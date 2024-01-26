@@ -21,10 +21,12 @@
   },
   "types": "./dist/esm/index.d.ts",
   "scripts": {
-    "prebuild": "rm -rf dist",
+    "prebuild": "rm -rf dist && npm run check",
     "build": "npm run build:esm && npm run build:cjs",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "build:esm": "tsc --module es2022 --outDir dist/esm",
+    "check": "biome check .",
+    "format": "biome format --write .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -35,7 +37,8 @@
     "url": "https://github.com/dunkelbraun/kysely-kinetic/issues"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "@types/node": "^18.0.0"
+    "@biomejs/biome": "1.5.3",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.3.3"
   }
 }
