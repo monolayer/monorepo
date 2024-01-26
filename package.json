@@ -1,0 +1,19 @@
+{
+  "name": "kysely-kinetic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/dunkelbraun/kysely-kinetic.git"
+  },
+  "author": "Marcos Essindi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dunkelbraun/kysely-kinetic/issues"
+  },
+  "homepage": "https://github.com/dunkelbraun/kysely-kinetic"
+}
