@@ -25,7 +25,9 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "build:esm": "tsc --module es2022 --outDir dist/esm",
-    "check": "biome check .",
+    "check": "npm run check:type && npm run check:biome",
+    "check:biome": "biome check .",
+    "check:type": "tsc --noEmit",
     "format": "biome format --write .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
