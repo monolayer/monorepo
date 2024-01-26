@@ -1,4 +1,7 @@
 {
+  "include": [
+    "src/**/*"
+  ],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
@@ -7,7 +10,7 @@
 
     /* Modules */
     "module": "es2022",                                  /* Specify what module code is generated. */
-    "rootDir": "src",                                    /* Specify the root folder within your source files. */
+    "rootDir": ".",                                    /* Specify the root folder within your source files. */
 		"moduleResolution": "node",                          /* Specify how TypeScript looks up a file from a given module specifier. */
 
     /* Emit */

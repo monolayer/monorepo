@@ -30,7 +30,8 @@
     "check:biome": "biome check .",
     "check:type": "tsc --noEmit",
     "format": "biome format --write .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest --run --coverage",
+    "test:watch": "vitest --watch --ui --open --coverage"
   },
   "repository": {
     "type": "git",
@@ -42,6 +43,9 @@
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
     "@types/node": "^18.0.0",
-    "typescript": "^5.3.3"
+    "@vitest/coverage-istanbul": "^1.2.1",
+    "@vitest/ui": "^1.2.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
   }
 }
