@@ -6,3 +6,4 @@ coverage
 .env
 .vscode
 !.vscode/extensions.json
+build

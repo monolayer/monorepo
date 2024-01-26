@@ -9,5 +9,6 @@ export default defineConfig({
 		},
 		setupFiles: ["tests/setup.ts"],
 		reporters: ["verbose"],
+		watchExclude: ["**/node_modules/**", "**/dist/**", "**/tmp/**"],
 	},
 });

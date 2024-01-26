@@ -8,6 +8,9 @@
   "type": "module",
   "main": "dist/cjs/index.js",
   "module": "./dist/esm/index.js",
+  "bin": {
+    "kinetic": "dist/esm/src/cli/index.js"
+  },
   "exports": {
     ".": {
       "import": {
@@ -21,17 +24,27 @@
     }
   },
   "types": "./dist/esm/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "prebuild": "rm -rf dist && npm run check",
     "build": "npm run build:esm && npm run build:cjs",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "build:esm": "tsc --module es2022 --outDir dist/esm",
+    "postbuild": "chmod +x ./dist/esm/src/cli/index.js",
     "check": "npm run check:type && npm run check:biome",
     "check:biome": "biome check .",
     "check:type": "tsc --noEmit",
+    "cli": "src/cli/index.ts",
     "format": "biome format --write .",
-    "test": "vitest --run --coverage",
-    "test:watch": "vitest --watch --ui --open --coverage"
+    "prepack": "npm run build && rm -rf build && mkdir build",
+    "pack": "npm pack --pack-destination ./build",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "vitest unit --run --coverage",
+    "pretest:integration": "npm run pack",
+    "test:integration": "vitest integration --run --coverage",
+    "test:watch": "vitest unit --watch --ui --open --coverage"
   },
   "repository": {
     "type": "git",
@@ -47,5 +60,10 @@
     "@vitest/ui": "^1.2.1",
     "typescript": "^5.3.3",
     "vitest": "^1.2.1"
+  },
+  "dependencies": {
+    "commander": "^11.1.0",
+    "execa": "^8.0.1",
+    "ts-node": "^10.9.2"
   }
 }
