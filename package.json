@@ -2,18 +2,39 @@
   "name": "kysely-kinetic",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "author": "Marcos Essindi",
+  "license": "MIT",
+  "homepage": "https://github.com/dunkelbraun/kysely-kinetic",
+  "main": "dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
+  "types": "./dist/esm/index.d.ts",
   "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "build:esm": "tsc --module es2022 --outDir dist/esm",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/dunkelbraun/kysely-kinetic.git"
   },
-  "author": "Marcos Essindi",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/dunkelbraun/kysely-kinetic/issues"
   },
-  "homepage": "https://github.com/dunkelbraun/kysely-kinetic"
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
 }
