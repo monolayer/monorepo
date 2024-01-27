@@ -30,9 +30,9 @@
   "scripts": {
     "prebuild": "rm -rf dist && npm run check",
     "build": "npm run build:esm && npm run build:cjs",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "build:esm": "tsc --module es2022 --outDir dist/esm",
     "postbuild": "chmod +x ./dist/esm/src/cli/index.js",
+    "build:cjs": "tsc -p tsconfig.cjs.json --outDir dist/cjs",
+    "build:esm": "tsc --outDir dist/esm",
     "check": "npm run check:type && npm run check:biome",
     "check:biome": "biome check .",
     "check:type": "tsc --noEmit",
