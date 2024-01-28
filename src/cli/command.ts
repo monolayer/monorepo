@@ -6,6 +6,7 @@ export enum ActionStatus {
 	KyselyInstallationInstalled = "KyselyInstallationInstalled",
 	InstallKyselySuccess = "InstallKyselySuccess",
 	Error = "Error",
+	Success = "Success",
 	InitKineticFolderSuccess = "InitKineticFolderSuccess",
 	pgInstallationNotInstalled = "pgInstallationNotInstalled",
 	pgInstallationInstalled = "pgInstallationInstalled",
