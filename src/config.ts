@@ -3,10 +3,6 @@ import type { ClientConfig, PoolConfig } from "pg";
 export type Config = {
 	folder: string;
 	environments: {
-		development: ClientConfig & PoolConfig;
-		test: ClientConfig & PoolConfig;
-		production: ClientConfig & PoolConfig;
-	} & {
 		[key: string]: ClientConfig & PoolConfig;
 	};
 };
