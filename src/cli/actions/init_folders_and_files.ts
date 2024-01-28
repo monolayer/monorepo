@@ -31,7 +31,7 @@ export async function initFolderAndFiles() {
 	log.lineMessage("");
 
 	await createFile(
-		path.join(cwd(), ".kinetic.ts"),
+		path.join(cwd(), "kinetic.ts"),
 		configTemplate.render({ folder: folder.path }),
 		true,
 	);

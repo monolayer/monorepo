@@ -115,7 +115,7 @@ describe("kinetic CLI", () => {
 
 			expect(result.exitCode).toBe(0);
 			expect(
-				fs.readFile(path.join(context.appFolder, ".kinetic.ts"), "utf8"),
+				fs.readFile(path.join(context.appFolder, "kinetic.ts"), "utf8"),
 			).resolves.toMatch(configTemplate.render({ folder: "app/db" }));
 			expect(
 				fs.readFile(path.join(context.appFolder, "app/db/schema.ts"), "utf8"),
@@ -144,7 +144,7 @@ describe("kinetic CLI", () => {
 
 			expect(result.exitCode).toBe(0);
 			expect(
-				fs.readFile(path.join(context.appFolder, ".kinetic.ts"), "utf8"),
+				fs.readFile(path.join(context.appFolder, "kinetic.ts"), "utf8"),
 			).resolves.toMatch(configTemplate.render({ folder: "src/db" }));
 			expect(
 				fs.readFile(path.join(context.appFolder, "src/db/schema.ts"), "utf8"),
