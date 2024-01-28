@@ -4,17 +4,36 @@ import { exit } from "process";
 import { checkKyselyInstallation } from "../actions/check_kysely.js";
 import { initFolderAndFiles } from "../actions/init_folders_and_files.js";
 import { installKysely } from "../actions/install_kysely.js";
-import { ActionStatus } from "../command.js";
+import {
+	checkPgInstallation,
+	checkPgTypesInstallation,
+	installPg,
+	installPgTypes,
+} from "../actions/install_pg.js";
+import { ActionStatus, CommandSuccess } from "../command.js";
 import { exitProgramWithError } from "../utils/program.js";
 
 export async function initCommand() {
 	p.intro("Initialize Kinetic");
-	const check = await checkKyselyInstallation();
-	if (check.status === ActionStatus.KyselyInstallationNotInstalled) {
-		const result = await installKysely();
-		if (result.status === ActionStatus.Error)
-			exitProgramWithError(program, result.error);
-	}
+
+	await installPackage(
+		checkKyselyInstallation,
+		installKysely,
+		ActionStatus.KyselyInstallationNotInstalled,
+	);
+
+	await installPackage(
+		checkPgInstallation,
+		installPg,
+		ActionStatus.pgInstallationNotInstalled,
+	);
+
+	await installPackage(
+		checkPgTypesInstallation,
+		installPgTypes,
+		ActionStatus.pgTypesInstallationNotInstalled,
+	);
+
 	await initFolderAndFiles();
 
 	const nextSteps = `1) Edit the database connection details at \`.kinetic.ts\`.
@@ -23,6 +42,21 @@ export async function initCommand() {
 4) Run \'npx kinetic kinetic generate\' to create migrations.
 5) Run \'npx kinetic migrate\' to migrate the database.`;
 	p.note(nextSteps, "Next Steps");
+
 	p.outro("Kinetic initialized successfully.");
+
 	exit(0);
+}
+
+async function installPackage(
+	checkFn: () => Promise<CommandSuccess>,
+	installFn: () => Promise<CommandSuccess>,
+	checkStatusSuccess: ActionStatus,
+) {
+	const check = await checkFn();
+	if (check.status === checkStatusSuccess) {
+		const installResult = await installFn();
+		if (installResult.status === ActionStatus.Error)
+			exitProgramWithError(program, installResult.error);
+	}
 }

@@ -1,8 +1,8 @@
 import { execa } from "execa";
 import { runCommand } from "../command.js";
 
-export async function npmInstall(pkg: string, cwd?: string) {
-	return await runCommand("npm", ["install", pkg], {
+export async function npmInstall(pkg: string[], cwd?: string) {
+	return await runCommand("npm", ["install", ...pkg], {
 		cwd: cwd || process.cwd(),
 	});
 }

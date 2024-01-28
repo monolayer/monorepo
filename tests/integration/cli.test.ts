@@ -49,7 +49,7 @@ describe("kinetic CLI", () => {
 	});
 
 	describe("init command", () => {
-		test("installs kysely in the project when missing", async (context: CliTestContext) => {
+		test("installs dependencies in the project when missing", async (context: CliTestContext) => {
 			const result = npx(["kinetic", "init"], context.appFolder);
 			if (result.stdout !== null) {
 				result.stdout.on("data", (data: Buffer | string) => {
@@ -64,12 +64,24 @@ describe("kinetic CLI", () => {
 			await result;
 			expect(result.exitCode).toBe(0);
 
-			const listCommand = await npmList(["kysely"], context.appFolder);
-			expect(listCommand.value?.exitCode).toBe(0);
-		});
+			const kyselyListCommand = await npmList(["kysely"], context.appFolder);
+			expect(kyselyListCommand.value?.exitCode).toBe(0);
 
-		test("skips kysely installation if already in the project", async (context: CliTestContext) => {
-			await npmInstall("kysely@0.27.0", context.appFolder);
+			const pgListCommand = await npmList(["pg"], context.appFolder);
+			expect(pgListCommand.value?.exitCode).toBe(0);
+
+			const pgTypesListCommand = await npmList(
+				["@types/pg"],
+				context.appFolder,
+			);
+			expect(pgTypesListCommand.value?.exitCode).toBe(0);
+		}, 20000);
+
+		test("skips install of dependecies already in the project", async (context: CliTestContext) => {
+			await npmInstall(["kysely@0.27.0"], context.appFolder);
+			await npmInstall(["pg@8.10.0"], context.appFolder);
+			await npmInstall(["@types/pg@8.10.9"], context.appFolder);
+
 			const result = npx(["kinetic", "init"], context.appFolder);
 			if (result.stdout !== null) {
 				result.stdout.on("data", (data: Buffer | string) => {
@@ -81,12 +93,22 @@ describe("kinetic CLI", () => {
 					}
 				});
 			}
+
 			await result;
 
 			expect(result.exitCode).toBe(0);
 
 			const listCommand = await npmList(
-				["kysely", "--json", "--omit", "dev", "--omit", "peer"],
+				[
+					"kysely",
+					"pg",
+					"@types/pg",
+					"--json",
+					"--omit",
+					"dev",
+					"--omit",
+					"peer",
+				],
 				context.appFolder,
 			);
 			const stdout = listCommand.value?.stdout;
@@ -94,6 +116,12 @@ describe("kinetic CLI", () => {
 				dependencies: {
 					kysely: {
 						version: "0.27.0",
+					},
+					pg: {
+						version: "8.10.0",
+					},
+					"@types/pg": {
+						version: "8.10.9",
 					},
 				},
 			});

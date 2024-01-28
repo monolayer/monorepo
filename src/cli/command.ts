@@ -7,6 +7,12 @@ export enum ActionStatus {
 	InstallKyselySuccess = "InstallKyselySuccess",
 	Error = "Error",
 	InitKineticFolderSuccess = "InitKineticFolderSuccess",
+	pgInstallationNotInstalled = "pgInstallationNotInstalled",
+	pgInstallationInstalled = "pgInstallationInstalled",
+	InstallPgSuccess = "InstallPgSuccess",
+	pgTypesInstallationNotInstalled = "pgTypesInstallationNotInstalled",
+	pgTypesInstallationInstalled = "pgTypesInstallationInstalled",
+	InstallPgTypesSuccess = "InstallPgTypesSuccess",
 }
 
 export type CommandSuccess = {
