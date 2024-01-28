@@ -9,34 +9,32 @@
   "main": "dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "bin": {
-    "kinetic": "dist/esm/src/cli/index.js"
+    "kinetic": "dist/esm/src/cli/cli.js"
   },
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      }
+      "import": "./dist/esm/src/index.js",
+      "require": "./dist/cjs/src/index.js",
+      "default": "./dist/cjs/src/index.js"
     }
   },
-  "types": "./dist/esm/index.d.ts",
+  "types": "./dist/esm/src/index.d.ts",
   "files": [
     "dist/**/*"
   ],
   "scripts": {
     "prebuild": "rm -rf dist && npm run check",
     "build": "npm run build:esm && npm run build:cjs",
-    "postbuild": "chmod +x ./dist/esm/src/cli/index.js",
     "build:cjs": "tsc -p tsconfig.cjs.json --outDir dist/cjs",
     "build:esm": "tsc --outDir dist/esm",
+    "postbuild": "npm run postbuild:makeexec && npm run postbuild:packagecjs && npm run postbuild:packageesm",
+    "postbuild:makeexec": "chmod +x dist/esm/src/cli/cli.js",
+    "postbuild:packagecjs": "echo '{\n  \"type\": \"commonjs\"\n}' > dist/cjs/src/package.json",
+    "postbuild:packageesm": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/src/package.json",
     "check": "npm run check:type && npm run check:biome",
     "check:biome": "biome check .",
     "check:type": "tsc --noEmit",
-    "cli": "src/cli/index.ts",
+    "cli": "src/cli/cli.ts",
     "format": "biome format --write .",
     "prepack": "npm run build && rm -rf build && mkdir build",
     "pack": "npm pack --pack-destination ./build",
@@ -55,15 +53,23 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
+    "@types/mock-fs": "^4.13.4",
     "@types/node": "^18.0.0",
+    "@types/nunjucks": "^3.2.6",
+    "@types/pg": "^8.11.0",
     "@vitest/coverage-istanbul": "^1.2.1",
     "@vitest/ui": "^1.2.1",
+    "mock-fs": "^5.2.0",
+    "mock-stdin": "^1.0.0",
     "typescript": "^5.3.3",
     "vitest": "^1.2.1"
   },
   "dependencies": {
+    "@clack/prompts": "^0.7.0",
     "commander": "^11.1.0",
     "execa": "^8.0.1",
+    "nunjucks": "^3.2.4",
+    "picocolors": "^1.0.0",
     "ts-node": "^10.9.2"
   }
 }
