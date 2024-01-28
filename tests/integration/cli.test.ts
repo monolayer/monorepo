@@ -7,6 +7,7 @@ import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {
 	configTemplate,
+	kyselyTemplate,
 	schemaTemplate,
 } from "../../src/cli/actions/init_folders_and_files.js";
 import { npmInstall, npmList, npx } from "../../src/cli/utils/npm.js";
@@ -121,6 +122,11 @@ describe("kinetic CLI", () => {
 				fs.readFile(path.join(context.appFolder, "app/db/schema.ts"), "utf8"),
 			).resolves.toMatch(schemaTemplate.render());
 			expect(
+				fs.readFile(path.join(context.appFolder, "app/db/kysely.ts"), "utf8"),
+			).resolves.toMatch(
+				kyselyTemplate.render({ kineticConfigPath: "../../kinetic.js" }),
+			);
+			expect(
 				fs.stat(path.join(context.appFolder, "app/db")),
 			).resolves.not.toThrowError();
 			expect(
@@ -149,6 +155,11 @@ describe("kinetic CLI", () => {
 			expect(
 				fs.readFile(path.join(context.appFolder, "src/db/schema.ts"), "utf8"),
 			).resolves.toMatch(schemaTemplate.render());
+			expect(
+				fs.readFile(path.join(context.appFolder, "src/db/kysely.ts"), "utf8"),
+			).resolves.toMatch(
+				kyselyTemplate.render({ kineticConfigPath: "../../kinetic.js" }),
+			);
 			expect(
 				fs.stat(path.join(context.appFolder, "src/db")),
 			).resolves.not.toThrowError();

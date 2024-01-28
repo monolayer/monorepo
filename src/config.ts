@@ -18,3 +18,13 @@ export function registerSchema(db: unknown) {
 		globalWithSchema.schema = db;
 	}
 }
+
+export function pgPoolConfig(config: Config, env: string) {
+	const poolConfig = config.environments[env];
+	if (poolConfig === undefined) {
+		throw new Error(
+			`No configuration found for environment: '${env}'. Please check your kinetic.js file.`,
+		);
+	}
+	return poolConfig;
+}

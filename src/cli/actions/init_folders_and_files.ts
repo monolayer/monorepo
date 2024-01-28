@@ -38,6 +38,17 @@ export async function initFolderAndFiles() {
 	await createDir(folder.path, true);
 	await createFile(`${folder.path}/schema.ts`, schemaTemplate.render(), true);
 	await createDir(`${folder.path}/migrations`, true);
+
+	await createFile(
+		path.join(`${folder.path}/kysely.ts`),
+		kyselyTemplate.render({
+			kineticConfigPath: path.relative(
+				path.join(cwd(), folder.path),
+				path.join(cwd(), "kinetic.js"),
+			),
+		}),
+		true,
+	);
 }
 
 export const configTemplate = nunjucks.compile(`import type { Config } from "kysely-kinetic";
@@ -67,5 +78,22 @@ export default ({
 
 export const schemaTemplate = nunjucks.compile(`import { registerSchema } from "kysely-kinetic";
 
+export type DB = object;
+
 registerSchema({});
+`);
+
+export const kyselyTemplate = nunjucks.compile(`import { Kysely, PostgresDialect } from "kysely";
+import { pgPoolConfig } from "kysely-kinetic";
+import pg from "pg";
+import kineticConfig from "{{ kineticConfigPath }}";
+import type { DB } from "./schema.js";
+
+export const kysely = new Kysely<DB>({
+	dialect: new PostgresDialect({
+		pool: new pg.Pool(
+			pgPoolConfig(kineticConfig, process.env.KINETIC_ENV || "development")
+		),
+	}),
+});
 `);
