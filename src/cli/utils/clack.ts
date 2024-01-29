@@ -25,13 +25,16 @@ export type Task = {
 export function checkEnvironmentIsConfigured(
 	config: Config,
 	environment: string,
+	options: { spinner?: ReturnType<typeof p.spinner>; outro?: true } = {},
 ) {
 	if (config.environments[environment] === undefined) {
-		log.lineMessage(
-			`${color.red(
-				"error",
-			)} No configuration found for environment: '${environment}'. Please check your kinetic.ts file.`,
-		);
+		const errorMesage = `Configuration not found for environment '${environment}'. Please check your kinetic.ts file.`;
+		if (options.spinner !== undefined) {
+			options.spinner.stop(errorMesage, 1);
+		} else {
+			p.log.error(errorMesage);
+		}
+		if (options.outro === true) p.outro(`${color.red("Failed")}`);
 		exit(1);
 	}
 }

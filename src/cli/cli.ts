@@ -6,6 +6,8 @@ import { isCommanderError } from "./command.js";
 import { dbCreate } from "./commands/db_create.js";
 import { dbDrop } from "./commands/db_drop.js";
 import { initCommand } from "./commands/init.js";
+import { structureDump } from "./commands/structure_dump.js";
+import { structureLoad } from "./commands/structure_load.js";
 
 async function main() {
 	const program = new Command();
@@ -41,6 +43,30 @@ async function main() {
 		.description("Drop the database")
 		.action(async (_opts, cmd) => {
 			await dbDrop(cmd.opts().environment);
+		});
+
+	program
+		.command("structure:dump")
+		.description("Dump the database structure")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
+		.action(async (_opts, cmd) => {
+			await structureDump(cmd.opts().environment);
+		});
+
+	program
+		.command("structure:load")
+		.description("Load the database structure")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
+		.action(async (_opts, cmd) => {
+			await structureLoad(cmd.opts().environment);
 		});
 
 	program.exitOverride();
