@@ -1,9 +1,4 @@
-#!/usr/bin/env node --loader ts-node/esm --no-warnings
-
-import tsnode from "ts-node";
-tsnode.register({
-	transpileOnly: true,
-});
+#!/usr/bin/env tsx
 
 import { Command } from "commander";
 import { exit } from "process";

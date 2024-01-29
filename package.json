@@ -72,6 +72,6 @@
     "nunjucks": "^3.2.4",
     "pg-connection-string": "^2.6.2",
     "picocolors": "^1.0.0",
-    "ts-node": "^10.9.2"
+    "tsx": "^4.7.0"
   }
 }
