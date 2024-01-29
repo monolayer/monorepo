@@ -61,7 +61,7 @@ type ConfigImport =
 
 export async function importConfig() {
 	const def = await import(path.join(process.cwd(), "kinetic.ts"));
-	const config = isEsmImport(def) ? def.default : def.default.default;
+	const config: Config = isEsmImport(def) ? def.default : def.default.default;
 	return config;
 }
 
