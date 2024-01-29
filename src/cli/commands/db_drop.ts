@@ -1,17 +1,31 @@
+import * as p from "@clack/prompts";
 import color from "picocolors";
 import { exit } from "process";
+import { pgPool } from "~/pg/pg_pool.js";
+import { pgQueryExecuteWithResult } from "~/pg/pg_query.js";
 import { importConfig } from "../../config.js";
-import { DbAdmin } from "../../db_admin.js";
-import { checkEnvironmentIsConfigured, log } from "../utils/clack.js";
+import { ActionStatus } from "../command.js";
+import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
 export async function dbDrop(environment: string) {
+	p.intro("Drop Database");
+	const s = p.spinner();
+	s.start("Creating database");
 	const config = await importConfig();
-	checkEnvironmentIsConfigured(config, environment);
-	const dbAdmin = new DbAdmin(config, environment);
-	const result = await dbAdmin.dropDb();
-	if (result.error instanceof Error) {
-		log.lineMessage(`${color.red("error")} ${result.error.message}`);
+	checkEnvironmentIsConfigured(config, environment, {
+		spinner: s,
+		outro: true,
+	});
+	const pool = pgPool(config, environment);
+
+	const dropDb = await pgQueryExecuteWithResult<{
+		datname: string;
+	}>(pool.pool, `DROP DATABASE ${pool.config.database};`);
+	if (dropDb.status === ActionStatus.Error) {
+		s.stop(dropDb.error.message, 1);
+		p.outro(`${color.red("Failed")}`);
 		exit(1);
 	}
-	log.lineMessage(`${color.green("dropped database")} ${dbAdmin.databaseName}`);
+	s.stop(`${color.green("dropped")} ${pool.config.database}`);
+	p.outro("Done");
 }
