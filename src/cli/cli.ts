@@ -7,6 +7,7 @@ import { dbCreate } from "./commands/db_create.js";
 import { dbDrop } from "./commands/db_drop.js";
 import { generate } from "./commands/generate.js";
 import { initCommand } from "./commands/init.js";
+import { migrate } from "./commands/migrate.js";
 import { structureDump } from "./commands/structure_dump.js";
 import { structureLoad } from "./commands/structure_load.js";
 
@@ -80,6 +81,18 @@ async function main() {
 		)
 		.action(async (_opts, _cmd) => {
 			await generate();
+		});
+
+	program
+		.command("migrate")
+		.description("Apply pending migrations")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
+		.action(async (_opts, cmd) => {
+			await migrate(cmd.opts().environment);
 		});
 
 	program.exitOverride();
