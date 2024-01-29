@@ -1,5 +1,5 @@
 import type { Pool, QueryResultRow } from "pg";
-import { ActionStatus, CommandError, CommandSuccess } from "../cli/command.js";
+import { ActionStatus, CommandError, CommandSuccess } from "~/cli/command.js";
 
 export async function pgQueryExecute(pool: Pool, query: string) {
 	try {

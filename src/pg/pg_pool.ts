@@ -2,8 +2,8 @@ import pg from "pg";
 import parse from "pg-connection-string";
 import color from "picocolors";
 import { exit } from "process";
-import { log } from "../cli/utils/clack.js";
-import { Config } from "../config.js";
+import { log } from "~/cli/utils/clack.js";
+import { Config } from "~/config.js";
 
 export function pgPool(config: Config, environment: string) {
 	const environmentConfig = config.environments[environment];

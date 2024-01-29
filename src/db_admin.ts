@@ -1,7 +1,7 @@
 import pg from "pg";
 import parse from "pg-connection-string";
-import { ActionStatus, CommandError, CommandSuccess } from "./cli/command.js";
-import { Config } from "./config.js";
+import { ActionStatus, CommandError, CommandSuccess } from "~/cli/command.js";
+import { Config } from "~/config.js";
 
 export class DbAdmin {
 	#pool: pg.Pool;

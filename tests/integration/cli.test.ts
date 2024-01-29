@@ -9,9 +9,9 @@ import {
 	configTemplate,
 	kyselyTemplate,
 	schemaTemplate,
-} from "../../src/cli/actions/init_folders_and_files.js";
-import { npmInstall, npmList, npx } from "../../src/cli/utils/npm.js";
-import { keys } from "../helpers/key_codes.js";
+} from "~/cli/actions/init_folders_and_files.js";
+import { npmInstall, npmList, npx } from "~/cli/utils/npm.js";
+import { keys } from "~tests/helpers/key_codes.js";
 
 type CliTestContext = {
 	appFolder: string;
@@ -54,7 +54,7 @@ describe("kinetic CLI", () => {
 			if (result.stdout !== null) {
 				result.stdout.on("data", (data: Buffer | string) => {
 					const read = data instanceof Buffer ? data.toString() : data;
-					if (data.includes("Where should the db folder be created?")) {
+					if (read.includes("Where should the db folder be created?")) {
 						if (result.stdin !== null) {
 							result.stdin.write(keys.enter);
 						}
@@ -86,7 +86,7 @@ describe("kinetic CLI", () => {
 			if (result.stdout !== null) {
 				result.stdout.on("data", (data: Buffer | string) => {
 					const read = data instanceof Buffer ? data.toString() : data;
-					if (data.includes("Where should the db folder be created?")) {
+					if (read.includes("Where should the db folder be created?")) {
 						if (result.stdin !== null) {
 							result.stdin.write(keys.enter);
 						}
@@ -133,7 +133,7 @@ describe("kinetic CLI", () => {
 			if (result.stdout !== null) {
 				result.stdout.on("data", (data: Buffer | string) => {
 					const read = data instanceof Buffer ? data.toString() : data;
-					if (data.includes("Where should the db folder be created?")) {
+					if (read.includes("Where should the db folder be created?")) {
 						if (result.stdin !== null) {
 							result.stdin.write(keys.enter);
 						}
@@ -167,7 +167,7 @@ describe("kinetic CLI", () => {
 			if (result.stdout !== null) {
 				result.stdout.on("data", (data: Buffer | string) => {
 					const read = data instanceof Buffer ? data.toString() : data;
-					if (data.includes("Where should the db folder be created?")) {
+					if (read.includes("Where should the db folder be created?")) {
 						if (result.stdin !== null) {
 							result.stdin.write(`src/db${keys.enter}`);
 						}

@@ -27,7 +27,9 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:cjs": "tsc -p tsconfig.cjs.json --outDir dist/cjs",
     "build:esm": "tsc --outDir dist/esm",
-    "postbuild": "npm run postbuild:makeexec && npm run postbuild:packagecjs && npm run postbuild:packageesm",
+    "postbuild": "npm run postbuild:makeexec && npm run postbuild:packagecjs && npm run postbuild:packageesm && npm run postbuild:remove-tests && npm run postbuild:transform-paths",
+    "postbuild:remove-tests": "rm -rf dist/esm/tests && rm -rf dist/cjs/tests",
+    "postbuild:transform-paths": "tsc-alias -p tsconfig.json --outDir dist/esm && tsc-alias -p tsconfig.cjs.json --outDir dist/cjs",
     "postbuild:makeexec": "chmod +x dist/esm/src/cli/cli.js",
     "postbuild:packagecjs": "echo '{\n  \"type\": \"commonjs\"\n}' > dist/cjs/src/package.json",
     "postbuild:packageesm": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/src/package.json",
@@ -63,9 +65,11 @@
     "mock-fs": "^5.2.0",
     "mock-stdin": "^1.0.0",
     "pg": "^8.11.3",
+    "tsc-alias": "^1.8.8",
     "type-fest": "^4.10.1",
     "type-testing": "^0.2.0",
     "typescript": "^5.3.3",
+    "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.2.1"
   },
   "dependencies": {

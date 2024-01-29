@@ -6,8 +6,8 @@ import {
 	pgInt4,
 	pgText,
 	pgVarchar,
-} from "../../../../src/database/schema/columns.js";
-import { pgTable } from "../../../../src/database/schema/table.js";
+} from "~/database/schema/columns.js";
+import { pgTable } from "~/database/schema/table.js";
 
 describe("pgTable definition", () => {
 	test("has a name", () => {

@@ -29,9 +29,8 @@ import {
 	pgTimestampTz,
 	pgUuid,
 	pgVarchar,
-} from "../../../../src/database/schema/columns.js";
-
-import { testMetaValue } from "../../../helpers/test_meta_value.js";
+} from "~/database/schema/columns.js";
+import { testMetaValue } from "~tests/helpers/test_meta_value.js";
 
 test("defineMetaInfo", () => {
 	const obj = {};

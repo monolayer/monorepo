@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	test: {
@@ -11,4 +12,5 @@ export default defineConfig({
 		reporters: ["verbose"],
 		watchExclude: ["**/node_modules/**", "**/dist/**", "**/tmp/**"],
 	},
+	plugins: [tsconfigPaths()],
 });

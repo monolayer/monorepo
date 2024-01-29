@@ -1,8 +1,8 @@
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { pgVarchar } from "../../../../src/database/schema/columns.js";
-import { pgDatabase } from "../../../../src/database/schema/database.js";
-import { pgTable } from "../../../../src/database/schema/table.js";
+import { pgVarchar } from "~/database/schema/columns.js";
+import { pgDatabase } from "~/database/schema/database.js";
+import { pgTable } from "~/database/schema/table.js";
 
 describe("pgDatabase definition", () => {
 	test("without tables", () => {
