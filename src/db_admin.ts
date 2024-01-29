@@ -8,9 +8,9 @@ export class DbAdmin {
 	#poolConfig: (pg.ClientConfig & pg.PoolConfig) | parse.ConnectionOptions;
 	#config: Config;
 
-	constructor(kineticConfig: Config) {
+	constructor(kineticConfig: Config, environment: string) {
 		this.#config = kineticConfig;
-		const poolConfig = this.#defaultPgPoolConfig();
+		const poolConfig = this.#defaultPgPoolConfig(environment);
 		this.#poolConfig = poolConfig;
 		this.#pool = new pg.Pool({
 			host: this.#poolConfig.host || "",
@@ -42,8 +42,7 @@ export class DbAdmin {
 		return this.#poolConfig.database;
 	}
 
-	#defaultPgPoolConfig() {
-		const env = process.env.KINETIC_ENV || "development";
+	#defaultPgPoolConfig(env: string) {
 		const poolConfig = this.#config.environments[env];
 		if (poolConfig === undefined) {
 			throw new Error(

@@ -1,5 +1,7 @@
 import * as p from "@clack/prompts";
 import color from "picocolors";
+import { exit } from "process";
+import { Config } from "../../config.js";
 
 type LogWithSimpleMessage = typeof p.log & {
 	lineMessage: (message?: string) => void;
@@ -19,3 +21,17 @@ export type Task = {
 	) => string | Promise<string> | void | Promise<void>;
 	enabled?: boolean;
 };
+
+export function checkEnvironmentIsConfigured(
+	config: Config,
+	environment: string,
+) {
+	if (config.environments[environment] === undefined) {
+		log.lineMessage(
+			`${color.red(
+				"error",
+			)} No configuration found for environment: '${environment}'. Please check your kinetic.ts file.`,
+		);
+		exit(1);
+	}
+}

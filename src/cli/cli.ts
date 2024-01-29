@@ -21,16 +21,26 @@ async function main() {
 
 	program
 		.command("db:create")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
 		.description("Create the database")
-		.action(async () => {
-			await dbCreate();
+		.action(async (_opts, cmd) => {
+			await dbCreate(cmd.opts().environment);
 		});
 
 	program
 		.command("db:drop")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
 		.description("Drop the database")
-		.action(async () => {
-			await dbDrop();
+		.action(async (_opts, cmd) => {
+			await dbDrop(cmd.opts().environment);
 		});
 
 	program.exitOverride();
