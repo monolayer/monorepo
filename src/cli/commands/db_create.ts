@@ -13,5 +13,5 @@ export async function dbCreate(environment: string) {
 		log.lineMessage(`${color.red("error")} ${result.error.message}`);
 		exit(1);
 	}
-	log.lineMessage(`${color.green("created")} ${dbAdmin.databaseName}`);
+	log.lineMessage(`${color.green("created database")} ${dbAdmin.databaseName}`);
 }

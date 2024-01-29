@@ -13,5 +13,5 @@ export async function dbDrop(environment: string) {
 		log.lineMessage(`${color.red("error")} ${result.error.message}`);
 		exit(1);
 	}
-	log.lineMessage(`${color.green("dropped")} ${dbAdmin.databaseName}`);
+	log.lineMessage(`${color.green("dropped database")} ${dbAdmin.databaseName}`);
 }
