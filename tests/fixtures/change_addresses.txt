@@ -1,0 +1,27 @@
+import { Kysely } from "kysely";
+
+export async function up(db: Kysely<any>): Promise<void> {
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("name", (col) => col.setDataType("varchar"))
+    .alterColumn("name", (col) => col.setDefault("hello"))
+    .alterColumn("name", (col) => col.setNotNull())
+    .alterColumn("email", (col) => col.setDataType("varchar"))
+    .alterColumn("city", (col) => col.dropDefault())
+    .alterColumn("city", (col) => col.setNotNull())
+    .addColumn("country", "text")
+    .execute();
+}
+
+export async function down(db: Kysely<any>): Promise<void> {
+  await db.schema
+    .alterTable("addresses")
+    .dropColumn("country")
+    .alterColumn("city", (col) => col.dropNotNull())
+    .alterColumn("city", (col) => col.setDefault("bcn"))
+    .alterColumn("email", (col) => col.setDataType("varchar(255)"))
+    .alterColumn("name", (col) => col.dropNotNull())
+    .alterColumn("name", (col) => col.dropDefault())
+    .alterColumn("name", (col) => col.setDataType("text"))
+    .execute();
+}

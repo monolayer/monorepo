@@ -1,0 +1,16 @@
+import { Kysely } from "kysely";
+
+export async function up(db: Kysely<any>): Promise<void> {
+  await db.schema
+    .dropTable("shops")
+    .execute();
+}
+
+export async function down(db: Kysely<any>): Promise<void> {
+  await db.schema
+    .createTable("shops")
+    .addColumn("name", "varchar", (col) => col.defaultTo("hello"))
+    .addColumn("email", "varchar(255)")
+    .addColumn("city", "text", (col) => col.notNull())
+    .execute();
+}

@@ -1,4 +1,9 @@
 import { Kysely, sql } from "kysely";
+import {
+	ActionStatus,
+	OperationAnyError,
+	OperationSuccess,
+} from "~/cli/command.js";
 import { ColumnInfo } from "./column_info.js";
 import { TableInfo } from "./table_diff.js";
 
@@ -74,8 +79,35 @@ type InformationSchemaDB = {
 export async function dbTableInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
+): Promise<
+	| {
+			status: ActionStatus.Success;
+			result: {
+				name: string | null;
+				schemaName: string | null;
+			}[];
+	  }
+	| OperationAnyError
+> {
+	try {
+		const results = await queryDbTableInfo(kysely, databaseSchema);
+		return {
+			status: ActionStatus.Success,
+			result: results,
+		};
+	} catch (error) {
+		return {
+			status: ActionStatus.Error,
+			error: error,
+		};
+	}
+}
+
+async function queryDbTableInfo(
+	kysely: Kysely<InformationSchemaDB>,
+	databaseSchema: string,
 ) {
-	const results = await kysely
+	return await kysely
 		.selectFrom("information_schema.tables")
 		.select(["table_name as name", "table_schema as schemaName"])
 		.where("table_schema", "=", databaseSchema)
@@ -85,26 +117,39 @@ export async function dbTableInfo(
 		.where("table_name", "!=", "kysely_migration")
 		.where("table_type", "!=", "VIEW")
 		.execute();
-	return results;
 }
 
 export async function dbColumnInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
-	tableNames?: string[],
-) {
-	const results = await fetchDbColumnInfo(kysely, databaseSchema, tableNames);
-	const transformed = transformDbColumnInfo(results);
-	const mapped = mapColumnsToTables(transformed);
-	return mapped;
+	tableNames: string[],
+): Promise<OperationSuccess<TableInfo> | OperationAnyError> {
+	try {
+		const results = await fetchDbColumnInfo(kysely, databaseSchema, tableNames);
+		const transformed = transformDbColumnInfo(results);
+		const mapped = mapColumnsToTables(transformed);
+		return {
+			status: ActionStatus.Success,
+			result: mapped,
+		};
+	} catch (error) {
+		return {
+			status: ActionStatus.Error,
+			error: error,
+		};
+	}
 }
 
 async function fetchDbColumnInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
-	tableNames?: string[],
+	tableNames: string[],
 ) {
-	const base = kysely
+	if (tableNames.length === 0) {
+		return [];
+	}
+
+	return kysely
 		.selectFrom("information_schema.columns")
 		.select([
 			"table_name",
@@ -124,19 +169,8 @@ async function fetchDbColumnInfo(
 				"rename_from",
 			),
 		])
-		.where("table_schema", "=", databaseSchema);
-	if (tableNames !== undefined) {
-		return await base
-			.where("table_name", "in", tableNames)
-			.orderBy("table_name asc")
-			.orderBy("column_name asc")
-			.execute();
-	}
-	return base
-		.where("table_name", "!=", "geometry_columns")
-		.where("table_name", "!=", "spatial_ref_sys")
-		.where("table_name", "!=", "kysely_migration_lock")
-		.where("table_name", "!=", "kysely_migration")
+		.where("table_schema", "=", databaseSchema)
+		.where("table_name", "in", tableNames)
 		.orderBy("table_name asc")
 		.orderBy("column_name asc")
 		.execute();

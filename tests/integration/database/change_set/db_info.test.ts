@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { ActionStatus } from "~/cli/command.js";
 import { dbColumnInfo, dbTableInfo } from "~/database/change_set/db_info.js";
 import { DbContext, globalKysely } from "~tests/setup.js";
 
@@ -31,17 +32,21 @@ describe("db info", () => {
 			await kysely.schema.createTable("table_info2").execute();
 			await kysely.schema.createTable("table_info3").execute();
 			const results = await dbTableInfo(kysely, "public");
-			const hasTableInfo1 = results.some(
+			if (results.status === ActionStatus.Error) {
+				throw results.error;
+			}
+			const allResults = results.result;
+			const hasTableInfo1 = allResults.some(
 				(element) =>
 					element.name === "table_info1" && element.schemaName === "public",
 			);
 			expect(hasTableInfo1).toBe(true);
-			const hasTableInfo2 = results.some(
+			const hasTableInfo2 = allResults.some(
 				(element) =>
 					element.name === "table_info2" && element.schemaName === "public",
 			);
 			expect(hasTableInfo2).toBe(true);
-			const hasTableInfo3 = results.some(
+			const hasTableInfo3 = allResults.some(
 				(element) =>
 					element.name === "table_info3" && element.schemaName === "public",
 			);
@@ -50,6 +55,16 @@ describe("db info", () => {
 	});
 
 	describe("#dbColumnInfo", () => {
+		it<DbContext>("returns empty columns info when tables names are not supplied", async ({
+			kysely,
+		}) => {
+			const emptyResults = await dbColumnInfo(kysely, "public", []);
+			if (emptyResults.status === ActionStatus.Error) {
+				throw emptyResults.error;
+			}
+			expect(emptyResults.result).toStrictEqual({});
+		});
+
 		it<DbContext>("returns info on columns with numeric data types", async ({
 			kysely,
 			tableNames,
@@ -73,7 +88,10 @@ describe("db info", () => {
 			const table_1_results = await dbColumnInfo(kysely, "public", [
 				"numeric_table_1",
 			]);
-			expect(table_1_results).toStrictEqual({
+			if (table_1_results.status === ActionStatus.Error) {
+				throw table_1_results.error;
+			}
+			expect(table_1_results.result).toStrictEqual({
 				numeric_table_1: {
 					decimal: {
 						tableName: "numeric_table_1",
@@ -104,7 +122,10 @@ describe("db info", () => {
 			const table_2_results = await dbColumnInfo(kysely, "public", [
 				"numeric_table_2",
 			]);
-			expect(table_2_results).toStrictEqual({
+			if (table_2_results.status === ActionStatus.Error) {
+				throw table_2_results.error;
+			}
+			expect(table_2_results.result).toStrictEqual({
 				numeric_table_2: {
 					decimal_with_precision: {
 						tableName: "numeric_table_2",
@@ -173,7 +194,10 @@ describe("db info", () => {
 				.addColumn("bigint", "bigint")
 				.execute();
 			const results = await dbColumnInfo(kysely, "public", ["integer_table_1"]);
-			expect(results).toStrictEqual({
+			if (results.status === ActionStatus.Error) {
+				throw results.error;
+			}
+			expect(results.result).toStrictEqual({
 				integer_table_1: {
 					bigint: {
 						tableName: "integer_table_1",
@@ -253,7 +277,10 @@ describe("db info", () => {
 				.addColumn("real", "real")
 				.execute();
 			const results = await dbColumnInfo(kysely, "public", ["float_table_1"]);
-			expect(results).toStrictEqual({
+			if (results.status === ActionStatus.Error) {
+				throw results.error;
+			}
+			expect(results.result).toStrictEqual({
 				float_table_1: {
 					double_precision: {
 						tableName: "float_table_1",
@@ -319,7 +346,10 @@ describe("db info", () => {
 				.addColumn("bigserial", "bigserial")
 				.execute();
 			const results = await dbColumnInfo(kysely, "public", ["serial_table_1"]);
-			expect(results).toStrictEqual({
+			if (results.status === ActionStatus.Error) {
+				throw results.error;
+			}
+			expect(results.result).toStrictEqual({
 				serial_table_1: {
 					bigserial: {
 						tableName: "serial_table_1",
@@ -365,7 +395,10 @@ describe("db info", () => {
 				.addColumn("uuid", "uuid")
 				.execute();
 			const results = await dbColumnInfo(kysely, "public", ["misc_table_1"]);
-			expect(results).toStrictEqual({
+			if (results.status === ActionStatus.Error) {
+				throw results.error;
+			}
+			expect(results.result).toStrictEqual({
 				misc_table_1: {
 					boolean: {
 						tableName: "misc_table_1",
@@ -464,7 +497,10 @@ describe("db info", () => {
 				"character_table_1",
 				"character_table_2",
 			]);
-			expect(results).toStrictEqual({
+			if (results.status === ActionStatus.Error) {
+				throw results.error;
+			}
+			expect(results.result).toStrictEqual({
 				character_table_1: {
 					char_1: {
 						tableName: "character_table_1",
@@ -556,7 +592,10 @@ describe("db info", () => {
 				"dt_table_1",
 				"dt_table_2",
 			]);
-			expect(results).toStrictEqual({
+			if (results.status === ActionStatus.Error) {
+				throw results.error;
+			}
+			expect(results.result).toStrictEqual({
 				dt_table_1: {
 					timestamp: {
 						tableName: "dt_table_1",

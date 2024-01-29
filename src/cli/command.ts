@@ -79,3 +79,45 @@ export function isExecaError(
 export function isError(error: unknown): error is Error {
 	return error instanceof Error;
 }
+
+export type OperationSuccess<T> = {
+	status: ActionStatus.Success;
+	result: T;
+};
+
+export type OperationAnyError = {
+	status: ActionStatus.Error;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	error: any;
+};
+
+type OperationError = {
+	status: ActionStatus.Error;
+	error: Error;
+};
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export async function throwableOperation<T extends (...args: any) => any>(
+	operation: () => ReturnType<T>,
+): Promise<
+	OperationSuccess<Awaited<ReturnType<T>>> | OperationAnyError | OperationError
+> {
+	try {
+		const result = await operation();
+		return <OperationSuccess<Awaited<ReturnType<T>>>>{
+			status: ActionStatus.Success,
+			result: result,
+		};
+	} catch (error) {
+		if (!(error instanceof Error)) {
+			return {
+				status: ActionStatus.Error,
+				error: error,
+			};
+		}
+		return {
+			status: ActionStatus.Error,
+			error: error,
+		};
+	}
+}

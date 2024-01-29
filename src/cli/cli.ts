@@ -5,6 +5,7 @@ import { exit } from "process";
 import { isCommanderError } from "./command.js";
 import { dbCreate } from "./commands/db_create.js";
 import { dbDrop } from "./commands/db_drop.js";
+import { generate } from "./commands/generate.js";
 import { initCommand } from "./commands/init.js";
 import { structureDump } from "./commands/structure_dump.js";
 import { structureLoad } from "./commands/structure_load.js";
@@ -67,6 +68,18 @@ async function main() {
 		)
 		.action(async (_opts, cmd) => {
 			await structureLoad(cmd.opts().environment);
+		});
+
+	program
+		.command("generate")
+		.description("Generate migrations based on the current defined schema")
+		.option(
+			"-f, --force",
+			"generate migrations without warnings (destroys pending migration files)",
+			false,
+		)
+		.action(async (_opts, _cmd) => {
+			await generate();
 		});
 
 	program.exitOverride();
