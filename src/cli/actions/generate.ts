@@ -2,11 +2,11 @@ import * as p from "@clack/prompts";
 import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { importConfig } from "~/config.js";
-import { analyzeLocalSchema } from "../actions/analyze_local_schema.js";
-import { analyzeRemoteSchema } from "../actions/analyze_remote_schema.js";
-import { computeChangeSet } from "../actions/compute_changeset.js";
-import { generateMigrations } from "../actions/generate_migrations.js";
-import { pendingMigrations } from "../actions/pending_migrations.js";
+import { analyzeLocalSchema } from "../components/analyze_local_schema.js";
+import { analyzeRemoteSchema } from "../components/analyze_remote_schema.js";
+import { computeChangeSet } from "../components/compute_changeset.js";
+import { generateMigrations } from "../components/generate_migrations.js";
+import { pendingMigrations } from "../components/pending_migrations.js";
 import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
 export async function generate() {

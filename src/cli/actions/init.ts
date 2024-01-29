@@ -1,16 +1,16 @@
 import * as p from "@clack/prompts";
 import { program } from "commander";
 import { exit } from "process";
-import { checkKyselyInstallation } from "../actions/check_kysely.js";
-import { initFolderAndFiles } from "../actions/init_folders_and_files.js";
-import { installKysely } from "../actions/install_kysely.js";
+import { ActionStatus, CommandSuccess } from "../command.js";
+import { checkKyselyInstallation } from "../components/check_kysely.js";
+import { initFolderAndFiles } from "../components/init_folders_and_files.js";
+import { installKysely } from "../components/install_kysely.js";
 import {
 	checkPgInstallation,
 	checkPgTypesInstallation,
 	installPg,
 	installPgTypes,
-} from "../actions/install_pg.js";
-import { ActionStatus, CommandSuccess } from "../command.js";
+} from "../components/install_pg.js";
 import { exitProgramWithError } from "../utils/program.js";
 
 export async function initCommand() {

@@ -2,14 +2,14 @@
 
 import { Command } from "commander";
 import { exit } from "process";
+import { dbCreate } from "./actions/db_create.js";
+import { dbDrop } from "./actions/db_drop.js";
+import { generate } from "./actions/generate.js";
+import { initCommand } from "./actions/init.js";
+import { migrate } from "./actions/migrate.js";
+import { structureDump } from "./actions/structure_dump.js";
+import { structureLoad } from "./actions/structure_load.js";
 import { isCommanderError } from "./command.js";
-import { dbCreate } from "./commands/db_create.js";
-import { dbDrop } from "./commands/db_drop.js";
-import { generate } from "./commands/generate.js";
-import { initCommand } from "./commands/init.js";
-import { migrate } from "./commands/migrate.js";
-import { structureDump } from "./commands/structure_dump.js";
-import { structureLoad } from "./commands/structure_load.js";
 
 async function main() {
 	const program = new Command();

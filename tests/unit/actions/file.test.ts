@@ -3,7 +3,7 @@ import { afterEach } from "node:test";
 import mock from "mock-fs";
 import color from "picocolors";
 import { MockInstance, beforeEach, describe, expect, test, vi } from "vitest";
-import { createDir, createFile } from "~/cli/actions/file.js";
+import { createDir, createFile } from "~/cli/components/file.js";
 
 type TestContext = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>

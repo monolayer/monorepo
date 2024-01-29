@@ -9,7 +9,7 @@ import {
 	configTemplate,
 	kyselyTemplate,
 	schemaTemplate,
-} from "~/cli/actions/init_folders_and_files.js";
+} from "~/cli/components/init_folders_and_files.js";
 import { npmInstall, npmList, npx } from "~/cli/utils/npm.js";
 import { keys } from "~tests/helpers/key_codes.js";
 
