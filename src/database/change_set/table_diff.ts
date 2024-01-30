@@ -113,7 +113,6 @@ export class TableDiff {
 
 	calculate() {
 		const tableDiff = diff(this.#db, this.#local);
-		console.log("Calculate", tableDiff);
 		const added = this.#addedTables(tableDiff);
 		const removed = this.#removedTables(tableDiff);
 		return {
