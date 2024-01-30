@@ -71,9 +71,22 @@ type InformationSchemaColumns = {
 	renameFrom: string | null;
 };
 
+type InformationSchemaKeyColumnUsage = {
+	table_catalog: string | null;
+	table_schema: string | null;
+	table_name: string | null;
+	column_name: string | null;
+	ordinal_position: number | null;
+	position_in_unique_constraint: number | null;
+	constraint_catalog: string | null;
+	constraint_schema: string | null;
+	constraint_name: string | null;
+};
+
 type InformationSchemaDB = {
 	"information_schema.tables": InformationSchemaTables;
 	"information_schema.columns": InformationSchemaColumns;
+	"information_schema.key_column_usage": InformationSchemaKeyColumnUsage;
 };
 
 export async function dbTableInfo(
@@ -151,28 +164,42 @@ async function fetchDbColumnInfo(
 
 	return kysely
 		.selectFrom("information_schema.columns")
+		.fullJoin("information_schema.key_column_usage", (join) =>
+			join
+				.onRef(
+					"information_schema.key_column_usage.table_name",
+					"=",
+					"information_schema.columns.table_name",
+				)
+				.on(
+					"information_schema.key_column_usage.column_name",
+					"=",
+					"information_schema.columns.column_name",
+				),
+		)
 		.select([
-			"table_name",
-			"column_name",
-			"data_type",
-			"column_default",
-			sql<boolean>`CASE WHEN is_nullable = 'YES' THEN true ELSE false END`.as(
+			"information_schema.columns.table_name",
+			"information_schema.columns.column_name",
+			"information_schema.columns.data_type",
+			"information_schema.columns.column_default",
+			sql<boolean>`CASE WHEN information_schema.columns.is_nullable = 'YES' THEN true ELSE false END`.as(
 				"is_nullable",
 			),
-			"numeric_precision",
-			"numeric_scale",
-			"character_maximum_length",
-			"datetime_precision",
+			"information_schema.columns.numeric_precision",
+			"information_schema.columns.numeric_scale",
+			"information_schema.columns.character_maximum_length",
+			"information_schema.columns.datetime_precision",
 			sql<
 				string | null
-			>`(SELECT obj_description(('public.' || "table_name")::regclass, 'pg_class')::json->>'previousName')`.as(
+			>`(SELECT obj_description(('public.' || "information_schema"."columns"."table_name")::regclass, 'pg_class')::json->>'previousName')`.as(
 				"rename_from",
 			),
+			"information_schema.key_column_usage.constraint_name",
 		])
-		.where("table_schema", "=", databaseSchema)
-		.where("table_name", "in", tableNames)
-		.orderBy("table_name asc")
-		.orderBy("column_name asc")
+		.where("information_schema.columns.table_schema", "=", databaseSchema)
+		.where("information_schema.columns.table_name", "in", tableNames)
+		.orderBy("information_schema.columns.table_name asc")
+		.orderBy("information_schema.columns.column_name asc")
 		.execute();
 }
 
@@ -296,6 +323,7 @@ function transformDbColumnInfo(
 			characterMaximumLength: row.character_maximum_length,
 			datetimePrecision: row.datetime_precision,
 			renameFrom: row.rename_from,
+			primaryKey: row.constraint_name !== null ? true : null,
 		});
 	}
 	return transformed;

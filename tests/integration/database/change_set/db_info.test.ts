@@ -104,6 +104,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					numeric: {
 						tableName: "numeric_table_1",
@@ -116,6 +117,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			});
@@ -138,6 +140,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					decimal_with_precision_and_scale: {
 						tableName: "numeric_table_2",
@@ -150,6 +153,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					numeric_with_precision: {
 						tableName: "numeric_table_2",
@@ -162,6 +166,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					numeric_with_precision_and_scale: {
 						tableName: "numeric_table_2",
@@ -174,6 +179,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			});
@@ -210,6 +216,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					int2: {
 						tableName: "integer_table_1",
@@ -222,6 +229,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					int4: {
 						tableName: "integer_table_1",
@@ -234,6 +242,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					int8: {
 						tableName: "integer_table_1",
@@ -246,6 +255,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					integer: {
 						tableName: "integer_table_1",
@@ -258,6 +268,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			});
@@ -293,6 +304,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					float4: {
 						tableName: "float_table_1",
@@ -305,6 +317,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					float8: {
 						tableName: "float_table_1",
@@ -317,6 +330,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					real: {
 						tableName: "float_table_1",
@@ -329,6 +343,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			});
@@ -362,6 +377,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					serial: {
 						tableName: "serial_table_1",
@@ -374,6 +390,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			});
@@ -411,6 +428,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					bytea: {
 						tableName: "misc_table_1",
@@ -423,6 +441,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					date: {
 						tableName: "misc_table_1",
@@ -435,6 +454,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					json: {
 						tableName: "misc_table_1",
@@ -447,6 +467,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					jsonb: {
 						tableName: "misc_table_1",
@@ -459,6 +480,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					uuid: {
 						tableName: "misc_table_1",
@@ -471,6 +493,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			});
@@ -513,6 +536,7 @@ describe("db info", () => {
 						characterMaximumLength: 1,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					char_10: {
 						tableName: "character_table_1",
@@ -525,6 +549,7 @@ describe("db info", () => {
 						characterMaximumLength: 10,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				character_table_2: {
@@ -539,6 +564,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					varchar: {
 						tableName: "character_table_2",
@@ -551,6 +577,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					varchar_300: {
 						tableName: "character_table_2",
@@ -563,6 +590,7 @@ describe("db info", () => {
 						characterMaximumLength: 300,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			});
@@ -608,6 +636,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: 6,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					timestamp_p: {
 						tableName: "dt_table_1",
@@ -620,6 +649,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: 3,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					timestamptz: {
 						tableName: "dt_table_1",
@@ -632,6 +662,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: 6,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					timestamptz_p: {
 						tableName: "dt_table_1",
@@ -644,6 +675,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: 3,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				dt_table_2: {
@@ -658,6 +690,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: 6,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					time_p: {
 						tableName: "dt_table_2",
@@ -670,6 +703,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: 3,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					timetz: {
 						tableName: "dt_table_2",
@@ -682,6 +716,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: 6,
 						renameFrom: null,
+						primaryKey: null,
 					},
 					timetz_p: {
 						tableName: "dt_table_2",
@@ -694,6 +729,7 @@ describe("db info", () => {
 						characterMaximumLength: null,
 						datetimePrecision: 3,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			});

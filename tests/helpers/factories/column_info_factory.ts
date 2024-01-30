@@ -20,5 +20,6 @@ export function columnInfoFactory(options: required & optional) {
 		datetimePrecision: options.datetimePrecision ?? null,
 		characterMaximumLength: options.characterMaximumLength ?? null,
 		renameFrom: options.renameFrom ?? null,
+		primaryKey: options.primaryKey ?? null,
 	};
 }

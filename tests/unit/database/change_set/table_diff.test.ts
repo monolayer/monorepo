@@ -17,6 +17,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				memberships: {
@@ -31,6 +32,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -47,6 +49,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				memberships: {
@@ -61,6 +64,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -83,6 +87,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				memberships: {
@@ -97,6 +102,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -113,6 +119,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				teams: {
@@ -127,6 +134,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -145,6 +153,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				memberships: {
@@ -159,6 +168,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			});
@@ -180,6 +190,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				memberships: {
@@ -194,6 +205,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -210,6 +222,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				memberships: {
@@ -224,6 +237,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -246,6 +260,7 @@ describe("TableDiff#calculate", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				memberships: {
@@ -260,6 +275,7 @@ describe("TableDiff#calculate", () => {
 						characterMaximumLength: null,
 						renameFrom: null,
 						datetimePrecision: null,
+						primaryKey: null,
 					},
 				},
 				users: {
@@ -274,6 +290,7 @@ describe("TableDiff#calculate", () => {
 						characterMaximumLength: null,
 						datetimePrecision: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -290,6 +307,7 @@ describe("TableDiff#calculate", () => {
 						characterMaximumLength: null,
 						renameFrom: null,
 						datetimePrecision: null,
+						primaryKey: null,
 					},
 				},
 				teams: {
@@ -304,6 +322,7 @@ describe("TableDiff#calculate", () => {
 						characterMaximumLength: null,
 						renameFrom: null,
 						datetimePrecision: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -323,6 +342,7 @@ describe("TableDiff#calculate", () => {
 						characterMaximumLength: null,
 						renameFrom: null,
 						datetimePrecision: null,
+						primaryKey: null,
 					},
 				},
 			});
@@ -344,6 +364,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				memberships: {
@@ -358,6 +379,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -374,6 +396,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 				memberships: {
@@ -388,6 +411,7 @@ describe("TableDiff#calculate", () => {
 						datetimePrecision: null,
 						characterMaximumLength: null,
 						renameFrom: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -410,6 +434,7 @@ describe("TableDiff#calculate", () => {
 						characterMaximumLength: null,
 						renameFrom: null,
 						datetimePrecision: null,
+						primaryKey: null,
 					},
 				},
 				memberships: {
@@ -424,6 +449,7 @@ describe("TableDiff#calculate", () => {
 						characterMaximumLength: null,
 						renameFrom: null,
 						datetimePrecision: null,
+						primaryKey: null,
 					},
 				},
 				users: {
@@ -438,6 +464,7 @@ describe("TableDiff#calculate", () => {
 						characterMaximumLength: 255,
 						renameFrom: "email",
 						datetimePrecision: null,
+						primaryKey: null,
 					},
 				},
 			};
@@ -454,6 +481,7 @@ describe("TableDiff#calculate", () => {
 						characterMaximumLength: null,
 						renameFrom: null,
 						datetimePrecision: null,
+						primaryKey: null,
 					},
 				},
 			};

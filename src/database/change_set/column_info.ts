@@ -9,4 +9,5 @@ export type ColumnInfo = {
 	characterMaximumLength: number | null;
 	datetimePrecision: number | null;
 	renameFrom: string | null;
+	primaryKey: true | null;
 };
