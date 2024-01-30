@@ -137,7 +137,7 @@ describe("char column", () => {
 	});
 
 	test("argument for default is string", () => {
-		const obj = pgText();
+		const obj = pgChar();
 		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
