@@ -47,6 +47,7 @@
     "pretest:integration": "npm run pack && tsx ./tests/setup/create_test_db.ts",
     "posttest:integration": "tsx ./tests/setup/drop_test_db.ts",
     "test:integration": "vitest integration --run --coverage",
+    "pretest:watch": "tsx ./tests/setup/create_test_db.ts",
     "test:watch": "vitest unit --watch --ui --open --coverage"
   },
   "repository": {
