@@ -61,6 +61,8 @@ describe("boolean column", () => {
 	testMetaValue(pgBoolean().default(true), "default", true);
 	testMetaValue(pgBoolean().nullable(), "isNullable", true);
 	testMetaValue(pgBoolean().nonNullable(), "isNullable", false);
+	testMetaValue(pgBoolean(), "primaryKey", null);
+	testMetaValue(pgBoolean().primaryKey(), "primaryKey", true);
 });
 
 describe("text column", () => {
@@ -89,6 +91,8 @@ describe("text column", () => {
 	testMetaValue(pgText().default("hello"), "default", "hello");
 	testMetaValue(pgText().nullable(), "isNullable", true);
 	testMetaValue(pgText().nonNullable(), "isNullable", false);
+	testMetaValue(pgText(), "primaryKey", null);
+	testMetaValue(pgText().primaryKey(), "primaryKey", true);
 });
 
 describe("varchar column", () => {
@@ -117,6 +121,8 @@ describe("varchar column", () => {
 	testMetaValue(pgVarchar().default("hello"), "default", "hello");
 	testMetaValue(pgVarchar().nullable(), "isNullable", true);
 	testMetaValue(pgVarchar().nonNullable(), "isNullable", false);
+	testMetaValue(pgVarchar(), "primaryKey", null);
+	testMetaValue(pgVarchar().primaryKey(), "primaryKey", true);
 
 	test("dataType is varchar({maximumLength}) when maximum length is defined", () => {
 		const obj = pgVarchar(100);
@@ -160,6 +166,8 @@ describe("char column", () => {
 	testMetaValue(pgChar().nonNullable(), "isNullable", false);
 	testMetaValue(pgChar(), "characterMaximumLength", 1);
 	testMetaValue(pgChar(100), "characterMaximumLength", 100);
+	testMetaValue(pgChar(), "primaryKey", null);
+	testMetaValue(pgChar().primaryKey(), "primaryKey", true);
 });
 
 describe("numeric column", () => {
@@ -189,6 +197,8 @@ describe("numeric column", () => {
 	testMetaValue(pgNumeric().default(12), "default", 12);
 	testMetaValue(pgNumeric().nullable(), "isNullable", true);
 	testMetaValue(pgNumeric().nonNullable(), "isNullable", false);
+	testMetaValue(pgNumeric(), "primaryKey", null);
+	testMetaValue(pgNumeric().primaryKey(), "primaryKey", true);
 });
 
 describe("numeric column with precision", () => {
@@ -218,6 +228,8 @@ describe("numeric column with precision", () => {
 	testMetaValue(pgNumeric(10).default(12), "default", 12);
 	testMetaValue(pgNumeric(10).nullable(), "isNullable", true);
 	testMetaValue(pgNumeric(10).nonNullable(), "isNullable", false);
+	testMetaValue(pgNumeric(10), "primaryKey", null);
+	testMetaValue(pgNumeric(10).primaryKey(), "primaryKey", true);
 });
 
 describe("numeric column with precision and scale", () => {
@@ -251,6 +263,8 @@ describe("numeric column with precision and scale", () => {
 	testMetaValue(pgNumeric(10, 4).default(12), "default", 12);
 	testMetaValue(pgNumeric(10, 4).nullable(), "isNullable", true);
 	testMetaValue(pgNumeric(10, 4).nonNullable(), "isNullable", false);
+	testMetaValue(pgNumeric(10, 4), "primaryKey", null);
+	testMetaValue(pgNumeric(10, 4).primaryKey(), "primaryKey", true);
 });
 
 describe("pgBigInt column", () => {
@@ -282,6 +296,8 @@ describe("pgBigInt column", () => {
 	testMetaValue(pgBigInt().default(12), "default", 12);
 	testMetaValue(pgBigInt().nullable(), "isNullable", true);
 	testMetaValue(pgBigInt().nonNullable(), "isNullable", false);
+	testMetaValue(pgBigInt(), "primaryKey", null);
+	testMetaValue(pgBigInt().primaryKey(), "primaryKey", true);
 });
 
 describe("pgBigSerial column", () => {
@@ -309,6 +325,8 @@ describe("pgBigSerial column", () => {
 	testMetaValue(pgBigSerial().renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(pgBigSerial().nullable(), "isNullable", true);
 	testMetaValue(pgBigSerial().nonNullable(), "isNullable", false);
+	testMetaValue(pgBigSerial(), "primaryKey", null);
+	testMetaValue(pgBigSerial().primaryKey(), "primaryKey", true);
 });
 
 describe("pgBytea column", () => {
@@ -346,6 +364,8 @@ describe("pgBytea column", () => {
 	);
 	testMetaValue(pgBytea().nullable(), "isNullable", true);
 	testMetaValue(pgBytea().nonNullable(), "isNullable", false);
+	testMetaValue(pgBytea(), "primaryKey", null);
+	testMetaValue(pgBytea().primaryKey(), "primaryKey", true);
 });
 
 describe("pgDate column", () => {
@@ -380,6 +400,8 @@ describe("pgDate column", () => {
 	);
 	testMetaValue(pgDate().nullable(), "isNullable", true);
 	testMetaValue(pgDate().nonNullable(), "isNullable", false);
+	testMetaValue(pgDate(), "primaryKey", null);
+	testMetaValue(pgDate().primaryKey(), "primaryKey", true);
 });
 
 describe("pgDoublePrecision column", () => {
@@ -415,6 +437,8 @@ describe("pgDoublePrecision column", () => {
 	testMetaValue(pgDoublePrecision().default(12.1), "default", 12.1);
 	testMetaValue(pgDoublePrecision().nullable(), "isNullable", true);
 	testMetaValue(pgDoublePrecision().nonNullable(), "isNullable", false);
+	testMetaValue(pgDoublePrecision(), "primaryKey", null);
+	testMetaValue(pgDoublePrecision().primaryKey(), "primaryKey", true);
 });
 
 describe("pgFloat4 column", () => {
@@ -446,6 +470,8 @@ describe("pgFloat4 column", () => {
 	testMetaValue(pgFloat4().default(12.1), "default", 12.1);
 	testMetaValue(pgFloat4().nullable(), "isNullable", true);
 	testMetaValue(pgFloat4().nonNullable(), "isNullable", false);
+	testMetaValue(pgFloat4(), "primaryKey", null);
+	testMetaValue(pgFloat4().primaryKey(), "primaryKey", true);
 });
 
 describe("pgFloat8 column", () => {
@@ -477,6 +503,8 @@ describe("pgFloat8 column", () => {
 	testMetaValue(pgFloat8().default(12.1), "default", 12.1);
 	testMetaValue(pgFloat8().nullable(), "isNullable", true);
 	testMetaValue(pgFloat8().nonNullable(), "isNullable", false);
+	testMetaValue(pgFloat8(), "primaryKey", null);
+	testMetaValue(pgFloat8().primaryKey(), "primaryKey", true);
 });
 
 describe("pgInt2 column", () => {
@@ -508,6 +536,8 @@ describe("pgInt2 column", () => {
 	testMetaValue(pgInt2().default(12), "default", 12);
 	testMetaValue(pgInt2().nullable(), "isNullable", true);
 	testMetaValue(pgInt2().nonNullable(), "isNullable", false);
+	testMetaValue(pgInt2(), "primaryKey", null);
+	testMetaValue(pgInt2().primaryKey(), "primaryKey", true);
 });
 
 describe("pgInt4 column", () => {
@@ -539,6 +569,8 @@ describe("pgInt4 column", () => {
 	testMetaValue(pgInt4().default(12), "default", 12);
 	testMetaValue(pgInt4().nullable(), "isNullable", true);
 	testMetaValue(pgInt4().nonNullable(), "isNullable", false);
+	testMetaValue(pgInt4(), "primaryKey", null);
+	testMetaValue(pgInt4().primaryKey(), "primaryKey", true);
 });
 
 describe("pgInt8 column", () => {
@@ -570,6 +602,8 @@ describe("pgInt8 column", () => {
 	testMetaValue(pgInt8().default(12), "default", 12);
 	testMetaValue(pgInt8().nullable(), "isNullable", true);
 	testMetaValue(pgInt8().nonNullable(), "isNullable", false);
+	testMetaValue(pgInt8(), "primaryKey", null);
+	testMetaValue(pgInt8().primaryKey(), "primaryKey", true);
 });
 
 describe("pgInteger column", () => {
@@ -601,6 +635,8 @@ describe("pgInteger column", () => {
 	testMetaValue(pgInteger().default(12), "default", 12);
 	testMetaValue(pgInteger().nullable(), "isNullable", true);
 	testMetaValue(pgInteger().nonNullable(), "isNullable", false);
+	testMetaValue(pgInteger(), "primaryKey", null);
+	testMetaValue(pgInteger().primaryKey(), "primaryKey", true);
 });
 
 describe("pgJson column", () => {
@@ -629,6 +665,8 @@ describe("pgJson column", () => {
 	testMetaValue(pgJson().default("12"), "default", "12");
 	testMetaValue(pgJson().nullable(), "isNullable", true);
 	testMetaValue(pgJson().nonNullable(), "isNullable", false);
+	testMetaValue(pgJson(), "primaryKey", null);
+	testMetaValue(pgJson().primaryKey(), "primaryKey", true);
 });
 
 describe("pgJsonB column", () => {
@@ -657,6 +695,8 @@ describe("pgJsonB column", () => {
 	testMetaValue(pgJsonB().default("12"), "default", "12");
 	testMetaValue(pgJsonB().nullable(), "isNullable", true);
 	testMetaValue(pgJsonB().nonNullable(), "isNullable", false);
+	testMetaValue(pgJsonB(), "primaryKey", null);
+	testMetaValue(pgJsonB().primaryKey(), "primaryKey", true);
 });
 
 describe("pgReal column", () => {
@@ -688,6 +728,8 @@ describe("pgReal column", () => {
 	testMetaValue(pgReal().default(12), "default", 12);
 	testMetaValue(pgReal().nullable(), "isNullable", true);
 	testMetaValue(pgReal().nonNullable(), "isNullable", false);
+	testMetaValue(pgReal(), "primaryKey", null);
+	testMetaValue(pgReal().primaryKey(), "primaryKey", true);
 });
 
 describe("pgSerial column", () => {
@@ -716,6 +758,8 @@ describe("pgSerial column", () => {
 	testMetaValue(pgSerial().renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(pgSerial().nullable(), "isNullable", true);
 	testMetaValue(pgSerial().nonNullable(), "isNullable", false);
+	testMetaValue(pgSerial(), "primaryKey", null);
+	testMetaValue(pgSerial().primaryKey(), "primaryKey", true);
 });
 
 describe("pgTime", () => {
@@ -745,6 +789,8 @@ describe("pgTime", () => {
 	testMetaValue(pgTime().default("05:24:11"), "default", "05:24:11");
 	testMetaValue(pgTime().nullable(), "isNullable", true);
 	testMetaValue(pgTime().nonNullable(), "isNullable", false);
+	testMetaValue(pgTime(), "primaryKey", null);
+	testMetaValue(pgTime().primaryKey(), "primaryKey", true);
 });
 
 describe("pgTime with date time precision", () => {
@@ -774,6 +820,8 @@ describe("pgTime with date time precision", () => {
 	testMetaValue(pgTime(1).default("05:24:11"), "default", "05:24:11");
 	testMetaValue(pgTime(1).nullable(), "isNullable", true);
 	testMetaValue(pgTime(1).nonNullable(), "isNullable", false);
+	testMetaValue(pgTime(1), "primaryKey", null);
+	testMetaValue(pgTime(1).primaryKey(), "primaryKey", true);
 });
 
 describe("pgTimestamp", () => {
@@ -808,6 +856,8 @@ describe("pgTimestamp", () => {
 	);
 	testMetaValue(pgTimestamp().nullable(), "isNullable", true);
 	testMetaValue(pgTimestamp().nonNullable(), "isNullable", false);
+	testMetaValue(pgTimestamp(), "primaryKey", null);
+	testMetaValue(pgTimestamp().primaryKey(), "primaryKey", true);
 });
 
 describe("pgTimestamp with date time precision", () => {
@@ -840,12 +890,14 @@ describe("pgTimestamp with date time precision", () => {
 		"test_col",
 	);
 	testMetaValue(
-		pgTimestamp().default("1999-01-08 04:05:06"),
+		pgTimestamp(2).default("1999-01-08 04:05:06"),
 		"default",
 		"1999-01-08 04:05:06",
 	);
-	testMetaValue(pgTimestamp().nullable(), "isNullable", true);
-	testMetaValue(pgTimestamp().nonNullable(), "isNullable", false);
+	testMetaValue(pgTimestamp(2).nullable(), "isNullable", true);
+	testMetaValue(pgTimestamp(2).nonNullable(), "isNullable", false);
+	testMetaValue(pgTimestamp(2), "primaryKey", null);
+	testMetaValue(pgTimestamp(2).primaryKey(), "primaryKey", true);
 });
 
 describe("pgTimestampTz", () => {
@@ -884,6 +936,8 @@ describe("pgTimestampTz", () => {
 	);
 	testMetaValue(pgTimestampTz().nullable(), "isNullable", true);
 	testMetaValue(pgTimestampTz().nonNullable(), "isNullable", false);
+	testMetaValue(pgTimestampTz(), "primaryKey", null);
+	testMetaValue(pgTimestampTz().primaryKey(), "primaryKey", true);
 });
 
 describe("pgTimestampTz with date time precision", () => {
@@ -922,6 +976,8 @@ describe("pgTimestampTz with date time precision", () => {
 	);
 	testMetaValue(pgTimestampTz(1).nullable(), "isNullable", true);
 	testMetaValue(pgTimestampTz(2).nonNullable(), "isNullable", false);
+	testMetaValue(pgTimestampTz(1), "primaryKey", null);
+	testMetaValue(pgTimestampTz(1).primaryKey(), "primaryKey", true);
 });
 
 describe("pgTimeTz", () => {
@@ -951,6 +1007,8 @@ describe("pgTimeTz", () => {
 	testMetaValue(pgTimeTz().default("04:05-08:00"), "default", "04:05-08:00");
 	testMetaValue(pgTimeTz().nullable(), "isNullable", true);
 	testMetaValue(pgTimeTz().nonNullable(), "isNullable", false);
+	testMetaValue(pgTimeTz(), "primaryKey", null);
+	testMetaValue(pgTimeTz().primaryKey(), "primaryKey", true);
 });
 
 describe("pgTimeTz with date time precision", () => {
@@ -980,6 +1038,8 @@ describe("pgTimeTz with date time precision", () => {
 	testMetaValue(pgTimeTz(2).default("04:05-08:00"), "default", "04:05-08:00");
 	testMetaValue(pgTimeTz(2).nullable(), "isNullable", true);
 	testMetaValue(pgTimeTz(2).nonNullable(), "isNullable", false);
+	testMetaValue(pgTimeTz(2), "primaryKey", null);
+	testMetaValue(pgTimeTz(2).primaryKey(), "primaryKey", true);
 });
 
 describe("pgUuid column", () => {
@@ -1012,4 +1072,6 @@ describe("pgUuid column", () => {
 	);
 	testMetaValue(pgUuid().nullable(), "isNullable", true);
 	testMetaValue(pgUuid().nonNullable(), "isNullable", false);
+	testMetaValue(pgUuid(), "primaryKey", null);
+	testMetaValue(pgUuid().primaryKey(), "primaryKey", true);
 });

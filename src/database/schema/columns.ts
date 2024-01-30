@@ -15,6 +15,7 @@ export type ColumnBase<T, N extends string, S, I> = {
 	nonNullable: () => T & NonNullable;
 	default: (value: I) => T;
 	renameFrom: (value: string) => T;
+	primaryKey: () => T;
 };
 
 export type ColumnBaseWithoutDefault<T, N extends string, S, I> = Omit<
@@ -33,6 +34,7 @@ export type ColumnMeta<T> = {
 	min: number | bigint | null;
 	max: number | bigint | null;
 	renameFrom: string | null;
+	primaryKey: true | null;
 };
 
 export type ColumnConstructor<T> = {
@@ -82,6 +84,17 @@ export function addRenameFrom<T extends PgColumn>(obj: T) {
 	});
 }
 
+export function addPrimaryKey<T extends PgColumn>(obj: T) {
+	Object.defineProperty(obj, "primaryKey", {
+		writable: false,
+		value: () => {
+			const meta = columnMeta<T>(obj);
+			if (meta !== undefined) meta.primaryKey = true;
+			return obj;
+		},
+	});
+}
+
 export function columnMeta<T>(obj: object) {
 	return (
 		obj as unknown as {
@@ -115,6 +128,7 @@ export function initColumnCommon<T extends PgColumnWithDefault>(
 		min: options.min ?? null,
 		max: options.max ?? null,
 		renameFrom: options.renameFrom ?? null,
+		primaryKey: options.primaryKey ?? null,
 	});
 }
 
@@ -137,12 +151,14 @@ export function initColumnCommonWithoutDefault<
 		min: options.min ?? null,
 		max: options.max ?? null,
 		renameFrom: options.renameFrom ?? null,
+		primaryKey: options.primaryKey ?? null,
 	});
 }
 
 function defineColumnCommon<T extends PgColumn>(obj: T) {
 	addNullableConstraint(obj);
 	addRenameFrom(obj);
+	addPrimaryKey(obj);
 }
 type Boolish = "true" | "false" | "1" | "0" | 1 | 0;
 
