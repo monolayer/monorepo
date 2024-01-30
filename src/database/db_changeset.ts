@@ -215,7 +215,7 @@ function alterColumnMigrationOp(difference: ColumnChangeDifference) {
 	switch (difference.path[2]) {
 		case "dataType":
 			return columnDatatypeMigrationOperation(difference);
-		case "default":
+		case "defaultValue":
 			return columnDefaultMigrationOperation(difference);
 		case "isNullable":
 			return columnNullableMigrationOperation(difference);
@@ -306,7 +306,8 @@ function optionsForColumn(column: ColumnInfo) {
 	const options = [];
 
 	if (column.isNullable === false) options.push("notNull()");
-	if (column.default !== null) options.push(`defaultTo(\"${column.default}\")`);
+	if (column.defaultValue !== null)
+		options.push(`defaultTo(\"${column.defaultValue}\")`);
 	if (options.length !== 0)
 		columnOptions = `, (col) => col.${options.join(".")}`;
 	return columnOptions;

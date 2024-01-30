@@ -26,7 +26,7 @@ export type ColumnBaseWithoutDefault<T, N extends string, S, I> = Omit<
 export type ColumnMeta<T> = {
 	dataType: ColumnDataType;
 	isNullable: boolean;
-	default: T | null;
+	defaultValue: T | null;
 	characterMaximumLength: number | null;
 	numericPrecision: number | null;
 	numericScale: number | null;
@@ -67,7 +67,7 @@ export function addDefaultContraint<T>(obj: PgColumnWithDefault) {
 		writable: false,
 		value: (value: T) => {
 			const meta = columnMeta<T>(obj);
-			if (meta !== undefined) meta.default = value;
+			if (meta !== undefined) meta.defaultValue = value;
 			return obj;
 		},
 	});
@@ -120,7 +120,7 @@ export function initColumnCommon<T extends PgColumnWithDefault>(
 	defineMetaInfo(obj, {
 		dataType: options.dataType,
 		isNullable: options.isNullable ?? true,
-		default: options.default ?? null,
+		defaultValue: options.defaultValue ?? null,
 		characterMaximumLength: options.characterMaximumLength ?? null,
 		numericPrecision: options.numericPrecision ?? null,
 		numericScale: options.numericScale ?? null,
@@ -143,7 +143,7 @@ export function initColumnCommonWithoutDefault<
 	defineMetaInfo(obj, {
 		dataType: options.dataType,
 		isNullable: options.isNullable ?? true,
-		default: null,
+		defaultValue: null,
 		characterMaximumLength: options.characterMaximumLength ?? null,
 		numericPrecision: options.numericPrecision ?? null,
 		numericScale: options.numericScale ?? null,

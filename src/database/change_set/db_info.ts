@@ -318,7 +318,7 @@ function transformDbColumnInfo(
 			tableName: row.table_name,
 			columnName: row.column_name,
 			dataType: dataTypeFullName,
-			default: row.column_default,
+			defaultValue: row.column_default,
 			isNullable: row.is_nullable,
 			numericPrecision: row.numeric_precision,
 			numericScale: row.numeric_scale,

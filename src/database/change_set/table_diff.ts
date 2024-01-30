@@ -226,7 +226,7 @@ export class TableDiff {
 	#defaultChanges(difference: ColumnDifferenceChange[]) {
 		const constraintChanges = difference.filter<ColumnDifferenceChangeDefault>(
 			(change): change is ColumnDifferenceChangeDefault =>
-				change.path[2] === "default",
+				change.path[2] === "defaultValue",
 		);
 
 		return constraintChanges.map<ConstraintDefaultColumnChange>((change) => {

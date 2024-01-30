@@ -4,7 +4,12 @@ import {
 	schemaDBTableInfo,
 	schemaTableInfo,
 } from "~/database/change_set/schema_info.js";
-import { pgBoolean, pgVarchar } from "~/database/schema/columns.js";
+import {
+	pgBigSerial,
+	pgBoolean,
+	pgSerial,
+	pgVarchar,
+} from "~/database/schema/columns.js";
 import { pgDatabase } from "~/database/schema/database.js";
 import { pgTable } from "~/database/schema/table.js";
 
@@ -34,13 +39,14 @@ test("#schemaColumnInfo", () => {
 		tableName: "foo",
 		columnName: "bar",
 		dataType: "varchar(100)",
-		default: "foo",
+		defaultValue: "foo",
 		isNullable: false,
 		numericPrecision: null,
 		numericScale: null,
 		characterMaximumLength: 100,
 		datetimePrecision: null,
 		renameFrom: "old_column_name",
+		primaryKey: null,
 	};
 
 	expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
@@ -49,12 +55,14 @@ test("#schemaColumnInfo", () => {
 test("#schemaDBTableInfo", () => {
 	const users = pgTable("users", {
 		columns: {
+			id: pgSerial(),
 			name: pgVarchar().nonNullable(),
 			email: pgVarchar().nonNullable(),
 		},
 	});
 	const teams = pgTable("teams", {
 		columns: {
+			id: pgBigSerial(),
 			name: pgVarchar().nonNullable(),
 			active: pgBoolean(),
 		},
@@ -65,55 +73,85 @@ test("#schemaDBTableInfo", () => {
 	});
 	const expectedDbTableInfo = {
 		users: {
-			name: {
+			id: {
 				tableName: "users",
-				columnName: "name",
-				dataType: "varchar",
-				default: null,
+				columnName: "id",
+				dataType: "serial",
+				defaultValue: null,
 				isNullable: false,
 				numericPrecision: null,
 				numericScale: null,
 				characterMaximumLength: null,
 				datetimePrecision: null,
 				renameFrom: null,
+				primaryKey: null,
+			},
+			name: {
+				tableName: "users",
+				columnName: "name",
+				dataType: "varchar",
+				defaultValue: null,
+				isNullable: false,
+				numericPrecision: null,
+				numericScale: null,
+				characterMaximumLength: null,
+				datetimePrecision: null,
+				renameFrom: null,
+				primaryKey: null,
 			},
 			email: {
 				tableName: "users",
 				columnName: "email",
 				dataType: "varchar",
-				default: null,
+				defaultValue: null,
 				isNullable: false,
 				numericPrecision: null,
 				numericScale: null,
 				characterMaximumLength: null,
 				datetimePrecision: null,
 				renameFrom: null,
+				primaryKey: null,
 			},
 		},
 		teams: {
+			id: {
+				tableName: "teams",
+				columnName: "id",
+				dataType: "bigserial",
+				defaultValue: null,
+				isNullable: false,
+				numericPrecision: null,
+				numericScale: null,
+				characterMaximumLength: null,
+				datetimePrecision: null,
+				renameFrom: null,
+				primaryKey: null,
+			},
 			name: {
 				tableName: "teams",
 				columnName: "name",
 				dataType: "varchar",
-				default: null,
+				defaultValue: null,
 				isNullable: false,
 				numericPrecision: null,
 				numericScale: null,
 				characterMaximumLength: null,
 				datetimePrecision: null,
 				renameFrom: null,
+				primaryKey: null,
 			},
 			active: {
 				tableName: "teams",
 				columnName: "active",
 				dataType: "boolean",
-				default: null,
+				defaultValue: null,
 				isNullable: true,
 				numericPrecision: null,
 				numericScale: null,
 				characterMaximumLength: null,
 				datetimePrecision: null,
 				renameFrom: null,
+				primaryKey: null,
 			},
 		},
 	};

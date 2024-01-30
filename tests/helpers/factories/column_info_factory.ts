@@ -13,7 +13,7 @@ export function columnInfoFactory(options: required & optional) {
 		tableName: options.tableName,
 		columnName: options.columnName,
 		dataType: options.dataType,
-		default: options.default ?? null,
+		defaultValue: options.defaultValue ?? null,
 		isNullable: options.isNullable ?? true,
 		numericPrecision: options.numericPrecision ?? null,
 		numericScale: options.numericScale ?? null,

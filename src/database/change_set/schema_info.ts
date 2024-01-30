@@ -15,9 +15,9 @@ export function schemaColumnInfo(
 	tableName: string,
 	columnName: string,
 	column: PgColumn,
-) {
+): ColumnInfo {
 	const meta = columnMeta<typeof column>(column);
-	return <ColumnInfo>{
+	return {
 		tableName: tableName,
 		columnName: columnName,
 		dataType: meta.dataType,
@@ -27,7 +27,8 @@ export function schemaColumnInfo(
 		numericPrecision: meta.numericPrecision,
 		numericScale: meta.numericScale,
 		renameFrom: meta.renameFrom,
-		default: meta.default,
+		primaryKey: meta.primaryKey,
+		defaultValue: meta.defaultValue ? meta.defaultValue.toString() : null,
 	};
 }
 

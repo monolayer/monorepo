@@ -24,7 +24,7 @@ describe("#dbDiff", () => {
 					tableName: "users",
 					columnName: "name",
 					dataType: "varchar",
-					default: "hello",
+					defaultValue: "hello",
 				}),
 				email: columnInfoFactory({
 					tableName: "users",
@@ -38,7 +38,7 @@ describe("#dbDiff", () => {
 					tableName: "members",
 					columnName: "name",
 					dataType: "varchar",
-					default: "hello",
+					defaultValue: "hello",
 				}),
 				email: columnInfoFactory({
 					tableName: "members",
@@ -114,7 +114,7 @@ describe("#dbDiff", () => {
 							tableName: "users",
 							columnName: "name",
 							dataType: "varchar",
-							default: "hello",
+							defaultValue: "hello",
 						}),
 						email: columnInfoFactory({
 							tableName: "users",
@@ -158,7 +158,7 @@ describe("#dbDiff", () => {
 						oldValue: "text",
 					},
 					{
-						path: ["members", "name", "default"],
+						path: ["members", "name", "defaultValue"],
 						type: "CHANGE",
 						value: "hello",
 						oldValue: null,
@@ -246,7 +246,7 @@ describe("#dbChangeset", () => {
 						tableName: "members",
 						columnName: "name",
 						dataType: "varchar",
-						default: "hello",
+						defaultValue: "hello",
 					}),
 					email: columnInfoFactory({
 						tableName: "members",
@@ -271,7 +271,7 @@ describe("#dbChangeset", () => {
 						tableName: "members",
 						columnName: "name",
 						dataType: "varchar",
-						default: "hello",
+						defaultValue: "hello",
 						isNullable: true,
 					}),
 					email: columnInfoFactory({
@@ -300,7 +300,7 @@ describe("#dbChangeset", () => {
 						tableName: "members",
 						columnName: "name",
 						dataType: "varchar",
-						default: "hello",
+						defaultValue: "hello",
 					}),
 					email: columnInfoFactory({
 						tableName: "members",
@@ -332,7 +332,7 @@ describe("#dbChangeset", () => {
 						tableName: "members",
 						columnName: "city",
 						dataType: "text",
-						default: "bcn",
+						defaultValue: "bcn",
 					}),
 				},
 			},
