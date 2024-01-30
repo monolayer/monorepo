@@ -1,7 +1,7 @@
 import { PgColumn, columnMeta } from "~/database/schema/columns.js";
 import { TableRecord, pgDatabase } from "~/database/schema/database.js";
 import { TableSchema, pgTable } from "~/database/schema/table.js";
-import { ColumnInfo } from "./column_info.js";
+import { ColumnInfo } from "./info.js";
 import { ColumnsInfo, TableInfo } from "./table_diff.js";
 
 export function schemaTableInfo(tables: pgTable<string, TableSchema>[]) {

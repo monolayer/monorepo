@@ -1,5 +1,5 @@
 import diff, { Difference } from "microdiff";
-import { ColumnInfo } from "./column_info.js";
+import { ColumnInfo } from "./info.js";
 
 export type ColumnsInfo = Record<string, ColumnInfo>;
 export type TableInfo = Record<string, ColumnsInfo>;

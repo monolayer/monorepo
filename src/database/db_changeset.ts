@@ -1,5 +1,5 @@
 import diff, { Difference } from "microdiff";
-import { ColumnInfo } from "~/database/change_set/column_info.js";
+import { ColumnInfo } from "~/database/change_set/info.js";
 import { ColumnsInfo, TableInfo } from "~/database/change_set/table_diff.js";
 
 type TableCreateDifference = {

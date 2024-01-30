@@ -4,7 +4,7 @@ import {
 	OperationAnyError,
 	OperationSuccess,
 } from "~/cli/command.js";
-import { ColumnInfo } from "./column_info.js";
+import { ColumnInfo, IndexInfo } from "./info.js";
 import { TableInfo } from "./table_diff.js";
 
 type InformationSchemaTables = {
@@ -83,10 +83,31 @@ type InformationSchemaKeyColumnUsage = {
 	constraint_name: string | null;
 };
 
+type PgIndexTable = {
+	indrelid: number;
+	indexrelid: number;
+	indisprimary: boolean;
+};
+
+type PgNamespaceTable = {
+	oid: number;
+	nspname: string;
+};
+
+type PgClassTable = {
+	oid: number;
+	relname: string;
+	relkind: string;
+	relnamespace: number;
+};
+
 type InformationSchemaDB = {
 	"information_schema.tables": InformationSchemaTables;
 	"information_schema.columns": InformationSchemaColumns;
 	"information_schema.key_column_usage": InformationSchemaKeyColumnUsage;
+	pg_index: PgIndexTable;
+	pg_namespace: PgNamespaceTable;
+	pg_class: PgClassTable;
 };
 
 export async function dbTableInfo(
@@ -330,6 +351,7 @@ function transformDbColumnInfo(
 	}
 	return transformed;
 }
+
 function mapColumnsToTables(columns: ColumnInfo[]) {
 	return columns.reduce<TableInfo>((acc, curr) => {
 		if (curr.tableName !== null && curr.columnName !== null) {
@@ -348,6 +370,42 @@ function mapColumnsToTables(columns: ColumnInfo[]) {
 				};
 			}
 		}
+		return acc;
+	}, {});
+}
+
+export async function dbIndexInfo(
+	kysely: Kysely<InformationSchemaDB>,
+	databaseSchema: string,
+	tableNames: string[],
+): Promise<IndexInfo> {
+	const results = await kysely
+		.selectFrom("pg_class")
+		.innerJoin("pg_index", "pg_class.oid", "pg_index.indrelid")
+		.innerJoin(
+			"pg_class as pg_class_2",
+			"pg_index.indexrelid",
+			"pg_class_2.oid",
+		)
+		.leftJoin("pg_namespace", "pg_namespace.oid", "pg_class.relnamespace")
+		.select([
+			"pg_class.relname as table",
+			"pg_class_2.relname as name",
+			sql<string>`pg_get_indexdef(pg_index.indexrelid)`.as("definition"),
+		])
+		.distinct()
+		.where("pg_class_2.relkind", "in", ["i", "I"])
+		.where("pg_index.indisprimary", "=", false)
+		.where("pg_class.relname", "in", tableNames)
+		.where("pg_namespace.nspname", "=", databaseSchema)
+		.orderBy("pg_class_2.relname")
+		.execute();
+
+	return results.reduce<IndexInfo>((acc, curr) => {
+		acc[curr.table] = {
+			...acc[curr.table],
+			...{ [curr.name]: curr.definition },
+		};
 		return acc;
 	}, {});
 }

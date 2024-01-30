@@ -11,3 +11,5 @@ export type ColumnInfo = {
 	renameFrom: string | null;
 	primaryKey: true | null;
 };
+
+export type IndexInfo = Record<string, Record<string, string>>;
