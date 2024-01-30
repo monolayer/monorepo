@@ -235,6 +235,12 @@ describe("#dbChangeset", () => {
 					}),
 				},
 				books: {
+					id: columnInfoFactory({
+						tableName: "books",
+						columnName: "id",
+						dataType: "serial",
+						primaryKey: true,
+					}),
 					name: columnInfoFactory({
 						tableName: "books",
 						columnName: "name",
@@ -261,7 +267,28 @@ describe("#dbChangeset", () => {
 						isNullable: false,
 					}),
 				},
+				samples: {
+					id: columnInfoFactory({
+						tableName: "samples",
+						columnName: "id",
+						dataType: "bigserial",
+						isNullable: false,
+						primaryKey: true,
+					}),
+					name: columnInfoFactory({
+						tableName: "samples",
+						columnName: "name",
+						dataType: "text",
+						isNullable: false,
+					}),
+				},
 				addresses: {
+					id: columnInfoFactory({
+						tableName: "addresses",
+						columnName: "id",
+						dataType: "serial",
+						primaryKey: true,
+					}),
 					country: columnInfoFactory({
 						tableName: "members",
 						columnName: "country",
@@ -315,6 +342,21 @@ describe("#dbChangeset", () => {
 						isNullable: false,
 					}),
 				},
+				samples: {
+					id: columnInfoFactory({
+						tableName: "samples",
+						columnName: "id",
+						dataType: "bigserial",
+						isNullable: false,
+					}),
+					name: columnInfoFactory({
+						tableName: "samples",
+						columnName: "name",
+						dataType: "text",
+						isNullable: false,
+						primaryKey: true,
+					}),
+				},
 				addresses: {
 					name: columnInfoFactory({
 						tableName: "members",
@@ -337,11 +379,16 @@ describe("#dbChangeset", () => {
 				},
 			},
 		);
+
 		expect(changeset).toStrictEqual([
 			{
 				tableName: "books",
 				type: "create",
-				up: ['createTable("books")', 'addColumn("name", "text")'],
+				up: [
+					'createTable("books")',
+					'addColumn("id", "serial", (col) => col.primaryKey())',
+					'addColumn("name", "text")',
+				],
 				down: ['dropTable("books")'],
 			},
 			{
@@ -367,6 +414,20 @@ describe("#dbChangeset", () => {
 				],
 			},
 			{
+				tableName: "samples",
+				type: "change",
+				up: [
+					'alterTable("samples")',
+					'dropConstraint("samples_pk")',
+					'alterColumn("id", (col) => col.primaryKey())',
+				],
+				down: [
+					'alterTable("samples")',
+					'dropConstraint("samples_pk")',
+					'alterColumn("name", (col) => col.primaryKey())',
+				],
+			},
+			{
 				tableName: "addresses",
 				type: "change",
 				up: [
@@ -377,11 +438,13 @@ describe("#dbChangeset", () => {
 					'alterColumn("email", (col) => col.setDataType("varchar"))',
 					'alterColumn("city", (col) => col.dropDefault())',
 					'alterColumn("city", (col) => col.setNotNull())',
+					'addColumn("id", "serial", (col) => col.primaryKey())',
 					'addColumn("country", "text")',
 				],
 				down: [
 					'alterTable("addresses")',
 					'dropColumn("country")',
+					'dropColumn("id")',
 					'alterColumn("city", (col) => col.dropNotNull())',
 					'alterColumn("city", (col) => col.setDefault("bcn"))',
 					'alterColumn("email", (col) => col.setDataType("varchar(255)"))',

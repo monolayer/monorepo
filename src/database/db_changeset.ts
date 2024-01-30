@@ -179,27 +179,25 @@ function columnDifferenceChangeset(
 				up: [] as string[],
 				down: [] as string[],
 			};
+			const columnOps: { priority: number; up: string; down: string }[] = [];
 			for (const columnDiff of columnDifferences) {
 				if (isColumnChangeDifference(columnDiff)) {
 					const ops = alterColumnMigrationOp(columnDiff);
-					if (ops !== undefined) {
-						migrationOp.down.unshift(ops.down);
-						migrationOp.up.push(ops.up);
-					}
+					if (ops !== undefined) columnOps.push(ops);
 				} else if (isColumnDropDifference(columnDiff)) {
 					const ops = columnDropMigrationOp(columnDiff);
-					if (ops !== undefined) {
-						migrationOp.down.unshift(ops.down);
-						migrationOp.up.push(ops.up);
-					}
+					if (ops !== undefined) columnOps.push(ops);
 				} else if (isColumnCreateDifference(columnDiff)) {
 					const ops = columnCreateMigrationOp(columnDiff);
-					if (ops !== undefined) {
-						migrationOp.down.unshift(ops.down);
-						migrationOp.up.push(ops.up);
-					}
+					if (ops !== undefined) columnOps.push(ops);
 				}
 			}
+			columnOps.sort((a, b) => a.priority - b.priority);
+			for (const columnOp of columnOps) {
+				migrationOp.up.push(columnOp.up);
+				migrationOp.down.unshift(columnOp.down);
+			}
+
 			if (migrationOp.down.length !== 0) {
 				migrationOp.up.unshift(`alterTable("${tableName}")`);
 				migrationOp.down.unshift(`alterTable("${tableName}")`);
@@ -219,6 +217,8 @@ function alterColumnMigrationOp(difference: ColumnChangeDifference) {
 			return columnDefaultMigrationOperation(difference);
 		case "isNullable":
 			return columnNullableMigrationOperation(difference);
+		case "primaryKey":
+			return columnPrimaryKeyMigrationOperation(difference);
 		default:
 			return undefined;
 	}
@@ -249,6 +249,7 @@ function columnCreateMigrationOp(difference: ColumnCreateDifference) {
 	const columnDef = difference.value;
 
 	return {
+		priority: 2,
 		up: `addColumn(\"${columnName}\", \"${
 			columnDef.dataType
 		}\"${optionsForColumn(columnDef)})`,
@@ -261,6 +262,7 @@ function columnDropMigrationOp(difference: ColumnDropDifference) {
 	const columnName = difference.path[1];
 
 	return {
+		priority: 2,
 		up: `dropColumn(\"${columnName}\")`,
 		down: `addColumn(\"${columnName}\", \"${
 			columnDef.dataType
@@ -270,6 +272,7 @@ function columnDropMigrationOp(difference: ColumnDropDifference) {
 
 function columnDatatypeMigrationOperation(diff: ColumnChangeDifference) {
 	return {
+		priority: 2,
 		up: `alterColumn(\"${diff.path[1]}\", (col) => col.setDataType("${diff.value}"))`,
 		down: `alterColumn(\"${diff.path[1]}\", (col) => col.setDataType("${diff.oldValue}"))`,
 	};
@@ -277,6 +280,7 @@ function columnDatatypeMigrationOperation(diff: ColumnChangeDifference) {
 
 function columnDefaultMigrationOperation(diff: ColumnChangeDifference) {
 	return {
+		priority: 2,
 		up:
 			diff.value === null
 				? `alterColumn(\"${diff.path[1]}\", (col) => col.dropDefault())`
@@ -290,6 +294,7 @@ function columnDefaultMigrationOperation(diff: ColumnChangeDifference) {
 
 function columnNullableMigrationOperation(diff: ColumnChangeDifference) {
 	return {
+		priority: 2,
 		up:
 			diff.value === null
 				? `alterColumn(\"${diff.path[1]}\", (col) => col.dropNotNull())`
@@ -301,11 +306,25 @@ function columnNullableMigrationOperation(diff: ColumnChangeDifference) {
 	};
 }
 
+function columnPrimaryKeyMigrationOperation(diff: ColumnChangeDifference) {
+	return {
+		priority: diff.value === null ? 1 : 1.1,
+		up:
+			diff.value === null
+				? `dropConstraint(\"${diff.path[0]}_pk\")`
+				: `alterColumn(\"${diff.path[1]}\", (col) => col.primaryKey())`,
+		down:
+			diff.value === null
+				? `alterColumn(\"${diff.path[1]}\", (col) => col.primaryKey())`
+				: `dropConstraint(\"${diff.path[0]}_pk\")`,
+	};
+}
 function optionsForColumn(column: ColumnInfo) {
 	let columnOptions = "";
 	const options = [];
 
 	if (column.isNullable === false) options.push("notNull()");
+	if (column.primaryKey === true) options.push("primaryKey()");
 	if (column.defaultValue !== null)
 		options.push(`defaultTo(\"${column.defaultValue}\")`);
 	if (options.length !== 0)
