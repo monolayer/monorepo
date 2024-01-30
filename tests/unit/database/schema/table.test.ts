@@ -7,6 +7,7 @@ import {
 	pgText,
 	pgVarchar,
 } from "~/database/schema/columns.js";
+import { pgIndex } from "~/database/schema/indexes.js";
 import { pgTable } from "~/database/schema/table.js";
 
 describe("pgTable definition", () => {
@@ -19,6 +20,7 @@ describe("pgTable definition", () => {
 		});
 		expect(table.name).toBe("users");
 	});
+
 	test("has columns defined", () => {
 		const columns = {
 			name: pgVarchar(),
@@ -70,5 +72,36 @@ describe("pgTable definition", () => {
 		type InsertType = typeof table.inferInsert;
 		const expect: Expect<Equal<InsertType, ExpectedType>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
+	});
+
+	test("indexes are undefined by default", () => {
+		const columns = {
+			name: pgVarchar(),
+			subscribed: pgBoolean(),
+		};
+		const table = pgTable("users", {
+			columns: columns,
+		});
+		expect(table.indexes).toBeUndefined();
+	});
+
+	test("indexes can be added", () => {
+		const indexes = [
+			pgIndex("index_on_name", (idx) =>
+				idx.ifNotExists().unique().using("btree"),
+			),
+			pgIndex("index_on_subscribe", (idx) =>
+				idx.ifNotExists().unique().using("btree"),
+			),
+		];
+		const columns = {
+			name: pgVarchar(),
+			subscribed: pgBoolean(),
+		};
+		const table = pgTable("users", {
+			columns: columns,
+			indexes,
+		});
+		expect(table.indexes).toStrictEqual(indexes);
 	});
 });

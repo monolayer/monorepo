@@ -1,10 +1,12 @@
-import { Kysely } from "kysely";
+import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("books")
     .addColumn("name", "text")
     .execute();
+
+  await sql`create index "books_name_idx" on "books" ("name")`.execute(db);
 }
 
 export async function down(db: Kysely<any>): Promise<void> {

@@ -2,7 +2,11 @@ import * as p from "@clack/prompts";
 import { Kysely } from "kysely";
 import pg from "pg";
 import { exit } from "process";
-import { dbColumnInfo, dbTableInfo } from "~/database/change_set/db_info.js";
+import {
+	dbColumnInfo,
+	dbIndexInfo,
+	dbTableInfo,
+} from "~/database/change_set/db_info.js";
 import { ActionStatus } from "../command.js";
 
 export async function analyzeRemoteSchema(
@@ -34,6 +38,17 @@ export async function analyzeRemoteSchema(
 		exit(0);
 	}
 
+	const remoteIndexInfo = await dbIndexInfo(kysely, "public", tables);
+
+	if (remoteIndexInfo.status === ActionStatus.Error) {
+		b.stop("Error while fetching database information", 1);
+		console.error(remoteIndexInfo.error);
+		exit(0);
+	}
+
 	b.stop(`Analyzed schema from ${environmentConfig?.database} database.`);
-	return remoteColumnInfo;
+	return {
+		columns: remoteColumnInfo,
+		indexes: remoteIndexInfo,
+	};
 }

@@ -1,54 +1,28 @@
-import diff, { Difference } from "microdiff";
 import { ColumnInfo } from "~/database/change_set/info.js";
-import { ColumnsInfo, TableInfo } from "~/database/change_set/table_diff.js";
+import {
+	ColumnChangeDifference,
+	ColumnCreateDifference,
+	ColumnDropDifference,
+	ColumnsInfo,
+	DbDiff,
+	DbTableInfo,
+	LocalTableInfo,
+	TableCreateDifference,
+	TableDropDifference,
+	dbDiff,
+	indexDiff,
+	isIndexCreateifference,
+	isIndexRemoveDifference,
+	isTableCreateDifference,
+	isTableDropDifference,
+} from "./change_set/diff.js";
 
-type TableCreateDifference = {
-	type: "CREATE";
-	path: [string];
-	value: ColumnsInfo;
-};
-
-type TableDropDifference = {
-	type: "REMOVE";
-	path: [string];
-	oldValue: ColumnsInfo;
-};
-
-type ColumnCreateDifference = {
-	type: "CREATE";
-	path: [string, string];
-	value: ColumnInfo;
-};
-
-type ColumnDropDifference = {
-	type: "REMOVE";
-	path: [string, string];
-	oldValue: ColumnInfo;
-};
-
-type ColumnChangeDifference = {
-	type: "CHANGE";
-	path: [string, string, keyof ColumnInfo];
-	value: string | boolean | number | null;
-	oldValue: string | boolean | number | null;
-};
-
-export type DbDiff = {
-	added: TableCreateDifference[];
-	removed: TableDropDifference[];
-	changed: {
-		[key: string]: (
-			| ColumnChangeDifference
-			| ColumnCreateDifference
-			| ColumnDropDifference
-		)[];
-	};
-};
-
-enum ChangeSetType {
+export enum ChangeSetType {
 	CreateTable = "create",
 	DropTable = "drop",
 	ChangeTable = "change",
+	CreateIndex = "createIndex",
+	DropIndex = "dropIndex",
 }
 
 type CreateTableChangeSet = {
@@ -72,114 +46,119 @@ type ChangeTableChangeSet = {
 	down: string[];
 };
 
-export type ChangeSet = (
-	| CreateTableChangeSet
-	| DropTableChangeSet
-	| ChangeTableChangeSet
-)[];
+type CreateIndexChangeSet = {
+	tableName: string;
+	type: ChangeSetType.CreateIndex;
+	up: string[];
+	down: string[];
+};
 
-export function dbDiff(local: TableInfo, db: TableInfo) {
-	return diff(db, local).reduce<DbDiff>(
-		(acc, diff) => {
-			if (isTableCreateDifference(diff)) {
-				acc.added.push(diff);
-			} else if (isTableDropDifference(diff)) {
-				acc.removed.push(diff);
-			} else if (
-				isColumnChangeDifference(diff) ||
-				isColumnDropDifference(diff) ||
-				isColumnCreateDifference(diff)
-			) {
-				const tableName = diff.path[0];
-				const tableChanges = acc.changed[tableName];
-				if (tableChanges === undefined) {
-					acc.changed[tableName] = [diff];
+type DropIndexChangeSet = {
+	tableName: string;
+	type: ChangeSetType.DropIndex;
+	up: string[];
+	down: string[];
+};
+
+export type TableChangeSet = {
+	columns?: CreateTableChangeSet | DropTableChangeSet | ChangeTableChangeSet;
+	indexes: (CreateIndexChangeSet | DropIndexChangeSet)[];
+};
+
+export type ChangeSet = Record<string, TableChangeSet>;
+
+export function dbChangeset(local: LocalTableInfo, db: DbTableInfo) {
+	const columnDiff = dbDiff(local, db);
+	const indexDiff = tableIndexChangeset(local, db, columnDiff);
+	const tableChangeset = {
+		...tableDifferenceChangeset(columnDiff.added, indexDiff),
+		...tableDifferenceChangeset(columnDiff.removed, indexDiff),
+		...columnDifferenceChangeset(columnDiff.changed, indexDiff),
+	};
+	const tablesNames = Object.keys(tableChangeset) as Array<
+		keyof typeof tableChangeset
+	>;
+	const filtered = [...indexDiff.removed, ...indexDiff.added].reduce<ChangeSet>(
+		(acc, changeset) => {
+			if (!tablesNames.includes(changeset.tableName)) {
+				let current = acc[changeset.tableName];
+				if (current === undefined) {
+					current = {
+						columns: undefined,
+						indexes: [changeset],
+					};
 				} else {
-					tableChanges.push(diff);
+					current.indexes.push(changeset);
 				}
+				acc[changeset.tableName] = current;
 			}
 			return acc;
 		},
-		{ added: [], removed: [], changed: {} },
+		{},
 	);
-}
 
-export function isTableCreateDifference(
-	test: Difference,
-): test is TableCreateDifference {
-	return test.path.length === 1 && test.type === "CREATE";
-}
-
-export function isTableDropDifference(
-	test: Difference,
-): test is TableDropDifference {
-	return test.path.length === 1 && test.type === "REMOVE";
-}
-
-export function isColumnCreateDifference(
-	test: Difference,
-): test is ColumnCreateDifference {
-	return test.path.length === 2 && test.type === "CREATE";
-}
-
-export function isColumnDropDifference(
-	test: Difference,
-): test is ColumnDropDifference {
-	return test.path.length === 2 && test.type === "REMOVE";
-}
-
-export function isColumnChangeDifference(
-	test: Difference,
-): test is ColumnChangeDifference {
-	return test.path.length === 3 && test.type === "CHANGE";
-}
-
-export function dbChangeset(local: TableInfo, db: TableInfo) {
-	const diff = dbDiff(local, db);
-	return [
-		...tableDifferenceChangeset(diff.added),
-		...tableDifferenceChangeset(diff.removed),
-		...columnDifferenceChangeset(diff.changed),
-	];
+	return {
+		...tableChangeset,
+		...filtered,
+	};
 }
 
 function tableDifferenceChangeset(
 	difference: (TableCreateDifference | TableDropDifference)[],
+	indexChangeSet: {
+		added: CreateIndexChangeSet[];
+		removed: DropIndexChangeSet[];
+	},
 ) {
 	return difference.reduce<ChangeSet>((acc, tableDifference) => {
 		const tableName = tableDifference.path[0];
+
 		if (isTableCreateDifference(tableDifference)) {
-			acc.push({
-				tableName: tableName,
-				type: ChangeSetType.CreateTable,
-				...tableCreateMigrationOp(tableDifference),
-			});
+			acc[tableName] = {
+				columns: {
+					tableName: tableName,
+					type: ChangeSetType.CreateTable,
+					...tableCreateMigrationOp(tableDifference),
+				},
+				indexes: indexChangeSet.added.filter(
+					(changeset) => changeset.tableName === tableName,
+				),
+			};
 		} else if (isTableDropDifference(tableDifference)) {
-			acc.push({
-				tableName: tableName,
-				type: ChangeSetType.DropTable,
-				...tableDropMigrationOp(tableDifference),
-			});
+			acc[tableName] = {
+				columns: {
+					tableName: tableName,
+					type: ChangeSetType.DropTable,
+					...tableDropMigrationOp(tableDifference),
+				},
+				indexes: indexChangeSet.removed.filter(
+					(changeset) => changeset.tableName === tableName,
+				),
+			};
 		}
 		return acc;
-	}, []);
+	}, {} as ChangeSet);
 }
 
 function columnDifferenceChangeset(
 	difference: Record<
 		string,
-		(ColumnDropDifference | ColumnCreateDifference | ColumnChangeDifference)[]
+		(ColumnCreateDifference | ColumnDropDifference | ColumnChangeDifference)[]
 	>,
+	indexChangeSet: {
+		added: CreateIndexChangeSet[];
+		removed: DropIndexChangeSet[];
+	},
 ) {
 	return Object.entries(difference).reduce<ChangeSet>(
 		(acc, [tableName, columnDifferences]) => {
-			const migrationOp = {
+			const columnOps = columnOperations(columnDifferences);
+			const migrationOp: ChangeTableChangeSet = {
 				tableName: tableName,
 				type: ChangeSetType.ChangeTable,
-				up: [] as string[],
-				down: [] as string[],
+				up: [],
+				down: [],
 			};
-			const columnOps = columnOperations(columnDifferences);
 
 			for (const columnOp of columnOps) {
 				migrationOp.up.push(columnOp.up);
@@ -189,11 +168,16 @@ function columnDifferenceChangeset(
 			if (migrationOp.down.length !== 0) {
 				migrationOp.up.unshift(`alterTable("${tableName}")`);
 				migrationOp.down.unshift(`alterTable("${tableName}")`);
-				acc.push(migrationOp);
+				acc[tableName] = {
+					columns: migrationOp,
+					indexes: [...indexChangeSet.added, ...indexChangeSet.removed].filter(
+						(changeset) => changeset.tableName === tableName,
+					),
+				};
 			}
 			return acc;
 		},
-		[],
+		{},
 	);
 }
 
@@ -331,6 +315,7 @@ function columnPrimaryKeyMigrationOperation(diff: ColumnChangeDifference) {
 				: `dropConstraint(\"${diff.path[0]}_pk\")`,
 	};
 }
+
 function optionsForColumn(column: ColumnInfo) {
 	let columnOptions = "";
 	const options = [];
@@ -350,4 +335,57 @@ function tableColumnsOps(columnsInfo: ColumnsInfo) {
 			column.dataType
 		}\"${optionsForColumn(column)})`;
 	});
+}
+
+function tableIndexChangeset(
+	local: LocalTableInfo,
+	db: DbTableInfo,
+	dbDiff: DbDiff,
+) {
+	const dbIndexes = db.indexes || {};
+	const droppedTables = dbDiff.removed.map((diff) => diff.path[0]);
+	return indexDiff(local, db).reduce(
+		(acc, tdiff) => {
+			switch (tdiff.type) {
+				case "CREATE": {
+					if (isIndexCreateifference(tdiff)) {
+						const tableName = tdiff.path[0];
+						const indexName = tdiff.path[1];
+						const changeSet: CreateIndexChangeSet = {
+							tableName: tableName,
+							type: ChangeSetType.CreateIndex,
+							up: [`await sql\`${tdiff.value}\`.execute(db);`],
+							down: [`await db.schema.dropIndex("${indexName}").execute();`],
+						};
+						acc.added.push(changeSet);
+					}
+					break;
+				}
+				case "REMOVE": {
+					if (isIndexRemoveDifference(tdiff)) {
+						const tableName = tdiff.path[0] as keyof typeof dbIndexes;
+						const indexName = tdiff.path[1];
+						const dbIndex = dbIndexes[tableName]?.[indexName];
+						if (dbIndex !== undefined) {
+							const changeSet: DropIndexChangeSet = {
+								tableName: tableName,
+								type: ChangeSetType.DropIndex,
+								up: droppedTables.includes(tableName)
+									? []
+									: [`await db.schema.dropIndex("${indexName}").execute();`],
+								down: [`await sql\`${dbIndex}\`.execute(db);`],
+							};
+							acc.removed.push(changeSet);
+						}
+					}
+					break;
+				}
+			}
+			return acc;
+		},
+		{
+			added: [] as CreateIndexChangeSet[],
+			removed: [] as DropIndexChangeSet[],
+		},
+	);
 }

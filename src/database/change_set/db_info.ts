@@ -4,8 +4,8 @@ import {
 	OperationAnyError,
 	OperationSuccess,
 } from "~/cli/command.js";
+import { TableColumnInfo } from "./diff.js";
 import { ColumnInfo, IndexInfo } from "./info.js";
-import { TableInfo } from "./table_diff.js";
 
 type InformationSchemaTables = {
 	table_catalog: string | null;
@@ -157,7 +157,7 @@ export async function dbColumnInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
-): Promise<OperationSuccess<TableInfo> | OperationAnyError> {
+): Promise<OperationSuccess<TableColumnInfo> | OperationAnyError> {
 	try {
 		const results = await fetchDbColumnInfo(kysely, databaseSchema, tableNames);
 		const transformed = transformDbColumnInfo(results);
@@ -353,7 +353,7 @@ function transformDbColumnInfo(
 }
 
 function mapColumnsToTables(columns: ColumnInfo[]) {
-	return columns.reduce<TableInfo>((acc, curr) => {
+	return columns.reduce<TableColumnInfo>((acc, curr) => {
 		if (curr.tableName !== null && curr.columnName !== null) {
 			const currentTable = acc[curr.tableName];
 			if (currentTable === undefined) {
@@ -378,34 +378,51 @@ export async function dbIndexInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
-): Promise<IndexInfo> {
-	const results = await kysely
-		.selectFrom("pg_class")
-		.innerJoin("pg_index", "pg_class.oid", "pg_index.indrelid")
-		.innerJoin(
-			"pg_class as pg_class_2",
-			"pg_index.indexrelid",
-			"pg_class_2.oid",
-		)
-		.leftJoin("pg_namespace", "pg_namespace.oid", "pg_class.relnamespace")
-		.select([
-			"pg_class.relname as table",
-			"pg_class_2.relname as name",
-			sql<string>`pg_get_indexdef(pg_index.indexrelid)`.as("definition"),
-		])
-		.distinct()
-		.where("pg_class_2.relkind", "in", ["i", "I"])
-		.where("pg_index.indisprimary", "=", false)
-		.where("pg_class.relname", "in", tableNames)
-		.where("pg_namespace.nspname", "=", databaseSchema)
-		.orderBy("pg_class_2.relname")
-		.execute();
-
-	return results.reduce<IndexInfo>((acc, curr) => {
-		acc[curr.table] = {
-			...acc[curr.table],
-			...{ [curr.name]: curr.definition },
+): Promise<OperationSuccess<IndexInfo> | OperationAnyError> {
+	if (tableNames.length === 0) {
+		return {
+			status: ActionStatus.Success,
+			result: {},
 		};
-		return acc;
-	}, {});
+	}
+
+	try {
+		const results = await kysely
+			.selectFrom("pg_class")
+			.innerJoin("pg_index", "pg_class.oid", "pg_index.indrelid")
+			.innerJoin(
+				"pg_class as pg_class_2",
+				"pg_index.indexrelid",
+				"pg_class_2.oid",
+			)
+			.leftJoin("pg_namespace", "pg_namespace.oid", "pg_class.relnamespace")
+			.select([
+				"pg_class.relname as table",
+				"pg_class_2.relname as name",
+				sql<string>`pg_get_indexdef(pg_index.indexrelid)`.as("definition"),
+			])
+			.distinct()
+			.where("pg_class_2.relkind", "in", ["i", "I"])
+			.where("pg_index.indisprimary", "=", false)
+			.where("pg_class.relname", "in", tableNames)
+			.where("pg_namespace.nspname", "=", databaseSchema)
+			.orderBy("pg_class_2.relname")
+			.execute();
+		const indexInfo = results.reduce<IndexInfo>((acc, curr) => {
+			acc[curr.table] = {
+				...acc[curr.table],
+				...{ [curr.name]: curr.definition },
+			};
+			return acc;
+		}, {});
+		return {
+			status: ActionStatus.Success,
+			result: indexInfo,
+		};
+	} catch (error) {
+		return {
+			status: ActionStatus.Error,
+			error: error,
+		};
+	}
 }

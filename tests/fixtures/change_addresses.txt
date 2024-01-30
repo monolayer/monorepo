@@ -1,4 +1,4 @@
-import { Kysely } from "kysely";
+import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
@@ -11,6 +11,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     .alterColumn("city", (col) => col.setNotNull())
     .addColumn("country", "text")
     .execute();
+
+  await sql`create unique index "addresses_city_idx" on "addresses" using btree ("city")`.execute(db);
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
@@ -24,4 +26,6 @@ export async function down(db: Kysely<any>): Promise<void> {
     .alterColumn("name", (col) => col.dropDefault())
     .alterColumn("name", (col) => col.setDataType("text"))
     .execute();
+
+  await db.schema.dropIndex("addresses_city_idx").execute();
 }

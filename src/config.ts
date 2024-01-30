@@ -1,6 +1,6 @@
 import path from "path";
 import type { ClientConfig, PoolConfig } from "pg";
-import { TableRecord, pgDatabase } from "./database/schema/database.js";
+import { pgDatabase } from "./database/schema/database.js";
 import { pgTable } from "./database/schema/table.js";
 
 export type Config = {
@@ -40,7 +40,7 @@ export async function importConfig() {
 
 type SchemaImport = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	database?: pgDatabase<TableRecord<Record<string, pgTable<string, any>>>>;
+	database?: pgDatabase<Record<string, pgTable<string, any>>>;
 };
 
 export async function importSchema() {

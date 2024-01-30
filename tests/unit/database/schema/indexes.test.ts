@@ -10,6 +10,11 @@ describe("pgIndex", () => {
 
 	test("index name", () => {
 		const idx = pgIndex("test_index", (idx) => idx);
+		expect(idx.name).toBe("test_index");
+	});
+
+	test("index meta name", () => {
+		const idx = pgIndex("test_index", (idx) => idx);
 		const meta = indexMeta(idx);
 		expect(meta.name).toBe("test_index");
 	});

@@ -807,22 +807,25 @@ describe("db info", () => {
 				"test_indexes_2",
 			]);
 			expect(results).toStrictEqual({
-				test_indexes_1: {
-					test_indexes_1_index_on_id:
-						"CREATE INDEX test_indexes_1_index_on_id ON public.test_indexes_1 USING btree (id)",
-					test_indexes_1_index_on_name:
-						"CREATE INDEX test_indexes_1_index_on_name ON public.test_indexes_1 USING btree (name) NULLS NOT DISTINCT",
-					test_indexes_1_index_on_id_and_name:
-						"CREATE UNIQUE INDEX test_indexes_1_index_on_id_and_name ON public.test_indexes_1 USING btree (id, name)",
+				result: {
+					test_indexes_1: {
+						test_indexes_1_index_on_id:
+							"CREATE INDEX test_indexes_1_index_on_id ON public.test_indexes_1 USING btree (id)",
+						test_indexes_1_index_on_name:
+							"CREATE INDEX test_indexes_1_index_on_name ON public.test_indexes_1 USING btree (name) NULLS NOT DISTINCT",
+						test_indexes_1_index_on_id_and_name:
+							"CREATE UNIQUE INDEX test_indexes_1_index_on_id_and_name ON public.test_indexes_1 USING btree (id, name)",
+					},
+					test_indexes_2: {
+						test_indexes_2_index_on_id:
+							"CREATE INDEX test_indexes_2_index_on_id ON public.test_indexes_2 USING btree (id)",
+						test_indexes_2_index_on_email:
+							"CREATE INDEX test_indexes_2_index_on_email ON public.test_indexes_2 USING btree (email)",
+						test_indexes_2_index_on_id_and_email:
+							"CREATE UNIQUE INDEX test_indexes_2_index_on_id_and_email ON public.test_indexes_2 USING btree (id, email)",
+					},
 				},
-				test_indexes_2: {
-					test_indexes_2_index_on_id:
-						"CREATE INDEX test_indexes_2_index_on_id ON public.test_indexes_2 USING btree (id)",
-					test_indexes_2_index_on_email:
-						"CREATE INDEX test_indexes_2_index_on_email ON public.test_indexes_2 USING btree (email)",
-					test_indexes_2_index_on_id_and_email:
-						"CREATE UNIQUE INDEX test_indexes_2_index_on_id_and_email ON public.test_indexes_2 USING btree (id, email)",
-				},
+				status: "Success",
 			});
 		});
 	});

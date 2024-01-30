@@ -28,12 +28,11 @@ export async function generate() {
 
 	await pendingMigrations(config, kysely);
 
-	const localTableInfo = await analyzeLocalSchema(config);
+	const localInfo = await analyzeLocalSchema(config);
 	const remoteColumnInfo = await analyzeRemoteSchema(environmentConfig, kysely);
+	const changeset = await computeChangeSet(localInfo, remoteColumnInfo);
 
-	const changset = await computeChangeSet(localTableInfo, remoteColumnInfo);
-
-	await generateMigrations(changset, config);
+	await generateMigrations(changeset, config);
 
 	kysely.destroy();
 

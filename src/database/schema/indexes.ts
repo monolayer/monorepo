@@ -1,23 +1,25 @@
 import { CreateIndexBuilder } from "kysely";
-import {
-	ColumnConstructor,
-	pgBoolean,
-	pgVarchar,
-} from "~/database/schema/columns.js";
-import { pgTable } from "./table.js";
+import { ColumnConstructor } from "~/database/schema/columns.js";
 
 export type IndexConstructor<T> = {
 	new (): T;
 	(): T;
 };
 
-export type pgIndex = object;
+export type pgIndex = {
+	readonly name: string;
+};
 
 export function pgIndex(
 	name: string,
-	builder: (builder: CreateIndexBuilder) => CreateIndexBuilder,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	builder: (builder: CreateIndexBuilder<any>) => CreateIndexBuilder<any>,
 ) {
 	const indexConstructor = function (this: pgIndex) {
+		Object.defineProperty(this, "name", {
+			value: name,
+			writable: false,
+		});
 		const meta = {
 			name,
 			builder,
@@ -33,7 +35,8 @@ export function pgIndex(
 
 export type IndexMeta = {
 	name: string;
-	builder: (builder: CreateIndexBuilder) => CreateIndexBuilder;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	builder: (builder: CreateIndexBuilder<any>) => CreateIndexBuilder<any>;
 };
 
 export function indexMeta(obj: object) {
@@ -43,18 +46,3 @@ export function indexMeta(obj: object) {
 		}
 	)._meta;
 }
-
-export const table = pgTable("users", {
-	columns: {
-		name: pgVarchar(),
-		subscribed: pgBoolean(),
-	},
-	indexes: [
-		pgIndex("index_on_name", (idx) =>
-			idx.ifNotExists().unique().using("btree"),
-		),
-		pgIndex("index_on_subscribe", (idx) =>
-			idx.ifNotExists().unique().using("btree"),
-		),
-	],
-});

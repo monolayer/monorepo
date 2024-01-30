@@ -1,7 +1,8 @@
 import { expect, test } from "vitest";
 import {
 	schemaColumnInfo,
-	schemaDBTableInfo,
+	schemaDBColumnInfoByTable,
+	schemaDBIndexInfoByTable,
 	schemaTableInfo,
 } from "~/database/change_set/schema_info.js";
 import {
@@ -11,6 +12,7 @@ import {
 	pgVarchar,
 } from "~/database/schema/columns.js";
 import { pgDatabase } from "~/database/schema/database.js";
+import { pgIndex } from "~/database/schema/indexes.js";
 import { pgTable } from "~/database/schema/table.js";
 
 test("#schemaTableInfo", () => {
@@ -71,7 +73,7 @@ test("#schemaDBTableInfo", () => {
 		users,
 		teams,
 	});
-	const expectedDbTableInfo = {
+	const expectedDbColumnInfoByTable = {
 		users: {
 			id: {
 				tableName: "users",
@@ -155,5 +157,45 @@ test("#schemaDBTableInfo", () => {
 			},
 		},
 	};
-	expect(schemaDBTableInfo(database)).toEqual(expectedDbTableInfo);
+	expect(schemaDBColumnInfoByTable(database)).toEqual(
+		expectedDbColumnInfoByTable,
+	);
+});
+
+test("#schemaDBTableInfo", () => {
+	const userIndexes = [
+		pgIndex("users_name_idx", (idx) => idx),
+		pgIndex("users_email_idx", (idx) => idx),
+	];
+	const users = pgTable("users", {
+		columns: {
+			id: pgSerial(),
+			name: pgVarchar().nonNullable(),
+			email: pgVarchar().nonNullable(),
+		},
+		indexes: userIndexes,
+	});
+	const teamIndexes = [
+		pgIndex("teams_id_idx", (idx) => idx),
+		pgIndex("teams_active_idx", (idx) => idx),
+	];
+	const teams = pgTable("teams", {
+		columns: {
+			id: pgBigSerial(),
+			name: pgVarchar().nonNullable(),
+			active: pgBoolean(),
+		},
+		indexes: teamIndexes,
+	});
+	const database = pgDatabase({
+		users,
+		teams,
+	});
+	const expectedDbIndexInfoByTable = {
+		users: userIndexes,
+		teams: teamIndexes,
+	};
+	expect(schemaDBIndexInfoByTable(database)).toEqual(
+		expectedDbIndexInfoByTable,
+	);
 });
