@@ -3,7 +3,6 @@ import { describe, expect, expectTypeOf, test } from "vitest";
 import {
 	NestedRecord,
 	columnMeta,
-	defineMetaInfo,
 	pgBigInt,
 	pgBigSerial,
 	pgBoolean,
@@ -31,34 +30,6 @@ import {
 	pgVarchar,
 } from "~/database/schema/columns.js";
 import { testMetaValue } from "~tests/helpers/test_meta_value.js";
-
-test("defineMetaInfo", () => {
-	const obj = {};
-	defineMetaInfo(obj, { foo: "bar" });
-
-	const propertyDescriptors = Object.getOwnPropertyDescriptors(obj);
-	const meta = propertyDescriptors._meta;
-
-	expect(meta).not.toBeUndefined();
-	if (meta !== undefined) {
-		expect(meta.value).not.toBe({ foo: "bar" });
-		expect(meta.writable).toBe(false);
-		expect(meta.enumerable).toBe(false);
-		expect(meta.configurable).toBe(false);
-	}
-});
-
-test("#columnMeta", () => {
-	const obj = {};
-	const meta = {
-		dataType: "char",
-		isNullable: false,
-		default: undefined,
-	};
-	defineMetaInfo(obj, meta);
-
-	expect(columnMeta(obj)).toBe(meta);
-});
 
 describe("boolean column", () => {
 	test("type is Boolean", () => {
