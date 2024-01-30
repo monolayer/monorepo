@@ -149,7 +149,8 @@ describe("char column", () => {
 		expect(meta?.dataType).toBe("char(100)");
 	});
 
-	testMetaValue(pgChar(), "dataType", "char");
+	testMetaValue(pgChar(100), "dataType", "char(100)");
+	testMetaValue(pgChar(), "dataType", "char(1)");
 	testMetaValue(pgChar(), "default", null);
 	testMetaValue(pgChar(), "isNullable", true);
 	testMetaValue(pgChar(), "renameFrom", null);
@@ -157,6 +158,8 @@ describe("char column", () => {
 	testMetaValue(pgChar().default("hello"), "default", "hello");
 	testMetaValue(pgChar().nullable(), "isNullable", true);
 	testMetaValue(pgChar().nonNullable(), "isNullable", false);
+	testMetaValue(pgChar(), "characterMaximumLength", 1);
+	testMetaValue(pgChar(100), "characterMaximumLength", 100);
 });
 
 describe("numeric column", () => {

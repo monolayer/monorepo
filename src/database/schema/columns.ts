@@ -198,9 +198,10 @@ export function pgChar(characterMaximumLength?: number) {
 		initColumnCommon<pgChar>(this, {
 			dataType:
 				characterMaximumLength === undefined
-					? "char"
+					? "char(1)"
 					: `char(${characterMaximumLength})`,
-			characterMaximumLength: characterMaximumLength,
+			characterMaximumLength:
+				characterMaximumLength === undefined ? 1 : characterMaximumLength,
 		});
 		return this;
 	} as ColumnConstructor<pgChar>;
