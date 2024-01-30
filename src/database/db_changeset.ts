@@ -179,20 +179,8 @@ function columnDifferenceChangeset(
 				up: [] as string[],
 				down: [] as string[],
 			};
-			const columnOps: { priority: number; up: string; down: string }[] = [];
-			for (const columnDiff of columnDifferences) {
-				if (isColumnChangeDifference(columnDiff)) {
-					const ops = alterColumnMigrationOp(columnDiff);
-					if (ops !== undefined) columnOps.push(ops);
-				} else if (isColumnDropDifference(columnDiff)) {
-					const ops = columnDropMigrationOp(columnDiff);
-					if (ops !== undefined) columnOps.push(ops);
-				} else if (isColumnCreateDifference(columnDiff)) {
-					const ops = columnCreateMigrationOp(columnDiff);
-					if (ops !== undefined) columnOps.push(ops);
-				}
-			}
-			columnOps.sort((a, b) => a.priority - b.priority);
+			const columnOps = columnOperations(columnDifferences);
+
 			for (const columnOp of columnOps) {
 				migrationOp.up.push(columnOp.up);
 				migrationOp.down.unshift(columnOp.down);
@@ -209,19 +197,43 @@ function columnDifferenceChangeset(
 	);
 }
 
-function alterColumnMigrationOp(difference: ColumnChangeDifference) {
-	switch (difference.path[2]) {
-		case "dataType":
-			return columnDatatypeMigrationOperation(difference);
-		case "defaultValue":
-			return columnDefaultMigrationOperation(difference);
-		case "isNullable":
-			return columnNullableMigrationOperation(difference);
-		case "primaryKey":
-			return columnPrimaryKeyMigrationOperation(difference);
-		default:
-			return undefined;
+function columnOperations(
+	differences: (
+		| ColumnCreateDifference
+		| ColumnDropDifference
+		| ColumnChangeDifference
+	)[],
+) {
+	const columnOps: { priority: number; up: string; down: string }[] = [];
+	for (const columnDiff of differences) {
+		switch (columnDiff.type) {
+			case "CREATE":
+				columnOps.push(columnCreateMigrationOp(columnDiff));
+				break;
+			case "REMOVE":
+				columnOps.push(columnDropMigrationOp(columnDiff));
+				break;
+			case "CHANGE": {
+				switch (columnDiff.path[2]) {
+					case "dataType":
+						columnOps.push(columnDatatypeMigrationOperation(columnDiff));
+						break;
+					case "defaultValue":
+						columnOps.push(columnDefaultMigrationOperation(columnDiff));
+						break;
+					case "isNullable":
+						columnOps.push(columnNullableMigrationOperation(columnDiff));
+						break;
+					case "primaryKey":
+						columnOps.push(columnPrimaryKeyMigrationOperation(columnDiff));
+						break;
+				}
+				break;
+			}
+		}
 	}
+	columnOps.sort((a, b) => a.priority - b.priority);
+	return columnOps;
 }
 
 function tableCreateMigrationOp(difference: TableCreateDifference) {
