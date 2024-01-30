@@ -320,7 +320,7 @@ describe("pgBigSerial column", () => {
 	testMetaValue(pgBigSerial(), "min", 1);
 	testMetaValue(pgBigSerial(), "max", 9223372036854775808n);
 	testMetaValue(pgBigSerial(), "default", null);
-	testMetaValue(pgBigSerial(), "isNullable", true);
+	testMetaValue(pgBigSerial(), "isNullable", false);
 	testMetaValue(pgBigSerial(), "renameFrom", null);
 	testMetaValue(pgBigSerial().renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(pgBigSerial().nullable(), "isNullable", true);
@@ -721,11 +721,11 @@ describe("pgReal column", () => {
 	testMetaValue(pgReal(), "dataType", "real");
 	testMetaValue(pgReal(), "min", -1e37);
 	testMetaValue(pgReal(), "max", 1e37);
-	testMetaValue(pgReal(), "default", null);
+	testMetaValue(pgReal(), "defaultValue", null);
 	testMetaValue(pgReal(), "isNullable", true);
 	testMetaValue(pgReal(), "renameFrom", null);
 	testMetaValue(pgReal().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgReal().default(12), "default", 12);
+	testMetaValue(pgReal().default(12), "defaultValue", 12);
 	testMetaValue(pgReal().nullable(), "isNullable", true);
 	testMetaValue(pgReal().nonNullable(), "isNullable", false);
 	testMetaValue(pgReal(), "primaryKey", null);

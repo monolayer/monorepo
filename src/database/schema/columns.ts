@@ -272,6 +272,7 @@ export function pgBigSerial() {
 			dataType: "bigserial",
 			min: 1,
 			max: 9223372036854775808n,
+			isNullable: false,
 		});
 		return this;
 	} as ColumnConstructor<pgBigSerial>;
@@ -488,6 +489,7 @@ export function pgSerial() {
 			dataType: "serial",
 			min: 1,
 			max: 2147483648,
+			isNullable: false,
 		});
 		return this;
 	} as ColumnConstructor<pgSerial>;
