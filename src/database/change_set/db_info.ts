@@ -223,6 +223,7 @@ function transformDbColumnInfo(
 						`nextval('${row.table_name}_${row.column_name}_seq'`,
 					)
 				) {
+					dataTypeFullName = "bigserial";
 					row.column_default = null;
 				}
 				break;
@@ -258,6 +259,7 @@ function transformDbColumnInfo(
 						`nextval('${row.table_name}_${row.column_name}_seq'`,
 					)
 				) {
+					dataTypeFullName = "serial";
 					row.column_default = null;
 				}
 				break;

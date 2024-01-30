@@ -369,8 +369,8 @@ describe("db info", () => {
 					bigserial: {
 						tableName: "serial_table_1",
 						columnName: "bigserial",
-						dataType: "bigint",
 						default: null,
+						dataType: "bigserial",
 						isNullable: false,
 						numericPrecision: null,
 						numericScale: null,
@@ -382,8 +382,8 @@ describe("db info", () => {
 					serial: {
 						tableName: "serial_table_1",
 						columnName: "serial",
-						dataType: "integer",
 						default: null,
+						dataType: "serial",
 						isNullable: false,
 						numericPrecision: null,
 						numericScale: null,
