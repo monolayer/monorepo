@@ -1,10 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ActionStatus } from "~/cli/command.js";
-import {
-	dbColumnInfo,
-	dbIndexInfo,
-	dbTableInfo,
-} from "~/database/change_set/db_info.js";
+import { dbColumnInfo, dbTableInfo } from "~/database/change_set/db_info.js";
 import { DbContext, globalKysely } from "~tests/setup.js";
 
 async function dropTables(context: DbContext) {
@@ -110,6 +106,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					numeric: {
 						tableName: "numeric_table_1",
@@ -123,6 +120,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 				},
 			});
@@ -146,6 +144,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					decimal_with_precision_and_scale: {
 						tableName: "numeric_table_2",
@@ -159,6 +158,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					numeric_with_precision: {
 						tableName: "numeric_table_2",
@@ -172,6 +172,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					numeric_with_precision_and_scale: {
 						tableName: "numeric_table_2",
@@ -185,6 +186,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 				},
 			});
@@ -222,6 +224,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					int2: {
 						tableName: "integer_table_1",
@@ -235,6 +238,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					int4: {
 						tableName: "integer_table_1",
@@ -248,6 +252,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					int8: {
 						tableName: "integer_table_1",
@@ -261,6 +266,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					integer: {
 						tableName: "integer_table_1",
@@ -274,6 +280,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 				},
 			});
@@ -310,6 +317,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					float4: {
 						tableName: "float_table_1",
@@ -323,6 +331,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					float8: {
 						tableName: "float_table_1",
@@ -336,6 +345,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					real: {
 						tableName: "float_table_1",
@@ -349,6 +359,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 				},
 			});
@@ -383,6 +394,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					serial: {
 						tableName: "serial_table_1",
@@ -396,6 +408,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 				},
 			});
@@ -434,6 +447,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					bytea: {
 						tableName: "misc_table_1",
@@ -447,6 +461,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					date: {
 						tableName: "misc_table_1",
@@ -460,6 +475,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					json: {
 						tableName: "misc_table_1",
@@ -473,6 +489,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					jsonb: {
 						tableName: "misc_table_1",
@@ -486,6 +503,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					uuid: {
 						tableName: "misc_table_1",
@@ -499,6 +517,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 				},
 			});
@@ -542,6 +561,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					char_10: {
 						tableName: "character_table_1",
@@ -555,6 +575,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 				},
 				character_table_2: {
@@ -570,6 +591,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					varchar: {
 						tableName: "character_table_2",
@@ -583,6 +605,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					varchar_300: {
 						tableName: "character_table_2",
@@ -596,6 +619,7 @@ describe("db info", () => {
 						datetimePrecision: null,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 				},
 			});
@@ -642,6 +666,7 @@ describe("db info", () => {
 						datetimePrecision: 6,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					timestamp_p: {
 						tableName: "dt_table_1",
@@ -655,6 +680,7 @@ describe("db info", () => {
 						datetimePrecision: 3,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					timestamptz: {
 						tableName: "dt_table_1",
@@ -668,6 +694,7 @@ describe("db info", () => {
 						datetimePrecision: 6,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					timestamptz_p: {
 						tableName: "dt_table_1",
@@ -681,6 +708,7 @@ describe("db info", () => {
 						datetimePrecision: 3,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 				},
 				dt_table_2: {
@@ -696,6 +724,7 @@ describe("db info", () => {
 						datetimePrecision: 6,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					time_p: {
 						tableName: "dt_table_2",
@@ -709,6 +738,7 @@ describe("db info", () => {
 						datetimePrecision: 3,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					timetz: {
 						tableName: "dt_table_2",
@@ -722,6 +752,7 @@ describe("db info", () => {
 						datetimePrecision: 6,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 					timetz_p: {
 						tableName: "dt_table_2",
@@ -735,98 +766,210 @@ describe("db info", () => {
 						datetimePrecision: 3,
 						renameFrom: null,
 						primaryKey: null,
+						foreignKeyConstraint: null,
 					},
 				},
 			});
 		});
-	});
 
-	describe("#dbIndexInfo", () => {
-		it<DbContext>("returns info on table indexes", async ({
+		it<DbContext>("returns info with foreign key constraints", async ({
 			kysely,
 			tableNames,
 		}) => {
-			tableNames.push("test_indexes_1");
-			tableNames.push("test_indexes_2");
-
+			tableNames.push("fk_table_2");
+			tableNames.push("fk_table_1");
 			await kysely.schema
-				.createTable("test_indexes_1")
-				.addColumn("id", "serial")
-				.addColumn("name", "text")
+				.createTable("fk_table_1")
+				.addColumn("id", "serial", (col) => col.primaryKey())
+				.addColumn("price", "numeric(6, 3)")
 				.execute();
-
 			await kysely.schema
-				.createIndex("test_indexes_1_index_on_id")
-				.on("test_indexes_1")
-				.column("id")
+				.createTable("fk_table_2")
+				.addColumn("name", "varchar", (col) => col.primaryKey())
+				.addColumn("email", "char(255)")
+				.addColumn("book_id", "integer")
+				.addForeignKeyConstraint(
+					"foreign_pk_books_id",
+					["book_id"],
+					"fk_table_1",
+					["id"],
+				)
 				.execute();
-
-			await kysely.schema
-				.createIndex("test_indexes_1_index_on_name")
-				.on("test_indexes_1")
-				.column("name")
-				.nullsNotDistinct()
-				.execute();
-
-			await kysely.schema
-				.createIndex("test_indexes_1_index_on_id_and_name")
-				.on("test_indexes_1")
-				.columns(["id", "name"])
-				.unique()
-				.ifNotExists()
-				.execute();
-
-			await kysely.schema
-				.createTable("test_indexes_2")
-				.addColumn("id", "serial")
-				.addColumn("email", "text")
-				.execute();
-
-			await kysely.schema
-				.createIndex("test_indexes_2_index_on_id")
-				.on("test_indexes_2")
-				.column("id")
-				.execute();
-
-			await kysely.schema
-				.createIndex("test_indexes_2_index_on_email")
-				.on("test_indexes_2")
-				.column("email")
-				.execute();
-
-			await kysely.schema
-				.createIndex("test_indexes_2_index_on_id_and_email")
-				.on("test_indexes_2")
-				.columns(["id", "email"])
-				.unique()
-				.ifNotExists()
-				.execute();
-
-			const results = await dbIndexInfo(kysely, "public", [
-				"test_indexes_1",
-				"test_indexes_2",
+			const table_1_results = await dbColumnInfo(kysely, "public", [
+				"fk_table_1",
+				"fk_table_2",
 			]);
-			expect(results).toStrictEqual({
-				result: {
-					test_indexes_1: {
-						test_indexes_1_index_on_id:
-							"CREATE INDEX test_indexes_1_index_on_id ON public.test_indexes_1 USING btree (id)",
-						test_indexes_1_index_on_name:
-							"CREATE INDEX test_indexes_1_index_on_name ON public.test_indexes_1 USING btree (name) NULLS NOT DISTINCT",
-						test_indexes_1_index_on_id_and_name:
-							"CREATE UNIQUE INDEX test_indexes_1_index_on_id_and_name ON public.test_indexes_1 USING btree (id, name)",
+			if (table_1_results.status === ActionStatus.Error) {
+				throw table_1_results.error;
+			}
+			expect(table_1_results.result).toStrictEqual({
+				fk_table_1: {
+					id: {
+						characterMaximumLength: null,
+						columnName: "id",
+						dataType: "serial",
+						datetimePrecision: null,
+						defaultValue: null,
+						foreignKeyConstraint: null,
+						isNullable: false,
+						numericPrecision: null,
+						numericScale: null,
+						primaryKey: true,
+						renameFrom: null,
+						tableName: "fk_table_1",
 					},
-					test_indexes_2: {
-						test_indexes_2_index_on_id:
-							"CREATE INDEX test_indexes_2_index_on_id ON public.test_indexes_2 USING btree (id)",
-						test_indexes_2_index_on_email:
-							"CREATE INDEX test_indexes_2_index_on_email ON public.test_indexes_2 USING btree (email)",
-						test_indexes_2_index_on_id_and_email:
-							"CREATE UNIQUE INDEX test_indexes_2_index_on_id_and_email ON public.test_indexes_2 USING btree (id, email)",
+					price: {
+						characterMaximumLength: null,
+						columnName: "price",
+						dataType: "numeric(6, 3)",
+						datetimePrecision: null,
+						defaultValue: null,
+						foreignKeyConstraint: null,
+						isNullable: true,
+						numericPrecision: 6,
+						numericScale: 3,
+						primaryKey: null,
+						renameFrom: null,
+						tableName: "fk_table_1",
 					},
 				},
-				status: "Success",
+				fk_table_2: {
+					book_id: {
+						characterMaximumLength: null,
+						columnName: "book_id",
+						dataType: "integer",
+						datetimePrecision: null,
+						defaultValue: null,
+						foreignKeyConstraint: {
+							table: "fk_table_1",
+							column: "id",
+						},
+						isNullable: true,
+						numericPrecision: null,
+						numericScale: null,
+						primaryKey: null,
+						renameFrom: null,
+						tableName: "fk_table_2",
+					},
+					email: {
+						characterMaximumLength: 255,
+						columnName: "email",
+						dataType: "char(255)",
+						datetimePrecision: null,
+						defaultValue: null,
+						foreignKeyConstraint: null,
+						isNullable: true,
+						numericPrecision: null,
+						numericScale: null,
+						primaryKey: null,
+						renameFrom: null,
+						tableName: "fk_table_2",
+					},
+					name: {
+						characterMaximumLength: null,
+						columnName: "name",
+						dataType: "varchar",
+						datetimePrecision: null,
+						defaultValue: null,
+						foreignKeyConstraint: null,
+						isNullable: false,
+						numericPrecision: null,
+						numericScale: null,
+						primaryKey: true,
+						renameFrom: null,
+						tableName: "fk_table_2",
+					},
+				},
 			});
 		});
 	});
+
+	// describe("#dbIndexInfo", () => {
+	// 	it<DbContext>("returns info on table indexes", async ({
+	// 		kysely,
+	// 		tableNames,
+	// 	}) => {
+	// 		tableNames.push("test_indexes_1");
+	// 		tableNames.push("test_indexes_2");
+
+	// 		await kysely.schema
+	// 			.createTable("test_indexes_1")
+	// 			.addColumn("id", "serial")
+	// 			.addColumn("name", "text")
+	// 			.execute();
+
+	// 		await kysely.schema
+	// 			.createIndex("test_indexes_1_index_on_id")
+	// 			.on("test_indexes_1")
+	// 			.column("id")
+	// 			.execute();
+
+	// 		await kysely.schema
+	// 			.createIndex("test_indexes_1_index_on_name")
+	// 			.on("test_indexes_1")
+	// 			.column("name")
+	// 			.nullsNotDistinct()
+	// 			.execute();
+
+	// 		await kysely.schema
+	// 			.createIndex("test_indexes_1_index_on_id_and_name")
+	// 			.on("test_indexes_1")
+	// 			.columns(["id", "name"])
+	// 			.unique()
+	// 			.ifNotExists()
+	// 			.execute();
+
+	// 		await kysely.schema
+	// 			.createTable("test_indexes_2")
+	// 			.addColumn("id", "serial")
+	// 			.addColumn("email", "text")
+	// 			.execute();
+
+	// 		await kysely.schema
+	// 			.createIndex("test_indexes_2_index_on_id")
+	// 			.on("test_indexes_2")
+	// 			.column("id")
+	// 			.execute();
+
+	// 		await kysely.schema
+	// 			.createIndex("test_indexes_2_index_on_email")
+	// 			.on("test_indexes_2")
+	// 			.column("email")
+	// 			.execute();
+
+	// 		await kysely.schema
+	// 			.createIndex("test_indexes_2_index_on_id_and_email")
+	// 			.on("test_indexes_2")
+	// 			.columns(["id", "email"])
+	// 			.unique()
+	// 			.ifNotExists()
+	// 			.execute();
+
+	// 		const results = await dbIndexInfo(kysely, "public", [
+	// 			"test_indexes_1",
+	// 			"test_indexes_2",
+	// 		]);
+	// 		expect(results).toStrictEqual({
+	// 			result: {
+	// 				test_indexes_1: {
+	// 					test_indexes_1_index_on_id:
+	// 						"CREATE INDEX test_indexes_1_index_on_id ON public.test_indexes_1 USING btree (id)",
+	// 					test_indexes_1_index_on_name:
+	// 						"CREATE INDEX test_indexes_1_index_on_name ON public.test_indexes_1 USING btree (name) NULLS NOT DISTINCT",
+	// 					test_indexes_1_index_on_id_and_name:
+	// 						"CREATE UNIQUE INDEX test_indexes_1_index_on_id_and_name ON public.test_indexes_1 USING btree (id, name)",
+	// 				},
+	// 				test_indexes_2: {
+	// 					test_indexes_2_index_on_id:
+	// 						"CREATE INDEX test_indexes_2_index_on_id ON public.test_indexes_2 USING btree (id)",
+	// 					test_indexes_2_index_on_email:
+	// 						"CREATE INDEX test_indexes_2_index_on_email ON public.test_indexes_2 USING btree (email)",
+	// 					test_indexes_2_index_on_id_and_email:
+	// 						"CREATE UNIQUE INDEX test_indexes_2_index_on_id_and_email ON public.test_indexes_2 USING btree (id, email)",
+	// 				},
+	// 			},
+	// 			status: "Success",
+	// 		});
+	// 	});
+	// });
 });

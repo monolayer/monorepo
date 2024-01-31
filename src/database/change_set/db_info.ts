@@ -83,6 +83,16 @@ type InformationSchemaKeyColumnUsage = {
 	constraint_name: string | null;
 };
 
+type InformationSchemaConstraintColumnUsage = {
+	table_catalog: string | null;
+	table_schema: string | null;
+	table_name: string | null;
+	column_name: string | null;
+	constraint_catalog: string | null;
+	constraint_schema: string | null;
+	constraint_name: string | null;
+};
+
 type PgIndexTable = {
 	indrelid: number;
 	indexrelid: number;
@@ -105,6 +115,7 @@ type InformationSchemaDB = {
 	"information_schema.tables": InformationSchemaTables;
 	"information_schema.columns": InformationSchemaColumns;
 	"information_schema.key_column_usage": InformationSchemaKeyColumnUsage;
+	"information_schema.constraint_column_usage": InformationSchemaConstraintColumnUsage;
 	pg_index: PgIndexTable;
 	pg_namespace: PgNamespaceTable;
 	pg_class: PgClassTable;
@@ -198,6 +209,13 @@ async function fetchDbColumnInfo(
 					"information_schema.columns.column_name",
 				),
 		)
+		.fullJoin("information_schema.constraint_column_usage", (join) =>
+			join.onRef(
+				"information_schema.constraint_column_usage.constraint_name",
+				"=",
+				"information_schema.key_column_usage.constraint_name",
+			),
+		)
 		.select([
 			"information_schema.columns.table_name",
 			"information_schema.columns.column_name",
@@ -217,6 +235,8 @@ async function fetchDbColumnInfo(
 			),
 			"information_schema.key_column_usage.constraint_name",
 			"information_schema.key_column_usage.position_in_unique_constraint",
+			"information_schema.constraint_column_usage.table_name as constraint_table_name",
+			"information_schema.constraint_column_usage.column_name as constraint_column_name",
 		])
 		.where("information_schema.columns.table_schema", "=", databaseSchema)
 		.where("information_schema.columns.table_name", "in", tableNames)
@@ -351,6 +371,15 @@ function transformDbColumnInfo(
 				row.constraint_name !== null &&
 				row.position_in_unique_constraint == null
 					? true
+					: null,
+			foreignKeyConstraint:
+				row.constraint_table_name !== null &&
+				row.table_name !== row.constraint_table_name &&
+				row.constraint_column_name !== null
+					? {
+							table: row.constraint_table_name,
+							column: row.constraint_column_name,
+					  }
 					: null,
 		});
 	}
