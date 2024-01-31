@@ -192,7 +192,7 @@ async function fetchDbColumnInfo(
 					"=",
 					"information_schema.columns.table_name",
 				)
-				.on(
+				.onRef(
 					"information_schema.key_column_usage.column_name",
 					"=",
 					"information_schema.columns.column_name",
@@ -216,6 +216,7 @@ async function fetchDbColumnInfo(
 				"rename_from",
 			),
 			"information_schema.key_column_usage.constraint_name",
+			"information_schema.key_column_usage.position_in_unique_constraint",
 		])
 		.where("information_schema.columns.table_schema", "=", databaseSchema)
 		.where("information_schema.columns.table_name", "in", tableNames)
@@ -346,7 +347,11 @@ function transformDbColumnInfo(
 			characterMaximumLength: row.character_maximum_length,
 			datetimePrecision: row.datetime_precision,
 			renameFrom: row.rename_from,
-			primaryKey: row.constraint_name !== null ? true : null,
+			primaryKey:
+				row.constraint_name !== null &&
+				row.position_in_unique_constraint == null
+					? true
+					: null,
 		});
 	}
 	return transformed;
