@@ -231,7 +231,7 @@ describe("#dbDiff", () => {
 });
 
 describe("#dbChangeset", () => {
-	test("added tables", () => {
+	test("tables and indexes", () => {
 		const changeset = dbChangeset(
 			{
 				columns: {
