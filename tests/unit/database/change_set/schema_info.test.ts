@@ -49,6 +49,7 @@ test("#schemaColumnInfo", () => {
 		datetimePrecision: null,
 		renameFrom: "old_column_name",
 		primaryKey: null,
+		foreignKeyConstraint: null,
 	};
 
 	expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
@@ -87,6 +88,7 @@ test("#schemaDBTableInfo", () => {
 				datetimePrecision: null,
 				renameFrom: null,
 				primaryKey: null,
+				foreignKeyConstraint: null,
 			},
 			name: {
 				tableName: "users",
@@ -100,6 +102,7 @@ test("#schemaDBTableInfo", () => {
 				datetimePrecision: null,
 				renameFrom: null,
 				primaryKey: null,
+				foreignKeyConstraint: null,
 			},
 			email: {
 				tableName: "users",
@@ -113,6 +116,7 @@ test("#schemaDBTableInfo", () => {
 				datetimePrecision: null,
 				renameFrom: null,
 				primaryKey: null,
+				foreignKeyConstraint: null,
 			},
 		},
 		teams: {
@@ -128,6 +132,7 @@ test("#schemaDBTableInfo", () => {
 				datetimePrecision: null,
 				renameFrom: null,
 				primaryKey: null,
+				foreignKeyConstraint: null,
 			},
 			name: {
 				tableName: "teams",
@@ -141,6 +146,7 @@ test("#schemaDBTableInfo", () => {
 				datetimePrecision: null,
 				renameFrom: null,
 				primaryKey: null,
+				foreignKeyConstraint: null,
 			},
 			active: {
 				tableName: "teams",
@@ -154,6 +160,7 @@ test("#schemaDBTableInfo", () => {
 				datetimePrecision: null,
 				renameFrom: null,
 				primaryKey: null,
+				foreignKeyConstraint: null,
 			},
 		},
 	};

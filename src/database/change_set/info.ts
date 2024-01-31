@@ -11,8 +11,8 @@ export type ColumnInfo = {
 	renameFrom: string | null;
 	primaryKey: true | null;
 	foreignKeyConstraint: {
-		tableName: string;
-		columnName: string;
+		table: string;
+		column: string;
 	} | null;
 };
 

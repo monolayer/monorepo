@@ -1,4 +1,5 @@
 import type { ColumnDataType } from "kysely";
+import { pgTable } from "./table.js";
 
 interface Nullable {
 	isNullable: true;
@@ -16,6 +17,11 @@ export type ColumnBase<T, N extends string, S, I> = {
 	default: (value: I) => T;
 	renameFrom: (value: string) => T;
 	primaryKey: () => T;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	references: <R extends pgTable<string, any>>(
+		table: R,
+		column: keyof R["columns"],
+	) => T;
 };
 
 export type ColumnBaseWithoutDefault<T, N extends string, S, I> = Omit<
@@ -35,6 +41,10 @@ export type ColumnMeta<T> = {
 	max: number | bigint | null;
 	renameFrom: string | null;
 	primaryKey: true | null;
+	foreignKeyConstraint: {
+		table: string;
+		column: string;
+	} | null;
 };
 
 export type ColumnConstructor<T> = {
@@ -95,6 +105,27 @@ export function addPrimaryKey<T extends PgColumn>(obj: T) {
 	});
 }
 
+export function addReferences<T extends PgColumn>(obj: T) {
+	Object.defineProperty(obj, "references", {
+		writable: false,
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		value: <R extends pgTable<string, any>>(
+			table: R,
+			column: keyof R["columns"],
+		) => {
+			const meta = columnMeta<T>(obj);
+			if (meta !== undefined) {
+				meta.foreignKeyConstraint = {
+					table: table.name,
+					column: column.toString(),
+				};
+			}
+			return obj;
+		},
+	});
+	return obj;
+}
+
 export function columnMeta<T>(obj: object) {
 	return (
 		obj as unknown as {
@@ -129,6 +160,7 @@ export function initColumnCommon<T extends PgColumnWithDefault>(
 		max: options.max ?? null,
 		renameFrom: options.renameFrom ?? null,
 		primaryKey: options.primaryKey ?? null,
+		foreignKeyConstraint: null,
 	});
 }
 
@@ -152,6 +184,7 @@ export function initColumnCommonWithoutDefault<
 		max: options.max ?? null,
 		renameFrom: options.renameFrom ?? null,
 		primaryKey: options.primaryKey ?? null,
+		foreignKeyConstraint: null,
 	});
 }
 
@@ -159,7 +192,9 @@ function defineColumnCommon<T extends PgColumn>(obj: T) {
 	addNullableConstraint(obj);
 	addRenameFrom(obj);
 	addPrimaryKey(obj);
+	addReferences(obj);
 }
+
 type Boolish = "true" | "false" | "1" | "0" | 1 | 0;
 
 export interface pgBoolean

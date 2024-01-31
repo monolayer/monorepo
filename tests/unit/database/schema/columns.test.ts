@@ -29,6 +29,7 @@ import {
 	pgUuid,
 	pgVarchar,
 } from "~/database/schema/columns.js";
+import { pgTable } from "~/database/schema/table.js";
 import { testMetaValue } from "~tests/helpers/test_meta_value.js";
 
 describe("boolean column", () => {
@@ -1082,4 +1083,29 @@ describe("pgUuid column", () => {
 	testMetaValue(pgUuid().nonNullable(), "isNullable", false);
 	testMetaValue(pgUuid(), "primaryKey", null);
 	testMetaValue(pgUuid().primaryKey(), "primaryKey", true);
+});
+
+describe("references", () => {
+	test("null by default", () => {
+		const books_author_id = pgInteger();
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		const meta = columnMeta<any>(books_author_id);
+		expect(meta.foreignKeyConstraint).toBeNull();
+	});
+
+	test("reference a column in another table", () => {
+		const author = pgTable("authors", {
+			columns: {
+				id: pgSerial(),
+			},
+		});
+
+		const books_author_id = pgInteger().references(author, "id").nullable();
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		const meta = columnMeta<any>(books_author_id);
+		expect(meta.foreignKeyConstraint).toStrictEqual({
+			table: "authors",
+			column: "id",
+		});
+	});
 });
