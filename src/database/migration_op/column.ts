@@ -1,7 +1,6 @@
 import { Difference } from "microdiff";
 import { ChangeSetType, Changeset } from "../changeset.js";
 import { ColumnInfo } from "../introspection/types.js";
-import { columnPrimaryKeyMigrationOperation } from "./column_change/primary_key.js";
 import {
 	MigrationOpPriority,
 	executeKyselySchemaStatement,
@@ -56,19 +55,6 @@ export function dropColumnMigration(diff: DropColumnDiff) {
 	return changeset;
 }
 
-export function changeColumnMigration(diff: ChangeColumnDiff) {
-	switch (diff.path[3]) {
-		case "dataType":
-			return columnDatatypeMigrationOperation(diff);
-		case "defaultValue":
-			return columnDefaultMigrationOperation(diff);
-		case "isNullable":
-			return columnNullableMigrationOperation(diff);
-		case "primaryKey":
-			return columnPrimaryKeyMigrationOperation(diff);
-	}
-}
-
 export type CreateColumnDiff = {
 	type: "CREATE";
 	path: ["table", string, string];
@@ -93,162 +79,9 @@ export function isDropColumn(test: Difference): test is DropColumnDiff {
 	);
 }
 
-type ColumnChangeAttr = Pick<
-	ColumnInfo,
-	"dataType" | "defaultValue" | "isNullable" | "primaryKey"
->;
-
 export type ChangeColumnDiff = {
 	type: "CHANGE";
-	path: ["table", string, string, keyof ColumnChangeAttr];
+	path: ["table", string, string, keyof ColumnInfo];
 	value: string | boolean | number | null;
 	oldValue: string | boolean | number | null;
 };
-
-export type ChangeColumnForeignConstraint = {
-	type: "CHANGE";
-	path: ["table", string, string, "foreignKeyConstraint"];
-	value: ForeIgnKeyConstraintInfo | null;
-	oldValue: ForeIgnKeyConstraintInfo | null;
-};
-
-export type ChangeColumnForeignConstraintAdd = {
-	type: "CHANGE";
-	path: ["table", string, string, "foreignKeyConstraint"];
-	value: ForeIgnKeyConstraintInfo;
-	oldValue: null;
-};
-
-export type ChangeColumnForeignConstraintRemove = {
-	type: "CHANGE";
-	path: ["table", string, string, "foreignKeyConstraint"];
-	value: null;
-	oldValue: ForeIgnKeyConstraintInfo;
-};
-
-export function isChangeColumn(test: Difference): test is ChangeColumnDiff {
-	const columNames = ["dataType", "defaultValue", "isNullable", "primaryKey"];
-
-	return (
-		test.type === "CHANGE" &&
-		test.path[0] === "table" &&
-		test.path.length === 4 &&
-		test.path[3] !== undefined &&
-		columNames.includes(test.path[3].toString())
-	);
-}
-
-function columnDatatypeMigrationOperation(diff: ChangeColumnDiff) {
-	const tableName = diff.path[1];
-	const columnName = diff.path[2];
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.ChangeColumnDatatype,
-		tableName: tableName,
-		type: ChangeSetType.ChangeColumn,
-		up: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`alterColumn(\"${columnName}\", (col) => col.setDataType("${diff.value}"))`,
-		),
-		down: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`alterColumn(\"${columnName}\", (col) => col.setDataType("${diff.oldValue}"))`,
-		),
-	};
-	return changeset;
-}
-
-function columnDefaultMigrationOperation(diff: ChangeColumnDiff) {
-	const tableName = diff.path[1];
-	const columnName = diff.path[2];
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.ChangeColumnBase,
-		tableName: tableName,
-		type: ChangeSetType.ChangeColumn,
-		up:
-			diff.value === null
-				? executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.dropDefault())`,
-				  )
-				: executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.setDefault("${diff.value}"))`,
-				  ),
-		down:
-			diff.value === null
-				? executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.setDefault("${diff.oldValue}"))`,
-				  )
-				: executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.dropDefault())`,
-				  ),
-	};
-	return changeset;
-}
-
-function columnNullableMigrationOperation(diff: ChangeColumnDiff) {
-	const tableName = diff.path[1];
-	const columnName = diff.path[2];
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.ChangeColumnBase,
-		tableName: tableName,
-		type: ChangeSetType.ChangeColumn,
-		up:
-			diff.value === null
-				? executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.dropNotNull())`,
-				  )
-				: executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.setNotNull())`,
-				  ),
-		down:
-			diff.value === null
-				? executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.setNotNull())`,
-				  )
-				: executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.dropNotNull())`,
-				  ),
-	};
-	return changeset;
-}
-
-function columnPrimaryKeyMigrationOperation(diff: ChangeColumnDiff) {
-	const tableName = diff.path[1];
-	const columnName = diff.path[2];
-	const changeset: Changeset = {
-		priority:
-			diff.value === null
-				? MigrationOpPriority.ChangeColumnPrimaryKeyDrop
-				: MigrationOpPriority.ChangeColumnPrimaryKeyCreate,
-		tableName: tableName,
-		type: ChangeSetType.ChangeColumn,
-		up:
-			diff.value === null
-				? executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`dropConstraint(\"${tableName}_pk\")`,
-				  )
-				: executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.primaryKey())`,
-				  ),
-		down:
-			diff.value === null
-				? executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.primaryKey())`,
-				  )
-				: executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`dropConstraint(\"${tableName}_pk\")`,
-				  ),
-	};
-	return changeset;
-}

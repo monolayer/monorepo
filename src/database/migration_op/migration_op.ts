@@ -1,23 +1,29 @@
 import { Difference } from "microdiff";
 import { Changeset } from "../changeset.js";
-import {
-	changeColumnMigration,
-	createColumnMigration,
-	isChangeColumn,
-	isCreateColumn,
-} from "./column.js";
+import { createColumnMigration, isCreateColumn } from "./column.js";
 import { dropColumnMigration, isDropColumn } from "./column.js";
-import { dropAllIndexesMigration, isDropAllIndexes } from "./index.js";
-import { createFirstIndexMigration, isCreateFirstIndex } from "./index.js";
-import { createIndexMigration, isCreateIndex } from "./index.js";
-import { dropIndexMigration, isDropIndex } from "./index.js";
-import { ChangeColumnForeignConstraintAdd } from "./column_change/foreign_key.js";
+import {
+	columnDefaultMigrationOperation,
+	isColumnDefaultValue,
+} from "./column_change/default.js";
 import {
 	addColumnForeignKeyMigrationOperation,
 	isAddForeignKeyConstraintValue,
 	isRemoveForeignKeyConstraintValue,
 	removeColumnForeignKeyMigrationOperation,
 } from "./column_change/foreign_key.js";
+import {
+	columnNullableMigrationOperation,
+	isColumnNullable,
+} from "./column_change/nullable.js";
+import {
+	columnPrimaryKeyMigrationOperation,
+	isColumnPrimaryKey,
+} from "./column_change/primary_key.js";
+import { dropAllIndexesMigration, isDropAllIndexes } from "./index.js";
+import { createFirstIndexMigration, isCreateFirstIndex } from "./index.js";
+import { createIndexMigration, isCreateIndex } from "./index.js";
+import { dropIndexMigration, isDropIndex } from "./index.js";
 import { createTableMigration, isCreateTable } from "./table.js";
 import { dropTableMigration, isDropTable } from "./table.js";
 
@@ -67,7 +73,14 @@ function migrationOp(
 	if (isDropTable(difference)) return dropTableMigration(difference);
 	if (isCreateColumn(difference)) return createColumnMigration(difference);
 	if (isDropColumn(difference)) return dropColumnMigration(difference);
-	if (isChangeColumn(difference)) return changeColumnMigration(difference);
+	if (isColumnDataType(difference))
+		return columnDatatypeMigrationOperation(difference);
+	if (isColumnDefaultValue(difference))
+		return columnDefaultMigrationOperation(difference);
+	if (isColumnNullable(difference))
+		return columnNullableMigrationOperation(difference);
+	if (isColumnPrimaryKey(difference))
+		return columnPrimaryKeyMigrationOperation(difference);
 	if (isAddForeignKeyConstraintValue(difference))
 		return addColumnForeignKeyMigrationOperation(difference);
 	if (isRemoveForeignKeyConstraintValue(difference))
