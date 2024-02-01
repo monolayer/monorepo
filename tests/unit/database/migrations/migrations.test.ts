@@ -4,7 +4,7 @@ import { Kysely } from "kysely";
 import pg from "pg";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { ChangeSetType, DbChangeset } from "~/database/db_changeset.js";
+import { ChangeSetType, Changeset } from "~/database/changeset.js";
 import { generateMigrationFiles } from "~/database/migrations/generate.js";
 import { globalKysely } from "~tests/setup.js";
 
@@ -38,108 +38,212 @@ describe("Migrator", () => {
 		});
 
 		test("#output files", (context: MigrationContext) => {
-			const changeset: DbChangeset = {
-				books: {
-					columns: {
+			const changeset: Record<string, Changeset[]> = {
+				books: [
+					{
 						tableName: "books",
 						type: ChangeSetType.CreateTable,
-						up: ['createTable("books")', 'addColumn("name", "text")'],
-						down: ['dropTable("books")'],
+						priority: 1,
+						up: [
+							"await db.schema",
+							'createTable("books")',
+							'addColumn("name", "text")',
+							"execute();",
+						],
+						down: ["await db.schema", 'dropTable("books")', "execute();"],
 					},
-					indexes: [
-						{
-							tableName: "books",
-							type: ChangeSetType.CreateIndex,
-							up: [
-								'await sql`create index "books_name_idx" on "books" ("name")`.execute(db);',
-							],
-							down: [],
-						},
-					],
-				},
-				members: {
-					columns: {
+					{
+						priority: 4,
+						tableName: "books",
+						type: ChangeSetType.CreateIndex,
+						up: [
+							'await sql`create index "books_name_idx" on "books" ("name")`.execute(db);',
+						],
+						down: [],
+					},
+				],
+				members: [
+					{
 						tableName: "members",
+						priority: 1,
 						type: ChangeSetType.CreateTable,
 						up: [
+							"await db.schema",
 							'createTable("members")',
 							'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
 							'addColumn("email", "varchar(255)")',
 							'addColumn("city", "text", (col) => col.notNull())',
+							"execute();",
 						],
-						down: ['dropTable("members")'],
+						down: ["await db.schema", 'dropTable("members")', "execute();"],
 					},
-					indexes: [],
-				},
-				shops: {
-					columns: {
+				],
+				shops: [
+					{
 						tableName: "shops",
+						priority: 1,
 						type: ChangeSetType.DropTable,
-						up: ['dropTable("shops")'],
+						up: ["await db.schema", 'dropTable("shops")', "execute();"],
 						down: [
+							"await db.schema",
 							'createTable("shops")',
 							'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
 							'addColumn("email", "varchar(255)")',
 							'addColumn("city", "text", (col) => col.notNull())',
+							"execute();",
 						],
 					},
-					indexes: [
-						{
-							tableName: "shops",
-							type: ChangeSetType.DropIndex,
-							up: [],
-							down: [
-								'await sql`create unique index "shops_mail_idx" on "shops" using btree ("email")`.execute(db);',
-							],
-						},
-						{
-							tableName: "shops",
-							type: ChangeSetType.DropIndex,
-							up: [],
-							down: [
-								'await sql`create unique index "shops_city_idx" on "shops" using btree ("city")`.execute(db);',
-							],
-						},
-					],
-				},
-				addresses: {
-					columns: {
+					{
+						tableName: "shops",
+						priority: 4,
+						type: ChangeSetType.DropIndex,
+						up: [],
+						down: [
+							'await sql`create unique index "shops_mail_idx" on "shops" using btree ("email")`.execute(db);',
+						],
+					},
+					{
+						tableName: "shops",
+						priority: 4,
+						type: ChangeSetType.DropIndex,
+						up: [],
+						down: [
+							'await sql`create unique index "shops_city_idx" on "shops" using btree ("city")`.execute(db);',
+						],
+					},
+				],
+				addresses: [
+					{
 						tableName: "addresses",
-						type: ChangeSetType.ChangeTable,
+						type: ChangeSetType.CreateColumn,
+						priority: 2,
 						up: [
+							"await db.schema",
 							'alterTable("addresses")',
-							'alterColumn("name", (col) => col.setDataType("varchar"))',
-							'alterColumn("name", (col) => col.setDefault("hello"))',
-							'alterColumn("name", (col) => col.setNotNull())',
-							'alterColumn("email", (col) => col.setDataType("varchar"))',
-							'alterColumn("city", (col) => col.dropDefault())',
-							'alterColumn("city", (col) => col.setNotNull())',
 							'addColumn("country", "text")',
+							"execute();",
 						],
 						down: [
+							"await db.schema",
 							'alterTable("addresses")',
 							'dropColumn("country")',
-							'alterColumn("city", (col) => col.dropNotNull())',
-							'alterColumn("city", (col) => col.setDefault("bcn"))',
-							'alterColumn("email", (col) => col.setDataType("varchar(255)"))',
-							'alterColumn("name", (col) => col.dropNotNull())',
-							'alterColumn("name", (col) => col.dropDefault())',
-							'alterColumn("name", (col) => col.setDataType("text"))',
+							"execute();",
 						],
 					},
-					indexes: [
-						{
-							tableName: "addresses",
-							type: ChangeSetType.CreateIndex,
-							up: [
-								'await sql`create unique index "addresses_city_idx" on "addresses" using btree ("city")`.execute(db);',
-							],
-							down: [
-								'await db.schema.dropIndex("addresses_city_idx").execute();',
-							],
-						},
-					],
-				},
+					{
+						tableName: "addresses",
+						type: ChangeSetType.ChangeColumn,
+						priority: 3,
+						up: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.setDataType("varchar"))',
+							"execute();",
+						],
+						down: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.setDataType("text"))',
+							"execute();",
+						],
+					},
+					{
+						tableName: "addresses",
+						type: ChangeSetType.ChangeColumn,
+						priority: 3,
+						up: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("email", (col) => col.setDataType("varchar"))',
+							"execute();",
+						],
+						down: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("email", (col) => col.setDataType("varchar(255)"))',
+							"execute();",
+						],
+					},
+					{
+						tableName: "addresses",
+						type: ChangeSetType.ChangeColumn,
+						priority: 3.1,
+						up: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.setDefault("hello"))',
+							"execute();",
+						],
+						down: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.dropDefault())',
+							"execute();",
+						],
+					},
+					{
+						tableName: "addresses",
+						type: ChangeSetType.ChangeColumn,
+						priority: 3.1,
+						up: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.setNotNull())',
+							"execute();",
+						],
+						down: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					},
+					{
+						tableName: "addresses",
+						type: ChangeSetType.ChangeColumn,
+						priority: 3.1,
+						up: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("city", (col) => col.dropDefault())',
+							"execute();",
+						],
+						down: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("city", (col) => col.setDefault("bcn"))',
+							"execute();",
+						],
+					},
+					{
+						tableName: "addresses",
+						type: ChangeSetType.ChangeColumn,
+						priority: 3.1,
+						up: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("city", (col) => col.setNotNull())',
+							"execute();",
+						],
+						down: [
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("city", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					},
+					{
+						tableName: "addresses",
+						priority: 4,
+						type: ChangeSetType.CreateIndex,
+						up: [
+							'await sql`create unique index "addresses_city_idx" on "addresses" using btree ("city")`.execute(db);',
+						],
+						down: [
+							'await db.schema.dropIndex("addresses_city_idx").execute();',
+						],
+					},
+				],
 			};
 			generateMigrationFiles(changeset, context.folder);
 			const dir = readdirSync(context.migrationsFolder);

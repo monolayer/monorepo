@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { exit } from "process";
 import { Config } from "~/config.js";
-import { DbChangeset } from "~/database/db_changeset.js";
+import { DbChangeset } from "~/database/changeset.js";
 import { generateMigrationFiles } from "~/database/migrations/generate.js";
 import { ActionStatus, throwableOperation } from "../command.js";
 

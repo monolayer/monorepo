@@ -17,3 +17,16 @@ export type ColumnInfo = {
 };
 
 export type IndexInfo = Record<string, Record<string, string>>;
+
+export type DbTableInfo = {
+	columns: TableColumnInfo;
+	indexes?: IndexInfo;
+};
+
+export type ColumnsInfo = Record<string, ColumnInfo>;
+export type TableColumnInfo = Record<string, ColumnsInfo>;
+
+export type LocalTableInfo = {
+	columns: TableColumnInfo;
+	indexes?: IndexInfo;
+};

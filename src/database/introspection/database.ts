@@ -4,8 +4,7 @@ import {
 	OperationAnyError,
 	OperationSuccess,
 } from "~/cli/command.js";
-import { TableColumnInfo } from "./diff.js";
-import { ColumnInfo, IndexInfo } from "./info.js";
+import { ColumnInfo, IndexInfo, TableColumnInfo } from "./types.js";
 
 type InformationSchemaTables = {
 	table_catalog: string | null;

@@ -1,13 +1,12 @@
 import * as p from "@clack/prompts";
-import { TableColumnInfo, TableIndexInfo } from "~/database/change_set/diff.js";
-import { IndexInfo } from "~/database/change_set/info.js";
-import { DbChangeset, dbChangeset } from "~/database/db_changeset.js";
+import { DbChangeset, dbChangeset } from "~/database/changeset.js";
+import { IndexInfo, TableColumnInfo } from "~/database/introspection/types.js";
 import { OperationSuccess } from "../command.js";
 
 export async function computeChangeSet(
 	localTableInfo: {
 		columns: TableColumnInfo;
-		indexes: TableIndexInfo;
+		indexes: IndexInfo;
 	},
 	remoteColumnInfo: {
 		columns: OperationSuccess<TableColumnInfo>;

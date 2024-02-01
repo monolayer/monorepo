@@ -14,7 +14,7 @@ export async function down(db: Kysely<any>): Promise<void> {
     .addColumn("city", "text", (col) => col.notNull())
     .execute();
 
-  await sql`create unique index "shops_city_idx" on "shops" using btree ("city")`.execute(db);
-
   await sql`create unique index "shops_mail_idx" on "shops" using btree ("email")`.execute(db);
+
+  await sql`create unique index "shops_city_idx" on "shops" using btree ("city")`.execute(db);
 }

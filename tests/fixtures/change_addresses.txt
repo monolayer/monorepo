@@ -3,13 +3,37 @@ import { Kysely, sql } from "kysely";
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("addresses")
-    .alterColumn("name", (col) => col.setDataType("varchar"))
-    .alterColumn("name", (col) => col.setDefault("hello"))
-    .alterColumn("name", (col) => col.setNotNull())
-    .alterColumn("email", (col) => col.setDataType("varchar"))
-    .alterColumn("city", (col) => col.dropDefault())
-    .alterColumn("city", (col) => col.setNotNull())
     .addColumn("country", "text")
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("name", (col) => col.setDataType("varchar"))
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("email", (col) => col.setDataType("varchar"))
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("name", (col) => col.setDefault("hello"))
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("name", (col) => col.setNotNull())
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("city", (col) => col.dropDefault())
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("city", (col) => col.setNotNull())
     .execute();
 
   await sql`create unique index "addresses_city_idx" on "addresses" using btree ("city")`.execute(db);
@@ -19,12 +43,36 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("addresses")
     .dropColumn("country")
-    .alterColumn("city", (col) => col.dropNotNull())
-    .alterColumn("city", (col) => col.setDefault("bcn"))
-    .alterColumn("email", (col) => col.setDataType("varchar(255)"))
-    .alterColumn("name", (col) => col.dropNotNull())
-    .alterColumn("name", (col) => col.dropDefault())
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
     .alterColumn("name", (col) => col.setDataType("text"))
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("email", (col) => col.setDataType("varchar(255)"))
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("name", (col) => col.dropDefault())
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("name", (col) => col.dropNotNull())
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("city", (col) => col.setDefault("bcn"))
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("city", (col) => col.dropNotNull())
     .execute();
 
   await db.schema.dropIndex("addresses_city_idx").execute();

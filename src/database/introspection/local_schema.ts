@@ -4,8 +4,12 @@ import { PgColumn, columnMeta } from "~/database/schema/columns.js";
 import { pgDatabase } from "~/database/schema/database.js";
 import { TableSchema, pgTable } from "~/database/schema/table.js";
 import { indexMeta, pgIndex } from "../schema/indexes.js";
-import { ColumnsInfo, TableColumnInfo, TableIndexInfo } from "./diff.js";
-import { ColumnInfo } from "./info.js";
+import {
+	ColumnInfo,
+	ColumnsInfo,
+	IndexInfo,
+	TableColumnInfo,
+} from "./types.js";
 
 export function schemaTableInfo(tables: pgTable<string, TableSchema>[]) {
 	return tables.map((table) => ({
@@ -73,7 +77,7 @@ export function schemaDBIndexInfoByTable(
 		}),
 	});
 
-	return Object.entries(schema.tables || []).reduce<TableIndexInfo>(
+	return Object.entries(schema.tables || []).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const indexes = tableDefinition.indexes as pgIndex[] | undefined;
 			for (const index of indexes || []) {

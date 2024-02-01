@@ -4,7 +4,7 @@ import { Config, importSchema } from "~/config.js";
 import {
 	schemaDBColumnInfoByTable,
 	schemaDBIndexInfoByTable,
-} from "~/database/change_set/schema_info.js";
+} from "~/database/introspection/local_schema.js";
 
 export async function analyzeLocalSchema(config: Config) {
 	const s = p.spinner();

@@ -4,7 +4,7 @@ import {
 	schemaDBColumnInfoByTable,
 	schemaDBIndexInfoByTable,
 	schemaTableInfo,
-} from "~/database/change_set/schema_info.js";
+} from "~/database/introspection/local_schema.js";
 import {
 	pgBigSerial,
 	pgBoolean,

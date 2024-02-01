@@ -1,53 +1,58 @@
 import path from "node:path";
 import nunjucks from "nunjucks";
-import { DbChangeset, TableChangeSet } from "~/database/db_changeset.js";
+import { ChangeSetType, Changeset, DbChangeset } from "~/database/changeset.js";
 import { createFile } from "~/utils.js";
 
 const template = `import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
-{%- if columnsUp %}
-  await db.schema
-    .{{ columnsUp.join("\n    .") | safe }}
-    .execute();
-{% endif -%}
-{%- for upIndex in indexesUp %}
-  {{ upIndex | safe }}
+{%- for u in up %}
+  {{ u | safe }}
 {% endfor -%}
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-{%- if columnsDown %}
-  await db.schema
-    .{{ columnsDown.join("\n    .") | safe }}
-    .execute();
-{% endif -%}
-{%- for downIndex in indexesDown %}
-  {{ downIndex | safe }}
+{%- for d in down %}
+  {{ d | safe }}
 {% endfor -%}
 }
 `;
 
 export function generateMigrationFiles(changeset: DbChangeset, folder: string) {
-	const keys = Object.keys(changeset) as Array<keyof typeof changeset>;
+	const keys = Object.keys(changeset);
 	for (const key of keys) {
-		const tableChange = changeset[key] as TableChangeSet;
-		const columnChanges = tableChange.columns;
-		const indexChanges = tableChange.indexes;
-		const migrationType = columnChanges ? columnChanges.type : "change";
+		const changesets = changeset[key] as Changeset[];
+		const { up, down } = extractMigrationOpChangesets(changesets);
+
 		const now = performance.now().toFixed(1).toString().replace(".", "");
 		const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
 		const migrationFilePath = path.join(
 			folder,
 			"migrations",
-			`${dateStr}-${now}-${migrationType}_${key}.ts`,
+			`${dateStr}-${now}-${migrationType(changesets)}_${key}.ts`,
 		);
+
 		const rendered = nunjucks.compile(template).render({
-			columnsUp: columnChanges ? columnChanges.up : undefined,
-			columnsDown: columnChanges ? columnChanges.down : undefined,
-			indexesUp: indexChanges.flatMap((idx) => idx.up),
-			indexesDown: indexChanges.flatMap((idx) => idx.down).reverse(),
+			up: up,
+			down: down,
 		});
 		createFile(migrationFilePath, rendered, true);
 	}
+}
+
+function extractMigrationOpChangesets(changesets: Changeset[]) {
+	const up = changesets
+		.filter((changeset) => changeset.up.length > 0)
+		.map((changeset) => changeset.up.join("\n    ."));
+	const down = changesets
+		.filter((changeset) => changeset.down.length > 0)
+		.map((changeset) => changeset.down.join("\n    ."));
+	return { up, down };
+}
+
+function migrationType(changesets: Changeset[]) {
+	const types = changesets.map((changeset) => changeset.type);
+	if (types.includes(ChangeSetType.CreateTable)) return "create";
+	if (types.includes(ChangeSetType.DropTable)) return "drop";
+	return "change";
 }

@@ -6,7 +6,7 @@ import {
 	dbColumnInfo,
 	dbIndexInfo,
 	dbTableInfo,
-} from "~/database/change_set/db_info.js";
+} from "~/database/introspection/database.js";
 import { ActionStatus } from "../command.js";
 
 export async function analyzeRemoteSchema(

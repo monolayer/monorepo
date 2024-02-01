@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ActionStatus } from "~/cli/command.js";
-import { dbColumnInfo, dbTableInfo } from "~/database/change_set/db_info.js";
+import {
+	dbColumnInfo,
+	dbTableInfo,
+} from "~/database/introspection/database.js";
 import { DbContext, globalKysely } from "~tests/setup.js";
 
 async function dropTables(context: DbContext) {
