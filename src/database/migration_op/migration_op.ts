@@ -1,21 +1,23 @@
 import { Difference } from "microdiff";
 import { Changeset } from "../changeset.js";
 import {
-	ChangeColumnForeignConstraintAdd,
-	addColumnForeignKeyMigrationOperation,
 	changeColumnMigration,
 	createColumnMigration,
-	isAddForeignKeyConstraintValue,
 	isChangeColumn,
 	isCreateColumn,
-	isRemoveForeignKeyConstraintValue,
-	removeColumnForeignKeyMigrationOperation,
 } from "./column.js";
 import { dropColumnMigration, isDropColumn } from "./column.js";
 import { dropAllIndexesMigration, isDropAllIndexes } from "./index.js";
 import { createFirstIndexMigration, isCreateFirstIndex } from "./index.js";
 import { createIndexMigration, isCreateIndex } from "./index.js";
 import { dropIndexMigration, isDropIndex } from "./index.js";
+import { ChangeColumnForeignConstraintAdd } from "./column_change/foreign_key.js";
+import {
+	addColumnForeignKeyMigrationOperation,
+	isAddForeignKeyConstraintValue,
+	isRemoveForeignKeyConstraintValue,
+	removeColumnForeignKeyMigrationOperation,
+} from "./column_change/foreign_key.js";
 import { createTableMigration, isCreateTable } from "./table.js";
 import { dropTableMigration, isDropTable } from "./table.js";
 
