@@ -1,5 +1,5 @@
 import * as p from "@clack/prompts";
-import { DbChangeset, dbChangeset } from "~/database/changeset.js";
+import { Changeset, dbChangeset } from "~/database/changeset.js";
 import { IndexInfo, TableColumnInfo } from "~/database/introspection/types.js";
 import { OperationSuccess } from "../command.js";
 
@@ -12,7 +12,7 @@ export async function computeChangeSet(
 		columns: OperationSuccess<TableColumnInfo>;
 		indexes: OperationSuccess<IndexInfo>;
 	},
-): Promise<DbChangeset> {
+): Promise<Changeset[]> {
 	const c = p.spinner();
 	c.start("Computing change set");
 	const changeset = dbChangeset(
@@ -27,7 +27,7 @@ export async function computeChangeSet(
 	);
 	c.stop("Computed change set.");
 
-	if (Object.keys(changeset).length === 0) {
+	if (changeset.length === 0) {
 		p.log.info("No changes found.");
 	}
 	return changeset;

@@ -1,17 +1,40 @@
 import * as p from "@clack/prompts";
 import { exit } from "process";
+import slug from "slug";
 import { Config } from "~/config.js";
-import { DbChangeset } from "~/database/changeset.js";
+import { Changeset } from "~/database/changeset.js";
 import { generateMigrationFiles } from "~/database/migrations/generate.js";
 import { ActionStatus, throwableOperation } from "../command.js";
 
 export async function generateMigrations(
-	changeset: DbChangeset,
+	changeset: Changeset[],
 	config: Config,
 ) {
 	const result = await throwableOperation<typeof generateMigrationFiles>(
 		async () => {
-			generateMigrationFiles(changeset, config.folder);
+			const migrationName = await p.group(
+				{
+					value: () =>
+						p.text({
+							message: "How should we name the migration",
+							placeholder: "Enter a migration name",
+							validate: (value) => {
+								if (value === "") return "Please enter a migration name.";
+							},
+						}),
+				},
+				{
+					onCancel: () => {
+						p.cancel("Operation cancelled.");
+						process.exit(0);
+					},
+				},
+			);
+			generateMigrationFiles(
+				changeset,
+				config.folder,
+				slug(migrationName.value),
+			);
 		},
 	);
 	if (result.status === ActionStatus.Error) {

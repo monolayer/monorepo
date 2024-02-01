@@ -1,7 +1,10 @@
 import { Difference } from "microdiff";
-import { Changeset } from "../changeset.js";
 import { createColumnMigration, isCreateColumn } from "./column.js";
 import { dropColumnMigration, isDropColumn } from "./column.js";
+import {
+	columnDatatypeMigrationOperation,
+	isColumnDataType,
+} from "./column_change/data_type.js";
 import {
 	columnDefaultMigrationOperation,
 	isColumnDefaultValue,
@@ -49,21 +52,9 @@ export function migrationOps(differences: Difference[]) {
 	const changeset = differences.flatMap((diff) =>
 		migrationOp(diff, addedTables, droppedTables),
 	);
-	return groupChangesetByTableName(changeset);
+	return changeset.sort((a, b) => (a.priority || 1) - (b.priority || 1));
 }
 
-function groupChangesetByTableName(changeset: Changeset[]) {
-	return changeset.reduce(
-		(acc, op) => {
-			const tableName = op.tableName;
-			acc[tableName] = [...(acc[tableName] || []), op].sort(
-				(a, b) => (a.priority || 1) - (b.priority || 1),
-			);
-			return acc;
-		},
-		{} as Record<string, Changeset[]>,
-	);
-}
 function migrationOp(
 	difference: Difference,
 	addedTables: string[],

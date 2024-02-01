@@ -5,7 +5,7 @@ import { migrationOps } from "./migration_op/migration_op.js";
 export function dbChangeset(
 	local: LocalTableInfo,
 	db: DbTableInfo,
-): DbChangeset {
+): Changeset[] {
 	const newDiff = diff(
 		{
 			table: db.columns,
