@@ -43,14 +43,14 @@ describe("boolean column", () => {
 		const expect: Expect<
 			Equal<
 				boolean | "true" | "false" | "1" | "0" | 1 | 0,
-				Parameters<typeof obj.default>[0]
+				Parameters<typeof obj.defaultTo>[0]
 			>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
 
 	test("method chaining", () => {
-		const obj = pgBoolean().nullable().default(true).nonNullable();
+		const obj = pgBoolean().nullable().defaultTo(true).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgBoolean>();
 	});
 
@@ -59,9 +59,9 @@ describe("boolean column", () => {
 	testMetaValue(pgBoolean(), "isNullable", true);
 	testMetaValue(pgBoolean(), "renameFrom", null);
 	testMetaValue(pgBoolean().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgBoolean().default(true), "defaultValue", true);
+	testMetaValue(pgBoolean().defaultTo(true), "defaultValue", true);
 	testMetaValue(pgBoolean().nullable(), "isNullable", true);
-	testMetaValue(pgBoolean().nonNullable(), "isNullable", false);
+	testMetaValue(pgBoolean().notNull(), "isNullable", false);
 	testMetaValue(pgBoolean(), "primaryKey", null);
 	testMetaValue(pgBoolean().primaryKey(), "primaryKey", true);
 });
@@ -73,13 +73,13 @@ describe("text column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgText().nullable().default("hellotrue").nonNullable();
+		const obj = pgText().nullable().defaultTo("hellotrue").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgText>();
 	});
 
 	test("argument for default is string", () => {
 		const obj = pgText();
-		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
+		const expect: Expect<Equal<string, Parameters<typeof obj.defaultTo>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -89,9 +89,9 @@ describe("text column", () => {
 	testMetaValue(pgText(), "isNullable", true);
 	testMetaValue(pgText(), "renameFrom", null);
 	testMetaValue(pgText().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgText().default("hello"), "defaultValue", "hello");
+	testMetaValue(pgText().defaultTo("hello"), "defaultValue", "hello");
 	testMetaValue(pgText().nullable(), "isNullable", true);
-	testMetaValue(pgText().nonNullable(), "isNullable", false);
+	testMetaValue(pgText().notNull(), "isNullable", false);
 	testMetaValue(pgText(), "primaryKey", null);
 	testMetaValue(pgText().primaryKey(), "primaryKey", true);
 });
@@ -103,13 +103,13 @@ describe("varchar column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgVarchar().nullable().default("hellotrue").nonNullable();
+		const obj = pgVarchar().nullable().defaultTo("hellotrue").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgVarchar>();
 	});
 
 	test("argument for default is string", () => {
 		const obj = pgText();
-		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
+		const expect: Expect<Equal<string, Parameters<typeof obj.defaultTo>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -119,9 +119,9 @@ describe("varchar column", () => {
 	testMetaValue(pgVarchar(), "isNullable", true);
 	testMetaValue(pgVarchar(), "renameFrom", null);
 	testMetaValue(pgVarchar().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgVarchar().default("hello"), "defaultValue", "hello");
+	testMetaValue(pgVarchar().defaultTo("hello"), "defaultValue", "hello");
 	testMetaValue(pgVarchar().nullable(), "isNullable", true);
-	testMetaValue(pgVarchar().nonNullable(), "isNullable", false);
+	testMetaValue(pgVarchar().notNull(), "isNullable", false);
 	testMetaValue(pgVarchar(), "primaryKey", null);
 	testMetaValue(pgVarchar().primaryKey(), "primaryKey", true);
 
@@ -139,13 +139,13 @@ describe("char column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgChar().nullable().default("hellotrue").nonNullable();
+		const obj = pgChar().nullable().defaultTo("hellotrue").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgChar>();
 	});
 
 	test("argument for default is string", () => {
 		const obj = pgChar();
-		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
+		const expect: Expect<Equal<string, Parameters<typeof obj.defaultTo>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -162,9 +162,9 @@ describe("char column", () => {
 	testMetaValue(pgChar(), "isNullable", true);
 	testMetaValue(pgChar(), "renameFrom", null);
 	testMetaValue(pgChar().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgChar().default("hello"), "defaultValue", "hello");
+	testMetaValue(pgChar().defaultTo("hello"), "defaultValue", "hello");
 	testMetaValue(pgChar().nullable(), "isNullable", true);
-	testMetaValue(pgChar().nonNullable(), "isNullable", false);
+	testMetaValue(pgChar().notNull(), "isNullable", false);
 	testMetaValue(pgChar(), "characterMaximumLength", 1);
 	testMetaValue(pgChar(100), "characterMaximumLength", 100);
 	testMetaValue(pgChar(), "primaryKey", null);
@@ -178,14 +178,14 @@ describe("numeric column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgNumeric().nullable().default(12).nonNullable();
+		const obj = pgNumeric().nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgNumeric>();
 	});
 
 	test("argument for default is number", () => {
 		const obj = pgNumeric();
 		const expect: Expect<
-			Equal<string | number | bigint, Parameters<typeof obj.default>[0]>
+			Equal<string | number | bigint, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -195,9 +195,9 @@ describe("numeric column", () => {
 	testMetaValue(pgNumeric(), "isNullable", true);
 	testMetaValue(pgNumeric(), "renameFrom", null);
 	testMetaValue(pgNumeric().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgNumeric().default(12), "defaultValue", 12);
+	testMetaValue(pgNumeric().defaultTo(12), "defaultValue", 12);
 	testMetaValue(pgNumeric().nullable(), "isNullable", true);
-	testMetaValue(pgNumeric().nonNullable(), "isNullable", false);
+	testMetaValue(pgNumeric().notNull(), "isNullable", false);
 	testMetaValue(pgNumeric(), "primaryKey", null);
 	testMetaValue(pgNumeric().primaryKey(), "primaryKey", true);
 });
@@ -211,13 +211,13 @@ describe("numeric column with precision", () => {
 	test("argument for default is number", () => {
 		const obj = pgNumeric();
 		const expect: Expect<
-			Equal<string | number | bigint, Parameters<typeof obj.default>[0]>
+			Equal<string | number | bigint, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
 
 	test("method chaining", () => {
-		const obj = pgNumeric(10).nullable().default(12).nonNullable();
+		const obj = pgNumeric(10).nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgNumeric>();
 	});
 
@@ -226,9 +226,9 @@ describe("numeric column with precision", () => {
 	testMetaValue(pgNumeric(10), "isNullable", true);
 	testMetaValue(pgNumeric(10), "renameFrom", null);
 	testMetaValue(pgNumeric(10).renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgNumeric(10).default(12), "defaultValue", 12);
+	testMetaValue(pgNumeric(10).defaultTo(12), "defaultValue", 12);
 	testMetaValue(pgNumeric(10).nullable(), "isNullable", true);
-	testMetaValue(pgNumeric(10).nonNullable(), "isNullable", false);
+	testMetaValue(pgNumeric(10).notNull(), "isNullable", false);
 	testMetaValue(pgNumeric(10), "primaryKey", null);
 	testMetaValue(pgNumeric(10).primaryKey(), "primaryKey", true);
 });
@@ -240,14 +240,14 @@ describe("numeric column with precision and scale", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgNumeric(10, 10).nullable().default(12).nonNullable();
+		const obj = pgNumeric(10, 10).nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgNumeric>();
 	});
 
 	test("argument for default is number", () => {
 		const obj = pgNumeric();
 		const expect: Expect<
-			Equal<string | number | bigint, Parameters<typeof obj.default>[0]>
+			Equal<string | number | bigint, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -261,9 +261,9 @@ describe("numeric column with precision and scale", () => {
 		"renameFrom",
 		"test_col",
 	);
-	testMetaValue(pgNumeric(10, 4).default(12), "defaultValue", 12);
+	testMetaValue(pgNumeric(10, 4).defaultTo(12), "defaultValue", 12);
 	testMetaValue(pgNumeric(10, 4).nullable(), "isNullable", true);
-	testMetaValue(pgNumeric(10, 4).nonNullable(), "isNullable", false);
+	testMetaValue(pgNumeric(10, 4).notNull(), "isNullable", false);
 	testMetaValue(pgNumeric(10, 4), "primaryKey", null);
 	testMetaValue(pgNumeric(10, 4).primaryKey(), "primaryKey", true);
 });
@@ -275,14 +275,14 @@ describe("pgBigInt column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgBigInt().nullable().default(12).nonNullable();
+		const obj = pgBigInt().nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgBigInt>();
 	});
 
 	test("argument for default is string or number or bigint", () => {
 		const obj = pgBigInt();
 		const expect: Expect<
-			Equal<number | string | bigint, Parameters<typeof obj.default>[0]>
+			Equal<number | string | bigint, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -294,9 +294,9 @@ describe("pgBigInt column", () => {
 	testMetaValue(pgBigInt(), "isNullable", true);
 	testMetaValue(pgBigInt(), "renameFrom", null);
 	testMetaValue(pgBigInt().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgBigInt().default(12), "defaultValue", 12);
+	testMetaValue(pgBigInt().defaultTo(12), "defaultValue", 12);
 	testMetaValue(pgBigInt().nullable(), "isNullable", true);
-	testMetaValue(pgBigInt().nonNullable(), "isNullable", false);
+	testMetaValue(pgBigInt().notNull(), "isNullable", false);
 	testMetaValue(pgBigInt(), "primaryKey", null);
 	testMetaValue(pgBigInt().primaryKey(), "primaryKey", true);
 });
@@ -308,13 +308,13 @@ describe("pgBigSerial column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgBigSerial().nullable().nonNullable();
+		const obj = pgBigSerial().nullable().notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgBigSerial>();
 	});
 
 	test("does not have a default method", () => {
 		const obj = pgBigSerial();
-		expect((obj as pgBigSerial).default).toBeUndefined();
+		expect((obj as pgBigSerial).defaultTo).toBeUndefined();
 	});
 
 	testMetaValue(pgBigSerial(), "dataType", "bigserial");
@@ -325,7 +325,7 @@ describe("pgBigSerial column", () => {
 	testMetaValue(pgBigSerial(), "renameFrom", null);
 	testMetaValue(pgBigSerial().renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(pgBigSerial().nullable(), "isNullable", true);
-	testMetaValue(pgBigSerial().nonNullable(), "isNullable", false);
+	testMetaValue(pgBigSerial().notNull(), "isNullable", false);
 	testMetaValue(pgBigSerial(), "primaryKey", null);
 	testMetaValue(pgBigSerial().primaryKey(), "primaryKey", true);
 });
@@ -337,7 +337,7 @@ describe("pgBytea column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgBytea().nullable().default(Buffer.from("1")).nonNullable();
+		const obj = pgBytea().nullable().defaultTo(Buffer.from("1")).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgBytea>();
 	});
 
@@ -346,7 +346,7 @@ describe("pgBytea column", () => {
 		const expect: Expect<
 			Equal<
 				Buffer | string | boolean | number | NestedRecord,
-				Parameters<typeof obj.default>[0]
+				Parameters<typeof obj.defaultTo>[0]
 			>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
@@ -358,13 +358,13 @@ describe("pgBytea column", () => {
 	testMetaValue(pgBytea(), "renameFrom", null);
 	testMetaValue(pgBytea().renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(
-		pgBytea().default(Buffer.from("12")),
+		pgBytea().defaultTo(Buffer.from("12")),
 		"defaultValue",
 		Buffer.from("12"),
 		true,
 	);
 	testMetaValue(pgBytea().nullable(), "isNullable", true);
-	testMetaValue(pgBytea().nonNullable(), "isNullable", false);
+	testMetaValue(pgBytea().notNull(), "isNullable", false);
 	testMetaValue(pgBytea(), "primaryKey", null);
 	testMetaValue(pgBytea().primaryKey(), "primaryKey", true);
 });
@@ -376,14 +376,14 @@ describe("pgDate column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgDate().nullable().default(new Date(1)).nonNullable();
+		const obj = pgDate().nullable().defaultTo(new Date(1)).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgDate>();
 	});
 
 	test("argument for default is date", () => {
 		const obj = pgDate();
 		const expect: Expect<
-			Equal<string | Date, Parameters<typeof obj.default>[0]>
+			Equal<string | Date, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -394,13 +394,13 @@ describe("pgDate column", () => {
 	testMetaValue(pgDate(), "renameFrom", null);
 	testMetaValue(pgDate().renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(
-		pgDate().default(new Date(100)),
+		pgDate().defaultTo(new Date(100)),
 		"defaultValue",
 		new Date(100),
 		true,
 	);
 	testMetaValue(pgDate().nullable(), "isNullable", true);
-	testMetaValue(pgDate().nonNullable(), "isNullable", false);
+	testMetaValue(pgDate().notNull(), "isNullable", false);
 	testMetaValue(pgDate(), "primaryKey", null);
 	testMetaValue(pgDate().primaryKey(), "primaryKey", true);
 });
@@ -412,14 +412,14 @@ describe("pgDoublePrecision column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgDoublePrecision().nullable().default(12).nonNullable();
+		const obj = pgDoublePrecision().nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgDoublePrecision>();
 	});
 
 	test("argument for default is string or number or bigint", () => {
 		const obj = pgDoublePrecision();
 		const expect: Expect<
-			Equal<string | number | bigint, Parameters<typeof obj.default>[0]>
+			Equal<string | number | bigint, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -435,9 +435,9 @@ describe("pgDoublePrecision column", () => {
 		"renameFrom",
 		"test_col",
 	);
-	testMetaValue(pgDoublePrecision().default(12.1), "defaultValue", 12.1);
+	testMetaValue(pgDoublePrecision().defaultTo(12.1), "defaultValue", 12.1);
 	testMetaValue(pgDoublePrecision().nullable(), "isNullable", true);
-	testMetaValue(pgDoublePrecision().nonNullable(), "isNullable", false);
+	testMetaValue(pgDoublePrecision().notNull(), "isNullable", false);
 	testMetaValue(pgDoublePrecision(), "primaryKey", null);
 	testMetaValue(pgDoublePrecision().primaryKey(), "primaryKey", true);
 });
@@ -449,14 +449,14 @@ describe("pgFloat4 column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgFloat4().nullable().default(12).nonNullable();
+		const obj = pgFloat4().nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgFloat4>();
 	});
 
 	test("argument for default is string or number or bigint", () => {
 		const obj = pgFloat4();
 		const expect: Expect<
-			Equal<string | number | bigint, Parameters<typeof obj.default>[0]>
+			Equal<string | number | bigint, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -468,9 +468,9 @@ describe("pgFloat4 column", () => {
 	testMetaValue(pgFloat4(), "isNullable", true);
 	testMetaValue(pgFloat4(), "renameFrom", null);
 	testMetaValue(pgFloat4().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgFloat4().default(12.1), "defaultValue", 12.1);
+	testMetaValue(pgFloat4().defaultTo(12.1), "defaultValue", 12.1);
 	testMetaValue(pgFloat4().nullable(), "isNullable", true);
-	testMetaValue(pgFloat4().nonNullable(), "isNullable", false);
+	testMetaValue(pgFloat4().notNull(), "isNullable", false);
 	testMetaValue(pgFloat4(), "primaryKey", null);
 	testMetaValue(pgFloat4().primaryKey(), "primaryKey", true);
 });
@@ -482,14 +482,14 @@ describe("pgFloat8 column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgFloat8().nullable().default(12).nonNullable();
+		const obj = pgFloat8().nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgFloat8>();
 	});
 
 	test("argument for default is string or number or bigint", () => {
 		const obj = pgFloat8();
 		const expect: Expect<
-			Equal<string | number | bigint, Parameters<typeof obj.default>[0]>
+			Equal<string | number | bigint, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -501,9 +501,9 @@ describe("pgFloat8 column", () => {
 	testMetaValue(pgFloat8(), "isNullable", true);
 	testMetaValue(pgFloat8(), "renameFrom", null);
 	testMetaValue(pgFloat8().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgFloat8().default(12.1), "defaultValue", 12.1);
+	testMetaValue(pgFloat8().defaultTo(12.1), "defaultValue", 12.1);
 	testMetaValue(pgFloat8().nullable(), "isNullable", true);
-	testMetaValue(pgFloat8().nonNullable(), "isNullable", false);
+	testMetaValue(pgFloat8().notNull(), "isNullable", false);
 	testMetaValue(pgFloat8(), "primaryKey", null);
 	testMetaValue(pgFloat8().primaryKey(), "primaryKey", true);
 });
@@ -515,14 +515,14 @@ describe("pgInt2 column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgInt2().nullable().default(12).nonNullable();
+		const obj = pgInt2().nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgInt2>();
 	});
 
 	test("argument for default is string or number or bigint", () => {
 		const obj = pgInt2();
 		const expect: Expect<
-			Equal<number | string, Parameters<typeof obj.default>[0]>
+			Equal<number | string, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -534,9 +534,9 @@ describe("pgInt2 column", () => {
 	testMetaValue(pgInt2(), "isNullable", true);
 	testMetaValue(pgInt2(), "renameFrom", null);
 	testMetaValue(pgInt2().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgInt2().default(12), "defaultValue", 12);
+	testMetaValue(pgInt2().defaultTo(12), "defaultValue", 12);
 	testMetaValue(pgInt2().nullable(), "isNullable", true);
-	testMetaValue(pgInt2().nonNullable(), "isNullable", false);
+	testMetaValue(pgInt2().notNull(), "isNullable", false);
 	testMetaValue(pgInt2(), "primaryKey", null);
 	testMetaValue(pgInt2().primaryKey(), "primaryKey", true);
 });
@@ -548,14 +548,14 @@ describe("pgInt4 column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgInt4().nullable().default(12).nonNullable();
+		const obj = pgInt4().nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgInt4>();
 	});
 
 	test("argument for default is string or number or bigint", () => {
 		const obj = pgInt4();
 		const expect: Expect<
-			Equal<number | string, Parameters<typeof obj.default>[0]>
+			Equal<number | string, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -567,9 +567,9 @@ describe("pgInt4 column", () => {
 	testMetaValue(pgInt4(), "isNullable", true);
 	testMetaValue(pgInt4(), "renameFrom", null);
 	testMetaValue(pgInt4().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgInt4().default(12), "defaultValue", 12);
+	testMetaValue(pgInt4().defaultTo(12), "defaultValue", 12);
 	testMetaValue(pgInt4().nullable(), "isNullable", true);
-	testMetaValue(pgInt4().nonNullable(), "isNullable", false);
+	testMetaValue(pgInt4().notNull(), "isNullable", false);
 	testMetaValue(pgInt4(), "primaryKey", null);
 	testMetaValue(pgInt4().primaryKey(), "primaryKey", true);
 });
@@ -581,14 +581,14 @@ describe("pgInt8 column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgInt8().nullable().default(12).nonNullable();
+		const obj = pgInt8().nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgInt8>();
 	});
 
 	test("argument for default is string or number or bigint", () => {
 		const obj = pgInt8();
 		const expect: Expect<
-			Equal<number | string | bigint, Parameters<typeof obj.default>[0]>
+			Equal<number | string | bigint, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -600,9 +600,9 @@ describe("pgInt8 column", () => {
 	testMetaValue(pgInt8(), "isNullable", true);
 	testMetaValue(pgInt8(), "renameFrom", null);
 	testMetaValue(pgInt8().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgInt8().default(12), "defaultValue", 12);
+	testMetaValue(pgInt8().defaultTo(12), "defaultValue", 12);
 	testMetaValue(pgInt8().nullable(), "isNullable", true);
-	testMetaValue(pgInt8().nonNullable(), "isNullable", false);
+	testMetaValue(pgInt8().notNull(), "isNullable", false);
 	testMetaValue(pgInt8(), "primaryKey", null);
 	testMetaValue(pgInt8().primaryKey(), "primaryKey", true);
 });
@@ -614,14 +614,14 @@ describe("pgInteger column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgInteger().nullable().default(12).nonNullable();
+		const obj = pgInteger().nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgInteger>();
 	});
 
 	test("argument for default is string or number", () => {
 		const obj = pgInteger();
 		const expect: Expect<
-			Equal<number | string, Parameters<typeof obj.default>[0]>
+			Equal<number | string, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -633,9 +633,9 @@ describe("pgInteger column", () => {
 	testMetaValue(pgInteger(), "isNullable", true);
 	testMetaValue(pgInteger(), "renameFrom", null);
 	testMetaValue(pgInteger().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgInteger().default(12), "defaultValue", 12);
+	testMetaValue(pgInteger().defaultTo(12), "defaultValue", 12);
 	testMetaValue(pgInteger().nullable(), "isNullable", true);
-	testMetaValue(pgInteger().nonNullable(), "isNullable", false);
+	testMetaValue(pgInteger().notNull(), "isNullable", false);
 	testMetaValue(pgInteger(), "primaryKey", null);
 	testMetaValue(pgInteger().primaryKey(), "primaryKey", true);
 });
@@ -647,13 +647,13 @@ describe("pgJson column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgJson().nullable().default("12").nonNullable();
+		const obj = pgJson().nullable().defaultTo("12").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgJson>();
 	});
 
 	test("argument for default is string, number, or boolean", () => {
 		const obj = pgJson();
-		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
+		const expect: Expect<Equal<string, Parameters<typeof obj.defaultTo>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -663,9 +663,9 @@ describe("pgJson column", () => {
 	testMetaValue(pgJson(), "isNullable", true);
 	testMetaValue(pgJson(), "renameFrom", null);
 	testMetaValue(pgJson().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgJson().default("12"), "defaultValue", "12");
+	testMetaValue(pgJson().defaultTo("12"), "defaultValue", "12");
 	testMetaValue(pgJson().nullable(), "isNullable", true);
-	testMetaValue(pgJson().nonNullable(), "isNullable", false);
+	testMetaValue(pgJson().notNull(), "isNullable", false);
 	testMetaValue(pgJson(), "primaryKey", null);
 	testMetaValue(pgJson().primaryKey(), "primaryKey", true);
 });
@@ -677,13 +677,13 @@ describe("pgJsonB column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgJsonB().nullable().default("12").nonNullable();
+		const obj = pgJsonB().nullable().defaultTo("12").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgJsonB>();
 	});
 
 	test("argument for default is string, number, or boolean", () => {
 		const obj = pgJsonB();
-		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
+		const expect: Expect<Equal<string, Parameters<typeof obj.defaultTo>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -693,9 +693,9 @@ describe("pgJsonB column", () => {
 	testMetaValue(pgJsonB(), "isNullable", true);
 	testMetaValue(pgJsonB(), "renameFrom", null);
 	testMetaValue(pgJsonB().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgJsonB().default("12"), "defaultValue", "12");
+	testMetaValue(pgJsonB().defaultTo("12"), "defaultValue", "12");
 	testMetaValue(pgJsonB().nullable(), "isNullable", true);
-	testMetaValue(pgJsonB().nonNullable(), "isNullable", false);
+	testMetaValue(pgJsonB().notNull(), "isNullable", false);
 	testMetaValue(pgJsonB(), "primaryKey", null);
 	testMetaValue(pgJsonB().primaryKey(), "primaryKey", true);
 });
@@ -707,14 +707,14 @@ describe("pgReal column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgReal().nullable().default(12).nonNullable();
+		const obj = pgReal().nullable().defaultTo(12).notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgReal>();
 	});
 
 	test("argument for default is string or number or bigint", () => {
 		const obj = pgReal();
 		const expect: Expect<
-			Equal<string | number | bigint, Parameters<typeof obj.default>[0]>
+			Equal<string | number | bigint, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -726,9 +726,9 @@ describe("pgReal column", () => {
 	testMetaValue(pgReal(), "isNullable", true);
 	testMetaValue(pgReal(), "renameFrom", null);
 	testMetaValue(pgReal().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgReal().default(12), "defaultValue", 12);
+	testMetaValue(pgReal().defaultTo(12), "defaultValue", 12);
 	testMetaValue(pgReal().nullable(), "isNullable", true);
-	testMetaValue(pgReal().nonNullable(), "isNullable", false);
+	testMetaValue(pgReal().notNull(), "isNullable", false);
 	testMetaValue(pgReal(), "primaryKey", null);
 	testMetaValue(pgReal().primaryKey(), "primaryKey", true);
 });
@@ -740,7 +740,7 @@ describe("pgSerial column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgSerial().nullable().nonNullable();
+		const obj = pgSerial().nullable().notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgSerial>();
 	});
 
@@ -758,7 +758,7 @@ describe("pgSerial column", () => {
 	testMetaValue(pgSerial(), "renameFrom", null);
 	testMetaValue(pgSerial().renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(pgSerial().nullable(), "isNullable", true);
-	testMetaValue(pgSerial().nonNullable(), "isNullable", false);
+	testMetaValue(pgSerial().notNull(), "isNullable", false);
 	testMetaValue(pgSerial(), "primaryKey", null);
 	testMetaValue(pgSerial().primaryKey(), "primaryKey", true);
 });
@@ -770,13 +770,13 @@ describe("pgTime", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgTime().nullable().default("string").nonNullable();
+		const obj = pgTime().nullable().defaultTo("string").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgTime>();
 	});
 
 	test("argument for default is date", () => {
 		const obj = pgTime();
-		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
+		const expect: Expect<Equal<string, Parameters<typeof obj.defaultTo>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -787,9 +787,9 @@ describe("pgTime", () => {
 	testMetaValue(pgTime(), "datetimePrecision", null);
 	testMetaValue(pgTime(), "renameFrom", null);
 	testMetaValue(pgTime().renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgTime().default("05:24:11"), "defaultValue", "05:24:11");
+	testMetaValue(pgTime().defaultTo("05:24:11"), "defaultValue", "05:24:11");
 	testMetaValue(pgTime().nullable(), "isNullable", true);
-	testMetaValue(pgTime().nonNullable(), "isNullable", false);
+	testMetaValue(pgTime().notNull(), "isNullable", false);
 	testMetaValue(pgTime(), "primaryKey", null);
 	testMetaValue(pgTime().primaryKey(), "primaryKey", true);
 });
@@ -801,13 +801,13 @@ describe("pgTime with date time precision", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgTime(1).nullable().default("string").nonNullable();
+		const obj = pgTime(1).nullable().defaultTo("string").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgTime>();
 	});
 
 	test("argument for default is date", () => {
 		const obj = pgTime(1);
-		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
+		const expect: Expect<Equal<string, Parameters<typeof obj.defaultTo>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -818,9 +818,9 @@ describe("pgTime with date time precision", () => {
 	testMetaValue(pgTime(2), "datetimePrecision", 2);
 	testMetaValue(pgTime(1), "renameFrom", null);
 	testMetaValue(pgTime(1).renameFrom("test_col"), "renameFrom", "test_col");
-	testMetaValue(pgTime(1).default("05:24:11"), "defaultValue", "05:24:11");
+	testMetaValue(pgTime(1).defaultTo("05:24:11"), "defaultValue", "05:24:11");
 	testMetaValue(pgTime(1).nullable(), "isNullable", true);
-	testMetaValue(pgTime(1).nonNullable(), "isNullable", false);
+	testMetaValue(pgTime(1).notNull(), "isNullable", false);
 	testMetaValue(pgTime(1), "primaryKey", null);
 	testMetaValue(pgTime(1).primaryKey(), "primaryKey", true);
 });
@@ -832,14 +832,14 @@ describe("pgTimestamp", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgTimestamp().nullable().default("string").nonNullable();
+		const obj = pgTimestamp().nullable().defaultTo("string").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgTimestamp>();
 	});
 
 	test("argument for default is date", () => {
 		const obj = pgTimestamp();
 		const expect: Expect<
-			Equal<string | Date, Parameters<typeof obj.default>[0]>
+			Equal<string | Date, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -851,12 +851,12 @@ describe("pgTimestamp", () => {
 	testMetaValue(pgTimestamp(), "renameFrom", null);
 	testMetaValue(pgTimestamp().renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(
-		pgTimestamp().default("1999-01-08 04:05:06"),
+		pgTimestamp().defaultTo("1999-01-08 04:05:06"),
 		"defaultValue",
 		"1999-01-08 04:05:06",
 	);
 	testMetaValue(pgTimestamp().nullable(), "isNullable", true);
-	testMetaValue(pgTimestamp().nonNullable(), "isNullable", false);
+	testMetaValue(pgTimestamp().notNull(), "isNullable", false);
 	testMetaValue(pgTimestamp(), "primaryKey", null);
 	testMetaValue(pgTimestamp().primaryKey(), "primaryKey", true);
 });
@@ -868,14 +868,14 @@ describe("pgTimestamp with date time precision", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgTimestamp(1).nullable().default("string").nonNullable();
+		const obj = pgTimestamp(1).nullable().defaultTo("string").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgTimestamp>();
 	});
 
 	test("argument for default is date", () => {
 		const obj = pgTimestamp(1);
 		const expect: Expect<
-			Equal<string | Date, Parameters<typeof obj.default>[0]>
+			Equal<string | Date, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -891,12 +891,12 @@ describe("pgTimestamp with date time precision", () => {
 		"test_col",
 	);
 	testMetaValue(
-		pgTimestamp(2).default("1999-01-08 04:05:06"),
+		pgTimestamp(2).defaultTo("1999-01-08 04:05:06"),
 		"defaultValue",
 		"1999-01-08 04:05:06",
 	);
 	testMetaValue(pgTimestamp(2).nullable(), "isNullable", true);
-	testMetaValue(pgTimestamp(2).nonNullable(), "isNullable", false);
+	testMetaValue(pgTimestamp(2).notNull(), "isNullable", false);
 	testMetaValue(pgTimestamp(2), "primaryKey", null);
 	testMetaValue(pgTimestamp(2).primaryKey(), "primaryKey", true);
 });
@@ -908,14 +908,14 @@ describe("pgTimestampTz", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgTimestampTz().nullable().default("string").nonNullable();
+		const obj = pgTimestampTz().nullable().defaultTo("string").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgTimestampTz>();
 	});
 
 	test("argument for default is date", () => {
 		const obj = pgTimestampTz();
 		const expect: Expect<
-			Equal<string | Date, Parameters<typeof obj.default>[0]>
+			Equal<string | Date, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -931,12 +931,12 @@ describe("pgTimestampTz", () => {
 		"test_col",
 	);
 	testMetaValue(
-		pgTimestampTz().default("1999-01-08 04:05:06 -8:00"),
+		pgTimestampTz().defaultTo("1999-01-08 04:05:06 -8:00"),
 		"defaultValue",
 		"1999-01-08 04:05:06 -8:00",
 	);
 	testMetaValue(pgTimestampTz().nullable(), "isNullable", true);
-	testMetaValue(pgTimestampTz().nonNullable(), "isNullable", false);
+	testMetaValue(pgTimestampTz().notNull(), "isNullable", false);
 	testMetaValue(pgTimestampTz(), "primaryKey", null);
 	testMetaValue(pgTimestampTz().primaryKey(), "primaryKey", true);
 });
@@ -948,14 +948,14 @@ describe("pgTimestampTz with date time precision", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgTimestampTz(1).nullable().default("string").nonNullable();
+		const obj = pgTimestampTz(1).nullable().defaultTo("string").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgTimestampTz>();
 	});
 
 	test("argument for default is date", () => {
 		const obj = pgTimestampTz(1);
 		const expect: Expect<
-			Equal<string | Date, Parameters<typeof obj.default>[0]>
+			Equal<string | Date, Parameters<typeof obj.defaultTo>[0]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -971,12 +971,12 @@ describe("pgTimestampTz with date time precision", () => {
 		"test_col",
 	);
 	testMetaValue(
-		pgTimestampTz(2).default("1999-01-08 04:05:06 -8:00"),
+		pgTimestampTz(2).defaultTo("1999-01-08 04:05:06 -8:00"),
 		"defaultValue",
 		"1999-01-08 04:05:06 -8:00",
 	);
 	testMetaValue(pgTimestampTz(1).nullable(), "isNullable", true);
-	testMetaValue(pgTimestampTz(2).nonNullable(), "isNullable", false);
+	testMetaValue(pgTimestampTz(2).notNull(), "isNullable", false);
 	testMetaValue(pgTimestampTz(1), "primaryKey", null);
 	testMetaValue(pgTimestampTz(1).primaryKey(), "primaryKey", true);
 });
@@ -988,13 +988,13 @@ describe("pgTimeTz", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgTimeTz().nullable().default("string").nonNullable();
+		const obj = pgTimeTz().nullable().defaultTo("string").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgTimeTz>();
 	});
 
 	test("argument for default is date", () => {
 		const obj = pgTimeTz();
-		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
+		const expect: Expect<Equal<string, Parameters<typeof obj.defaultTo>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -1006,12 +1006,12 @@ describe("pgTimeTz", () => {
 	testMetaValue(pgTimeTz(), "renameFrom", null);
 	testMetaValue(pgTimeTz().renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(
-		pgTimeTz().default("04:05-08:00"),
+		pgTimeTz().defaultTo("04:05-08:00"),
 		"defaultValue",
 		"04:05-08:00",
 	);
 	testMetaValue(pgTimeTz().nullable(), "isNullable", true);
-	testMetaValue(pgTimeTz().nonNullable(), "isNullable", false);
+	testMetaValue(pgTimeTz().notNull(), "isNullable", false);
 	testMetaValue(pgTimeTz(), "primaryKey", null);
 	testMetaValue(pgTimeTz().primaryKey(), "primaryKey", true);
 });
@@ -1023,13 +1023,13 @@ describe("pgTimeTz with date time precision", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgTimeTz(1).nullable().default("string").nonNullable();
+		const obj = pgTimeTz(1).nullable().defaultTo("string").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgTimeTz>();
 	});
 
 	test("argument for default is date", () => {
 		const obj = pgTimeTz(1);
-		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
+		const expect: Expect<Equal<string, Parameters<typeof obj.defaultTo>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -1041,12 +1041,12 @@ describe("pgTimeTz with date time precision", () => {
 	testMetaValue(pgTimeTz(2), "renameFrom", null);
 	testMetaValue(pgTimeTz(2).renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(
-		pgTimeTz(2).default("04:05-08:00"),
+		pgTimeTz(2).defaultTo("04:05-08:00"),
 		"defaultValue",
 		"04:05-08:00",
 	);
 	testMetaValue(pgTimeTz(2).nullable(), "isNullable", true);
-	testMetaValue(pgTimeTz(2).nonNullable(), "isNullable", false);
+	testMetaValue(pgTimeTz(2).notNull(), "isNullable", false);
 	testMetaValue(pgTimeTz(2), "primaryKey", null);
 	testMetaValue(pgTimeTz(2).primaryKey(), "primaryKey", true);
 });
@@ -1058,13 +1058,13 @@ describe("pgUuid column", () => {
 	});
 
 	test("method chaining", () => {
-		const obj = pgUuid().nullable().default("23").nonNullable();
+		const obj = pgUuid().nullable().defaultTo("23").notNull();
 		expectTypeOf(obj).toMatchTypeOf<pgUuid>();
 	});
 
 	test("argument for default is string", () => {
 		const obj = pgUuid();
-		const expect: Expect<Equal<string, Parameters<typeof obj.default>[0]>> =
+		const expect: Expect<Equal<string, Parameters<typeof obj.defaultTo>[0]>> =
 			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -1075,12 +1075,12 @@ describe("pgUuid column", () => {
 	testMetaValue(pgUuid(), "renameFrom", null);
 	testMetaValue(pgUuid().renameFrom("test_col"), "renameFrom", "test_col");
 	testMetaValue(
-		pgUuid().default("e7c96606-3e2f-4762-b545-7424f7acd8a7"),
+		pgUuid().defaultTo("e7c96606-3e2f-4762-b545-7424f7acd8a7"),
 		"defaultValue",
 		"e7c96606-3e2f-4762-b545-7424f7acd8a7",
 	);
 	testMetaValue(pgUuid().nullable(), "isNullable", true);
-	testMetaValue(pgUuid().nonNullable(), "isNullable", false);
+	testMetaValue(pgUuid().notNull(), "isNullable", false);
 	testMetaValue(pgUuid(), "primaryKey", null);
 	testMetaValue(pgUuid().primaryKey(), "primaryKey", true);
 });

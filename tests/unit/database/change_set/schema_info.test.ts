@@ -34,8 +34,8 @@ test("#schemaTableInfo", () => {
 
 test("#schemaColumnInfo", () => {
 	const column = pgVarchar(100)
-		.nonNullable()
-		.default("foo")
+		.notNull()
+		.defaultTo("foo")
 		.renameFrom("old_column_name");
 	const expectedInfo = {
 		tableName: "foo",
@@ -59,14 +59,14 @@ test("#schemaDBTableInfo", () => {
 	const users = pgTable("users", {
 		columns: {
 			id: pgSerial(),
-			name: pgVarchar().nonNullable(),
-			email: pgVarchar().nonNullable(),
+			name: pgVarchar().notNull(),
+			email: pgVarchar().notNull(),
 		},
 	});
 	const teams = pgTable("teams", {
 		columns: {
 			id: pgBigSerial(),
-			name: pgVarchar().nonNullable(),
+			name: pgVarchar().notNull(),
 			active: pgBoolean(),
 		},
 	});
@@ -173,8 +173,8 @@ test("#schemaDBTableInfo", () => {
 	const users = pgTable("users", {
 		columns: {
 			id: pgSerial(),
-			name: pgVarchar().nonNullable(),
-			email: pgVarchar().nonNullable(),
+			name: pgVarchar().notNull(),
+			email: pgVarchar().notNull(),
 		},
 		indexes: [
 			pgIndex("users_name_idx", (idx) => idx),
@@ -184,7 +184,7 @@ test("#schemaDBTableInfo", () => {
 	const teams = pgTable("teams", {
 		columns: {
 			id: pgBigSerial(),
-			name: pgVarchar().nonNullable(),
+			name: pgVarchar().notNull(),
 			active: pgBoolean(),
 		},
 		indexes: [

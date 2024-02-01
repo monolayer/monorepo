@@ -13,8 +13,8 @@ export type ColumnBase<T, N extends string, S, I> = {
 	_selectType: S;
 	_insertType: I;
 	nullable: () => T & Nullable;
-	nonNullable: () => T & NonNullable;
-	default: (value: I) => T;
+	notNull: () => T & NonNullable;
+	defaultTo: (value: I) => T;
 	renameFrom: (value: string) => T;
 	primaryKey: () => T;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -62,7 +62,7 @@ export function addNullableConstraint<T extends PgColumn>(obj: T) {
 		},
 	});
 
-	Object.defineProperty(obj, "nonNullable", {
+	Object.defineProperty(obj, "notNull", {
 		writable: false,
 		value: () => {
 			const meta = columnMeta(obj);
@@ -73,7 +73,7 @@ export function addNullableConstraint<T extends PgColumn>(obj: T) {
 }
 
 export function addDefaultContraint<T>(obj: PgColumnWithDefault) {
-	Object.defineProperty(obj, "default", {
+	Object.defineProperty(obj, "defaultTo", {
 		writable: false,
 		value: (value: T) => {
 			const meta = columnMeta<T>(obj);
@@ -147,7 +147,7 @@ export function initColumnCommon<T extends PgColumnWithDefault>(
 		Omit<Partial<ColumnMeta<T>>, "dataType">,
 ) {
 	defineColumnCommon(obj);
-	addDefaultContraint<Parameters<T["default"]>[0]>(obj);
+	addDefaultContraint<Parameters<T["defaultTo"]>[0]>(obj);
 	defineMetaInfo(obj, {
 		dataType: options.dataType,
 		isNullable: options.isNullable ?? true,

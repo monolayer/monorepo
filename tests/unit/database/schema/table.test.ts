@@ -34,9 +34,9 @@ describe("pgTable definition", () => {
 
 	test("inferSelect column types", () => {
 		const columns = {
-			name: pgVarchar().nonNullable(),
+			name: pgVarchar().notNull(),
 			subscribed: pgBoolean(),
-			email: pgText().nonNullable().nullable(),
+			email: pgText().notNull().nullable(),
 			subscribers: pgInt4(),
 		};
 		const table = pgTable("users", {
@@ -55,9 +55,9 @@ describe("pgTable definition", () => {
 
 	test("inferInsert column types", () => {
 		const columns = {
-			id: pgBigSerial().nonNullable(),
-			name: pgVarchar().nonNullable(),
-			email: pgText().nonNullable().nullable(),
+			id: pgBigSerial().notNull(),
+			name: pgVarchar().notNull(),
+			email: pgText().notNull().nullable(),
 			subscribers: pgInt4(),
 		};
 		const table = pgTable("users", {
