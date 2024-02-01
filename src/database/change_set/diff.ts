@@ -151,7 +151,10 @@ export function indexDiff(local: LocalTableInfo, db: DbTableInfo) {
 	return diff(dbEn || {}, localEnt || {});
 }
 
-function normalizeEntries(local: Record<string, pgIndex[]>, db: IndexInfo) {
+export function normalizeEntries(
+	local: Record<string, pgIndex[]>,
+	db: IndexInfo,
+) {
 	const dbEntries = normalizeDbIndexEntries(db);
 	const dbTables = Object.keys(dbEntries);
 	const localEntries = normalizeLocalIndexEntries(local);

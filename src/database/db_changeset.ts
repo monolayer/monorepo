@@ -1,3 +1,4 @@
+import diff from "microdiff";
 import { ColumnInfo } from "~/database/change_set/info.js";
 import {
 	ColumnChangeDifference,
@@ -25,47 +26,19 @@ export enum ChangeSetType {
 	DropIndex = "dropIndex",
 }
 
-type CreateTableChangeSet = {
+export type Changeset = {
 	tableName: string;
-	type: ChangeSetType.CreateTable;
-	up: string[];
-	down: string[];
-};
-
-type DropTableChangeSet = {
-	tableName: string;
-	type: ChangeSetType.DropTable;
-	up: string[];
-	down: string[];
-};
-
-type ChangeTableChangeSet = {
-	tableName: string;
-	type: ChangeSetType.ChangeTable;
-	up: string[];
-	down: string[];
-};
-
-type CreateIndexChangeSet = {
-	tableName: string;
-	type: ChangeSetType.CreateIndex;
-	up: string[];
-	down: string[];
-};
-
-type DropIndexChangeSet = {
-	tableName: string;
-	type: ChangeSetType.DropIndex;
+	type: ChangeSetType;
 	up: string[];
 	down: string[];
 };
 
 export type TableChangeSet = {
-	columns?: CreateTableChangeSet | DropTableChangeSet | ChangeTableChangeSet;
-	indexes: (CreateIndexChangeSet | DropIndexChangeSet)[];
+	columns?: Changeset;
+	indexes: Changeset[];
 };
 
-export type ChangeSet = Record<string, TableChangeSet>;
+export type DbChangeset = Record<string, TableChangeSet>;
 
 export function dbChangeset(local: LocalTableInfo, db: DbTableInfo) {
 	const columnDiff = dbDiff(local, db);
@@ -78,24 +51,24 @@ export function dbChangeset(local: LocalTableInfo, db: DbTableInfo) {
 	const tablesNames = Object.keys(tableChangeset) as Array<
 		keyof typeof tableChangeset
 	>;
-	const filtered = [...indexDiff.removed, ...indexDiff.added].reduce<ChangeSet>(
-		(acc, changeset) => {
-			if (!tablesNames.includes(changeset.tableName)) {
-				let current = acc[changeset.tableName];
-				if (current === undefined) {
-					current = {
-						columns: undefined,
-						indexes: [changeset],
-					};
-				} else {
-					current.indexes.push(changeset);
-				}
-				acc[changeset.tableName] = current;
+	const filtered = [
+		...indexDiff.removed,
+		...indexDiff.added,
+	].reduce<DbChangeset>((acc, changeset) => {
+		if (!tablesNames.includes(changeset.tableName)) {
+			let current = acc[changeset.tableName];
+			if (current === undefined) {
+				current = {
+					columns: undefined,
+					indexes: [changeset],
+				};
+			} else {
+				current.indexes.push(changeset);
 			}
-			return acc;
-		},
-		{},
-	);
+			acc[changeset.tableName] = current;
+		}
+		return acc;
+	}, {});
 
 	return {
 		...tableChangeset,
@@ -106,11 +79,11 @@ export function dbChangeset(local: LocalTableInfo, db: DbTableInfo) {
 function tableDifferenceChangeset(
 	difference: (TableCreateDifference | TableDropDifference)[],
 	indexChangeSet: {
-		added: CreateIndexChangeSet[];
-		removed: DropIndexChangeSet[];
+		added: Changeset[];
+		removed: Changeset[];
 	},
 ) {
-	return difference.reduce<ChangeSet>((acc, tableDifference) => {
+	return difference.reduce<DbChangeset>((acc, tableDifference) => {
 		const tableName = tableDifference.path[0];
 
 		if (isTableCreateDifference(tableDifference)) {
@@ -137,7 +110,7 @@ function tableDifferenceChangeset(
 			};
 		}
 		return acc;
-	}, {} as ChangeSet);
+	}, {} as DbChangeset);
 }
 
 function columnDifferenceChangeset(
@@ -146,14 +119,14 @@ function columnDifferenceChangeset(
 		(ColumnCreateDifference | ColumnDropDifference | ColumnChangeDifference)[]
 	>,
 	indexChangeSet: {
-		added: CreateIndexChangeSet[];
-		removed: DropIndexChangeSet[];
+		added: Changeset[];
+		removed: Changeset[];
 	},
 ) {
-	return Object.entries(difference).reduce<ChangeSet>(
+	return Object.entries(difference).reduce<DbChangeset>(
 		(acc, [tableName, columnDifferences]) => {
 			const columnOps = columnOperations(columnDifferences);
-			const migrationOp: ChangeTableChangeSet = {
+			const migrationOp: Changeset = {
 				tableName: tableName,
 				type: ChangeSetType.ChangeTable,
 				up: [],
@@ -351,7 +324,7 @@ function tableIndexChangeset(
 					if (isIndexCreateifference(tdiff)) {
 						const tableName = tdiff.path[0];
 						const indexName = tdiff.path[1];
-						const changeSet: CreateIndexChangeSet = {
+						const changeSet: Changeset = {
 							tableName: tableName,
 							type: ChangeSetType.CreateIndex,
 							up: [`await sql\`${tdiff.value}\`.execute(db);`],
@@ -367,7 +340,7 @@ function tableIndexChangeset(
 						const indexName = tdiff.path[1];
 						const dbIndex = dbIndexes[tableName]?.[indexName];
 						if (dbIndex !== undefined) {
-							const changeSet: DropIndexChangeSet = {
+							const changeSet: Changeset = {
 								tableName: tableName,
 								type: ChangeSetType.DropIndex,
 								up: droppedTables.includes(tableName)
@@ -384,8 +357,8 @@ function tableIndexChangeset(
 			return acc;
 		},
 		{
-			added: [] as CreateIndexChangeSet[],
-			removed: [] as DropIndexChangeSet[],
+			added: [] as Changeset[],
+			removed: [] as Changeset[],
 		},
 	);
 }

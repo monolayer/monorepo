@@ -1,11 +1,14 @@
 import * as p from "@clack/prompts";
 import { exit } from "process";
 import { Config } from "~/config.js";
-import { ChangeSet } from "~/database/db_changeset.js";
+import { DbChangeset } from "~/database/db_changeset.js";
 import { generateMigrationFiles } from "~/database/migrations/generate.js";
 import { ActionStatus, throwableOperation } from "../command.js";
 
-export async function generateMigrations(changeset: ChangeSet, config: Config) {
+export async function generateMigrations(
+	changeset: DbChangeset,
+	config: Config,
+) {
 	const result = await throwableOperation<typeof generateMigrationFiles>(
 		async () => {
 			generateMigrationFiles(changeset, config.folder);

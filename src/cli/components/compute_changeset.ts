@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { TableColumnInfo, TableIndexInfo } from "~/database/change_set/diff.js";
 import { IndexInfo } from "~/database/change_set/info.js";
-import { ChangeSet, dbChangeset } from "~/database/db_changeset.js";
+import { DbChangeset, dbChangeset } from "~/database/db_changeset.js";
 import { OperationSuccess } from "../command.js";
 
 export async function computeChangeSet(
@@ -13,7 +13,7 @@ export async function computeChangeSet(
 		columns: OperationSuccess<TableColumnInfo>;
 		indexes: OperationSuccess<IndexInfo>;
 	},
-): Promise<ChangeSet> {
+): Promise<DbChangeset> {
 	const c = p.spinner();
 	c.start("Computing change set");
 	const changeset = dbChangeset(

@@ -1,6 +1,6 @@
 import path from "node:path";
 import nunjucks from "nunjucks";
-import { ChangeSet, TableChangeSet } from "~/database/db_changeset.js";
+import { DbChangeset, TableChangeSet } from "~/database/db_changeset.js";
 import { createFile } from "~/utils.js";
 
 const template = `import { Kysely, sql } from "kysely";
@@ -28,7 +28,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 }
 `;
 
-export function generateMigrationFiles(changeset: ChangeSet, folder: string) {
+export function generateMigrationFiles(changeset: DbChangeset, folder: string) {
 	const keys = Object.keys(changeset) as Array<keyof typeof changeset>;
 	for (const key of keys) {
 		const tableChange = changeset[key] as TableChangeSet;

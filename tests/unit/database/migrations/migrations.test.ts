@@ -4,7 +4,7 @@ import { Kysely } from "kysely";
 import pg from "pg";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { ChangeSet, ChangeSetType } from "~/database/db_changeset.js";
+import { ChangeSetType, DbChangeset } from "~/database/db_changeset.js";
 import { generateMigrationFiles } from "~/database/migrations/generate.js";
 import { globalKysely } from "~tests/setup.js";
 
@@ -38,7 +38,7 @@ describe("Migrator", () => {
 		});
 
 		test("#output files", (context: MigrationContext) => {
-			const changeset: ChangeSet = {
+			const changeset: DbChangeset = {
 				books: {
 					columns: {
 						tableName: "books",
