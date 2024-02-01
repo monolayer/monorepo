@@ -512,4 +512,322 @@ describe("#dbChangeset", () => {
 		};
 		expect(changeset).toStrictEqual(expected);
 	});
+
+	describe("foreign keys", () => {
+		test("on table creation", () => {
+			const changeset = dbChangeset(
+				{
+					columns: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "serial",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: "hello",
+							}),
+							book_id: columnInfoFactory({
+								tableName: "members",
+								columnName: "book_id",
+								dataType: "integer",
+								foreignKeyConstraint: {
+									table: "books",
+									column: "id",
+								},
+							}),
+						},
+					},
+					indexes: {},
+				},
+				{
+					columns: {},
+					indexes: {},
+				},
+			);
+			const expected = {
+				members: [
+					{
+						tableName: "members",
+						priority: 1,
+						type: "createTable",
+						up: [
+							"await db.schema",
+							'createTable("members")',
+							'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
+							'addColumn("book_id", "integer")',
+							'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"])',
+							"execute();",
+						],
+						down: ["await db.schema", 'dropTable("members")', "execute();"],
+					},
+				],
+				books: [
+					{
+						tableName: "books",
+						type: "createTable",
+						priority: 1,
+						up: [
+							"await db.schema",
+							'createTable("books")',
+							'addColumn("id", "serial", (col) => col.primaryKey())',
+							"execute();",
+						],
+						down: ["await db.schema", 'dropTable("books")', "execute();"],
+					},
+				],
+			};
+			expect(changeset).toStrictEqual(expected);
+		});
+		test("on column creation", () => {
+			const changeset = dbChangeset(
+				{
+					columns: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "serial",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: "hello",
+							}),
+							book_id: columnInfoFactory({
+								tableName: "members",
+								columnName: "book_id",
+								dataType: "integer",
+								foreignKeyConstraint: {
+									table: "books",
+									column: "id",
+								},
+							}),
+						},
+					},
+					indexes: {},
+				},
+				{
+					columns: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "serial",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: "hello",
+							}),
+						},
+					},
+					indexes: {},
+				},
+			);
+			const expected = {
+				members: [
+					{
+						tableName: "members",
+						priority: 2,
+						type: "createColumn",
+						up: [
+							"await db.schema",
+							'alterTable("members")',
+							'addColumn("book_id", "integer")',
+							'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"])',
+							"execute();",
+						],
+						down: [
+							"await db.schema",
+							'alterTable("members")',
+							'dropColumn("book_id")',
+							"execute();",
+						],
+					},
+				],
+			};
+			expect(changeset).toStrictEqual(expected);
+		});
+
+		test("on column change (add)", () => {
+			const changeset = dbChangeset(
+				{
+					columns: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "serial",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: "hello",
+							}),
+							book_id: columnInfoFactory({
+								tableName: "members",
+								columnName: "book_id",
+								dataType: "integer",
+								foreignKeyConstraint: {
+									table: "books",
+									column: "id",
+								},
+							}),
+						},
+					},
+					indexes: {},
+				},
+				{
+					columns: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "serial",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: "hello",
+							}),
+							book_id: columnInfoFactory({
+								tableName: "members",
+								columnName: "book_id",
+								dataType: "integer",
+							}),
+						},
+					},
+					indexes: {},
+				},
+			);
+			const expected = {
+				members: [
+					{
+						tableName: "members",
+						priority: 3.4,
+						type: "changeColumn",
+						up: [
+							"await db.schema",
+							'alterTable("members")',
+							'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"])',
+							"execute();",
+						],
+						down: [
+							"await db.schema",
+							'alterTable("members")',
+							'.dropConstraint("members_book_id_fkey")',
+							"execute();",
+						],
+					},
+				],
+			};
+			expect(changeset).toStrictEqual(expected);
+		});
+
+		test("on column change (remove)", () => {
+			const changeset = dbChangeset(
+				{
+					columns: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "serial",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: "hello",
+							}),
+							book_id: columnInfoFactory({
+								tableName: "members",
+								columnName: "book_id",
+								dataType: "integer",
+							}),
+						},
+					},
+					indexes: {},
+				},
+				{
+					columns: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "serial",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: "hello",
+							}),
+							book_id: columnInfoFactory({
+								tableName: "members",
+								columnName: "book_id",
+								dataType: "integer",
+								foreignKeyConstraint: {
+									table: "books",
+									column: "id",
+								},
+							}),
+						},
+					},
+					indexes: {},
+				},
+			);
+			const expected = {
+				members: [
+					{
+						tableName: "members",
+						priority: 3.41,
+						type: "changeColumn",
+						up: [
+							"await db.schema",
+							'alterTable("members")',
+							'.dropConstraint("members_book_id_fkey")',
+							"execute();",
+						],
+						down: [
+							"await db.schema",
+							'alterTable("members")',
+							'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"])',
+							"execute();",
+						],
+					},
+				],
+			};
+			expect(changeset).toStrictEqual(expected);
+		});
+	});
 });

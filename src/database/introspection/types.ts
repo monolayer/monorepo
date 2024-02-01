@@ -10,10 +10,12 @@ export type ColumnInfo = {
 	datetimePrecision: number | null;
 	renameFrom: string | null;
 	primaryKey: true | null;
-	foreignKeyConstraint: {
-		table: string;
-		column: string;
-	} | null;
+	foreignKeyConstraint: ForeIgnKeyConstraintInfo | null;
+};
+
+export type ForeIgnKeyConstraintInfo = {
+	table: string;
+	column: string;
 };
 
 export type IndexInfo = Record<string, Record<string, string>>;

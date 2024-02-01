@@ -21,6 +21,6 @@ export function columnInfoFactory(options: required & optional) {
 		characterMaximumLength: options.characterMaximumLength ?? null,
 		renameFrom: options.renameFrom ?? null,
 		primaryKey: options.primaryKey ?? null,
-		foreignKeyConstraint: null,
+		foreignKeyConstraint: options.foreignKeyConstraint ?? null,
 	};
 }

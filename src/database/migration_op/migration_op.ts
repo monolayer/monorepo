@@ -1,10 +1,15 @@
 import { Difference } from "microdiff";
 import { Changeset } from "../changeset.js";
 import {
+	ChangeColumnForeignConstraintAdd,
+	addColumnForeignKeyMigrationOperation,
 	changeColumnMigration,
 	createColumnMigration,
+	isAddForeignKeyConstraintValue,
 	isChangeColumn,
 	isCreateColumn,
+	isRemoveForeignKeyConstraintValue,
+	removeColumnForeignKeyMigrationOperation,
 } from "./column.js";
 import { dropColumnMigration, isDropColumn } from "./column.js";
 import { dropAllIndexesMigration, isDropAllIndexes } from "./index.js";
@@ -21,6 +26,8 @@ export enum MigrationOpPriority {
 	ChangeColumnBase = 3.1,
 	ChangeColumnPrimaryKeyDrop = 3.2,
 	ChangeColumnPrimaryKeyCreate = 3.3,
+	ChangeColumnForeignKeyCreate = 3.4,
+	ChangeColumnForeignKeyDrop = 3.41,
 	Index = 4,
 }
 
@@ -59,6 +66,10 @@ function migrationOp(
 	if (isCreateColumn(difference)) return createColumnMigration(difference);
 	if (isDropColumn(difference)) return dropColumnMigration(difference);
 	if (isChangeColumn(difference)) return changeColumnMigration(difference);
+	if (isAddForeignKeyConstraintValue(difference))
+		return addColumnForeignKeyMigrationOperation(difference);
+	if (isRemoveForeignKeyConstraintValue(difference))
+		return removeColumnForeignKeyMigrationOperation(difference);
 	if (isCreateIndex(difference))
 		return createIndexMigration(difference, addedTables);
 	if (isCreateFirstIndex(difference))
@@ -71,7 +82,7 @@ function migrationOp(
 }
 
 export function executeKyselySchemaStatement(...args: string[]) {
-	return ["await db.schema", ...args, "execute();"];
+	return ["await db.schema", ...args, "execute();"].filter((x) => x !== "");
 }
 
 export function executeKyselyDbStatement(ops: string[]) {
