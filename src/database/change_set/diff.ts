@@ -1,16 +1,13 @@
-import { Kysely, PostgresDialect } from "kysely";
 import diff, { Difference } from "microdiff";
-import pg from "pg";
 import { ColumnInfo, IndexInfo } from "~/database/change_set/info.js";
-import { indexMeta, pgIndex } from "../schema/indexes.js";
 
 export type ColumnsInfo = Record<string, ColumnInfo>;
 export type TableColumnInfo = Record<string, ColumnsInfo>;
-export type TableIndexInfo = Record<string, pgIndex[]>;
+export type TableIndexInfo = IndexInfo;
 
 export type LocalTableInfo = {
 	columns: TableColumnInfo;
-	indexes?: Record<string, pgIndex[]>;
+	indexes?: IndexInfo;
 };
 
 export type DbTableInfo = {
@@ -52,12 +49,23 @@ export type ColumnChangeDifference = {
 export type IndexRemoveDifference = {
 	type: "REMOVE";
 	path: [string, string];
+	oldValue: string;
+};
+
+export type IndexRemoveAllDifference = {
+	type: "REMOVE";
+	path: [string];
 	oldValue: Record<string, string>;
 };
 
 export type IndexCreateDifference = {
 	type: "CREATE";
 	path: [string, string];
+	value: string;
+};
+export type IndexCreateFirstDifference = {
+	type: "CREATE";
+	path: [string];
 	value: Record<string, string>;
 };
 
@@ -109,10 +117,22 @@ export function isIndexRemoveDifference(
 	return test.path.length === 2 && test.type === "REMOVE";
 }
 
-export function isIndexCreateifference(
+export function isIndexRemoveAllDifference(
+	test: Difference,
+): test is IndexRemoveAllDifference {
+	return test.path.length === 1 && test.type === "REMOVE";
+}
+
+export function isIndexCreateDifference(
 	test: Difference,
 ): test is IndexCreateDifference {
 	return test.path.length === 2 && test.type === "CREATE";
+}
+
+export function isIndexCreateFirstDifference(
+	test: Difference,
+): test is IndexCreateFirstDifference {
+	return test.path.length === 1 && test.type === "CREATE";
 }
 
 export function dbDiff(local: LocalTableInfo, db: DbTableInfo) {
@@ -147,71 +167,5 @@ export function dbDiff(local: LocalTableInfo, db: DbTableInfo) {
 export function indexDiff(local: LocalTableInfo, db: DbTableInfo) {
 	const localIndexes = local.indexes || {};
 	const dbIndexes = db.indexes || {};
-	const [dbEn, localEnt] = normalizeEntries(localIndexes, dbIndexes);
-	return diff(dbEn || {}, localEnt || {});
-}
-
-export function normalizeEntries(
-	local: Record<string, pgIndex[]>,
-	db: IndexInfo,
-) {
-	const dbEntries = normalizeDbIndexEntries(db);
-	const dbTables = Object.keys(dbEntries);
-	const localEntries = normalizeLocalIndexEntries(local);
-	const localTables = Object.keys(localEntries);
-	for (const tableName of dbTables) {
-		localEntries[tableName] = {
-			...(localEntries[tableName] || {}),
-		};
-	}
-	for (const tableName of localTables) {
-		dbEntries[tableName] = {
-			...(dbEntries[tableName] || {}),
-		};
-	}
-	return [dbEntries, localEntries];
-}
-
-function normalizeLocalIndexEntries(local: Record<string, pgIndex[]>) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	const kysely = new Kysely<any>({
-		dialect: new PostgresDialect({
-			pool: new pg.Pool({}),
-		}),
-	});
-
-	return Object.entries(local).reduce(
-		(acc, [tableName, indexes]) => {
-			for (const index of indexes) {
-				const meta = indexMeta(index as pgIndex);
-
-				const compiledQuery = meta
-					.builder(kysely.schema.createIndex(meta.name).on(tableName))
-					.compile().sql;
-
-				acc[tableName] = {
-					...acc[tableName],
-					...{ [index.name]: compiledQuery },
-				};
-			}
-			return acc;
-		},
-		{} as Record<string, Record<string, string>>,
-	);
-}
-
-function normalizeDbIndexEntries(db: IndexInfo) {
-	return Object.entries(db).reduce(
-		(acc, [tableName, indexes]) => {
-			const idx = Object.entries(indexes);
-			for (const index of idx) {
-				acc[tableName] = {
-					...acc[tableName],
-					...{ [index[0]]: index[1] },
-				};
-			}
-			return acc;
-		},
-		{} as Record<string, Record<string, string>>,
-	);
+	return diff(dbIndexes, localIndexes);
 }

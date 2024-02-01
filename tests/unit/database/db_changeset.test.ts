@@ -11,6 +11,7 @@ import {
 import { dbChangeset } from "~/database/db_changeset.js";
 import { pgIndex } from "~/database/schema/indexes.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
+import { compileIndex } from "~tests/helpers/indexes.js";
 
 type TableDiffContext = {
 	localSchema: TableColumnInfo;
@@ -323,16 +324,32 @@ describe("#dbChangeset", () => {
 					},
 				},
 				indexes: {
-					samples: [pgIndex("samples_name_idx", (idx) => idx.column("name"))],
-					books: [pgIndex("books_name_idx", (idx) => idx.column("name"))],
-					addresses: [
-						pgIndex("addresses_city_idx", (idx) =>
-							idx.column("city").using("btree").unique(),
+					samples: {
+						...compileIndex(
+							pgIndex("samples_name_idx", (idx) => idx.column("name")),
+							"samples",
 						),
-						pgIndex("addresses_city_and_country_idx", (idx) =>
-							idx.columns(["city", "country"]).using("btree").unique(),
+					},
+					books: {
+						...compileIndex(
+							pgIndex("books_name_idx", (idx) => idx.column("name")),
+							"books",
 						),
-					],
+					},
+					addresses: {
+						...compileIndex(
+							pgIndex("addresses_city_idx", (idx) =>
+								idx.column("city").using("btree").unique(),
+							),
+							"addresses",
+						),
+						...compileIndex(
+							pgIndex("addresses_city_and_country_idx", (idx) =>
+								idx.columns(["city", "country"]).using("btree").unique(),
+							),
+							"addresses",
+						),
+					},
 				},
 			},
 			{

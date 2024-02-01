@@ -1,4 +1,3 @@
-import diff from "microdiff";
 import { ColumnInfo } from "~/database/change_set/info.js";
 import {
 	ColumnChangeDifference,
@@ -12,7 +11,9 @@ import {
 	TableDropDifference,
 	dbDiff,
 	indexDiff,
-	isIndexCreateifference,
+	isIndexCreateDifference,
+	isIndexCreateFirstDifference,
+	isIndexRemoveAllDifference,
 	isIndexRemoveDifference,
 	isTableCreateDifference,
 	isTableDropDifference,
@@ -321,7 +322,7 @@ function tableIndexChangeset(
 		(acc, tdiff) => {
 			switch (tdiff.type) {
 				case "CREATE": {
-					if (isIndexCreateifference(tdiff)) {
+					if (isIndexCreateDifference(tdiff)) {
 						const tableName = tdiff.path[0];
 						const indexName = tdiff.path[1];
 						const changeSet: Changeset = {
@@ -332,13 +333,28 @@ function tableIndexChangeset(
 						};
 						acc.added.push(changeSet);
 					}
+					if (isIndexCreateFirstDifference(tdiff)) {
+						const tableName = tdiff.path[0];
+						const indexNames = Object.keys(tdiff.value) as Array<
+							keyof typeof tdiff.value
+						>;
+						for (const indexName of indexNames) {
+							const changeSet: Changeset = {
+								tableName: tableName,
+								type: ChangeSetType.CreateIndex,
+								up: [`await sql\`${tdiff.value[indexName]}\`.execute(db);`],
+								down: [`await db.schema.dropIndex("${indexName}").execute();`],
+							};
+							acc.added.push(changeSet);
+						}
+					}
 					break;
 				}
 				case "REMOVE": {
 					if (isIndexRemoveDifference(tdiff)) {
 						const tableName = tdiff.path[0] as keyof typeof dbIndexes;
 						const indexName = tdiff.path[1];
-						const dbIndex = dbIndexes[tableName]?.[indexName];
+						const dbIndex = tdiff.oldValue;
 						if (dbIndex !== undefined) {
 							const changeSet: Changeset = {
 								tableName: tableName,
@@ -347,6 +363,25 @@ function tableIndexChangeset(
 									? []
 									: [`await db.schema.dropIndex("${indexName}").execute();`],
 								down: [`await sql\`${dbIndex}\`.execute(db);`],
+							};
+							acc.removed.push(changeSet);
+						}
+					}
+					if (isIndexRemoveAllDifference(tdiff)) {
+						const tableName = tdiff.path[0] as keyof typeof dbIndexes;
+						const indexNames = Object.keys(tdiff.oldValue) as Array<
+							keyof typeof tdiff.oldValue
+						>;
+						for (const indexName of indexNames) {
+							const changeSet: Changeset = {
+								tableName: tableName,
+								type: ChangeSetType.DropIndex,
+								up: droppedTables.includes(tableName)
+									? []
+									: [`await db.schema.dropIndex("${indexName}").execute();`],
+								down: [
+									`await sql\`${tdiff.oldValue[indexName]}\`.execute(db);`,
+								],
 							};
 							acc.removed.push(changeSet);
 						}

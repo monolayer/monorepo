@@ -170,39 +170,40 @@ test("#schemaDBTableInfo", () => {
 });
 
 test("#schemaDBTableInfo", () => {
-	const userIndexes = [
-		pgIndex("users_name_idx", (idx) => idx),
-		pgIndex("users_email_idx", (idx) => idx),
-	];
 	const users = pgTable("users", {
 		columns: {
 			id: pgSerial(),
 			name: pgVarchar().nonNullable(),
 			email: pgVarchar().nonNullable(),
 		},
-		indexes: userIndexes,
+		indexes: [
+			pgIndex("users_name_idx", (idx) => idx),
+			pgIndex("users_email_idx", (idx) => idx),
+		],
 	});
-	const teamIndexes = [
-		pgIndex("teams_id_idx", (idx) => idx),
-		pgIndex("teams_active_idx", (idx) => idx),
-	];
 	const teams = pgTable("teams", {
 		columns: {
 			id: pgBigSerial(),
 			name: pgVarchar().nonNullable(),
 			active: pgBoolean(),
 		},
-		indexes: teamIndexes,
+		indexes: [
+			pgIndex("teams_id_idx", (idx) => idx),
+			pgIndex("teams_active_idx", (idx) => idx),
+		],
 	});
 	const database = pgDatabase({
 		users,
 		teams,
 	});
-	const expectedDbIndexInfoByTable = {
-		users: userIndexes,
-		teams: teamIndexes,
-	};
-	expect(schemaDBIndexInfoByTable(database)).toEqual(
-		expectedDbIndexInfoByTable,
-	);
+	expect(schemaDBIndexInfoByTable(database)).toStrictEqual({
+		teams: {
+			teams_active_idx: 'create index "teams_active_idx" on "teams"',
+			teams_id_idx: 'create index "teams_id_idx" on "teams"',
+		},
+		users: {
+			users_email_idx: 'create index "users_email_idx" on "users"',
+			users_name_idx: 'create index "users_name_idx" on "users"',
+		},
+	});
 });
