@@ -1,6 +1,6 @@
 import { Difference } from "microdiff";
-import { createColumnMigration, isCreateColumn } from "./column.js";
-import { dropColumnMigration, isDropColumn } from "./column.js";
+import { createColumnMigration, isCreateColumn } from "./column/create.js";
+import { dropColumnMigration, isDropColumn } from "./column/drop.js";
 import {
 	columnDatatypeMigrationOperation,
 	isColumnDataType,
@@ -23,12 +23,16 @@ import {
 	columnPrimaryKeyMigrationOperation,
 	isColumnPrimaryKey,
 } from "./column_change/primary_key.js";
-import { dropAllIndexesMigration, isDropAllIndexes } from "./index.js";
-import { createFirstIndexMigration, isCreateFirstIndex } from "./index.js";
-import { createIndexMigration, isCreateIndex } from "./index.js";
-import { dropIndexMigration, isDropIndex } from "./index.js";
-import { createTableMigration, isCreateTable } from "./table.js";
-import { dropTableMigration, isDropTable } from "./table.js";
+import { isCreateIndex } from "./index/create.js";
+import { createIndexMigration } from "./index/create.js";
+import { isCreateFirstIndex } from "./index/create_first.js";
+import { createFirstIndexMigration } from "./index/create_first.js";
+import { isDropIndex } from "./index/drop.js";
+import { dropIndexMigration } from "./index/drop.js";
+import { isDropAllIndexes } from "./index/drop_all.js";
+import { dropAllIndexesMigration } from "./index/drop_all.js";
+import { createTableMigration, isCreateTable } from "./table/create.js";
+import { dropTableMigration, isDropTable } from "./table/drop.js";
 
 export enum MigrationOpPriority {
 	Table = 1,
