@@ -1,12 +1,14 @@
-import diff from "microdiff";
+import microdiff from "microdiff";
 import { DbTableInfo, LocalTableInfo } from "./introspection/types.js";
-import { computeMigrationOps } from "./migration_op/compute.js";
+import { migrationOp } from "./migration_op/compute.js";
+import { isCreateTable } from "./migration_op/table/create.js";
+import { isDropTable } from "./migration_op/table/drop.js";
 
 export function dbChangeset(
 	local: LocalTableInfo,
 	db: DbTableInfo,
 ): Changeset[] {
-	const newDiff = diff(
+	const diff = microdiff(
 		{
 			table: db.columns,
 			index: db.indexes,
@@ -16,7 +18,12 @@ export function dbChangeset(
 			index: local.indexes,
 		},
 	);
-	return computeMigrationOps(newDiff);
+	const droppedTables = diff.filter(isDropTable).map((diff) => diff.path[1]);
+	const addedTables = diff.filter(isCreateTable).map((diff) => diff.path[1]);
+	const changeset = diff.flatMap((diff) =>
+		migrationOp(diff, addedTables, droppedTables),
+	);
+	return changeset.sort((a, b) => (a.priority || 1) - (b.priority || 1));
 }
 
 export type DbChangeset = Record<string, Changeset[]>;

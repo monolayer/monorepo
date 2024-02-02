@@ -23,14 +23,13 @@ import {
 	columnPrimaryKeyMigrationOperation,
 	isColumnPrimaryKey,
 } from "./column_change/primary_key.js";
-import { isCreateIndex } from "./index/create.js";
-import { createIndexMigration } from "./index/create.js";
-import { isCreateFirstIndex } from "./index/create_first.js";
-import { createFirstIndexMigration } from "./index/create_first.js";
-import { isDropIndex } from "./index/drop.js";
-import { dropIndexMigration } from "./index/drop.js";
-import { isDropAllIndexes } from "./index/drop_all.js";
-import { dropAllIndexesMigration } from "./index/drop_all.js";
+import { createIndexMigration, isCreateIndex } from "./index/create.js";
+import {
+	createFirstIndexMigration,
+	isCreateFirstIndex,
+} from "./index/create_first.js";
+import { dropIndexMigration, isDropIndex } from "./index/drop.js";
+import { dropAllIndexesMigration, isDropAllIndexes } from "./index/drop_all.js";
 import { createTableMigration, isCreateTable } from "./table/create.js";
 import { dropTableMigration, isDropTable } from "./table/drop.js";
 
@@ -46,20 +45,7 @@ export enum MigrationOpPriority {
 	Index = 4,
 }
 
-export function computeMigrationOps(differences: Difference[]) {
-	const droppedTables = differences
-		.filter(isDropTable)
-		.map((diff) => diff.path[1]);
-	const addedTables = differences
-		.filter(isCreateTable)
-		.map((diff) => diff.path[1]);
-	const changeset = differences.flatMap((diff) =>
-		migrationOp(diff, addedTables, droppedTables),
-	);
-	return changeset.sort((a, b) => (a.priority || 1) - (b.priority || 1));
-}
-
-function migrationOp(
+export function migrationOp(
 	difference: Difference,
 	addedTables: string[],
 	droppedTables: string[],
