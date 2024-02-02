@@ -3,7 +3,7 @@ import { Changeset, changeset } from "~/database/changeset.js";
 import { IndexInfo, TableColumnInfo } from "~/database/introspection/types.js";
 import { OperationSuccess } from "../command.js";
 
-export async function computeChangeSet(
+export async function computeChangeset(
 	localTableInfo: {
 		table: TableColumnInfo;
 		index: IndexInfo;

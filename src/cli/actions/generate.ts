@@ -4,7 +4,7 @@ import pg from "pg";
 import { importConfig } from "~/config.js";
 import { analyzeLocalSchema } from "../components/analyze_local_schema.js";
 import { analyzeRemoteSchema } from "../components/analyze_remote_schema.js";
-import { computeChangeSet } from "../components/compute_changeset.js";
+import { computeChangeset } from "../components/compute_changeset.js";
 import { generateMigrations } from "../components/generate_migrations.js";
 import { pendingMigrations } from "../components/pending_migrations.js";
 import { checkEnvironmentIsConfigured } from "../utils/clack.js";
@@ -30,7 +30,7 @@ export async function generate() {
 
 	const localInfo = await analyzeLocalSchema(config);
 	const remoteColumnInfo = await analyzeRemoteSchema(environmentConfig, kysely);
-	const changeset = await computeChangeSet(localInfo, remoteColumnInfo);
+	const changeset = await computeChangeset(localInfo, remoteColumnInfo);
 
 	await generateMigrations(changeset, config);
 
