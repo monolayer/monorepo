@@ -1,5 +1,4 @@
 import { CreateIndexBuilder } from "kysely";
-import { ColumnConstructor } from "~/database/schema/columns.js";
 
 export type IndexConstructor<T> = {
 	new (): T;
@@ -29,7 +28,7 @@ export function pgIndex(
 			writable: false,
 		});
 		return this;
-	} as ColumnConstructor<pgIndex>;
+	} as IndexConstructor<pgIndex>;
 	return new indexConstructor();
 }
 

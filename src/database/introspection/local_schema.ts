@@ -1,9 +1,9 @@
 import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
-import { PgColumn, columnMeta } from "~/database/schema/columns.js";
 import { pgDatabase } from "~/database/schema/database.js";
 import { TableSchema, pgTable } from "~/database/schema/table.js";
 import { indexMeta, pgIndex } from "../schema/indexes.js";
+import { PgColumnTypes } from "../schema/pg_column.js";
 import {
 	ColumnInfo,
 	ColumnsInfo,
@@ -21,9 +21,12 @@ export function schemaTableInfo(tables: pgTable<string, TableSchema>[]) {
 export function schemaColumnInfo(
 	tableName: string,
 	columnName: string,
-	column: PgColumn,
+	column: PgColumnTypes,
 ): ColumnInfo {
-	const meta = columnMeta<typeof column>(column);
+	const columnInfo: ColumnInfo = Object.fromEntries(
+		Object.entries(column),
+	).info;
+	const meta = columnInfo;
 	return {
 		tableName: tableName,
 		columnName: columnName,
@@ -54,7 +57,7 @@ export function schemaDBColumnInfoByTable(
 					columnAcc[columnName] = schemaColumnInfo(
 						tableName,
 						columnName,
-						column as PgColumn,
+						column as PgColumnTypes,
 					);
 					return columnAcc;
 				},

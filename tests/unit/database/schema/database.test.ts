@@ -1,7 +1,7 @@
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { pgVarchar } from "~/database/schema/columns.js";
 import { pgDatabase } from "~/database/schema/database.js";
+import { pgVarChar } from "~/database/schema/pg_column.js";
 import { pgTable } from "~/database/schema/table.js";
 
 describe("pgDatabase definition", () => {
@@ -15,12 +15,12 @@ describe("pgDatabase definition", () => {
 	test("with tables", () => {
 		const users = pgTable("users", {
 			columns: {
-				name: pgVarchar(),
+				name: pgVarChar(),
 			},
 		});
 		const teams = pgTable("teams", {
 			columns: {
-				name: pgVarchar(),
+				name: pgVarChar(),
 			},
 		});
 		const database = pgDatabase({

@@ -5,14 +5,14 @@ import {
 	schemaDBIndexInfoByTable,
 	schemaTableInfo,
 } from "~/database/introspection/local_schema.js";
+import { pgDatabase } from "~/database/schema/database.js";
+import { pgIndex } from "~/database/schema/indexes.js";
 import {
 	pgBigSerial,
 	pgBoolean,
 	pgSerial,
-	pgVarchar,
-} from "~/database/schema/columns.js";
-import { pgDatabase } from "~/database/schema/database.js";
-import { pgIndex } from "~/database/schema/indexes.js";
+	pgVarChar,
+} from "~/database/schema/pg_column.js";
 import { pgTable } from "~/database/schema/table.js";
 
 test("#schemaTableInfo", () => {
@@ -33,7 +33,7 @@ test("#schemaTableInfo", () => {
 });
 
 test("#schemaColumnInfo", () => {
-	const column = pgVarchar(100)
+	const column = pgVarChar(100)
 		.notNull()
 		.defaultTo("foo")
 		.renameFrom("old_column_name");
@@ -59,14 +59,14 @@ test("#schemaDBTableInfo", () => {
 	const users = pgTable("users", {
 		columns: {
 			id: pgSerial(),
-			name: pgVarchar().notNull(),
-			email: pgVarchar().notNull(),
+			name: pgVarChar().notNull(),
+			email: pgVarChar().notNull(),
 		},
 	});
 	const teams = pgTable("teams", {
 		columns: {
 			id: pgBigSerial(),
-			name: pgVarchar().notNull(),
+			name: pgVarChar().notNull(),
 			active: pgBoolean(),
 		},
 	});
@@ -173,8 +173,8 @@ test("#schemaDBTableInfo", () => {
 	const users = pgTable("users", {
 		columns: {
 			id: pgSerial(),
-			name: pgVarchar().notNull(),
-			email: pgVarchar().notNull(),
+			name: pgVarChar().notNull(),
+			email: pgVarChar().notNull(),
 		},
 		indexes: [
 			pgIndex("users_name_idx", (idx) => idx),
@@ -184,7 +184,7 @@ test("#schemaDBTableInfo", () => {
 	const teams = pgTable("teams", {
 		columns: {
 			id: pgBigSerial(),
-			name: pgVarchar().notNull(),
+			name: pgVarChar().notNull(),
 			active: pgBoolean(),
 		},
 		indexes: [

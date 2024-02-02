@@ -1,20 +1,21 @@
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
+import { pgIndex } from "~/database/schema/indexes.js";
 import {
-	pgBigSerial,
 	pgBoolean,
 	pgInt4,
+	pgInteger,
+	pgSerial,
 	pgText,
-	pgVarchar,
-} from "~/database/schema/columns.js";
-import { pgIndex } from "~/database/schema/indexes.js";
+	pgVarChar,
+} from "~/database/schema/pg_column.js";
 import { pgTable } from "~/database/schema/table.js";
 
 describe("pgTable definition", () => {
 	test("has a name", () => {
 		const table = pgTable("users", {
 			columns: {
-				name: pgVarchar(),
+				name: pgVarChar(),
 				subscribed: pgBoolean(),
 			},
 		});
@@ -23,7 +24,7 @@ describe("pgTable definition", () => {
 
 	test("has columns defined", () => {
 		const columns = {
-			name: pgVarchar(),
+			name: pgVarChar(),
 			subscribed: pgBoolean(),
 		};
 		const table = pgTable("users", {
@@ -34,49 +35,82 @@ describe("pgTable definition", () => {
 
 	test("inferSelect column types", () => {
 		const columns = {
-			name: pgVarchar().notNull(),
+			pk: pgInteger().primaryKey(),
+			id: pgSerial(),
+			name: pgVarChar().notNull(),
 			subscribed: pgBoolean(),
-			email: pgText().notNull().nullable(),
+			email: pgText().notNull(),
 			subscribers: pgInt4(),
 		};
 		const table = pgTable("users", {
 			columns: columns,
 		});
 		type ExpectedType = {
+			pk: number;
+			id: number;
 			name: string;
-			subscribed?: boolean;
-			email?: string;
-			subscribers?: number;
+			email: string;
+			subscribed: boolean | null;
+			subscribers: number | null;
 		};
-		type SelectType = typeof table.inferSelect;
-		const expect: Expect<Equal<SelectType, ExpectedType>> = true;
+		type InferredSelectType = typeof table.inferSelect;
+		const expect: Expect<Equal<InferredSelectType, ExpectedType>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
 
 	test("inferInsert column types", () => {
 		const columns = {
-			id: pgBigSerial().notNull(),
-			name: pgVarchar().notNull(),
-			email: pgText().notNull().nullable(),
+			pk: pgInteger().primaryKey(),
+			id: pgSerial(),
+			name: pgVarChar().notNull(),
+			subscribed: pgBoolean(),
+			email: pgText().notNull(),
 			subscribers: pgInt4(),
 		};
 		const table = pgTable("users", {
 			columns: columns,
 		});
 		type ExpectedType = {
-			id: string | number | bigint;
+			pk?: number | string;
+			id?: number | string;
 			name: string;
-			email?: string;
-			subscribers?: string | number;
+			email: string;
+			subscribed?: boolean | null;
+			subscribers?: number | string | null;
 		};
-		type InsertType = typeof table.inferInsert;
-		const expect: Expect<Equal<InsertType, ExpectedType>> = true;
+		type InferredInsertType = typeof table.inferInsert;
+		const expect: Expect<Equal<InferredInsertType, ExpectedType>> = true;
+		expectTypeOf(expect).toMatchTypeOf<boolean>();
+	});
+
+	test("inferUpdate column types", () => {
+		const columns = {
+			pk: pgInteger().primaryKey(),
+			id: pgSerial(),
+			name: pgVarChar().notNull(),
+			subscribed: pgBoolean(),
+			email: pgText().notNull(),
+			subscribers: pgInt4(),
+		};
+		const table = pgTable("users", {
+			columns: columns,
+		});
+		type ExpectedType = {
+			pk?: number | string;
+			id?: string | number;
+			name?: string;
+			email?: string;
+			subscribed?: boolean | null;
+			subscribers?: number | string | null;
+		};
+		type InferredUpdateType = typeof table.inferUpdate;
+		const expect: Expect<Equal<InferredUpdateType, ExpectedType>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
 
 	test("indexes are undefined by default", () => {
 		const columns = {
-			name: pgVarchar(),
+			name: pgVarChar(),
 			subscribed: pgBoolean(),
 		};
 		const table = pgTable("users", {
@@ -95,7 +129,7 @@ describe("pgTable definition", () => {
 			),
 		];
 		const columns = {
-			name: pgVarchar(),
+			name: pgVarChar(),
 			subscribed: pgBoolean(),
 		};
 		const table = pgTable("users", {
