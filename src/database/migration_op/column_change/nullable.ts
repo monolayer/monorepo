@@ -3,7 +3,7 @@ import { ChangeSetType, Changeset } from "~/database/changeset.js";
 import {
 	MigrationOpPriority,
 	executeKyselySchemaStatement,
-} from "../migration_op.js";
+} from "../compute.js";
 
 export type ColumnNullableDifference = {
 	type: "CHANGE";

@@ -46,7 +46,7 @@ export enum MigrationOpPriority {
 	Index = 4,
 }
 
-export function migrationOps(differences: Difference[]) {
+export function computeMigrationOps(differences: Difference[]) {
 	const droppedTables = differences
 		.filter(isDropTable)
 		.map((diff) => diff.path[1]);

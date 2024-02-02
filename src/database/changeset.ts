@@ -1,6 +1,6 @@
 import diff from "microdiff";
 import { DbTableInfo, LocalTableInfo } from "./introspection/types.js";
-import { migrationOps } from "./migration_op/migration_op.js";
+import { computeMigrationOps } from "./migration_op/compute.js";
 
 export function dbChangeset(
 	local: LocalTableInfo,
@@ -16,7 +16,7 @@ export function dbChangeset(
 			index: local.indexes,
 		},
 	);
-	return migrationOps(newDiff);
+	return computeMigrationOps(newDiff);
 }
 
 export type DbChangeset = Record<string, Changeset[]>;

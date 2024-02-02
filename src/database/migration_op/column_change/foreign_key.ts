@@ -4,7 +4,7 @@ import { ChangeSetType, Changeset } from "../../changeset.js";
 import {
 	MigrationOpPriority,
 	executeKyselySchemaStatement,
-} from "../migration_op.js";
+} from "../compute.js";
 
 export type ChangeColumnForeignConstraintAdd = {
 	type: "CHANGE";

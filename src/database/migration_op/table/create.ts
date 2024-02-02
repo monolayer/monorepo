@@ -4,7 +4,7 @@ import { ColumnsInfo } from "~/database/introspection/types.js";
 import {
 	MigrationOpPriority,
 	executeKyselySchemaStatement,
-} from "../migration_op.js";
+} from "../compute.js";
 import { tableColumnsOps } from "../table_common.js";
 
 export type CreateTableDiff = {

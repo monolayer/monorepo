@@ -1,6 +1,6 @@
 import { Difference } from "microdiff";
 import { ChangeSetType, Changeset } from "~/database/changeset.js";
-import { MigrationOpPriority } from "../migration_op.js";
+import { MigrationOpPriority } from "../compute.js";
 
 export type CreateFirstIndexDiff = {
 	type: "CREATE";
