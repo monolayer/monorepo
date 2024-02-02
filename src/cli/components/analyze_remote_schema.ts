@@ -48,7 +48,7 @@ export async function analyzeRemoteSchema(
 
 	b.stop(`Analyzed schema from ${environmentConfig?.database} database.`);
 	return {
-		columns: remoteColumnInfo,
-		indexes: remoteIndexInfo,
+		table: remoteColumnInfo,
+		index: remoteIndexInfo,
 	};
 }

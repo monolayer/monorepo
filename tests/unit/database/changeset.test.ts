@@ -8,7 +8,7 @@ describe("#dbChangeset", () => {
 	test("create a table", () => {
 		const changeset = dbChangeset(
 			{
-				columns: {
+				table: {
 					books: {
 						id: columnInfoFactory({
 							tableName: "books",
@@ -43,7 +43,7 @@ describe("#dbChangeset", () => {
 						}),
 					},
 				},
-				indexes: {
+				index: {
 					books: {
 						...compileIndex(
 							pgIndex("books_name_idx", (idx) => idx.column("name")),
@@ -53,8 +53,8 @@ describe("#dbChangeset", () => {
 				},
 			},
 			{
-				columns: {},
-				indexes: {},
+				table: {},
+				index: {},
 			},
 		);
 
@@ -102,11 +102,11 @@ describe("#dbChangeset", () => {
 	test("drop a table", () => {
 		const changeset = dbChangeset(
 			{
-				columns: {},
-				indexes: {},
+				table: {},
+				index: {},
 			},
 			{
-				columns: {
+				table: {
 					shops: {
 						name: columnInfoFactory({
 							tableName: "members",
@@ -128,7 +128,7 @@ describe("#dbChangeset", () => {
 						}),
 					},
 				},
-				indexes: {
+				index: {
 					shops: {
 						shops_mail_idx:
 							'create unique index "shops_mail_idx" on "shops" using btree ("email")',
@@ -179,7 +179,7 @@ describe("#dbChangeset", () => {
 	test("change a table", () => {
 		const changeset = dbChangeset(
 			{
-				columns: {
+				table: {
 					samples: {
 						id: columnInfoFactory({
 							tableName: "samples",
@@ -227,7 +227,7 @@ describe("#dbChangeset", () => {
 						}),
 					},
 				},
-				indexes: {
+				index: {
 					samples: {
 						...compileIndex(
 							pgIndex("samples_name_idx", (idx) => idx.column("name")),
@@ -251,7 +251,7 @@ describe("#dbChangeset", () => {
 				},
 			},
 			{
-				columns: {
+				table: {
 					addresses: {
 						name: columnInfoFactory({
 							tableName: "members",
@@ -288,7 +288,7 @@ describe("#dbChangeset", () => {
 						}),
 					},
 				},
-				indexes: {
+				index: {
 					addresses: {
 						addresses_city_idx:
 							'create unique index "addresses_city_idx" on "addresses" using btree ("city")',
@@ -507,7 +507,7 @@ describe("#dbChangeset", () => {
 		test("on table creation", () => {
 			const changeset = dbChangeset(
 				{
-					columns: {
+					table: {
 						books: {
 							id: columnInfoFactory({
 								tableName: "books",
@@ -534,11 +534,11 @@ describe("#dbChangeset", () => {
 							}),
 						},
 					},
-					indexes: {},
+					index: {},
 				},
 				{
-					columns: {},
-					indexes: {},
+					table: {},
+					index: {},
 				},
 			);
 			const expected = [
@@ -574,7 +574,7 @@ describe("#dbChangeset", () => {
 		test("on column creation", () => {
 			const changeset = dbChangeset(
 				{
-					columns: {
+					table: {
 						books: {
 							id: columnInfoFactory({
 								tableName: "books",
@@ -601,10 +601,10 @@ describe("#dbChangeset", () => {
 							}),
 						},
 					},
-					indexes: {},
+					index: {},
 				},
 				{
-					columns: {
+					table: {
 						books: {
 							id: columnInfoFactory({
 								tableName: "books",
@@ -622,7 +622,7 @@ describe("#dbChangeset", () => {
 							}),
 						},
 					},
-					indexes: {},
+					index: {},
 				},
 			);
 			const expected = [
@@ -651,7 +651,7 @@ describe("#dbChangeset", () => {
 		test("on column change (add)", () => {
 			const changeset = dbChangeset(
 				{
-					columns: {
+					table: {
 						books: {
 							id: columnInfoFactory({
 								tableName: "books",
@@ -678,10 +678,10 @@ describe("#dbChangeset", () => {
 							}),
 						},
 					},
-					indexes: {},
+					index: {},
 				},
 				{
-					columns: {
+					table: {
 						books: {
 							id: columnInfoFactory({
 								tableName: "books",
@@ -704,7 +704,7 @@ describe("#dbChangeset", () => {
 							}),
 						},
 					},
-					indexes: {},
+					index: {},
 				},
 			);
 			const expected = [
@@ -732,7 +732,7 @@ describe("#dbChangeset", () => {
 		test("on column change (remove)", () => {
 			const changeset = dbChangeset(
 				{
-					columns: {
+					table: {
 						books: {
 							id: columnInfoFactory({
 								tableName: "books",
@@ -755,10 +755,10 @@ describe("#dbChangeset", () => {
 							}),
 						},
 					},
-					indexes: {},
+					index: {},
 				},
 				{
-					columns: {
+					table: {
 						books: {
 							id: columnInfoFactory({
 								tableName: "books",
@@ -785,7 +785,7 @@ describe("#dbChangeset", () => {
 							}),
 						},
 					},
-					indexes: {},
+					index: {},
 				},
 			);
 			const expected = [

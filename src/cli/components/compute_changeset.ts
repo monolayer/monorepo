@@ -5,26 +5,20 @@ import { OperationSuccess } from "../command.js";
 
 export async function computeChangeSet(
 	localTableInfo: {
-		columns: TableColumnInfo;
-		indexes: IndexInfo;
+		table: TableColumnInfo;
+		index: IndexInfo;
 	},
 	remoteColumnInfo: {
-		columns: OperationSuccess<TableColumnInfo>;
-		indexes: OperationSuccess<IndexInfo>;
+		table: OperationSuccess<TableColumnInfo>;
+		index: OperationSuccess<IndexInfo>;
 	},
 ): Promise<Changeset[]> {
 	const c = p.spinner();
 	c.start("Computing change set");
-	const changeset = dbChangeset(
-		{
-			columns: localTableInfo.columns,
-			indexes: localTableInfo.indexes,
-		},
-		{
-			columns: remoteColumnInfo.columns.result,
-			indexes: remoteColumnInfo.indexes.result,
-		},
-	);
+	const changeset = dbChangeset(localTableInfo, {
+		table: remoteColumnInfo.table.result,
+		index: remoteColumnInfo.index.result,
+	});
 	c.stop("Computed change set.");
 
 	if (changeset.length === 0) {

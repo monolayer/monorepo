@@ -8,16 +8,7 @@ export function dbChangeset(
 	local: LocalTableInfo,
 	db: DbTableInfo,
 ): Changeset[] {
-	const diff = microdiff(
-		{
-			table: db.columns,
-			index: db.indexes,
-		},
-		{
-			table: local.columns,
-			index: local.indexes,
-		},
-	);
+	const diff = microdiff(db, local);
 	const droppedTables = diff.filter(isDropTable).map((diff) => diff.path[1]);
 	const addedTables = diff.filter(isCreateTable).map((diff) => diff.path[1]);
 	const changeset = diff.flatMap((diff) =>

@@ -22,7 +22,7 @@ export async function analyzeLocalSchema(config: Config) {
 	const localIndexInfo = schemaDBIndexInfoByTable(schema.database);
 	s.stop("Analyzed schema at app/db/schema.ts");
 	return {
-		columns: localTableColumnInfo,
-		indexes: localIndexInfo,
+		table: localTableColumnInfo,
+		index: localIndexInfo,
 	};
 }
