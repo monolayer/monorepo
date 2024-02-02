@@ -33,7 +33,7 @@ export type Changeset = {
 	type: ChangeSetType;
 	up: string[];
 	down: string[];
-	priority?: number;
+	priority: number;
 };
 
 function tableName(diff: CreateTableDiff | DropTableTableDiff) {
