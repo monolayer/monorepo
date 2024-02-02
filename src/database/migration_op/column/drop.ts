@@ -5,7 +5,7 @@ import {
 	MigrationOpPriority,
 	executeKyselySchemaStatement,
 } from "../compute.js";
-import { optionsForColumn } from "../table_common.js";
+import { foreignKeyConstraint, optionsForColumn } from "../table_common.js";
 
 export type DropColumnDiff = {
 	type: "REMOVE";
@@ -38,6 +38,7 @@ export function dropColumnMigration(diff: DropColumnDiff) {
 			`addColumn(\"${columnName}\", \"${columnDef.dataType}\"${optionsForColumn(
 				columnDef,
 			)})`,
+			foreignKeyConstraint(columnDef),
 		),
 	};
 	return changeset;
