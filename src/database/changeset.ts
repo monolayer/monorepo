@@ -4,10 +4,7 @@ import { migrationOp } from "./migration_op/compute.js";
 import { isCreateTable } from "./migration_op/table/create.js";
 import { isDropTable } from "./migration_op/table/drop.js";
 
-export function dbChangeset(
-	local: LocalTableInfo,
-	db: DbTableInfo,
-): Changeset[] {
+export function changeset(local: LocalTableInfo, db: DbTableInfo): Changeset[] {
 	const diff = microdiff(db, local);
 	const droppedTables = diff.filter(isDropTable).map((diff) => diff.path[1]);
 	const addedTables = diff.filter(isCreateTable).map((diff) => diff.path[1]);

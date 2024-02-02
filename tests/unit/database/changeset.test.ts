@@ -1,12 +1,12 @@
 import { describe, expect, test } from "vitest";
-import { dbChangeset } from "~/database/changeset.js";
+import { changeset } from "~/database/changeset.js";
 import { pgIndex } from "~/database/schema/indexes.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
 
 describe("#dbChangeset", () => {
 	test("create a table", () => {
-		const changeset = dbChangeset(
+		const cset = changeset(
 			{
 				table: {
 					books: {
@@ -96,11 +96,11 @@ describe("#dbChangeset", () => {
 				down: [],
 			},
 		];
-		expect(changeset).toStrictEqual(expected);
+		expect(cset).toStrictEqual(expected);
 	});
 
 	test("drop a table", () => {
-		const changeset = dbChangeset(
+		const cset = changeset(
 			{
 				table: {},
 				index: {},
@@ -173,11 +173,11 @@ describe("#dbChangeset", () => {
 				],
 			},
 		];
-		expect(changeset).toStrictEqual(expected);
+		expect(cset).toStrictEqual(expected);
 	});
 
 	test("change a table", () => {
-		const changeset = dbChangeset(
+		const cset = changeset(
 			{
 				table: {
 					samples: {
@@ -500,12 +500,12 @@ describe("#dbChangeset", () => {
 				down: ['await db.schema.dropIndex("samples_name_idx").execute();'],
 			},
 		];
-		expect(changeset).toStrictEqual(expected);
+		expect(cset).toStrictEqual(expected);
 	});
 
 	describe("foreign keys", () => {
 		test("on table creation", () => {
-			const changeset = dbChangeset(
+			const cset = changeset(
 				{
 					table: {
 						books: {
@@ -569,10 +569,10 @@ describe("#dbChangeset", () => {
 					down: ["await db.schema", 'dropTable("members")', "execute();"],
 				},
 			];
-			expect(changeset).toStrictEqual(expected);
+			expect(cset).toStrictEqual(expected);
 		});
 		test("on column creation", () => {
-			const changeset = dbChangeset(
+			const cset = changeset(
 				{
 					table: {
 						books: {
@@ -645,11 +645,11 @@ describe("#dbChangeset", () => {
 					],
 				},
 			];
-			expect(changeset).toStrictEqual(expected);
+			expect(cset).toStrictEqual(expected);
 		});
 
 		test("on column change (add)", () => {
-			const changeset = dbChangeset(
+			const cset = changeset(
 				{
 					table: {
 						books: {
@@ -726,11 +726,11 @@ describe("#dbChangeset", () => {
 					],
 				},
 			];
-			expect(changeset).toStrictEqual(expected);
+			expect(cset).toStrictEqual(expected);
 		});
 
 		test("on column change (remove)", () => {
-			const changeset = dbChangeset(
+			const cset = changeset(
 				{
 					table: {
 						books: {
@@ -807,7 +807,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 			];
-			expect(changeset).toStrictEqual(expected);
+			expect(cset).toStrictEqual(expected);
 		});
 	});
 });
