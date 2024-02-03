@@ -14,6 +14,7 @@ import {
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/table.js";
+import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 
 test("#schemaTableInfo", () => {
 	const foo = pgTable("foo", { columns: {} });
@@ -37,21 +38,15 @@ test("#schemaColumnInfo", () => {
 		.notNull()
 		.defaultTo("foo")
 		.renameFrom("old_column_name");
-	const expectedInfo = {
+	const expectedInfo = columnInfoFactory({
 		tableName: "foo",
 		columnName: "bar",
 		dataType: "varchar(100)",
 		defaultValue: "foo",
 		isNullable: false,
-		numericPrecision: null,
-		numericScale: null,
 		characterMaximumLength: 100,
-		datetimePrecision: null,
 		renameFrom: "old_column_name",
-		primaryKey: null,
-		foreignKeyConstraint: null,
-		identity: null,
-	};
+	});
 
 	expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
 });
@@ -77,98 +72,44 @@ test("#schemaDBTableInfo", () => {
 	});
 	const expectedDbColumnInfoByTable = {
 		users: {
-			id: {
+			id: columnInfoFactory({
 				tableName: "users",
 				columnName: "id",
 				dataType: "serial",
-				defaultValue: null,
 				isNullable: false,
-				numericPrecision: null,
-				numericScale: null,
-				characterMaximumLength: null,
-				datetimePrecision: null,
-				renameFrom: null,
-				primaryKey: null,
-				foreignKeyConstraint: null,
-				identity: null,
-			},
-			name: {
+			}),
+			name: columnInfoFactory({
 				tableName: "users",
 				columnName: "name",
 				dataType: "varchar",
-				defaultValue: null,
 				isNullable: false,
-				numericPrecision: null,
-				numericScale: null,
-				characterMaximumLength: null,
-				datetimePrecision: null,
-				renameFrom: null,
-				primaryKey: null,
-				foreignKeyConstraint: null,
-				identity: null,
-			},
-			email: {
+			}),
+			email: columnInfoFactory({
 				tableName: "users",
 				columnName: "email",
 				dataType: "varchar",
-				defaultValue: null,
 				isNullable: false,
-				numericPrecision: null,
-				numericScale: null,
-				characterMaximumLength: null,
-				datetimePrecision: null,
-				renameFrom: null,
-				primaryKey: null,
-				foreignKeyConstraint: null,
-				identity: null,
-			},
+			}),
 		},
 		teams: {
-			id: {
+			id: columnInfoFactory({
 				tableName: "teams",
 				columnName: "id",
 				dataType: "bigserial",
-				defaultValue: null,
 				isNullable: false,
-				numericPrecision: null,
-				numericScale: null,
-				characterMaximumLength: null,
-				datetimePrecision: null,
-				renameFrom: null,
-				primaryKey: null,
-				foreignKeyConstraint: null,
-				identity: null,
-			},
-			name: {
+			}),
+			name: columnInfoFactory({
 				tableName: "teams",
 				columnName: "name",
 				dataType: "varchar",
-				defaultValue: null,
 				isNullable: false,
-				numericPrecision: null,
-				numericScale: null,
-				characterMaximumLength: null,
-				datetimePrecision: null,
-				renameFrom: null,
-				primaryKey: null,
-				foreignKeyConstraint: null,
-				identity: null,
-			},
-			active: {
+			}),
+			active: columnInfoFactory({
 				tableName: "teams",
 				columnName: "active",
 				dataType: "boolean",
-				defaultValue: null,
 				isNullable: true,
-				numericPrecision: null,
-				numericScale: null,
-				characterMaximumLength: null,
-				datetimePrecision: null,
-				renameFrom: null,
-				primaryKey: null,
-				foreignKeyConstraint: null,
-				identity: null,
-			},
+			}),
 		},
 	};
 	expect(schemaDBColumnInfoByTable(database)).toEqual(
