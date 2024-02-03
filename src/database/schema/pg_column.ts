@@ -94,6 +94,20 @@ export class PgColumn<T, I, U = I>
 		this.info.defaultValue = value;
 		return this;
 	}
+
+	generatedByDefaultAsIdentity() {
+		this.info.identity = "BY DEFAULT";
+		return this as this & {
+			_columnType: ColumnType<T, I, U>;
+		};
+	}
+
+	generatedAlwaysAsIdentity() {
+		this.info.identity = "ALWAYS";
+		return this as this & {
+			_columnType: ColumnType<T, never, U>;
+		};
+	}
 }
 
 export class PgGeneratedColumn<T, U>

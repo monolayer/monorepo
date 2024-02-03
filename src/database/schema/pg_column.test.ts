@@ -127,6 +127,16 @@ describe("PgColumn", () => {
 		context.column.defaultTo(5);
 		expect(context.columnInfo.defaultValue).toBe(5);
 	});
+
+	test("generatedAlwaysAsIdentity sets identity to ALWAYS", (context: ColumnWithDefaultContext) => {
+		context.column.generatedAlwaysAsIdentity();
+		expect(context.columnInfo.identity).toBe("ALWAYS");
+	});
+
+	test("generatedByDefaultAsIdentity sets identity to BY DEFAULT", (context: ColumnWithDefaultContext) => {
+		context.column.generatedByDefaultAsIdentity();
+		expect(context.columnInfo.identity).toBe("BY DEFAULT");
+	});
 });
 
 describe("PgGeneratedColumn", () => {
@@ -154,6 +164,21 @@ describe("PgGeneratedColumn", () => {
 	test("does not have notNull", (context: ColumnWithoutDefaultContext) => {
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		expect(typeof (context.column as any).notNull === "function").toBe(false);
+	});
+
+	test("does not have generatedAlwaysAsIdentity", (context: ColumnWithoutDefaultContext) => {
+		expect(
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			typeof (context.column as any).generatedAlwaysAsIdentity === "function",
+		).toBe(false);
+	});
+
+	test("does not have generatedByDefaultAsIdentity", (context: ColumnWithoutDefaultContext) => {
+		expect(
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			typeof (context.column as any).generatedByDefaultAsIdentity ===
+				"function",
+		).toBe(false);
 	});
 });
 
@@ -827,6 +852,10 @@ function testColumnDefaults(expectedDataType: string) {
 
 		test("foreignKeyConstraint is null", (context: ColumnContext) => {
 			expect(context.columnInfo.foreignKeyConstraint).toBe(null);
+		});
+
+		test("identity is null", (context: ColumnContext) => {
+			expect(context.columnInfo.identity).toBe(null);
 		});
 	});
 }
