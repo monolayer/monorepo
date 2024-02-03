@@ -1,7 +1,7 @@
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { pgDatabase } from "~/database/schema/database.js";
 import { pgVarChar } from "~/database/schema/pg_column.js";
+import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/table.js";
 
 describe("pgDatabase definition", () => {

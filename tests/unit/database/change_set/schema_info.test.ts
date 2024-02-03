@@ -5,14 +5,14 @@ import {
 	schemaDBIndexInfoByTable,
 	schemaTableInfo,
 } from "~/database/introspection/local_schema.js";
-import { pgDatabase } from "~/database/schema/database.js";
-import { pgIndex } from "~/database/schema/indexes.js";
 import {
 	pgBigSerial,
 	pgBoolean,
 	pgSerial,
 	pgVarChar,
 } from "~/database/schema/pg_column.js";
+import { pgDatabase } from "~/database/schema/pg_database.js";
+import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/table.js";
 
 test("#schemaTableInfo", () => {

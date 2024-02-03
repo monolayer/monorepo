@@ -1,6 +1,6 @@
 import { CreateIndexBuilder } from "kysely";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { indexMeta, pgIndex } from "~/database/schema/indexes.js";
+import { indexMeta, pgIndex } from "~/database/schema/pg_index.js";
 
 describe("pgIndex", () => {
 	test("type is pgIndex", () => {

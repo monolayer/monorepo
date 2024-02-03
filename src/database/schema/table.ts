@@ -1,7 +1,7 @@
 import type { Insertable, Selectable, Updateable } from "kysely";
 import { type Simplify } from "type-fest";
-import { pgIndex } from "./indexes.js";
 import { PgColumnTypes } from "./pg_column.js";
+import { pgIndex } from "./pg_index.js";
 
 type ColumnRecord = Record<string, PgColumnTypes>;
 

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { changeset } from "~/database/changeset.js";
-import { pgIndex } from "~/database/schema/indexes.js";
+import { pgIndex } from "~/database/schema/pg_index.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
 

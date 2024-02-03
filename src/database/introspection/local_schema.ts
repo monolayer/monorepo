@@ -1,9 +1,9 @@
 import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
-import { pgDatabase } from "~/database/schema/database.js";
+import { pgDatabase } from "~/database/schema/pg_database.js";
 import { TableSchema, pgTable } from "~/database/schema/table.js";
-import { indexMeta, pgIndex } from "../schema/indexes.js";
 import { PgColumnTypes } from "../schema/pg_column.js";
+import { indexMeta, pgIndex } from "../schema/pg_index.js";
 import {
 	ColumnInfo,
 	ColumnsInfo,

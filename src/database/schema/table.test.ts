@@ -1,6 +1,5 @@
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { pgIndex } from "~/database/schema/indexes.js";
 import {
 	pgBoolean,
 	pgInt4,
@@ -9,6 +8,7 @@ import {
 	pgText,
 	pgVarChar,
 } from "~/database/schema/pg_column.js";
+import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/table.js";
 
 describe("pgTable definition", () => {
