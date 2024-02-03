@@ -48,8 +48,8 @@ type InformationSchemaColumns = {
 	scope_name: string | null;
 	dtd_identifier: string | null;
 	is_self_referencing: string | null;
-	is_identity: string | null;
-	identity_generation: string | null;
+	is_identity: "YES" | "NO" | null;
+	identity_generation: "ALWAYS" | "BY DEFAULT" | null;
 	identity_start: string | null;
 	identity_increment: string | null;
 	identity_maximum: string | null;
@@ -233,6 +233,8 @@ async function fetchDbColumnInfo(
 			>`(SELECT obj_description(('public.' || "information_schema"."columns"."table_name")::regclass, 'pg_class')::json->>'previousName')`.as(
 				"rename_from",
 			),
+			"information_schema.columns.identity_generation",
+			"information_schema.columns.is_identity",
 			"information_schema.key_column_usage.constraint_name",
 			"information_schema.key_column_usage.position_in_unique_constraint",
 			"information_schema.constraint_column_usage.table_name as constraint_table_name",
@@ -381,7 +383,10 @@ function transformDbColumnInfo(
 							column: row.constraint_column_name,
 					  }
 					: null,
-			identity: null,
+			identity:
+				row.is_identity === "YES" && row.identity_generation !== null
+					? row.identity_generation
+					: null,
 		});
 	}
 	return transformed;

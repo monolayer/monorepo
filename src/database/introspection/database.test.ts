@@ -587,5 +587,44 @@ describe("db info", () => {
 				},
 			});
 		});
+
+		it<DbContext>("returns info with identity", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("identity_table_1");
+			await kysely.schema
+				.createTable("identity_table_1")
+				.addColumn("id", "integer", (col) =>
+					col.primaryKey().generatedByDefaultAsIdentity(),
+				)
+				.addColumn("price", "integer", (col) => col.generatedAlwaysAsIdentity())
+				.execute();
+			const table_1_results = await dbColumnInfo(kysely, "public", [
+				"identity_table_1",
+			]);
+			if (table_1_results.status === ActionStatus.Error) {
+				throw table_1_results.error;
+			}
+			expect(table_1_results.result).toStrictEqual({
+				identity_table_1: {
+					id: columnInfoFactory({
+						columnName: "id",
+						dataType: "integer",
+						isNullable: false,
+						primaryKey: true,
+						tableName: "identity_table_1",
+						identity: "BY DEFAULT",
+					}),
+					price: columnInfoFactory({
+						columnName: "price",
+						dataType: "integer",
+						isNullable: false,
+						tableName: "identity_table_1",
+						identity: "ALWAYS",
+					}),
+				},
+			});
+		});
 	});
 });
