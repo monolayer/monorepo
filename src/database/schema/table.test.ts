@@ -175,7 +175,7 @@ describe("pgTable definition", () => {
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
 
-	test("indexes are undefined by default", () => {
+	test("indexes are empty by default", () => {
 		const columns = {
 			name: pgVarChar(),
 			subscribed: pgBoolean(),
@@ -183,7 +183,7 @@ describe("pgTable definition", () => {
 		const table = pgTable("users", {
 			columns: columns,
 		});
-		expect(table.indexes).toBeUndefined();
+		expect(table.indexes).toStrictEqual([]);
 	});
 
 	test("indexes can be added", () => {

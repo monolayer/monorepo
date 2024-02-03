@@ -40,12 +40,11 @@ export function schemaColumnInfo(
 }
 
 export function schemaDBColumnInfoByTable(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, pgTable<string, any>>>,
+	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
 ) {
-	return Object.entries(schema.tables || []).reduce<TableColumnInfo>(
+	return Object.entries(schema.tables).reduce<TableColumnInfo>(
 		(acc, [tableName, tableDefinition]) => {
-			const columns = Object.entries(tableDefinition.columns || []);
+			const columns = Object.entries(tableDefinition.columns);
 			acc[tableName] = columns.reduce<ColumnsInfo>(
 				(columnAcc, [columnName, column]) => {
 					columnAcc[columnName] = schemaColumnInfo(
@@ -64,8 +63,7 @@ export function schemaDBColumnInfoByTable(
 }
 
 export function schemaDBIndexInfoByTable(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, pgTable<string, any>>>,
+	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
 ) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
@@ -74,10 +72,10 @@ export function schemaDBIndexInfoByTable(
 		}),
 	});
 
-	return Object.entries(schema.tables || []).reduce<IndexInfo>(
+	return Object.entries(schema.tables).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {
-			const indexes = tableDefinition.indexes as pgIndex[] | undefined;
-			for (const index of indexes || []) {
+			const indexes = tableDefinition.indexes;
+			for (const index of indexes) {
 				const indexInfo = indexToInfo(index, tableName, kysely);
 				acc[tableName] = {
 					...acc[tableName],

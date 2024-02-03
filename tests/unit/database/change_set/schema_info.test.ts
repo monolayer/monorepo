@@ -51,6 +51,11 @@ test("#schemaColumnInfo", () => {
 	expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
 });
 
+test("#schemaDBTableInfo on empty database", () => {
+	const database = pgDatabase({});
+	expect(schemaDBColumnInfoByTable(database)).toEqual({});
+});
+
 test("#schemaDBTableInfo", () => {
 	const users = pgTable("users", {
 		columns: {
