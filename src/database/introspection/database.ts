@@ -277,11 +277,7 @@ function transformDbColumnInfo(
 				dataTypeFullName = row.data_type;
 				break;
 			case "character":
-				if (row.character_maximum_length !== null) {
-					dataTypeFullName = `char(${row.character_maximum_length})`;
-				} else {
-					dataTypeFullName = "char";
-				}
+				dataTypeFullName = `char(${row.character_maximum_length})`;
 				break;
 			case "character varying":
 				if (row.character_maximum_length !== null) {
@@ -320,39 +316,21 @@ function transformDbColumnInfo(
 			case "numeric":
 				if (row.numeric_precision !== null && row.numeric_scale !== null) {
 					dataTypeFullName = `${row.data_type}(${row.numeric_precision}, ${row.numeric_scale})`;
-				} else if (row.numeric_precision !== null) {
-					dataTypeFullName = `${row.data_type}(${row.numeric_precision})`;
 				} else {
 					dataTypeFullName = row.data_type;
 				}
 				break;
 			case "timestamp without time zone":
-				if (row.datetime_precision !== null) {
-					dataTypeFullName = `timestamp(${row.datetime_precision})`;
-				} else {
-					dataTypeFullName = "timestamp";
-				}
+				dataTypeFullName = `timestamp(${row.datetime_precision})`;
 				break;
 			case "timestamp with time zone":
-				if (row.datetime_precision !== null) {
-					dataTypeFullName = `timestamptz(${row.datetime_precision})`;
-				} else {
-					dataTypeFullName = "timestamptz";
-				}
+				dataTypeFullName = `timestamptz(${row.datetime_precision})`;
 				break;
 			case "time with time zone":
-				if (row.datetime_precision !== null) {
-					dataTypeFullName = `timetz(${row.datetime_precision})`;
-				} else {
-					dataTypeFullName = "timetz";
-				}
+				dataTypeFullName = `timetz(${row.datetime_precision})`;
 				break;
 			case "time without time zone":
-				if (row.datetime_precision !== null) {
-					dataTypeFullName = `time(${row.datetime_precision})`;
-				} else {
-					dataTypeFullName = "time";
-				}
+				dataTypeFullName = `time(${row.datetime_precision})`;
 				break;
 			default:
 				dataTypeFullName = row.data_type || "";
