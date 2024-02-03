@@ -6,6 +6,7 @@ import {
 } from "~/database/introspection/database.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { DbContext, globalKysely } from "~tests/setup.js";
+import { ColumnIdentity } from "../schema/pg_column.js";
 
 async function dropTables(context: DbContext) {
 	try {
@@ -614,14 +615,14 @@ describe("db info", () => {
 						isNullable: false,
 						primaryKey: true,
 						tableName: "identity_table_1",
-						identity: "BY DEFAULT",
+						identity: ColumnIdentity.ByDefault,
 					}),
 					price: columnInfoFactory({
 						columnName: "price",
 						dataType: "integer",
 						isNullable: false,
 						tableName: "identity_table_1",
-						identity: "ALWAYS",
+						identity: ColumnIdentity.Always,
 					}),
 				},
 			});

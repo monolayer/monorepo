@@ -15,8 +15,13 @@ export type ColumnInfo = {
 	renameFrom: string | null;
 	primaryKey: true | null;
 	foreignKeyConstraint: ForeIgnKeyConstraintInfo | null;
-	identity: "ALWAYS" | "BY DEFAULT" | null;
+	identity: ColumnIdentity.Always | ColumnIdentity.ByDefault | null;
 };
+
+export enum ColumnIdentity {
+	Always = "ALWAYS",
+	ByDefault = "BY DEFAULT",
+}
 
 interface QueryDataType {
 	/** @internal */
@@ -96,14 +101,14 @@ export class PgColumn<T, I, U = I>
 	}
 
 	generatedByDefaultAsIdentity() {
-		this.info.identity = "BY DEFAULT";
+		this.info.identity = ColumnIdentity.ByDefault;
 		return this as this & {
 			_columnType: ColumnType<T, I, U>;
 		};
 	}
 
 	generatedAlwaysAsIdentity() {
-		this.info.identity = "ALWAYS";
+		this.info.identity = ColumnIdentity.Always;
 		return this as this & {
 			_columnType: ColumnType<T, never, U>;
 		};

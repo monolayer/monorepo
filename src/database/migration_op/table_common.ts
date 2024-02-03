@@ -28,6 +28,9 @@ export function optionsForColumn(column: ColumnInfo) {
 
 	if (column.isNullable === false) options.push("notNull()");
 	if (column.primaryKey === true) options.push("primaryKey()");
+	if (column.identity === "ALWAYS") options.push("generatedAlwaysAsIdentity()");
+	if (column.identity === "BY DEFAULT")
+		options.push("generatedByDefaultAsIdentity()");
 	if (column.defaultValue !== null)
 		options.push(`defaultTo(\"${column.defaultValue}\")`);
 	if (options.length !== 0)

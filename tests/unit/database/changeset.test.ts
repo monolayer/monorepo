@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { changeset } from "~/database/changeset.js";
 import { pgIndex } from "~/database/schema/pg_index.js";
+import { ColumnIdentity } from "~/index.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
 
@@ -803,6 +804,410 @@ describe("#dbChangeset", () => {
 						"await db.schema",
 						'alterTable("members")',
 						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"])',
+						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+	});
+
+	describe("identity columns", () => {
+		test("on table creation", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								primaryKey: true,
+								identity: ColumnIdentity.ByDefault,
+							}),
+						},
+						members: {
+							id: columnInfoFactory({
+								tableName: "members",
+								columnName: "id",
+								dataType: "varchar",
+								identity: ColumnIdentity.Always,
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					type: "createTable",
+					priority: 1,
+					up: [
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("id", "integer", (col) => col.primaryKey().generatedByDefaultAsIdentity())',
+						"execute();",
+					],
+					down: ["await db.schema", 'dropTable("books")', "execute();"],
+				},
+				{
+					tableName: "members",
+					type: "createTable",
+					priority: 1,
+					up: [
+						"await db.schema",
+						'createTable("members")',
+						'addColumn("id", "varchar", (col) => col.generatedAlwaysAsIdentity())',
+						"execute();",
+					],
+					down: ["await db.schema", 'dropTable("members")', "execute();"],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on table drop", () => {
+			const cset = changeset(
+				{
+					table: {},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								primaryKey: true,
+								identity: ColumnIdentity.ByDefault,
+							}),
+						},
+						members: {
+							id: columnInfoFactory({
+								tableName: "members",
+								columnName: "id",
+								dataType: "varchar",
+								identity: ColumnIdentity.Always,
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					type: "dropTable",
+					priority: 1,
+					up: ["await db.schema", 'dropTable("books")', "execute();"],
+					down: [
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("id", "integer", (col) => col.primaryKey().generatedByDefaultAsIdentity())',
+						"execute();",
+					],
+				},
+				{
+					tableName: "members",
+					type: "dropTable",
+					priority: 1,
+					up: ["await db.schema", 'dropTable("members")', "execute();"],
+					down: [
+						"await db.schema",
+						'createTable("members")',
+						'addColumn("id", "varchar", (col) => col.generatedAlwaysAsIdentity())',
+						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column creation", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								primaryKey: true,
+								identity: ColumnIdentity.ByDefault,
+							}),
+						},
+						members: {
+							id: columnInfoFactory({
+								tableName: "members",
+								columnName: "id",
+								dataType: "varchar",
+								identity: ColumnIdentity.Always,
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {},
+						members: {},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 2,
+					type: "createColumn",
+					up: [
+						"await db.schema",
+						'alterTable("books")',
+						'addColumn("id", "integer", (col) => col.primaryKey().generatedByDefaultAsIdentity())',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("books")',
+						'dropColumn("id")',
+						"execute();",
+					],
+				},
+				{
+					tableName: "members",
+					priority: 2,
+					type: "createColumn",
+					up: [
+						"await db.schema",
+						'alterTable("members")',
+						'addColumn("id", "varchar", (col) => col.generatedAlwaysAsIdentity())',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("members")',
+						'dropColumn("id")',
+						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column change (add)", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								primaryKey: true,
+								identity: ColumnIdentity.ByDefault,
+							}),
+						},
+						members: {
+							id: columnInfoFactory({
+								tableName: "members",
+								columnName: "id",
+								dataType: "varchar",
+								identity: ColumnIdentity.Always,
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							id: columnInfoFactory({
+								tableName: "members",
+								columnName: "id",
+								dataType: "varchar",
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 3.5,
+					type: "changeColumn",
+					up: [
+						"await sql`ALTER TABLE books ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE books ALTER COLUMN id DROP IDENTITY`.execute(db);",
+					],
+				},
+				{
+					tableName: "members",
+					priority: 3.5,
+					type: "changeColumn",
+					up: [
+						"await sql`ALTER TABLE members ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE members ALTER COLUMN id DROP IDENTITY`.execute(db);",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column change (remove)", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							id: columnInfoFactory({
+								tableName: "members",
+								columnName: "id",
+								dataType: "varchar",
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								primaryKey: true,
+								identity: ColumnIdentity.ByDefault,
+							}),
+						},
+						members: {
+							id: columnInfoFactory({
+								tableName: "members",
+								columnName: "id",
+								dataType: "varchar",
+								identity: ColumnIdentity.Always,
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 3.51,
+					type: "changeColumn",
+					up: [
+						"await sql`ALTER TABLE books ALTER COLUMN id DROP IDENTITY`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE books ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY`.execute(db);",
+					],
+				},
+				{
+					tableName: "members",
+					priority: 3.51,
+					type: "changeColumn",
+					up: [
+						"await sql`ALTER TABLE members ALTER COLUMN id DROP IDENTITY`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE members ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY`.execute(db);",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column drop", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {},
+						members: {},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								primaryKey: true,
+								identity: ColumnIdentity.ByDefault,
+							}),
+						},
+						members: {
+							id: columnInfoFactory({
+								tableName: "members",
+								columnName: "id",
+								dataType: "varchar",
+								identity: ColumnIdentity.Always,
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 2,
+					type: "dropColumn",
+					up: [
+						"await db.schema",
+						'alterTable("books")',
+						'dropColumn("id")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("books")',
+						'addColumn("id", "integer", (col) => col.primaryKey().generatedByDefaultAsIdentity())',
+						"execute();",
+					],
+				},
+				{
+					tableName: "members",
+					priority: 2,
+					type: "dropColumn",
+					up: [
+						"await db.schema",
+						'alterTable("members")',
+						'dropColumn("id")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("members")',
+						'addColumn("id", "varchar", (col) => col.generatedAlwaysAsIdentity())',
 						"execute();",
 					],
 				},

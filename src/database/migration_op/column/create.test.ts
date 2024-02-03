@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+import { ColumnIdentity } from "~/database/schema/pg_column.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { CreateColumnDiff, createColumnMigration } from "./create.js";
 
@@ -182,6 +183,71 @@ describe("createTableMigration", () => {
 				"await db.schema",
 				'alterTable("books")',
 				'dropColumn("author_id")',
+				"execute();",
+			],
+		};
+
+		expect(createColumnMigration(column)).toStrictEqual(expected);
+	});
+
+	test("columns with a identity always", () => {
+		const column: CreateColumnDiff = {
+			type: "CREATE",
+			path: ["table", "books", "demo"],
+			value: columnInfoFactory({
+				tableName: "books",
+				columnName: "demo",
+				dataType: "text",
+				identity: ColumnIdentity.Always,
+			}),
+		};
+
+		const expected = {
+			priority: 2,
+			tableName: "books",
+			type: "createColumn",
+			up: [
+				"await db.schema",
+				'alterTable("books")',
+				'addColumn("demo", "text", (col) => col.generatedAlwaysAsIdentity())',
+				"execute();",
+			],
+			down: [
+				"await db.schema",
+				'alterTable("books")',
+				'dropColumn("demo")',
+				"execute();",
+			],
+		};
+		expect(createColumnMigration(column)).toStrictEqual(expected);
+	});
+
+	test("columns with a identity by default", () => {
+		const column: CreateColumnDiff = {
+			type: "CREATE",
+			path: ["table", "books", "demo"],
+			value: columnInfoFactory({
+				tableName: "books",
+				columnName: "demo",
+				dataType: "text",
+				identity: ColumnIdentity.ByDefault,
+			}),
+		};
+
+		const expected = {
+			priority: 2,
+			tableName: "books",
+			type: "createColumn",
+			up: [
+				"await db.schema",
+				'alterTable("books")',
+				'addColumn("demo", "text", (col) => col.generatedByDefaultAsIdentity())',
+				"execute();",
+			],
+			down: [
+				"await db.schema",
+				'alterTable("books")',
+				'dropColumn("demo")',
 				"execute();",
 			],
 		};

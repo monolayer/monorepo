@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+import { ColumnIdentity } from "~/database/schema/pg_column.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { DropColumnDiff, dropColumnMigration } from "./drop.js";
 
@@ -182,6 +183,71 @@ describe("dropTableMigration", () => {
 				'alterTable("books")',
 				'addColumn("author_id", "text")',
 				'.addForeignKeyConstraint("books_author_id_fkey", ["author_id"], "authors", ["id"])',
+				"execute();",
+			],
+		};
+
+		expect(dropColumnMigration(column)).toStrictEqual(expected);
+	});
+
+	test("columns with a identity always", () => {
+		const column: DropColumnDiff = {
+			type: "REMOVE",
+			path: ["table", "books", "demo"],
+			oldValue: columnInfoFactory({
+				tableName: "books",
+				columnName: "demo",
+				dataType: "text",
+				identity: ColumnIdentity.Always,
+			}),
+		};
+
+		const expected = {
+			priority: 2,
+			tableName: "books",
+			type: "dropColumn",
+			up: [
+				"await db.schema",
+				'alterTable("books")',
+				'dropColumn("demo")',
+				"execute();",
+			],
+			down: [
+				"await db.schema",
+				'alterTable("books")',
+				'addColumn("demo", "text", (col) => col.generatedAlwaysAsIdentity())',
+				"execute();",
+			],
+		};
+		expect(dropColumnMigration(column)).toStrictEqual(expected);
+	});
+
+	test("columns with a identity by default", () => {
+		const column: DropColumnDiff = {
+			type: "REMOVE",
+			path: ["table", "books", "demo"],
+			oldValue: columnInfoFactory({
+				tableName: "books",
+				columnName: "demo",
+				dataType: "text",
+				identity: ColumnIdentity.ByDefault,
+			}),
+		};
+
+		const expected = {
+			priority: 2,
+			tableName: "books",
+			type: "dropColumn",
+			up: [
+				"await db.schema",
+				'alterTable("books")',
+				'dropColumn("demo")',
+				"execute();",
+			],
+			down: [
+				"await db.schema",
+				'alterTable("books")',
+				'addColumn("demo", "text", (col) => col.generatedByDefaultAsIdentity())',
 				"execute();",
 			],
 		};

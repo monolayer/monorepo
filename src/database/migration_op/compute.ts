@@ -16,6 +16,12 @@ import {
 	removeColumnForeignKeyMigrationOperation,
 } from "./column_change/foreign_key.js";
 import {
+	columnIdentityAddMigrationOperation,
+	columnIdentityDropMigrationOperation,
+	isColumnIdentityAdd,
+	isColumnIdentityDrop,
+} from "./column_change/identity.js";
+import {
 	columnNullableMigrationOperation,
 	isColumnNullable,
 } from "./column_change/nullable.js";
@@ -42,6 +48,8 @@ export enum MigrationOpPriority {
 	ChangeColumnPrimaryKeyCreate = 3.3,
 	ChangeColumnForeignKeyCreate = 3.4,
 	ChangeColumnForeignKeyDrop = 3.41,
+	ChangeColumnIdentityAdd = 3.5,
+	ChangeColumnIdentityDrop = 3.51,
 	Index = 4,
 }
 
@@ -66,6 +74,10 @@ export function migrationOp(
 		return addColumnForeignKeyMigrationOperation(difference);
 	if (isRemoveForeignKeyConstraintValue(difference))
 		return removeColumnForeignKeyMigrationOperation(difference);
+	if (isColumnIdentityAdd(difference))
+		return columnIdentityAddMigrationOperation(difference);
+	if (isColumnIdentityDrop(difference))
+		return columnIdentityDropMigrationOperation(difference);
 	if (isCreateIndex(difference))
 		return createIndexMigration(difference, addedTables);
 	if (isCreateFirstIndex(difference))
@@ -81,6 +93,6 @@ export function executeKyselySchemaStatement(...args: string[]) {
 	return ["await db.schema", ...args, "execute();"].filter((x) => x !== "");
 }
 
-export function executeKyselyDbStatement(ops: string[]) {
-	return ["await ", ...ops, "execute(db);"];
+export function executeKyselyDbStatement(statement: string) {
+	return [`await sql\`${statement}\`.execute(db);`];
 }

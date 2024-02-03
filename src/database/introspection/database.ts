@@ -4,7 +4,7 @@ import {
 	OperationAnyError,
 	OperationSuccess,
 } from "~/cli/command.js";
-import type { ColumnInfo } from "../schema/pg_column.js";
+import type { ColumnIdentity, ColumnInfo } from "../schema/pg_column.js";
 import { IndexInfo, TableColumnInfo } from "./types.js";
 
 type InformationSchemaTables = {
@@ -49,7 +49,7 @@ type InformationSchemaColumns = {
 	dtd_identifier: string | null;
 	is_self_referencing: string | null;
 	is_identity: "YES" | "NO" | null;
-	identity_generation: "ALWAYS" | "BY DEFAULT" | null;
+	identity_generation: ColumnIdentity.ByDefault | ColumnIdentity.Always | null;
 	identity_start: string | null;
 	identity_increment: string | null;
 	identity_maximum: string | null;
