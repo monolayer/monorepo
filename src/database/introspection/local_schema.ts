@@ -2,14 +2,9 @@ import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { TableSchema, pgTable } from "~/database/schema/table.js";
-import { PgColumnTypes } from "../schema/pg_column.js";
+import { type ColumnInfo, PgColumnTypes } from "../schema/pg_column.js";
 import { indexMeta, pgIndex } from "../schema/pg_index.js";
-import {
-	ColumnInfo,
-	ColumnsInfo,
-	IndexInfo,
-	TableColumnInfo,
-} from "./types.js";
+import { ColumnsInfo, IndexInfo, TableColumnInfo } from "./types.js";
 
 export function schemaTableInfo(tables: pgTable<string, TableSchema>[]) {
 	return tables.map((table) => ({

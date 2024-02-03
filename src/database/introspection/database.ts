@@ -4,7 +4,8 @@ import {
 	OperationAnyError,
 	OperationSuccess,
 } from "~/cli/command.js";
-import { ColumnInfo, IndexInfo, TableColumnInfo } from "./types.js";
+import type { ColumnInfo } from "../schema/pg_column.js";
+import { IndexInfo, TableColumnInfo } from "./types.js";
 
 type InformationSchemaTables = {
 	table_catalog: string | null;

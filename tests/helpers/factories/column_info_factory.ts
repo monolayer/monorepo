@@ -1,5 +1,5 @@
 import { SetNonNullable } from "type-fest";
-import { ColumnInfo } from "~/database/introspection/types.js";
+import type { ColumnInfo } from "~/index.js";
 
 type required = SetNonNullable<
 	Pick<ColumnInfo, "tableName" | "dataType" | "columnName">

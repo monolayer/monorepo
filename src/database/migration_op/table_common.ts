@@ -1,4 +1,5 @@
-import { ColumnInfo, ColumnsInfo } from "../introspection/types.js";
+import { ColumnsInfo } from "../introspection/types.js";
+import type { ColumnInfo } from "../schema/pg_column.js";
 
 export function tableColumnsOps(columnsInfo: ColumnsInfo) {
 	return Object.entries(columnsInfo).flatMap(([_, column]) => {

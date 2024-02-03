@@ -1,6 +1,6 @@
 import { Difference } from "microdiff";
 import { ChangeSetType, Changeset } from "~/database/changeset.js";
-import { ColumnInfo } from "~/database/introspection/types.js";
+import type { ColumnInfo } from "~/database/schema/pg_column.js";
 import {
 	MigrationOpPriority,
 	executeKyselySchemaStatement,
