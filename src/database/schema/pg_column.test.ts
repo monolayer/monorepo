@@ -97,7 +97,7 @@ describe("PgColumnBase", () => {
 	testColumnMethods();
 });
 
-describe("PgColumnWithDefault", () => {
+describe("PgColumn", () => {
 	beforeEach((context: ColumnWithDefaultContext) => {
 		context.column = new PgColumn("integer");
 		context.columnInfo = Object.fromEntries(
@@ -106,6 +106,13 @@ describe("PgColumnWithDefault", () => {
 	});
 
 	testBase();
+
+	test("primaryKey() sets primaryKey to true", (context: ColumnContext) => {
+		const column = pgInteger();
+		column.primaryKey();
+		const columnInfo = Object.fromEntries(Object.entries(column)).info;
+		expect(columnInfo.primaryKey).toBe(true);
+	});
 
 	test("isNullable is true", (context: ColumnContext) => {
 		expect(context.columnInfo.isNullable).toBe(true);
@@ -122,7 +129,7 @@ describe("PgColumnWithDefault", () => {
 	});
 });
 
-describe("PgColumnWithoutDefault", () => {
+describe("PgGeneratedColumn", () => {
 	beforeEach((context: ColumnWithoutDefaultContext) => {
 		context.column = new PgGeneratedColumn("serial");
 		context.columnInfo = Object.fromEntries(
@@ -131,6 +138,13 @@ describe("PgColumnWithoutDefault", () => {
 	});
 
 	testBase("serial");
+
+	test("primaryKey() sets primaryKey to true", (context: ColumnContext) => {
+		const column = pgSerial();
+		column.primaryKey();
+		const columnInfo = Object.fromEntries(Object.entries(column)).info;
+		expect(columnInfo.primaryKey).toBe(true);
+	});
 
 	test("does not have defaultTo", (context: ColumnWithoutDefaultContext) => {
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -818,11 +832,6 @@ function testColumnDefaults(expectedDataType: string) {
 }
 
 function testColumnMethods(testNull = true) {
-	test("primaryKey() sets primaryKey to true", (context: ColumnContext) => {
-		context.column.primaryKey();
-		expect(context.columnInfo.primaryKey).toBe(true);
-	});
-
 	test("renameFrom() sets renameFrom", (context: ColumnContext) => {
 		context.column.renameFrom("old_name");
 		expect(context.columnInfo.renameFrom).toBe("old_name");

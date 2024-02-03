@@ -41,13 +41,6 @@ export class PgColumnBase<S, I, U> {
 		};
 	}
 
-	primaryKey() {
-		this.info.primaryKey = true;
-		return this as this & {
-			_columnType: ColumnType<S, I | undefined, U | undefined>;
-		};
-	}
-
 	renameFrom(name: string) {
 		this.info.renameFrom = name;
 		return this;
@@ -81,6 +74,13 @@ export class PgColumn<T, I, U = I>
 		this.info.isNullable = true;
 	}
 
+	primaryKey() {
+		this.info.primaryKey = true;
+		return this as this & {
+			_columnType: ColumnType<T, I, U | undefined>;
+		};
+	}
+
 	notNull() {
 		this.info.isNullable = false;
 		return this as this & {
@@ -103,6 +103,13 @@ export class PgGeneratedColumn<T, U>
 	constructor(dataType: "serial" | "bigserial") {
 		super(dataType);
 		this.info.isNullable = false;
+	}
+
+	primaryKey() {
+		this.info.primaryKey = true;
+		return this as this & {
+			_columnType: ColumnType<T, U | undefined, U | undefined>;
+		};
 	}
 }
 

@@ -58,29 +58,72 @@ describe("pgTable definition", () => {
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
 
-	test("inferInsert column types", () => {
-		const columns = {
-			pk: pgInteger().primaryKey(),
-			id: pgSerial(),
-			name: pgVarChar().notNull(),
-			subscribed: pgBoolean(),
-			email: pgText().notNull(),
-			subscribers: pgInt4(),
-		};
-		const table = pgTable("users", {
-			columns: columns,
+	describe("inferInsert column types", () => {
+		test("primary keys are required by default", () => {
+			const columns = {
+				pk: pgInteger().primaryKey(),
+			};
+			const table = pgTable("users", {
+				columns: columns,
+			});
+			type ExpectedType = {
+				pk: number | string;
+			};
+			type InferredInsertType = typeof table.inferInsert;
+			const expect: Expect<Equal<InferredInsertType, ExpectedType>> = true;
+			expectTypeOf(expect).toMatchTypeOf<boolean>();
 		});
-		type ExpectedType = {
-			pk?: number | string;
-			id?: number | string;
-			name: string;
-			email: string;
-			subscribed?: boolean | null;
-			subscribers?: number | string | null;
-		};
-		type InferredInsertType = typeof table.inferInsert;
-		const expect: Expect<Equal<InferredInsertType, ExpectedType>> = true;
-		expectTypeOf(expect).toMatchTypeOf<boolean>();
+
+		test("primary keys are optional on generated columns", () => {
+			const users = pgTable("users", {
+				columns: {
+					pk: pgSerial().primaryKey(),
+				},
+			});
+			type ExpectedType = {
+				pk?: number | string;
+			};
+
+			type InferredUsersInsertType = typeof users.inferInsert;
+			const usersExpect: Expect<Equal<InferredUsersInsertType, ExpectedType>> =
+				true;
+			expectTypeOf(usersExpect).toMatchTypeOf<boolean>();
+
+			const books = pgTable("users", {
+				columns: {
+					pk: pgSerial().primaryKey(),
+				},
+			});
+			type InferredBooksInsertType = typeof books.inferInsert;
+			const booksExpect: Expect<Equal<InferredBooksInsertType, ExpectedType>> =
+				true;
+			expectTypeOf(booksExpect).toMatchTypeOf<boolean>();
+		});
+
+		test("inferInsert column types", () => {
+			const columns = {
+				pk: pgInteger().primaryKey(),
+				id: pgSerial(),
+				name: pgVarChar().notNull(),
+				subscribed: pgBoolean(),
+				email: pgText().notNull(),
+				subscribers: pgInt4(),
+			};
+			const table = pgTable("users", {
+				columns: columns,
+			});
+			type ExpectedType = {
+				pk: number | string;
+				id?: number | string;
+				name: string;
+				email: string;
+				subscribed?: boolean | null;
+				subscribers?: number | string | null;
+			};
+			type InferredInsertType = typeof table.inferInsert;
+			const expect: Expect<Equal<InferredInsertType, ExpectedType>> = true;
+			expectTypeOf(expect).toMatchTypeOf<boolean>();
+		});
 	});
 
 	test("inferUpdate column types", () => {
