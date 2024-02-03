@@ -14,6 +14,9 @@ export type pgTable<T extends string, C extends TableSchema> = {
 	name: T;
 	columns: C["columns"];
 	indexes: C["indexes"];
+	infer: {
+		[K in keyof C["columns"]]: C["columns"][K]["_columnType"];
+	};
 	inferSelect: Selectable<{
 		[K in keyof C["columns"]]: C["columns"][K]["_columnType"];
 	}>;

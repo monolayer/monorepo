@@ -33,6 +33,30 @@ describe("pgTable definition", () => {
 		expect(table.columns).toBe(columns);
 	});
 
+	test("infer column types", () => {
+		const table = pgTable("users", {
+			columns: {
+				pk: pgInteger().primaryKey(),
+				id: pgSerial(),
+				name: pgVarChar().notNull(),
+				subscribed: pgBoolean(),
+				email: pgText().notNull(),
+				subscribers: pgInt4(),
+			},
+		});
+		type ExpectedType = {
+			pk: (typeof table.columns.pk)["_columnType"];
+			id: (typeof table.columns.id)["_columnType"];
+			name: (typeof table.columns.name)["_columnType"];
+			email: (typeof table.columns.email)["_columnType"];
+			subscribed: (typeof table.columns.subscribed)["_columnType"];
+			subscribers: (typeof table.columns.subscribers)["_columnType"];
+		};
+		type InferredType = typeof table.infer;
+		const expect: Expect<Equal<InferredType, ExpectedType>> = true;
+		expectTypeOf(expect).toMatchTypeOf<boolean>();
+	});
+
 	test("inferSelect column types", () => {
 		const columns = {
 			pk: pgInteger().primaryKey(),
