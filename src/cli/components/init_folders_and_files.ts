@@ -76,24 +76,21 @@ export default ({
   }
 } satisfies Config);`);
 
-export const schemaTemplate = nunjucks.compile(`import { registerSchema } from "kysely-kinetic";
+export const schemaTemplate = nunjucks.compile(`import { pgDatabase } from "kysely-kinetic";
 
-export type DB = object;
+export const database = pgDatabase({});
 
-registerSchema({});
+export type DB = typeof database.kyselyDatabase;
 `);
 
 export const kyselyTemplate = nunjucks.compile(`import { Kysely, PostgresDialect } from "kysely";
-import { pgPoolConfig } from "kysely-kinetic";
-import pg from "pg";
+import { pgPool } from "kysely-kinetic";
 import kineticConfig from "{{ kineticConfigPath }}";
 import type { DB } from "./schema.js";
 
 export const kysely = new Kysely<DB>({
 	dialect: new PostgresDialect({
-		pool: new pg.Pool(
-			pgPoolConfig(kineticConfig, process.env.KINETIC_ENV || "development")
-		),
+		pool: pgPool(kineticConfig, process.env.KINETIC_ENV || "development"),
 	}),
 });
 `);

@@ -4,7 +4,7 @@ import * as p from "@clack/prompts";
 import color from "picocolors";
 import { env, exit } from "process";
 import { importConfig } from "../../config.js";
-import { pgPool } from "../../pg/pg_pool.js";
+import { pgPoolAndConfig } from "../../pg/pg_pool.js";
 import { pgQueryExecuteWithResult } from "../../pg/pg_query.js";
 import { ActionStatus, runCommand } from "../command.js";
 import { checkEnvironmentIsConfigured } from "../utils/clack.js";
@@ -18,7 +18,7 @@ export async function structureDump(environment: string) {
 		spinner: s,
 		outro: true,
 	});
-	const pool = pgPool(config, environment);
+	const pool = pgPoolAndConfig(config, environment);
 
 	const searchPathQueryResult = await pgQueryExecuteWithResult<{
 		search_path: string;

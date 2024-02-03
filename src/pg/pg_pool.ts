@@ -5,7 +5,7 @@ import { exit } from "process";
 import { log } from "~/cli/utils/clack.js";
 import { Config } from "~/config.js";
 
-export function pgPool(config: Config, environment: string) {
+export function pgPoolAndConfig(config: Config, environment: string) {
 	const environmentConfig = config.environments[environment];
 	if (environmentConfig === undefined) {
 		log.lineMessage(
@@ -29,4 +29,8 @@ export function pgPool(config: Config, environment: string) {
 		}),
 		config: poolConfig,
 	};
+}
+
+export function pgPool(config: Config, environment: string) {
+	return pgPoolAndConfig(config, environment).pool;
 }
