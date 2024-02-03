@@ -22,5 +22,6 @@ export function columnInfoFactory(options: required & optional) {
 		renameFrom: options.renameFrom ?? null,
 		primaryKey: options.primaryKey ?? null,
 		foreignKeyConstraint: options.foreignKeyConstraint ?? null,
+		identity: options.identity ?? null,
 	};
 }

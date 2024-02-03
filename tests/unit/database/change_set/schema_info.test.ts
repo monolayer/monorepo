@@ -50,6 +50,7 @@ test("#schemaColumnInfo", () => {
 		renameFrom: "old_column_name",
 		primaryKey: null,
 		foreignKeyConstraint: null,
+		identity: null,
 	};
 
 	expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
@@ -89,6 +90,7 @@ test("#schemaDBTableInfo", () => {
 				renameFrom: null,
 				primaryKey: null,
 				foreignKeyConstraint: null,
+				identity: null,
 			},
 			name: {
 				tableName: "users",
@@ -103,6 +105,7 @@ test("#schemaDBTableInfo", () => {
 				renameFrom: null,
 				primaryKey: null,
 				foreignKeyConstraint: null,
+				identity: null,
 			},
 			email: {
 				tableName: "users",
@@ -117,6 +120,7 @@ test("#schemaDBTableInfo", () => {
 				renameFrom: null,
 				primaryKey: null,
 				foreignKeyConstraint: null,
+				identity: null,
 			},
 		},
 		teams: {
@@ -133,6 +137,7 @@ test("#schemaDBTableInfo", () => {
 				renameFrom: null,
 				primaryKey: null,
 				foreignKeyConstraint: null,
+				identity: null,
 			},
 			name: {
 				tableName: "teams",
@@ -147,6 +152,7 @@ test("#schemaDBTableInfo", () => {
 				renameFrom: null,
 				primaryKey: null,
 				foreignKeyConstraint: null,
+				identity: null,
 			},
 			active: {
 				tableName: "teams",
@@ -161,6 +167,7 @@ test("#schemaDBTableInfo", () => {
 				renameFrom: null,
 				primaryKey: null,
 				foreignKeyConstraint: null,
+				identity: null,
 			},
 		},
 	};

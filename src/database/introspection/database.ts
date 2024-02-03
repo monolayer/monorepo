@@ -380,6 +380,7 @@ function transformDbColumnInfo(
 							column: row.constraint_column_name,
 					  }
 					: null,
+			identity: null,
 		});
 	}
 	return transformed;

@@ -15,6 +15,7 @@ export type ColumnInfo = {
 	renameFrom: string | null;
 	primaryKey: true | null;
 	foreignKeyConstraint: ForeIgnKeyConstraintInfo | null;
+	identity: "ALWAYS" | "BY DEFAULT" | null;
 };
 
 interface QueryDataType {
@@ -38,6 +39,7 @@ export class PgColumnBase<S, I, U> {
 			renameFrom: null,
 			primaryKey: null,
 			foreignKeyConstraint: null,
+			identity: null,
 		};
 	}
 

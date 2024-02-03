@@ -42,6 +42,7 @@ export function schemaColumnInfo(
 		foreignKeyConstraint: meta.foreignKeyConstraint
 			? meta.foreignKeyConstraint
 			: null,
+		identity: null,
 	};
 }
 

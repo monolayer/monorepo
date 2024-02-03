@@ -110,6 +110,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					numeric: {
 						tableName: "numeric_table_1",
@@ -124,6 +125,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 				},
 			});
@@ -148,6 +150,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					decimal_with_precision_and_scale: {
 						tableName: "numeric_table_2",
@@ -162,6 +165,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					numeric_with_precision: {
 						tableName: "numeric_table_2",
@@ -176,6 +180,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					numeric_with_precision_and_scale: {
 						tableName: "numeric_table_2",
@@ -190,6 +195,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 				},
 			});
@@ -228,6 +234,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					int2: {
 						tableName: "integer_table_1",
@@ -242,6 +249,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					int4: {
 						tableName: "integer_table_1",
@@ -256,6 +264,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					int8: {
 						tableName: "integer_table_1",
@@ -270,6 +279,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					integer: {
 						tableName: "integer_table_1",
@@ -284,6 +294,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 				},
 			});
@@ -321,6 +332,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					float4: {
 						tableName: "float_table_1",
@@ -335,6 +347,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					float8: {
 						tableName: "float_table_1",
@@ -349,6 +362,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					real: {
 						tableName: "float_table_1",
@@ -363,6 +377,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 				},
 			});
@@ -398,6 +413,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					serial: {
 						tableName: "serial_table_1",
@@ -412,6 +428,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 				},
 			});
@@ -451,6 +468,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					bytea: {
 						tableName: "misc_table_1",
@@ -465,6 +483,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					date: {
 						tableName: "misc_table_1",
@@ -479,6 +498,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					json: {
 						tableName: "misc_table_1",
@@ -493,6 +513,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					jsonb: {
 						tableName: "misc_table_1",
@@ -507,6 +528,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					uuid: {
 						tableName: "misc_table_1",
@@ -521,6 +543,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 				},
 			});
@@ -565,6 +588,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					char_10: {
 						tableName: "character_table_1",
@@ -579,6 +603,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 				},
 				character_table_2: {
@@ -595,6 +620,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					varchar: {
 						tableName: "character_table_2",
@@ -609,6 +635,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					varchar_300: {
 						tableName: "character_table_2",
@@ -623,6 +650,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 				},
 			});
@@ -670,6 +698,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					timestamp_p: {
 						tableName: "dt_table_1",
@@ -684,6 +713,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					timestamptz: {
 						tableName: "dt_table_1",
@@ -698,6 +728,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					timestamptz_p: {
 						tableName: "dt_table_1",
@@ -712,6 +743,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 				},
 				dt_table_2: {
@@ -728,6 +760,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					time_p: {
 						tableName: "dt_table_2",
@@ -742,6 +775,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					timetz: {
 						tableName: "dt_table_2",
@@ -756,6 +790,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 					timetz_p: {
 						tableName: "dt_table_2",
@@ -770,6 +805,7 @@ describe("db info", () => {
 						renameFrom: null,
 						primaryKey: null,
 						foreignKeyConstraint: null,
+						identity: null,
 					},
 				},
 			});
@@ -820,6 +856,7 @@ describe("db info", () => {
 						primaryKey: true,
 						renameFrom: null,
 						tableName: "fk_table_1",
+						identity: null,
 					},
 					price: {
 						characterMaximumLength: null,
@@ -834,6 +871,7 @@ describe("db info", () => {
 						primaryKey: null,
 						renameFrom: null,
 						tableName: "fk_table_1",
+						identity: null,
 					},
 				},
 				fk_table_2: {
@@ -853,6 +891,7 @@ describe("db info", () => {
 						primaryKey: null,
 						renameFrom: null,
 						tableName: "fk_table_2",
+						identity: null,
 					},
 					email: {
 						characterMaximumLength: 255,
@@ -867,6 +906,7 @@ describe("db info", () => {
 						primaryKey: null,
 						renameFrom: null,
 						tableName: "fk_table_2",
+						identity: null,
 					},
 					name: {
 						characterMaximumLength: null,
@@ -881,6 +921,7 @@ describe("db info", () => {
 						primaryKey: true,
 						renameFrom: null,
 						tableName: "fk_table_2",
+						identity: null,
 					},
 				},
 			});

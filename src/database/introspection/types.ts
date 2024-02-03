@@ -11,6 +11,7 @@ export type ColumnInfo = {
 	renameFrom: string | null;
 	primaryKey: true | null;
 	foreignKeyConstraint: ForeIgnKeyConstraintInfo | null;
+	identity: "ALWAYS" | "BY DEFAULT" | null;
 };
 
 export type ForeIgnKeyConstraintInfo = {
