@@ -34,9 +34,7 @@ export function schemaColumnInfo(
 		renameFrom: meta.renameFrom,
 		primaryKey: meta.primaryKey,
 		defaultValue: meta.defaultValue ? meta.defaultValue.toString() : null,
-		foreignKeyConstraint: meta.foreignKeyConstraint
-			? meta.foreignKeyConstraint
-			: null,
+		foreignKeyConstraint: meta.foreignKeyConstraint,
 		identity: meta.identity,
 	};
 }
