@@ -22,6 +22,20 @@ type InformationSchemaTables = {
 	commit_action: string | null;
 };
 
+type InformationSchemaTableConstraints = {
+	constraint_catalog: string | null;
+	constraint_schema: string | null;
+	constraint_name: string | null;
+	table_catalog: string | null;
+	table_schema: string | null;
+	table_name: string | null;
+	constraint_type: "CHECK" | "FOREIGN KEY" | "PRIMARY KEY" | "UNIQUE";
+	is_deferrable: "YES" | "NO";
+	initially_deferred: "YES" | "NO";
+	enforced: "YES" | "NO";
+	nulls_distinct: "YES" | "NO";
+};
+
 type InformationSchemaColumns = {
 	numeric_precision: number | null;
 	numeric_precision_radix: number | null;
@@ -116,6 +130,7 @@ type InformationSchemaDB = {
 	"information_schema.columns": InformationSchemaColumns;
 	"information_schema.key_column_usage": InformationSchemaKeyColumnUsage;
 	"information_schema.constraint_column_usage": InformationSchemaConstraintColumnUsage;
+	"information_schema.table_constraints": InformationSchemaTableConstraints;
 	pg_index: PgIndexTable;
 	pg_namespace: PgNamespaceTable;
 	pg_class: PgClassTable;
@@ -216,6 +231,13 @@ async function fetchDbColumnInfo(
 				"information_schema.key_column_usage.constraint_name",
 			),
 		)
+		.fullJoin("information_schema.table_constraints", (join) =>
+			join.onRef(
+				"information_schema.table_constraints.constraint_name",
+				"=",
+				"information_schema.key_column_usage.constraint_name",
+			),
+		)
 		.select([
 			"information_schema.columns.table_name",
 			"information_schema.columns.column_name",
@@ -239,6 +261,8 @@ async function fetchDbColumnInfo(
 			"information_schema.key_column_usage.position_in_unique_constraint",
 			"information_schema.constraint_column_usage.table_name as constraint_table_name",
 			"information_schema.constraint_column_usage.column_name as constraint_column_name",
+			"information_schema.table_constraints.constraint_type as constraint_type",
+			"information_schema.table_constraints.nulls_distinct as constraint_nulls_distinct",
 		])
 		.where("information_schema.columns.table_schema", "=", databaseSchema)
 		.where("information_schema.columns.table_name", "in", tableNames)
@@ -347,12 +371,10 @@ function transformDbColumnInfo(
 			characterMaximumLength: row.character_maximum_length,
 			datetimePrecision: row.datetime_precision,
 			renameFrom: row.rename_from,
-			primaryKey:
-				row.constraint_name !== null &&
-				row.position_in_unique_constraint == null
-					? true
-					: null,
+			primaryKey: row.constraint_type === "PRIMARY KEY" || null,
 			foreignKeyConstraint:
+				row.constraint_type !== null &&
+				row.constraint_type === "FOREIGN KEY" &&
 				row.constraint_table_name !== null &&
 				row.table_name !== row.constraint_table_name &&
 				row.constraint_column_name !== null
