@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
 	schemaColumnInfo,
 	schemaDBColumnInfoByTable,
@@ -6,6 +6,8 @@ import {
 	schemaTableInfo,
 } from "~/database/introspection/local_schema.js";
 import {
+	ColumnIdentity,
+	ColumnUnique,
 	pgBigSerial,
 	pgBoolean,
 	pgSerial,
@@ -33,22 +35,109 @@ test("#schemaTableInfo", () => {
 	expect(schemaTableInfo([foo, bar])).toEqual(expectedInfo);
 });
 
-test("#schemaColumnInfo", () => {
-	const column = pgVarChar(100)
-		.notNull()
-		.defaultTo("foo")
-		.renameFrom("old_column_name");
-	const expectedInfo = columnInfoFactory({
-		tableName: "foo",
-		columnName: "bar",
-		dataType: "varchar(100)",
-		defaultValue: "foo",
-		isNullable: false,
-		characterMaximumLength: 100,
-		renameFrom: "old_column_name",
+describe("#schemaColumnInfo", () => {
+	test("default column", () => {
+		const column = pgVarChar(100);
+		const expectedInfo = columnInfoFactory({
+			tableName: "foo",
+			columnName: "bar",
+			dataType: "varchar(100)",
+			characterMaximumLength: 100,
+		});
+
+		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
 	});
 
-	expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+	test("not null column", () => {
+		const column = pgVarChar(100).notNull();
+		const expectedInfo = columnInfoFactory({
+			tableName: "foo",
+			columnName: "bar",
+			dataType: "varchar(100)",
+			isNullable: false,
+			characterMaximumLength: 100,
+		});
+
+		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+	});
+
+	test("column with defaultTo", () => {
+		const column = pgVarChar(100).defaultTo("foo");
+		const expectedInfo = columnInfoFactory({
+			tableName: "foo",
+			columnName: "bar",
+			dataType: "varchar(100)",
+			defaultValue: "foo",
+			characterMaximumLength: 100,
+		});
+
+		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+	});
+
+	test("column with renameFrom", () => {
+		const column = pgVarChar(100).renameFrom("old_column_name");
+		const expectedInfo = columnInfoFactory({
+			tableName: "foo",
+			columnName: "bar",
+			dataType: "varchar(100)",
+			characterMaximumLength: 100,
+			renameFrom: "old_column_name",
+		});
+
+		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+	});
+
+	test("column with unique", () => {
+		const column = pgVarChar(100).unique();
+		const expectedInfo = columnInfoFactory({
+			tableName: "foo",
+			columnName: "bar",
+			dataType: "varchar(100)",
+			characterMaximumLength: 100,
+			unique: ColumnUnique.NullsDistinct,
+		});
+
+		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+	});
+
+	test("column with unique nulls not distinct", () => {
+		const column = pgVarChar(100).unique().nullsNotDistinct();
+		const expectedInfo = columnInfoFactory({
+			tableName: "foo",
+			columnName: "bar",
+			dataType: "varchar(100)",
+			characterMaximumLength: 100,
+			unique: ColumnUnique.NullsNotDistinct,
+		});
+
+		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+	});
+
+	test("column with always as identity", () => {
+		const column = pgVarChar(100).generatedAlwaysAsIdentity();
+		const expectedInfo = columnInfoFactory({
+			tableName: "foo",
+			columnName: "bar",
+			dataType: "varchar(100)",
+			characterMaximumLength: 100,
+			identity: ColumnIdentity.Always,
+		});
+
+		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+	});
+
+	test("column with by default as identity", () => {
+		const column = pgVarChar(100).generatedByDefaultAsIdentity();
+		const expectedInfo = columnInfoFactory({
+			tableName: "foo",
+			columnName: "bar",
+			dataType: "varchar(100)",
+			characterMaximumLength: 100,
+			identity: ColumnIdentity.ByDefault,
+		});
+
+		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+	});
 });
 
 test("#schemaDBTableInfo on empty database", () => {

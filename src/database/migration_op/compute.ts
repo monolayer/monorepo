@@ -29,6 +29,14 @@ import {
 	columnPrimaryKeyMigrationOperation,
 	isColumnPrimaryKey,
 } from "./column_change/primary_key.js";
+import {
+	columnUniqueNullDistinctAddMigrationOperation,
+	columnUniqueNullDistinctChangeMigrationOperation,
+	columnUniqueNullDistinctDropMigrationOperation,
+	isUniqueAdd,
+	isUniqueChange,
+	isUniqueDrop,
+} from "./column_change/unique.js";
 import { createIndexMigration, isCreateIndex } from "./index/create.js";
 import {
 	createFirstIndexMigration,
@@ -50,6 +58,9 @@ export enum MigrationOpPriority {
 	ChangeColumnForeignKeyDrop = 3.41,
 	ChangeColumnIdentityAdd = 3.5,
 	ChangeColumnIdentityDrop = 3.51,
+	ChangeColumnUniqueAdd = 3.6,
+	ChangeColumnUniqueDrop = 3.61,
+	ChangeColumnUniqueChange = 3.62,
 	Index = 4,
 }
 
@@ -86,6 +97,12 @@ export function migrationOp(
 		return dropIndexMigration(difference, droppedTables);
 	if (isDropAllIndexes(difference))
 		return dropAllIndexesMigration(difference, droppedTables);
+	if (isUniqueAdd(difference))
+		return columnUniqueNullDistinctAddMigrationOperation(difference);
+	if (isUniqueDrop(difference))
+		return columnUniqueNullDistinctDropMigrationOperation(difference);
+	if (isUniqueChange(difference))
+		return columnUniqueNullDistinctChangeMigrationOperation(difference);
 	return [];
 }
 
@@ -95,4 +112,10 @@ export function executeKyselySchemaStatement(...args: string[]) {
 
 export function executeKyselyDbStatement(statement: string) {
 	return [`await sql\`${statement}\`.execute(db);`];
+}
+
+export function executeKyselyDbStatements(statements: string[]) {
+	return statements.flatMap((statement) => {
+		return executeKyselyDbStatement(statement);
+	});
 }

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { changeset } from "~/database/changeset.js";
 import { pgIndex } from "~/database/schema/pg_index.js";
-import { ColumnIdentity } from "~/index.js";
+import { ColumnIdentity, ColumnUnique } from "~/index.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
 
@@ -1209,6 +1209,434 @@ describe("#dbChangeset", () => {
 						'alterTable("members")',
 						'addColumn("id", "varchar", (col) => col.generatedAlwaysAsIdentity())',
 						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+	});
+
+	describe("unique columns", () => {
+		test("on table creation", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							unNullD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsDistinct,
+							}),
+							unNullNotD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullNotD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsNotDistinct,
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					type: "createTable",
+					priority: 1,
+					up: [
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("unNullD", "integer", (col) => col.unique())',
+						'addColumn("unNullNotD", "integer", (col) => col.unique().nullsNotDistinct())',
+						"execute();",
+					],
+					down: ["await db.schema", 'dropTable("books")', "execute();"],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on table drop", () => {
+			const cset = changeset(
+				{
+					table: {},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							unNullD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsDistinct,
+							}),
+							unNullNotD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullNotD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsNotDistinct,
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					type: "dropTable",
+					priority: 1,
+					up: ["await db.schema", 'dropTable("books")', "execute();"],
+					down: [
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("unNullD", "integer", (col) => col.unique())',
+						'addColumn("unNullNotD", "integer", (col) => col.unique().nullsNotDistinct())',
+						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column creation", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							unNullD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsDistinct,
+							}),
+							unNullNotD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullNotD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsNotDistinct,
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 2,
+					type: "createColumn",
+					up: [
+						"await db.schema",
+						'alterTable("books")',
+						'addColumn("unNullD", "integer", (col) => col.unique())',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("books")',
+						'dropColumn("unNullD")',
+						"execute();",
+					],
+				},
+				{
+					tableName: "books",
+					priority: 2,
+					type: "createColumn",
+					up: [
+						"await db.schema",
+						'alterTable("books")',
+						'addColumn("unNullNotD", "integer", (col) => col.unique().nullsNotDistinct())',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("books")',
+						'dropColumn("unNullNotD")',
+						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column drop", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							unNullD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsDistinct,
+							}),
+							unNullNotD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullNotD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsNotDistinct,
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 2,
+					type: "dropColumn",
+					up: [
+						"await db.schema",
+						'alterTable("books")',
+						'dropColumn("unNullD")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("books")',
+						'addColumn("unNullD", "integer", (col) => col.unique())',
+						"execute();",
+					],
+				},
+				{
+					tableName: "books",
+					priority: 2,
+					type: "dropColumn",
+					up: [
+						"await db.schema",
+						'alterTable("books")',
+						'dropColumn("unNullNotD")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("books")',
+						'addColumn("unNullNotD", "integer", (col) => col.unique().nullsNotDistinct())',
+						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column change (add)", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							unNullD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsDistinct,
+							}),
+							unNullNotD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullNotD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsNotDistinct,
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							unNullD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullD",
+								dataType: "integer",
+							}),
+							unNullNotD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullNotD",
+								dataType: "integer",
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 3.6,
+					type: "changeColumn",
+					up: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullD ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullD DROP CONSTRAINT books_unNullD_key`.execute(db);",
+					],
+				},
+				{
+					tableName: "books",
+					priority: 3.6,
+					type: "changeColumn",
+					up: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column change (remove)", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							unNullD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullD",
+								dataType: "integer",
+							}),
+							unNullNotD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullNotD",
+								dataType: "integer",
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							unNullD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsDistinct,
+							}),
+							unNullNotD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullNotD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsNotDistinct,
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 3.61,
+					type: "changeColumn",
+					up: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullD DROP CONSTRAINT books_unNullD_key`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullD ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
+					],
+				},
+				{
+					tableName: "books",
+					priority: 3.61,
+					type: "changeColumn",
+					up: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column change (change)", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							unNullD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsDistinct,
+							}),
+							unNullNotD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullNotD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsNotDistinct,
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							unNullD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsNotDistinct,
+							}),
+							unNullNotD: columnInfoFactory({
+								tableName: "books",
+								columnName: "unNullNotD",
+								dataType: "integer",
+								unique: ColumnUnique.NullsDistinct,
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 3.62,
+					type: "changeColumn",
+					up: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullD DROP CONSTRAINT books_unNullD_key`.execute(db);",
+						"await sql`ALTER TABLE books ALTER COLUMN unNullD ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullD DROP CONSTRAINT books_unNullD_key`.execute(db);",
+						"await sql`ALTER TABLE books ALTER COLUMN unNullD ADD CONSTRAINT books_unNullD_key UNIQUE NULLS NOT DISTINCT (unNullD)`.execute(db);",
+					],
+				},
+				{
+					tableName: "books",
+					priority: 3.62,
+					type: "changeColumn",
+					up: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
+						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
+						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD ADD CONSTRAINT books_unNullNotD_key UNIQUE (unNullNotD)`.execute(db);",
 					],
 				},
 			];

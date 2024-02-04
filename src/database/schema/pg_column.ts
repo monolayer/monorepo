@@ -16,12 +16,24 @@ export type ColumnInfo = {
 	primaryKey: true | null;
 	foreignKeyConstraint: ForeIgnKeyConstraintInfo | null;
 	identity: ColumnIdentity.Always | ColumnIdentity.ByDefault | null;
+	unique: ColumnUnique.NullsDistinct | ColumnUnique.NullsNotDistinct | null;
 };
 
 export enum ColumnIdentity {
 	Always = "ALWAYS",
 	ByDefault = "BY DEFAULT",
 }
+
+export enum ColumnUnique {
+	NullsDistinct = "NullsDistinct",
+	NullsNotDistinct = "NullsNotDistinct",
+}
+
+export type UniqueConstraintInfo = {
+	enabled: boolean;
+	name: string | null;
+	nullsNotDistinct: boolean;
+};
 
 interface QueryDataType {
 	/** @internal */
@@ -45,6 +57,7 @@ export class PgColumnBase<S, I, U> {
 			primaryKey: null,
 			foreignKeyConstraint: null,
 			identity: null,
+			unique: null,
 		};
 	}
 
@@ -62,6 +75,18 @@ export class PgColumnBase<S, I, U> {
 			table: table.name,
 			column: column.toString(),
 		};
+		return this;
+	}
+
+	unique() {
+		this.info.unique = ColumnUnique.NullsDistinct;
+		return this;
+	}
+
+	nullsNotDistinct() {
+		if (this.info.unique !== null) {
+			this.info.unique = ColumnUnique.NullsNotDistinct;
+		}
 		return this;
 	}
 }

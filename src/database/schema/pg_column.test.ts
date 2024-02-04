@@ -3,6 +3,7 @@ import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import {
 	ColumnInfo,
+	ColumnUnique,
 	PgBigInt,
 	PgBigSerial,
 	PgBoolean,
@@ -877,5 +878,21 @@ function testColumnMethods(testNull = true) {
 			table: "users",
 			column: "id",
 		});
+	});
+
+	test("unique() sets unique info", (context: ColumnContext) => {
+		context.column.unique();
+		expect(context.columnInfo.unique).toBe(ColumnUnique.NullsDistinct);
+	});
+
+	test("nullsNotDistinct() sets unique info when unique() has been called", (context: ColumnContext) => {
+		const col = context.column.unique();
+		col.nullsNotDistinct();
+		expect(context.columnInfo.unique).toBe(ColumnUnique.NullsNotDistinct);
+	});
+
+	test("nullsNotDistinct() does not set unique info when unique() has not been called", (context: ColumnContext) => {
+		context.column.nullsNotDistinct();
+		expect(context.columnInfo.unique).toBe(null);
 	});
 }

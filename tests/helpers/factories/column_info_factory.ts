@@ -23,5 +23,6 @@ export function columnInfoFactory(options: required & optional) {
 		primaryKey: options.primaryKey ?? null,
 		foreignKeyConstraint: options.foreignKeyConstraint ?? null,
 		identity: options.identity ?? null,
+		unique: options.unique ?? null,
 	};
 }

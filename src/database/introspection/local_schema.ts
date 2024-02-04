@@ -36,6 +36,7 @@ export function schemaColumnInfo(
 		defaultValue: meta.defaultValue ? meta.defaultValue.toString() : null,
 		foreignKeyConstraint: meta.foreignKeyConstraint,
 		identity: meta.identity,
+		unique: meta.unique,
 	};
 }
 

@@ -4,7 +4,11 @@ import {
 	OperationAnyError,
 	OperationSuccess,
 } from "~/cli/command.js";
-import type { ColumnIdentity, ColumnInfo } from "../schema/pg_column.js";
+import {
+	ColumnIdentity,
+	ColumnInfo,
+	ColumnUnique,
+} from "../schema/pg_column.js";
 import { IndexInfo, TableColumnInfo } from "./types.js";
 
 type InformationSchemaTables = {
@@ -257,8 +261,7 @@ async function fetchDbColumnInfo(
 			),
 			"information_schema.columns.identity_generation",
 			"information_schema.columns.is_identity",
-			"information_schema.key_column_usage.constraint_name",
-			"information_schema.key_column_usage.position_in_unique_constraint",
+			"information_schema.table_constraints.constraint_name",
 			"information_schema.constraint_column_usage.table_name as constraint_table_name",
 			"information_schema.constraint_column_usage.column_name as constraint_column_name",
 			"information_schema.table_constraints.constraint_type as constraint_type",
@@ -386,6 +389,15 @@ function transformDbColumnInfo(
 			identity:
 				row.is_identity === "YES" && row.identity_generation !== null
 					? row.identity_generation
+					: null,
+			unique:
+				row.constraint_name !== null &&
+				row.constraint_type !== null &&
+				row.constraint_type === "UNIQUE" &&
+				row.constraint_nulls_distinct !== null
+					? row.constraint_nulls_distinct === "YES"
+						? ColumnUnique.NullsDistinct
+						: ColumnUnique.NullsNotDistinct
 					: null,
 		});
 	}

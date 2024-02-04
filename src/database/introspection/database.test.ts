@@ -6,7 +6,7 @@ import {
 } from "~/database/introspection/database.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { DbContext, globalKysely } from "~tests/setup.js";
-import { ColumnIdentity } from "../schema/pg_column.js";
+import { ColumnIdentity, ColumnUnique } from "../schema/pg_column.js";
 
 async function dropTables(context: DbContext) {
 	try {
@@ -623,6 +623,41 @@ describe("db info", () => {
 						isNullable: false,
 						tableName: "identity_table_1",
 						identity: ColumnIdentity.Always,
+					}),
+				},
+			});
+		});
+		it<DbContext>("returns info with unique constraint", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("unique_constraint_test");
+			await kysely.schema
+				.createTable("unique_constraint_test")
+				.addColumn("price", "integer", (col) => col.unique())
+				.addColumn("demo", "integer", (col) => col.unique().nullsNotDistinct())
+				.execute();
+			const table_1_results = await dbColumnInfo(kysely, "public", [
+				"unique_constraint_test",
+			]);
+			if (table_1_results.status === ActionStatus.Error) {
+				throw table_1_results.error;
+			}
+			expect(table_1_results.result).toStrictEqual({
+				unique_constraint_test: {
+					price: columnInfoFactory({
+						columnName: "price",
+						dataType: "integer",
+						isNullable: true,
+						tableName: "unique_constraint_test",
+						unique: ColumnUnique.NullsDistinct,
+					}),
+					demo: columnInfoFactory({
+						columnName: "demo",
+						dataType: "integer",
+						isNullable: true,
+						tableName: "unique_constraint_test",
+						unique: ColumnUnique.NullsNotDistinct,
 					}),
 				},
 			});

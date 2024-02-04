@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { ColumnIdentity } from "~/database/schema/pg_column.js";
+import { ColumnIdentity, ColumnUnique } from "~/database/schema/pg_column.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { CreateColumnDiff, createColumnMigration } from "./create.js";
 
@@ -242,6 +242,72 @@ describe("createTableMigration", () => {
 				"await db.schema",
 				'alterTable("books")',
 				'addColumn("demo", "text", (col) => col.generatedByDefaultAsIdentity())',
+				"execute();",
+			],
+			down: [
+				"await db.schema",
+				'alterTable("books")',
+				'dropColumn("demo")',
+				"execute();",
+			],
+		};
+
+		expect(createColumnMigration(column)).toStrictEqual(expected);
+	});
+
+	test("columns with unique nulls distinct", () => {
+		const column: CreateColumnDiff = {
+			type: "CREATE",
+			path: ["table", "books", "demo"],
+			value: columnInfoFactory({
+				tableName: "books",
+				columnName: "demo",
+				dataType: "text",
+				unique: ColumnUnique.NullsDistinct,
+			}),
+		};
+
+		const expected = {
+			priority: 2,
+			tableName: "books",
+			type: "createColumn",
+			up: [
+				"await db.schema",
+				'alterTable("books")',
+				'addColumn("demo", "text", (col) => col.unique())',
+				"execute();",
+			],
+			down: [
+				"await db.schema",
+				'alterTable("books")',
+				'dropColumn("demo")',
+				"execute();",
+			],
+		};
+
+		expect(createColumnMigration(column)).toStrictEqual(expected);
+	});
+
+	test("columns with unique nulls not distinct", () => {
+		const column: CreateColumnDiff = {
+			type: "CREATE",
+			path: ["table", "books", "demo"],
+			value: columnInfoFactory({
+				tableName: "books",
+				columnName: "demo",
+				dataType: "text",
+				unique: ColumnUnique.NullsNotDistinct,
+			}),
+		};
+
+		const expected = {
+			priority: 2,
+			tableName: "books",
+			type: "createColumn",
+			up: [
+				"await db.schema",
+				'alterTable("books")',
+				'addColumn("demo", "text", (col) => col.unique().nullsNotDistinct())',
 				"execute();",
 			],
 			down: [
