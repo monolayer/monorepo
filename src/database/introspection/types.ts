@@ -1,8 +1,10 @@
+import type { OnModifyForeignAction } from "kysely";
 import type { ColumnInfo } from "../schema/pg_column.js";
 
 export type ForeIgnKeyConstraintInfo = {
 	table: string;
 	column: string;
+	options: `${OnModifyForeignAction};${OnModifyForeignAction}`;
 };
 
 export type IndexInfo = Record<string, Record<string, string>>;

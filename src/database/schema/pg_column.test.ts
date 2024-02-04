@@ -1,6 +1,7 @@
 import { ColumnDataType } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
+import { PgColumnBase } from "./PgColumnBase.js";
 import {
 	ColumnInfo,
 	ColumnUnique,
@@ -10,7 +11,6 @@ import {
 	PgBytea,
 	PgChar,
 	PgColumn,
-	PgColumnBase,
 	PgColumnWithPrecision,
 	PgDate,
 	PgDoublePrecision,
@@ -184,9 +184,6 @@ describe("PgGeneratedColumn", () => {
 });
 
 function testBase(expectedDataType = "integer") {
-	test("inherits from PgColumnBase", (context: ColumnContext) => {
-		expect(context.column).toBeInstanceOf(PgColumnBase);
-	});
 	testColumnDefaults(expectedDataType);
 	testColumnMethods();
 }
@@ -867,16 +864,47 @@ function testColumnMethods(testNull = true) {
 		expect(context.columnInfo.renameFrom).toBe("old_name");
 	});
 
-	test("references() sets foreignKeyConstraint", (context: ColumnContext) => {
-		const users = pgTable("users", {
-			columns: {
-				id: pgSerial(),
-			},
+	describe("references()", () => {
+		test("references() sets foreignKeyConstraint", (context: ColumnContext) => {
+			const users = pgTable("users", {
+				columns: {
+					id: pgSerial(),
+				},
+			});
+			context.column.references(users, "id");
+			expect(context.columnInfo.foreignKeyConstraint).toEqual({
+				table: "users",
+				column: "id",
+				options: "no action;no action",
+			});
 		});
-		context.column.references(users, "id");
-		expect(context.columnInfo.foreignKeyConstraint).toEqual({
-			table: "users",
-			column: "id",
+
+		test("references() sets foreignKeyConstraint on delete", (context: ColumnContext) => {
+			const users = pgTable("users", {
+				columns: {
+					id: pgSerial(),
+				},
+			});
+			context.column.references(users, "id", { onDelete: "cascade" });
+			expect(context.columnInfo.foreignKeyConstraint).toEqual({
+				table: "users",
+				column: "id",
+				options: "cascade;no action",
+			});
+		});
+
+		test("references() sets foreignKeyConstraint on update", (context: ColumnContext) => {
+			const users = pgTable("users", {
+				columns: {
+					id: pgSerial(),
+				},
+			});
+			context.column.references(users, "id", { onUpdate: "cascade" });
+			expect(context.columnInfo.foreignKeyConstraint).toEqual({
+				table: "users",
+				column: "id",
+				options: "no action;cascade",
+			});
 		});
 	});
 

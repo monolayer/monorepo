@@ -15,10 +15,11 @@ export function tableColumnsOps(columnsInfo: ColumnsInfo) {
 
 export function foreignKeyConstraint(column: ColumnInfo) {
 	if (column.foreignKeyConstraint === null) return "";
+	const options = column.foreignKeyConstraint.options.split(";");
 	return [
 		`.addForeignKeyConstraint("${column.tableName}_${column.columnName}_fkey",`,
 		`["${column.columnName}"], "${column.foreignKeyConstraint.table}",`,
-		`["${column.foreignKeyConstraint.column}"])`,
+		`["${column.foreignKeyConstraint.column}"], (cb) => cb.onDelete("${options[0]}").onUpdate("${options[1]}"))`,
 	].join(" ");
 }
 

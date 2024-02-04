@@ -1,4 +1,5 @@
 import { Difference } from "microdiff";
+import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { createColumnMigration, isCreateColumn } from "./column/create.js";
 import { dropColumnMigration, isDropColumn } from "./column/drop.js";
 import {
@@ -11,7 +12,9 @@ import {
 } from "./column_change/default.js";
 import {
 	addColumnForeignKeyMigrationOperation,
+	changeColumnForeignKeyMigrationOperation,
 	isAddForeignKeyConstraintValue,
+	isChangeOptionsForeignKeyConstraintValue,
 	isRemoveForeignKeyConstraintValue,
 	removeColumnForeignKeyMigrationOperation,
 } from "./column_change/foreign_key.js";
@@ -56,6 +59,7 @@ export enum MigrationOpPriority {
 	ChangeColumnPrimaryKeyCreate = 3.3,
 	ChangeColumnForeignKeyCreate = 3.4,
 	ChangeColumnForeignKeyDrop = 3.41,
+	ChangeColumnForeignKeyChange = 3.42,
 	ChangeColumnIdentityAdd = 3.5,
 	ChangeColumnIdentityDrop = 3.51,
 	ChangeColumnUniqueAdd = 3.6,
@@ -68,7 +72,10 @@ export function migrationOp(
 	difference: Difference,
 	addedTables: string[],
 	droppedTables: string[],
+	local: LocalTableInfo,
+	db: DbTableInfo,
 ) {
+	console.log(difference);
 	if (isCreateTable(difference)) return createTableMigration(difference);
 	if (isDropTable(difference)) return dropTableMigration(difference);
 	if (isCreateColumn(difference)) return createColumnMigration(difference);
@@ -85,6 +92,8 @@ export function migrationOp(
 		return addColumnForeignKeyMigrationOperation(difference);
 	if (isRemoveForeignKeyConstraintValue(difference))
 		return removeColumnForeignKeyMigrationOperation(difference);
+	if (isChangeOptionsForeignKeyConstraintValue(difference))
+		return changeColumnForeignKeyMigrationOperation(difference, local, db);
 	if (isColumnIdentityAdd(difference))
 		return columnIdentityAddMigrationOperation(difference);
 	if (isColumnIdentityDrop(difference))

@@ -516,6 +516,7 @@ describe("db info", () => {
 			kysely,
 			tableNames,
 		}) => {
+			tableNames.push("fk_table_3");
 			tableNames.push("fk_table_2");
 			tableNames.push("fk_table_1");
 			await kysely.schema
@@ -529,15 +530,29 @@ describe("db info", () => {
 				.addColumn("email", "char(255)")
 				.addColumn("book_id", "integer")
 				.addForeignKeyConstraint(
-					"foreign_pk_books_id",
+					"foreign_fk_table_2_pk_books_id",
 					["book_id"],
 					"fk_table_1",
 					["id"],
 				)
 				.execute();
+
+			await kysely.schema
+				.createTable("fk_table_3")
+				.addColumn("book_id", "integer")
+				.addForeignKeyConstraint(
+					"foreign_fk_table_3_pk_books_id",
+					["book_id"],
+					"fk_table_1",
+					["id"],
+					(cb) => cb.onDelete("set null").onUpdate("cascade"),
+				)
+				.execute();
+
 			const table_1_results = await dbColumnInfo(kysely, "public", [
 				"fk_table_1",
 				"fk_table_2",
+				"fk_table_3",
 			]);
 			if (table_1_results.status === ActionStatus.Error) {
 				throw table_1_results.error;
@@ -567,6 +582,7 @@ describe("db info", () => {
 						foreignKeyConstraint: {
 							table: "fk_table_1",
 							column: "id",
+							options: "no action;no action",
 						},
 						isNullable: true,
 						tableName: "fk_table_2",
@@ -584,6 +600,19 @@ describe("db info", () => {
 						isNullable: false,
 						primaryKey: true,
 						tableName: "fk_table_2",
+					}),
+				},
+				fk_table_3: {
+					book_id: columnInfoFactory({
+						columnName: "book_id",
+						dataType: "integer",
+						foreignKeyConstraint: {
+							table: "fk_table_1",
+							column: "id",
+							options: "set null;cascade",
+						},
+						isNullable: true,
+						tableName: "fk_table_3",
 					}),
 				},
 			});

@@ -1,4 +1,9 @@
-import type { ColumnDataType, ColumnType, Expression } from "kysely";
+import type {
+	ColumnDataType,
+	ColumnType,
+	Expression,
+	OnModifyForeignAction,
+} from "kysely";
 import { ForeIgnKeyConstraintInfo } from "../introspection/types.js";
 import { pgTable } from "./table.js";
 
@@ -70,10 +75,17 @@ export class PgColumnBase<S, I, U> {
 	references<R extends pgTable<string, any>>(
 		table: R,
 		column: keyof R["columns"],
+		options?: {
+			onDelete?: OnModifyForeignAction;
+			onUpdate?: OnModifyForeignAction;
+		},
 	): this {
 		this.info.foreignKeyConstraint = {
 			table: table.name,
 			column: column.toString(),
+			options: `${
+				options?.onDelete !== undefined ? options.onDelete : "no action"
+			};${options?.onUpdate !== undefined ? options.onUpdate : "no action"}`,
 		};
 		return this;
 	}

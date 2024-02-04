@@ -1,4 +1,4 @@
-import { Kysely, sql } from "kysely";
+import { Kysely, type OnModifyForeignAction, sql } from "kysely";
 import {
 	ActionStatus,
 	OperationAnyError,
@@ -111,6 +111,30 @@ type InformationSchemaConstraintColumnUsage = {
 	constraint_name: string | null;
 };
 
+type InformationSchemaReferentialConstraints = {
+	constraint_catalog: string | null;
+	constraint_schema: string | null;
+	constraint_name: string | null;
+	unique_constraint_catalog: string | null;
+	unique_constraint_schema: string | null;
+	unique_constraint_name: string | null;
+	match_option: string | null;
+	update_rule:
+		| "CASCADE"
+		| "SET NULL"
+		| "SET DEFAULT"
+		| "RESTRICT"
+		| "NO ACTION"
+		| null;
+	delete_rule:
+		| "CASCADE"
+		| "SET NULL"
+		| "SET DEFAULT"
+		| "RESTRICT"
+		| "NO ACTION"
+		| null;
+};
+
 type PgIndexTable = {
 	indrelid: number;
 	indexrelid: number;
@@ -135,6 +159,7 @@ type InformationSchemaDB = {
 	"information_schema.key_column_usage": InformationSchemaKeyColumnUsage;
 	"information_schema.constraint_column_usage": InformationSchemaConstraintColumnUsage;
 	"information_schema.table_constraints": InformationSchemaTableConstraints;
+	"information_schema.referential_constraints": InformationSchemaReferentialConstraints;
 	pg_index: PgIndexTable;
 	pg_namespace: PgNamespaceTable;
 	pg_class: PgClassTable;
@@ -242,6 +267,13 @@ async function fetchDbColumnInfo(
 				"information_schema.key_column_usage.constraint_name",
 			),
 		)
+		.fullJoin("information_schema.referential_constraints", (join) =>
+			join.onRef(
+				"information_schema.table_constraints.constraint_name",
+				"=",
+				"information_schema.referential_constraints.constraint_name",
+			),
+		)
 		.select([
 			"information_schema.columns.table_name",
 			"information_schema.columns.column_name",
@@ -266,6 +298,8 @@ async function fetchDbColumnInfo(
 			"information_schema.constraint_column_usage.column_name as constraint_column_name",
 			"information_schema.table_constraints.constraint_type as constraint_type",
 			"information_schema.table_constraints.nulls_distinct as constraint_nulls_distinct",
+			"information_schema.referential_constraints.delete_rule",
+			"information_schema.referential_constraints.update_rule",
 		])
 		.where("information_schema.columns.table_schema", "=", databaseSchema)
 		.where("information_schema.columns.table_name", "in", tableNames)
@@ -380,10 +414,15 @@ function transformDbColumnInfo(
 				row.constraint_type === "FOREIGN KEY" &&
 				row.constraint_table_name !== null &&
 				row.table_name !== row.constraint_table_name &&
-				row.constraint_column_name !== null
+				row.constraint_column_name !== null &&
+				row.delete_rule !== null &&
+				row.update_rule !== null
 					? {
 							table: row.constraint_table_name,
 							column: row.constraint_column_name,
+							options: `${
+								row.delete_rule.toLowerCase() as OnModifyForeignAction
+							};${row.update_rule.toLowerCase() as OnModifyForeignAction}`,
 					  }
 					: null,
 			identity:

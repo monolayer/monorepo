@@ -164,6 +164,7 @@ describe("createTableMigration", () => {
 				foreignKeyConstraint: {
 					table: "authors",
 					column: "id",
+					options: "no action;cascade",
 				},
 			}),
 		};
@@ -176,7 +177,7 @@ describe("createTableMigration", () => {
 				"await db.schema",
 				'alterTable("books")',
 				'addColumn("author_id", "text")',
-				'.addForeignKeyConstraint("books_author_id_fkey", ["author_id"], "authors", ["id"])',
+				'.addForeignKeyConstraint("books_author_id_fkey", ["author_id"], "authors", ["id"], (cb) => cb.onDelete("no action").onUpdate("cascade"))',
 				"execute();",
 			],
 			down: [

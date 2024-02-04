@@ -531,6 +531,7 @@ describe("#dbChangeset", () => {
 								foreignKeyConstraint: {
 									table: "books",
 									column: "id",
+									options: "no action;no action",
 								},
 							}),
 						},
@@ -564,7 +565,7 @@ describe("#dbChangeset", () => {
 						'createTable("members")',
 						'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
 						'addColumn("book_id", "integer")',
-						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"])',
+						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"], (cb) => cb.onDelete("no action").onUpdate("no action"))',
 						"execute();",
 					],
 					down: ["await db.schema", 'dropTable("members")', "execute();"],
@@ -598,6 +599,7 @@ describe("#dbChangeset", () => {
 								foreignKeyConstraint: {
 									table: "books",
 									column: "id",
+									options: "no action;no action",
 								},
 							}),
 						},
@@ -635,7 +637,7 @@ describe("#dbChangeset", () => {
 						"await db.schema",
 						'alterTable("members")',
 						'addColumn("book_id", "integer")',
-						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"])',
+						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"], (cb) => cb.onDelete("no action").onUpdate("no action"))',
 						"execute();",
 					],
 					down: [
@@ -675,6 +677,7 @@ describe("#dbChangeset", () => {
 								foreignKeyConstraint: {
 									table: "books",
 									column: "id",
+									options: "no action;no action",
 								},
 							}),
 						},
@@ -782,6 +785,7 @@ describe("#dbChangeset", () => {
 								foreignKeyConstraint: {
 									table: "books",
 									column: "id",
+									options: "no action;no action",
 								},
 							}),
 						},
@@ -805,6 +809,89 @@ describe("#dbChangeset", () => {
 						'alterTable("members")',
 						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"])',
 						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column change (option change)", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "serial",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							book_id: columnInfoFactory({
+								tableName: "members",
+								columnName: "book_id",
+								dataType: "integer",
+								foreignKeyConstraint: {
+									table: "books",
+									column: "id",
+									options: "cascade;restrict",
+								},
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "serial",
+								primaryKey: true,
+							}),
+						},
+						members: {
+							book_id: columnInfoFactory({
+								tableName: "members",
+								columnName: "book_id",
+								dataType: "integer",
+								foreignKeyConstraint: {
+									table: "books",
+									column: "id",
+									options: "no action;cascade",
+								},
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "members",
+					priority: 3.42,
+					type: "changeColumn",
+					up: [
+						[
+							"await sql`",
+							[
+								"ALTER TABLE members DROP CONSTRAINT members_book_id_fkey",
+								"ALTER TABLE members ADD CONSTRAINT members_book_id_fkey FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE cascade ON UPDATE restrict",
+							].join(", "),
+							"`.execute(db);",
+						].join(""),
+					],
+					down: [
+						[
+							"await sql`",
+							[
+								"ALTER TABLE members DROP CONSTRAINT members_book_id_fkey",
+								"ALTER TABLE members ADD CONSTRAINT members_book_id_fkey FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE no action ON UPDATE cascade",
+							].join(", "),
+							"`.execute(db);",
+						].join(""),
 					],
 				},
 			];

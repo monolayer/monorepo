@@ -6,11 +6,11 @@ import { DropTableTableDiff, isDropTable } from "./migration_op/table/drop.js";
 
 export function changeset(local: LocalTableInfo, db: DbTableInfo): Changeset[] {
 	const diff = microdiff(db, local);
-	const droppedTables = diff.filter(isDropTable).map(tableName);
 	const addedTables = diff.filter(isCreateTable).map(tableName);
+	const droppedTables = diff.filter(isDropTable).map(tableName);
 	return diff
 		.flatMap((difference) =>
-			migrationOp(difference, addedTables, droppedTables),
+			migrationOp(difference, addedTables, droppedTables, local, db),
 		)
 		.sort((a, b) => (a.priority || 1) - (b.priority || 1));
 }
