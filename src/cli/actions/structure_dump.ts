@@ -4,8 +4,8 @@ import * as p from "@clack/prompts";
 import color from "picocolors";
 import { env, exit } from "process";
 import { importConfig } from "../../config.js";
-import { pgPoolAndConfig } from "../../pg/pg_pool.js";
-import { pgQueryExecuteWithResult } from "../../pg/pg_query.js";
+import { pgPoolAndConfig } from "../../database/pg/pg_pool.js";
+import { pgQueryExecuteWithResult } from "../../database/pg/pg_query.js";
 import { ActionStatus, runCommand } from "../command.js";
 import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
