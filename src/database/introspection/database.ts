@@ -278,22 +278,7 @@ async function fetchDbColumnInfo(
 		.select([
 			"information_schema.columns.table_name",
 			"information_schema.columns.column_name",
-			sql<string>`
-				CASE
-					WHEN pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name) IS NOT NULL
-						AND information_schema.columns.data_type = 'integer'
-						AND information_schema.columns.is_identity = 'NO'
-						THEN 'serial'
-					WHEN pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name) IS NOT NULL
-						AND information_schema.columns.data_type = 'bigint'
-						AND information_schema.columns.is_identity = 'NO'
-						THEN 'bigserial'
-					ELSE information_schema.columns.data_type
-				END`.as("data_type"),
 			"information_schema.columns.column_default",
-			sql<boolean>`CASE WHEN information_schema.columns.is_nullable = 'YES' THEN true ELSE false END`.as(
-				"is_nullable",
-			),
 			"information_schema.columns.numeric_precision",
 			"information_schema.columns.numeric_scale",
 			"information_schema.columns.character_maximum_length",
@@ -315,6 +300,32 @@ async function fetchDbColumnInfo(
 			sql`pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name)`.as(
 				"sequence_name",
 			),
+		])
+		.select((eb) => [
+			eb
+				.case()
+				.when(
+					sql`
+						pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name) IS NOT NULL
+						AND information_schema.columns.data_type = 'integer'
+						AND information_schema.columns.is_identity = 'NO'`,
+				)
+				.then("serial")
+				.when(sql`
+					pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name) IS NOT NULL
+					AND information_schema.columns.data_type = 'bigint'
+					AND information_schema.columns.is_identity = 'NO'`)
+				.then("bigserial")
+				.else(sql<string>`information_schema.columns.data_type`)
+				.end()
+				.as("data_type"),
+			eb
+				.case()
+				.when(sql`information_schema.columns.is_nullable = 'YES'`)
+				.then(sql<boolean>`true`)
+				.else(sql<boolean>`false`)
+				.end()
+				.as("is_nullable"),
 		])
 		.where("information_schema.columns.table_schema", "=", databaseSchema)
 		.where("information_schema.columns.table_name", "in", tableNames)
