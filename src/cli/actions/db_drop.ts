@@ -10,7 +10,7 @@ import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 export async function dbDrop(environment: string) {
 	p.intro("Drop Database");
 	const s = p.spinner();
-	s.start("Creating database");
+	s.start("Dropping database");
 	const config = await importConfig();
 	checkEnvironmentIsConfigured(config, environment, {
 		spinner: s,
