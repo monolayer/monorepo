@@ -217,6 +217,7 @@ export async function dbColumnInfo(
 		const results = await fetchDbColumnInfo(kysely, databaseSchema, tableNames);
 		const transformed = transformDbColumnInfo(results);
 		const mapped = mapColumnsToTables(transformed);
+		console.dir(mapped, { depth: null });
 		return {
 			status: ActionStatus.Success,
 			result: mapped,
@@ -313,10 +314,6 @@ function transformDbColumnInfo(
 ) {
 	const transformed: ColumnInfo[] = [];
 	for (const row of info) {
-		const match = row.column_default?.match(/^'(.+)\:\:.+$/);
-		if (match && match[1] !== undefined) {
-			row.column_default = match[1].replace(/'/g, "");
-		}
 		let dataTypeFullName: string;
 		switch (row.data_type) {
 			case "bigint":

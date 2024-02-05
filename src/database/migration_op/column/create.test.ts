@@ -128,7 +128,7 @@ describe("createTableMigration", () => {
 				tableName: "books",
 				columnName: "id",
 				dataType: "text",
-				defaultValue: "foo",
+				defaultValue: "'foo':text",
 			}),
 		};
 
@@ -139,7 +139,7 @@ describe("createTableMigration", () => {
 			up: [
 				"await db.schema",
 				'alterTable("books")',
-				'addColumn("id", "text", (col) => col.defaultTo("foo"))',
+				'addColumn("id", "text", (col) => col.defaultTo(sql`\'foo\':text`))',
 				"execute();",
 			],
 			down: [

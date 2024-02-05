@@ -1,3 +1,4 @@
+import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
 import { changeset } from "~/database/changeset.js";
 import { pgIndex } from "~/database/schema/pg_index.js";
@@ -21,6 +22,7 @@ describe("#dbChangeset", () => {
 							tableName: "books",
 							columnName: "name",
 							dataType: "text",
+							defaultValue: "'10'::text",
 						}),
 					},
 					members: {
@@ -28,13 +30,14 @@ describe("#dbChangeset", () => {
 							tableName: "members",
 							columnName: "name",
 							dataType: "varchar",
-							defaultValue: "hello",
+							defaultValue: sql`hello`,
 						}),
 						email: columnInfoFactory({
 							tableName: "members",
 							columnName: "email",
 							dataType: "varchar(255)",
 							characterMaximumLength: 255,
+							defaultValue: sql`${sql`10`}`,
 						}),
 						city: columnInfoFactory({
 							tableName: "members",
@@ -68,7 +71,7 @@ describe("#dbChangeset", () => {
 					"await db.schema",
 					'createTable("books")',
 					'addColumn("id", "serial", (col) => col.primaryKey())',
-					'addColumn("name", "text")',
+					'addColumn("name", "text", (col) => col.defaultTo(sql`\'10\'::text`))',
 					"execute();",
 				],
 				down: ["await db.schema", 'dropTable("books")', "execute();"],
@@ -80,8 +83,8 @@ describe("#dbChangeset", () => {
 				up: [
 					"await db.schema",
 					'createTable("members")',
-					'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
-					'addColumn("email", "varchar(255)")',
+					'addColumn("name", "varchar", (col) => col.defaultTo(sql`hello`))',
+					'addColumn("email", "varchar(255)", (col) => col.defaultTo(sql`10`))',
 					'addColumn("city", "text", (col) => col.notNull())',
 					"execute();",
 				],
@@ -113,7 +116,7 @@ describe("#dbChangeset", () => {
 							tableName: "members",
 							columnName: "name",
 							dataType: "varchar",
-							defaultValue: "hello",
+							defaultValue: sql`hello`,
 						}),
 						email: columnInfoFactory({
 							tableName: "members",
@@ -149,7 +152,7 @@ describe("#dbChangeset", () => {
 				down: [
 					"await db.schema",
 					'createTable("shops")',
-					'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
+					'addColumn("name", "varchar", (col) => col.defaultTo(sql`hello`))',
 					'addColumn("email", "varchar(255)")',
 					'addColumn("city", "text", (col) => col.notNull())',
 					"execute();",
@@ -212,7 +215,6 @@ describe("#dbChangeset", () => {
 							tableName: "members",
 							columnName: "name",
 							dataType: "varchar",
-							defaultValue: "hello",
 							isNullable: true,
 						}),
 						email: columnInfoFactory({
@@ -270,7 +272,6 @@ describe("#dbChangeset", () => {
 							tableName: "members",
 							columnName: "city",
 							dataType: "text",
-							defaultValue: "bcn",
 						}),
 					},
 					samples: {
@@ -376,23 +377,6 @@ describe("#dbChangeset", () => {
 				up: [
 					"await db.schema",
 					'alterTable("addresses")',
-					'alterColumn("name", (col) => col.setDefault("hello"))',
-					"execute();",
-				],
-				down: [
-					"await db.schema",
-					'alterTable("addresses")',
-					'alterColumn("name", (col) => col.dropDefault())',
-					"execute();",
-				],
-			},
-			{
-				tableName: "addresses",
-				type: "changeColumn",
-				priority: 3.1,
-				up: [
-					"await db.schema",
-					'alterTable("addresses")',
 					'alterColumn("name", (col) => col.setNotNull())',
 					"execute();",
 				],
@@ -400,23 +384,6 @@ describe("#dbChangeset", () => {
 					"await db.schema",
 					'alterTable("addresses")',
 					'alterColumn("name", (col) => col.dropNotNull())',
-					"execute();",
-				],
-			},
-			{
-				tableName: "addresses",
-				type: "changeColumn",
-				priority: 3.1,
-				up: [
-					"await db.schema",
-					'alterTable("addresses")',
-					'alterColumn("city", (col) => col.dropDefault())',
-					"execute();",
-				],
-				down: [
-					"await db.schema",
-					'alterTable("addresses")',
-					'alterColumn("city", (col) => col.setDefault("bcn"))',
 					"execute();",
 				],
 			},
@@ -522,7 +489,7 @@ describe("#dbChangeset", () => {
 								tableName: "members",
 								columnName: "name",
 								dataType: "varchar",
-								defaultValue: "hello",
+								defaultValue: sql`hello`,
 							}),
 							book_id: columnInfoFactory({
 								tableName: "members",
@@ -563,7 +530,7 @@ describe("#dbChangeset", () => {
 					up: [
 						"await db.schema",
 						'createTable("members")',
-						'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
+						'addColumn("name", "varchar", (col) => col.defaultTo(sql`hello`))',
 						'addColumn("book_id", "integer")',
 						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"], (cb) => cb.onDelete("no action").onUpdate("no action"))',
 						"execute();",
@@ -1724,6 +1691,277 @@ describe("#dbChangeset", () => {
 					down: [
 						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
 						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD ADD CONSTRAINT books_unNullNotD_key UNIQUE (unNullNotD)`.execute(db);",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+	});
+
+	describe("column default value", () => {
+		test("on table creation", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								defaultValue: "'1'::integer",
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					type: "createTable",
+					priority: 1,
+					up: [
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("id", "integer", (col) => col.defaultTo(sql`\'1\'::integer`))',
+						"execute();",
+					],
+					down: ["await db.schema", 'dropTable("books")', "execute();"],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on table drop", () => {
+			const cset = changeset(
+				{
+					table: {},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								defaultValue: "'1'::integer",
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					type: "dropTable",
+					priority: 1,
+					up: ["await db.schema", 'dropTable("books")', "execute();"],
+					down: [
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("id", "integer", (col) => col.defaultTo(sql`\'1\'::integer`))',
+						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column creation", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								defaultValue: "'1'::integer",
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 2,
+					type: "createColumn",
+					up: [
+						"await db.schema",
+						'alterTable("books")',
+						'addColumn("id", "integer", (col) => col.defaultTo(sql`\'1\'::integer`))',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("books")',
+						'dropColumn("id")',
+						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column change (add)", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								defaultValue: "'1'::integer",
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 3.7,
+					type: "changeColumn",
+					up: [
+						"await db.schema",
+						'alterTable("books")',
+						"alterColumn(\"id\", (col) => col.setDefault(sql`'1'::integer`))",
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("books")',
+						'alterColumn("id", (col) => col.dropDefault())',
+						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column change (remove)", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								defaultValue: "'1'::integer",
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 3.71,
+					type: "changeColumn",
+					up: [
+						"await db.schema",
+						'alterTable("books")',
+						'alterColumn("id", (col) => col.dropDefault())',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("books")',
+						"alterColumn(\"id\", (col) => col.setDefault(sql`'1'::integer`))",
+						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on column change (change)", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								defaultValue: "'3'::integer",
+							}),
+						},
+					},
+					index: {},
+				},
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "integer",
+								defaultValue: "'1'::integer",
+							}),
+						},
+					},
+					index: {},
+				},
+			);
+			const expected = [
+				{
+					tableName: "books",
+					priority: 3.72,
+					type: "changeColumn",
+					up: [
+						"await db.schema",
+						'alterTable("books")',
+						"alterColumn(\"id\", (col) => col.setDefault(sql`'3'::integer`))",
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("books")',
+						"alterColumn(\"id\", (col) => col.setDefault(sql`'1'::integer`))",
+						"execute();",
 					],
 				},
 			];

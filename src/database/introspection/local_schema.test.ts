@@ -67,7 +67,7 @@ describe("#schemaColumnInfo", () => {
 			tableName: "foo",
 			columnName: "bar",
 			dataType: "varchar(100)",
-			defaultValue: "foo",
+			defaultValue: "'foo'::character varying",
 			characterMaximumLength: 100,
 		});
 

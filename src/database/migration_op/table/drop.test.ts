@@ -122,7 +122,7 @@ describe("dropTableMigration", () => {
 					tableName: "books",
 					columnName: "id",
 					dataType: "text",
-					defaultValue: "foo",
+					defaultValue: "'foo':text",
 				}),
 			},
 		};
@@ -135,7 +135,7 @@ describe("dropTableMigration", () => {
 			down: [
 				"await db.schema",
 				'createTable("books")',
-				'addColumn("id", "text", (col) => col.defaultTo("foo"))',
+				'addColumn("id", "text", (col) => col.defaultTo(sql`\'foo\':text`))',
 				"execute();",
 			],
 		};

@@ -1,5 +1,6 @@
 import { ColumnsInfo } from "../introspection/types.js";
 import { type ColumnInfo, ColumnUnique } from "../schema/pg_column.js";
+import { compileDefault } from "./column_change/default.js";
 
 export function tableColumnsOps(columnsInfo: ColumnsInfo) {
 	return Object.entries(columnsInfo).flatMap(([_, column]) => {
@@ -36,8 +37,9 @@ export function optionsForColumn(column: ColumnInfo) {
 	if (column.unique === ColumnUnique.NullsNotDistinct)
 		options.push("unique().nullsNotDistinct()");
 
-	if (column.defaultValue !== null)
-		options.push(`defaultTo(\"${column.defaultValue}\")`);
+	if (column.defaultValue !== null) {
+		options.push(`defaultTo(${compileDefault(column.defaultValue)})`);
+	}
 	if (options.length !== 0)
 		columnOptions = `, (col) => col.${options.join(".")}`;
 	return columnOptions;

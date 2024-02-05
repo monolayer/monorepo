@@ -1,10 +1,11 @@
-import { ColumnDataType } from "kysely";
+import { ColumnDataType, type Expression, sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { PgColumnBase } from "./PgColumnBase.js";
 import {
 	ColumnInfo,
 	ColumnUnique,
+	DefaultValueDataTypes,
 	PgBigInt,
 	PgBigSerial,
 	PgBoolean,
@@ -100,7 +101,7 @@ describe("PgColumnBase", () => {
 
 describe("PgColumn", () => {
 	beforeEach((context: ColumnWithDefaultContext) => {
-		context.column = new PgColumn("integer");
+		context.column = new PgColumn("integer", DefaultValueDataTypes.integer);
 		context.columnInfo = Object.fromEntries(
 			Object.entries(context.column),
 		).info;
@@ -124,9 +125,35 @@ describe("PgColumn", () => {
 		expect(context.columnInfo.isNullable).toBe(false);
 	});
 
-	test("defaultTo sets defaultValue", (context: ColumnWithDefaultContext) => {
-		context.column.defaultTo(5);
-		expect(context.columnInfo.defaultValue).toBe(5);
+	describe("defaultTo()", () => {
+		test("defaultTo accepts insert column data types or an arbitrary SQL expression", () => {
+			const integerColumn = pgInteger();
+			const integerColumnExpect: Expect<
+				Equal<
+					string | number | Expression<unknown>,
+					Parameters<typeof integerColumn.defaultTo>[0]
+				>
+			> = true;
+			expectTypeOf(integerColumnExpect).toMatchTypeOf<boolean>();
+
+			const textColumn = pgText();
+			const textColumnExpect: Expect<
+				Equal<
+					string | Expression<unknown>,
+					Parameters<typeof textColumn.defaultTo>[0]
+				>
+			> = true;
+			expectTypeOf(textColumnExpect).toMatchTypeOf<boolean>();
+		});
+
+		test("defaultTo sets default value", (context: ColumnWithDefaultContext) => {
+			const column = pgText();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			const someSqlExpression = sql`now()`;
+			column.defaultTo(someSqlExpression);
+			expect(info.defaultValue).toBe(someSqlExpression);
+		});
 	});
 
 	test("generatedAlwaysAsIdentity sets identity to ALWAYS", (context: ColumnWithDefaultContext) => {
@@ -142,7 +169,10 @@ describe("PgColumn", () => {
 
 describe("PgGeneratedColumn", () => {
 	beforeEach((context: ColumnWithoutDefaultContext) => {
-		context.column = new PgGeneratedColumn("serial");
+		context.column = new PgGeneratedColumn(
+			"serial",
+			DefaultValueDataTypes.serial,
+		);
 		context.columnInfo = Object.fromEntries(
 			Object.entries(context.column),
 		).info;
@@ -203,6 +233,14 @@ describe("pgBoolean", () => {
 			const info = Object.fromEntries(Object.entries(pgBoolean())).info;
 			expect(info.dataType).toBe("boolean");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgBoolean();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(true);
+			expect(info.defaultValue).toBe("'true'::boolean");
+		});
 	});
 });
 
@@ -221,6 +259,14 @@ describe("pgText", () => {
 			const info = Object.fromEntries(Object.entries(pgText())).info;
 			expect(info.dataType).toBe("text");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgText();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("foo");
+			expect(info.defaultValue).toBe("'foo'::text");
+		});
 	});
 });
 
@@ -238,6 +284,20 @@ describe("pgBigInt", () => {
 		test("dataType is set to bigint", () => {
 			const info = Object.fromEntries(Object.entries(pgBigInt())).info;
 			expect(info.dataType).toBe("bigint");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgBigInt();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(12234433444444455n);
+			expect(info.defaultValue).toBe("'12234433444444455'::bigint");
+
+			column.defaultTo(12);
+			expect(info.defaultValue).toBe("'12'::bigint");
+
+			column.defaultTo("12");
+			expect(info.defaultValue).toBe("'12'::bigint");
 		});
 	});
 });
@@ -275,6 +335,24 @@ describe("pgBytea", () => {
 			const info = Object.fromEntries(Object.entries(pgBytea())).info;
 			expect(info.dataType).toBe("bytea");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgBytea();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			const buffer = Buffer.from("hello");
+			column.defaultTo(buffer);
+			expect(info.defaultValue).toBe("'hello'::bytea");
+
+			column.defaultTo(12);
+			expect(info.defaultValue).toBe("'12'::bytea");
+
+			column.defaultTo("12");
+			expect(info.defaultValue).toBe("'12'::bytea");
+
+			column.defaultTo(true);
+			expect(info.defaultValue).toBe("'true'::bytea");
+		});
 	});
 });
 
@@ -292,6 +370,18 @@ describe("pgDate", () => {
 		test("dataType is set to date", () => {
 			const info = Object.fromEntries(Object.entries(pgDate())).info;
 			expect(info.dataType).toBe("date");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgDate();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			const date = new Date(1);
+			column.defaultTo(date);
+			expect(info.defaultValue).toBe("'1970-01-01'::date");
+
+			column.defaultTo(new Date(1).toISOString());
+			expect(info.defaultValue).toBe("'1970-01-01'::date");
 		});
 	});
 });
@@ -311,6 +401,20 @@ describe("pgDoublePrecision", () => {
 			const info = Object.fromEntries(Object.entries(pgDoublePrecision())).info;
 			expect(info.dataType).toBe("double precision");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgDoublePrecision();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(10);
+			expect(info.defaultValue).toBe("'10'::double precision");
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::double precision");
+
+			column.defaultTo(102n);
+			expect(info.defaultValue).toBe("'102'::double precision");
+		});
 	});
 });
 
@@ -328,6 +432,20 @@ describe("pgFloat4", () => {
 		test("dataType is set to float4", () => {
 			const info = Object.fromEntries(Object.entries(pgFloat4())).info;
 			expect(info.dataType).toBe("float4");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgFloat4();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(10.4);
+			expect(info.defaultValue).toBe("'10.4'::real");
+
+			column.defaultTo("10.4");
+			expect(info.defaultValue).toBe("'10.4'::real");
+
+			column.defaultTo(102n);
+			expect(info.defaultValue).toBe("'102'::real");
 		});
 	});
 });
@@ -347,6 +465,20 @@ describe("pgFloat8", () => {
 			const info = Object.fromEntries(Object.entries(pgFloat8())).info;
 			expect(info.dataType).toBe("float8");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgFloat8();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(10.4);
+			expect(info.defaultValue).toBe("'10.4'::double precision");
+
+			column.defaultTo("10.4");
+			expect(info.defaultValue).toBe("'10.4'::double precision");
+
+			column.defaultTo(102n);
+			expect(info.defaultValue).toBe("'102'::double precision");
+		});
 	});
 });
 
@@ -364,6 +496,17 @@ describe("pgInt2", () => {
 		test("dataType is set to int2", () => {
 			const info = Object.fromEntries(Object.entries(pgInt2())).info;
 			expect(info.dataType).toBe("int2");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgInt2();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(10);
+			expect(info.defaultValue).toBe("'10'::smallint");
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::smallint");
 		});
 	});
 });
@@ -383,6 +526,17 @@ describe("pgInt4", () => {
 			const info = Object.fromEntries(Object.entries(pgInt4())).info;
 			expect(info.dataType).toBe("int4");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgInt4();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(10);
+			expect(info.defaultValue).toBe("'10'::integer");
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::integer");
+		});
 	});
 });
 
@@ -400,6 +554,20 @@ describe("pgInt8", () => {
 		test("dataType is set to int8", () => {
 			const info = Object.fromEntries(Object.entries(pgInt8())).info;
 			expect(info.dataType).toBe("int8");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgInt8();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(10);
+			expect(info.defaultValue).toBe("'10'::bigint");
+
+			column.defaultTo(100n);
+			expect(info.defaultValue).toBe("'100'::bigint");
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::bigint");
 		});
 	});
 });
@@ -419,6 +587,17 @@ describe("pgInteger", () => {
 			const info = Object.fromEntries(Object.entries(pgInteger())).info;
 			expect(info.dataType).toBe("integer");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgInteger();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(10);
+			expect(info.defaultValue).toBe("'10'::integer");
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::integer");
+		});
 	});
 });
 
@@ -436,6 +615,17 @@ describe("pgJson", () => {
 		test("dataType is set to json", () => {
 			const info = Object.fromEntries(Object.entries(pgJson())).info;
 			expect(info.dataType).toBe("json");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgJson();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::json");
+
+			column.defaultTo('{ "foo": "bar" }');
+			expect(info.defaultValue).toBe('\'{ "foo": "bar" }\'::json');
 		});
 	});
 });
@@ -455,6 +645,17 @@ describe("pgJsonB", () => {
 			const info = Object.fromEntries(Object.entries(pgJsonB())).info;
 			expect(info.dataType).toBe("jsonb");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgJsonB();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::jsonb");
+
+			column.defaultTo('{ "foo": "bar" }');
+			expect(info.defaultValue).toBe('\'{ "foo": "bar" }\'::jsonb');
+		});
 	});
 });
 
@@ -472,6 +673,20 @@ describe("pgReal", () => {
 		test("dataType is set to real", () => {
 			const info = Object.fromEntries(Object.entries(pgReal())).info;
 			expect(info.dataType).toBe("real");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgReal();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::real");
+
+			column.defaultTo(10);
+			expect(info.defaultValue).toBe("'10'::real");
+
+			column.defaultTo(100n);
+			expect(info.defaultValue).toBe("'100'::real");
 		});
 	});
 });
@@ -514,6 +729,14 @@ describe("pgUuid", () => {
 			const info = Object.fromEntries(Object.entries(pgUuid())).info;
 			expect(info.dataType).toBe("uuid");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgUuid();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::uuid");
+		});
 	});
 });
 
@@ -532,6 +755,14 @@ describe("pgVarChar", () => {
 			const info = Object.fromEntries(Object.entries(pgVarChar())).info;
 			expect(info.dataType).toBe("varchar");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgVarChar();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::character varying");
+		});
 	});
 
 	describe("with optional maximumLength", () => {
@@ -544,6 +775,14 @@ describe("pgVarChar", () => {
 		test("data type has maximumLength", () => {
 			const info = Object.fromEntries(Object.entries(pgVarChar(255))).info;
 			expect(info.dataType).toBe("varchar(255)");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgVarChar(100);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::character varying");
 		});
 	});
 });
@@ -569,6 +808,14 @@ describe("pgChar", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.characterMaximumLength).toBe(1);
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgChar();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::character(1)");
+		});
 	});
 
 	describe("with optional maximumLength", () => {
@@ -581,6 +828,14 @@ describe("pgChar", () => {
 		test("data type has maximumLength", () => {
 			const info = Object.fromEntries(Object.entries(pgChar(255))).info;
 			expect(info.dataType).toBe("char(255)");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgChar(200);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("10");
+			expect(info.defaultValue).toBe("'10'::character(1)");
 		});
 	});
 });
@@ -621,6 +876,14 @@ describe("pgTime", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgTime();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("04:05 AM");
+			expect(info.defaultValue).toBe("'04:05 AM'::time without time zone");
+		});
 	});
 
 	describe("with optional precision", () => {
@@ -633,6 +896,14 @@ describe("pgTime", () => {
 		test("data type has precision", () => {
 			const info = Object.fromEntries(Object.entries(pgTime(1))).info;
 			expect(info.dataType).toBe("time(1)");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgTime(1);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("04:05 AM");
+			expect(info.defaultValue).toBe("'04:05 AM'::time without time zone");
 		});
 	});
 });
@@ -658,6 +929,14 @@ describe("pgTimeTz", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgTimeTz();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("04:05:06-08:00");
+			expect(info.defaultValue).toBe("'04:05:06-08:00'::time with time zone");
+		});
 	});
 
 	describe("with optional precision", () => {
@@ -670,6 +949,14 @@ describe("pgTimeTz", () => {
 		test("data type has precision", () => {
 			const info = Object.fromEntries(Object.entries(pgTimeTz(1))).info;
 			expect(info.dataType).toBe("timetz(1)");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgTimeTz(1);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo("04:05:06-08:00");
+			expect(info.defaultValue).toBe("'04:05:06-08:00'::time with time zone");
 		});
 	});
 });
@@ -695,6 +982,16 @@ describe("pgTimestamp", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgTimestamp();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(new Date(1));
+			expect(info.defaultValue).toBe(
+				"'1970-01-01T00:00:00.001Z'::timestamp without time zone",
+			);
+		});
 	});
 
 	describe("with optional precision", () => {
@@ -707,6 +1004,16 @@ describe("pgTimestamp", () => {
 		test("data type has precision", () => {
 			const info = Object.fromEntries(Object.entries(pgTimestamp(1))).info;
 			expect(info.dataType).toBe("timestamp(1)");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgTimestamp(1);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(new Date(1));
+			expect(info.defaultValue).toBe(
+				"'1970-01-01T00:00:00.001Z'::timestamp without time zone",
+			);
 		});
 	});
 });
@@ -732,6 +1039,16 @@ describe("pgTimestampTz", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgTimestampTz();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(new Date(1));
+			expect(info.defaultValue).toBe(
+				"'1970-01-01T00:00:00.001Z'::timestamp with time zone",
+			);
+		});
 	});
 
 	describe("with optional precision", () => {
@@ -744,6 +1061,16 @@ describe("pgTimestampTz", () => {
 		test("data type has precision", () => {
 			const info = Object.fromEntries(Object.entries(pgTimestampTz(1))).info;
 			expect(info.dataType).toBe("timestamptz(1)");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgTimestampTz(1);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(new Date(1));
+			expect(info.defaultValue).toBe(
+				"'1970-01-01T00:00:00.001Z'::timestamp with time zone",
+			);
 		});
 	});
 });
@@ -775,6 +1102,26 @@ describe("pgNumeric", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericScale).toBe(null);
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgNumeric();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(1);
+			expect(info.defaultValue).toBe("'1'::numeric");
+
+			column.defaultTo("1");
+			expect(info.defaultValue).toBe("'1'::numeric");
+
+			column.defaultTo(1.1);
+			expect(info.defaultValue).toBe("'1.1'::numeric");
+
+			column.defaultTo("1.1");
+			expect(info.defaultValue).toBe("'1.1'::numeric");
+
+			column.defaultTo(100n);
+			expect(info.defaultValue).toBe("'100'::numeric");
+		});
 	});
 
 	describe("with optional precision", () => {
@@ -794,6 +1141,26 @@ describe("pgNumeric", () => {
 			const info = Object.fromEntries(Object.entries(pgNumeric(5))).info;
 			expect(info.dataType).toBe("numeric(5, 0)");
 		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgNumeric(5);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(1);
+			expect(info.defaultValue).toBe("'1'::numeric");
+
+			column.defaultTo("1");
+			expect(info.defaultValue).toBe("'1'::numeric");
+
+			column.defaultTo(1.1);
+			expect(info.defaultValue).toBe("'1.1'::numeric");
+
+			column.defaultTo("1.1");
+			expect(info.defaultValue).toBe("'1.1'::numeric");
+
+			column.defaultTo(100n);
+			expect(info.defaultValue).toBe("'100'::numeric");
+		});
 	});
 
 	describe("with scale", () => {
@@ -806,6 +1173,26 @@ describe("pgNumeric", () => {
 		test("data type has precision and scale", () => {
 			const info = Object.fromEntries(Object.entries(pgNumeric(4, 5))).info;
 			expect(info.dataType).toBe("numeric(4, 5)");
+		});
+
+		test("defaultTo with column data type", () => {
+			const column = pgNumeric(5, 1);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.defaultTo(1);
+			expect(info.defaultValue).toBe("'1'::numeric");
+
+			column.defaultTo("1");
+			expect(info.defaultValue).toBe("'1'::numeric");
+
+			column.defaultTo(1.1);
+			expect(info.defaultValue).toBe("'1.1'::numeric");
+
+			column.defaultTo("1.1");
+			expect(info.defaultValue).toBe("'1.1'::numeric");
+
+			column.defaultTo(100n);
+			expect(info.defaultValue).toBe("'100'::numeric");
 		});
 	});
 });

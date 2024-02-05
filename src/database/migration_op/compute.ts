@@ -7,8 +7,12 @@ import {
 	isColumnDataType,
 } from "./column_change/data_type.js";
 import {
-	columnDefaultMigrationOperation,
-	isColumnDefaultValue,
+	columnDefaultAddMigrationOperation,
+	columnDefaultChangeMigrationOperation,
+	columnDefaultDropMigrationOperation,
+	isColumnDefaultAddValue,
+	isColumnDefaultChangeValue,
+	isColumnDefaultDropValue,
 } from "./column_change/default.js";
 import {
 	addColumnForeignKeyMigrationOperation,
@@ -65,6 +69,9 @@ export enum MigrationOpPriority {
 	ChangeColumnUniqueAdd = 3.6,
 	ChangeColumnUniqueDrop = 3.61,
 	ChangeColumnUniqueChange = 3.62,
+	ChangeColumnDefaultAdd = 3.7,
+	ChangeColumnDefaultDrop = 3.71,
+	ChangeColumnDefaultChange = 3.72,
 	Index = 4,
 }
 
@@ -75,15 +82,18 @@ export function migrationOp(
 	local: LocalTableInfo,
 	db: DbTableInfo,
 ) {
-	console.log(difference);
 	if (isCreateTable(difference)) return createTableMigration(difference);
 	if (isDropTable(difference)) return dropTableMigration(difference);
 	if (isCreateColumn(difference)) return createColumnMigration(difference);
 	if (isDropColumn(difference)) return dropColumnMigration(difference);
 	if (isColumnDataType(difference))
 		return columnDatatypeMigrationOperation(difference);
-	if (isColumnDefaultValue(difference))
-		return columnDefaultMigrationOperation(difference);
+	if (isColumnDefaultAddValue(difference))
+		return columnDefaultAddMigrationOperation(difference);
+	if (isColumnDefaultDropValue(difference))
+		return columnDefaultDropMigrationOperation(difference);
+	if (isColumnDefaultChangeValue(difference))
+		return columnDefaultChangeMigrationOperation(difference);
 	if (isColumnNullable(difference))
 		return columnNullableMigrationOperation(difference);
 	if (isColumnPrimaryKey(difference))

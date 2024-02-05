@@ -1,8 +1,9 @@
-import type {
-	ColumnDataType,
-	ColumnType,
-	Expression,
-	OnModifyForeignAction,
+import {
+	type ColumnDataType,
+	type ColumnType,
+	type Expression,
+	type OnModifyForeignAction,
+	isExpression,
 } from "kysely";
 import { ForeIgnKeyConstraintInfo } from "../introspection/types.js";
 import { pgTable } from "./table.js";
@@ -34,6 +35,52 @@ export enum ColumnUnique {
 	NullsNotDistinct = "NullsNotDistinct",
 }
 
+export enum DefaultValueDataTypes {
+	bigint = "bigint",
+	bigserial = "bigserial",
+	bit = "bit",
+	"bit varying" = "bit varying",
+	boolean = "boolean",
+	box = "box",
+	bytea = "bytea",
+	character = "character(1)",
+	"character varying" = "character varying",
+	cidr = "cidr",
+	circle = "circle",
+	date = "date",
+	"double precision" = "double precision",
+	inet = "inet",
+	integer = "integer",
+	interval = "interval",
+	json = "json",
+	jsonb = "jsonb",
+	line = "line",
+	lseg = "lseg",
+	macaddr = "macaddr",
+	macaddr8 = "macaddr8",
+	money = "money",
+	numeric = "numeric",
+	path = "path",
+	pg_lsn = "pg_lsn",
+	pg_snapshot = "pg_snapshot",
+	point = "point",
+	polygon = "polygon",
+	real = "real",
+	smallint = "smallint",
+	smallserial = "smallserial",
+	serial = "serial",
+	text = "text",
+	"time without time zone" = "time without time zone",
+	"time with time zone" = "time with time zone",
+	"timestamp without time zone" = "timestamp without time zone",
+	"timestamp with time zone" = "timestamp with time zone",
+	tsquery = "tsquery",
+	tsvector = "tsvector",
+	txid_snapshot = "txid_snapshot",
+	uuid = "uuid",
+	xml = "xml",
+}
+
 export type UniqueConstraintInfo = {
 	enabled: boolean;
 	name: string | null;
@@ -44,6 +91,11 @@ interface QueryDataType {
 	/** @internal */
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	readonly _columnType: ColumnType<any, any, any>;
+}
+
+interface NativelDataType {
+	/** @internal */
+	readonly _native_data_type: DefaultValueDataTypes;
 }
 
 export class PgColumnBase<S, I, U> {
@@ -103,64 +155,86 @@ export class PgColumnBase<S, I, U> {
 	}
 }
 
-export class PgColumn<T, I, U = I>
-	extends PgColumnBase<T, I, U>
-	implements QueryDataType
+export class PgColumn<S, I, U = I>
+	extends PgColumnBase<S, I, U>
+	implements QueryDataType, NativelDataType
 {
 	declare readonly _columnType: ColumnType<
-		T | null,
+		S | null,
 		I | undefined | null,
 		U | undefined | null
 	>;
 
-	constructor(dataType: ColumnDataType) {
+	declare readonly _native_data_type: DefaultValueDataTypes;
+
+	constructor(
+		dataType: ColumnDataType,
+		postgresDataType: DefaultValueDataTypes,
+	) {
 		super(dataType);
 		this.info.isNullable = true;
+		this._native_data_type = postgresDataType;
 	}
 
 	primaryKey() {
 		this.info.primaryKey = true;
 		return this as this & {
-			_columnType: ColumnType<T, I, U | undefined>;
+			_columnType: ColumnType<S, I, U | undefined>;
 		};
 	}
 
 	notNull() {
 		this.info.isNullable = false;
 		return this as this & {
-			_columnType: ColumnType<T, I, U>;
+			_columnType: ColumnType<S, I, U>;
 		};
 	}
 
-	defaultTo(value: unknown | Expression<unknown>) {
-		this.info.defaultValue = value;
+	defaultTo(value: I | Expression<unknown>) {
+		if (isExpression(value)) {
+			this.info.defaultValue = value;
+		} else {
+			if (this.info.dataType !== null) {
+				let val: unknown = value;
+				if (val instanceof Date) val = val.toISOString();
+				if (typeof val === "string" && this instanceof PgDate)
+					val = val.split("T")[0];
+				this.info.defaultValue = `'${val}'::${this._native_data_type}`;
+			}
+		}
 		return this;
 	}
 
 	generatedByDefaultAsIdentity() {
 		this.info.identity = ColumnIdentity.ByDefault;
 		return this as this & {
-			_columnType: ColumnType<T, I, U>;
+			_columnType: ColumnType<S, I, U>;
 		};
 	}
 
 	generatedAlwaysAsIdentity() {
 		this.info.identity = ColumnIdentity.Always;
 		return this as this & {
-			_columnType: ColumnType<T, never, U>;
+			_columnType: ColumnType<S, never, U>;
 		};
 	}
 }
 
 export class PgGeneratedColumn<T, U>
 	extends PgColumnBase<NonNullable<T>, U, U>
-	implements QueryDataType
+	implements QueryDataType, NativelDataType
 {
 	declare readonly _columnType: ColumnType<T, U | undefined, U>;
 
-	constructor(dataType: "serial" | "bigserial") {
+	declare readonly _native_data_type: DefaultValueDataTypes;
+
+	constructor(
+		dataType: "serial" | "bigserial",
+		postgresDataType: DefaultValueDataTypes,
+	) {
 		super(dataType);
 		this.info.isNullable = false;
+		this._native_data_type = postgresDataType;
 	}
 
 	primaryKey() {
@@ -177,7 +251,7 @@ export function pgBoolean() {
 
 export class PgBoolean extends PgColumn<boolean, boolean> {
 	constructor() {
-		super("boolean");
+		super("boolean", DefaultValueDataTypes.boolean);
 	}
 }
 
@@ -187,7 +261,7 @@ export function pgText() {
 
 export class PgText extends PgColumn<string, string> {
 	constructor() {
-		super("text");
+		super("text", DefaultValueDataTypes.text);
 	}
 }
 
@@ -197,7 +271,7 @@ export function pgBigInt() {
 
 export class PgBigInt extends PgColumn<string, number | bigint | string> {
 	constructor() {
-		super("bigint");
+		super("bigint", DefaultValueDataTypes.bigint);
 	}
 }
 
@@ -210,7 +284,7 @@ export class PgBigSerial extends PgGeneratedColumn<
 	number | bigint | string
 > {
 	constructor() {
-		super("bigserial");
+		super("bigserial", DefaultValueDataTypes.bigserial);
 	}
 }
 
@@ -227,7 +301,7 @@ export class PgBytea extends PgColumn<
 	Buffer | string | boolean | number | NestedRecord
 > {
 	constructor() {
-		super("bytea");
+		super("bytea", DefaultValueDataTypes.bytea);
 	}
 }
 
@@ -237,7 +311,7 @@ export function pgDate() {
 
 export class PgDate extends PgColumn<Date, Date | string> {
 	constructor() {
-		super("date");
+		super("date", DefaultValueDataTypes.date);
 	}
 }
 
@@ -250,7 +324,7 @@ export class PgDoublePrecision extends PgColumn<
 	number | bigint | string
 > {
 	constructor() {
-		super("double precision");
+		super("double precision", DefaultValueDataTypes["double precision"]);
 	}
 }
 
@@ -260,7 +334,7 @@ export function pgFloat4() {
 
 export class PgFloat4 extends PgColumn<number, number | bigint | string> {
 	constructor() {
-		super("float4");
+		super("float4", DefaultValueDataTypes.real);
 	}
 }
 
@@ -270,7 +344,7 @@ export function pgFloat8() {
 
 export class PgFloat8 extends PgColumn<number, number | bigint | string> {
 	constructor() {
-		super("float8");
+		super("float8", DefaultValueDataTypes["double precision"]);
 	}
 }
 
@@ -280,7 +354,7 @@ export function pgInt2() {
 
 export class PgInt2 extends PgColumn<number, number | string> {
 	constructor() {
-		super("int2");
+		super("int2", DefaultValueDataTypes.smallint);
 	}
 }
 
@@ -290,7 +364,7 @@ export function pgInt4() {
 
 export class PgInt4 extends PgColumn<number, number | string> {
 	constructor() {
-		super("int4");
+		super("int4", DefaultValueDataTypes.integer);
 	}
 }
 
@@ -298,9 +372,9 @@ export function pgInt8() {
 	return new PgInt8();
 }
 
-export class PgInt8 extends PgColumn<number, number | string> {
+export class PgInt8 extends PgColumn<number, number | bigint | string> {
 	constructor() {
-		super("int8");
+		super("int8", DefaultValueDataTypes.bigint);
 	}
 }
 
@@ -310,7 +384,7 @@ export function pgInteger() {
 
 export class PgInteger extends PgColumn<number, number | string> {
 	constructor() {
-		super("integer");
+		super("integer", DefaultValueDataTypes.integer);
 	}
 }
 
@@ -330,7 +404,7 @@ type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
 export class PgJson extends PgColumn<JsonValue, string> {
 	constructor() {
-		super("json");
+		super("json", DefaultValueDataTypes.json);
 	}
 }
 
@@ -340,7 +414,7 @@ export function pgJsonB() {
 
 export class PgJsonB extends PgColumn<JsonValue, string> {
 	constructor() {
-		super("jsonb");
+		super("jsonb", DefaultValueDataTypes.jsonb);
 	}
 }
 
@@ -350,7 +424,7 @@ export function pgReal() {
 
 export class PgReal extends PgColumn<number, number | bigint | string> {
 	constructor() {
-		super("real");
+		super("real", DefaultValueDataTypes.real);
 	}
 }
 
@@ -360,7 +434,7 @@ export function pgSerial() {
 
 export class PgSerial extends PgGeneratedColumn<number, number | string> {
 	constructor() {
-		super("serial");
+		super("serial", DefaultValueDataTypes.serial);
 	}
 }
 
@@ -370,17 +444,21 @@ export function pgUuid() {
 
 export class PgUuid extends PgColumn<string, string> {
 	constructor() {
-		super("uuid");
+		super("uuid", DefaultValueDataTypes.uuid);
 	}
 }
 
 export class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
 	constructor(dataType: "varchar" | "char", maximumLength?: number) {
+		const postgresDataType =
+			dataType === "varchar"
+				? DefaultValueDataTypes["character varying"]
+				: DefaultValueDataTypes.character;
 		if (maximumLength !== undefined) {
-			super(`${dataType}(${maximumLength})`);
+			super(`${dataType}(${maximumLength})`, postgresDataType);
 			this.info.characterMaximumLength = maximumLength;
 		} else {
-			super(dataType);
+			super(dataType, postgresDataType);
 		}
 	}
 }
@@ -410,11 +488,19 @@ export class PgColumnWithPrecision<T, U> extends PgColumn<T, U> {
 		dataType: PgColumnWithPrecisionDataType,
 		precision?: DateTimePrecision,
 	) {
+		const postgresDataType =
+			dataType === "time"
+				? DefaultValueDataTypes["time without time zone"]
+				: dataType === "timetz"
+				  ? DefaultValueDataTypes["time with time zone"]
+				  : dataType === "timestamp"
+					  ? DefaultValueDataTypes["timestamp without time zone"]
+					  : DefaultValueDataTypes["timestamp with time zone"];
 		if (precision !== undefined) {
-			super(`${dataType}(${precision})`);
+			super(`${dataType}(${precision})`, postgresDataType);
 			this.info.datetimePrecision = precision;
 		} else {
-			super(dataType);
+			super(dataType, postgresDataType);
 		}
 	}
 }
@@ -450,11 +536,14 @@ export function pgNumeric(precision?: number, scale = 0) {
 export class PgNumeric extends PgColumn<string, number | bigint | string> {
 	constructor(precision?: number, scale?: number) {
 		if (precision !== undefined) {
-			super(`numeric(${precision}, ${scale !== undefined ? scale : 0})`);
+			super(
+				`numeric(${precision}, ${scale !== undefined ? scale : 0})`,
+				DefaultValueDataTypes.numeric,
+			);
 			this.info.numericPrecision = precision;
 			this.info.numericScale = scale !== undefined ? scale : 0;
 		} else {
-			super("numeric");
+			super("numeric", DefaultValueDataTypes.numeric);
 		}
 	}
 }

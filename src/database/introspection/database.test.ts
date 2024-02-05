@@ -1,3 +1,4 @@
+import { sql } from "kysely";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ActionStatus } from "~/cli/command.js";
 import {
@@ -359,13 +360,17 @@ describe("db info", () => {
 		}) => {
 			tableNames.push("character_table_1");
 			tableNames.push("character_table_2");
+			await kysely.schema.createTable("character_table_1").execute();
+			await kysely.schema.createTable("character_table_2").execute();
 			await kysely.schema
-				.createTable("character_table_1")
+				.alterTable("character_table_1")
 				.addColumn("char_1", "char")
-				.addColumn("char_10", "char(10)", (col) => col.defaultTo("foo"))
+				.addColumn("char_10", "char(10)", (col) =>
+					col.defaultTo(sql`'foo'::character`),
+				)
 				.execute();
 			await kysely.schema
-				.createTable("character_table_2")
+				.alterTable("character_table_2")
 				.addColumn("varchar", "varchar", (column) => column.defaultTo("foo"))
 				.addColumn("varchar_300", "varchar(300)")
 				.addColumn("text", "text")
@@ -390,7 +395,7 @@ describe("db info", () => {
 						tableName: "character_table_1",
 						columnName: "char_10",
 						dataType: "char(10)",
-						defaultValue: "foo",
+						defaultValue: "'foo'::character(1)",
 						isNullable: true,
 						characterMaximumLength: 10,
 					}),
@@ -406,7 +411,7 @@ describe("db info", () => {
 						tableName: "character_table_2",
 						columnName: "varchar",
 						dataType: "varchar",
-						defaultValue: "foo",
+						defaultValue: "'foo'::character varying",
 						isNullable: true,
 					}),
 					varchar_300: columnInfoFactory({
@@ -483,7 +488,7 @@ describe("db info", () => {
 						tableName: "dt_table_2",
 						columnName: "time",
 						dataType: "time(6)",
-						defaultValue: "12:00:00",
+						defaultValue: "'12:00:00'::time without time zone",
 						isNullable: true,
 						datetimePrecision: 6,
 					}),
