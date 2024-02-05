@@ -278,7 +278,18 @@ async function fetchDbColumnInfo(
 		.select([
 			"information_schema.columns.table_name",
 			"information_schema.columns.column_name",
-			"information_schema.columns.data_type",
+			sql<string>`
+				CASE
+					WHEN pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name) IS NOT NULL
+						AND information_schema.columns.data_type = 'integer'
+						AND information_schema.columns.is_identity = 'NO'
+						THEN 'serial'
+					WHEN pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name) IS NOT NULL
+						AND information_schema.columns.data_type = 'bigint'
+						AND information_schema.columns.is_identity = 'NO'
+						THEN 'bigserial'
+					ELSE information_schema.columns.data_type
+				END`.as("data_type"),
 			"information_schema.columns.column_default",
 			sql<boolean>`CASE WHEN information_schema.columns.is_nullable = 'YES' THEN true ELSE false END`.as(
 				"is_nullable",
@@ -301,6 +312,9 @@ async function fetchDbColumnInfo(
 			"information_schema.table_constraints.nulls_distinct as constraint_nulls_distinct",
 			"information_schema.referential_constraints.delete_rule",
 			"information_schema.referential_constraints.update_rule",
+			sql`pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name)`.as(
+				"sequence_name",
+			),
 		])
 		.where("information_schema.columns.table_schema", "=", databaseSchema)
 		.where("information_schema.columns.table_name", "in", tableNames)
@@ -317,17 +331,15 @@ function transformDbColumnInfo(
 		let dataTypeFullName: string;
 		switch (row.data_type) {
 			case "bigint":
+				dataTypeFullName = row.data_type;
 				row.numeric_precision = null;
 				row.numeric_scale = null;
+				break;
+			case "bigserial":
+			case "serial":
 				dataTypeFullName = row.data_type;
-				if (
-					row.column_default?.startsWith(
-						`nextval('${row.table_name}_${row.column_name}_seq'`,
-					)
-				) {
-					dataTypeFullName = "bigserial";
-					row.column_default = null;
-				}
+				row.numeric_precision = null;
+				row.numeric_scale = null;
 				break;
 			case "double precision":
 				row.numeric_precision = null;
@@ -398,7 +410,7 @@ function transformDbColumnInfo(
 			tableName: row.table_name,
 			columnName: row.column_name,
 			dataType: dataTypeFullName,
-			defaultValue: row.column_default,
+			defaultValue: row.sequence_name === null ? row.column_default : null,
 			isNullable: row.is_nullable,
 			numericPrecision: row.numeric_precision,
 			numericScale: row.numeric_scale,
