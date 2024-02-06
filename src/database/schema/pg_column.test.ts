@@ -1,7 +1,6 @@
 import { ColumnDataType, type Expression, sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
-import { PgColumnBase } from "./PgColumnBase.js";
 import {
 	ColumnInfo,
 	ColumnUnique,
@@ -12,6 +11,7 @@ import {
 	PgBytea,
 	PgChar,
 	PgColumn,
+	PgColumnBase,
 	PgColumnWithPrecision,
 	PgDate,
 	PgDoublePrecision,
