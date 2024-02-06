@@ -142,6 +142,60 @@ export type PgClassTable = {
 	relnamespace: number;
 };
 
+export type PgConstraintTable = {
+	oid: number;
+	conname: string;
+	connamespace: number;
+	contype: string;
+	condeferrable: boolean;
+	condeferred: boolean;
+	convalidated: boolean;
+	conrelid: number;
+	contypid: number;
+	conindid: number;
+	conparentid: number;
+	confrelid: number;
+	confupdtype: string;
+	confdeltype: string;
+	confmatchtype: string;
+	conislocal: boolean;
+	coninhcount: number;
+	connoinherit: boolean;
+	conkey: number[];
+	confkey: number[];
+	conpfeqop: number[];
+	conppeqop: number[];
+	conffeqop: number[];
+	confdelsetcols: number[];
+	conexclop: number[];
+	conbin: string;
+};
+
+export type PgAttributeTable = {
+	attrelid: number;
+	attname: string;
+	atttypid: number;
+	attstattarget: number;
+	attlen: number;
+	attnum: number;
+	attndims: number;
+	attcacheoff: number;
+	atttypmod: number;
+	attbyval: boolean;
+	attstorage: string;
+	attalign: string;
+	attnotnull: boolean;
+	atthasdef: boolean;
+	attisdropped: boolean;
+	attislocal: boolean;
+	attinhcount: number;
+	attcollation: number;
+	attacl: string;
+	attoptions: string;
+	attfdwoptions: string;
+	attmissingval: string;
+};
+
 export type InformationSchemaDB = {
 	"information_schema.tables": InformationSchemaTables;
 	"information_schema.columns": InformationSchemaColumns;
@@ -152,4 +206,6 @@ export type InformationSchemaDB = {
 	pg_index: PgIndexTable;
 	pg_namespace: PgNamespaceTable;
 	pg_class: PgClassTable;
+	pg_constraint: PgConstraintTable;
+	pg_attribute: PgAttributeTable;
 };
