@@ -15,7 +15,7 @@ import {
 } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgIndex } from "~/database/schema/pg_index.js";
-import { pgTable } from "~/database/schema/table.js";
+import { pgTable } from "~/database/schema/pg_table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 
 test("#schemaTableInfo", () => {

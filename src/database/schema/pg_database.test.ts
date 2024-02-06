@@ -7,7 +7,7 @@ import {
 	pgVarChar,
 } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
-import { pgTable } from "~/database/schema/table.js";
+import { pgTable } from "~/database/schema/pg_table.js";
 
 describe("pgDatabase definition", () => {
 	test("without tables", () => {

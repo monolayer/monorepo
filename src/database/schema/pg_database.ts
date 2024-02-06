@@ -1,4 +1,4 @@
-import { type OptionalTableSchema, pgTable } from "./table.js";
+import { type OptionalTableSchema, pgTable } from "./pg_table.js";
 
 export type pgDatabase<
 	O extends Record<string, pgTable<string, OptionalTableSchema>>,

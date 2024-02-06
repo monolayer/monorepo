@@ -6,7 +6,7 @@ import {
 	isExpression,
 } from "kysely";
 import { ForeIgnKeyConstraintInfo } from "../introspection/types.js";
-import { pgTable } from "./table.js";
+import { pgTable } from "./pg_table.js";
 
 export type ColumnInfo = {
 	columnName: string | null;

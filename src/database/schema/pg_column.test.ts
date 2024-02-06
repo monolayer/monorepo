@@ -60,7 +60,7 @@ import {
 	pgUuid,
 	pgVarChar,
 } from "./pg_column.js";
-import { pgTable } from "./table.js";
+import { pgTable } from "./pg_table.js";
 
 type ColumnWithDefaultContext = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>

@@ -1,7 +1,7 @@
 import path from "path";
 import type { ClientConfig, PoolConfig } from "pg";
 import { pgDatabase } from "./database/schema/pg_database.js";
-import { pgTable } from "./database/schema/table.js";
+import { pgTable } from "./database/schema/pg_table.js";
 
 export type Config = {
 	folder: string;

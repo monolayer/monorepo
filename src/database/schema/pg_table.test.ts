@@ -9,7 +9,7 @@ import {
 	pgVarChar,
 } from "~/database/schema/pg_column.js";
 import { pgIndex } from "~/database/schema/pg_index.js";
-import { pgTable } from "~/database/schema/table.js";
+import { pgTable } from "~/database/schema/pg_table.js";
 import { pgForeignKeyConstraint } from "./pg_foreign_key.js";
 import { pgPrimaryKeyConstraint } from "./pg_primary_key.js";
 import { pgUniqueConstraint } from "./pg_unique.js";
