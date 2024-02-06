@@ -140,12 +140,12 @@ describe("#schemaColumnInfo", () => {
 	});
 });
 
-test("#schemaDBTableInfo on empty database", () => {
+test("#schemaDBColumnInfoByTable on empty database", () => {
 	const database = pgDatabase({});
 	expect(schemaDBColumnInfoByTable(database)).toEqual({});
 });
 
-test("#schemaDBTableInfo", () => {
+test("#schemaDBColumnInfoByTable", () => {
 	const users = pgTable("users", {
 		columns: {
 			id: pgSerial(),
@@ -211,7 +211,7 @@ test("#schemaDBTableInfo", () => {
 	);
 });
 
-test("#schemaDBTableInfo", () => {
+test("#schemaDBIndexInfoByTable", () => {
 	const users = pgTable("users", {
 		columns: {
 			id: pgSerial(),
