@@ -2,8 +2,8 @@ import * as p from "@clack/prompts";
 import { Kysely } from "kysely";
 import pg from "pg";
 import { exit } from "process";
-import { dbIndexInfo } from "~/database/introspection/database/indexes.js";
 import { dbColumnInfo } from "~/database/introspection/database/columns.js";
+import { dbIndexInfo } from "~/database/introspection/database/indexes.js";
 import { dbTableInfo } from "~/database/introspection/database/tables.js";
 import { ActionStatus } from "../command.js";
 
