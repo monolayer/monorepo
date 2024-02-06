@@ -6,7 +6,7 @@ import {
 } from "~/cli/command.js";
 import type { InformationSchemaDB } from "./types.js";
 
-type ForeignKeyRule =
+export type ForeignKeyRule =
 	| "CASCADE"
 	| "SET NULL"
 	| "SET DEFAULT"

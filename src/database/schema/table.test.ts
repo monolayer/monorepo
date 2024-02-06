@@ -10,6 +10,9 @@ import {
 } from "~/database/schema/pg_column.js";
 import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/table.js";
+import { pgForeignKeyConstraint } from "./pg_foreign_key.js";
+import { pgPrimaryKeyConstraint } from "./pg_primary_key.js";
+import { pgUniqueConstraint } from "./pg_unique.js";
 
 describe("pgTable definition", () => {
 	test("has a name", () => {
@@ -204,5 +207,90 @@ describe("pgTable definition", () => {
 			indexes,
 		});
 		expect(table.indexes).toStrictEqual(indexes);
+	});
+
+	describe("constraints", () => {
+		test("constraints are empty by default", () => {
+			const columns = {
+				name: pgVarChar(),
+				subscribed: pgBoolean(),
+			};
+			const table = pgTable("users", {
+				columns: columns,
+			});
+			expect(table.constraints).toStrictEqual([]);
+		});
+
+		test("foreign key constraints can be added", () => {
+			const columns = {
+				id: pgSerial().primaryKey(),
+				name: pgVarChar(),
+				subscribed: pgBoolean(),
+			};
+			const foreignKeyConstraint1 = pgForeignKeyConstraint(
+				["user_id"],
+				"users",
+				["id"],
+			);
+			const foreignKeyConstraint2 = pgForeignKeyConstraint(
+				["book_id"],
+				"books",
+				["id"],
+			);
+
+			const table = pgTable("users", {
+				columns: columns,
+				constraints: [foreignKeyConstraint1, foreignKeyConstraint2],
+			});
+			expect(table.constraints).toStrictEqual([
+				foreignKeyConstraint1,
+				foreignKeyConstraint2,
+			]);
+		});
+
+		test("unique constraints can be added", () => {
+			const columns = {
+				id: pgSerial().primaryKey(),
+				name: pgVarChar(),
+				subscribed: pgBoolean(),
+			};
+			const uniqueConstraint1 = pgUniqueConstraint(["name"]);
+			const uniqueConstraint2 = pgUniqueConstraint(["subscribed"]);
+
+			const table = pgTable("users", {
+				columns: columns,
+				constraints: [uniqueConstraint1, uniqueConstraint2],
+			});
+			expect(table.constraints).toStrictEqual([
+				uniqueConstraint1,
+				uniqueConstraint2,
+			]);
+		});
+	});
+
+	describe("primary key", () => {
+		test("is undefined by default", () => {
+			const columns = {
+				id: pgSerial(),
+				name: pgVarChar(),
+			};
+			const table = pgTable("users", {
+				columns: columns,
+			});
+			expect(table.primaryKey).toBeUndefined();
+		});
+
+		test("at the table level", () => {
+			const columns = {
+				id: pgInteger(),
+				name: pgVarChar(),
+			};
+			const primaryKey = pgPrimaryKeyConstraint(["id", "name"]);
+			const table = pgTable("users", {
+				columns: columns,
+				primaryKey: primaryKey,
+			});
+			expect(table.primaryKey).toStrictEqual(primaryKey);
+		});
 	});
 });
