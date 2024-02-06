@@ -491,7 +491,7 @@ describe("#dbColumnInfo", () => {
 			.addColumn("email", "char(255)")
 			.addColumn("book_id", "integer")
 			.addForeignKeyConstraint(
-				"foreign_fk_table_2_pk_books_id",
+				"fk_table_2_book_id_fkey",
 				["book_id"],
 				"fk_table_1",
 				["id"],
@@ -502,7 +502,7 @@ describe("#dbColumnInfo", () => {
 			.createTable("fk_table_3")
 			.addColumn("book_id", "integer")
 			.addForeignKeyConstraint(
-				"foreign_fk_table_3_pk_books_id",
+				"fk_table_3_book_id_fkey",
 				["book_id"],
 				"fk_table_1",
 				["id"],

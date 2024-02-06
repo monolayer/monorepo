@@ -69,11 +69,26 @@ async function fetchDbColumnInfo(
 			),
 		)
 		.fullJoin("information_schema.referential_constraints", (join) =>
-			join.onRef(
-				"information_schema.table_constraints.constraint_name",
-				"=",
-				"information_schema.referential_constraints.constraint_name",
-			),
+			join
+				.onRef(
+					"information_schema.table_constraints.constraint_name",
+					"=",
+					"information_schema.referential_constraints.constraint_name",
+				)
+				.on((eb) =>
+					eb.or([
+						eb(
+							"information_schema.referential_constraints.constraint_name",
+							"=",
+							sql<string>`information_schema.columns.table_name || '_' || information_schema.columns.column_name || '_key'`,
+						),
+						eb(
+							"information_schema.referential_constraints.constraint_name",
+							"=",
+							sql<string>`information_schema.columns.table_name || '_' || information_schema.columns.column_name || '_fkey'`,
+						),
+					]),
+				),
 		)
 		.select([
 			"information_schema.columns.table_name",
