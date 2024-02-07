@@ -3,7 +3,13 @@ import pg from "pg";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { TableSchema, pgTable } from "~/database/schema/pg_table.js";
 import { type ColumnInfo, PgColumnTypes } from "../schema/pg_column.js";
+import { PgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
 import { indexMeta, pgIndex } from "../schema/pg_index.js";
+import { PgUniqueConstraint } from "../schema/pg_unique.js";
+import {
+	foreignKeyConstraintInfoToQuery,
+	uniqueConstraintInfoToQuery,
+} from "./info_to_query.js";
 import { ColumnsInfo, IndexInfo, TableColumnInfo } from "./types.js";
 
 export function schemaTableInfo(tables: pgTable<string, TableSchema>[]) {
@@ -100,4 +106,55 @@ function indexToInfo(index: pgIndex, tableName: string, kysely: Kysely<any>) {
 	return {
 		[index.name]: compiledQuery,
 	};
+}
+
+export type ConstraintInfo = {
+	unique: Record<string, string>;
+	foreignKey: Record<string, string>;
+};
+
+export function schemaDbConstraintInfoByTable(
+	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
+) {
+	return Object.entries(schema.tables).reduce<ConstraintInfo>(
+		(acc, [tableName, tableDefinition]) => {
+			for (const constraint of tableDefinition.constraints) {
+				if (constraint instanceof PgUniqueConstraint) {
+					const constraintInfo = uniqueConstraintInfoToQuery({
+						constraintType: "UNIQUE",
+						table: tableName,
+						columns: constraint.columns,
+						nullsDistinct: constraint.nullsDistinct,
+					});
+					const keyName = `${tableName}_${constraint.columns.join(
+						"_",
+					)}_kinetic_key`;
+					acc.unique = {
+						...acc.unique,
+						[keyName]: constraintInfo,
+					};
+				}
+				if (constraint instanceof PgForeignKeyConstraint) {
+					const constraintInfo = foreignKeyConstraintInfoToQuery({
+						constraintType: "FOREIGN KEY",
+						table: tableName,
+						column: constraint.columns,
+						targetTable: constraint.targetTable,
+						targetColumns: constraint.targetColumns,
+						deleteRule: constraint.options.deleteRule,
+						updateRule: constraint.options.updateRule,
+					});
+					const keyName = `${tableName}_${constraint.columns.join("_")}_${
+						constraint.targetTable
+					}_${constraint.targetColumns.join("_")}_kinetic_fk`;
+					acc.foreignKey = {
+						...acc.foreignKey,
+						[keyName]: constraintInfo,
+					};
+				}
+			}
+			return acc;
+		},
+		{ unique: {}, foreignKey: {} },
+	);
 }

@@ -3,6 +3,7 @@ import {
 	schemaColumnInfo,
 	schemaDBColumnInfoByTable,
 	schemaDBIndexInfoByTable,
+	schemaDbConstraintInfoByTable,
 	schemaTableInfo,
 } from "~/database/introspection/local_schema.js";
 import {
@@ -10,6 +11,7 @@ import {
 	ColumnUnique,
 	pgBigSerial,
 	pgBoolean,
+	pgInteger,
 	pgSerial,
 	pgVarChar,
 } from "~/database/schema/pg_column.js";
@@ -17,6 +19,8 @@ import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
+import { pgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
+import { pgUniqueConstraint } from "../schema/pg_unique.js";
 
 test("#schemaTableInfo", () => {
 	const foo = pgTable("foo", { columns: {} });
@@ -246,6 +250,61 @@ test("#schemaDBIndexInfoByTable", () => {
 		users: {
 			users_email_idx: 'create index "users_email_idx" on "users"',
 			users_name_idx: 'create index "users_name_idx" on "users"',
+		},
+	});
+});
+
+test("#schemaDbConstraintInfoByTable", () => {
+	const userUniqueConstraint1 = pgUniqueConstraint(["name"]);
+	const userUniqueConstraint2 = pgUniqueConstraint(["subscribed"]);
+	const userForeignKeyConstraint = pgForeignKeyConstraint(
+		["book_id"],
+		"books",
+		["id"],
+	);
+
+	const users = pgTable("users", {
+		columns: {
+			id: pgSerial().primaryKey(),
+			name: pgVarChar(),
+			subscribed: pgBoolean(),
+			bookd_id: pgInteger(),
+		},
+		constraints: [
+			userForeignKeyConstraint,
+			userUniqueConstraint1,
+			userUniqueConstraint2,
+		],
+	});
+
+	const booksConstraint = pgUniqueConstraint(["name", "location"]);
+
+	const books = pgTable("books", {
+		columns: {
+			id: pgSerial().primaryKey(),
+			name: pgVarChar(),
+			location: pgVarChar(),
+		},
+		constraints: [booksConstraint],
+	});
+
+	const database = pgDatabase({
+		users,
+		books,
+	});
+
+	expect(schemaDbConstraintInfoByTable(database)).toStrictEqual({
+		unique: {
+			users_name_kinetic_key:
+				"CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)",
+			users_subscribed_kinetic_key:
+				"CONSTRAINT users_subscribed_kinetic_key UNIQUE NULLS DISTINCT (subscribed)",
+			books_name_location_kinetic_key:
+				"CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)",
+		},
+		foreignKey: {
+			users_book_id_books_id_kinetic_fk:
+				"CONSTRAINT users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
 		},
 	});
 });
