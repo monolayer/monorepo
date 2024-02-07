@@ -6,7 +6,6 @@ import {
 	schemaDBIndexInfoByTable,
 	schemaDbConstraintInfoByTable,
 	schemaDbPrimaryKeyInfo,
-	schemaTableInfo,
 } from "~/database/introspection/local_schema.js";
 import {
 	ColumnIdentity,
@@ -24,23 +23,6 @@ import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.
 import { pgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
 import { pgPrimaryKeyConstraint } from "../schema/pg_primary_key.js";
 import { pgUniqueConstraint } from "../schema/pg_unique.js";
-
-test("#schemaTableInfo", () => {
-	const foo = pgTable("foo", { columns: {} });
-	const bar = pgTable("bar", { columns: {} });
-
-	const expectedInfo = [
-		{
-			tableName: "foo",
-			schemaName: "public",
-		},
-		{
-			tableName: "bar",
-			schemaName: "public",
-		},
-	];
-	expect(schemaTableInfo([foo, bar])).toEqual(expectedInfo);
-});
 
 describe("#schemaColumnInfo", () => {
 	test("default column", () => {

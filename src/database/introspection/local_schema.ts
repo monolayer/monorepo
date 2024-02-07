@@ -17,13 +17,6 @@ import {
 } from "./info_to_query.js";
 import { ColumnsInfo, IndexInfo, TableColumnInfo } from "./types.js";
 
-export function schemaTableInfo(tables: pgTable<string, TableSchema>[]) {
-	return tables.map((table) => ({
-		tableName: table.name,
-		schemaName: "public",
-	}));
-}
-
 export function schemaColumnInfo(
 	tableName: string,
 	columnName: string,
