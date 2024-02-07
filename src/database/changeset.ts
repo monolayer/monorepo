@@ -8,14 +8,23 @@ export function changeset(
 	local: MigrationSchema,
 	remote: MigrationSchema,
 ): Changeset[] {
-	const diff = microdiff(remote, local);
-	const addedTables = diff.filter(isCreateTable).map(tableName);
-	const droppedTables = diff.filter(isDropTable).map(tableName);
+	const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
 	return diff
 		.flatMap((difference) =>
 			migrationOp(difference, addedTables, droppedTables, local, remote),
 		)
 		.sort((a, b) => (a.priority || 1) - (b.priority || 1));
+}
+
+export function changesetDiff(local: MigrationSchema, remote: MigrationSchema) {
+	const diff = microdiff(remote, local);
+	const addedTables = diff.filter(isCreateTable).map(tableName);
+	const droppedTables = diff.filter(isDropTable).map(tableName);
+	return {
+		diff,
+		addedTables,
+		droppedTables,
+	};
 }
 
 export type DbChangeset = Record<string, Changeset[]>;
@@ -29,6 +38,9 @@ export enum ChangeSetType {
 	ChangeTable = "changeTable",
 	CreateIndex = "createIndex",
 	DropIndex = "dropIndex",
+	CreatePrimaryKey = "createPrimaryKey",
+	DropPrimaryKey = "dropPrimaryKey",
+	UpdatePrimaryKey = "updatePrimaryKey",
 }
 
 export type Changeset = {

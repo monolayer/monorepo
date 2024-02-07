@@ -17,7 +17,6 @@ export async function dbColumnInfo(
 		const results = await fetchDbColumnInfo(kysely, databaseSchema, tableNames);
 		const transformed = transformDbColumnInfo(results);
 		const mapped = mapColumnsToTables(transformed);
-		console.dir(mapped, { depth: null });
 		return {
 			status: ActionStatus.Success,
 			result: mapped,

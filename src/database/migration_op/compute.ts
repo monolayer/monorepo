@@ -73,6 +73,10 @@ export enum MigrationOpPriority {
 	ChangeColumnDefaultDrop = 3.71,
 	ChangeColumnDefaultChange = 3.72,
 	Index = 4,
+	PrimaryKeyDrop = 5,
+	PrimaryKeyReplace = 5.1,
+	PrimaryKeyCreate = 5.11,
+	PrimaryKeyUpdate = 5.12,
 }
 
 export function migrationOp(
