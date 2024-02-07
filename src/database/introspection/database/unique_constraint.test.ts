@@ -39,19 +39,11 @@ describe("#dbUniqueConstraintInfo", () => {
 		if (table_1_results.status === ActionStatus.Error) {
 			throw table_1_results.error;
 		}
-		expect(table_1_results.result).toStrictEqual([
-			{
-				constraintType: "UNIQUE",
-				columns: ["price", "demo"],
-				table: "unique_constraint_test",
-				nullsDistinct: false,
-			},
-			{
-				constraintType: "UNIQUE",
-				columns: ["demo", "name"],
-				table: "unique_constraint_test",
-				nullsDistinct: true,
-			},
-		]);
+		expect(table_1_results.result).toStrictEqual({
+			unique_constraint_test_demo_name_kinetic_key:
+				"CONSTRAINT unique_constraint_test_demo_name_kinetic_key UNIQUE NULLS DISTINCT (demo, name)",
+			unique_constraint_test_price_demo_kinetic_key:
+				"CONSTRAINT unique_constraint_test_price_demo_kinetic_key UNIQUE NULLS NOT DISTINCT (price, demo)",
+		});
 	});
 });

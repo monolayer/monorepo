@@ -7,7 +7,9 @@ export function foreignKeyConstraintInfoToQuery(
 ) {
 	return [
 		"CONSTRAINT",
-		`${info.table}_${info.column.join("_")}_kinetic_fk`,
+		`${info.table}_${info.column.join("_")}_${
+			info.targetTable
+		}_${info.targetColumns.join("_")}_kinetic_fk`,
 		"FOREIGN KEY",
 		`(${info.column.join(", ")})`,
 		"REFERENCES",

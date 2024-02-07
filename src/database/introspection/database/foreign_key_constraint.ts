@@ -4,6 +4,7 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
+import { foreignKeyConstraintInfoToQuery } from "../info_to_query.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export type ForeignKeyRule =
@@ -26,9 +27,8 @@ export type ForeignKeyConstraintInfo = {
 export async function dbForeignKeyConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
-): Promise<
-	OperationSuccess<Array<ForeignKeyConstraintInfo>> | OperationAnyError
-> {
+	tables: string[],
+): Promise<OperationSuccess<Record<string, string>> | OperationAnyError> {
 	try {
 		const results = await kysely
 			.selectFrom("pg_constraint as con")
@@ -83,9 +83,19 @@ export async function dbForeignKeyConstraintInfo(
 				"con.confrelid",
 			])
 			.execute();
+		const transformedResults = results.reduce<Record<string, string>>(
+			(acc, result) => {
+				const key = `${result.table}_${result.column.join("_")}_${
+					result.targetTable
+				}_${result.targetColumns.join("_")}_kinetic_fk`;
+				acc[key] = foreignKeyConstraintInfoToQuery(result);
+				return acc;
+			},
+			{},
+		);
 		return {
 			status: ActionStatus.Success,
-			result: results,
+			result: transformedResults,
 		};
 	} catch (error) {
 		return {

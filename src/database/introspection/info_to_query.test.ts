@@ -30,7 +30,7 @@ test("#foreigKeyInfoToQuery", () => {
 		deleteRule: "NO ACTION",
 	};
 	const expected =
-		"CONSTRAINT test_users_book_id_location_id_kinetic_fk FOREIGN KEY (book_id, location_id) REFERENCES test_books_fk (id, location) ON DELETE NO ACTION ON UPDATE CASCADE";
+		"CONSTRAINT test_users_book_id_location_id_test_books_fk_id_location_kinetic_fk FOREIGN KEY (book_id, location_id) REFERENCES test_books_fk (id, location) ON DELETE NO ACTION ON UPDATE CASCADE";
 	expect(foreignKeyConstraintInfoToQuery(info)).toBe(expected);
 });
 

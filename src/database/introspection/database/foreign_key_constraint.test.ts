@@ -47,16 +47,9 @@ describe("dbForeignKeyConstraintInfo", () => {
 			throw table_1_results.error;
 		}
 
-		expect(table_1_results.result).toStrictEqual([
-			{
-				constraintType: "FOREIGN KEY",
-				table: "test_users_fk",
-				column: ["book_id", "location_id"],
-				targetTable: "test_books_fk",
-				targetColumns: ["id", "location"],
-				updateRule: "NO ACTION",
-				deleteRule: "NO ACTION",
-			},
-		]);
+		expect(table_1_results.result).toStrictEqual({
+			test_users_fk_book_id_location_id_test_books_fk_id_location_kinetic_fk:
+				"CONSTRAINT test_users_fk_book_id_location_id_test_books_fk_id_location_kinetic_fk FOREIGN KEY (book_id, location_id) REFERENCES test_books_fk (id, location) ON DELETE NO ACTION ON UPDATE NO ACTION",
+		});
 	});
 });

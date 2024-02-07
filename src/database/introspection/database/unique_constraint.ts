@@ -4,6 +4,7 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
+import { uniqueConstraintInfoToQuery } from "../info_to_query.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export type UniqueConstraintInfo = {
@@ -16,7 +17,7 @@ export type UniqueConstraintInfo = {
 export async function dbUniqueConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
-): Promise<OperationSuccess<Array<UniqueConstraintInfo>> | OperationAnyError> {
+): Promise<OperationSuccess<Record<string, string>> | OperationAnyError> {
 	try {
 		const results = await kysely
 			.selectFrom("pg_constraint")
@@ -64,9 +65,19 @@ export async function dbUniqueConstraintInfo(
 			.where("pg_class.relname", "!=", "VIEW")
 			.groupBy(["table", "information_schema.table_constraints.nulls_distinct"])
 			.execute();
+		const transformedResults = results.reduce<Record<string, string>>(
+			(acc, result) => {
+				const keyName = `${result.table}_${result.columns.join(
+					"_",
+				)}_kinetic_key`;
+				acc[keyName] = uniqueConstraintInfoToQuery(result);
+				return acc;
+			},
+			{},
+		);
 		return {
 			status: ActionStatus.Success,
-			result: results,
+			result: transformedResults,
 		};
 	} catch (error) {
 		return {

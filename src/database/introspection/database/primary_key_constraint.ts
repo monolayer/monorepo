@@ -4,6 +4,7 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
+import { primaryKeyConstraintInfoToQuery } from "../info_to_query.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export type PrimaryKeyConstraintInfo = {
@@ -15,9 +16,7 @@ export type PrimaryKeyConstraintInfo = {
 export async function dbPrimaryKeyConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
-): Promise<
-	OperationSuccess<Array<PrimaryKeyConstraintInfo>> | OperationAnyError
-> {
+): Promise<OperationSuccess<Record<string, string>> | OperationAnyError> {
 	try {
 		const results = await kysely
 			.selectFrom("pg_constraint as con")
@@ -48,9 +47,17 @@ export async function dbPrimaryKeyConstraintInfo(
 			.groupBy(["tbl.relname"])
 			.orderBy(["table"])
 			.execute();
+		const transformedResults = results.reduce<Record<string, string>>(
+			(acc, result) => {
+				const key = `${result.table}_${result.columns.join("_")}_kinetic_pk`;
+				acc[key] = primaryKeyConstraintInfoToQuery(result);
+				return acc;
+			},
+			{},
+		);
 		return {
 			status: ActionStatus.Success,
-			result: results,
+			result: transformedResults,
 		};
 	} catch (error) {
 		return {

@@ -50,17 +50,11 @@ describe("dbPrimaryKeyConstraintInfo", () => {
 			throw results.error;
 		}
 
-		expect(results.result).toStrictEqual([
-			{
-				constraintType: "PRIMARY KEY",
-				table: "test_books_pk",
-				columns: ["id", "location"],
-			},
-			{
-				constraintType: "PRIMARY KEY",
-				table: "test_users_pk",
-				columns: ["book_id"],
-			},
-		]);
+		expect(results.result).toStrictEqual({
+			test_books_pk_id_location_kinetic_pk:
+				"CONSTRAINT test_books_pk_id_location_kinetic_pk PRIMARY KEY (id, location)",
+			test_users_pk_book_id_kinetic_pk:
+				"CONSTRAINT test_users_pk_book_id_kinetic_pk PRIMARY KEY (book_id)",
+		});
 	});
 });
