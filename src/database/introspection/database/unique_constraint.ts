@@ -4,6 +4,7 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
+import type { UniqueInfo } from "~/database/migrations/migration_schema.js";
 import { uniqueConstraintInfoToQuery } from "../info_to_query.js";
 import type { InformationSchemaDB } from "./types.js";
 
@@ -18,7 +19,7 @@ export async function dbUniqueConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
-): Promise<OperationSuccess<Record<string, string>> | OperationAnyError> {
+): Promise<OperationSuccess<UniqueInfo> | OperationAnyError> {
 	try {
 		if (tableNames.length === 0) {
 			return {
@@ -68,16 +69,20 @@ export async function dbUniqueConstraintInfo(
 			.where("pg_class.relname", "in", tableNames)
 			.groupBy(["table", "information_schema.table_constraints.nulls_distinct"])
 			.execute();
-		const transformedResults = results.reduce<Record<string, string>>(
-			(acc, result) => {
-				const keyName = `${result.table}_${result.columns.join(
-					"_",
-				)}_kinetic_key`;
-				acc[keyName] = uniqueConstraintInfoToQuery(result);
-				return acc;
-			},
-			{},
-		);
+		const transformedResults = results.reduce<UniqueInfo>((acc, result) => {
+			const keyName = `${result.table}_${result.columns.join("_")}_kinetic_key`;
+			const constraintInfo = {
+				[keyName]: uniqueConstraintInfoToQuery(result),
+			};
+			const table = result.table;
+			if (table !== null) {
+				acc[table] = {
+					...acc[table],
+					...constraintInfo,
+				};
+			}
+			return acc;
+		}, {});
 		return {
 			status: ActionStatus.Success,
 			result: transformedResults,

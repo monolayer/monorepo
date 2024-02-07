@@ -5,6 +5,7 @@ import { TableSchema, pgTable } from "~/database/schema/pg_table.js";
 import type {
 	ConstraintInfo,
 	MigrationSchema,
+	PrimaryKeyInfo,
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes } from "../schema/pg_column.js";
 import { PgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
@@ -113,36 +114,40 @@ export function schemaDbConstraintInfoByTable(
 		(acc, [tableName, tableDefinition]) => {
 			for (const constraint of tableDefinition.constraints) {
 				if (constraint instanceof PgUniqueConstraint) {
-					const constraintInfo = uniqueConstraintInfoToQuery({
-						constraintType: "UNIQUE",
-						table: tableName,
-						columns: constraint.columns,
-						nullsDistinct: constraint.nullsDistinct,
-					});
 					const keyName = `${tableName}_${constraint.columns.join(
 						"_",
 					)}_kinetic_key`;
-					acc.unique = {
-						...acc.unique,
-						[keyName]: constraintInfo,
+					const constraintInfo = {
+						[keyName]: uniqueConstraintInfoToQuery({
+							constraintType: "UNIQUE",
+							table: tableName,
+							columns: constraint.columns,
+							nullsDistinct: constraint.nullsDistinct,
+						}),
+					};
+					acc.unique[tableName] = {
+						...acc.unique[tableName],
+						...constraintInfo,
 					};
 				}
 				if (constraint instanceof PgForeignKeyConstraint) {
-					const constraintInfo = foreignKeyConstraintInfoToQuery({
-						constraintType: "FOREIGN KEY",
-						table: tableName,
-						column: constraint.columns,
-						targetTable: constraint.targetTable,
-						targetColumns: constraint.targetColumns,
-						deleteRule: constraint.options.deleteRule,
-						updateRule: constraint.options.updateRule,
-					});
 					const keyName = `${tableName}_${constraint.columns.join("_")}_${
 						constraint.targetTable
 					}_${constraint.targetColumns.join("_")}_kinetic_fk`;
-					acc.foreign = {
-						...acc.foreign,
-						[keyName]: constraintInfo,
+					const constraintInfo = {
+						[keyName]: foreignKeyConstraintInfoToQuery({
+							constraintType: "FOREIGN KEY",
+							table: tableName,
+							column: constraint.columns,
+							targetTable: constraint.targetTable,
+							targetColumns: constraint.targetColumns,
+							deleteRule: constraint.options.deleteRule,
+							updateRule: constraint.options.updateRule,
+						}),
+					};
+					acc.foreign[tableName] = {
+						...acc.foreign[tableName],
+						...constraintInfo,
 					};
 				}
 			}
@@ -155,17 +160,23 @@ export function schemaDbConstraintInfoByTable(
 export function schemaDbPrimaryKeyInfo(
 	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
 ) {
-	return Object.entries(schema.tables).reduce<Record<string, string>>(
+	return Object.entries(schema.tables).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			if (tableDefinition.primaryKey) {
 				const keyName = `${tableName}_${tableDefinition.primaryKey.columns.join(
 					"_",
 				)}_kinetic_pk`;
-				acc[keyName] = primaryKeyConstraintInfoToQuery({
-					constraintType: "PRIMARY KEY",
-					table: tableName,
-					columns: tableDefinition.primaryKey.columns,
-				});
+				const constraintInfo = {
+					[keyName]: primaryKeyConstraintInfoToQuery({
+						constraintType: "PRIMARY KEY",
+						table: tableName,
+						columns: tableDefinition.primaryKey.columns,
+					}),
+				};
+				acc[tableName] = {
+					...acc[tableName],
+					...constraintInfo,
+				};
 			}
 			return acc;
 		},
@@ -176,10 +187,16 @@ export function schemaDbPrimaryKeyInfo(
 export function localSchema(
 	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
 ): MigrationSchema {
+	const constraints = schemaDbConstraintInfoByTable(schema);
 	return {
 		table: schemaDBColumnInfoByTable(schema),
 		index: schemaDBIndexInfoByTable(schema),
-		constraints: schemaDbConstraintInfoByTable(schema),
+		foreignKeyConstraints: {
+			...constraints.foreign,
+		},
+		uniqueConstraints: {
+			...constraints.unique,
+		},
 		primaryKey: schemaDbPrimaryKeyInfo(schema),
 	};
 }

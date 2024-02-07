@@ -60,10 +60,8 @@ export async function remoteSchema(
 		result: {
 			table: remoteColumnInfo.result,
 			index: remoteIndexInfo.result,
-			constraints: {
-				unique: remoteUniqueConstraintInfo.result,
-				foreign: remoteForeignKeyConstraintInfo.result,
-			},
+			foreignKeyConstraints: remoteForeignKeyConstraintInfo.result,
+			uniqueConstraints: remoteUniqueConstraintInfo.result,
 			primaryKey: primaryKeyConstraintInfo.result,
 		},
 	};

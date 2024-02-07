@@ -1,13 +1,21 @@
 import type { IndexInfo, TableColumnInfo } from "../introspection/types.js";
 
+type TableName = string;
+type Name = string;
+type Definition = string;
+export type PrimaryKeyInfo = Record<TableName, Record<Name, Definition>>;
+export type ForeignKeyInfo = Record<TableName, Record<Name, Definition>>;
+export type UniqueInfo = Record<TableName, Record<Name, Definition>>;
+
 export type ConstraintInfo = {
-	unique: Record<string, string>;
-	foreign: Record<string, string>;
+	unique: UniqueInfo;
+	foreign: ForeignKeyInfo;
 };
 
 export type MigrationSchema = {
 	table: TableColumnInfo;
 	index: IndexInfo;
-	constraints: ConstraintInfo;
-	primaryKey: Record<string, string>;
+	foreignKeyConstraints: ForeignKeyInfo;
+	uniqueConstraints: UniqueInfo;
+	primaryKey: PrimaryKeyInfo;
 };

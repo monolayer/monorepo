@@ -180,19 +180,23 @@ describe("#remoteSchema", () => {
 							"CREATE INDEX remote_schema_users_name_email_kinetic_idx ON public.remote_schema_users USING btree (name, email)",
 					},
 				},
-				constraints: {
-					unique: {
+				uniqueConstraints: {
+					remote_schema_users: {
 						remote_schema_users_name_kinetic_key:
 							"CONSTRAINT remote_schema_users_name_kinetic_key UNIQUE NULLS NOT DISTINCT (name)",
 					},
-					foreign: {
+				},
+				foreignKeyConstraints: {
+					remote_schema_users: {
 						remote_schema_users_book_id_remote_schema_books_id_kinetic_fk:
 							"CONSTRAINT remote_schema_users_book_id_remote_schema_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES remote_schema_books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
 					},
 				},
 				primaryKey: {
-					remote_schema_users_id_kinetic_pk:
-						"CONSTRAINT remote_schema_users_id_kinetic_pk PRIMARY KEY (id)",
+					remote_schema_users: {
+						remote_schema_users_id_kinetic_pk:
+							"CONSTRAINT remote_schema_users_id_kinetic_pk PRIMARY KEY (id)",
+					},
 				},
 			},
 		};

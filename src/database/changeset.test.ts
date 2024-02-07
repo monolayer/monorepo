@@ -55,19 +55,15 @@ describe("#dbChangeset", () => {
 						),
 					},
 				},
-				constraints: {
-					unique: {},
-					foreign: {},
-				},
+				uniqueConstraints: {},
+				foreignKeyConstraints: {},
 				primaryKey: {},
 			},
 			{
 				table: {},
 				index: {},
-				constraints: {
-					unique: {},
-					foreign: {},
-				},
+				uniqueConstraints: {},
+				foreignKeyConstraints: {},
 				primaryKey: {},
 			},
 		);
@@ -118,10 +114,8 @@ describe("#dbChangeset", () => {
 			{
 				table: {},
 				index: {},
-				constraints: {
-					unique: {},
-					foreign: {},
-				},
+				uniqueConstraints: {},
+				foreignKeyConstraints: {},
 				primaryKey: {},
 			},
 			{
@@ -155,10 +149,8 @@ describe("#dbChangeset", () => {
 							'create unique index "shops_city_idx" on "shops" using btree ("city")',
 					},
 				},
-				constraints: {
-					unique: {},
-					foreign: {},
-				},
+				uniqueConstraints: {},
+				foreignKeyConstraints: {},
 				primaryKey: {},
 			},
 		);
@@ -272,10 +264,8 @@ describe("#dbChangeset", () => {
 						),
 					},
 				},
-				constraints: {
-					unique: {},
-					foreign: {},
-				},
+				uniqueConstraints: {},
+				foreignKeyConstraints: {},
 				primaryKey: {},
 			},
 			{
@@ -323,10 +313,8 @@ describe("#dbChangeset", () => {
 							'create unique index "addresses_country_idx" on "addresses" using btree ("country")',
 					},
 				},
-				constraints: {
-					unique: {},
-					foreign: {},
-				},
+				uniqueConstraints: {},
+				foreignKeyConstraints: {},
 				primaryKey: {},
 			},
 		);
@@ -534,19 +522,15 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
 					table: {},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -612,10 +596,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -638,10 +620,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -700,10 +680,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -731,10 +709,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -787,10 +763,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -823,10 +797,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -878,10 +850,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -908,10 +878,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -970,19 +938,15 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
 					table: {},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1020,10 +984,8 @@ describe("#dbChangeset", () => {
 				{
 					table: {},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1047,10 +1009,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1106,10 +1066,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1118,10 +1076,8 @@ describe("#dbChangeset", () => {
 						members: {},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1187,10 +1143,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1212,10 +1166,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1267,10 +1219,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1294,10 +1244,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1336,10 +1284,8 @@ describe("#dbChangeset", () => {
 						members: {},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1363,10 +1309,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1431,19 +1375,15 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
 					table: {},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1470,10 +1410,8 @@ describe("#dbChangeset", () => {
 				{
 					table: {},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1494,10 +1432,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1539,10 +1475,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1550,10 +1484,8 @@ describe("#dbChangeset", () => {
 						books: {},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1603,10 +1535,8 @@ describe("#dbChangeset", () => {
 						books: {},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1627,10 +1557,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1693,10 +1621,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1715,10 +1641,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1767,10 +1691,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1791,10 +1713,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1845,10 +1765,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1869,10 +1787,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1923,19 +1839,15 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
 					table: {},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -1961,10 +1873,8 @@ describe("#dbChangeset", () => {
 				{
 					table: {},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -1979,10 +1889,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -2017,10 +1925,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -2028,10 +1934,8 @@ describe("#dbChangeset", () => {
 						books: {},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -2071,10 +1975,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -2088,10 +1990,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -2130,10 +2030,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -2148,10 +2046,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);
@@ -2191,10 +2087,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 				{
@@ -2209,10 +2103,8 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
-					constraints: {
-						unique: {},
-						foreign: {},
-					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
 					primaryKey: {},
 				},
 			);

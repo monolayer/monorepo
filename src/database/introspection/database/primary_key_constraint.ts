@@ -4,6 +4,7 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
+import type { PrimaryKeyInfo } from "~/database/migrations/migration_schema.js";
 import { primaryKeyConstraintInfoToQuery } from "../info_to_query.js";
 import type { InformationSchemaDB } from "./types.js";
 
@@ -17,7 +18,7 @@ export async function dbPrimaryKeyConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
-): Promise<OperationSuccess<Record<string, string>> | OperationAnyError> {
+): Promise<OperationSuccess<PrimaryKeyInfo> | OperationAnyError> {
 	try {
 		if (tableNames.length === 0) {
 			return {
@@ -50,14 +51,20 @@ export async function dbPrimaryKeyConstraintInfo(
 			.groupBy(["tbl.relname"])
 			.orderBy(["table"])
 			.execute();
-		const transformedResults = results.reduce<Record<string, string>>(
-			(acc, result) => {
-				const key = `${result.table}_${result.columns.join("_")}_kinetic_pk`;
-				acc[key] = primaryKeyConstraintInfoToQuery(result);
-				return acc;
-			},
-			{},
-		);
+		const transformedResults = results.reduce<PrimaryKeyInfo>((acc, result) => {
+			const key = `${result.table}_${result.columns.join("_")}_kinetic_pk`;
+			const constraintInfo = {
+				[key]: primaryKeyConstraintInfoToQuery(result),
+			};
+			const table = result.table;
+			if (table !== null) {
+				acc[table] = {
+					...acc[table],
+					...constraintInfo,
+				};
+			}
+			return acc;
+		}, {});
 		return {
 			status: ActionStatus.Success,
 			result: transformedResults,

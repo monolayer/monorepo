@@ -280,16 +280,22 @@ test("#schemaDbConstraintInfoByTable", () => {
 
 	expect(schemaDbConstraintInfoByTable(database)).toStrictEqual({
 		unique: {
-			users_name_kinetic_key:
-				"CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)",
-			users_subscribed_kinetic_key:
-				"CONSTRAINT users_subscribed_kinetic_key UNIQUE NULLS DISTINCT (subscribed)",
-			books_name_location_kinetic_key:
-				"CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)",
+			users: {
+				users_name_kinetic_key:
+					"CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)",
+				users_subscribed_kinetic_key:
+					"CONSTRAINT users_subscribed_kinetic_key UNIQUE NULLS DISTINCT (subscribed)",
+			},
+			books: {
+				books_name_location_kinetic_key:
+					"CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)",
+			},
 		},
 		foreign: {
-			users_book_id_books_id_kinetic_fk:
-				"CONSTRAINT users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
+			users: {
+				users_book_id_books_id_kinetic_fk:
+					"CONSTRAINT users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
+			},
 		},
 	});
 });
@@ -319,8 +325,12 @@ test("#schemaDbPrimaryKeyInfo", () => {
 	});
 
 	expect(schemaDbPrimaryKeyInfo(database)).toStrictEqual({
-		users_id_kinetic_pk: "CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)",
-		books_id_kinetic_pk: "CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)",
+		users: {
+			users_id_kinetic_pk: "CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)",
+		},
+		books: {
+			books_id_kinetic_pk: "CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)",
+		},
 	});
 });
 
@@ -557,23 +567,31 @@ test("#localSchema", () => {
 					'create index "teams_name_kinetic_idx" on "teams"',
 			},
 		},
-		constraints: {
-			foreign: {
+		foreignKeyConstraints: {
+			users: {
 				users_book_id_books_id_kinetic_fk:
 					"CONSTRAINT users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
 			},
-			unique: {
-				books_name_location_kinetic_key:
-					"CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)",
+		},
+		uniqueConstraints: {
+			users: {
 				users_email_kinetic_key:
 					"CONSTRAINT users_email_kinetic_key UNIQUE NULLS NOT DISTINCT (email)",
 				users_name_kinetic_key:
 					"CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)",
 			},
+			books: {
+				books_name_location_kinetic_key:
+					"CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)",
+			},
 		},
 		primaryKey: {
-			teams_id_kinetic_pk: "CONSTRAINT teams_id_kinetic_pk PRIMARY KEY (id)",
-			users_id_kinetic_pk: "CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)",
+			teams: {
+				teams_id_kinetic_pk: "CONSTRAINT teams_id_kinetic_pk PRIMARY KEY (id)",
+			},
+			users: {
+				users_id_kinetic_pk: "CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)",
+			},
 		},
 	};
 	expect(localSchema(database)).toStrictEqual(expectedLocalSchema);
