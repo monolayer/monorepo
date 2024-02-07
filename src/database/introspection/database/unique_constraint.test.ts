@@ -44,9 +44,9 @@ describe("#dbUniqueConstraintInfo", () => {
 		expect(table_1_results.result).toStrictEqual({
 			unique_constraint_test: {
 				unique_constraint_test_demo_name_kinetic_key:
-					"CONSTRAINT unique_constraint_test_demo_name_kinetic_key UNIQUE NULLS DISTINCT (demo, name)",
+					"unique_constraint_test_demo_name_kinetic_key UNIQUE NULLS DISTINCT (demo, name)",
 				unique_constraint_test_price_demo_kinetic_key:
-					"CONSTRAINT unique_constraint_test_price_demo_kinetic_key UNIQUE NULLS NOT DISTINCT (price, demo)",
+					"unique_constraint_test_price_demo_kinetic_key UNIQUE NULLS NOT DISTINCT (price, demo)",
 			},
 		});
 	});

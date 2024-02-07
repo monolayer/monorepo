@@ -6,7 +6,6 @@ export function foreignKeyConstraintInfoToQuery(
 	info: ForeignKeyConstraintInfo,
 ) {
 	return [
-		"CONSTRAINT",
 		`${info.table}_${info.column.join("_")}_${
 			info.targetTable
 		}_${info.targetColumns.join("_")}_kinetic_fk`,
@@ -24,7 +23,6 @@ export function primaryKeyConstraintInfoToQuery(
 	info: PrimaryKeyConstraintInfo,
 ) {
 	return [
-		"CONSTRAINT",
 		`${info.table}_${info.columns.join("_")}_kinetic_pk`,
 		"PRIMARY KEY",
 		`(${info.columns.join(", ")})`,
@@ -33,7 +31,6 @@ export function primaryKeyConstraintInfoToQuery(
 
 export function uniqueConstraintInfoToQuery(info: UniqueConstraintInfo) {
 	return [
-		"CONSTRAINT",
 		`${info.table}_${info.columns.join("_")}_kinetic_key`,
 		"UNIQUE",
 		info.nullsDistinct ? "NULLS DISTINCT" : "NULLS NOT DISTINCT",
