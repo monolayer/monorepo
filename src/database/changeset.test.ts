@@ -55,10 +55,20 @@ describe("#dbChangeset", () => {
 						),
 					},
 				},
+				constraints: {
+					unique: {},
+					foreign: {},
+				},
+				primaryKey: {},
 			},
 			{
 				table: {},
 				index: {},
+				constraints: {
+					unique: {},
+					foreign: {},
+				},
+				primaryKey: {},
 			},
 		);
 
@@ -108,6 +118,11 @@ describe("#dbChangeset", () => {
 			{
 				table: {},
 				index: {},
+				constraints: {
+					unique: {},
+					foreign: {},
+				},
+				primaryKey: {},
 			},
 			{
 				table: {
@@ -140,6 +155,11 @@ describe("#dbChangeset", () => {
 							'create unique index "shops_city_idx" on "shops" using btree ("city")',
 					},
 				},
+				constraints: {
+					unique: {},
+					foreign: {},
+				},
+				primaryKey: {},
 			},
 		);
 
@@ -252,6 +272,11 @@ describe("#dbChangeset", () => {
 						),
 					},
 				},
+				constraints: {
+					unique: {},
+					foreign: {},
+				},
+				primaryKey: {},
 			},
 			{
 				table: {
@@ -298,6 +323,11 @@ describe("#dbChangeset", () => {
 							'create unique index "addresses_country_idx" on "addresses" using btree ("country")',
 					},
 				},
+				constraints: {
+					unique: {},
+					foreign: {},
+				},
+				primaryKey: {},
 			},
 		);
 
@@ -504,10 +534,20 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -572,6 +612,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -593,6 +638,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -650,6 +700,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -676,6 +731,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -727,6 +787,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -758,6 +823,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -808,6 +878,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -833,6 +908,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -890,10 +970,20 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -930,6 +1020,11 @@ describe("#dbChangeset", () => {
 				{
 					table: {},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -952,6 +1047,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1006,6 +1106,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1013,6 +1118,11 @@ describe("#dbChangeset", () => {
 						members: {},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1077,6 +1187,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1097,6 +1212,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1147,6 +1267,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1169,6 +1294,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1206,6 +1336,11 @@ describe("#dbChangeset", () => {
 						members: {},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1228,6 +1363,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1291,10 +1431,20 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1320,6 +1470,11 @@ describe("#dbChangeset", () => {
 				{
 					table: {},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1339,6 +1494,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1379,12 +1539,22 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
 						books: {},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1433,6 +1603,11 @@ describe("#dbChangeset", () => {
 						books: {},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1452,6 +1627,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1513,6 +1693,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1530,6 +1715,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1577,6 +1767,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1596,6 +1791,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1645,6 +1845,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1664,6 +1869,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1713,10 +1923,20 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1741,6 +1961,11 @@ describe("#dbChangeset", () => {
 				{
 					table: {},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1754,6 +1979,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1787,12 +2017,22 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
 						books: {},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1831,6 +2071,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1843,6 +2088,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1880,6 +2130,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1893,6 +2148,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [
@@ -1931,6 +2191,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 				{
 					table: {
@@ -1944,6 +2209,11 @@ describe("#dbChangeset", () => {
 						},
 					},
 					index: {},
+					constraints: {
+						unique: {},
+						foreign: {},
+					},
+					primaryKey: {},
 				},
 			);
 			const expected = [

@@ -1,10 +1,7 @@
 import * as p from "@clack/prompts";
 import { exit } from "process";
 import { Config, importSchema } from "~/config.js";
-import {
-	schemaDBColumnInfoByTable,
-	schemaDBIndexInfoByTable,
-} from "~/database/introspection/local_schema.js";
+import { localSchema } from "~/database/introspection/local_schema.js";
 
 export async function analyzeLocalSchema(config: Config) {
 	const s = p.spinner();
@@ -18,11 +15,7 @@ export async function analyzeLocalSchema(config: Config) {
 		p.outro("Done");
 		exit(0);
 	}
-	const localTableColumnInfo = schemaDBColumnInfoByTable(schema.database);
-	const localIndexInfo = schemaDBIndexInfoByTable(schema.database);
+	const local = localSchema(schema.database);
 	s.stop("Analyzed schema at app/db/schema.ts");
-	return {
-		table: localTableColumnInfo,
-		index: localIndexInfo,
-	};
+	return local;
 }

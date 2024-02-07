@@ -2,22 +2,15 @@ import * as p from "@clack/prompts";
 import color from "picocolors";
 import { exit } from "process";
 import { Changeset, changeset } from "~/database/changeset.js";
-import type { RemoteSchema } from "~/database/introspection/remote_schema.js";
-import { IndexInfo, TableColumnInfo } from "~/database/introspection/types.js";
+import type { MigrationSchema } from "~/database/migrations/migration_schema.js";
 
 export async function computeChangeset(
-	localTableInfo: {
-		table: TableColumnInfo;
-		index: IndexInfo;
-	},
-	remoteColumnInfo: RemoteSchema,
+	local: MigrationSchema,
+	remote: MigrationSchema,
 ): Promise<Changeset[]> {
 	const c = p.spinner();
 	c.start("Computing change set");
-	const cset = changeset(localTableInfo, {
-		table: remoteColumnInfo.table,
-		index: remoteColumnInfo.index,
-	});
+	const cset = changeset(local, remote);
 	c.stop("Computed change set.");
 
 	if (cset.length === 0) {

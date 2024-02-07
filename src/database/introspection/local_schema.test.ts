@@ -1,9 +1,11 @@
 import { describe, expect, test } from "vitest";
 import {
+	localSchema,
 	schemaColumnInfo,
 	schemaDBColumnInfoByTable,
 	schemaDBIndexInfoByTable,
 	schemaDbConstraintInfoByTable,
+	schemaDbPrimaryKeyInfo,
 	schemaTableInfo,
 } from "~/database/introspection/local_schema.js";
 import {
@@ -20,6 +22,7 @@ import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { pgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
+import { pgPrimaryKeyConstraint } from "../schema/pg_primary_key.js";
 import { pgUniqueConstraint } from "../schema/pg_unique.js";
 
 test("#schemaTableInfo", () => {
@@ -302,9 +305,294 @@ test("#schemaDbConstraintInfoByTable", () => {
 			books_name_location_kinetic_key:
 				"CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)",
 		},
-		foreignKey: {
+		foreign: {
 			users_book_id_books_id_kinetic_fk:
 				"CONSTRAINT users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
 		},
 	});
+});
+
+test("#schemaDbPrimaryKeyInfo", () => {
+	const usersPrimaryKey = pgPrimaryKeyConstraint(["id"]);
+	const booksPrimaryKey = pgPrimaryKeyConstraint(["id"]);
+
+	const users = pgTable("users", {
+		columns: {
+			id: pgInteger(),
+		},
+		primaryKey: usersPrimaryKey,
+	});
+
+	const books = pgTable("books", {
+		columns: {
+			id: pgInteger(),
+			subscribed: pgBoolean(),
+		},
+		primaryKey: booksPrimaryKey,
+	});
+
+	const database = pgDatabase({
+		users,
+		books,
+	});
+
+	expect(schemaDbPrimaryKeyInfo(database)).toStrictEqual({
+		users_id_kinetic_pk: "CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)",
+		books_id_kinetic_pk: "CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)",
+	});
+});
+
+test("#localSchema", () => {
+	const usersPrimaryKey = pgPrimaryKeyConstraint(["id"]);
+	const userUniqueConstraint1 = pgUniqueConstraint(["name"]);
+	const userUniqueConstraint2 = pgUniqueConstraint(["email"], false);
+	const userForeignKeyConstraint = pgForeignKeyConstraint(
+		["book_id"],
+		"books",
+		["id"],
+	);
+
+	const users = pgTable("users", {
+		columns: {
+			id: pgSerial(),
+			name: pgVarChar().notNull(),
+			email: pgVarChar().notNull(),
+			books_id: pgInteger(),
+		},
+		constraints: [
+			userForeignKeyConstraint,
+			userUniqueConstraint1,
+			userUniqueConstraint2,
+		],
+		primaryKey: usersPrimaryKey,
+	});
+
+	const teamsPrimaryKey = pgPrimaryKeyConstraint(["id"]);
+	const teams = pgTable("teams", {
+		columns: {
+			id: pgBigSerial(),
+			name: pgVarChar().notNull(),
+			active: pgBoolean(),
+		},
+		indexes: [pgIndex("teams_name_kinetic_idx", (idx) => idx)],
+		primaryKey: teamsPrimaryKey,
+	});
+
+	const booksConstraint = pgUniqueConstraint(["name", "location"]);
+
+	const books = pgTable("books", {
+		columns: {
+			id: pgSerial().primaryKey(),
+			name: pgVarChar(),
+			location: pgVarChar(),
+		},
+		indexes: [pgIndex("books_name_kinetic_idx", (idx) => idx)],
+		constraints: [booksConstraint],
+	});
+
+	const database = pgDatabase({
+		users,
+		teams,
+		books,
+	});
+
+	const expectedLocalSchema = {
+		table: {
+			books: {
+				id: {
+					characterMaximumLength: null,
+					columnName: "id",
+					dataType: "serial",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: true,
+					renameFrom: null,
+					tableName: "books",
+					unique: null,
+				},
+				location: {
+					characterMaximumLength: null,
+					columnName: "location",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "books",
+					unique: null,
+				},
+				name: {
+					characterMaximumLength: null,
+					columnName: "name",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "books",
+					unique: null,
+				},
+			},
+			teams: {
+				active: {
+					characterMaximumLength: null,
+					columnName: "active",
+					dataType: "boolean",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "teams",
+					unique: null,
+				},
+				id: {
+					characterMaximumLength: null,
+					columnName: "id",
+					dataType: "bigserial",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "teams",
+					unique: null,
+				},
+				name: {
+					characterMaximumLength: null,
+					columnName: "name",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "teams",
+					unique: null,
+				},
+			},
+			users: {
+				books_id: {
+					characterMaximumLength: null,
+					columnName: "books_id",
+					dataType: "integer",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "users",
+					unique: null,
+				},
+				email: {
+					characterMaximumLength: null,
+					columnName: "email",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "users",
+					unique: null,
+				},
+				id: {
+					characterMaximumLength: null,
+					columnName: "id",
+					dataType: "serial",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "users",
+					unique: null,
+				},
+				name: {
+					characterMaximumLength: null,
+					columnName: "name",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "users",
+					unique: null,
+				},
+			},
+		},
+		index: {
+			books: {
+				books_name_kinetic_idx:
+					'create index "books_name_kinetic_idx" on "books"',
+			},
+			teams: {
+				teams_name_kinetic_idx:
+					'create index "teams_name_kinetic_idx" on "teams"',
+			},
+		},
+		constraints: {
+			foreign: {
+				users_book_id_books_id_kinetic_fk:
+					"CONSTRAINT users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
+			},
+			unique: {
+				books_name_location_kinetic_key:
+					"CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)",
+				users_email_kinetic_key:
+					"CONSTRAINT users_email_kinetic_key UNIQUE NULLS NOT DISTINCT (email)",
+				users_name_kinetic_key:
+					"CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)",
+			},
+		},
+		primaryKey: {
+			teams_id_kinetic_pk: "CONSTRAINT teams_id_kinetic_pk PRIMARY KEY (id)",
+			users_id_kinetic_pk: "CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)",
+		},
+	};
+	expect(localSchema(database)).toStrictEqual(expectedLocalSchema);
 });

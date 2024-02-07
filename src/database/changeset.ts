@@ -1,16 +1,19 @@
 import microdiff from "microdiff";
-import { DbTableInfo, LocalTableInfo } from "./introspection/types.js";
 import { migrationOp } from "./migration_op/compute.js";
 import { CreateTableDiff, isCreateTable } from "./migration_op/table/create.js";
 import { DropTableTableDiff, isDropTable } from "./migration_op/table/drop.js";
+import type { MigrationSchema } from "./migrations/migration_schema.js";
 
-export function changeset(local: LocalTableInfo, db: DbTableInfo): Changeset[] {
-	const diff = microdiff(db, local);
+export function changeset(
+	local: MigrationSchema,
+	remote: MigrationSchema,
+): Changeset[] {
+	const diff = microdiff(remote, local);
 	const addedTables = diff.filter(isCreateTable).map(tableName);
 	const droppedTables = diff.filter(isDropTable).map(tableName);
 	return diff
 		.flatMap((difference) =>
-			migrationOp(difference, addedTables, droppedTables, local, db),
+			migrationOp(difference, addedTables, droppedTables, local, remote),
 		)
 		.sort((a, b) => (a.priority || 1) - (b.priority || 1));
 }

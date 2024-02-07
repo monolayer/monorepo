@@ -4,28 +4,18 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
+import { MigrationSchema } from "../migrations/migration_schema.js";
 import { dbColumnInfo } from "./database/columns.js";
 import { dbForeignKeyConstraintInfo } from "./database/foreign_key_constraint.js";
 import { dbIndexInfo } from "./database/indexes.js";
 import { dbPrimaryKeyConstraintInfo } from "./database/primary_key_constraint.js";
 import { dbTableInfo } from "./database/tables.js";
 import { dbUniqueConstraintInfo } from "./database/unique_constraint.js";
-import type { IndexInfo, TableColumnInfo } from "./types.js";
-
-export type RemoteSchema = {
-	table: TableColumnInfo;
-	index: IndexInfo;
-	constraints: {
-		unique: Record<string, string>;
-		foreign: Record<string, string>;
-	};
-	primaryKey: Record<string, string>;
-};
 
 export async function remoteSchema(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	kysely: Kysely<any>,
-): Promise<OperationSuccess<RemoteSchema> | OperationAnyError> {
+): Promise<OperationSuccess<MigrationSchema> | OperationAnyError> {
 	const remoteTableInfo = await dbTableInfo(kysely, "public");
 	if (remoteTableInfo.status === ActionStatus.Error) return remoteTableInfo;
 

@@ -2,12 +2,17 @@ import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { TableSchema, pgTable } from "~/database/schema/pg_table.js";
+import type {
+	ConstraintInfo,
+	MigrationSchema,
+} from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes } from "../schema/pg_column.js";
 import { PgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
 import { indexMeta, pgIndex } from "../schema/pg_index.js";
 import { PgUniqueConstraint } from "../schema/pg_unique.js";
 import {
 	foreignKeyConstraintInfoToQuery,
+	primaryKeyConstraintInfoToQuery,
 	uniqueConstraintInfoToQuery,
 } from "./info_to_query.js";
 import { ColumnsInfo, IndexInfo, TableColumnInfo } from "./types.js";
@@ -108,11 +113,6 @@ function indexToInfo(index: pgIndex, tableName: string, kysely: Kysely<any>) {
 	};
 }
 
-export type ConstraintInfo = {
-	unique: Record<string, string>;
-	foreignKey: Record<string, string>;
-};
-
 export function schemaDbConstraintInfoByTable(
 	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
 ) {
@@ -147,14 +147,46 @@ export function schemaDbConstraintInfoByTable(
 					const keyName = `${tableName}_${constraint.columns.join("_")}_${
 						constraint.targetTable
 					}_${constraint.targetColumns.join("_")}_kinetic_fk`;
-					acc.foreignKey = {
-						...acc.foreignKey,
+					acc.foreign = {
+						...acc.foreign,
 						[keyName]: constraintInfo,
 					};
 				}
 			}
 			return acc;
 		},
-		{ unique: {}, foreignKey: {} },
+		{ unique: {}, foreign: {} },
 	);
+}
+
+export function schemaDbPrimaryKeyInfo(
+	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
+) {
+	return Object.entries(schema.tables).reduce<Record<string, string>>(
+		(acc, [tableName, tableDefinition]) => {
+			if (tableDefinition.primaryKey) {
+				const keyName = `${tableName}_${tableDefinition.primaryKey.columns.join(
+					"_",
+				)}_kinetic_pk`;
+				acc[keyName] = primaryKeyConstraintInfoToQuery({
+					constraintType: "PRIMARY KEY",
+					table: tableName,
+					columns: tableDefinition.primaryKey.columns,
+				});
+			}
+			return acc;
+		},
+		{},
+	);
+}
+
+export function localSchema(
+	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
+): MigrationSchema {
+	return {
+		table: schemaDBColumnInfoByTable(schema),
+		index: schemaDBIndexInfoByTable(schema),
+		constraints: schemaDbConstraintInfoByTable(schema),
+		primaryKey: schemaDbPrimaryKeyInfo(schema),
+	};
 }
