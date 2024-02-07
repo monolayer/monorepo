@@ -25,7 +25,7 @@ describe("dbForeignKeyConstraintInfo", () => {
 			.createTable("test_books_fk")
 			.addColumn("id", "integer")
 			.addColumn("location", "integer")
-			.addPrimaryKeyConstraint("k_primary_key_test_books_fk", [
+			.addPrimaryKeyConstraint("k_primary_key_test_books_pk", [
 				"id",
 				"location",
 			])
@@ -35,7 +35,7 @@ describe("dbForeignKeyConstraintInfo", () => {
 			.addColumn("book_id", "integer")
 			.addColumn("location_id", "integer")
 			.addForeignKeyConstraint(
-				"k_fk_constraint_test_users_book_id_kinetic_fkey",
+				"k_fk_constraint_test_users_book_id_kinetic_fk",
 				["book_id", "location_id"],
 				"test_books_fk",
 				["id", "location"],

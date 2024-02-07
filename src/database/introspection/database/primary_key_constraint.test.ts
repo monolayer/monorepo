@@ -31,7 +31,7 @@ describe("dbPrimaryKeyConstraintInfo", () => {
 			.createTable("test_books_pk")
 			.addColumn("id", "integer")
 			.addColumn("location", "integer")
-			.addPrimaryKeyConstraint("k_primary_key_test_books_kinetic_pkey", [
+			.addPrimaryKeyConstraint("k_primary_key_test_books_kinetic_pk", [
 				"id",
 				"location",
 			])
@@ -40,7 +40,7 @@ describe("dbPrimaryKeyConstraintInfo", () => {
 			.createTable("test_users_pk")
 			.addColumn("book_id", "integer")
 			.addColumn("location_id", "integer")
-			.addPrimaryKeyConstraint("k_primary_key_test_books_fk_kinetic_pkey", [
+			.addPrimaryKeyConstraint("k_primary_key_test_books_fk_kinetic_pk", [
 				"book_id",
 			])
 			.execute();

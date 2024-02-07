@@ -45,7 +45,7 @@ export async function dbPrimaryKeyConstraintInfo(
 			])
 			.where("con.contype", "=", "p")
 			.where("ns.nspname", "=", databaseSchema)
-			.where("con.conname", "~", "kinetic_pkey$")
+			.where("con.conname", "~", "kinetic_pk$")
 			.where("tbl.relname", "in", tableNames)
 			.groupBy(["tbl.relname"])
 			.orderBy(["table"])

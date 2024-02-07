@@ -75,8 +75,7 @@ export async function dbForeignKeyConstraintInfo(
 			])
 			.where("con.contype", "=", "f")
 			.where("ns.nspname", "=", databaseSchema)
-			.where("con.conname", "~", "kinetic_fkey$")
-			.where("con.conname", "~", "^k_fk_")
+			.where("con.conname", "~", "kinetic_fk$")
 			.where("tbl.relname", "in", tableNames)
 			.groupBy([
 				"tbl.relname",
