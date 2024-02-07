@@ -27,8 +27,15 @@ export type ForeignKeyConstraintInfo = {
 export async function dbForeignKeyConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
-	tables: string[],
+	tableNames: string[],
 ): Promise<OperationSuccess<Record<string, string>> | OperationAnyError> {
+	if (tableNames.length === 0) {
+		return {
+			status: ActionStatus.Success,
+			result: {},
+		};
+	}
+
 	try {
 		const results = await kysely
 			.selectFrom("pg_constraint as con")
@@ -70,11 +77,7 @@ export async function dbForeignKeyConstraintInfo(
 			.where("ns.nspname", "=", databaseSchema)
 			.where("con.conname", "~", "kinetic_fkey$")
 			.where("con.conname", "~", "^k_fk_")
-			.where("tbl.relname", "!=", "geometry_columns")
-			.where("tbl.relname", "!=", "spatial_ref_sys")
-			.where("tbl.relname", "!=", "kysely_migration_lock")
-			.where("tbl.relname", "!=", "kysely_migration")
-			.where("tbl.relname", "!=", "VIEW")
+			.where("tbl.relname", "in", tableNames)
 			.groupBy([
 				"tbl.relname",
 				"ref_tbl.relname",

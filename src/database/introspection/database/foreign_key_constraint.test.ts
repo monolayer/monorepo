@@ -42,7 +42,10 @@ describe("dbForeignKeyConstraintInfo", () => {
 			)
 			.execute();
 
-		const table_1_results = await dbForeignKeyConstraintInfo(kysely, "public");
+		const table_1_results = await dbForeignKeyConstraintInfo(kysely, "public", [
+			"test_users_fk",
+			"test_books_fk",
+		]);
 		if (table_1_results.status === ActionStatus.Error) {
 			throw table_1_results.error;
 		}

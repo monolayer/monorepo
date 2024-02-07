@@ -16,8 +16,15 @@ export type PrimaryKeyConstraintInfo = {
 export async function dbPrimaryKeyConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
+	tableNames: string[],
 ): Promise<OperationSuccess<Record<string, string>> | OperationAnyError> {
 	try {
+		if (tableNames.length === 0) {
+			return {
+				status: ActionStatus.Success,
+				result: {},
+			};
+		}
 		const results = await kysely
 			.selectFrom("pg_constraint as con")
 			.fullJoin("pg_class as tbl", (join) =>
@@ -39,11 +46,7 @@ export async function dbPrimaryKeyConstraintInfo(
 			.where("con.contype", "=", "p")
 			.where("ns.nspname", "=", databaseSchema)
 			.where("con.conname", "~", "kinetic_pkey$")
-			.where("tbl.relname", "!=", "geometry_columns")
-			.where("tbl.relname", "!=", "spatial_ref_sys")
-			.where("tbl.relname", "!=", "kysely_migration_lock")
-			.where("tbl.relname", "!=", "kysely_migration")
-			.where("tbl.relname", "!=", "VIEW")
+			.where("tbl.relname", "in", tableNames)
 			.groupBy(["tbl.relname"])
 			.orderBy(["table"])
 			.execute();

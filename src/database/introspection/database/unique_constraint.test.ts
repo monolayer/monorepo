@@ -35,7 +35,9 @@ describe("#dbUniqueConstraintInfo", () => {
 				"name",
 			])
 			.execute();
-		const table_1_results = await dbUniqueConstraintInfo(kysely, "public");
+		const table_1_results = await dbUniqueConstraintInfo(kysely, "public", [
+			"unique_constraint_test",
+		]);
 		if (table_1_results.status === ActionStatus.Error) {
 			throw table_1_results.error;
 		}

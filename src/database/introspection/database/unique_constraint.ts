@@ -17,8 +17,15 @@ export type UniqueConstraintInfo = {
 export async function dbUniqueConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
+	tableNames: string[],
 ): Promise<OperationSuccess<Record<string, string>> | OperationAnyError> {
 	try {
+		if (tableNames.length === 0) {
+			return {
+				status: ActionStatus.Success,
+				result: {},
+			};
+		}
 		const results = await kysely
 			.selectFrom("pg_constraint")
 			.fullJoin("pg_namespace", (join) =>
@@ -58,11 +65,7 @@ export async function dbUniqueConstraintInfo(
 			.where("pg_constraint.contype", "=", "u")
 			.where("pg_constraint.conname", "~", "kinetic_key$")
 			.where("pg_namespace.nspname", "=", databaseSchema)
-			.where("pg_class.relname", "!=", "geometry_columns")
-			.where("pg_class.relname", "!=", "spatial_ref_sys")
-			.where("pg_class.relname", "!=", "kysely_migration_lock")
-			.where("pg_class.relname", "!=", "kysely_migration")
-			.where("pg_class.relname", "!=", "VIEW")
+			.where("pg_class.relname", "in", tableNames)
 			.groupBy(["table", "information_schema.table_constraints.nulls_distinct"])
 			.execute();
 		const transformedResults = results.reduce<Record<string, string>>(

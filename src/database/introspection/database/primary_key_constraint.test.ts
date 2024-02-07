@@ -45,7 +45,11 @@ describe("dbPrimaryKeyConstraintInfo", () => {
 			])
 			.execute();
 
-		const results = await dbPrimaryKeyConstraintInfo(kysely, "public");
+		const results = await dbPrimaryKeyConstraintInfo(kysely, "public", [
+			"test_demo_pk",
+			"test_books_pk",
+			"test_users_pk",
+		]);
 		if (results.status === ActionStatus.Error) {
 			throw results.error;
 		}
