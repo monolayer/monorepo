@@ -45,6 +45,14 @@ import {
 	isUniqueChange,
 	isUniqueDrop,
 } from "./column_change/unique.js";
+import {
+	changeforeignKeyConstraintMigration,
+	createforeignKeyConstraintMigration,
+	dropforeignKeyConstraintMigration,
+	isForeignKeyConstraintChange,
+	isForeignKeyConstraintCreate,
+	isForeignKeyConstraintDrop,
+} from "./foreign_key.js";
 import { createIndexMigration, isCreateIndex } from "./index/create.js";
 import {
 	createFirstIndexMigration,
@@ -134,6 +142,12 @@ export function migrationOp(
 		return removeColumnForeignKeyMigrationOperation(difference);
 	if (isChangeOptionsForeignKeyConstraint(difference))
 		return changeColumnForeignKeyMigrationOperation(difference, local, db);
+	if (isForeignKeyConstraintCreate(difference))
+		return createforeignKeyConstraintMigration(difference, addedTables);
+	if (isForeignKeyConstraintDrop(difference))
+		return dropforeignKeyConstraintMigration(difference, droppedTables);
+	if (isForeignKeyConstraintChange(difference))
+		return changeforeignKeyConstraintMigration(difference);
 	if (isUniqueConstraintCreate(difference))
 		return createUniqueConstraintMigration(difference, addedTables);
 	if (isUniqueConstraintDrop(difference))

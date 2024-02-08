@@ -26,7 +26,9 @@ type ForeignKeyChangeDiff = {
 	oldValue: string;
 };
 
-function isForeignKeyCreate(test: Difference): test is ForeignKeyCreateDiff {
+export function isForeignKeyConstraintCreate(
+	test: Difference,
+): test is ForeignKeyCreateDiff {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 2 &&
@@ -37,7 +39,9 @@ function isForeignKeyCreate(test: Difference): test is ForeignKeyCreateDiff {
 	);
 }
 
-function isForeignKeyDrop(test: Difference): test is ForeignKeyDropDiff {
+export function isForeignKeyConstraintDrop(
+	test: Difference,
+): test is ForeignKeyDropDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 2 &&
@@ -48,7 +52,9 @@ function isForeignKeyDrop(test: Difference): test is ForeignKeyDropDiff {
 	);
 }
 
-function isForeignKeyChange(test: Difference): test is ForeignKeyChangeDiff {
+export function isForeignKeyConstraintChange(
+	test: Difference,
+): test is ForeignKeyChangeDiff {
 	return (
 		test.type === "CHANGE" &&
 		test.path.length === 3 &&
@@ -60,7 +66,7 @@ function isForeignKeyChange(test: Difference): test is ForeignKeyChangeDiff {
 	);
 }
 
-function createforeignKeyConstraintMigration(
+export function createforeignKeyConstraintMigration(
 	diff: ForeignKeyCreateDiff,
 	addedTables: string[],
 ) {
@@ -85,7 +91,7 @@ function createforeignKeyConstraintMigration(
 	};
 }
 
-function dropforeignKeyConstraintMigration(
+export function dropforeignKeyConstraintMigration(
 	diff: ForeignKeyDropDiff,
 	droppedTables: string[],
 ) {
@@ -112,7 +118,9 @@ function dropforeignKeyConstraintMigration(
 	};
 }
 
-function changeforeignKeyConstraintMigration(diff: ForeignKeyChangeDiff) {
+export function changeforeignKeyConstraintMigration(
+	diff: ForeignKeyChangeDiff,
+) {
 	const tableName = diff.path[1];
 	const constraintName = diff.path[2];
 	const newValue = diff.value;
@@ -139,13 +147,13 @@ export function foreignKeyMigrationOps(
 		return [];
 	}
 	return diff.flatMap((d) => {
-		if (isForeignKeyCreate(d)) {
+		if (isForeignKeyConstraintCreate(d)) {
 			return createforeignKeyConstraintMigration(d, addedTables);
 		}
-		if (isForeignKeyDrop(d)) {
+		if (isForeignKeyConstraintDrop(d)) {
 			return dropforeignKeyConstraintMigration(d, droppedTables);
 		}
-		if (isForeignKeyChange(d)) {
+		if (isForeignKeyConstraintChange(d)) {
 			return changeforeignKeyConstraintMigration(d);
 		}
 		return [];
