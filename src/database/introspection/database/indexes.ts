@@ -37,7 +37,7 @@ export async function dbIndexInfo(
 			.distinct()
 			.where("pg_class_2.relkind", "in", ["i", "I"])
 			.where("pg_index.indisprimary", "=", false)
-			.where("pg_class_2.relname", "~", "kinetic_idx$")
+			.where("pg_class_2.relname", "~", "idx$")
 			.where("pg_class.relname", "in", tableNames)
 			.where("pg_namespace.nspname", "=", databaseSchema)
 			.orderBy("pg_class_2.relname")

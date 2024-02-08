@@ -29,7 +29,7 @@ describe("dbIndexInfo", () => {
 			.execute();
 
 		await kysely.schema
-			.createIndex("indexes_test_books_location_kinetic_idx")
+			.createIndex("indexes_test_books_location_kntc_idx")
 			.on("indexes_test_books")
 			.columns(["location"])
 			.execute();
@@ -42,7 +42,7 @@ describe("dbIndexInfo", () => {
 			.execute();
 
 		await kysely.schema
-			.createIndex("indexes_test_users_name_email_kinetic_idx")
+			.createIndex("indexes_test_users_name_email_kntc_idx")
 			.on("indexes_test_users")
 			.columns(["name", "email"])
 			.execute();
@@ -57,12 +57,12 @@ describe("dbIndexInfo", () => {
 
 		const expectedIndexes = {
 			indexes_test_books: {
-				indexes_test_books_location_kinetic_idx:
-					"CREATE INDEX indexes_test_books_location_kinetic_idx ON public.indexes_test_books USING btree (location)",
+				indexes_test_books_location_kntc_idx:
+					"CREATE INDEX indexes_test_books_location_kntc_idx ON public.indexes_test_books USING btree (location)",
 			},
 			indexes_test_users: {
-				indexes_test_users_name_email_kinetic_idx:
-					"CREATE INDEX indexes_test_users_name_email_kinetic_idx ON public.indexes_test_users USING btree (name, email)",
+				indexes_test_users_name_email_kntc_idx:
+					"CREATE INDEX indexes_test_users_name_email_kntc_idx ON public.indexes_test_users USING btree (name, email)",
 			},
 		};
 		expect(results.result).toStrictEqual(expectedIndexes);

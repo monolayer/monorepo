@@ -64,7 +64,7 @@ describe("#remoteSchema", () => {
 			.execute();
 
 		await kysely.schema
-			.createIndex("remote_schema_users_name_email_kinetic_idx")
+			.createIndex("remote_schema_users_name_email_kntc_idx")
 			.on("remote_schema_users")
 			.columns(["name", "email"])
 			.execute();
@@ -176,8 +176,8 @@ describe("#remoteSchema", () => {
 				},
 				index: {
 					remote_schema_users: {
-						remote_schema_users_name_email_kinetic_idx:
-							"CREATE INDEX remote_schema_users_name_email_kinetic_idx ON public.remote_schema_users USING btree (name, email)",
+						remote_schema_users_name_email_kntc_idx:
+							"CREATE INDEX remote_schema_users_name_email_kntc_idx ON public.remote_schema_users USING btree (name, email)",
 					},
 				},
 				uniqueConstraints: {

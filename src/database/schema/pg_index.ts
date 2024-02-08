@@ -1,47 +1,35 @@
 import { CreateIndexBuilder } from "kysely";
 
-export type IndexConstructor<T> = {
-	new (): T;
-	(): T;
-};
-
-export type pgIndex = {
-	readonly name: string;
-};
-
-export function pgIndex(
-	name: string,
+type IndexBuilder = (
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	builder: (builder: CreateIndexBuilder<any>) => CreateIndexBuilder<any>,
-) {
-	const indexConstructor = function (this: pgIndex) {
-		Object.defineProperty(this, "name", {
-			value: name,
-			writable: false,
-		});
-		const meta = {
-			name,
-			builder,
-		};
-		Object.defineProperty(this, "_meta", {
-			value: meta,
-			writable: false,
-		});
-		return this;
-	} as IndexConstructor<pgIndex>;
-	return new indexConstructor();
+	builder: CreateIndexBuilder<any> & {
+		column: never;
+		columns: never;
+	},
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+) => CreateIndexBuilder<any>;
+
+export function pgIndex<T>(columns: T, builder: IndexBuilder) {
+	return new PgIndex(columns, builder);
 }
 
-export type IndexMeta = {
-	name: string;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	builder: (builder: CreateIndexBuilder<any>) => CreateIndexBuilder<any>;
-};
+export class PgIndex<T> {
+	_builder: IndexBuilder;
 
-export function indexMeta(obj: object) {
-	return (
-		obj as unknown as {
-			_meta: IndexMeta;
+	constructor(
+		private cols: T,
+		builder: IndexBuilder,
+	) {
+		this._builder = builder;
+	}
+
+	get columns() {
+		const colArray = [] as string[];
+		if (typeof this.cols === "string") {
+			colArray.push(this.cols);
+		} else {
+			colArray.push(...(this.cols as unknown as string[]));
 		}
-	)._meta;
+		return colArray;
+	}
 }

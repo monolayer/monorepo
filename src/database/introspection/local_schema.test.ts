@@ -206,10 +206,7 @@ test("#schemaDBIndexInfoByTable", () => {
 			name: pgVarChar().notNull(),
 			email: pgVarChar().notNull(),
 		},
-		indexes: [
-			pgIndex("users_name_idx", (idx) => idx),
-			pgIndex("users_email_idx", (idx) => idx),
-		],
+		indexes: [pgIndex("name", (idx) => idx), pgIndex("email", (idx) => idx)],
 	});
 	const teams = pgTable("teams", {
 		columns: {
@@ -217,10 +214,7 @@ test("#schemaDBIndexInfoByTable", () => {
 			name: pgVarChar().notNull(),
 			active: pgBoolean(),
 		},
-		indexes: [
-			pgIndex("teams_id_idx", (idx) => idx),
-			pgIndex("teams_active_idx", (idx) => idx),
-		],
+		indexes: [pgIndex("id", (idx) => idx), pgIndex("active", (idx) => idx)],
 	});
 	const database = pgDatabase({
 		users,
@@ -228,48 +222,38 @@ test("#schemaDBIndexInfoByTable", () => {
 	});
 	expect(schemaDBIndexInfoByTable(database)).toStrictEqual({
 		teams: {
-			teams_active_idx: 'create index "teams_active_idx" on "teams"',
-			teams_id_idx: 'create index "teams_id_idx" on "teams"',
+			teams_active_kntc_idx: 'create index "teams_active_kntc_idx" on "teams"',
+			teams_id_kntc_idx: 'create index "teams_id_kntc_idx" on "teams"',
 		},
 		users: {
-			users_email_idx: 'create index "users_email_idx" on "users"',
-			users_name_idx: 'create index "users_name_idx" on "users"',
+			users_email_kntc_idx: 'create index "users_email_kntc_idx" on "users"',
+			users_name_kntc_idx: 'create index "users_name_kntc_idx" on "users"',
 		},
 	});
 });
 
 test("#schemaDbConstraintInfoByTable", () => {
-	const userUniqueConstraint1 = pgUniqueConstraint(["name"]);
-	const userUniqueConstraint2 = pgUniqueConstraint(["subscribed"]);
-	const userForeignKeyConstraint = pgForeignKeyConstraint(
-		["book_id"],
-		"books",
-		["id"],
-	);
-
-	const users = pgTable("users", {
-		columns: {
-			id: pgSerial().primaryKey(),
-			name: pgVarChar(),
-			subscribed: pgBoolean(),
-			bookd_id: pgInteger(),
-		},
-		constraints: [
-			userForeignKeyConstraint,
-			userUniqueConstraint1,
-			userUniqueConstraint2,
-		],
-	});
-
-	const booksConstraint = pgUniqueConstraint(["name", "location"]);
-
 	const books = pgTable("books", {
 		columns: {
 			id: pgSerial().primaryKey(),
 			name: pgVarChar(),
 			location: pgVarChar(),
 		},
-		constraints: [booksConstraint],
+		constraints: [pgUniqueConstraint(["name", "location"])],
+	});
+
+	const users = pgTable("users", {
+		columns: {
+			id: pgSerial().primaryKey(),
+			name: pgVarChar(),
+			subscribed: pgBoolean(),
+			book_id: pgInteger(),
+		},
+		constraints: [
+			pgUniqueConstraint(["name"]),
+			pgUniqueConstraint(["subscribed"]),
+			pgForeignKeyConstraint(["book_id"], books, ["id"]),
+		],
 	});
 
 	const database = pgDatabase({
@@ -301,51 +285,39 @@ test("#schemaDbConstraintInfoByTable", () => {
 });
 
 test("#localSchema", () => {
-	const usersPrimaryKey = pgPrimaryKeyConstraint(["id"]);
-	const userUniqueConstraint1 = pgUniqueConstraint(["name"]);
-	const userUniqueConstraint2 = pgUniqueConstraint(["email"], false);
-	const userForeignKeyConstraint = pgForeignKeyConstraint(
-		["book_id"],
-		"books",
-		["id"],
-	);
-
-	const users = pgTable("users", {
-		columns: {
-			id: pgSerial(),
-			name: pgVarChar().notNull(),
-			email: pgVarChar().notNull(),
-			books_id: pgInteger(),
-		},
-		constraints: [
-			userForeignKeyConstraint,
-			userUniqueConstraint1,
-			userUniqueConstraint2,
-			usersPrimaryKey,
-		],
-	});
-
-	const teamsPrimaryKey = pgPrimaryKeyConstraint(["id"]);
-	const teams = pgTable("teams", {
-		columns: {
-			id: pgBigSerial(),
-			name: pgVarChar().notNull(),
-			active: pgBoolean(),
-		},
-		indexes: [pgIndex("teams_name_kinetic_idx", (idx) => idx)],
-		constraints: [teamsPrimaryKey],
-	});
-
-	const booksConstraint = pgUniqueConstraint(["name", "location"]);
-
 	const books = pgTable("books", {
 		columns: {
 			id: pgSerial().primaryKey(),
 			name: pgVarChar(),
 			location: pgVarChar(),
 		},
-		indexes: [pgIndex("books_name_kinetic_idx", (idx) => idx)],
-		constraints: [booksConstraint],
+		indexes: [pgIndex("name", (idx) => idx)],
+		constraints: [pgUniqueConstraint(["name", "location"])],
+	});
+
+	const users = pgTable("users", {
+		columns: {
+			id: pgSerial(),
+			name: pgVarChar().notNull(),
+			email: pgVarChar().notNull(),
+			book_id: pgInteger(),
+		},
+		constraints: [
+			pgForeignKeyConstraint(["book_id"], books, ["id"]),
+			pgUniqueConstraint(["name"]),
+			pgUniqueConstraint(["email"], false),
+			pgPrimaryKeyConstraint(["id"]),
+		],
+	});
+
+	const teams = pgTable("teams", {
+		columns: {
+			id: pgBigSerial(),
+			name: pgVarChar().notNull(),
+			active: pgBoolean(),
+		},
+		indexes: [pgIndex("name", (idx) => idx)],
+		constraints: [pgPrimaryKeyConstraint("id")],
 	});
 
 	const database = pgDatabase({
@@ -457,9 +429,9 @@ test("#localSchema", () => {
 				},
 			},
 			users: {
-				books_id: {
+				book_id: {
 					characterMaximumLength: null,
-					columnName: "books_id",
+					columnName: "book_id",
 					dataType: "integer",
 					datetimePrecision: null,
 					defaultValue: null,
@@ -525,12 +497,10 @@ test("#localSchema", () => {
 		},
 		index: {
 			books: {
-				books_name_kinetic_idx:
-					'create index "books_name_kinetic_idx" on "books"',
+				books_name_kntc_idx: 'create index "books_name_kntc_idx" on "books"',
 			},
 			teams: {
-				teams_name_kinetic_idx:
-					'create index "teams_name_kinetic_idx" on "teams"',
+				teams_name_kntc_idx: 'create index "teams_name_kntc_idx" on "teams"',
 			},
 		},
 		foreignKeyConstraints: {

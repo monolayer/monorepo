@@ -1,4 +1,4 @@
-import { Kysely, PostgresDialect } from "kysely";
+import { type CreateIndexBuilder, Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { type PgTable } from "~/database/schema/pg_table.js";
@@ -8,7 +8,7 @@ import type {
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes } from "../schema/pg_column.js";
 import { PgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
-import { indexMeta, pgIndex } from "../schema/pg_index.js";
+import type { PgIndex } from "../schema/pg_index.js";
 import { PgPrimaryKeyConstraint } from "../schema/pg_primary_key.js";
 import { PgUniqueConstraint } from "../schema/pg_unique.js";
 import {
@@ -96,16 +96,25 @@ export function schemaDBIndexInfoByTable(
 	);
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function indexToInfo(index: pgIndex, tableName: string, kysely: Kysely<any>) {
-	const meta = indexMeta(index as pgIndex);
-
-	const compiledQuery = meta
-		.builder(kysely.schema.createIndex(meta.name).on(tableName))
-		.compile().sql;
+function indexToInfo(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	index: PgIndex<any>,
+	tableName: string,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	kysely: Kysely<any>,
+) {
+	const indexName = `${tableName}_${index.columns.join("_")}_kntc_idx`;
+	const kyselyBuilder = kysely.schema
+		.createIndex(indexName)
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		.on(tableName) as CreateIndexBuilder<any> & {
+		column: never;
+		columns: never;
+	};
+	const compiledQuery = index._builder(kyselyBuilder).compile().sql;
 
 	return {
-		[index.name]: compiledQuery,
+		[indexName]: compiledQuery,
 	};
 }
 
@@ -135,14 +144,14 @@ export function schemaDbConstraintInfoByTable(
 				}
 				if (constraint instanceof PgForeignKeyConstraint) {
 					const keyName = `${tableName}_${constraint.columns.join("_")}_${
-						constraint.targetTable
+						constraint.targetTable.name
 					}_${constraint.targetColumns.join("_")}_kinetic_fk`;
 					const constraintInfo = {
 						[keyName]: foreignKeyConstraintInfoToQuery({
 							constraintType: "FOREIGN KEY",
 							table: tableName,
 							column: constraint.columns,
-							targetTable: constraint.targetTable,
+							targetTable: constraint.targetTable.name,
 							targetColumns: constraint.targetColumns,
 							deleteRule: constraint.options.deleteRule,
 							updateRule: constraint.options.updateRule,

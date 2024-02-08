@@ -8,11 +8,17 @@ import {
 	pgText,
 	pgVarChar,
 } from "~/database/schema/pg_column.js";
-import { pgIndex } from "~/database/schema/pg_index.js";
+import { PgIndex, pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import { pgForeignKeyConstraint } from "./pg_foreign_key.js";
-import { pgPrimaryKeyConstraint } from "./pg_primary_key.js";
-import { pgUniqueConstraint } from "./pg_unique.js";
+import {
+	PgForeignKeyConstraint,
+	pgForeignKeyConstraint,
+} from "./pg_foreign_key.js";
+import {
+	PgPrimaryKeyConstraint,
+	pgPrimaryKeyConstraint,
+} from "./pg_primary_key.js";
+import { PgUniqueConstraint, pgUniqueConstraint } from "./pg_unique.js";
 
 describe("pgTable definition", () => {
 	test("has a name", () => {
@@ -190,23 +196,23 @@ describe("pgTable definition", () => {
 	});
 
 	test("indexes can be added", () => {
-		const indexes = [
-			pgIndex("index_on_name", (idx) =>
-				idx.ifNotExists().unique().using("btree"),
-			),
-			pgIndex("index_on_subscribe", (idx) =>
-				idx.ifNotExists().unique().using("btree"),
-			),
-		];
 		const columns = {
 			name: pgVarChar(),
 			subscribed: pgBoolean(),
 		};
 		const tbl = pgTable("users", {
 			columns: columns,
-			indexes,
+			indexes: [
+				pgIndex("name", (idx) => idx.ifNotExists().unique().using("btree")),
+				pgIndex("subscribed", (idx) =>
+					idx.ifNotExists().unique().using("btree"),
+				),
+			],
 		});
-		expect(tbl.indexes).toStrictEqual(indexes);
+		expect(tbl.indexes?.length).toBe(2);
+		for (const idx of tbl.indexes || []) {
+			expect(idx).toBeInstanceOf(PgIndex);
+		}
 	});
 
 	describe("constraints", () => {
@@ -222,30 +228,28 @@ describe("pgTable definition", () => {
 		});
 
 		test("foreign key constraints can be added", () => {
-			const columns = {
-				id: pgSerial().primaryKey(),
-				name: pgVarChar(),
-				subscribed: pgBoolean(),
-			};
-			const foreignKeyConstraint1 = pgForeignKeyConstraint(
-				["user_id"],
-				"users",
-				["id"],
-			);
-			const foreignKeyConstraint2 = pgForeignKeyConstraint(
-				["book_id"],
-				"books",
-				["id"],
-			);
-
-			const tbl = pgTable("users", {
-				columns: columns,
-				constraints: [foreignKeyConstraint1, foreignKeyConstraint2],
+			const books = pgTable("books", {
+				columns: {
+					id: pgSerial().primaryKey(),
+					name: pgVarChar(),
+					location: pgVarChar(),
+				},
+				constraints: [pgUniqueConstraint(["name", "location"])],
 			});
-			expect(tbl.constraints).toStrictEqual([
-				foreignKeyConstraint1,
-				foreignKeyConstraint2,
-			]);
+
+			const users = pgTable("users", {
+				columns: {
+					id: pgSerial().primaryKey(),
+					name: pgVarChar(),
+					subscribed: pgBoolean(),
+					book_id: pgInteger(),
+				},
+				constraints: [pgForeignKeyConstraint(["book_id"], books, ["id"])],
+			});
+			expect(users.constraints?.length).toBe(1);
+			for (const constraint of users.constraints || []) {
+				expect(constraint).toBeInstanceOf(PgForeignKeyConstraint);
+			}
 		});
 
 		test("unique constraints can be added", () => {
@@ -254,17 +258,18 @@ describe("pgTable definition", () => {
 				name: pgVarChar(),
 				subscribed: pgBoolean(),
 			};
-			const uniqueConstraint1 = pgUniqueConstraint(["name"]);
-			const uniqueConstraint2 = pgUniqueConstraint(["subscribed"]);
 
 			const tbl = pgTable("users", {
 				columns: columns,
-				constraints: [uniqueConstraint1, uniqueConstraint2],
+				constraints: [
+					pgUniqueConstraint(["name"]),
+					pgUniqueConstraint(["subscribed"]),
+				],
 			});
-			expect(tbl.constraints).toStrictEqual([
-				uniqueConstraint1,
-				uniqueConstraint2,
-			]);
+			expect(tbl.constraints?.length).toBe(2);
+			for (const constraint of tbl.constraints || []) {
+				expect(constraint).toBeInstanceOf(PgUniqueConstraint);
+			}
 		});
 
 		test("primary key constraints can be added the table level", () => {
@@ -272,12 +277,14 @@ describe("pgTable definition", () => {
 				id: pgInteger(),
 				name: pgVarChar(),
 			};
-			const primaryKey = pgPrimaryKeyConstraint(["id", "name"]);
 			const tbl = pgTable("users", {
 				columns: columns,
-				constraints: [primaryKey],
+				constraints: [pgPrimaryKeyConstraint(["id", "name"])],
 			});
-			expect(tbl.constraints).toStrictEqual([primaryKey]);
+			expect(tbl.constraints?.length).toBe(1);
+			for (const constraint of tbl.constraints || []) {
+				expect(constraint).toBeInstanceOf(PgPrimaryKeyConstraint);
+			}
 		});
 	});
 });

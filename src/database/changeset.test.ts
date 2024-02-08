@@ -50,7 +50,7 @@ describe("#dbChangeset", () => {
 				index: {
 					books: {
 						...compileIndex(
-							pgIndex("books_name_idx", (idx) => idx.column("name")),
+							pgIndex("name", (idx) => idx),
 							"books",
 						),
 					},
@@ -101,7 +101,7 @@ describe("#dbChangeset", () => {
 				tableName: "books",
 				type: "createIndex",
 				up: [
-					'await sql`create index "books_name_idx" on "books" ("name")`.execute(db);',
+					'await sql`create index "books_name_kntc_idx" on "books" ("name")`.execute(db);',
 				],
 				down: [],
 			},
@@ -143,10 +143,10 @@ describe("#dbChangeset", () => {
 				},
 				index: {
 					shops: {
-						shops_mail_idx:
-							'create unique index "shops_mail_idx" on "shops" using btree ("email")',
-						shops_city_idx:
-							'create unique index "shops_city_idx" on "shops" using btree ("city")',
+						shops_mail_kntc_idx:
+							'create unique index "shops_email_kntc_idx" on "shops" using btree ("email")',
+						shops_city_kntc_idx:
+							'create unique index "shops_city_kntc_idx" on "shops" using btree ("city")',
 					},
 				},
 				uniqueConstraints: {},
@@ -176,7 +176,7 @@ describe("#dbChangeset", () => {
 				type: "dropIndex",
 				up: [],
 				down: [
-					'await sql`create unique index "shops_mail_idx" on "shops" using btree ("email")`.execute(db);',
+					'await sql`create unique index "shops_email_kntc_idx" on "shops" using btree ("email")`.execute(db);',
 				],
 			},
 			{
@@ -185,7 +185,7 @@ describe("#dbChangeset", () => {
 				type: "dropIndex",
 				up: [],
 				down: [
-					'await sql`create unique index "shops_city_idx" on "shops" using btree ("city")`.execute(db);',
+					'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city")`.execute(db);',
 				],
 			},
 		];
@@ -245,20 +245,18 @@ describe("#dbChangeset", () => {
 				index: {
 					samples: {
 						...compileIndex(
-							pgIndex("samples_name_idx", (idx) => idx.column("name")),
+							pgIndex("name", (idx) => idx),
 							"samples",
 						),
 					},
 					addresses: {
 						...compileIndex(
-							pgIndex("addresses_city_idx", (idx) =>
-								idx.column("city").using("btree").unique(),
-							),
+							pgIndex("city", (idx) => idx.using("btree").unique()),
 							"addresses",
 						),
 						...compileIndex(
-							pgIndex("addresses_city_and_country_idx", (idx) =>
-								idx.columns(["city", "country"]).using("btree").unique(),
+							pgIndex(["city", "country"], (idx) =>
+								idx.using("btree").unique(),
 							),
 							"addresses",
 						),
@@ -307,10 +305,10 @@ describe("#dbChangeset", () => {
 				},
 				index: {
 					addresses: {
-						addresses_city_idx:
-							'create unique index "addresses_city_idx" on "addresses" using btree ("city")',
-						addresses_country_idx:
-							'create unique index "addresses_country_idx" on "addresses" using btree ("country")',
+						addresses_city_kntc_idx:
+							'create unique index "addresses_city_kntc_idx" on "addresses" using btree ("city")',
+						addresses_country_kntc_idx:
+							'create unique index "addresses_country_kntc_idx" on "addresses" using btree ("country")',
 					},
 				},
 				uniqueConstraints: {},
@@ -460,9 +458,11 @@ describe("#dbChangeset", () => {
 				tableName: "addresses",
 				type: "dropIndex",
 				priority: 4,
-				up: ['await db.schema.dropIndex("addresses_country_idx").execute();'],
+				up: [
+					'await db.schema.dropIndex("addresses_country_kntc_idx").execute();',
+				],
 				down: [
-					'await sql`create unique index "addresses_country_idx" on "addresses" using btree ("country")`.execute(db);',
+					'await sql`create unique index "addresses_country_kntc_idx" on "addresses" using btree ("country")`.execute(db);',
 				],
 			},
 			{
@@ -470,10 +470,10 @@ describe("#dbChangeset", () => {
 				priority: 4,
 				type: "createIndex",
 				up: [
-					'await sql`create unique index "addresses_city_and_country_idx" on "addresses" using btree ("city", "country")`.execute(db);',
+					'await sql`create unique index "addresses_city_country_kntc_idx" on "addresses" using btree ("city", "country")`.execute(db);',
 				],
 				down: [
-					'await db.schema.dropIndex("addresses_city_and_country_idx").execute();',
+					'await db.schema.dropIndex("addresses_city_country_kntc_idx").execute();',
 				],
 			},
 			{
@@ -481,9 +481,9 @@ describe("#dbChangeset", () => {
 				priority: 4,
 				type: "createIndex",
 				up: [
-					'await sql`create index "samples_name_idx" on "samples" ("name")`.execute(db);',
+					'await sql`create index "samples_name_kntc_idx" on "samples" ("name")`.execute(db);',
 				],
-				down: ['await db.schema.dropIndex("samples_name_idx").execute();'],
+				down: ['await db.schema.dropIndex("samples_name_kntc_idx").execute();'],
 			},
 		];
 		expect(cset).toStrictEqual(expected);

@@ -2,26 +2,20 @@ import type { Insertable, Selectable, Updateable } from "kysely";
 import { type Simplify } from "type-fest";
 import { PgColumnTypes } from "./pg_column.js";
 import type { PgForeignKeyConstraint } from "./pg_foreign_key.js";
-import { pgIndex } from "./pg_index.js";
+import { type PgIndex } from "./pg_index.js";
 import type { PgPrimaryKeyConstraint } from "./pg_primary_key.js";
 import type { PgUniqueConstraint } from "./pg_unique.js";
 
 export type ColumnRecord = Record<string, PgColumnTypes>;
 
-export type Constraints = (
-	| PgUniqueConstraint
-	| PgForeignKeyConstraint
-	| PgPrimaryKeyConstraint
-)[];
-
 type TableSchema<T> = {
 	columns: T extends ColumnRecord ? T : never;
 	constraints?: (
-		| PgUniqueConstraint
-		| PgForeignKeyConstraint
-		| PgPrimaryKeyConstraint
+		| PgUniqueConstraint<keyof T | Array<keyof T>>
+		| PgForeignKeyConstraint<keyof T | Array<keyof T>>
+		| PgPrimaryKeyConstraint<keyof T | Array<keyof T>>
 	)[];
-	indexes?: pgIndex[];
+	indexes?: PgIndex<keyof T | Array<keyof T>>[];
 };
 
 export function pgTable<N extends string, T extends ColumnRecord>(

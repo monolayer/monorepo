@@ -203,7 +203,7 @@ describe("Migrator", () => {
 					tableName: "books",
 					type: ChangeSetType.CreateIndex,
 					up: [
-						'await sql`create index "books_name_idx" on "books" ("name")`.execute(db);',
+						'await sql`create index "books_name_kntc_idx" on "books" ("name")`.execute(db);',
 					],
 					down: [],
 				},
@@ -213,7 +213,7 @@ describe("Migrator", () => {
 					type: ChangeSetType.DropIndex,
 					up: [],
 					down: [
-						'await sql`create unique index "shops_mail_idx" on "shops" using btree ("email")`.execute(db);',
+						'await sql`create unique index "shops_mail_kntc_idx" on "shops" using btree ("email")`.execute(db);',
 					],
 				},
 				{
@@ -222,7 +222,7 @@ describe("Migrator", () => {
 					type: ChangeSetType.DropIndex,
 					up: [],
 					down: [
-						'await sql`create unique index "shops_city_idx" on "shops" using btree ("city")`.execute(db);',
+						'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city")`.execute(db);',
 					],
 				},
 				{
@@ -230,9 +230,11 @@ describe("Migrator", () => {
 					priority: 4,
 					type: ChangeSetType.CreateIndex,
 					up: [
-						'await sql`create unique index "addresses_city_idx" on "addresses" using btree ("city")`.execute(db);',
+						'await sql`create unique index "addresses_city_kntc_idx" on "addresses" using btree ("city")`.execute(db);',
 					],
-					down: ['await db.schema.dropIndex("addresses_city_idx").execute();'],
+					down: [
+						'await db.schema.dropIndex("addresses_city_kntc_idx").execute();',
+					],
 				},
 			];
 			generateMigrationFiles(changeset, context.folder, "test_migration");
