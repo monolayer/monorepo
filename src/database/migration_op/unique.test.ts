@@ -27,10 +27,10 @@ describe("uniqueMigrationOps", () => {
 				tableName: "users",
 				type: "createUniqueConstraint",
 				up: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);',
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);",
 				],
 				down: [
-					'await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key`.execute(db);',
+					"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key`.execute(db);",
 				],
 			},
 			{
@@ -38,10 +38,10 @@ describe("uniqueMigrationOps", () => {
 				tableName: "books",
 				type: "createUniqueConstraint",
 				up: [
-					'await sql`ALTER TABLE books ADD CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)`.execute(db);',
+					"await sql`ALTER TABLE books ADD CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)`.execute(db);",
 				],
 				down: [
-					'await sql`ALTER TABLE books DROP CONSTRAINT books_name_location_kinetic_key`.execute(db);',
+					"await sql`ALTER TABLE books DROP CONSTRAINT books_name_location_kinetic_key`.execute(db);",
 				],
 			},
 		];
@@ -74,7 +74,7 @@ describe("uniqueMigrationOps", () => {
 				tableName: "users",
 				type: "createUniqueConstraint",
 				up: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);',
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);",
 				],
 				down: [],
 			},
@@ -83,10 +83,10 @@ describe("uniqueMigrationOps", () => {
 				tableName: "books",
 				type: "createUniqueConstraint",
 				up: [
-					'await sql`ALTER TABLE books ADD CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)`.execute(db);',
+					"await sql`ALTER TABLE books ADD CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)`.execute(db);",
 				],
 				down: [
-					'await sql`ALTER TABLE books DROP CONSTRAINT books_name_location_kinetic_key`.execute(db);',
+					"await sql`ALTER TABLE books DROP CONSTRAINT books_name_location_kinetic_key`.execute(db);",
 				],
 			},
 		];
@@ -115,10 +115,10 @@ describe("uniqueMigrationOps", () => {
 				tableName: "users",
 				type: "dropUniqueConstraint",
 				up: [
-					'await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key`.execute(db);',
+					"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key`.execute(db);",
 				],
 				down: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);',
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);",
 				],
 			},
 			{
@@ -126,10 +126,10 @@ describe("uniqueMigrationOps", () => {
 				tableName: "books",
 				type: "dropUniqueConstraint",
 				up: [
-					'await sql`ALTER TABLE books DROP CONSTRAINT books_name_location_kinetic_key`.execute(db);',
+					"await sql`ALTER TABLE books DROP CONSTRAINT books_name_location_kinetic_key`.execute(db);",
 				],
 				down: [
-					'await sql`ALTER TABLE books ADD CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)`.execute(db);',
+					"await sql`ALTER TABLE books ADD CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)`.execute(db);",
 				],
 			},
 		];
@@ -162,7 +162,7 @@ describe("uniqueMigrationOps", () => {
 				type: "dropUniqueConstraint",
 				up: [],
 				down: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);',
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);",
 				],
 			},
 			{
@@ -170,10 +170,10 @@ describe("uniqueMigrationOps", () => {
 				tableName: "books",
 				type: "dropUniqueConstraint",
 				up: [
-					'await sql`ALTER TABLE books DROP CONSTRAINT books_name_location_kinetic_key`.execute(db);',
+					"await sql`ALTER TABLE books DROP CONSTRAINT books_name_location_kinetic_key`.execute(db);",
 				],
 				down: [
-					'await sql`ALTER TABLE books ADD CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)`.execute(db);',
+					"await sql`ALTER TABLE books ADD CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)`.execute(db);",
 				],
 			},
 		];
@@ -207,10 +207,10 @@ describe("uniqueMigrationOps", () => {
 				tableName: "users",
 				type: "changeUniqueConstraint",
 				up: [
-					'await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key, ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS NOT DISTINCT (name)`.execute(db);',
+					"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key, ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS NOT DISTINCT (name)`.execute(db);",
 				],
 				down: [
-					'await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key, ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);',
+					"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key, ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);",
 				],
 			},
 		];
