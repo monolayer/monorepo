@@ -5,7 +5,6 @@ import {
 	schemaDBColumnInfoByTable,
 	schemaDBIndexInfoByTable,
 	schemaDbConstraintInfoByTable,
-	schemaDbPrimaryKeyInfo,
 } from "~/database/introspection/local_schema.js";
 import {
 	ColumnIdentity,
@@ -297,40 +296,7 @@ test("#schemaDbConstraintInfoByTable", () => {
 					"users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
 			},
 		},
-	});
-});
-
-test("#schemaDbPrimaryKeyInfo", () => {
-	const usersPrimaryKey = pgPrimaryKeyConstraint(["id"]);
-	const booksPrimaryKey = pgPrimaryKeyConstraint(["id"]);
-
-	const users = pgTable("users", {
-		columns: {
-			id: pgInteger(),
-		},
-		primaryKey: usersPrimaryKey,
-	});
-
-	const books = pgTable("books", {
-		columns: {
-			id: pgInteger(),
-			subscribed: pgBoolean(),
-		},
-		primaryKey: booksPrimaryKey,
-	});
-
-	const database = pgDatabase({
-		users,
-		books,
-	});
-
-	expect(schemaDbPrimaryKeyInfo(database)).toStrictEqual({
-		users: {
-			users_id_kinetic_pk: "users_id_kinetic_pk PRIMARY KEY (id)",
-		},
-		books: {
-			books_id_kinetic_pk: "books_id_kinetic_pk PRIMARY KEY (id)",
-		},
+		primaryKey: {},
 	});
 });
 
@@ -355,8 +321,8 @@ test("#localSchema", () => {
 			userForeignKeyConstraint,
 			userUniqueConstraint1,
 			userUniqueConstraint2,
+			usersPrimaryKey,
 		],
-		primaryKey: usersPrimaryKey,
 	});
 
 	const teamsPrimaryKey = pgPrimaryKeyConstraint(["id"]);
@@ -367,7 +333,7 @@ test("#localSchema", () => {
 			active: pgBoolean(),
 		},
 		indexes: [pgIndex("teams_name_kinetic_idx", (idx) => idx)],
-		primaryKey: teamsPrimaryKey,
+		constraints: [teamsPrimaryKey],
 	});
 
 	const booksConstraint = pgUniqueConstraint(["name", "location"]);

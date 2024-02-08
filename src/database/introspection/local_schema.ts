@@ -5,11 +5,11 @@ import { TableSchema, pgTable } from "~/database/schema/pg_table.js";
 import type {
 	ConstraintInfo,
 	MigrationSchema,
-	PrimaryKeyInfo,
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes } from "../schema/pg_column.js";
 import { PgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
 import { indexMeta, pgIndex } from "../schema/pg_index.js";
+import { PgPrimaryKeyConstraint } from "../schema/pg_primary_key.js";
 import { PgUniqueConstraint } from "../schema/pg_unique.js";
 import {
 	foreignKeyConstraintInfoToQuery,
@@ -112,7 +112,7 @@ export function schemaDbConstraintInfoByTable(
 ) {
 	return Object.entries(schema.tables).reduce<ConstraintInfo>(
 		(acc, [tableName, tableDefinition]) => {
-			for (const constraint of tableDefinition.constraints) {
+			for (const constraint of tableDefinition.constraints || []) {
 				if (constraint instanceof PgUniqueConstraint) {
 					const keyName = `${tableName}_${constraint.columns.join(
 						"_",
@@ -150,37 +150,27 @@ export function schemaDbConstraintInfoByTable(
 						...constraintInfo,
 					};
 				}
-			}
-			return acc;
-		},
-		{ unique: {}, foreign: {} },
-	);
-}
+				if (constraint instanceof PgPrimaryKeyConstraint) {
+					const keyName = `${tableName}_${constraint.columns.join(
+						"_",
+					)}_kinetic_pk`;
+					const constraintInfo = {
+						[keyName]: primaryKeyConstraintInfoToQuery({
+							constraintType: "PRIMARY KEY",
+							table: tableName,
+							columns: constraint.columns,
+						}),
+					};
 
-export function schemaDbPrimaryKeyInfo(
-	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
-) {
-	return Object.entries(schema.tables).reduce<PrimaryKeyInfo>(
-		(acc, [tableName, tableDefinition]) => {
-			if (tableDefinition.primaryKey) {
-				const keyName = `${tableName}_${tableDefinition.primaryKey.columns.join(
-					"_",
-				)}_kinetic_pk`;
-				const constraintInfo = {
-					[keyName]: primaryKeyConstraintInfoToQuery({
-						constraintType: "PRIMARY KEY",
-						table: tableName,
-						columns: tableDefinition.primaryKey.columns,
-					}),
-				};
-				acc[tableName] = {
-					...acc[tableName],
-					...constraintInfo,
-				};
+					acc.primaryKey[tableName] = {
+						...acc.primaryKey[tableName],
+						...constraintInfo,
+					};
+				}
 			}
 			return acc;
 		},
-		{},
+		{ unique: {}, foreign: {}, primaryKey: {} },
 	);
 }
 
@@ -197,6 +187,8 @@ export function localSchema(
 		uniqueConstraints: {
 			...constraints.unique,
 		},
-		primaryKey: schemaDbPrimaryKeyInfo(schema),
+		primaryKey: {
+			...constraints.primaryKey,
+		},
 	};
 }

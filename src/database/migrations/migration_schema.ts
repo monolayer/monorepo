@@ -10,6 +10,7 @@ export type UniqueInfo = Record<TableName, Record<Name, Definition>>;
 export type ConstraintInfo = {
 	unique: UniqueInfo;
 	foreign: ForeignKeyInfo;
+	primaryKey: PrimaryKeyInfo;
 };
 
 export type MigrationSchema = {

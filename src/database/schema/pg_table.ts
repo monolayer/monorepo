@@ -7,20 +7,22 @@ import type { PgPrimaryKeyConstraint } from "./pg_primary_key.js";
 import type { PgUniqueConstraint } from "./pg_unique.js";
 
 export type ColumnRecord = Record<string, PgColumnTypes>;
-export type Constraints = (PgUniqueConstraint | PgForeignKeyConstraint)[];
+export type Constraints = (
+	| PgUniqueConstraint
+	| PgForeignKeyConstraint
+	| PgPrimaryKeyConstraint
+)[];
 
 export type TableSchema = {
 	columns: ColumnRecord;
 	indexes: pgIndex[];
-	constraints: Constraints;
-	primaryKey?: PgPrimaryKeyConstraint;
+	constraints?: Constraints;
 };
 
 export type OptionalTableSchema = {
 	columns: ColumnRecord;
 	indexes?: pgIndex[];
 	constraints?: Constraints;
-	primaryKey?: PgPrimaryKeyConstraint;
 };
 
 export type pgTable<T extends string, C extends OptionalTableSchema> = {
@@ -28,7 +30,6 @@ export type pgTable<T extends string, C extends OptionalTableSchema> = {
 	columns: C["columns"];
 	indexes: C["indexes"];
 	constraints: C["constraints"];
-	primaryKey: C["primaryKey"];
 	infer: {
 		[K in keyof C["columns"]]: C["columns"][K]["_columnType"];
 	};
@@ -60,9 +61,6 @@ export function pgTable<T extends string, C extends OptionalTableSchema>(
 				constraints: C["constraints"] extends Constraints
 					? C["constraints"]
 					: [];
-				primaryKey: C["primaryKey"] extends PgPrimaryKeyConstraint
-					? C["primaryKey"]
-					: undefined;
 			}
 		>
 	>{
@@ -70,7 +68,6 @@ export function pgTable<T extends string, C extends OptionalTableSchema>(
 		columns: schema.columns,
 		indexes: schema.indexes ? schema.indexes : [],
 		constraints: schema.constraints ? schema.constraints : [],
-		primaryKey: schema.primaryKey,
 	};
 	return table;
 }

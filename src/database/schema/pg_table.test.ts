@@ -266,21 +266,8 @@ describe("pgTable definition", () => {
 				uniqueConstraint2,
 			]);
 		});
-	});
 
-	describe("primary key", () => {
-		test("is undefined by default", () => {
-			const columns = {
-				id: pgSerial(),
-				name: pgVarChar(),
-			};
-			const table = pgTable("users", {
-				columns: columns,
-			});
-			expect(table.primaryKey).toBeUndefined();
-		});
-
-		test("at the table level", () => {
+		test("primary key constraints can be added the table level", () => {
 			const columns = {
 				id: pgInteger(),
 				name: pgVarChar(),
@@ -288,9 +275,9 @@ describe("pgTable definition", () => {
 			const primaryKey = pgPrimaryKeyConstraint(["id", "name"]);
 			const table = pgTable("users", {
 				columns: columns,
-				primaryKey: primaryKey,
+				constraints: [primaryKey],
 			});
-			expect(table.primaryKey).toStrictEqual(primaryKey);
+			expect(table.constraints).toStrictEqual([primaryKey]);
 		});
 	});
 });
