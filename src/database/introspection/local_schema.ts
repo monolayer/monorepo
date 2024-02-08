@@ -128,7 +128,7 @@ export function schemaDbConstraintInfoByTable(
 	return Object.entries(schema.tables).reduce<ConstraintInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			for (const constraint of tableDefinition.constraints || []) {
-				if (constraint instanceof PgUnique) {
+				if (isUniqueConstraint(constraint)) {
 					const keyName = `${tableName}_${constraint.columns.join(
 						"_",
 					)}_kinetic_key`;
@@ -145,7 +145,8 @@ export function schemaDbConstraintInfoByTable(
 						...constraintInfo,
 					};
 				}
-				if (constraint instanceof PgForeignKey) {
+				if (isForeignKeyConstraint(constraint)) {
+					console.log("foreignKey", constraint);
 					const keyName = `${tableName}_${constraint.columns.join("_")}_${
 						constraint.targetTable.name
 					}_${constraint.targetColumns.join("_")}_kinetic_fk`;
@@ -165,7 +166,7 @@ export function schemaDbConstraintInfoByTable(
 						...constraintInfo,
 					};
 				}
-				if (constraint instanceof PgPrimaryKey) {
+				if (isPrimaryKeyConstraint(constraint)) {
 					const keyName = `${tableName}_${constraint.columns.join(
 						"_",
 					)}_kinetic_pk`;
@@ -207,4 +208,28 @@ export function localSchema(
 			...constraints.primaryKey,
 		},
 	};
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function isPrimaryKeyConstraint(obj: any): obj is PgPrimaryKey<any> {
+	const keys = Object.keys(obj).sort();
+	return keys.length === 1 && keys[0] === "cols";
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function isUniqueConstraint(obj: any): obj is PgUnique<any> {
+	const keys = Object.keys(obj).sort();
+	return keys.length === 2 && keys[0] === "cols" && keys[1] === "nullsDistinct";
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function isForeignKeyConstraint(obj: any): obj is PgForeignKey<any> {
+	const keys = Object.keys(obj).sort();
+	return (
+		keys.length === 4 &&
+		keys[0] === "cols" &&
+		keys[1] === "options" &&
+		keys[2] === "targetCols" &&
+		keys[3] === "targetTable"
+	);
 }
