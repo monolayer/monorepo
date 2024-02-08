@@ -1,10 +1,8 @@
 import { Difference } from "microdiff";
-import { ChangeSetType, Changeset } from "~/database/changeset.js";
+import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import type { ColumnInfo } from "~/database/schema/pg_column.js";
-import {
-	MigrationOpPriority,
-	executeKyselySchemaStatement,
-} from "../compute.js";
+import { executeKyselySchemaStatement } from "../helpers.js";
+import { MigrationOpPriority } from "../priority.js";
 import { foreignKeyConstraint, optionsForColumn } from "../table_common.js";
 
 export type CreateColumnDiff = {

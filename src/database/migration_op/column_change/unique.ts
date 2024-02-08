@@ -1,11 +1,11 @@
 import { Difference } from "microdiff";
-import { ChangeSetType, Changeset } from "~/database/changeset.js";
+import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import { type ColumnInfo, ColumnUnique } from "~/database/schema/pg_column.js";
 import {
-	MigrationOpPriority,
 	executeKyselyDbStatement,
 	executeKyselyDbStatements,
-} from "../compute.js";
+} from "../helpers.js";
+import { MigrationOpPriority } from "../priority.js";
 
 export type UniqueAddDifference = {
 	type: "CHANGE";

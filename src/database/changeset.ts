@@ -1,4 +1,5 @@
 import microdiff from "microdiff";
+import { Changeset } from "./migration_op/changeset.js";
 import { migrationOp } from "./migration_op/compute.js";
 import { CreateTableDiff, isCreateTable } from "./migration_op/table/create.js";
 import { DropTableTableDiff, isDropTable } from "./migration_op/table/drop.js";
@@ -28,34 +29,6 @@ export function changesetDiff(local: MigrationSchema, remote: MigrationSchema) {
 }
 
 export type DbChangeset = Record<string, Changeset[]>;
-
-export enum ChangeSetType {
-	CreateTable = "createTable",
-	DropTable = "dropTable",
-	CreateColumn = "createColumn",
-	DropColumn = "dropColumn",
-	ChangeColumn = "changeColumn",
-	ChangeTable = "changeTable",
-	CreateIndex = "createIndex",
-	DropIndex = "dropIndex",
-	CreatePrimaryKey = "createPrimaryKey",
-	DropPrimaryKey = "dropPrimaryKey",
-	UpdatePrimaryKey = "updatePrimaryKey",
-	CreateUniqueConstraint = "createUniqueConstraint",
-	DropUniqueConstraint = "dropUniqueConstraint",
-	ChangeUniqueConstraint = "changeUniqueConstraint",
-	CreateForeignKeyConstraint = "createForeignKeyConstraint",
-	DropForeignKeyConstraint = "dropForeignKeyConstraint",
-	ChangeForeignKeyConstraint = "changeForeignKeyConstraint",
-}
-
-export type Changeset = {
-	tableName: string;
-	type: ChangeSetType;
-	up: string[];
-	down: string[];
-	priority: number;
-};
 
 function tableName(diff: CreateTableDiff | DropTableTableDiff) {
 	return diff.path[1];

@@ -1,7 +1,7 @@
 import path from "node:path";
 import nunjucks from "nunjucks";
-import { Changeset } from "~/database/changeset.js";
 import { createFile } from "~/utils.js";
+import { Changeset } from "../migration_op/changeset.js";
 
 const template = `import { Kysely, sql } from "kysely";
 

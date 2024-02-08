@@ -1,10 +1,8 @@
 import { Difference } from "microdiff";
-import { ChangeSetType } from "~/database/changeset.js";
 import { ColumnsInfo } from "~/database/introspection/types.js";
-import {
-	MigrationOpPriority,
-	executeKyselySchemaStatement,
-} from "../compute.js";
+import { ChangeSetType } from "~/database/migration_op/changeset.js";
+import { executeKyselySchemaStatement } from "../helpers.js";
+import { MigrationOpPriority } from "../priority.js";
 import { tableColumnsOps } from "../table_common.js";
 
 export type DropTableTableDiff = {

@@ -4,7 +4,7 @@ import { Kysely } from "kysely";
 import pg from "pg";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { ChangeSetType, Changeset } from "~/database/changeset.js";
+import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import { generateMigrationFiles } from "~/database/migrations/generate.js";
 import { globalKysely } from "~tests/setup.js";
 

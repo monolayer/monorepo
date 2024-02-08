@@ -7,11 +7,9 @@ import {
 } from "kysely";
 import { Difference } from "microdiff";
 import pg from "pg";
-import { ChangeSetType, Changeset } from "~/database/changeset.js";
-import {
-	MigrationOpPriority,
-	executeKyselySchemaStatement,
-} from "../compute.js";
+import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
+import { executeKyselySchemaStatement } from "../helpers.js";
+import { MigrationOpPriority } from "../priority.js";
 
 export type ColumnDefaultDifference = {
 	type: "CHANGE";

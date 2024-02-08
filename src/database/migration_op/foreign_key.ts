@@ -1,6 +1,7 @@
 import type { Difference } from "microdiff";
-import { ChangeSetType } from "../changeset.js";
-import { MigrationOpPriority, executeKyselyDbStatement } from "./compute.js";
+import { ChangeSetType } from "./changeset.js";
+import { executeKyselyDbStatement } from "./helpers.js";
+import { MigrationOpPriority } from "./priority.js";
 
 type ForeignKeyCreateDiff = {
 	type: "CREATE";

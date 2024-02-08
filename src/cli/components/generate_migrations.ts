@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { exit } from "process";
 import slug from "slug";
 import { Config } from "~/config.js";
-import { Changeset } from "~/database/changeset.js";
+import { Changeset } from "~/database/migration_op/changeset.js";
 import { generateMigrationFiles } from "~/database/migrations/generate.js";
 import { ActionStatus, throwableOperation } from "../command.js";
 

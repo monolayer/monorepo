@@ -5,12 +5,12 @@ import {
 	ForeIgnKeyConstraintInfo,
 	type LocalTableInfo,
 } from "~/database/introspection/types.js";
-import { ChangeSetType, Changeset } from "../../changeset.js";
+import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import {
-	MigrationOpPriority,
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
-} from "../compute.js";
+} from "../helpers.js";
+import { MigrationOpPriority } from "../priority.js";
 
 export type AddForeignKeyConstraintDiff = {
 	type: "CHANGE";
