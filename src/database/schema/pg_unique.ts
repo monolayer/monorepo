@@ -8,10 +8,13 @@ export function unique<T>(columns: T, nullsDistinct = true) {
 	return new PgUnique(columns, nullsDistinct);
 }
 export class PgUnique<T> {
+	cols: T;
 	constructor(
-		private cols: T,
+		cols: T,
 		public nullsDistinct = true,
-	) {}
+	) {
+		this.cols = cols;
+	}
 
 	get columns() {
 		const colArray = [] as string[];

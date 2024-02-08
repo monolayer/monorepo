@@ -14,12 +14,11 @@ export function index<T>(columns: T, builder: IndexBuilder) {
 }
 
 export class PgIndex<T> {
+	cols: T;
 	_builder: IndexBuilder;
 
-	constructor(
-		private cols: T,
-		builder: IndexBuilder,
-	) {
+	constructor(cols: T, builder: IndexBuilder) {
+		this.cols = cols;
 		this._builder = builder;
 	}
 

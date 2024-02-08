@@ -1,8 +1,11 @@
-export function primaryKey<T>(columns: T) {
+export function primaryKey<T>(columns: keyof T | Array<keyof T>) {
 	return new PgPrimaryKey(columns);
 }
 export class PgPrimaryKey<T> {
-	constructor(private cols: T) {}
+	cols: keyof T | Array<keyof T>;
+	constructor(cols: keyof T | Array<keyof T>) {
+		this.cols = cols;
+	}
 
 	get columns() {
 		const colArray = [] as string[];

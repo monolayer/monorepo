@@ -13,7 +13,7 @@ type TableSchema<T> = {
 	constraints?: (
 		| PgUnique<keyof T | Array<keyof T>>
 		| PgForeignKey<keyof T | Array<keyof T>>
-		| PgPrimaryKey<keyof T | Array<keyof T>>
+		| PgPrimaryKey<T>
 	)[];
 	indexes?: PgIndex<keyof T | Array<keyof T>>[];
 };

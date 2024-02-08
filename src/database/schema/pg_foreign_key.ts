@@ -18,15 +18,20 @@ export function foreignKey<T, C = PgTable<string, any>>(
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export class PgForeignKey<T, C = PgTable<string, any>> {
+	cols: T;
+	targetTable: C;
+	targetCols: C extends PgTable<string, infer U>
+		? (keyof U)[] | keyof U
+		: never;
 	options: {
 		deleteRule: ForeignKeyRule;
 		updateRule: ForeignKeyRule;
 	};
 
 	constructor(
-		private cols: T,
-		public targetTable: C,
-		private targetCols: C extends PgTable<string, infer U>
+		cols: T,
+		targetTable: C,
+		targetCols: C extends PgTable<string, infer U>
 			? (keyof U)[] | keyof U
 			: never,
 		options?: {
@@ -34,6 +39,9 @@ export class PgForeignKey<T, C = PgTable<string, any>> {
 			updateRule?: Lowercase<ForeignKeyRule>;
 		},
 	) {
+		this.cols = cols;
+		this.targetTable = targetTable;
+		this.targetCols = targetCols;
 		this.options = {
 			deleteRule: (options?.deleteRule?.toUpperCase() ??
 				"NO ACTION") as ForeignKeyRule,
