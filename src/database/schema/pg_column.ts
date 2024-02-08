@@ -6,7 +6,7 @@ import {
 	isExpression,
 } from "kysely";
 import { ForeIgnKeyConstraintInfo } from "../introspection/types.js";
-import { pgTable } from "./pg_table.js";
+import { type PgTable } from "./pg_table.js";
 
 export type ColumnInfo = {
 	columnName: string | null;
@@ -124,7 +124,7 @@ export class PgColumnBase<S, I, U> {
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	references<R extends pgTable<string, any>>(
+	references<R extends PgTable<string, any>>(
 		table: R,
 		column: keyof R["columns"],
 		options?: {

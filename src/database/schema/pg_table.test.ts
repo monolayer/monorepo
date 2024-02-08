@@ -16,13 +16,13 @@ import { pgUniqueConstraint } from "./pg_unique.js";
 
 describe("pgTable definition", () => {
 	test("has a name", () => {
-		const table = pgTable("users", {
+		const tbl = pgTable("users", {
 			columns: {
 				name: pgVarChar(),
 				subscribed: pgBoolean(),
 			},
 		});
-		expect(table.name).toBe("users");
+		expect(tbl.name).toBe("users");
 	});
 
 	test("has columns defined", () => {
@@ -30,14 +30,14 @@ describe("pgTable definition", () => {
 			name: pgVarChar(),
 			subscribed: pgBoolean(),
 		};
-		const table = pgTable("users", {
+		const tbl = pgTable("users", {
 			columns: columns,
 		});
-		expect(table.columns).toBe(columns);
+		expect(tbl.columns).toBe(columns);
 	});
 
 	test("infer column types", () => {
-		const table = pgTable("users", {
+		const tbl = pgTable("users", {
 			columns: {
 				pk: pgInteger().primaryKey(),
 				id: pgSerial(),
@@ -48,14 +48,14 @@ describe("pgTable definition", () => {
 			},
 		});
 		type ExpectedType = {
-			pk: (typeof table.columns.pk)["_columnType"];
-			id: (typeof table.columns.id)["_columnType"];
-			name: (typeof table.columns.name)["_columnType"];
-			email: (typeof table.columns.email)["_columnType"];
-			subscribed: (typeof table.columns.subscribed)["_columnType"];
-			subscribers: (typeof table.columns.subscribers)["_columnType"];
+			pk: (typeof tbl.columns.pk)["_columnType"];
+			id: (typeof tbl.columns.id)["_columnType"];
+			name: (typeof tbl.columns.name)["_columnType"];
+			email: (typeof tbl.columns.email)["_columnType"];
+			subscribed: (typeof tbl.columns.subscribed)["_columnType"];
+			subscribers: (typeof tbl.columns.subscribers)["_columnType"];
 		};
-		type InferredType = typeof table.infer;
+		type InferredType = typeof tbl.infer;
 		const expect: Expect<Equal<InferredType, ExpectedType>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -69,7 +69,7 @@ describe("pgTable definition", () => {
 			email: pgText().notNull(),
 			subscribers: pgInt4(),
 		};
-		const table = pgTable("users", {
+		const tbl = pgTable("users", {
 			columns: columns,
 		});
 		type ExpectedType = {
@@ -80,7 +80,7 @@ describe("pgTable definition", () => {
 			subscribed: boolean | null;
 			subscribers: number | null;
 		};
-		type InferredSelectType = typeof table.inferSelect;
+		type InferredSelectType = typeof tbl.inferSelect;
 		const expect: Expect<Equal<InferredSelectType, ExpectedType>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -90,13 +90,13 @@ describe("pgTable definition", () => {
 			const columns = {
 				pk: pgInteger().primaryKey(),
 			};
-			const table = pgTable("users", {
+			const tbl = pgTable("users", {
 				columns: columns,
 			});
 			type ExpectedType = {
 				pk: number | string;
 			};
-			type InferredInsertType = typeof table.inferInsert;
+			type InferredInsertType = typeof tbl.inferInsert;
 			const expect: Expect<Equal<InferredInsertType, ExpectedType>> = true;
 			expectTypeOf(expect).toMatchTypeOf<boolean>();
 		});
@@ -136,7 +136,7 @@ describe("pgTable definition", () => {
 				email: pgText().notNull(),
 				subscribers: pgInt4(),
 			};
-			const table = pgTable("users", {
+			const tbl = pgTable("users", {
 				columns: columns,
 			});
 			type ExpectedType = {
@@ -147,7 +147,7 @@ describe("pgTable definition", () => {
 				subscribed?: boolean | null;
 				subscribers?: number | string | null;
 			};
-			type InferredInsertType = typeof table.inferInsert;
+			type InferredInsertType = typeof tbl.inferInsert;
 			const expect: Expect<Equal<InferredInsertType, ExpectedType>> = true;
 			expectTypeOf(expect).toMatchTypeOf<boolean>();
 		});
@@ -162,7 +162,7 @@ describe("pgTable definition", () => {
 			email: pgText().notNull(),
 			subscribers: pgInt4(),
 		};
-		const table = pgTable("users", {
+		const tbl = pgTable("users", {
 			columns: columns,
 		});
 		type ExpectedType = {
@@ -173,7 +173,7 @@ describe("pgTable definition", () => {
 			subscribed?: boolean | null;
 			subscribers?: number | string | null;
 		};
-		type InferredUpdateType = typeof table.inferUpdate;
+		type InferredUpdateType = typeof tbl.inferUpdate;
 		const expect: Expect<Equal<InferredUpdateType, ExpectedType>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -183,10 +183,10 @@ describe("pgTable definition", () => {
 			name: pgVarChar(),
 			subscribed: pgBoolean(),
 		};
-		const table = pgTable("users", {
+		const tbl = pgTable("users", {
 			columns: columns,
 		});
-		expect(table.indexes).toStrictEqual([]);
+		expect(tbl.indexes).toStrictEqual([]);
 	});
 
 	test("indexes can be added", () => {
@@ -202,11 +202,11 @@ describe("pgTable definition", () => {
 			name: pgVarChar(),
 			subscribed: pgBoolean(),
 		};
-		const table = pgTable("users", {
+		const tbl = pgTable("users", {
 			columns: columns,
 			indexes,
 		});
-		expect(table.indexes).toStrictEqual(indexes);
+		expect(tbl.indexes).toStrictEqual(indexes);
 	});
 
 	describe("constraints", () => {
@@ -215,10 +215,10 @@ describe("pgTable definition", () => {
 				name: pgVarChar(),
 				subscribed: pgBoolean(),
 			};
-			const table = pgTable("users", {
+			const tbl = pgTable("users", {
 				columns: columns,
 			});
-			expect(table.constraints).toStrictEqual([]);
+			expect(tbl.constraints).toStrictEqual([]);
 		});
 
 		test("foreign key constraints can be added", () => {
@@ -238,11 +238,11 @@ describe("pgTable definition", () => {
 				["id"],
 			);
 
-			const table = pgTable("users", {
+			const tbl = pgTable("users", {
 				columns: columns,
 				constraints: [foreignKeyConstraint1, foreignKeyConstraint2],
 			});
-			expect(table.constraints).toStrictEqual([
+			expect(tbl.constraints).toStrictEqual([
 				foreignKeyConstraint1,
 				foreignKeyConstraint2,
 			]);
@@ -257,11 +257,11 @@ describe("pgTable definition", () => {
 			const uniqueConstraint1 = pgUniqueConstraint(["name"]);
 			const uniqueConstraint2 = pgUniqueConstraint(["subscribed"]);
 
-			const table = pgTable("users", {
+			const tbl = pgTable("users", {
 				columns: columns,
 				constraints: [uniqueConstraint1, uniqueConstraint2],
 			});
-			expect(table.constraints).toStrictEqual([
+			expect(tbl.constraints).toStrictEqual([
 				uniqueConstraint1,
 				uniqueConstraint2,
 			]);
@@ -273,11 +273,11 @@ describe("pgTable definition", () => {
 				name: pgVarChar(),
 			};
 			const primaryKey = pgPrimaryKeyConstraint(["id", "name"]);
-			const table = pgTable("users", {
+			const tbl = pgTable("users", {
 				columns: columns,
 				constraints: [primaryKey],
 			});
-			expect(table.constraints).toStrictEqual([primaryKey]);
+			expect(tbl.constraints).toStrictEqual([primaryKey]);
 		});
 	});
 });

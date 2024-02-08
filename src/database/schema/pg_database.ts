@@ -1,7 +1,8 @@
-import { type OptionalTableSchema, pgTable } from "./pg_table.js";
+import { type PgTable } from "./pg_table.js";
 
 export type pgDatabase<
-	O extends Record<string, pgTable<string, OptionalTableSchema>>,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	O extends Record<string, PgTable<string, any>>,
 > = {
 	tables: O;
 	kyselyDatabase: {
@@ -9,9 +10,10 @@ export type pgDatabase<
 	};
 };
 
-export function pgDatabase<
-	O extends Record<string, pgTable<string, OptionalTableSchema>>,
->(tables: O) {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function pgDatabase<O extends Record<string, PgTable<string, any>>>(
+	tables: O,
+) {
 	const database = <pgDatabase<O>>{ tables: tables };
 	return database;
 }

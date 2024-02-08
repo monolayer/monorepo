@@ -1,7 +1,7 @@
 import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { pgDatabase } from "~/database/schema/pg_database.js";
-import { TableSchema, pgTable } from "~/database/schema/pg_table.js";
+import { type PgTable } from "~/database/schema/pg_table.js";
 import type {
 	ConstraintInfo,
 	MigrationSchema,
@@ -46,7 +46,8 @@ export function schemaColumnInfo(
 }
 
 export function schemaDBColumnInfoByTable(
-	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	schema: pgDatabase<Record<string, PgTable<string, any>>>,
 ) {
 	return Object.entries(schema.tables).reduce<TableColumnInfo>(
 		(acc, [tableName, tableDefinition]) => {
@@ -69,7 +70,8 @@ export function schemaDBColumnInfoByTable(
 }
 
 export function schemaDBIndexInfoByTable(
-	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	schema: pgDatabase<Record<string, PgTable<string, any>>>,
 ) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
@@ -80,7 +82,7 @@ export function schemaDBIndexInfoByTable(
 
 	return Object.entries(schema.tables).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {
-			const indexes = tableDefinition.indexes;
+			const indexes = tableDefinition.indexes || [];
 			for (const index of indexes) {
 				const indexInfo = indexToInfo(index, tableName, kysely);
 				acc[tableName] = {
@@ -108,7 +110,8 @@ function indexToInfo(index: pgIndex, tableName: string, kysely: Kysely<any>) {
 }
 
 export function schemaDbConstraintInfoByTable(
-	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	schema: pgDatabase<Record<string, PgTable<string, any>>>,
 ) {
 	return Object.entries(schema.tables).reduce<ConstraintInfo>(
 		(acc, [tableName, tableDefinition]) => {
@@ -175,7 +178,8 @@ export function schemaDbConstraintInfoByTable(
 }
 
 export function localSchema(
-	schema: pgDatabase<Record<string, pgTable<string, TableSchema>>>,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	schema: pgDatabase<Record<string, PgTable<string, any>>>,
 ): MigrationSchema {
 	const constraints = schemaDbConstraintInfoByTable(schema);
 	return {

@@ -17,10 +17,10 @@ import {
 } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgIndex } from "~/database/schema/pg_index.js";
-import { pgTable } from "~/database/schema/pg_table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { pgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
 import { pgPrimaryKeyConstraint } from "../schema/pg_primary_key.js";
+import { pgTable } from "../schema/pg_table.js";
 import { pgUniqueConstraint } from "../schema/pg_unique.js";
 
 describe("#schemaColumnInfo", () => {
