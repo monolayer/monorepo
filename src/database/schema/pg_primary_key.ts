@@ -1,7 +1,7 @@
-export function pgPrimaryKeyConstraint<T>(columns: T) {
-	return new PgPrimaryKeyConstraint(columns);
+export function primaryKey<T>(columns: T) {
+	return new PgPrimaryKey(columns);
 }
-export class PgPrimaryKeyConstraint<T> {
+export class PgPrimaryKey<T> {
 	constructor(private cols: T) {}
 
 	get columns() {

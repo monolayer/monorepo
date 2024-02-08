@@ -1,7 +1,7 @@
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
 import { changeset } from "~/database/changeset.js";
-import { pgIndex } from "~/database/schema/pg_index.js";
+import { index } from "~/database/schema/pg_index.js";
 import { ColumnIdentity, ColumnUnique } from "~/index.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
@@ -50,7 +50,7 @@ describe("#dbChangeset", () => {
 				index: {
 					books: {
 						...compileIndex(
-							pgIndex("name", (idx) => idx),
+							index("name", (idx) => idx),
 							"books",
 						),
 					},
@@ -245,19 +245,17 @@ describe("#dbChangeset", () => {
 				index: {
 					samples: {
 						...compileIndex(
-							pgIndex("name", (idx) => idx),
+							index("name", (idx) => idx),
 							"samples",
 						),
 					},
 					addresses: {
 						...compileIndex(
-							pgIndex("city", (idx) => idx.using("btree").unique()),
+							index("city", (idx) => idx.using("btree").unique()),
 							"addresses",
 						),
 						...compileIndex(
-							pgIndex(["city", "country"], (idx) =>
-								idx.using("btree").unique(),
-							),
+							index(["city", "country"], (idx) => idx.using("btree").unique()),
 							"addresses",
 						),
 					},

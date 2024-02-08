@@ -9,23 +9,23 @@ import {
 import {
 	ColumnIdentity,
 	ColumnUnique,
-	pgBigSerial,
-	pgBoolean,
-	pgInteger,
-	pgSerial,
-	pgVarChar,
+	bigserial,
+	boolean,
+	integer,
+	serial,
+	varchar,
 } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
-import { pgIndex } from "~/database/schema/pg_index.js";
+import { index } from "~/database/schema/pg_index.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
-import { pgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
-import { pgPrimaryKeyConstraint } from "../schema/pg_primary_key.js";
+import { foreignKey } from "../schema/pg_foreign_key.js";
+import { primaryKey } from "../schema/pg_primary_key.js";
 import { pgTable } from "../schema/pg_table.js";
-import { pgUniqueConstraint } from "../schema/pg_unique.js";
+import { unique } from "../schema/pg_unique.js";
 
 describe("#schemaColumnInfo", () => {
 	test("default column", () => {
-		const column = pgVarChar(100);
+		const column = varchar(100);
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -37,7 +37,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("not null column", () => {
-		const column = pgVarChar(100).notNull();
+		const column = varchar(100).notNull();
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -50,7 +50,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with defaultTo", () => {
-		const column = pgVarChar(100).defaultTo("foo");
+		const column = varchar(100).defaultTo("foo");
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -63,7 +63,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with renameFrom", () => {
-		const column = pgVarChar(100).renameFrom("old_column_name");
+		const column = varchar(100).renameFrom("old_column_name");
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -76,7 +76,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with unique", () => {
-		const column = pgVarChar(100).unique();
+		const column = varchar(100).unique();
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -89,7 +89,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with unique nulls not distinct", () => {
-		const column = pgVarChar(100).unique().nullsNotDistinct();
+		const column = varchar(100).unique().nullsNotDistinct();
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -102,7 +102,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with always as identity", () => {
-		const column = pgVarChar(100).generatedAlwaysAsIdentity();
+		const column = varchar(100).generatedAlwaysAsIdentity();
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -115,7 +115,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with by default as identity", () => {
-		const column = pgVarChar(100).generatedByDefaultAsIdentity();
+		const column = varchar(100).generatedByDefaultAsIdentity();
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -136,16 +136,16 @@ test("#schemaDBColumnInfoByTable on empty database", () => {
 test("#schemaDBColumnInfoByTable", () => {
 	const users = pgTable("users", {
 		columns: {
-			id: pgSerial(),
-			name: pgVarChar().notNull(),
-			email: pgVarChar().notNull(),
+			id: serial(),
+			name: varchar().notNull(),
+			email: varchar().notNull(),
 		},
 	});
 	const teams = pgTable("teams", {
 		columns: {
-			id: pgBigSerial(),
-			name: pgVarChar().notNull(),
-			active: pgBoolean(),
+			id: bigserial(),
+			name: varchar().notNull(),
+			active: boolean(),
 		},
 	});
 	const database = pgDatabase({
@@ -202,19 +202,19 @@ test("#schemaDBColumnInfoByTable", () => {
 test("#schemaDBIndexInfoByTable", () => {
 	const users = pgTable("users", {
 		columns: {
-			id: pgSerial(),
-			name: pgVarChar().notNull(),
-			email: pgVarChar().notNull(),
+			id: serial(),
+			name: varchar().notNull(),
+			email: varchar().notNull(),
 		},
-		indexes: [pgIndex("name", (idx) => idx), pgIndex("email", (idx) => idx)],
+		indexes: [index("name", (idx) => idx), index("email", (idx) => idx)],
 	});
 	const teams = pgTable("teams", {
 		columns: {
-			id: pgBigSerial(),
-			name: pgVarChar().notNull(),
-			active: pgBoolean(),
+			id: bigserial(),
+			name: varchar().notNull(),
+			active: boolean(),
 		},
-		indexes: [pgIndex("id", (idx) => idx), pgIndex("active", (idx) => idx)],
+		indexes: [index("id", (idx) => idx), index("active", (idx) => idx)],
 	});
 	const database = pgDatabase({
 		users,
@@ -235,24 +235,24 @@ test("#schemaDBIndexInfoByTable", () => {
 test("#schemaDbConstraintInfoByTable", () => {
 	const books = pgTable("books", {
 		columns: {
-			id: pgSerial().primaryKey(),
-			name: pgVarChar(),
-			location: pgVarChar(),
+			id: serial().primaryKey(),
+			name: varchar(),
+			location: varchar(),
 		},
-		constraints: [pgUniqueConstraint(["name", "location"])],
+		constraints: [unique(["name", "location"])],
 	});
 
 	const users = pgTable("users", {
 		columns: {
-			id: pgSerial().primaryKey(),
-			name: pgVarChar(),
-			subscribed: pgBoolean(),
-			book_id: pgInteger(),
+			id: serial().primaryKey(),
+			name: varchar(),
+			subscribed: boolean(),
+			book_id: integer(),
 		},
 		constraints: [
-			pgUniqueConstraint(["name"]),
-			pgUniqueConstraint(["subscribed"]),
-			pgForeignKeyConstraint(["book_id"], books, ["id"]),
+			unique(["name"]),
+			unique(["subscribed"]),
+			foreignKey(["book_id"], books, ["id"]),
 		],
 	});
 
@@ -287,37 +287,37 @@ test("#schemaDbConstraintInfoByTable", () => {
 test("#localSchema", () => {
 	const books = pgTable("books", {
 		columns: {
-			id: pgSerial().primaryKey(),
-			name: pgVarChar(),
-			location: pgVarChar(),
+			id: serial().primaryKey(),
+			name: varchar(),
+			location: varchar(),
 		},
-		indexes: [pgIndex("name", (idx) => idx)],
-		constraints: [pgUniqueConstraint(["name", "location"])],
+		indexes: [index("name", (idx) => idx)],
+		constraints: [unique(["name", "location"])],
 	});
 
 	const users = pgTable("users", {
 		columns: {
-			id: pgSerial(),
-			name: pgVarChar().notNull(),
-			email: pgVarChar().notNull(),
-			book_id: pgInteger(),
+			id: serial(),
+			name: varchar().notNull(),
+			email: varchar().notNull(),
+			book_id: integer(),
 		},
 		constraints: [
-			pgForeignKeyConstraint(["book_id"], books, ["id"]),
-			pgUniqueConstraint(["name"]),
-			pgUniqueConstraint(["email"], false),
-			pgPrimaryKeyConstraint(["id"]),
+			foreignKey(["book_id"], books, ["id"]),
+			unique(["name"]),
+			unique(["email"], false),
+			primaryKey(["id"]),
 		],
 	});
 
 	const teams = pgTable("teams", {
 		columns: {
-			id: pgBigSerial(),
-			name: pgVarChar().notNull(),
-			active: pgBoolean(),
+			id: bigserial(),
+			name: varchar().notNull(),
+			active: boolean(),
 		},
-		indexes: [pgIndex("name", (idx) => idx)],
-		constraints: [pgPrimaryKeyConstraint("id")],
+		indexes: [index("name", (idx) => idx)],
+		constraints: [primaryKey("id")],
 	});
 
 	const database = pgDatabase({

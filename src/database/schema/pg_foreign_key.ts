@@ -2,7 +2,7 @@ import type { ForeignKeyRule } from "../introspection/database/foreign_key_const
 import type { PgTable } from "./pg_table.js";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function pgForeignKeyConstraint<T, C = PgTable<string, any>>(
+export function foreignKey<T, C = PgTable<string, any>>(
 	columns: T,
 	targetTable: C,
 	targetColumns: C extends PgTable<string, infer U>
@@ -13,16 +13,11 @@ export function pgForeignKeyConstraint<T, C = PgTable<string, any>>(
 		updateRule?: Lowercase<ForeignKeyRule>;
 	},
 ) {
-	return new PgForeignKeyConstraint(
-		columns,
-		targetTable,
-		targetColumns,
-		options,
-	);
+	return new PgForeignKey(columns, targetTable, targetColumns, options);
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export class PgForeignKeyConstraint<T, C = PgTable<string, any>> {
+export class PgForeignKey<T, C = PgTable<string, any>> {
 	options: {
 		deleteRule: ForeignKeyRule;
 		updateRule: ForeignKeyRule;

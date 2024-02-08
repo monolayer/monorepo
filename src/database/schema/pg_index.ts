@@ -9,7 +9,7 @@ type IndexBuilder = (
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ) => CreateIndexBuilder<any>;
 
-export function pgIndex<T>(columns: T, builder: IndexBuilder) {
+export function index<T>(columns: T, builder: IndexBuilder) {
 	return new PgIndex(columns, builder);
 }
 

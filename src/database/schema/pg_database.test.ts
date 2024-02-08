@@ -1,11 +1,6 @@
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import {
-	pgBoolean,
-	pgSerial,
-	pgText,
-	pgVarChar,
-} from "~/database/schema/pg_column.js";
+import { boolean, serial, text, varchar } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 
@@ -20,12 +15,12 @@ describe("pgDatabase definition", () => {
 	test("with tables", () => {
 		const users = pgTable("users", {
 			columns: {
-				name: pgVarChar(),
+				name: varchar(),
 			},
 		});
 		const teams = pgTable("teams", {
 			columns: {
-				name: pgVarChar(),
+				name: varchar(),
 			},
 		});
 		const database = pgDatabase({
@@ -48,17 +43,17 @@ describe("pgDatabase definition", () => {
 test("types for Kysely", () => {
 	const users = pgTable("users", {
 		columns: {
-			id: pgSerial().primaryKey(),
-			name: pgVarChar().notNull(),
-			email: pgText().notNull(),
-			address: pgText(),
+			id: serial().primaryKey(),
+			name: varchar().notNull(),
+			email: text().notNull(),
+			address: text(),
 		},
 	});
 	const books = pgTable("books", {
 		columns: {
-			id: pgSerial().primaryKey(),
-			title: pgVarChar().notNull(),
-			borrowed: pgBoolean().notNull(),
+			id: serial().primaryKey(),
+			title: varchar().notNull(),
+			borrowed: boolean().notNull(),
 		},
 	});
 	const database = pgDatabase({

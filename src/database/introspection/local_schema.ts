@@ -7,10 +7,10 @@ import type {
 	MigrationSchema,
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes } from "../schema/pg_column.js";
-import { PgForeignKeyConstraint } from "../schema/pg_foreign_key.js";
+import { PgForeignKey } from "../schema/pg_foreign_key.js";
 import type { PgIndex } from "../schema/pg_index.js";
-import { PgPrimaryKeyConstraint } from "../schema/pg_primary_key.js";
-import { PgUniqueConstraint } from "../schema/pg_unique.js";
+import { PgPrimaryKey } from "../schema/pg_primary_key.js";
+import { PgUnique } from "../schema/pg_unique.js";
 import {
 	foreignKeyConstraintInfoToQuery,
 	primaryKeyConstraintInfoToQuery,
@@ -125,7 +125,7 @@ export function schemaDbConstraintInfoByTable(
 	return Object.entries(schema.tables).reduce<ConstraintInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			for (const constraint of tableDefinition.constraints || []) {
-				if (constraint instanceof PgUniqueConstraint) {
+				if (constraint instanceof PgUnique) {
 					const keyName = `${tableName}_${constraint.columns.join(
 						"_",
 					)}_kinetic_key`;
@@ -142,7 +142,7 @@ export function schemaDbConstraintInfoByTable(
 						...constraintInfo,
 					};
 				}
-				if (constraint instanceof PgForeignKeyConstraint) {
+				if (constraint instanceof PgForeignKey) {
 					const keyName = `${tableName}_${constraint.columns.join("_")}_${
 						constraint.targetTable.name
 					}_${constraint.targetColumns.join("_")}_kinetic_fk`;
@@ -162,7 +162,7 @@ export function schemaDbConstraintInfoByTable(
 						...constraintInfo,
 					};
 				}
-				if (constraint instanceof PgPrimaryKeyConstraint) {
+				if (constraint instanceof PgPrimaryKey) {
 					const keyName = `${tableName}_${constraint.columns.join(
 						"_",
 					)}_kinetic_pk`;

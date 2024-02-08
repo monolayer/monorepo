@@ -34,31 +34,31 @@ import {
 	PgTimestampTz,
 	PgUuid,
 	PgVarChar,
-	pgBigInt,
-	pgBigSerial,
-	pgBoolean,
-	pgBytea,
-	pgChar,
-	pgDate,
-	pgDoublePrecision,
-	pgFloat4,
-	pgFloat8,
-	pgInt2,
-	pgInt4,
-	pgInt8,
-	pgInteger,
-	pgJson,
-	pgJsonB,
-	pgNumeric,
-	pgReal,
-	pgSerial,
-	pgText,
-	pgTime,
-	pgTimeTz,
-	pgTimestamp,
-	pgTimestampTz,
-	pgUuid,
-	pgVarChar,
+	bigint,
+	bigserial,
+	boolean,
+	bytea,
+	char,
+	date,
+	doublePrecision,
+	float4,
+	float8,
+	int2,
+	int4,
+	int8,
+	integer,
+	json,
+	jsonb,
+	numeric,
+	real,
+	serial,
+	text,
+	time,
+	timestamp,
+	timestamptz,
+	timetz,
+	uuid,
+	varchar,
 } from "./pg_column.js";
 import { pgTable } from "./pg_table.js";
 
@@ -110,7 +110,7 @@ describe("PgColumn", () => {
 	testBase();
 
 	test("primaryKey() sets primaryKey to true", (context: ColumnContext) => {
-		const column = pgInteger();
+		const column = integer();
 		column.primaryKey();
 		const columnInfo = Object.fromEntries(Object.entries(column)).info;
 		expect(columnInfo.primaryKey).toBe(true);
@@ -127,7 +127,7 @@ describe("PgColumn", () => {
 
 	describe("defaultTo()", () => {
 		test("defaultTo accepts insert column data types or an arbitrary SQL expression", () => {
-			const integerColumn = pgInteger();
+			const integerColumn = integer();
 			const integerColumnExpect: Expect<
 				Equal<
 					string | number | Expression<unknown>,
@@ -136,7 +136,7 @@ describe("PgColumn", () => {
 			> = true;
 			expectTypeOf(integerColumnExpect).toMatchTypeOf<boolean>();
 
-			const textColumn = pgText();
+			const textColumn = text();
 			const textColumnExpect: Expect<
 				Equal<
 					string | Expression<unknown>,
@@ -147,7 +147,7 @@ describe("PgColumn", () => {
 		});
 
 		test("defaultTo sets default value", (context: ColumnWithDefaultContext) => {
-			const column = pgText();
+			const column = text();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			const someSqlExpression = sql`now()`;
@@ -181,7 +181,7 @@ describe("PgGeneratedColumn", () => {
 	testBase("serial");
 
 	test("primaryKey() sets primaryKey to true", (context: ColumnContext) => {
-		const column = pgSerial();
+		const column = serial();
 		column.primaryKey();
 		const columnInfo = Object.fromEntries(Object.entries(column)).info;
 		expect(columnInfo.primaryKey).toBe(true);
@@ -220,22 +220,22 @@ function testBase(expectedDataType = "integer") {
 
 describe("pgBoolean", () => {
 	test("returns a PgBoolean instance", () => {
-		const column = pgBoolean();
+		const column = boolean();
 		expect(column).toBeInstanceOf(PgBoolean);
 	});
 
 	describe("PgBoolean", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgBoolean()).toBeInstanceOf(PgColumn);
+			expect(boolean()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to boolean", () => {
-			const info = Object.fromEntries(Object.entries(pgBoolean())).info;
+			const info = Object.fromEntries(Object.entries(boolean())).info;
 			expect(info.dataType).toBe("boolean");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgBoolean();
+			const column = boolean();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(true);
@@ -246,22 +246,22 @@ describe("pgBoolean", () => {
 
 describe("pgText", () => {
 	test("returns a PgText instance", () => {
-		const column = pgText();
+		const column = text();
 		expect(column).toBeInstanceOf(PgText);
 	});
 
 	describe("PgText", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgText()).toBeInstanceOf(PgColumn);
+			expect(text()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to text", () => {
-			const info = Object.fromEntries(Object.entries(pgText())).info;
+			const info = Object.fromEntries(Object.entries(text())).info;
 			expect(info.dataType).toBe("text");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgText();
+			const column = text();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("foo");
@@ -272,22 +272,22 @@ describe("pgText", () => {
 
 describe("pgBigInt", () => {
 	test("returns a PgBigInt instance", () => {
-		const column = pgBigInt();
+		const column = bigint();
 		expect(column).toBeInstanceOf(PgBigInt);
 	});
 
 	describe("PgBigInt", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgBigInt()).toBeInstanceOf(PgColumn);
+			expect(bigint()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to bigint", () => {
-			const info = Object.fromEntries(Object.entries(pgBigInt())).info;
+			const info = Object.fromEntries(Object.entries(bigint())).info;
 			expect(info.dataType).toBe("bigint");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgBigInt();
+			const column = bigint();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(12234433444444455n);
@@ -304,17 +304,17 @@ describe("pgBigInt", () => {
 
 describe("pgBigSerial", () => {
 	test("returns a PgBigSerial instance", () => {
-		const column = pgBigSerial();
+		const column = bigserial();
 		expect(column).toBeInstanceOf(PgBigSerial);
 	});
 
 	describe("PgBigSerial", () => {
 		test("inherits from PgColumnWithoutDefault", () => {
-			expect(pgBigSerial()).toBeInstanceOf(PgGeneratedColumn);
+			expect(bigserial()).toBeInstanceOf(PgGeneratedColumn);
 		});
 
 		test("dataType is set to bigserial", () => {
-			const info = Object.fromEntries(Object.entries(pgBigSerial())).info;
+			const info = Object.fromEntries(Object.entries(bigserial())).info;
 			expect(info.dataType).toBe("bigserial");
 		});
 	});
@@ -322,22 +322,22 @@ describe("pgBigSerial", () => {
 
 describe("pgBytea", () => {
 	test("returns a PgBytea instance", () => {
-		const column = pgBytea();
+		const column = bytea();
 		expect(column).toBeInstanceOf(PgBytea);
 	});
 
 	describe("PgBytea", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgBytea()).toBeInstanceOf(PgColumn);
+			expect(bytea()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to bytea", () => {
-			const info = Object.fromEntries(Object.entries(pgBytea())).info;
+			const info = Object.fromEntries(Object.entries(bytea())).info;
 			expect(info.dataType).toBe("bytea");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgBytea();
+			const column = bytea();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			const buffer = Buffer.from("hello");
@@ -358,26 +358,25 @@ describe("pgBytea", () => {
 
 describe("pgDate", () => {
 	test("returns a PgDate instance", () => {
-		const column = pgDate();
+		const column = date();
 		expect(column).toBeInstanceOf(PgDate);
 	});
 
 	describe("PgDate", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgDate()).toBeInstanceOf(PgColumn);
+			expect(date()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to date", () => {
-			const info = Object.fromEntries(Object.entries(pgDate())).info;
+			const info = Object.fromEntries(Object.entries(date())).info;
 			expect(info.dataType).toBe("date");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgDate();
+			const column = date();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			const date = new Date(1);
-			column.defaultTo(date);
+			column.defaultTo(new Date(1));
 			expect(info.defaultValue).toBe("'1970-01-01'::date");
 
 			column.defaultTo(new Date(1).toISOString());
@@ -388,22 +387,22 @@ describe("pgDate", () => {
 
 describe("pgDoublePrecision", () => {
 	test("returns a PgDoublePrecision instance", () => {
-		const column = pgDoublePrecision();
+		const column = doublePrecision();
 		expect(column).toBeInstanceOf(PgDoublePrecision);
 	});
 
 	describe("PgDoublePrecision", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgDoublePrecision()).toBeInstanceOf(PgColumn);
+			expect(doublePrecision()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to double precision", () => {
-			const info = Object.fromEntries(Object.entries(pgDoublePrecision())).info;
+			const info = Object.fromEntries(Object.entries(doublePrecision())).info;
 			expect(info.dataType).toBe("double precision");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgDoublePrecision();
+			const column = doublePrecision();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(10);
@@ -420,22 +419,22 @@ describe("pgDoublePrecision", () => {
 
 describe("pgFloat4", () => {
 	test("returns a PgFloat4 instance", () => {
-		const column = pgFloat4();
+		const column = float4();
 		expect(column).toBeInstanceOf(PgFloat4);
 	});
 
 	describe("PgFloat4", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgFloat4()).toBeInstanceOf(PgColumn);
+			expect(float4()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to float4", () => {
-			const info = Object.fromEntries(Object.entries(pgFloat4())).info;
+			const info = Object.fromEntries(Object.entries(float4())).info;
 			expect(info.dataType).toBe("float4");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgFloat4();
+			const column = float4();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(10.4);
@@ -452,22 +451,22 @@ describe("pgFloat4", () => {
 
 describe("pgFloat8", () => {
 	test("returns a PgFloat8 instance", () => {
-		const column = pgFloat8();
+		const column = float8();
 		expect(column).toBeInstanceOf(PgFloat8);
 	});
 
 	describe("PgFloat8", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgFloat8()).toBeInstanceOf(PgColumn);
+			expect(float8()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to float8", () => {
-			const info = Object.fromEntries(Object.entries(pgFloat8())).info;
+			const info = Object.fromEntries(Object.entries(float8())).info;
 			expect(info.dataType).toBe("float8");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgFloat8();
+			const column = float8();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(10.4);
@@ -484,22 +483,22 @@ describe("pgFloat8", () => {
 
 describe("pgInt2", () => {
 	test("returns a PgInt2 instance", () => {
-		const column = pgInt2();
+		const column = int2();
 		expect(column).toBeInstanceOf(PgInt2);
 	});
 
 	describe("PgInt2", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgInt2()).toBeInstanceOf(PgColumn);
+			expect(int2()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to int2", () => {
-			const info = Object.fromEntries(Object.entries(pgInt2())).info;
+			const info = Object.fromEntries(Object.entries(int2())).info;
 			expect(info.dataType).toBe("int2");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgInt2();
+			const column = int2();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(10);
@@ -513,22 +512,22 @@ describe("pgInt2", () => {
 
 describe("pgInt4", () => {
 	test("returns a PgInt4 instance", () => {
-		const column = pgInt4();
+		const column = int4();
 		expect(column).toBeInstanceOf(PgInt4);
 	});
 
 	describe("PgInt4", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgInt4()).toBeInstanceOf(PgColumn);
+			expect(int4()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to int4", () => {
-			const info = Object.fromEntries(Object.entries(pgInt4())).info;
+			const info = Object.fromEntries(Object.entries(int4())).info;
 			expect(info.dataType).toBe("int4");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgInt4();
+			const column = int4();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(10);
@@ -542,22 +541,22 @@ describe("pgInt4", () => {
 
 describe("pgInt8", () => {
 	test("returns a PgInt8 instance", () => {
-		const column = pgInt8();
+		const column = int8();
 		expect(column).toBeInstanceOf(PgInt8);
 	});
 
 	describe("PgInt8", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgInt8()).toBeInstanceOf(PgColumn);
+			expect(int8()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to int8", () => {
-			const info = Object.fromEntries(Object.entries(pgInt8())).info;
+			const info = Object.fromEntries(Object.entries(int8())).info;
 			expect(info.dataType).toBe("int8");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgInt8();
+			const column = int8();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(10);
@@ -574,22 +573,22 @@ describe("pgInt8", () => {
 
 describe("pgInteger", () => {
 	test("returns a PgInteger instance", () => {
-		const column = pgInteger();
+		const column = integer();
 		expect(column).toBeInstanceOf(PgInteger);
 	});
 
 	describe("PgInteger", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgInteger()).toBeInstanceOf(PgColumn);
+			expect(integer()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to integer", () => {
-			const info = Object.fromEntries(Object.entries(pgInteger())).info;
+			const info = Object.fromEntries(Object.entries(integer())).info;
 			expect(info.dataType).toBe("integer");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgInteger();
+			const column = integer();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(10);
@@ -603,22 +602,22 @@ describe("pgInteger", () => {
 
 describe("pgJson", () => {
 	test("returns a PgJson instance", () => {
-		const column = pgJson();
+		const column = json();
 		expect(column).toBeInstanceOf(PgJson);
 	});
 
 	describe("PgJson", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgJson()).toBeInstanceOf(PgColumn);
+			expect(json()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to json", () => {
-			const info = Object.fromEntries(Object.entries(pgJson())).info;
+			const info = Object.fromEntries(Object.entries(json())).info;
 			expect(info.dataType).toBe("json");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgJson();
+			const column = json();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("10");
@@ -632,22 +631,22 @@ describe("pgJson", () => {
 
 describe("pgJsonB", () => {
 	test("returns a PgJsonB instance", () => {
-		const column = pgJsonB();
+		const column = jsonb();
 		expect(column).toBeInstanceOf(PgJsonB);
 	});
 
 	describe("PgJsonB", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgJsonB()).toBeInstanceOf(PgColumn);
+			expect(jsonb()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to jsonb", () => {
-			const info = Object.fromEntries(Object.entries(pgJsonB())).info;
+			const info = Object.fromEntries(Object.entries(jsonb())).info;
 			expect(info.dataType).toBe("jsonb");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgJsonB();
+			const column = jsonb();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("10");
@@ -661,22 +660,22 @@ describe("pgJsonB", () => {
 
 describe("pgReal", () => {
 	test("returns a PgReal instance", () => {
-		const column = pgReal();
+		const column = real();
 		expect(column).toBeInstanceOf(PgReal);
 	});
 
 	describe("PgReal", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgReal()).toBeInstanceOf(PgColumn);
+			expect(real()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to real", () => {
-			const info = Object.fromEntries(Object.entries(pgReal())).info;
+			const info = Object.fromEntries(Object.entries(real())).info;
 			expect(info.dataType).toBe("real");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgReal();
+			const column = real();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("10");
@@ -693,22 +692,22 @@ describe("pgReal", () => {
 
 describe("pgSerial", () => {
 	test("returns a PgSerial instance", () => {
-		const column = pgSerial();
+		const column = serial();
 		expect(column).toBeInstanceOf(PgSerial);
 	});
 
 	describe("PgSerial", () => {
 		test("inherits from PgColumnWithoutDefault", () => {
-			expect(pgSerial()).toBeInstanceOf(PgGeneratedColumn);
+			expect(serial()).toBeInstanceOf(PgGeneratedColumn);
 		});
 
 		test("dataType is set to serial", () => {
-			const info = Object.fromEntries(Object.entries(pgSerial())).info;
+			const info = Object.fromEntries(Object.entries(serial())).info;
 			expect(info.dataType).toBe("serial");
 		});
 
 		test("isNullable is false", () => {
-			const info = Object.fromEntries(Object.entries(pgSerial())).info;
+			const info = Object.fromEntries(Object.entries(serial())).info;
 			expect(info.isNullable).toBe(false);
 		});
 	});
@@ -716,22 +715,22 @@ describe("pgSerial", () => {
 
 describe("pgUuid", () => {
 	test("returns a PgUuid instance", () => {
-		const column = pgUuid();
+		const column = uuid();
 		expect(column).toBeInstanceOf(PgUuid);
 	});
 
 	describe("PgUuid", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgUuid()).toBeInstanceOf(PgColumn);
+			expect(uuid()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to uuid", () => {
-			const info = Object.fromEntries(Object.entries(pgUuid())).info;
+			const info = Object.fromEntries(Object.entries(uuid())).info;
 			expect(info.dataType).toBe("uuid");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgUuid();
+			const column = uuid();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("10");
@@ -742,22 +741,22 @@ describe("pgUuid", () => {
 
 describe("pgVarChar", () => {
 	test("returns a PgVarChar instance", () => {
-		const column = pgVarChar();
+		const column = varchar();
 		expect(column).toBeInstanceOf(PgVarChar);
 	});
 
 	describe("PgVarChar", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgVarChar()).toBeInstanceOf(PgColumn);
+			expect(varchar()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to varchar", () => {
-			const info = Object.fromEntries(Object.entries(pgVarChar())).info;
+			const info = Object.fromEntries(Object.entries(varchar())).info;
 			expect(info.dataType).toBe("varchar");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgVarChar();
+			const column = varchar();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("10");
@@ -767,18 +766,18 @@ describe("pgVarChar", () => {
 
 	describe("with optional maximumLength", () => {
 		test("characterMaximumLength is set to maximumLength", () => {
-			const column = pgVarChar(255);
+			const column = varchar(255);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.characterMaximumLength).toBe(255);
 		});
 
 		test("data type has maximumLength", () => {
-			const info = Object.fromEntries(Object.entries(pgVarChar(255))).info;
+			const info = Object.fromEntries(Object.entries(varchar(255))).info;
 			expect(info.dataType).toBe("varchar(255)");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgVarChar(100);
+			const column = varchar(100);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("10");
@@ -789,28 +788,28 @@ describe("pgVarChar", () => {
 
 describe("pgChar", () => {
 	test("returns a PgChar instance", () => {
-		const column = pgChar();
+		const column = char();
 		expect(column).toBeInstanceOf(PgChar);
 	});
 
 	describe("PgChar", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgChar()).toBeInstanceOf(PgColumn);
+			expect(char()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to char(1)", () => {
-			const info = Object.fromEntries(Object.entries(pgChar())).info;
+			const info = Object.fromEntries(Object.entries(char())).info;
 			expect(info.dataType).toBe("char(1)");
 		});
 
 		test("characterMaximumLength is set to 1", () => {
-			const column = pgChar();
+			const column = char();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.characterMaximumLength).toBe(1);
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgChar();
+			const column = char();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("10");
@@ -820,18 +819,18 @@ describe("pgChar", () => {
 
 	describe("with optional maximumLength", () => {
 		test("characterMaximumLength is set to maximumLength", () => {
-			const column = pgChar(255);
+			const column = char(255);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.characterMaximumLength).toBe(255);
 		});
 
 		test("data type has maximumLength", () => {
-			const info = Object.fromEntries(Object.entries(pgChar(255))).info;
+			const info = Object.fromEntries(Object.entries(char(255))).info;
 			expect(info.dataType).toBe("char(255)");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgChar(200);
+			const column = char(200);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("10");
@@ -857,28 +856,28 @@ describe("PgColumnWithPrecision", () => {
 
 describe("pgTime", () => {
 	test("returns a PgTime instance", () => {
-		const column = pgTime();
+		const column = time();
 		expect(column).toBeInstanceOf(PgTime);
 	});
 
 	describe("PgTime", () => {
 		test("inherits from PgColumnWithPrecision", () => {
-			expect(pgTime()).toBeInstanceOf(PgColumnWithPrecision);
+			expect(time()).toBeInstanceOf(PgColumnWithPrecision);
 		});
 
 		test("dataType is set to time", () => {
-			const info = Object.fromEntries(Object.entries(pgTime())).info;
+			const info = Object.fromEntries(Object.entries(time())).info;
 			expect(info.dataType).toBe("time");
 		});
 
 		test("datetimePrecision is set to null", () => {
-			const column = pgTime();
+			const column = time();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgTime();
+			const column = time();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("04:05 AM");
@@ -888,18 +887,18 @@ describe("pgTime", () => {
 
 	describe("with optional precision", () => {
 		test("datetimePrecision is set to precision", () => {
-			const column = pgTime(1);
+			const column = time(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(1);
 		});
 
 		test("data type has precision", () => {
-			const info = Object.fromEntries(Object.entries(pgTime(1))).info;
+			const info = Object.fromEntries(Object.entries(time(1))).info;
 			expect(info.dataType).toBe("time(1)");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgTime(1);
+			const column = time(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("04:05 AM");
@@ -910,28 +909,28 @@ describe("pgTime", () => {
 
 describe("pgTimeTz", () => {
 	test("returns a PgTimeTz instance", () => {
-		const column = pgTimeTz();
+		const column = timetz();
 		expect(column).toBeInstanceOf(PgTimeTz);
 	});
 
 	describe("PgTimeTz", () => {
 		test("inherits from PgColumnWithPrecision", () => {
-			expect(pgTimeTz()).toBeInstanceOf(PgColumnWithPrecision);
+			expect(timetz()).toBeInstanceOf(PgColumnWithPrecision);
 		});
 
 		test("dataType is set to timetz", () => {
-			const info = Object.fromEntries(Object.entries(pgTimeTz())).info;
+			const info = Object.fromEntries(Object.entries(timetz())).info;
 			expect(info.dataType).toBe("timetz");
 		});
 
 		test("datetimePrecision is set to null", () => {
-			const column = pgTimeTz();
+			const column = timetz();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgTimeTz();
+			const column = timetz();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("04:05:06-08:00");
@@ -941,18 +940,18 @@ describe("pgTimeTz", () => {
 
 	describe("with optional precision", () => {
 		test("datetimePrecision is set to precision", () => {
-			const column = pgTimeTz(1);
+			const column = timetz(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(1);
 		});
 
 		test("data type has precision", () => {
-			const info = Object.fromEntries(Object.entries(pgTimeTz(1))).info;
+			const info = Object.fromEntries(Object.entries(timetz(1))).info;
 			expect(info.dataType).toBe("timetz(1)");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgTimeTz(1);
+			const column = timetz(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo("04:05:06-08:00");
@@ -963,28 +962,28 @@ describe("pgTimeTz", () => {
 
 describe("pgTimestamp", () => {
 	test("returns a PgTimestamp instance", () => {
-		const column = pgTimestamp();
+		const column = timestamp();
 		expect(column).toBeInstanceOf(PgTimestamp);
 	});
 
 	describe("PgTimestamp", () => {
 		test("inherits from PgColumnWithPrecision", () => {
-			expect(pgTimestamp()).toBeInstanceOf(PgColumnWithPrecision);
+			expect(timestamp()).toBeInstanceOf(PgColumnWithPrecision);
 		});
 
 		test("dataType is set to timestamp", () => {
-			const info = Object.fromEntries(Object.entries(pgTimestamp())).info;
+			const info = Object.fromEntries(Object.entries(timestamp())).info;
 			expect(info.dataType).toBe("timestamp");
 		});
 
 		test("datetimePrecision is set to null", () => {
-			const column = pgTimestamp();
+			const column = timestamp();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgTimestamp();
+			const column = timestamp();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(new Date(1));
@@ -996,18 +995,18 @@ describe("pgTimestamp", () => {
 
 	describe("with optional precision", () => {
 		test("datetimePrecision is set to precision", () => {
-			const column = pgTimestamp(1);
+			const column = timestamp(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(1);
 		});
 
 		test("data type has precision", () => {
-			const info = Object.fromEntries(Object.entries(pgTimestamp(1))).info;
+			const info = Object.fromEntries(Object.entries(timestamp(1))).info;
 			expect(info.dataType).toBe("timestamp(1)");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgTimestamp(1);
+			const column = timestamp(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(new Date(1));
@@ -1020,28 +1019,28 @@ describe("pgTimestamp", () => {
 
 describe("pgTimestampTz", () => {
 	test("returns a PgTimestampTz instance", () => {
-		const column = pgTimestampTz();
+		const column = timestamptz();
 		expect(column).toBeInstanceOf(PgTimestampTz);
 	});
 
 	describe("PgTimestampTz", () => {
 		test("inherits from PgColumnWithPrecision", () => {
-			expect(pgTimestampTz()).toBeInstanceOf(PgColumnWithPrecision);
+			expect(timestamptz()).toBeInstanceOf(PgColumnWithPrecision);
 		});
 
 		test("dataType is set to timestamptz", () => {
-			const info = Object.fromEntries(Object.entries(pgTimestampTz())).info;
+			const info = Object.fromEntries(Object.entries(timestamptz())).info;
 			expect(info.dataType).toBe("timestamptz");
 		});
 
 		test("datetimePrecision is set to null", () => {
-			const column = pgTimestampTz();
+			const column = timestamptz();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgTimestampTz();
+			const column = timestamptz();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(new Date(1));
@@ -1053,18 +1052,18 @@ describe("pgTimestampTz", () => {
 
 	describe("with optional precision", () => {
 		test("datetimePrecision is set to precision", () => {
-			const column = pgTimestampTz(1);
+			const column = timestamptz(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(1);
 		});
 
 		test("data type has precision", () => {
-			const info = Object.fromEntries(Object.entries(pgTimestampTz(1))).info;
+			const info = Object.fromEntries(Object.entries(timestamptz(1))).info;
 			expect(info.dataType).toBe("timestamptz(1)");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgTimestampTz(1);
+			const column = timestamptz(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(new Date(1));
@@ -1077,34 +1076,34 @@ describe("pgTimestampTz", () => {
 
 describe("pgNumeric", () => {
 	test("returns a PgNumeric instance", () => {
-		const column = pgNumeric();
+		const column = numeric();
 		expect(column).toBeInstanceOf(PgNumeric);
 	});
 
 	describe("PgNumeric", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgNumeric()).toBeInstanceOf(PgColumn);
+			expect(numeric()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to numeric", () => {
-			const info = Object.fromEntries(Object.entries(pgNumeric())).info;
+			const info = Object.fromEntries(Object.entries(numeric())).info;
 			expect(info.dataType).toBe("numeric");
 		});
 
 		test("numericPrecision is set to null", () => {
-			const column = pgNumeric();
+			const column = numeric();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericPrecision).toBe(null);
 		});
 
 		test("numericScale is set to null", () => {
-			const column = pgNumeric();
+			const column = numeric();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericScale).toBe(null);
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgNumeric();
+			const column = numeric();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(1);
@@ -1126,24 +1125,24 @@ describe("pgNumeric", () => {
 
 	describe("with optional precision", () => {
 		test("numericPrecision is set to precision", () => {
-			const column = pgNumeric(4);
+			const column = numeric(4);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericPrecision).toBe(4);
 		});
 
 		test("numericScale is set to 0", () => {
-			const column = pgNumeric(4);
+			const column = numeric(4);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericScale).toBe(0);
 		});
 
 		test("data type has precision and scale", () => {
-			const info = Object.fromEntries(Object.entries(pgNumeric(5))).info;
+			const info = Object.fromEntries(Object.entries(numeric(5))).info;
 			expect(info.dataType).toBe("numeric(5, 0)");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgNumeric(5);
+			const column = numeric(5);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(1);
@@ -1165,18 +1164,18 @@ describe("pgNumeric", () => {
 
 	describe("with scale", () => {
 		test("numericScale is set to scale", () => {
-			const column = pgNumeric(4, 5);
+			const column = numeric(4, 5);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericScale).toBe(5);
 		});
 
 		test("data type has precision and scale", () => {
-			const info = Object.fromEntries(Object.entries(pgNumeric(4, 5))).info;
+			const info = Object.fromEntries(Object.entries(numeric(4, 5))).info;
 			expect(info.dataType).toBe("numeric(4, 5)");
 		});
 
 		test("defaultTo with column data type", () => {
-			const column = pgNumeric(5, 1);
+			const column = numeric(5, 1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(1);
@@ -1255,7 +1254,7 @@ function testColumnMethods(testNull = true) {
 		test("references() sets foreignKeyConstraint", (context: ColumnContext) => {
 			const users = pgTable("users", {
 				columns: {
-					id: pgSerial(),
+					id: serial(),
 				},
 			});
 			context.column.references(users, "id");
@@ -1269,7 +1268,7 @@ function testColumnMethods(testNull = true) {
 		test("references() sets foreignKeyConstraint on delete", (context: ColumnContext) => {
 			const users = pgTable("users", {
 				columns: {
-					id: pgSerial(),
+					id: serial(),
 				},
 			});
 			context.column.references(users, "id", { onDelete: "cascade" });
@@ -1283,7 +1282,7 @@ function testColumnMethods(testNull = true) {
 		test("references() sets foreignKeyConstraint on update", (context: ColumnContext) => {
 			const users = pgTable("users", {
 				columns: {
-					id: pgSerial(),
+					id: serial(),
 				},
 			});
 			context.column.references(users, "id", { onUpdate: "cascade" });

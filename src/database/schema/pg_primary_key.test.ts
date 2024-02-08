@@ -1,17 +1,14 @@
 import { describe, expect, test } from "vitest";
-import {
-	PgPrimaryKeyConstraint,
-	pgPrimaryKeyConstraint,
-} from "./pg_primary_key.js";
+import { PgPrimaryKey, primaryKey } from "./pg_primary_key.js";
 
 describe("PgPrimaryKeyConstraint", () => {
 	test("it can be instantiated with pgPrimaryKeyConstraint", () => {
-		const constraint = pgPrimaryKeyConstraint(["id"]);
-		expect(constraint).toBeInstanceOf(PgPrimaryKeyConstraint);
+		const constraint = primaryKey(["id"]);
+		expect(constraint).toBeInstanceOf(PgPrimaryKey);
 	});
 
 	test("it stores columns", () => {
-		const constraint = pgPrimaryKeyConstraint(["id"]);
+		const constraint = primaryKey(["id"]);
 		expect(constraint.columns).toStrictEqual(["id"]);
 	});
 });

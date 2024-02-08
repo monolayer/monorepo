@@ -1,13 +1,13 @@
-export function pgUniqueConstraint<T>(columns: T, nullsDistinct = true) {
+export function unique<T>(columns: T, nullsDistinct = true) {
 	const cols = [] as string[];
 	if (typeof columns === "string") {
 		cols.push(columns);
 	} else {
 		cols.push(...(columns as unknown as string[]));
 	}
-	return new PgUniqueConstraint(columns, nullsDistinct);
+	return new PgUnique(columns, nullsDistinct);
 }
-export class PgUniqueConstraint<T> {
+export class PgUnique<T> {
 	constructor(
 		private cols: T,
 		public nullsDistinct = true,

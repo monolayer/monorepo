@@ -1,19 +1,19 @@
 import type { Insertable, Selectable, Updateable } from "kysely";
 import { type Simplify } from "type-fest";
 import { PgColumnTypes } from "./pg_column.js";
-import type { PgForeignKeyConstraint } from "./pg_foreign_key.js";
+import type { PgForeignKey } from "./pg_foreign_key.js";
 import { type PgIndex } from "./pg_index.js";
-import type { PgPrimaryKeyConstraint } from "./pg_primary_key.js";
-import type { PgUniqueConstraint } from "./pg_unique.js";
+import type { PgPrimaryKey } from "./pg_primary_key.js";
+import type { PgUnique } from "./pg_unique.js";
 
 export type ColumnRecord = Record<string, PgColumnTypes>;
 
 type TableSchema<T> = {
 	columns: T extends ColumnRecord ? T : never;
 	constraints?: (
-		| PgUniqueConstraint<keyof T | Array<keyof T>>
-		| PgForeignKeyConstraint<keyof T | Array<keyof T>>
-		| PgPrimaryKeyConstraint<keyof T | Array<keyof T>>
+		| PgUnique<keyof T | Array<keyof T>>
+		| PgForeignKey<keyof T | Array<keyof T>>
+		| PgPrimaryKey<keyof T | Array<keyof T>>
 	)[];
 	indexes?: PgIndex<keyof T | Array<keyof T>>[];
 };

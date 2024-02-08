@@ -1,31 +1,25 @@
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
 import {
-	pgBoolean,
-	pgInt4,
-	pgInteger,
-	pgSerial,
-	pgText,
-	pgVarChar,
+	boolean,
+	int4,
+	integer,
+	serial,
+	text,
+	varchar,
 } from "~/database/schema/pg_column.js";
-import { PgIndex, pgIndex } from "~/database/schema/pg_index.js";
+import { PgIndex, index } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import {
-	PgForeignKeyConstraint,
-	pgForeignKeyConstraint,
-} from "./pg_foreign_key.js";
-import {
-	PgPrimaryKeyConstraint,
-	pgPrimaryKeyConstraint,
-} from "./pg_primary_key.js";
-import { PgUniqueConstraint, pgUniqueConstraint } from "./pg_unique.js";
+import { PgForeignKey, foreignKey } from "./pg_foreign_key.js";
+import { PgPrimaryKey, primaryKey } from "./pg_primary_key.js";
+import { PgUnique, unique } from "./pg_unique.js";
 
 describe("pgTable definition", () => {
 	test("has a name", () => {
 		const tbl = pgTable("users", {
 			columns: {
-				name: pgVarChar(),
-				subscribed: pgBoolean(),
+				name: varchar(),
+				subscribed: boolean(),
 			},
 		});
 		expect(tbl.name).toBe("users");
@@ -33,8 +27,8 @@ describe("pgTable definition", () => {
 
 	test("has columns defined", () => {
 		const columns = {
-			name: pgVarChar(),
-			subscribed: pgBoolean(),
+			name: varchar(),
+			subscribed: boolean(),
 		};
 		const tbl = pgTable("users", {
 			columns: columns,
@@ -45,12 +39,12 @@ describe("pgTable definition", () => {
 	test("infer column types", () => {
 		const tbl = pgTable("users", {
 			columns: {
-				pk: pgInteger().primaryKey(),
-				id: pgSerial(),
-				name: pgVarChar().notNull(),
-				subscribed: pgBoolean(),
-				email: pgText().notNull(),
-				subscribers: pgInt4(),
+				pk: integer().primaryKey(),
+				id: serial(),
+				name: varchar().notNull(),
+				subscribed: boolean(),
+				email: text().notNull(),
+				subscribers: int4(),
 			},
 		});
 		type ExpectedType = {
@@ -68,12 +62,12 @@ describe("pgTable definition", () => {
 
 	test("inferSelect column types", () => {
 		const columns = {
-			pk: pgInteger().primaryKey(),
-			id: pgSerial(),
-			name: pgVarChar().notNull(),
-			subscribed: pgBoolean(),
-			email: pgText().notNull(),
-			subscribers: pgInt4(),
+			pk: integer().primaryKey(),
+			id: serial(),
+			name: varchar().notNull(),
+			subscribed: boolean(),
+			email: text().notNull(),
+			subscribers: int4(),
 		};
 		const tbl = pgTable("users", {
 			columns: columns,
@@ -94,7 +88,7 @@ describe("pgTable definition", () => {
 	describe("inferInsert column types", () => {
 		test("primary keys are required by default", () => {
 			const columns = {
-				pk: pgInteger().primaryKey(),
+				pk: integer().primaryKey(),
 			};
 			const tbl = pgTable("users", {
 				columns: columns,
@@ -110,7 +104,7 @@ describe("pgTable definition", () => {
 		test("primary keys are optional on generated columns", () => {
 			const users = pgTable("users", {
 				columns: {
-					pk: pgSerial().primaryKey(),
+					pk: serial().primaryKey(),
 				},
 			});
 			type ExpectedType = {
@@ -124,7 +118,7 @@ describe("pgTable definition", () => {
 
 			const books = pgTable("users", {
 				columns: {
-					pk: pgSerial().primaryKey(),
+					pk: serial().primaryKey(),
 				},
 			});
 			type InferredBooksInsertType = typeof books.inferInsert;
@@ -135,12 +129,12 @@ describe("pgTable definition", () => {
 
 		test("inferInsert column types", () => {
 			const columns = {
-				pk: pgInteger().primaryKey(),
-				id: pgSerial(),
-				name: pgVarChar().notNull(),
-				subscribed: pgBoolean(),
-				email: pgText().notNull(),
-				subscribers: pgInt4(),
+				pk: integer().primaryKey(),
+				id: serial(),
+				name: varchar().notNull(),
+				subscribed: boolean(),
+				email: text().notNull(),
+				subscribers: int4(),
 			};
 			const tbl = pgTable("users", {
 				columns: columns,
@@ -161,12 +155,12 @@ describe("pgTable definition", () => {
 
 	test("inferUpdate column types", () => {
 		const columns = {
-			pk: pgInteger().primaryKey(),
-			id: pgSerial(),
-			name: pgVarChar().notNull(),
-			subscribed: pgBoolean(),
-			email: pgText().notNull(),
-			subscribers: pgInt4(),
+			pk: integer().primaryKey(),
+			id: serial(),
+			name: varchar().notNull(),
+			subscribed: boolean(),
+			email: text().notNull(),
+			subscribers: int4(),
 		};
 		const tbl = pgTable("users", {
 			columns: columns,
@@ -186,8 +180,8 @@ describe("pgTable definition", () => {
 
 	test("indexes are empty by default", () => {
 		const columns = {
-			name: pgVarChar(),
-			subscribed: pgBoolean(),
+			name: varchar(),
+			subscribed: boolean(),
 		};
 		const tbl = pgTable("users", {
 			columns: columns,
@@ -197,16 +191,14 @@ describe("pgTable definition", () => {
 
 	test("indexes can be added", () => {
 		const columns = {
-			name: pgVarChar(),
-			subscribed: pgBoolean(),
+			name: varchar(),
+			subscribed: boolean(),
 		};
 		const tbl = pgTable("users", {
 			columns: columns,
 			indexes: [
-				pgIndex("name", (idx) => idx.ifNotExists().unique().using("btree")),
-				pgIndex("subscribed", (idx) =>
-					idx.ifNotExists().unique().using("btree"),
-				),
+				index("name", (idx) => idx.ifNotExists().unique().using("btree")),
+				index("subscribed", (idx) => idx.ifNotExists().unique().using("btree")),
 			],
 		});
 		expect(tbl.indexes?.length).toBe(2);
@@ -218,8 +210,8 @@ describe("pgTable definition", () => {
 	describe("constraints", () => {
 		test("constraints are empty by default", () => {
 			const columns = {
-				name: pgVarChar(),
-				subscribed: pgBoolean(),
+				name: varchar(),
+				subscribed: boolean(),
 			};
 			const tbl = pgTable("users", {
 				columns: columns,
@@ -230,60 +222,57 @@ describe("pgTable definition", () => {
 		test("foreign key constraints can be added", () => {
 			const books = pgTable("books", {
 				columns: {
-					id: pgSerial().primaryKey(),
-					name: pgVarChar(),
-					location: pgVarChar(),
+					id: serial().primaryKey(),
+					name: varchar(),
+					location: varchar(),
 				},
-				constraints: [pgUniqueConstraint(["name", "location"])],
+				constraints: [unique(["name", "location"])],
 			});
 
 			const users = pgTable("users", {
 				columns: {
-					id: pgSerial().primaryKey(),
-					name: pgVarChar(),
-					subscribed: pgBoolean(),
-					book_id: pgInteger(),
+					id: serial().primaryKey(),
+					name: varchar(),
+					subscribed: boolean(),
+					book_id: integer(),
 				},
-				constraints: [pgForeignKeyConstraint(["book_id"], books, ["id"])],
+				constraints: [foreignKey(["book_id"], books, ["id"])],
 			});
 			expect(users.constraints?.length).toBe(1);
 			for (const constraint of users.constraints || []) {
-				expect(constraint).toBeInstanceOf(PgForeignKeyConstraint);
+				expect(constraint).toBeInstanceOf(PgForeignKey);
 			}
 		});
 
 		test("unique constraints can be added", () => {
 			const columns = {
-				id: pgSerial().primaryKey(),
-				name: pgVarChar(),
-				subscribed: pgBoolean(),
+				id: serial().primaryKey(),
+				name: varchar(),
+				subscribed: boolean(),
 			};
 
 			const tbl = pgTable("users", {
 				columns: columns,
-				constraints: [
-					pgUniqueConstraint(["name"]),
-					pgUniqueConstraint(["subscribed"]),
-				],
+				constraints: [unique(["name"]), unique(["subscribed"])],
 			});
 			expect(tbl.constraints?.length).toBe(2);
 			for (const constraint of tbl.constraints || []) {
-				expect(constraint).toBeInstanceOf(PgUniqueConstraint);
+				expect(constraint).toBeInstanceOf(PgUnique);
 			}
 		});
 
 		test("primary key constraints can be added the table level", () => {
 			const columns = {
-				id: pgInteger(),
-				name: pgVarChar(),
+				id: integer(),
+				name: varchar(),
 			};
 			const tbl = pgTable("users", {
 				columns: columns,
-				constraints: [pgPrimaryKeyConstraint(["id", "name"])],
+				constraints: [primaryKey(["id", "name"])],
 			});
 			expect(tbl.constraints?.length).toBe(1);
 			for (const constraint of tbl.constraints || []) {
-				expect(constraint).toBeInstanceOf(PgPrimaryKeyConstraint);
+				expect(constraint).toBeInstanceOf(PgPrimaryKey);
 			}
 		});
 	});
