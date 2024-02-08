@@ -12,30 +12,30 @@ import {
 	executeKyselySchemaStatement,
 } from "../compute.js";
 
-export type ChangeColumnForeignConstraintAdd = {
+export type AddForeignKeyConstraintDiff = {
 	type: "CHANGE";
 	path: ["table", string, string, "foreignKeyConstraint"];
 	value: ForeIgnKeyConstraintInfo;
 	oldValue: null;
 };
 
-export type ChangeColumnForeignConstraintRemove = {
+export type RemoveForeignKeyConstraint = {
 	type: "CHANGE";
 	path: ["table", string, string, "foreignKeyConstraint"];
 	value: null;
 	oldValue: ForeIgnKeyConstraintInfo;
 };
 
-export type ChangeOptionColumnForeignConstraintChange = {
+export type ChangeForeignConstraintDiff = {
 	type: "CHANGE";
 	path: ["table", string, string, "foreignKeyConstraint", "options"];
 	value: `${OnModifyForeignAction};${OnModifyForeignAction}`;
 	oldValue: `${OnModifyForeignAction};${OnModifyForeignAction}`;
 };
 
-export function isAddForeignKeyConstraintValue(
+export function isAddForeignKeyConstraint(
 	test: Difference,
-): test is ChangeColumnForeignConstraintAdd {
+): test is AddForeignKeyConstraintDiff {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
@@ -45,9 +45,9 @@ export function isAddForeignKeyConstraintValue(
 	);
 }
 
-export function isRemoveForeignKeyConstraintValue(
+export function isRemoveForeignKeyConstraint(
 	test: Difference,
-): test is ChangeColumnForeignConstraintRemove {
+): test is RemoveForeignKeyConstraint {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
@@ -57,9 +57,9 @@ export function isRemoveForeignKeyConstraintValue(
 	);
 }
 
-export function isChangeOptionsForeignKeyConstraintValue(
+export function isChangeOptionsForeignKeyConstraint(
 	test: Difference,
-): test is ChangeOptionColumnForeignConstraintChange {
+): test is ChangeForeignConstraintDiff {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
@@ -72,7 +72,7 @@ export function isChangeOptionsForeignKeyConstraintValue(
 }
 
 export function addColumnForeignKeyMigrationOperation(
-	diff: ChangeColumnForeignConstraintAdd,
+	diff: AddForeignKeyConstraintDiff,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
@@ -97,7 +97,7 @@ export function addColumnForeignKeyMigrationOperation(
 }
 
 export function removeColumnForeignKeyMigrationOperation(
-	diff: ChangeColumnForeignConstraintRemove,
+	diff: RemoveForeignKeyConstraint,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
@@ -122,7 +122,7 @@ export function removeColumnForeignKeyMigrationOperation(
 }
 
 export function changeColumnForeignKeyMigrationOperation(
-	diff: ChangeOptionColumnForeignConstraintChange,
+	diff: ChangeForeignConstraintDiff,
 	local: LocalTableInfo,
 	db: DbTableInfo,
 ) {

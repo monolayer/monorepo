@@ -17,9 +17,9 @@ import {
 import {
 	addColumnForeignKeyMigrationOperation,
 	changeColumnForeignKeyMigrationOperation,
-	isAddForeignKeyConstraintValue,
-	isChangeOptionsForeignKeyConstraintValue,
-	isRemoveForeignKeyConstraintValue,
+	isAddForeignKeyConstraint,
+	isChangeOptionsForeignKeyConstraint,
+	isRemoveForeignKeyConstraint,
 	removeColumnForeignKeyMigrationOperation,
 } from "./column_change/foreign_key.js";
 import {
@@ -108,11 +108,11 @@ export function migrationOp(
 		return columnNullableMigrationOperation(difference);
 	if (isColumnPrimaryKey(difference))
 		return columnPrimaryKeyMigrationOperation(difference);
-	if (isAddForeignKeyConstraintValue(difference))
+	if (isAddForeignKeyConstraint(difference))
 		return addColumnForeignKeyMigrationOperation(difference);
-	if (isRemoveForeignKeyConstraintValue(difference))
+	if (isRemoveForeignKeyConstraint(difference))
 		return removeColumnForeignKeyMigrationOperation(difference);
-	if (isChangeOptionsForeignKeyConstraintValue(difference))
+	if (isChangeOptionsForeignKeyConstraint(difference))
 		return changeColumnForeignKeyMigrationOperation(difference, local, db);
 	if (isColumnIdentityAdd(difference))
 		return columnIdentityAddMigrationOperation(difference);
