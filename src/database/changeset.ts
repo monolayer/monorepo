@@ -41,6 +41,12 @@ export enum ChangeSetType {
 	CreatePrimaryKey = "createPrimaryKey",
 	DropPrimaryKey = "dropPrimaryKey",
 	UpdatePrimaryKey = "updatePrimaryKey",
+	CreateUniqueConstraint = "createUniqueConstraint",
+	DropUniqueConstraint = "dropUniqueConstraint",
+	ChangeUniqueConstraint = "changeUniqueConstraint",
+	CreateForeignKeyConstraint = "createForeignKeyConstraint",
+	DropForeignKeyConstraint = "dropForeignKeyConstraint",
+	ChangeForeignKeyConstraint = "changeForeignKeyConstraint",
 }
 
 export type Changeset = {

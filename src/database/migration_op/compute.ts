@@ -77,6 +77,12 @@ export enum MigrationOpPriority {
 	PrimaryKeyReplace = 5.1,
 	PrimaryKeyCreate = 5.11,
 	PrimaryKeyUpdate = 5.12,
+	UniqueConstraintDrop = 6,
+	UniqueConstraintCreate = 6.11,
+	UniqueConstraintChange = 6.12,
+	ForeignKeyConstraintDrop = 7,
+	ForeignKeyConstraintCreate = 7.11,
+	ForeignKeyConstraintChange = 7.12,
 }
 
 export function migrationOp(
