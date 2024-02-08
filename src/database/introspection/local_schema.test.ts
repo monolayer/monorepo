@@ -222,12 +222,15 @@ test("#schemaDBIndexInfoByTable", () => {
 	});
 	expect(schemaDBIndexInfoByTable(database)).toStrictEqual({
 		teams: {
-			teams_active_kntc_idx: 'create index "teams_active_kntc_idx" on "teams"',
-			teams_id_kntc_idx: 'create index "teams_id_kntc_idx" on "teams"',
+			teams_active_kntc_idx:
+				'create index "teams_active_kntc_idx" on "teams" ("active")',
+			teams_id_kntc_idx: 'create index "teams_id_kntc_idx" on "teams" ("id")',
 		},
 		users: {
-			users_email_kntc_idx: 'create index "users_email_kntc_idx" on "users"',
-			users_name_kntc_idx: 'create index "users_name_kntc_idx" on "users"',
+			users_email_kntc_idx:
+				'create index "users_email_kntc_idx" on "users" ("email")',
+			users_name_kntc_idx:
+				'create index "users_name_kntc_idx" on "users" ("name")',
 		},
 	});
 });
@@ -497,10 +500,12 @@ test("#localSchema", () => {
 		},
 		index: {
 			books: {
-				books_name_kntc_idx: 'create index "books_name_kntc_idx" on "books"',
+				books_name_kntc_idx:
+					'create index "books_name_kntc_idx" on "books" ("name")',
 			},
 			teams: {
-				teams_name_kntc_idx: 'create index "teams_name_kntc_idx" on "teams"',
+				teams_name_kntc_idx:
+					'create index "teams_name_kntc_idx" on "teams" ("name")',
 			},
 		},
 		foreignKeyConstraints: {

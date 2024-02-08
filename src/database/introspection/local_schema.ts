@@ -111,7 +111,10 @@ function indexToInfo(
 		column: never;
 		columns: never;
 	};
-	const compiledQuery = index._builder(kyselyBuilder).compile().sql;
+	const compiledQuery = index
+		._builder(kyselyBuilder)
+		.columns(index.columns)
+		.compile().sql;
 
 	return {
 		[indexName]: compiledQuery,
