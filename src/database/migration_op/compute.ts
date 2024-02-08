@@ -1,4 +1,5 @@
 import { Difference } from "microdiff";
+import {} from "vitest/dist/reporters-1evA5lom.js";
 import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { createColumnMigration, isCreateColumn } from "./column/create.js";
 import { dropColumnMigration, isDropColumn } from "./column/drop.js";
@@ -51,8 +52,26 @@ import {
 } from "./index/create_first.js";
 import { dropIndexMigration, isDropIndex } from "./index/drop.js";
 import { dropAllIndexesMigration, isDropAllIndexes } from "./index/drop_all.js";
+import {
+	createPrimaryKeyMigration,
+	dropPrimaryKeyMigration,
+	isPrimaryKeyCreateFirst,
+	isPrimaryKeyDrop,
+	isPrimaryKeyReplace,
+	isPrimaryKeyUpdate,
+	replacePrimaryKeyMigration,
+	updatePrimaryKeyMigration,
+} from "./primary_key.js";
 import { createTableMigration, isCreateTable } from "./table/create.js";
 import { dropTableMigration, isDropTable } from "./table/drop.js";
+import {
+	changeUniqueConstraintMigration,
+	createUniqueConstraintMigration,
+	dropUniqueConstraintMigration,
+	isUniqueConstraintChange,
+	isUniqueConstraintCreate,
+	isUniqueConstraintDrop,
+} from "./unique.js";
 
 export enum MigrationOpPriority {
 	Table = 1,
@@ -132,6 +151,26 @@ export function migrationOp(
 		return columnUniqueNullDistinctDropMigrationOperation(difference);
 	if (isUniqueChange(difference))
 		return columnUniqueNullDistinctChangeMigrationOperation(difference);
+	if (isPrimaryKeyCreateFirst(difference))
+		return createPrimaryKeyMigration(difference, addedTables);
+	if (isPrimaryKeyDrop(difference))
+		return dropPrimaryKeyMigration(difference, droppedTables);
+	if (isPrimaryKeyUpdate(difference))
+		return updatePrimaryKeyMigration(difference, addedTables, droppedTables);
+	if (isPrimaryKeyReplace(difference))
+		return replacePrimaryKeyMigration(difference, addedTables, droppedTables);
+	if (isAddForeignKeyConstraint(difference))
+		return addColumnForeignKeyMigrationOperation(difference);
+	if (isRemoveForeignKeyConstraint(difference))
+		return removeColumnForeignKeyMigrationOperation(difference);
+	if (isChangeOptionsForeignKeyConstraint(difference))
+		return changeColumnForeignKeyMigrationOperation(difference, local, db);
+	if (isUniqueConstraintCreate(difference))
+		return createUniqueConstraintMigration(difference, addedTables);
+	if (isUniqueConstraintDrop(difference))
+		return dropUniqueConstraintMigration(difference, droppedTables);
+	if (isUniqueConstraintChange(difference))
+		return changeUniqueConstraintMigration(difference);
 	return [];
 }
 

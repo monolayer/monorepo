@@ -30,7 +30,7 @@ type PrimaryKeyReplaceDiff = {
 	oldValue: string;
 };
 
-function isPrimaryKeyCreateFirst(
+export function isPrimaryKeyCreateFirst(
 	test: Difference,
 ): test is PrimaryKeyCreateFirstDiff {
 	return (
@@ -43,7 +43,9 @@ function isPrimaryKeyCreateFirst(
 	);
 }
 
-function isPrimaryKeyUpdate(test: Difference): test is PrimaryKeyUpdateDiff {
+export function isPrimaryKeyUpdate(
+	test: Difference,
+): test is PrimaryKeyUpdateDiff {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 3 &&
@@ -54,7 +56,7 @@ function isPrimaryKeyUpdate(test: Difference): test is PrimaryKeyUpdateDiff {
 	);
 }
 
-function isPrimaryKeyDrop(test: Difference): test is PrimaryKeyDropDiff {
+export function isPrimaryKeyDrop(test: Difference): test is PrimaryKeyDropDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 2 &&
@@ -65,7 +67,9 @@ function isPrimaryKeyDrop(test: Difference): test is PrimaryKeyDropDiff {
 	);
 }
 
-function isPrimaryKeyReplace(test: Difference): test is PrimaryKeyReplaceDiff {
+export function isPrimaryKeyReplace(
+	test: Difference,
+): test is PrimaryKeyReplaceDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 3 &&
@@ -76,7 +80,7 @@ function isPrimaryKeyReplace(test: Difference): test is PrimaryKeyReplaceDiff {
 	);
 }
 
-function createPrimaryKeyMigration(
+export function createPrimaryKeyMigration(
 	diff: PrimaryKeyCreateFirstDiff,
 	addedTables: string[],
 ): Changeset {
@@ -103,7 +107,7 @@ function createPrimaryKeyMigration(
 	};
 }
 
-function dropPrimaryKeyMigration(
+export function dropPrimaryKeyMigration(
 	diff: PrimaryKeyDropDiff,
 	droppedTables: string[],
 ): Changeset {
@@ -130,7 +134,7 @@ function dropPrimaryKeyMigration(
 	};
 }
 
-function updatePrimaryKeyMigration(
+export function updatePrimaryKeyMigration(
 	diff: PrimaryKeyUpdateDiff,
 	addedTables: string[],
 	droppedTables: string[],

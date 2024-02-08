@@ -25,7 +25,9 @@ type UniqueChangeDiff = {
 	oldValue: string;
 };
 
-function isUniqueCreate(test: Difference): test is UniqueCreateDiff {
+export function isUniqueConstraintCreate(
+	test: Difference,
+): test is UniqueCreateDiff {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 2 &&
@@ -36,7 +38,9 @@ function isUniqueCreate(test: Difference): test is UniqueCreateDiff {
 	);
 }
 
-function isUniqueDrop(test: Difference): test is UniqueDropDiff {
+export function isUniqueConstraintDrop(
+	test: Difference,
+): test is UniqueDropDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 2 &&
@@ -47,7 +51,9 @@ function isUniqueDrop(test: Difference): test is UniqueDropDiff {
 	);
 }
 
-function isUniqueChange(test: Difference): test is UniqueChangeDiff {
+export function isUniqueConstraintChange(
+	test: Difference,
+): test is UniqueChangeDiff {
 	return (
 		test.type === "CHANGE" &&
 		test.path.length === 3 &&
@@ -59,7 +65,7 @@ function isUniqueChange(test: Difference): test is UniqueChangeDiff {
 	);
 }
 
-function createUniqueConstraintMigration(
+export function createUniqueConstraintMigration(
 	diff: UniqueCreateDiff,
 	addedTables: string[],
 ) {
@@ -84,7 +90,7 @@ function createUniqueConstraintMigration(
 	};
 }
 
-function dropUniqueConstraintMigration(
+export function dropUniqueConstraintMigration(
 	diff: UniqueDropDiff,
 	droppedTables: string[],
 ) {
@@ -111,7 +117,7 @@ function dropUniqueConstraintMigration(
 	};
 }
 
-function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
+export function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
 	const tableName = diff.path[1];
 	const constraintName = diff.path[2];
 	const newValue = diff.value;
@@ -138,13 +144,13 @@ export function uniqueMigrationOps(
 		return [];
 	}
 	return diff.flatMap((d) => {
-		if (isUniqueCreate(d)) {
+		if (isUniqueConstraintCreate(d)) {
 			return createUniqueConstraintMigration(d, addedTables);
 		}
-		if (isUniqueDrop(d)) {
+		if (isUniqueConstraintDrop(d)) {
 			return dropUniqueConstraintMigration(d, droppedTables);
 		}
-		if (isUniqueChange(d)) {
+		if (isUniqueConstraintChange(d)) {
 			return changeUniqueConstraintMigration(d);
 		}
 		return [];
