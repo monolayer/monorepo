@@ -198,7 +198,6 @@ describe("uniqueMigrationOps", () => {
 			},
 		});
 		const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
-		console.dir(diff, { depth: null });
 		const result = uniqueMigrationOps(diff, addedTables, droppedTables);
 
 		const expected = [

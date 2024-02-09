@@ -46,7 +46,7 @@ describe("#remoteSchema", () => {
 		await kysely.schema
 			.createTable("remote_schema_users")
 			.addColumn("id", "integer", (col) => col.generatedByDefaultAsIdentity())
-			.addColumn("name", "varchar")
+			.addColumn("name", "varchar", (col) => col.unique().nullsNotDistinct())
 			.addColumn("email", "varchar")
 			.addColumn("book_id", "integer")
 			.addPrimaryKeyConstraint("remote_schema_users_id_kinetic_pk", ["id"])
@@ -57,8 +57,8 @@ describe("#remoteSchema", () => {
 				["id"],
 			)
 			.addUniqueConstraint(
-				"remote_schema_users_name_kinetic_key",
-				["name"],
+				"remote_schema_users_email_kinetic_key",
+				["email"],
 				(builder) => builder.nullsNotDistinct(),
 			)
 			.execute();
@@ -182,8 +182,8 @@ describe("#remoteSchema", () => {
 				},
 				uniqueConstraints: {
 					remote_schema_users: {
-						remote_schema_users_name_kinetic_key:
-							"remote_schema_users_name_kinetic_key UNIQUE NULLS NOT DISTINCT (name)",
+						remote_schema_users_email_kinetic_key:
+							"remote_schema_users_email_kinetic_key UNIQUE NULLS NOT DISTINCT (email)",
 					},
 				},
 				foreignKeyConstraints: {

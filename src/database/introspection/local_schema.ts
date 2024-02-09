@@ -146,7 +146,6 @@ export function schemaDbConstraintInfoByTable(
 					};
 				}
 				if (isForeignKeyConstraint(constraint)) {
-					console.log("foreignKey", constraint);
 					const keyName = `${tableName}_${constraint.columns.join("_")}_${
 						constraint.targetTable.name
 					}_${constraint.targetColumns.join("_")}_kinetic_fk`;

@@ -40,54 +40,92 @@ async function fetchDbColumnInfo(
 
 	return kysely
 		.selectFrom("information_schema.columns")
-		.fullJoin("information_schema.key_column_usage", (join) =>
-			join
-				.onRef(
-					"information_schema.key_column_usage.table_name",
-					"=",
-					"information_schema.columns.table_name",
-				)
-				.onRef(
-					"information_schema.key_column_usage.column_name",
-					"=",
-					"information_schema.columns.column_name",
-				),
-		)
-		.fullJoin("information_schema.constraint_column_usage", (join) =>
-			join.onRef(
-				"information_schema.constraint_column_usage.constraint_name",
-				"=",
-				"information_schema.key_column_usage.constraint_name",
-			),
-		)
-		.fullJoin("information_schema.table_constraints", (join) =>
-			join.onRef(
-				"information_schema.table_constraints.constraint_name",
-				"=",
-				"information_schema.key_column_usage.constraint_name",
-			),
-		)
-		.fullJoin("information_schema.referential_constraints", (join) =>
-			join
-				.onRef(
-					"information_schema.table_constraints.constraint_name",
-					"=",
-					"information_schema.referential_constraints.constraint_name",
-				)
-				.on((eb) =>
-					eb.or([
-						eb(
-							"information_schema.referential_constraints.constraint_name",
-							"=",
-							sql<string>`information_schema.columns.table_name || '_' || information_schema.columns.column_name || '_key'`,
-						),
-						eb(
-							"information_schema.referential_constraints.constraint_name",
-							"=",
-							sql<string>`information_schema.columns.table_name || '_' || information_schema.columns.column_name || '_fkey'`,
-						),
-					]),
-				),
+		.leftJoin(
+			(eb) =>
+				eb
+					.selectFrom("information_schema.table_constraints as tc")
+					.leftJoin("information_schema.key_column_usage as kcu", (join) =>
+						join
+							.onRef("tc.constraint_name", "=", "kcu.constraint_name")
+							.onRef("tc.table_schema", "=", "kcu.table_schema"),
+					)
+					.leftJoin(
+						"information_schema.referential_constraints as rc",
+						(join) =>
+							join
+								.onRef("tc.constraint_name", "=", "rc.constraint_name")
+								.onRef("tc.table_schema", "=", "rc.constraint_schema"),
+					)
+					.leftJoin(
+						(eb) =>
+							eb
+								.selectFrom("information_schema.referential_constraints as rc")
+								.leftJoin(
+									"information_schema.key_column_usage as kcu",
+									(join) =>
+										join.onRef(
+											"rc.unique_constraint_name",
+											"=",
+											"kcu.constraint_name",
+										),
+								)
+								.select([
+									"rc.constraint_name",
+									"kcu.table_name as target_table",
+									sql<string[]>`json_agg(kcu.column_name)`.as("target_columns"),
+								])
+								.groupBy(["rc.constraint_name", "kcu.table_name"])
+								.as("fk"),
+						(join) =>
+							join.onRef("tc.constraint_name", "=", "fk.constraint_name"),
+					)
+					.select([
+						"tc.table_schema",
+						"tc.table_name",
+						"kcu.column_name",
+						sql<
+							{
+								constraint_name: string;
+								constraint_type: string;
+								columns: string[];
+								delete_rule: string | null;
+								update_rule: string | null;
+								sequence_name: string | null;
+								target_table: string | null;
+								target_columns: string[];
+								nulls_distinct: string | null;
+							}[]
+						>`
+							json_agg(
+								DISTINCT jsonb_build_object(
+									'constraint_name', tc.constraint_name,
+									'constraint_type', tc.constraint_type,
+									'nulls_distinct', tc.nulls_distinct,
+									'columns', (SELECT array_agg(kcu_inner.column_name ORDER BY kcu_inner.ordinal_position)
+															FROM information_schema.key_column_usage kcu_inner
+															WHERE kcu_inner.constraint_name = tc.constraint_name
+															GROUP BY kcu_inner.constraint_name),
+									'delete_rule', rc.delete_rule,
+									'update_rule', rc.update_rule,
+									'sequence_name', pg_get_serial_sequence(tc.table_schema || '.' || tc.table_name, kcu.column_name),
+									'target_table', fk.target_table,
+									'target_columns', fk.target_columns
+									)
+								)
+							`.as("constraints"),
+					])
+					.where("tc.table_schema", "=", databaseSchema)
+					.where("tc.table_name", "in", tableNames)
+					.groupBy(["tc.table_schema", "tc.table_name", "kcu.column_name"])
+					.as("c"),
+			(join) =>
+				join
+					.onRef("c.table_name", "=", "information_schema.columns.table_name")
+					.onRef(
+						"c.column_name",
+						"=",
+						"information_schema.columns.column_name",
+					),
 		)
 		.select([
 			"information_schema.columns.table_name",
@@ -104,16 +142,10 @@ async function fetchDbColumnInfo(
 			),
 			"information_schema.columns.identity_generation",
 			"information_schema.columns.is_identity",
-			"information_schema.table_constraints.constraint_name",
-			"information_schema.constraint_column_usage.table_name as constraint_table_name",
-			"information_schema.constraint_column_usage.column_name as constraint_column_name",
-			"information_schema.table_constraints.constraint_type as constraint_type",
-			"information_schema.table_constraints.nulls_distinct as constraint_nulls_distinct",
-			"information_schema.referential_constraints.delete_rule",
-			"information_schema.referential_constraints.update_rule",
 			sql`pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name)`.as(
 				"sequence_name",
 			),
+			"c.constraints",
 		])
 		.select((eb) => [
 			eb
@@ -147,6 +179,7 @@ async function fetchDbColumnInfo(
 		.orderBy("information_schema.columns.column_name asc")
 		.execute();
 }
+
 function transformDbColumnInfo(
 	info: Awaited<ReturnType<typeof fetchDbColumnInfo>>,
 ) {
@@ -230,6 +263,18 @@ function transformDbColumnInfo(
 				dataTypeFullName = row.data_type || "";
 				break;
 		}
+
+		const foreignKey = row.constraints?.find(
+			(e) =>
+				e.constraint_type === "FOREIGN KEY" &&
+				!e.constraint_name.includes("kinetic"),
+		);
+
+		const uniqueConstraints = row.constraints?.find(
+			(e) =>
+				e.constraint_type === "UNIQUE" &&
+				!e.constraint_name.includes("kinetic"),
+		);
 		transformed.push({
 			tableName: row.table_name,
 			columnName: row.column_name,
@@ -241,21 +286,21 @@ function transformDbColumnInfo(
 			characterMaximumLength: row.character_maximum_length,
 			datetimePrecision: row.datetime_precision,
 			renameFrom: row.rename_from,
-			primaryKey: row.constraint_type === "PRIMARY KEY" || null,
+			primaryKey:
+				row.constraints?.find((e) => e.constraint_type === "PRIMARY KEY") !==
+				undefined
+					? true
+					: null,
 			foreignKeyConstraint:
-				row.constraint_type !== null &&
-				row.constraint_type === "FOREIGN KEY" &&
-				row.constraint_table_name !== null &&
-				row.table_name !== row.constraint_table_name &&
-				row.constraint_column_name !== null &&
-				row.delete_rule !== null &&
-				row.update_rule !== null
+				foreignKey !== undefined
 					? {
-							table: row.constraint_table_name,
-							column: row.constraint_column_name,
+							table: foreignKey.target_table ?? "",
+							column: foreignKey.target_columns.join("") ?? "",
 							options: `${
-								row.delete_rule.toLowerCase() as OnModifyForeignAction
-							};${row.update_rule.toLowerCase() as OnModifyForeignAction}`,
+								foreignKey.delete_rule?.toLowerCase() as OnModifyForeignAction
+							};${
+								foreignKey.update_rule?.toLowerCase() as OnModifyForeignAction
+							}`,
 					  }
 					: null,
 			identity:
@@ -263,11 +308,8 @@ function transformDbColumnInfo(
 					? row.identity_generation
 					: null,
 			unique:
-				row.constraint_name !== null &&
-				row.constraint_type !== null &&
-				row.constraint_type === "UNIQUE" &&
-				row.constraint_nulls_distinct !== null
-					? row.constraint_nulls_distinct === "YES"
+				uniqueConstraints !== undefined
+					? uniqueConstraints.nulls_distinct === "YES"
 						? ColumnUnique.NullsDistinct
 						: ColumnUnique.NullsNotDistinct
 					: null,
