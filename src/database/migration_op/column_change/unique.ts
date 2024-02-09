@@ -75,13 +75,13 @@ export function columnUniqueNullDistinctAddMigrationOperation(
 		up:
 			diff.value === ColumnUnique.NullsDistinct
 				? executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE (${columnName})`,
+						`ALTER TABLE ${tableName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE (${columnName})`,
 				  )
 				: executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE NULLS NOT DISTINCT (${columnName})`,
+						`ALTER TABLE ${tableName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE NULLS NOT DISTINCT (${columnName})`,
 				  ),
 		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
+			`ALTER TABLE ${tableName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
 		),
 	};
 	return changeset;
@@ -97,15 +97,15 @@ export function columnUniqueNullDistinctDropMigrationOperation(
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
 		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
+			`ALTER TABLE ${tableName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
 		),
 		down:
 			diff.oldValue === ColumnUnique.NullsDistinct
 				? executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE (${columnName})`,
+						`ALTER TABLE ${tableName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE (${columnName})`,
 				  )
 				: executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE NULLS NOT DISTINCT (${columnName})`,
+						`ALTER TABLE ${tableName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE NULLS NOT DISTINCT (${columnName})`,
 				  ),
 	};
 	return changeset;
@@ -123,22 +123,22 @@ export function columnUniqueNullDistinctChangeMigrationOperation(
 		up:
 			diff.value === ColumnUnique.NullsDistinct
 				? executeKyselyDbStatements([
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE (${columnName})`,
+						`ALTER TABLE ${tableName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
+						`ALTER TABLE ${tableName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE (${columnName})`,
 				  ])
 				: executeKyselyDbStatements([
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE NULLS NOT DISTINCT (${columnName})`,
+						`ALTER TABLE ${tableName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
+						`ALTER TABLE ${tableName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE NULLS NOT DISTINCT (${columnName})`,
 				  ]),
 		down:
 			diff.oldValue === ColumnUnique.NullsDistinct
 				? executeKyselyDbStatements([
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE (${columnName})`,
+						`ALTER TABLE ${tableName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
+						`ALTER TABLE ${tableName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE (${columnName})`,
 				  ])
 				: executeKyselyDbStatements([
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
-						`ALTER TABLE ${tableName} ALTER COLUMN ${columnName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE NULLS NOT DISTINCT (${columnName})`,
+						`ALTER TABLE ${tableName} DROP CONSTRAINT ${tableName}_${columnName}_key`,
+						`ALTER TABLE ${tableName} ADD CONSTRAINT ${tableName}_${columnName}_key UNIQUE NULLS NOT DISTINCT (${columnName})`,
 				  ]),
 	};
 	return changeset;

@@ -1650,10 +1650,10 @@ describe("#dbChangeset", () => {
 					priority: 3.6,
 					type: "changeColumn",
 					up: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullD ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
+						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
 					],
 					down: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullD DROP CONSTRAINT books_unNullD_key`.execute(db);",
+						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullD_key`.execute(db);",
 					],
 				},
 				{
@@ -1661,10 +1661,10 @@ describe("#dbChangeset", () => {
 					priority: 3.6,
 					type: "changeColumn",
 					up: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
+						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
 					],
 					down: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
+						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
 					],
 				},
 			];
@@ -1722,10 +1722,10 @@ describe("#dbChangeset", () => {
 					priority: 3.61,
 					type: "changeColumn",
 					up: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullD DROP CONSTRAINT books_unNullD_key`.execute(db);",
+						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullD_key`.execute(db);",
 					],
 					down: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullD ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
+						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
 					],
 				},
 				{
@@ -1733,10 +1733,10 @@ describe("#dbChangeset", () => {
 					priority: 3.61,
 					type: "changeColumn",
 					up: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
+						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
 					],
 					down: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
+						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
 					],
 				},
 			];
@@ -1796,12 +1796,12 @@ describe("#dbChangeset", () => {
 					priority: 3.62,
 					type: "changeColumn",
 					up: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullD DROP CONSTRAINT books_unNullD_key`.execute(db);",
-						"await sql`ALTER TABLE books ALTER COLUMN unNullD ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
+						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullD_key`.execute(db);",
+						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
 					],
 					down: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullD DROP CONSTRAINT books_unNullD_key`.execute(db);",
-						"await sql`ALTER TABLE books ALTER COLUMN unNullD ADD CONSTRAINT books_unNullD_key UNIQUE NULLS NOT DISTINCT (unNullD)`.execute(db);",
+						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullD_key`.execute(db);",
+						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullD_key UNIQUE NULLS NOT DISTINCT (unNullD)`.execute(db);",
 					],
 				},
 				{
@@ -1809,12 +1809,12 @@ describe("#dbChangeset", () => {
 					priority: 3.62,
 					type: "changeColumn",
 					up: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
-						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
+						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
+						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
 					],
 					down: [
-						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
-						"await sql`ALTER TABLE books ALTER COLUMN unNullNotD ADD CONSTRAINT books_unNullNotD_key UNIQUE (unNullNotD)`.execute(db);",
+						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
+						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullNotD_key UNIQUE (unNullNotD)`.execute(db);",
 					],
 				},
 			];
