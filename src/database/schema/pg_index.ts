@@ -5,6 +5,7 @@ type IndexBuilder = (
 	builder: CreateIndexBuilder<any> & {
 		column: never;
 		columns: never;
+		ifNotExists: never;
 	},
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ) => CreateIndexBuilder<any>;
