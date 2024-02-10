@@ -207,4 +207,69 @@ describe("#remoteSchema", () => {
 
 		expect(await remoteSchema(kysely)).toStrictEqual(expectedSchema);
 	});
+
+	test<DbContext>("returns schema with empty tables", async ({
+		tableNames,
+		kysely,
+	}) => {
+		tableNames.push("schema_with_empty_tables_users");
+		tableNames.push("schema_with_empty_tables_books");
+
+		await kysely.schema
+			.createTable("schema_with_empty_tables_books")
+			.addColumn("id", "serial", (col) => col.primaryKey())
+			.addColumn("name", "varchar", (col) => col.unique())
+			.execute();
+
+		await kysely.schema.createTable("schema_with_empty_tables_users").execute();
+
+		const expectedSchema = {
+			status: "Success",
+			result: {
+				table: {
+					schema_with_empty_tables_users: {},
+					schema_with_empty_tables_books: {
+						id: {
+							characterMaximumLength: null,
+							columnName: "id",
+							dataType: "serial",
+							datetimePrecision: null,
+							defaultValue: null,
+							foreignKeyConstraint: null,
+							identity: null,
+							isNullable: false,
+							numericPrecision: null,
+							numericScale: null,
+							primaryKey: true,
+							renameFrom: null,
+							tableName: "schema_with_empty_tables_books",
+							unique: null,
+						},
+						name: {
+							characterMaximumLength: null,
+							columnName: "name",
+							dataType: "varchar",
+							datetimePrecision: null,
+							defaultValue: null,
+							foreignKeyConstraint: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							primaryKey: null,
+							renameFrom: null,
+							tableName: "schema_with_empty_tables_books",
+							unique: "NullsDistinct",
+						},
+					},
+				},
+				index: {},
+				uniqueConstraints: {},
+				foreignKeyConstraints: {},
+				primaryKey: {},
+			},
+		};
+
+		expect(await remoteSchema(kysely)).toStrictEqual(expectedSchema);
+	});
 });
