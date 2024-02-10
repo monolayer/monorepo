@@ -115,10 +115,14 @@ export function indexToInfo(
 		ifNotExists: never;
 	};
 
-	const compiledQuery = index
-		._builder(kyselyBuilder)
-		.columns(index.columns)
-		.compile().sql;
+	const compiledQuery =
+		index._builder !== undefined
+			? index._builder(kyselyBuilder).columns(index.columns).compile().sql
+			: kysely.schema
+					.createIndex(indexName)
+					.on(tableName)
+					.columns(index.columns)
+					.compile().sql;
 
 	const hash = createHash("sha256");
 	hash.update(compiledQuery);

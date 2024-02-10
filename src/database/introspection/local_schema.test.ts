@@ -295,7 +295,7 @@ test("#localSchema", () => {
 			name: varchar(),
 			location: varchar(),
 		},
-		indexes: [index("name", (idx) => idx)],
+		indexes: [index("name")],
 		constraints: [unique(["name", "location"])],
 	});
 

@@ -10,15 +10,15 @@ type IndexBuilder = (
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 ) => CreateIndexBuilder<any>;
 
-export function index<T>(columns: T, builder: IndexBuilder) {
+export function index<T>(columns: T, builder?: IndexBuilder) {
 	return new PgIndex(columns, builder);
 }
 
 export class PgIndex<T> {
 	cols: T;
-	_builder: IndexBuilder;
+	_builder?: IndexBuilder;
 
-	constructor(cols: T, builder: IndexBuilder) {
+	constructor(cols: T, builder?: IndexBuilder) {
 		this.cols = cols;
 		this._builder = builder;
 	}
