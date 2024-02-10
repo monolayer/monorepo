@@ -7,6 +7,7 @@ export enum ChangeSetType {
 	ChangeTable = "changeTable",
 	CreateIndex = "createIndex",
 	DropIndex = "dropIndex",
+	ChangeIndex = "changeIndex",
 	CreatePrimaryKey = "createPrimaryKey",
 	DropPrimaryKey = "dropPrimaryKey",
 	UpdatePrimaryKey = "updatePrimaryKey",

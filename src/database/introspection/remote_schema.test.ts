@@ -1,4 +1,4 @@
-import { Kysely, PostgresDialect } from "kysely";
+import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
 import { env } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
@@ -68,6 +68,10 @@ describe("#remoteSchema", () => {
 			.on("remote_schema_users")
 			.columns(["name", "email"])
 			.execute();
+
+		await sql`COMMENT ON INDEX remote_schema_users_name_email_kntc_idx IS 'abcd'`.execute(
+			kysely,
+		);
 
 		const expectedSchema = {
 			status: "Success",
@@ -177,7 +181,7 @@ describe("#remoteSchema", () => {
 				index: {
 					remote_schema_users: {
 						remote_schema_users_name_email_kntc_idx:
-							"CREATE INDEX remote_schema_users_name_email_kntc_idx ON public.remote_schema_users USING btree (name, email)",
+							"abcd:CREATE INDEX remote_schema_users_name_email_kntc_idx ON public.remote_schema_users USING btree (name, email)",
 					},
 				},
 				uniqueConstraints: {

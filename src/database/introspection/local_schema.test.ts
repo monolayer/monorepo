@@ -223,14 +223,15 @@ test("#schemaDBIndexInfoByTable", () => {
 	expect(schemaDBIndexInfoByTable(database)).toStrictEqual({
 		teams: {
 			teams_active_kntc_idx:
-				'create index "teams_active_kntc_idx" on "teams" ("active")',
-			teams_id_kntc_idx: 'create index "teams_id_kntc_idx" on "teams" ("id")',
+				'c3c6080ff3d3e7bf8b6a6e729aff7aa2f79712f924cdc454cc615595f940a1e6:create index "teams_active_kntc_idx" on "teams" ("active")',
+			teams_id_kntc_idx:
+				'43e5590f52736483e6877c00bccaf65586bb6dd7fae45bdc8159a05d2521dd7c:create index "teams_id_kntc_idx" on "teams" ("id")',
 		},
 		users: {
 			users_email_kntc_idx:
-				'create index "users_email_kntc_idx" on "users" ("email")',
+				'd6d7731a163ff74b32643d72154f528ab2f7043dd3fb47a6131c70a535ca1513:create index "users_email_kntc_idx" on "users" ("email")',
 			users_name_kntc_idx:
-				'create index "users_name_kntc_idx" on "users" ("name")',
+				'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45:create index "users_name_kntc_idx" on "users" ("name")',
 		},
 	});
 });
@@ -501,11 +502,11 @@ test("#localSchema", () => {
 		index: {
 			books: {
 				books_name_kntc_idx:
-					'create index "books_name_kntc_idx" on "books" ("name")',
+					'77f3737b4f672295b1204a55da66fa8873cf81ba7ae3d785480c618455e3ac22:create index "books_name_kntc_idx" on "books" ("name")',
 			},
 			teams: {
 				teams_name_kntc_idx:
-					'create index "teams_name_kntc_idx" on "teams" ("name")',
+					'590d0c8227f1792fe07fe7f16202b6a6ea954932810010733646dbcd46d88618:create index "teams_name_kntc_idx" on "teams" ("name")',
 			},
 		},
 		foreignKeyConstraints: {

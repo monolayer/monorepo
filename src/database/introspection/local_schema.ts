@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { type CreateIndexBuilder, Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { pgDatabase } from "~/database/schema/pg_database.js";
@@ -96,12 +97,13 @@ export function schemaDBIndexInfoByTable(
 	);
 }
 
-function indexToInfo(
+export function indexToInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	index: PgIndex<any>,
 	tableName: string,
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	kysely: Kysely<any>,
+	schema = "public",
 ) {
 	const indexName = `${tableName}_${index.columns.join("_")}_kntc_idx`;
 	const kyselyBuilder = kysely.schema
@@ -110,14 +112,18 @@ function indexToInfo(
 		.on(tableName) as CreateIndexBuilder<any> & {
 		column: never;
 		columns: never;
+		ifNotExists: never;
 	};
+
 	const compiledQuery = index
 		._builder(kyselyBuilder)
 		.columns(index.columns)
 		.compile().sql;
 
+	const hash = createHash("sha256");
+	hash.update(compiledQuery);
 	return {
-		[indexName]: compiledQuery,
+		[indexName]: `${hash.digest("hex")}:${compiledQuery}`,
 	};
 }
 

@@ -47,14 +47,7 @@ describe("#dbChangeset", () => {
 						}),
 					},
 				},
-				index: {
-					books: {
-						...compileIndex(
-							index("name", (idx) => idx),
-							"books",
-						),
-					},
-				},
+				index: {},
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
@@ -96,15 +89,6 @@ describe("#dbChangeset", () => {
 				],
 				down: ["await db.schema", 'dropTable("members")', "execute();"],
 			},
-			{
-				priority: 4,
-				tableName: "books",
-				type: "createIndex",
-				up: [
-					'await sql`create index "books_name_kntc_idx" on "books" ("name")`.execute(db);',
-				],
-				down: [],
-			},
 		];
 		expect(cset).toStrictEqual(expected);
 	});
@@ -141,14 +125,7 @@ describe("#dbChangeset", () => {
 						}),
 					},
 				},
-				index: {
-					shops: {
-						shops_mail_kntc_idx:
-							'create unique index "shops_email_kntc_idx" on "shops" using btree ("email")',
-						shops_city_kntc_idx:
-							'create unique index "shops_city_kntc_idx" on "shops" using btree ("city")',
-					},
-				},
+				index: {},
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
@@ -168,24 +145,6 @@ describe("#dbChangeset", () => {
 					'addColumn("email", "varchar(255)")',
 					'addColumn("city", "text", (col) => col.notNull())',
 					"execute();",
-				],
-			},
-			{
-				tableName: "shops",
-				priority: 4,
-				type: "dropIndex",
-				up: [],
-				down: [
-					'await sql`create unique index "shops_email_kntc_idx" on "shops" using btree ("email")`.execute(db);',
-				],
-			},
-			{
-				tableName: "shops",
-				priority: 4,
-				type: "dropIndex",
-				up: [],
-				down: [
-					'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city")`.execute(db);',
 				],
 			},
 		];
@@ -242,24 +201,7 @@ describe("#dbChangeset", () => {
 						}),
 					},
 				},
-				index: {
-					samples: {
-						...compileIndex(
-							index("name", (idx) => idx),
-							"samples",
-						),
-					},
-					addresses: {
-						...compileIndex(
-							index("city", (idx) => idx.using("btree").unique()),
-							"addresses",
-						),
-						...compileIndex(
-							index(["city", "country"], (idx) => idx.using("btree").unique()),
-							"addresses",
-						),
-					},
-				},
+				index: {},
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
@@ -301,14 +243,7 @@ describe("#dbChangeset", () => {
 						}),
 					},
 				},
-				index: {
-					addresses: {
-						addresses_city_kntc_idx:
-							'create unique index "addresses_city_kntc_idx" on "addresses" using btree ("city")',
-						addresses_country_kntc_idx:
-							'create unique index "addresses_country_kntc_idx" on "addresses" using btree ("country")',
-					},
-				},
+				index: {},
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
@@ -452,37 +387,6 @@ describe("#dbChangeset", () => {
 					"execute();",
 				],
 			},
-			{
-				tableName: "addresses",
-				type: "dropIndex",
-				priority: 4,
-				up: [
-					'await db.schema.dropIndex("addresses_country_kntc_idx").execute();',
-				],
-				down: [
-					'await sql`create unique index "addresses_country_kntc_idx" on "addresses" using btree ("country")`.execute(db);',
-				],
-			},
-			{
-				tableName: "addresses",
-				priority: 4,
-				type: "createIndex",
-				up: [
-					'await sql`create unique index "addresses_city_country_kntc_idx" on "addresses" using btree ("city", "country")`.execute(db);',
-				],
-				down: [
-					'await db.schema.dropIndex("addresses_city_country_kntc_idx").execute();',
-				],
-			},
-			{
-				tableName: "samples",
-				priority: 4,
-				type: "createIndex",
-				up: [
-					'await sql`create index "samples_name_kntc_idx" on "samples" ("name")`.execute(db);',
-				],
-				down: ['await db.schema.dropIndex("samples_name_kntc_idx").execute();'],
-			},
 		];
 		expect(cset).toStrictEqual(expected);
 	});
@@ -562,6 +466,7 @@ describe("#dbChangeset", () => {
 			];
 			expect(cset).toStrictEqual(expected);
 		});
+
 		test("on column creation", () => {
 			const cset = changeset(
 				{
@@ -2122,6 +2027,430 @@ describe("#dbChangeset", () => {
 						'alterTable("books")',
 						"alterColumn(\"id\", (col) => col.setDefault(sql`'1'::integer`))",
 						"execute();",
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+	});
+
+	describe("indexes", () => {
+		test("on table creation", () => {
+			const cset = changeset(
+				{
+					table: {
+						books: {
+							id: columnInfoFactory({
+								tableName: "books",
+								columnName: "id",
+								dataType: "serial",
+								primaryKey: true,
+							}),
+							name: columnInfoFactory({
+								tableName: "books",
+								columnName: "name",
+								dataType: "text",
+								defaultValue: "'10'::text",
+							}),
+						},
+					},
+					index: {
+						books: {
+							...compileIndex(
+								index("name", (idx) => idx),
+								"books",
+							),
+						},
+					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+				},
+				{
+					table: {},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "books",
+					type: "createTable",
+					priority: 1,
+					up: [
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("id", "serial", (col) => col.primaryKey())',
+						'addColumn("name", "text", (col) => col.defaultTo(sql`\'10\'::text`))',
+						"execute();",
+					],
+					down: ["await db.schema", 'dropTable("books")', "execute();"],
+				},
+				{
+					priority: 4,
+					tableName: "books",
+					type: "createIndex",
+					up: [
+						'await sql`create index "books_name_kntc_idx" on "books" ("name");COMMENT ON INDEX books_name_kntc_idx IS \'77f3737b4f672295b1204a55da66fa8873cf81ba7ae3d785480c618455e3ac22\'`.execute(db);',
+					],
+					down: [],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on table drop", () => {
+			const cset = changeset(
+				{
+					table: {},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+				},
+				{
+					table: {
+						shops: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: sql`hello`,
+							}),
+							email: columnInfoFactory({
+								tableName: "members",
+								columnName: "email",
+								dataType: "varchar(255)",
+								characterMaximumLength: 255,
+							}),
+							city: columnInfoFactory({
+								tableName: "members",
+								columnName: "city",
+								dataType: "text",
+								isNullable: false,
+							}),
+						},
+					},
+					index: {
+						shops: {
+							shops_email_kntc_idx:
+								'abcd:create unique index "shops_email_kntc_idx" on "shops" using btree ("email")',
+							shops_city_kntc_idx:
+								'1234:create unique index "shops_city_kntc_idx" on "shops" using btree ("city")',
+						},
+					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "shops",
+					priority: 1,
+					type: "dropTable",
+					up: ["await db.schema", 'dropTable("shops")', "execute();"],
+					down: [
+						"await db.schema",
+						'createTable("shops")',
+						'addColumn("name", "varchar", (col) => col.defaultTo(sql`hello`))',
+						'addColumn("email", "varchar(255)")',
+						'addColumn("city", "text", (col) => col.notNull())',
+						"execute();",
+					],
+				},
+				{
+					tableName: "shops",
+					priority: 4,
+					type: "dropIndex",
+					up: [],
+					down: [
+						'await sql`create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcd\'`.execute(db);',
+					],
+				},
+				{
+					tableName: "shops",
+					priority: 4,
+					type: "dropIndex",
+					up: [],
+					down: [
+						'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city");COMMENT ON INDEX shops_city_kntc_idx IS \'1234\'`.execute(db);',
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on table change (create)", () => {
+			const cset = changeset(
+				{
+					table: {
+						shops: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: sql`hello`,
+							}),
+							email: columnInfoFactory({
+								tableName: "members",
+								columnName: "email",
+								dataType: "varchar(255)",
+								characterMaximumLength: 255,
+							}),
+							city: columnInfoFactory({
+								tableName: "members",
+								columnName: "city",
+								dataType: "text",
+								isNullable: false,
+							}),
+						},
+					},
+					index: {
+						shops: {
+							shops_email_kntc_idx:
+								'abcd:create unique index "shops_email_kntc_idx" on "shops" using btree ("email")',
+							shops_city_kntc_idx:
+								'1234:create unique index "shops_city_kntc_idx" on "shops" using btree ("city")',
+						},
+					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+				},
+				{
+					table: {
+						shops: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: sql`hello`,
+							}),
+							email: columnInfoFactory({
+								tableName: "members",
+								columnName: "email",
+								dataType: "varchar(255)",
+								characterMaximumLength: 255,
+							}),
+							city: columnInfoFactory({
+								tableName: "members",
+								columnName: "city",
+								dataType: "text",
+								isNullable: false,
+							}),
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "shops",
+					priority: 4,
+					type: "createIndex",
+					up: [
+						'await sql`create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcd\'`.execute(db);',
+					],
+					down: [
+						'await db.schema.dropIndex("shops_email_kntc_idx").execute();',
+					],
+				},
+				{
+					tableName: "shops",
+					priority: 4,
+					type: "createIndex",
+					up: [
+						'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city");COMMENT ON INDEX shops_city_kntc_idx IS \'1234\'`.execute(db);',
+					],
+					down: ['await db.schema.dropIndex("shops_city_kntc_idx").execute();'],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on table change (drop)", () => {
+			const cset = changeset(
+				{
+					table: {
+						shops: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: sql`hello`,
+							}),
+							email: columnInfoFactory({
+								tableName: "members",
+								columnName: "email",
+								dataType: "varchar(255)",
+								characterMaximumLength: 255,
+							}),
+							city: columnInfoFactory({
+								tableName: "members",
+								columnName: "city",
+								dataType: "text",
+								isNullable: false,
+							}),
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+				},
+				{
+					table: {
+						shops: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: sql`hello`,
+							}),
+							email: columnInfoFactory({
+								tableName: "members",
+								columnName: "email",
+								dataType: "varchar(255)",
+								characterMaximumLength: 255,
+							}),
+							city: columnInfoFactory({
+								tableName: "members",
+								columnName: "city",
+								dataType: "text",
+								isNullable: false,
+							}),
+						},
+					},
+					index: {
+						shops: {
+							shops_email_kntc_idx:
+								'abcd:create unique index "shops_email_kntc_idx" on "shops" using btree ("email")',
+							shops_city_kntc_idx:
+								'1234:create unique index "shops_city_kntc_idx" on "shops" using btree ("city")',
+						},
+					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "shops",
+					priority: 4,
+					type: "dropIndex",
+					up: ['await db.schema.dropIndex("shops_email_kntc_idx").execute();'],
+					down: [
+						'await sql`create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcd\'`.execute(db);',
+					],
+				},
+				{
+					tableName: "shops",
+					priority: 4,
+					type: "dropIndex",
+					up: ['await db.schema.dropIndex("shops_city_kntc_idx").execute();'],
+					down: [
+						'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city");COMMENT ON INDEX shops_city_kntc_idx IS \'1234\'`.execute(db);',
+					],
+				},
+			];
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on table change (change)", () => {
+			const cset = changeset(
+				{
+					table: {
+						shops: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: sql`hello`,
+							}),
+							email: columnInfoFactory({
+								tableName: "members",
+								columnName: "email",
+								dataType: "varchar(255)",
+								characterMaximumLength: 255,
+							}),
+							city: columnInfoFactory({
+								tableName: "members",
+								columnName: "city",
+								dataType: "text",
+								isNullable: false,
+							}),
+						},
+					},
+					index: {
+						shops: {
+							shops_email_kntc_idx:
+								'abcde:create unique index "shops_email_kntc_idx" on "shops" using hash ("email")',
+							shops_city_kntc_idx:
+								'1234:create unique index "shops_city_kntc_idx" on "shops" using btree ("city")',
+						},
+					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+				},
+				{
+					table: {
+						shops: {
+							name: columnInfoFactory({
+								tableName: "members",
+								columnName: "name",
+								dataType: "varchar",
+								defaultValue: sql`hello`,
+							}),
+							email: columnInfoFactory({
+								tableName: "members",
+								columnName: "email",
+								dataType: "varchar(255)",
+								characterMaximumLength: 255,
+							}),
+							city: columnInfoFactory({
+								tableName: "members",
+								columnName: "city",
+								dataType: "text",
+								isNullable: false,
+							}),
+						},
+					},
+					index: {
+						shops: {
+							shops_email_kntc_idx:
+								'abcd:create unique index "shops_email_kntc_idx" on "shops" using btree ("email")',
+							shops_city_kntc_idx:
+								'1234:CREATE UNIQUE INDEX "shops_city_kntc_idx" on "shops" using btree ("city")',
+						},
+					},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "shops",
+					priority: 4.1,
+					type: "changeIndex",
+					up: [
+						'await sql`DROP INDEX shops_email_kntc_idx;create unique index "shops_email_kntc_idx" on "shops" using hash ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcde\'`.execute(db);',
+					],
+					down: [
+						'await sql`DROP INDEX shops_email_kntc_idx;create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcd\'`.execute(db);',
 					],
 				},
 			];

@@ -53,13 +53,9 @@ import {
 	isForeignKeyConstraintCreate,
 	isForeignKeyConstraintDrop,
 } from "./foreign_key.js";
-import { createIndexMigration, isCreateIndex } from "./index/create.js";
-import {
-	createFirstIndexMigration,
-	isCreateFirstIndex,
-} from "./index/create_first.js";
-import { dropIndexMigration, isDropIndex } from "./index/drop.js";
-import { dropAllIndexesMigration, isDropAllIndexes } from "./index/drop_all.js";
+import { changeIndexMigration, isChangeIndex } from "./index.js";
+import { createFirstIndexMigration, isCreateFirstIndex } from "./index.js";
+import { dropAllIndexesMigration, isDropAllIndexes } from "./index.js";
 import {
 	createPrimaryKeyMigration,
 	dropPrimaryKeyMigration,
@@ -114,14 +110,12 @@ export function migrationOp(
 		return columnIdentityAddMigrationOperation(difference);
 	if (isColumnIdentityDrop(difference))
 		return columnIdentityDropMigrationOperation(difference);
-	if (isCreateIndex(difference))
-		return createIndexMigration(difference, addedTables);
 	if (isCreateFirstIndex(difference))
 		return createFirstIndexMigration(difference, addedTables);
-	if (isDropIndex(difference))
-		return dropIndexMigration(difference, droppedTables);
 	if (isDropAllIndexes(difference))
 		return dropAllIndexesMigration(difference, droppedTables);
+	if (isChangeIndex(difference)) return changeIndexMigration(difference);
+
 	if (isUniqueAdd(difference))
 		return columnUniqueNullDistinctAddMigrationOperation(difference);
 	if (isUniqueDrop(difference))

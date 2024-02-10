@@ -33,6 +33,9 @@ export async function dbIndexInfo(
 				"pg_class.relname as table",
 				"pg_class_2.relname as name",
 				sql<string>`pg_get_indexdef(pg_index.indexrelid)`.as("definition"),
+				sql<string>`obj_description(pg_index.indexrelid, 'pg_class')`.as(
+					"comment",
+				),
 			])
 			.distinct()
 			.where("pg_class_2.relkind", "in", ["i", "I"])
@@ -42,10 +45,13 @@ export async function dbIndexInfo(
 			.where("pg_namespace.nspname", "=", databaseSchema)
 			.orderBy("pg_class_2.relname")
 			.execute();
+
 		const indexInfo = results.reduce<IndexInfo>((acc, curr) => {
 			acc[curr.table] = {
 				...acc[curr.table],
-				...{ [curr.name]: curr.definition },
+				...{
+					[curr.name]: `${curr.comment}:${curr.definition}`,
+				},
 			};
 			return acc;
 		}, {});
