@@ -96,14 +96,12 @@ export function createPrimaryKeyMigration(
 		tableName: tableName,
 		type: ChangeSetType.CreatePrimaryKey,
 		up: executeKyselyDbStatement(
-			[`alterTable("${tableName}")`, "ADD CONSTRAINT", indexValue].join(" "),
+			`ALTER TABLE ${tableName} ADD CONSTRAINT ${indexValue}`,
 		),
 		down: addedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					[`alterTable("${tableName}")`, "DROP CONSTRAINT", indexName].join(
-						" ",
-					),
+					`ALTER TABLE ${tableName} DROP CONSTRAINT ${indexName}`,
 			  ),
 	};
 }
@@ -125,12 +123,10 @@ export function dropPrimaryKeyMigration(
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					[`alterTable("${tableName}")`, "DROP CONSTRAINT", indexName].join(
-						" ",
-					),
+					`ALTER TABLE ${tableName} DROP CONSTRAINT ${indexName}`,
 			  ),
 		down: executeKyselyDbStatement(
-			[`alterTable("${tableName}")`, "ADD CONSTRAINT", indexValue].join(" "),
+			`ALTER TABLE ${tableName} ADD CONSTRAINT ${indexValue}`,
 		),
 	};
 }
@@ -151,16 +147,12 @@ export function updatePrimaryKeyMigration(
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					[`alterTable("${tableName}")`, "ADD CONSTRAINT", indexValue].join(
-						" ",
-					),
+					`ALTER TABLE ${tableName} ADD CONSTRAINT ${indexValue}`,
 			  ),
 		down: addedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					[`alterTable("${tableName}")`, "DROP CONSTRAINT", indexName].join(
-						" ",
-					),
+					`ALTER TABLE ${tableName} DROP CONSTRAINT ${indexName}`,
 			  ),
 	};
 }
@@ -181,16 +173,12 @@ export function replacePrimaryKeyMigration(
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					[`alterTable("${tableName}")`, "DROP CONSTRAINT", indexName].join(
-						" ",
-					),
+					`ALTER TABLE ${tableName} DROP CONSTRAINT ${indexName}`,
 			  ),
 		down: addedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					[`alterTable("${tableName}")`, "ADD CONSTRAINT", indexValue].join(
-						" ",
-					),
+					`ALTER TABLE ${tableName} ADD CONSTRAINT ${indexValue}`,
 			  ),
 	};
 }

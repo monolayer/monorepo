@@ -25,10 +25,10 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "users",
 				type: "createPrimaryKey",
 				up: [
-					'await sql`alterTable("users") ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);',
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 				down: [
-					'await sql`alterTable("users") DROP CONSTRAINT users_id_kinetic_pk`.execute(db);',
+					"await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk`.execute(db);",
 				],
 			},
 			{
@@ -36,10 +36,10 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "books",
 				type: "createPrimaryKey",
 				up: [
-					'await sql`alterTable("books") ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);',
+					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 				down: [
-					'await sql`alterTable("books") DROP CONSTRAINT books_id_kinetic_pk`.execute(db);',
+					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
 				],
 			},
 		];
@@ -70,10 +70,10 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "users",
 				type: "createPrimaryKey",
 				up: [
-					'await sql`alterTable("users") ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);',
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 				down: [
-					'await sql`alterTable("users") DROP CONSTRAINT users_id_kinetic_pk`.execute(db);',
+					"await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk`.execute(db);",
 				],
 			},
 			{
@@ -81,7 +81,7 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "books",
 				type: "createPrimaryKey",
 				up: [
-					'await sql`alterTable("books") ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);',
+					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 				down: [],
 			},
@@ -111,10 +111,10 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "users",
 				type: "dropPrimaryKey",
 				up: [
-					'await sql`alterTable("users") DROP CONSTRAINT users_id_kinetic_pk`.execute(db);',
+					"await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk`.execute(db);",
 				],
 				down: [
-					'await sql`alterTable("users") ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);',
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 			},
 			{
@@ -122,10 +122,10 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "books",
 				type: "dropPrimaryKey",
 				up: [
-					'await sql`alterTable("books") DROP CONSTRAINT books_id_kinetic_pk`.execute(db);',
+					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
 				],
 				down: [
-					'await sql`alterTable("books") ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);',
+					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 			},
 		];
@@ -158,7 +158,7 @@ describe("primaryKeyMigrationOps", () => {
 				type: "dropPrimaryKey",
 				up: [],
 				down: [
-					'await sql`alterTable("users") ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);',
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 			},
 			{
@@ -166,10 +166,10 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "books",
 				type: "dropPrimaryKey",
 				up: [
-					'await sql`alterTable("books") DROP CONSTRAINT books_id_kinetic_pk`.execute(db);',
+					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
 				],
 				down: [
-					'await sql`alterTable("books") ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);',
+					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 			},
 		];
@@ -206,10 +206,10 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "users",
 				type: "updatePrimaryKey",
 				up: [
-					'await sql`alterTable("users") DROP CONSTRAINT users_id_kinetic_pk`.execute(db);',
+					"await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk`.execute(db);",
 				],
 				down: [
-					'await sql`alterTable("users") ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);',
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 			},
 			{
@@ -217,10 +217,10 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "users",
 				type: "updatePrimaryKey",
 				up: [
-					'await sql`alterTable("users") ADD CONSTRAINT users_name_kinetic_pk PRIMARY KEY (name)`.execute(db);',
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_pk PRIMARY KEY (name)`.execute(db);",
 				],
 				down: [
-					'await sql`alterTable("users") DROP CONSTRAINT users_name_kinetic_pk`.execute(db);',
+					"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_pk`.execute(db);",
 				],
 			},
 			{
@@ -228,10 +228,10 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "books",
 				type: "updatePrimaryKey",
 				up: [
-					'await sql`alterTable("books") DROP CONSTRAINT books_id_kinetic_pk`.execute(db);',
+					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
 				],
 				down: [
-					'await sql`alterTable("books") ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);',
+					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 			},
 			{
@@ -239,10 +239,10 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "books",
 				type: "updatePrimaryKey",
 				up: [
-					'await sql`alterTable("books") ADD CONSTRAINT books_name_kinetic_pk PRIMARY KEY (name)`.execute(db);',
+					"await sql`ALTER TABLE books ADD CONSTRAINT books_name_kinetic_pk PRIMARY KEY (name)`.execute(db);",
 				],
 				down: [
-					'await sql`alterTable("books") DROP CONSTRAINT books_name_kinetic_pk`.execute(db);',
+					"await sql`ALTER TABLE books DROP CONSTRAINT books_name_kinetic_pk`.execute(db);",
 				],
 			},
 		];
