@@ -17,6 +17,8 @@ export enum ChangeSetType {
 	CreateForeignKeyConstraint = "createForeignKeyConstraint",
 	DropForeignKeyConstraint = "dropForeignKeyConstraint",
 	ChangeForeignKeyConstraint = "changeForeignKeyConstraint",
+	CreateExtension = "createExtension",
+	DropExtension = "dropExtension",
 }
 
 export type Changeset = {

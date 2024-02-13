@@ -1,19 +1,25 @@
+import type { PgExtensions } from "./pg_extension.js";
 import { type PgTable } from "./pg_table.js";
 
 export type pgDatabase<
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	O extends Record<string, PgTable<string, any>>,
+	T extends Record<string, PgTable<string, any>>,
 > = {
-	tables: O;
+	extensions: PgExtensions;
+	tables: T;
 	kyselyDatabase: {
-		[K in keyof O]: O[K]["infer"];
+		[K in keyof T]: T[K]["infer"];
 	};
 };
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function pgDatabase<O extends Record<string, PgTable<string, any>>>(
-	tables: O,
-) {
-	const database = <pgDatabase<O>>{ tables: tables };
+export function pgDatabase<T extends Record<string, PgTable<string, any>>>({
+	extensions,
+	tables,
+}: { extensions?: PgExtensions; tables: T }) {
+	const database = <pgDatabase<T>>{
+		extensions: extensions !== undefined ? extensions : [],
+		tables: tables,
+	};
 	return database;
 }

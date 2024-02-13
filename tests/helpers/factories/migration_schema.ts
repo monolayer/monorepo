@@ -4,6 +4,7 @@ export function migrationSchemaFactory(
 	options?: Partial<MigrationSchema>,
 ): MigrationSchema {
 	return {
+		extensions: options?.extensions ?? {},
 		table: options?.table ?? {},
 		index: options?.index ?? {},
 		foreignKeyConstraints: options?.foreignKeyConstraints ?? {},

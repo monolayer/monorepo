@@ -1,4 +1,5 @@
 export enum MigrationOpPriority {
+	Database = 0,
 	Table = 1,
 	Column = 2,
 	ChangeColumnDatatype = 3,

@@ -6,6 +6,7 @@ import {
 } from "~/cli/command.js";
 import { MigrationSchema } from "../migrations/migration_schema.js";
 import { dbColumnInfo } from "./database/columns.js";
+import { dbExtensionInfo } from "./database/extensions.js";
 import { dbForeignKeyConstraintInfo } from "./database/foreign_key_constraint.js";
 import { dbIndexInfo } from "./database/indexes.js";
 import { dbPrimaryKeyConstraintInfo } from "./database/primary_key_constraint.js";
@@ -55,9 +56,13 @@ export async function remoteSchema(
 	if (primaryKeyConstraintInfo.status === ActionStatus.Error)
 		return primaryKeyConstraintInfo;
 
+	const extensionInfo = await dbExtensionInfo(kysely, "public");
+	if (extensionInfo.status === ActionStatus.Error) return extensionInfo;
+
 	return {
 		status: ActionStatus.Success,
 		result: {
+			extensions: extensionInfo.result,
 			table: remoteColumnInfo.result,
 			index: remoteIndexInfo.result,
 			foreignKeyConstraints: remoteForeignKeyConstraintInfo.result,

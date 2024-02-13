@@ -6,7 +6,7 @@ import { pgTable } from "~/database/schema/pg_table.js";
 
 describe("pgDatabase definition", () => {
 	test("without tables", () => {
-		const database = pgDatabase({});
+		const database = pgDatabase({ tables: {} });
 		// biome-ignore lint/complexity/noBannedTypes: <explanation>
 		const expect: Expect<Equal<typeof database, pgDatabase<{}>>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
@@ -24,8 +24,7 @@ describe("pgDatabase definition", () => {
 			},
 		});
 		const database = pgDatabase({
-			users,
-			teams,
+			tables: { users, teams },
 		});
 		expect(database.tables?.users).toBe(users);
 		expect(database.tables?.teams).toBe(teams);
@@ -38,6 +37,15 @@ describe("pgDatabase definition", () => {
 		> = true;
 		expectTypeOf(expectation).toMatchTypeOf<boolean>();
 	});
+});
+
+test("with extensions", () => {
+	const database = pgDatabase({
+		extensions: ["pgcrypto", "btree_gist"],
+		tables: {},
+	});
+
+	expect(database.extensions).toStrictEqual(["pgcrypto", "btree_gist"]);
 });
 
 test("types for Kysely", () => {
@@ -57,8 +65,10 @@ test("types for Kysely", () => {
 		},
 	});
 	const database = pgDatabase({
-		users,
-		books,
+		tables: {
+			users,
+			books,
+		},
 	});
 
 	type ExpectedType = {

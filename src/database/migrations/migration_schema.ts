@@ -1,4 +1,8 @@
-import type { IndexInfo, TableColumnInfo } from "../introspection/types.js";
+import type {
+	ExtensionInfo,
+	IndexInfo,
+	TableColumnInfo,
+} from "../introspection/types.js";
 
 type TableName = string;
 type Name = string;
@@ -14,6 +18,7 @@ export type ConstraintInfo = {
 };
 
 export type MigrationSchema = {
+	extensions: ExtensionInfo;
 	table: TableColumnInfo;
 	index: IndexInfo;
 	foreignKeyConstraints: ForeignKeyInfo;

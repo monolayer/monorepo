@@ -46,6 +46,12 @@ import {
 	isUniqueDrop,
 } from "./column_change/unique.js";
 import {
+	createExtensionMigration,
+	dropExtensionMigration,
+	isCreateExtensionDiff,
+	isDropExtensionDiff,
+} from "./extensions.js";
+import {
 	changeforeignKeyConstraintMigration,
 	createforeignKeyConstraintMigration,
 	dropforeignKeyConstraintMigration,
@@ -84,6 +90,10 @@ export function migrationOp(
 	local: LocalTableInfo,
 	db: DbTableInfo,
 ) {
+	if (isCreateExtensionDiff(difference))
+		return createExtensionMigration(difference);
+	if (isDropExtensionDiff(difference))
+		return dropExtensionMigration(difference);
 	if (isCreateTable(difference)) return createTableMigration(difference);
 	if (isDropTable(difference)) return dropTableMigration(difference);
 	if (isCreateColumn(difference)) return createColumnMigration(difference);

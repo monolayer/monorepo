@@ -129,7 +129,7 @@ describe("#schemaColumnInfo", () => {
 });
 
 test("#schemaDBColumnInfoByTable on empty database", () => {
-	const database = pgDatabase({});
+	const database = pgDatabase({ tables: {} });
 	expect(schemaDBColumnInfoByTable(database)).toEqual({});
 });
 
@@ -149,8 +149,10 @@ test("#schemaDBColumnInfoByTable", () => {
 		},
 	});
 	const database = pgDatabase({
-		users,
-		teams,
+		tables: {
+			users,
+			teams,
+		},
 	});
 	const expectedDbColumnInfoByTable = {
 		users: {
@@ -217,8 +219,10 @@ test("#schemaDBIndexInfoByTable", () => {
 		indexes: [index("id", (idx) => idx), index("active", (idx) => idx)],
 	});
 	const database = pgDatabase({
-		users,
-		teams,
+		tables: {
+			users,
+			teams,
+		},
 	});
 	expect(schemaDBIndexInfoByTable(database)).toStrictEqual({
 		teams: {
@@ -261,8 +265,7 @@ test("#schemaDbConstraintInfoByTable", () => {
 	});
 
 	const database = pgDatabase({
-		users,
-		books,
+		tables: { users, books },
 	});
 
 	expect(schemaDbConstraintInfoByTable(database)).toStrictEqual({
@@ -325,9 +328,12 @@ test("#localSchema", () => {
 	});
 
 	const database = pgDatabase({
-		users,
-		teams,
-		books,
+		extensions: ["cube", "btree_gin"],
+		tables: {
+			users,
+			teams,
+			books,
+		},
 	});
 
 	const expectedLocalSchema = {
@@ -535,6 +541,7 @@ test("#localSchema", () => {
 				users_id_kinetic_pk: "users_id_kinetic_pk PRIMARY KEY (id)",
 			},
 		},
+		extensions: { btree_gin: true, cube: true },
 	};
 	expect(localSchema(database)).toStrictEqual(expectedLocalSchema);
 });

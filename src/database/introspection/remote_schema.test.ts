@@ -37,6 +37,9 @@ describe("#remoteSchema", () => {
 		tableNames.push("remote_schema_users");
 		tableNames.push("remote_schema_books");
 
+		await sql`CREATE EXTENSION moddatetime`.execute(kysely);
+		await sql`CREATE EXTENSION btree_gin`.execute(kysely);
+
 		await kysely.schema
 			.createTable("remote_schema_books")
 			.addColumn("id", "serial", (col) => col.primaryKey())
@@ -76,6 +79,10 @@ describe("#remoteSchema", () => {
 		const expectedSchema = {
 			status: "Success",
 			result: {
+				extensions: {
+					btree_gin: true,
+					moddatetime: true,
+				},
 				table: {
 					remote_schema_users: {
 						id: {
@@ -267,6 +274,7 @@ describe("#remoteSchema", () => {
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
+				extensions: {},
 			},
 		};
 

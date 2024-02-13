@@ -17,7 +17,12 @@ import {
 	primaryKeyConstraintInfoToQuery,
 	uniqueConstraintInfoToQuery,
 } from "./info_to_query.js";
-import { ColumnsInfo, IndexInfo, TableColumnInfo } from "./types.js";
+import {
+	ColumnsInfo,
+	type ExtensionInfo,
+	IndexInfo,
+	TableColumnInfo,
+} from "./types.js";
 
 export function schemaColumnInfo(
 	tableName: string,
@@ -205,6 +210,7 @@ export function localSchema(
 ): MigrationSchema {
 	const constraints = schemaDbConstraintInfoByTable(schema);
 	return {
+		extensions: schemaDBExtensionsInfo(schema),
 		table: schemaDBColumnInfoByTable(schema),
 		index: schemaDBIndexInfoByTable(schema),
 		foreignKeyConstraints: {
@@ -217,6 +223,16 @@ export function localSchema(
 			...constraints.primaryKey,
 		},
 	};
+}
+
+function schemaDBExtensionsInfo(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	schema: pgDatabase<Record<string, PgTable<string, any>>>,
+) {
+	return schema.extensions.reduce<ExtensionInfo>((acc, curr) => {
+		acc[curr] = true;
+		return acc;
+	}, {});
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>

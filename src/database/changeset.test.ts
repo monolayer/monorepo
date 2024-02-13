@@ -51,6 +51,7 @@ describe("#dbChangeset", () => {
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
+				extensions: {},
 			},
 			{
 				table: {},
@@ -58,6 +59,7 @@ describe("#dbChangeset", () => {
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
+				extensions: {},
 			},
 		);
 
@@ -101,6 +103,7 @@ describe("#dbChangeset", () => {
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
+				extensions: {},
 			},
 			{
 				table: {
@@ -129,6 +132,7 @@ describe("#dbChangeset", () => {
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
+				extensions: {},
 			},
 		);
 
@@ -205,6 +209,7 @@ describe("#dbChangeset", () => {
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
+				extensions: {},
 			},
 			{
 				table: {
@@ -247,6 +252,7 @@ describe("#dbChangeset", () => {
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
 				primaryKey: {},
+				extensions: {},
 			},
 		);
 
@@ -427,6 +433,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {},
@@ -434,6 +441,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -502,6 +510,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -526,6 +535,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -586,6 +596,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -615,6 +626,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -669,6 +681,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -703,6 +716,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -756,6 +770,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -784,6 +799,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -844,6 +860,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {},
@@ -851,6 +868,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -890,6 +908,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -915,6 +934,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -972,6 +992,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -982,6 +1003,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1049,6 +1071,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1072,6 +1095,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1125,6 +1149,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1150,6 +1175,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1190,6 +1216,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1215,6 +1242,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1281,6 +1309,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {},
@@ -1288,6 +1317,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1316,6 +1346,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1338,6 +1369,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1381,6 +1413,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1390,6 +1423,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1441,6 +1475,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1463,6 +1498,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1527,6 +1563,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1547,6 +1584,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1597,6 +1635,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1619,6 +1658,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1671,6 +1711,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1693,6 +1734,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1745,6 +1787,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {},
@@ -1752,6 +1795,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1779,6 +1823,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1795,6 +1840,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1831,6 +1877,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1840,6 +1887,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1881,6 +1929,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1896,6 +1945,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1936,6 +1986,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -1952,6 +2003,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -1993,6 +2045,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -2009,6 +2062,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 			const expected = [
@@ -2065,6 +2119,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {},
@@ -2072,6 +2127,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 
@@ -2110,6 +2166,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -2145,6 +2202,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 
@@ -2221,6 +2279,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -2249,6 +2308,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 
@@ -2306,6 +2366,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -2341,6 +2402,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 
@@ -2403,6 +2465,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 				{
 					table: {
@@ -2438,6 +2501,7 @@ describe("#dbChangeset", () => {
 					uniqueConstraints: {},
 					foreignKeyConstraints: {},
 					primaryKey: {},
+					extensions: {},
 				},
 			);
 
@@ -2454,6 +2518,58 @@ describe("#dbChangeset", () => {
 					],
 				},
 			];
+			expect(cset).toStrictEqual(expected);
+		});
+	});
+
+	describe("extensions", () => {
+		test("adding extensions", () => {
+			const cset = changeset(
+				{
+					table: {},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {
+						btree_gist: true,
+					},
+				},
+				{
+					table: {},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {
+						cube: true,
+					},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "none",
+					priority: 0,
+					type: "dropExtension",
+					up: ["await sql`DROP EXTENSION IF EXISTS cube;`.execute(db);"],
+					down: [
+						"await sql`CREATE EXTENSION IF NOT EXISTS cube;`.execute(db);",
+					],
+				},
+				{
+					tableName: "none",
+					priority: 0,
+					type: "createExtension",
+					up: [
+						"await sql`CREATE EXTENSION IF NOT EXISTS btree_gist;`.execute(db);",
+					],
+					down: [
+						"await sql`DROP EXTENSION IF EXISTS btree_gist;`.execute(db);",
+					],
+				},
+			];
+
 			expect(cset).toStrictEqual(expected);
 		});
 	});

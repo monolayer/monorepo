@@ -196,6 +196,17 @@ export type PgAttributeTable = {
 	attmissingval: string;
 };
 
+export type PbExtensionTable = {
+	oid: number;
+	extname: string;
+	extowner: number;
+	extnamespace: number;
+	extrelocatable: boolean;
+	extversion: string;
+	extconfig: number[];
+	extcondition: string[];
+};
+
 export type InformationSchemaDB = {
 	"information_schema.tables": InformationSchemaTables;
 	"information_schema.columns": InformationSchemaColumns;
@@ -208,4 +219,5 @@ export type InformationSchemaDB = {
 	pg_class: PgClassTable;
 	pg_constraint: PgConstraintTable;
 	pg_attribute: PgAttributeTable;
+	pg_extension: PbExtensionTable;
 };
