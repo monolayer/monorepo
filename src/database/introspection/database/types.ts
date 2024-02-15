@@ -207,6 +207,13 @@ export type PbExtensionTable = {
 	extcondition: string[];
 };
 
+export type PgTrigger = {
+	oid: number;
+	tgname: string;
+	tgfoid: number;
+	tgrelid: number;
+};
+
 export type InformationSchemaDB = {
 	"information_schema.tables": InformationSchemaTables;
 	"information_schema.columns": InformationSchemaColumns;
@@ -220,4 +227,5 @@ export type InformationSchemaDB = {
 	pg_constraint: PgConstraintTable;
 	pg_attribute: PgAttributeTable;
 	pg_extension: PbExtensionTable;
+	pg_trigger: PgTrigger;
 };

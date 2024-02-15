@@ -44,6 +44,9 @@ describe("#remoteSchema", () => {
 			.createTable("remote_schema_books")
 			.addColumn("id", "serial", (col) => col.primaryKey())
 			.addColumn("name", "varchar", (col) => col.unique())
+			.addColumn("updated_at", "timestamp", (col) =>
+				col.defaultTo(sql`CURRENT_TIMESTAMP`),
+			)
 			.execute();
 
 		await kysely.schema
@@ -52,6 +55,9 @@ describe("#remoteSchema", () => {
 			.addColumn("name", "varchar", (col) => col.unique().nullsNotDistinct())
 			.addColumn("email", "varchar")
 			.addColumn("book_id", "integer")
+			.addColumn("updated_at", "timestamp", (col) =>
+				col.defaultTo(sql`CURRENT_TIMESTAMP`),
+			)
 			.addPrimaryKeyConstraint("remote_schema_users_id_kinetic_pk", ["id"])
 			.addForeignKeyConstraint(
 				"remote_schema_users_book_id_remote_schema_books_id_kinetic_fk",
@@ -75,6 +81,25 @@ describe("#remoteSchema", () => {
 		await sql`COMMENT ON INDEX remote_schema_users_name_email_kntc_idx IS 'abcd'`.execute(
 			kysely,
 		);
+
+		await sql`
+      CREATE TRIGGER updated_at_remote_schema_users_trg
+        BEFORE UPDATE ON remote_schema_users
+        FOR EACH ROW
+        EXECUTE PROCEDURE moddatetime (updated_at);
+    `.execute(kysely);
+
+		await sql`
+      CREATE TRIGGER updated_at_remote_schema_books_trg
+        BEFORE UPDATE ON remote_schema_books
+        FOR EACH ROW
+        EXECUTE PROCEDURE moddatetime (updated_at);
+    `.execute(kysely);
+
+		await sql`
+      COMMENT ON TRIGGER updated_at_remote_schema_users_trg ON remote_schema_users IS '1234';
+      COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';
+    `.execute(kysely);
 
 		const expectedSchema = {
 			status: "Success",
@@ -149,6 +174,22 @@ describe("#remoteSchema", () => {
 							tableName: "remote_schema_users",
 							unique: null,
 						},
+						updated_at: {
+							characterMaximumLength: null,
+							columnName: "updated_at",
+							dataType: "timestamp(6)",
+							datetimePrecision: 6,
+							defaultValue: "CURRENT_TIMESTAMP",
+							foreignKeyConstraint: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							primaryKey: null,
+							renameFrom: null,
+							tableName: "remote_schema_users",
+							unique: null,
+						},
 					},
 					remote_schema_books: {
 						id: {
@@ -183,6 +224,22 @@ describe("#remoteSchema", () => {
 							tableName: "remote_schema_books",
 							unique: "NullsDistinct",
 						},
+						updated_at: {
+							characterMaximumLength: null,
+							columnName: "updated_at",
+							dataType: "timestamp(6)",
+							datetimePrecision: 6,
+							defaultValue: "CURRENT_TIMESTAMP",
+							foreignKeyConstraint: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							primaryKey: null,
+							renameFrom: null,
+							tableName: "remote_schema_books",
+							unique: null,
+						},
 					},
 				},
 				index: {
@@ -207,6 +264,16 @@ describe("#remoteSchema", () => {
 					remote_schema_users: {
 						remote_schema_users_id_kinetic_pk:
 							"remote_schema_users_id_kinetic_pk PRIMARY KEY (id)",
+					},
+				},
+				triggers: {
+					remote_schema_books: {
+						updated_at_remote_schema_books_trg:
+							"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
+					},
+					remote_schema_users: {
+						updated_at_remote_schema_users_trg:
+							"1234:CREATE TRIGGER updated_at_remote_schema_users_trg BEFORE UPDATE ON public.remote_schema_users FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
 					},
 				},
 			},
@@ -275,6 +342,7 @@ describe("#remoteSchema", () => {
 				foreignKeyConstraints: {},
 				primaryKey: {},
 				extensions: {},
+				triggers: {},
 			},
 		};
 

@@ -21,6 +21,7 @@ import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.
 import { foreignKey } from "../schema/pg_foreign_key.js";
 import { primaryKey } from "../schema/pg_primary_key.js";
 import { pgTable } from "../schema/pg_table.js";
+import { trigger } from "../schema/pg_trigger.js";
 import { unique } from "../schema/pg_unique.js";
 
 describe("#schemaColumnInfo", () => {
@@ -315,6 +316,14 @@ test("#localSchema", () => {
 			unique(["email"], false),
 			primaryKey(["id"]),
 		],
+		triggers: {
+			foo_before_update: trigger({
+				firingTime: "before",
+				events: ["update"],
+				forEach: "statement",
+				functionName: "foo",
+			}),
+		},
 	});
 
 	const teams = pgTable("teams", {
@@ -325,6 +334,14 @@ test("#localSchema", () => {
 		},
 		indexes: [index("name", (idx) => idx)],
 		constraints: [primaryKey("id")],
+		triggers: {
+			foo_before_insert: trigger({
+				firingTime: "before",
+				events: ["insert"],
+				forEach: "row",
+				functionName: "foo",
+			}),
+		},
 	});
 
 	const database = pgDatabase({
@@ -542,6 +559,16 @@ test("#localSchema", () => {
 			},
 		},
 		extensions: { btree_gin: true, cube: true },
+		triggers: {
+			teams: {
+				foo_before_insert_trg:
+					"05c8db6554999531138ecba0b32e1f47595be0f4210f28e8b955e98b1fa06f3a:CREATE OR REPLACE TRIGGER foo_before_insert_trg\nBEFORE INSERT ON teams\nFOR EACH ROW\nEXECUTE FUNCTION foo",
+			},
+			users: {
+				foo_before_update_trg:
+					"a2b86e379795876db3ca7ffb7ae373b26287a1be74a33c46eee8a4d789e2a9f6:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+			},
+		},
 	};
 	expect(localSchema(database)).toStrictEqual(expectedLocalSchema);
 });

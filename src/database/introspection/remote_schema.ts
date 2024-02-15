@@ -11,6 +11,7 @@ import { dbForeignKeyConstraintInfo } from "./database/foreign_key_constraint.js
 import { dbIndexInfo } from "./database/indexes.js";
 import { dbPrimaryKeyConstraintInfo } from "./database/primary_key_constraint.js";
 import { dbTableInfo } from "./database/tables.js";
+import { dbTriggerInfo } from "./database/triggers.js";
 import { dbUniqueConstraintInfo } from "./database/unique_constraint.js";
 
 export async function remoteSchema(
@@ -59,6 +60,9 @@ export async function remoteSchema(
 	const extensionInfo = await dbExtensionInfo(kysely, "public");
 	if (extensionInfo.status === ActionStatus.Error) return extensionInfo;
 
+	const triggerInfo = await dbTriggerInfo(kysely, "public", tables);
+	if (triggerInfo.status === ActionStatus.Error) return triggerInfo;
+
 	return {
 		status: ActionStatus.Success,
 		result: {
@@ -68,6 +72,7 @@ export async function remoteSchema(
 			foreignKeyConstraints: remoteForeignKeyConstraintInfo.result,
 			uniqueConstraints: remoteUniqueConstraintInfo.result,
 			primaryKey: primaryKeyConstraintInfo.result,
+			triggers: triggerInfo.result,
 		},
 	};
 }

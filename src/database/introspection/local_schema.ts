@@ -6,6 +6,7 @@ import { type PgTable } from "~/database/schema/pg_table.js";
 import type {
 	ConstraintInfo,
 	MigrationSchema,
+	TriggerInfo,
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes } from "../schema/pg_column.js";
 import { PgForeignKey } from "../schema/pg_foreign_key.js";
@@ -222,6 +223,9 @@ export function localSchema(
 		primaryKey: {
 			...constraints.primaryKey,
 		},
+		triggers: {
+			...schemaDBTriggersInfo(schema),
+		},
 	};
 }
 
@@ -256,5 +260,29 @@ function isForeignKeyConstraint(obj: any): obj is PgForeignKey<any> {
 		keys[1] === "options" &&
 		keys[2] === "targetCols" &&
 		keys[3] === "targetTable"
+	);
+}
+
+function schemaDBTriggersInfo(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	schema: pgDatabase<Record<string, PgTable<string, any>>>,
+) {
+	return Object.entries(schema.tables).reduce<TriggerInfo>(
+		(acc, [tableName, tableDefinition]) => {
+			tableDefinition.triggers;
+			for (const trigger of Object.entries(tableDefinition.triggers || {})) {
+				const triggerName = `${trigger[0]}_trg`;
+				const hash = createHash("sha256");
+				const compiledTrigger = trigger[1].compile(triggerName, tableName);
+				hash.update(compiledTrigger);
+
+				acc[tableName] = {
+					...acc[tableName],
+					[triggerName]: `${hash.digest("hex")}:${compiledTrigger}`,
+				};
+			}
+			return acc;
+		},
+		{},
 	);
 }

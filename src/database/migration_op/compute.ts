@@ -75,6 +75,14 @@ import {
 import { createTableMigration, isCreateTable } from "./table/create.js";
 import { dropTableMigration, isDropTable } from "./table/drop.js";
 import {
+	changeTriggerMigration,
+	createTriggerMigration,
+	dropTriggerMigration,
+	isTriggerChange,
+	isTriggerCreate,
+	isTriggerDrop,
+} from "./trigger.js";
+import {
 	changeUniqueConstraintMigration,
 	createUniqueConstraintMigration,
 	dropUniqueConstraintMigration,
@@ -125,7 +133,6 @@ export function migrationOp(
 	if (isDropAllIndexes(difference))
 		return dropAllIndexesMigration(difference, droppedTables);
 	if (isChangeIndex(difference)) return changeIndexMigration(difference);
-
 	if (isUniqueAdd(difference))
 		return columnUniqueNullDistinctAddMigrationOperation(difference);
 	if (isUniqueDrop(difference))
@@ -158,5 +165,10 @@ export function migrationOp(
 		return dropUniqueConstraintMigration(difference, droppedTables);
 	if (isUniqueConstraintChange(difference))
 		return changeUniqueConstraintMigration(difference);
+	if (isTriggerCreate(difference))
+		return createTriggerMigration(difference, addedTables);
+	if (isTriggerDrop(difference))
+		return dropTriggerMigration(difference, droppedTables);
+	if (isTriggerChange(difference)) return changeTriggerMigration(difference);
 	return [];
 }

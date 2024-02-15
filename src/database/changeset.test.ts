@@ -52,6 +52,7 @@ describe("#dbChangeset", () => {
 				foreignKeyConstraints: {},
 				primaryKey: {},
 				extensions: {},
+				triggers: {},
 			},
 			{
 				table: {},
@@ -60,6 +61,7 @@ describe("#dbChangeset", () => {
 				foreignKeyConstraints: {},
 				primaryKey: {},
 				extensions: {},
+				triggers: {},
 			},
 		);
 
@@ -104,6 +106,7 @@ describe("#dbChangeset", () => {
 				foreignKeyConstraints: {},
 				primaryKey: {},
 				extensions: {},
+				triggers: {},
 			},
 			{
 				table: {
@@ -133,6 +136,7 @@ describe("#dbChangeset", () => {
 				foreignKeyConstraints: {},
 				primaryKey: {},
 				extensions: {},
+				triggers: {},
 			},
 		);
 
@@ -210,6 +214,7 @@ describe("#dbChangeset", () => {
 				foreignKeyConstraints: {},
 				primaryKey: {},
 				extensions: {},
+				triggers: {},
 			},
 			{
 				table: {
@@ -253,6 +258,7 @@ describe("#dbChangeset", () => {
 				foreignKeyConstraints: {},
 				primaryKey: {},
 				extensions: {},
+				triggers: {},
 			},
 		);
 
@@ -434,6 +440,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {},
@@ -442,6 +449,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -511,6 +519,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -536,6 +545,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -597,6 +607,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -627,6 +638,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -682,6 +694,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -717,6 +730,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -771,6 +785,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -800,6 +815,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -861,6 +877,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {},
@@ -869,6 +886,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -909,6 +927,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -935,6 +954,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -993,6 +1013,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1004,6 +1025,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1072,6 +1094,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1096,6 +1119,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1150,6 +1174,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1176,6 +1201,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1217,6 +1243,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1243,6 +1270,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1310,6 +1338,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {},
@@ -1318,6 +1347,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1347,6 +1377,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1370,6 +1401,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1414,6 +1446,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1424,6 +1457,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1476,6 +1510,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1499,6 +1534,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1564,6 +1600,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1585,6 +1622,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1636,6 +1674,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1659,6 +1698,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1712,6 +1752,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1735,6 +1776,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1788,6 +1830,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {},
@@ -1796,6 +1839,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1824,6 +1868,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1841,6 +1886,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1878,6 +1924,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1888,6 +1935,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1930,6 +1978,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -1946,6 +1995,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -1987,6 +2037,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -2004,6 +2055,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -2046,6 +2098,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -2063,6 +2116,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 			const expected = [
@@ -2120,6 +2174,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {},
@@ -2128,6 +2183,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 
@@ -2167,6 +2223,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -2203,6 +2260,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 
@@ -2280,6 +2338,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -2309,6 +2368,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 
@@ -2367,6 +2427,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -2403,6 +2464,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 
@@ -2466,6 +2528,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 				{
 					table: {
@@ -2502,6 +2565,7 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
+					triggers: {},
 				},
 			);
 
@@ -2534,6 +2598,7 @@ describe("#dbChangeset", () => {
 					extensions: {
 						btree_gist: true,
 					},
+					triggers: {},
 				},
 				{
 					table: {},
@@ -2544,6 +2609,7 @@ describe("#dbChangeset", () => {
 					extensions: {
 						cube: true,
 					},
+					triggers: {},
 				},
 			);
 
@@ -2566,6 +2632,543 @@ describe("#dbChangeset", () => {
 					],
 					down: [
 						"await sql`DROP EXTENSION IF EXISTS btree_gist;`.execute(db);",
+					],
+				},
+			];
+
+			expect(cset).toStrictEqual(expected);
+		});
+	});
+
+	describe("triggers", () => {
+		test("on table creation", () => {
+			const cset = changeset(
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+							updated_at: {
+								characterMaximumLength: null,
+								columnName: "updated_at",
+								dataType: "timestamp(6)",
+								datetimePrecision: 6,
+								defaultValue: "CURRENT_TIMESTAMP",
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {
+						remote_schema_books: {
+							updated_at_remote_schema_books_trg:
+								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
+						},
+					},
+				},
+				{
+					table: {},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {},
+				},
+			);
+
+			const expected = [
+				{
+					priority: 1,
+					tableName: "remote_schema_books",
+					type: "createTable",
+					up: [
+						"await db.schema",
+						'createTable("remote_schema_books")',
+						'addColumn("id", "serial", (col) => col.notNull().primaryKey())',
+						'addColumn("updated_at", "timestamp(6)", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`))',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'dropTable("remote_schema_books")',
+						"execute();",
+					],
+				},
+				{
+					tableName: "remote_schema_books",
+					priority: 8.1,
+					type: "createTrigger",
+					up: [
+						"await sql`CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';`.execute(db);",
+					],
+					down: [],
+				},
+			];
+
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("on table drop", () => {
+			const cset = changeset(
+				{
+					table: {},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {},
+				},
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+							updated_at: {
+								characterMaximumLength: null,
+								columnName: "updated_at",
+								dataType: "timestamp(6)",
+								datetimePrecision: 6,
+								defaultValue: "CURRENT_TIMESTAMP",
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {
+						remote_schema_books: {
+							updated_at_remote_schema_books_trg:
+								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
+						},
+					},
+				},
+			);
+
+			const expected = [
+				{
+					priority: 1,
+					tableName: "remote_schema_books",
+					type: "dropTable",
+					down: [
+						"await db.schema",
+						'createTable("remote_schema_books")',
+						'addColumn("id", "serial", (col) => col.notNull().primaryKey())',
+						'addColumn("updated_at", "timestamp(6)", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`))',
+						"execute();",
+					],
+					up: [
+						"await db.schema",
+						'dropTable("remote_schema_books")',
+						"execute();",
+					],
+				},
+				{
+					tableName: "remote_schema_books",
+					priority: 8,
+					type: "dropTrigger",
+					up: [],
+					down: [
+						"await sql`CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';`.execute(db);",
+					],
+				},
+			];
+
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("add trigger", () => {
+			const cset = changeset(
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+							updated_at: {
+								characterMaximumLength: null,
+								columnName: "updated_at",
+								dataType: "timestamp(6)",
+								datetimePrecision: 6,
+								defaultValue: "CURRENT_TIMESTAMP",
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {
+						remote_schema_books: {
+							updated_at_remote_schema_books_trg:
+								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
+						},
+					},
+				},
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+							updated_at: {
+								characterMaximumLength: null,
+								columnName: "updated_at",
+								dataType: "timestamp(6)",
+								datetimePrecision: 6,
+								defaultValue: "CURRENT_TIMESTAMP",
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "remote_schema_books",
+					priority: 8.1,
+					type: "createTrigger",
+					up: [
+						"await sql`CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';`.execute(db);",
+					],
+					down: [
+						"await sql`DROP TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books`.execute(db);",
+					],
+				},
+			];
+
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("drop trigger", () => {
+			const cset = changeset(
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+							updated_at: {
+								characterMaximumLength: null,
+								columnName: "updated_at",
+								dataType: "timestamp(6)",
+								datetimePrecision: 6,
+								defaultValue: "CURRENT_TIMESTAMP",
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {},
+				},
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+							updated_at: {
+								characterMaximumLength: null,
+								columnName: "updated_at",
+								dataType: "timestamp(6)",
+								datetimePrecision: 6,
+								defaultValue: "CURRENT_TIMESTAMP",
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {
+						remote_schema_books: {
+							updated_at_remote_schema_books_trg:
+								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
+						},
+					},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "remote_schema_books",
+					priority: 8,
+					type: "dropTrigger",
+					up: [
+						"await sql`DROP TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books`.execute(db);",
+					],
+					down: [
+						"await sql`CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';`.execute(db);",
+					],
+				},
+			];
+
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("change trigger", () => {
+			const cset = changeset(
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+							updated_at: {
+								characterMaximumLength: null,
+								columnName: "updated_at",
+								dataType: "timestamp(6)",
+								datetimePrecision: 6,
+								defaultValue: "CURRENT_TIMESTAMP",
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {
+						remote_schema_books: {
+							updated_at_remote_schema_books_trg:
+								"abcsd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('updated_at')",
+						},
+					},
+				},
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+							updated_at: {
+								characterMaximumLength: null,
+								columnName: "updated_at",
+								dataType: "timestamp(6)",
+								datetimePrecision: 6,
+								defaultValue: "CURRENT_TIMESTAMP",
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {
+						remote_schema_books: {
+							updated_at_remote_schema_books_trg:
+								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
+						},
+					},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "remote_schema_books",
+					priority: 8.2,
+					type: "updateTrigger",
+					up: [
+						"await sql`DROP TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books;CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcsd';`.execute(db);",
+					],
+					down: [
+						"await sql`DROP TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books;CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';`.execute(db);",
 					],
 				},
 			];

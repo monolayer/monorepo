@@ -29,4 +29,7 @@ export enum MigrationOpPriority {
 	ForeignKeyConstraintDrop = 7,
 	ForeignKeyConstraintCreate = 7.11,
 	ForeignKeyConstraintChange = 7.12,
+	TriggerDrop = 8,
+	TriggerCreate = 8.1,
+	TriggerUpdate = 8.2,
 }

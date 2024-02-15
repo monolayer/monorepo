@@ -11,6 +11,8 @@ export type IndexInfo = Record<string, Record<string, string>>;
 
 export type ExtensionInfo = Record<string, boolean>;
 
+export type TriggerInfo = Record<string, Record<string, string>>;
+
 export type DbTableInfo = {
 	table: TableColumnInfo;
 	index?: IndexInfo;

@@ -4,6 +4,7 @@ import { PgColumnTypes } from "./pg_column.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
 import { type PgIndex } from "./pg_index.js";
 import type { PgPrimaryKey } from "./pg_primary_key.js";
+import type { PgTrigger } from "./pg_trigger.js";
 import type { PgUnique } from "./pg_unique.js";
 
 export type ColumnRecord = Record<string, PgColumnTypes>;
@@ -16,6 +17,7 @@ type TableSchema<T> = {
 		| PgPrimaryKey<T>
 	)[];
 	indexes?: PgIndex<keyof T | Array<keyof T>>[];
+	triggers?: Record<string, PgTrigger>;
 };
 
 export function pgTable<N extends string, T extends ColumnRecord>(
@@ -40,6 +42,7 @@ export class PgTable<N extends string, T extends ColumnRecord> {
 		this.schema.indexes = this.schema.indexes || [];
 		this.schema.constraints = this.schema.constraints || [];
 		this.schema.columns = this.schema.columns || {};
+		this.schema.triggers = this.schema.triggers || {};
 	}
 
 	get columns() {
@@ -52,5 +55,9 @@ export class PgTable<N extends string, T extends ColumnRecord> {
 
 	get constraints() {
 		return this.schema.constraints;
+	}
+
+	get triggers() {
+		return this.schema.triggers;
 	}
 }

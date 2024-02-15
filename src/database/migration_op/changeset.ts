@@ -19,6 +19,9 @@ export enum ChangeSetType {
 	ChangeForeignKeyConstraint = "changeForeignKeyConstraint",
 	CreateExtension = "createExtension",
 	DropExtension = "dropExtension",
+	CreateTrigger = "createTrigger",
+	DropTrigger = "dropTrigger",
+	UpdateTrigger = "updateTrigger",
 }
 
 export type Changeset = {

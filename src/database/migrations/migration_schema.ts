@@ -10,6 +10,7 @@ type Definition = string;
 export type PrimaryKeyInfo = Record<TableName, Record<Name, Definition>>;
 export type ForeignKeyInfo = Record<TableName, Record<Name, Definition>>;
 export type UniqueInfo = Record<TableName, Record<Name, Definition>>;
+export type TriggerInfo = Record<TableName, Record<Name, Definition>>;
 
 export type ConstraintInfo = {
 	unique: UniqueInfo;
@@ -24,4 +25,5 @@ export type MigrationSchema = {
 	foreignKeyConstraints: ForeignKeyInfo;
 	uniqueConstraints: UniqueInfo;
 	primaryKey: PrimaryKeyInfo;
+	triggers: TriggerInfo;
 };

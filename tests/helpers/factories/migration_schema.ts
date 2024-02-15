@@ -10,5 +10,6 @@ export function migrationSchemaFactory(
 		foreignKeyConstraints: options?.foreignKeyConstraints ?? {},
 		uniqueConstraints: options?.uniqueConstraints ?? {},
 		primaryKey: options?.primaryKey ?? {},
+		triggers: options?.triggers ?? {},
 	};
 }
