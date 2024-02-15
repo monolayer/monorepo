@@ -3105,6 +3105,8 @@ describe("#dbChangeset", () => {
 						remote_schema_books: {
 							updated_at_remote_schema_books_trg:
 								"abcsd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('updated_at')",
+							created_at_remote_schema_books_trg:
+								"123456:CREATE TRIGGER created_at_remote_schema_books_trg BEFORE UPDATE ON remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('created_at')",
 						},
 					},
 				},
@@ -3154,6 +3156,8 @@ describe("#dbChangeset", () => {
 						remote_schema_books: {
 							updated_at_remote_schema_books_trg:
 								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
+							created_at_remote_schema_books_trg:
+								"123456:CREATE TRIGGER created_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('created_at')",
 						},
 					},
 				},

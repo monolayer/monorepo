@@ -75,7 +75,8 @@ function isTriggerChange(test: Difference): test is TriggerChangeDiff {
 		typeof test.path[1] === "string" &&
 		typeof test.path[2] === "string" &&
 		typeof test.value === "string" &&
-		typeof test.oldValue === "string"
+		typeof test.oldValue === "string" &&
+		test.value.split(":")[0] !== test.oldValue.split(":")[0]
 	);
 }
 
