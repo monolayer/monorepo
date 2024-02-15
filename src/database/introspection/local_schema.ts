@@ -1,5 +1,12 @@
 import { createHash } from "crypto";
-import { type CreateIndexBuilder, Kysely, PostgresDialect } from "kysely";
+import {
+	type CreateIndexBuilder,
+	type Expression,
+	Kysely,
+	PostgresDialect,
+	type RawBuilder,
+	isExpression,
+} from "kysely";
 import pg from "pg";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { type PgTable } from "~/database/schema/pg_table.js";
@@ -45,11 +52,54 @@ export function schemaColumnInfo(
 		numericScale: meta.numericScale,
 		renameFrom: meta.renameFrom,
 		primaryKey: meta.primaryKey,
-		defaultValue: meta.defaultValue ? meta.defaultValue.toString() : null,
+		defaultValue: meta.defaultValue
+			? isExpression(meta.defaultValue)
+				? compileDefaultExpression(meta.defaultValue)
+				: meta.defaultValue.toString()
+			: null,
 		foreignKeyConstraint: meta.foreignKeyConstraint,
 		identity: meta.identity,
 		unique: meta.unique,
 	};
+}
+
+export function compileDefaultExpression(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	expression: Expression<any>,
+) {
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const kysely = new Kysely<any>({
+		dialect: new PostgresDialect({
+			pool: new pg.Pool({}),
+		}),
+	});
+
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const compiled = (expression as RawBuilder<any>).compile(kysely);
+	return substituteSQLParameters({
+		sql: compiled.sql,
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		parameters: compiled.parameters as any[],
+	});
+}
+
+function substituteSQLParameters(queryObject: {
+	sql: string;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	parameters: any[];
+}) {
+	let { sql, parameters } = queryObject;
+
+	// Replace each placeholder with the corresponding parameter from the array
+	parameters.forEach((param, idx) => {
+		// Create a regular expression for each placeholder (e.g., $1, $2)
+		// Note: The backslash is escaped in the string, and '$' is escaped in the regex
+		const regex = new RegExp(`\\$${idx + 1}`, "g");
+		const value = typeof param === "object" ? JSON.stringify(param) : param;
+		sql = sql.replace(regex, value);
+	});
+
+	return sql;
 }
 
 export function schemaDBColumnInfoByTable(

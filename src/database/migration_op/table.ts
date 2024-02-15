@@ -1,13 +1,12 @@
 import { Difference } from "microdiff";
 import {
-	ColumnsInfo,
 	type DbTableInfo,
 	type LocalTableInfo,
 } from "~/database/introspection/types.js";
 import { ChangeSetType } from "~/database/migration_op/changeset.js";
 import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
-import { tableColumnsOps } from "./table_common.js";
+import { type ColumnsInfoDiff, tableColumnsOps } from "./table_common.js";
 
 export function tableMigrationOpGenerator(
 	diff: Difference,
@@ -27,7 +26,7 @@ export function tableMigrationOpGenerator(
 export type CreateTableDiff = {
 	type: "CREATE";
 	path: ["table", string];
-	value: ColumnsInfo;
+	value: ColumnsInfoDiff;
 };
 
 export function isCreateTable(test: Difference): test is CreateTableDiff {
@@ -53,7 +52,7 @@ function createTableMigration(diff: CreateTableDiff) {
 export type DropTableTableDiff = {
 	type: "REMOVE";
 	path: ["table", string];
-	oldValue: ColumnsInfo;
+	oldValue: ColumnsInfoDiff;
 };
 
 export function isDropTable(test: Difference): test is DropTableTableDiff {

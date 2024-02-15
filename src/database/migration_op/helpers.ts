@@ -3,11 +3,15 @@ export function executeKyselySchemaStatement(...args: string[]) {
 }
 
 export function executeKyselyDbStatement(statement: string) {
-	return [`await sql\`${statement}\`.execute(db);`];
+	return [`await ${sqlStatement(statement)}.execute(db);`];
 }
 
 export function executeKyselyDbStatements(statements: string[]) {
 	return statements.flatMap((statement) => {
 		return executeKyselyDbStatement(statement);
 	});
+}
+
+export function sqlStatement(value: string) {
+	return ["sql`", value, "`"].join("");
 }

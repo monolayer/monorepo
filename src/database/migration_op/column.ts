@@ -1,10 +1,13 @@
 import { Difference } from "microdiff";
 import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
-import type { ColumnInfo } from "~/database/schema/pg_column.js";
 import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
-import { foreignKeyConstraint, optionsForColumn } from "./table_common.js";
+import {
+	type ColumnInfoDiff,
+	foreignKeyConstraint,
+	optionsForColumn,
+} from "./table_common.js";
 
 export function columnMigrationOpGenerator(
 	diff: Difference,
@@ -24,7 +27,7 @@ export function columnMigrationOpGenerator(
 type CreateColumnDiff = {
 	type: "CREATE";
 	path: ["table", string, string];
-	value: ColumnInfo;
+	value: ColumnInfoDiff;
 };
 
 function isCreateColumn(test: Difference): test is CreateColumnDiff {
@@ -60,7 +63,7 @@ function createColumnMigration(diff: CreateColumnDiff) {
 type DropColumnDiff = {
 	type: "REMOVE";
 	path: ["table", string, string];
-	oldValue: ColumnInfo;
+	oldValue: ColumnInfoDiff;
 };
 
 function isDropColumn(test: Difference): test is DropColumnDiff {

@@ -1,3 +1,4 @@
+import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
 import {
 	localSchema,
@@ -13,6 +14,7 @@ import {
 	boolean,
 	integer,
 	serial,
+	timestamp,
 	varchar,
 } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
@@ -50,7 +52,7 @@ describe("#schemaColumnInfo", () => {
 		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
 	});
 
-	test("column with defaultTo", () => {
+	test("column with defaultTo default data type", () => {
 		const column = varchar(100).defaultTo("foo");
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
@@ -58,6 +60,18 @@ describe("#schemaColumnInfo", () => {
 			dataType: "varchar(100)",
 			defaultValue: "'foo'::character varying",
 			characterMaximumLength: 100,
+		});
+
+		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+	});
+
+	test("column with defaultTo with expression", () => {
+		const column = timestamp().defaultTo(sql`CURRENT_TIMESTAMP`);
+		const expectedInfo = columnInfoFactory({
+			tableName: "foo",
+			columnName: "bar",
+			dataType: "timestamp",
+			defaultValue: "CURRENT_TIMESTAMP",
 		});
 
 		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);

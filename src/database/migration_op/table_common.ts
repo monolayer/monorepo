@@ -1,8 +1,13 @@
-import { ColumnsInfo } from "../introspection/types.js";
 import { type ColumnInfo, ColumnUnique } from "../schema/pg_column.js";
-import { compileDefault } from "./column_change/default.js";
+import { sqlStatement } from "./helpers.js";
 
-export function tableColumnsOps(columnsInfo: ColumnsInfo) {
+export type ColumnsInfoDiff = Record<string, ColumnInfoDiff>;
+
+export type ColumnInfoDiff = Omit<ColumnInfo, "defaultValue"> & {
+	defaultValue: string;
+};
+
+export function tableColumnsOps(columnsInfo: ColumnsInfoDiff) {
 	return Object.entries(columnsInfo).flatMap(([_, column]) => {
 		const base = [
 			`addColumn(\"${column.columnName}\", \"${
@@ -14,7 +19,7 @@ export function tableColumnsOps(columnsInfo: ColumnsInfo) {
 	});
 }
 
-export function foreignKeyConstraint(column: ColumnInfo) {
+export function foreignKeyConstraint(column: ColumnInfoDiff) {
 	if (column.foreignKeyConstraint === null) return "";
 	const options = column.foreignKeyConstraint.options.split(";");
 	return [
@@ -24,7 +29,7 @@ export function foreignKeyConstraint(column: ColumnInfo) {
 	].join(" ");
 }
 
-export function optionsForColumn(column: ColumnInfo) {
+export function optionsForColumn(column: ColumnInfoDiff) {
 	let columnOptions = "";
 	const options = [];
 
@@ -38,7 +43,7 @@ export function optionsForColumn(column: ColumnInfo) {
 		options.push("unique().nullsNotDistinct()");
 
 	if (column.defaultValue !== null) {
-		options.push(`defaultTo(${compileDefault(column.defaultValue)})`);
+		options.push(`defaultTo(${sqlStatement(column.defaultValue)})`);
 	}
 	if (options.length !== 0)
 		columnOptions = `, (col) => col.${options.join(".")}`;
