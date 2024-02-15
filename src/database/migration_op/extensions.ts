@@ -1,23 +1,37 @@
 import type { Difference } from "microdiff";
+import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { ChangeSetType } from "./changeset.js";
 import { executeKyselyDbStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
 
-export type CreateExtensionDiff = {
+export function extensionMigrationOpGenerator(
+	diff: Difference,
+	_addedTables: string[],
+	_droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isCreateExtensionDiff(diff)) {
+		return createExtensionMigration(diff);
+	}
+	if (isDropExtensionDiff(diff)) {
+		return dropExtensionMigration(diff);
+	}
+}
+
+type CreateExtensionDiff = {
 	type: "CREATE";
 	path: ["extensions", string];
 	value: boolean;
 };
 
-export type DropExtensionDiff = {
+type DropExtensionDiff = {
 	type: "REMOVE";
 	path: ["extensions", string];
 	oldValue: boolean;
 };
 
-export function isCreateExtensionDiff(
-	test: Difference,
-): test is CreateExtensionDiff {
+function isCreateExtensionDiff(test: Difference): test is CreateExtensionDiff {
 	return (
 		test.type === "CREATE" &&
 		test.path[0] === "extensions" &&
@@ -26,9 +40,7 @@ export function isCreateExtensionDiff(
 	);
 }
 
-export function isDropExtensionDiff(
-	test: Difference,
-): test is DropExtensionDiff {
+function isDropExtensionDiff(test: Difference): test is DropExtensionDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path[0] === "extensions" &&
@@ -37,7 +49,7 @@ export function isDropExtensionDiff(
 	);
 }
 
-export function createExtensionMigration(diff: CreateExtensionDiff) {
+function createExtensionMigration(diff: CreateExtensionDiff) {
 	const extensionName = diff.path[1];
 	return {
 		priority: MigrationOpPriority.Database,
@@ -52,7 +64,7 @@ export function createExtensionMigration(diff: CreateExtensionDiff) {
 	};
 }
 
-export function dropExtensionMigration(diff: DropExtensionDiff) {
+function dropExtensionMigration(diff: DropExtensionDiff) {
 	const extensionName = diff.path[1];
 	return {
 		priority: MigrationOpPriority.Database,

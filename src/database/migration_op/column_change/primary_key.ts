@@ -1,16 +1,32 @@
 import { Difference } from "microdiff";
+import type {
+	DbTableInfo,
+	LocalTableInfo,
+} from "~/database/introspection/types.js";
 import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import { executeKyselySchemaStatement } from "../helpers.js";
 import { MigrationOpPriority } from "../priority.js";
 
-export type ColumnPrimaryKeyDifference = {
+export function columnPrimaryKeyMigrationOpGenerator(
+	diff: Difference,
+	_addedTables: string[],
+	_droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isColumnPrimaryKey(diff)) {
+		return columnPrimaryKeyMigrationOperation(diff);
+	}
+}
+
+type ColumnPrimaryKeyDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "primaryKey"];
 	value: true | null;
 	oldValue: true | null;
 };
 
-export function isColumnPrimaryKey(
+function isColumnPrimaryKey(
 	test: Difference,
 ): test is ColumnPrimaryKeyDifference {
 	return (
@@ -21,9 +37,7 @@ export function isColumnPrimaryKey(
 	);
 }
 
-export function columnPrimaryKeyMigrationOperation(
-	diff: ColumnPrimaryKeyDifference,
-) {
+function columnPrimaryKeyMigrationOperation(diff: ColumnPrimaryKeyDifference) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const changeset: Changeset = {

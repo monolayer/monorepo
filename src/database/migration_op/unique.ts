@@ -1,7 +1,26 @@
 import type { Difference } from "microdiff";
+import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { ChangeSetType } from "./changeset.js";
 import { executeKyselyDbStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
+
+export function uniqueConstraintMigrationOpGenerator(
+	diff: Difference,
+	addedTables: string[],
+	droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isUniqueConstraintCreate(diff)) {
+		return createUniqueConstraintMigration(diff, addedTables);
+	}
+	if (isUniqueConstraintDrop(diff)) {
+		return dropUniqueConstraintMigration(diff, droppedTables);
+	}
+	if (isUniqueConstraintChange(diff)) {
+		return changeUniqueConstraintMigration(diff);
+	}
+}
 
 type UniqueCreateDiff = {
 	type: "CREATE";
@@ -26,9 +45,7 @@ type UniqueChangeDiff = {
 	oldValue: string;
 };
 
-export function isUniqueConstraintCreate(
-	test: Difference,
-): test is UniqueCreateDiff {
+function isUniqueConstraintCreate(test: Difference): test is UniqueCreateDiff {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 2 &&
@@ -39,9 +56,7 @@ export function isUniqueConstraintCreate(
 	);
 }
 
-export function isUniqueConstraintDrop(
-	test: Difference,
-): test is UniqueDropDiff {
+function isUniqueConstraintDrop(test: Difference): test is UniqueDropDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 2 &&
@@ -52,9 +67,7 @@ export function isUniqueConstraintDrop(
 	);
 }
 
-export function isUniqueConstraintChange(
-	test: Difference,
-): test is UniqueChangeDiff {
+function isUniqueConstraintChange(test: Difference): test is UniqueChangeDiff {
 	return (
 		test.type === "CHANGE" &&
 		test.path.length === 3 &&
@@ -66,7 +79,7 @@ export function isUniqueConstraintChange(
 	);
 }
 
-export function createUniqueConstraintMigration(
+function createUniqueConstraintMigration(
 	diff: UniqueCreateDiff,
 	addedTables: string[],
 ) {
@@ -91,7 +104,7 @@ export function createUniqueConstraintMigration(
 	};
 }
 
-export function dropUniqueConstraintMigration(
+function dropUniqueConstraintMigration(
 	diff: UniqueDropDiff,
 	droppedTables: string[],
 ) {
@@ -118,7 +131,7 @@ export function dropUniqueConstraintMigration(
 	};
 }
 
-export function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
+function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
 	const tableName = diff.path[1];
 	const constraintName = diff.path[2];
 	const newValue = diff.value;

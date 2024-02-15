@@ -1,7 +1,26 @@
 import type { Difference } from "microdiff";
+import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { ChangeSetType } from "./changeset.js";
 import { executeKyselyDbStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
+
+export function triggerMigrationOpGenerator(
+	diff: Difference,
+	addedTables: string[],
+	droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isTriggerCreate(diff)) {
+		return createTriggerMigration(diff, addedTables);
+	}
+	if (isTriggerDrop(diff)) {
+		return dropTriggerMigration(diff, droppedTables);
+	}
+	if (isTriggerChange(diff)) {
+		return changeTriggerMigration(diff);
+	}
+}
 
 type TriggerCreateDiff = {
 	type: "CREATE";
@@ -26,7 +45,7 @@ type TriggerChangeDiff = {
 	oldValue: string;
 };
 
-export function isTriggerCreate(test: Difference): test is TriggerCreateDiff {
+function isTriggerCreate(test: Difference): test is TriggerCreateDiff {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 2 &&
@@ -37,7 +56,7 @@ export function isTriggerCreate(test: Difference): test is TriggerCreateDiff {
 	);
 }
 
-export function isTriggerDrop(test: Difference): test is TriggerDropDiff {
+function isTriggerDrop(test: Difference): test is TriggerDropDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 2 &&
@@ -48,7 +67,7 @@ export function isTriggerDrop(test: Difference): test is TriggerDropDiff {
 	);
 }
 
-export function isTriggerChange(test: Difference): test is TriggerChangeDiff {
+function isTriggerChange(test: Difference): test is TriggerChangeDiff {
 	return (
 		test.type === "CHANGE" &&
 		test.path.length === 3 &&
@@ -60,7 +79,7 @@ export function isTriggerChange(test: Difference): test is TriggerChangeDiff {
 	);
 }
 
-export function createTriggerMigration(
+function createTriggerMigration(
 	diff: TriggerCreateDiff,
 	addedTables: string[],
 ) {
@@ -84,10 +103,7 @@ export function createTriggerMigration(
 	};
 }
 
-export function dropTriggerMigration(
-	diff: TriggerDropDiff,
-	droppedTables: string[],
-) {
+function dropTriggerMigration(diff: TriggerDropDiff, droppedTables: string[]) {
 	const tableName = diff.path[1];
 	const triggerName = Object.keys(
 		diff.oldValue,
@@ -110,7 +126,7 @@ export function dropTriggerMigration(
 	};
 }
 
-export function changeTriggerMigration(diff: TriggerChangeDiff) {
+function changeTriggerMigration(diff: TriggerChangeDiff) {
 	const tableName = diff.path[1];
 	const triggerName = diff.path[2];
 	const newValue = diff.value;

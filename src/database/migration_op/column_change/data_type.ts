@@ -1,18 +1,32 @@
 import { Difference } from "microdiff";
+import type {
+	DbTableInfo,
+	LocalTableInfo,
+} from "~/database/introspection/types.js";
 import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import { executeKyselySchemaStatement } from "../helpers.js";
 import { MigrationOpPriority } from "../priority.js";
 
-export type ColumnDataTypeDifference = {
+export function columnDataTypeMigrationOpGenerator(
+	diff: Difference,
+	_addedTables: string[],
+	_droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isColumnDataType(diff)) {
+		return columnDatatypeMigrationOperation(diff);
+	}
+}
+
+type ColumnDataTypeDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "dataType"];
 	value: string | null;
 	oldValue: string | null;
 };
 
-export function isColumnDataType(
-	test: Difference,
-): test is ColumnDataTypeDifference {
+function isColumnDataType(test: Difference): test is ColumnDataTypeDifference {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
@@ -21,9 +35,7 @@ export function isColumnDataType(
 	);
 }
 
-export function columnDatatypeMigrationOperation(
-	diff: ColumnDataTypeDifference,
-) {
+function columnDatatypeMigrationOperation(diff: ColumnDataTypeDifference) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const changeset: Changeset = {

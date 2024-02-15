@@ -7,39 +7,54 @@ import {
 } from "kysely";
 import { Difference } from "microdiff";
 import pg from "pg";
+import type {
+	DbTableInfo,
+	LocalTableInfo,
+} from "~/database/introspection/types.js";
 import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import { executeKyselySchemaStatement } from "../helpers.js";
 import { MigrationOpPriority } from "../priority.js";
 
-export type ColumnDefaultDifference = {
-	type: "CHANGE";
-	path: ["table", string, string, "defaultValue"];
-	value: unknown | Expression<unknown> | null;
-	oldValue: unknown | Expression<unknown> | null;
-};
+export function columnDefaultMigrationOpGenerator(
+	diff: Difference,
+	_addedTables: string[],
+	_droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isColumnDefaultAddValue(diff)) {
+		return columnDefaultAddMigrationOperation(diff);
+	}
+	if (isColumnDefaultDropValue(diff)) {
+		return columnDefaultDropMigrationOperation(diff);
+	}
+	if (isColumnDefaultChangeValue(diff)) {
+		return columnDefaultChangeMigrationOperation(diff);
+	}
+}
 
-export type ColumnDefaultAddDifference = {
+type ColumnDefaultAddDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "defaultValue"];
 	value: unknown | Expression<unknown> | null;
 	oldValue: null;
 };
 
-export type ColumnDefaultDropDifference = {
+type ColumnDefaultDropDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "defaultValue"];
 	value: null;
 	oldValue: unknown | Expression<unknown> | null;
 };
 
-export type ColumnDefaultChangeDifference = {
+type ColumnDefaultChangeDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "defaultValue"];
 	value: unknown | Expression<unknown> | null;
 	oldValue: unknown | Expression<unknown> | null;
 };
 
-export function isColumnDefaultAddValue(
+function isColumnDefaultAddValue(
 	test: Difference,
 ): test is ColumnDefaultAddDifference {
 	return (
@@ -52,7 +67,7 @@ export function isColumnDefaultAddValue(
 	);
 }
 
-export function isColumnDefaultDropValue(
+function isColumnDefaultDropValue(
 	test: Difference,
 ): test is ColumnDefaultDropDifference {
 	return (
@@ -65,7 +80,7 @@ export function isColumnDefaultDropValue(
 	);
 }
 
-export function isColumnDefaultChangeValue(
+function isColumnDefaultChangeValue(
 	test: Difference,
 ): test is ColumnDefaultChangeDifference {
 	return (
@@ -78,9 +93,7 @@ export function isColumnDefaultChangeValue(
 	);
 }
 
-export function columnDefaultAddMigrationOperation(
-	diff: ColumnDefaultAddDifference,
-) {
+function columnDefaultAddMigrationOperation(diff: ColumnDefaultAddDifference) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const defaultValue = compileDefault(diff.value);
@@ -100,7 +113,7 @@ export function columnDefaultAddMigrationOperation(
 	return changeset;
 }
 
-export function columnDefaultDropMigrationOperation(
+function columnDefaultDropMigrationOperation(
 	diff: ColumnDefaultDropDifference,
 ) {
 	const tableName = diff.path[1];
@@ -122,7 +135,7 @@ export function columnDefaultDropMigrationOperation(
 	return changeset;
 }
 
-export function columnDefaultChangeMigrationOperation(
+function columnDefaultChangeMigrationOperation(
 	diff: ColumnDefaultChangeDifference,
 ) {
 	const tableName = diff.path[1];
@@ -154,7 +167,7 @@ export function compileDefault(value: any) {
 	].join("");
 }
 
-export function compileDefaultExpression(
+function compileDefaultExpression(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	expression: Expression<any>,
 ) {

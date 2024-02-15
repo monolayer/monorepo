@@ -1,4 +1,8 @@
 import { Difference } from "microdiff";
+import type {
+	DbTableInfo,
+	LocalTableInfo,
+} from "~/database/introspection/types.js";
 import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import { type ColumnInfo, ColumnUnique } from "~/database/schema/pg_column.js";
 import {
@@ -7,28 +11,46 @@ import {
 } from "../helpers.js";
 import { MigrationOpPriority } from "../priority.js";
 
-export type UniqueAddDifference = {
+export function uniqueMigrationOpGenerator(
+	diff: Difference,
+	_addedTables: string[],
+	_droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isUniqueAdd(diff)) {
+		return columnUniqueNullDistinctAddMigrationOperation(diff);
+	}
+	if (isUniqueDrop(diff)) {
+		return columnUniqueNullDistinctDropMigrationOperation(diff);
+	}
+	if (isUniqueChange(diff)) {
+		return columnUniqueNullDistinctChangeMigrationOperation(diff);
+	}
+}
+
+type UniqueAddDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "unique"];
 	value: NonNullable<ColumnInfo["unique"]>;
 	oldValue: null;
 };
 
-export type UniqueDropDifference = {
+type UniqueDropDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "unique"];
 	value: null;
 	oldValue: NonNullable<ColumnInfo["unique"]>;
 };
 
-export type UniqueChangeDifference = {
+type UniqueChangeDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "unique"];
 	value: NonNullable<ColumnInfo["unique"]>;
 	oldValue: NonNullable<ColumnInfo["unique"]>;
 };
 
-export function isUniqueAdd(test: Difference): test is UniqueAddDifference {
+function isUniqueAdd(test: Difference): test is UniqueAddDifference {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
@@ -39,7 +61,7 @@ export function isUniqueAdd(test: Difference): test is UniqueAddDifference {
 	);
 }
 
-export function isUniqueDrop(test: Difference): test is UniqueDropDifference {
+function isUniqueDrop(test: Difference): test is UniqueDropDifference {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
@@ -50,9 +72,7 @@ export function isUniqueDrop(test: Difference): test is UniqueDropDifference {
 	);
 }
 
-export function isUniqueChange(
-	test: Difference,
-): test is UniqueChangeDifference {
+function isUniqueChange(test: Difference): test is UniqueChangeDifference {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
@@ -63,7 +83,7 @@ export function isUniqueChange(
 	);
 }
 
-export function columnUniqueNullDistinctAddMigrationOperation(
+function columnUniqueNullDistinctAddMigrationOperation(
 	diff: UniqueAddDifference,
 ) {
 	const tableName = diff.path[1];
@@ -87,7 +107,7 @@ export function columnUniqueNullDistinctAddMigrationOperation(
 	return changeset;
 }
 
-export function columnUniqueNullDistinctDropMigrationOperation(
+function columnUniqueNullDistinctDropMigrationOperation(
 	diff: UniqueDropDifference,
 ) {
 	const tableName = diff.path[1];
@@ -111,7 +131,7 @@ export function columnUniqueNullDistinctDropMigrationOperation(
 	return changeset;
 }
 
-export function columnUniqueNullDistinctChangeMigrationOperation(
+function columnUniqueNullDistinctChangeMigrationOperation(
 	diff: UniqueChangeDifference,
 ) {
 	const tableName = diff.path[1];

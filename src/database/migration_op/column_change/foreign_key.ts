@@ -12,28 +12,46 @@ import {
 } from "../helpers.js";
 import { MigrationOpPriority } from "../priority.js";
 
-export type AddForeignKeyConstraintDiff = {
+export function columnForeignKeyMigrationOpGenerator(
+	diff: Difference,
+	_addedTables: string[],
+	_droppedTables: string[],
+	local: LocalTableInfo,
+	db: DbTableInfo,
+) {
+	if (isAddForeignKeyConstraint(diff)) {
+		return addColumnForeignKeyMigrationOperation(diff);
+	}
+	if (isRemoveForeignKeyConstraint(diff)) {
+		return removeColumnForeignKeyMigrationOperation(diff);
+	}
+	if (isChangeOptionsForeignKeyConstraint(diff)) {
+		return changeColumnForeignKeyMigrationOperation(diff, local, db);
+	}
+}
+
+type AddForeignKeyConstraintDiff = {
 	type: "CHANGE";
 	path: ["table", string, string, "foreignKeyConstraint"];
 	value: ForeIgnKeyConstraintInfo;
 	oldValue: null;
 };
 
-export type RemoveForeignKeyConstraint = {
+type RemoveForeignKeyConstraint = {
 	type: "CHANGE";
 	path: ["table", string, string, "foreignKeyConstraint"];
 	value: null;
 	oldValue: ForeIgnKeyConstraintInfo;
 };
 
-export type ChangeForeignConstraintDiff = {
+type ChangeForeignConstraintDiff = {
 	type: "CHANGE";
 	path: ["table", string, string, "foreignKeyConstraint", "options"];
 	value: `${OnModifyForeignAction};${OnModifyForeignAction}`;
 	oldValue: `${OnModifyForeignAction};${OnModifyForeignAction}`;
 };
 
-export function isAddForeignKeyConstraint(
+function isAddForeignKeyConstraint(
 	test: Difference,
 ): test is AddForeignKeyConstraintDiff {
 	return (
@@ -45,7 +63,7 @@ export function isAddForeignKeyConstraint(
 	);
 }
 
-export function isRemoveForeignKeyConstraint(
+function isRemoveForeignKeyConstraint(
 	test: Difference,
 ): test is RemoveForeignKeyConstraint {
 	return (
@@ -57,7 +75,7 @@ export function isRemoveForeignKeyConstraint(
 	);
 }
 
-export function isChangeOptionsForeignKeyConstraint(
+function isChangeOptionsForeignKeyConstraint(
 	test: Difference,
 ): test is ChangeForeignConstraintDiff {
 	return (
@@ -71,7 +89,7 @@ export function isChangeOptionsForeignKeyConstraint(
 	);
 }
 
-export function addColumnForeignKeyMigrationOperation(
+function addColumnForeignKeyMigrationOperation(
 	diff: AddForeignKeyConstraintDiff,
 ) {
 	const tableName = diff.path[1];
@@ -96,7 +114,7 @@ export function addColumnForeignKeyMigrationOperation(
 	return changeset;
 }
 
-export function removeColumnForeignKeyMigrationOperation(
+function removeColumnForeignKeyMigrationOperation(
 	diff: RemoveForeignKeyConstraint,
 ) {
 	const tableName = diff.path[1];
@@ -121,7 +139,7 @@ export function removeColumnForeignKeyMigrationOperation(
 	return changeset;
 }
 
-export function changeColumnForeignKeyMigrationOperation(
+function changeColumnForeignKeyMigrationOperation(
 	diff: ChangeForeignConstraintDiff,
 	local: LocalTableInfo,
 	db: DbTableInfo,
@@ -154,6 +172,3 @@ export function changeColumnForeignKeyMigrationOperation(
 	};
 	return changeset;
 }
-
-// "ALTER TABLE members DROP CONSTRAINT members_book_id_fkey",
-// "ALTER TABLE members ADD CONSTRAINT members_book_id_fkey FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE ON UPDATE CASCADE",

@@ -1,18 +1,32 @@
 import { Difference } from "microdiff";
+import type {
+	DbTableInfo,
+	LocalTableInfo,
+} from "~/database/introspection/types.js";
 import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import { executeKyselySchemaStatement } from "../helpers.js";
 import { MigrationOpPriority } from "../priority.js";
 
-export type ColumnNullableDifference = {
+export function columnNullableMigrationOpGenerator(
+	diff: Difference,
+	_addedTables: string[],
+	_droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isColumnNullable(diff)) {
+		return columnNullableMigrationOperation(diff);
+	}
+}
+
+type ColumnNullableDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "isNullable"];
 	value: true | null;
 	oldValue: true | null;
 };
 
-export function isColumnNullable(
-	test: Difference,
-): test is ColumnNullableDifference {
+function isColumnNullable(test: Difference): test is ColumnNullableDifference {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
@@ -21,9 +35,7 @@ export function isColumnNullable(
 	);
 }
 
-export function columnNullableMigrationOperation(
-	diff: ColumnNullableDifference,
-) {
+function columnNullableMigrationOperation(diff: ColumnNullableDifference) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const changeset: Changeset = {

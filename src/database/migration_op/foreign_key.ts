@@ -3,6 +3,22 @@ import { ChangeSetType } from "./changeset.js";
 import { executeKyselyDbStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
 
+export function foreignKeyMigrationOpGenerator(
+	diff: Difference,
+	addedTables: string[],
+	droppedTables: string[],
+) {
+	if (isForeignKeyConstraintCreate(diff)) {
+		return createforeignKeyConstraintMigration(diff, addedTables);
+	}
+	if (isForeignKeyConstraintDrop(diff)) {
+		return dropforeignKeyConstraintMigration(diff, droppedTables);
+	}
+	if (isForeignKeyConstraintChange(diff)) {
+		return changeforeignKeyConstraintMigration(diff);
+	}
+}
+
 type ForeignKeyCreateDiff = {
 	type: "CREATE";
 	path: ["foreignKeyConstraints", string];
@@ -26,7 +42,7 @@ type ForeignKeyChangeDiff = {
 	oldValue: string;
 };
 
-export function isForeignKeyConstraintCreate(
+function isForeignKeyConstraintCreate(
 	test: Difference,
 ): test is ForeignKeyCreateDiff {
 	return (
@@ -39,7 +55,7 @@ export function isForeignKeyConstraintCreate(
 	);
 }
 
-export function isForeignKeyConstraintDrop(
+function isForeignKeyConstraintDrop(
 	test: Difference,
 ): test is ForeignKeyDropDiff {
 	return (
@@ -52,7 +68,7 @@ export function isForeignKeyConstraintDrop(
 	);
 }
 
-export function isForeignKeyConstraintChange(
+function isForeignKeyConstraintChange(
 	test: Difference,
 ): test is ForeignKeyChangeDiff {
 	return (
@@ -66,7 +82,7 @@ export function isForeignKeyConstraintChange(
 	);
 }
 
-export function createforeignKeyConstraintMigration(
+function createforeignKeyConstraintMigration(
 	diff: ForeignKeyCreateDiff,
 	addedTables: string[],
 ) {
@@ -91,7 +107,7 @@ export function createforeignKeyConstraintMigration(
 	};
 }
 
-export function dropforeignKeyConstraintMigration(
+function dropforeignKeyConstraintMigration(
 	diff: ForeignKeyDropDiff,
 	droppedTables: string[],
 ) {
@@ -118,9 +134,7 @@ export function dropforeignKeyConstraintMigration(
 	};
 }
 
-export function changeforeignKeyConstraintMigration(
-	diff: ForeignKeyChangeDiff,
-) {
+function changeforeignKeyConstraintMigration(diff: ForeignKeyChangeDiff) {
 	const tableName = diff.path[1];
 	const constraintName = diff.path[2];
 	const newValue = diff.value;

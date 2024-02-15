@@ -1,7 +1,29 @@
 import type { Difference } from "microdiff";
+import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { ChangeSetType, type Changeset } from "./changeset.js";
 import { executeKyselyDbStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
+
+export function primaryKeyMigrationOpGenerator(
+	diff: Difference,
+	addedTables: string[],
+	droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isPrimaryKeyCreateFirst(diff)) {
+		return createPrimaryKeyMigration(diff, addedTables);
+	}
+	if (isPrimaryKeyDrop(diff)) {
+		return dropPrimaryKeyMigration(diff, droppedTables);
+	}
+	if (isPrimaryKeyUpdate(diff)) {
+		return updatePrimaryKeyMigration(diff, addedTables, droppedTables);
+	}
+	if (isPrimaryKeyReplace(diff)) {
+		return replacePrimaryKeyMigration(diff, addedTables, droppedTables);
+	}
+}
 
 type PrimaryKeyCreateFirstDiff = {
 	type: "CREATE";
@@ -31,7 +53,7 @@ type PrimaryKeyReplaceDiff = {
 	oldValue: string;
 };
 
-export function isPrimaryKeyCreateFirst(
+function isPrimaryKeyCreateFirst(
 	test: Difference,
 ): test is PrimaryKeyCreateFirstDiff {
 	return (
@@ -44,9 +66,7 @@ export function isPrimaryKeyCreateFirst(
 	);
 }
 
-export function isPrimaryKeyUpdate(
-	test: Difference,
-): test is PrimaryKeyUpdateDiff {
+function isPrimaryKeyUpdate(test: Difference): test is PrimaryKeyUpdateDiff {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 3 &&
@@ -57,7 +77,7 @@ export function isPrimaryKeyUpdate(
 	);
 }
 
-export function isPrimaryKeyDrop(test: Difference): test is PrimaryKeyDropDiff {
+function isPrimaryKeyDrop(test: Difference): test is PrimaryKeyDropDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 2 &&
@@ -68,9 +88,7 @@ export function isPrimaryKeyDrop(test: Difference): test is PrimaryKeyDropDiff {
 	);
 }
 
-export function isPrimaryKeyReplace(
-	test: Difference,
-): test is PrimaryKeyReplaceDiff {
+function isPrimaryKeyReplace(test: Difference): test is PrimaryKeyReplaceDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 3 &&
@@ -81,7 +99,7 @@ export function isPrimaryKeyReplace(
 	);
 }
 
-export function createPrimaryKeyMigration(
+function createPrimaryKeyMigration(
 	diff: PrimaryKeyCreateFirstDiff,
 	addedTables: string[],
 ): Changeset {
@@ -106,7 +124,7 @@ export function createPrimaryKeyMigration(
 	};
 }
 
-export function dropPrimaryKeyMigration(
+function dropPrimaryKeyMigration(
 	diff: PrimaryKeyDropDiff,
 	droppedTables: string[],
 ): Changeset {
@@ -131,7 +149,7 @@ export function dropPrimaryKeyMigration(
 	};
 }
 
-export function updatePrimaryKeyMigration(
+function updatePrimaryKeyMigration(
 	diff: PrimaryKeyUpdateDiff,
 	addedTables: string[],
 	droppedTables: string[],
@@ -157,7 +175,7 @@ export function updatePrimaryKeyMigration(
 	};
 }
 
-export function replacePrimaryKeyMigration(
+function replacePrimaryKeyMigration(
 	diff: PrimaryKeyReplaceDiff,
 	addedTables: string[],
 	droppedTables: string[],

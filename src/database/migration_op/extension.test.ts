@@ -1,12 +1,7 @@
 import microdiff from "microdiff";
 import { describe, expect, test } from "vitest";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
-import {
-	createExtensionMigration,
-	dropExtensionMigration,
-	isCreateExtensionDiff,
-	isDropExtensionDiff,
-} from "./extensions.js";
+import { extensionMigrationOpGenerator } from "./extensions.js";
 
 describe("extension migration Ops", () => {
 	test("add extension", () => {
@@ -19,9 +14,15 @@ describe("extension migration Ops", () => {
 		const remote = migrationSchemaFactory();
 		const diff = microdiff(remote, local);
 
-		const result = diff.map((d) => {
-			if (isCreateExtensionDiff(d)) return createExtensionMigration(d);
-		});
+		const result = diff.map((d) =>
+			extensionMigrationOpGenerator(
+				d,
+				[],
+				[],
+				migrationSchemaFactory(),
+				migrationSchemaFactory(),
+			),
+		);
 
 		const expected = [
 			{
@@ -54,9 +55,15 @@ describe("extension migration Ops", () => {
 		});
 		const diff = microdiff(remote, local);
 
-		const result = diff.map((d) => {
-			if (isDropExtensionDiff(d)) return dropExtensionMigration(d);
-		});
+		const result = diff.map((d) =>
+			extensionMigrationOpGenerator(
+				d,
+				[],
+				[],
+				migrationSchemaFactory(),
+				migrationSchemaFactory(),
+			),
+		);
 
 		const expected = [
 			{

@@ -1,26 +1,43 @@
 import { Difference } from "microdiff";
+import type {
+	DbTableInfo,
+	LocalTableInfo,
+} from "~/database/introspection/types.js";
 import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import type { ColumnInfo } from "~/database/schema/pg_column.js";
 import { executeKyselyDbStatement } from "../helpers.js";
 import { MigrationOpPriority } from "../priority.js";
 
-export type IdentityAddDifference = {
+export function columnIdentityMigrationOpGenerator(
+	diff: Difference,
+	_addedTables: string[],
+	_droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isColumnIdentityAdd(diff)) {
+		return columnIdentityAddMigrationOperation(diff);
+	}
+	if (isColumnIdentityDrop(diff)) {
+		return columnIdentityDropMigrationOperation(diff);
+	}
+}
+
+type IdentityAddDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "identity"];
 	value: NonNullable<ColumnInfo["identity"]>;
 	oldValue: null;
 };
 
-export type IdentityDropDifference = {
+type IdentityDropDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "identity"];
 	value: null;
 	oldValue: NonNullable<ColumnInfo["identity"]>;
 };
 
-export function isColumnIdentityAdd(
-	test: Difference,
-): test is IdentityAddDifference {
+function isColumnIdentityAdd(test: Difference): test is IdentityAddDifference {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
@@ -31,7 +48,7 @@ export function isColumnIdentityAdd(
 	);
 }
 
-export function isColumnIdentityDrop(
+function isColumnIdentityDrop(
 	test: Difference,
 ): test is IdentityDropDifference {
 	return (
@@ -44,9 +61,7 @@ export function isColumnIdentityDrop(
 	);
 }
 
-export function columnIdentityAddMigrationOperation(
-	diff: IdentityAddDifference,
-) {
+function columnIdentityAddMigrationOperation(diff: IdentityAddDifference) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const changeset: Changeset = {
@@ -68,9 +83,7 @@ export function columnIdentityAddMigrationOperation(
 	return changeset;
 }
 
-export function columnIdentityDropMigrationOperation(
-	diff: IdentityDropDifference,
-) {
+function columnIdentityDropMigrationOperation(diff: IdentityDropDifference) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const changeset: Changeset = {

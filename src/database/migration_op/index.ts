@@ -1,31 +1,46 @@
 import type { Difference } from "microdiff";
+import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { ChangeSetType, type Changeset } from "./changeset.js";
 import { MigrationOpPriority } from "./priority.js";
 
-export type CreateFirstIndexDiff = {
+export function indexMigrationOpGenerator(
+	diff: Difference,
+	addedTables: string[],
+	droppedTables: string[],
+	_local: LocalTableInfo,
+	_db: DbTableInfo,
+) {
+	if (isCreateFirstIndex(diff)) {
+		return createFirstIndexMigration(diff, addedTables);
+	}
+	if (isDropAllIndexes(diff)) {
+		return dropAllIndexesMigration(diff, droppedTables);
+	}
+	if (isChangeIndex(diff)) {
+		return changeIndexMigration(diff);
+	}
+}
+
+type CreateFirstIndexDiff = {
 	type: "CREATE";
 	path: ["index", string];
 	value: Record<string, string>;
 };
 
-export function isCreateFirstIndex(
-	test: Difference,
-): test is CreateFirstIndexDiff {
+function isCreateFirstIndex(test: Difference): test is CreateFirstIndexDiff {
 	return (
 		test.type === "CREATE" && test.path[0] === "index" && test.path.length === 2
 	);
 }
 
-export type ChangeIndexDiff = {
+type ChangeIndexDiff = {
 	type: "CHANGE";
 	path: ["index", string, string];
 	value: string;
 	oldValue: string;
 };
 
-export function isChangeIndex(
-	differece: Difference,
-): differece is ChangeIndexDiff {
+function isChangeIndex(differece: Difference): differece is ChangeIndexDiff {
 	return (
 		differece.type === "CHANGE" &&
 		differece.path[0] === "index" &&
@@ -36,19 +51,19 @@ export function isChangeIndex(
 	);
 }
 
-export type DropAllIndexesDiff = {
+type DropAllIndexesDiff = {
 	type: "REMOVE";
 	path: ["index", string];
 	oldValue: Record<string, string>;
 };
 
-export function isDropAllIndexes(test: Difference): test is DropAllIndexesDiff {
+function isDropAllIndexes(test: Difference): test is DropAllIndexesDiff {
 	return (
 		test.type === "REMOVE" && test.path[0] === "index" && test.path.length === 2
 	);
 }
 
-export function createFirstIndexMigration(
+function createFirstIndexMigration(
 	diff: CreateFirstIndexDiff,
 	addedTables: string[],
 ) {
@@ -75,7 +90,7 @@ export function createFirstIndexMigration(
 		.filter((x): x is Changeset => x !== undefined);
 }
 
-export function dropAllIndexesMigration(
+function dropAllIndexesMigration(
 	diff: DropAllIndexesDiff,
 	droppedTables: string[],
 ) {
@@ -103,7 +118,7 @@ export function dropAllIndexesMigration(
 		.filter((x): x is Changeset => x !== undefined);
 }
 
-export function changeIndexMigration(diff: ChangeIndexDiff) {
+function changeIndexMigration(diff: ChangeIndexDiff) {
 	const tableName = diff.path[1];
 	const indexName = diff.path[2];
 	const oldIndex = diff.oldValue.split(":");
