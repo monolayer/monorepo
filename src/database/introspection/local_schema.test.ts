@@ -586,3 +586,60 @@ test("#localSchema", () => {
 	};
 	expect(localSchema(database)).toStrictEqual(expectedLocalSchema);
 });
+
+test("trigger names are downcased", () => {
+	const users = pgTable("users", {
+		columns: {
+			id: serial(),
+		},
+		triggers: {
+			foo_Before_update: trigger({
+				firingTime: "before",
+				events: ["update"],
+				forEach: "statement",
+				functionName: "foo",
+			}),
+		},
+	});
+
+	const database = pgDatabase({
+		tables: {
+			users,
+		},
+	});
+
+	const expectedLocalSchema = {
+		table: {
+			users: {
+				id: {
+					characterMaximumLength: null,
+					columnName: "id",
+					dataType: "serial",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "users",
+					unique: null,
+				},
+			},
+		},
+		triggers: {
+			users: {
+				foo_before_update_trg:
+					"a2b86e379795876db3ca7ffb7ae373b26287a1be74a33c46eee8a4d789e2a9f6:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+			},
+		},
+		extensions: {},
+		foreignKeyConstraints: {},
+		index: {},
+		primaryKey: {},
+		uniqueConstraints: {},
+	};
+	expect(localSchema(database)).toStrictEqual(expectedLocalSchema);
+});

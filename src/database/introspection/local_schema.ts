@@ -321,7 +321,7 @@ function schemaDBTriggersInfo(
 		(acc, [tableName, tableDefinition]) => {
 			tableDefinition.triggers;
 			for (const trigger of Object.entries(tableDefinition.triggers || {})) {
-				const triggerName = `${trigger[0]}_trg`;
+				const triggerName = `${trigger[0]}_trg`.toLowerCase();
 				const hash = createHash("sha256");
 				const compiledTrigger = trigger[1].compile(triggerName, tableName);
 				hash.update(compiledTrigger);
