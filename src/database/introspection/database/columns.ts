@@ -132,6 +132,31 @@ async function fetchDbColumnInfo(
 						"information_schema.columns.column_name",
 					),
 		)
+		.fullJoin("pg_class", (eb) =>
+			eb.onRef(
+				"information_schema.columns.table_name",
+				"=",
+				"pg_class.relname",
+			),
+		)
+		.fullJoin("pg_namespace", (eb) =>
+			eb
+				.onRef(
+					"information_schema.columns.table_schema",
+					"=",
+					"pg_namespace.nspname",
+				)
+				.onRef("pg_class.relnamespace", "=", "pg_namespace.oid"),
+		)
+		.fullJoin("pg_attribute", (eb) =>
+			eb
+				.onRef("pg_attribute.attrelid", "=", "pg_class.oid")
+				.onRef(
+					"pg_attribute.attname",
+					"=",
+					"information_schema.columns.column_name",
+				),
+		)
 		.select([
 			"information_schema.columns.table_name",
 			"information_schema.columns.column_name",
@@ -151,6 +176,7 @@ async function fetchDbColumnInfo(
 				"sequence_name",
 			),
 			"c.constraints",
+			"pg_attribute.atttypmod",
 		])
 		.select((eb) => [
 			eb
@@ -180,6 +206,8 @@ async function fetchDbColumnInfo(
 		])
 		.where("information_schema.columns.table_schema", "=", databaseSchema)
 		.where("information_schema.columns.table_name", "in", tableNames)
+		.where("pg_attribute.attnum", ">", 0)
+		.where("pg_attribute.attisdropped", "=", false)
 		.orderBy("information_schema.columns.table_name asc")
 		.orderBy("information_schema.columns.column_name asc")
 		.execute();
@@ -209,7 +237,10 @@ function transformDbColumnInfo(
 				dataTypeFullName = row.data_type;
 				break;
 			case "character":
-				dataTypeFullName = `char(${row.character_maximum_length})`;
+				dataTypeFullName =
+					row.atttypmod === -1
+						? "char"
+						: `char(${row.character_maximum_length})`;
 				break;
 			case "character varying":
 				if (row.character_maximum_length !== null) {
@@ -253,16 +284,24 @@ function transformDbColumnInfo(
 				}
 				break;
 			case "timestamp without time zone":
-				dataTypeFullName = `timestamp(${row.datetime_precision})`;
+				dataTypeFullName =
+					row.atttypmod === -1
+						? "timestamp"
+						: `timestamp(${row.datetime_precision})`;
 				break;
 			case "timestamp with time zone":
-				dataTypeFullName = `timestamptz(${row.datetime_precision})`;
+				dataTypeFullName =
+					row.atttypmod === -1
+						? "timestamptz"
+						: `timestamptz(${row.datetime_precision})`;
 				break;
 			case "time with time zone":
-				dataTypeFullName = `timetz(${row.datetime_precision})`;
+				dataTypeFullName =
+					row.atttypmod === -1 ? "timetz" : `timetz(${row.datetime_precision})`;
 				break;
 			case "time without time zone":
-				dataTypeFullName = `time(${row.datetime_precision})`;
+				dataTypeFullName =
+					row.atttypmod === -1 ? "time" : `time(${row.datetime_precision})`;
 				break;
 			default:
 				dataTypeFullName = row.data_type || "";

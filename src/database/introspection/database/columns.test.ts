@@ -413,7 +413,7 @@ describe("#dbColumnInfo", () => {
 				timestamp: columnInfoFactory({
 					tableName: "dt_table_1",
 					columnName: "timestamp",
-					dataType: "timestamp(6)",
+					dataType: "timestamp",
 					isNullable: true,
 					datetimePrecision: 6,
 				}),
@@ -427,7 +427,7 @@ describe("#dbColumnInfo", () => {
 				timestamptz: columnInfoFactory({
 					tableName: "dt_table_1",
 					columnName: "timestamptz",
-					dataType: "timestamptz(6)",
+					dataType: "timestamptz",
 					isNullable: true,
 					datetimePrecision: 6,
 				}),
@@ -443,7 +443,7 @@ describe("#dbColumnInfo", () => {
 				time: columnInfoFactory({
 					tableName: "dt_table_2",
 					columnName: "time",
-					dataType: "time(6)",
+					dataType: "time",
 					defaultValue: "'12:00:00'::time without time zone",
 					isNullable: true,
 					datetimePrecision: 6,
@@ -458,7 +458,7 @@ describe("#dbColumnInfo", () => {
 				timetz: columnInfoFactory({
 					tableName: "dt_table_2",
 					columnName: "timetz",
-					dataType: "timetz(6)",
+					dataType: "timetz",
 					isNullable: true,
 					datetimePrecision: 6,
 				}),

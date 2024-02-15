@@ -177,7 +177,7 @@ describe("#remoteSchema", () => {
 						updated_at: {
 							characterMaximumLength: null,
 							columnName: "updated_at",
-							dataType: "timestamp(6)",
+							dataType: "timestamp",
 							datetimePrecision: 6,
 							defaultValue: "CURRENT_TIMESTAMP",
 							foreignKeyConstraint: null,
@@ -227,7 +227,7 @@ describe("#remoteSchema", () => {
 						updated_at: {
 							characterMaximumLength: null,
 							columnName: "updated_at",
-							dataType: "timestamp(6)",
+							dataType: "timestamp",
 							datetimePrecision: 6,
 							defaultValue: "CURRENT_TIMESTAMP",
 							foreignKeyConstraint: null,
