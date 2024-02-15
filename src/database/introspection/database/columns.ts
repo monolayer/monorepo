@@ -288,20 +288,28 @@ function transformDbColumnInfo(
 					row.atttypmod === -1
 						? "timestamp"
 						: `timestamp(${row.datetime_precision})`;
+				row.datetime_precision =
+					row.atttypmod === -1 ? null : row.datetime_precision;
 				break;
 			case "timestamp with time zone":
 				dataTypeFullName =
 					row.atttypmod === -1
 						? "timestamptz"
 						: `timestamptz(${row.datetime_precision})`;
+				row.datetime_precision =
+					row.atttypmod === -1 ? null : row.datetime_precision;
 				break;
 			case "time with time zone":
 				dataTypeFullName =
 					row.atttypmod === -1 ? "timetz" : `timetz(${row.datetime_precision})`;
+				row.datetime_precision =
+					row.atttypmod === -1 ? null : row.datetime_precision;
 				break;
 			case "time without time zone":
 				dataTypeFullName =
 					row.atttypmod === -1 ? "time" : `time(${row.datetime_precision})`;
+				row.datetime_precision =
+					row.atttypmod === -1 ? null : row.datetime_precision;
 				break;
 			default:
 				dataTypeFullName = row.data_type || "";
