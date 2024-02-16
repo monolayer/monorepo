@@ -22,6 +22,9 @@ export enum ChangeSetType {
 	CreateTrigger = "createTrigger",
 	DropTrigger = "dropTrigger",
 	UpdateTrigger = "updateTrigger",
+	CreateEnum = "createEnum",
+	DropEnum = "dropEnum",
+	ChangeEnum = "changeEnum",
 }
 
 export type Changeset = {

@@ -23,6 +23,7 @@ export type ColumnInfo = {
 	foreignKeyConstraint: ForeIgnKeyConstraintInfo | null;
 	identity: ColumnIdentity.Always | ColumnIdentity.ByDefault | null;
 	unique: ColumnUnique.NullsDistinct | ColumnUnique.NullsNotDistinct | null;
+	enum: boolean;
 };
 
 export enum ColumnIdentity {
@@ -115,6 +116,7 @@ export class PgColumnBase<S, I, U> {
 			foreignKeyConstraint: null,
 			identity: null,
 			unique: null,
+			enum: false,
 		};
 	}
 
@@ -548,6 +550,80 @@ export class PgNumeric extends PgColumn<string, number | bigint | string> {
 	}
 }
 
+export function pgEnum<N extends string, T extends string[]>(
+	name: N,
+	values: [...T],
+): PgEnum<N, T[number]> {
+	return new PgEnum(name, values as unknown as T[number]);
+}
+
+export class PgEnum<
+	N,
+	T,
+	S = string | undefined,
+	I = string | undefined,
+	U = string,
+> {
+	declare readonly _columnType: ColumnType<S, I, U>;
+	readonly values: T;
+	readonly name: N;
+	readonly info: Omit<ColumnInfo, "columnName" | "tableName">;
+
+	constructor(name: N, values: T) {
+		this.values = values;
+		this.name = name;
+		this.info = {
+			dataType: name as string,
+			isNullable: true,
+			defaultValue: null,
+			characterMaximumLength: null,
+			numericPrecision: null,
+			numericScale: null,
+			datetimePrecision: null,
+			renameFrom: null,
+			primaryKey: null,
+			foreignKeyConstraint: null,
+			identity: null,
+			unique: null,
+			enum: true,
+		};
+	}
+
+	notNull() {
+		this.info.isNullable = false;
+		return this as unknown as PgEnum<N, T, string, string, string>;
+	}
+
+	defaultTo(value: string) {
+		this.info.defaultValue = `'${value}'::${this.info.dataType}`;
+		return this as unknown as PgEnum<N, T, string, string | undefined, string>;
+	}
+
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	references<R extends PgTable<string, any>>(
+		table: R,
+		column: keyof R["columns"],
+		options?: {
+			onDelete?: OnModifyForeignAction;
+			onUpdate?: OnModifyForeignAction;
+		},
+	): this {
+		this.info.foreignKeyConstraint = {
+			table: table.name,
+			column: column.toString(),
+			options: `${
+				options?.onDelete !== undefined ? options.onDelete : "no action"
+			};${options?.onUpdate !== undefined ? options.onUpdate : "no action"}`,
+		};
+		return this;
+	}
+
+	renameFrom(name: string) {
+		this.info.renameFrom = name;
+		return this;
+	}
+}
+
 export type PgColumnTypes =
 	| PgBigInt
 	| PgBigSerial
@@ -573,4 +649,6 @@ export type PgColumnTypes =
 	| PgTimestamp
 	| PgTimestampTz
 	| PgUuid
-	| PgVarChar;
+	| PgVarChar
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	| PgEnum<string, any, any, any, any>;

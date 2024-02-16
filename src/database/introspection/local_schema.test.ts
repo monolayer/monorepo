@@ -6,6 +6,7 @@ import {
 	schemaDBColumnInfoByTable,
 	schemaDBIndexInfoByTable,
 	schemaDbConstraintInfoByTable,
+	schemaDbEnumInfo,
 } from "~/database/introspection/local_schema.js";
 import {
 	ColumnIdentity,
@@ -13,6 +14,7 @@ import {
 	bigserial,
 	boolean,
 	integer,
+	pgEnum,
 	serial,
 	timestamp,
 	varchar,
@@ -154,6 +156,7 @@ test("#schemaDBColumnInfoByTable", () => {
 			id: serial(),
 			name: varchar().notNull(),
 			email: varchar().notNull(),
+			role: pgEnum("role", ["user", "admin", "superuser"]),
 		},
 	});
 	const teams = pgTable("teams", {
@@ -188,6 +191,12 @@ test("#schemaDBColumnInfoByTable", () => {
 				columnName: "email",
 				dataType: "varchar",
 				isNullable: false,
+			}),
+			role: columnInfoFactory({
+				tableName: "users",
+				columnName: "role",
+				dataType: "role",
+				enum: true,
 			}),
 		},
 		teams: {
@@ -306,12 +315,39 @@ test("#schemaDbConstraintInfoByTable", () => {
 	});
 });
 
+test("#schemaDbEnumInfo", () => {
+	const books = pgTable("books", {
+		columns: {
+			id: serial().primaryKey(),
+			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
+		},
+	});
+
+	const users = pgTable("users", {
+		columns: {
+			id: serial().primaryKey(),
+			name: varchar(),
+			status: pgEnum("user_status", ["active", "inactive"]),
+		},
+	});
+
+	const database = pgDatabase({
+		tables: { users, books },
+	});
+
+	expect(schemaDbEnumInfo(database)).toStrictEqual({
+		book_status: "available, checked_out, lost",
+		user_status: "active, inactive",
+	});
+});
+
 test("#localSchema", () => {
 	const books = pgTable("books", {
 		columns: {
 			id: serial().primaryKey(),
 			name: varchar(),
 			location: varchar(),
+			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
 		},
 		indexes: [index("name")],
 		constraints: [unique(["name", "location"])],
@@ -323,6 +359,7 @@ test("#localSchema", () => {
 			name: varchar().notNull(),
 			email: varchar().notNull(),
 			book_id: integer(),
+			status: pgEnum("user_status", ["active", "inactive"]),
 		},
 		constraints: [
 			foreignKey(["book_id"], books, ["id"]),
@@ -385,6 +422,7 @@ test("#localSchema", () => {
 					renameFrom: null,
 					tableName: "books",
 					unique: null,
+					enum: false,
 				},
 				location: {
 					characterMaximumLength: null,
@@ -401,6 +439,24 @@ test("#localSchema", () => {
 					renameFrom: null,
 					tableName: "books",
 					unique: null,
+					enum: false,
+				},
+				status: {
+					characterMaximumLength: null,
+					columnName: "status",
+					dataType: "book_status",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "books",
+					unique: null,
+					enum: true,
 				},
 				name: {
 					characterMaximumLength: null,
@@ -417,6 +473,7 @@ test("#localSchema", () => {
 					renameFrom: null,
 					tableName: "books",
 					unique: null,
+					enum: false,
 				},
 			},
 			teams: {
@@ -435,6 +492,7 @@ test("#localSchema", () => {
 					renameFrom: null,
 					tableName: "teams",
 					unique: null,
+					enum: false,
 				},
 				id: {
 					characterMaximumLength: null,
@@ -451,6 +509,7 @@ test("#localSchema", () => {
 					renameFrom: null,
 					tableName: "teams",
 					unique: null,
+					enum: false,
 				},
 				name: {
 					characterMaximumLength: null,
@@ -467,6 +526,7 @@ test("#localSchema", () => {
 					renameFrom: null,
 					tableName: "teams",
 					unique: null,
+					enum: false,
 				},
 			},
 			users: {
@@ -485,6 +545,7 @@ test("#localSchema", () => {
 					renameFrom: null,
 					tableName: "users",
 					unique: null,
+					enum: false,
 				},
 				email: {
 					characterMaximumLength: null,
@@ -501,6 +562,7 @@ test("#localSchema", () => {
 					renameFrom: null,
 					tableName: "users",
 					unique: null,
+					enum: false,
 				},
 				id: {
 					characterMaximumLength: null,
@@ -517,6 +579,7 @@ test("#localSchema", () => {
 					renameFrom: null,
 					tableName: "users",
 					unique: null,
+					enum: false,
 				},
 				name: {
 					characterMaximumLength: null,
@@ -533,6 +596,24 @@ test("#localSchema", () => {
 					renameFrom: null,
 					tableName: "users",
 					unique: null,
+					enum: false,
+				},
+				status: {
+					characterMaximumLength: null,
+					columnName: "status",
+					dataType: "user_status",
+					datetimePrecision: null,
+					defaultValue: null,
+					foreignKeyConstraint: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					primaryKey: null,
+					renameFrom: null,
+					tableName: "users",
+					unique: null,
+					enum: true,
 				},
 			},
 		},
@@ -583,6 +664,10 @@ test("#localSchema", () => {
 					"a2b86e379795876db3ca7ffb7ae373b26287a1be74a33c46eee8a4d789e2a9f6:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
 			},
 		},
+		enums: {
+			book_status: "available, checked_out, lost",
+			user_status: "active, inactive",
+		},
 	};
 	expect(localSchema(database)).toStrictEqual(expectedLocalSchema);
 });
@@ -626,6 +711,7 @@ test("trigger names are downcased", () => {
 					renameFrom: null,
 					tableName: "users",
 					unique: null,
+					enum: false,
 				},
 			},
 		},
@@ -640,6 +726,7 @@ test("trigger names are downcased", () => {
 		index: {},
 		primaryKey: {},
 		uniqueConstraints: {},
+		enums: {},
 	};
 	expect(localSchema(database)).toStrictEqual(expectedLocalSchema);
 });

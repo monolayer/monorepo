@@ -11,5 +11,6 @@ export function migrationSchemaFactory(
 		uniqueConstraints: options?.uniqueConstraints ?? {},
 		primaryKey: options?.primaryKey ?? {},
 		triggers: options?.triggers ?? {},
+		enums: options?.enums ?? {},
 	};
 }

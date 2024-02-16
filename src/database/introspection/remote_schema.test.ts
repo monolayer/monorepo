@@ -41,12 +41,31 @@ describe("#remoteSchema", () => {
 		await sql`CREATE EXTENSION btree_gin`.execute(kysely);
 
 		await kysely.schema
+			.createType("status")
+			.asEnum(["failed", "success"])
+			.execute();
+
+		await kysely.schema
+			.createType("role")
+			.asEnum(["user", "admin", "superuser"])
+			.execute();
+
+		await kysely.schema
+			.createType("not_kinetic")
+			.asEnum(["failed", "success"])
+			.execute();
+
+		await sql`COMMENT ON TYPE status IS 'kinetic'`.execute(kysely);
+		await sql`COMMENT ON TYPE role IS 'kinetic'`.execute(kysely);
+
+		await kysely.schema
 			.createTable("remote_schema_books")
 			.addColumn("id", "serial", (col) => col.primaryKey())
 			.addColumn("name", "varchar", (col) => col.unique())
 			.addColumn("updated_at", "timestamp", (col) =>
 				col.defaultTo(sql`CURRENT_TIMESTAMP`),
 			)
+			.addColumn("status", sql`status`)
 			.execute();
 
 		await kysely.schema
@@ -125,6 +144,7 @@ describe("#remoteSchema", () => {
 							renameFrom: null,
 							tableName: "remote_schema_users",
 							unique: null,
+							enum: false,
 						},
 						name: {
 							characterMaximumLength: null,
@@ -141,6 +161,7 @@ describe("#remoteSchema", () => {
 							renameFrom: null,
 							tableName: "remote_schema_users",
 							unique: "NullsNotDistinct",
+							enum: false,
 						},
 						book_id: {
 							characterMaximumLength: null,
@@ -157,6 +178,7 @@ describe("#remoteSchema", () => {
 							renameFrom: null,
 							tableName: "remote_schema_users",
 							unique: null,
+							enum: false,
 						},
 						email: {
 							characterMaximumLength: null,
@@ -173,6 +195,7 @@ describe("#remoteSchema", () => {
 							renameFrom: null,
 							tableName: "remote_schema_users",
 							unique: null,
+							enum: false,
 						},
 						updated_at: {
 							characterMaximumLength: null,
@@ -189,6 +212,7 @@ describe("#remoteSchema", () => {
 							renameFrom: null,
 							tableName: "remote_schema_users",
 							unique: null,
+							enum: false,
 						},
 					},
 					remote_schema_books: {
@@ -207,6 +231,7 @@ describe("#remoteSchema", () => {
 							renameFrom: null,
 							tableName: "remote_schema_books",
 							unique: null,
+							enum: false,
 						},
 						name: {
 							characterMaximumLength: null,
@@ -223,6 +248,7 @@ describe("#remoteSchema", () => {
 							renameFrom: null,
 							tableName: "remote_schema_books",
 							unique: "NullsDistinct",
+							enum: false,
 						},
 						updated_at: {
 							characterMaximumLength: null,
@@ -239,6 +265,24 @@ describe("#remoteSchema", () => {
 							renameFrom: null,
 							tableName: "remote_schema_books",
 							unique: null,
+							enum: false,
+						},
+						status: {
+							characterMaximumLength: null,
+							columnName: "status",
+							dataType: "status",
+							datetimePrecision: null,
+							defaultValue: null,
+							foreignKeyConstraint: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							primaryKey: null,
+							renameFrom: null,
+							tableName: "remote_schema_books",
+							unique: null,
+							enum: true,
 						},
 					},
 				},
@@ -275,6 +319,10 @@ describe("#remoteSchema", () => {
 						updated_at_remote_schema_users_trg:
 							"1234:CREATE TRIGGER updated_at_remote_schema_users_trg BEFORE UPDATE ON public.remote_schema_users FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
 					},
+				},
+				enums: {
+					role: "admin, superuser, user",
+					status: "failed, success",
 				},
 			},
 		};
@@ -318,6 +366,7 @@ describe("#remoteSchema", () => {
 							renameFrom: null,
 							tableName: "schema_with_empty_tables_books",
 							unique: null,
+							enum: false,
 						},
 						name: {
 							characterMaximumLength: null,
@@ -334,6 +383,7 @@ describe("#remoteSchema", () => {
 							renameFrom: null,
 							tableName: "schema_with_empty_tables_books",
 							unique: "NullsDistinct",
+							enum: false,
 						},
 					},
 				},
@@ -343,6 +393,7 @@ describe("#remoteSchema", () => {
 				primaryKey: {},
 				extensions: {},
 				triggers: {},
+				enums: {},
 			},
 		};
 

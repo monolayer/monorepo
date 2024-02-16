@@ -13,6 +13,8 @@ export type ExtensionInfo = Record<string, boolean>;
 
 export type TriggerInfo = Record<string, Record<string, string>>;
 
+export type EnumInfo = Record<string, string>;
+
 export type DbTableInfo = {
 	table: TableColumnInfo;
 	index?: IndexInfo;

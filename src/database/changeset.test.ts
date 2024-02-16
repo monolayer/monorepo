@@ -53,6 +53,7 @@ describe("#dbChangeset", () => {
 				primaryKey: {},
 				extensions: {},
 				triggers: {},
+				enums: {},
 			},
 			{
 				table: {},
@@ -62,6 +63,7 @@ describe("#dbChangeset", () => {
 				primaryKey: {},
 				extensions: {},
 				triggers: {},
+				enums: {},
 			},
 		);
 
@@ -107,6 +109,7 @@ describe("#dbChangeset", () => {
 				primaryKey: {},
 				extensions: {},
 				triggers: {},
+				enums: {},
 			},
 			{
 				table: {
@@ -137,6 +140,7 @@ describe("#dbChangeset", () => {
 				primaryKey: {},
 				extensions: {},
 				triggers: {},
+				enums: {},
 			},
 		);
 
@@ -215,6 +219,7 @@ describe("#dbChangeset", () => {
 				primaryKey: {},
 				extensions: {},
 				triggers: {},
+				enums: {},
 			},
 			{
 				table: {
@@ -259,6 +264,7 @@ describe("#dbChangeset", () => {
 				primaryKey: {},
 				extensions: {},
 				triggers: {},
+				enums: {},
 			},
 		);
 
@@ -441,6 +447,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {},
@@ -450,6 +457,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -520,6 +528,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -546,6 +555,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -608,6 +618,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -639,6 +650,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -695,6 +707,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -731,6 +744,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -786,6 +800,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -816,6 +831,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -878,6 +894,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {},
@@ -887,6 +904,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -928,6 +946,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -955,6 +974,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1014,6 +1034,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1026,6 +1047,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1095,6 +1117,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1120,6 +1143,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1175,6 +1199,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1202,6 +1227,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1244,6 +1270,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1271,6 +1298,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1339,6 +1367,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {},
@@ -1348,6 +1377,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1378,6 +1408,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1402,6 +1433,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1447,6 +1479,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1458,6 +1491,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1511,6 +1545,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1535,6 +1570,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1601,6 +1637,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1623,6 +1660,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1675,6 +1713,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1699,6 +1738,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1753,6 +1793,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1777,6 +1818,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1831,6 +1873,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {},
@@ -1840,6 +1883,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1869,6 +1913,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1887,6 +1932,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1925,6 +1971,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1936,6 +1983,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -1979,6 +2027,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -1996,6 +2045,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -2038,6 +2088,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -2056,6 +2107,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -2099,6 +2151,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -2117,6 +2170,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 			const expected = [
@@ -2175,6 +2229,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {},
@@ -2184,6 +2239,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 
@@ -2224,6 +2280,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -2261,6 +2318,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 
@@ -2339,6 +2397,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -2369,6 +2428,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 
@@ -2428,6 +2488,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -2465,6 +2526,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 
@@ -2529,6 +2591,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -2566,6 +2629,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 
@@ -2599,6 +2663,7 @@ describe("#dbChangeset", () => {
 						btree_gist: true,
 					},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {},
@@ -2610,6 +2675,7 @@ describe("#dbChangeset", () => {
 						cube: true,
 					},
 					triggers: {},
+					enums: {},
 				},
 			);
 
@@ -2661,6 +2727,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 							updated_at: {
 								characterMaximumLength: null,
@@ -2677,6 +2744,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 						},
 					},
@@ -2691,6 +2759,7 @@ describe("#dbChangeset", () => {
 								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
 						},
 					},
+					enums: {},
 				},
 				{
 					table: {},
@@ -2700,6 +2769,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 
@@ -2745,6 +2815,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -2764,6 +2835,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 							updated_at: {
 								characterMaximumLength: null,
@@ -2780,6 +2852,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 						},
 					},
@@ -2794,6 +2867,7 @@ describe("#dbChangeset", () => {
 								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
 						},
 					},
+					enums: {},
 				},
 			);
 
@@ -2849,6 +2923,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 							updated_at: {
 								characterMaximumLength: null,
@@ -2865,6 +2940,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 						},
 					},
@@ -2879,6 +2955,7 @@ describe("#dbChangeset", () => {
 								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
 						},
 					},
+					enums: {},
 				},
 				{
 					table: {
@@ -2898,6 +2975,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 							updated_at: {
 								characterMaximumLength: null,
@@ -2914,6 +2992,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 						},
 					},
@@ -2923,6 +3002,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 			);
 
@@ -2963,6 +3043,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 							updated_at: {
 								characterMaximumLength: null,
@@ -2979,6 +3060,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 						},
 					},
@@ -2988,6 +3070,7 @@ describe("#dbChangeset", () => {
 					primaryKey: {},
 					extensions: {},
 					triggers: {},
+					enums: {},
 				},
 				{
 					table: {
@@ -3007,6 +3090,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 							updated_at: {
 								characterMaximumLength: null,
@@ -3023,6 +3107,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 						},
 					},
@@ -3037,6 +3122,7 @@ describe("#dbChangeset", () => {
 								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
 						},
 					},
+					enums: {},
 				},
 			);
 
@@ -3077,6 +3163,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 							updated_at: {
 								characterMaximumLength: null,
@@ -3093,6 +3180,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
 						},
 					},
@@ -3108,6 +3196,360 @@ describe("#dbChangeset", () => {
 							created_at_remote_schema_books_trg:
 								"123456:CREATE TRIGGER created_at_remote_schema_books_trg BEFORE UPDATE ON remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('created_at')",
 						},
+					},
+					enums: {},
+				},
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+								enum: false,
+							},
+							updated_at: {
+								characterMaximumLength: null,
+								columnName: "updated_at",
+								dataType: "timestamp(6)",
+								datetimePrecision: 6,
+								defaultValue: "CURRENT_TIMESTAMP",
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+								enum: false,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {
+						remote_schema_books: {
+							updated_at_remote_schema_books_trg:
+								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
+							created_at_remote_schema_books_trg:
+								"123456:CREATE TRIGGER created_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('created_at')",
+						},
+					},
+					enums: {},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "remote_schema_books",
+					priority: 8.2,
+					type: "updateTrigger",
+					up: [
+						"await sql`DROP TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books;CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcsd';`.execute(db);",
+					],
+					down: [
+						"await sql`DROP TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books;CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';`.execute(db);",
+					],
+				},
+			];
+
+			expect(cset).toStrictEqual(expected);
+		});
+	});
+
+	describe("enums", () => {
+		test("create enums", () => {
+			const cset = changeset(
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+								enum: false,
+							},
+							role: {
+								characterMaximumLength: null,
+								columnName: "role",
+								dataType: "books_role",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+								enum: true,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {},
+					enums: {
+						book_status: "available, checked_out, lost",
+					},
+				},
+				{
+					table: {},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {},
+					enums: {},
+				},
+			);
+
+			const expected = [
+				{
+					tableName: "remote_schema_books",
+					type: "createTable",
+					priority: 1,
+					up: [
+						"await db.schema",
+						'createTable("remote_schema_books")',
+						'addColumn("id", "serial", (col) => col.notNull().primaryKey())',
+						'addColumn("role", "books_role")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'dropTable("remote_schema_books")',
+						"execute();",
+					],
+				},
+				{
+					priority: 0,
+					tableName: "none",
+					type: "createEnum",
+					up: [
+						"await kysely.schema",
+						'.createType("book_status")',
+						'.asEnum(["available", "checked_out", "lost"])',
+						".execute();",
+						"await sql`COMMENT ON TYPE book_status IS 'kinetic'`.execute(kysely);",
+					],
+					down: [
+						"await kysely.schema",
+						'.dropType("book_status")',
+						".execute();",
+					],
+				},
+			];
+
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("drop enums", () => {
+			const cset = changeset(
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+								enum: false,
+							},
+							role: {
+								characterMaximumLength: null,
+								columnName: "role",
+								dataType: "books_role",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+								enum: true,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {},
+					enums: {},
+				},
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+								enum: false,
+							},
+							role: {
+								characterMaximumLength: null,
+								columnName: "role",
+								dataType: "books_role",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+								enum: true,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {},
+					enums: {
+						book_status: "available, checked_out, lost",
+					},
+				},
+			);
+
+			const expected = [
+				{
+					priority: 0,
+					tableName: "none",
+					type: "dropEnum",
+					up: [
+						"await kysely.schema",
+						'.dropType("book_status")',
+						".execute();",
+					],
+					down: [
+						"await kysely.schema",
+						'.createType("book_status")',
+						'.asEnum(["available", "checked_out", "lost"])',
+						".execute();",
+						"await sql`COMMENT ON TYPE book_status IS 'kinetic'`.execute(kysely);",
+					],
+				},
+			];
+
+			expect(cset).toStrictEqual(expected);
+		});
+
+		test("change enums", () => {
+			const cset = changeset(
+				{
+					table: {
+						remote_schema_books: {
+							id: {
+								characterMaximumLength: null,
+								columnName: "id",
+								dataType: "serial",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: false,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: true,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+								enum: false,
+							},
+							role: {
+								characterMaximumLength: null,
+								columnName: "role",
+								dataType: "books_role",
+								datetimePrecision: null,
+								defaultValue: null,
+								foreignKeyConstraint: null,
+								identity: null,
+								isNullable: true,
+								numericPrecision: null,
+								numericScale: null,
+								primaryKey: null,
+								renameFrom: null,
+								tableName: "remote_schema_books",
+								unique: null,
+								enum: true,
+							},
+						},
+					},
+					index: {},
+					uniqueConstraints: {},
+					foreignKeyConstraints: {},
+					primaryKey: {},
+					extensions: {},
+					triggers: {},
+					enums: {
+						user_role: "",
+						book_status: "available, checked_out, lost, recovered, damaged",
 					},
 				},
 				{
@@ -3128,13 +3570,14 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: false,
 							},
-							updated_at: {
+							role: {
 								characterMaximumLength: null,
-								columnName: "updated_at",
-								dataType: "timestamp(6)",
-								datetimePrecision: 6,
-								defaultValue: "CURRENT_TIMESTAMP",
+								columnName: "role",
+								dataType: "books_role",
+								datetimePrecision: null,
+								defaultValue: null,
 								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
@@ -3144,6 +3587,7 @@ describe("#dbChangeset", () => {
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								unique: null,
+								enum: true,
 							},
 						},
 					},
@@ -3152,28 +3596,23 @@ describe("#dbChangeset", () => {
 					foreignKeyConstraints: {},
 					primaryKey: {},
 					extensions: {},
-					triggers: {
-						remote_schema_books: {
-							updated_at_remote_schema_books_trg:
-								"abcd:CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')",
-							created_at_remote_schema_books_trg:
-								"123456:CREATE TRIGGER created_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('created_at')",
-						},
+					triggers: {},
+					enums: {
+						user_role: "admin, user, guest",
+						book_status: "available, checked_out, lost",
 					},
 				},
 			);
 
 			const expected = [
 				{
-					tableName: "remote_schema_books",
-					priority: 8.2,
-					type: "updateTrigger",
+					priority: 0,
+					tableName: "none",
+					type: "changeEnum",
 					up: [
-						"await sql`DROP TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books;CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcsd';`.execute(db);",
+						"await sql`ALTER TYPE book_status ADD VALUE IF NOT EXISTS 'recovered';ALTER TYPE book_status ADD VALUE IF NOT EXISTS 'damaged';`.execute(kysely);",
 					],
-					down: [
-						"await sql`DROP TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books;CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';`.execute(db);",
-					],
+					down: [],
 				},
 			];
 

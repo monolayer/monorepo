@@ -6,6 +6,7 @@ import { columnIdentityMigrationOpGenerator } from "./migration_op/column_change
 import { columnNullableMigrationOpGenerator } from "./migration_op/column_change/nullable.js";
 import { columnPrimaryKeyMigrationOpGenerator } from "./migration_op/column_change/primary_key.js";
 import { uniqueMigrationOpGenerator } from "./migration_op/column_change/unique.js";
+import { enumMigrationOpGenerator } from "./migration_op/enums.js";
 import { extensionMigrationOpGenerator } from "./migration_op/extensions.js";
 import { foreignKeyMigrationOpGenerator } from "./migration_op/foreign_key.js";
 import { indexMigrationOpGenerator } from "./migration_op/index.js";
@@ -30,4 +31,5 @@ export const migrationOpGenerators = [
 	uniqueConstraintMigrationOpGenerator,
 	foreignKeyMigrationOpGenerator,
 	triggerMigrationOpGenerator,
+	enumMigrationOpGenerator,
 ];

@@ -214,6 +214,24 @@ export type PgTrigger = {
 	tgrelid: number;
 };
 
+export type PgTypeTable = {
+	oid: number;
+	typname: string;
+	typtype: "b" | "c" | "d" | "e" | "p" | "r" | "m";
+	typnamespace: number;
+};
+
+export type PgEnumTable = {
+	enumtypid: number;
+	enumlabel: string;
+};
+
+export type PgDescriptionTable = {
+	objoid: number;
+	objsubid: number;
+	description: string;
+};
+
 export type InformationSchemaDB = {
 	"information_schema.tables": InformationSchemaTables;
 	"information_schema.columns": InformationSchemaColumns;
@@ -228,4 +246,7 @@ export type InformationSchemaDB = {
 	pg_attribute: PgAttributeTable;
 	pg_extension: PbExtensionTable;
 	pg_trigger: PgTrigger;
+	pg_type: PgTypeTable;
+	pg_enum: PgEnumTable;
+	pg_description: PgDescriptionTable;
 };

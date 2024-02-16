@@ -157,6 +157,9 @@ async function fetchDbColumnInfo(
 					"information_schema.columns.column_name",
 				),
 		)
+		.fullJoin("pg_type", (eb) =>
+			eb.onRef("pg_type.oid", "=", "pg_attribute.atttypid"),
+		)
 		.select([
 			"information_schema.columns.table_name",
 			"information_schema.columns.column_name",
@@ -203,6 +206,18 @@ async function fetchDbColumnInfo(
 				.else(sql<boolean>`false`)
 				.end()
 				.as("is_nullable"),
+		])
+		.select((eb) => [
+			eb
+				.case()
+				.when(
+					sql`
+						information_schema.columns.data_type = 'USER-DEFINED' AND pg_type.typtype = 'e'`,
+				)
+				.then(sql<string>`pg_type.typname`)
+				.else(null)
+				.end()
+				.as("user_defined_type_name"),
 		])
 		.where("information_schema.columns.table_schema", "=", databaseSchema)
 		.where("information_schema.columns.table_name", "in", tableNames)
@@ -330,7 +345,10 @@ function transformDbColumnInfo(
 		transformed.push({
 			tableName: row.table_name,
 			columnName: row.column_name,
-			dataType: dataTypeFullName,
+			dataType:
+				row.user_defined_type_name !== null
+					? row.user_defined_type_name
+					: dataTypeFullName,
 			defaultValue: row.sequence_name === null ? row.column_default : null,
 			isNullable: row.is_nullable,
 			numericPrecision: row.numeric_precision,
@@ -365,6 +383,7 @@ function transformDbColumnInfo(
 						? ColumnUnique.NullsDistinct
 						: ColumnUnique.NullsNotDistinct
 					: null,
+			enum: row.user_defined_type_name !== null,
 		});
 	}
 	return transformed;

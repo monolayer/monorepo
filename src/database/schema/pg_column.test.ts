@@ -60,6 +60,7 @@ import {
 	uuid,
 	varchar,
 } from "./pg_column.js";
+import { PgEnum, pgEnum } from "./pg_column.js";
 import { pgTable } from "./pg_table.js";
 
 type ColumnWithDefaultContext = {
@@ -1193,6 +1194,122 @@ describe("pgNumeric", () => {
 			column.defaultTo(100n);
 			expect(info.defaultValue).toBe("'100'::numeric");
 		});
+	});
+});
+
+describe("pgEnum", () => {
+	test("returns a PgEnum instance", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
+		expect(testEnum).toBeInstanceOf(PgEnum);
+	});
+
+	test("enum name", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
+		expect(testEnum.name).toBe("myEnum");
+	});
+
+	test("enum values", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
+		expect(testEnum.values).toStrictEqual(["one", "two", "three"]);
+	});
+
+	test("column_type", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
+		type expectedColumnType = {
+			readonly __select__: string | undefined;
+			readonly __insert__: string | undefined;
+			readonly __update__: string;
+		};
+
+		const expectation: Expect<
+			Equal<expectedColumnType, typeof testEnum._columnType>
+		> = true;
+		expectTypeOf(expectation).toMatchTypeOf<boolean>();
+	});
+
+	test("default info", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
+		expect(testEnum.info).toStrictEqual({
+			dataType: "myEnum",
+			characterMaximumLength: null,
+			datetimePrecision: null,
+			defaultValue: null,
+			foreignKeyConstraint: null,
+			identity: null,
+			isNullable: true,
+			numericPrecision: null,
+			numericScale: null,
+			primaryKey: null,
+			renameFrom: null,
+			unique: null,
+			enum: true,
+		});
+	});
+
+	test("notNull()", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).notNull();
+		expect(testEnum.info.isNullable).toBe(false);
+	});
+
+	test("notNull() changes columnType", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).notNull();
+		type expectedColumnType = {
+			readonly __select__: string;
+			readonly __insert__: string;
+			readonly __update__: string;
+		};
+
+		const expectation: Expect<
+			Equal<expectedColumnType, typeof testEnum._columnType>
+		> = true;
+		expectTypeOf(expectation).toMatchTypeOf<boolean>();
+	});
+
+	test("defaultTo()", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).defaultTo("one");
+		expect(testEnum.info.defaultValue).toBe("'one'::myEnum");
+	});
+
+	test("defaultTo() changes columnType", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).defaultTo("one");
+		type expectedColumnType = {
+			readonly __select__: string;
+			readonly __insert__: string | undefined;
+			readonly __update__: string;
+		};
+
+		const expectation: Expect<
+			Equal<expectedColumnType, typeof testEnum._columnType>
+		> = true;
+		expectTypeOf(expectation).toMatchTypeOf<boolean>();
+	});
+
+	test("references()", () => {
+		const users = pgTable("users", {
+			columns: {
+				id: serial(),
+			},
+		});
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).references(
+			users,
+			"id",
+			{
+				onDelete: "cascade",
+				onUpdate: "set null",
+			},
+		);
+		expect(testEnum.info.foreignKeyConstraint).toEqual({
+			table: "users",
+			column: "id",
+			options: "cascade;set null",
+		});
+	});
+
+	test("renameFrom()", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).renameFrom(
+			"old_name",
+		);
+		expect(testEnum.info.renameFrom).toBe("old_name");
 	});
 });
 

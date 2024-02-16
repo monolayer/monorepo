@@ -6,6 +6,7 @@ import {
 } from "~/cli/command.js";
 import { MigrationSchema } from "../migrations/migration_schema.js";
 import { dbColumnInfo } from "./database/columns.js";
+import { dbEnumInfo } from "./database/enums.js";
 import { dbExtensionInfo } from "./database/extensions.js";
 import { dbForeignKeyConstraintInfo } from "./database/foreign_key_constraint.js";
 import { dbIndexInfo } from "./database/indexes.js";
@@ -63,6 +64,9 @@ export async function remoteSchema(
 	const triggerInfo = await dbTriggerInfo(kysely, "public", tables);
 	if (triggerInfo.status === ActionStatus.Error) return triggerInfo;
 
+	const enumInfo = await dbEnumInfo(kysely, "public");
+	if (enumInfo.status === ActionStatus.Error) return enumInfo;
+
 	return {
 		status: ActionStatus.Success,
 		result: {
@@ -73,6 +77,7 @@ export async function remoteSchema(
 			uniqueConstraints: remoteUniqueConstraintInfo.result,
 			primaryKey: primaryKeyConstraintInfo.result,
 			triggers: triggerInfo.result,
+			enums: enumInfo.result,
 		},
 	};
 }

@@ -4,6 +4,7 @@ import {
 	boolean,
 	int4,
 	integer,
+	pgEnum,
 	serial,
 	text,
 	varchar,
@@ -29,6 +30,18 @@ describe("pgTable definition", () => {
 		const columns = {
 			name: varchar(),
 			subscribed: boolean(),
+		};
+		const tbl = pgTable("users", {
+			columns: columns,
+		});
+		expect(tbl.columns).toBe(columns);
+	});
+
+	test("columns with pgEnum", () => {
+		const columns = {
+			name: varchar(),
+			subscribed: boolean(),
+			role: pgEnum("role", ["admin", "user"]),
 		};
 		const tbl = pgTable("users", {
 			columns: columns,

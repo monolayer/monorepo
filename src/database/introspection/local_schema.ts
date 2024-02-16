@@ -15,7 +15,7 @@ import type {
 	MigrationSchema,
 	TriggerInfo,
 } from "../migrations/migration_schema.js";
-import { type ColumnInfo, PgColumnTypes } from "../schema/pg_column.js";
+import { type ColumnInfo, PgColumnTypes, PgEnum } from "../schema/pg_column.js";
 import { PgForeignKey } from "../schema/pg_foreign_key.js";
 import type { PgIndex } from "../schema/pg_index.js";
 import { PgPrimaryKey } from "../schema/pg_primary_key.js";
@@ -27,6 +27,7 @@ import {
 } from "./info_to_query.js";
 import {
 	ColumnsInfo,
+	type EnumInfo,
 	type ExtensionInfo,
 	IndexInfo,
 	TableColumnInfo,
@@ -60,6 +61,7 @@ export function schemaColumnInfo(
 		foreignKeyConstraint: meta.foreignKeyConstraint,
 		identity: meta.identity,
 		unique: meta.unique,
+		enum: meta.enum,
 	};
 }
 
@@ -276,6 +278,7 @@ export function localSchema(
 		triggers: {
 			...schemaDBTriggersInfo(schema),
 		},
+		enums: schemaDbEnumInfo(schema),
 	};
 }
 
@@ -332,6 +335,28 @@ function schemaDBTriggersInfo(
 				};
 			}
 			return acc;
+		},
+		{},
+	);
+}
+
+export function schemaDbEnumInfo(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	schema: pgDatabase<Record<string, PgTable<string, any>>>,
+) {
+	return Object.entries(schema.tables).reduce<EnumInfo>(
+		(enumInfo, [, tableDefinition]) => {
+			const keys = Object.keys(tableDefinition.columns);
+			for (const key of keys) {
+				const column = tableDefinition.columns[key];
+				if (column instanceof PgEnum) {
+					const enumName = column.info.dataType;
+					if (enumName !== null) {
+						enumInfo[enumName] = (column.values as string[]).join(", ");
+					}
+				}
+			}
+			return enumInfo;
 		},
 		{},
 	);

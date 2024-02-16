@@ -1,4 +1,5 @@
 import type {
+	EnumInfo,
 	ExtensionInfo,
 	IndexInfo,
 	TableColumnInfo,
@@ -26,4 +27,5 @@ export type MigrationSchema = {
 	uniqueConstraints: UniqueInfo;
 	primaryKey: PrimaryKeyInfo;
 	triggers: TriggerInfo;
+	enums: EnumInfo;
 };
