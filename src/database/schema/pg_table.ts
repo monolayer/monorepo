@@ -1,5 +1,4 @@
-import type { Insertable, Selectable, Updateable } from "kysely";
-import { type Simplify } from "type-fest";
+import type { Insertable, Selectable, Simplify, Updateable } from "kysely";
 import { PgColumnTypes } from "./pg_column.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
 import { type PgIndex } from "./pg_index.js";
@@ -28,9 +27,9 @@ export function pgTable<N extends string, T extends ColumnRecord>(
 }
 
 export class PgTable<N extends string, T extends ColumnRecord> {
-	declare infer: Simplify<{
-		[K in keyof TableSchema<T>["columns"]]: TableSchema<T>["columns"][K]["_columnType"];
-	}>;
+	declare infer: {
+		[K in keyof T]: T[K]["_columnType"];
+	};
 	declare inferSelect: Selectable<typeof this.infer>;
 	declare inferInsert: Simplify<Insertable<typeof this.infer>>;
 	declare inferUpdate: Simplify<Updateable<typeof this.infer>>;
