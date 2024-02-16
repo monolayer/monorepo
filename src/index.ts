@@ -7,4 +7,5 @@ export * from "~/database/schema/pg_foreign_key.js";
 export * from "~/database/schema/pg_primary_key.js";
 export * from "~/database/schema/pg_unique.js";
 export * from "~/database/schema/pg_trigger.js";
+export * from "~/database/schema/pg_extension.js";
 export { pgPool } from "~/database/pg/pg_pool.js";
