@@ -93,7 +93,7 @@ interface QueryDataType {
 	readonly _columnType: ColumnType<any, any, any>;
 }
 
-interface NativelDataType {
+interface NativeDataType {
 	/** @internal */
 	readonly _native_data_type: DefaultValueDataTypes;
 }
@@ -157,7 +157,7 @@ export class PgColumnBase<S, I, U> {
 
 export class PgColumn<S, I, U = I>
 	extends PgColumnBase<S, I, U>
-	implements QueryDataType, NativelDataType
+	implements QueryDataType, NativeDataType
 {
 	declare readonly _columnType: ColumnType<
 		S | null,
@@ -222,7 +222,7 @@ export class PgColumn<S, I, U = I>
 
 export class PgGeneratedColumn<T, U>
 	extends PgColumnBase<NonNullable<T>, U, U>
-	implements QueryDataType, NativelDataType
+	implements QueryDataType, NativeDataType
 {
 	declare readonly _columnType: ColumnType<T, U | undefined, U>;
 
