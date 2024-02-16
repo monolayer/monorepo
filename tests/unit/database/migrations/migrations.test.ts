@@ -237,16 +237,17 @@ describe("Migrator", () => {
 					],
 				},
 			];
-			generateMigrationFiles(changeset, context.folder, "test_migration");
+			generateMigrationFiles(changeset, context.folder);
 			const dir = readdirSync(context.migrationsFolder);
-			const fileMatch = /^\w+-\d+-(\w+)\.ts$/;
+			const fileMatch = /^\w+-\d+-(\w+)-(\w+)\.ts$/;
+			console.dir(dir);
 			for (const file of dir) {
 				const matchedFile = fileMatch.exec(file);
 				if (matchedFile === null) {
 					expect(matchedFile).not.toBeNull();
 				} else {
 					const fixtureContent = readFileSync(
-						`${cwd()}/tests/fixtures/${matchedFile[1]}.txt`,
+						`${cwd()}/tests/fixtures/test_migration.txt`,
 						"utf-8",
 					);
 					const migrationContent = readFileSync(

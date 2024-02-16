@@ -21,7 +21,6 @@ export async function down(db: Kysely<any>): Promise<void> {
 export function generateMigrationFiles(
 	changesets: Changeset[],
 	folder: string,
-	name: string,
 ) {
 	const { up, down } = extractMigrationOpChangesets(changesets);
 	const now = performance.now().toFixed(1).toString().replace(".", "");
@@ -29,7 +28,7 @@ export function generateMigrationFiles(
 	const migrationFilePath = path.join(
 		folder,
 		"migrations",
-		`${dateStr}-${now}-${name}.ts`,
+		`${dateStr}-${now}-${randomName()}.ts`,
 	);
 	const rendered = nunjucks.compile(template).render({
 		up: up,
@@ -47,3 +46,78 @@ function extractMigrationOpChangesets(changesets: Changeset[]) {
 		.map((changeset) => changeset.down.join("\n    ."));
 	return { up, down };
 }
+
+function randomName() {
+	const randomColor = colors[Math.floor(Math.random() * colors.length)];
+	const randomStarName =
+		starNames[Math.floor(Math.random() * starNames.length)];
+	return `${randomStarName}-${randomColor}`;
+}
+
+const colors = [
+	"crimson",
+	"sapphire",
+	"emerald",
+	"amethyst",
+	"canary",
+	"charcoal",
+	"coral",
+	"turquoise",
+	"lavender",
+	"olive",
+	"teal",
+	"maroon",
+	"mustard",
+	"slate",
+	"cobalt",
+	"magenta",
+	"mint",
+	"indigo",
+	"peach",
+	"blue",
+	"yellow",
+	"red",
+	"green",
+	"gray",
+	"black",
+];
+
+const starNames = [
+	"sirius",
+	"canopus",
+	"arcturus",
+	"vega",
+	"rigel",
+	"procyon",
+	"achernar",
+	"altair",
+	"antares",
+	"spica",
+	"pollux",
+	"fomalhaut",
+	"deneb",
+	"regulus",
+	"castor",
+	"gacrux",
+	"bellatrix",
+	"algol",
+	"mizar",
+	"alnilam",
+	"alnair",
+	"dubhe",
+	"mirfak",
+	"alphard",
+	"polaris",
+	"diphda",
+	"schedar",
+	"caph",
+	"algenib",
+	"mirach",
+	"alpheratz",
+	"hamal",
+	"electra",
+	"maia",
+	"merope",
+	"taygeta",
+	"pleione",
+];
