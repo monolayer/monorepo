@@ -78,7 +78,6 @@ describe("createTableMigration", () => {
 					columnName: "id",
 					dataType: "serial",
 					isNullable: false,
-					primaryKey: true,
 				}),
 			},
 		};
@@ -90,7 +89,7 @@ describe("createTableMigration", () => {
 			up: [
 				"await db.schema",
 				'createTable("books")',
-				'addColumn("id", "serial", (col) => col.notNull().primaryKey())',
+				'addColumn("id", "serial", (col) => col.notNull())',
 				"execute();",
 			],
 			down: ["await db.schema", 'dropTable("books")', "execute();"],
@@ -167,49 +166,6 @@ describe("createTableMigration", () => {
 				"await db.schema",
 				'createTable("books")',
 				'addColumn("id", "text", (col) => col.defaultTo(sql`\'foo\':text`))',
-				"execute();",
-			],
-			down: ["await db.schema", 'dropTable("books")', "execute();"],
-		};
-
-		const result = tableMigrationOpGenerator(
-			table,
-			[],
-			[],
-			migrationSchemaFactory(),
-			migrationSchemaFactory(),
-		);
-
-		expect(result).toStrictEqual(expected);
-	});
-
-	test("columns with a foreign key contraint", () => {
-		const table: Difference = {
-			type: "CREATE",
-			path: ["table", "books"],
-			value: {
-				id: columnInfoFactory({
-					tableName: "books",
-					columnName: "author_id",
-					dataType: "text",
-					foreignKeyConstraint: {
-						table: "authors",
-						column: "id",
-						options: "no action;no action",
-					},
-				}),
-			},
-		};
-
-		const expected = {
-			priority: 1,
-			tableName: "books",
-			type: "createTable",
-			up: [
-				"await db.schema",
-				'createTable("books")',
-				'addColumn("author_id", "text")',
-				'.addForeignKeyConstraint("books_author_id_fkey", ["author_id"], "authors", ["id"], (cb) => cb.onDelete("no action").onUpdate("no action"))',
 				"execute();",
 			],
 			down: ["await db.schema", 'dropTable("books")', "execute();"],
@@ -301,7 +257,6 @@ describe("dropTableMigration", () => {
 					columnName: "id",
 					dataType: "serial",
 					isNullable: false,
-					primaryKey: true,
 				}),
 			},
 		};
@@ -314,7 +269,7 @@ describe("dropTableMigration", () => {
 			down: [
 				"await db.schema",
 				'createTable("books")',
-				'addColumn("id", "serial", (col) => col.notNull().primaryKey())',
+				'addColumn("id", "serial", (col) => col.notNull())',
 				"execute();",
 			],
 		};
@@ -391,49 +346,6 @@ describe("dropTableMigration", () => {
 				"await db.schema",
 				'createTable("books")',
 				'addColumn("id", "text", (col) => col.defaultTo(sql`\'foo\':text`))',
-				"execute();",
-			],
-		};
-
-		const result = tableMigrationOpGenerator(
-			table,
-			[],
-			[],
-			migrationSchemaFactory(),
-			migrationSchemaFactory(),
-		);
-
-		expect(result).toStrictEqual(expected);
-	});
-
-	test("columns with a foreign key contraint", () => {
-		const table: Difference = {
-			type: "REMOVE",
-			path: ["table", "books"],
-			oldValue: {
-				id: columnInfoFactory({
-					tableName: "books",
-					columnName: "author_id",
-					dataType: "text",
-					foreignKeyConstraint: {
-						table: "authors",
-						column: "id",
-						options: "no action;no action",
-					},
-				}),
-			},
-		};
-
-		const expected = {
-			priority: 1,
-			tableName: "books",
-			type: "dropTable",
-			up: ["await db.schema", 'dropTable("books")', "execute();"],
-			down: [
-				"await db.schema",
-				'createTable("books")',
-				'addColumn("author_id", "text")',
-				'.addForeignKeyConstraint("books_author_id_fkey", ["author_id"], "authors", ["id"], (cb) => cb.onDelete("no action").onUpdate("no action"))',
 				"execute();",
 			],
 		};

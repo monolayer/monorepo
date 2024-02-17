@@ -10,7 +10,6 @@ import {
 } from "~/database/introspection/local_schema.js";
 import {
 	ColumnIdentity,
-	ColumnUnique,
 	bigserial,
 	boolean,
 	integer,
@@ -87,32 +86,6 @@ describe("#schemaColumnInfo", () => {
 			dataType: "varchar(100)",
 			characterMaximumLength: 100,
 			renameFrom: "old_column_name",
-		});
-
-		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
-	});
-
-	test("column with unique", () => {
-		const column = varchar(100).unique();
-		const expectedInfo = columnInfoFactory({
-			tableName: "foo",
-			columnName: "bar",
-			dataType: "varchar(100)",
-			characterMaximumLength: 100,
-			unique: ColumnUnique.NullsDistinct,
-		});
-
-		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
-	});
-
-	test("column with unique nulls not distinct", () => {
-		const column = varchar(100).unique().nullsNotDistinct();
-		const expectedInfo = columnInfoFactory({
-			tableName: "foo",
-			columnName: "bar",
-			dataType: "varchar(100)",
-			characterMaximumLength: 100,
-			unique: ColumnUnique.NullsNotDistinct,
 		});
 
 		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
@@ -267,7 +240,7 @@ test("#schemaDBIndexInfoByTable", () => {
 test("#schemaDbConstraintInfoByTable", () => {
 	const books = pgTable("books", {
 		columns: {
-			id: serial().primaryKey(),
+			id: serial(),
 			name: varchar(),
 			location: varchar(),
 		},
@@ -276,7 +249,7 @@ test("#schemaDbConstraintInfoByTable", () => {
 
 	const users = pgTable("users", {
 		columns: {
-			id: serial().primaryKey(),
+			id: serial(),
 			name: varchar(),
 			subscribed: boolean(),
 			book_id: integer(),
@@ -318,14 +291,14 @@ test("#schemaDbConstraintInfoByTable", () => {
 test("#schemaDbEnumInfo", () => {
 	const books = pgTable("books", {
 		columns: {
-			id: serial().primaryKey(),
+			id: serial(),
 			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
 		},
 	});
 
 	const users = pgTable("users", {
 		columns: {
-			id: serial().primaryKey(),
+			id: serial(),
 			name: varchar(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
@@ -344,7 +317,7 @@ test("#schemaDbEnumInfo", () => {
 test("#localSchema", () => {
 	const books = pgTable("books", {
 		columns: {
-			id: serial().primaryKey(),
+			id: serial(),
 			name: varchar(),
 			location: varchar(),
 			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
@@ -413,15 +386,12 @@ test("#localSchema", () => {
 					dataType: "serial",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: false,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: true,
 					renameFrom: null,
 					tableName: "books",
-					unique: null,
 					enum: false,
 				},
 				location: {
@@ -430,15 +400,12 @@ test("#localSchema", () => {
 					dataType: "varchar",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: true,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "books",
-					unique: null,
 					enum: false,
 				},
 				status: {
@@ -447,15 +414,12 @@ test("#localSchema", () => {
 					dataType: "book_status",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: true,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "books",
-					unique: null,
 					enum: true,
 				},
 				name: {
@@ -464,15 +428,12 @@ test("#localSchema", () => {
 					dataType: "varchar",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: true,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "books",
-					unique: null,
 					enum: false,
 				},
 			},
@@ -483,15 +444,12 @@ test("#localSchema", () => {
 					dataType: "boolean",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: true,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "teams",
-					unique: null,
 					enum: false,
 				},
 				id: {
@@ -500,15 +458,12 @@ test("#localSchema", () => {
 					dataType: "bigserial",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: false,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "teams",
-					unique: null,
 					enum: false,
 				},
 				name: {
@@ -517,15 +472,12 @@ test("#localSchema", () => {
 					dataType: "varchar",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: false,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "teams",
-					unique: null,
 					enum: false,
 				},
 			},
@@ -536,15 +488,12 @@ test("#localSchema", () => {
 					dataType: "integer",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: true,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "users",
-					unique: null,
 					enum: false,
 				},
 				email: {
@@ -553,15 +502,12 @@ test("#localSchema", () => {
 					dataType: "varchar",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: false,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "users",
-					unique: null,
 					enum: false,
 				},
 				id: {
@@ -570,15 +516,12 @@ test("#localSchema", () => {
 					dataType: "serial",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: false,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "users",
-					unique: null,
 					enum: false,
 				},
 				name: {
@@ -587,15 +530,12 @@ test("#localSchema", () => {
 					dataType: "varchar",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: false,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "users",
-					unique: null,
 					enum: false,
 				},
 				status: {
@@ -604,15 +544,12 @@ test("#localSchema", () => {
 					dataType: "user_status",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: true,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "users",
-					unique: null,
 					enum: true,
 				},
 			},
@@ -702,15 +639,12 @@ test("trigger names are downcased", () => {
 					dataType: "serial",
 					datetimePrecision: null,
 					defaultValue: null,
-					foreignKeyConstraint: null,
 					identity: null,
 					isNullable: false,
 					numericPrecision: null,
 					numericScale: null,
-					primaryKey: null,
 					renameFrom: null,
 					tableName: "users",
-					unique: null,
 					enum: false,
 				},
 			},

@@ -2,7 +2,7 @@ import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
 import { changeset } from "~/database/changeset.js";
 import { index } from "~/database/schema/pg_index.js";
-import { ColumnIdentity, ColumnUnique } from "~/index.js";
+import { ColumnIdentity } from "~/index.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
 
@@ -16,7 +16,6 @@ describe("#dbChangeset", () => {
 							tableName: "books",
 							columnName: "id",
 							dataType: "serial",
-							primaryKey: true,
 						}),
 						name: columnInfoFactory({
 							tableName: "books",
@@ -75,7 +74,7 @@ describe("#dbChangeset", () => {
 				up: [
 					"await db.schema",
 					'createTable("books")',
-					'addColumn("id", "serial", (col) => col.primaryKey())',
+					'addColumn("id", "serial")',
 					'addColumn("name", "text", (col) => col.defaultTo(sql`\'10\'::text`))',
 					"execute();",
 				],
@@ -173,7 +172,6 @@ describe("#dbChangeset", () => {
 							columnName: "id",
 							dataType: "bigserial",
 							isNullable: false,
-							primaryKey: true,
 						}),
 						name: columnInfoFactory({
 							tableName: "samples",
@@ -187,7 +185,6 @@ describe("#dbChangeset", () => {
 							tableName: "addresses",
 							columnName: "id",
 							dataType: "serial",
-							primaryKey: true,
 						}),
 						country: columnInfoFactory({
 							tableName: "members",
@@ -254,7 +251,6 @@ describe("#dbChangeset", () => {
 							columnName: "name",
 							dataType: "text",
 							isNullable: false,
-							primaryKey: true,
 						}),
 					},
 				},
@@ -276,7 +272,7 @@ describe("#dbChangeset", () => {
 				up: [
 					"await db.schema",
 					'alterTable("addresses")',
-					'addColumn("id", "serial", (col) => col.primaryKey())',
+					'addColumn("id", "serial")',
 					"execute();",
 				],
 				down: [
@@ -371,498 +367,8 @@ describe("#dbChangeset", () => {
 					"execute();",
 				],
 			},
-			{
-				tableName: "samples",
-				priority: 3.2,
-				type: "changeColumn",
-				up: [
-					"await db.schema",
-					'alterTable("samples")',
-					'dropConstraint("samples_pk")',
-					"execute();",
-				],
-				down: [
-					"await db.schema",
-					'alterTable("samples")',
-					'alterColumn("name", (col) => col.primaryKey())',
-					"execute();",
-				],
-			},
-			{
-				tableName: "samples",
-				priority: 3.3,
-				type: "changeColumn",
-				up: [
-					"await db.schema",
-					'alterTable("samples")',
-					'alterColumn("id", (col) => col.primaryKey())',
-					"execute();",
-				],
-				down: [
-					"await db.schema",
-					'alterTable("samples")',
-					'dropConstraint("samples_pk")',
-					"execute();",
-				],
-			},
 		];
 		expect(cset).toStrictEqual(expected);
-	});
-
-	describe("foreign keys", () => {
-		test("on table creation", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {
-							id: columnInfoFactory({
-								tableName: "books",
-								columnName: "id",
-								dataType: "serial",
-								primaryKey: true,
-							}),
-						},
-						members: {
-							name: columnInfoFactory({
-								tableName: "members",
-								columnName: "name",
-								dataType: "varchar",
-								defaultValue: sql`hello`,
-							}),
-							book_id: columnInfoFactory({
-								tableName: "members",
-								columnName: "book_id",
-								dataType: "integer",
-								foreignKeyConstraint: {
-									table: "books",
-									column: "id",
-									options: "no action;no action",
-								},
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "books",
-					type: "createTable",
-					priority: 1,
-					up: [
-						"await db.schema",
-						'createTable("books")',
-						'addColumn("id", "serial", (col) => col.primaryKey())',
-						"execute();",
-					],
-					down: ["await db.schema", 'dropTable("books")', "execute();"],
-				},
-				{
-					tableName: "members",
-					priority: 1,
-					type: "createTable",
-					up: [
-						"await db.schema",
-						'createTable("members")',
-						'addColumn("name", "varchar", (col) => col.defaultTo(sql`hello`))',
-						'addColumn("book_id", "integer")',
-						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"], (cb) => cb.onDelete("no action").onUpdate("no action"))',
-						"execute();",
-					],
-					down: ["await db.schema", 'dropTable("members")', "execute();"],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-
-		test("on column creation", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {
-							id: columnInfoFactory({
-								tableName: "books",
-								columnName: "id",
-								dataType: "serial",
-								primaryKey: true,
-							}),
-						},
-						members: {
-							name: columnInfoFactory({
-								tableName: "members",
-								columnName: "name",
-								dataType: "varchar",
-								defaultValue: "hello",
-							}),
-							book_id: columnInfoFactory({
-								tableName: "members",
-								columnName: "book_id",
-								dataType: "integer",
-								foreignKeyConstraint: {
-									table: "books",
-									column: "id",
-									options: "no action;no action",
-								},
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {
-						books: {
-							id: columnInfoFactory({
-								tableName: "books",
-								columnName: "id",
-								dataType: "serial",
-								primaryKey: true,
-							}),
-						},
-						members: {
-							name: columnInfoFactory({
-								tableName: "members",
-								columnName: "name",
-								dataType: "varchar",
-								defaultValue: "hello",
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "members",
-					priority: 2,
-					type: "createColumn",
-					up: [
-						"await db.schema",
-						'alterTable("members")',
-						'addColumn("book_id", "integer")',
-						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"], (cb) => cb.onDelete("no action").onUpdate("no action"))',
-						"execute();",
-					],
-					down: [
-						"await db.schema",
-						'alterTable("members")',
-						'dropColumn("book_id")',
-						"execute();",
-					],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-
-		test("on column change (add)", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {
-							id: columnInfoFactory({
-								tableName: "books",
-								columnName: "id",
-								dataType: "serial",
-								primaryKey: true,
-							}),
-						},
-						members: {
-							name: columnInfoFactory({
-								tableName: "members",
-								columnName: "name",
-								dataType: "varchar",
-								defaultValue: "hello",
-							}),
-							book_id: columnInfoFactory({
-								tableName: "members",
-								columnName: "book_id",
-								dataType: "integer",
-								foreignKeyConstraint: {
-									table: "books",
-									column: "id",
-									options: "no action;no action",
-								},
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {
-						books: {
-							id: columnInfoFactory({
-								tableName: "books",
-								columnName: "id",
-								dataType: "serial",
-								primaryKey: true,
-							}),
-						},
-						members: {
-							name: columnInfoFactory({
-								tableName: "members",
-								columnName: "name",
-								dataType: "varchar",
-								defaultValue: "hello",
-							}),
-							book_id: columnInfoFactory({
-								tableName: "members",
-								columnName: "book_id",
-								dataType: "integer",
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "members",
-					priority: 3.4,
-					type: "changeColumn",
-					up: [
-						"await db.schema",
-						'alterTable("members")',
-						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"])',
-						"execute();",
-					],
-					down: [
-						"await db.schema",
-						'alterTable("members")',
-						'.dropConstraint("members_book_id_fkey")',
-						"execute();",
-					],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-
-		test("on column change (remove)", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {
-							id: columnInfoFactory({
-								tableName: "books",
-								columnName: "id",
-								dataType: "serial",
-								primaryKey: true,
-							}),
-						},
-						members: {
-							name: columnInfoFactory({
-								tableName: "members",
-								columnName: "name",
-								dataType: "varchar",
-								defaultValue: "hello",
-							}),
-							book_id: columnInfoFactory({
-								tableName: "members",
-								columnName: "book_id",
-								dataType: "integer",
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {
-						books: {
-							id: columnInfoFactory({
-								tableName: "books",
-								columnName: "id",
-								dataType: "serial",
-								primaryKey: true,
-							}),
-						},
-						members: {
-							name: columnInfoFactory({
-								tableName: "members",
-								columnName: "name",
-								dataType: "varchar",
-								defaultValue: "hello",
-							}),
-							book_id: columnInfoFactory({
-								tableName: "members",
-								columnName: "book_id",
-								dataType: "integer",
-								foreignKeyConstraint: {
-									table: "books",
-									column: "id",
-									options: "no action;no action",
-								},
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "members",
-					priority: 3.41,
-					type: "changeColumn",
-					up: [
-						"await db.schema",
-						'alterTable("members")',
-						'.dropConstraint("members_book_id_fkey")',
-						"execute();",
-					],
-					down: [
-						"await db.schema",
-						'alterTable("members")',
-						'.addForeignKeyConstraint("members_book_id_fkey", ["book_id"], "books", ["id"])',
-						"execute();",
-					],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-
-		test("on column change (option change)", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {
-							id: columnInfoFactory({
-								tableName: "books",
-								columnName: "id",
-								dataType: "serial",
-								primaryKey: true,
-							}),
-						},
-						members: {
-							book_id: columnInfoFactory({
-								tableName: "members",
-								columnName: "book_id",
-								dataType: "integer",
-								foreignKeyConstraint: {
-									table: "books",
-									column: "id",
-									options: "cascade;restrict",
-								},
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {
-						books: {
-							id: columnInfoFactory({
-								tableName: "books",
-								columnName: "id",
-								dataType: "serial",
-								primaryKey: true,
-							}),
-						},
-						members: {
-							book_id: columnInfoFactory({
-								tableName: "members",
-								columnName: "book_id",
-								dataType: "integer",
-								foreignKeyConstraint: {
-									table: "books",
-									column: "id",
-									options: "no action;cascade",
-								},
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "members",
-					priority: 3.42,
-					type: "changeColumn",
-					up: [
-						[
-							"await sql`",
-							[
-								"ALTER TABLE members DROP CONSTRAINT members_book_id_fkey",
-								"ALTER TABLE members ADD CONSTRAINT members_book_id_fkey FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE cascade ON UPDATE restrict",
-							].join(", "),
-							"`.execute(db);",
-						].join(""),
-					],
-					down: [
-						[
-							"await sql`",
-							[
-								"ALTER TABLE members DROP CONSTRAINT members_book_id_fkey",
-								"ALTER TABLE members ADD CONSTRAINT members_book_id_fkey FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE no action ON UPDATE cascade",
-							].join(", "),
-							"`.execute(db);",
-						].join(""),
-					],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
 	});
 
 	describe("identity columns", () => {
@@ -875,7 +381,7 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-								primaryKey: true,
+
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -915,7 +421,7 @@ describe("#dbChangeset", () => {
 					up: [
 						"await db.schema",
 						'createTable("books")',
-						'addColumn("id", "integer", (col) => col.primaryKey().generatedByDefaultAsIdentity())',
+						'addColumn("id", "integer", (col) => col.generatedByDefaultAsIdentity())',
 						"execute();",
 					],
 					down: ["await db.schema", 'dropTable("books")', "execute();"],
@@ -955,7 +461,7 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-								primaryKey: true,
+
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -986,7 +492,7 @@ describe("#dbChangeset", () => {
 					down: [
 						"await db.schema",
 						'createTable("books")',
-						'addColumn("id", "integer", (col) => col.primaryKey().generatedByDefaultAsIdentity())',
+						'addColumn("id", "integer", (col) => col.generatedByDefaultAsIdentity())',
 						"execute();",
 					],
 				},
@@ -1015,7 +521,7 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-								primaryKey: true,
+
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -1058,7 +564,7 @@ describe("#dbChangeset", () => {
 					up: [
 						"await db.schema",
 						'alterTable("books")',
-						'addColumn("id", "integer", (col) => col.primaryKey().generatedByDefaultAsIdentity())',
+						'addColumn("id", "integer", (col) => col.generatedByDefaultAsIdentity())',
 						"execute();",
 					],
 					down: [
@@ -1098,7 +604,7 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-								primaryKey: true,
+
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -1126,7 +632,6 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-								primaryKey: true,
 							}),
 						},
 						members: {
@@ -1182,7 +687,6 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-								primaryKey: true,
 							}),
 						},
 						members: {
@@ -1208,7 +712,7 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-								primaryKey: true,
+
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -1279,7 +783,7 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-								primaryKey: true,
+
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -1315,7 +819,7 @@ describe("#dbChangeset", () => {
 					down: [
 						"await db.schema",
 						'alterTable("books")',
-						'addColumn("id", "integer", (col) => col.primaryKey().generatedByDefaultAsIdentity())',
+						'addColumn("id", "integer", (col) => col.generatedByDefaultAsIdentity())',
 						"execute();",
 					],
 				},
@@ -1334,518 +838,6 @@ describe("#dbChangeset", () => {
 						'alterTable("members")',
 						'addColumn("id", "varchar", (col) => col.generatedAlwaysAsIdentity())',
 						"execute();",
-					],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-	});
-
-	describe("unique columns", () => {
-		test("on table creation", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {
-							unNullD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsDistinct,
-							}),
-							unNullNotD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullNotD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsNotDistinct,
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "books",
-					type: "createTable",
-					priority: 1,
-					up: [
-						"await db.schema",
-						'createTable("books")',
-						'addColumn("unNullD", "integer", (col) => col.unique())',
-						'addColumn("unNullNotD", "integer", (col) => col.unique().nullsNotDistinct())',
-						"execute();",
-					],
-					down: ["await db.schema", 'dropTable("books")', "execute();"],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-
-		test("on table drop", () => {
-			const cset = changeset(
-				{
-					table: {},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {
-						books: {
-							unNullD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsDistinct,
-							}),
-							unNullNotD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullNotD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsNotDistinct,
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "books",
-					type: "dropTable",
-					priority: 1,
-					up: ["await db.schema", 'dropTable("books")', "execute();"],
-					down: [
-						"await db.schema",
-						'createTable("books")',
-						'addColumn("unNullD", "integer", (col) => col.unique())',
-						'addColumn("unNullNotD", "integer", (col) => col.unique().nullsNotDistinct())',
-						"execute();",
-					],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-
-		test("on column creation", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {
-							unNullD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsDistinct,
-							}),
-							unNullNotD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullNotD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsNotDistinct,
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {
-						books: {},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "books",
-					priority: 2,
-					type: "createColumn",
-					up: [
-						"await db.schema",
-						'alterTable("books")',
-						'addColumn("unNullD", "integer", (col) => col.unique())',
-						"execute();",
-					],
-					down: [
-						"await db.schema",
-						'alterTable("books")',
-						'dropColumn("unNullD")',
-						"execute();",
-					],
-				},
-				{
-					tableName: "books",
-					priority: 2,
-					type: "createColumn",
-					up: [
-						"await db.schema",
-						'alterTable("books")',
-						'addColumn("unNullNotD", "integer", (col) => col.unique().nullsNotDistinct())',
-						"execute();",
-					],
-					down: [
-						"await db.schema",
-						'alterTable("books")',
-						'dropColumn("unNullNotD")',
-						"execute();",
-					],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-
-		test("on column drop", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {
-						books: {
-							unNullD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsDistinct,
-							}),
-							unNullNotD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullNotD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsNotDistinct,
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "books",
-					priority: 2,
-					type: "dropColumn",
-					up: [
-						"await db.schema",
-						'alterTable("books")',
-						'dropColumn("unNullD")',
-						"execute();",
-					],
-					down: [
-						"await db.schema",
-						'alterTable("books")',
-						'addColumn("unNullD", "integer", (col) => col.unique())',
-						"execute();",
-					],
-				},
-				{
-					tableName: "books",
-					priority: 2,
-					type: "dropColumn",
-					up: [
-						"await db.schema",
-						'alterTable("books")',
-						'dropColumn("unNullNotD")',
-						"execute();",
-					],
-					down: [
-						"await db.schema",
-						'alterTable("books")',
-						'addColumn("unNullNotD", "integer", (col) => col.unique().nullsNotDistinct())',
-						"execute();",
-					],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-
-		test("on column change (add)", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {
-							unNullD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsDistinct,
-							}),
-							unNullNotD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullNotD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsNotDistinct,
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {
-						books: {
-							unNullD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullD",
-								dataType: "integer",
-							}),
-							unNullNotD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullNotD",
-								dataType: "integer",
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "books",
-					priority: 3.6,
-					type: "changeColumn",
-					up: [
-						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
-					],
-					down: [
-						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullD_key`.execute(db);",
-					],
-				},
-				{
-					tableName: "books",
-					priority: 3.6,
-					type: "changeColumn",
-					up: [
-						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
-					],
-					down: [
-						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
-					],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-
-		test("on column change (remove)", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {
-							unNullD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullD",
-								dataType: "integer",
-							}),
-							unNullNotD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullNotD",
-								dataType: "integer",
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {
-						books: {
-							unNullD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsDistinct,
-							}),
-							unNullNotD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullNotD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsNotDistinct,
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "books",
-					priority: 3.61,
-					type: "changeColumn",
-					up: [
-						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullD_key`.execute(db);",
-					],
-					down: [
-						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
-					],
-				},
-				{
-					tableName: "books",
-					priority: 3.61,
-					type: "changeColumn",
-					up: [
-						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
-					],
-					down: [
-						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
-					],
-				},
-			];
-			expect(cset).toStrictEqual(expected);
-		});
-
-		test("on column change (change)", () => {
-			const cset = changeset(
-				{
-					table: {
-						books: {
-							unNullD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsDistinct,
-							}),
-							unNullNotD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullNotD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsNotDistinct,
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-				{
-					table: {
-						books: {
-							unNullD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsNotDistinct,
-							}),
-							unNullNotD: columnInfoFactory({
-								tableName: "books",
-								columnName: "unNullNotD",
-								dataType: "integer",
-								unique: ColumnUnique.NullsDistinct,
-							}),
-						},
-					},
-					index: {},
-					uniqueConstraints: {},
-					foreignKeyConstraints: {},
-					primaryKey: {},
-					extensions: {},
-					triggers: {},
-					enums: {},
-				},
-			);
-			const expected = [
-				{
-					tableName: "books",
-					priority: 3.62,
-					type: "changeColumn",
-					up: [
-						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullD_key`.execute(db);",
-						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullD_key UNIQUE (unNullD)`.execute(db);",
-					],
-					down: [
-						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullD_key`.execute(db);",
-						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullD_key UNIQUE NULLS NOT DISTINCT (unNullD)`.execute(db);",
-					],
-				},
-				{
-					tableName: "books",
-					priority: 3.62,
-					type: "changeColumn",
-					up: [
-						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
-						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullNotD_key UNIQUE NULLS NOT DISTINCT (unNullNotD)`.execute(db);",
-					],
-					down: [
-						"await sql`ALTER TABLE books DROP CONSTRAINT books_unNullNotD_key`.execute(db);",
-						"await sql`ALTER TABLE books ADD CONSTRAINT books_unNullNotD_key UNIQUE (unNullNotD)`.execute(db);",
 					],
 				},
 			];
@@ -2206,7 +1198,6 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "serial",
-								primaryKey: true,
 							}),
 							name: columnInfoFactory({
 								tableName: "books",
@@ -2251,7 +1242,7 @@ describe("#dbChangeset", () => {
 					up: [
 						"await db.schema",
 						'createTable("books")',
-						'addColumn("id", "serial", (col) => col.primaryKey())',
+						'addColumn("id", "serial")',
 						'addColumn("name", "text", (col) => col.defaultTo(sql`\'10\'::text`))',
 						"execute();",
 					],
@@ -2718,15 +1709,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							updated_at: {
@@ -2735,15 +1724,12 @@ describe("#dbChangeset", () => {
 								dataType: "timestamp(6)",
 								datetimePrecision: 6,
 								defaultValue: "CURRENT_TIMESTAMP",
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 						},
@@ -2781,7 +1767,7 @@ describe("#dbChangeset", () => {
 					up: [
 						"await db.schema",
 						'createTable("remote_schema_books")',
-						'addColumn("id", "serial", (col) => col.notNull().primaryKey())',
+						'addColumn("id", "serial", (col) => col.notNull())',
 						'addColumn("updated_at", "timestamp(6)", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`))',
 						"execute();",
 					],
@@ -2826,15 +1812,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							updated_at: {
@@ -2843,15 +1827,12 @@ describe("#dbChangeset", () => {
 								dataType: "timestamp(6)",
 								datetimePrecision: 6,
 								defaultValue: "CURRENT_TIMESTAMP",
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 						},
@@ -2879,7 +1860,7 @@ describe("#dbChangeset", () => {
 					down: [
 						"await db.schema",
 						'createTable("remote_schema_books")',
-						'addColumn("id", "serial", (col) => col.notNull().primaryKey())',
+						'addColumn("id", "serial", (col) => col.notNull())',
 						'addColumn("updated_at", "timestamp(6)", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`))',
 						"execute();",
 					],
@@ -2914,15 +1895,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							updated_at: {
@@ -2931,15 +1910,12 @@ describe("#dbChangeset", () => {
 								dataType: "timestamp(6)",
 								datetimePrecision: 6,
 								defaultValue: "CURRENT_TIMESTAMP",
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 						},
@@ -2966,15 +1942,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							updated_at: {
@@ -2983,15 +1957,12 @@ describe("#dbChangeset", () => {
 								dataType: "timestamp(6)",
 								datetimePrecision: 6,
 								defaultValue: "CURRENT_TIMESTAMP",
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 						},
@@ -3034,15 +2005,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							updated_at: {
@@ -3051,15 +2020,12 @@ describe("#dbChangeset", () => {
 								dataType: "timestamp(6)",
 								datetimePrecision: 6,
 								defaultValue: "CURRENT_TIMESTAMP",
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 						},
@@ -3081,15 +2047,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							updated_at: {
@@ -3098,15 +2062,12 @@ describe("#dbChangeset", () => {
 								dataType: "timestamp(6)",
 								datetimePrecision: 6,
 								defaultValue: "CURRENT_TIMESTAMP",
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 						},
@@ -3154,15 +2115,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							updated_at: {
@@ -3171,15 +2130,12 @@ describe("#dbChangeset", () => {
 								dataType: "timestamp(6)",
 								datetimePrecision: 6,
 								defaultValue: "CURRENT_TIMESTAMP",
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 						},
@@ -3208,15 +2164,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							updated_at: {
@@ -3225,15 +2179,12 @@ describe("#dbChangeset", () => {
 								dataType: "timestamp(6)",
 								datetimePrecision: 6,
 								defaultValue: "CURRENT_TIMESTAMP",
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 						},
@@ -3285,15 +2236,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							role: {
@@ -3302,15 +2251,12 @@ describe("#dbChangeset", () => {
 								dataType: "books_role",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: true,
 							},
 						},
@@ -3345,7 +2291,7 @@ describe("#dbChangeset", () => {
 					up: [
 						"await db.schema",
 						'createTable("remote_schema_books")',
-						'addColumn("id", "serial", (col) => col.notNull().primaryKey())',
+						'addColumn("id", "serial", (col) => col.notNull())',
 						'addColumn("role", "books_role")',
 						"execute();",
 					],
@@ -3388,15 +2334,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							role: {
@@ -3405,15 +2349,12 @@ describe("#dbChangeset", () => {
 								dataType: "books_role",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: true,
 							},
 						},
@@ -3435,15 +2376,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							role: {
@@ -3452,15 +2391,12 @@ describe("#dbChangeset", () => {
 								dataType: "books_role",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: true,
 							},
 						},
@@ -3511,15 +2447,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							role: {
@@ -3528,15 +2462,12 @@ describe("#dbChangeset", () => {
 								dataType: "books_role",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: true,
 							},
 						},
@@ -3561,15 +2492,13 @@ describe("#dbChangeset", () => {
 								dataType: "serial",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: true,
+
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: false,
 							},
 							role: {
@@ -3578,15 +2507,12 @@ describe("#dbChangeset", () => {
 								dataType: "books_role",
 								datetimePrecision: null,
 								defaultValue: null,
-								foreignKeyConstraint: null,
 								identity: null,
 								isNullable: true,
 								numericPrecision: null,
 								numericScale: null,
-								primaryKey: null,
 								renameFrom: null,
 								tableName: "remote_schema_books",
-								unique: null,
 								enum: true,
 							},
 						},

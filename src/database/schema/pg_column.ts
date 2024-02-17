@@ -2,11 +2,8 @@ import {
 	type ColumnDataType,
 	type ColumnType,
 	type Expression,
-	type OnModifyForeignAction,
 	isExpression,
 } from "kysely";
-import { ForeIgnKeyConstraintInfo } from "../introspection/types.js";
-import { type PgTable } from "./pg_table.js";
 
 export type ColumnInfo = {
 	columnName: string | null;
@@ -19,10 +16,7 @@ export type ColumnInfo = {
 	characterMaximumLength: number | null;
 	datetimePrecision: number | null;
 	renameFrom: string | null;
-	primaryKey: true | null;
-	foreignKeyConstraint: ForeIgnKeyConstraintInfo | null;
 	identity: ColumnIdentity.Always | ColumnIdentity.ByDefault | null;
-	unique: ColumnUnique.NullsDistinct | ColumnUnique.NullsNotDistinct | null;
 	enum: boolean;
 };
 
@@ -112,47 +106,13 @@ export class PgColumnBase<S, I, U> {
 			numericScale: null,
 			datetimePrecision: null,
 			renameFrom: null,
-			primaryKey: null,
-			foreignKeyConstraint: null,
 			identity: null,
-			unique: null,
 			enum: false,
 		};
 	}
 
 	renameFrom(name: string) {
 		this.info.renameFrom = name;
-		return this;
-	}
-
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	references<R extends PgTable<string, any>>(
-		table: R,
-		column: keyof R["columns"],
-		options?: {
-			onDelete?: OnModifyForeignAction;
-			onUpdate?: OnModifyForeignAction;
-		},
-	): this {
-		this.info.foreignKeyConstraint = {
-			table: table.name,
-			column: column.toString(),
-			options: `${
-				options?.onDelete !== undefined ? options.onDelete : "no action"
-			};${options?.onUpdate !== undefined ? options.onUpdate : "no action"}`,
-		};
-		return this;
-	}
-
-	unique() {
-		this.info.unique = ColumnUnique.NullsDistinct;
-		return this;
-	}
-
-	nullsNotDistinct() {
-		if (this.info.unique !== null) {
-			this.info.unique = ColumnUnique.NullsNotDistinct;
-		}
 		return this;
 	}
 }
@@ -176,13 +136,6 @@ export class PgColumn<S, I, U = I>
 		super(dataType);
 		this.info.isNullable = true;
 		this._native_data_type = postgresDataType;
-	}
-
-	primaryKey() {
-		this.info.primaryKey = true;
-		return this as this & {
-			_columnType: ColumnType<S, I, U | undefined>;
-		};
 	}
 
 	notNull() {
@@ -237,13 +190,6 @@ export class PgGeneratedColumn<T, U>
 		super(dataType);
 		this.info.isNullable = false;
 		this._native_data_type = postgresDataType;
-	}
-
-	primaryKey() {
-		this.info.primaryKey = true;
-		return this as this & {
-			_columnType: ColumnType<T, U | undefined, U | undefined>;
-		};
 	}
 }
 
@@ -581,10 +527,7 @@ export class PgEnum<
 			numericScale: null,
 			datetimePrecision: null,
 			renameFrom: null,
-			primaryKey: null,
-			foreignKeyConstraint: null,
 			identity: null,
-			unique: null,
 			enum: true,
 		};
 	}
@@ -597,25 +540,6 @@ export class PgEnum<
 	defaultTo(value: string) {
 		this.info.defaultValue = `'${value}'::${this.info.dataType}`;
 		return this as unknown as PgEnum<N, T, string, string | undefined, string>;
-	}
-
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	references<R extends PgTable<string, any>>(
-		table: R,
-		column: keyof R["columns"],
-		options?: {
-			onDelete?: OnModifyForeignAction;
-			onUpdate?: OnModifyForeignAction;
-		},
-	): this {
-		this.info.foreignKeyConstraint = {
-			table: table.name,
-			column: column.toString(),
-			options: `${
-				options?.onDelete !== undefined ? options.onDelete : "no action"
-			};${options?.onUpdate !== undefined ? options.onUpdate : "no action"}`,
-		};
-		return this;
 	}
 
 	renameFrom(name: string) {

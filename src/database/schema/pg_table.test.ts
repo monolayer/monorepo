@@ -52,7 +52,7 @@ describe("pgTable definition", () => {
 	test("infer column types", () => {
 		const tbl = pgTable("users", {
 			columns: {
-				pk: integer().primaryKey(),
+				pk: integer(),
 				id: serial(),
 				name: varchar().notNull(),
 				subscribed: boolean(),
@@ -75,7 +75,7 @@ describe("pgTable definition", () => {
 
 	test("inferSelect column types", () => {
 		const columns = {
-			pk: integer().primaryKey(),
+			pk: integer(),
 			id: serial(),
 			name: varchar().notNull(),
 			subscribed: boolean(),
@@ -86,7 +86,7 @@ describe("pgTable definition", () => {
 			columns: columns,
 		});
 		type ExpectedType = {
-			pk: number;
+			pk: number | null;
 			id: number;
 			name: string;
 			email: string;
@@ -101,13 +101,13 @@ describe("pgTable definition", () => {
 	describe("inferInsert column types", () => {
 		test("primary keys are required by default", () => {
 			const columns = {
-				pk: integer().primaryKey(),
+				pk: integer(),
 			};
 			const tbl = pgTable("users", {
 				columns: columns,
 			});
 			type ExpectedType = {
-				pk: number | string;
+				pk?: number | string | null;
 			};
 			type InferredInsertType = typeof tbl.inferInsert;
 			const expect: Expect<Equal<InferredInsertType, ExpectedType>> = true;
@@ -117,7 +117,7 @@ describe("pgTable definition", () => {
 		test("primary keys are optional on generated columns", () => {
 			const users = pgTable("users", {
 				columns: {
-					pk: serial().primaryKey(),
+					pk: serial(),
 				},
 			});
 			type ExpectedType = {
@@ -131,7 +131,7 @@ describe("pgTable definition", () => {
 
 			const books = pgTable("users", {
 				columns: {
-					pk: serial().primaryKey(),
+					pk: serial(),
 				},
 			});
 			type InferredBooksInsertType = typeof books.inferInsert;
@@ -142,7 +142,7 @@ describe("pgTable definition", () => {
 
 		test("inferInsert column types", () => {
 			const columns = {
-				pk: integer().primaryKey(),
+				pk: integer(),
 				id: serial(),
 				name: varchar().notNull(),
 				subscribed: boolean(),
@@ -153,7 +153,7 @@ describe("pgTable definition", () => {
 				columns: columns,
 			});
 			type ExpectedType = {
-				pk: number | string;
+				pk?: number | string | null;
 				id?: number | string;
 				name: string;
 				email: string;
@@ -168,7 +168,7 @@ describe("pgTable definition", () => {
 
 	test("inferUpdate column types", () => {
 		const columns = {
-			pk: integer().primaryKey(),
+			pk: integer(),
 			id: serial(),
 			name: varchar().notNull(),
 			subscribed: boolean(),
@@ -179,7 +179,7 @@ describe("pgTable definition", () => {
 			columns: columns,
 		});
 		type ExpectedType = {
-			pk?: number | string;
+			pk?: number | string | null;
 			id?: string | number;
 			name?: string;
 			email?: string;
@@ -235,7 +235,7 @@ describe("pgTable definition", () => {
 		test("foreign key constraints can be added", () => {
 			const books = pgTable("books", {
 				columns: {
-					id: serial().primaryKey(),
+					id: serial(),
 					name: varchar(),
 					location: varchar(),
 				},
@@ -244,7 +244,7 @@ describe("pgTable definition", () => {
 
 			const users = pgTable("users", {
 				columns: {
-					id: serial().primaryKey(),
+					id: serial(),
 					name: varchar(),
 					subscribed: boolean(),
 					book_id: integer(),
@@ -259,7 +259,7 @@ describe("pgTable definition", () => {
 
 		test("unique constraints can be added", () => {
 			const columns = {
-				id: serial().primaryKey(),
+				id: serial(),
 				name: varchar(),
 				subscribed: boolean(),
 			};

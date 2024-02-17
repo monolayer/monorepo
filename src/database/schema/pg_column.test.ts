@@ -3,7 +3,6 @@ import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import {
 	ColumnInfo,
-	ColumnUnique,
 	DefaultValueDataTypes,
 	PgBigInt,
 	PgBigSerial,
@@ -61,7 +60,6 @@ import {
 	varchar,
 } from "./pg_column.js";
 import { PgEnum, pgEnum } from "./pg_column.js";
-import { pgTable } from "./pg_table.js";
 
 type ColumnWithDefaultContext = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -109,13 +107,6 @@ describe("PgColumn", () => {
 	});
 
 	testBase();
-
-	test("primaryKey() sets primaryKey to true", (context: ColumnContext) => {
-		const column = integer();
-		column.primaryKey();
-		const columnInfo = Object.fromEntries(Object.entries(column)).info;
-		expect(columnInfo.primaryKey).toBe(true);
-	});
 
 	test("isNullable is true", (context: ColumnContext) => {
 		expect(context.columnInfo.isNullable).toBe(true);
@@ -180,13 +171,6 @@ describe("PgGeneratedColumn", () => {
 	});
 
 	testBase("serial");
-
-	test("primaryKey() sets primaryKey to true", (context: ColumnContext) => {
-		const column = serial();
-		column.primaryKey();
-		const columnInfo = Object.fromEntries(Object.entries(column)).info;
-		expect(columnInfo.primaryKey).toBe(true);
-	});
 
 	test("does not have defaultTo", (context: ColumnWithoutDefaultContext) => {
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -1234,14 +1218,11 @@ describe("pgEnum", () => {
 			characterMaximumLength: null,
 			datetimePrecision: null,
 			defaultValue: null,
-			foreignKeyConstraint: null,
 			identity: null,
 			isNullable: true,
 			numericPrecision: null,
 			numericScale: null,
-			primaryKey: null,
 			renameFrom: null,
-			unique: null,
 			enum: true,
 		});
 	});
@@ -1282,27 +1263,6 @@ describe("pgEnum", () => {
 			Equal<expectedColumnType, typeof testEnum._columnType>
 		> = true;
 		expectTypeOf(expectation).toMatchTypeOf<boolean>();
-	});
-
-	test("references()", () => {
-		const users = pgTable("users", {
-			columns: {
-				id: serial(),
-			},
-		});
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).references(
-			users,
-			"id",
-			{
-				onDelete: "cascade",
-				onUpdate: "set null",
-			},
-		);
-		expect(testEnum.info.foreignKeyConstraint).toEqual({
-			table: "users",
-			column: "id",
-			options: "cascade;set null",
-		});
 	});
 
 	test("renameFrom()", () => {
@@ -1347,14 +1307,6 @@ function testColumnDefaults(expectedDataType: string) {
 			expect(context.columnInfo.renameFrom).toBe(null);
 		});
 
-		test("primaryKey is null", (context: ColumnContext) => {
-			expect(context.columnInfo.primaryKey).toBe(null);
-		});
-
-		test("foreignKeyConstraint is null", (context: ColumnContext) => {
-			expect(context.columnInfo.foreignKeyConstraint).toBe(null);
-		});
-
 		test("identity is null", (context: ColumnContext) => {
 			expect(context.columnInfo.identity).toBe(null);
 		});
@@ -1365,65 +1317,5 @@ function testColumnMethods(testNull = true) {
 	test("renameFrom() sets renameFrom", (context: ColumnContext) => {
 		context.column.renameFrom("old_name");
 		expect(context.columnInfo.renameFrom).toBe("old_name");
-	});
-
-	describe("references()", () => {
-		test("references() sets foreignKeyConstraint", (context: ColumnContext) => {
-			const users = pgTable("users", {
-				columns: {
-					id: serial(),
-				},
-			});
-			context.column.references(users, "id");
-			expect(context.columnInfo.foreignKeyConstraint).toEqual({
-				table: "users",
-				column: "id",
-				options: "no action;no action",
-			});
-		});
-
-		test("references() sets foreignKeyConstraint on delete", (context: ColumnContext) => {
-			const users = pgTable("users", {
-				columns: {
-					id: serial(),
-				},
-			});
-			context.column.references(users, "id", { onDelete: "cascade" });
-			expect(context.columnInfo.foreignKeyConstraint).toEqual({
-				table: "users",
-				column: "id",
-				options: "cascade;no action",
-			});
-		});
-
-		test("references() sets foreignKeyConstraint on update", (context: ColumnContext) => {
-			const users = pgTable("users", {
-				columns: {
-					id: serial(),
-				},
-			});
-			context.column.references(users, "id", { onUpdate: "cascade" });
-			expect(context.columnInfo.foreignKeyConstraint).toEqual({
-				table: "users",
-				column: "id",
-				options: "no action;cascade",
-			});
-		});
-	});
-
-	test("unique() sets unique info", (context: ColumnContext) => {
-		context.column.unique();
-		expect(context.columnInfo.unique).toBe(ColumnUnique.NullsDistinct);
-	});
-
-	test("nullsNotDistinct() sets unique info when unique() has been called", (context: ColumnContext) => {
-		const col = context.column.unique();
-		col.nullsNotDistinct();
-		expect(context.columnInfo.unique).toBe(ColumnUnique.NullsNotDistinct);
-	});
-
-	test("nullsNotDistinct() does not set unique info when unique() has not been called", (context: ColumnContext) => {
-		context.column.nullsNotDistinct();
-		expect(context.columnInfo.unique).toBe(null);
 	});
 }

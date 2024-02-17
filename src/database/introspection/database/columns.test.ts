@@ -1,7 +1,7 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ActionStatus } from "~/cli/command.js";
-import { ColumnIdentity, ColumnUnique } from "~/index.js";
+import { ColumnIdentity } from "~/index.js";
 import { dropTables } from "~tests/helpers/dropTables.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { type DbContext, globalKysely } from "~tests/setup.js";
@@ -520,7 +520,6 @@ describe("#dbColumnInfo", () => {
 					columnName: "id",
 					dataType: "serial",
 					isNullable: false,
-					primaryKey: true,
 					tableName: "fk_table_1",
 				}),
 				price: columnInfoFactory({
@@ -536,11 +535,6 @@ describe("#dbColumnInfo", () => {
 				book_id: columnInfoFactory({
 					columnName: "book_id",
 					dataType: "integer",
-					foreignKeyConstraint: {
-						table: "fk_table_1",
-						column: "id",
-						options: "no action;no action",
-					},
 					isNullable: true,
 					tableName: "fk_table_2",
 				}),
@@ -555,7 +549,6 @@ describe("#dbColumnInfo", () => {
 					columnName: "name",
 					dataType: "varchar",
 					isNullable: false,
-					primaryKey: true,
 					tableName: "fk_table_2",
 				}),
 			},
@@ -563,11 +556,6 @@ describe("#dbColumnInfo", () => {
 				book_id: columnInfoFactory({
 					columnName: "book_id",
 					dataType: "integer",
-					foreignKeyConstraint: {
-						table: "fk_table_1",
-						column: "id",
-						options: "set null;cascade",
-					},
 					isNullable: true,
 					tableName: "fk_table_3",
 				}),
@@ -599,7 +587,6 @@ describe("#dbColumnInfo", () => {
 					columnName: "id",
 					dataType: "integer",
 					isNullable: false,
-					primaryKey: true,
 					tableName: "identity_table_1",
 					identity: ColumnIdentity.ByDefault,
 				}),
@@ -637,14 +624,12 @@ describe("#dbColumnInfo", () => {
 					dataType: "integer",
 					isNullable: true,
 					tableName: "unique_constraint_test",
-					unique: ColumnUnique.NullsDistinct,
 				}),
 				demo: columnInfoFactory({
 					columnName: "demo",
 					dataType: "integer",
 					isNullable: true,
 					tableName: "unique_constraint_test",
-					unique: ColumnUnique.NullsNotDistinct,
 				}),
 			},
 		});

@@ -1,10 +1,10 @@
-import { Kysely, type OnModifyForeignAction, sql } from "kysely";
+import { Kysely, sql } from "kysely";
 import {
 	ActionStatus,
 	OperationAnyError,
 	OperationSuccess,
 } from "~/cli/command.js";
-import { ColumnInfo, ColumnUnique } from "../../schema/pg_column.js";
+import { ColumnInfo } from "../../schema/pg_column.js";
 import { TableColumnInfo } from "../types.js";
 import type { InformationSchemaDB } from "./types.js";
 
@@ -331,17 +331,6 @@ function transformDbColumnInfo(
 				break;
 		}
 
-		const foreignKey = row.constraints?.find(
-			(e) =>
-				e.constraint_type === "FOREIGN KEY" &&
-				!e.constraint_name.includes("kinetic"),
-		);
-
-		const uniqueConstraints = row.constraints?.find(
-			(e) =>
-				e.constraint_type === "UNIQUE" &&
-				!e.constraint_name.includes("kinetic"),
-		);
 		transformed.push({
 			tableName: row.table_name,
 			columnName: row.column_name,
@@ -356,32 +345,9 @@ function transformDbColumnInfo(
 			characterMaximumLength: row.character_maximum_length,
 			datetimePrecision: row.datetime_precision,
 			renameFrom: row.rename_from,
-			primaryKey:
-				row.constraints?.find((e) => e.constraint_type === "PRIMARY KEY") !==
-				undefined
-					? true
-					: null,
-			foreignKeyConstraint:
-				foreignKey !== undefined
-					? {
-							table: foreignKey.target_table ?? "",
-							column: foreignKey.target_columns.join("") ?? "",
-							options: `${
-								foreignKey.delete_rule?.toLowerCase() as OnModifyForeignAction
-							};${
-								foreignKey.update_rule?.toLowerCase() as OnModifyForeignAction
-							}`,
-					  }
-					: null,
 			identity:
 				row.is_identity === "YES" && row.identity_generation !== null
 					? row.identity_generation
-					: null,
-			unique:
-				uniqueConstraints !== undefined
-					? uniqueConstraints.nulls_distinct === "YES"
-						? ColumnUnique.NullsDistinct
-						: ColumnUnique.NullsNotDistinct
 					: null,
 			enum: row.user_defined_type_name !== null,
 		});

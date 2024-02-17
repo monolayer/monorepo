@@ -3,11 +3,7 @@ import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
-import {
-	type ColumnInfoDiff,
-	foreignKeyConstraint,
-	optionsForColumn,
-} from "./table_common.js";
+import { type ColumnInfoDiff, optionsForColumn } from "./table_common.js";
 
 export function columnMigrationOpGenerator(
 	diff: Difference,
@@ -50,7 +46,6 @@ function createColumnMigration(diff: CreateColumnDiff) {
 			`addColumn(\"${columnName}\", \"${columnDef.dataType}\"${optionsForColumn(
 				columnDef,
 			)})`,
-			foreignKeyConstraint(columnDef),
 		),
 		down: executeKyselySchemaStatement(
 			`alterTable("${tableName}")`,
@@ -91,7 +86,6 @@ function dropColumnMigration(diff: DropColumnDiff) {
 			`addColumn(\"${columnName}\", \"${columnDef.dataType}\"${optionsForColumn(
 				columnDef,
 			)})`,
-			foreignKeyConstraint(columnDef),
 		),
 	};
 	return changeset;

@@ -51,7 +51,7 @@ test("with extensions", () => {
 test("types for Kysely", () => {
 	const users = pgTable("users", {
 		columns: {
-			id: serial().primaryKey(),
+			id: serial(),
 			name: varchar().notNull(),
 			email: text().notNull(),
 			address: text(),
@@ -59,7 +59,7 @@ test("types for Kysely", () => {
 	});
 	const books = pgTable("books", {
 		columns: {
-			id: serial().primaryKey(),
+			id: serial(),
 			title: varchar().notNull(),
 			borrowed: boolean().notNull(),
 		},

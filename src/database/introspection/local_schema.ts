@@ -52,15 +52,12 @@ export function schemaColumnInfo(
 		numericPrecision: meta.numericPrecision,
 		numericScale: meta.numericScale,
 		renameFrom: meta.renameFrom,
-		primaryKey: meta.primaryKey,
 		defaultValue: meta.defaultValue
 			? isExpression(meta.defaultValue)
 				? compileDefaultExpression(meta.defaultValue)
 				: meta.defaultValue.toString()
 			: null,
-		foreignKeyConstraint: meta.foreignKeyConstraint,
 		identity: meta.identity,
-		unique: meta.unique,
 		enum: meta.enum,
 	};
 }
