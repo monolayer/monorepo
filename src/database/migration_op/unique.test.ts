@@ -23,9 +23,9 @@ describe("uniqueMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 6.11,
+				priority: 5.1,
 				tableName: "users",
-				type: "createUniqueConstraint",
+				type: "createConstraint",
 				up: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);",
 				],
@@ -34,9 +34,9 @@ describe("uniqueMigrationOps", () => {
 				],
 			},
 			{
-				priority: 6.11,
+				priority: 5.1,
 				tableName: "books",
-				type: "createUniqueConstraint",
+				type: "createConstraint",
 				up: [
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)`.execute(db);",
 				],
@@ -70,18 +70,18 @@ describe("uniqueMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 6.11,
+				priority: 5.1,
 				tableName: "users",
-				type: "createUniqueConstraint",
+				type: "createConstraint",
 				up: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);",
 				],
 				down: [],
 			},
 			{
-				priority: 6.11,
+				priority: 5.1,
 				tableName: "books",
-				type: "createUniqueConstraint",
+				type: "createConstraint",
 				up: [
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)`.execute(db);",
 				],
@@ -111,9 +111,9 @@ describe("uniqueMigrationOps", () => {
 		const result = uniqueMigrationOps(diff, addedTables, droppedTables);
 		const expected = [
 			{
-				priority: 6,
+				priority: 3.79,
 				tableName: "users",
-				type: "dropUniqueConstraint",
+				type: "dropConstraint",
 				up: [
 					"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key`.execute(db);",
 				],
@@ -122,9 +122,9 @@ describe("uniqueMigrationOps", () => {
 				],
 			},
 			{
-				priority: 6,
+				priority: 3.79,
 				tableName: "books",
-				type: "dropUniqueConstraint",
+				type: "dropConstraint",
 				up: [
 					"await sql`ALTER TABLE books DROP CONSTRAINT books_name_location_kinetic_key`.execute(db);",
 				],
@@ -157,18 +157,18 @@ describe("uniqueMigrationOps", () => {
 		const result = uniqueMigrationOps(diff, addedTables, droppedTables);
 		const expected = [
 			{
-				priority: 6,
+				priority: 3.79,
 				tableName: "users",
-				type: "dropUniqueConstraint",
+				type: "dropConstraint",
 				up: [],
 				down: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);",
 				],
 			},
 			{
-				priority: 6,
+				priority: 3.79,
 				tableName: "books",
-				type: "dropUniqueConstraint",
+				type: "dropConstraint",
 				up: [
 					"await sql`ALTER TABLE books DROP CONSTRAINT books_name_location_kinetic_key`.execute(db);",
 				],
@@ -202,9 +202,9 @@ describe("uniqueMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 6.12,
+				priority: 5.2,
 				tableName: "users",
-				type: "changeUniqueConstraint",
+				type: "changeConstraint",
 				up: [
 					"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key, ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS NOT DISTINCT (name)`.execute(db);",
 				],

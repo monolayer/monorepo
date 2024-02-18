@@ -90,9 +90,9 @@ function createUniqueConstraintMigration(
 	] as (typeof diff.value)[keyof typeof diff.value];
 
 	return {
-		priority: MigrationOpPriority.UniqueConstraintCreate,
+		priority: MigrationOpPriority.ConstraintCreate,
 		tableName: tableName,
-		type: ChangeSetType.CreateUniqueConstraint,
+		type: ChangeSetType.CreateConstraint,
 		up: executeKyselyDbStatement(
 			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
 		),
@@ -117,9 +117,9 @@ function dropUniqueConstraintMigration(
 	] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
 
 	return {
-		priority: MigrationOpPriority.UniqueConstraintDrop,
+		priority: MigrationOpPriority.ConstraintDrop,
 		tableName: tableName,
-		type: ChangeSetType.DropUniqueConstraint,
+		type: ChangeSetType.DropConstraint,
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
@@ -137,9 +137,9 @@ function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
 	const newValue = diff.value;
 	const oldValue = diff.oldValue;
 	return {
-		priority: MigrationOpPriority.UniqueConstraintChange,
+		priority: MigrationOpPriority.ConstraintChange,
 		tableName: tableName,
-		type: ChangeSetType.ChangeUniqueConstraint,
+		type: ChangeSetType.ChangeConstraint,
 		up: executeKyselyDbStatement(
 			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}, ADD CONSTRAINT ${newValue}`,
 		),

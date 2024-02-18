@@ -23,9 +23,9 @@ describe("foreignKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 7.11,
+				priority: 5.1,
 				tableName: "users",
-				type: "createForeignKeyConstraint",
+				type: "createConstraint",
 				up: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE ON UPDATE CASCADE`.execute(db);",
 				],
@@ -34,9 +34,9 @@ describe("foreignKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 7.11,
+				priority: 5.1,
 				tableName: "books",
-				type: "createForeignKeyConstraint",
+				type: "createConstraint",
 				up: [
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_location_id_locations_id_kinetic_fk FOREIGN KEY (location_id) REFERENCES locations (id) ON DELETE CASCADE ON UPDATE CASCADE`.execute(db);",
 				],
@@ -70,18 +70,18 @@ describe("foreignKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 7.11,
+				priority: 5.1,
 				tableName: "users",
-				type: "createForeignKeyConstraint",
+				type: "createConstraint",
 				up: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE ON UPDATE CASCADE`.execute(db);",
 				],
 				down: [],
 			},
 			{
-				priority: 7.11,
+				priority: 5.1,
 				tableName: "books",
-				type: "createForeignKeyConstraint",
+				type: "createConstraint",
 				up: [
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_location_id_locations_id_kinetic_fk FOREIGN KEY (location_id) REFERENCES locations (id) ON DELETE CASCADE ON UPDATE CASCADE`.execute(db);",
 				],
@@ -112,9 +112,9 @@ describe("foreignKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 7,
+				priority: 3.79,
 				tableName: "users",
-				type: "dropForeignKeyConstraint",
+				type: "dropConstraint",
 				up: [
 					"await sql`ALTER TABLE users DROP CONSTRAINT users_book_id_books_id_kinetic_fk`.execute(db);",
 				],
@@ -123,9 +123,9 @@ describe("foreignKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 7,
+				priority: 3.79,
 				tableName: "books",
-				type: "dropForeignKeyConstraint",
+				type: "dropConstraint",
 				up: [
 					"await sql`ALTER TABLE books DROP CONSTRAINT books_location_id_locations_id_kinetic_fk`.execute(db);",
 				],
@@ -159,18 +159,18 @@ describe("foreignKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 7,
+				priority: 3.79,
 				tableName: "users",
-				type: "dropForeignKeyConstraint",
+				type: "dropConstraint",
 				up: [],
 				down: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE ON UPDATE CASCADE`.execute(db);",
 				],
 			},
 			{
-				priority: 7,
+				priority: 3.79,
 				tableName: "books",
-				type: "dropForeignKeyConstraint",
+				type: "dropConstraint",
 				up: [
 					"await sql`ALTER TABLE books DROP CONSTRAINT books_location_id_locations_id_kinetic_fk`.execute(db);",
 				],
@@ -212,9 +212,9 @@ describe("foreignKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 7.12,
+				priority: 5.2,
 				tableName: "users",
-				type: "changeForeignKeyConstraint",
+				type: "changeConstraint",
 				up: [
 					"await sql`ALTER TABLE users DROP CONSTRAINT users_book_id_books_id_kinetic_fk, ADD CONSTRAINT users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);",
 				],
@@ -223,9 +223,9 @@ describe("foreignKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 7.12,
+				priority: 5.2,
 				tableName: "books",
-				type: "changeForeignKeyConstraint",
+				type: "changeConstraint",
 				up: [
 					"await sql`ALTER TABLE books DROP CONSTRAINT books_location_id_locations_id_kinetic_fk, ADD CONSTRAINT books_location_id_locations_id_kinetic_fk FOREIGN KEY (location_id) REFERENCES locations (id) ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);",
 				],

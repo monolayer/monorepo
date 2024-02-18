@@ -93,9 +93,9 @@ function createforeignKeyConstraintMigration(
 	] as (typeof diff.value)[keyof typeof diff.value];
 
 	return {
-		priority: MigrationOpPriority.ForeignKeyConstraintCreate,
+		priority: MigrationOpPriority.ConstraintCreate,
 		tableName: tableName,
-		type: ChangeSetType.CreateForeignKeyConstraint,
+		type: ChangeSetType.CreateConstraint,
 		up: executeKyselyDbStatement(
 			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
 		),
@@ -120,9 +120,9 @@ function dropforeignKeyConstraintMigration(
 	] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
 
 	return {
-		priority: MigrationOpPriority.ForeignKeyConstraintDrop,
+		priority: MigrationOpPriority.ConstraintDrop,
 		tableName: tableName,
-		type: ChangeSetType.DropForeignKeyConstraint,
+		type: ChangeSetType.DropConstraint,
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
@@ -140,9 +140,9 @@ function changeforeignKeyConstraintMigration(diff: ForeignKeyChangeDiff) {
 	const newValue = diff.value;
 	const oldValue = diff.oldValue;
 	return {
-		priority: MigrationOpPriority.ForeignKeyConstraintChange,
+		priority: MigrationOpPriority.ConstraintChange,
 		tableName: tableName,
-		type: ChangeSetType.ChangeForeignKeyConstraint,
+		type: ChangeSetType.ChangeConstraint,
 		up: executeKyselyDbStatement(
 			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}, ADD CONSTRAINT ${newValue}`,
 		),
