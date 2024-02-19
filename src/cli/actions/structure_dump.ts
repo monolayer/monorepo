@@ -1,6 +1,7 @@
 import { appendFileSync } from "fs";
 import path from "path";
 import * as p from "@clack/prompts";
+import { execa } from "execa";
 import color from "picocolors";
 import { env, exit } from "process";
 import { importConfig } from "../../config.js";
@@ -51,8 +52,12 @@ export async function structureDump(environment: string) {
 	];
 
 	const result = await runCommand("pg_dump", args);
+
+	const migrationInfo = await dumpMigrationInfoArgs(pool.config.database || "");
+
 	if (result.error === undefined && searchPath !== undefined)
 		appendFileSync(`${dumpPath}`, `SET search_path TO ${searchPath};\n\n`);
+	if (migrationInfo !== undefined) appendFileSync(`${dumpPath}`, migrationInfo);
 	if (result.error instanceof Error) {
 		s.stop(result.error.message, 1);
 		p.outro(`${color.red("Failed")}`);
@@ -60,4 +65,23 @@ export async function structureDump(environment: string) {
 	}
 	s.stop(`${color.green("dumped")} ${pool.config.database}`);
 	p.outro("Done");
+}
+
+async function dumpMigrationInfoArgs(database: string) {
+	const migrationDumpArgs = [
+		"--no-privileges",
+		"--no-owner",
+		"--schema=public",
+		"--inserts",
+		"--table=kysely_migration_lock",
+		"--table=kysely_migration",
+		"-a",
+		"--no-comments",
+		`${database}`,
+	];
+	const dump = execa("pg_dump", migrationDumpArgs);
+	if (dump.pipeStdout !== undefined) {
+		const { stdout } = await dump.pipeStdout(execa("grep", ["INSERT INTO"]));
+		return stdout;
+	}
 }
