@@ -3,14 +3,17 @@ import nunjucks from "nunjucks";
 import { createFile } from "~/utils.js";
 import { Changeset } from "../migration_op/changeset.js";
 
-const template = `import { Kysely, sql } from "kysely";
+const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Kysely, sql } from "kysely";
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function up(db: Kysely<any>): Promise<void> {
 {%- for u in up %}
   {{ u | safe }}
 {% endfor -%}
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function down(db: Kysely<any>): Promise<void> {
 {%- for d in down %}
   {{ d | safe }}
