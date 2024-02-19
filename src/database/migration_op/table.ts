@@ -38,7 +38,7 @@ export function isCreateTable(test: Difference): test is CreateTableDiff {
 function createTableMigration(diff: CreateTableDiff) {
 	const tableName = diff.path[1];
 	return {
-		priority: MigrationOpPriority.Table,
+		priority: MigrationOpPriority.TableCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateTable,
 		up: executeKyselySchemaStatement(
@@ -64,7 +64,7 @@ export function isDropTable(test: Difference): test is DropTableTableDiff {
 function dropTableMigration(diff: DropTableTableDiff) {
 	const tableName = diff.path[1];
 	return {
-		priority: MigrationOpPriority.Table,
+		priority: MigrationOpPriority.TableDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropTable,
 		up: executeKyselySchemaStatement(`dropTable("${tableName}")`),

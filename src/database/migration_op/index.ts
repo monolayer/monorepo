@@ -80,7 +80,7 @@ function createFirstIndexMigration(
 			const index = diff.value[indexName]?.split(":");
 			if (index !== undefined) {
 				const changeSet: Changeset = {
-					priority: MigrationOpPriority.Index,
+					priority: MigrationOpPriority.IndexCreate,
 					tableName: tableName,
 					type: ChangeSetType.CreateIndex,
 					up: [
@@ -109,7 +109,7 @@ function dropAllIndexesMigration(
 			const index = diff.oldValue[indexName]?.split(":");
 			if (index === undefined) return;
 			const changeSet: Changeset = {
-				priority: MigrationOpPriority.Index,
+				priority: MigrationOpPriority.IndexDrop,
 				tableName: tableName,
 				type: ChangeSetType.DropIndex,
 				up: droppedTables.includes(tableName)
@@ -163,7 +163,7 @@ function createIndexMigration(diff: CreateIndex) {
 	const indexName = diff.path[2];
 	const index = diff.value.split(":");
 	const changeSet: Changeset = {
-		priority: MigrationOpPriority.Index,
+		priority: MigrationOpPriority.IndexCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateIndex,
 		up: [

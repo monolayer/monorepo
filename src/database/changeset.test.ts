@@ -17,6 +17,7 @@ import { foreignKey } from "./schema/pg_foreign_key.js";
 import { primaryKey } from "./schema/pg_primary_key.js";
 import { pgTable } from "./schema/pg_table.js";
 import { unique } from "./schema/pg_unique.js";
+
 describe("#dbChangeset", () => {
 	test("create a table", () => {
 		const cset = changeset(
@@ -1335,7 +1336,7 @@ describe("#dbChangeset", () => {
 				},
 				{
 					tableName: "shops",
-					priority: 4,
+					priority: 3.79,
 					type: "dropIndex",
 					up: [],
 					down: [
@@ -1344,7 +1345,7 @@ describe("#dbChangeset", () => {
 				},
 				{
 					tableName: "shops",
-					priority: 4,
+					priority: 3.79,
 					type: "dropIndex",
 					up: [],
 					down: [
@@ -1529,7 +1530,7 @@ describe("#dbChangeset", () => {
 			const expected = [
 				{
 					tableName: "shops",
-					priority: 4,
+					priority: 3.79,
 					type: "dropIndex",
 					up: ['await db.schema.dropIndex("shops_email_kntc_idx").execute();'],
 					down: [
@@ -1538,7 +1539,7 @@ describe("#dbChangeset", () => {
 				},
 				{
 					tableName: "shops",
-					priority: 4,
+					priority: 3.79,
 					type: "dropIndex",
 					up: ['await db.schema.dropIndex("shops_city_kntc_idx").execute();'],
 					down: [

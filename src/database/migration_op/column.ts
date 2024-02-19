@@ -38,7 +38,7 @@ function createColumnMigration(diff: CreateColumnDiff) {
 	const columnDef = diff.value;
 
 	const changeset: Changeset = {
-		priority: MigrationOpPriority.Column,
+		priority: MigrationOpPriority.ColumnCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateColumn,
 		up: executeKyselySchemaStatement(
@@ -73,7 +73,7 @@ function dropColumnMigration(diff: DropColumnDiff) {
 	const columnName = diff.path[2];
 
 	const changeset: Changeset = {
-		priority: MigrationOpPriority.Column,
+		priority: MigrationOpPriority.ColumnDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropColumn,
 		up: executeKyselySchemaStatement(
