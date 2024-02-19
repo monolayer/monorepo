@@ -7,6 +7,7 @@ import { dbDrop } from "./actions/db_drop.js";
 import { generate } from "./actions/generate.js";
 import { initCommand } from "./actions/init.js";
 import { migrate } from "./actions/migrate.js";
+import { migrateDown } from "./actions/migrate_down.js";
 import { structureDump } from "./actions/structure_dump.js";
 import { structureLoad } from "./actions/structure_load.js";
 import { isCommanderError } from "./command.js";
@@ -93,6 +94,18 @@ async function main() {
 		)
 		.action(async (_opts, cmd) => {
 			await migrate(cmd.opts().environment);
+		});
+
+	program
+		.command("migrate:down")
+		.description("Migrate one step down")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
+		.action(async (_opts, cmd) => {
+			await migrateDown(cmd.opts().environment);
 		});
 
 	program.exitOverride();
