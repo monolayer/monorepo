@@ -42,6 +42,7 @@ function extractMigrationOpChangesets(changesets: Changeset[]) {
 		.filter((changeset) => changeset.up.length > 0)
 		.map((changeset) => changeset.up.join("\n    ."));
 	const down = changesets
+		.reverse()
 		.filter((changeset) => changeset.down.length > 0)
 		.map((changeset) => changeset.down.join("\n    ."));
 	return { up, down };

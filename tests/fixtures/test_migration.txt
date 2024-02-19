@@ -58,12 +58,45 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
+  await db.schema.dropIndex("addresses_city_kntc_idx").execute();
+
+  await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city")`.execute(db);
+
+  await sql`create unique index "shops_mail_kntc_idx" on "shops" using btree ("email")`.execute(db);
+
   await db.schema
-    .dropTable("books")
+    .alterTable("addresses")
+    .alterColumn("city", (col) => col.dropNotNull())
     .execute();
 
   await db.schema
-    .dropTable("members")
+    .alterTable("addresses")
+    .alterColumn("city", (col) => col.setDefault("bcn"))
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("name", (col) => col.dropNotNull())
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("name", (col) => col.dropDefault())
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("email", (col) => col.setDataType("varchar(255)"))
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .alterColumn("name", (col) => col.setDataType("text"))
+    .execute();
+
+  await db.schema
+    .alterTable("addresses")
+    .dropColumn("country")
     .execute();
 
   await db.schema
@@ -74,43 +107,10 @@ export async function down(db: Kysely<any>): Promise<void> {
     .execute();
 
   await db.schema
-    .alterTable("addresses")
-    .dropColumn("country")
+    .dropTable("members")
     .execute();
 
   await db.schema
-    .alterTable("addresses")
-    .alterColumn("name", (col) => col.setDataType("text"))
+    .dropTable("books")
     .execute();
-
-  await db.schema
-    .alterTable("addresses")
-    .alterColumn("email", (col) => col.setDataType("varchar(255)"))
-    .execute();
-
-  await db.schema
-    .alterTable("addresses")
-    .alterColumn("name", (col) => col.dropDefault())
-    .execute();
-
-  await db.schema
-    .alterTable("addresses")
-    .alterColumn("name", (col) => col.dropNotNull())
-    .execute();
-
-  await db.schema
-    .alterTable("addresses")
-    .alterColumn("city", (col) => col.setDefault("bcn"))
-    .execute();
-
-  await db.schema
-    .alterTable("addresses")
-    .alterColumn("city", (col) => col.dropNotNull())
-    .execute();
-
-  await sql`create unique index "shops_mail_kntc_idx" on "shops" using btree ("email")`.execute(db);
-
-  await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city")`.execute(db);
-
-  await db.schema.dropIndex("addresses_city_kntc_idx").execute();
 }
