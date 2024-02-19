@@ -21,7 +21,7 @@ describe("primaryKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 2003,
+				priority: 4001,
 				tableName: "users",
 				type: "createPrimaryKey",
 				up: [
@@ -32,7 +32,7 @@ describe("primaryKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 2003,
+				priority: 4001,
 				tableName: "books",
 				type: "createPrimaryKey",
 				up: [
@@ -66,7 +66,7 @@ describe("primaryKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 2003,
+				priority: 4001,
 				tableName: "users",
 				type: "createPrimaryKey",
 				up: [
@@ -77,7 +77,7 @@ describe("primaryKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 2003,
+				priority: 4001,
 				tableName: "books",
 				type: "createPrimaryKey",
 				up: [
@@ -213,7 +213,7 @@ describe("primaryKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 2003,
+				priority: 4001,
 				tableName: "users",
 				type: "createPrimaryKey",
 				up: [
@@ -235,7 +235,7 @@ describe("primaryKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 2003,
+				priority: 4001,
 				tableName: "books",
 				type: "createPrimaryKey",
 				up: [

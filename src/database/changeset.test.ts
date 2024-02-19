@@ -1257,7 +1257,7 @@ describe("#dbChangeset", () => {
 					down: ["await db.schema", 'dropTable("books")', "execute();"],
 				},
 				{
-					priority: 2005,
+					priority: 4003,
 					tableName: "books",
 					type: "createIndex",
 					up: [
@@ -1438,7 +1438,7 @@ describe("#dbChangeset", () => {
 			const expected = [
 				{
 					tableName: "shops",
-					priority: 2005,
+					priority: 4003,
 					type: "createIndex",
 					up: [
 						'await sql`create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcd\'`.execute(db);',
@@ -1449,7 +1449,7 @@ describe("#dbChangeset", () => {
 				},
 				{
 					tableName: "shops",
-					priority: 2005,
+					priority: 4003,
 					type: "createIndex",
 					up: [
 						'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city");COMMENT ON INDEX shops_city_kntc_idx IS \'1234\'`.execute(db);',
@@ -1641,7 +1641,7 @@ describe("#dbChangeset", () => {
 			const expected = [
 				{
 					tableName: "shops",
-					priority: 4001,
+					priority: 5001,
 					type: "changeIndex",
 					up: [
 						'await sql`DROP INDEX shops_email_kntc_idx;create unique index "shops_email_kntc_idx" on "shops" using hash ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcde\'`.execute(db);',
@@ -1792,7 +1792,7 @@ describe("#dbChangeset", () => {
 				},
 				{
 					tableName: "remote_schema_books",
-					priority: 2006,
+					priority: 4004,
 					type: "createTrigger",
 					up: [
 						"await sql`CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';`.execute(db);",
@@ -1994,7 +1994,7 @@ describe("#dbChangeset", () => {
 			const expected = [
 				{
 					tableName: "remote_schema_books",
-					priority: 2006,
+					priority: 4004,
 					type: "createTrigger",
 					up: [
 						"await sql`CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';`.execute(db);",
@@ -2219,7 +2219,7 @@ describe("#dbChangeset", () => {
 			const expected = [
 				{
 					tableName: "remote_schema_books",
-					priority: 4003,
+					priority: 5003,
 					type: "updateTrigger",
 					up: [
 						"await sql`DROP TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books;CREATE TRIGGER updated_at_remote_schema_books_trg BEFORE UPDATE ON public.remote_schema_books FOR EACH STATEMENT EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcsd';`.execute(db);",
@@ -2757,7 +2757,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 				{
-					priority: 2004,
+					priority: 4002,
 					tableName: "users",
 					type: "createConstraint",
 					up: [
@@ -2823,7 +2823,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 				{
-					priority: 2004,
+					priority: 4002,
 					tableName: "users",
 					type: "createConstraint",
 					up: [
@@ -2978,7 +2978,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 				{
-					priority: 2003,
+					priority: 4001,
 					tableName: "users_pk1",
 					type: "createPrimaryKey",
 					up: [
@@ -3044,7 +3044,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 				{
-					priority: 2003,
+					priority: 4001,
 					tableName: "users_pk1",
 					type: "createPrimaryKey",
 					up: [
@@ -3223,7 +3223,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 				{
-					priority: 2004,
+					priority: 4002,
 					tableName: "users_pk1",
 					type: "createConstraint",
 					up: [
@@ -3306,7 +3306,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 				{
-					priority: 2004,
+					priority: 4002,
 					tableName: "users_pk1",
 					type: "createConstraint",
 					up: [
@@ -3515,7 +3515,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 				{
-					priority: 2005,
+					priority: 4003,
 					tableName: "users_pk1",
 					type: "createIndex",
 					up: [
@@ -3584,7 +3584,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 				{
-					priority: 2005,
+					priority: 4003,
 					tableName: "users_pk1",
 					type: "createIndex",
 					up: [
@@ -3662,7 +3662,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 				{
-					priority: 2005,
+					priority: 4003,
 					tableName: "users_pk1",
 					type: "createIndex",
 					up: [

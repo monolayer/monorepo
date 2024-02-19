@@ -199,7 +199,7 @@ describe("Migrator", () => {
 					],
 				},
 				{
-					priority: 2005,
+					priority: 4003,
 					tableName: "books",
 					type: ChangeSetType.CreateIndex,
 					up: [
@@ -209,7 +209,7 @@ describe("Migrator", () => {
 				},
 				{
 					tableName: "shops",
-					priority: 2005,
+					priority: 4003,
 					type: ChangeSetType.DropIndex,
 					up: [],
 					down: [
@@ -218,7 +218,7 @@ describe("Migrator", () => {
 				},
 				{
 					tableName: "shops",
-					priority: 2005,
+					priority: 4003,
 					type: ChangeSetType.DropIndex,
 					up: [],
 					down: [
@@ -227,7 +227,7 @@ describe("Migrator", () => {
 				},
 				{
 					tableName: "addresses",
-					priority: 2005,
+					priority: 4003,
 					type: ChangeSetType.CreateIndex,
 					up: [
 						'await sql`create unique index "addresses_city_kntc_idx" on "addresses" using btree ("city")`.execute(db);',

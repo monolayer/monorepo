@@ -23,7 +23,7 @@ describe("uniqueMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 2004,
+				priority: 4002,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -34,7 +34,7 @@ describe("uniqueMigrationOps", () => {
 				],
 			},
 			{
-				priority: 2004,
+				priority: 4002,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -70,7 +70,7 @@ describe("uniqueMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 2004,
+				priority: 4002,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -79,7 +79,7 @@ describe("uniqueMigrationOps", () => {
 				down: [],
 			},
 			{
-				priority: 2004,
+				priority: 4002,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -202,7 +202,7 @@ describe("uniqueMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 4002,
+				priority: 5002,
 				tableName: "users",
 				type: "changeConstraint",
 				up: [
