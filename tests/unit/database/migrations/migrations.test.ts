@@ -239,7 +239,7 @@ describe("Migrator", () => {
 			];
 			generateMigrationFiles(changeset, context.folder);
 			const dir = readdirSync(context.migrationsFolder);
-			const fileMatch = /^\w+-\d+-(\w+)-(\w+)\.ts$/;
+			const fileMatch = /^\w+-(\w+)-(\w+)\.ts$/;
 			for (const file of dir) {
 				const matchedFile = fileMatch.exec(file);
 				if (matchedFile === null) {
