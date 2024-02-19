@@ -63,6 +63,6 @@ function extractColumnsFromPrimaryKey(pkey: string) {
 	if (columns === undefined) {
 		return null;
 	}
-	const [column] = columns.split(")");
+	const [column] = columns.replace(/"/g, "").split(")");
 	return column?.split(", ");
 }

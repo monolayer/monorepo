@@ -274,19 +274,19 @@ test("#schemaDbConstraintInfoByTable", () => {
 		unique: {
 			users: {
 				users_name_kinetic_key:
-					"users_name_kinetic_key UNIQUE NULLS DISTINCT (name)",
+					'users_name_kinetic_key UNIQUE NULLS DISTINCT ("name")',
 				users_subscribed_kinetic_key:
-					"users_subscribed_kinetic_key UNIQUE NULLS DISTINCT (subscribed)",
+					'users_subscribed_kinetic_key UNIQUE NULLS DISTINCT ("subscribed")',
 			},
 			books: {
 				books_name_location_kinetic_key:
-					"books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)",
+					'books_name_location_kinetic_key UNIQUE NULLS DISTINCT ("name", "location")',
 			},
 		},
 		foreign: {
 			users: {
 				users_book_id_books_id_kinetic_fk:
-					"users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
+					'users_book_id_books_id_kinetic_fk FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 			},
 		},
 		primaryKey: {},
@@ -572,27 +572,27 @@ test("#localSchema", () => {
 		foreignKeyConstraints: {
 			users: {
 				users_book_id_books_id_kinetic_fk:
-					"users_book_id_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
+					'users_book_id_books_id_kinetic_fk FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 			},
 		},
 		uniqueConstraints: {
 			users: {
 				users_email_kinetic_key:
-					"users_email_kinetic_key UNIQUE NULLS NOT DISTINCT (email)",
+					'users_email_kinetic_key UNIQUE NULLS NOT DISTINCT ("email")',
 				users_name_kinetic_key:
-					"users_name_kinetic_key UNIQUE NULLS DISTINCT (name)",
+					'users_name_kinetic_key UNIQUE NULLS DISTINCT ("name")',
 			},
 			books: {
 				books_name_location_kinetic_key:
-					"books_name_location_kinetic_key UNIQUE NULLS DISTINCT (name, location)",
+					'books_name_location_kinetic_key UNIQUE NULLS DISTINCT ("name", "location")',
 			},
 		},
 		primaryKey: {
 			teams: {
-				teams_id_kinetic_pk: "teams_id_kinetic_pk PRIMARY KEY (id)",
+				teams_id_kinetic_pk: 'teams_id_kinetic_pk PRIMARY KEY ("id")',
 			},
 			users: {
-				users_id_kinetic_pk: "users_id_kinetic_pk PRIMARY KEY (id)",
+				users_id_kinetic_pk: 'users_id_kinetic_pk PRIMARY KEY ("id")',
 			},
 		},
 		extensions: { btree_gin: true, cube: true },

@@ -2719,7 +2719,7 @@ describe("#dbChangeset", () => {
 						"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key`.execute(db);",
 					],
 					down: [
-						"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);",
+						'await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT ("name")`.execute(db);',
 					],
 				},
 				{
@@ -2744,7 +2744,7 @@ describe("#dbChangeset", () => {
 					tableName: "users",
 					type: "createConstraint",
 					up: [
-						"await sql`ALTER TABLE users ADD CONSTRAINT users_fullName_kinetic_key UNIQUE NULLS NOT DISTINCT (fullName)`.execute(db);",
+						'await sql`ALTER TABLE users ADD CONSTRAINT users_fullName_kinetic_key UNIQUE NULLS NOT DISTINCT ("fullName")`.execute(db);',
 					],
 					down: [
 						"await sql`ALTER TABLE users DROP CONSTRAINT users_fullName_kinetic_key`.execute(db);",
@@ -2808,7 +2808,7 @@ describe("#dbChangeset", () => {
 					tableName: "users",
 					type: "createConstraint",
 					up: [
-						"await sql`ALTER TABLE users ADD CONSTRAINT users_fullName_kinetic_key UNIQUE NULLS DISTINCT (fullName)`.execute(db);",
+						'await sql`ALTER TABLE users ADD CONSTRAINT users_fullName_kinetic_key UNIQUE NULLS DISTINCT ("fullName")`.execute(db);',
 					],
 					down: [
 						"await sql`ALTER TABLE users DROP CONSTRAINT users_fullName_kinetic_key`.execute(db);",
@@ -2903,7 +2903,7 @@ describe("#dbChangeset", () => {
 				.addColumn("name", "text")
 				.execute();
 
-			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY (name)`.execute(
+			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY (\"name\")`.execute(
 				kysely,
 			);
 
@@ -2936,7 +2936,7 @@ describe("#dbChangeset", () => {
 						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_name_kinetic_pk`.execute(db);",
 					],
 					down: [
-						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY (name)`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY ("name")`.execute(db);',
 					],
 				},
 				{
@@ -2961,7 +2961,7 @@ describe("#dbChangeset", () => {
 					tableName: "users_pk1",
 					type: "createConstraint",
 					up: [
-						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY (fullName)`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY ("fullName")`.execute(db);',
 					],
 					down: [
 						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_fullName_kinetic_pk`.execute(db);",
@@ -3025,7 +3025,7 @@ describe("#dbChangeset", () => {
 					tableName: "users_pk1",
 					type: "createConstraint",
 					up: [
-						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY (fullName)`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY ("fullName")`.execute(db);',
 					],
 					down: [
 						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_fullName_kinetic_pk`.execute(db);",
@@ -3177,7 +3177,7 @@ describe("#dbChangeset", () => {
 						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_book_id_books_pk1_id_kinetic_fk`.execute(db);",
 					],
 					down: [
-						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_book_id_books_pk1_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books_pk1 (id) ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_book_id_books_pk1_id_kinetic_fk FOREIGN KEY ("book_id") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
 					],
 				},
 				{
@@ -3202,7 +3202,7 @@ describe("#dbChangeset", () => {
 					tableName: "users_pk1",
 					type: "createConstraint",
 					up: [
-						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk FOREIGN KEY (bookId) REFERENCES books_pk1 (id) ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
 					],
 					down: [
 						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk`.execute(db);",
@@ -3283,7 +3283,7 @@ describe("#dbChangeset", () => {
 					tableName: "users_pk1",
 					type: "createConstraint",
 					up: [
-						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk FOREIGN KEY (bookId) REFERENCES books_pk1 (id) ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
 					],
 					down: [
 						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk`.execute(db);",

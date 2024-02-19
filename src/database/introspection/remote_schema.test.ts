@@ -270,19 +270,19 @@ describe("#remoteSchema", () => {
 				uniqueConstraints: {
 					remote_schema_users: {
 						remote_schema_users_email_kinetic_key:
-							"remote_schema_users_email_kinetic_key UNIQUE NULLS NOT DISTINCT (email)",
+							'remote_schema_users_email_kinetic_key UNIQUE NULLS NOT DISTINCT ("email")',
 					},
 				},
 				foreignKeyConstraints: {
 					remote_schema_users: {
 						remote_schema_users_book_id_remote_schema_books_id_kinetic_fk:
-							"remote_schema_users_book_id_remote_schema_books_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES remote_schema_books (id) ON DELETE NO ACTION ON UPDATE NO ACTION",
+							'remote_schema_users_book_id_remote_schema_books_id_kinetic_fk FOREIGN KEY ("book_id") REFERENCES remote_schema_books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 					},
 				},
 				primaryKey: {
 					remote_schema_users: {
 						remote_schema_users_id_kinetic_pk:
-							"remote_schema_users_id_kinetic_pk PRIMARY KEY (id)",
+							'remote_schema_users_id_kinetic_pk PRIMARY KEY ("id")',
 					},
 				},
 				triggers: {

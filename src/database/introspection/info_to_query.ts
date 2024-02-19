@@ -10,10 +10,10 @@ export function foreignKeyConstraintInfoToQuery(
 			info.targetTable
 		}_${info.targetColumns.join("_")}_kinetic_fk`,
 		"FOREIGN KEY",
-		`(${info.column.join(", ")})`,
+		`(${info.column.map((col) => `"${col}"`).join(", ")})`,
 		"REFERENCES",
 		info.targetTable,
-		`(${info.targetColumns.join(", ")})`,
+		`(${info.targetColumns.map((col) => `"${col}"`).join(", ")})`,
 		`ON DELETE ${info.deleteRule}`,
 		`ON UPDATE ${info.updateRule}`,
 	].join(" ");
@@ -25,7 +25,7 @@ export function primaryKeyConstraintInfoToQuery(
 	return [
 		`${info.table}_${info.columns.join("_")}_kinetic_pk`,
 		"PRIMARY KEY",
-		`(${info.columns.join(", ")})`,
+		`(${info.columns.map((col) => `"${col}"`).join(", ")})`,
 	].join(" ");
 }
 
@@ -34,6 +34,6 @@ export function uniqueConstraintInfoToQuery(info: UniqueConstraintInfo) {
 		`${info.table}_${info.columns.join("_")}_kinetic_key`,
 		"UNIQUE",
 		info.nullsDistinct ? "NULLS DISTINCT" : "NULLS NOT DISTINCT",
-		`(${info.columns.join(", ")})`,
+		`(${info.columns.map((col) => `"${col}"`).join(", ")})`,
 	].join(" ");
 }
