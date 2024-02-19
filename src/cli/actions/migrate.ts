@@ -11,6 +11,7 @@ import pg from "pg";
 import color from "picocolors";
 import { cwd } from "process";
 import { importConfig } from "~/config.js";
+import { dumpStructure } from "../components/dump_structure.js";
 import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
 export async function migrate(environment: string) {
@@ -38,6 +39,7 @@ export async function migrate(environment: string) {
 			migrationFolder: path.join(cwd(), config.folder, "migrations"),
 		}),
 	});
+
 	const { error, results } = await migrator.migrateToLatest();
 	if (error !== undefined || results === undefined) {
 		p.cancel("Unexpected error while migrating");
@@ -58,6 +60,14 @@ export async function migrate(environment: string) {
 		}
 	}
 
+	const result = await dumpStructure(config, environment);
+	if (result instanceof Error) {
+		p.log.error(`${color.red("error")} while dumping structure`);
+		console.error(error);
+		process.exit(1);
+	}
+	p.log.info(`${color.green("dumped")} ${result}`);
 	db.destroy();
+
 	p.outro("Done");
 }
