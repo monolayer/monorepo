@@ -1,11 +1,22 @@
-import { sql } from "kysely";
-import { describe, expect, test } from "vitest";
+import { Kysely, PostgresDialect, sql } from "kysely";
+import pg from "pg";
+import { env } from "process";
+import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { ActionStatus } from "~/cli/command.js";
 import { changeset } from "~/database/changeset.js";
 import { index } from "~/database/schema/pg_index.js";
-import { ColumnIdentity } from "~/index.js";
+import { dropTables } from "~tests/helpers/dropTables.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
-
+import { type DbContext, globalPool } from "~tests/setup.js";
+import { localSchema } from "./introspection/local_schema.js";
+import { remoteSchema } from "./introspection/remote_schema.js";
+import { ColumnIdentity, integer, text, varchar } from "./schema/pg_column.js";
+import { pgDatabase } from "./schema/pg_database.js";
+import { foreignKey } from "./schema/pg_foreign_key.js";
+import { primaryKey } from "./schema/pg_primary_key.js";
+import { pgTable } from "./schema/pg_table.js";
+import { unique } from "./schema/pg_unique.js";
 describe("#dbChangeset", () => {
 	test("create a table", () => {
 		const cset = changeset(
@@ -381,7 +392,6 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -461,7 +471,6 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -521,7 +530,6 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -604,7 +612,6 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -712,7 +719,6 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -783,7 +789,6 @@ describe("#dbChangeset", () => {
 								tableName: "books",
 								columnName: "id",
 								dataType: "integer",
-
 								identity: ColumnIdentity.ByDefault,
 							}),
 						},
@@ -1713,7 +1718,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -1816,7 +1820,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -1899,7 +1902,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -1946,7 +1948,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -2009,7 +2010,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -2051,7 +2051,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -2119,7 +2118,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -2168,7 +2166,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -2240,7 +2237,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -2338,7 +2334,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -2380,7 +2375,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -2451,7 +2445,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -2496,7 +2489,6 @@ describe("#dbChangeset", () => {
 								isNullable: false,
 								numericPrecision: null,
 								numericScale: null,
-
 								renameFrom: null,
 								tableName: "remote_schema_books",
 								enum: false,
@@ -2543,6 +2535,1195 @@ describe("#dbChangeset", () => {
 			];
 
 			expect(cset).toStrictEqual(expected);
+		});
+	});
+
+	describe("changing column names", () => {
+		beforeEach<DbContext>(async (context) => {
+			const pool = globalPool();
+			await pool.query("DROP DATABASE IF EXISTS test_change_column_names");
+			await pool.query("CREATE DATABASE test_change_column_names");
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			context.kysely = new Kysely<any>({
+				dialect: new PostgresDialect({
+					pool: new pg.Pool({
+						connectionString: `${env.POSTGRES_URL}/test_change_column_names?schema=public`,
+					}),
+				}),
+			});
+			context.tableNames = [];
+			await dropTables(context);
+		});
+
+		afterEach<DbContext>(async (context) => {
+			await dropTables(context);
+			await context.kysely.destroy();
+			const pool = globalPool();
+			await pool.query("DROP DATABASE IF EXISTS test_change_column_names");
+		});
+
+		test<DbContext>("change column name (not applied in remote)", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users");
+			await kysely.schema
+				.createTable("users")
+				.addColumn("name", "text")
+				.execute();
+
+			const database = pgDatabase({
+				tables: {
+					users: pgTable("users", {
+						columns: {
+							fullName: text().renameFrom("name"),
+						},
+					}),
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3.8,
+					tableName: "users",
+					type: "changeColumnName",
+					up: [
+						"await db.schema",
+						'alterTable("users")',
+						'renameColumn("name", "fullName")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users")',
+						'renameColumn("fullName", "name")',
+						"execute();",
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (not applied in remote) and type", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users");
+			await kysely.schema
+				.createTable("users")
+				.addColumn("name", "text")
+				.execute();
+
+			const database = pgDatabase({
+				tables: {
+					users: pgTable("users", {
+						columns: {
+							fullName: varchar(255).renameFrom("name"),
+						},
+					}),
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3,
+					tableName: "users",
+					type: "changeColumn",
+					up: [
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.setDataType("varchar(255)"))',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.setDataType("text"))',
+						"execute();",
+					],
+				},
+				{
+					priority: 3.8,
+					tableName: "users",
+					type: "changeColumnName",
+					up: [
+						"await db.schema",
+						'alterTable("users")',
+						'renameColumn("name", "fullName")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users")',
+						'renameColumn("fullName", "name")',
+						"execute();",
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (not applied in remote) with unique constraints applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users");
+			await kysely.schema
+				.createTable("users")
+				.addColumn("name", "text")
+				.addUniqueConstraint("users_name_kinetic_key", ["name"])
+				.execute();
+
+			const users = pgTable("users", {
+				columns: {
+					fullName: text().renameFrom("name"),
+				},
+				constraints: [unique(["fullName"], false)],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3.79,
+					tableName: "users",
+					type: "dropConstraint",
+					up: [
+						"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT (name)`.execute(db);",
+					],
+				},
+				{
+					priority: 3.8,
+					tableName: "users",
+					type: "changeColumnName",
+					up: [
+						"await db.schema",
+						'alterTable("users")',
+						'renameColumn("name", "fullName")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users")',
+						'renameColumn("fullName", "name")',
+						"execute();",
+					],
+				},
+				{
+					priority: 5.1,
+					tableName: "users",
+					type: "createConstraint",
+					up: [
+						"await sql`ALTER TABLE users ADD CONSTRAINT users_fullName_kinetic_key UNIQUE NULLS NOT DISTINCT (fullName)`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE users DROP CONSTRAINT users_fullName_kinetic_key`.execute(db);",
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (not applied in remote) with unique constraints not applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users");
+			await kysely.schema
+				.createTable("users")
+				.addColumn("name", "text")
+				.execute();
+
+			const users = pgTable("users", {
+				columns: {
+					fullName: text().renameFrom("name"),
+				},
+				constraints: [unique(["fullName"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3.8,
+					tableName: "users",
+					type: "changeColumnName",
+					up: [
+						"await db.schema",
+						'alterTable("users")',
+						'renameColumn("name", "fullName")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users")',
+						'renameColumn("fullName", "name")',
+						"execute();",
+					],
+				},
+				{
+					priority: 5.1,
+					tableName: "users",
+					type: "createConstraint",
+					up: [
+						"await sql`ALTER TABLE users ADD CONSTRAINT users_fullName_kinetic_key UNIQUE NULLS DISTINCT (fullName)`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE users DROP CONSTRAINT users_fullName_kinetic_key`.execute(db);",
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (applied in remote) with unique constraints from previous name applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users");
+			await kysely.schema
+				.createTable("users")
+				.addColumn("name", "text")
+				.addUniqueConstraint("users_name_kinetic_key", ["name"])
+				.execute();
+
+			await kysely.schema
+				.alterTable("users")
+				.renameColumn("name", "fullName")
+				.execute();
+
+			const users = pgTable("users", {
+				columns: {
+					fullName: text().renameFrom("name"),
+				},
+				constraints: [unique(["fullName"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			expect(cs).toStrictEqual([]);
+		});
+
+		test<DbContext>("change column name (applied in remote) with unique constraints name applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users6");
+
+			await kysely.schema
+				.createTable("users6")
+				.addColumn("fullName", "text")
+				.addUniqueConstraint("usersh_fullName_kinetic_key", ["fullName"])
+				.execute();
+
+			const users = pgTable("users6", {
+				columns: {
+					fullName: text().renameFrom("name"),
+				},
+				constraints: [unique(["fullName"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users6: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			expect(cs).toStrictEqual([]);
+		});
+
+		test<DbContext>("change column name (not applied in remote) with primary key applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users_pk1");
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.execute();
+
+			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY (name)`.execute(
+				kysely,
+			);
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					fullName: text().renameFrom("name"),
+				},
+				constraints: [primaryKey(["fullName"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3.79,
+					tableName: "users_pk1",
+					type: "dropConstraint",
+					up: [
+						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_name_kinetic_pk`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY (name)`.execute(db);",
+					],
+				},
+				{
+					priority: 3.8,
+					tableName: "users_pk1",
+					type: "changeColumnName",
+					up: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("name", "fullName")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("fullName", "name")',
+						"execute();",
+					],
+				},
+				{
+					priority: 5.1,
+					tableName: "users_pk1",
+					type: "createConstraint",
+					up: [
+						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY (fullName)`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_fullName_kinetic_pk`.execute(db);",
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (not applied in remote) with primary key not applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users_pk1");
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.execute();
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					fullName: text().renameFrom("name"),
+				},
+				constraints: [primaryKey(["fullName"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3.8,
+					tableName: "users_pk1",
+					type: "changeColumnName",
+					up: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("name", "fullName")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("fullName", "name")',
+						"execute();",
+					],
+				},
+				{
+					priority: 5.1,
+					tableName: "users_pk1",
+					type: "createConstraint",
+					up: [
+						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY (fullName)`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_fullName_kinetic_pk`.execute(db);",
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (applied in remote) with primary key from previous name applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users_pk1");
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.execute();
+
+			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY (name)`.execute(
+				kysely,
+			);
+
+			await kysely.schema
+				.alterTable("users_pk1")
+				.renameColumn("name", "fullName")
+				.execute();
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					fullName: text().renameFrom("name"),
+				},
+				constraints: [primaryKey(["fullName"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			expect(cs).toStrictEqual([]);
+		});
+
+		test<DbContext>("change column name (applied in remote) with primary key name applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users_pk1");
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("fullName", "text")
+				.execute();
+
+			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY (\"fullName\")`.execute(
+				kysely,
+			);
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					fullName: text().renameFrom("name"),
+				},
+				constraints: [primaryKey(["fullName"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			expect(cs).toStrictEqual([]);
+		});
+
+		test<DbContext>("change column name (not applied in remote) with foreign key applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("books_fk1");
+			tableNames.push("users_fk1");
+			await kysely.schema
+				.createTable("books_pk1")
+				.addColumn("id", "integer")
+				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
+				.execute();
+
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.addColumn("book_id", "integer")
+				.addForeignKeyConstraint(
+					"users_pk1_book_id_books_pk1_id_kinetic_fk",
+					["book_id"],
+					"books_pk1",
+					["id"],
+				)
+				.execute();
+
+			const books = pgTable("books_pk1", {
+				columns: {
+					id: integer(),
+				},
+				constraints: [primaryKey(["id"])],
+			});
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					name: text(),
+					bookId: integer().renameFrom("book_id"),
+				},
+				constraints: [foreignKey(["bookId"], books, ["id"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+					books_pk1: books,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3.79,
+					tableName: "users_pk1",
+					type: "dropConstraint",
+					up: [
+						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_book_id_books_pk1_id_kinetic_fk`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_book_id_books_pk1_id_kinetic_fk FOREIGN KEY (book_id) REFERENCES books_pk1 (id) ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);",
+					],
+				},
+				{
+					priority: 3.8,
+					tableName: "users_pk1",
+					type: "changeColumnName",
+					up: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("book_id", "bookId")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("bookId", "book_id")',
+						"execute();",
+					],
+				},
+				{
+					priority: 5.1,
+					tableName: "users_pk1",
+					type: "createConstraint",
+					up: [
+						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk FOREIGN KEY (bookId) REFERENCES books_pk1 (id) ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk`.execute(db);",
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (not applied in remote) with foreign key not applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("books_fk1");
+			tableNames.push("users_fk1");
+			await kysely.schema
+				.createTable("books_pk1")
+				.addColumn("id", "integer")
+				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
+				.execute();
+
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.addColumn("book_id", "integer")
+				.execute();
+
+			const books = pgTable("books_pk1", {
+				columns: {
+					id: integer(),
+				},
+				constraints: [primaryKey(["id"])],
+			});
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					name: text(),
+					bookId: integer().renameFrom("book_id"),
+				},
+				constraints: [foreignKey(["bookId"], books, ["id"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+					books_pk1: books,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3.8,
+					tableName: "users_pk1",
+					type: "changeColumnName",
+					up: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("book_id", "bookId")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("bookId", "book_id")',
+						"execute();",
+					],
+				},
+				{
+					priority: 5.1,
+					tableName: "users_pk1",
+					type: "createConstraint",
+					up: [
+						"await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk FOREIGN KEY (bookId) REFERENCES books_pk1 (id) ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);",
+					],
+					down: [
+						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk`.execute(db);",
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (applied in remote) with foreign key from previous name applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("books_fk1");
+			tableNames.push("users_fk1");
+			await kysely.schema
+				.createTable("books_pk1")
+				.addColumn("id", "integer")
+				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
+				.execute();
+
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.addColumn("book_id", "integer")
+				.addForeignKeyConstraint(
+					"users_pk1_book_id_books_pk1_id_kinetic_fk",
+					["book_id"],
+					"books_pk1",
+					["id"],
+				)
+				.execute();
+
+			await kysely.schema
+				.alterTable("users_pk1")
+				.renameColumn("book_id", "bookId")
+				.execute();
+
+			const books = pgTable("books_pk1", {
+				columns: {
+					id: integer(),
+				},
+				constraints: [primaryKey(["id"])],
+			});
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					name: text(),
+					bookId: integer().renameFrom("book_id"),
+				},
+				constraints: [foreignKey(["bookId"], books, ["id"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+					books_pk1: books,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+
+			expect(cs).toStrictEqual([]);
+		});
+
+		test<DbContext>("change column name (applied in remote) with foreign key name applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("books_fk1");
+			tableNames.push("users_fk1");
+			await kysely.schema
+				.createTable("books_pk1")
+				.addColumn("id", "integer")
+				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
+				.execute();
+
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.addColumn("bookId", "integer")
+				.addForeignKeyConstraint(
+					"users_pk1_book_id_books_pk1_id_kinetic_fk",
+					["bookId"],
+					"books_pk1",
+					["id"],
+				)
+				.execute();
+
+			const books = pgTable("books_pk1", {
+				columns: {
+					id: integer(),
+				},
+				constraints: [primaryKey(["id"])],
+			});
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					name: text(),
+					bookId: integer().renameFrom("book_id"),
+				},
+				constraints: [foreignKey(["bookId"], books, ["id"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+					books_pk1: books,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+
+			expect(cs).toStrictEqual([]);
+		});
+
+		test<DbContext>("change column name (not applied in remote) with indexes applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users_fk1");
+
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.addColumn("book_id", "integer")
+				.execute();
+
+			await kysely.schema
+				.createIndex("users_pk1_book_id_kntc_idx")
+				.on("users_pk1")
+				.columns(["book_id"])
+				.execute();
+
+			await sql`COMMENT ON INDEX users_pk1_book_id_kntc_idx IS 'abcd'`.execute(
+				kysely,
+			);
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					name: text(),
+					bookId: integer().renameFrom("book_id"),
+				},
+				indexes: [index(["bookId"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3.79,
+					tableName: "users_pk1",
+					type: "dropIndex",
+					up: [
+						'await db.schema.dropIndex("users_pk1_book_id_kntc_idx").execute();',
+					],
+					down: [
+						"await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree (book_id);COMMENT ON INDEX users_pk1_book_id_kntc_idx IS 'abcd'`.execute(db);",
+					],
+				},
+				{
+					priority: 3.8,
+					tableName: "users_pk1",
+					type: "changeColumnName",
+					up: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("book_id", "bookId")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("bookId", "book_id")',
+						"execute();",
+					],
+				},
+				{
+					priority: 4,
+					tableName: "users_pk1",
+					type: "createIndex",
+					up: [
+						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX users_pk1_bookId_kntc_idx IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+					],
+					down: [
+						'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (not applied in remote) with indexes not applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users_fk1");
+
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.addColumn("book_id", "integer")
+				.execute();
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					name: text(),
+					bookId: integer().renameFrom("book_id"),
+				},
+				indexes: [index(["bookId"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3.8,
+					tableName: "users_pk1",
+					type: "changeColumnName",
+					up: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("book_id", "bookId")',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("users_pk1")',
+						'renameColumn("bookId", "book_id")',
+						"execute();",
+					],
+				},
+				{
+					priority: 4,
+					tableName: "users_pk1",
+					type: "createIndex",
+					up: [
+						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX users_pk1_bookId_kntc_idx IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+					],
+					down: [
+						'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (applied in remote) with indexes from previous name applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users_fk1");
+
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.addColumn("book_id", "integer")
+				.execute();
+
+			await kysely.schema
+				.createIndex("users_pk1_book_id_kntc_idx")
+				.on("users_pk1")
+				.columns(["book_id"])
+				.execute();
+
+			await sql`COMMENT ON INDEX users_pk1_book_id_kntc_idx IS 'abcd'`.execute(
+				kysely,
+			);
+
+			await kysely.schema
+				.alterTable("users_pk1")
+				.renameColumn("book_id", "bookId")
+				.execute();
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					name: text(),
+					bookId: integer().renameFrom("book_id"),
+				},
+				indexes: [index(["bookId"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 3.79,
+					tableName: "users_pk1",
+					type: "dropIndex",
+					up: [
+						'await db.schema.dropIndex("users_pk1_book_id_kntc_idx").execute();',
+					],
+					down: [
+						"await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree (\"bookId\");COMMENT ON INDEX users_pk1_book_id_kntc_idx IS 'abcd'`.execute(db);",
+					],
+				},
+				{
+					priority: 4,
+					tableName: "users_pk1",
+					type: "createIndex",
+					up: [
+						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX users_pk1_bookId_kntc_idx IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+					],
+					down: [
+						'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+					],
+				},
+			];
+
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change column name (applied in remote) with indexes name applied", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users_fk1");
+
+			await kysely.schema
+				.createTable("users_pk1")
+				.addColumn("name", "text")
+				.addColumn("book_id", "integer")
+				.execute();
+
+			await kysely.schema
+				.alterTable("users_pk1")
+				.renameColumn("book_id", "bookId")
+				.execute();
+
+			await kysely.schema
+				.createIndex("users_pk1_bookId_kntc_idx")
+				.on("users_pk1")
+				.columns(["bookId"])
+				.execute();
+
+			await sql`COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS '760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb'`.execute(
+				kysely,
+			);
+
+			const users = pgTable("users_pk1", {
+				columns: {
+					name: text(),
+					bookId: integer().renameFrom("book_id"),
+				},
+				indexes: [index(["bookId"])],
+			});
+
+			const database = pgDatabase({
+				tables: {
+					users_pk1: users,
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+
+			expect(cs).toStrictEqual([]);
+		});
+
+		test<DbContext>("change column name (applied in remote)", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("users");
+			await kysely.schema
+				.createTable("users")
+				.addColumn("fullName", "text")
+				.execute();
+
+			const database = pgDatabase({
+				tables: {
+					users: pgTable("users", {
+						columns: {
+							fullName: text().renameFrom("name"),
+						},
+					}),
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			expect(cs).toStrictEqual([]);
 		});
 	});
 });

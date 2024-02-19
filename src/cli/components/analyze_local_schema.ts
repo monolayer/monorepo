@@ -2,8 +2,12 @@ import * as p from "@clack/prompts";
 import { exit } from "process";
 import { Config, importSchema } from "~/config.js";
 import { localSchema } from "~/database/introspection/local_schema.js";
+import type { MigrationSchema } from "~/database/migrations/migration_schema.js";
 
-export async function analyzeLocalSchema(config: Config) {
+export async function analyzeLocalSchema(
+	config: Config,
+	remoteSchema: MigrationSchema,
+) {
 	const s = p.spinner();
 	s.start(`Analyzing database schema at ${config.folder}/schema.ts.`);
 	const schema = await importSchema();
@@ -15,7 +19,7 @@ export async function analyzeLocalSchema(config: Config) {
 		p.outro("Done");
 		exit(0);
 	}
-	const local = localSchema(schema.database);
+	const local = localSchema(schema.database, remoteSchema);
 	s.stop("Analyzed schema at app/db/schema.ts");
 	return local;
 }

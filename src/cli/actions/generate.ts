@@ -28,8 +28,8 @@ export async function generate() {
 
 	await pendingMigrations(config, kysely);
 
-	const localInfo = await analyzeLocalSchema(config);
 	const remoteColumnInfo = await analyzeRemoteSchema(environmentConfig, kysely);
+	const localInfo = await analyzeLocalSchema(config, remoteColumnInfo.result);
 	const changeset = await computeChangeset(localInfo, remoteColumnInfo.result);
 
 	await generateMigrations(changeset, config);

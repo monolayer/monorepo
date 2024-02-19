@@ -10,10 +10,12 @@ import {
 import pg from "pg";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { type PgTable } from "~/database/schema/pg_table.js";
-import type {
-	ConstraintInfo,
-	MigrationSchema,
-	TriggerInfo,
+import {
+	type ConstraintInfo,
+	type MigrationSchema,
+	type TriggerInfo,
+	findColumn,
+	findPrimaryKey,
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes, PgEnum } from "../schema/pg_column.js";
 import { PgForeignKey } from "../schema/pg_foreign_key.js";
@@ -104,17 +106,44 @@ function substituteSQLParameters(queryObject: {
 export function schemaDBColumnInfoByTable(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<string, any>>>,
+	remoteSchema: MigrationSchema,
 ) {
 	return Object.entries(schema.tables).reduce<TableColumnInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const columns = Object.entries(tableDefinition.columns);
 			acc[tableName] = columns.reduce<ColumnsInfo>(
 				(columnAcc, [columnName, column]) => {
-					columnAcc[columnName] = schemaColumnInfo(
+					const columnInfo = schemaColumnInfo(
 						tableName,
 						columnName,
 						column as PgColumnTypes,
 					);
+					let columnKey = columnName;
+					const pKey = findPrimaryKey(remoteSchema, tableName);
+					if (columnInfo.renameFrom !== null) {
+						const appliedInRemote =
+							findColumn(remoteSchema, tableName, columnName) !== null;
+						const toApplyInRemote =
+							findColumn(remoteSchema, tableName, columnInfo.renameFrom) !==
+							null;
+						if (appliedInRemote && pKey?.includes(columnName)) {
+							columnInfo.isNullable = false;
+						}
+						if (appliedInRemote || toApplyInRemote) {
+							if (toApplyInRemote) {
+								columnKey = columnInfo.renameFrom;
+								if (pKey?.includes(columnInfo.renameFrom)) {
+									columnInfo.isNullable = false;
+								}
+							}
+						}
+						columnInfo.renameFrom = null;
+					} else {
+						if (pKey?.includes(columnName)) {
+							columnInfo.isNullable = false;
+						}
+					}
+					columnAcc[columnKey] = columnInfo;
 					return columnAcc;
 				},
 				{},
@@ -189,6 +218,7 @@ export function indexToInfo(
 export function schemaDbConstraintInfoByTable(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<string, any>>>,
+	remoteSchema: MigrationSchema,
 ) {
 	return Object.entries(schema.tables).reduce<ConstraintInfo>(
 		(acc, [tableName, tableDefinition]) => {
@@ -257,11 +287,12 @@ export function schemaDbConstraintInfoByTable(
 export function localSchema(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<string, any>>>,
+	remoteSchema: MigrationSchema,
 ): MigrationSchema {
-	const constraints = schemaDbConstraintInfoByTable(schema);
+	const constraints = schemaDbConstraintInfoByTable(schema, remoteSchema);
 	return {
 		extensions: schemaDBExtensionsInfo(schema),
-		table: schemaDBColumnInfoByTable(schema),
+		table: schemaDBColumnInfoByTable(schema, remoteSchema),
 		index: schemaDBIndexInfoByTable(schema),
 		foreignKeyConstraints: {
 			...constraints.foreign,

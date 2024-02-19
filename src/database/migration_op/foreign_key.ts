@@ -8,18 +8,24 @@ export function foreignKeyMigrationOpGenerator(
 	addedTables: string[],
 	droppedTables: string[],
 ) {
-	if (isForeignKeyConstraintCreate(diff)) {
-		return createforeignKeyConstraintMigration(diff, addedTables);
+	if (isForeignKeyConstraintCreateFirst(diff)) {
+		return createforeignKeyFirstConstraintMigration(diff, addedTables);
 	}
-	if (isForeignKeyConstraintDrop(diff)) {
-		return dropforeignKeyConstraintMigration(diff, droppedTables);
+	if (isForeignKeyConstraintDropLast(diff)) {
+		return dropforeignKeyLastConstraintMigration(diff, droppedTables);
 	}
 	if (isForeignKeyConstraintChange(diff)) {
 		return changeforeignKeyConstraintMigration(diff);
 	}
+	if (isForeignKeyConstraintCreate(diff)) {
+		return createForeignKeyConstraintMigration(diff);
+	}
+	if (isForeignKeyConstraintDrop(diff)) {
+		return dropForeignKeyConstraintMigration(diff);
+	}
 }
 
-type ForeignKeyCreateDiff = {
+type ForeignKeyCreateFirstDiff = {
 	type: "CREATE";
 	path: ["foreignKeyConstraints", string];
 	value: {
@@ -27,12 +33,24 @@ type ForeignKeyCreateDiff = {
 	};
 };
 
-type ForeignKeyDropDiff = {
+type ForeignKeyCreateDiff = {
+	type: "CREATE";
+	path: ["foreignKeyConstraints", string, string];
+	value: string;
+};
+
+type ForeignKeyDropLastDiff = {
 	type: "REMOVE";
 	path: ["foreignKeyConstraints", string];
 	oldValue: {
 		[key: string]: string;
 	};
+};
+
+type ForeignKeyDropDiff = {
+	type: "REMOVE";
+	path: ["foreignKeyConstraints", string, string];
+	oldValue: string;
 };
 
 type ForeignKeyChangeDiff = {
@@ -42,9 +60,9 @@ type ForeignKeyChangeDiff = {
 	oldValue: string;
 };
 
-function isForeignKeyConstraintCreate(
+function isForeignKeyConstraintCreateFirst(
 	test: Difference,
-): test is ForeignKeyCreateDiff {
+): test is ForeignKeyCreateFirstDiff {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 2 &&
@@ -55,9 +73,22 @@ function isForeignKeyConstraintCreate(
 	);
 }
 
-function isForeignKeyConstraintDrop(
+function isForeignKeyConstraintCreate(
 	test: Difference,
-): test is ForeignKeyDropDiff {
+): test is ForeignKeyCreateDiff {
+	return (
+		test.type === "CREATE" &&
+		test.path.length === 3 &&
+		test.path[0] === "foreignKeyConstraints" &&
+		typeof test.path[1] === "string" &&
+		typeof test.path[2] === "string" &&
+		typeof test.value === "string"
+	);
+}
+
+function isForeignKeyConstraintDropLast(
+	test: Difference,
+): test is ForeignKeyDropLastDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 2 &&
@@ -65,6 +96,19 @@ function isForeignKeyConstraintDrop(
 		typeof test.path[1] === "string" &&
 		typeof test.oldValue === "object" &&
 		Object.keys(test.oldValue).length === 1
+	);
+}
+
+function isForeignKeyConstraintDrop(
+	test: Difference,
+): test is ForeignKeyDropDiff {
+	return (
+		test.type === "REMOVE" &&
+		test.path.length === 3 &&
+		test.path[0] === "foreignKeyConstraints" &&
+		typeof test.path[1] === "string" &&
+		typeof test.path[2] === "string" &&
+		typeof test.oldValue === "string"
 	);
 }
 
@@ -82,8 +126,8 @@ function isForeignKeyConstraintChange(
 	);
 }
 
-function createforeignKeyConstraintMigration(
-	diff: ForeignKeyCreateDiff,
+function createforeignKeyFirstConstraintMigration(
+	diff: ForeignKeyCreateFirstDiff,
 	addedTables: string[],
 ) {
 	const tableName = diff.path[1];
@@ -107,8 +151,26 @@ function createforeignKeyConstraintMigration(
 	};
 }
 
-function dropforeignKeyConstraintMigration(
-	diff: ForeignKeyDropDiff,
+function createForeignKeyConstraintMigration(diff: ForeignKeyCreateDiff) {
+	const tableName = diff.path[1];
+	const constraintName = diff.path[2];
+	const constraintValue = diff.value;
+
+	return {
+		priority: MigrationOpPriority.ConstraintCreate,
+		tableName: tableName,
+		type: ChangeSetType.CreateConstraint,
+		up: executeKyselyDbStatement(
+			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
+		),
+		down: executeKyselyDbStatement(
+			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+		),
+	};
+}
+
+function dropforeignKeyLastConstraintMigration(
+	diff: ForeignKeyDropLastDiff,
 	droppedTables: string[],
 ) {
 	const tableName = diff.path[1];
@@ -128,6 +190,24 @@ function dropforeignKeyConstraintMigration(
 			: executeKyselyDbStatement(
 					`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
 			  ),
+		down: executeKyselyDbStatement(
+			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
+		),
+	};
+}
+
+function dropForeignKeyConstraintMigration(diff: ForeignKeyDropDiff) {
+	const tableName = diff.path[1];
+	const constraintName = diff.path[2];
+	const constraintValue = diff.oldValue;
+
+	return {
+		priority: MigrationOpPriority.ConstraintDrop,
+		tableName: tableName,
+		type: ChangeSetType.DropConstraint,
+		up: executeKyselyDbStatement(
+			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+		),
 		down: executeKyselyDbStatement(
 			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
 		),
@@ -161,11 +241,11 @@ export function foreignKeyMigrationOps(
 		return [];
 	}
 	return diff.flatMap((d) => {
-		if (isForeignKeyConstraintCreate(d)) {
-			return createforeignKeyConstraintMigration(d, addedTables);
+		if (isForeignKeyConstraintCreateFirst(d)) {
+			return createforeignKeyFirstConstraintMigration(d, addedTables);
 		}
-		if (isForeignKeyConstraintDrop(d)) {
-			return dropforeignKeyConstraintMigration(d, droppedTables);
+		if (isForeignKeyConstraintDropLast(d)) {
+			return dropforeignKeyLastConstraintMigration(d, droppedTables);
 		}
 		if (isForeignKeyConstraintChange(d)) {
 			return changeforeignKeyConstraintMigration(d);

@@ -21,6 +21,7 @@ import {
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { index } from "~/database/schema/pg_index.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
+import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
 import { foreignKey } from "../schema/pg_foreign_key.js";
 import { primaryKey } from "../schema/pg_primary_key.js";
 import { pgTable } from "../schema/pg_table.js";
@@ -120,7 +121,9 @@ describe("#schemaColumnInfo", () => {
 
 test("#schemaDBColumnInfoByTable on empty database", () => {
 	const database = pgDatabase({ tables: {} });
-	expect(schemaDBColumnInfoByTable(database)).toEqual({});
+	expect(schemaDBColumnInfoByTable(database, migrationSchemaFactory())).toEqual(
+		{},
+	);
 });
 
 test("#schemaDBColumnInfoByTable", () => {
@@ -193,7 +196,7 @@ test("#schemaDBColumnInfoByTable", () => {
 			}),
 		},
 	};
-	expect(schemaDBColumnInfoByTable(database)).toEqual(
+	expect(schemaDBColumnInfoByTable(database, migrationSchemaFactory())).toEqual(
 		expectedDbColumnInfoByTable,
 	);
 });
@@ -265,7 +268,9 @@ test("#schemaDbConstraintInfoByTable", () => {
 		tables: { users, books },
 	});
 
-	expect(schemaDbConstraintInfoByTable(database)).toStrictEqual({
+	expect(
+		schemaDbConstraintInfoByTable(database, migrationSchemaFactory()),
+	).toStrictEqual({
 		unique: {
 			users: {
 				users_name_kinetic_key:
@@ -606,7 +611,9 @@ test("#localSchema", () => {
 			user_status: "active, inactive",
 		},
 	};
-	expect(localSchema(database)).toStrictEqual(expectedLocalSchema);
+	expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+		expectedLocalSchema,
+	);
 });
 
 test("trigger names are downcased", () => {
@@ -662,5 +669,7 @@ test("trigger names are downcased", () => {
 		uniqueConstraints: {},
 		enums: {},
 	};
-	expect(localSchema(database)).toStrictEqual(expectedLocalSchema);
+	expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+		expectedLocalSchema,
+	);
 });

@@ -2,6 +2,7 @@ import { columnMigrationOpGenerator } from "./migration_op/column.js";
 import { columnDataTypeMigrationOpGenerator } from "./migration_op/column_change/data_type.js";
 import { columnDefaultMigrationOpGenerator } from "./migration_op/column_change/default.js";
 import { columnIdentityMigrationOpGenerator } from "./migration_op/column_change/identity.js";
+import { ColumnNameMigrationOpGenerator } from "./migration_op/column_change/name.js";
 import { columnNullableMigrationOpGenerator } from "./migration_op/column_change/nullable.js";
 import { enumMigrationOpGenerator } from "./migration_op/enums.js";
 import { extensionMigrationOpGenerator } from "./migration_op/extensions.js";
@@ -26,4 +27,5 @@ export const migrationOpGenerators = [
 	foreignKeyMigrationOpGenerator,
 	triggerMigrationOpGenerator,
 	enumMigrationOpGenerator,
+	ColumnNameMigrationOpGenerator,
 ];

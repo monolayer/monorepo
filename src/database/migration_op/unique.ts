@@ -11,18 +11,24 @@ export function uniqueConstraintMigrationOpGenerator(
 	_local: LocalTableInfo,
 	_db: DbTableInfo,
 ) {
-	if (isUniqueConstraintCreate(diff)) {
-		return createUniqueConstraintMigration(diff, addedTables);
+	if (isUniqueConstraintCreateFirst(diff)) {
+		return createUniqueFirstConstraintMigration(diff, addedTables);
 	}
-	if (isUniqueConstraintDrop(diff)) {
-		return dropUniqueConstraintMigration(diff, droppedTables);
+	if (isUniqueConstraintDropLast(diff)) {
+		return dropUniqueLastConstraintMigration(diff, droppedTables);
 	}
 	if (isUniqueConstraintChange(diff)) {
 		return changeUniqueConstraintMigration(diff);
 	}
+	if (isUniqueContraintCreateDiff(diff)) {
+		return createUniqueConstraintMigration(diff);
+	}
+	if (isUniqueConstraintDropDiff(diff)) {
+		return dropUniqueConstraintMigration(diff);
+	}
 }
 
-type UniqueCreateDiff = {
+type UniqueCreateFirst = {
 	type: "CREATE";
 	path: ["uniqueConstraints", string];
 	value: {
@@ -30,12 +36,24 @@ type UniqueCreateDiff = {
 	};
 };
 
-type UniqueDropDiff = {
+type UniqueCreateDiff = {
+	type: "CREATE";
+	path: ["uniqueConstraints", string, string];
+	value: string;
+};
+
+type UniqueDropLast = {
 	type: "REMOVE";
 	path: ["uniqueConstraints", string];
 	oldValue: {
 		[key: string]: string;
 	};
+};
+
+type UuniqueDropDiff = {
+	type: "REMOVE";
+	path: ["uniqueConstraints", string, string];
+	oldValue: string;
 };
 
 type UniqueChangeDiff = {
@@ -45,7 +63,9 @@ type UniqueChangeDiff = {
 	oldValue: string;
 };
 
-function isUniqueConstraintCreate(test: Difference): test is UniqueCreateDiff {
+function isUniqueConstraintCreateFirst(
+	test: Difference,
+): test is UniqueCreateFirst {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 2 &&
@@ -56,7 +76,20 @@ function isUniqueConstraintCreate(test: Difference): test is UniqueCreateDiff {
 	);
 }
 
-function isUniqueConstraintDrop(test: Difference): test is UniqueDropDiff {
+function isUniqueContraintCreateDiff(
+	test: Difference,
+): test is UniqueCreateDiff {
+	return (
+		test.type === "CREATE" &&
+		test.path.length === 3 &&
+		test.path[0] === "uniqueConstraints" &&
+		typeof test.path[1] === "string" &&
+		typeof test.path[2] === "string" &&
+		typeof test.value === "string"
+	);
+}
+
+function isUniqueConstraintDropLast(test: Difference): test is UniqueDropLast {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 2 &&
@@ -64,6 +97,17 @@ function isUniqueConstraintDrop(test: Difference): test is UniqueDropDiff {
 		typeof test.path[1] === "string" &&
 		typeof test.oldValue === "object" &&
 		Object.keys(test.oldValue).length === 1
+	);
+}
+
+function isUniqueConstraintDropDiff(test: Difference): test is UuniqueDropDiff {
+	return (
+		test.type === "REMOVE" &&
+		test.path.length === 3 &&
+		test.path[0] === "uniqueConstraints" &&
+		typeof test.path[1] === "string" &&
+		typeof test.path[2] === "string" &&
+		typeof test.oldValue === "string"
 	);
 }
 
@@ -79,8 +123,8 @@ function isUniqueConstraintChange(test: Difference): test is UniqueChangeDiff {
 	);
 }
 
-function createUniqueConstraintMigration(
-	diff: UniqueCreateDiff,
+function createUniqueFirstConstraintMigration(
+	diff: UniqueCreateFirst,
 	addedTables: string[],
 ) {
 	const tableName = diff.path[1];
@@ -104,8 +148,8 @@ function createUniqueConstraintMigration(
 	};
 }
 
-function dropUniqueConstraintMigration(
-	diff: UniqueDropDiff,
+function dropUniqueLastConstraintMigration(
+	diff: UniqueDropLast,
 	droppedTables: string[],
 ) {
 	const tableName = diff.path[1];
@@ -149,6 +193,40 @@ function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
 	};
 }
 
+function createUniqueConstraintMigration(diff: UniqueCreateDiff) {
+	const tableName = diff.path[1];
+	const constraintName = diff.path[2];
+	const constraintValue = diff.value;
+	return {
+		priority: MigrationOpPriority.ConstraintCreate,
+		tableName: tableName,
+		type: ChangeSetType.CreateConstraint,
+		up: executeKyselyDbStatement(
+			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
+		),
+		down: executeKyselyDbStatement(
+			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+		),
+	};
+}
+
+function dropUniqueConstraintMigration(diff: UuniqueDropDiff) {
+	const tableName = diff.path[1];
+	const constraintName = diff.path[2];
+	const constraintValue = diff.oldValue;
+	return {
+		priority: MigrationOpPriority.ConstraintDrop,
+		tableName: tableName,
+		type: ChangeSetType.DropConstraint,
+		up: executeKyselyDbStatement(
+			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+		),
+		down: executeKyselyDbStatement(
+			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
+		),
+	};
+}
+
 export function uniqueMigrationOps(
 	diff: Difference[],
 	addedTables: string[],
@@ -158,11 +236,11 @@ export function uniqueMigrationOps(
 		return [];
 	}
 	return diff.flatMap((d) => {
-		if (isUniqueConstraintCreate(d)) {
-			return createUniqueConstraintMigration(d, addedTables);
+		if (isUniqueConstraintCreateFirst(d)) {
+			return createUniqueFirstConstraintMigration(d, addedTables);
 		}
-		if (isUniqueConstraintDrop(d)) {
-			return dropUniqueConstraintMigration(d, droppedTables);
+		if (isUniqueConstraintDropLast(d)) {
+			return dropUniqueLastConstraintMigration(d, droppedTables);
 		}
 		if (isUniqueConstraintChange(d)) {
 			return changeUniqueConstraintMigration(d);

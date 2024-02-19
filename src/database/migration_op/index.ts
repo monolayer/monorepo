@@ -19,6 +19,12 @@ export function indexMigrationOpGenerator(
 	if (isChangeIndex(diff)) {
 		return changeIndexMigration(diff);
 	}
+	if (isCreateIndex(diff)) {
+		return createIndexMigration(diff);
+	}
+	if (isDropIndex(diff)) {
+		return dropIndexMigration(diff);
+	}
 }
 
 type CreateFirstIndexDiff = {
@@ -135,4 +141,66 @@ function changeIndexMigration(diff: ChangeIndexDiff) {
 		],
 	};
 	return changeset;
+}
+
+type CreateIndex = {
+	type: "CREATE";
+	path: ["index", string, string];
+	value: string;
+};
+
+function isCreateIndex(test: Difference): test is CreateIndex {
+	return (
+		test.type === "CREATE" &&
+		test.path[0] === "index" &&
+		test.path.length === 3 &&
+		typeof test.value === "string"
+	);
+}
+
+function createIndexMigration(diff: CreateIndex) {
+	const tableName = diff.path[1];
+	const indexName = diff.path[2];
+	const index = diff.value.split(":");
+	const changeSet: Changeset = {
+		priority: MigrationOpPriority.Index,
+		tableName: tableName,
+		type: ChangeSetType.CreateIndex,
+		up: [
+			`await sql\`${index[1]};COMMENT ON INDEX ${indexName} IS '${index[0]}'\`.execute(db);`,
+		],
+		down: [`await db.schema.dropIndex("${indexName}").execute();`],
+	};
+	return changeSet;
+}
+
+type DropIndex = {
+	type: "REMOVE";
+	path: ["index", string, string];
+	oldValue: string;
+};
+
+function isDropIndex(test: Difference): test is DropIndex {
+	return (
+		test.type === "REMOVE" &&
+		test.path[0] === "index" &&
+		test.path.length === 3 &&
+		typeof test.oldValue === "string"
+	);
+}
+
+function dropIndexMigration(diff: DropIndex) {
+	const tableName = diff.path[1];
+	const indexName = diff.path[2];
+	const index = diff.oldValue.split(":");
+	const changeSet: Changeset = {
+		priority: MigrationOpPriority.IndexDrop,
+		tableName: tableName,
+		type: ChangeSetType.DropIndex,
+		up: [`await db.schema.dropIndex("${indexName}").execute();`],
+		down: [
+			`await sql\`${index[1]};COMMENT ON INDEX ${indexName} IS '${index[0]}'\`.execute(db);`,
+		],
+	};
+	return changeSet;
 }

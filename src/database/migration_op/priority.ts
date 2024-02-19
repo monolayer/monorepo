@@ -10,6 +10,7 @@ export enum MigrationOpPriority {
 	ChangeColumnDefaultDrop = 3.71,
 	ChangeColumnDefaultChange = 3.72,
 	ChangeColumnName = 3.8,
+	IndexDrop = 3.79,
 	Index = 4,
 	ChangeIndex = 4.1,
 	ConstraintDrop = 3.79,
