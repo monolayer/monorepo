@@ -110,7 +110,7 @@ function createPrimaryKeyMigration(
 	] as (typeof diff.value)[keyof typeof diff.value];
 
 	return {
-		priority: MigrationOpPriority.ConstraintCreate,
+		priority: MigrationOpPriority.PrimaryKeyCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
 		up: executeKyselyDbStatement(
@@ -135,7 +135,7 @@ function dropPrimaryKeyMigration(
 	] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
 
 	return {
-		priority: MigrationOpPriority.ConstraintDrop,
+		priority: MigrationOpPriority.PrimaryKeyDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropConstraint,
 		up: droppedTables.includes(tableName)
@@ -159,7 +159,7 @@ function updatePrimaryKeyMigration(
 	const indexValue = diff.value;
 
 	return {
-		priority: MigrationOpPriority.ConstraintCreate,
+		priority: MigrationOpPriority.PrimaryKeyCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
 		up: droppedTables.includes(tableName)
@@ -185,7 +185,7 @@ function replacePrimaryKeyMigration(
 	const indexValue = diff.oldValue;
 
 	return {
-		priority: MigrationOpPriority.ConstraintDrop,
+		priority: MigrationOpPriority.PrimaryKeyDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropConstraint,
 		up: droppedTables.includes(tableName)

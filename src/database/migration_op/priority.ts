@@ -15,6 +15,8 @@ export enum MigrationOpPriority {
 	IndexDrop = 3.79,
 	IndexCreate = 4,
 	ChangeIndex = 4.1,
+	PrimaryKeyDrop = 3.79,
+	PrimaryKeyCreate = 5.1,
 	ConstraintDrop = 3.79,
 	ConstraintCreate = 5.1,
 	ConstraintChange = 5.2,
