@@ -6,28 +6,6 @@ import { ColumnIdentity } from "../schema/pg_column.js";
 import { columnMigrationOpGenerator } from "./column.js";
 
 describe("Column Create Migration ops", () => {
-	test("has a priority of 1", () => {
-		const column: Difference = {
-			type: "CREATE",
-			path: ["table", "books", "id"],
-			value: columnInfoFactory({
-				tableName: "books",
-				columnName: "id",
-				dataType: "serial",
-				isNullable: true,
-			}),
-		};
-
-		const result = columnMigrationOpGenerator(
-			column,
-			[],
-			[],
-			migrationSchemaFactory(),
-			migrationSchemaFactory(),
-		);
-		expect(result?.priority).toBe(2);
-	});
-
 	test("columns", () => {
 		const column: Difference = {
 			type: "CREATE",
@@ -41,7 +19,7 @@ describe("Column Create Migration ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 2002,
 			tableName: "books",
 			type: "createColumn",
 			up: [
@@ -82,7 +60,7 @@ describe("Column Create Migration ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 2002,
 			tableName: "books",
 			type: "createColumn",
 			up: [
@@ -123,7 +101,7 @@ describe("Column Create Migration ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 2002,
 			tableName: "books",
 			type: "createColumn",
 			up: [
@@ -164,7 +142,7 @@ describe("Column Create Migration ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 2002,
 			tableName: "books",
 			type: "createColumn",
 			up: [
@@ -205,7 +183,7 @@ describe("Column Create Migration ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 2002,
 			tableName: "books",
 			type: "createColumn",
 			up: [
@@ -246,7 +224,7 @@ describe("Column Create Migration ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 2002,
 			tableName: "books",
 			type: "createColumn",
 			up: [
@@ -285,7 +263,7 @@ describe("Column Create Migration ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 2002,
 			tableName: "books",
 			type: "createColumn",
 			up: [
@@ -325,7 +303,7 @@ describe("Column Create Migration ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 2002,
 			tableName: "books",
 			type: "createColumn",
 			up: [
@@ -355,29 +333,6 @@ describe("Column Create Migration ops", () => {
 });
 
 describe("Column Drop Migration Ops", () => {
-	test("has a priority of 1", () => {
-		const column: Difference = {
-			type: "REMOVE",
-			path: ["table", "books", "id"],
-			oldValue: columnInfoFactory({
-				tableName: "books",
-				columnName: "id",
-				dataType: "serial",
-				isNullable: true,
-			}),
-		};
-
-		const result = columnMigrationOpGenerator(
-			column,
-			[],
-			[],
-			migrationSchemaFactory(),
-			migrationSchemaFactory(),
-		);
-
-		expect(result?.priority).toBe(2);
-	});
-
 	test("columns", () => {
 		const column: Difference = {
 			type: "REMOVE",
@@ -391,7 +346,7 @@ describe("Column Drop Migration Ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 1005,
 			tableName: "books",
 			type: "dropColumn",
 			up: [
@@ -432,7 +387,7 @@ describe("Column Drop Migration Ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 1005,
 			tableName: "books",
 			type: "dropColumn",
 			up: [
@@ -473,7 +428,7 @@ describe("Column Drop Migration Ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 1005,
 			tableName: "books",
 			type: "dropColumn",
 			up: [
@@ -514,7 +469,7 @@ describe("Column Drop Migration Ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 1005,
 			tableName: "books",
 			type: "dropColumn",
 			up: [
@@ -555,7 +510,7 @@ describe("Column Drop Migration Ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 1005,
 			tableName: "books",
 			type: "dropColumn",
 			up: [
@@ -595,7 +550,7 @@ describe("Column Drop Migration Ops", () => {
 		};
 
 		const expected = {
-			priority: 2,
+			priority: 1005,
 			tableName: "books",
 			type: "dropColumn",
 			up: [

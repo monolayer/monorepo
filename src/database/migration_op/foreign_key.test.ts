@@ -23,7 +23,7 @@ describe("foreignKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 5.1,
+				priority: 2004,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -34,7 +34,7 @@ describe("foreignKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 5.1,
+				priority: 2004,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -70,7 +70,7 @@ describe("foreignKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 5.1,
+				priority: 2004,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -79,7 +79,7 @@ describe("foreignKeyMigrationOps", () => {
 				down: [],
 			},
 			{
-				priority: 5.1,
+				priority: 2004,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -112,7 +112,7 @@ describe("foreignKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 3.79,
+				priority: 1003,
 				tableName: "users",
 				type: "dropConstraint",
 				up: [
@@ -123,7 +123,7 @@ describe("foreignKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 3.79,
+				priority: 1003,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -159,7 +159,7 @@ describe("foreignKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 3.79,
+				priority: 1003,
 				tableName: "users",
 				type: "dropConstraint",
 				up: [],
@@ -168,7 +168,7 @@ describe("foreignKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 3.79,
+				priority: 1003,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -212,7 +212,7 @@ describe("foreignKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 5.2,
+				priority: 4002,
 				tableName: "users",
 				type: "changeConstraint",
 				up: [
@@ -223,7 +223,7 @@ describe("foreignKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 5.2,
+				priority: 4002,
 				tableName: "books",
 				type: "changeConstraint",
 				up: [

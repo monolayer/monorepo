@@ -21,9 +21,9 @@ describe("primaryKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 5.1,
+				priority: 2003,
 				tableName: "users",
-				type: "createConstraint",
+				type: "createPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
@@ -32,9 +32,9 @@ describe("primaryKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 5.1,
+				priority: 2003,
 				tableName: "books",
-				type: "createConstraint",
+				type: "createPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
@@ -66,9 +66,9 @@ describe("primaryKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 5.1,
+				priority: 2003,
 				tableName: "users",
-				type: "createConstraint",
+				type: "createPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
@@ -77,9 +77,9 @@ describe("primaryKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 5.1,
+				priority: 2003,
 				tableName: "books",
-				type: "createConstraint",
+				type: "createPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
@@ -107,9 +107,9 @@ describe("primaryKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 3.79,
+				priority: 1004,
 				tableName: "users",
-				type: "dropConstraint",
+				type: "dropPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk`.execute(db);",
 				],
@@ -118,9 +118,9 @@ describe("primaryKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 3.79,
+				priority: 1004,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
 				],
@@ -153,18 +153,18 @@ describe("primaryKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 3.79,
+				priority: 1004,
 				tableName: "users",
-				type: "dropConstraint",
+				type: "dropPrimaryKey",
 				up: [],
 				down: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 			},
 			{
-				priority: 3.79,
+				priority: 1004,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
 				],
@@ -202,9 +202,9 @@ describe("primaryKeyMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 3.79,
+				priority: 1004,
 				tableName: "users",
-				type: "dropConstraint",
+				type: "dropPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk`.execute(db);",
 				],
@@ -213,9 +213,9 @@ describe("primaryKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 5.1,
+				priority: 2003,
 				tableName: "users",
-				type: "createConstraint",
+				type: "createPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_pk PRIMARY KEY (name)`.execute(db);",
 				],
@@ -224,9 +224,9 @@ describe("primaryKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 3.79,
+				priority: 1004,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
 				],
@@ -235,9 +235,9 @@ describe("primaryKeyMigrationOps", () => {
 				],
 			},
 			{
-				priority: 5.1,
+				priority: 2003,
 				tableName: "books",
-				type: "createConstraint",
+				type: "createPrimaryKey",
 				up: [
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_name_kinetic_pk PRIMARY KEY (name)`.execute(db);",
 				],

@@ -23,7 +23,7 @@ describe("uniqueMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 5.1,
+				priority: 2004,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -34,7 +34,7 @@ describe("uniqueMigrationOps", () => {
 				],
 			},
 			{
-				priority: 5.1,
+				priority: 2004,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -70,7 +70,7 @@ describe("uniqueMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 5.1,
+				priority: 2004,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -79,7 +79,7 @@ describe("uniqueMigrationOps", () => {
 				down: [],
 			},
 			{
-				priority: 5.1,
+				priority: 2004,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -111,7 +111,7 @@ describe("uniqueMigrationOps", () => {
 		const result = uniqueMigrationOps(diff, addedTables, droppedTables);
 		const expected = [
 			{
-				priority: 3.79,
+				priority: 1003,
 				tableName: "users",
 				type: "dropConstraint",
 				up: [
@@ -122,7 +122,7 @@ describe("uniqueMigrationOps", () => {
 				],
 			},
 			{
-				priority: 3.79,
+				priority: 1003,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -157,7 +157,7 @@ describe("uniqueMigrationOps", () => {
 		const result = uniqueMigrationOps(diff, addedTables, droppedTables);
 		const expected = [
 			{
-				priority: 3.79,
+				priority: 1003,
 				tableName: "users",
 				type: "dropConstraint",
 				up: [],
@@ -166,7 +166,7 @@ describe("uniqueMigrationOps", () => {
 				],
 			},
 			{
-				priority: 3.79,
+				priority: 1003,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -202,7 +202,7 @@ describe("uniqueMigrationOps", () => {
 
 		const expected = [
 			{
-				priority: 5.2,
+				priority: 4002,
 				tableName: "users",
 				type: "changeConstraint",
 				up: [

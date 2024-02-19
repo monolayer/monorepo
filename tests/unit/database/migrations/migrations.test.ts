@@ -99,7 +99,7 @@ describe("Migrator", () => {
 				{
 					tableName: "addresses",
 					type: ChangeSetType.ChangeColumn,
-					priority: 3,
+					priority: 3001,
 					up: [
 						"await db.schema",
 						'alterTable("addresses")',
@@ -116,7 +116,7 @@ describe("Migrator", () => {
 				{
 					tableName: "addresses",
 					type: ChangeSetType.ChangeColumn,
-					priority: 3,
+					priority: 3001,
 					up: [
 						"await db.schema",
 						'alterTable("addresses")',
@@ -133,7 +133,7 @@ describe("Migrator", () => {
 				{
 					tableName: "addresses",
 					type: ChangeSetType.ChangeColumn,
-					priority: 3.1,
+					priority: 3002,
 					up: [
 						"await db.schema",
 						'alterTable("addresses")',
@@ -150,7 +150,7 @@ describe("Migrator", () => {
 				{
 					tableName: "addresses",
 					type: ChangeSetType.ChangeColumn,
-					priority: 3.1,
+					priority: 3002,
 					up: [
 						"await db.schema",
 						'alterTable("addresses")',
@@ -167,7 +167,7 @@ describe("Migrator", () => {
 				{
 					tableName: "addresses",
 					type: ChangeSetType.ChangeColumn,
-					priority: 3.1,
+					priority: 3002,
 					up: [
 						"await db.schema",
 						'alterTable("addresses")',
@@ -184,7 +184,7 @@ describe("Migrator", () => {
 				{
 					tableName: "addresses",
 					type: ChangeSetType.ChangeColumn,
-					priority: 3.1,
+					priority: 3002,
 					up: [
 						"await db.schema",
 						'alterTable("addresses")',
@@ -199,7 +199,7 @@ describe("Migrator", () => {
 					],
 				},
 				{
-					priority: 4,
+					priority: 2005,
 					tableName: "books",
 					type: ChangeSetType.CreateIndex,
 					up: [
@@ -209,7 +209,7 @@ describe("Migrator", () => {
 				},
 				{
 					tableName: "shops",
-					priority: 4,
+					priority: 2005,
 					type: ChangeSetType.DropIndex,
 					up: [],
 					down: [
@@ -218,7 +218,7 @@ describe("Migrator", () => {
 				},
 				{
 					tableName: "shops",
-					priority: 4,
+					priority: 2005,
 					type: ChangeSetType.DropIndex,
 					up: [],
 					down: [
@@ -227,7 +227,7 @@ describe("Migrator", () => {
 				},
 				{
 					tableName: "addresses",
-					priority: 4,
+					priority: 2005,
 					type: ChangeSetType.CreateIndex,
 					up: [
 						'await sql`create unique index "addresses_city_kntc_idx" on "addresses" using btree ("city")`.execute(db);',

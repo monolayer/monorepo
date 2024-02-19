@@ -112,7 +112,7 @@ function createPrimaryKeyMigration(
 	return {
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		tableName: tableName,
-		type: ChangeSetType.CreateConstraint,
+		type: ChangeSetType.CreatePrimaryKey,
 		up: executeKyselyDbStatement(
 			`ALTER TABLE ${tableName} ADD CONSTRAINT ${indexValue}`,
 		),
@@ -137,7 +137,7 @@ function dropPrimaryKeyMigration(
 	return {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
 		tableName: tableName,
-		type: ChangeSetType.DropConstraint,
+		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
@@ -161,7 +161,7 @@ function updatePrimaryKeyMigration(
 	return {
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		tableName: tableName,
-		type: ChangeSetType.CreateConstraint,
+		type: ChangeSetType.CreatePrimaryKey,
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
@@ -187,7 +187,7 @@ function replacePrimaryKeyMigration(
 	return {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
 		tableName: tableName,
-		type: ChangeSetType.DropConstraint,
+		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(

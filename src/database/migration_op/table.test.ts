@@ -5,24 +5,6 @@ import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schem
 import { tableMigrationOpGenerator } from "./table.js";
 
 describe("createTableMigration", () => {
-	test("has a priority of 1", () => {
-		const table: Difference = {
-			type: "CREATE",
-			path: ["table", "books"],
-			value: {},
-		};
-
-		const result = tableMigrationOpGenerator(
-			table,
-			[],
-			[],
-			migrationSchemaFactory(),
-			migrationSchemaFactory(),
-		);
-
-		expect(result?.priority).toBe(1);
-	});
-
 	test("columns", () => {
 		const table: Difference = {
 			type: "CREATE",
@@ -44,7 +26,7 @@ describe("createTableMigration", () => {
 		};
 
 		const expected = {
-			priority: 1,
+			priority: 2001,
 			tableName: "books",
 			type: "createTable",
 			up: [
@@ -83,7 +65,7 @@ describe("createTableMigration", () => {
 		};
 
 		const expected = {
-			priority: 1,
+			priority: 2001,
 			tableName: "books",
 			type: "createTable",
 			up: [
@@ -121,7 +103,7 @@ describe("createTableMigration", () => {
 		};
 
 		const expected = {
-			priority: 1,
+			priority: 2001,
 			tableName: "books",
 			type: "createTable",
 			up: [
@@ -159,7 +141,7 @@ describe("createTableMigration", () => {
 		};
 
 		const expected = {
-			priority: 1,
+			priority: 2001,
 			tableName: "books",
 			type: "createTable",
 			up: [
@@ -184,24 +166,6 @@ describe("createTableMigration", () => {
 });
 
 describe("dropTableMigration", () => {
-	test("has a priority of 1", () => {
-		const table: Difference = {
-			type: "REMOVE",
-			path: ["table", "books"],
-			oldValue: {},
-		};
-
-		const result = tableMigrationOpGenerator(
-			table,
-			[],
-			[],
-			migrationSchemaFactory(),
-			migrationSchemaFactory(),
-		);
-
-		expect(result?.priority).toBe(1);
-	});
-
 	test("columns", () => {
 		const table: Difference = {
 			type: "REMOVE",
@@ -223,7 +187,7 @@ describe("dropTableMigration", () => {
 		};
 
 		const expected = {
-			priority: 1,
+			priority: 1006,
 			tableName: "books",
 			type: "dropTable",
 			up: ["await db.schema", 'dropTable("books")', "execute();"],
@@ -262,7 +226,7 @@ describe("dropTableMigration", () => {
 		};
 
 		const expected = {
-			priority: 1,
+			priority: 1006,
 			tableName: "books",
 			type: "dropTable",
 			up: ["await db.schema", 'dropTable("books")', "execute();"],
@@ -300,7 +264,7 @@ describe("dropTableMigration", () => {
 		};
 
 		const expected = {
-			priority: 1,
+			priority: 1006,
 			tableName: "books",
 			type: "dropTable",
 			up: ["await db.schema", 'dropTable("books")', "execute();"],
@@ -338,7 +302,7 @@ describe("dropTableMigration", () => {
 		};
 
 		const expected = {
-			priority: 1,
+			priority: 1006,
 			tableName: "books",
 			type: "dropTable",
 			up: ["await db.schema", 'dropTable("books")', "execute();"],
