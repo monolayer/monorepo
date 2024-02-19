@@ -8,6 +8,7 @@ import { generate } from "./actions/generate.js";
 import { initCommand } from "./actions/init.js";
 import { migrate } from "./actions/migrate.js";
 import { migrateDown } from "./actions/migrate_down.js";
+import { pendingMigrations } from "./actions/pending_migrations.js";
 import { structureDump } from "./actions/structure_dump.js";
 import { structureLoad } from "./actions/structure_load.js";
 import { isCommanderError } from "./command.js";
@@ -106,6 +107,18 @@ async function main() {
 		)
 		.action(async (_opts, cmd) => {
 			await migrateDown(cmd.opts().environment);
+		});
+
+	program
+		.command("migrate:pending")
+		.description("List pending migrations")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
+		.action(async (_opts, cmd) => {
+			await pendingMigrations(cmd.opts().environment);
 		});
 
 	program.exitOverride();
