@@ -26,12 +26,11 @@ export function generateMigrationFiles(
 	folder: string,
 ) {
 	const { up, down } = extractMigrationOpChangesets(changesets);
-	const now = performance.now().toFixed(1).toString().replace(".", "");
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
 	const migrationFilePath = path.join(
 		folder,
 		"migrations",
-		`${dateStr}-${now}-${randomName()}.ts`,
+		`${dateStr}-${randomName()}.ts`,
 	);
 	const rendered = nunjucks.compile(template).render({
 		up: up,
