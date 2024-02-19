@@ -201,6 +201,17 @@ export class PgBoolean extends PgColumn<boolean, boolean> {
 	constructor() {
 		super("boolean", DefaultValueDataTypes.boolean);
 	}
+
+	defaultTo(value: boolean | Expression<unknown>) {
+		if (isExpression(value)) {
+			this.info.defaultValue = value;
+		} else {
+			if (this.info.dataType !== null) {
+				this.info.defaultValue = `${value}`;
+			}
+		}
+		return this;
+	}
 }
 
 export function text() {
@@ -250,6 +261,44 @@ export class PgBytea extends PgColumn<
 > {
 	constructor() {
 		super("bytea", DefaultValueDataTypes.bytea);
+	}
+
+	defaultTo(
+		value:
+			| Buffer
+			| string
+			| boolean
+			| number
+			| NestedRecord
+			| Expression<unknown>,
+	) {
+		if (isExpression(value)) {
+			this.info.defaultValue = value;
+		} else {
+			if (this.info.dataType !== null) {
+				const valueType = typeof value;
+				switch (valueType) {
+					case "string":
+					case "boolean":
+					case "number": {
+						const hexVal = Buffer.from(String(value)).toString("hex");
+						this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
+						break;
+					}
+					case "object": {
+						if (value instanceof Buffer) {
+							const hexVal = value.toString("hex");
+							this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
+						} else {
+							const hexVal = Buffer.from(JSON.stringify(value)).toString("hex");
+							this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
+						}
+						break;
+					}
+				}
+			}
+		}
+		return this;
 	}
 }
 
@@ -314,6 +363,17 @@ export class PgInt4 extends PgColumn<number, number | string> {
 	constructor() {
 		super("int4", DefaultValueDataTypes.integer);
 	}
+
+	defaultTo(value: number | string | Expression<unknown>) {
+		if (isExpression(value)) {
+			this.info.defaultValue = value;
+		} else {
+			if (this.info.dataType !== null) {
+				this.info.defaultValue = `${value}`;
+			}
+		}
+		return this;
+	}
 }
 
 export function int8() {
@@ -333,6 +393,17 @@ export function integer() {
 export class PgInteger extends PgColumn<number, number | string> {
 	constructor() {
 		super("integer", DefaultValueDataTypes.integer);
+	}
+
+	defaultTo(value: number | string | Expression<unknown>) {
+		if (isExpression(value)) {
+			this.info.defaultValue = value;
+		} else {
+			if (this.info.dataType !== null) {
+				this.info.defaultValue = `${value}`;
+			}
+		}
+		return this;
 	}
 }
 
@@ -393,6 +464,17 @@ export function uuid() {
 export class PgUuid extends PgColumn<string, string> {
 	constructor() {
 		super("uuid", DefaultValueDataTypes.uuid);
+	}
+
+	defaultTo(value: string | Expression<unknown>) {
+		if (isExpression(value)) {
+			this.info.defaultValue = value;
+		} else {
+			if (this.info.dataType !== null) {
+				this.info.defaultValue = `'${value.toLowerCase()}'::uuid`;
+			}
+		}
+		return this;
 	}
 }
 

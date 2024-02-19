@@ -224,7 +224,10 @@ describe("pgBoolean", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(true);
-			expect(info.defaultValue).toBe("'true'::boolean");
+			expect(info.defaultValue).toBe("true");
+
+			column.defaultTo(false);
+			expect(info.defaultValue).toBe("false");
 		});
 	});
 });
@@ -327,16 +330,19 @@ describe("pgBytea", () => {
 
 			const buffer = Buffer.from("hello");
 			column.defaultTo(buffer);
-			expect(info.defaultValue).toBe("'hello'::bytea");
+			expect(info.defaultValue).toBe("'\\x68656c6c6f'::bytea");
 
 			column.defaultTo(12);
-			expect(info.defaultValue).toBe("'12'::bytea");
+			expect(info.defaultValue).toBe("'\\x3132'::bytea");
 
 			column.defaultTo("12");
-			expect(info.defaultValue).toBe("'12'::bytea");
+			expect(info.defaultValue).toBe("'\\x3132'::bytea");
 
 			column.defaultTo(true);
-			expect(info.defaultValue).toBe("'true'::bytea");
+			expect(info.defaultValue).toBe("'\\x74727565'::bytea");
+
+			column.defaultTo({ a: 1, b: 2 });
+			expect(info.defaultValue).toBe("'\\x7b2261223a312c2262223a327d'::bytea");
 		});
 	});
 });
@@ -516,10 +522,10 @@ describe("pgInt4", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(10);
-			expect(info.defaultValue).toBe("'10'::integer");
+			expect(info.defaultValue).toBe("10");
 
 			column.defaultTo("10");
-			expect(info.defaultValue).toBe("'10'::integer");
+			expect(info.defaultValue).toBe("10");
 		});
 	});
 });
@@ -577,10 +583,10 @@ describe("pgInteger", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.defaultTo(10);
-			expect(info.defaultValue).toBe("'10'::integer");
+			expect(info.defaultValue).toBe("10");
 
 			column.defaultTo("10");
-			expect(info.defaultValue).toBe("'10'::integer");
+			expect(info.defaultValue).toBe("10");
 		});
 	});
 });
@@ -718,8 +724,10 @@ describe("pgUuid", () => {
 			const column = uuid();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("10");
-			expect(info.defaultValue).toBe("'10'::uuid");
+			column.defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
+			expect(info.defaultValue).toBe(
+				"'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
+			);
 		});
 	});
 });

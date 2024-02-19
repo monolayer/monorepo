@@ -368,4 +368,106 @@ describe("#remoteSchema", () => {
 
 		expect(await remoteSchema(kysely)).toStrictEqual(expectedSchema);
 	});
+
+	test<DbContext>("column default value casts", async ({
+		tableNames,
+		kysely,
+	}) => {
+		tableNames.push("test_column_default_value");
+
+		await kysely.schema
+			.createTable("test_column_default_value")
+			.addColumn("bigint", "bigint", (col) => col.defaultTo(sql`'1'::bigint`))
+			.addColumn("boolean", "boolean", (col) =>
+				col.defaultTo(sql`'false'::boolean`),
+			)
+			.addColumn("bytea", "bytea", (col) =>
+				col.defaultTo(sql`'\\x74727565'::bytea`),
+			)
+			.addColumn("char", "char", (col) => col.defaultTo(sql`'a'::char`))
+			.addColumn("char_10", "char(10)", (col) =>
+				col.defaultTo(sql`'abc'::char`),
+			)
+			.addColumn("date", "date", (col) =>
+				col.defaultTo(sql`'January 8, 1999'::date`),
+			)
+			.addColumn("double_precision", "double precision", (col) =>
+				col.defaultTo(sql`'1'::double precision`),
+			)
+			.addColumn("float4", "float4", (col) => col.defaultTo(sql`'1'::float4`))
+			.addColumn("float8", "float8", (col) => col.defaultTo(sql`'1'::float8`))
+			.addColumn("int2", "int2", (col) => col.defaultTo(sql`'1'::int2`))
+			.addColumn("int4", "int4", (col) => col.defaultTo(sql`'1'::int4`))
+			.addColumn("int8", "int8", (col) => col.defaultTo(sql`'1'::bigint`))
+			.addColumn("integer", "integer", (col) =>
+				col.defaultTo(sql`'1'::integer`),
+			)
+			.addColumn("json", "json", (col) => col.defaultTo(sql`'1'::json`))
+			.addColumn("jsonb", "jsonb", (col) => col.defaultTo(sql`'1'::jsonb`))
+			.addColumn("numeric", "numeric", (col) =>
+				col.defaultTo(sql`'1'::numeric`),
+			)
+			.addColumn("real", "real", (col) => col.defaultTo(sql`'1'::real`))
+			.addColumn("time", "time", (col) =>
+				col.defaultTo(sql`'04:05:06'::time without time zone`),
+			)
+			.addColumn("timetz", "timetz", (col) =>
+				col.defaultTo(sql`'04:05:06'::time with time zone`),
+			)
+			.addColumn("timestamp", "timestamp", (col) =>
+				col.defaultTo(sql`'2004-10-19 10:23:54'::timestamp without time zone`),
+			)
+			.addColumn("timestamptz", "timestamptz", (col) =>
+				col.defaultTo(sql`'2004-10-19 10:23:54'::timestamp with time zone`),
+			)
+			.addColumn("text", "text", (col) => col.defaultTo(sql`'1'::text`))
+			.addColumn("uuid", "uuid", (col) =>
+				col.defaultTo(sql`'A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11'::uuid`),
+			)
+			.addColumn("varchar", "varchar", (col) =>
+				col.defaultTo(sql`'1'::character varying`),
+			)
+			.execute();
+
+		const schema = await remoteSchema(kysely);
+		if (schema.status === "Error") {
+			throw new Error("Error fetching schema");
+		}
+		const columns = schema.result.table.test_column_default_value;
+		const columDefaults = Object.entries(columns || {}).reduce(
+			(acc, [key, value]) => {
+				acc[key] = value.defaultValue as string;
+				return acc;
+			},
+			{} as Record<string, string>,
+		);
+
+		const expected = {
+			bigint: "'1'::bigint",
+			boolean: "false",
+			bytea: "'\\x74727565'::bytea",
+			char: "'a'::character(1)",
+			char_10: "'abc'::character(1)",
+			date: "'1999-01-08'::date",
+			double_precision: "'1'::double precision",
+			float4: "'1'::real",
+			float8: "'1'::double precision",
+			int2: "'1'::smallint",
+			int4: "1",
+			int8: "'1'::bigint",
+			integer: "1",
+			json: "'1'::json",
+			jsonb: "'1'::jsonb",
+			numeric: "'1'::numeric",
+			real: "'1'::real",
+			time: "'04:05:06'::time without time zone",
+			timetz: "'04:05:06+00'::time with time zone",
+			timestamp: "'2004-10-19 10:23:54'::timestamp without time zone",
+			timestamptz: "'2004-10-19 10:23:54+00'::timestamp with time zone",
+			text: "'1'::text",
+			uuid: "'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
+			varchar: "'1'::character varying",
+		};
+		expect(columDefaults).toStrictEqual(expected);
+	});
 });
