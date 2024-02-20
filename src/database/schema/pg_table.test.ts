@@ -248,10 +248,10 @@ describe("pgTable definition", () => {
 					subscribed: boolean(),
 					book_id: integer(),
 				},
-				constraints: [foreignKey(["book_id"], books, ["id"])],
+				foreignKeys: [foreignKey(["book_id"], books, ["id"])],
 			});
-			expect(users.constraints?.length).toBe(1);
-			for (const constraint of users.constraints || []) {
+			expect(users.schema.foreignKeys?.length).toBe(1);
+			for (const constraint of users.schema.foreignKeys || []) {
 				expect(constraint).toBeInstanceOf(PgForeignKey);
 			}
 		});

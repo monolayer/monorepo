@@ -3175,7 +3175,7 @@ describe("#dbChangeset", () => {
 					name: text(),
 					bookId: integer().renameFrom("book_id"),
 				},
-				constraints: [foreignKey(["bookId"], books, ["id"])],
+				foreignKeys: [foreignKey(["bookId"], books, ["id"])],
 			});
 
 			const database = pgDatabase({
@@ -3269,7 +3269,7 @@ describe("#dbChangeset", () => {
 					name: text(),
 					bookId: integer().renameFrom("book_id"),
 				},
-				constraints: [foreignKey(["bookId"], books, ["id"])],
+				foreignKeys: [foreignKey(["bookId"], books, ["id"])],
 			});
 
 			const database = pgDatabase({
@@ -3363,7 +3363,7 @@ describe("#dbChangeset", () => {
 					name: text(),
 					bookId: integer().renameFrom("book_id"),
 				},
-				constraints: [foreignKey(["bookId"], books, ["id"])],
+				foreignKeys: [foreignKey(["bookId"], books, ["id"])],
 			});
 
 			const database = pgDatabase({
@@ -3420,7 +3420,7 @@ describe("#dbChangeset", () => {
 					name: text(),
 					bookId: integer().renameFrom("book_id"),
 				},
-				constraints: [foreignKey(["bookId"], books, ["id"])],
+				foreignKeys: [foreignKey(["bookId"], books, ["id"])],
 			});
 
 			const database = pgDatabase({

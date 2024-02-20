@@ -12,6 +12,7 @@ import { pgDatabase } from "~/database/schema/pg_database.js";
 import { type PgTable } from "~/database/schema/pg_table.js";
 import {
 	type ConstraintInfo,
+	type ForeignKeyInfo,
 	type MigrationSchema,
 	type PrimaryKeyInfo,
 	type TriggerInfo,
@@ -19,7 +20,6 @@ import {
 	findPrimaryKey,
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes, PgEnum } from "../schema/pg_column.js";
-import { PgForeignKey } from "../schema/pg_foreign_key.js";
 import type { PgIndex } from "../schema/pg_index.js";
 import { PgUnique } from "../schema/pg_unique.js";
 import {
@@ -240,30 +240,10 @@ export function schemaDbConstraintInfoByTable(
 						...constraintInfo,
 					};
 				}
-				if (isForeignKeyConstraint(constraint)) {
-					const keyName = `${tableName}_${constraint.columns.join("_")}_${
-						constraint.targetTable.name
-					}_${constraint.targetColumns.join("_")}_kinetic_fk`;
-					const constraintInfo = {
-						[keyName]: foreignKeyConstraintInfoToQuery({
-							constraintType: "FOREIGN KEY",
-							table: tableName,
-							column: constraint.columns,
-							targetTable: constraint.targetTable.name,
-							targetColumns: constraint.targetColumns,
-							deleteRule: constraint.options.deleteRule,
-							updateRule: constraint.options.updateRule,
-						}),
-					};
-					acc.foreign[tableName] = {
-						...acc.foreign[tableName],
-						...constraintInfo,
-					};
-				}
 			}
 			return acc;
 		},
-		{ unique: {}, foreign: {} },
+		{ unique: {} },
 	);
 }
 
@@ -277,9 +257,7 @@ export function localSchema(
 		extensions: schemaDBExtensionsInfo(schema),
 		table: schemaDBColumnInfoByTable(schema, remoteSchema),
 		index: schemaDBIndexInfoByTable(schema),
-		foreignKeyConstraints: {
-			...constraints.foreign,
-		},
+		foreignKeyConstraints: foreignKeyConstraintInfo(schema),
 		uniqueConstraints: {
 			...constraints.unique,
 		},
@@ -305,18 +283,6 @@ function schemaDBExtensionsInfo(
 function isUniqueConstraint(obj: any): obj is PgUnique<any> {
 	const keys = Object.keys(obj).sort();
 	return keys.length === 2 && keys[0] === "cols" && keys[1] === "nullsDistinct";
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function isForeignKeyConstraint(obj: any): obj is PgForeignKey<any> {
-	const keys = Object.keys(obj).sort();
-	return (
-		keys.length === 4 &&
-		keys[0] === "cols" &&
-		keys[1] === "options" &&
-		keys[2] === "targetCols" &&
-		keys[3] === "targetTable"
-	);
 }
 
 function schemaDBTriggersInfo(
@@ -381,6 +347,38 @@ function primaryKeyConstraintInfo(
 						columns: primaryKey,
 					}),
 				};
+			}
+			return acc;
+		},
+		{},
+	);
+}
+
+function foreignKeyConstraintInfo(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+) {
+	return Object.entries(schema.tables).reduce<ForeignKeyInfo>(
+		(acc, [tableName, tableDefinition]) => {
+			const foreignKeys = tableDefinition.schema.foreignKeys;
+			if (foreignKeys !== undefined) {
+				for (const foreignKey of foreignKeys) {
+					const keyName = `${tableName}_${foreignKey.columns.join("_")}_${
+						foreignKey.targetTable.name
+					}_${foreignKey.targetColumns.join("_")}_kinetic_fk`;
+					acc[tableName] = {
+						...acc[tableName],
+						[keyName]: foreignKeyConstraintInfoToQuery({
+							constraintType: "FOREIGN KEY",
+							table: tableName,
+							column: foreignKey.columns,
+							targetTable: foreignKey.targetTable.name,
+							targetColumns: foreignKey.targetColumns,
+							deleteRule: foreignKey.options.deleteRule,
+							updateRule: foreignKey.options.updateRule,
+						}),
+					};
+				}
 			}
 			return acc;
 		},

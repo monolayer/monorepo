@@ -256,11 +256,7 @@ test("#schemaDbConstraintInfoByTable", () => {
 			subscribed: boolean(),
 			book_id: integer(),
 		},
-		constraints: [
-			unique(["name"]),
-			unique(["subscribed"]),
-			foreignKey(["book_id"], books, ["id"]),
-		],
+		constraints: [unique(["name"]), unique(["subscribed"])],
 	});
 
 	const database = pgDatabase({
@@ -280,12 +276,6 @@ test("#schemaDbConstraintInfoByTable", () => {
 			books: {
 				books_name_location_kinetic_key:
 					'books_name_location_kinetic_key UNIQUE NULLS DISTINCT ("name", "location")',
-			},
-		},
-		foreign: {
-			users: {
-				users_book_id_books_id_kinetic_fk:
-					'users_book_id_books_id_kinetic_fk FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 			},
 		},
 	});
@@ -338,11 +328,8 @@ test("#localSchema", () => {
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
 		primaryKey: ["id"],
-		constraints: [
-			foreignKey(["book_id"], books, ["id"]),
-			unique(["name"]),
-			unique(["email"], false),
-		],
+		foreignKeys: [foreignKey(["book_id"], books, ["id"])],
+		constraints: [unique(["name"]), unique(["email"], false)],
 		triggers: {
 			foo_before_update: trigger({
 				firingTime: "before",

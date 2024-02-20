@@ -15,7 +15,6 @@ export type TriggerInfo = Record<TableName, Record<Name, Definition>>;
 
 export type ConstraintInfo = {
 	unique: UniqueInfo;
-	foreign: ForeignKeyInfo;
 };
 
 export type MigrationSchema = {
