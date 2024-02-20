@@ -23,7 +23,6 @@ import { index } from "~/database/schema/pg_index.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
 import { foreignKey } from "../schema/pg_foreign_key.js";
-import { primaryKey } from "../schema/pg_primary_key.js";
 import { pgTable } from "../schema/pg_table.js";
 import { trigger } from "../schema/pg_trigger.js";
 import { unique } from "../schema/pg_unique.js";
@@ -289,7 +288,6 @@ test("#schemaDbConstraintInfoByTable", () => {
 					'users_book_id_books_id_kinetic_fk FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 			},
 		},
-		primaryKey: {},
 	});
 });
 
@@ -339,11 +337,11 @@ test("#localSchema", () => {
 			book_id: integer(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
+		primaryKey: ["id"],
 		constraints: [
 			foreignKey(["book_id"], books, ["id"]),
 			unique(["name"]),
 			unique(["email"], false),
-			primaryKey(["id"]),
 		],
 		triggers: {
 			foo_before_update: trigger({
@@ -361,8 +359,8 @@ test("#localSchema", () => {
 			name: varchar().notNull(),
 			active: boolean(),
 		},
+		primaryKey: ["id"],
 		indexes: [index("name", (idx) => idx)],
-		constraints: [primaryKey("id")],
 		triggers: {
 			foo_before_insert: trigger({
 				firingTime: "before",

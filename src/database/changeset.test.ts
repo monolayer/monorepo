@@ -14,7 +14,6 @@ import { remoteSchema } from "./introspection/remote_schema.js";
 import { ColumnIdentity, integer, text, varchar } from "./schema/pg_column.js";
 import { pgDatabase } from "./schema/pg_database.js";
 import { foreignKey } from "./schema/pg_foreign_key.js";
-import { primaryKey } from "./schema/pg_primary_key.js";
 import { pgTable } from "./schema/pg_table.js";
 import { unique } from "./schema/pg_unique.js";
 
@@ -2932,7 +2931,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					fullName: text().renameFrom("name"),
 				},
-				constraints: [primaryKey(["fullName"])],
+				primaryKey: ["fullName"],
 			});
 
 			const database = pgDatabase({
@@ -3009,7 +3008,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					fullName: text().renameFrom("name"),
 				},
-				constraints: [primaryKey(["fullName"])],
+				primaryKey: ["fullName"],
 			});
 
 			const database = pgDatabase({
@@ -3084,7 +3083,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					fullName: text().renameFrom("name"),
 				},
-				constraints: [primaryKey(["fullName"])],
+				primaryKey: ["fullName"],
 			});
 
 			const database = pgDatabase({
@@ -3121,7 +3120,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					fullName: text().renameFrom("name"),
 				},
-				constraints: [primaryKey(["fullName"])],
+				primaryKey: ["fullName"],
 			});
 
 			const database = pgDatabase({
@@ -3168,7 +3167,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					id: integer(),
 				},
-				constraints: [primaryKey(["id"])],
+				primaryKey: ["id"],
 			});
 
 			const users = pgTable("users_pk1", {
@@ -3262,7 +3261,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					id: integer(),
 				},
-				constraints: [primaryKey(["id"])],
+				primaryKey: ["id"],
 			});
 
 			const users = pgTable("users_pk1", {
@@ -3356,7 +3355,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					id: integer(),
 				},
-				constraints: [primaryKey(["id"])],
+				primaryKey: ["id"],
 			});
 
 			const users = pgTable("users_pk1", {
@@ -3413,7 +3412,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					id: integer(),
 				},
-				constraints: [primaryKey(["id"])],
+				primaryKey: ["id"],
 			});
 
 			const users = pgTable("users_pk1", {

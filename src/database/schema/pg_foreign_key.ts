@@ -2,10 +2,11 @@ import type { ForeignKeyRule } from "../introspection/database/foreign_key_const
 import type { PgTable } from "./pg_table.js";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function foreignKey<T, C = PgTable<string, any>>(
+export function foreignKey<T, C = PgTable<string, any, any>>(
 	columns: T,
 	targetTable: C,
-	targetColumns: C extends PgTable<string, infer U>
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	targetColumns: C extends PgTable<string, infer U, any>
 		? (keyof U)[] | keyof U
 		: never,
 	options?: {
@@ -17,10 +18,11 @@ export function foreignKey<T, C = PgTable<string, any>>(
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export class PgForeignKey<T, C = PgTable<string, any>> {
+export class PgForeignKey<T, C = PgTable<string, any, any>> {
 	cols: T;
 	targetTable: C;
-	targetCols: C extends PgTable<string, infer U>
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	targetCols: C extends PgTable<string, infer U, any>
 		? (keyof U)[] | keyof U
 		: never;
 	options: {
@@ -31,7 +33,8 @@ export class PgForeignKey<T, C = PgTable<string, any>> {
 	constructor(
 		cols: T,
 		targetTable: C,
-		targetCols: C extends PgTable<string, infer U>
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		targetCols: C extends PgTable<string, infer U, any>
 			? (keyof U)[] | keyof U
 			: never,
 		options?: {

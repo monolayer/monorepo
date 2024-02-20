@@ -40,7 +40,7 @@ export async function importConfig() {
 
 type SchemaImport = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	database?: pgDatabase<Record<string, PgTable<string, any>>>;
+	database?: pgDatabase<Record<string, PgTable<string, any, any>>>;
 };
 
 export async function importSchema() {

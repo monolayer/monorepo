@@ -12,7 +12,6 @@ import {
 import { PgIndex, index } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { PgForeignKey, foreignKey } from "./pg_foreign_key.js";
-import { PgPrimaryKey, primaryKey } from "./pg_primary_key.js";
 import { PgUnique, unique } from "./pg_unique.js";
 
 describe("pgTable definition", () => {
@@ -274,19 +273,27 @@ describe("pgTable definition", () => {
 			}
 		});
 
-		test("primary key constraints can be added the table level", () => {
-			const columns = {
-				id: integer(),
-				name: varchar(),
-			};
+		test("primary key", () => {
 			const tbl = pgTable("users", {
-				columns: columns,
-				constraints: [primaryKey(["id", "name"])],
+				columns: {
+					id: integer(),
+					name: varchar(),
+				},
+				primaryKey: ["id"],
 			});
-			expect(tbl.constraints?.length).toBe(1);
-			for (const constraint of tbl.constraints || []) {
-				expect(constraint).toBeInstanceOf(PgPrimaryKey);
-			}
+			expect(tbl.schema.primaryKey).toStrictEqual(["id"]);
 		});
+
+		test("primary key with more than one column", () => {
+			const tbl = pgTable("users", {
+				columns: {
+					id: integer(),
+					name: varchar(),
+				},
+				primaryKey: ["id", "name"],
+			});
+			expect(tbl.schema.primaryKey).toStrictEqual(["id", "name"]);
+		});
+	});
 	});
 });
