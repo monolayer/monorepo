@@ -10,7 +10,7 @@ export type ColumnInfo = {
 	tableName: string | null;
 	dataType: string | null;
 	defaultValue: unknown | Expression<unknown> | null;
-	isNullable: boolean | null;
+	isNullable: boolean;
 	numericPrecision: number | null;
 	numericScale: number | null;
 	characterMaximumLength: number | null;
@@ -99,7 +99,7 @@ export class PgColumnBase<S, I, U> {
 	constructor(dataType: ColumnDataType) {
 		this.info = {
 			dataType: dataType,
-			isNullable: null,
+			isNullable: true,
 			defaultValue: null,
 			characterMaximumLength: null,
 			numericPrecision: null,
@@ -134,7 +134,6 @@ export class PgColumn<S, I, U = I>
 		postgresDataType: DefaultValueDataTypes,
 	) {
 		super(dataType);
-		this.info.isNullable = true;
 		this._native_data_type = postgresDataType;
 	}
 

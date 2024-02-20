@@ -351,13 +351,13 @@ describe("#dbChangeset", () => {
 				up: [
 					"await db.schema",
 					'alterTable("addresses")',
-					'alterColumn("name", (col) => col.setNotNull())',
+					'alterColumn("name", (col) => col.dropNotNull())',
 					"execute();",
 				],
 				down: [
 					"await db.schema",
 					'alterTable("addresses")',
-					'alterColumn("name", (col) => col.dropNotNull())',
+					'alterColumn("name", (col) => col.setNotNull())',
 					"execute();",
 				],
 			},

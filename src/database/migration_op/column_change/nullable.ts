@@ -22,8 +22,8 @@ export function columnNullableMigrationOpGenerator(
 type ColumnNullableDifference = {
 	type: "CHANGE";
 	path: ["table", string, string, "isNullable"];
-	value: true | null;
-	oldValue: true | null;
+	value: boolean;
+	oldValue: boolean;
 };
 
 function isColumnNullable(test: Difference): test is ColumnNullableDifference {
@@ -42,26 +42,24 @@ function columnNullableMigrationOperation(diff: ColumnNullableDifference) {
 		priority: MigrationOpPriority.ChangeColumnBase,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
-		up:
-			diff.value === null
-				? executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.dropNotNull())`,
-				  )
-				: executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.setNotNull())`,
-				  ),
-		down:
-			diff.value === null
-				? executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.setNotNull())`,
-				  )
-				: executeKyselySchemaStatement(
-						`alterTable("${tableName}")`,
-						`alterColumn(\"${columnName}\", (col) => col.dropNotNull())`,
-				  ),
+		up: diff.value
+			? executeKyselySchemaStatement(
+					`alterTable("${tableName}")`,
+					`alterColumn(\"${columnName}\", (col) => col.dropNotNull())`,
+			  )
+			: executeKyselySchemaStatement(
+					`alterTable("${tableName}")`,
+					`alterColumn(\"${columnName}\", (col) => col.setNotNull())`,
+			  ),
+		down: diff.value
+			? executeKyselySchemaStatement(
+					`alterTable("${tableName}")`,
+					`alterColumn(\"${columnName}\", (col) => col.setNotNull())`,
+			  )
+			: executeKyselySchemaStatement(
+					`alterTable("${tableName}")`,
+					`alterColumn(\"${columnName}\", (col) => col.dropNotNull())`,
+			  ),
 	};
 	return changeset;
 }
