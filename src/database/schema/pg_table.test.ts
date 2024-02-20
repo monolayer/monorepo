@@ -220,17 +220,6 @@ describe("pgTable definition", () => {
 	});
 
 	describe("constraints", () => {
-		test("constraints are empty by default", () => {
-			const columns = {
-				name: varchar(),
-				subscribed: boolean(),
-			};
-			const tbl = pgTable("users", {
-				columns: columns,
-			});
-			expect(tbl.constraints).toStrictEqual([]);
-		});
-
 		test("foreign key constraints can be added", () => {
 			const books = pgTable("books", {
 				columns: {
@@ -238,7 +227,7 @@ describe("pgTable definition", () => {
 					name: varchar(),
 					location: varchar(),
 				},
-				constraints: [unique(["name", "location"])],
+				uniqueConstraints: [unique(["name", "location"])],
 			});
 
 			const users = pgTable("users", {
@@ -265,10 +254,10 @@ describe("pgTable definition", () => {
 
 			const tbl = pgTable("users", {
 				columns: columns,
-				constraints: [unique(["name"]), unique(["subscribed"])],
+				uniqueConstraints: [unique(["name"]), unique(["subscribed"])],
 			});
-			expect(tbl.constraints?.length).toBe(2);
-			for (const constraint of tbl.constraints || []) {
+			expect(tbl.schema.uniqueConstraints?.length).toBe(2);
+			for (const constraint of tbl.schema.uniqueConstraints || []) {
 				expect(constraint).toBeInstanceOf(PgUnique);
 			}
 		});

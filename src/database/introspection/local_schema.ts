@@ -11,17 +11,16 @@ import pg from "pg";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { type PgTable } from "~/database/schema/pg_table.js";
 import {
-	type ConstraintInfo,
 	type ForeignKeyInfo,
 	type MigrationSchema,
 	type PrimaryKeyInfo,
 	type TriggerInfo,
+	type UniqueInfo,
 	findColumn,
 	findPrimaryKey,
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes, PgEnum } from "../schema/pg_column.js";
 import type { PgIndex } from "../schema/pg_index.js";
-import { PgUnique } from "../schema/pg_unique.js";
 import {
 	foreignKeyConstraintInfoToQuery,
 	primaryKeyConstraintInfoToQuery,
@@ -215,52 +214,17 @@ export function indexToInfo(
 	};
 }
 
-export function schemaDbConstraintInfoByTable(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
-	remoteSchema: MigrationSchema,
-) {
-	return Object.entries(schema.tables).reduce<ConstraintInfo>(
-		(acc, [tableName, tableDefinition]) => {
-			for (const constraint of tableDefinition.constraints || []) {
-				if (isUniqueConstraint(constraint)) {
-					const keyName = `${tableName}_${constraint.columns.join(
-						"_",
-					)}_kinetic_key`;
-					const constraintInfo = {
-						[keyName]: uniqueConstraintInfoToQuery({
-							constraintType: "UNIQUE",
-							table: tableName,
-							columns: constraint.columns,
-							nullsDistinct: constraint.nullsDistinct,
-						}),
-					};
-					acc.unique[tableName] = {
-						...acc.unique[tableName],
-						...constraintInfo,
-					};
-				}
-			}
-			return acc;
-		},
-		{ unique: {} },
-	);
-}
-
 export function localSchema(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
 	remoteSchema: MigrationSchema,
 ): MigrationSchema {
-	const constraints = schemaDbConstraintInfoByTable(schema, remoteSchema);
 	return {
 		extensions: schemaDBExtensionsInfo(schema),
 		table: schemaDBColumnInfoByTable(schema, remoteSchema),
 		index: schemaDBIndexInfoByTable(schema),
 		foreignKeyConstraints: foreignKeyConstraintInfo(schema),
-		uniqueConstraints: {
-			...constraints.unique,
-		},
+		uniqueConstraints: uniqueConstraintInfo(schema),
 		primaryKey: primaryKeyConstraintInfo(schema),
 		triggers: {
 			...schemaDBTriggersInfo(schema),
@@ -277,12 +241,6 @@ function schemaDBExtensionsInfo(
 		acc[curr] = true;
 		return acc;
 	}, {});
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function isUniqueConstraint(obj: any): obj is PgUnique<any> {
-	const keys = Object.keys(obj).sort();
-	return keys.length === 2 && keys[0] === "cols" && keys[1] === "nullsDistinct";
 }
 
 function schemaDBTriggersInfo(
@@ -376,6 +334,35 @@ function foreignKeyConstraintInfo(
 							targetColumns: foreignKey.targetColumns,
 							deleteRule: foreignKey.options.deleteRule,
 							updateRule: foreignKey.options.updateRule,
+						}),
+					};
+				}
+			}
+			return acc;
+		},
+		{},
+	);
+}
+
+function uniqueConstraintInfo(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+) {
+	return Object.entries(schema.tables).reduce<UniqueInfo>(
+		(acc, [tableName, tableDefinition]) => {
+			const uniqueConstraints = tableDefinition.schema.uniqueConstraints;
+			if (uniqueConstraints !== undefined) {
+				for (const uniqueConstraint of uniqueConstraints) {
+					const keyName = `${tableName}_${uniqueConstraint.columns.join(
+						"_",
+					)}_kinetic_key`;
+					acc[tableName] = {
+						...acc[tableName],
+						[keyName]: uniqueConstraintInfoToQuery({
+							constraintType: "UNIQUE",
+							table: tableName,
+							columns: uniqueConstraint.columns,
+							nullsDistinct: uniqueConstraint.nullsDistinct,
 						}),
 					};
 				}

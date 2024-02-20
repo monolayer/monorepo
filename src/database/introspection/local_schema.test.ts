@@ -5,7 +5,6 @@ import {
 	schemaColumnInfo,
 	schemaDBColumnInfoByTable,
 	schemaDBIndexInfoByTable,
-	schemaDbConstraintInfoByTable,
 	schemaDbEnumInfo,
 } from "~/database/introspection/local_schema.js";
 import {
@@ -239,48 +238,6 @@ test("#schemaDBIndexInfoByTable", () => {
 	});
 });
 
-test("#schemaDbConstraintInfoByTable", () => {
-	const books = pgTable("books", {
-		columns: {
-			id: serial(),
-			name: varchar(),
-			location: varchar(),
-		},
-		constraints: [unique(["name", "location"])],
-	});
-
-	const users = pgTable("users", {
-		columns: {
-			id: serial(),
-			name: varchar(),
-			subscribed: boolean(),
-			book_id: integer(),
-		},
-		constraints: [unique(["name"]), unique(["subscribed"])],
-	});
-
-	const database = pgDatabase({
-		tables: { users, books },
-	});
-
-	expect(
-		schemaDbConstraintInfoByTable(database, migrationSchemaFactory()),
-	).toStrictEqual({
-		unique: {
-			users: {
-				users_name_kinetic_key:
-					'users_name_kinetic_key UNIQUE NULLS DISTINCT ("name")',
-				users_subscribed_kinetic_key:
-					'users_subscribed_kinetic_key UNIQUE NULLS DISTINCT ("subscribed")',
-			},
-			books: {
-				books_name_location_kinetic_key:
-					'books_name_location_kinetic_key UNIQUE NULLS DISTINCT ("name", "location")',
-			},
-		},
-	});
-});
-
 test("#schemaDbEnumInfo", () => {
 	const books = pgTable("books", {
 		columns: {
@@ -316,7 +273,7 @@ test("#localSchema", () => {
 			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
 		},
 		indexes: [index("name")],
-		constraints: [unique(["name", "location"])],
+		uniqueConstraints: [unique(["name", "location"])],
 	});
 
 	const users = pgTable("users", {
@@ -329,7 +286,7 @@ test("#localSchema", () => {
 		},
 		primaryKey: ["id"],
 		foreignKeys: [foreignKey(["book_id"], books, ["id"])],
-		constraints: [unique(["name"]), unique(["email"], false)],
+		uniqueConstraints: [unique(["name"]), unique(["email"], false)],
 		triggers: {
 			foo_before_update: trigger({
 				firingTime: "before",

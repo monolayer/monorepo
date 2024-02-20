@@ -2710,7 +2710,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					fullName: text().renameFrom("name"),
 				},
-				constraints: [unique(["fullName"], false)],
+				uniqueConstraints: [unique(["fullName"], false)],
 			});
 
 			const database = pgDatabase({
@@ -2787,7 +2787,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					fullName: text().renameFrom("name"),
 				},
-				constraints: [unique(["fullName"])],
+				uniqueConstraints: [unique(["fullName"])],
 			});
 
 			const database = pgDatabase({
@@ -2859,7 +2859,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					fullName: text().renameFrom("name"),
 				},
-				constraints: [unique(["fullName"])],
+				uniqueConstraints: [unique(["fullName"])],
 			});
 
 			const database = pgDatabase({
@@ -2894,7 +2894,7 @@ describe("#dbChangeset", () => {
 				columns: {
 					fullName: text().renameFrom("name"),
 				},
-				constraints: [unique(["fullName"])],
+				uniqueConstraints: [unique(["fullName"])],
 			});
 
 			const database = pgDatabase({

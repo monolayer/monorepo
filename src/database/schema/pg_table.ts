@@ -17,7 +17,7 @@ export function pgTable<
 		columns: T extends ColumnRecord ? T : never;
 		primaryKey?: PK[];
 		foreignKeys?: PgForeignKey<keyof T | Array<keyof T>>[];
-		constraints?: PgUnique<keyof T | Array<keyof T>>[];
+		uniqueConstraints?: PgUnique<keyof T | Array<keyof T>>[];
 		indexes?: PgIndex<keyof T | Array<keyof T>>[];
 		triggers?: Record<string, PgTrigger>;
 	},
@@ -43,7 +43,7 @@ export class PgTable<
 			columns: T extends ColumnRecord ? T : never;
 			primaryKey?: PK[];
 			foreignKeys?: PgForeignKey<keyof T | Array<keyof T>>[];
-			constraints?: PgUnique<keyof T | Array<keyof T>>[];
+			uniqueConstraints?: PgUnique<keyof T | Array<keyof T>>[];
 			indexes?: PgIndex<keyof T | Array<keyof T>>[];
 			triggers?: Record<string, PgTrigger>;
 		},
@@ -52,7 +52,7 @@ export class PgTable<
 		this.schema.columns = this.schema.columns || {};
 		this.schema.primaryKey = this.schema.primaryKey;
 		this.schema.foreignKeys = this.schema.foreignKeys;
-		this.schema.constraints = this.schema.constraints || [];
+		this.schema.uniqueConstraints = this.schema.uniqueConstraints || [];
 		this.schema.triggers = this.schema.triggers || {};
 	}
 
@@ -62,10 +62,6 @@ export class PgTable<
 
 	get indexes() {
 		return this.schema.indexes;
-	}
-
-	get constraints() {
-		return this.schema.constraints;
 	}
 
 	get triggers() {
