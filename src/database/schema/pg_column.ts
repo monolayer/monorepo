@@ -87,6 +87,8 @@ interface QueryDataType {
 	/** @internal */
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	readonly _columnType: ColumnType<any, any, any>;
+	readonly _generatedAlways: boolean;
+	readonly _hasDefault: boolean;
 }
 
 interface NativeDataType {
@@ -125,8 +127,11 @@ export class PgColumn<S, I, U = I>
 	declare readonly _columnType: ColumnType<
 		S | null,
 		I | undefined | null,
-		U | undefined | null
+		U | null
 	>;
+
+	declare readonly _generatedAlways: boolean;
+	declare readonly _hasDefault: boolean;
 
 	declare readonly _native_data_type: DefaultValueDataTypes;
 
@@ -136,6 +141,8 @@ export class PgColumn<S, I, U = I>
 	) {
 		super(dataType);
 		this._native_data_type = postgresDataType;
+		this._generatedAlways = false;
+		this._hasDefault = false;
 	}
 
 	notNull() {
@@ -157,20 +164,25 @@ export class PgColumn<S, I, U = I>
 				this.info.defaultValue = `'${val}'::${this._native_data_type}`;
 			}
 		}
-		return this;
+		return this as this & {
+			_columnType: ColumnType<S, I | undefined | null, U | null>;
+			_hasDefault: true;
+		};
 	}
 
 	generatedByDefaultAsIdentity() {
 		this.info.identity = ColumnIdentity.ByDefault;
 		return this as this & {
-			_columnType: ColumnType<S, I, U>;
+			_columnType: ColumnType<S, I | undefined, U>;
+			_generatedAlways: false;
 		};
 	}
 
 	generatedAlwaysAsIdentity() {
 		this.info.identity = ColumnIdentity.Always;
 		return this as this & {
-			_columnType: ColumnType<S, never, U>;
+			_columnType: ColumnType<S, never, never>;
+			_generatedAlways: true;
 		};
 	}
 }
@@ -180,7 +192,8 @@ export class PgGeneratedColumn<T, U>
 	implements QueryDataType, NativeDataType
 {
 	declare readonly _columnType: ColumnType<T, U | undefined, U>;
-
+	declare readonly _generatedAlways: false;
+	declare readonly _hasDefault: boolean;
 	declare readonly _native_data_type: DefaultValueDataTypes;
 
 	constructor(
@@ -190,6 +203,8 @@ export class PgGeneratedColumn<T, U>
 		super(dataType);
 		this.info.isNullable = false;
 		this._native_data_type = postgresDataType;
+		this._generatedAlways = false;
+		this._hasDefault = true;
 	}
 }
 
@@ -210,7 +225,14 @@ export class PgBoolean extends PgColumn<boolean, boolean> {
 				this.info.defaultValue = `${value}`;
 			}
 		}
-		return this;
+		return this as this & {
+			_columnType: ColumnType<
+				boolean,
+				boolean | undefined | null,
+				boolean | null
+			>;
+			_hasDefault: true;
+		};
 	}
 }
 
@@ -298,7 +320,14 @@ export class PgBytea extends PgColumn<
 				}
 			}
 		}
-		return this;
+		return this as this & {
+			_columnType: ColumnType<
+				Buffer,
+				Buffer | string | boolean | number | NestedRecord | undefined | null,
+				Buffer | string | boolean | number | NestedRecord | null
+			>;
+			_hasDefault: true;
+		};
 	}
 }
 
@@ -372,7 +401,14 @@ export class PgInt4 extends PgColumn<number, number | string> {
 				this.info.defaultValue = `${value}`;
 			}
 		}
-		return this;
+		return this as this & {
+			_columnType: ColumnType<
+				number,
+				number | string | undefined | null,
+				number | string | null
+			>;
+			_hasDefault: true;
+		};
 	}
 }
 
@@ -403,7 +439,14 @@ export class PgInteger extends PgColumn<number, number | string> {
 				this.info.defaultValue = `${value}`;
 			}
 		}
-		return this;
+		return this as this & {
+			_columnType: ColumnType<
+				number,
+				number | string | undefined | null,
+				number | string | null
+			>;
+			_hasDefault: true;
+		};
 	}
 }
 
@@ -474,7 +517,10 @@ export class PgUuid extends PgColumn<string, string> {
 				this.info.defaultValue = `'${value.toLowerCase()}'::uuid`;
 			}
 		}
-		return this;
+		return this as this & {
+			_columnType: ColumnType<string, string | undefined | null, string | null>;
+			_hasDefault: true;
+		};
 	}
 }
 
@@ -588,11 +634,14 @@ export function pgEnum<N extends string, T extends string[]>(
 export class PgEnum<
 	N,
 	T,
-	S = string | undefined,
-	I = string | undefined,
-	U = string,
+	S = string | null,
+	I = string | null | undefined,
+	U = string | null,
 > {
 	declare readonly _columnType: ColumnType<S, I, U>;
+	declare readonly _generatedAlways: boolean;
+	declare readonly _hasDefault: boolean;
+
 	readonly values: T;
 	readonly name: N;
 	readonly info: Omit<ColumnInfo, "columnName" | "tableName">;
@@ -612,16 +661,23 @@ export class PgEnum<
 			identity: null,
 			enum: true,
 		};
+		this._generatedAlways = false;
+		this._hasDefault = false;
 	}
 
 	notNull() {
 		this.info.isNullable = false;
-		return this as unknown as PgEnum<N, T, string, string, string>;
+		return this as this & {
+			_columnType: ColumnType<string, string, string>;
+		};
 	}
 
 	defaultTo(value: string) {
 		this.info.defaultValue = `'${value}'::${this.info.dataType}`;
-		return this as unknown as PgEnum<N, T, string, string | undefined, string>;
+		return this as this & {
+			_columnType: ColumnType<string, string | undefined, string>;
+			_hasDefault: true;
+		};
 	}
 
 	renameFrom(name: string) {

@@ -1,4 +1,10 @@
-import type { Insertable, Selectable, Simplify, Updateable } from "kysely";
+import type {
+	ColumnType,
+	Insertable,
+	Selectable,
+	Simplify,
+	Updateable,
+} from "kysely";
 import { PgColumnTypes } from "./pg_column.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
 import { type PgIndex } from "./pg_index.js";
@@ -7,46 +13,39 @@ import type { PgUnique } from "./pg_unique.js";
 
 export type ColumnRecord = Record<string, PgColumnTypes>;
 
+type TableSchema<T, PK> = {
+	columns: T extends ColumnRecord ? T : never;
+	primaryKey?: PK;
+	foreignKeys?: PgForeignKey<keyof T | Array<keyof T>>[];
+	uniqueConstraints?: PgUnique<keyof T | Array<keyof T>>[];
+	indexes?: PgIndex<keyof T | Array<keyof T>>[];
+	triggers?: Record<string, PgTrigger>;
+};
+
 export function pgTable<
 	N extends string,
 	T extends ColumnRecord,
-	PK extends keyof T,
->(
-	name: N,
-	schema: {
-		columns: T extends ColumnRecord ? T : never;
-		primaryKey?: PK[];
-		foreignKeys?: PgForeignKey<keyof T | Array<keyof T>>[];
-		uniqueConstraints?: PgUnique<keyof T | Array<keyof T>>[];
-		indexes?: PgIndex<keyof T | Array<keyof T>>[];
-		triggers?: Record<string, PgTrigger>;
-	},
-) {
+	PK extends Array<keyof T> | undefined = undefined,
+>(name: N, schema: TableSchema<T, PK>) {
 	return new PgTable(name, schema);
 }
 
 export class PgTable<
 	N extends string,
 	T extends ColumnRecord,
-	PK extends keyof T,
+	PK extends Array<keyof T> | undefined = undefined,
 > {
-	declare infer: {
-		[K in keyof T]: T[K]["_columnType"];
-	};
+	declare infer: Simplify<
+		InferColumTypes<T, PK extends Array<keyof T> ? PK[number] : never>
+	>;
+
 	declare inferSelect: Selectable<typeof this.infer>;
 	declare inferInsert: Simplify<Insertable<typeof this.infer>>;
 	declare inferUpdate: Simplify<Updateable<typeof this.infer>>;
 
 	constructor(
 		public name: N,
-		public schema: {
-			columns: T extends ColumnRecord ? T : never;
-			primaryKey?: PK[];
-			foreignKeys?: PgForeignKey<keyof T | Array<keyof T>>[];
-			uniqueConstraints?: PgUnique<keyof T | Array<keyof T>>[];
-			indexes?: PgIndex<keyof T | Array<keyof T>>[];
-			triggers?: Record<string, PgTrigger>;
-		},
+		public schema: TableSchema<T, PK>,
 	) {
 		this.schema.indexes = this.schema.indexes || [];
 		this.schema.columns = this.schema.columns || {};
@@ -68,3 +67,43 @@ export class PgTable<
 		return this.schema.triggers;
 	}
 }
+
+type InferColumTypes<T extends ColumnRecord, K extends PropertyKey> = Simplify<{
+	[P in keyof T]: P extends K
+		? Simplify<PrimaryKeyColumn<T[P]["_columnType"], T[P]>>
+		: Simplify<NonPrimaryKeyColumn<T[P]["_columnType"], T[P]>>;
+}>;
+
+type PrimaryKeyColumn<T, C extends PgColumnTypes> = T extends ColumnType<
+	infer S,
+	infer I,
+	infer U
+>
+	? ColumnType<
+			Exclude<Exclude<S, undefined>, null>,
+			undefined extends I
+				? null extends I
+					? Exclude<Exclude<I, undefined>, null>
+					: I | undefined
+				: C["_generatedAlways"] extends true
+				  ? never
+				  : I,
+			undefined extends I
+				? null extends I
+					? Exclude<U, null>
+					: Exclude<U, null>
+				: C["_generatedAlways"] extends true
+				  ? never
+				  : Exclude<U, null>
+	  >
+	: never;
+
+type NonPrimaryKeyColumn<T, C extends PgColumnTypes> = T extends ColumnType<
+	infer S,
+	infer I,
+	infer U
+>
+	? C["_hasDefault"] extends true
+		? ColumnType<S, I | undefined, U>
+		: ColumnType<S, I, U>
+	: never;

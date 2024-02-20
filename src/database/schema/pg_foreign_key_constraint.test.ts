@@ -8,7 +8,7 @@ describe("PgForeignKeyConstraint", () => {
 		const users = "users" as unknown as PgTable<
 			"users",
 			{ id: PgSerial },
-			"id"
+			["id"]
 		>;
 		const constraint = foreignKey(["user_id"], users, ["id"]);
 		expect(constraint).toBeInstanceOf(PgForeignKey);
@@ -18,7 +18,7 @@ describe("PgForeignKeyConstraint", () => {
 		const users = "users" as unknown as PgTable<
 			"users",
 			{ id: PgSerial },
-			"id"
+			["id"]
 		>;
 		const constraint = foreignKey(["user_id"], users, ["id"]);
 		expect(constraint.columns).toStrictEqual(["user_id"]);
@@ -28,7 +28,7 @@ describe("PgForeignKeyConstraint", () => {
 		const users = "users" as unknown as PgTable<
 			"users",
 			{ id: PgSerial },
-			"id"
+			["id"]
 		>;
 		const constraint = foreignKey(["user_id"], users, ["id"]);
 		expect(constraint.targetTable).toBe("users");
@@ -38,7 +38,7 @@ describe("PgForeignKeyConstraint", () => {
 		const users = "users" as unknown as PgTable<
 			"users",
 			{ id: PgSerial },
-			"id"
+			["id"]
 		>;
 		const constraint = foreignKey(["user_id"], users, ["id"]);
 		expect(constraint.targetColumns).toStrictEqual(["id"]);
@@ -48,7 +48,7 @@ describe("PgForeignKeyConstraint", () => {
 		const users = "users" as unknown as PgTable<
 			"users",
 			{ id: PgSerial },
-			"id"
+			["id"]
 		>;
 		const constraint = foreignKey(["user_id"], users, ["id"]);
 		expect(constraint.options.deleteRule).toBe("NO ACTION");
@@ -58,7 +58,7 @@ describe("PgForeignKeyConstraint", () => {
 		const users = "users" as unknown as PgTable<
 			"users",
 			{ id: PgSerial },
-			"id"
+			["id"]
 		>;
 		const constraint = foreignKey(["user_id"], users, ["id"]);
 		expect(constraint.options.updateRule).toBe("NO ACTION");
@@ -68,7 +68,7 @@ describe("PgForeignKeyConstraint", () => {
 		const users = "users" as unknown as PgTable<
 			"users",
 			{ id: PgSerial },
-			"id"
+			["id"]
 		>;
 		const constraint = foreignKey(["user_id"], users, ["id"], {
 			deleteRule: "cascade",

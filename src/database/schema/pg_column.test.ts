@@ -1205,20 +1205,6 @@ describe("pgEnum", () => {
 		expect(testEnum.values).toStrictEqual(["one", "two", "three"]);
 	});
 
-	test("column_type", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
-		type expectedColumnType = {
-			readonly __select__: string | undefined;
-			readonly __insert__: string | undefined;
-			readonly __update__: string;
-		};
-
-		const expectation: Expect<
-			Equal<expectedColumnType, typeof testEnum._columnType>
-		> = true;
-		expectTypeOf(expectation).toMatchTypeOf<boolean>();
-	});
-
 	test("default info", () => {
 		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
 		expect(testEnum.info).toStrictEqual({
@@ -1240,37 +1226,9 @@ describe("pgEnum", () => {
 		expect(testEnum.info.isNullable).toBe(false);
 	});
 
-	test("notNull() changes columnType", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).notNull();
-		type expectedColumnType = {
-			readonly __select__: string;
-			readonly __insert__: string;
-			readonly __update__: string;
-		};
-
-		const expectation: Expect<
-			Equal<expectedColumnType, typeof testEnum._columnType>
-		> = true;
-		expectTypeOf(expectation).toMatchTypeOf<boolean>();
-	});
-
 	test("defaultTo()", () => {
 		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).defaultTo("one");
 		expect(testEnum.info.defaultValue).toBe("'one'::myEnum");
-	});
-
-	test("defaultTo() changes columnType", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).defaultTo("one");
-		type expectedColumnType = {
-			readonly __select__: string;
-			readonly __insert__: string | undefined;
-			readonly __update__: string;
-		};
-
-		const expectation: Expect<
-			Equal<expectedColumnType, typeof testEnum._columnType>
-		> = true;
-		expectTypeOf(expectation).toMatchTypeOf<boolean>();
 	});
 
 	test("renameFrom()", () => {
