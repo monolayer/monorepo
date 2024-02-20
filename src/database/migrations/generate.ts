@@ -36,7 +36,11 @@ export function generateMigrationFiles(
 		up: up,
 		down: down,
 	});
-	createFile(migrationFilePath, rendered, true);
+	createFile(
+		migrationFilePath,
+		rendered.includes("sql`") ? rendered : rendered.replace(", sql", ""),
+		true,
+	);
 }
 
 function extractMigrationOpChangesets(changesets: Changeset[]) {
