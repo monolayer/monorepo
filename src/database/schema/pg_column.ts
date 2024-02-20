@@ -11,6 +11,7 @@ export type ColumnInfo = {
 	dataType: string | null;
 	defaultValue: unknown | Expression<unknown> | null;
 	isNullable: boolean;
+	originalIsNullable?: boolean | null;
 	numericPrecision: number | null;
 	numericScale: number | null;
 	characterMaximumLength: number | null;

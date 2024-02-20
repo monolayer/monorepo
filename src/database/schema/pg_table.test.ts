@@ -284,5 +284,4 @@ describe("pgTable definition", () => {
 			expect(tbl.schema.primaryKey).toStrictEqual(["id", "name"]);
 		});
 	});
-	});
 });

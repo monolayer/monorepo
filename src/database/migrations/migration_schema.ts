@@ -52,7 +52,7 @@ export function findPrimaryKey(schema: MigrationSchema, tableName: string) {
 	return extractColumnsFromPrimaryKey(primaryKeyEntry[pKeyName] || "");
 }
 
-function extractColumnsFromPrimaryKey(pkey: string) {
+export function extractColumnsFromPrimaryKey(pkey: string) {
 	const [_, columns] = pkey.split("PRIMARY KEY (");
 	if (columns === undefined) {
 		return null;

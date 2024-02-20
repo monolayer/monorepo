@@ -2953,7 +2953,7 @@ describe("#dbChangeset", () => {
 					tableName: "users_pk1",
 					type: "dropPrimaryKey",
 					up: [
-						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_name_kinetic_pk`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_name_kinetic_pk, ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
 					],
 					down: [
 						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY ("name")`.execute(db);',
@@ -3758,6 +3758,231 @@ describe("#dbChangeset", () => {
 			const local = localSchema(database, remote.result);
 			const cs = changeset(local, remote.result);
 			expect(cs).toStrictEqual([]);
+		});
+	});
+
+	describe("primary key changes", () => {
+		beforeEach<DbContext>(async (context) => {
+			const pool = globalPool();
+			await pool.query("DROP DATABASE IF EXISTS test_primary_key_change");
+			await pool.query("CREATE DATABASE test_primary_key_change");
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			context.kysely = new Kysely<any>({
+				dialect: new PostgresDialect({
+					pool: new pg.Pool({
+						connectionString: `${env.POSTGRES_URL}/test_primary_key_change?schema=public`,
+					}),
+				}),
+			});
+			context.tableNames = [];
+			await dropTables(context);
+		});
+
+		afterEach<DbContext>(async (context) => {
+			await dropTables(context);
+			await context.kysely.destroy();
+			const pool = globalPool();
+			await pool.query("DROP DATABASE IF EXISTS test_primary_key_change");
+		});
+
+		test<DbContext>("change a primary key drops not null on affected columns", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("test_primary_key_change");
+			await kysely.schema
+				.createTable("test_primary_key_change")
+				.addColumn("email", "text")
+				.addColumn("name", "text")
+				.execute();
+
+			await sql`ALTER TABLE test_primary_key_change ADD CONSTRAINT test_primary_key_change_name_kinetic_pk PRIMARY KEY (\"name\")`.execute(
+				kysely,
+			);
+
+			const database = pgDatabase({
+				tables: {
+					test_primary_key_change: pgTable("test_primary_key_change", {
+						columns: {
+							name: text(),
+							email: text(),
+						},
+						primaryKey: ["email"],
+					}),
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 1004,
+					tableName: "test_primary_key_change",
+					type: "dropPrimaryKey",
+					up: [
+						'await sql`ALTER TABLE test_primary_key_change DROP CONSTRAINT test_primary_key_change_name_kinetic_pk, ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
+					],
+					down: [
+						'await sql`ALTER TABLE test_primary_key_change ADD CONSTRAINT test_primary_key_change_name_kinetic_pk PRIMARY KEY ("name")`.execute(db);',
+					],
+				},
+				{
+					priority: 4001,
+					tableName: "test_primary_key_change",
+					type: "createPrimaryKey",
+					up: [
+						'await sql`ALTER TABLE test_primary_key_change ADD CONSTRAINT test_primary_key_change_email_kinetic_pk PRIMARY KEY ("email")`.execute(db);',
+					],
+					down: [
+						'await sql`ALTER TABLE test_primary_key_change DROP CONSTRAINT test_primary_key_change_email_kinetic_pk, ALTER COLUMN "email" DROP NOT NULL`.execute(db);',
+					],
+				},
+			];
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change a primary key and notNull on affected columns does not remove not null constraint", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("test_primary_key_change");
+			await kysely.schema
+				.createTable("test_primary_key_change")
+				.addColumn("email", "text")
+				.addColumn("name", "text")
+				.execute();
+
+			await sql`ALTER TABLE test_primary_key_change ADD CONSTRAINT test_primary_key_change_name_kinetic_pk PRIMARY KEY (\"name\")`.execute(
+				kysely,
+			);
+
+			const database = pgDatabase({
+				tables: {
+					test_primary_key_change: pgTable("test_primary_key_change", {
+						columns: {
+							name: text().notNull(),
+							email: text(),
+						},
+						primaryKey: ["email"],
+					}),
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 1004,
+					tableName: "test_primary_key_change",
+					type: "dropPrimaryKey",
+					up: [
+						"await sql`ALTER TABLE test_primary_key_change DROP CONSTRAINT test_primary_key_change_name_kinetic_pk`.execute(db);",
+					],
+					down: [
+						'await sql`ALTER TABLE test_primary_key_change ADD CONSTRAINT test_primary_key_change_name_kinetic_pk PRIMARY KEY ("name")`.execute(db);',
+					],
+				},
+				{
+					priority: 4001,
+					tableName: "test_primary_key_change",
+					type: "createPrimaryKey",
+					up: [
+						'await sql`ALTER TABLE test_primary_key_change ADD CONSTRAINT test_primary_key_change_email_kinetic_pk PRIMARY KEY ("email")`.execute(db);',
+					],
+					down: [
+						'await sql`ALTER TABLE test_primary_key_change DROP CONSTRAINT test_primary_key_change_email_kinetic_pk, ALTER COLUMN "email" DROP NOT NULL`.execute(db);',
+					],
+				},
+			];
+			expect(cs).toStrictEqual(expected);
+		});
+
+		test<DbContext>("change a primary key drops not null on affected columns with eplicit notNull in new primary key", async ({
+			kysely,
+			tableNames,
+		}) => {
+			tableNames.push("test_primary_key_change");
+			await kysely.schema
+				.createTable("test_primary_key_change")
+				.addColumn("email", "text")
+				.addColumn("name", "text")
+				.execute();
+
+			await sql`ALTER TABLE test_primary_key_change ADD CONSTRAINT test_primary_key_change_name_kinetic_pk PRIMARY KEY (\"name\")`.execute(
+				kysely,
+			);
+
+			const database = pgDatabase({
+				tables: {
+					test_primary_key_change: pgTable("test_primary_key_change", {
+						columns: {
+							name: text(),
+							email: text().notNull(),
+						},
+						primaryKey: ["email"],
+					}),
+				},
+			});
+
+			const remote = await remoteSchema(kysely);
+			if (remote.status === ActionStatus.Error) {
+				throw remote.error;
+			}
+
+			const local = localSchema(database, remote.result);
+			const cs = changeset(local, remote.result);
+			const expected = [
+				{
+					priority: 1004,
+					tableName: "test_primary_key_change",
+					type: "dropPrimaryKey",
+					up: [
+						'await sql`ALTER TABLE test_primary_key_change DROP CONSTRAINT test_primary_key_change_name_kinetic_pk, ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
+					],
+					down: [
+						'await sql`ALTER TABLE test_primary_key_change ADD CONSTRAINT test_primary_key_change_name_kinetic_pk PRIMARY KEY ("name")`.execute(db);',
+					],
+				},
+				{
+					priority: 3002,
+					tableName: "test_primary_key_change",
+					type: "changeColumn",
+					up: [
+						"await db.schema",
+						'alterTable("test_primary_key_change")',
+						'alterColumn("email", (col) => col.setNotNull())',
+						"execute();",
+					],
+					down: [
+						"await db.schema",
+						'alterTable("test_primary_key_change")',
+						'alterColumn("email", (col) => col.dropNotNull())',
+						"execute();",
+					],
+				},
+				{
+					priority: 4001,
+					tableName: "test_primary_key_change",
+					type: "createPrimaryKey",
+					up: [
+						'await sql`ALTER TABLE test_primary_key_change ADD CONSTRAINT test_primary_key_change_email_kinetic_pk PRIMARY KEY ("email")`.execute(db);',
+					],
+					down: [
+						'await sql`ALTER TABLE test_primary_key_change DROP CONSTRAINT test_primary_key_change_email_kinetic_pk, ALTER COLUMN "email" DROP NOT NULL`.execute(db);',
+					],
+				},
+			];
+			expect(cs).toStrictEqual(expected);
 		});
 	});
 });

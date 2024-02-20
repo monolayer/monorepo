@@ -126,12 +126,14 @@ export function schemaDBColumnInfoByTable(
 							findColumn(remoteSchema, tableName, columnInfo.renameFrom) !==
 							null;
 						if (appliedInRemote && pKey?.includes(columnName)) {
+							columnInfo.originalIsNullable = columnInfo.isNullable;
 							columnInfo.isNullable = false;
 						}
 						if (appliedInRemote || toApplyInRemote) {
 							if (toApplyInRemote) {
 								columnKey = columnInfo.renameFrom;
 								if (pKey?.includes(columnInfo.renameFrom)) {
+									columnInfo.originalIsNullable = columnInfo.isNullable;
 									columnInfo.isNullable = false;
 								}
 							}
@@ -139,6 +141,7 @@ export function schemaDBColumnInfoByTable(
 						columnInfo.renameFrom = null;
 					} else {
 						if (pKey?.includes(columnName)) {
+							columnInfo.originalIsNullable = columnInfo.isNullable;
 							columnInfo.isNullable = false;
 						}
 					}

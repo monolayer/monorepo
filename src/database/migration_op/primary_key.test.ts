@@ -17,7 +17,12 @@ describe("primaryKeyMigrationOps", () => {
 		});
 		const remote = migrationSchemaFactory();
 		const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
-		const result = primaryKeyMigrationOps(diff, addedTables, droppedTables);
+		const result = primaryKeyMigrationOps(
+			diff,
+			addedTables,
+			droppedTables,
+			local,
+		);
 
 		const expected = [
 			{
@@ -28,7 +33,7 @@ describe("primaryKeyMigrationOps", () => {
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 				down: [
-					"await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk`.execute(db);",
+					'await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk, ALTER COLUMN "id" DROP NOT NULL`.execute(db);',
 				],
 			},
 			{
@@ -39,7 +44,7 @@ describe("primaryKeyMigrationOps", () => {
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 				down: [
-					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
+					'await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk, ALTER COLUMN "id" DROP NOT NULL`.execute(db);',
 				],
 			},
 		];
@@ -62,7 +67,12 @@ describe("primaryKeyMigrationOps", () => {
 		});
 		const remote = migrationSchemaFactory();
 		const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
-		const result = primaryKeyMigrationOps(diff, addedTables, droppedTables);
+		const result = primaryKeyMigrationOps(
+			diff,
+			addedTables,
+			droppedTables,
+			local,
+		);
 
 		const expected = [
 			{
@@ -73,7 +83,7 @@ describe("primaryKeyMigrationOps", () => {
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
 				],
 				down: [
-					"await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk`.execute(db);",
+					'await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk, ALTER COLUMN "id" DROP NOT NULL`.execute(db);',
 				],
 			},
 			{
@@ -103,7 +113,12 @@ describe("primaryKeyMigrationOps", () => {
 		});
 
 		const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
-		const result = primaryKeyMigrationOps(diff, addedTables, droppedTables);
+		const result = primaryKeyMigrationOps(
+			diff,
+			addedTables,
+			droppedTables,
+			local,
+		);
 
 		const expected = [
 			{
@@ -111,7 +126,7 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "users",
 				type: "dropPrimaryKey",
 				up: [
-					"await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk`.execute(db);",
+					'await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk, ALTER COLUMN "id" DROP NOT NULL`.execute(db);',
 				],
 				down: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
@@ -122,7 +137,7 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "books",
 				type: "dropPrimaryKey",
 				up: [
-					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
+					'await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk, ALTER COLUMN "id" DROP NOT NULL`.execute(db);',
 				],
 				down: [
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
@@ -149,7 +164,12 @@ describe("primaryKeyMigrationOps", () => {
 		});
 
 		const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
-		const result = primaryKeyMigrationOps(diff, addedTables, droppedTables);
+		const result = primaryKeyMigrationOps(
+			diff,
+			addedTables,
+			droppedTables,
+			local,
+		);
 
 		const expected = [
 			{
@@ -166,7 +186,7 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "books",
 				type: "dropPrimaryKey",
 				up: [
-					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
+					'await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk, ALTER COLUMN "id" DROP NOT NULL`.execute(db);',
 				],
 				down: [
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
@@ -198,7 +218,12 @@ describe("primaryKeyMigrationOps", () => {
 			},
 		});
 		const { diff, addedTables, droppedTables } = changesetDiff(local, db);
-		const result = primaryKeyMigrationOps(diff, addedTables, droppedTables);
+		const result = primaryKeyMigrationOps(
+			diff,
+			addedTables,
+			droppedTables,
+			local,
+		);
 
 		const expected = [
 			{
@@ -206,7 +231,7 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "users",
 				type: "dropPrimaryKey",
 				up: [
-					"await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk`.execute(db);",
+					'await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk, ALTER COLUMN "id" DROP NOT NULL`.execute(db);',
 				],
 				down: [
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
@@ -220,7 +245,7 @@ describe("primaryKeyMigrationOps", () => {
 					"await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_pk PRIMARY KEY (name)`.execute(db);",
 				],
 				down: [
-					"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_pk`.execute(db);",
+					'await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_pk, ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
 				],
 			},
 			{
@@ -228,7 +253,7 @@ describe("primaryKeyMigrationOps", () => {
 				tableName: "books",
 				type: "dropPrimaryKey",
 				up: [
-					"await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk`.execute(db);",
+					'await sql`ALTER TABLE books DROP CONSTRAINT books_id_kinetic_pk, ALTER COLUMN "id" DROP NOT NULL`.execute(db);',
 				],
 				down: [
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY (id)`.execute(db);",
@@ -242,7 +267,7 @@ describe("primaryKeyMigrationOps", () => {
 					"await sql`ALTER TABLE books ADD CONSTRAINT books_name_kinetic_pk PRIMARY KEY (name)`.execute(db);",
 				],
 				down: [
-					"await sql`ALTER TABLE books DROP CONSTRAINT books_name_kinetic_pk`.execute(db);",
+					'await sql`ALTER TABLE books DROP CONSTRAINT books_name_kinetic_pk, ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
 				],
 			},
 		];
