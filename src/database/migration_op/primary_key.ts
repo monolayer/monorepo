@@ -104,9 +104,9 @@ function createPrimaryKeyMigration(
 	addedTables: string[],
 ): Changeset {
 	const tableName = diff.path[1];
-	const indexName = Object.keys(diff.value)[0] as keyof typeof diff.value;
-	const indexValue = diff.value[
-		indexName
+	const primaryKeyName = Object.keys(diff.value)[0] as keyof typeof diff.value;
+	const primaryKeyValue = diff.value[
+		primaryKeyName
 	] as (typeof diff.value)[keyof typeof diff.value];
 
 	return {
@@ -114,12 +114,12 @@ function createPrimaryKeyMigration(
 		tableName: tableName,
 		type: ChangeSetType.CreatePrimaryKey,
 		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} ADD CONSTRAINT ${indexValue}`,
+			`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
 		),
 		down: addedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${indexName}`,
+					`ALTER TABLE ${tableName} DROP CONSTRAINT ${primaryKeyName}`,
 			  ),
 	};
 }
@@ -129,9 +129,9 @@ function dropPrimaryKeyMigration(
 	droppedTables: string[],
 ): Changeset {
 	const tableName = diff.path[1];
-	const indexName = Object.keys(diff.oldValue)[0] as keyof typeof diff.oldValue;
-	const indexValue = diff.oldValue[
-		indexName
+	const primaryKeyName = Object.keys(diff.oldValue)[0] as keyof typeof diff.oldValue;
+	const primaryKeyValue = diff.oldValue[
+		primaryKeyName
 	] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
 
 	return {
@@ -141,10 +141,10 @@ function dropPrimaryKeyMigration(
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${indexName}`,
+					`ALTER TABLE ${tableName} DROP CONSTRAINT ${primaryKeyName}`,
 			  ),
 		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} ADD CONSTRAINT ${indexValue}`,
+			`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
 		),
 	};
 }
@@ -155,8 +155,8 @@ function updatePrimaryKeyMigration(
 	droppedTables: string[],
 ): Changeset {
 	const tableName = diff.path[1];
-	const indexName = diff.path[2];
-	const indexValue = diff.value;
+	const primaryKeyName = diff.path[2];
+	const primaryKeyValue = diff.value;
 
 	return {
 		priority: MigrationOpPriority.PrimaryKeyCreate,
@@ -165,12 +165,12 @@ function updatePrimaryKeyMigration(
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} ADD CONSTRAINT ${indexValue}`,
+					`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
 			  ),
 		down: addedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${indexName}`,
+					`ALTER TABLE ${tableName} DROP CONSTRAINT ${primaryKeyName}`,
 			  ),
 	};
 }
@@ -181,8 +181,8 @@ function replacePrimaryKeyMigration(
 	droppedTables: string[],
 ): Changeset {
 	const tableName = diff.path[1];
-	const indexName = diff.path[2];
-	const indexValue = diff.oldValue;
+	const primaryKeyName = diff.path[2];
+	const primaryKeyValue = diff.oldValue;
 
 	return {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
@@ -191,12 +191,12 @@ function replacePrimaryKeyMigration(
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${indexName}`,
+					`ALTER TABLE ${tableName} DROP CONSTRAINT ${primaryKeyName}`,
 			  ),
 		down: addedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} ADD CONSTRAINT ${indexValue}`,
+					`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
 			  ),
 	};
 }
