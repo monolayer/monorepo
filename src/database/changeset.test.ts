@@ -3978,7 +3978,7 @@ describe("#dbChangeset", () => {
 						'await sql`ALTER TABLE test_primary_key_change ADD CONSTRAINT test_primary_key_change_email_kinetic_pk PRIMARY KEY ("email")`.execute(db);',
 					],
 					down: [
-						'await sql`ALTER TABLE test_primary_key_change DROP CONSTRAINT test_primary_key_change_email_kinetic_pk, ALTER COLUMN "email" DROP NOT NULL`.execute(db);',
+						"await sql`ALTER TABLE test_primary_key_change DROP CONSTRAINT test_primary_key_change_email_kinetic_pk`.execute(db);",
 					],
 				},
 			];

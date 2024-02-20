@@ -262,11 +262,20 @@ function dropNotNullStatements(
 			const table = local.table[tableName];
 			if (table !== undefined) {
 				const tableColumn = table[column];
-				if (
-					tableColumn !== undefined &&
-					tableColumn.originalIsNullable !== tableColumn.isNullable
-				) {
-					dropNotNullStatements.push(`ALTER COLUMN "${column}" DROP NOT NULL`);
+				if (tableColumn !== undefined) {
+					if (tableColumn.originalIsNullable === undefined) {
+						if (tableColumn.isNullable) {
+							dropNotNullStatements.push(
+								`ALTER COLUMN "${column}" DROP NOT NULL`,
+							);
+						}
+					} else {
+						if (tableColumn.originalIsNullable !== tableColumn.isNullable) {
+							dropNotNullStatements.push(
+								`ALTER COLUMN "${column}" DROP NOT NULL`,
+							);
+						}
+					}
 				}
 			} else {
 				dropNotNullStatements.push(`ALTER COLUMN "${column}" DROP NOT NULL`);
@@ -279,3 +288,12 @@ function dropNotNullStatements(
 			: "";
 	return dropStatements;
 }
+
+// if (
+// 	tableColumn.originalIsNullable === undefined &&
+// 	tableColumn.isNullable !== true
+// ) {
+// 	dropNotNullStatements.push(
+// 		`ALTER COLUMN "${column}" DROP NOT NULL`,
+// 	);
+// }
