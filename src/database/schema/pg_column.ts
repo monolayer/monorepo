@@ -593,19 +593,16 @@ export function timestamptz(precision?: DateTimePrecision) {
 
 export class PgTimestampTz extends PgColumnWithPrecision<Date, Date | string> {}
 
-export function numeric(precision?: number, scale = 0) {
+export function numeric(precision?: number, scale?: number) {
 	return new PgNumeric(precision, scale);
 }
 
 export class PgNumeric extends PgColumn<string, number | bigint | string> {
-	constructor(precision?: number, scale?: number) {
+	constructor(precision?: number, scale = 0) {
 		if (precision !== undefined) {
-			super(
-				`numeric(${precision}, ${scale !== undefined ? scale : 0})`,
-				DefaultValueDataTypes.numeric,
-			);
+			super(`numeric(${precision}, ${scale})`, DefaultValueDataTypes.numeric);
 			this.info.numericPrecision = precision;
-			this.info.numericScale = scale !== undefined ? scale : 0;
+			this.info.numericScale = scale;
 		} else {
 			super("numeric", DefaultValueDataTypes.numeric);
 		}
