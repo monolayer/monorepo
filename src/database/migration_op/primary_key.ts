@@ -288,12 +288,3 @@ function dropNotNullStatements(
 			: "";
 	return dropStatements;
 }
-
-// if (
-// 	tableColumn.originalIsNullable === undefined &&
-// 	tableColumn.isNullable !== true
-// ) {
-// 	dropNotNullStatements.push(
-// 		`ALTER COLUMN "${column}" DROP NOT NULL`,
-// 	);
-// }
