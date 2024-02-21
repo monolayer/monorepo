@@ -256,5 +256,40 @@ describe("Migrator", () => {
 				}
 			}
 		});
+
+		test("#output without sql import", (context: MigrationContext) => {
+			const changeset: Changeset[] = [
+				{
+					tableName: "books",
+					type: ChangeSetType.CreateTable,
+					priority: 1,
+					up: [
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("name", "text")',
+						"execute();",
+					],
+					down: ["await db.schema", 'dropTable("books")', "execute();"],
+				},
+			];
+			generateMigrationFiles(changeset, context.folder);
+			const dir = readdirSync(context.migrationsFolder);
+			const fileMatch = /^\w+-(\w+)-(\w+)\.ts$/;
+			for (const file of dir) {
+				const matchedFile = fileMatch.exec(file);
+				if (matchedFile === null) {
+					expect(matchedFile).not.toBeNull();
+				} else {
+					const fixtureContent = readFileSync(
+						`${cwd()}/tests/fixtures/test_migration_without_sql_import.txt`,
+						"utf-8",
+					);
+					const migrationContent = readFileSync(
+						`${context.migrationsFolder}/${file}`,
+					).toString();
+					expect(migrationContent).toBe(fixtureContent);
+				}
+			}
+		});
 	});
 });
