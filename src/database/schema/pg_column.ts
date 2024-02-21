@@ -164,6 +164,7 @@ export class PgColumn<S, I, U = I>
 
 	generatedByDefaultAsIdentity() {
 		this.info.identity = ColumnIdentity.ByDefault;
+		this.info.isNullable = false;
 		return this as this & {
 			_columnType: ColumnType<S, I | undefined, U>;
 			_generatedAlways: false;
@@ -172,6 +173,7 @@ export class PgColumn<S, I, U = I>
 
 	generatedAlwaysAsIdentity() {
 		this.info.identity = ColumnIdentity.Always;
+		this.info.isNullable = false;
 		return this as this & {
 			_columnType: ColumnType<S, never, never>;
 			_generatedAlways: true;

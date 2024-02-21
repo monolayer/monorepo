@@ -347,7 +347,7 @@ describe("#dbChangeset", () => {
 			{
 				tableName: "addresses",
 				type: "changeColumn",
-				priority: 3002,
+				priority: 3008,
 				up: [
 					"await db.schema",
 					'alterTable("addresses")',
@@ -364,7 +364,7 @@ describe("#dbChangeset", () => {
 			{
 				tableName: "addresses",
 				type: "changeColumn",
-				priority: 3002,
+				priority: 3008,
 				up: [
 					"await db.schema",
 					'alterTable("addresses")',
@@ -3954,7 +3954,7 @@ describe("#dbChangeset", () => {
 					],
 				},
 				{
-					priority: 3002,
+					priority: 3008,
 					tableName: "test_primary_key_change",
 					type: "changeColumn",
 					up: [

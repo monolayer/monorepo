@@ -98,6 +98,7 @@ describe("#schemaColumnInfo", () => {
 			dataType: "varchar(100)",
 			characterMaximumLength: 100,
 			identity: ColumnIdentity.Always,
+			isNullable: false,
 		});
 
 		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
@@ -111,6 +112,7 @@ describe("#schemaColumnInfo", () => {
 			dataType: "varchar(100)",
 			characterMaximumLength: 100,
 			identity: ColumnIdentity.ByDefault,
+			isNullable: false,
 		});
 
 		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);

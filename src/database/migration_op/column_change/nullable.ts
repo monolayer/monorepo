@@ -39,7 +39,7 @@ function columnNullableMigrationOperation(diff: ColumnNullableDifference) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const changeset: Changeset = {
-		priority: MigrationOpPriority.ChangeColumnBase,
+		priority: MigrationOpPriority.ChangeColumnNullable,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
 		up: diff.value
