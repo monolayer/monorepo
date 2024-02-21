@@ -107,7 +107,7 @@ export function schemaDBColumnInfoByTable(
 	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
 	remoteSchema: MigrationSchema,
 ) {
-	return Object.entries(schema.tables).reduce<TableColumnInfo>(
+	return Object.entries(schema.tables || {}).reduce<TableColumnInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const columns = Object.entries(tableDefinition.columns);
 			acc[tableName] = columns.reduce<ColumnsInfo>(
@@ -167,7 +167,7 @@ export function schemaDBIndexInfoByTable(
 		}),
 	});
 
-	return Object.entries(schema.tables).reduce<IndexInfo>(
+	return Object.entries(schema.tables || {}).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const indexes = tableDefinition.indexes || [];
 			for (const index of indexes) {
@@ -250,7 +250,7 @@ function schemaDBTriggersInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
 ) {
-	return Object.entries(schema.tables).reduce<TriggerInfo>(
+	return Object.entries(schema.tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			tableDefinition.triggers;
 			for (const trigger of Object.entries(tableDefinition.triggers || {})) {
@@ -274,7 +274,7 @@ export function schemaDbEnumInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
 ) {
-	return Object.entries(schema.tables).reduce<EnumInfo>(
+	return Object.entries(schema.tables || {}).reduce<EnumInfo>(
 		(enumInfo, [, tableDefinition]) => {
 			const keys = Object.keys(tableDefinition.columns);
 			for (const key of keys) {
@@ -296,7 +296,7 @@ function primaryKeyConstraintInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
 ) {
-	return Object.entries(schema.tables).reduce<PrimaryKeyInfo>(
+	return Object.entries(schema.tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const primaryKey = tableDefinition.schema.primaryKey;
 			if (primaryKey !== undefined) {
@@ -319,7 +319,7 @@ function foreignKeyConstraintInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
 ) {
-	return Object.entries(schema.tables).reduce<ForeignKeyInfo>(
+	return Object.entries(schema.tables || {}).reduce<ForeignKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const foreignKeys = tableDefinition.schema.foreignKeys;
 			if (foreignKeys !== undefined) {
@@ -351,7 +351,7 @@ function uniqueConstraintInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
 ) {
-	return Object.entries(schema.tables).reduce<UniqueInfo>(
+	return Object.entries(schema.tables || {}).reduce<UniqueInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const uniqueConstraints = tableDefinition.schema.uniqueConstraints;
 			if (uniqueConstraints !== undefined) {

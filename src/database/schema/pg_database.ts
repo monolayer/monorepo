@@ -6,7 +6,7 @@ export type pgDatabase<
 	T extends Record<string, PgTable<string, any, any>>,
 > = {
 	extensions: PgExtensions;
-	tables: T;
+	tables?: T;
 	kyselyDatabase: {
 		[K in keyof T]: T[K]["infer"];
 	};
@@ -15,10 +15,10 @@ export type pgDatabase<
 export function pgDatabase<
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	T extends Record<string, PgTable<string, any, any>>,
->({ extensions, tables }: { extensions?: PgExtensions; tables: T }) {
+>({ extensions, tables }: { extensions?: PgExtensions; tables?: T }) {
 	const database = <pgDatabase<T>>{
 		extensions: extensions !== undefined ? extensions : [],
-		tables: tables,
+		tables: tables !== undefined ? tables : {},
 	};
 	return database;
 }
