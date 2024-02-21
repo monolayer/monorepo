@@ -77,12 +77,6 @@ export enum DefaultValueDataTypes {
 	xml = "xml",
 }
 
-export type UniqueConstraintInfo = {
-	enabled: boolean;
-	name: string | null;
-	nullsNotDistinct: boolean;
-};
-
 interface QueryDataType {
 	/** @internal */
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
