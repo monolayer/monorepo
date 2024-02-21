@@ -51,6 +51,39 @@ describe("primaryKeyMigrationOps", () => {
 		expect(result).toStrictEqual(expected);
 	});
 
+	test("add composite primary key", () => {
+		const local = migrationSchemaFactory({
+			primaryKey: {
+				users: {
+					users_id_kinetic_pk: "users_id_kinetic_pk PRIMARY KEY (id, name)",
+				},
+			},
+		});
+		const remote = migrationSchemaFactory();
+		const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
+		const result = primaryKeyMigrationOps(
+			diff,
+			addedTables,
+			droppedTables,
+			local,
+		);
+
+		const expected = [
+			{
+				priority: 4001,
+				tableName: "users",
+				type: "createPrimaryKey",
+				up: [
+					"await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY (id, name)`.execute(db);",
+				],
+				down: [
+					'await sql`ALTER TABLE users DROP CONSTRAINT users_id_kinetic_pk, ALTER COLUMN "id" DROP NOT NULL, ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
+				],
+			},
+		];
+		expect(result).toStrictEqual(expected);
+	});
+
 	test("add primary key on table creation", () => {
 		const local = migrationSchemaFactory({
 			table: {
