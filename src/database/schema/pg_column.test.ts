@@ -228,6 +228,10 @@ describe("pgBoolean", () => {
 
 			column.defaultTo(false);
 			expect(info.defaultValue).toBe("false");
+
+			const expression = sql`true`;
+			column.defaultTo(expression);
+			expect(info.defaultValue).toBe(expression);
 		});
 	});
 });
@@ -343,6 +347,10 @@ describe("pgBytea", () => {
 
 			column.defaultTo({ a: 1, b: 2 });
 			expect(info.defaultValue).toBe("'\\x7b2261223a312c2262223a327d'::bytea");
+
+			const expression = sql`\\x7b2261223a312c2262223a327d'::bytea`;
+			column.defaultTo(expression);
+			expect(info.defaultValue).toBe(expression);
 		});
 	});
 });
@@ -526,6 +534,10 @@ describe("pgInt4", () => {
 
 			column.defaultTo("10");
 			expect(info.defaultValue).toBe("10");
+
+			const expression = sql`20`;
+			column.defaultTo(expression);
+			expect(info.defaultValue).toBe(expression);
 		});
 	});
 });
@@ -587,6 +599,10 @@ describe("pgInteger", () => {
 
 			column.defaultTo("10");
 			expect(info.defaultValue).toBe("10");
+
+			const expression = sql`20`;
+			column.defaultTo(expression);
+			expect(info.defaultValue).toBe(expression);
 		});
 	});
 });
@@ -728,6 +744,10 @@ describe("pgUuid", () => {
 			expect(info.defaultValue).toBe(
 				"'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
 			);
+
+			const expression = sql`'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid`;
+			column.defaultTo(expression);
+			expect(info.defaultValue).toBe(expression);
 		});
 	});
 });
