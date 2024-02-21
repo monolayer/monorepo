@@ -80,9 +80,12 @@ type ColumnWithoutDefaultContext = {
 };
 
 describe("PgColumnBase", () => {
-	test("constructor accepts only kysely column data types", () => {
+	test("constructor accepts kysely column data types and smallint", () => {
 		const expect: Expect<
-			Equal<ColumnDataType, ConstructorParameters<typeof PgColumnBase>[0]>
+			Equal<
+				ColumnDataType | "smallint",
+				ConstructorParameters<typeof PgColumnBase>[0]
+			>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -427,9 +430,9 @@ describe("pgFloat4", () => {
 			expect(float4()).toBeInstanceOf(PgColumn);
 		});
 
-		test("dataType is set to float4", () => {
+		test("dataType is set to real", () => {
 			const info = Object.fromEntries(Object.entries(float4())).info;
-			expect(info.dataType).toBe("float4");
+			expect(info.dataType).toBe("real");
 		});
 
 		test("defaultTo with column data type", () => {
@@ -459,9 +462,9 @@ describe("pgFloat8", () => {
 			expect(float8()).toBeInstanceOf(PgColumn);
 		});
 
-		test("dataType is set to float8", () => {
+		test("dataType is set to double precision", () => {
 			const info = Object.fromEntries(Object.entries(float8())).info;
-			expect(info.dataType).toBe("float8");
+			expect(info.dataType).toBe("double precision");
 		});
 
 		test("defaultTo with column data type", () => {
@@ -491,9 +494,9 @@ describe("pgInt2", () => {
 			expect(int2()).toBeInstanceOf(PgColumn);
 		});
 
-		test("dataType is set to int2", () => {
+		test("dataType is set to smallint", () => {
 			const info = Object.fromEntries(Object.entries(int2())).info;
-			expect(info.dataType).toBe("int2");
+			expect(info.dataType).toBe("smallint");
 		});
 
 		test("defaultTo with column data type", () => {
@@ -522,7 +525,7 @@ describe("pgInt4", () => {
 
 		test("dataType is set to int4", () => {
 			const info = Object.fromEntries(Object.entries(int4())).info;
-			expect(info.dataType).toBe("int4");
+			expect(info.dataType).toBe("integer");
 		});
 
 		test("defaultTo with column data type", () => {
@@ -555,7 +558,7 @@ describe("pgInt8", () => {
 
 		test("dataType is set to int8", () => {
 			const info = Object.fromEntries(Object.entries(int8())).info;
-			expect(info.dataType).toBe("int8");
+			expect(info.dataType).toBe("bigint");
 		});
 
 		test("defaultTo with column data type", () => {

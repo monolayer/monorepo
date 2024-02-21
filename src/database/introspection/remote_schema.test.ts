@@ -470,4 +470,214 @@ describe("#remoteSchema", () => {
 		};
 		expect(columDefaults).toStrictEqual(expected);
 	});
+
+	test<DbContext>("use native column data types", async ({
+		tableNames,
+		kysely,
+	}) => {
+		tableNames.push("user_native_data_types_test");
+
+		await kysely.schema
+			.createTable("user_native_data_types_test")
+			.addColumn("bigint", "bigint")
+			.addColumn("char", "char")
+			.addColumn("doublePrecision", "double precision")
+			.addColumn("int2", "int2")
+			.addColumn("int4", "int4")
+			.addColumn("int8", "int8")
+			.addColumn("integer", "integer")
+			.addColumn("float4", "float4")
+			.addColumn("float8", "float8")
+			.addColumn("timetz", "timetz")
+			.addColumn("timestamptz", "timestamptz")
+			.addColumn("varchar", "varchar")
+			.execute();
+
+		const expectedSchema = {
+			status: "Success",
+			result: {
+				extensions: {},
+				table: {
+					user_native_data_types_test: {
+						bigint: {
+							characterMaximumLength: null,
+							columnName: "bigint",
+							dataType: "bigint",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						doublePrecision: {
+							characterMaximumLength: null,
+							columnName: "doublePrecision",
+							dataType: "double precision",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						integer: {
+							characterMaximumLength: null,
+							columnName: "integer",
+							dataType: "integer",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						float4: {
+							characterMaximumLength: null,
+							columnName: "float4",
+							dataType: "real",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						float8: {
+							characterMaximumLength: null,
+							columnName: "float8",
+							dataType: "double precision",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						int2: {
+							characterMaximumLength: null,
+							columnName: "int2",
+							dataType: "smallint",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						int4: {
+							characterMaximumLength: null,
+							columnName: "int4",
+							dataType: "integer",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						int8: {
+							characterMaximumLength: null,
+							columnName: "int8",
+							dataType: "bigint",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						varchar: {
+							characterMaximumLength: null,
+							columnName: "varchar",
+							dataType: "varchar",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						char: {
+							characterMaximumLength: 1,
+							columnName: "char",
+							dataType: "char(1)",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						timetz: {
+							characterMaximumLength: null,
+							columnName: "timetz",
+							dataType: "timetz",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+						timestamptz: {
+							characterMaximumLength: null,
+							columnName: "timestamptz",
+							dataType: "timestamptz",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "user_native_data_types_test",
+							enum: false,
+						},
+					},
+				},
+				index: {},
+				uniqueConstraints: {},
+				foreignKeyConstraints: {},
+				primaryKey: {},
+				triggers: {},
+				enums: {},
+			},
+		};
+
+		expect(await remoteSchema(kysely)).toStrictEqual(expectedSchema);
+	});
 });

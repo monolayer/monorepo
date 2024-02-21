@@ -123,7 +123,7 @@ describe("#dbColumnInfo", () => {
 		tableNames.push("integer_table_2");
 		await kysely.schema
 			.createTable("integer_table_1")
-			.addColumn("int2", "int2")
+			.addColumn("int2", sql`smallint`)
 			.addColumn("int4", "int4")
 			.addColumn("integer", "integer")
 			.addColumn("int8", "int8")
@@ -144,7 +144,7 @@ describe("#dbColumnInfo", () => {
 				int2: columnInfoFactory({
 					tableName: "integer_table_1",
 					columnName: "int2",
-					dataType: "int2",
+					dataType: "smallint",
 					isNullable: true,
 				}),
 				int4: columnInfoFactory({

@@ -287,7 +287,7 @@ function transformDbColumnInfo(
 				row.numeric_scale = null;
 				break;
 			case "smallint":
-				dataTypeFullName = "int2";
+				dataTypeFullName = row.data_type;
 				row.numeric_precision = null;
 				row.numeric_scale = null;
 				break;

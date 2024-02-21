@@ -93,7 +93,7 @@ interface NativeDataType {
 export class PgColumnBase<S, I, U> {
 	protected info: Omit<ColumnInfo, "columnName" | "tableName">;
 
-	constructor(dataType: ColumnDataType) {
+	constructor(dataType: ColumnDataType | "smallint") {
 		this.info = {
 			dataType: dataType,
 			isNullable: true,
@@ -130,7 +130,7 @@ export class PgColumn<S, I, U = I>
 	declare readonly _native_data_type: DefaultValueDataTypes;
 
 	constructor(
-		dataType: ColumnDataType,
+		dataType: ColumnDataType | "smallint",
 		postgresDataType: DefaultValueDataTypes,
 	) {
 		super(dataType);
@@ -350,7 +350,7 @@ export function float4() {
 
 export class PgFloat4 extends PgColumn<number, number | bigint | string> {
 	constructor() {
-		super("float4", DefaultValueDataTypes.real);
+		super("real", DefaultValueDataTypes.real);
 	}
 }
 
@@ -360,7 +360,7 @@ export function float8() {
 
 export class PgFloat8 extends PgColumn<number, number | bigint | string> {
 	constructor() {
-		super("float8", DefaultValueDataTypes["double precision"]);
+		super("double precision", DefaultValueDataTypes["double precision"]);
 	}
 }
 
@@ -370,7 +370,7 @@ export function int2() {
 
 export class PgInt2 extends PgColumn<number, number | string> {
 	constructor() {
-		super("int2", DefaultValueDataTypes.smallint);
+		super("smallint", DefaultValueDataTypes.smallint);
 	}
 }
 
@@ -380,7 +380,7 @@ export function int4() {
 
 export class PgInt4 extends PgColumn<number, number | string> {
 	constructor() {
-		super("int4", DefaultValueDataTypes.integer);
+		super("integer", DefaultValueDataTypes.integer);
 	}
 
 	defaultTo(value: number | string | Expression<unknown>) {
@@ -406,7 +406,7 @@ export function int8() {
 
 export class PgInt8 extends PgColumn<number, number | bigint | string> {
 	constructor() {
-		super("int8", DefaultValueDataTypes.bigint);
+		super("bigint", DefaultValueDataTypes.bigint);
 	}
 }
 
