@@ -30,33 +30,25 @@ export function findColumn(
 	columName: string,
 ) {
 	const table = schema.table[tableName];
-	if (table === undefined) {
-		return null;
+	if (table !== undefined && table[columName] !== undefined) {
+		return table[columName];
 	}
-	const column = table[columName];
-	if (column === undefined) {
-		return null;
-	}
-	return column;
 }
 
 export function findPrimaryKey(schema: MigrationSchema, tableName: string) {
-	const primaryKeyEntry = schema.primaryKey[tableName];
-	if (primaryKeyEntry === undefined) {
-		return undefined;
-	}
-	const pKeyName = Object.keys(primaryKeyEntry)[0];
-	if (pKeyName === undefined) {
-		return undefined;
-	}
-	return extractColumnsFromPrimaryKey(primaryKeyEntry[pKeyName] || "");
+	return Object.entries(schema.primaryKey).flatMap(
+		([schemaTableName, primaryKeyRecord]) => {
+			if (schemaTableName === tableName) {
+				for (const primaryKeyDefinition of Object.values(primaryKeyRecord)) {
+					return extractColumnsFromPrimaryKey(primaryKeyDefinition);
+				}
+			}
+			return [];
+		},
+	);
 }
 
 export function extractColumnsFromPrimaryKey(pkey: string) {
 	const [_, columns] = pkey.split("PRIMARY KEY (");
-	if (columns === undefined) {
-		return null;
-	}
-	const [column] = columns.replace(/"/g, "").split(")");
-	return column?.split(", ");
+	return columns?.replace(/"/g, "").split(")")[0]?.split(", ") || [];
 }

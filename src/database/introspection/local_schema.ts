@@ -121,10 +121,10 @@ export function schemaDBColumnInfoByTable(
 					const pKey = findPrimaryKey(remoteSchema, tableName);
 					if (columnInfo.renameFrom !== null) {
 						const appliedInRemote =
-							findColumn(remoteSchema, tableName, columnName) !== null;
+							findColumn(remoteSchema, tableName, columnName) !== undefined;
 						const toApplyInRemote =
 							findColumn(remoteSchema, tableName, columnInfo.renameFrom) !==
-							null;
+							undefined;
 						if (appliedInRemote && pKey?.includes(columnName)) {
 							columnInfo.originalIsNullable = columnInfo.isNullable;
 							columnInfo.isNullable = false;
