@@ -39,7 +39,7 @@
     "format": "biome format --write .",
     "prepack": "npm run build && rm -rf build && mkdir build",
     "pack": "npm pack --pack-destination ./build",
-    "test": "npm run test:unit && npm run test:integration",
+    "test": "vitest unit src integration --run --coverage",
     "pretest:unit": "tsx ./tests/setup/create_test_db.ts",
     "test:unit": "vitest unit src --run --coverage",
     "posttest:unit": "tsx ./tests/setup/drop_test_db.ts",
