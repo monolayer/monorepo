@@ -8,7 +8,7 @@ import {
 export type ColumnInfo = {
 	columnName: string | null;
 	tableName: string | null;
-	dataType: string | null;
+	dataType: string;
 	defaultValue: unknown | Expression<unknown> | null;
 	isNullable: boolean;
 	originalIsNullable?: boolean | null;
@@ -156,13 +156,11 @@ export class PgColumn<S, I, U = I>
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
-			if (this.info.dataType !== null) {
-				let val: unknown = value;
-				if (val instanceof Date) val = val.toISOString();
-				if (typeof val === "string" && this instanceof PgDate)
-					val = val.split("T")[0];
-				this.info.defaultValue = `'${val}'::${this._native_data_type}`;
-			}
+			let val: unknown = value;
+			if (val instanceof Date) val = val.toISOString();
+			if (typeof val === "string" && this instanceof PgDate)
+				val = val.split("T")[0];
+			this.info.defaultValue = `'${val}'::${this._native_data_type}`;
 		}
 		return this as this & {
 			_columnType: ColumnType<S, I | undefined | null, U | null>;
@@ -221,9 +219,7 @@ export class PgBoolean extends PgColumn<boolean, boolean> {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
-			if (this.info.dataType !== null) {
-				this.info.defaultValue = `${value}`;
-			}
+			this.info.defaultValue = `${value}`;
 		}
 		return this as this & {
 			_columnType: ColumnType<
@@ -297,26 +293,24 @@ export class PgBytea extends PgColumn<
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
-			if (this.info.dataType !== null) {
-				const valueType = typeof value;
-				switch (valueType) {
-					case "string":
-					case "boolean":
-					case "number": {
-						const hexVal = Buffer.from(String(value)).toString("hex");
+			const valueType = typeof value;
+			switch (valueType) {
+				case "string":
+				case "boolean":
+				case "number": {
+					const hexVal = Buffer.from(String(value)).toString("hex");
+					this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
+					break;
+				}
+				case "object": {
+					if (value instanceof Buffer) {
+						const hexVal = value.toString("hex");
 						this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
-						break;
+					} else {
+						const hexVal = Buffer.from(JSON.stringify(value)).toString("hex");
+						this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
 					}
-					case "object": {
-						if (value instanceof Buffer) {
-							const hexVal = value.toString("hex");
-							this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
-						} else {
-							const hexVal = Buffer.from(JSON.stringify(value)).toString("hex");
-							this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
-						}
-						break;
-					}
+					break;
 				}
 			}
 		}
@@ -397,9 +391,7 @@ export class PgInt4 extends PgColumn<number, number | string> {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
-			if (this.info.dataType !== null) {
-				this.info.defaultValue = `${value}`;
-			}
+			this.info.defaultValue = `${value}`;
 		}
 		return this as this & {
 			_columnType: ColumnType<
@@ -435,9 +427,7 @@ export class PgInteger extends PgColumn<number, number | string> {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
-			if (this.info.dataType !== null) {
-				this.info.defaultValue = `${value}`;
-			}
+			this.info.defaultValue = `${value}`;
 		}
 		return this as this & {
 			_columnType: ColumnType<
@@ -513,9 +503,7 @@ export class PgUuid extends PgColumn<string, string> {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
-			if (this.info.dataType !== null) {
-				this.info.defaultValue = `'${value.toLowerCase()}'::uuid`;
-			}
+			this.info.defaultValue = `'${value.toLowerCase()}'::uuid`;
 		}
 		return this as this & {
 			_columnType: ColumnType<string, string | undefined | null, string | null>;
