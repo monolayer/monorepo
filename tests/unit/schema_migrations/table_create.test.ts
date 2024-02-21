@@ -27,6 +27,7 @@ import {
 	varchar,
 } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
+import { foreignKey } from "~/database/schema/pg_foreign_key.js";
 import { index } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { computeChangeset } from "~tests/helpers/compute_changeset.js";
@@ -56,18 +57,18 @@ describe("Table create migrations", () => {
 
 		const expected = [
 			{
-				tableName: "users",
-				type: "createTable",
-				priority: 2001,
-				up: ["await db.schema", 'createTable("users")', "execute();"],
-				down: ["await db.schema", 'dropTable("users")', "execute();"],
-			},
-			{
 				tableName: "books",
 				type: "createTable",
 				priority: 2001,
 				up: ["await db.schema", 'createTable("books")', "execute();"],
 				down: ["await db.schema", 'dropTable("books")', "execute();"],
+			},
+			{
+				tableName: "users",
+				type: "createTable",
+				priority: 2001,
+				up: ["await db.schema", 'createTable("users")', "execute();"],
+				down: ["await db.schema", 'dropTable("users")', "execute();"],
 			},
 		];
 		const cs = await computeChangeset(kysely, database);
@@ -127,34 +128,6 @@ describe("Table create migrations", () => {
 
 		const expected = [
 			{
-				tableName: "users",
-				type: "createTable",
-				priority: 2001,
-				up: [
-					"await db.schema",
-					'createTable("users")',
-					'addColumn("bigInt", "bigint")',
-					'addColumn("bigInt2", "bigint", (col) => col.notNull())',
-					'addColumn("bigSerial", "bigserial", (col) => col.notNull())',
-					'addColumn("boolean", "boolean")',
-					'addColumn("bytea", "bytea")',
-					'addColumn("char", "char(1)")',
-					'addColumn("char_10", "char(10)")',
-					'addColumn("date", "date")',
-					'addColumn("doublePrecision", "double precision")',
-					'addColumn("float4", "real")',
-					'addColumn("float8", "double precision")',
-					'addColumn("int2", sql`smallint`)',
-					'addColumn("int4", "integer")',
-					'addColumn("int8", "bigint")',
-					'addColumn("integer", "integer")',
-					'addColumn("integerAlwaysAsIdentity", "integer", (col) => col.notNull().generatedAlwaysAsIdentity())',
-					'addColumn("integerDefaultAsIdentity", "integer", (col) => col.notNull().generatedByDefaultAsIdentity())',
-					"execute();",
-				],
-				down: ["await db.schema", 'dropTable("users")', "execute();"],
-			},
-			{
 				tableName: "books",
 				type: "createTable",
 				priority: 2001,
@@ -185,6 +158,34 @@ describe("Table create migrations", () => {
 				],
 				down: ["await db.schema", 'dropTable("books")', "execute();"],
 			},
+			{
+				tableName: "users",
+				type: "createTable",
+				priority: 2001,
+				up: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("bigInt", "bigint")',
+					'addColumn("bigInt2", "bigint", (col) => col.notNull())',
+					'addColumn("bigSerial", "bigserial", (col) => col.notNull())',
+					'addColumn("boolean", "boolean")',
+					'addColumn("bytea", "bytea")',
+					'addColumn("char", "char(1)")',
+					'addColumn("char_10", "char(10)")',
+					'addColumn("date", "date")',
+					'addColumn("doublePrecision", "double precision")',
+					'addColumn("float4", "real")',
+					'addColumn("float8", "double precision")',
+					'addColumn("int2", sql`smallint`)',
+					'addColumn("int4", "integer")',
+					'addColumn("int8", "bigint")',
+					'addColumn("integer", "integer")',
+					'addColumn("integerAlwaysAsIdentity", "integer", (col) => col.notNull().generatedAlwaysAsIdentity())',
+					'addColumn("integerDefaultAsIdentity", "integer", (col) => col.notNull().generatedByDefaultAsIdentity())',
+					"execute();",
+				],
+				down: ["await db.schema", 'dropTable("users")', "execute();"],
+			},
 		];
 		const cs = await computeChangeset(kysely, database);
 		expect(cs).toEqual(expected);
@@ -210,18 +211,6 @@ describe("Table create migrations", () => {
 
 		const expected = [
 			{
-				tableName: "users",
-				type: "createTable",
-				priority: 2001,
-				up: [
-					"await db.schema",
-					'createTable("users")',
-					'addColumn("id", "serial", (col) => col.notNull())',
-					"execute();",
-				],
-				down: ["await db.schema", 'dropTable("users")', "execute();"],
-			},
-			{
 				tableName: "books",
 				type: "createTable",
 				priority: 2001,
@@ -232,6 +221,18 @@ describe("Table create migrations", () => {
 					"execute();",
 				],
 				down: ["await db.schema", 'dropTable("books")', "execute();"],
+			},
+			{
+				tableName: "users",
+				type: "createTable",
+				priority: 2001,
+				up: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("id", "serial", (col) => col.notNull())',
+					"execute();",
+				],
+				down: ["await db.schema", 'dropTable("users")', "execute();"],
 			},
 			{
 				down: [],
@@ -279,6 +280,18 @@ describe("Table create migrations", () => {
 
 		const expected = [
 			{
+				tableName: "books",
+				type: "createTable",
+				priority: 2001,
+				up: [
+					"await db.schema",
+					'createTable("books")',
+					'addColumn("id", "bigserial", (col) => col.notNull())',
+					"execute();",
+				],
+				down: ["await db.schema", 'dropTable("books")', "execute();"],
+			},
+			{
 				tableName: "users",
 				type: "createTable",
 				priority: 2001,
@@ -290,18 +303,6 @@ describe("Table create migrations", () => {
 					"execute();",
 				],
 				down: ["await db.schema", 'dropTable("users")', "execute();"],
-			},
-			{
-				tableName: "books",
-				type: "createTable",
-				priority: 2001,
-				up: [
-					"await db.schema",
-					'createTable("books")',
-					'addColumn("id", "bigserial", (col) => col.notNull())',
-					"execute();",
-				],
-				down: ["await db.schema", 'dropTable("books")', "execute();"],
 			},
 			{
 				down: [],
@@ -327,7 +328,83 @@ describe("Table create migrations", () => {
 	});
 
 	test.todo<DbContext>("create table with unique constraints");
-	test.todo<DbContext>("create table with foreign keys");
+
+	test<DbContext>("create table with foreign keys", async ({ kysely }) => {
+		const books = pgTable("books", {
+			columns: {
+				id: bigserial(),
+			},
+			primaryKey: ["id"],
+		});
+
+		const users = pgTable("users", {
+			columns: {
+				id: serial(),
+				name: varchar(),
+			},
+			foreignKeys: [
+				foreignKey(["id"], books, ["id"], {
+					updateRule: "set null",
+					deleteRule: "set null",
+				}),
+			],
+		});
+
+		const database = pgDatabase({
+			tables: {
+				books,
+				users,
+			},
+		});
+
+		const expected = [
+			{
+				down: ["await db.schema", 'dropTable("books")', "execute();"],
+				priority: 2001,
+				tableName: "books",
+				type: "createTable",
+				up: [
+					"await db.schema",
+					'createTable("books")',
+					'addColumn("id", "bigserial", (col) => col.notNull())',
+					"execute();",
+				],
+			},
+			{
+				down: ["await db.schema", 'dropTable("users")', "execute();"],
+				priority: 2001,
+				tableName: "users",
+				type: "createTable",
+				up: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("id", "serial", (col) => col.notNull())',
+					'addColumn("name", "varchar")',
+					"execute();",
+				],
+			},
+			{
+				down: [],
+				priority: 4001,
+				tableName: "books",
+				type: "createPrimaryKey",
+				up: [
+					'await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(db);',
+				],
+			},
+			{
+				down: [],
+				priority: 4002,
+				tableName: "users",
+				type: "createConstraint",
+				up: [
+					'await sql`ALTER TABLE users ADD CONSTRAINT users_id_books_id_kinetic_fk FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(db);',
+				],
+			},
+		];
+		const cs = await computeChangeset(kysely, database);
+		expect(cs).toEqual(expected);
+	});
 
 	test<DbContext>("create table with indexes", async ({ kysely }) => {
 		const users = pgTable("users", {
@@ -354,18 +431,6 @@ describe("Table create migrations", () => {
 
 		const expected = [
 			{
-				down: ["await db.schema", 'dropTable("users")', "execute();"],
-				priority: 2001,
-				tableName: "users",
-				type: "createTable",
-				up: [
-					"await db.schema",
-					'createTable("users")',
-					'addColumn("name", "text")',
-					"execute();",
-				],
-			},
-			{
 				down: ["await db.schema", 'dropTable("books")', "execute();"],
 				priority: 2001,
 				tableName: "books",
@@ -374,6 +439,18 @@ describe("Table create migrations", () => {
 					"await db.schema",
 					'createTable("books")',
 					'addColumn("id", "text")',
+					"execute();",
+				],
+			},
+			{
+				down: ["await db.schema", 'dropTable("users")', "execute();"],
+				priority: 2001,
+				tableName: "users",
+				type: "createTable",
+				up: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("name", "text")',
 					"execute();",
 				],
 			},

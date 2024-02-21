@@ -8,7 +8,10 @@ import {
 	isDropTable,
 } from "./migration_op/table.js";
 import { migrationOpGenerators } from "./migration_op_generators.js";
-import type { MigrationSchema } from "./migrations/migration_schema.js";
+import {
+	type MigrationSchema,
+	buildNodes,
+} from "./migrations/migration_schema.js";
 
 interface Generator {
 	(
@@ -26,6 +29,9 @@ export function changeset(
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
 	const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
+	const droppedTablesSortOrder = buildNodes(droppedTables, remote);
+	const addedTablesSortOrder = buildNodes(addedTables, local);
+
 	return diff
 		.flatMap((difference) => {
 			for (const generator of generators) {
@@ -39,6 +45,22 @@ export function changeset(
 				if (op !== undefined) return op;
 			}
 			return [];
+		})
+		.sort((a, b) => {
+			if (a.type === "dropTable") {
+				const aIndex = droppedTablesSortOrder.indexOf(a.tableName);
+				const bIndex = droppedTablesSortOrder.indexOf(b.tableName);
+				return aIndex - bIndex;
+			}
+			return 1 - 1;
+		})
+		.sort((a, b) => {
+			if (a.type === "createTable") {
+				const aIndex = addedTablesSortOrder.indexOf(a.tableName);
+				const bIndex = addedTablesSortOrder.indexOf(b.tableName);
+				return bIndex - aIndex;
+			}
+			return 1 - 1;
 		})
 		.sort((a, b) => (a.priority || 1) - (b.priority || 1));
 }

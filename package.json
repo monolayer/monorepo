@@ -63,6 +63,7 @@
     "@types/nunjucks": "^3.2.6",
     "@types/pg": "^8.11.0",
     "@types/slug": "^5.0.7",
+    "@types/toposort": "^2.0.7",
     "@vitest/coverage-istanbul": "^1.2.1",
     "@vitest/ui": "^1.2.1",
     "dotenv": "^16.4.1",
@@ -86,6 +87,7 @@
     "pg-connection-string": "^2.6.2",
     "picocolors": "^1.0.0",
     "slug": "^8.2.3",
+    "toposort": "^2.0.2",
     "tsx": "^4.7.0"
   }
 }

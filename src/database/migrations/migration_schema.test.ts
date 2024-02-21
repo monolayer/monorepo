@@ -1,7 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
-import { findColumn, findPrimaryKey } from "./migration_schema.js";
+import {
+	findColumn,
+	findForeignKeysTargetTables,
+	findPrimaryKey,
+} from "./migration_schema.js";
 
 describe("findColumn", () => {
 	test("returns the column definition of a table", () => {
@@ -99,5 +103,38 @@ describe("findPrimaryKey", () => {
 			},
 		});
 		expect(findPrimaryKey(schema, "books")).toStrictEqual([]);
+	});
+});
+
+describe("findForeignKeysTargetTables", () => {
+	test("returns the target table of a foreign key", () => {
+		const schema = migrationSchemaFactory({
+			foreignKeyConstraints: {
+				books: {
+					books_author_id_authors_id_kinetic_fk:
+						'FOREIGN KEY ("author_id") REFERENCES "authors" ("id")',
+				},
+			},
+		});
+		expect(findForeignKeysTargetTables(schema, "books")).toStrictEqual([
+			"authors",
+		]);
+	});
+
+	test("returns the target tables of a foreign keys", () => {
+		const schema = migrationSchemaFactory({
+			foreignKeyConstraints: {
+				books: {
+					books_author_id_authors_id_kinetic_fk:
+						'FOREIGN KEY ("author_id") REFERENCES "authors" ("id")',
+					books_building_id_buildings_id_kinetic_fk:
+						'FOREIGN KEY ("building_id") REFERENCES "buildings" ("id")',
+				},
+			},
+		});
+		expect(findForeignKeysTargetTables(schema, "books")).toStrictEqual([
+			"authors",
+			"buildings",
+		]);
 	});
 });

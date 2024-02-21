@@ -1,3 +1,4 @@
+import toposort from "toposort";
 import type {
 	EnumInfo,
 	ExtensionInfo,
@@ -51,4 +52,37 @@ export function findPrimaryKey(schema: MigrationSchema, tableName: string) {
 export function extractColumnsFromPrimaryKey(pkey: string) {
 	const [_, columns] = pkey.split("PRIMARY KEY (");
 	return columns?.replace(/"/g, "").split(")")[0]?.split(", ") || [];
+}
+
+export function findForeignKeysTargetTables(
+	schema: MigrationSchema,
+	tableName: string,
+) {
+	const foreignKeys = schema.foreignKeyConstraints[tableName];
+	if (foreignKeys === undefined) {
+		return [];
+	}
+	return Object.values(foreignKeys).flatMap((fk) => {
+		const [_, targetTable] = fk.split("REFERENCES ");
+		if (targetTable !== undefined) {
+			const targetTables = targetTable.split(" (")[0];
+			if (targetTables !== undefined) {
+				return targetTables.replace(/"/g, "");
+			}
+		}
+		return [];
+	});
+}
+
+type NodeTuple = [string, string | undefined];
+
+export function buildNodes(droppedTables: string[], remote: MigrationSchema) {
+	const nodes = droppedTables.flatMap((droppedTable) => {
+		const deps = findForeignKeysTargetTables(remote, droppedTable);
+		if (deps.length === 0) {
+			return [[droppedTable, undefined] as NodeTuple];
+		}
+		return deps.map((dep) => [droppedTable, dep] as NodeTuple);
+	});
+	return toposort(nodes).filter((node) => node !== undefined);
 }

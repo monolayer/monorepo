@@ -255,7 +255,79 @@ describe("Table drop migrations", () => {
 
 	test.todo<DbContext>("drop table with unique constraints");
 
-	test.todo<DbContext>("drop table with foreign keys");
+	test<DbContext>("drop table with foreign keys", async ({ kysely }) => {
+		const database = pgDatabase({
+			tables: {
+				organizations: pgTable("organizations", {
+					columns: {},
+				}),
+			},
+		});
+		await kysely.schema.createTable("organizations").execute();
+
+		await kysely.schema
+			.createTable("books")
+			.addColumn("id", "bigserial", (col) => col.notNull())
+			.execute();
+		await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(
+			kysely,
+		);
+
+		await kysely.schema
+			.createTable("users")
+			.addColumn("id", "serial", (col) => col.notNull())
+			.execute();
+		await sql`ALTER TABLE users ADD CONSTRAINT users_id_books_id_kinetic_fk FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(
+			kysely,
+		);
+
+		const expected = [
+			{
+				priority: 1003,
+				tableName: "users",
+				type: "dropConstraint",
+				up: [],
+				down: [
+					'await sql`ALTER TABLE users ADD CONSTRAINT users_id_books_id_kinetic_fk FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(db);',
+				],
+			},
+			{
+				priority: 1004,
+				tableName: "books",
+				type: "dropPrimaryKey",
+				up: [],
+				down: [
+					'await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(db);',
+				],
+			},
+			{
+				priority: 1006,
+				tableName: "users",
+				type: "dropTable",
+				up: ["await db.schema", 'dropTable("users")', "execute();"],
+				down: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("id", "serial", (col) => col.notNull())',
+					"execute();",
+				],
+			},
+			{
+				priority: 1006,
+				tableName: "books",
+				type: "dropTable",
+				up: ["await db.schema", 'dropTable("books")', "execute();"],
+				down: [
+					"await db.schema",
+					'createTable("books")',
+					'addColumn("id", "bigserial", (col) => col.notNull())',
+					"execute();",
+				],
+			},
+		];
+		const cs = await computeChangeset(kysely, database);
+		expect(cs).toEqual(expected);
+	});
 
 	test<DbContext>("drop table with indexes", async ({ kysely }) => {
 		const database = pgDatabase({
