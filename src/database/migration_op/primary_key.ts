@@ -225,32 +225,6 @@ function replacePrimaryKeyMigration(
 	};
 }
 
-export function primaryKeyMigrationOps(
-	diff: Difference[],
-	addedTables: string[],
-	droppedTables: string[],
-	local: LocalTableInfo,
-) {
-	if (diff.length === 0) {
-		return [];
-	}
-	return diff.flatMap((d) => {
-		if (isPrimaryKeyCreateFirst(d)) {
-			return createPrimaryKeyMigration(d, addedTables, local);
-		}
-		if (isPrimaryKeyDrop(d)) {
-			return dropPrimaryKeyMigration(d, droppedTables, local);
-		}
-		if (isPrimaryKeyUpdate(d)) {
-			return updatePrimaryKeyMigration(d, addedTables, droppedTables, local);
-		}
-		if (isPrimaryKeyReplace(d)) {
-			return replacePrimaryKeyMigration(d, addedTables, droppedTables, local);
-		}
-		return [];
-	});
-}
-
 function dropNotNullStatements(
 	primaryKeyValue: string,
 	tableName: string,

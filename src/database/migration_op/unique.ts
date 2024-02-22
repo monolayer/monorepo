@@ -226,25 +226,3 @@ function dropUniqueConstraintMigration(diff: UuniqueDropDiff) {
 		),
 	};
 }
-
-export function uniqueMigrationOps(
-	diff: Difference[],
-	addedTables: string[],
-	droppedTables: string[],
-) {
-	if (diff.length === 0) {
-		return [];
-	}
-	return diff.flatMap((d) => {
-		if (isUniqueConstraintCreateFirst(d)) {
-			return createUniqueFirstConstraintMigration(d, addedTables);
-		}
-		if (isUniqueConstraintDropLast(d)) {
-			return dropUniqueLastConstraintMigration(d, droppedTables);
-		}
-		if (isUniqueConstraintChange(d)) {
-			return changeUniqueConstraintMigration(d);
-		}
-		return [];
-	});
-}

@@ -231,25 +231,3 @@ function changeforeignKeyConstraintMigration(diff: ForeignKeyChangeDiff) {
 		),
 	};
 }
-
-export function foreignKeyMigrationOps(
-	diff: Difference[],
-	addedTables: string[],
-	droppedTables: string[],
-) {
-	if (diff.length === 0) {
-		return [];
-	}
-	return diff.flatMap((d) => {
-		if (isForeignKeyConstraintCreateFirst(d)) {
-			return createforeignKeyFirstConstraintMigration(d, addedTables);
-		}
-		if (isForeignKeyConstraintDropLast(d)) {
-			return dropforeignKeyLastConstraintMigration(d, droppedTables);
-		}
-		if (isForeignKeyConstraintChange(d)) {
-			return changeforeignKeyConstraintMigration(d);
-		}
-		return [];
-	});
-}
