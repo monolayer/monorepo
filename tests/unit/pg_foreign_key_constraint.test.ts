@@ -1,7 +1,10 @@
 import { describe, expect, test } from "vitest";
-import { type PgSerial } from "./pg_column.js";
-import { PgForeignKey, foreignKey } from "./pg_foreign_key.js";
-import { type PgTable } from "./pg_table.js";
+import { type PgSerial } from "../../src/database/schema/pg_column.js";
+import {
+	PgForeignKey,
+	foreignKey,
+} from "../../src/database/schema/pg_foreign_key.js";
+import { type PgTable } from "../../src/database/schema/pg_table.js";
 
 describe("PgForeignKeyConstraint", () => {
 	test("it can be instantiated with pgForeignKeyConstraint", () => {

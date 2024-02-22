@@ -9,8 +9,11 @@ import {
 } from "~/database/schema/pg_column.js";
 import { PgIndex, index } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import { PgForeignKey, foreignKey } from "./pg_foreign_key.js";
-import { PgUnique, unique } from "./pg_unique.js";
+import {
+	PgForeignKey,
+	foreignKey,
+} from "../../src/database/schema/pg_foreign_key.js";
+import { PgUnique, unique } from "../../src/database/schema/pg_unique.js";
 
 describe("pgTable definition", () => {
 	test("has a name", () => {

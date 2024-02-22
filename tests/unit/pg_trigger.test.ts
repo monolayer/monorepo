@@ -1,6 +1,6 @@
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
-import { trigger } from "./pg_trigger.js";
+import { trigger } from "../../src/database/schema/pg_trigger.js";
 
 describe("pg_trigger", () => {
 	test("trigger before", () => {

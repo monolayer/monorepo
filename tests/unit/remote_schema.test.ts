@@ -4,7 +4,7 @@ import { env } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { dropTables } from "~tests/helpers/dropTables.js";
 import { type DbContext, globalPool } from "~tests/setup.js";
-import { remoteSchema } from "./remote_schema.js";
+import { remoteSchema } from "../../src/database/introspection/remote_schema.js";
 
 describe("#remoteSchema", () => {
 	beforeEach<DbContext>(async (context) => {

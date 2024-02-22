@@ -58,8 +58,8 @@ import {
 	timetz,
 	uuid,
 	varchar,
-} from "./pg_column.js";
-import { PgEnum, pgEnum } from "./pg_column.js";
+} from "../../src/database/schema/pg_column.js";
+import { PgEnum, pgEnum } from "../../src/database/schema/pg_column.js";
 
 type ColumnWithDefaultContext = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>

@@ -5,7 +5,7 @@ import {
 	findColumn,
 	findForeignKeysTargetTables,
 	findPrimaryKey,
-} from "./migration_schema.js";
+} from "../../src/database/migrations/migration_schema.js";
 
 describe("findColumn", () => {
 	test("returns the column definition of a table", () => {

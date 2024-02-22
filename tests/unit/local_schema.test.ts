@@ -21,10 +21,10 @@ import { pgDatabase } from "~/database/schema/pg_database.js";
 import { index } from "~/database/schema/pg_index.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
-import { foreignKey } from "../schema/pg_foreign_key.js";
-import { pgTable } from "../schema/pg_table.js";
-import { trigger } from "../schema/pg_trigger.js";
-import { unique } from "../schema/pg_unique.js";
+import { foreignKey } from "../../src/database/schema/pg_foreign_key.js";
+import { pgTable } from "../../src/database/schema/pg_table.js";
+import { trigger } from "../../src/database/schema/pg_trigger.js";
+import { unique } from "../../src/database/schema/pg_unique.js";
 
 describe("#schemaColumnInfo", () => {
 	test("default column", () => {
