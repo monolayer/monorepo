@@ -49,6 +49,7 @@ function createColumnMigration(diff: CreateColumnDiff) {
 			`alterTable("${tableName}")`,
 			`addColumn(\"${columnName}\", ${compileDataType(
 				columnDef.dataType,
+				columnDef.enum,
 			)}${optionsForColumn(columnDef)})`,
 		),
 		down: executeKyselySchemaStatement(
@@ -87,9 +88,10 @@ function dropColumnMigration(diff: DropColumnDiff) {
 
 		down: executeKyselySchemaStatement(
 			`alterTable("${tableName}")`,
-			`addColumn(\"${columnName}\", \"${columnDef.dataType}\"${optionsForColumn(
-				columnDef,
-			)})`,
+			`addColumn(\"${columnName}\", ${compileDataType(
+				columnDef.dataType,
+				columnDef.enum,
+			)}${optionsForColumn(columnDef)})`,
 		),
 	};
 	return changeset;

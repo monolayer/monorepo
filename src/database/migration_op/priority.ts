@@ -7,6 +7,7 @@ export enum MigrationOpPriority {
 	PrimaryKeyDrop = 1004,
 	ColumnDrop = 1005,
 	TableDrop = 1006,
+	DropEnum = 3009,
 
 	TableCreate = 2001,
 	ColumnCreate = 2002,

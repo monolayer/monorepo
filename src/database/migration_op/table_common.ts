@@ -11,6 +11,7 @@ export function tableColumnsOps(columnsInfo: ColumnsInfoDiff) {
 		const base = [
 			`addColumn(\"${column.columnName}\", ${compileDataType(
 				column.dataType,
+				column.enum,
 			)}${optionsForColumn(column)})`,
 		];
 		return base;
@@ -34,7 +35,10 @@ export function optionsForColumn(column: ColumnInfoDiff) {
 	return columnOptions;
 }
 
-export function compileDataType(dataType: string) {
+export function compileDataType(dataType: string, isEnum: boolean) {
+	if (isEnum) {
+		return `sql\`${dataType}\``;
+	}
 	if (dataType === "smallint") {
 		return "sql`smallint`";
 	}

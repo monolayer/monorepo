@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { integer, serial, varchar } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
-import { foreignKey } from "~/database/schema/pg_foreign_key.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { unique } from "~/database/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
@@ -80,7 +79,7 @@ describe("Database migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -147,7 +146,7 @@ describe("Database migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -226,7 +225,7 @@ describe("Database migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -294,7 +293,7 @@ describe("Database migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 });

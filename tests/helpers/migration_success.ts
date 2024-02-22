@@ -34,7 +34,7 @@ export async function testUpAndDownMigrations(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	database: pgDatabase<any>,
 	cs: Changeset[],
-	reverseChangesetAfterDown = true,
+	down: "same" | "reverse" | "empty",
 ) {
 	expectMigrationSuccess(await migrateUp(context.folder, context.migrator, cs));
 
@@ -42,13 +42,22 @@ export async function testUpAndDownMigrations(
 	expect(afterUpCs).toEqual([]);
 
 	expectMigrationSuccess(await migrateDown(context.migrator));
-
-	if (reverseChangesetAfterDown) {
-		const afterDownCs = await computeChangeset(context.kysely, database);
-		expect(afterDownCs).toEqual(cs.reverse());
-	} else {
-		const afterDownCs = await computeChangeset(context.kysely, database);
-		expect(afterDownCs).toEqual(cs);
+	switch (down) {
+		case "reverse": {
+			const afterDownCs = await computeChangeset(context.kysely, database);
+			expect(afterDownCs).toEqual(cs.reverse());
+			break;
+		}
+		case "same": {
+			const afterDownCs = await computeChangeset(context.kysely, database);
+			expect(afterDownCs).toEqual(cs);
+			break;
+		}
+		case "empty": {
+			const afterDownCs = await computeChangeset(context.kysely, database);
+			expect(afterDownCs).toEqual([]);
+			break;
+		}
 	}
 }
 
@@ -56,22 +65,17 @@ export async function testChangesetAndMigrations({
 	context,
 	database,
 	expected,
-	reverseChangesetAfterDown,
+	down,
 }: {
 	context: DbContext;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	database: pgDatabase<any>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	expected: any[];
-	reverseChangesetAfterDown: boolean;
+	down: "same" | "reverse" | "empty";
 }) {
 	const cs = await computeChangeset(context.kysely, database);
 	expect(cs).toEqual(expected);
 
-	await testUpAndDownMigrations(
-		context,
-		database,
-		cs,
-		reverseChangesetAfterDown,
-	);
+	await testUpAndDownMigrations(context, database, cs, down);
 }

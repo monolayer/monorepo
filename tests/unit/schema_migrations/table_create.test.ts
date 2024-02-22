@@ -16,6 +16,7 @@ import {
 	json,
 	jsonb,
 	numeric,
+	pgEnum,
 	real,
 	serial,
 	text,
@@ -77,7 +78,7 @@ describe("Table create migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -198,7 +199,7 @@ describe("Table create migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -269,7 +270,7 @@ describe("Table create migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -342,7 +343,7 @@ describe("Table create migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -419,7 +420,7 @@ describe("Table create migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -501,7 +502,7 @@ describe("Table create migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -576,7 +577,56 @@ describe("Table create migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
+		});
+	});
+
+	test<DbContext>("create table with enums", async (context) => {
+		const users = pgTable("users", {
+			columns: {
+				name: text(),
+				role: pgEnum("role", ["admin", "user"]),
+			},
+		});
+
+		const database = pgDatabase({
+			tables: {
+				users,
+			},
+		});
+		const expected = [
+			{
+				priority: 0,
+				tableName: "none",
+				type: "createEnum",
+				up: [
+					"await db.schema",
+					'createType("role")',
+					'asEnum(["admin", "user"])',
+					"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+				],
+				down: ["await db.schema", 'dropType("role")', "execute();"],
+			},
+			{
+				priority: 2001,
+				tableName: "users",
+				type: "createTable",
+				up: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("name", "text")',
+					'addColumn("role", sql`role`)',
+					"execute();",
+				],
+				down: ["await db.schema", 'dropTable("users")', "execute();"],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			down: "reverse",
 		});
 	});
 

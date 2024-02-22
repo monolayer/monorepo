@@ -32,13 +32,12 @@ function createEnumMigration(diff: CreateEnumDiff) {
 		tableName: "none",
 		type: ChangeSetType.CreateEnum,
 		up: [
-			"await kysely.schema",
-			`.createType("${enumName}")`,
-			`.asEnum([${enumValues}])`,
-			".execute();",
-			`await sql\`COMMENT ON TYPE ${enumName} IS 'kinetic'\`.execute(kysely);`,
+			"await db.schema",
+			`createType("${enumName}")`,
+			`asEnum([${enumValues}])`,
+			`execute();await sql\`COMMENT ON TYPE \"${enumName}\" IS 'kinetic'\`.execute(db)`,
 		],
-		down: ["await kysely.schema", `.dropType("${enumName}")`, ".execute();"],
+		down: ["await db.schema", `dropType("${enumName}")`, "execute();"],
 	};
 	return changeSet;
 }
@@ -50,16 +49,15 @@ function dropEnumMigration(diff: DropEnumDiff) {
 		.map((value) => `"${value}"`)
 		.join(", ");
 	const changeSet: Changeset = {
-		priority: MigrationOpPriority.Database,
+		priority: MigrationOpPriority.DropEnum,
 		tableName: "none",
 		type: ChangeSetType.DropEnum,
-		up: ["await kysely.schema", `.dropType("${enumName}")`, ".execute();"],
+		up: ["await db.schema", `dropType("${enumName}")`, "execute();"],
 		down: [
-			"await kysely.schema",
-			`.createType("${enumName}")`,
-			`.asEnum([${enumValues}])`,
-			".execute();",
-			`await sql\`COMMENT ON TYPE ${enumName} IS 'kinetic'\`.execute(kysely);`,
+			"await db.schema",
+			`createType("${enumName}")`,
+			`asEnum([${enumValues}])`,
+			`execute();await sql\`COMMENT ON TYPE \"${enumName}\" IS 'kinetic'\`.execute(db)`,
 		],
 	};
 	return changeSet;
@@ -84,7 +82,7 @@ function changeEnumMigration(diff: ChangeEnumDiff) {
 		priority: MigrationOpPriority.Database,
 		tableName: "none",
 		type: ChangeSetType.ChangeEnum,
-		up: [`await sql\`${newValues.join(";")};\`.execute(kysely);`],
+		up: [`await sql\`${newValues.join(";")};\`.execute(db);`],
 		down: [],
 	};
 

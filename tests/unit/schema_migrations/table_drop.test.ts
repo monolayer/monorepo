@@ -1,6 +1,6 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, serial, varchar } from "~/database/schema/pg_column.js";
+import { integer } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { unique } from "~/database/schema/pg_unique.js";
@@ -51,7 +51,7 @@ describe("Table drop migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: false,
+			down: "same",
 		});
 	});
 
@@ -181,7 +181,7 @@ describe("Table drop migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -260,7 +260,7 @@ describe("Table drop migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -330,7 +330,7 @@ describe("Table drop migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -409,7 +409,7 @@ describe("Table drop migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -487,7 +487,58 @@ describe("Table drop migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
+		});
+	});
+
+	test<DbContext>("drop table with enums", async (context) => {
+		const database = pgDatabase({});
+
+		await context.kysely.schema
+			.createType("role")
+			.asEnum(["admin", "user"])
+			.execute();
+		await sql`COMMENT ON TYPE "role" IS 'kinetic'`.execute(context.kysely);
+
+		await context.kysely.schema
+			.createTable("users")
+			.addColumn("name", "text")
+			.addColumn("role", sql`role`)
+			.execute();
+
+		const expected = [
+			{
+				priority: 1006,
+				tableName: "users",
+				type: "dropTable",
+				up: ["await db.schema", 'dropTable("users")', "execute();"],
+				down: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("name", "text")',
+					'addColumn("role", sql`role`)',
+					"execute();",
+				],
+			},
+			{
+				priority: 3009,
+				tableName: "none",
+				type: "dropEnum",
+				up: ["await db.schema", 'dropType("role")', "execute();"],
+				down: [
+					"await db.schema",
+					'createType("role")',
+					'asEnum(["admin", "user"])',
+					"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			down: "reverse",
 		});
 	});
 

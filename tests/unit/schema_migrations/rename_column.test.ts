@@ -60,7 +60,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -121,7 +121,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -191,7 +191,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -249,7 +249,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -322,7 +322,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -380,7 +380,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -471,7 +471,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -545,7 +545,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -626,7 +626,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -686,7 +686,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 	});
@@ -721,7 +721,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected: [],
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -749,7 +749,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected: [],
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -785,7 +785,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected: [],
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -816,7 +816,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected: [],
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -870,7 +870,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected: [],
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -919,7 +919,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected: [],
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -988,7 +988,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected,
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -1032,7 +1032,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected: [],
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -1056,7 +1056,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected: [],
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 
@@ -1080,7 +1080,7 @@ describe("Rename column migrations", () => {
 				context,
 				database,
 				expected: [],
-				reverseChangesetAfterDown: true,
+				down: "reverse",
 			});
 		});
 	});

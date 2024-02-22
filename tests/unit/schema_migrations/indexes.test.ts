@@ -63,7 +63,7 @@ describe("Database migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -122,7 +122,7 @@ describe("Database migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -192,7 +192,7 @@ describe("Database migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 
@@ -253,7 +253,7 @@ describe("Database migrations", () => {
 			context,
 			database,
 			expected,
-			reverseChangesetAfterDown: true,
+			down: "reverse",
 		});
 	});
 });
