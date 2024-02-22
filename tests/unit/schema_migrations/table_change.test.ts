@@ -18,7 +18,4 @@ describe("Table change migrations", () => {
 	test.todo<DbContext>("change column default");
 	test.todo<DbContext>("change column not null");
 	test.todo<DbContext>("change column unique");
-	test.todo<DbContext>("add trigger");
-	test.todo<DbContext>("remove trigger");
-	test.todo<DbContext>("replace trigger");
 });

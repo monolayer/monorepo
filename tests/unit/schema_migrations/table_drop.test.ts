@@ -1,6 +1,6 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer } from "~/database/schema/pg_column.js";
+import { integer, text } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { unique } from "~/database/schema/pg_unique.js";
@@ -542,5 +542,70 @@ describe("Table drop migrations", () => {
 		});
 	});
 
-	test.todo<DbContext>("drop table with triggers");
+	test<DbContext>("drop table with triggers", async (context) => {
+		await context.kysely.schema
+			.createTable("teams")
+			.addColumn("name", "text")
+			.execute();
+		await context.kysely.schema
+			.createTable("users")
+			.addColumn("id", "integer")
+			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
+			.execute();
+
+		await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(
+			context.kysely,
+		);
+
+		await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg
+							BEFORE UPDATE ON users
+							FOR EACH ROW
+							EXECUTE FUNCTION moddatetime(updatedAt);
+							COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(
+			context.kysely,
+		);
+
+		const database = pgDatabase({
+			extensions: ["moddatetime"],
+			tables: {
+				teams: pgTable("teams", {
+					columns: {
+						name: text(),
+					},
+				}),
+			},
+		});
+
+		const expected = [
+			{
+				priority: 1001,
+				tableName: "users",
+				type: "dropTrigger",
+				up: [],
+				down: [
+					"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat');COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(db);",
+				],
+			},
+			{
+				priority: 1006,
+				tableName: "users",
+				type: "dropTable",
+				up: ["await db.schema", 'dropTable("users")', "execute();"],
+				down: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("id", "integer")',
+					'addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))',
+					"execute();",
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			down: "reverse",
+		});
+	});
 });

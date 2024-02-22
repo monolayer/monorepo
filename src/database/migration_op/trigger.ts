@@ -122,7 +122,10 @@ function dropTriggerMigration(diff: TriggerDropDiff, droppedTables: string[]) {
 			? []
 			: executeKyselyDbStatement(`DROP TRIGGER ${triggerName} ON ${tableName}`),
 		down: executeKyselyDbStatement(
-			`${trigger[1]};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}';`,
+			`${trigger[1]?.replace(
+				"CREATE TRIGGER",
+				"CREATE OR REPLACE TRIGGER",
+			)};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}';`,
 		),
 	};
 }
@@ -140,10 +143,15 @@ function changeTriggerMigration(diff: TriggerChangeDiff) {
 		tableName: tableName,
 		type: ChangeSetType.UpdateTrigger,
 		up: executeKyselyDbStatement(
-			`DROP TRIGGER ${triggerName} ON ${tableName};${newTrigger[1]};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${newTrigger[0]}';`,
+			`${newTrigger[1]};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${newTrigger[0]}';`,
 		),
 		down: executeKyselyDbStatement(
-			`DROP TRIGGER ${triggerName} ON ${tableName};${oldTrigger[1]};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${oldTrigger[0]}';`,
+			`${oldTrigger[1]?.replace(
+				"CREATE TRIGGER",
+				"CREATE OR REPLACE TRIGGER",
+			)};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${
+				oldTrigger[0]
+			}';`,
 		),
 	};
 }

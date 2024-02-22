@@ -1,3 +1,4 @@
+import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import {
 	bigint,
@@ -31,6 +32,7 @@ import { pgDatabase } from "~/database/schema/pg_database.js";
 import { foreignKey } from "~/database/schema/pg_foreign_key.js";
 import { index } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
+import { trigger } from "~/database/schema/pg_trigger.js";
 import { unique } from "~/database/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
@@ -630,5 +632,71 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test.todo<DbContext>("create table with triggers");
+	test<DbContext>("create table with triggers", async (context) => {
+		const users = pgTable("users", {
+			columns: {
+				id: integer(),
+				updatedAt: timestamp().defaultTo(sql`now()`),
+			},
+			triggers: {
+				foo_before_update: trigger({
+					firingTime: "before",
+					events: ["update"],
+					forEach: "row",
+					functionName: "moddatetime",
+					functionArgs: ["updatedAt"],
+				}),
+			},
+		});
+
+		const database = pgDatabase({
+			extensions: ["moddatetime"],
+			tables: {
+				users,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 0,
+				tableName: "none",
+				type: "createExtension",
+				up: [
+					"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(db);",
+				],
+				down: ["await sql`DROP EXTENSION IF EXISTS moddatetime;`.execute(db);"],
+			},
+			{
+				priority: 2001,
+				tableName: "users",
+				type: "createTable",
+				up: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("id", "integer")',
+					'addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))',
+					"execute();",
+				],
+				down: ["await db.schema", 'dropTable("users")', "execute();"],
+			},
+			{
+				priority: 4004,
+				tableName: "users",
+				type: "createTrigger",
+				up: [
+					`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';\`.execute(db);`,
+				],
+				down: [],
+			},
+		];
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			down: "reverse",
+		});
+	});
 });
