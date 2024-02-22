@@ -151,10 +151,10 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "dropConstraint",
 					up: [
-						"await sql`ALTER TABLE users DROP CONSTRAINT users_name_kinetic_key`.execute(db);",
+						'await sql`ALTER TABLE users DROP CONSTRAINT "users_name_kinetic_key"`.execute(db);',
 					],
 					down: [
-						'await sql`ALTER TABLE users ADD CONSTRAINT users_name_kinetic_key UNIQUE NULLS DISTINCT ("name")`.execute(db);',
+						'await sql`ALTER TABLE users ADD CONSTRAINT "users_name_kinetic_key" UNIQUE NULLS DISTINCT ("name")`.execute(db);',
 					],
 				},
 				{
@@ -179,10 +179,10 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "createConstraint",
 					up: [
-						'await sql`ALTER TABLE users ADD CONSTRAINT users_fullName_kinetic_key UNIQUE NULLS NOT DISTINCT ("fullName")`.execute(db);',
+						'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_kinetic_key" UNIQUE NULLS NOT DISTINCT ("fullName")`.execute(db);',
 					],
 					down: [
-						"await sql`ALTER TABLE users DROP CONSTRAINT users_fullName_kinetic_key`.execute(db);",
+						'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_kinetic_key"`.execute(db);',
 					],
 				},
 			];
@@ -237,10 +237,10 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "createConstraint",
 					up: [
-						'await sql`ALTER TABLE users ADD CONSTRAINT users_fullName_kinetic_key UNIQUE NULLS DISTINCT ("fullName")`.execute(db);',
+						'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_kinetic_key" UNIQUE NULLS DISTINCT ("fullName")`.execute(db);',
 					],
 					down: [
-						"await sql`ALTER TABLE users DROP CONSTRAINT users_fullName_kinetic_key`.execute(db);",
+						'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_kinetic_key"`.execute(db);',
 					],
 				},
 			];

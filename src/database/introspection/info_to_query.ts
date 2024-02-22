@@ -31,9 +31,12 @@ export function primaryKeyConstraintInfoToQuery(
 
 export function uniqueConstraintInfoToQuery(info: UniqueConstraintInfo) {
 	return [
-		`${info.table}_${info.columns.join("_")}_kinetic_key`,
+		`"${info.table}_${info.columns.sort().join("_")}_kinetic_key"`,
 		"UNIQUE",
 		info.nullsDistinct ? "NULLS DISTINCT" : "NULLS NOT DISTINCT",
-		`(${info.columns.map((col) => `"${col}"`).join(", ")})`,
+		`(${info.columns
+			.sort()
+			.map((col) => `"${col}"`)
+			.join(", ")})`,
 	].join(" ");
 }

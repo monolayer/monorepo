@@ -43,11 +43,11 @@ test("#uniqueConstraintInfoToQuery", () => {
 	};
 
 	expect(uniqueConstraintInfoToQuery(info)).toBe(
-		'test_users_book_id_location_id_kinetic_key UNIQUE NULLS DISTINCT ("book_id", "location_id")',
+		'"test_users_book_id_location_id_kinetic_key" UNIQUE NULLS DISTINCT ("book_id", "location_id")',
 	);
 
 	info.nullsDistinct = false;
 	expect(uniqueConstraintInfoToQuery(info)).toBe(
-		'test_users_book_id_location_id_kinetic_key UNIQUE NULLS NOT DISTINCT ("book_id", "location_id")',
+		'"test_users_book_id_location_id_kinetic_key" UNIQUE NULLS NOT DISTINCT ("book_id", "location_id")',
 	);
 });

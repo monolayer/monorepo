@@ -356,15 +356,15 @@ function uniqueConstraintInfo(
 			const uniqueConstraints = tableDefinition.schema.uniqueConstraints;
 			if (uniqueConstraints !== undefined) {
 				for (const uniqueConstraint of uniqueConstraints) {
-					const keyName = `${tableName}_${uniqueConstraint.columns.join(
-						"_",
-					)}_kinetic_key`;
+					const keyName = `${tableName}_${uniqueConstraint.columns
+						.sort()
+						.join("_")}_kinetic_key`;
 					acc[tableName] = {
 						...acc[tableName],
 						[keyName]: uniqueConstraintInfoToQuery({
 							constraintType: "UNIQUE",
 							table: tableName,
-							columns: uniqueConstraint.columns,
+							columns: uniqueConstraint.columns.sort(),
 							nullsDistinct: uniqueConstraint.nullsDistinct,
 						}),
 					};

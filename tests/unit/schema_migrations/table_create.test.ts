@@ -30,6 +30,7 @@ import { pgDatabase } from "~/database/schema/pg_database.js";
 import { foreignKey } from "~/database/schema/pg_foreign_key.js";
 import { index } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
+import { unique } from "~/database/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
@@ -345,7 +346,82 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test.todo<DbContext>("create table with unique constraints");
+	test<DbContext>("create table with unique constraints", async (context) => {
+		const books = pgTable("books", {
+			columns: {
+				id: integer(),
+			},
+			uniqueConstraints: [unique("id", false)],
+		});
+
+		const users = pgTable("users", {
+			columns: {
+				id: serial(),
+				fullName: varchar(),
+			},
+			uniqueConstraints: [unique(["id"])],
+		});
+
+		const database = pgDatabase({
+			tables: {
+				books,
+				users,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 2001,
+				tableName: "users",
+				type: "createTable",
+				up: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("id", "serial", (col) => col.notNull())',
+					'addColumn("fullName", "varchar")',
+					"execute();",
+				],
+				down: ["await db.schema", 'dropTable("users")', "execute();"],
+			},
+			{
+				priority: 2001,
+				tableName: "books",
+				type: "createTable",
+				up: [
+					"await db.schema",
+					'createTable("books")',
+					'addColumn("id", "integer")',
+					"execute();",
+				],
+				down: ["await db.schema", 'dropTable("books")', "execute();"],
+			},
+			{
+				priority: 4002,
+				tableName: "books",
+				type: "createConstraint",
+				up: [
+					'await sql`ALTER TABLE books ADD CONSTRAINT "books_id_kinetic_key" UNIQUE NULLS NOT DISTINCT ("id")`.execute(db);',
+				],
+				down: [],
+			},
+			{
+				priority: 4002,
+				tableName: "users",
+				type: "createConstraint",
+				up: [
+					'await sql`ALTER TABLE users ADD CONSTRAINT "users_id_kinetic_key" UNIQUE NULLS DISTINCT ("id")`.execute(db);',
+				],
+				down: [],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
+	});
 
 	test<DbContext>("create table with foreign keys", async (context) => {
 		const books = pgTable("books", {

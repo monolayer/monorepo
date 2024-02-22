@@ -70,7 +70,9 @@ export async function dbUniqueConstraintInfo(
 			.groupBy(["table", "information_schema.table_constraints.nulls_distinct"])
 			.execute();
 		const transformedResults = results.reduce<UniqueInfo>((acc, result) => {
-			const keyName = `${result.table}_${result.columns.join("_")}_kinetic_key`;
+			const keyName = `${result.table}_${result.columns
+				.sort()
+				.join("_")}_kinetic_key`;
 			const constraintInfo = {
 				[keyName]: uniqueConstraintInfoToQuery(result),
 			};

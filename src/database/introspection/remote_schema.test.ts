@@ -270,7 +270,7 @@ describe("#remoteSchema", () => {
 				uniqueConstraints: {
 					remote_schema_users: {
 						remote_schema_users_email_kinetic_key:
-							'remote_schema_users_email_kinetic_key UNIQUE NULLS NOT DISTINCT ("email")',
+							'"remote_schema_users_email_kinetic_key" UNIQUE NULLS NOT DISTINCT ("email")',
 					},
 				},
 				foreignKeyConstraints: {

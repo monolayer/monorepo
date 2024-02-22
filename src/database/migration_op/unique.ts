@@ -143,7 +143,7 @@ function createUniqueFirstConstraintMigration(
 		down: addedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+					`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
 			  ),
 	};
 }
@@ -167,7 +167,7 @@ function dropUniqueLastConstraintMigration(
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+					`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
 			  ),
 		down: executeKyselyDbStatement(
 			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
@@ -185,10 +185,10 @@ function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
 		tableName: tableName,
 		type: ChangeSetType.ChangeConstraint,
 		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}, ADD CONSTRAINT ${newValue}`,
+			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}", ADD CONSTRAINT ${newValue}`,
 		),
 		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}, ADD CONSTRAINT ${oldValue}`,
+			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}", ADD CONSTRAINT ${oldValue}`,
 		),
 	};
 }
@@ -205,7 +205,7 @@ function createUniqueConstraintMigration(diff: UniqueCreateDiff) {
 			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
 		),
 		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
 		),
 	};
 }
@@ -219,7 +219,7 @@ function dropUniqueConstraintMigration(diff: UuniqueDropDiff) {
 		tableName: tableName,
 		type: ChangeSetType.DropConstraint,
 		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
 		),
 		down: executeKyselyDbStatement(
 			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,

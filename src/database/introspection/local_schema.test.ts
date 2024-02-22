@@ -522,13 +522,13 @@ test("#localSchema", () => {
 		uniqueConstraints: {
 			users: {
 				users_email_kinetic_key:
-					'users_email_kinetic_key UNIQUE NULLS NOT DISTINCT ("email")',
+					'"users_email_kinetic_key" UNIQUE NULLS NOT DISTINCT ("email")',
 				users_name_kinetic_key:
-					'users_name_kinetic_key UNIQUE NULLS DISTINCT ("name")',
+					'"users_name_kinetic_key" UNIQUE NULLS DISTINCT ("name")',
 			},
 			books: {
-				books_name_location_kinetic_key:
-					'books_name_location_kinetic_key UNIQUE NULLS DISTINCT ("name", "location")',
+				books_location_name_kinetic_key:
+					'"books_location_name_kinetic_key" UNIQUE NULLS DISTINCT ("location", "name")',
 			},
 		},
 		primaryKey: {

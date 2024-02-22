@@ -1,7 +1,9 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
+import { integer, serial, varchar } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
+import { unique } from "~/database/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
@@ -262,7 +264,75 @@ describe("Table drop migrations", () => {
 		});
 	});
 
-	test.todo<DbContext>("drop table with unique constraints");
+	test<DbContext>("drop table with unique constraints", async (context) => {
+		await context.kysely.schema
+			.createTable("books")
+			.addColumn("id", "integer")
+			.execute();
+
+		await context.kysely.schema
+			.alterTable("books")
+			.addUniqueConstraint("books_id_kinetic_key", ["id"], (uc) =>
+				uc.nullsNotDistinct(),
+			)
+			.execute();
+
+		await context.kysely.schema
+			.createTable("users")
+			.addColumn("id", "serial")
+			.addColumn("fullName", "varchar")
+			.execute();
+
+		await context.kysely.schema
+			.alterTable("users")
+			.addUniqueConstraint("users_id_fullName_kinetic_key", ["id", "fullName"])
+			.execute();
+
+		const books = pgTable("books", {
+			columns: {
+				id: integer(),
+			},
+			uniqueConstraints: [unique("id", false)],
+		});
+
+		const database = pgDatabase({
+			tables: {
+				books,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 1003,
+				tableName: "users",
+				type: "dropConstraint",
+				up: [],
+				down: [
+					'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_id_kinetic_key" UNIQUE NULLS DISTINCT ("fullName", "id")`.execute(db);',
+				],
+			},
+			{
+				priority: 1006,
+				tableName: "users",
+				type: "dropTable",
+				up: ["await db.schema", 'dropTable("users")', "execute();"],
+				down: [
+					"await db.schema",
+					'createTable("users")',
+					'addColumn("fullName", "varchar")',
+					'addColumn("id", "serial", (col) => col.notNull())',
+					"execute();",
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
+	});
 
 	test<DbContext>("drop table with foreign keys", async (context) => {
 		const database = pgDatabase({
