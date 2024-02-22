@@ -1,12 +1,12 @@
 import { sql } from "kysely";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, test } from "vitest";
 import { integer, text, varchar } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { foreignKey } from "~/database/schema/pg_foreign_key.js";
 import { index } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { unique } from "~/database/schema/pg_unique.js";
-import { computeChangeset } from "~tests/helpers/compute_changeset.js";
+import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
 
@@ -20,8 +20,8 @@ describe("Rename column migrations", () => {
 	});
 
 	describe("not applied in remote", () => {
-		test<DbContext>("column name", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("column name", async (context) => {
+			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
 				.execute();
@@ -35,8 +35,6 @@ describe("Rename column migrations", () => {
 					}),
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -58,11 +56,16 @@ describe("Rename column migrations", () => {
 				},
 			];
 
-			expect(cs).toStrictEqual(expected);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("column name and type", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("column name and type", async (context) => {
+			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
 				.execute();
@@ -76,8 +79,6 @@ describe("Rename column migrations", () => {
 					}),
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -116,13 +117,16 @@ describe("Rename column migrations", () => {
 				},
 			];
 
-			expect(cs.sort((a, b) => a.priority - b.priority)).toStrictEqual(
-				expected.sort((a, b) => a.priority - b.priority),
-			);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with unique constraints applied", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("with unique constraints applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
 				.addUniqueConstraint("users_name_kinetic_key", ["name"])
@@ -140,8 +144,6 @@ describe("Rename column migrations", () => {
 					users: users,
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -185,15 +187,16 @@ describe("Rename column migrations", () => {
 				},
 			];
 
-			expect(cs.sort((a, b) => a.priority - b.priority)).toStrictEqual(
-				expected.sort((a, b) => a.priority - b.priority),
-			);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with unique constraints not applied", async ({
-			kysely,
-		}) => {
-			await kysely.schema
+		test<DbContext>("with unique constraints not applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
 				.execute();
@@ -210,8 +213,6 @@ describe("Rename column migrations", () => {
 					users: users,
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -244,19 +245,22 @@ describe("Rename column migrations", () => {
 				},
 			];
 
-			expect(cs.sort((a, b) => a.priority - b.priority)).toStrictEqual(
-				expected.sort((a, b) => a.priority - b.priority),
-			);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with primary key applied", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("with primary key applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.execute();
 
 			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY (\"name\")`.execute(
-				kysely,
+				context.kysely,
 			);
 
 			const users = pgTable("users_pk1", {
@@ -271,8 +275,6 @@ describe("Rename column migrations", () => {
 					users_pk1: users,
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -311,18 +313,21 @@ describe("Rename column migrations", () => {
 						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY ("fullName")`.execute(db);',
 					],
 					down: [
-						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_fullName_kinetic_pk`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_fullName_kinetic_pk, ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
 					],
 				},
 			];
 
-			expect(cs.sort((a, b) => a.priority - b.priority)).toStrictEqual(
-				expected.sort((a, b) => a.priority - b.priority),
-			);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with primary key not applied", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("with primary key not applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.execute();
@@ -339,8 +344,6 @@ describe("Rename column migrations", () => {
 					users_pk1: users,
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -368,24 +371,27 @@ describe("Rename column migrations", () => {
 						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY ("fullName")`.execute(db);',
 					],
 					down: [
-						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_fullName_kinetic_pk`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_fullName_kinetic_pk, ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
 					],
 				},
 			];
 
-			expect(cs.sort((a, b) => a.priority - b.priority)).toStrictEqual(
-				expected.sort((a, b) => a.priority - b.priority),
-			);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with foreign key applied", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("with foreign key applied", async (context) => {
+			await context.kysely.schema
 				.createTable("books_pk1")
 				.addColumn("id", "integer")
 				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
 				.execute();
 
-			await kysely.schema
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
@@ -418,8 +424,6 @@ describe("Rename column migrations", () => {
 					books_pk1: books,
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -463,19 +467,22 @@ describe("Rename column migrations", () => {
 				},
 			];
 
-			expect(cs.sort((a, b) => a.priority - b.priority)).toStrictEqual(
-				expected.sort((a, b) => a.priority - b.priority),
-			);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with foreign key not applied", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("with foreign key not applied", async (context) => {
+			await context.kysely.schema
 				.createTable("books_pk1")
 				.addColumn("id", "integer")
 				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
 				.execute();
 
-			await kysely.schema
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
@@ -502,8 +509,6 @@ describe("Rename column migrations", () => {
 					books_pk1: books,
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -536,26 +541,29 @@ describe("Rename column migrations", () => {
 				},
 			];
 
-			expect(cs.sort((a, b) => a.priority - b.priority)).toStrictEqual(
-				expected.sort((a, b) => a.priority - b.priority),
-			);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with indexes applied", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("with indexes applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
 				.execute();
 
-			await kysely.schema
+			await context.kysely.schema
 				.createIndex("users_pk1_book_id_kntc_idx")
 				.on("users_pk1")
 				.columns(["book_id"])
 				.execute();
 
 			await sql`COMMENT ON INDEX users_pk1_book_id_kntc_idx IS 'abcd'`.execute(
-				kysely,
+				context.kysely,
 			);
 
 			const users = pgTable("users_pk1", {
@@ -571,8 +579,6 @@ describe("Rename column migrations", () => {
 					users_pk1: users,
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -583,7 +589,7 @@ describe("Rename column migrations", () => {
 						'await db.schema.dropIndex("users_pk1_book_id_kntc_idx").execute();',
 					],
 					down: [
-						"await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree (book_id);COMMENT ON INDEX users_pk1_book_id_kntc_idx IS 'abcd'`.execute(db);",
+						"await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree (book_id);COMMENT ON INDEX \"users_pk1_book_id_kntc_idx\" IS 'abcd'`.execute(db);",
 					],
 				},
 				{
@@ -608,7 +614,7 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createIndex",
 					up: [
-						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX users_pk1_bookId_kntc_idx IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
 					],
 					down: [
 						'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
@@ -616,13 +622,16 @@ describe("Rename column migrations", () => {
 				},
 			];
 
-			expect(cs.sort((a, b) => a.priority - b.priority)).toStrictEqual(
-				expected.sort((a, b) => a.priority - b.priority),
-			);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with indexes not applied", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("with indexes not applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
@@ -641,8 +650,6 @@ describe("Rename column migrations", () => {
 					users_pk1: users,
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -667,7 +674,7 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createIndex",
 					up: [
-						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX users_pk1_bookId_kntc_idx IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
 					],
 					down: [
 						'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
@@ -675,23 +682,24 @@ describe("Rename column migrations", () => {
 				},
 			];
 
-			expect(cs.sort((a, b) => a.priority - b.priority)).toStrictEqual(
-				expected.sort((a, b) => a.priority - b.priority),
-			);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 	});
 
 	describe("applied in remote", () => {
-		test<DbContext>("with unique constraints with previous name applied", async ({
-			kysely,
-		}) => {
-			await kysely.schema
+		test<DbContext>("with unique constraints with previous name applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
 				.addUniqueConstraint("users_name_kinetic_key", ["name"])
 				.execute();
 
-			await kysely.schema
+			await context.kysely.schema
 				.alterTable("users")
 				.renameColumn("name", "fullName")
 				.execute();
@@ -709,15 +717,16 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const cs = await computeChangeset(kysely, database);
-
-			expect(cs).toStrictEqual([]);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected: [],
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with unique constraints name applied", async ({
-			kysely,
-		}) => {
-			await kysely.schema
+		test<DbContext>("with unique constraints name applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users6")
 				.addColumn("fullName", "text")
 				.addUniqueConstraint("usersh_fullName_kinetic_key", ["fullName"])
@@ -736,24 +745,25 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const cs = await computeChangeset(kysely, database);
-
-			expect(cs).toStrictEqual([]);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected: [],
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with primary key from previous name applied", async ({
-			kysely,
-		}) => {
-			await kysely.schema
+		test<DbContext>("with primary key from previous name applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.execute();
 
 			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY (name)`.execute(
-				kysely,
+				context.kysely,
 			);
 
-			await kysely.schema
+			await context.kysely.schema
 				.alterTable("users_pk1")
 				.renameColumn("name", "fullName")
 				.execute();
@@ -771,19 +781,22 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const cs = await computeChangeset(kysely, database);
-
-			expect(cs).toStrictEqual([]);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected: [],
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with primary key name applied", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("with primary key name applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("fullName", "text")
 				.execute();
 
 			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY (\"fullName\")`.execute(
-				kysely,
+				context.kysely,
 			);
 
 			const users = pgTable("users_pk1", {
@@ -799,21 +812,22 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const cs = await computeChangeset(kysely, database);
-
-			expect(cs).toStrictEqual([]);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected: [],
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with foreign key from previous name applied", async ({
-			kysely,
-		}) => {
-			await kysely.schema
+		test<DbContext>("with foreign key from previous name applied", async (context) => {
+			await context.kysely.schema
 				.createTable("books_pk1")
 				.addColumn("id", "integer")
 				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
 				.execute();
 
-			await kysely.schema
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
@@ -825,7 +839,7 @@ describe("Rename column migrations", () => {
 				)
 				.execute();
 
-			await kysely.schema
+			await context.kysely.schema
 				.alterTable("users_pk1")
 				.renameColumn("book_id", "bookId")
 				.execute();
@@ -852,19 +866,22 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const cs = await computeChangeset(kysely, database);
-
-			expect(cs).toStrictEqual([]);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected: [],
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with foreign key name applied", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("with foreign key name applied", async (context) => {
+			await context.kysely.schema
 				.createTable("books_pk1")
 				.addColumn("id", "integer")
 				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
 				.execute();
 
-			await kysely.schema
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.addColumn("bookId", "integer")
@@ -898,31 +915,32 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const cs = await computeChangeset(kysely, database);
-
-			expect(cs).toStrictEqual([]);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected: [],
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with indexes from previous name applied", async ({
-			kysely,
-		}) => {
-			await kysely.schema
+		test<DbContext>("with indexes from previous name applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
 				.execute();
 
-			await kysely.schema
+			await context.kysely.schema
 				.createIndex("users_pk1_book_id_kntc_idx")
 				.on("users_pk1")
 				.columns(["book_id"])
 				.execute();
 
 			await sql`COMMENT ON INDEX users_pk1_book_id_kntc_idx IS 'abcd'`.execute(
-				kysely,
+				context.kysely,
 			);
 
-			await kysely.schema
+			await context.kysely.schema
 				.alterTable("users_pk1")
 				.renameColumn("book_id", "bookId")
 				.execute();
@@ -940,8 +958,6 @@ describe("Rename column migrations", () => {
 					users_pk1: users,
 				},
 			});
-
-			const cs = await computeChangeset(kysely, database);
 
 			const expected = [
 				{
@@ -952,7 +968,7 @@ describe("Rename column migrations", () => {
 						'await db.schema.dropIndex("users_pk1_book_id_kntc_idx").execute();',
 					],
 					down: [
-						"await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree (\"bookId\");COMMENT ON INDEX users_pk1_book_id_kntc_idx IS 'abcd'`.execute(db);",
+						'await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree ("bookId");COMMENT ON INDEX "users_pk1_book_id_kntc_idx" IS \'abcd\'`.execute(db);',
 					],
 				},
 				{
@@ -960,7 +976,7 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createIndex",
 					up: [
-						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX users_pk1_bookId_kntc_idx IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
 					],
 					down: [
 						'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
@@ -968,31 +984,34 @@ describe("Rename column migrations", () => {
 				},
 			];
 
-			expect(cs.sort((a, b) => a.priority - b.priority)).toStrictEqual(
-				expected.sort((a, b) => a.priority - b.priority),
-			);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected,
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("with indexes name applied", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("with indexes name applied", async (context) => {
+			await context.kysely.schema
 				.createTable("users_pk1")
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
 				.execute();
 
-			await kysely.schema
+			await context.kysely.schema
 				.alterTable("users_pk1")
 				.renameColumn("book_id", "bookId")
 				.execute();
 
-			await kysely.schema
+			await context.kysely.schema
 				.createIndex("users_pk1_bookId_kntc_idx")
 				.on("users_pk1")
 				.columns(["bookId"])
 				.execute();
 
 			await sql`COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS '760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb'`.execute(
-				kysely,
+				context.kysely,
 			);
 
 			const users = pgTable("users_pk1", {
@@ -1009,13 +1028,16 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const cs = await computeChangeset(kysely, database);
-
-			expect(cs).toStrictEqual([]);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected: [],
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("change name", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("change name", async (context) => {
+			await context.kysely.schema
 				.createTable("users")
 				.addColumn("fullName", "text")
 				.execute();
@@ -1030,13 +1052,16 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const cs = await computeChangeset(kysely, database);
-
-			expect(cs).toStrictEqual([]);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected: [],
+				reverseChangesetAfterDown: true,
+			});
 		});
 
-		test<DbContext>("change name and type", async ({ kysely }) => {
-			await kysely.schema
+		test<DbContext>("change name and type", async (context) => {
+			await context.kysely.schema
 				.createTable("users")
 				.addColumn("fullName", "varchar")
 				.execute();
@@ -1051,9 +1076,12 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const cs = await computeChangeset(kysely, database);
-
-			expect(cs).toStrictEqual([]);
+			await testChangesetAndMigrations({
+				context,
+				database,
+				expected: [],
+				reverseChangesetAfterDown: true,
+			});
 		});
 	});
 });

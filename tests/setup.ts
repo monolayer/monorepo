@@ -1,6 +1,6 @@
 import { env } from "node:process";
 import dotenv from "dotenv";
-import { Kysely, PostgresDialect } from "kysely";
+import { Kysely, Migrator, PostgresDialect } from "kysely";
 import pg from "pg";
 import type { GlobalThis } from "type-fest";
 dotenv.config();
@@ -14,7 +14,10 @@ export type GlobalThisInTests = GlobalThis & {
 export interface DbContext {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	kysely: Kysely<any>;
+	migrator: Migrator;
 	tableNames: string[];
+	dbName: string;
+	folder: string;
 }
 
 export function globalPool() {

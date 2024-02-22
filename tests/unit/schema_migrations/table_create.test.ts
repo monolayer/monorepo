@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, test } from "vitest";
 import {
 	bigint,
 	bigserial,
@@ -30,7 +30,7 @@ import { pgDatabase } from "~/database/schema/pg_database.js";
 import { foreignKey } from "~/database/schema/pg_foreign_key.js";
 import { index } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import { computeChangeset } from "~tests/helpers/compute_changeset.js";
+import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
 
@@ -43,7 +43,7 @@ describe("Table create migrations", () => {
 		await teardownContext(context);
 	});
 
-	test<DbContext>("create empty table", async ({ kysely }) => {
+	test<DbContext>("create empty table", async (context) => {
 		const database = pgDatabase({
 			tables: {
 				users: pgTable("users", {
@@ -71,11 +71,16 @@ describe("Table create migrations", () => {
 				down: ["await db.schema", 'dropTable("users")', "execute();"],
 			},
 		];
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual(expected);
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
 	});
 
-	test<DbContext>("create table with columns", async ({ kysely }) => {
+	test<DbContext>("create table with columns", async (context) => {
 		const database = pgDatabase({
 			tables: {
 				users: pgTable("users", {
@@ -187,11 +192,16 @@ describe("Table create migrations", () => {
 				down: ["await db.schema", 'dropTable("users")', "execute();"],
 			},
 		];
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual(expected);
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
 	});
 
-	test<DbContext>("create table with primary key", async ({ kysely }) => {
+	test<DbContext>("create table with primary key", async (context) => {
 		const database = pgDatabase({
 			tables: {
 				users: pgTable("users", {
@@ -253,13 +263,16 @@ describe("Table create migrations", () => {
 				],
 			},
 		];
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual(expected);
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
 	});
 
-	test<DbContext>("create table with composite primary key", async ({
-		kysely,
-	}) => {
+	test<DbContext>("create table with composite primary key", async (context) => {
 		const database = pgDatabase({
 			tables: {
 				users: pgTable("users", {
@@ -323,13 +336,18 @@ describe("Table create migrations", () => {
 				],
 			},
 		];
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual(expected);
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
 	});
 
 	test.todo<DbContext>("create table with unique constraints");
 
-	test<DbContext>("create table with foreign keys", async ({ kysely }) => {
+	test<DbContext>("create table with foreign keys", async (context) => {
 		const books = pgTable("books", {
 			columns: {
 				id: bigserial(),
@@ -402,11 +420,16 @@ describe("Table create migrations", () => {
 				],
 			},
 		];
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual(expected);
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
 	});
 
-	test<DbContext>("create table with indexes", async ({ kysely }) => {
+	test<DbContext>("create table with indexes", async (context) => {
 		const users = pgTable("users", {
 			columns: {
 				name: text(),
@@ -427,7 +450,6 @@ describe("Table create migrations", () => {
 				books,
 			},
 		});
-		const cs = await computeChangeset(kysely, database);
 
 		const expected = [
 			{
@@ -460,7 +482,7 @@ describe("Table create migrations", () => {
 				tableName: "users",
 				type: "createIndex",
 				up: [
-					'await sql`create index "users_name_kntc_idx" on "users" ("name");COMMENT ON INDEX users_name_kntc_idx IS \'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45\'`.execute(db);',
+					'await sql`create index "users_name_kntc_idx" on "users" ("name");COMMENT ON INDEX "users_name_kntc_idx" IS \'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45\'`.execute(db);',
 				],
 			},
 			{
@@ -469,12 +491,18 @@ describe("Table create migrations", () => {
 				tableName: "books",
 				type: "createIndex",
 				up: [
-					'await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX books_id_kntc_idx IS \'2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee\'`.execute(db);',
+					'await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX "books_id_kntc_idx" IS \'2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee\'`.execute(db);',
 				],
 			},
 		];
 
-		expect(cs).toStrictEqual(expected);
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
 	});
+
 	test.todo<DbContext>("create table with triggers");
 });

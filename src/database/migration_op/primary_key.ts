@@ -1,6 +1,7 @@
 import type { Difference } from "microdiff";
 import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { extractColumnsFromPrimaryKey } from "../migrations/migration_schema.js";
+import { findColumnByNameInTable } from "../migrations/migration_schema.js";
 import { ChangeSetType, type Changeset } from "./changeset.js";
 import { executeKyselyDbStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
@@ -261,7 +262,8 @@ function dropNotNullStatements(
 		for (const column of primaryKeyColumns) {
 			const table = local.table[tableName];
 			if (table !== undefined) {
-				const tableColumn = table[column];
+				const tableColumn =
+					table[column] || findColumnByNameInTable(table, column);
 				if (tableColumn !== undefined) {
 					if (tableColumn.originalIsNullable === undefined) {
 						if (tableColumn.isNullable) {

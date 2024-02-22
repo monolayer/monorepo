@@ -880,7 +880,7 @@ describe("#dbChangeset", () => {
 					priority: 4003,
 					type: "createIndex",
 					up: [
-						'await sql`create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcd\'`.execute(db);',
+						'await sql`create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX "shops_email_kntc_idx" IS \'abcd\'`.execute(db);',
 					],
 					down: [
 						'await db.schema.dropIndex("shops_email_kntc_idx").execute();',
@@ -891,7 +891,7 @@ describe("#dbChangeset", () => {
 					priority: 4003,
 					type: "createIndex",
 					up: [
-						'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city");COMMENT ON INDEX shops_city_kntc_idx IS \'1234\'`.execute(db);',
+						'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city");COMMENT ON INDEX "shops_city_kntc_idx" IS \'1234\'`.execute(db);',
 					],
 					down: ['await db.schema.dropIndex("shops_city_kntc_idx").execute();'],
 				},
@@ -979,7 +979,7 @@ describe("#dbChangeset", () => {
 					type: "dropIndex",
 					up: ['await db.schema.dropIndex("shops_email_kntc_idx").execute();'],
 					down: [
-						'await sql`create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcd\'`.execute(db);',
+						'await sql`create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX "shops_email_kntc_idx" IS \'abcd\'`.execute(db);',
 					],
 				},
 				{
@@ -988,7 +988,7 @@ describe("#dbChangeset", () => {
 					type: "dropIndex",
 					up: ['await db.schema.dropIndex("shops_city_kntc_idx").execute();'],
 					down: [
-						'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city");COMMENT ON INDEX shops_city_kntc_idx IS \'1234\'`.execute(db);',
+						'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city");COMMENT ON INDEX "shops_city_kntc_idx" IS \'1234\'`.execute(db);',
 					],
 				},
 			];
@@ -1083,10 +1083,10 @@ describe("#dbChangeset", () => {
 					priority: 5001,
 					type: "changeIndex",
 					up: [
-						'await sql`DROP INDEX shops_email_kntc_idx;create unique index "shops_email_kntc_idx" on "shops" using hash ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcde\'`.execute(db);',
+						'await sql`DROP INDEX shops_email_kntc_idx;create unique index "shops_email_kntc_idx" on "shops" using hash ("email");COMMENT ON INDEX "shops_email_kntc_idx" IS \'abcde\'`.execute(db);',
 					],
 					down: [
-						'await sql`DROP INDEX shops_email_kntc_idx;create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX shops_email_kntc_idx IS \'abcd\'`.execute(db);',
+						'await sql`DROP INDEX shops_email_kntc_idx;create unique index "shops_email_kntc_idx" on "shops" using btree ("email");COMMENT ON INDEX "shops_email_kntc_idx" IS \'abcd\'`.execute(db);',
 					],
 				},
 			];

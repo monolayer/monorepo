@@ -1,5 +1,6 @@
 import toposort from "toposort";
 import type {
+	ColumnsInfo,
 	EnumInfo,
 	ExtensionInfo,
 	IndexInfo,
@@ -85,4 +86,17 @@ export function buildNodes(droppedTables: string[], remote: MigrationSchema) {
 		return deps.map((dep) => [droppedTable, dep] as NodeTuple);
 	});
 	return toposort(nodes).filter((node) => node !== undefined);
+}
+
+export function findColumnByNameInTable(
+	table: ColumnsInfo,
+	columnName: string,
+) {
+	const entries = Object.entries(table);
+	const column = entries.find(
+		([_key, value]) => value.columnName === columnName,
+	);
+	if (column !== undefined) {
+		return column[1];
+	}
 }

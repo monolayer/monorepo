@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { computeChangeset } from "~tests/helpers/compute_changeset.js";
+import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
 
@@ -15,13 +16,7 @@ describe("Table drop migrations", () => {
 		await teardownContext(context);
 	});
 
-	test<DbContext>("empty database", async ({ kysely }) => {
-		const database = pgDatabase({});
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual([]);
-	});
-
-	test<DbContext>("drop empty tables", async ({ kysely }) => {
+	test<DbContext>("drop empty tables", async (context) => {
 		const database = pgDatabase({
 			tables: {
 				books: pgTable("books", {
@@ -30,9 +25,9 @@ describe("Table drop migrations", () => {
 			},
 		});
 
-		await kysely.schema.createTable("users").execute();
-		await kysely.schema.createTable("books").execute();
-		await kysely.schema.createTable("organizations").execute();
+		await context.kysely.schema.createTable("users").execute();
+		await context.kysely.schema.createTable("books").execute();
+		await context.kysely.schema.createTable("organizations").execute();
 
 		const expected = [
 			{
@@ -50,11 +45,16 @@ describe("Table drop migrations", () => {
 				up: ["await db.schema", 'dropTable("organizations")', "execute();"],
 			},
 		];
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual(expected);
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: false,
+		});
 	});
 
-	test<DbContext>("drop table with columns", async ({ kysely }) => {
+	test<DbContext>("drop table with columns", async (context) => {
 		const database = pgDatabase({
 			tables: {
 				organizations: pgTable("organizations", {
@@ -62,9 +62,9 @@ describe("Table drop migrations", () => {
 				}),
 			},
 		});
-		await kysely.schema.createTable("organizations").execute();
+		await context.kysely.schema.createTable("organizations").execute();
 
-		await kysely.schema
+		await context.kysely.schema
 			.createTable("users")
 			.addColumn("bigInt", "bigint")
 			.addColumn("bigInt2", "bigint", (col) => col.notNull())
@@ -89,7 +89,7 @@ describe("Table drop migrations", () => {
 			)
 			.execute();
 
-		await kysely.schema
+		await context.kysely.schema
 			.createTable("books")
 			.addColumn("json", "json")
 			.addColumn("jsonB", "jsonb")
@@ -175,11 +175,16 @@ describe("Table drop migrations", () => {
 				],
 			},
 		];
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual(expected);
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
 	});
 
-	test<DbContext>("drop table with primary key", async ({ kysely }) => {
+	test<DbContext>("drop table with primary key", async (context) => {
 		const database = pgDatabase({
 			tables: {
 				organizations: pgTable("organizations", {
@@ -187,22 +192,22 @@ describe("Table drop migrations", () => {
 				}),
 			},
 		});
-		await kysely.schema.createTable("organizations").execute();
+		await context.kysely.schema.createTable("organizations").execute();
 
-		await kysely.schema
+		await context.kysely.schema
 			.createTable("users")
 			.addColumn("id", "serial", (col) => col.notNull())
 			.execute();
 		await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY ("id")`.execute(
-			kysely,
+			context.kysely,
 		);
 
-		await kysely.schema
+		await context.kysely.schema
 			.createTable("books")
 			.addColumn("id", "bigserial", (col) => col.notNull())
 			.execute();
 		await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(
-			kysely,
+			context.kysely,
 		);
 
 		const expected = [
@@ -249,13 +254,18 @@ describe("Table drop migrations", () => {
 				up: ["await db.schema", 'dropTable("users")', "execute();"],
 			},
 		];
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual(expected);
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
 	});
 
 	test.todo<DbContext>("drop table with unique constraints");
 
-	test<DbContext>("drop table with foreign keys", async ({ kysely }) => {
+	test<DbContext>("drop table with foreign keys", async (context) => {
 		const database = pgDatabase({
 			tables: {
 				organizations: pgTable("organizations", {
@@ -263,22 +273,22 @@ describe("Table drop migrations", () => {
 				}),
 			},
 		});
-		await kysely.schema.createTable("organizations").execute();
+		await context.kysely.schema.createTable("organizations").execute();
 
-		await kysely.schema
+		await context.kysely.schema
 			.createTable("books")
 			.addColumn("id", "bigserial", (col) => col.notNull())
 			.execute();
 		await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(
-			kysely,
+			context.kysely,
 		);
 
-		await kysely.schema
+		await context.kysely.schema
 			.createTable("users")
 			.addColumn("id", "serial", (col) => col.notNull())
 			.execute();
 		await sql`ALTER TABLE users ADD CONSTRAINT users_id_books_id_kinetic_fk FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(
-			kysely,
+			context.kysely,
 		);
 
 		const expected = [
@@ -325,11 +335,16 @@ describe("Table drop migrations", () => {
 				],
 			},
 		];
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual(expected);
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
 	});
 
-	test<DbContext>("drop table with indexes", async ({ kysely }) => {
+	test<DbContext>("drop table with indexes", async (context) => {
 		const database = pgDatabase({
 			tables: {
 				organizations: pgTable("organizations", {
@@ -337,21 +352,22 @@ describe("Table drop migrations", () => {
 				}),
 			},
 		});
-		await kysely.schema.createTable("organizations").execute();
+		await context.kysely.schema.createTable("organizations").execute();
 
-		await kysely.schema
+		await context.kysely.schema
 			.createTable("users")
 			.addColumn("name", "text")
 			.execute();
 		await sql`create index "users_name_kntc_idx" on "users" ("name");COMMENT ON INDEX users_name_kntc_idx IS \'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45\'`.execute(
-			kysely,
+			context.kysely,
 		);
-		await kysely.schema.createTable("books").addColumn("id", "text").execute();
+		await context.kysely.schema
+			.createTable("books")
+			.addColumn("id", "text")
+			.execute();
 		await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX books_id_kntc_idx IS \'2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee\'`.execute(
-			kysely,
+			context.kysely,
 		);
-
-		const cs = await computeChangeset(kysely, database);
 
 		const expected = [
 			{
@@ -360,7 +376,7 @@ describe("Table drop migrations", () => {
 				type: "dropIndex",
 				up: [],
 				down: [
-					"await sql`CREATE UNIQUE INDEX books_id_kntc_idx ON public.books USING btree (id);COMMENT ON INDEX books_id_kntc_idx IS '2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee'`.execute(db);",
+					"await sql`CREATE UNIQUE INDEX books_id_kntc_idx ON public.books USING btree (id);COMMENT ON INDEX \"books_id_kntc_idx\" IS '2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee'`.execute(db);",
 				],
 			},
 			{
@@ -369,7 +385,7 @@ describe("Table drop migrations", () => {
 				type: "dropIndex",
 				up: [],
 				down: [
-					"await sql`CREATE INDEX users_name_kntc_idx ON public.users USING btree (name);COMMENT ON INDEX users_name_kntc_idx IS 'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45'`.execute(db);",
+					"await sql`CREATE INDEX users_name_kntc_idx ON public.users USING btree (name);COMMENT ON INDEX \"users_name_kntc_idx\" IS 'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45'`.execute(db);",
 				],
 			},
 			{
@@ -398,7 +414,12 @@ describe("Table drop migrations", () => {
 			},
 		];
 
-		expect(cs).toStrictEqual(expected);
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			reverseChangesetAfterDown: true,
+		});
 	});
 
 	test.todo<DbContext>("drop table with triggers");
