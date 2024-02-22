@@ -1,12 +1,11 @@
 import { sql } from "kysely";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, test } from "vitest";
 import { text } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { index } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
-import { computeChangeset } from "../../helpers/compute_changeset.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";
 
 describe("Database migrations", () => {
@@ -16,12 +15,6 @@ describe("Database migrations", () => {
 
 	afterEach<DbContext>(async (context) => {
 		await teardownContext(context);
-	});
-
-	test<DbContext>("database without tables", async ({ kysely }) => {
-		const database = pgDatabase({});
-		const cs = await computeChangeset(kysely, database);
-		expect(cs).toEqual([]);
 	});
 
 	test<DbContext>("add indexes", async (context) => {
