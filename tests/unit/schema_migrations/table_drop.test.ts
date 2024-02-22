@@ -1,8 +1,7 @@
 import { sql } from "kysely";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, test } from "vitest";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import { computeChangeset } from "~tests/helpers/compute_changeset.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
@@ -213,7 +212,7 @@ describe("Table drop migrations", () => {
 		const expected = [
 			{
 				down: [
-					'await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(db);',
+					'await sql`ALTER TABLE books ADD CONSTRAINT "books_id_kinetic_pk" PRIMARY KEY ("id")`.execute(db);',
 				],
 				priority: 1004,
 				tableName: "books",
@@ -222,7 +221,7 @@ describe("Table drop migrations", () => {
 			},
 			{
 				down: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY ("id")`.execute(db);',
+					'await sql`ALTER TABLE users ADD CONSTRAINT "users_id_kinetic_pk" PRIMARY KEY ("id")`.execute(db);',
 				],
 				priority: 1004,
 				tableName: "users",
@@ -307,7 +306,7 @@ describe("Table drop migrations", () => {
 				type: "dropPrimaryKey",
 				up: [],
 				down: [
-					'await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(db);',
+					'await sql`ALTER TABLE books ADD CONSTRAINT "books_id_kinetic_pk" PRIMARY KEY ("id")`.execute(db);',
 				],
 			},
 			{

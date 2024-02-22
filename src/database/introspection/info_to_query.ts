@@ -23,7 +23,7 @@ export function primaryKeyConstraintInfoToQuery(
 	info: PrimaryKeyConstraintInfo,
 ) {
 	return [
-		`${info.table}_${info.columns.join("_")}_kinetic_pk`,
+		`"${info.table}_${info.columns.join("_")}_kinetic_pk"`,
 		"PRIMARY KEY",
 		`(${info.columns.map((col) => `"${col}"`).join(", ")})`,
 	].join(" ");

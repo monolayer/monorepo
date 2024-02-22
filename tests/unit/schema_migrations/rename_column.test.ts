@@ -282,10 +282,10 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "dropPrimaryKey",
 					up: [
-						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_name_kinetic_pk, ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
+						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_name_kinetic_pk", ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
 					],
 					down: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY ("name")`.execute(db);',
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_name_kinetic_pk" PRIMARY KEY ("name")`.execute(db);',
 					],
 				},
 				{
@@ -310,10 +310,10 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createPrimaryKey",
 					up: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY ("fullName")`.execute(db);',
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_fullName_kinetic_pk" PRIMARY KEY ("fullName")`.execute(db);',
 					],
 					down: [
-						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_fullName_kinetic_pk, ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_fullName_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
 					],
 				},
 			];
@@ -368,10 +368,10 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createPrimaryKey",
 					up: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY ("fullName")`.execute(db);',
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_fullName_kinetic_pk" PRIMARY KEY ("fullName")`.execute(db);',
 					],
 					down: [
-						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_fullName_kinetic_pk, ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_fullName_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
 					],
 				},
 			];

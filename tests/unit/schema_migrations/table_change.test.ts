@@ -18,9 +18,6 @@ describe("Table change migrations", () => {
 	test.todo<DbContext>("change column default");
 	test.todo<DbContext>("change column not null");
 	test.todo<DbContext>("change column unique");
-	test.todo<DbContext>("add primary key");
-	test.todo<DbContext>("remove primary key");
-	test.todo<DbContext>("change primary key");
 	test.todo<DbContext>("add foreign key");
 	test.todo<DbContext>("remove foreign key");
 	test.todo<DbContext>("change foreign key");

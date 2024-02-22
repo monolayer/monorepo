@@ -282,7 +282,7 @@ describe("#remoteSchema", () => {
 				primaryKey: {
 					remote_schema_users: {
 						remote_schema_users_id_kinetic_pk:
-							'remote_schema_users_id_kinetic_pk PRIMARY KEY ("id")',
+							'"remote_schema_users_id_kinetic_pk" PRIMARY KEY ("id")',
 					},
 				},
 				triggers: {

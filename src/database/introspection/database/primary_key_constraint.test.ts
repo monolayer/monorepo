@@ -57,11 +57,11 @@ describe("dbPrimaryKeyConstraintInfo", () => {
 		expect(results.result).toStrictEqual({
 			test_books_pk: {
 				test_books_pk_id_location_kinetic_pk:
-					'test_books_pk_id_location_kinetic_pk PRIMARY KEY ("id", "location")',
+					'"test_books_pk_id_location_kinetic_pk" PRIMARY KEY ("id", "location")',
 			},
 			test_users_pk: {
 				test_users_pk_book_id_kinetic_pk:
-					'test_users_pk_book_id_kinetic_pk PRIMARY KEY ("book_id")',
+					'"test_users_pk_book_id_kinetic_pk" PRIMARY KEY ("book_id")',
 			},
 		});
 	});

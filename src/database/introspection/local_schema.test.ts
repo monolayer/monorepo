@@ -533,10 +533,10 @@ test("#localSchema", () => {
 		},
 		primaryKey: {
 			teams: {
-				teams_id_kinetic_pk: 'teams_id_kinetic_pk PRIMARY KEY ("id")',
+				teams_id_kinetic_pk: '"teams_id_kinetic_pk" PRIMARY KEY ("id")',
 			},
 			users: {
-				users_id_kinetic_pk: 'users_id_kinetic_pk PRIMARY KEY ("id")',
+				users_id_kinetic_pk: '"users_id_kinetic_pk" PRIMARY KEY ("id")',
 			},
 		},
 		extensions: { btree_gin: true, cube: true },

@@ -250,7 +250,7 @@ describe("Table create migrations", () => {
 				tableName: "users",
 				type: "createPrimaryKey",
 				up: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY ("id")`.execute(db);',
+					'await sql`ALTER TABLE users ADD CONSTRAINT "users_id_kinetic_pk" PRIMARY KEY ("id")`.execute(db);',
 				],
 			},
 			{
@@ -259,7 +259,7 @@ describe("Table create migrations", () => {
 				tableName: "books",
 				type: "createPrimaryKey",
 				up: [
-					'await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(db);',
+					'await sql`ALTER TABLE books ADD CONSTRAINT "books_id_kinetic_pk" PRIMARY KEY ("id")`.execute(db);',
 				],
 			},
 		];
@@ -323,7 +323,7 @@ describe("Table create migrations", () => {
 				tableName: "users",
 				type: "createPrimaryKey",
 				up: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT users_id_name_kinetic_pk PRIMARY KEY ("id", "name")`.execute(db);',
+					'await sql`ALTER TABLE users ADD CONSTRAINT "users_id_name_kinetic_pk" PRIMARY KEY ("id", "name")`.execute(db);',
 				],
 			},
 			{
@@ -332,7 +332,7 @@ describe("Table create migrations", () => {
 				tableName: "books",
 				type: "createPrimaryKey",
 				up: [
-					'await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(db);',
+					'await sql`ALTER TABLE books ADD CONSTRAINT "books_id_kinetic_pk" PRIMARY KEY ("id")`.execute(db);',
 				],
 			},
 		];
@@ -407,7 +407,7 @@ describe("Table create migrations", () => {
 				tableName: "books",
 				type: "createPrimaryKey",
 				up: [
-					'await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(db);',
+					'await sql`ALTER TABLE books ADD CONSTRAINT "books_id_kinetic_pk" PRIMARY KEY ("id")`.execute(db);',
 				],
 			},
 			{

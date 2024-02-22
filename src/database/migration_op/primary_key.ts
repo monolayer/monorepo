@@ -122,7 +122,7 @@ function createPrimaryKeyMigration(
 		down: addedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${primaryKeyName}${dropNotNullStatements(
+					`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
 						primaryKeyValue,
 						tableName,
 						local,
@@ -151,7 +151,7 @@ function dropPrimaryKeyMigration(
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${primaryKeyName}${dropNotNullStatements(
+					`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
 						primaryKeyValue,
 						tableName,
 						local,
@@ -185,7 +185,7 @@ function updatePrimaryKeyMigration(
 		down: addedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${primaryKeyName}${dropNotNullStatements(
+					`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
 						primaryKeyValue,
 						tableName,
 						local,
@@ -211,7 +211,7 @@ function replacePrimaryKeyMigration(
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${primaryKeyName}${dropNotNullStatements(
+					`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
 						primaryKeyValue,
 						tableName,
 						local,
