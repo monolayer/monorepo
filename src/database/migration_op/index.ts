@@ -134,10 +134,10 @@ function changeIndexMigration(diff: ChangeIndexDiff) {
 		tableName: tableName,
 		type: ChangeSetType.ChangeIndex,
 		up: [
-			`await sql\`DROP INDEX ${indexName};${newIndex[1]};COMMENT ON INDEX "${indexName}" IS '${newIndex[0]}'\`.execute(db);`,
+			`await sql\`DROP INDEX "${indexName}";${newIndex[1]};COMMENT ON INDEX "${indexName}" IS '${newIndex[0]}'\`.execute(db);`,
 		],
 		down: [
-			`await sql\`DROP INDEX ${indexName};${oldIndex[1]};COMMENT ON INDEX "${indexName}" IS '${oldIndex[0]}'\`.execute(db);`,
+			`await sql\`DROP INDEX "${indexName}";${oldIndex[1]};COMMENT ON INDEX "${indexName}" IS '${oldIndex[0]}'\`.execute(db);`,
 		],
 	};
 	return changeset;
