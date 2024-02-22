@@ -516,7 +516,7 @@ test("#localSchema", () => {
 		foreignKeyConstraints: {
 			users: {
 				users_book_id_books_id_kinetic_fk:
-					'users_book_id_books_id_kinetic_fk FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+					'"users_book_id_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 			},
 		},
 		uniqueConstraints: {

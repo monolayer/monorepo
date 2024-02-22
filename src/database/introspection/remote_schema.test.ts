@@ -276,7 +276,7 @@ describe("#remoteSchema", () => {
 				foreignKeyConstraints: {
 					remote_schema_users: {
 						remote_schema_users_book_id_remote_schema_books_id_kinetic_fk:
-							'remote_schema_users_book_id_remote_schema_books_id_kinetic_fk FOREIGN KEY ("book_id") REFERENCES remote_schema_books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+							'"remote_schema_users_book_id_remote_schema_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES remote_schema_books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 					},
 				},
 				primaryKey: {

@@ -6,9 +6,9 @@ export function foreignKeyConstraintInfoToQuery(
 	info: ForeignKeyConstraintInfo,
 ) {
 	return [
-		`${info.table}_${info.column.join("_")}_${
+		`"${info.table}_${info.column.join("_")}_${
 			info.targetTable
-		}_${info.targetColumns.join("_")}_kinetic_fk`,
+		}_${info.targetColumns.join("_")}_kinetic_fk"`,
 		"FOREIGN KEY",
 		`(${info.column.map((col) => `"${col}"`).join(", ")})`,
 		"REFERENCES",

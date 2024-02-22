@@ -431,10 +431,10 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "dropConstraint",
 					up: [
-						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_book_id_books_pk1_id_kinetic_fk`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_book_id_books_pk1_id_kinetic_fk"`.execute(db);',
 					],
 					down: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_book_id_books_pk1_id_kinetic_fk FOREIGN KEY ("book_id") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_book_id_books_pk1_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
 					],
 				},
 				{
@@ -459,10 +459,10 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createConstraint",
 					up: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk" FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
 					],
 					down: [
-						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk"`.execute(db);',
 					],
 				},
 			];
@@ -533,10 +533,10 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createConstraint",
 					up: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk" FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
 					],
 					down: [
-						"await sql`ALTER TABLE users_pk1 DROP CONSTRAINT users_pk1_bookId_books_pk1_id_kinetic_fk`.execute(db);",
+						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk"`.execute(db);',
 					],
 				},
 			];

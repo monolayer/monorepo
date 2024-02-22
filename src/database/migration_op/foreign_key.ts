@@ -146,7 +146,7 @@ function createforeignKeyFirstConstraintMigration(
 		down: addedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+					`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
 			  ),
 	};
 }
@@ -164,7 +164,7 @@ function createForeignKeyConstraintMigration(diff: ForeignKeyCreateDiff) {
 			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
 		),
 		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
 		),
 	};
 }
@@ -188,7 +188,7 @@ function dropforeignKeyLastConstraintMigration(
 		up: droppedTables.includes(tableName)
 			? []
 			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+					`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
 			  ),
 		down: executeKyselyDbStatement(
 			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
@@ -206,7 +206,7 @@ function dropForeignKeyConstraintMigration(diff: ForeignKeyDropDiff) {
 		tableName: tableName,
 		type: ChangeSetType.DropConstraint,
 		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}`,
+			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
 		),
 		down: executeKyselyDbStatement(
 			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
@@ -224,10 +224,10 @@ function changeforeignKeyConstraintMigration(diff: ForeignKeyChangeDiff) {
 		tableName: tableName,
 		type: ChangeSetType.ChangeConstraint,
 		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}, ADD CONSTRAINT ${newValue}`,
+			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}", ADD CONSTRAINT ${newValue}`,
 		),
 		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT ${constraintName}, ADD CONSTRAINT ${oldValue}`,
+			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}", ADD CONSTRAINT ${oldValue}`,
 		),
 	};
 }
