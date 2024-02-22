@@ -7,6 +7,7 @@ export default defineConfig({
 		coverage: {
 			provider: "istanbul",
 			reporter: ["html", "json"],
+			exclude: ["**/tmp/**", "**/tests/**"],
 		},
 		setupFiles: ["tests/setup.ts"],
 		reporters: ["verbose"],
