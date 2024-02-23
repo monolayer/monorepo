@@ -6,6 +6,8 @@ import type {
 	IndexInfo,
 	TableColumnInfo,
 } from "../introspection/types.js";
+import type { pgDatabase } from "../schema/pg_database.js";
+import type { PgTable } from "../schema/pg_table.js";
 
 type TableName = string;
 type Name = string;
@@ -98,5 +100,19 @@ export function findColumnByNameInTable(
 	);
 	if (column !== undefined) {
 		return column[1];
+	}
+}
+
+export function findTableInDatabaseSchema(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	table: PgTable<any, any>,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+) {
+	const tableInSchema = Object.entries(schema.tables || {}).find(
+		([_key, value]) => value.columns === table.columns,
+	);
+	if (tableInSchema !== undefined) {
+		return tableInSchema[0];
 	}
 }

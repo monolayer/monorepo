@@ -20,7 +20,7 @@ describe("Table drop migrations", () => {
 	test<DbContext>("drop empty tables", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				books: pgTable("books", {
+				books: pgTable({
 					columns: {},
 				}),
 			},
@@ -58,7 +58,7 @@ describe("Table drop migrations", () => {
 	test<DbContext>("drop table with columns", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				organizations: pgTable("organizations", {
+				organizations: pgTable({
 					columns: {},
 				}),
 			},
@@ -188,7 +188,7 @@ describe("Table drop migrations", () => {
 	test<DbContext>("drop table with primary key", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				organizations: pgTable("organizations", {
+				organizations: pgTable({
 					columns: {},
 				}),
 			},
@@ -288,7 +288,7 @@ describe("Table drop migrations", () => {
 			.addUniqueConstraint("users_id_fullName_kinetic_key", ["id", "fullName"])
 			.execute();
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: integer(),
 			},
@@ -337,7 +337,7 @@ describe("Table drop migrations", () => {
 	test<DbContext>("drop table with foreign keys", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				organizations: pgTable("organizations", {
+				organizations: pgTable({
 					columns: {},
 				}),
 			},
@@ -416,7 +416,7 @@ describe("Table drop migrations", () => {
 	test<DbContext>("drop table with indexes", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				organizations: pgTable("organizations", {
+				organizations: pgTable({
 					columns: {},
 				}),
 			},
@@ -568,7 +568,7 @@ describe("Table drop migrations", () => {
 		const database = pgDatabase({
 			extensions: ["moddatetime"],
 			tables: {
-				teams: pgTable("teams", {
+				teams: pgTable({
 					columns: {
 						name: text(),
 					},

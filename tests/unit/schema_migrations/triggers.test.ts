@@ -24,7 +24,7 @@ describe("Database migrations", () => {
 			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
 			.execute();
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: integer(),
 				updatedAt: timestamp().defaultTo(sql`now()`),
@@ -100,7 +100,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 			context.kysely,
 		);
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: integer(),
 				updatedAt: timestamp().defaultTo(sql`now()`),
@@ -155,7 +155,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 			context.kysely,
 		);
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: integer(),
 				updatedAt: timestamp().defaultTo(sql`now()`),

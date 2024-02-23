@@ -13,12 +13,12 @@ describe("pgDatabase definition", () => {
 	});
 
 	test("with tables", () => {
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				name: varchar(),
 			},
 		});
-		const teams = pgTable("teams", {
+		const teams = pgTable({
 			columns: {
 				name: varchar(),
 			},
@@ -49,7 +49,7 @@ test("with extensions", () => {
 });
 
 test("types for Kysely", () => {
-	const users = pgTable("users", {
+	const users = pgTable({
 		columns: {
 			id: serial(),
 			name: varchar().notNull(),
@@ -57,7 +57,7 @@ test("types for Kysely", () => {
 			address: text(),
 		},
 	});
-	const books = pgTable("books", {
+	const books = pgTable({
 		columns: {
 			id: serial(),
 			title: varchar().notNull(),

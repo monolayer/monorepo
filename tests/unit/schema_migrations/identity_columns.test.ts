@@ -20,7 +20,7 @@ describe("Identity columns", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 						count: integer().generatedByDefaultAsIdentity(),
@@ -87,7 +87,7 @@ describe("Identity columns", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {},
 				}),
 			},
@@ -147,7 +147,7 @@ describe("Identity columns", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 						count: integer().generatedByDefaultAsIdentity(),
@@ -236,7 +236,7 @@ describe("Identity columns", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						id: integer(),
 						count: integer(),

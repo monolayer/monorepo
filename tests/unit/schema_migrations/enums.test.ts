@@ -22,7 +22,7 @@ describe("Database migrations", () => {
 			.addColumn("id", "integer")
 			.execute();
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: integer(),
 				role: pgEnum("role", ["admin", "user"]),
@@ -88,7 +88,7 @@ describe("Database migrations", () => {
 			.addColumn("role", sql`role`)
 			.execute();
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 			},
@@ -153,7 +153,7 @@ describe("Database migrations", () => {
 			.addColumn("role", sql`role`)
 			.execute();
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				role: pgEnum("role", ["admin", "user", "superuser"]),

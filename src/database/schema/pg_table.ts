@@ -23,15 +23,13 @@ type TableSchema<T, PK> = {
 };
 
 export function pgTable<
-	N extends string,
 	T extends ColumnRecord,
 	PK extends Array<keyof T> | undefined = undefined,
->(name: N, schema: TableSchema<T, PK>) {
-	return new PgTable(name, schema);
+>(schema: TableSchema<T, PK>) {
+	return new PgTable(schema);
 }
 
 export class PgTable<
-	N extends string,
 	T extends ColumnRecord,
 	PK extends Array<keyof T> | undefined = undefined,
 > {
@@ -43,10 +41,7 @@ export class PgTable<
 	declare inferInsert: Simplify<Insertable<typeof this.infer>>;
 	declare inferUpdate: Simplify<Updateable<typeof this.infer>>;
 
-	constructor(
-		public name: N,
-		public schema: TableSchema<T, PK>,
-	) {
+	constructor(public schema: TableSchema<T, PK>) {
 		this.schema.indexes = this.schema.indexes || [];
 		this.schema.columns = this.schema.columns || {};
 		this.schema.primaryKey = this.schema.primaryKey;

@@ -50,10 +50,10 @@ describe("Table create migrations", () => {
 	test<DbContext>("create empty table", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {},
 				}),
-				books: pgTable("books", {
+				books: pgTable({
 					columns: {},
 				}),
 			},
@@ -87,7 +87,7 @@ describe("Table create migrations", () => {
 	test<DbContext>("create table with columns", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						bigInt: bigint(),
 						bigInt2: bigint().notNull(),
@@ -108,7 +108,7 @@ describe("Table create migrations", () => {
 						integerDefaultAsIdentity: integer().generatedByDefaultAsIdentity(),
 					},
 				}),
-				books: pgTable("books", {
+				books: pgTable({
 					columns: {
 						json: json(),
 						jsonB: jsonb(),
@@ -208,13 +208,13 @@ describe("Table create migrations", () => {
 	test<DbContext>("create table with primary key", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						id: serial(),
 					},
 					primaryKey: ["id"],
 				}),
-				books: pgTable("books", {
+				books: pgTable({
 					columns: {
 						id: bigserial(),
 					},
@@ -279,14 +279,14 @@ describe("Table create migrations", () => {
 	test<DbContext>("create table with composite primary key", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						id: serial(),
 						name: varchar(),
 					},
 					primaryKey: ["id", "name"],
 				}),
-				books: pgTable("books", {
+				books: pgTable({
 					columns: {
 						id: bigserial(),
 					},
@@ -350,14 +350,14 @@ describe("Table create migrations", () => {
 	});
 
 	test<DbContext>("create table with unique constraints", async (context) => {
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: integer(),
 			},
 			uniqueConstraints: [unique("id", false)],
 		});
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				fullName: varchar(),
@@ -427,14 +427,14 @@ describe("Table create migrations", () => {
 	});
 
 	test<DbContext>("create table with foreign keys", async (context) => {
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: bigserial(),
 			},
 			primaryKey: ["id"],
 		});
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				name: varchar(),
@@ -509,14 +509,14 @@ describe("Table create migrations", () => {
 	});
 
 	test<DbContext>("create table with indexes", async (context) => {
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				name: text(),
 			},
 			indexes: [index(["name"])],
 		});
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: text(),
 			},
@@ -584,7 +584,7 @@ describe("Table create migrations", () => {
 	});
 
 	test<DbContext>("create table with enums", async (context) => {
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				name: text(),
 				role: pgEnum("role", ["admin", "user"]),
@@ -633,7 +633,7 @@ describe("Table create migrations", () => {
 	});
 
 	test<DbContext>("create table with triggers", async (context) => {
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: integer(),
 				updatedAt: timestamp().defaultTo(sql`now()`),

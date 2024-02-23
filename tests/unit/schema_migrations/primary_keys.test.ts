@@ -27,7 +27,7 @@ describe("Database migrations", () => {
 			.addColumn("name", "text")
 			.execute();
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				fullName: text(),
 				name: text(),
@@ -35,7 +35,7 @@ describe("Database migrations", () => {
 			primaryKey: ["name", "fullName"],
 		});
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				name: text(),
 			},
@@ -107,14 +107,14 @@ describe("Database migrations", () => {
 			.addPrimaryKeyConstraint("books_name_kinetic_pk", ["name"])
 			.execute();
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				fullName: text(),
 				name: text(),
 			},
 		});
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				name: text(),
 			},
@@ -175,7 +175,7 @@ describe("Database migrations", () => {
 			])
 			.execute();
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				fullName: text(),
 				name: text(),
@@ -237,7 +237,7 @@ describe("Database migrations", () => {
 			])
 			.execute();
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				fullName: text().notNull(),
 				name: text(),
@@ -296,7 +296,7 @@ describe("Database migrations", () => {
 			.addPrimaryKeyConstraint("users_name_kinetic_pk", ["name"])
 			.execute();
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				name: text(),
 				email: text().notNull(),

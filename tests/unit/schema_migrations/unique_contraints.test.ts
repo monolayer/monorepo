@@ -28,14 +28,14 @@ describe("Database migrations", () => {
 			.addColumn("fullName", "varchar")
 			.execute();
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: integer(),
 			},
 			uniqueConstraints: [unique("id", false)],
 		});
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				fullName: varchar(),
@@ -107,14 +107,14 @@ describe("Database migrations", () => {
 			.addUniqueConstraint("users_fullName_id_kinetic_key", ["id", "fullName"])
 			.execute();
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: integer(),
 			},
 			uniqueConstraints: [unique("id", false)],
 		});
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				fullName: varchar(),
@@ -174,14 +174,14 @@ describe("Database migrations", () => {
 			.addUniqueConstraint("users_fullName_id_kinetic_key", ["id", "fullName"])
 			.execute();
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: integer(),
 			},
 			uniqueConstraints: [unique("id", false)],
 		});
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				fullName: varchar(),
@@ -253,14 +253,14 @@ describe("Database migrations", () => {
 			.addUniqueConstraint("users_fullName_id_kinetic_key", ["id", "fullName"])
 			.execute();
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: integer(),
 			},
 			uniqueConstraints: [unique("id", false)],
 		});
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				fullName: varchar(),

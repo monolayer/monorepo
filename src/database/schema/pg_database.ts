@@ -3,7 +3,7 @@ import { type PgTable } from "./pg_table.js";
 
 export type pgDatabase<
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	T extends Record<string, PgTable<string, any, any>>,
+	T extends Record<string, PgTable<any, any>>,
 > = {
 	extensions: PgExtensions;
 	tables?: T;
@@ -14,7 +14,7 @@ export type pgDatabase<
 
 export function pgDatabase<
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	T extends Record<string, PgTable<string, any, any>>,
+	T extends Record<string, PgTable<any, any>>,
 >({ extensions, tables }: { extensions?: PgExtensions; tables?: T }) {
 	const database = <pgDatabase<T>>{
 		extensions: extensions !== undefined ? extensions : [],

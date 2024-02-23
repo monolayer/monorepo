@@ -127,7 +127,7 @@ test("#schemaDBColumnInfoByTable on empty database", () => {
 });
 
 test("#schemaDBColumnInfoByTable", () => {
-	const users = pgTable("users", {
+	const users = pgTable({
 		columns: {
 			id: serial(),
 			name: varchar().notNull(),
@@ -135,7 +135,7 @@ test("#schemaDBColumnInfoByTable", () => {
 			role: pgEnum("role", ["user", "admin", "superuser"]),
 		},
 	});
-	const teams = pgTable("teams", {
+	const teams = pgTable({
 		columns: {
 			id: bigserial(),
 			name: varchar().notNull(),
@@ -202,7 +202,7 @@ test("#schemaDBColumnInfoByTable", () => {
 });
 
 test("#schemaDBIndexInfoByTable", () => {
-	const users = pgTable("users", {
+	const users = pgTable({
 		columns: {
 			id: serial(),
 			name: varchar().notNull(),
@@ -210,7 +210,7 @@ test("#schemaDBIndexInfoByTable", () => {
 		},
 		indexes: [index("name", (idx) => idx), index("email", (idx) => idx)],
 	});
-	const teams = pgTable("teams", {
+	const teams = pgTable({
 		columns: {
 			id: bigserial(),
 			name: varchar().notNull(),
@@ -241,14 +241,14 @@ test("#schemaDBIndexInfoByTable", () => {
 });
 
 test("#schemaDbEnumInfo", () => {
-	const books = pgTable("books", {
+	const books = pgTable({
 		columns: {
 			id: serial(),
 			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
 		},
 	});
 
-	const users = pgTable("users", {
+	const users = pgTable({
 		columns: {
 			id: serial(),
 			name: varchar(),
@@ -267,7 +267,7 @@ test("#schemaDbEnumInfo", () => {
 });
 
 test("#localSchema", () => {
-	const books = pgTable("books", {
+	const books = pgTable({
 		columns: {
 			id: serial(),
 			name: varchar(),
@@ -278,7 +278,7 @@ test("#localSchema", () => {
 		uniqueConstraints: [unique(["name", "location"])],
 	});
 
-	const users = pgTable("users", {
+	const users = pgTable({
 		columns: {
 			id: serial(),
 			name: varchar().notNull(),
@@ -299,7 +299,7 @@ test("#localSchema", () => {
 		},
 	});
 
-	const teams = pgTable("teams", {
+	const teams = pgTable({
 		columns: {
 			id: bigserial(),
 			name: varchar().notNull(),
@@ -561,7 +561,7 @@ test("#localSchema", () => {
 });
 
 test("trigger names are downcased", () => {
-	const users = pgTable("users", {
+	const users = pgTable({
 		columns: {
 			id: serial(),
 		},

@@ -1,10 +1,14 @@
 import { describe, expect, test } from "vitest";
+import { serial } from "~/database/schema/pg_column.js";
+import { pgDatabase } from "~/database/schema/pg_database.js";
+import { pgTable } from "~/database/schema/pg_table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
 import {
 	findColumn,
 	findForeignKeysTargetTables,
 	findPrimaryKey,
+	findTableInDatabaseSchema,
 } from "../../src/database/migrations/migration_schema.js";
 
 describe("findColumn", () => {
@@ -136,5 +140,59 @@ describe("findForeignKeysTargetTables", () => {
 			"authors",
 			"buildings",
 		]);
+	});
+});
+
+describe("findTableInDatabaseSchema", () => {
+	test("returns the name table of a table in the database schema", () => {
+		const users = pgTable({
+			columns: {
+				id: serial(),
+			},
+		});
+
+		const database = pgDatabase({
+			tables: {
+				users,
+			},
+		});
+
+		expect(findTableInDatabaseSchema(users, database)).toStrictEqual("users");
+	});
+
+	test("returns the undefined if the table is not found", () => {
+		const users = pgTable({
+			columns: {
+				id: serial(),
+			},
+		});
+
+		const database = pgDatabase({
+			tables: {},
+		});
+
+		expect(findTableInDatabaseSchema(users, database)).toBeUndefined();
+	});
+
+	test("returns the name table of a table in the database schema with multiple tables with same definition", () => {
+		const users = pgTable({
+			columns: {
+				id: serial(),
+			},
+		});
+
+		const desks = pgTable({
+			columns: {
+				id: serial(),
+			},
+		});
+
+		const database = pgDatabase({
+			tables: {
+				users,
+				desks,
+			},
+		});
+		expect(findTableInDatabaseSchema(desks, database)).toStrictEqual("desks");
 	});
 });

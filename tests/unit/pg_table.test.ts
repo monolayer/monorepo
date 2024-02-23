@@ -16,22 +16,12 @@ import {
 import { PgUnique, unique } from "../../src/database/schema/pg_unique.js";
 
 describe("pgTable definition", () => {
-	test("has a name", () => {
-		const tbl = pgTable("users", {
-			columns: {
-				name: varchar(),
-				subscribed: boolean(),
-			},
-		});
-		expect(tbl.name).toBe("users");
-	});
-
 	test("has columns defined", () => {
 		const columns = {
 			name: varchar(),
 			subscribed: boolean(),
 		};
-		const tbl = pgTable("users", {
+		const tbl = pgTable({
 			columns: columns,
 		});
 		expect(tbl.columns).toBe(columns);
@@ -43,7 +33,7 @@ describe("pgTable definition", () => {
 			subscribed: boolean(),
 			role: pgEnum("role", ["admin", "user"]),
 		};
-		const tbl = pgTable("users", {
+		const tbl = pgTable({
 			columns: columns,
 		});
 		expect(tbl.columns).toBe(columns);
@@ -54,7 +44,7 @@ describe("pgTable definition", () => {
 			name: varchar(),
 			subscribed: boolean(),
 		};
-		const tbl = pgTable("users", {
+		const tbl = pgTable({
 			columns: columns,
 		});
 		expect(tbl.indexes).toStrictEqual([]);
@@ -65,7 +55,7 @@ describe("pgTable definition", () => {
 			name: varchar(),
 			subscribed: boolean(),
 		};
-		const tbl = pgTable("users", {
+		const tbl = pgTable({
 			columns: columns,
 			indexes: [
 				index("name", (idx) => idx.unique().using("btree")),
@@ -80,7 +70,7 @@ describe("pgTable definition", () => {
 
 	describe("constraints", () => {
 		test("foreign key constraints can be added", () => {
-			const books = pgTable("books", {
+			const books = pgTable({
 				columns: {
 					id: serial(),
 					name: varchar(),
@@ -89,7 +79,7 @@ describe("pgTable definition", () => {
 				uniqueConstraints: [unique(["name", "location"])],
 			});
 
-			const users = pgTable("users", {
+			const users = pgTable({
 				columns: {
 					id: serial(),
 					name: varchar(),
@@ -111,7 +101,7 @@ describe("pgTable definition", () => {
 				subscribed: boolean(),
 			};
 
-			const tbl = pgTable("users", {
+			const tbl = pgTable({
 				columns: columns,
 				uniqueConstraints: [unique(["name"]), unique(["subscribed"])],
 			});
@@ -122,7 +112,7 @@ describe("pgTable definition", () => {
 		});
 
 		test("primary key", () => {
-			const tbl = pgTable("users", {
+			const tbl = pgTable({
 				columns: {
 					id: integer(),
 					name: varchar(),
@@ -133,7 +123,7 @@ describe("pgTable definition", () => {
 		});
 
 		test("primary key with more than one column", () => {
-			const tbl = pgTable("users", {
+			const tbl = pgTable({
 				columns: {
 					id: integer(),
 					name: varchar(),
@@ -147,7 +137,7 @@ describe("pgTable definition", () => {
 	describe("column type inference", () => {
 		describe("column defaults", () => {
 			test("nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer(),
 					},
@@ -161,7 +151,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("nullable and optional inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer(),
 					},
@@ -175,7 +165,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("nullable and optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer(),
 					},
@@ -189,7 +179,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer(),
 					},
@@ -209,7 +199,7 @@ describe("pgTable definition", () => {
 
 		describe("non nullable columns", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull(),
 					},
@@ -223,7 +213,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and required inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull(),
 					},
@@ -237,7 +227,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull(),
 					},
@@ -251,7 +241,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull(),
 					},
@@ -271,7 +261,7 @@ describe("pgTable definition", () => {
 
 		describe("columns with default", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().defaultTo(0),
 					},
@@ -285,7 +275,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("nullable and optional inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().defaultTo(0),
 					},
@@ -299,7 +289,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("nullable and optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().defaultTo(0),
 					},
@@ -313,7 +303,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().defaultTo(0),
 					},
@@ -333,7 +323,7 @@ describe("pgTable definition", () => {
 
 		describe("non nullable columns with default", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull().defaultTo(0),
 					},
@@ -347,7 +337,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull().defaultTo(0),
 					},
@@ -361,7 +351,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull().defaultTo(0),
 					},
@@ -375,7 +365,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull().defaultTo(0),
 					},
@@ -395,7 +385,7 @@ describe("pgTable definition", () => {
 
 		describe("columns with default non nullable", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().defaultTo(0).notNull(),
 					},
@@ -409,7 +399,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().defaultTo(0).notNull(),
 					},
@@ -423,7 +413,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().defaultTo(0).notNull(),
 					},
@@ -437,7 +427,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().defaultTo(0).notNull(),
 					},
@@ -457,7 +447,7 @@ describe("pgTable definition", () => {
 
 		describe("primary key columns", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer(),
 					},
@@ -472,7 +462,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and required inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer(),
 					},
@@ -487,7 +477,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer(),
 					},
@@ -502,7 +492,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer(),
 					},
@@ -523,7 +513,7 @@ describe("pgTable definition", () => {
 
 		describe("non nullable primary key columns", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull(),
 					},
@@ -538,7 +528,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and required inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull(),
 					},
@@ -553,7 +543,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull(),
 					},
@@ -568,7 +558,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().notNull(),
 					},
@@ -589,7 +579,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (serial) columns", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: serial(),
 					},
@@ -603,7 +593,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: serial(),
 					},
@@ -617,7 +607,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: serial(),
 					},
@@ -631,7 +621,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: serial(),
 					},
@@ -651,7 +641,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (serial) primary key columns", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: serial(),
 					},
@@ -666,7 +656,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: serial(),
 					},
@@ -681,7 +671,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: serial(),
 					},
@@ -696,7 +686,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: serial(),
 					},
@@ -717,7 +707,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (by default as identity) columns", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
 					},
@@ -731,7 +721,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable optional inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
 					},
@@ -745,7 +735,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
 					},
@@ -759,7 +749,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
 					},
@@ -779,7 +769,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (by default as identity) primary key columns", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
 					},
@@ -794,7 +784,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable optional inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
 					},
@@ -811,7 +801,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable optional updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
 					},
@@ -826,7 +816,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
 					},
@@ -847,7 +837,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (always as identity) primary key columns", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 					},
@@ -862,7 +852,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("does not accept inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 					},
@@ -876,7 +866,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("does not accept updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 					},
@@ -890,7 +880,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 					},
@@ -911,7 +901,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (always as identity) columns", () => {
 			test("non nullable selects", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 					},
@@ -925,7 +915,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("does not accept inserts", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 					},
@@ -938,7 +928,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("does not accept updates", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 					},
@@ -951,7 +941,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
-				const tbl = pgTable("users", {
+				const tbl = pgTable({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 					},
@@ -972,7 +962,7 @@ describe("pgTable definition", () => {
 		describe("enum columns", () => {
 			describe("defaults", () => {
 				test("nullable selects", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]),
 						},
@@ -986,7 +976,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("nullable and optional inserts", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]),
 						},
@@ -1000,7 +990,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("nullable and optional updates", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]),
 						},
@@ -1014,7 +1004,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("infer select, insert, and update", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]),
 						},
@@ -1034,7 +1024,7 @@ describe("pgTable definition", () => {
 
 			describe("non nullable", () => {
 				test("non nullable selects", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 						},
@@ -1048,7 +1038,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and required inserts", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 						},
@@ -1062,7 +1052,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional updates", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 						},
@@ -1076,7 +1066,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("infer select, insert, and update", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 						},
@@ -1096,7 +1086,7 @@ describe("pgTable definition", () => {
 
 			describe("with default", () => {
 				test("non nullable selects", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
 								"user",
@@ -1112,7 +1102,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional inserts", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
 								"user",
@@ -1128,7 +1118,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional updates", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
 								"user",
@@ -1144,7 +1134,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("infer select, insert, and update", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
 								"user",
@@ -1166,7 +1156,7 @@ describe("pgTable definition", () => {
 
 			describe("non nullable with default", () => {
 				test("non nullable selects", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.notNull()
@@ -1182,7 +1172,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional inserts", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.notNull()
@@ -1198,7 +1188,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional updates", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.notNull()
@@ -1214,7 +1204,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("infer select, insert, and update", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.notNull()
@@ -1236,7 +1226,7 @@ describe("pgTable definition", () => {
 
 			describe("with default non nullable", () => {
 				test("non nullable selects", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.defaultTo("user")
@@ -1252,7 +1242,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional inserts", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.defaultTo("user")
@@ -1268,7 +1258,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional updates", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.defaultTo("user")
@@ -1284,7 +1274,7 @@ describe("pgTable definition", () => {
 				});
 
 				test("infer select, insert, and update", () => {
-					const tbl = pgTable("users", {
+					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.defaultTo("user")

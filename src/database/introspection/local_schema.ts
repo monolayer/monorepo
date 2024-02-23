@@ -18,6 +18,7 @@ import {
 	type UniqueInfo,
 	findColumn,
 	findPrimaryKey,
+	findTableInDatabaseSchema,
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes, PgEnum } from "../schema/pg_column.js";
 import type { PgIndex } from "../schema/pg_index.js";
@@ -104,7 +105,7 @@ function substituteSQLParameters(queryObject: {
 
 export function schemaDBColumnInfoByTable(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 	remoteSchema: MigrationSchema,
 ) {
 	return Object.entries(schema.tables || {}).reduce<TableColumnInfo>(
@@ -158,7 +159,7 @@ export function schemaDBColumnInfoByTable(
 
 export function schemaDBIndexInfoByTable(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 ) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
@@ -219,7 +220,7 @@ export function indexToInfo(
 
 export function localSchema(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 	remoteSchema: MigrationSchema,
 ): MigrationSchema {
 	return {
@@ -238,7 +239,7 @@ export function localSchema(
 
 function schemaDBExtensionsInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 ) {
 	return schema.extensions.reduce<ExtensionInfo>((acc, curr) => {
 		acc[curr] = true;
@@ -248,7 +249,7 @@ function schemaDBExtensionsInfo(
 
 function schemaDBTriggersInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 ) {
 	return Object.entries(schema.tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
@@ -272,7 +273,7 @@ function schemaDBTriggersInfo(
 
 export function schemaDbEnumInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 ) {
 	return Object.entries(schema.tables || {}).reduce<EnumInfo>(
 		(enumInfo, [, tableDefinition]) => {
@@ -294,7 +295,7 @@ export function schemaDbEnumInfo(
 
 function primaryKeyConstraintInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 ) {
 	return Object.entries(schema.tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
@@ -317,28 +318,36 @@ function primaryKeyConstraintInfo(
 
 function foreignKeyConstraintInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 ) {
 	return Object.entries(schema.tables || {}).reduce<ForeignKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const foreignKeys = tableDefinition.schema.foreignKeys;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {
-					const keyName = `${tableName}_${foreignKey.columns.join("_")}_${
-						foreignKey.targetTable.name
-					}_${foreignKey.targetColumns.join("_")}_kinetic_fk`;
-					acc[tableName] = {
-						...acc[tableName],
-						[keyName]: foreignKeyConstraintInfoToQuery({
-							constraintType: "FOREIGN KEY",
-							table: tableName,
-							column: foreignKey.columns,
-							targetTable: foreignKey.targetTable.name,
-							targetColumns: foreignKey.targetColumns,
-							deleteRule: foreignKey.options.deleteRule,
-							updateRule: foreignKey.options.updateRule,
-						}),
-					};
+					const targetTableName = findTableInDatabaseSchema(
+						foreignKey.targetTable,
+						schema,
+					);
+					if (targetTableName !== undefined) {
+						const keyName = `${tableName}_${foreignKey.columns.join(
+							"_",
+						)}_${targetTableName}_${foreignKey.targetColumns.join(
+							"_",
+						)}_kinetic_fk`;
+						acc[tableName] = {
+							...acc[tableName],
+							[keyName]: foreignKeyConstraintInfoToQuery({
+								constraintType: "FOREIGN KEY",
+								table: tableName,
+								column: foreignKey.columns,
+								targetTable: targetTableName,
+								targetColumns: foreignKey.targetColumns,
+								deleteRule: foreignKey.options.deleteRule,
+								updateRule: foreignKey.options.updateRule,
+							}),
+						};
+					}
 				}
 			}
 			return acc;
@@ -349,7 +358,7 @@ function foreignKeyConstraintInfo(
 
 function uniqueConstraintInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<string, any, any>>>,
+	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 ) {
 	return Object.entries(schema.tables || {}).reduce<UniqueInfo>(
 		(acc, [tableName, tableDefinition]) => {

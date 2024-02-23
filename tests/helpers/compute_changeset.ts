@@ -10,7 +10,7 @@ export async function computeChangeset(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	kysely: Kysely<any>,
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	db: pgDatabase<Record<string, PgTable<string, any, any>>>,
+	db: pgDatabase<Record<string, PgTable<any, any>>>,
 ) {
 	const remote = await remoteSchema(kysely);
 	if (remote.status === ActionStatus.Error) {

@@ -33,7 +33,7 @@ describe("Database migrations", () => {
 			context.kysely,
 		);
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				fullName: text(),
 				name: text(),
@@ -92,7 +92,7 @@ describe("Database migrations", () => {
 			context.kysely,
 		);
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				fullName: text(),
 				name: text(),
@@ -151,7 +151,7 @@ describe("Database migrations", () => {
 			context.kysely,
 		);
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				fullName: text(),
 				name: text(),
@@ -221,7 +221,7 @@ describe("Database migrations", () => {
 			context.kysely,
 		);
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				fullName: text(),
 				name: text(),

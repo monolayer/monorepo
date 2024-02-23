@@ -33,14 +33,14 @@ describe("Database migrations", () => {
 			.addColumn("name", "varchar")
 			.execute();
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: integer(),
 			},
 			primaryKey: ["id"],
 		});
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				book_id: integer(),
@@ -129,14 +129,14 @@ describe("Database migrations", () => {
 			.onUpdate("set null")
 			.execute();
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: integer(),
 			},
 			primaryKey: ["id"],
 		});
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				book_id: integer(),
@@ -201,14 +201,14 @@ describe("Database migrations", () => {
 			.onUpdate("set null")
 			.execute();
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: integer(),
 			},
 			primaryKey: ["id"],
 		});
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				book_id: integer(),
@@ -290,14 +290,14 @@ describe("Database migrations", () => {
 			.onUpdate("set null")
 			.execute();
 
-		const books = pgTable("books", {
+		const books = pgTable({
 			columns: {
 				id: integer(),
 			},
 			primaryKey: ["id"],
 		});
 
-		const users = pgTable("users", {
+		const users = pgTable({
 			columns: {
 				id: serial(),
 				book_id: integer(),

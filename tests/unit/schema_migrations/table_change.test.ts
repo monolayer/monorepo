@@ -29,13 +29,13 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						name: text(),
 						email: text(),
 					},
 				}),
-				teams: pgTable("teams", {
+				teams: pgTable({
 					columns: {
 						id: integer(),
 						location: text(),
@@ -104,12 +104,12 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						name: text(),
 					},
 				}),
-				teams: pgTable("teams", {
+				teams: pgTable({
 					columns: {
 						id: integer(),
 					},
@@ -169,7 +169,7 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						name: varchar(),
 					},
@@ -213,7 +213,7 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						name: text().defaultTo("bar"),
 					},
@@ -258,7 +258,7 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						name: text(),
 						email: text().notNull(),
@@ -319,7 +319,7 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable("users", {
+				users: pgTable({
 					columns: {
 						name: varchar().defaultTo("foo").notNull(),
 					},
