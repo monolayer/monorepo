@@ -58,8 +58,8 @@ describe("pgTable definition", () => {
 		const tbl = pgTable({
 			columns: columns,
 			indexes: [
-				index("name", (idx) => idx.unique().using("btree")),
-				index("subscribed", (idx) => idx.unique().using("btree")),
+				index("name").unique().using("btree"),
+				index("subscribed").unique().using("btree"),
 			],
 		});
 		expect(tbl.indexes?.length).toBe(2);

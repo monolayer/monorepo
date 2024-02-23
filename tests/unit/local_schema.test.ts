@@ -208,7 +208,7 @@ test("#schemaDBIndexInfoByTable", () => {
 			name: varchar().notNull(),
 			email: varchar().notNull(),
 		},
-		indexes: [index("name", (idx) => idx), index("email", (idx) => idx)],
+		indexes: [index("name"), index("email")],
 	});
 	const teams = pgTable({
 		columns: {
@@ -216,7 +216,7 @@ test("#schemaDBIndexInfoByTable", () => {
 			name: varchar().notNull(),
 			active: boolean(),
 		},
-		indexes: [index("id", (idx) => idx), index("active", (idx) => idx)],
+		indexes: [index("id"), index("active")],
 	});
 	const database = pgDatabase({
 		tables: {
@@ -306,7 +306,7 @@ test("#localSchema", () => {
 			active: boolean(),
 		},
 		primaryKey: ["id"],
-		indexes: [index("name", (idx) => idx)],
+		indexes: [index("name")],
 		triggers: {
 			foo_before_insert: trigger({
 				firingTime: "before",

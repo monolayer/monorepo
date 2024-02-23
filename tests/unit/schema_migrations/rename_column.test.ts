@@ -571,7 +571,7 @@ describe("Rename column migrations", () => {
 					name: text(),
 					bookId: integer().renameFrom("book_id"),
 				},
-				indexes: [index(["bookId"])],
+				indexes: [index("bookId")],
 			});
 
 			const database = pgDatabase({
@@ -642,7 +642,7 @@ describe("Rename column migrations", () => {
 					name: text(),
 					bookId: integer().renameFrom("book_id"),
 				},
-				indexes: [index(["bookId"])],
+				indexes: [index("bookId")],
 			});
 
 			const database = pgDatabase({
@@ -950,7 +950,7 @@ describe("Rename column migrations", () => {
 					name: text(),
 					bookId: integer().renameFrom("book_id"),
 				},
-				indexes: [index(["bookId"])],
+				indexes: [index("bookId")],
 			});
 
 			const database = pgDatabase({
@@ -1019,7 +1019,7 @@ describe("Rename column migrations", () => {
 					name: text(),
 					bookId: integer().renameFrom("book_id"),
 				},
-				indexes: [index(["bookId"])],
+				indexes: [index("bookId")],
 			});
 
 			const database = pgDatabase({

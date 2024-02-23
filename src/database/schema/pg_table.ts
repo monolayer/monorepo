@@ -18,7 +18,7 @@ type TableSchema<T, PK> = {
 	primaryKey?: PK;
 	foreignKeys?: PgForeignKey<keyof T | Array<keyof T>>[];
 	uniqueConstraints?: PgUnique<keyof T | Array<keyof T>>[];
-	indexes?: PgIndex<keyof T | Array<keyof T>>[];
+	indexes?: keyof T extends string ? PgIndex<keyof T>[] : [];
 	triggers?: Record<string, PgTrigger>;
 };
 

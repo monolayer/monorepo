@@ -513,14 +513,14 @@ describe("Table create migrations", () => {
 			columns: {
 				name: text(),
 			},
-			indexes: [index(["name"])],
+			indexes: [index("name")],
 		});
 
 		const books = pgTable({
 			columns: {
 				id: text(),
 			},
-			indexes: [index(["id"], (idx) => idx.unique())],
+			indexes: [index("id").unique()],
 		});
 
 		const database = pgDatabase({

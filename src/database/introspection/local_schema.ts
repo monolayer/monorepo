@@ -1,6 +1,5 @@
 import { createHash } from "crypto";
 import {
-	type CreateIndexBuilder,
 	type Expression,
 	Kysely,
 	PostgresDialect,
@@ -190,26 +189,44 @@ export function indexToInfo(
 	tableName: string,
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	kysely: Kysely<any>,
-	schema = "public",
 ) {
-	const indexName = `${tableName}_${index.columns.join("_")}_kntc_idx`;
-	const kyselyBuilder = kysely.schema
+	const indexCompileArgs = index.compileArgs();
+	const indexName = `${tableName}_${indexCompileArgs.columns.join(
+		"_",
+	)}_kntc_idx`;
+	let kyselyBuilder = kysely.schema
 		.createIndex(indexName)
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		.on(tableName) as CreateIndexBuilder<any> & {
-		column: never;
-		columns: never;
-		ifNotExists: never;
-	};
+		.on(tableName)
+		.columns(indexCompileArgs.columns);
 
-	const compiledQuery =
-		index._builder !== undefined
-			? index._builder(kyselyBuilder).columns(index.columns).compile().sql
-			: kysely.schema
-					.createIndex(indexName)
-					.on(tableName)
-					.columns(index.columns)
-					.compile().sql;
+	if (indexCompileArgs.ifnotExists) {
+		kyselyBuilder = kyselyBuilder.ifNotExists();
+	}
+	if (indexCompileArgs.unique) {
+		kyselyBuilder = kyselyBuilder.unique();
+	}
+	if (indexCompileArgs.nullsNotDistinct) {
+		kyselyBuilder = kyselyBuilder.nullsNotDistinct();
+	}
+	if (indexCompileArgs.expression !== undefined) {
+		kyselyBuilder = kyselyBuilder.expression(indexCompileArgs.expression);
+	}
+	if (indexCompileArgs.using !== undefined) {
+		kyselyBuilder = kyselyBuilder.using(indexCompileArgs.using);
+	}
+	if (indexCompileArgs.where !== undefined) {
+		if (indexCompileArgs.where.length === 1) {
+			kyselyBuilder = kyselyBuilder.where(indexCompileArgs.where[0]);
+		}
+		if (indexCompileArgs.where.length === 3) {
+			kyselyBuilder = kyselyBuilder.where(
+				indexCompileArgs.where[0],
+				indexCompileArgs.where[1],
+				indexCompileArgs.where[2],
+			);
+		}
+	}
+	const compiledQuery = kyselyBuilder.compile().sql;
 
 	const hash = createHash("sha256");
 	hash.update(compiledQuery);
