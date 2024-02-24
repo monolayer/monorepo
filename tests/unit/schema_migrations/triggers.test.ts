@@ -30,13 +30,11 @@ describe("Database migrations", () => {
 				updatedAt: timestamp().defaultTo(sql`now()`),
 			},
 			triggers: {
-				foo_before_update: trigger({
-					firingTime: "before",
-					events: ["update"],
-					forEach: "row",
-					functionName: "moddatetime",
-					functionArgs: ["updatedAt"],
-				}),
+				foo_before_update: trigger()
+					.fireWhen("before")
+					.events(["update"])
+					.forEach("row")
+					.function("moddatetime", ["updatedAt"]),
 			},
 		});
 
@@ -161,13 +159,11 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 				updatedAt: timestamp().defaultTo(sql`now()`),
 			},
 			triggers: {
-				foo_before_update: trigger({
-					firingTime: "after",
-					events: ["update"],
-					forEach: "row",
-					functionName: "moddatetime",
-					functionArgs: ["updatedAt"],
-				}),
+				foo_before_update: trigger()
+					.fireWhen("after")
+					.events(["update"])
+					.forEach("row")
+					.function("moddatetime", ["updatedAt"]),
 			},
 		});
 

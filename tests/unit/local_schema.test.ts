@@ -290,12 +290,11 @@ test("#localSchema", () => {
 		foreignKeys: [foreignKey(["book_id"], books, ["id"])],
 		uniqueConstraints: [unique(["name"]), unique(["email"]).nullsNotDistinct()],
 		triggers: {
-			foo_before_update: trigger({
-				firingTime: "before",
-				events: ["update"],
-				forEach: "statement",
-				functionName: "foo",
-			}),
+			foo_before_update: trigger()
+				.fireWhen("before")
+				.events(["update"])
+				.forEach("statement")
+				.function("foo"),
 		},
 	});
 
@@ -308,12 +307,11 @@ test("#localSchema", () => {
 		primaryKey: ["id"],
 		indexes: [index("name")],
 		triggers: {
-			foo_before_insert: trigger({
-				firingTime: "before",
-				events: ["insert"],
-				forEach: "row",
-				functionName: "foo",
-			}),
+			foo_before_insert: trigger()
+				.fireWhen("before")
+				.events(["insert"])
+				.forEach("row")
+				.function("foo"),
 		},
 	});
 
@@ -566,12 +564,11 @@ test("trigger names are downcased", () => {
 			id: serial(),
 		},
 		triggers: {
-			foo_Before_update: trigger({
-				firingTime: "before",
-				events: ["update"],
-				forEach: "statement",
-				functionName: "foo",
-			}),
+			foo_Before_update: trigger()
+				.fireWhen("before")
+				.events(["update"])
+				.forEach("statement")
+				.function("foo"),
 		},
 	});
 

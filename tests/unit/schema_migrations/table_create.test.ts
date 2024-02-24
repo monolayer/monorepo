@@ -639,13 +639,11 @@ describe("Table create migrations", () => {
 				updatedAt: timestamp().defaultTo(sql`now()`),
 			},
 			triggers: {
-				foo_before_update: trigger({
-					firingTime: "before",
-					events: ["update"],
-					forEach: "row",
-					functionName: "moddatetime",
-					functionArgs: ["updatedAt"],
-				}),
+				foo_before_update: trigger()
+					.fireWhen("before")
+					.events(["update"])
+					.forEach("row")
+					.function("moddatetime", ["updatedAt"]),
 			},
 		});
 

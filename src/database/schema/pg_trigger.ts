@@ -1,9 +1,4 @@
-import { Kysely, PostgresDialect, type RawBuilder } from "kysely";
-import pg from "pg";
-
-export function trigger(options: PgTriggerFunctionOptions): PgTrigger {
-	return new PgTrigger(options);
-}
+import { type RawBuilder } from "kysely";
 
 export type TriggerFiringTime = "before" | "after" | "instead of";
 
@@ -14,7 +9,7 @@ export type TriggerEvent =
 	| "truncate"
 	| "update of";
 
-interface PgTriggerFunctionOptions {
+export interface PgTriggerFunctionOptions {
 	firingTime: TriggerFiringTime;
 	events: TriggerEvent[];
 	columns?: string[];
@@ -26,67 +21,82 @@ interface PgTriggerFunctionOptions {
 	functionArgs?: string[];
 }
 
-export class PgTrigger {
-	#functionCall: string;
-	#events: string[];
-	#referencing: {
-		newTable: string | null;
-		oldTable: string | null;
-	};
-	#fireWhen: string;
-	#condition: RawBuilder<string> | null;
-	#execute: string | null;
+export function trigger() {
+	return new PgTrigger();
+}
 
-	constructor(options: PgTriggerFunctionOptions) {
-		this.#events = options.events.map((event) => {
-			if (event === "update of" && options.columns !== undefined) {
-				return `UPDATE OF ${options.columns.join(", ")}`;
-			}
-			return event.toUpperCase();
-		});
-		this.#functionCall = options.firingTime.toUpperCase();
-		this.#referencing = {
-			newTable: options.referencingNewTableAs || null,
-			oldTable: options.referencingOldTableAs || null,
-		};
-		this.#fireWhen = `FOR EACH ${options.forEach.toUpperCase()}`;
-		this.#condition = options.condition || null;
-		this.#execute =
-			options.functionArgs !== undefined
-				? `${options.functionName}(${options.functionArgs.join(", ")})`
-				: `${options.functionName}`;
+export class PgTrigger {
+	#compileArgs: Partial<PgTriggerFunctionOptions>;
+
+	constructor() {
+		this.#compileArgs = {};
 	}
 
-	compile(triggerName: string, tableName: string) {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		const kysely = new Kysely<any>({
-			dialect: new PostgresDialect({
-				pool: new pg.Pool({}),
-			}),
-		});
+	events(events: Pick<PgTriggerFunctionOptions, "events">["events"]) {
+		this.#compileArgs.events = events;
+		return this;
+	}
 
-		return [
-			`CREATE OR REPLACE TRIGGER ${triggerName}`,
-			`${this.#functionCall} ${this.#events.join(" OR ")} ON ${tableName}`,
-			`${
-				this.#referencing.newTable !== null &&
-				this.#referencing.oldTable !== null
-					? `REFERENCING NEW TABLE AS ${this.#referencing.newTable} OLD TABLE AS ${this.#referencing.oldTable}`
-					: this.#referencing.newTable !== null
-					  ? `REFERENCING NEW TABLE AS ${this.#referencing.newTable}`
-					  : this.#referencing.oldTable !== null
-						  ? `REFERENCING OLD TABLE AS ${this.#referencing.oldTable}`
-						  : ""
-			}`,
-			`${this.#fireWhen}`,
-			`${
-				this.#condition !== null
-					? `WHEN ${this.#condition.compile(kysely).sql}`
-					: ""
-			}`,
-			`EXECUTE FUNCTION ${this.#execute}`,
-		]
-			.filter((part) => part !== "")
-			.join("\n");
+	fireWhen(
+		fireWhen: Pick<PgTriggerFunctionOptions, "firingTime">["firingTime"],
+	) {
+		this.#compileArgs.firingTime = fireWhen;
+		return this;
+	}
+
+	referencingNewTableAs(
+		newTable: Pick<
+			PgTriggerFunctionOptions,
+			"referencingNewTableAs"
+		>["referencingNewTableAs"],
+	) {
+		this.#compileArgs.referencingNewTableAs = newTable;
+		return this;
+	}
+
+	referencingOldTableAs(
+		oldTable: Pick<
+			PgTriggerFunctionOptions,
+			"referencingOldTableAs"
+		>["referencingOldTableAs"],
+	) {
+		this.#compileArgs.referencingOldTableAs = oldTable;
+		return this;
+	}
+
+	columns(columns: Pick<PgTriggerFunctionOptions, "columns">["columns"]) {
+		this.#compileArgs.columns = columns;
+		return this;
+	}
+
+	condition(
+		condition: Pick<PgTriggerFunctionOptions, "condition">["condition"],
+	) {
+		this.#compileArgs.condition = condition;
+		return this;
+	}
+
+	forEach(forEach: Pick<PgTriggerFunctionOptions, "forEach">["forEach"]) {
+		this.#compileArgs.forEach = forEach;
+		return this;
+	}
+
+	function(
+		functionName: Pick<
+			PgTriggerFunctionOptions,
+			"functionName"
+		>["functionName"],
+		functionArgs?: Pick<
+			PgTriggerFunctionOptions,
+			"functionArgs"
+		>["functionArgs"],
+	) {
+		this.#compileArgs.functionName = functionName;
+		this.#compileArgs.functionArgs = functionArgs;
+		return this;
+	}
+
+	compileArgs() {
+		return this.#compileArgs;
 	}
 }

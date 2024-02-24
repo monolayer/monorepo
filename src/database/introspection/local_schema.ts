@@ -21,6 +21,7 @@ import {
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes, PgEnum } from "../schema/pg_column.js";
 import type { PgIndex } from "../schema/pg_index.js";
+import type { PgTrigger } from "../schema/pg_trigger.js";
 import type { PgUnique } from "../schema/pg_unique.js";
 import {
 	foreignKeyConstraintInfoToQuery,
@@ -268,13 +269,25 @@ function schemaDBTriggersInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 ) {
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const kysely = new Kysely<any>({
+		dialect: new PostgresDialect({
+			pool: new pg.Pool({}),
+		}),
+	});
+
 	return Object.entries(schema.tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			tableDefinition.triggers;
 			for (const trigger of Object.entries(tableDefinition.triggers || {})) {
 				const triggerName = `${trigger[0]}_trg`.toLowerCase();
 				const hash = createHash("sha256");
-				const compiledTrigger = trigger[1].compile(triggerName, tableName);
+				const compiledTrigger = triggerInfo(
+					trigger[1],
+					triggerName,
+					tableName,
+					kysely,
+				);
 				hash.update(compiledTrigger);
 
 				acc[tableName] = {
@@ -440,4 +453,52 @@ export function uniqueToInfo(
 	return {
 		[keyName]: compiledQuery,
 	};
+}
+
+export function triggerInfo(
+	trigger: PgTrigger,
+	triggerName: string,
+	tableName: string,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	kysely: Kysely<any>,
+) {
+	const compileArgs = trigger.compileArgs();
+
+	const events = compileArgs.events?.map((event) => {
+		if (event === "update of" && compileArgs.columns !== undefined) {
+			return `UPDATE OF ${compileArgs.columns.join(", ")}`;
+		}
+		return event.toUpperCase();
+	});
+
+	const execute =
+		compileArgs.functionArgs !== undefined
+			? `${compileArgs.functionName}(${compileArgs.functionArgs.join(", ")})`
+			: `${compileArgs.functionName}`;
+
+	return [
+		`CREATE OR REPLACE TRIGGER ${triggerName}`,
+		`${compileArgs.firingTime?.toUpperCase()} ${events?.join(
+			" OR ",
+		)} ON ${tableName}`,
+		`${
+			compileArgs.referencingNewTableAs !== undefined &&
+			compileArgs.referencingOldTableAs !== undefined
+				? `REFERENCING NEW TABLE AS ${compileArgs.referencingNewTableAs} OLD TABLE AS ${compileArgs.referencingOldTableAs}`
+				: compileArgs.referencingNewTableAs !== undefined
+				  ? `REFERENCING NEW TABLE AS ${compileArgs.referencingNewTableAs}`
+				  : compileArgs.referencingOldTableAs !== undefined
+					  ? `REFERENCING OLD TABLE AS ${compileArgs.referencingOldTableAs}`
+					  : ""
+		}`,
+		`FOR EACH ${compileArgs.forEach?.toUpperCase()}`,
+		`${
+			compileArgs.condition !== undefined
+				? `WHEN ${compileArgs.condition.compile(kysely).sql}`
+				: ""
+		}`,
+		`EXECUTE FUNCTION ${execute}`,
+	]
+		.filter((part) => part !== "")
+		.join("\n");
 }
