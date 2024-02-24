@@ -4,42 +4,6 @@ import { ActionStatus, CommandSuccess, isExecaError } from "../command.js";
 import { npmInstall, npmList } from "../utils/npm.js";
 import { exitProgramWithError } from "../utils/program.js";
 
-export async function checkPgInstallation(): Promise<CommandSuccess> {
-	const s = p.spinner();
-	s.start("Check pg");
-	const isInstalled = await npmList(["pg"]);
-	if (isInstalled.success === false) {
-		if (
-			isExecaError(isInstalled.error) &&
-			isInstalled.error.failed === true &&
-			isInstalled.error.stdout !== undefined &&
-			isInstalled.error.stdout.includes("(empty)")
-		) {
-			s.stop("pg not in package.json", 1);
-			return {
-				status: ActionStatus.pgInstallationNotInstalled,
-			};
-		}
-		exitProgramWithError(program, isInstalled.error);
-	}
-	s.stop("pg in package.json", 0);
-	return {
-		status: ActionStatus.pgInstallationInstalled,
-	};
-}
-
-export async function installPg(): Promise<CommandSuccess> {
-	const s = p.spinner();
-	s.start("Installing pg via npm");
-	const installResult = await npmInstall(["pg"]);
-	if (installResult.success === false)
-		exitProgramWithError(program, installResult);
-	s.stop("Installed pg via npm");
-	return {
-		status: ActionStatus.InstallPgSuccess,
-	};
-}
-
 export async function checkPgTypesInstallation(): Promise<CommandSuccess> {
 	const s = p.spinner();
 	s.start("Check @types/pg");

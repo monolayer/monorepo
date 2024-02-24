@@ -78,8 +78,6 @@ describe("kinetic CLI", () => {
 		}, 20000);
 
 		test("skips install of dependecies already in the project", async (context: CliTestContext) => {
-			await npmInstall(["kysely@0.27.0"], context.appFolder);
-			await npmInstall(["pg@8.10.0"], context.appFolder);
 			await npmInstall(["@types/pg@8.10.9"], context.appFolder);
 
 			const result = npx(["kinetic", "init"], context.appFolder);
@@ -99,27 +97,12 @@ describe("kinetic CLI", () => {
 			expect(result.exitCode).toBe(0);
 
 			const listCommand = await npmList(
-				[
-					"kysely",
-					"pg",
-					"@types/pg",
-					"--json",
-					"--omit",
-					"dev",
-					"--omit",
-					"peer",
-				],
+				["@types/pg", "--json", "--omit", "dev", "--omit", "peer"],
 				context.appFolder,
 			);
 			const stdout = listCommand.value?.stdout;
 			expect(JSON.parse(stdout ? stdout.toString() : "")).toMatchObject({
 				dependencies: {
-					kysely: {
-						version: "0.27.0",
-					},
-					pg: {
-						version: "8.10.0",
-					},
 					"@types/pg": {
 						version: "8.10.9",
 					},

@@ -2,31 +2,15 @@ import * as p from "@clack/prompts";
 import { program } from "commander";
 import { exit } from "process";
 import { ActionStatus, CommandSuccess } from "../command.js";
-import { checkKyselyInstallation } from "../components/check_kysely.js";
 import { initFolderAndFiles } from "../components/init_folders_and_files.js";
-import { installKysely } from "../components/install_kysely.js";
 import {
-	checkPgInstallation,
 	checkPgTypesInstallation,
-	installPg,
 	installPgTypes,
 } from "../components/install_pg.js";
 import { exitProgramWithError } from "../utils/program.js";
 
 export async function initCommand() {
 	p.intro("Initialize Kinetic");
-
-	await installPackage(
-		checkKyselyInstallation,
-		installKysely,
-		ActionStatus.KyselyInstallationNotInstalled,
-	);
-
-	await installPackage(
-		checkPgInstallation,
-		installPg,
-		ActionStatus.pgInstallationNotInstalled,
-	);
 
 	await installPackage(
 		checkPgTypesInstallation,
