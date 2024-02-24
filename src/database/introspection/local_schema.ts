@@ -21,10 +21,10 @@ import {
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes, PgEnum } from "../schema/pg_column.js";
 import type { PgIndex } from "../schema/pg_index.js";
+import type { PgUnique } from "../schema/pg_unique.js";
 import {
 	foreignKeyConstraintInfoToQuery,
 	primaryKeyConstraintInfoToQuery,
-	uniqueConstraintInfoToQuery,
 } from "./info_to_query.js";
 import {
 	ColumnsInfo,
@@ -377,22 +377,22 @@ function uniqueConstraintInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: pgDatabase<Record<string, PgTable<any, any>>>,
 ) {
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const kysely = new Kysely<any>({
+		dialect: new PostgresDialect({
+			pool: new pg.Pool({}),
+		}),
+	});
+
 	return Object.entries(schema.tables || {}).reduce<UniqueInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const uniqueConstraints = tableDefinition.schema.uniqueConstraints;
 			if (uniqueConstraints !== undefined) {
 				for (const uniqueConstraint of uniqueConstraints) {
-					const keyName = `${tableName}_${uniqueConstraint.columns
-						.sort()
-						.join("_")}_kinetic_key`;
+					const unique = uniqueToInfo(uniqueConstraint, tableName, kysely);
 					acc[tableName] = {
 						...acc[tableName],
-						[keyName]: uniqueConstraintInfoToQuery({
-							constraintType: "UNIQUE",
-							table: tableName,
-							columns: uniqueConstraint.columns.sort(),
-							nullsDistinct: uniqueConstraint.nullsDistinct,
-						}),
+						...unique,
 					};
 				}
 			}
@@ -400,4 +400,44 @@ function uniqueConstraintInfo(
 		},
 		{},
 	);
+}
+
+export function uniqueToInfo(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	unique: PgUnique<any>,
+	tableName: string,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	kysely: Kysely<any>,
+) {
+	const args = unique.compileArgs();
+	const columns = args.cols.sort();
+	const keyName = `${tableName}_${columns.join("_")}_kinetic_key`;
+
+	const kyselyBuilder = kysely.schema
+		.alterTable(tableName)
+		.addUniqueConstraint(keyName, columns, (uc) => {
+			if (args.nullsDistinct === false) {
+				return uc.nullsNotDistinct();
+			}
+			return uc;
+		});
+
+	let compiledQuery = kyselyBuilder.compile().sql;
+
+	compiledQuery = compiledQuery.replace(
+		/alter table \"\w+\" add constraint /,
+		"",
+	);
+	if (args.nullsDistinct) {
+		compiledQuery = compiledQuery.replace("unique", "UNIQUE NULLS DISTINCT");
+	} else {
+		compiledQuery = compiledQuery.replace(
+			"unique nulls not distinct",
+			"UNIQUE NULLS NOT DISTINCT",
+		);
+	}
+
+	return {
+		[keyName]: compiledQuery,
+	};
 }

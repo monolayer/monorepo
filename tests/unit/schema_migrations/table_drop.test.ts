@@ -292,7 +292,7 @@ describe("Table drop migrations", () => {
 			columns: {
 				id: integer(),
 			},
-			uniqueConstraints: [unique("id", false)],
+			uniqueConstraints: [unique("id").nullsNotDistinct()],
 		});
 
 		const database = pgDatabase({

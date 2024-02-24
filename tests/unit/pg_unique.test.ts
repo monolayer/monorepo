@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+import { compileUnique } from "~tests/helpers/indexes.js";
 import { PgUnique, unique } from "../../src/database/schema/pg_unique.js";
 
 describe("PgUniqueConstraint", () => {
@@ -7,18 +8,36 @@ describe("PgUniqueConstraint", () => {
 		expect(constraint).toBeInstanceOf(PgUnique);
 	});
 
-	test("it stores columns", () => {
-		const constraint = unique(["id"]);
-		expect(constraint.columns).toStrictEqual(["id"]);
+	test("one column", () => {
+		const constraint = unique("id");
+		const compiled = compileUnique(constraint, "test_table");
+
+		const expected = {
+			test_table_id_kinetic_key:
+				'"test_table_id_kinetic_key" UNIQUE NULLS DISTINCT ("id")',
+		};
+		expect(compiled).toStrictEqual(expected);
 	});
 
-	test("it has nullsDistinct to true by default", () => {
-		const constraint = unique(["id"]);
-		expect(constraint.nullsDistinct).toBe(true);
+	test("multiple columns", () => {
+		const constraint = unique(["price", "name"]);
+		const compiled = compileUnique(constraint, "test_table");
+
+		const expected = {
+			test_table_name_price_kinetic_key:
+				'"test_table_name_price_kinetic_key" UNIQUE NULLS DISTINCT ("name", "price")',
+		};
+		expect(compiled).toStrictEqual(expected);
 	});
 
-	test("nullsDistinct can be set to false", () => {
-		const constraint = unique(["id"], false);
-		expect(constraint.nullsDistinct).toBe(false);
+	test("null not distinct", () => {
+		const constraint = unique("id").nullsNotDistinct();
+		const compiled = compileUnique(constraint, "test_table");
+
+		const expected = {
+			test_table_id_kinetic_key:
+				'"test_table_id_kinetic_key" UNIQUE NULLS NOT DISTINCT ("id")',
+		};
+		expect(compiled).toStrictEqual(expected);
 	});
 });

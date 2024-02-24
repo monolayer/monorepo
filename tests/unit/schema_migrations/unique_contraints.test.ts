@@ -32,7 +32,7 @@ describe("Database migrations", () => {
 			columns: {
 				id: integer(),
 			},
-			uniqueConstraints: [unique("id", false)],
+			uniqueConstraints: [unique("id").nullsNotDistinct()],
 		});
 
 		const users = pgTable({
@@ -40,7 +40,7 @@ describe("Database migrations", () => {
 				id: serial(),
 				fullName: varchar(),
 			},
-			uniqueConstraints: [unique(["id", "fullName"], true)],
+			uniqueConstraints: [unique(["id", "fullName"])],
 		});
 
 		const database = pgDatabase({
@@ -111,7 +111,7 @@ describe("Database migrations", () => {
 			columns: {
 				id: integer(),
 			},
-			uniqueConstraints: [unique("id", false)],
+			uniqueConstraints: [unique("id").nullsNotDistinct()],
 		});
 
 		const users = pgTable({
@@ -178,7 +178,7 @@ describe("Database migrations", () => {
 			columns: {
 				id: integer(),
 			},
-			uniqueConstraints: [unique("id", false)],
+			uniqueConstraints: [unique("id").nullsNotDistinct()],
 		});
 
 		const users = pgTable({
@@ -257,7 +257,7 @@ describe("Database migrations", () => {
 			columns: {
 				id: integer(),
 			},
-			uniqueConstraints: [unique("id", false)],
+			uniqueConstraints: [unique("id").nullsNotDistinct()],
 		});
 
 		const users = pgTable({
@@ -265,7 +265,7 @@ describe("Database migrations", () => {
 				id: serial(),
 				fullName: varchar(),
 			},
-			uniqueConstraints: [unique(["id", "fullName"], false)],
+			uniqueConstraints: [unique(["id", "fullName"]).nullsNotDistinct()],
 		});
 
 		const database = pgDatabase({

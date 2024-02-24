@@ -288,7 +288,7 @@ test("#localSchema", () => {
 		},
 		primaryKey: ["id"],
 		foreignKeys: [foreignKey(["book_id"], books, ["id"])],
-		uniqueConstraints: [unique(["name"]), unique(["email"], false)],
+		uniqueConstraints: [unique(["name"]), unique(["email"]).nullsNotDistinct()],
 		triggers: {
 			foo_before_update: trigger({
 				firingTime: "before",

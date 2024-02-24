@@ -136,7 +136,7 @@ describe("Rename column migrations", () => {
 				columns: {
 					fullName: text().renameFrom("name"),
 				},
-				uniqueConstraints: [unique(["fullName"], false)],
+				uniqueConstraints: [unique(["fullName"]).nullsNotDistinct()],
 			});
 
 			const database = pgDatabase({
