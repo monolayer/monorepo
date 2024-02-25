@@ -24,13 +24,15 @@ export async function down(db: Kysely<any>): Promise<void> {
 export function generateMigrationFiles(
 	changesets: Changeset[],
 	folder: string,
+	migrationsFolder = "migrations",
+	name?: string,
 ) {
 	const { up, down } = extractMigrationOpChangesets(changesets);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
 	const migrationFilePath = path.join(
 		folder,
-		"migrations",
-		`${dateStr}-${randomName()}.ts`,
+		migrationsFolder,
+		name !== undefined ? name : `${dateStr}-${randomName()}.ts`,
 	);
 	const rendered = nunjucks.compile(template).render({
 		up: up,

@@ -5,7 +5,10 @@ import { pgPoolAndConfig } from "~/database/pg/pg_pool.js";
 import { pgQueryExecuteWithResult } from "~/database/pg/pg_query.js";
 import { importConfig } from "../../config.js";
 import { ActionStatus } from "../command.js";
-import { checkEnvironmentIsConfigured } from "../utils/clack.js";
+import {
+	checkAutoPilotLock,
+	checkEnvironmentIsConfigured,
+} from "../utils/clack.js";
 
 export async function dbCreate(environment: string) {
 	p.intro("Create Database");
@@ -16,6 +19,11 @@ export async function dbCreate(environment: string) {
 		spinner: s,
 		outro: true,
 	});
+	checkAutoPilotLock({
+		spinner: s,
+		outro: true,
+	});
+
 	const pool = pgPoolAndConfig(config, environment);
 
 	const createDb = await pgQueryExecuteWithResult<{

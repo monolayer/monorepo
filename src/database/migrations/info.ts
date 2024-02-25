@@ -6,10 +6,19 @@ import { cwd, exit } from "process";
 import { ActionStatus, throwableOperation } from "~/cli/command.js";
 import { Config } from "~/config.js";
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export async function fetchPendingMigrations(config: Config, db: Kysely<any>) {
-	const migrationsFolder = path.join(cwd(), config.folder, "migrations");
-	const allMigrations = await migrations(config, db);
+export async function fetchPendingMigrations(
+	config: Config,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	db: Kysely<any>,
+	migrationsFolderName = "migrations",
+) {
+	const migrationsFolder = path.join(
+		cwd(),
+		config.folder,
+		migrationsFolderName,
+	);
+
+	const allMigrations = await migrations(config, db, migrationsFolderName);
 	if (allMigrations.status === ActionStatus.Error) {
 		p.cancel("Unexpected error while fetching migrations.");
 		console.error(allMigrations.error);
@@ -46,14 +55,18 @@ export async function fetchPendingMigrations(config: Config, db: Kysely<any>) {
 		});
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export async function migrations(config: Config, db: Kysely<any>) {
+export async function migrations(
+	config: Config,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	db: Kysely<any>,
+	migrationsFolderName = "migrations",
+) {
 	const migrator = new Migrator({
 		db,
 		provider: new FileMigrationProvider({
 			fs,
 			path,
-			migrationFolder: path.join(cwd(), config.folder, "migrations"),
+			migrationFolder: path.join(cwd(), config.folder, migrationsFolderName),
 		}),
 	});
 	return await throwableOperation<typeof migrator.getMigrations>(async () => {

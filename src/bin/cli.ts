@@ -2,16 +2,17 @@
 
 import { Command } from "commander";
 import { exit } from "process";
-import { dbCreate } from "./actions/db_create.js";
-import { dbDrop } from "./actions/db_drop.js";
-import { generate } from "./actions/generate.js";
-import { initCommand } from "./actions/init.js";
-import { migrate } from "./actions/migrate.js";
-import { migrateDown } from "./actions/migrate_down.js";
-import { pendingMigrations } from "./actions/pending_migrations.js";
-import { structureDump } from "./actions/structure_dump.js";
-import { structureLoad } from "./actions/structure_load.js";
-import { isCommanderError } from "./command.js";
+import { autopilotRevert } from "../cli/actions/autopilot_revert.js";
+import { dbCreate } from "../cli/actions/db_create.js";
+import { dbDrop } from "../cli/actions/db_drop.js";
+import { generate } from "../cli/actions/generate.js";
+import { initCommand } from "../cli/actions/init.js";
+import { migrate } from "../cli/actions/migrate.js";
+import { migrateDown } from "../cli/actions/migrate_down.js";
+import { pendingMigrations } from "../cli/actions/pending_migrations.js";
+import { structureDump } from "../cli/actions/structure_dump.js";
+import { structureLoad } from "../cli/actions/structure_load.js";
+import { isCommanderError } from "../cli/command.js";
 
 async function main() {
 	const program = new Command();
@@ -119,6 +120,13 @@ async function main() {
 		)
 		.action(async (_opts, cmd) => {
 			await pendingMigrations(cmd.opts().environment);
+		});
+
+	program
+		.command("autopilot:revert")
+		.description("Revert autopilot migrations")
+		.action(async (_opts, cmd) => {
+			await autopilotRevert();
 		});
 
 	program.exitOverride();

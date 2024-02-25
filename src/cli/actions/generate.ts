@@ -7,7 +7,10 @@ import { analyzeRemoteSchema } from "../components/analyze_remote_schema.js";
 import { computeChangeset } from "../components/compute_changeset.js";
 import { generateMigrations } from "../components/generate_migrations.js";
 import { pendingMigrations } from "../components/pending_migrations.js";
-import { checkEnvironmentIsConfigured } from "../utils/clack.js";
+import {
+	checkAutoPilotLock,
+	checkEnvironmentIsConfigured,
+} from "../utils/clack.js";
 
 export async function generate() {
 	p.intro("Generate");
@@ -18,6 +21,8 @@ export async function generate() {
 	checkEnvironmentIsConfigured(config, "development", {
 		outro: true,
 	});
+
+	checkAutoPilotLock({ outro: true });
 
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
