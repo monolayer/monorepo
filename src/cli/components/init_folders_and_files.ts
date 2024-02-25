@@ -51,7 +51,7 @@ export async function initFolderAndFiles() {
 	);
 }
 
-export const configTemplate = nunjucks.compile(`import type { Config } from "kysely-kinetic";
+export const configTemplate = nunjucks.compile(`import type { Config } from "kysely-kinetic/config";
 
 export default ({
   folder: "{{ folder }}",
@@ -84,7 +84,7 @@ export type DB = typeof database.kyselyDatabase;
 `);
 
 export const kyselyTemplate = nunjucks.compile(`import { Kysely, PostgresDialect } from "kysely";
-import { pgPool } from "kysely-kinetic";
+import { pgPool } from "kysely-kinetic/pool";
 import kineticConfig from "{{ kineticConfigPath }}";
 import type { DB } from "./schema.js";
 

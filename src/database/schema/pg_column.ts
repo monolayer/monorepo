@@ -1,9 +1,5 @@
-import {
-	type ColumnDataType,
-	type ColumnType,
-	type Expression,
-	isExpression,
-} from "kysely";
+import { type ColumnDataType, type ColumnType, type Expression } from "kysely";
+import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 
 export type ColumnInfo = {
 	columnName: string | null;
@@ -695,3 +691,17 @@ export type PgColumnTypes =
 	| PgVarChar
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	| PgEnum<string, any, any, any, any>;
+
+// From Kysely. To avoid bundling Kysely in client code.
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function isExpression(obj: unknown): obj is Expression<any> {
+	return (
+		isObject(obj) &&
+		"expressionType" in obj &&
+		typeof obj.toOperationNode === "function"
+	);
+}
+
+function isObject(obj: unknown): obj is ShallowRecord<string, unknown> {
+	return typeof obj === "object" && obj !== null;
+}

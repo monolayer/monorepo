@@ -16,7 +16,22 @@
     ".": {
       "import": "./dist/esm/src/index.js",
       "require": "./dist/cjs/src/index.js",
-      "default": "./dist/cjs/src/index.js"
+      "types": "./dist/esm/src/index.d.ts"
+    },
+    "./autopilot": {
+      "import": "./dist/esm/src/autopilot.js",
+      "require": "./dist/cjs/src/autopilot.js",
+      "types": "./dist/esm/src/autopilot.d.ts"
+    },
+    "./config": {
+      "import": "./dist/esm/src/config.js",
+      "require": "./dist/cjs/src/config.js",
+      "types": "./dist/esm/src/config.js"
+    },
+    "./pool": {
+      "import": "./dist/esm/src/database/pg/pg_pool.js",
+      "require": "./dist/cjs/src/database/pg/pg_pool.js",
+      "types": "./dist/esm/src/database/pg/pg_pool.js"
     }
   },
   "types": "./dist/esm/src/index.d.ts",
@@ -68,10 +83,8 @@
     "@vitest/coverage-istanbul": "^1.2.1",
     "@vitest/ui": "^1.2.1",
     "dotenv": "^16.4.1",
-    "kysely": "^0.27.2",
     "mock-fs": "^5.2.0",
     "mock-stdin": "^1.0.0",
-    "pg": "^8.11.3",
     "tsc-alias": "^1.8.8",
     "type-fest": "^4.10.1",
     "type-testing": "^0.2.0",
