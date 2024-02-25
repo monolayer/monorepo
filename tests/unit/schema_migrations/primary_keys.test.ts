@@ -55,10 +55,10 @@ describe("Database migrations", () => {
 				tableName: "users",
 				type: "createPrimaryKey",
 				up: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT "users_name_fullName_kinetic_pk" PRIMARY KEY ("name", "fullName")`.execute(db);',
+					'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_name_kinetic_pk" PRIMARY KEY ("fullName", "name")`.execute(db);',
 				],
 				down: [
-					'await sql`ALTER TABLE users DROP CONSTRAINT "users_name_fullName_kinetic_pk", ALTER COLUMN "name" DROP NOT NULL, ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+					'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_name_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL, ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
 				],
 			},
 			{
@@ -91,7 +91,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addPrimaryKeyConstraint("users_name_fullName_kinetic_pk", [
+			.addPrimaryKeyConstraint("users_fullName_name_kinetic_pk", [
 				"name",
 				"fullName",
 			])
@@ -144,10 +144,10 @@ describe("Database migrations", () => {
 				tableName: "users",
 				type: "dropPrimaryKey",
 				up: [
-					'await sql`ALTER TABLE users DROP CONSTRAINT "users_name_fullName_kinetic_pk", ALTER COLUMN "name" DROP NOT NULL, ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+					'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_name_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL, ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
 				],
 				down: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT "users_name_fullName_kinetic_pk" PRIMARY KEY ("name", "fullName")`.execute(db);',
+					'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_name_kinetic_pk" PRIMARY KEY ("fullName", "name")`.execute(db);',
 				],
 			},
 		];
@@ -169,7 +169,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addPrimaryKeyConstraint("users_name_fullName_kinetic_pk", [
+			.addPrimaryKeyConstraint("users_fullName_name_kinetic_pk", [
 				"name",
 				"fullName",
 			])
@@ -195,10 +195,10 @@ describe("Database migrations", () => {
 				tableName: "users",
 				type: "dropPrimaryKey",
 				up: [
-					'await sql`ALTER TABLE users DROP CONSTRAINT "users_name_fullName_kinetic_pk", ALTER COLUMN "name" DROP NOT NULL, ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+					'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_name_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL, ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
 				],
 				down: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT "users_name_fullName_kinetic_pk" PRIMARY KEY ("name", "fullName")`.execute(db);',
+					'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_name_kinetic_pk" PRIMARY KEY ("fullName", "name")`.execute(db);',
 				],
 			},
 			{
@@ -231,7 +231,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addPrimaryKeyConstraint("users_name_fullName_kinetic_pk", [
+			.addPrimaryKeyConstraint("users_fullName_name_kinetic_pk", [
 				"name",
 				"fullName",
 			])
@@ -257,10 +257,10 @@ describe("Database migrations", () => {
 				tableName: "users",
 				type: "dropPrimaryKey",
 				up: [
-					'await sql`ALTER TABLE users DROP CONSTRAINT "users_name_fullName_kinetic_pk", ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
+					'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_name_kinetic_pk", ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
 				],
 				down: [
-					'await sql`ALTER TABLE users ADD CONSTRAINT "users_name_fullName_kinetic_pk" PRIMARY KEY ("name", "fullName")`.execute(db);',
+					'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_name_kinetic_pk" PRIMARY KEY ("fullName", "name")`.execute(db);',
 				],
 			},
 			{

@@ -52,7 +52,9 @@ export async function dbPrimaryKeyConstraintInfo(
 			.orderBy(["table"])
 			.execute();
 		const transformedResults = results.reduce<PrimaryKeyInfo>((acc, result) => {
-			const key = `${result.table}_${result.columns.join("_")}_kinetic_pk`;
+			const key = `${result.table}_${result.columns
+				.sort()
+				.join("_")}_kinetic_pk`;
 			const constraintInfo = {
 				[key]: primaryKeyConstraintInfoToQuery(result),
 			};

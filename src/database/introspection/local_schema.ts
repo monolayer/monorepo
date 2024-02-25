@@ -331,7 +331,9 @@ function primaryKeyConstraintInfo(
 		(acc, [tableName, tableDefinition]) => {
 			const primaryKey = tableDefinition.schema.primaryKey;
 			if (primaryKey !== undefined) {
-				const keyName = `${tableName}_${primaryKey.join("_")}_kinetic_pk`;
+				const keyName = `${tableName}_${primaryKey
+					.sort()
+					.join("_")}_kinetic_pk`;
 				acc[tableName] = {
 					[keyName]: primaryKeyConstraintInfoToQuery({
 						constraintType: "PRIMARY KEY",
