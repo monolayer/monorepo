@@ -8,7 +8,9 @@ import {
 	PgDate,
 	PgDoublePrecision,
 	PgEnum,
+	PgFloat4,
 	PgFloat8,
+	PgReal,
 	PgSerial,
 	PgText,
 } from "./pg_column.js";
@@ -39,6 +41,12 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgFloat8:
 			isFloat8(column);
 			return float8Schema(column);
+		case PgReal:
+			isReal(column);
+			return realSchema(column);
+		case PgFloat4:
+			isFloat4(column);
+			return float4Schema(column);
 		default:
 			return z.unknown();
 	}
@@ -182,6 +190,47 @@ function isDoublePrecision(
 }
 
 function doublePrecisionSchema(column: PgDoublePrecision | PgFloat8) {
+	return variablePrecisionSchema(column, -1e308, 1e308);
+}
+
+function isFloat8(column: PgColumnTypes): asserts column is PgFloat8 {
+	if (column instanceof PgFloat8) {
+		return;
+	}
+	throw new Error("Only a PgFloat8 column is allowed");
+}
+
+function float8Schema(column: PgFloat8) {
+	return variablePrecisionSchema(column, -1e308, 1e308);
+}
+
+function isReal(column: PgColumnTypes): asserts column is PgReal {
+	if (column instanceof PgReal) {
+		return;
+	}
+	throw new Error("Only a PgReal column is allowed");
+}
+
+function realSchema(column: PgReal) {
+	return variablePrecisionSchema(column, -1e37, 1e37);
+}
+
+function isFloat4(column: PgColumnTypes): asserts column is PgFloat4 {
+	if (column instanceof PgFloat4) {
+		return;
+	}
+	throw new Error("Only a PgFloat4 column is allowed");
+}
+
+function float4Schema(column: PgFloat4) {
+	return variablePrecisionSchema(column, -1e37, 1e37);
+}
+
+function variablePrecisionSchema(
+	column: PgDoublePrecision | PgFloat8 | PgReal | PgFloat4,
+	minimum: number,
+	maximum: number,
+) {
 	const base = z
 		.bigint()
 		.or(z.number())
@@ -202,17 +251,6 @@ function doublePrecisionSchema(column: PgDoublePrecision | PgFloat8) {
 				return z.NEVER;
 			}
 		})
-		.pipe(z.coerce.number().min(-1e308).max(1e308));
+		.pipe(z.coerce.number().min(minimum).max(maximum));
 	return columnSchemaWithBase(column, base);
-}
-
-function isFloat8(column: PgColumnTypes): asserts column is PgFloat8 {
-	if (column instanceof PgFloat8) {
-		return;
-	}
-	throw new Error("Only a PgFloat8 column is allowed");
-}
-
-function float8Schema(column: PgFloat8) {
-	return doublePrecisionSchema(column);
 }
