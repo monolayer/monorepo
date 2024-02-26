@@ -10,6 +10,10 @@ import {
 	PgEnum,
 	PgFloat4,
 	PgFloat8,
+	PgInt2,
+	PgInt4,
+	PgInt8,
+	PgInteger,
 	PgReal,
 	PgSerial,
 	PgText,
@@ -47,6 +51,18 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgFloat4:
 			isFloat4(column);
 			return float4Schema(column);
+		case PgInteger:
+			isInteger(column);
+			return integerSchema(column);
+		case PgInt8:
+			isInt8(column);
+			return int8Schema(column);
+		case PgInt4:
+			isInt4(column);
+			return int4Schema(column);
+		case PgInt2:
+			isInt2(column);
+			return int2Schema(column);
 		default:
 			return z.unknown();
 	}
@@ -110,11 +126,22 @@ function isBigInt(column: PgColumnTypes): asserts column is PgBigInt {
 	throw new Error("Only a PgBigInt column is allowed");
 }
 
-function bigIntSchema(column: PgBigInt) {
+function bigIntSchema(column: PgBigInt | PgInt8) {
 	const base = bigintSchema().pipe(
 		z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
 	);
 	return columnSchemaWithBase(column, base);
+}
+
+function isInt8(column: PgColumnTypes): asserts column is PgInt8 {
+	if (column instanceof PgInt8) {
+		return;
+	}
+	throw new Error("Only a PgInt8 column is allowed");
+}
+
+function int8Schema(column: PgInt8) {
+	return bigIntSchema(column);
 }
 
 function isSerial(column: PgColumnTypes): asserts column is PgSerial {
@@ -226,6 +253,38 @@ function float4Schema(column: PgFloat4) {
 	return variablePrecisionSchema(column, -1e37, 1e37);
 }
 
+function isInteger(column: PgColumnTypes): asserts column is PgInteger {
+	if (column instanceof PgInteger) {
+		return;
+	}
+	throw new Error("Only a PgInteger column is allowed");
+}
+
+function integerSchema(column: PgInteger) {
+	return wholeNumberSchema(column, -2147483648, 2147483647);
+}
+
+function isInt4(column: PgColumnTypes): asserts column is PgInt4 {
+	if (column instanceof PgInt4) {
+		return;
+	}
+	throw new Error("Only a PgInt4 column is allowed");
+}
+
+function int4Schema(column: PgInt4) {
+	return wholeNumberSchema(column, -2147483648, 2147483647);
+}
+
+function isInt2(column: PgColumnTypes): asserts column is PgInt2 {
+	if (column instanceof PgInt2) {
+		return;
+	}
+	throw new Error("Only a PgInt2 column is allowed");
+}
+
+function int2Schema(column: PgInt2) {
+	return wholeNumberSchema(column, -32768, 32767);
+}
 function variablePrecisionSchema(
 	column: PgDoublePrecision | PgFloat8 | PgReal | PgFloat4,
 	minimum: number,
@@ -252,5 +311,17 @@ function variablePrecisionSchema(
 			}
 		})
 		.pipe(z.coerce.number().min(minimum).max(maximum));
+	return columnSchemaWithBase(column, base);
+}
+
+function wholeNumberSchema(
+	column: PgInteger | PgInt4 | PgInt2,
+	minimum: number,
+	maximum: number,
+) {
+	const base = z
+		.number()
+		.or(z.string())
+		.pipe(z.coerce.number().int().min(minimum).max(maximum));
 	return columnSchemaWithBase(column, base);
 }
