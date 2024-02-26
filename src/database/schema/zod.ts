@@ -8,6 +8,7 @@ import {
 	PgDate,
 	PgDoublePrecision,
 	PgEnum,
+	PgFloat8,
 	PgSerial,
 	PgText,
 } from "./pg_column.js";
@@ -35,6 +36,9 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgDoublePrecision:
 			isDoublePrecision(column);
 			return doublePrecisionSchema(column);
+		case PgFloat8:
+			isFloat8(column);
+			return float8Schema(column);
 		default:
 			return z.unknown();
 	}
@@ -177,7 +181,7 @@ function isDoublePrecision(
 	throw new Error("Only a PgDoublePrecision column is allowed");
 }
 
-function doublePrecisionSchema(column: PgDoublePrecision) {
+function doublePrecisionSchema(column: PgDoublePrecision | PgFloat8) {
 	const base = z
 		.bigint()
 		.or(z.number())
@@ -200,4 +204,15 @@ function doublePrecisionSchema(column: PgDoublePrecision) {
 		})
 		.pipe(z.coerce.number().min(-1e308).max(1e308));
 	return columnSchemaWithBase(column, base);
+}
+
+function isFloat8(column: PgColumnTypes): asserts column is PgFloat8 {
+	if (column instanceof PgFloat8) {
+		return;
+	}
+	throw new Error("Only a PgFloat8 column is allowed");
+}
+
+function float8Schema(column: PgFloat8) {
+	return doublePrecisionSchema(column);
 }
