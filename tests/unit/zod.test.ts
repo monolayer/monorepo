@@ -5,11 +5,21 @@ import { zodSchema } from "~/database/schema/zod.js";
 describe("zod column schemas", () => {
 	describe("PgBoolean", () => {
 		describe("by default", () => {
-			test("parses boolean, null and undefined", () => {
+			test("parses boolean", () => {
 				const column = boolean();
 				const schema = zodSchema(column);
 				expect(schema.safeParse(true).success).toBe(true);
+			});
+
+			test("parses null", () => {
+				const column = boolean();
+				const schema = zodSchema(column);
 				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const column = boolean();
+				const schema = zodSchema(column);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
@@ -92,13 +102,27 @@ describe("zod column schemas", () => {
 
 	describe("PgText", () => {
 		describe("by default", () => {
-			test("parses only strings, null and undefined", () => {
+			test("parses strings", () => {
 				const column = text();
 				const schema = zodSchema(column);
 				expect(schema.safeParse("hello").success).toBe(true);
+			});
+
+			test("parses null", () => {
+				const column = text();
+				const schema = zodSchema(column);
 				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const column = text();
+				const schema = zodSchema(column);
 				expect(schema.safeParse(undefined).success).toBe(true);
-				expect(schema.safeParse(true).success).toBe(false);
+			});
+
+			test("does not parse other types", () => {
+				const column = text();
+				const schema = zodSchema(column);
 				expect(schema.safeParse(new Date()).success).toBe(false);
 				expect(schema.safeParse(1).success).toBe(false);
 			});
