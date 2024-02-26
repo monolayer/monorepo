@@ -79,6 +79,7 @@ interface QueryDataType {
 	readonly _columnType: ColumnType<any, any, any>;
 	readonly _generatedAlways: boolean;
 	readonly _hasDefault: boolean;
+	_isPrimaryKey: boolean;
 }
 
 interface NativeDataType {
@@ -122,6 +123,7 @@ export class PgColumn<S, I, U = I>
 
 	declare readonly _generatedAlways: boolean;
 	declare readonly _hasDefault: boolean;
+	declare _isPrimaryKey: boolean;
 
 	declare readonly _native_data_type: DefaultValueDataTypes;
 
@@ -133,6 +135,7 @@ export class PgColumn<S, I, U = I>
 		this._native_data_type = postgresDataType;
 		this._generatedAlways = false;
 		this._hasDefault = false;
+		this._isPrimaryKey = false;
 	}
 
 	notNull() {
@@ -185,6 +188,7 @@ export class PgGeneratedColumn<T, U>
 	declare readonly _generatedAlways: false;
 	declare readonly _hasDefault: boolean;
 	declare readonly _native_data_type: DefaultValueDataTypes;
+	declare _isPrimaryKey: boolean;
 
 	constructor(
 		dataType: "serial" | "bigserial",
@@ -195,6 +199,7 @@ export class PgGeneratedColumn<T, U>
 		this._native_data_type = postgresDataType;
 		this._generatedAlways = false;
 		this._hasDefault = true;
+		this._isPrimaryKey = false;
 	}
 }
 
@@ -618,6 +623,7 @@ export class PgEnum<
 	declare readonly _columnType: ColumnType<S, I, U>;
 	declare readonly _generatedAlways: boolean;
 	declare readonly _hasDefault: boolean;
+	declare _isPrimaryKey: boolean;
 
 	readonly values: T;
 	readonly name: N;
@@ -640,6 +646,7 @@ export class PgEnum<
 		};
 		this._generatedAlways = false;
 		this._hasDefault = false;
+		this._isPrimaryKey = false;
 	}
 
 	notNull() {

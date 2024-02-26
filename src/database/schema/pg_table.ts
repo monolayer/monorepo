@@ -45,6 +45,14 @@ export class PgTable<
 		this.schema.indexes = this.schema.indexes || [];
 		this.schema.columns = this.schema.columns || {};
 		this.schema.primaryKey = this.schema.primaryKey;
+		if (this.schema.primaryKey !== undefined) {
+			for (const key of this.schema.primaryKey) {
+				const column = this.schema.columns[key];
+				if (column !== undefined) {
+					column._isPrimaryKey = true;
+				}
+			}
+		}
 		this.schema.foreignKeys = this.schema.foreignKeys;
 		this.schema.uniqueConstraints = this.schema.uniqueConstraints || [];
 		this.schema.triggers = this.schema.triggers || {};
