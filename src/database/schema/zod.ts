@@ -5,6 +5,7 @@ import {
 	PgBoolean,
 	PgColumnBase,
 	PgColumnTypes,
+	PgDate,
 	PgEnum,
 	PgSerial,
 	PgText,
@@ -27,6 +28,9 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgBigSerial:
 			isBigSerial(column);
 			return bigSerialSchema(column);
+		case PgDate:
+			isDate(column);
+			return dateSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -146,4 +150,16 @@ function bigintSchema() {
 				return z.NEVER;
 			}
 		});
+}
+
+function isDate(column: PgColumnTypes): asserts column is PgDate {
+	if (column instanceof PgDate) {
+		return;
+	}
+	throw new Error("Only a PgDate column is allowed");
+}
+
+function dateSchema(column: PgDate) {
+	const base = z.date().or(z.string().pipe(z.coerce.date()));
+	return columnSchemaWithBase(column, base);
 }
