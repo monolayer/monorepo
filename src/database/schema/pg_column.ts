@@ -90,6 +90,11 @@ interface NativeDataType {
 export class PgColumnBase<S, I, U> {
 	protected info: Omit<ColumnInfo, "columnName" | "tableName">;
 
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	static info(column: PgColumnBase<any, any, any>) {
+		return column.info;
+	}
+
 	constructor(dataType: ColumnDataType | "smallint") {
 		this.info = {
 			dataType: dataType,

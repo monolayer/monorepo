@@ -32,6 +32,11 @@
       "import": "./dist/esm/src/database/pg/pg_pool.js",
       "require": "./dist/cjs/src/database/pg/pg_pool.js",
       "types": "./dist/esm/src/database/pg/pg_pool.js"
+    },
+    "./zod": {
+      "import": "./dist/esm/src/database/schema/zod.js",
+      "require": "./dist/cjs/src/database/schema/zod.js",
+      "types": "./dist/esm/src/database/schema/zod.js"
     }
   },
   "types": "./dist/esm/src/index.d.ts",
