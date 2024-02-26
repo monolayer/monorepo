@@ -6,6 +6,7 @@ import {
 	PgColumnBase,
 	PgColumnTypes,
 	PgDate,
+	PgDoublePrecision,
 	PgEnum,
 	PgSerial,
 	PgText,
@@ -31,6 +32,9 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgDate:
 			isDate(column);
 			return dateSchema(column);
+		case PgDoublePrecision:
+			isDoublePrecision(column);
+			return doublePrecisionSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -161,5 +165,39 @@ function isDate(column: PgColumnTypes): asserts column is PgDate {
 
 function dateSchema(column: PgDate) {
 	const base = z.date().or(z.string().pipe(z.coerce.date()));
+	return columnSchemaWithBase(column, base);
+}
+
+function isDoublePrecision(
+	column: PgColumnTypes,
+): asserts column is PgDoublePrecision {
+	if (column instanceof PgDoublePrecision) {
+		return;
+	}
+	throw new Error("Only a PgDoublePrecision column is allowed");
+}
+
+function doublePrecisionSchema(column: PgDoublePrecision) {
+	const base = z
+		.bigint()
+		.or(z.number())
+		.or(z.string())
+		.transform((s, ctx) => {
+			try {
+				if (typeof s === "string") {
+					return parseFloat(s) || BigInt(s);
+				}
+				return s;
+			} catch (e) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.invalid_type,
+					expected: "bigint",
+					received: "string",
+					message: `Cannot convert '${s}' to a Number or a BigInt`,
+				});
+				return z.NEVER;
+			}
+		})
+		.pipe(z.coerce.number().min(-1e308).max(1e308));
 	return columnSchemaWithBase(column, base);
 }

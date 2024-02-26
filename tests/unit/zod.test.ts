@@ -4,10 +4,17 @@ import {
 	bigserial,
 	boolean,
 	date,
+	doublePrecision,
 	serial,
 	text,
 } from "~/database/schema/pg_column.js";
 import { zodSchema } from "~/database/schema/zod.js";
+
+const tenCentillionBitInt =
+	100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000n;
+
+const elevenCentillionBitInt =
+	1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000n;
 
 describe("zod column schemas", () => {
 	describe("PgBoolean", () => {
@@ -523,6 +530,124 @@ describe("zod column schemas", () => {
 				column._isPrimaryKey = true;
 				const schema = zodSchema(column);
 				expect(schema.safeParse(new Date()).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+	});
+
+	describe("PgDoublePrecision", () => {
+		describe("by default", () => {
+			test("parses bigint", () => {
+				const column = doublePrecision();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1n).success).toBe(true);
+			});
+
+			test("parses number", () => {
+				const column = doublePrecision();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1).success).toBe(true);
+			});
+
+			test("parses decimals", () => {
+				const column = doublePrecision();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1.1).success).toBe(true);
+			});
+
+			test("parses strings that can be coerced to number or bigint", () => {
+				const column = doublePrecision();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse("1.1").success).toBe(true);
+				expect(schema.safeParse("alpha").success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const column = doublePrecision();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const column = doublePrecision();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const column = doublePrecision().defaultTo(30);
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1.1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = doublePrecision().notNull();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1.1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = doublePrecision().notNull().defaultTo(1.1);
+				const schema = zodSchema(column);
+				expect(schema.safeParse(3.1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("minimum is -1e308", () => {
+				const column = doublePrecision();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(-tenCentillionBitInt).success).toBe(true);
+				expect(schema.safeParse(-elevenCentillionBitInt).success).toBe(false);
+			});
+
+			test("maximum is 1e308", () => {
+				const column = doublePrecision();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(tenCentillionBitInt).success).toBe(true);
+				expect(schema.safeParse(elevenCentillionBitInt).success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("is non nullable and required", () => {
+				const column = doublePrecision();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1.1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable and optional", () => {
+				const column = doublePrecision().defaultTo(1.1);
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1.1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = doublePrecision().notNull();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1.1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = doublePrecision().notNull().defaultTo(2.2);
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
