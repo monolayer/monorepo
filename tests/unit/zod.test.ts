@@ -311,7 +311,7 @@ describe("zod column schemas", () => {
 			});
 
 			test("with default value is non nullable and optional", () => {
-				const column = bigint().defaultTo("hello");
+				const column = bigint().defaultTo(1);
 				column._isPrimaryKey = true;
 				const schema = zodSchema(column);
 				expect(schema.safeParse(1n).success).toBe(true);
@@ -520,7 +520,7 @@ describe("zod column schemas", () => {
 			});
 
 			test("with default value is non nullable and optional", () => {
-				const column = date().defaultTo("hello");
+				const column = date().defaultTo(new Date());
 				column._isPrimaryKey = true;
 				const schema = zodSchema(column);
 				expect(schema.safeParse(new Date()).success).toBe(true);
