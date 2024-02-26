@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
 	PgBigInt,
+	PgBigSerial,
 	PgBoolean,
 	PgColumnBase,
 	PgColumnTypes,
@@ -23,6 +24,9 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgSerial:
 			isSerial(column);
 			return serialSchema(column);
+		case PgBigSerial:
+			isBigSerial(column);
+			return bigSerialSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -87,26 +91,9 @@ function isBigInt(column: PgColumnTypes): asserts column is PgBigInt {
 }
 
 function bigIntSchema(column: PgBigInt) {
-	const base = z
-		.bigint()
-		.or(z.number())
-		.or(z.string())
-		.transform((s, ctx) => {
-			try {
-				return BigInt(s);
-			} catch (e) {
-				ctx.addIssue({
-					code: z.ZodIssueCode.invalid_type,
-					expected: "bigint",
-					received: "string",
-					message: `Cannot convert '${s}' to a BigInt`,
-				});
-				return z.NEVER;
-			}
-		})
-		.pipe(
-			z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
-		);
+	const base = bigintSchema().pipe(
+		z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
+	);
 	return columnSchemaWithBase(column, base);
 }
 
@@ -125,4 +112,38 @@ function serialSchema(column: PgSerial) {
 		.optional();
 
 	return base;
+}
+
+function isBigSerial(column: PgColumnTypes): asserts column is PgBigSerial {
+	if (column instanceof PgBigSerial) {
+		return;
+	}
+	throw new Error("Only a PgBigSerial column is allowed");
+}
+
+function bigSerialSchema(column: PgBigSerial) {
+	const base = bigintSchema()
+		.pipe(z.coerce.bigint().min(1n).max(9223372036854775807n))
+		.optional();
+	return base;
+}
+
+function bigintSchema() {
+	return z
+		.bigint()
+		.or(z.number())
+		.or(z.string())
+		.transform((s, ctx) => {
+			try {
+				return BigInt(s);
+			} catch (e) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.invalid_type,
+					expected: "bigint",
+					received: "string",
+					message: `Cannot convert '${s}' to a BigInt`,
+				});
+				return z.NEVER;
+			}
+		});
 }
