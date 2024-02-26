@@ -243,6 +243,12 @@ describe("zod column schemas", () => {
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
+			test("does not parse floats", () => {
+				const column = bigint();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1.1).success).toBe(false);
+			});
+
 			test("fails on invalid string", () => {
 				const column = bigint();
 				const schema = zodSchema(column);
