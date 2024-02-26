@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { bigint, boolean, text } from "~/database/schema/pg_column.js";
+import { bigint, boolean, serial, text } from "~/database/schema/pg_column.js";
 import { zodSchema } from "~/database/schema/zod.js";
 
 describe("zod column schemas", () => {
@@ -308,6 +308,68 @@ describe("zod column schemas", () => {
 				const schema = zodSchema(column);
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+	});
+
+	describe("PgSerial", () => {
+		describe("by default", () => {
+			test("parses number", () => {
+				const column = serial();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1).success).toBe(true);
+			});
+
+			test("parses string", () => {
+				const column = serial();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("1").success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const column = serial();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("parses coerced strings as number", () => {
+				const column = serial();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse("hello").success).toBe(false);
+			});
+
+			test("is non nullable", () => {
+				const column = serial();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(null).success).toBe(false);
+			});
+
+			test("minimum is 1", () => {
+				const column = serial();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1).success).toBe(true);
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(0).success).toBe(false);
+				expect(schema.safeParse("0").success).toBe(false);
+			});
+
+			test("maximum is 2147483648", () => {
+				const column = serial();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(2147483648).success).toBe(true);
+				expect(schema.safeParse("2147483648").success).toBe(true);
+				expect(schema.safeParse(2147483649).success).toBe(false);
+				expect(schema.safeParse("2147483649").success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("is optional", () => {
+				const column = serial();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 		});

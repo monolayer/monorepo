@@ -5,6 +5,7 @@ import {
 	PgColumnBase,
 	PgColumnTypes,
 	PgEnum,
+	PgSerial,
 	PgText,
 } from "./pg_column.js";
 
@@ -19,6 +20,9 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgBigInt:
 			isBigInt(column);
 			return bigIntSchema(column);
+		case PgSerial:
+			isSerial(column);
+			return serialSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -104,4 +108,21 @@ function bigIntSchema(column: PgBigInt) {
 			z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
 		);
 	return columnSchemaWithBase(column, base);
+}
+
+function isSerial(column: PgColumnTypes): asserts column is PgSerial {
+	if (column instanceof PgSerial) {
+		return;
+	}
+	throw new Error("Only a PgSerial column is allowed");
+}
+
+function serialSchema(column: PgSerial) {
+	const base = z
+		.number()
+		.or(z.string())
+		.pipe(z.coerce.number().min(1).max(2147483648))
+		.optional();
+
+	return base;
 }
