@@ -244,6 +244,32 @@ describe("pgBoolean", () => {
 			column.defaultTo(expression);
 			expect(info.defaultValue).toBe(expression);
 		});
+
+		describe("column type", () => {
+			test("insert: boolean, null, or undefined", () => {
+				const column = boolean();
+				type ColumnType = typeof column._columnType.__insert__;
+				type Expected = boolean | null | undefined;
+				const isEqual: Expect<Equal<ColumnType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("select: boolean or null", () => {
+				const column = boolean();
+				type ColumnType = typeof column._columnType.__select__;
+				type Expected = boolean | null;
+				const isEqual: Expect<Equal<ColumnType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("update: boolean, null, or undefined", () => {
+				const column = boolean();
+				type ColumnType = typeof column._columnType.__update__;
+				type Expected = boolean | null;
+				const isEqual: Expect<Equal<ColumnType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+		});
 	});
 });
 
