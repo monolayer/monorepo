@@ -15,6 +15,7 @@ import {
 	PgInt4,
 	PgInt8,
 	PgInteger,
+	PgNumeric,
 	PgReal,
 	PgSerial,
 	PgText,
@@ -91,6 +92,9 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgChar:
 			isChar(column);
 			return charSchema(column);
+		case PgNumeric:
+			isNumeric(column);
+			return numericSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -399,6 +403,17 @@ function charSchema(column: PgChar) {
 	return charactedColumnWithMaximumLength(column);
 }
 
+function isNumeric(column: PgColumnTypes): asserts column is PgNumeric {
+	if (column instanceof PgNumeric) {
+		return;
+	}
+	throw new Error("Only a PgNumeric column is allowed");
+}
+
+function numericSchema(column: PgNumeric) {
+	return decimalSchema(column);
+}
+
 function charactedColumnWithMaximumLength(column: PgVarChar | PgChar) {
 	const info = PgColumnBase.info(column);
 	if (info.characterMaximumLength !== null) {
@@ -448,5 +463,64 @@ function wholeNumberSchema(
 		.number()
 		.or(z.string())
 		.pipe(z.coerce.number().int().min(minimum).max(maximum));
+	return columnSchemaWithBase(column, base);
+}
+
+function decimalSchema(column: PgNumeric) {
+	const info = PgColumnBase.info(column);
+	const base = z
+		.bigint()
+		.or(z.number())
+		.or(z.string())
+		.transform((s, ctx) => {
+			try {
+				if (typeof s === "string") {
+					return parseFloat(s) || BigInt(s);
+				}
+				return s;
+			} catch (e) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.invalid_type,
+					expected: "bigint",
+					received: "string",
+					message: `Cannot convert '${s}' to a Number or a BigInt`,
+				});
+				return z.NEVER;
+			}
+		})
+		.pipe(
+			z.coerce
+				.number()
+				.refine(
+					(n) => {
+						const numberString = n.toString();
+						const [wholeNumber, _decimals] = numberString.split(".");
+						if (wholeNumber !== undefined && info.numericPrecision !== null) {
+							return wholeNumber.length <= info.numericPrecision;
+						}
+						return true;
+					},
+					{
+						message: `Precision of ${info.numericPrecision} exeeded.`,
+					},
+				)
+				.refine(
+					(n) => {
+						const numberString = n.toString();
+						const [_wholeNumber, decimals] = numberString.split(".");
+						if (
+							decimals !== undefined &&
+							info.numericScale !== null &&
+							info.numericScale !== 0
+						) {
+							return decimals.length <= info.numericScale;
+						}
+						return true;
+					},
+					{
+						message: `Maximum scale ${info.numericScale} exeeded.`,
+					},
+				),
+		);
 	return columnSchemaWithBase(column, base);
 }

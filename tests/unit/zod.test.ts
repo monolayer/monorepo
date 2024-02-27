@@ -12,6 +12,7 @@ import {
 	int4,
 	int8,
 	integer,
+	numeric,
 	real,
 	serial,
 	text,
@@ -2205,6 +2206,201 @@ describe("zod column schemas", () => {
 				column._isPrimaryKey = true;
 				const schema = zodSchema(column);
 				expect(schema.safeParse("foo").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+	});
+
+	describe("PgNumeric", () => {
+		describe("by default", () => {
+			test("parses bigint", () => {
+				const column = numeric();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1n).success).toBe(true);
+			});
+
+			test("parses number", () => {
+				const column = numeric();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1).success).toBe(true);
+			});
+
+			test("parses decimals", () => {
+				const column = numeric();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1.1).success).toBe(true);
+			});
+
+			test("parses strings that can be coerced to number or bigint", () => {
+				const column = numeric();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse("1.1").success).toBe(true);
+				expect(schema.safeParse("alpha").success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const column = numeric();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const column = numeric();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const column = numeric().defaultTo(2);
+				const schema = zodSchema(column);
+				expect(schema.safeParse(2).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = numeric().notNull();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = numeric().notNull().defaultTo(1);
+				const schema = zodSchema(column);
+				expect(schema.safeParse(2).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("unconstrained", () => {
+				const column = numeric();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(123423442.1).success).toBe(true);
+				expect(schema.safeParse(123423442.12345).success).toBe(true);
+				expect(schema.safeParse(12342.123452323).success).toBe(true);
+			});
+
+			describe("constrained with precision", () => {
+				test("parses on digit count before decimal less than precision", () => {
+					const column = numeric(5);
+					const schema = zodSchema(column);
+					const result = schema.safeParse(1234.1);
+					if (!result.success) {
+						console.dir(result.error, { depth: null });
+					}
+					expect(schema.safeParse(1234.1).success).toBe(true);
+					expect(schema.safeParse(1234).success).toBe(true);
+					expect(schema.safeParse("1234.1").success).toBe(true);
+					expect(schema.safeParse("1234").success).toBe(true);
+				});
+
+				test("parses on digit count before decimal equal to precision", () => {
+					const column = numeric(5);
+					const schema = zodSchema(column);
+					expect(schema.safeParse(12345).success).toBe(true);
+					expect(schema.safeParse(12345.1234).success).toBe(true);
+					expect(schema.safeParse("12345").success).toBe(true);
+					expect(schema.safeParse("12345.1234").success).toBe(true);
+				});
+
+				test("does not parse on digit count before decimal greater than precision", () => {
+					const column = numeric(5);
+					const schema = zodSchema(column);
+					expect(schema.safeParse(123456).success).toBe(false);
+					expect(schema.safeParse(123456.1234).success).toBe(false);
+					expect(schema.safeParse("123456").success).toBe(false);
+					expect(schema.safeParse("123456.1234").success).toBe(false);
+				});
+			});
+
+			describe("constrained with precision and scale", () => {
+				test("parses on digit count before decimal less than precision", () => {
+					const column = numeric(5, 2);
+					const schema = zodSchema(column);
+					expect(schema.safeParse(1234.1).success).toBe(true);
+					expect(schema.safeParse(1234).success).toBe(true);
+					expect(schema.safeParse("1234.1").success).toBe(true);
+					expect(schema.safeParse("1234").success).toBe(true);
+				});
+
+				test("parses on digit count before decimal equal to precision", () => {
+					const column = numeric(5, 4);
+					const schema = zodSchema(column);
+					expect(schema.safeParse(12345).success).toBe(true);
+					expect(schema.safeParse(12345.1234).success).toBe(true);
+					expect(schema.safeParse("12345").success).toBe(true);
+					expect(schema.safeParse("12345.1234").success).toBe(true);
+				});
+
+				test("does not parse on digit count before decimal greater than precision", () => {
+					const column = numeric(5, 2);
+					const schema = zodSchema(column);
+					expect(schema.safeParse(123456).success).toBe(false);
+					expect(schema.safeParse(123456.1234).success).toBe(false);
+					expect(schema.safeParse("123456").success).toBe(false);
+					expect(schema.safeParse("123456.1234").success).toBe(false);
+				});
+
+				test("parses on decimal count less than scale", () => {
+					const column = numeric(5, 4);
+					const schema = zodSchema(column);
+					expect(schema.safeParse(1234.1).success).toBe(true);
+					expect(schema.safeParse("1234.1").success).toBe(true);
+				});
+
+				test("parses on decimal count equal to scale", () => {
+					const column = numeric(5, 4);
+					const schema = zodSchema(column);
+					expect(schema.safeParse(1234.1234).success).toBe(true);
+					expect(schema.safeParse("1234.1234").success).toBe(true);
+				});
+
+				test("does not parse decimal count grater than scale", () => {
+					const column = numeric(5, 4);
+					const schema = zodSchema(column);
+					expect(schema.safeParse(1234.12345).success).toBe(false);
+					expect(schema.safeParse("1234.12345").success).toBe(false);
+				});
+			});
+		});
+
+		describe("as primary key", () => {
+			test("is non nullable and required", () => {
+				const column = numeric();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable and optional", () => {
+				const column = numeric().defaultTo(1);
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse(2).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = numeric().notNull();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = numeric().notNull().defaultTo(1);
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse(2).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
