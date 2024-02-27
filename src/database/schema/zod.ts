@@ -15,6 +15,8 @@ import {
 	PgInt4,
 	PgInt8,
 	PgInteger,
+	PgJson,
+	PgJsonB,
 	PgNumeric,
 	PgReal,
 	PgSerial,
@@ -95,6 +97,12 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgNumeric:
 			isNumeric(column);
 			return numericSchema(column);
+		case PgJson:
+			isJson(column);
+			return jsonSchema(column);
+		case PgJsonB:
+			isJsonb(column);
+			return jsonBSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -412,6 +420,50 @@ function isNumeric(column: PgColumnTypes): asserts column is PgNumeric {
 
 function numericSchema(column: PgNumeric) {
 	return decimalSchema(column);
+}
+
+function isJson(column: PgColumnTypes): asserts column is PgJson {
+	if (column instanceof PgJson) {
+		return;
+	}
+	throw new Error("Only a PgJson column is allowed");
+}
+
+function jsonSchema(column: PgJson | PgJsonB) {
+	const base = z
+		.string()
+		.or(z.number())
+		.or(z.boolean())
+		.or(z.record(z.any()))
+		.transform((val, ctx) => {
+			try {
+				if (typeof val === "string") {
+					return JSON.parse(val);
+				}
+				if (typeof val !== "number" || typeof val !== "boolean") {
+					return JSON.stringify(val);
+				}
+				return val;
+			} catch (e) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: "Invalid JSON",
+				});
+				return z.NEVER;
+			}
+		});
+	return columnSchemaWithBase(column, base);
+}
+
+function isJsonb(column: PgColumnTypes): asserts column is PgJsonB {
+	if (column instanceof PgJsonB) {
+		return;
+	}
+	throw new Error("Only a PgJsonB column is allowed");
+}
+
+function jsonBSchema(column: PgJsonB) {
+	return jsonSchema(column);
 }
 
 function charactedColumnWithMaximumLength(column: PgVarChar | PgChar) {
