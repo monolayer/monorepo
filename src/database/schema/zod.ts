@@ -19,6 +19,8 @@ import {
 	PgText,
 	PgTime,
 	PgTimeTz,
+	PgTimestamp,
+	PgTimestampTz,
 } from "./pg_column.js";
 
 export function zodSchema(column: PgColumnTypes) {
@@ -71,6 +73,12 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgTimeTz:
 			istTimeTz(column);
 			return timeTzSchema(column);
+		case PgTimestamp:
+			isTimestamp(column);
+			return timestampSchema(column);
+		case PgTimestampTz:
+			isTimestampTz(column);
+			return timestampTzSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -318,6 +326,30 @@ function istTimeTz(column: PgColumnTypes): asserts column is PgTimeTz {
 
 function timeTzSchema(column: PgTimeTz) {
 	const base = z.string().regex(TIME_REGEX);
+	return columnSchemaWithBase(column, base);
+}
+
+function isTimestamp(column: PgColumnTypes): asserts column is PgTimestamp {
+	if (column instanceof PgTimestamp) {
+		return;
+	}
+	throw new Error("Only a PgTimestamp column is allowed");
+}
+
+function timestampSchema(column: PgTimestamp) {
+	const base = z.date().or(z.string().pipe(z.coerce.date()));
+	return columnSchemaWithBase(column, base);
+}
+
+function isTimestampTz(column: PgColumnTypes): asserts column is PgTimestampTz {
+	if (column instanceof PgTimestampTz) {
+		return;
+	}
+	throw new Error("Only a PgTimestamp column is allowed");
+}
+
+function timestampTzSchema(column: PgTimestampTz) {
+	const base = z.date().or(z.string().pipe(z.coerce.date()));
 	return columnSchemaWithBase(column, base);
 }
 
