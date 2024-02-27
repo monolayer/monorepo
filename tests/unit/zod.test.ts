@@ -18,6 +18,7 @@ import {
 	timestamp,
 	timestamptz,
 	timetz,
+	uuid,
 } from "~/database/schema/pg_column.js";
 import { zodSchema } from "~/database/schema/zod.js";
 
@@ -1893,6 +1894,116 @@ describe("zod column schemas", () => {
 				column._isPrimaryKey = true;
 				const schema = zodSchema(column);
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+	});
+
+	describe("PgUuid", () => {
+		describe("by default", () => {
+			test("parses strings that can be coerced into uuid", () => {
+				const column = uuid();
+				const schema = zodSchema(column);
+				expect(
+					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
+				).toBe(true);
+			});
+
+			test("does not parse other strings", () => {
+				const column = uuid();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const column = uuid();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const column = uuid();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const column = uuid().defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
+				const schema = zodSchema(column);
+				expect(
+					schema.safeParse("B0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
+				).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = uuid().notNull();
+				const schema = zodSchema(column);
+				expect(
+					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
+				).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = uuid()
+					.notNull()
+					.defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
+				const schema = zodSchema(column);
+				expect(
+					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A12").success,
+				).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("is non nullable and required", () => {
+				const column = uuid();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(
+					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
+				).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable and optional", () => {
+				const column = uuid().defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(
+					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A12").success,
+				).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = uuid().notNull();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(
+					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
+				).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = uuid()
+					.notNull()
+					.defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(
+					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A12").success,
+				).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});

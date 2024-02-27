@@ -21,6 +21,7 @@ import {
 	PgTimeTz,
 	PgTimestamp,
 	PgTimestampTz,
+	PgUuid,
 } from "./pg_column.js";
 
 export function zodSchema(column: PgColumnTypes) {
@@ -79,6 +80,9 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgTimestampTz:
 			isTimestampTz(column);
 			return timestampTzSchema(column);
+		case PgUuid:
+			isUuid(column);
+			return uuidSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -350,6 +354,18 @@ function isTimestampTz(column: PgColumnTypes): asserts column is PgTimestampTz {
 
 function timestampTzSchema(column: PgTimestampTz) {
 	const base = z.date().or(z.string().pipe(z.coerce.date()));
+	return columnSchemaWithBase(column, base);
+}
+
+function isUuid(column: PgColumnTypes): asserts column is PgUuid {
+	if (column instanceof PgUuid) {
+		return;
+	}
+	throw new Error("Only a PgUuid column is allowed");
+}
+
+function uuidSchema(column: PgUuid) {
+	const base = z.string().uuid();
 	return columnSchemaWithBase(column, base);
 }
 
