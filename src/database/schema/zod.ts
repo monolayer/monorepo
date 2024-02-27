@@ -116,16 +116,12 @@ export function zodSchema(column: PgColumnTypes) {
 	}
 }
 
-function columnSchemaWithBase(
-	column: PgColumnTypes,
+function columnSchemaWithBase<T extends z.ZodTypeAny>(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	base: z.ZodType<any, any, any>,
+	column: Exclude<PgColumnTypes, PgEnum<any, any, any, any, any>>,
+	base: T,
 ) {
-	if (column instanceof PgEnum) {
-		return base;
-	}
 	const info = PgColumnBase.info(column);
-
 	if (
 		(column._isPrimaryKey && info.defaultValue !== null) ||
 		(info.isNullable === false && info.defaultValue !== null)
