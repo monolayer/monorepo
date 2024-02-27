@@ -3,6 +3,7 @@ import {
 	PgBigInt,
 	PgBigSerial,
 	PgBoolean,
+	PgBytea,
 	PgChar,
 	PgColumnBase,
 	PgColumnTypes,
@@ -103,6 +104,9 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgJsonB:
 			isJsonb(column);
 			return jsonBSchema(column);
+		case PgBytea:
+			isBytea(column);
+			return byteaSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -464,6 +468,52 @@ function isJsonb(column: PgColumnTypes): asserts column is PgJsonB {
 
 function jsonBSchema(column: PgJsonB) {
 	return jsonSchema(column);
+}
+
+function isBytea(column: PgColumnTypes): asserts column is PgBytea {
+	if (column instanceof PgBytea) {
+		return;
+	}
+	throw new Error("Only a PgBytea column is allowed");
+}
+
+function byteaSchema(column: PgBytea) {
+	const info = PgColumnBase.info(column);
+
+	const base = z.any().transform((val, ctx) => {
+		if (
+			val === null ||
+			val === undefined ||
+			val.constructor.name === "Buffer" ||
+			typeof val === "string"
+		) {
+			return val;
+		}
+		ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			message: "Expected Buffer or String.",
+		});
+		return z.NEVER;
+	});
+
+	if (
+		(column._isPrimaryKey && info.defaultValue !== null) ||
+		info.isNullable === false
+	) {
+		if (info.defaultValue !== null) {
+			return base.optional().refine((val) => val !== null);
+		}
+		return base.refine((val) => val !== null && val !== undefined);
+	}
+
+	if (column._isPrimaryKey) {
+		return base.refine((val) => val !== null && val !== undefined);
+	}
+
+	if (!column._isPrimaryKey && info.isNullable === true) {
+		return base.optional();
+	}
+	return base;
 }
 
 function charactedColumnWithMaximumLength(column: PgVarChar | PgChar) {

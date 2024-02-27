@@ -3,6 +3,7 @@ import {
 	bigint,
 	bigserial,
 	boolean,
+	bytea,
 	char,
 	date,
 	doublePrecision,
@@ -2608,6 +2609,107 @@ describe("zod column schemas", () => {
 
 			test("with default and notNull is non nullable and optional", () => {
 				const column = jsonb().notNull().defaultTo("1");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("2").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+	});
+
+	describe("PgBytea", () => {
+		describe("by default", () => {
+			test("parses buffers", () => {
+				const column = bytea();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(Buffer.from("hello")).success).toBe(true);
+			});
+
+			test("parses strings", () => {
+				const column = bytea();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+			});
+
+			test("parses null", () => {
+				const column = bytea();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("does not parse other objects", () => {
+				const column = bytea();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1).success).toBe(false);
+				expect(schema.safeParse(10.123).success).toBe(false);
+				expect(schema.safeParse(true).success).toBe(false);
+				expect(schema.safeParse(new Date()).success).toBe(false);
+				expect(schema.safeParse({ a: 1 }).success).toBe(false);
+				expect(schema.safeParse(Date).success).toBe(false);
+			});
+
+			test("parses undefined", () => {
+				const column = bytea();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const column = bytea().defaultTo(Buffer.from("1"));
+				const schema = zodSchema(column);
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = bytea().notNull();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = bytea().notNull().defaultTo("1");
+				const schema = zodSchema(column);
+				expect(schema.safeParse("2").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("is non nullable and required", () => {
+				const column = bytea();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable and optional", () => {
+				const column = bytea().defaultTo("1");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("2").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = bytea().notNull();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = bytea().notNull().defaultTo("1");
 				column._isPrimaryKey = true;
 				const schema = zodSchema(column);
 				expect(schema.safeParse("2").success).toBe(true);
