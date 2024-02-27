@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+	type ColumnInfo,
 	PgBigInt,
 	PgBigSerial,
 	PgBoolean,
@@ -107,6 +108,9 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgBytea:
 			isBytea(column);
 			return byteaSchema(column);
+		case PgEnum:
+			isEnum(column);
+			return enumSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -478,8 +482,6 @@ function isBytea(column: PgColumnTypes): asserts column is PgBytea {
 }
 
 function byteaSchema(column: PgBytea) {
-	const info = PgColumnBase.info(column);
-
 	const base = z.any().transform((val, ctx) => {
 		if (
 			val === null ||
@@ -496,6 +498,35 @@ function byteaSchema(column: PgBytea) {
 		return z.NEVER;
 	});
 
+	return columnSchemaFromNullAndUndefined(
+		column,
+		PgColumnBase.info(column),
+		base,
+	);
+}
+
+function isEnum(
+	column: PgColumnTypes,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+): asserts column is PgEnum<any, any, any, any, any> {
+	if (column instanceof PgEnum) {
+		return;
+	}
+	throw new Error("Only a PgEnum column is allowed");
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+function enumSchema(column: PgEnum<any, any, any, any, any>) {
+	const base = z.enum(column.values).or(z.null()).or(z.undefined());
+	return columnSchemaFromNullAndUndefined(column, column.info, base);
+}
+
+function columnSchemaFromNullAndUndefined<T extends z.ZodTypeAny>(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	column: PgBytea | PgEnum<any, any, any, any, any>,
+	info: Omit<ColumnInfo, "columnName" | "tableName">,
+	base: T,
+) {
 	if (
 		(column._isPrimaryKey && info.defaultValue !== null) ||
 		info.isNullable === false
