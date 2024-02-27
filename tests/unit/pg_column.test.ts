@@ -373,17 +373,8 @@ describe("pgBytea", () => {
 			column.defaultTo(buffer);
 			expect(info.defaultValue).toBe("'\\x68656c6c6f'::bytea");
 
-			column.defaultTo(12);
-			expect(info.defaultValue).toBe("'\\x3132'::bytea");
-
 			column.defaultTo("12");
 			expect(info.defaultValue).toBe("'\\x3132'::bytea");
-
-			column.defaultTo(true);
-			expect(info.defaultValue).toBe("'\\x74727565'::bytea");
-
-			column.defaultTo({ a: 1, b: 2 });
-			expect(info.defaultValue).toBe("'\\x7b2261223a312c2262223a327d'::bytea");
 
 			const expression = sql`\\x7b2261223a312c2262223a327d'::bytea`;
 			column.defaultTo(expression);

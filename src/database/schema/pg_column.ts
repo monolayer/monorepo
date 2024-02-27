@@ -275,23 +275,12 @@ export type NestedRecord = {
 	[k: string]: string | number | boolean | NestedRecord;
 };
 
-export class PgBytea extends PgColumn<
-	Buffer,
-	Buffer | string | boolean | number | NestedRecord
-> {
+export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 	constructor() {
 		super("bytea", DefaultValueDataTypes.bytea);
 	}
 
-	defaultTo(
-		value:
-			| Buffer
-			| string
-			| boolean
-			| number
-			| NestedRecord
-			| Expression<unknown>,
-	) {
+	defaultTo(value: Buffer | string | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
