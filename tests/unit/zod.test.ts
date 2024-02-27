@@ -2290,10 +2290,6 @@ describe("zod column schemas", () => {
 				test("parses on digit count before decimal less than precision", () => {
 					const column = numeric(5);
 					const schema = zodSchema(column);
-					const result = schema.safeParse(1234.1);
-					if (!result.success) {
-						console.dir(result.error, { depth: null });
-					}
 					expect(schema.safeParse(1234.1).success).toBe(true);
 					expect(schema.safeParse(1234).success).toBe(true);
 					expect(schema.safeParse("1234.1").success).toBe(true);
