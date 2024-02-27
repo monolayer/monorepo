@@ -3,6 +3,7 @@ import {
 	PgBigInt,
 	PgBigSerial,
 	PgBoolean,
+	PgChar,
 	PgColumnBase,
 	PgColumnTypes,
 	PgDate,
@@ -22,6 +23,7 @@ import {
 	PgTimestamp,
 	PgTimestampTz,
 	PgUuid,
+	PgVarChar,
 } from "./pg_column.js";
 
 export function zodSchema(column: PgColumnTypes) {
@@ -83,6 +85,12 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgUuid:
 			isUuid(column);
 			return uuidSchema(column);
+		case PgVarChar:
+			isVarChar(column);
+			return varCharSchema(column);
+		case PgChar:
+			isChar(column);
+			return charSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -367,6 +375,39 @@ function isUuid(column: PgColumnTypes): asserts column is PgUuid {
 function uuidSchema(column: PgUuid) {
 	const base = z.string().uuid();
 	return columnSchemaWithBase(column, base);
+}
+
+function isVarChar(column: PgColumnTypes): asserts column is PgVarChar {
+	if (column instanceof PgVarChar) {
+		return;
+	}
+	throw new Error("Only a PgVarChar column is allowed");
+}
+
+function varCharSchema(column: PgVarChar) {
+	return charactedColumnWithMaximumLength(column);
+}
+
+function isChar(column: PgColumnTypes): asserts column is PgChar {
+	if (column instanceof PgChar) {
+		return;
+	}
+	throw new Error("Only a PgChar column is allowed");
+}
+
+function charSchema(column: PgChar) {
+	return charactedColumnWithMaximumLength(column);
+}
+
+function charactedColumnWithMaximumLength(column: PgVarChar | PgChar) {
+	const info = PgColumnBase.info(column);
+	if (info.characterMaximumLength !== null) {
+		return columnSchemaWithBase(
+			column,
+			z.string().max(info.characterMaximumLength),
+		);
+	}
+	return columnSchemaWithBase(column, z.string());
 }
 
 function variablePrecisionSchema(

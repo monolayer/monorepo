@@ -3,6 +3,7 @@ import {
 	bigint,
 	bigserial,
 	boolean,
+	char,
 	date,
 	doublePrecision,
 	float4,
@@ -19,6 +20,7 @@ import {
 	timestamptz,
 	timetz,
 	uuid,
+	varchar,
 } from "~/database/schema/pg_column.js";
 import { zodSchema } from "~/database/schema/zod.js";
 
@@ -2004,6 +2006,205 @@ describe("zod column schemas", () => {
 				expect(
 					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A12").success,
 				).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+	});
+
+	describe("PgVarChar", () => {
+		describe("by default", () => {
+			test("parses strings", () => {
+				const column = varchar();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+			});
+
+			test("does not parse other objects", () => {
+				const column = varchar();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1).success).toBe(false);
+				expect(schema.safeParse(new Date()).success).toBe(false);
+				expect(schema.safeParse({ foo: "bar" }).success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const column = varchar();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const column = varchar();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const column = varchar().defaultTo("hello");
+				const schema = zodSchema(column);
+				expect(schema.safeParse("foo").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = varchar().notNull();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = varchar().notNull().defaultTo("hello");
+				const schema = zodSchema(column);
+				expect(schema.safeParse("foo").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("without maximum length", () => {
+				const column = varchar();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse("hello!").success).toBe(true);
+			});
+
+			test("with maximum length", () => {
+				const column = varchar(5);
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse("hello!").success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("is non nullable and required", () => {
+				const column = varchar();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable and optional", () => {
+				const column = varchar().defaultTo("hello");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("foo").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = varchar().notNull();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = varchar().notNull().defaultTo("hello");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("foo").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+	});
+
+	describe("PgChar", () => {
+		describe("by default", () => {
+			test("parses strings up to the maximum length", () => {
+				const column = char(5);
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse("hello!").success).toBe(false);
+			});
+
+			test("does not parse other objects", () => {
+				const column = char(5);
+				const schema = zodSchema(column);
+				expect(schema.safeParse(1).success).toBe(false);
+				expect(schema.safeParse(new Date()).success).toBe(false);
+				expect(schema.safeParse({ foo: "bar" }).success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const column = char();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const column = char();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const column = char(5).defaultTo("hello");
+				const schema = zodSchema(column);
+				expect(schema.safeParse("foo").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = char(5).notNull();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = char(5).notNull().defaultTo("hello");
+				const schema = zodSchema(column);
+				expect(schema.safeParse("foo").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("is non nullable and required", () => {
+				const column = char(5);
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable and optional", () => {
+				const column = char(5).defaultTo("hello");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("foo").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = char(5).notNull();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = char(5).notNull().defaultTo("hello");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
