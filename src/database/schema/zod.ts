@@ -17,6 +17,8 @@ import {
 	PgReal,
 	PgSerial,
 	PgText,
+	PgTime,
+	PgTimeTz,
 } from "./pg_column.js";
 
 export function zodSchema(column: PgColumnTypes) {
@@ -63,6 +65,12 @@ export function zodSchema(column: PgColumnTypes) {
 		case PgInt2:
 			isInt2(column);
 			return int2Schema(column);
+		case PgTime:
+			isTime(column);
+			return timeSchema(column);
+		case PgTimeTz:
+			istTimeTz(column);
+			return timeTzSchema(column);
 		default:
 			return z.unknown();
 	}
@@ -285,6 +293,34 @@ function isInt2(column: PgColumnTypes): asserts column is PgInt2 {
 function int2Schema(column: PgInt2) {
 	return wholeNumberSchema(column, -32768, 32767);
 }
+
+const TIME_REGEX =
+	/^((?:\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:[+-]\d{1,2}(?::?\d{2})?)?)|(\d{6}(?:[+-]\d{2}(?::?\d{2}){0,2})?))$/;
+
+function isTime(column: PgColumnTypes): asserts column is PgTime {
+	if (column instanceof PgTime) {
+		return;
+	}
+	throw new Error("Only a PgTime column is allowed");
+}
+
+function timeSchema(column: PgTime) {
+	const base = z.string().regex(TIME_REGEX);
+	return columnSchemaWithBase(column, base);
+}
+
+function istTimeTz(column: PgColumnTypes): asserts column is PgTimeTz {
+	if (column instanceof PgTimeTz) {
+		return;
+	}
+	throw new Error("Only a PgTimeTz column is allowed");
+}
+
+function timeTzSchema(column: PgTimeTz) {
+	const base = z.string().regex(TIME_REGEX);
+	return columnSchemaWithBase(column, base);
+}
+
 function variablePrecisionSchema(
 	column: PgDoublePrecision | PgFloat8 | PgReal | PgFloat4,
 	minimum: number,

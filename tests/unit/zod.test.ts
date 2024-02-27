@@ -14,6 +14,8 @@ import {
 	real,
 	serial,
 	text,
+	time,
+	timetz,
 } from "~/database/schema/pg_column.js";
 import { zodSchema } from "~/database/schema/zod.js";
 
@@ -1497,6 +1499,206 @@ describe("zod column schemas", () => {
 				column._isPrimaryKey = true;
 				const schema = zodSchema(column);
 				expect(schema.safeParse(1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+	});
+
+	describe("PgTime", () => {
+		describe("by default", () => {
+			test("parses time strings", () => {
+				const column = timetz();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("11:30").success).toBe(true);
+				expect(schema.safeParse("11:30:01").success).toBe(true);
+				expect(schema.safeParse("11:30:01.129").success).toBe(true);
+				expect(schema.safeParse("040506").success).toBe(true);
+				expect(schema.safeParse("040506-08").success).toBe(true);
+				expect(schema.safeParse("04:05:06.789-8").success).toBe(true);
+				expect(schema.safeParse("04:05:06-08:00").success).toBe(true);
+				expect(schema.safeParse("04:05-08:00").success).toBe(true);
+				expect(schema.safeParse("040506+0730").success).toBe(true);
+				expect(schema.safeParse("040506-0730").success).toBe(true);
+				expect(schema.safeParse("040506+07:30:00").success).toBe(true);
+			});
+
+			test("does not parse other strings", () => {
+				const column = time();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const column = time();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const column = time();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const column = time().defaultTo("11:30");
+				const schema = zodSchema(column);
+				expect(schema.safeParse("01:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = time().notNull();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("11:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = time().notNull().defaultTo("11:30");
+				const schema = zodSchema(column);
+				expect(schema.safeParse("02:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("is non nullable and required", () => {
+				const column = time();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("11:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable and optional", () => {
+				const column = time().defaultTo("11:30");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("10:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = time().notNull();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("11:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = time().notNull().defaultTo("11:30");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("10:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+	});
+
+	describe("PgTimeTz", () => {
+		describe("by default", () => {
+			test("parses time strings", () => {
+				const column = timetz();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("11:30").success).toBe(true);
+				expect(schema.safeParse("11:30:01").success).toBe(true);
+				expect(schema.safeParse("11:30:01.129").success).toBe(true);
+				expect(schema.safeParse("040506").success).toBe(true);
+				expect(schema.safeParse("040506-08").success).toBe(true);
+				expect(schema.safeParse("04:05:06.789-8").success).toBe(true);
+				expect(schema.safeParse("04:05:06-08:00").success).toBe(true);
+				expect(schema.safeParse("04:05-08:00").success).toBe(true);
+				expect(schema.safeParse("040506+0730").success).toBe(true);
+				expect(schema.safeParse("040506-0730").success).toBe(true);
+				expect(schema.safeParse("040506+07:30:00").success).toBe(true);
+			});
+
+			test("does not parse other strings", () => {
+				const column = timetz();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("hello").success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const column = timetz();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const column = timetz();
+				const schema = zodSchema(column);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const column = timetz().defaultTo("11:30");
+				const schema = zodSchema(column);
+				expect(schema.safeParse("01:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = timetz().notNull();
+				const schema = zodSchema(column);
+				expect(schema.safeParse("11:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = timetz().notNull().defaultTo("11:30");
+				const schema = zodSchema(column);
+				expect(schema.safeParse("02:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("is non nullable and required", () => {
+				const column = time();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("11:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable and optional", () => {
+				const column = time().defaultTo("11:30");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("10:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const column = time().notNull();
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("11:30").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const column = time().notNull().defaultTo("11:30");
+				column._isPrimaryKey = true;
+				const schema = zodSchema(column);
+				expect(schema.safeParse("10:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
