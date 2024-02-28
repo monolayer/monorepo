@@ -112,7 +112,7 @@ export function zodSchema(column: PgColumnTypes) {
 			isEnum(column);
 			return enumSchema(column);
 		default:
-			return z.unknown();
+			return z.NEVER;
 	}
 }
 
@@ -442,10 +442,10 @@ function jsonSchema(column: PgJson | PgJsonB) {
 		.transform((val, ctx) => {
 			try {
 				if (typeof val === "string") {
-					return JSON.parse(val);
+					JSON.parse(val);
 				}
 				if (typeof val !== "number" || typeof val !== "boolean") {
-					return JSON.stringify(val);
+					JSON.stringify(val);
 				}
 				return val;
 			} catch (e) {
@@ -478,7 +478,7 @@ function isBytea(column: PgColumnTypes): asserts column is PgBytea {
 }
 
 function byteaSchema(column: PgBytea) {
-	const base = z.any().transform((val, ctx) => {
+	const base = z.any().transform((val, ctx): Buffer => {
 		if (
 			val === null ||
 			val === undefined ||
@@ -494,11 +494,12 @@ function byteaSchema(column: PgBytea) {
 		return z.NEVER;
 	});
 
-	return columnSchemaFromNullAndUndefined(
-		column,
-		PgColumnBase.info(column),
-		base,
-	);
+	const schema: z.ZodType<
+		Buffer | string | null | undefined,
+		z.ZodTypeDef,
+		Buffer | string | null | undefined
+	> = columnSchemaFromNullAndUndefined(column, PgColumnBase.info(column), base);
+	return schema;
 }
 
 function isEnum(
@@ -511,10 +512,17 @@ function isEnum(
 	throw new Error("Only a PgEnum column is allowed");
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function enumSchema(column: PgEnum<any, any, any, any, any>) {
-	const base = z.enum(column.values).or(z.null()).or(z.undefined());
-	return columnSchemaFromNullAndUndefined(column, column.info, base);
+function enumSchema(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	column: PgEnum<any, any, any, any, any>,
+) {
+	const base = z.null().or(z.undefined().or(z.enum(column.values)));
+	const schema: z.ZodType<
+		string | null | undefined,
+		z.ZodTypeDef,
+		string | null | undefined
+	> = columnSchemaFromNullAndUndefined(column, column.info, base);
+	return schema;
 }
 
 function columnSchemaFromNullAndUndefined<T extends z.ZodTypeAny>(
