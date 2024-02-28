@@ -1,5 +1,14 @@
 import { type ColumnDataType, type ColumnType, type Expression } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
+import { z } from "zod";
+import {
+	bigintSchema,
+	columnSchemaFromNullAndUndefined,
+	decimalSchema,
+	jsonSchema,
+	variablePrecisionSchema,
+	wholeNumberSchema,
+} from "./zod.js";
 
 export type ColumnInfo = {
 	columnName: string | null;
@@ -183,6 +192,27 @@ export class PgColumn<S, I, U = I>
 			_generatedAlways: true;
 		};
 	}
+
+	schemaWithoptions<T extends z.ZodTypeAny>(base: T) {
+		if (this.#optional()) {
+			return base.optional();
+		}
+		if (this.#nullableAndOptional()) {
+			return base.nullable().optional();
+		}
+		return base;
+	}
+
+	#optional() {
+		return (
+			(this._isPrimaryKey && this.info.defaultValue !== null) ||
+			(this.info.isNullable === false && this.info.defaultValue !== null)
+		);
+	}
+
+	#nullableAndOptional() {
+		return !this._isPrimaryKey && this.info.isNullable;
+	}
 }
 
 export class PgGeneratedColumn<T, U>
@@ -232,6 +262,15 @@ export class PgBoolean extends PgColumn<boolean, boolean> {
 			_hasDefault: true;
 		};
 	}
+
+	zodSchema() {
+		const base = z
+			.boolean()
+			.or(z.string().refine((s) => s === "true" || s === "false"))
+			.pipe(z.coerce.boolean());
+
+		return this.schemaWithoptions(base);
+	}
 }
 
 export function text() {
@@ -242,6 +281,11 @@ export class PgText extends PgColumn<string, string> {
 	constructor() {
 		super("text", DefaultValueDataTypes.text);
 	}
+
+	zodSchema() {
+		const base = z.string();
+		return this.schemaWithoptions(base);
+	}
 }
 
 export function bigint() {
@@ -251,6 +295,13 @@ export function bigint() {
 export class PgBigInt extends PgColumn<string, number | bigint | string> {
 	constructor() {
 		super("bigint", DefaultValueDataTypes.bigint);
+	}
+
+	zodSchema() {
+		const base = bigintSchema().pipe(
+			z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
+		);
+		return this.schemaWithoptions(base);
 	}
 }
 
@@ -264,6 +315,12 @@ export class PgBigSerial extends PgGeneratedColumn<
 > {
 	constructor() {
 		super("bigserial", DefaultValueDataTypes.bigserial);
+	}
+
+	zodSchema() {
+		return bigintSchema()
+			.pipe(z.coerce.bigint().min(1n).max(9223372036854775807n))
+			.optional();
 	}
 }
 
@@ -314,6 +371,36 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 			_hasDefault: true;
 		};
 	}
+
+	zodSchema() {
+		const base = z.any().transform((val, ctx): Buffer => {
+			if (
+				val === null ||
+				val === undefined ||
+				val.constructor.name === "Buffer" ||
+				typeof val === "string"
+			) {
+				return val;
+			}
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "Expected Buffer or String.",
+			});
+			return z.NEVER;
+		});
+
+		const schema: z.ZodType<
+			Buffer | string | null | undefined,
+			z.ZodTypeDef,
+			Buffer | string | null | undefined
+		> = columnSchemaFromNullAndUndefined(
+			this._isPrimaryKey,
+			this.info.defaultValue,
+			this.info.isNullable,
+			base,
+		);
+		return schema;
+	}
 }
 
 export function date() {
@@ -323,6 +410,11 @@ export function date() {
 export class PgDate extends PgColumn<Date, Date | string> {
 	constructor() {
 		super("date", DefaultValueDataTypes.date);
+	}
+
+	zodSchema() {
+		const base = z.date().or(z.string().pipe(z.coerce.date()));
+		return this.schemaWithoptions(base);
 	}
 }
 
@@ -337,6 +429,11 @@ export class PgDoublePrecision extends PgColumn<
 	constructor() {
 		super("double precision", DefaultValueDataTypes["double precision"]);
 	}
+
+	zodSchema() {
+		const base = variablePrecisionSchema(-1e308, 1e308);
+		return this.schemaWithoptions(base);
+	}
 }
 
 export function float4() {
@@ -346,6 +443,11 @@ export function float4() {
 export class PgFloat4 extends PgColumn<number, number | bigint | string> {
 	constructor() {
 		super("real", DefaultValueDataTypes.real);
+	}
+
+	zodSchema() {
+		const base = variablePrecisionSchema(-1e37, 1e37);
+		return this.schemaWithoptions(base);
 	}
 }
 
@@ -357,6 +459,11 @@ export class PgFloat8 extends PgColumn<number, number | bigint | string> {
 	constructor() {
 		super("double precision", DefaultValueDataTypes["double precision"]);
 	}
+
+	zodSchema() {
+		const base = variablePrecisionSchema(-1e308, 1e308);
+		return this.schemaWithoptions(base);
+	}
 }
 
 export function int2() {
@@ -366,6 +473,11 @@ export function int2() {
 export class PgInt2 extends PgColumn<number, number | string> {
 	constructor() {
 		super("smallint", DefaultValueDataTypes.smallint);
+	}
+
+	zodSchema() {
+		const base = wholeNumberSchema(-32768, 32767);
+		return this.schemaWithoptions(base);
 	}
 }
 
@@ -393,6 +505,11 @@ export class PgInt4 extends PgColumn<number, number | string> {
 			_hasDefault: true;
 		};
 	}
+
+	zodSchema() {
+		const base = wholeNumberSchema(-2147483648, 2147483647);
+		return this.schemaWithoptions(base);
+	}
 }
 
 export function int8() {
@@ -402,6 +519,13 @@ export function int8() {
 export class PgInt8 extends PgColumn<number, number | bigint | string> {
 	constructor() {
 		super("bigint", DefaultValueDataTypes.bigint);
+	}
+
+	zodSchema() {
+		const base = bigintSchema().pipe(
+			z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
+		);
+		return this.schemaWithoptions(base);
 	}
 }
 
@@ -429,6 +553,11 @@ export class PgInteger extends PgColumn<number, number | string> {
 			_hasDefault: true;
 		};
 	}
+
+	zodSchema() {
+		const base = wholeNumberSchema(-2147483648, 2147483647);
+		return this.schemaWithoptions(base);
+	}
 }
 
 export function json() {
@@ -449,6 +578,11 @@ export class PgJson extends PgColumn<JsonValue, string> {
 	constructor() {
 		super("json", DefaultValueDataTypes.json);
 	}
+
+	zodSchema() {
+		const base = jsonSchema();
+		return this.schemaWithoptions(base);
+	}
 }
 
 export function jsonb() {
@@ -458,6 +592,11 @@ export function jsonb() {
 export class PgJsonB extends PgColumn<JsonValue, string> {
 	constructor() {
 		super("jsonb", DefaultValueDataTypes.jsonb);
+	}
+
+	zodSchema() {
+		const base = jsonSchema();
+		return this.schemaWithoptions(base);
 	}
 }
 
@@ -469,6 +608,11 @@ export class PgReal extends PgColumn<number, number | bigint | string> {
 	constructor() {
 		super("real", DefaultValueDataTypes.real);
 	}
+
+	zodSchema() {
+		const base = variablePrecisionSchema(-1e37, 1e37);
+		return this.schemaWithoptions(base);
+	}
 }
 
 export function serial() {
@@ -478,6 +622,14 @@ export function serial() {
 export class PgSerial extends PgGeneratedColumn<number, number | string> {
 	constructor() {
 		super("serial", DefaultValueDataTypes.serial);
+	}
+
+	zodSchema() {
+		return z
+			.number()
+			.or(z.string())
+			.pipe(z.coerce.number().min(1).max(2147483648))
+			.optional();
 	}
 }
 
@@ -501,6 +653,11 @@ export class PgUuid extends PgColumn<string, string> {
 			_hasDefault: true;
 		};
 	}
+
+	zodSchema() {
+		const base = z.string().uuid();
+		return this.schemaWithoptions(base);
+	}
 }
 
 export class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
@@ -522,13 +679,31 @@ export function varchar(maximumLength?: number) {
 	return new PgVarChar("varchar", maximumLength);
 }
 
-export class PgVarChar extends PgColumnWithMaximumLength<string, string> {}
+export class PgVarChar extends PgColumnWithMaximumLength<string, string> {
+	zodSchema() {
+		if (this.info.characterMaximumLength !== null) {
+			return this.schemaWithoptions(
+				z.string().max(this.info.characterMaximumLength),
+			);
+		}
+		return this.schemaWithoptions(z.string());
+	}
+}
 
 export function char(maximumLength?: number) {
 	return new PgChar("char", maximumLength ? maximumLength : 1);
 }
 
-export class PgChar extends PgColumnWithMaximumLength<string, string> {}
+export class PgChar extends PgColumnWithMaximumLength<string, string> {
+	zodSchema() {
+		if (this.info.characterMaximumLength !== null) {
+			return this.schemaWithoptions(
+				z.string().max(this.info.characterMaximumLength),
+			);
+		}
+		return this.schemaWithoptions(z.string());
+	}
+}
 
 type DateTimePrecision = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -560,29 +735,52 @@ export class PgColumnWithPrecision<T, U> extends PgColumn<T, U> {
 	}
 }
 
+const TIME_REGEX =
+	/^((?:\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:[+-]\d{1,2}(?::?\d{2})?)?)|(\d{6}(?:[+-]\d{2}(?::?\d{2}){0,2})?))$/;
+
 export function time(precision?: DateTimePrecision) {
 	return new PgTime("time", precision);
 }
 
-export class PgTime extends PgColumnWithPrecision<string, string> {}
+export class PgTime extends PgColumnWithPrecision<string, string> {
+	zodSchema() {
+		const base = z.string().regex(TIME_REGEX);
+		return this.schemaWithoptions(base);
+	}
+}
 
 export function timetz(precision?: DateTimePrecision) {
 	return new PgTimeTz("timetz", precision);
 }
 
-export class PgTimeTz extends PgColumnWithPrecision<string, string> {}
+export class PgTimeTz extends PgColumnWithPrecision<string, string> {
+	zodSchema() {
+		const base = z.string().regex(TIME_REGEX);
+		return this.schemaWithoptions(base);
+	}
+}
 
 export function timestamp(precision?: DateTimePrecision) {
 	return new PgTimestamp("timestamp", precision);
 }
 
-export class PgTimestamp extends PgColumnWithPrecision<Date, Date | string> {}
+export class PgTimestamp extends PgColumnWithPrecision<Date, Date | string> {
+	zodSchema() {
+		const base = z.date().or(z.string().pipe(z.coerce.date()));
+		return this.schemaWithoptions(base);
+	}
+}
 
 export function timestamptz(precision?: DateTimePrecision) {
 	return new PgTimestampTz("timestamptz", precision);
 }
 
-export class PgTimestampTz extends PgColumnWithPrecision<Date, Date | string> {}
+export class PgTimestampTz extends PgColumnWithPrecision<Date, Date | string> {
+	zodSchema() {
+		const base = z.date().or(z.string().pipe(z.coerce.date()));
+		return this.schemaWithoptions(base);
+	}
+}
 
 export function numeric(precision?: number, scale?: number) {
 	return new PgNumeric(precision, scale);
@@ -597,6 +795,14 @@ export class PgNumeric extends PgColumn<string, number | bigint | string> {
 		} else {
 			super("numeric", DefaultValueDataTypes.numeric);
 		}
+	}
+
+	zodSchema() {
+		const base = decimalSchema(
+			this.info.numericPrecision,
+			this.info.numericScale,
+		);
+		return this.schemaWithoptions(base);
 	}
 }
 
@@ -661,6 +867,22 @@ export class PgEnum<
 	renameFrom(name: string) {
 		this.info.renameFrom = name;
 		return this;
+	}
+
+	zodSchema() {
+		const enumValues = this.values as unknown as [string, ...string[]];
+		const base = z.null().or(z.undefined().or(z.enum(enumValues)));
+		const schema: z.ZodType<
+			string | null | undefined,
+			z.ZodTypeDef,
+			string | null | undefined
+		> = columnSchemaFromNullAndUndefined(
+			this._isPrimaryKey,
+			this.info.defaultValue,
+			this.info.isNullable,
+			base,
+		);
+		return schema;
 	}
 }
 
