@@ -91,12 +91,11 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with always as identity", () => {
-		const column = varchar(100).generatedAlwaysAsIdentity();
+		const column = integer().generatedAlwaysAsIdentity();
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
-			dataType: "varchar(100)",
-			characterMaximumLength: 100,
+			dataType: "integer",
 			identity: ColumnIdentity.Always,
 			isNullable: false,
 		});
@@ -105,12 +104,11 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with by default as identity", () => {
-		const column = varchar(100).generatedByDefaultAsIdentity();
+		const column = integer().generatedByDefaultAsIdentity();
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
-			dataType: "varchar(100)",
-			characterMaximumLength: 100,
+			dataType: "integer",
 			identity: ColumnIdentity.ByDefault,
 			isNullable: false,
 		});

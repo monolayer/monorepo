@@ -165,16 +165,6 @@ describe("PgColumn", () => {
 			expect(info.defaultValue).toBe(someSqlExpression);
 		});
 	});
-
-	test("generatedAlwaysAsIdentity sets identity to ALWAYS", (context: ColumnWithDefaultContext) => {
-		context.column.generatedAlwaysAsIdentity();
-		expect(context.columnInfo.identity).toBe("ALWAYS");
-	});
-
-	test("generatedByDefaultAsIdentity sets identity to BY DEFAULT", (context: ColumnWithDefaultContext) => {
-		context.column.generatedByDefaultAsIdentity();
-		expect(context.columnInfo.identity).toBe("BY DEFAULT");
-	});
 });
 
 describe("PgGeneratedColumn", () => {
@@ -217,6 +207,22 @@ describe("PgGeneratedColumn", () => {
 
 	test("is not a primary key by default", (context: ColumnWithDefaultContext) => {
 		expect(context.column._isPrimaryKey).toBe(false);
+	});
+});
+
+describe("PgIdentifiableColumn", () => {
+	test("generatedAlwaysAsIdentity sets identity to ALWAYS", () => {
+		const column = integer();
+		column.generatedAlwaysAsIdentity();
+		const columnInfo = Object.fromEntries(Object.entries(column)).info;
+		expect(columnInfo.identity).toBe("ALWAYS");
+	});
+
+	test("generatedByDefaultAsIdentity sets identity to BY DEFAULT", () => {
+		const column = integer();
+		column.generatedByDefaultAsIdentity();
+		const columnInfo = Object.fromEntries(Object.entries(column)).info;
+		expect(columnInfo.identity).toBe("BY DEFAULT");
 	});
 });
 
@@ -284,6 +290,22 @@ describe("pgBoolean", () => {
 			const expression = sql`true`;
 			column.defaultTo(expression);
 			expect(info.defaultValue).toBe(expression);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = boolean() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = boolean() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
 		});
 
 		describe("column type", () => {
@@ -549,6 +571,22 @@ describe("pgText", () => {
 			column.defaultTo("foo");
 			expect(info.defaultValue).toBe("'foo'::text");
 		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = text() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = text() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
 	});
 
 	describe("zod", () => {
@@ -713,6 +751,18 @@ describe("pgBigInt", () => {
 
 			column.defaultTo("12");
 			expect(info.defaultValue).toBe("'12'::bigint");
+		});
+
+		test("has generatedAlwaysAsIdentity", () => {
+			const column = bigint();
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
+		});
+
+		test("has generatedByDefaultAsIdentity", () => {
+			const column = bigint();
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				true,
+			);
 		});
 	});
 
@@ -903,6 +953,22 @@ describe("pgBigSerial", () => {
 			const info = Object.fromEntries(Object.entries(bigserial())).info;
 			expect(info.dataType).toBe("bigserial");
 		});
+
+		test("does not have generatedAlwaysAsIdentity", (context) => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = bigserial() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", (context) => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = bigserial() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
 	});
 
 	describe("zod", () => {
@@ -1011,6 +1077,22 @@ describe("pgBytea", () => {
 			const expression = sql`\\x7b2261223a312c2262223a327d'::bytea`;
 			column.defaultTo(expression);
 			expect(info.defaultValue).toBe(expression);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = bytea() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = bytea() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
 		});
 	});
 
@@ -1196,6 +1278,22 @@ describe("pgDate", () => {
 			column.defaultTo(new Date(1).toISOString());
 			expect(info.defaultValue).toBe("'1970-01-01'::date");
 		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = date() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = date() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
 	});
 
 	describe("zod", () => {
@@ -1372,6 +1470,22 @@ describe("pgDoublePrecision", () => {
 
 			column.defaultTo(102n);
 			expect(info.defaultValue).toBe("'102'::double precision");
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = doublePrecision() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = doublePrecision() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
 		});
 	});
 
@@ -1587,7 +1701,24 @@ describe("pgFloat4", () => {
 			column.defaultTo(102n);
 			expect(info.defaultValue).toBe("'102'::real");
 		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = float4() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = float4() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
 	});
+
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is number, bigint, string or null", () => {
@@ -1800,6 +1931,22 @@ describe("pgFloat8", () => {
 			column.defaultTo(102n);
 			expect(info.defaultValue).toBe("'102'::double precision");
 		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = float8() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = float8() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
 	});
 
 	describe("zod", () => {
@@ -2011,6 +2158,20 @@ describe("pgInt2", () => {
 			column.defaultTo("10");
 			expect(info.defaultValue).toBe("'10'::smallint");
 		});
+
+		test("has have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = int2() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = int2() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				true,
+			);
+		});
 	});
 
 	describe("zod", () => {
@@ -2215,6 +2376,20 @@ describe("pgInt4", () => {
 			column.defaultTo(expression);
 			expect(info.defaultValue).toBe(expression);
 		});
+
+		test("has generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = int4() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
+		});
+
+		test("has generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = int4() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				true,
+			);
+		});
 	});
 
 	describe("zod", () => {
@@ -2417,6 +2592,20 @@ describe("pgInt8", () => {
 
 			column.defaultTo("10");
 			expect(info.defaultValue).toBe("'10'::bigint");
+		});
+
+		test("has generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = int8() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
+		});
+
+		test("has generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = int8() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				true,
+			);
 		});
 	});
 
@@ -2641,6 +2830,20 @@ describe("pgInteger", () => {
 			column.defaultTo(expression);
 			expect(info.defaultValue).toBe(expression);
 		});
+
+		test("has generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = integer() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
+		});
+
+		test("has generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = integer() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				true,
+			);
+		});
 	});
 
 	describe("zod", () => {
@@ -2839,6 +3042,22 @@ describe("pgJson", () => {
 
 			column.defaultTo('{ "foo": "bar" }');
 			expect(info.defaultValue).toBe('\'{ "foo": "bar" }\'::json');
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = json() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = json() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
 		});
 	});
 
@@ -3040,6 +3259,22 @@ describe("pgJsonB", () => {
 
 			column.defaultTo('{ "foo": "bar" }');
 			expect(info.defaultValue).toBe('\'{ "foo": "bar" }\'::jsonb');
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = jsonb() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = jsonb() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
 		});
 	});
 
@@ -3245,6 +3480,22 @@ describe("pgReal", () => {
 			column.defaultTo(100n);
 			expect(info.defaultValue).toBe("'100'::real");
 		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = real() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = real() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
 	});
 
 	describe("zod", () => {
@@ -3448,6 +3699,22 @@ describe("pgSerial", () => {
 			const info = Object.fromEntries(Object.entries(serial())).info;
 			expect(info.isNullable).toBe(false);
 		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = serial() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = serial() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
 	});
 
 	describe("zod", () => {
@@ -3561,6 +3828,22 @@ describe("pgUuid", () => {
 			const expression = sql`'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid`;
 			column.defaultTo(expression);
 			expect(info.defaultValue).toBe(expression);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = uuid() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = uuid() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
 		});
 	});
 
@@ -3748,6 +4031,22 @@ describe("pgVarChar", () => {
 
 			column.defaultTo("10");
 			expect(info.defaultValue).toBe("'10'::character varying");
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = varchar() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = varchar() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
 		});
 	});
 
@@ -3949,6 +4248,22 @@ describe("pgChar", () => {
 
 			column.defaultTo("10");
 			expect(info.defaultValue).toBe("'10'::character(1)");
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = char() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = char() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
 		});
 	});
 
@@ -4153,6 +4468,22 @@ describe("pgTime", () => {
 			column.defaultTo("04:05 AM");
 			expect(info.defaultValue).toBe("'04:05 AM'::time without time zone");
 		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = time() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = time() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
 	});
 
 	describe("with optional precision", () => {
@@ -4347,6 +4678,22 @@ describe("pgTimeTz", () => {
 
 			column.defaultTo("04:05:06-08:00");
 			expect(info.defaultValue).toBe("'04:05:06-08:00'::time with time zone");
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = timetz() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = timetz() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
 		});
 	});
 
@@ -4543,6 +4890,22 @@ describe("pgTimestamp", () => {
 			column.defaultTo(new Date(1));
 			expect(info.defaultValue).toBe(
 				"'1970-01-01T00:00:00.001Z'::timestamp without time zone",
+			);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = timestamp() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = timestamp() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
 			);
 		});
 	});
@@ -4751,6 +5114,22 @@ describe("pgTimestampTz", () => {
 			column.defaultTo(new Date(1));
 			expect(info.defaultValue).toBe(
 				"'1970-01-01T00:00:00.001Z'::timestamp with time zone",
+			);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = timestamptz() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = timestamptz() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
 			);
 		});
 	});
@@ -4976,6 +5355,22 @@ describe("pgNumeric", () => {
 
 			column.defaultTo(100n);
 			expect(info.defaultValue).toBe("'100'::numeric");
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = numeric() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			const column = numeric() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
 		});
 	});
 
@@ -5342,6 +5737,20 @@ describe("pgEnum", () => {
 			renameFrom: null,
 			enum: true,
 		});
+	});
+
+	test("does not have generatedAlwaysAsIdentity", () => {
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		const column = pgEnum("myEnum", ["one", "two", "three"]) as any;
+		expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(false);
+	});
+
+	test("does not have generatedByDefaultAsIdentity", () => {
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		const column = pgEnum("myEnum", ["one", "two", "three"]) as any;
+		expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+			false,
+		);
 	});
 
 	test("notNull()", () => {

@@ -191,26 +191,6 @@ export class PgColumn<S, I, U = I>
 		};
 	}
 
-	generatedByDefaultAsIdentity() {
-		this.info.identity = ColumnIdentity.ByDefault;
-		this.info.isNullable = false;
-		return this as this & {
-			_columnType: ColumnType<S, I | undefined, U>;
-			_generatedAlways: false;
-			_generatedByDefault: true;
-		};
-	}
-
-	generatedAlwaysAsIdentity() {
-		this.info.identity = ColumnIdentity.Always;
-		this.info.isNullable = false;
-		return this as this & {
-			_columnType: ColumnType<S, never, never>;
-			_generatedAlways: true;
-			_generatedByDefault: false;
-		};
-	}
-
 	schemaWithoptions<T extends z.ZodTypeAny>(base: T) {
 		if (!this._isPrimaryKey && this.info.isNullable) {
 			return base.nullable();
@@ -241,6 +221,28 @@ export class PgGeneratedColumn<T, U>
 		this._generatedByDefault = true;
 		this._hasDefault = true;
 		this._isPrimaryKey = false;
+	}
+}
+
+export class IdentifiableColumn<S, I, U = I> extends PgColumn<S, I, U> {
+	generatedByDefaultAsIdentity() {
+		this.info.identity = ColumnIdentity.ByDefault;
+		this.info.isNullable = false;
+		return this as this & {
+			_columnType: ColumnType<S, I | undefined, U>;
+			_generatedAlways: false;
+			_generatedByDefault: true;
+		};
+	}
+
+	generatedAlwaysAsIdentity() {
+		this.info.identity = ColumnIdentity.Always;
+		this.info.isNullable = false;
+		return this as this & {
+			_columnType: ColumnType<S, never, never>;
+			_generatedAlways: true;
+			_generatedByDefault: false;
+		};
 	}
 }
 
@@ -357,7 +359,10 @@ export function bigint() {
 	return new PgBigInt();
 }
 
-export class PgBigInt extends PgColumn<string, number | bigint | string> {
+export class PgBigInt extends IdentifiableColumn<
+	string,
+	number | bigint | string
+> {
 	constructor() {
 		super("bigint", DefaultValueDataTypes.bigint);
 	}
@@ -531,7 +536,7 @@ export function int2() {
 	return new PgInt2();
 }
 
-export class PgInt2 extends PgColumn<number, number | string> {
+export class PgInt2 extends IdentifiableColumn<number, number | string> {
 	constructor() {
 		super("smallint", DefaultValueDataTypes.smallint);
 	}
@@ -546,7 +551,7 @@ export function int4() {
 	return new PgInt4();
 }
 
-export class PgInt4 extends PgColumn<number, number | string> {
+export class PgInt4 extends IdentifiableColumn<number, number | string> {
 	constructor() {
 		super("integer", DefaultValueDataTypes.integer);
 	}
@@ -577,7 +582,10 @@ export function int8() {
 	return new PgInt8();
 }
 
-export class PgInt8 extends PgColumn<number, number | bigint | string> {
+export class PgInt8 extends IdentifiableColumn<
+	number,
+	number | bigint | string
+> {
 	constructor() {
 		super("bigint", DefaultValueDataTypes.bigint);
 	}
@@ -596,7 +604,7 @@ export function integer() {
 	return new PgInteger();
 }
 
-export class PgInteger extends PgColumn<number, number | string> {
+export class PgInteger extends IdentifiableColumn<number, number | string> {
 	constructor() {
 		super("integer", DefaultValueDataTypes.integer);
 	}
