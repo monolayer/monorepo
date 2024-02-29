@@ -240,11 +240,7 @@ export class PgBoolean extends PgColumn<boolean, boolean> {
 			this.info.defaultValue = `${value}`;
 		}
 		return this as this & {
-			_columnType: ColumnType<
-				boolean,
-				boolean | undefined | null,
-				boolean | null
-			>;
+			_columnType: ColumnType<boolean, boolean | null, boolean | null>;
 			_hasDefault: true;
 		};
 	}

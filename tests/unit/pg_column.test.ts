@@ -255,10 +255,10 @@ describe("pgBoolean", () => {
 		});
 
 		describe("column type", () => {
-			test("insert: boolean, null, or undefined", () => {
+			test("insert: boolean, null", () => {
 				const column = boolean();
 				type ColumnType = typeof column._columnType.__insert__;
-				type Expected = boolean | null | undefined;
+				type Expected = boolean | null;
 				const isEqual: Expect<Equal<ColumnType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -271,7 +271,7 @@ describe("pgBoolean", () => {
 				expect(isEqual).toBe(true);
 			});
 
-			test("update: boolean, null, or undefined", () => {
+			test("update: boolean, null", () => {
 				const column = boolean();
 				type ColumnType = typeof column._columnType.__update__;
 				type Expected = boolean | null;
