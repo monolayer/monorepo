@@ -810,6 +810,35 @@ describe("pgBigInt", () => {
 				}
 			});
 
+			test("has never type when generatedAlwaysAsIdentity", () => {
+				const column = bigint().generatedAlwaysAsIdentity();
+				const schema = column.zodSchema();
+				type SchemaType = typeof schema;
+				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
+				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const result = schema.safeParse(1);
+				expect(result.success).toBe(false);
+			});
+
+			test("output type is string with generatedByDefaultAsIdentity", () => {
+				const column = bigint().generatedByDefaultAsIdentity();
+				const schema = column.zodSchema();
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse(10n);
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("10");
+				}
+
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
 			test("parses bigint", () => {
 				const column = bigint();
 				const schema = column.zodSchema();
@@ -2230,6 +2259,35 @@ describe("pgInt2", () => {
 				expect(nullResult.success).toBe(false);
 			});
 
+			test("has never type when generatedAlwaysAsIdentity", () => {
+				const column = int2().generatedAlwaysAsIdentity();
+				const schema = column.zodSchema();
+				type SchemaType = typeof schema;
+				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
+				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const result = schema.safeParse(1);
+				expect(result.success).toBe(false);
+			});
+
+			test("output type is number with generatedByDefaultAsIdentity", () => {
+				const column = int2().generatedByDefaultAsIdentity();
+				const schema = column.zodSchema();
+				type OutputType = z.output<typeof schema>;
+				type Expected = number;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const result = schema.safeParse(10);
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe(10);
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
 			test("parses number", () => {
 				const column = int2();
 				const schema = column.zodSchema();
@@ -2443,6 +2501,35 @@ describe("pgInt4", () => {
 				expect(stringResult.success).toBe(true);
 				if (stringResult.success) {
 					expect(stringResult.data).toBe(10);
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
+			test("has never type when generatedAlwaysAsIdentity", () => {
+				const column = int4().generatedAlwaysAsIdentity();
+				const schema = column.zodSchema();
+				type SchemaType = typeof schema;
+				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
+				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const result = schema.safeParse(1);
+				expect(result.success).toBe(false);
+			});
+
+			test("output type is number with generatedByDefaultAsIdentity", () => {
+				const column = int4().generatedByDefaultAsIdentity();
+				const schema = column.zodSchema();
+				type OutputType = z.output<typeof schema>;
+				type Expected = number;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const result = schema.safeParse(10);
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe(10);
 				}
 				const nullResult = schema.safeParse(null);
 				expect(nullResult.success).toBe(false);
@@ -2673,6 +2760,35 @@ describe("pgInt8", () => {
 				expect(nullResult.success).toBe(false);
 			});
 
+			test("has never type when generatedAlwaysAsIdentity", () => {
+				const column = int8().generatedAlwaysAsIdentity();
+				const schema = column.zodSchema();
+				type SchemaType = typeof schema;
+				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
+				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const result = schema.safeParse(1);
+				expect(result.success).toBe(false);
+			});
+
+			test("output type is number with generatedByDefaultAsIdentity", () => {
+				const column = int8().generatedByDefaultAsIdentity();
+				const schema = column.zodSchema();
+				type OutputType = z.output<typeof schema>;
+				type Expected = number;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const result = schema.safeParse(10);
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe(10);
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
 			test("parses bigint", () => {
 				const column = int8();
 				const schema = column.zodSchema();
@@ -2896,6 +3012,35 @@ describe("pgInteger", () => {
 				expect(stringResult.success).toBe(true);
 				if (stringResult.success) {
 					expect(stringResult.data).toBe(10);
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
+			test("has never type when generatedAlwaysAsIdentity", () => {
+				const column = integer().generatedAlwaysAsIdentity();
+				const schema = column.zodSchema();
+				type SchemaType = typeof schema;
+				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
+				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const result = schema.safeParse(1);
+				expect(result.success).toBe(false);
+			});
+
+			test("output type is number with generatedByDefaultAsIdentity", () => {
+				const column = integer().generatedByDefaultAsIdentity();
+				const schema = column.zodSchema();
+				type OutputType = z.output<typeof schema>;
+				type Expected = number;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const result = schema.safeParse(10);
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe(10);
 				}
 				const nullResult = schema.safeParse(null);
 				expect(nullResult.success).toBe(false);

@@ -88,7 +88,9 @@ type ZodType<T extends PgColumnTypes> = z.ZodType<
 		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		  T extends PgGeneratedColumn<any, any>
 		  ? T["_columnType"]["__select__"]
-		  : T["_columnType"]["__select__"] | null,
+		  : T extends { _generatedAlways: true }
+			  ? never
+			  : T["_columnType"]["__select__"] | null,
 	z.ZodTypeDef,
 	T["_generatedByDefault"] extends true
 		? NonOptional<T["_columnType"]["__insert__"]>
@@ -368,6 +370,9 @@ export class PgBigInt extends IdentifiableColumn<
 	}
 
 	zodSchema(): ZodType<typeof this> {
+		if (this.info.identity === ColumnIdentity.Always) {
+			return z.never() as unknown as ZodType<typeof this>;
+		}
 		const base = bigintSchema()
 			.pipe(z.bigint().min(-9223372036854775808n).max(9223372036854775807n))
 			.transform((val) => val.toString());
@@ -542,6 +547,9 @@ export class PgInt2 extends IdentifiableColumn<number, number | string> {
 	}
 
 	zodSchema(): ZodType<typeof this> {
+		if (this.info.identity === ColumnIdentity.Always) {
+			return z.never() as unknown as ZodType<typeof this>;
+		}
 		const base = wholeNumberSchema(-32768, 32767);
 		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
@@ -573,6 +581,10 @@ export class PgInt4 extends IdentifiableColumn<number, number | string> {
 	}
 
 	zodSchema(): ZodType<typeof this> {
+		if (this.info.identity === ColumnIdentity.Always) {
+			return z.never() as unknown as ZodType<typeof this>;
+		}
+
 		const base = wholeNumberSchema(-2147483648, 2147483647);
 		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
@@ -591,6 +603,9 @@ export class PgInt8 extends IdentifiableColumn<
 	}
 
 	zodSchema(): ZodType<typeof this> {
+		if (this.info.identity === ColumnIdentity.Always) {
+			return z.never() as unknown as ZodType<typeof this>;
+		}
 		const base = bigintSchema().pipe(
 			z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
 		);
@@ -626,6 +641,9 @@ export class PgInteger extends IdentifiableColumn<number, number | string> {
 	}
 
 	zodSchema(): ZodType<typeof this> {
+		if (this.info.identity === ColumnIdentity.Always) {
+			return z.never() as unknown as ZodType<typeof this>;
+		}
 		const base = wholeNumberSchema(-2147483648, 2147483647);
 		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
