@@ -87,6 +87,7 @@ interface QueryDataType {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	readonly _columnType: ColumnType<any, any, any>;
 	readonly _generatedAlways: boolean;
+	readonly _generatedByDefault: boolean;
 	readonly _hasDefault: boolean;
 	_isPrimaryKey: boolean;
 }
@@ -132,6 +133,8 @@ export class PgColumn<S, I, U = I>
 	declare readonly _columnType: ColumnType<S | null, I | null, U | null>;
 
 	declare readonly _generatedAlways: boolean;
+	declare readonly _generatedByDefault: boolean;
+
 	declare readonly _hasDefault: boolean;
 	declare _isPrimaryKey: boolean;
 
@@ -146,6 +149,7 @@ export class PgColumn<S, I, U = I>
 		super(dataType);
 		this._native_data_type = postgresDataType;
 		this._generatedAlways = false;
+		this._generatedByDefault = false;
 		this._hasDefault = false;
 		this._isPrimaryKey = false;
 	}
@@ -179,6 +183,7 @@ export class PgColumn<S, I, U = I>
 		return this as this & {
 			_columnType: ColumnType<S, I | undefined, U>;
 			_generatedAlways: false;
+			_generatedByDefault: true;
 		};
 	}
 
@@ -188,6 +193,7 @@ export class PgColumn<S, I, U = I>
 		return this as this & {
 			_columnType: ColumnType<S, never, never>;
 			_generatedAlways: true;
+			_generatedByDefault: false;
 		};
 	}
 
@@ -205,6 +211,7 @@ export class PgGeneratedColumn<T, U>
 {
 	declare readonly _columnType: ColumnType<T, U | undefined, U>;
 	declare readonly _generatedAlways: false;
+	declare readonly _generatedByDefault: true;
 	declare readonly _hasDefault: boolean;
 	declare readonly _native_data_type: DefaultValueDataTypes;
 	declare _isPrimaryKey: boolean;
@@ -217,6 +224,7 @@ export class PgGeneratedColumn<T, U>
 		this.info.isNullable = false;
 		this._native_data_type = postgresDataType;
 		this._generatedAlways = false;
+		this._generatedByDefault = true;
 		this._hasDefault = true;
 		this._isPrimaryKey = false;
 	}
@@ -823,6 +831,7 @@ export class PgEnum<
 > {
 	declare readonly _columnType: ColumnType<S, I, U>;
 	declare readonly _generatedAlways: boolean;
+	declare readonly _generatedByDefault: boolean;
 	declare readonly _hasDefault: boolean;
 	declare _isPrimaryKey: boolean;
 
@@ -846,6 +855,7 @@ export class PgEnum<
 			enum: true,
 		};
 		this._generatedAlways = false;
+		this._generatedByDefault = false;
 		this._hasDefault = false;
 		this._isPrimaryKey = false;
 	}

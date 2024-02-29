@@ -90,7 +90,9 @@ type PrimaryKeyColumn<T, C extends PgColumnTypes> = T extends ColumnType<
 					: I | undefined
 				: C["_generatedAlways"] extends true
 				  ? never
-				  : I,
+				  : C["_generatedByDefault"] extends true
+					  ? I | undefined
+					  : Exclude<Exclude<I, undefined>, null>,
 			undefined extends I
 				? null extends I
 					? Exclude<U, null>
@@ -108,7 +110,11 @@ type NonPrimaryKeyColumn<T, C extends PgColumnTypes> = T extends ColumnType<
 >
 	? C["_hasDefault"] extends true
 		? ColumnType<S, I | undefined, U>
-		: ColumnType<S, I, U>
+		: C["_generatedAlways"] extends true
+		  ? ColumnType<S, I, U>
+		  : C["_generatedByDefault"] extends true
+			  ? ColumnType<S, I | undefined, U>
+			  : ColumnType<S, I, U>
 	: never;
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>

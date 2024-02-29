@@ -187,7 +187,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: {
 						readonly __select__: number | null;
-						readonly __insert__: string | number | null | undefined;
+						readonly __insert__: string | number | null;
 						readonly __update__: string | number | null;
 					};
 				};
