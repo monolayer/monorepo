@@ -47,25 +47,13 @@ export function jsonSchema() {
 
 export function columnSchemaFromNullAndUndefined<T extends z.ZodTypeAny>(
 	primaryKey: boolean,
-	defaultValue: unknown,
 	nullable: boolean,
 	base: T,
 ) {
-	if ((primaryKey && defaultValue !== null) || nullable === false) {
-		if (defaultValue !== null) {
-			return base.optional().refine((val) => val !== null);
-		}
-		return base.refine((val) => val !== null && val !== undefined);
-	}
-
-	if (primaryKey) {
-		return base.refine((val) => val !== null && val !== undefined);
-	}
-
 	if (!primaryKey && nullable === true) {
-		return base.optional();
+		return base;
 	}
-	return base.refine((val) => val !== null && val !== undefined);
+	return base.refine((val) => val !== null);
 }
 
 export function variablePrecisionSchema(minimum: number, maximum: number) {

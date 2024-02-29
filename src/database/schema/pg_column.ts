@@ -194,24 +194,10 @@ export class PgColumn<S, I, U = I>
 	}
 
 	schemaWithoptions<T extends z.ZodTypeAny>(base: T) {
-		if (this.#optional()) {
-			return base.optional();
-		}
-		if (this.#nullableAndOptional()) {
-			return base.nullable().optional();
+		if (!this._isPrimaryKey && this.info.isNullable) {
+			return base.nullable();
 		}
 		return base;
-	}
-
-	#optional() {
-		return (
-			(this._isPrimaryKey && this.info.defaultValue !== null) ||
-			(this.info.isNullable === false && this.info.defaultValue !== null)
-		);
-	}
-
-	#nullableAndOptional() {
-		return !this._isPrimaryKey && this.info.isNullable;
 	}
 }
 
@@ -380,7 +366,9 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 				val.constructor.name === "Buffer" ||
 				typeof val === "string"
 			) {
-				return val;
+				if (val !== undefined) {
+					return val;
+				}
 			}
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
@@ -390,12 +378,11 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 		});
 
 		const schema: z.ZodType<
-			Buffer | string | null | undefined,
+			Buffer | string | null,
 			z.ZodTypeDef,
-			Buffer | string | null | undefined
+			Buffer | string | null
 		> = columnSchemaFromNullAndUndefined(
 			this._isPrimaryKey,
-			this.info.defaultValue,
 			this.info.isNullable,
 			base,
 		);
@@ -628,8 +615,7 @@ export class PgSerial extends PgGeneratedColumn<number, number | string> {
 		return z
 			.number()
 			.or(z.string())
-			.pipe(z.coerce.number().min(1).max(2147483648))
-			.optional();
+			.pipe(z.coerce.number().min(1).max(2147483648));
 	}
 }
 
@@ -871,17 +857,13 @@ export class PgEnum<
 
 	zodSchema() {
 		const enumValues = this.values as unknown as [string, ...string[]];
-		const base = z.null().or(z.undefined().or(z.enum(enumValues)));
-		const schema: z.ZodType<
-			string | null | undefined,
-			z.ZodTypeDef,
-			string | null | undefined
-		> = columnSchemaFromNullAndUndefined(
-			this._isPrimaryKey,
-			this.info.defaultValue,
-			this.info.isNullable,
-			base,
-		);
+		const base = z.null().or(z.enum(enumValues));
+		const schema: z.ZodType<string | null, z.ZodTypeDef, string | null> =
+			columnSchemaFromNullAndUndefined(
+				this._isPrimaryKey,
+				this.info.isNullable,
+				base,
+			);
 		return schema;
 	}
 }
