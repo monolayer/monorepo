@@ -796,7 +796,7 @@ describe("pgBigInt", () => {
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is bigint with notNull", () => {
+			test("output type is string with notNull", () => {
 				const column = bigint().notNull();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
