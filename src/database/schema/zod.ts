@@ -64,7 +64,7 @@ export function variablePrecisionSchema(minimum: number, maximum: number) {
 		.transform((s, ctx) => {
 			try {
 				if (typeof s === "string") {
-					return parseFloat(s) || BigInt(s);
+					parseFloat(s) || BigInt(s);
 				}
 				return s;
 			} catch (e) {

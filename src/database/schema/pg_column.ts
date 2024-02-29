@@ -82,6 +82,19 @@ export enum DefaultValueDataTypes {
 	xml = "xml",
 }
 
+type ZodType<T extends PgColumnTypes> = z.ZodType<
+	T extends { nullable: false }
+		? NonNullable<T["_columnType"]["__select__"]>
+		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		  T extends PgGeneratedColumn<any, any>
+		  ? T["_columnType"]["__select__"]
+		  : T["_columnType"]["__select__"] | null,
+	z.ZodTypeDef,
+	T["_generatedByDefault"] extends true
+		? NonOptional<T["_columnType"]["__insert__"]>
+		: T["_columnType"]["__insert__"]
+>;
+
 interface QueryDataType {
 	/** @internal */
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -158,6 +171,7 @@ export class PgColumn<S, I, U = I>
 		this.info.isNullable = false;
 		return this as this & {
 			_columnType: ColumnType<S, I, U>;
+			nullable: false;
 		};
 	}
 
@@ -266,19 +280,61 @@ export class PgBoolean<
 		};
 	}
 
-	zodSchema() {
-		const boolish = ["yes", "no", "true", "false", "on", "off", "1", "0"];
-		const base = z
-			.boolean()
-			.or(z.number().refine((s) => s === 1 || s === 0))
-			.or(
-				z
-					.string()
-					.refine((s) => boolish.includes(s))
-					.pipe(z.coerce.boolean()),
-			);
+	zodSchema(): ZodType<typeof this> {
+		const testBoolish = (val: unknown): val is Boolish => {
+			switch (val) {
+				case "true":
+				case "false":
+				case "yes":
+				case "no":
+				case 1:
+				case 0:
+				case "1":
+				case "0":
+				case "on":
+				case "off":
+					return true;
+				default:
+					return false;
+			}
+		};
 
-		return this.schemaWithoptions(base);
+		const toBooleanOrNull = (val: boolean | Boolish | null): boolean | null => {
+			switch (val) {
+				case true:
+				case "true":
+				case 1:
+				case "1":
+				case "yes":
+				case "on":
+					return true;
+				case false:
+				case "false":
+				case 0:
+				case "0":
+				case "no":
+				case "off":
+					return false;
+				case null:
+					return null;
+			}
+		};
+
+		const nullable = !this._isPrimaryKey && this.info.isNullable;
+		const base = z
+			.custom<boolean | Boolish | null>((val) => {
+				if (val === undefined) return false;
+				if (val === null) return true;
+				if (typeof val === "boolean") return true;
+				return testBoolish(val);
+			})
+			.transform(toBooleanOrNull);
+
+		return base.refine((val) => {
+			if (nullable && val === null) return true;
+			if (!nullable && val === null) return false;
+			return true;
+		}) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -291,9 +347,9 @@ export class PgText extends PgColumn<string, string> {
 		super("text", DefaultValueDataTypes.text);
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = z.string();
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -306,11 +362,12 @@ export class PgBigInt extends PgColumn<string, number | bigint | string> {
 		super("bigint", DefaultValueDataTypes.bigint);
 	}
 
-	zodSchema() {
-		const base = bigintSchema().pipe(
-			z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
-		);
-		return this.schemaWithoptions(base);
+	zodSchema(): ZodType<typeof this> {
+		const base = bigintSchema()
+			.pipe(z.bigint().min(-9223372036854775808n).max(9223372036854775807n))
+			.transform((val) => val.toString());
+
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -326,10 +383,10 @@ export class PgBigSerial extends PgGeneratedColumn<
 		super("bigserial", DefaultValueDataTypes.bigserial);
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		return bigintSchema()
-			.pipe(z.coerce.bigint().min(1n).max(9223372036854775807n))
-			.optional();
+			.pipe(z.bigint().min(1n).max(9223372036854775807n))
+			.transform((val) => val.toString()) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -340,6 +397,12 @@ export function bytea() {
 export type NestedRecord = {
 	[k: string]: string | number | boolean | NestedRecord;
 };
+
+type ByteaZodType<T extends PgBytea> = z.ZodType<
+	T extends { nullable: false } ? Buffer | string : Buffer | string | null,
+	z.ZodTypeDef,
+	Buffer | string | null
+>;
 
 export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 	constructor() {
@@ -374,42 +437,28 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 		return this as this & {
 			_columnType: ColumnType<
 				Buffer,
-				Buffer | string | boolean | number | NestedRecord | undefined | null,
-				Buffer | string | boolean | number | NestedRecord | null
+				Buffer | string | null,
+				Buffer | string | null
 			>;
 			_hasDefault: true;
 		};
 	}
 
-	zodSchema() {
-		const base = z.any().transform((val, ctx): Buffer => {
+	zodSchema(): ByteaZodType<typeof this> {
+		const nullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = z.custom<string | Buffer | null>((val) => {
+			if (!nullable && val === null) return false;
+			if (val === undefined) return false;
 			if (
-				val === null ||
-				val === undefined ||
-				val.constructor.name === "Buffer" ||
-				typeof val === "string"
+				typeof val === "string" ||
+				val?.constructor.name === "Buffer" ||
+				val === null
 			) {
-				if (val !== undefined) {
-					return val;
-				}
+				return true;
 			}
-			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: "Expected Buffer or String.",
-			});
-			return z.NEVER;
+			return false;
 		});
-
-		const schema: z.ZodType<
-			Buffer | string | null,
-			z.ZodTypeDef,
-			Buffer | string | null
-		> = columnSchemaFromNullAndUndefined(
-			this._isPrimaryKey,
-			this.info.isNullable,
-			base,
-		);
-		return schema;
+		return base as ByteaZodType<typeof this>;
 	}
 }
 
@@ -422,9 +471,9 @@ export class PgDate extends PgColumn<Date, Date | string> {
 		super("date", DefaultValueDataTypes.date);
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = z.date().or(z.string().pipe(z.coerce.date()));
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -440,9 +489,11 @@ export class PgDoublePrecision extends PgColumn<
 		super("double precision", DefaultValueDataTypes["double precision"]);
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = variablePrecisionSchema(-1e308, 1e308);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base).transform((val) =>
+			val === null ? val : val.toString(),
+		) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -455,9 +506,9 @@ export class PgFloat4 extends PgColumn<number, number | bigint | string> {
 		super("real", DefaultValueDataTypes.real);
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = variablePrecisionSchema(-1e37, 1e37);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -470,9 +521,9 @@ export class PgFloat8 extends PgColumn<number, number | bigint | string> {
 		super("double precision", DefaultValueDataTypes["double precision"]);
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = variablePrecisionSchema(-1e308, 1e308);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -485,9 +536,9 @@ export class PgInt2 extends PgColumn<number, number | string> {
 		super("smallint", DefaultValueDataTypes.smallint);
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = wholeNumberSchema(-32768, 32767);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -516,9 +567,9 @@ export class PgInt4 extends PgColumn<number, number | string> {
 		};
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = wholeNumberSchema(-2147483648, 2147483647);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -531,11 +582,13 @@ export class PgInt8 extends PgColumn<number, number | bigint | string> {
 		super("bigint", DefaultValueDataTypes.bigint);
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = bigintSchema().pipe(
 			z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
 		);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base).transform((val) =>
+			val !== null ? Number(val) : val,
+		) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -564,9 +617,9 @@ export class PgInteger extends PgColumn<number, number | string> {
 		};
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = wholeNumberSchema(-2147483648, 2147483647);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -574,24 +627,35 @@ export function json() {
 	return new PgJson();
 }
 
-type JsonArray = JsonValue[];
+export type JsonArray = JsonValue[];
 
-type JsonObject = {
+export type JsonObject = {
 	[K in string]?: JsonValue;
 };
 
-type JsonPrimitive = boolean | number | string | null;
+export type JsonPrimitive = boolean | number | string | null;
 
-type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
+type JsonZodType<T extends PgJson | PgJsonB> = z.ZodType<
+	T extends { nullable: false }
+		? // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		  string | number | boolean | Record<string, any>
+		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		  string | number | boolean | Record<string, any> | null,
+	z.ZodTypeDef,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	string | number | boolean | Record<string, any> | null
+>;
 
 export class PgJson extends PgColumn<JsonValue, string> {
 	constructor() {
 		super("json", DefaultValueDataTypes.json);
 	}
 
-	zodSchema() {
+	zodSchema(): JsonZodType<typeof this> {
 		const base = jsonSchema();
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as JsonZodType<typeof this>;
 	}
 }
 
@@ -604,9 +668,9 @@ export class PgJsonB extends PgColumn<JsonValue, string> {
 		super("jsonb", DefaultValueDataTypes.jsonb);
 	}
 
-	zodSchema() {
+	zodSchema(): JsonZodType<typeof this> {
 		const base = jsonSchema();
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as JsonZodType<typeof this>;
 	}
 }
 
@@ -619,9 +683,9 @@ export class PgReal extends PgColumn<number, number | bigint | string> {
 		super("real", DefaultValueDataTypes.real);
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = variablePrecisionSchema(-1e37, 1e37);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -663,9 +727,9 @@ export class PgUuid extends PgColumn<string, string> {
 		};
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = z.string().uuid();
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -689,13 +753,15 @@ export function varchar(maximumLength?: number) {
 }
 
 export class PgVarChar extends PgColumnWithMaximumLength<string, string> {
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		if (this.info.characterMaximumLength !== null) {
 			return this.schemaWithoptions(
 				z.string().max(this.info.characterMaximumLength),
-			);
+			) as unknown as ZodType<typeof this>;
 		}
-		return this.schemaWithoptions(z.string());
+		return this.schemaWithoptions(z.string()) as unknown as ZodType<
+			typeof this
+		>;
 	}
 }
 
@@ -704,13 +770,15 @@ export function char(maximumLength?: number) {
 }
 
 export class PgChar extends PgColumnWithMaximumLength<string, string> {
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		if (this.info.characterMaximumLength !== null) {
 			return this.schemaWithoptions(
 				z.string().max(this.info.characterMaximumLength),
-			);
+			) as unknown as ZodType<typeof this>;
 		}
-		return this.schemaWithoptions(z.string());
+		return this.schemaWithoptions(z.string()) as unknown as ZodType<
+			typeof this
+		>;
 	}
 }
 
@@ -752,9 +820,9 @@ export function time(precision?: DateTimePrecision) {
 }
 
 export class PgTime extends PgColumnWithPrecision<string, string> {
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = z.string().regex(TIME_REGEX);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -763,9 +831,9 @@ export function timetz(precision?: DateTimePrecision) {
 }
 
 export class PgTimeTz extends PgColumnWithPrecision<string, string> {
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = z.string().regex(TIME_REGEX);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -774,9 +842,9 @@ export function timestamp(precision?: DateTimePrecision) {
 }
 
 export class PgTimestamp extends PgColumnWithPrecision<Date, Date | string> {
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = z.date().or(z.string().pipe(z.coerce.date()));
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -785,9 +853,9 @@ export function timestamptz(precision?: DateTimePrecision) {
 }
 
 export class PgTimestampTz extends PgColumnWithPrecision<Date, Date | string> {
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = z.date().or(z.string().pipe(z.coerce.date()));
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -806,12 +874,12 @@ export class PgNumeric extends PgColumn<string, number | bigint | string> {
 		}
 	}
 
-	zodSchema() {
+	zodSchema(): ZodType<typeof this> {
 		const base = decimalSchema(
 			this.info.numericPrecision,
 			this.info.numericScale,
 		);
-		return this.schemaWithoptions(base);
+		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -864,6 +932,7 @@ export class PgEnum<
 		this.info.isNullable = false;
 		return this as this & {
 			_columnType: ColumnType<string, string, string>;
+			nullable: false;
 		};
 	}
 
@@ -880,7 +949,7 @@ export class PgEnum<
 		return this;
 	}
 
-	zodSchema() {
+	zodSchema(): EnumZodyType<typeof this> {
 		const enumValues = this.values as unknown as [string, ...string[]];
 		const base = z.null().or(z.enum(enumValues));
 		const schema: z.ZodType<string | null, z.ZodTypeDef, string | null> =
@@ -889,9 +958,20 @@ export class PgEnum<
 				this.info.isNullable,
 				base,
 			);
-		return schema;
+		return schema as unknown as EnumZodyType<typeof this>;
 	}
 }
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type EnumZodyType<T extends PgEnum<any, any, any, any, any>> = z.ZodType<
+	T extends { nullable: false }
+		? NonNullable<T["_columnType"]["__select__"]>
+		: T["_columnType"]["__select__"],
+	z.ZodTypeDef,
+	NonOptional<T["_columnType"]["__insert__"]>
+>;
+
+type NonOptional<T> = Exclude<T, undefined>;
 
 export type PgColumnTypes =
 	| PgBigInt
