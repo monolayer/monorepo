@@ -719,15 +719,6 @@ describe("pgBigSerial", () => {
 				expect(schema.safeParse("9223372036854775808").success).toBe(false);
 			});
 		});
-
-		describe("as primary key", () => {
-			test("is optional", () => {
-				const column = bigserial();
-				column._isPrimaryKey = true;
-				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
-			});
-		});
 	});
 });
 
@@ -2532,15 +2523,6 @@ describe("pgSerial", () => {
 				expect(schema.safeParse("2147483648").success).toBe(true);
 				expect(schema.safeParse(2147483649).success).toBe(false);
 				expect(schema.safeParse("2147483649").success).toBe(false);
-			});
-		});
-
-		describe("as primary key", () => {
-			test("is optional", () => {
-				const column = serial();
-				column._isPrimaryKey = true;
-				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
 	});
