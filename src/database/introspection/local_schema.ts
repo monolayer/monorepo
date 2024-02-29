@@ -155,10 +155,7 @@ export function schemaDBColumnInfoByTable(
 	);
 }
 
-export function schemaDBIndexInfoByTable(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: AnyPgDatabase,
-) {
+export function schemaDBIndexInfoByTable(schema: AnyPgDatabase) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
@@ -235,7 +232,6 @@ export function indexToInfo(
 }
 
 export function localSchema(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	schema: AnyPgDatabase,
 	remoteSchema: MigrationSchema,
 ): MigrationSchema {
@@ -253,20 +249,14 @@ export function localSchema(
 	};
 }
 
-function schemaDBExtensionsInfo(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: AnyPgDatabase,
-) {
+function schemaDBExtensionsInfo(schema: AnyPgDatabase) {
 	return schema.extensions.reduce<ExtensionInfo>((acc, curr) => {
 		acc[curr] = true;
 		return acc;
 	}, {});
 }
 
-function schemaDBTriggersInfo(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: AnyPgDatabase,
-) {
+function schemaDBTriggersInfo(schema: AnyPgDatabase) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
@@ -299,10 +289,7 @@ function schemaDBTriggersInfo(
 	);
 }
 
-export function schemaDbEnumInfo(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: AnyPgDatabase,
-) {
+export function schemaDbEnumInfo(schema: AnyPgDatabase) {
 	return Object.entries(schema.tables || {}).reduce<EnumInfo>(
 		(enumInfo, [, tableDefinition]) => {
 			const keys = Object.keys(tableDefinition.columns);
@@ -321,10 +308,7 @@ export function schemaDbEnumInfo(
 	);
 }
 
-function primaryKeyConstraintInfo(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: AnyPgDatabase,
-) {
+function primaryKeyConstraintInfo(schema: AnyPgDatabase) {
 	return Object.entries(schema.tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const primaryKey = tableDefinition.schema.primaryKey;
@@ -346,10 +330,7 @@ function primaryKeyConstraintInfo(
 	);
 }
 
-function foreignKeyConstraintInfo(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: AnyPgDatabase,
-) {
+function foreignKeyConstraintInfo(schema: AnyPgDatabase) {
 	return Object.entries(schema.tables || {}).reduce<ForeignKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const foreignKeys = tableDefinition.schema.foreignKeys;
@@ -386,10 +367,7 @@ function foreignKeyConstraintInfo(
 	);
 }
 
-function uniqueConstraintInfo(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: AnyPgDatabase,
-) {
+function uniqueConstraintInfo(schema: AnyPgDatabase) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
