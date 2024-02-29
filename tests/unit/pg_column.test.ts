@@ -249,16 +249,58 @@ describe("pgBoolean", () => {
 			column.defaultTo(false);
 			expect(info.defaultValue).toBe("false");
 
+			column.defaultTo("true");
+			expect(info.defaultValue).toBe("true");
+
+			column.defaultTo("false");
+			expect(info.defaultValue).toBe("false");
+
+			column.defaultTo("yes");
+			expect(info.defaultValue).toBe("yes");
+
+			column.defaultTo("no");
+			expect(info.defaultValue).toBe("no");
+
+			column.defaultTo("on");
+			expect(info.defaultValue).toBe("on");
+
+			column.defaultTo("off");
+			expect(info.defaultValue).toBe("off");
+
+			column.defaultTo("1");
+			expect(info.defaultValue).toBe("1");
+
+			column.defaultTo("0");
+			expect(info.defaultValue).toBe("0");
+
+			column.defaultTo(1);
+			expect(info.defaultValue).toBe("1");
+
+			column.defaultTo(0);
+			expect(info.defaultValue).toBe("0");
+
 			const expression = sql`true`;
 			column.defaultTo(expression);
 			expect(info.defaultValue).toBe(expression);
 		});
 
 		describe("column type", () => {
-			test("insert: boolean, null", () => {
+			test('insert: boolean, "yes", "no", "on", "off", 1, 0, "1", "0", null', () => {
 				const column = boolean();
 				type ColumnType = typeof column._columnType.__insert__;
-				type Expected = boolean | null;
+				type Expected =
+					| boolean
+					| "true"
+					| "false"
+					| 1
+					| 0
+					| "1"
+					| "0"
+					| "on"
+					| "off"
+					| "yes"
+					| "no"
+					| null;
 				const isEqual: Expect<Equal<ColumnType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -271,10 +313,23 @@ describe("pgBoolean", () => {
 				expect(isEqual).toBe(true);
 			});
 
-			test("update: boolean, null", () => {
+			test('update: boolean, "true", "false", "yes", "no", "on", "off", 1, 0, "1", "0", or null', () => {
 				const column = boolean();
 				type ColumnType = typeof column._columnType.__update__;
-				type Expected = boolean | null;
+				type Expected =
+					| boolean
+					| "true"
+					| "false"
+					| 1
+					| 0
+					| "1"
+					| "0"
+					| "on"
+					| "off"
+					| "yes"
+					| "no"
+					| null;
+				null;
 				const isEqual: Expect<Equal<ColumnType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -300,17 +355,27 @@ describe("pgBoolean", () => {
 					expect(schema.safeParse(undefined).success).toBe(false);
 				});
 
-				test("parses with coercion only 'true' and 'false'", () => {
+				test("parses with coercion with boolish values", () => {
 					const column = boolean();
 					const schema = column.zodSchema();
 					expect(schema.safeParse("true").success).toBe(true);
 					expect(schema.safeParse("false").success).toBe(true);
+					expect(schema.safeParse("yes").success).toBe(true);
+					expect(schema.safeParse("no").success).toBe(true);
+					expect(schema.safeParse("1").success).toBe(true);
+					expect(schema.safeParse("0").success).toBe(true);
+					expect(schema.safeParse(1).success).toBe(true);
+					expect(schema.safeParse(0).success).toBe(true);
+				});
+
+				test("does not parse non boolish values", () => {
+					const column = boolean();
+					const schema = column.zodSchema();
 					expect(schema.safeParse("TRUE").success).toBe(false);
 					expect(schema.safeParse("FALSE").success).toBe(false);
-					expect(schema.safeParse("1").success).toBe(false);
-					expect(schema.safeParse("0").success).toBe(false);
 					expect(schema.safeParse("undefined").success).toBe(false);
 					expect(schema.safeParse("null").success).toBe(false);
+					expect(schema.safeParse(2).success).toBe(false);
 				});
 
 				test("with default value is nullable", () => {

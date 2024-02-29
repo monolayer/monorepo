@@ -129,15 +129,13 @@ export class PgColumn<S, I, U = I>
 	extends PgColumnBase<S, I, U>
 	implements QueryDataType, NativeDataType
 {
-	declare readonly _columnType: ColumnType<
-		S | null,
-		I | undefined | null,
-		U | null
-	>;
+	declare readonly _columnType: ColumnType<S | null, I | null, U | null>;
 
 	declare readonly _generatedAlways: boolean;
 	declare readonly _hasDefault: boolean;
 	declare _isPrimaryKey: boolean;
+
+	declare readonly _zodType: typeof this._columnType.__select__;
 
 	declare readonly _native_data_type: DefaultValueDataTypes;
 
@@ -228,28 +226,49 @@ export function boolean() {
 	return new PgBoolean();
 }
 
-export class PgBoolean extends PgColumn<boolean, boolean> {
+export type Boolish =
+	| "true"
+	| "false"
+	| "yes"
+	| "no"
+	| 1
+	| 0
+	| "1"
+	| "0"
+	| "on"
+	| "off";
+
+export class PgBoolean<
+	S extends boolean,
+	I extends boolean | Boolish,
+> extends PgColumn<S, I> {
 	constructor() {
 		super("boolean", DefaultValueDataTypes.boolean);
 	}
 
-	defaultTo(value: boolean | Expression<unknown>) {
+	defaultTo(value: I | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
 			this.info.defaultValue = `${value}`;
 		}
 		return this as this & {
-			_columnType: ColumnType<boolean, boolean | null, boolean | null>;
+			_columnType: ColumnType<boolean, I | null, I | null>;
 			_hasDefault: true;
 		};
 	}
 
 	zodSchema() {
+		const boolish = ["yes", "no", "true", "false", "on", "off", "1", "0"];
 		const base = z
 			.boolean()
-			.or(z.string().refine((s) => s === "true" || s === "false"))
-			.pipe(z.coerce.boolean());
+			.or(z.number().refine((s) => s === 1 || s === 0))
+			.or(
+				z
+					.string()
+					.refine((s) => boolish.includes(s))
+					.pipe(z.coerce.boolean()),
+			);
 
 		return this.schemaWithoptions(base);
 	}
@@ -867,7 +886,8 @@ export class PgEnum<
 export type PgColumnTypes =
 	| PgBigInt
 	| PgBigSerial
-	| PgBoolean
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	| PgBoolean<any, any>
 	| PgBytea
 	| PgChar
 	| PgDate
