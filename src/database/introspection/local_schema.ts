@@ -7,8 +7,7 @@ import {
 	isExpression,
 } from "kysely";
 import pg from "pg";
-import { pgDatabase } from "~/database/schema/pg_database.js";
-import { type PgTable } from "~/database/schema/pg_table.js";
+import { type AnyPgDatabase } from "~/database/schema/pg_database.js";
 import {
 	type ForeignKeyInfo,
 	type MigrationSchema,
@@ -104,8 +103,7 @@ function substituteSQLParameters(queryObject: {
 }
 
 export function schemaDBColumnInfoByTable(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+	schema: AnyPgDatabase,
 	remoteSchema: MigrationSchema,
 ) {
 	return Object.entries(schema.tables || {}).reduce<TableColumnInfo>(
@@ -159,7 +157,7 @@ export function schemaDBColumnInfoByTable(
 
 export function schemaDBIndexInfoByTable(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+	schema: AnyPgDatabase,
 ) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
@@ -238,7 +236,7 @@ export function indexToInfo(
 
 export function localSchema(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+	schema: AnyPgDatabase,
 	remoteSchema: MigrationSchema,
 ): MigrationSchema {
 	return {
@@ -257,7 +255,7 @@ export function localSchema(
 
 function schemaDBExtensionsInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+	schema: AnyPgDatabase,
 ) {
 	return schema.extensions.reduce<ExtensionInfo>((acc, curr) => {
 		acc[curr] = true;
@@ -267,7 +265,7 @@ function schemaDBExtensionsInfo(
 
 function schemaDBTriggersInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+	schema: AnyPgDatabase,
 ) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
@@ -303,7 +301,7 @@ function schemaDBTriggersInfo(
 
 export function schemaDbEnumInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+	schema: AnyPgDatabase,
 ) {
 	return Object.entries(schema.tables || {}).reduce<EnumInfo>(
 		(enumInfo, [, tableDefinition]) => {
@@ -325,7 +323,7 @@ export function schemaDbEnumInfo(
 
 function primaryKeyConstraintInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+	schema: AnyPgDatabase,
 ) {
 	return Object.entries(schema.tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
@@ -350,7 +348,7 @@ function primaryKeyConstraintInfo(
 
 function foreignKeyConstraintInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+	schema: AnyPgDatabase,
 ) {
 	return Object.entries(schema.tables || {}).reduce<ForeignKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
@@ -390,7 +388,7 @@ function foreignKeyConstraintInfo(
 
 function uniqueConstraintInfo(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+	schema: AnyPgDatabase,
 ) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({

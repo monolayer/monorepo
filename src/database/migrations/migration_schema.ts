@@ -6,8 +6,8 @@ import type {
 	IndexInfo,
 	TableColumnInfo,
 } from "../introspection/types.js";
-import type { pgDatabase } from "../schema/pg_database.js";
-import type { PgTable } from "../schema/pg_table.js";
+import type { AnyPgDatabase } from "../schema/pg_database.js";
+import type { AnyPgTable } from "../schema/pg_table.js";
 
 type TableName = string;
 type Name = string;
@@ -104,10 +104,8 @@ export function findColumnByNameInTable(
 }
 
 export function findTableInDatabaseSchema(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	table: PgTable<any, any>,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	schema: pgDatabase<Record<string, PgTable<any, any>>>,
+	table: AnyPgTable,
+	schema: AnyPgDatabase,
 ) {
 	const tableInSchema = Object.entries(schema.tables || {}).find(
 		([_key, value]) => value.columns === table.columns,

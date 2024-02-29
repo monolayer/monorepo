@@ -110,3 +110,6 @@ type NonPrimaryKeyColumn<T, C extends PgColumnTypes> = T extends ColumnType<
 		? ColumnType<S, I | undefined, U>
 		: ColumnType<S, I, U>
 	: never;
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type AnyPgTable = PgTable<any, any>;

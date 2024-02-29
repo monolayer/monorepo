@@ -1,8 +1,7 @@
 import type { ForeignKeyRule } from "../introspection/database/foreign_key_constraint.js";
-import type { PgTable } from "./pg_table.js";
+import type { AnyPgTable, PgTable } from "./pg_table.js";
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export function foreignKey<T, C = PgTable<any, any>>(
+export function foreignKey<T, C = AnyPgTable>(
 	columns: T,
 	targetTable: C,
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -17,8 +16,7 @@ export function foreignKey<T, C = PgTable<any, any>>(
 	return new PgForeignKey(columns, targetTable, targetColumns, options);
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export class PgForeignKey<T, C = PgTable<any, any>> {
+export class PgForeignKey<T, C = AnyPgTable> {
 	cols: T;
 	targetTable: C;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
