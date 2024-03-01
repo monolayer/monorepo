@@ -210,15 +210,13 @@ describe("Table create migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						id: serial(),
+						id: serial().primaryKey(),
 					},
-					primaryKey: ["id"],
 				}),
 				books: pgTable({
 					columns: {
-						id: bigserial(),
+						id: bigserial().primaryKey(),
 					},
-					primaryKey: ["id"],
 				}),
 			},
 		});
@@ -281,16 +279,14 @@ describe("Table create migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						id: serial(),
-						name: varchar(),
+						id: serial().primaryKey(),
+						name: varchar().primaryKey(),
 					},
-					primaryKey: ["id", "name"],
 				}),
 				books: pgTable({
 					columns: {
-						id: bigserial(),
+						id: bigserial().primaryKey(),
 					},
-					primaryKey: ["id"],
 				}),
 			},
 		});
@@ -429,9 +425,8 @@ describe("Table create migrations", () => {
 	test<DbContext>("create table with foreign keys", async (context) => {
 		const books = pgTable({
 			columns: {
-				id: bigserial(),
+				id: bigserial().primaryKey(),
 			},
-			primaryKey: ["id"],
 		});
 
 		const users = pgTable({

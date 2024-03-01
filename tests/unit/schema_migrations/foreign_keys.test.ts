@@ -35,9 +35,8 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer(),
+				id: integer().primaryKey(),
 			},
-			primaryKey: ["id"],
 		});
 
 		const users = pgTable({
@@ -131,9 +130,8 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer(),
+				id: integer().primaryKey(),
 			},
-			primaryKey: ["id"],
 		});
 
 		const users = pgTable({
@@ -203,9 +201,8 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer(),
+				id: integer().primaryKey(),
 			},
-			primaryKey: ["id"],
 		});
 
 		const users = pgTable({
@@ -292,9 +289,8 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer(),
+				id: integer().primaryKey(),
 			},
-			primaryKey: ["id"],
 		});
 
 		const users = pgTable({

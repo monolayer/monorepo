@@ -29,17 +29,15 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				fullName: text(),
-				name: text(),
+				fullName: text().primaryKey(),
+				name: text().primaryKey(),
 			},
-			primaryKey: ["name", "fullName"],
 		});
 
 		const books = pgTable({
 			columns: {
-				name: text(),
+				name: text().primaryKey(),
 			},
-			primaryKey: ["name"],
 		});
 
 		const database = pgDatabase({
@@ -178,9 +176,8 @@ describe("Database migrations", () => {
 		const users = pgTable({
 			columns: {
 				fullName: text(),
-				name: text(),
+				name: text().primaryKey(),
 			},
-			primaryKey: ["name"],
 		});
 
 		const database = pgDatabase({
@@ -240,9 +237,8 @@ describe("Database migrations", () => {
 		const users = pgTable({
 			columns: {
 				fullName: text().notNull(),
-				name: text(),
+				name: text().primaryKey(),
 			},
-			primaryKey: ["name"],
 		});
 
 		const database = pgDatabase({
@@ -299,9 +295,8 @@ describe("Database migrations", () => {
 		const users = pgTable({
 			columns: {
 				name: text(),
-				email: text().notNull(),
+				email: text().notNull().primaryKey(),
 			},
-			primaryKey: ["email"],
 		});
 
 		const database = pgDatabase({

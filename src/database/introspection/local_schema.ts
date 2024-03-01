@@ -17,9 +17,11 @@ import {
 	findColumn,
 	findPrimaryKey,
 	findTableInDatabaseSchema,
+	primaryKeyColumns,
 } from "../migrations/migration_schema.js";
 import { type ColumnInfo, PgColumnTypes, PgEnum } from "../schema/pg_column.js";
 import type { PgIndex } from "../schema/pg_index.js";
+import type { ColumnRecord } from "../schema/pg_table.js";
 import type { PgTrigger } from "../schema/pg_trigger.js";
 import type { PgUnique } from "../schema/pg_unique.js";
 import {
@@ -311,16 +313,17 @@ export function schemaDbEnumInfo(schema: AnyPgDatabase) {
 function primaryKeyConstraintInfo(schema: AnyPgDatabase) {
 	return Object.entries(schema.tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
-			const primaryKey = tableDefinition.schema.primaryKey;
-			if (primaryKey !== undefined) {
-				const keyName = `${tableName}_${primaryKey
+			const columns = tableDefinition.schema.columns as ColumnRecord;
+			const primaryKeys = primaryKeyColumns(columns);
+			if (primaryKeys.length !== 0) {
+				const keyName = `${tableName}_${primaryKeys
 					.sort()
 					.join("_")}_kinetic_pk`;
 				acc[tableName] = {
 					[keyName]: primaryKeyConstraintInfoToQuery({
 						constraintType: "PRIMARY KEY",
 						table: tableName,
-						columns: primaryKey,
+						columns: primaryKeys,
 					}),
 				};
 			}

@@ -13,46 +13,28 @@ import type { PgUnique } from "./pg_unique.js";
 
 export type ColumnRecord = Record<string, PgColumnTypes>;
 
-type TableSchema<T, PK> = {
+type TableSchema<T> = {
 	columns: T extends ColumnRecord ? T : never;
-	primaryKey?: PK;
 	foreignKeys?: PgForeignKey<keyof T | Array<keyof T>>[];
 	uniqueConstraints?: PgUnique<keyof T | Array<keyof T>>[];
 	indexes?: keyof T extends string ? PgIndex<keyof T>[] : [];
 	triggers?: Record<string, PgTrigger>;
 };
 
-export function pgTable<
-	T extends ColumnRecord,
-	PK extends Array<keyof T> | undefined = undefined,
->(schema: TableSchema<T, PK>) {
+export function pgTable<T extends ColumnRecord>(schema: TableSchema<T>) {
 	return new PgTable(schema);
 }
 
-export class PgTable<
-	T extends ColumnRecord,
-	PK extends Array<keyof T> | undefined = undefined,
-> {
-	declare infer: Simplify<
-		InferColumTypes<T, PK extends Array<keyof T> ? PK[number] : never>
-	>;
+export class PgTable<T extends ColumnRecord> {
+	declare infer: Simplify<InferColumTypes<T>>;
 
 	declare inferSelect: Selectable<typeof this.infer>;
 	declare inferInsert: Simplify<Insertable<typeof this.infer>>;
 	declare inferUpdate: Simplify<Updateable<typeof this.infer>>;
 
-	constructor(public schema: TableSchema<T, PK>) {
+	constructor(public schema: TableSchema<T>) {
 		this.schema.indexes = this.schema.indexes || [];
 		this.schema.columns = this.schema.columns || {};
-		this.schema.primaryKey = this.schema.primaryKey;
-		if (this.schema.primaryKey !== undefined) {
-			for (const key of this.schema.primaryKey) {
-				const column = this.schema.columns[key];
-				if (column !== undefined) {
-					column._isPrimaryKey = true;
-				}
-			}
-		}
 		this.schema.foreignKeys = this.schema.foreignKeys;
 		this.schema.uniqueConstraints = this.schema.uniqueConstraints || [];
 		this.schema.triggers = this.schema.triggers || {};
@@ -71,37 +53,9 @@ export class PgTable<
 	}
 }
 
-type InferColumTypes<T extends ColumnRecord, K extends PropertyKey> = Simplify<{
-	[P in keyof T]: P extends K
-		? Simplify<PrimaryKeyColumn<T[P]["_columnType"], T[P]>>
-		: Simplify<NonPrimaryKeyColumn<T[P]["_columnType"], T[P]>>;
+type InferColumTypes<T extends ColumnRecord> = Simplify<{
+	[P in keyof T]: Simplify<NonPrimaryKeyColumn<T[P]["_columnType"], T[P]>>;
 }>;
-
-type PrimaryKeyColumn<T, C extends PgColumnTypes> = T extends ColumnType<
-	infer S,
-	infer I,
-	infer U
->
-	? ColumnType<
-			Exclude<Exclude<S, undefined>, null>,
-			undefined extends I
-				? null extends I
-					? Exclude<Exclude<I, undefined>, null>
-					: I | undefined
-				: C["_generatedAlways"] extends true
-				  ? never
-				  : C["_generatedByDefault"] extends true
-					  ? I | undefined
-					  : Exclude<Exclude<I, undefined>, null>,
-			undefined extends I
-				? null extends I
-					? Exclude<U, null>
-					: Exclude<U, null>
-				: C["_generatedAlways"] extends true
-				  ? never
-				  : Exclude<U, null>
-	  >
-	: never;
 
 type NonPrimaryKeyColumn<T, C extends PgColumnTypes> = T extends ColumnType<
 	infer S,
@@ -118,4 +72,4 @@ type NonPrimaryKeyColumn<T, C extends PgColumnTypes> = T extends ColumnType<
 	: never;
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export type AnyPgTable = PgTable<any, any>;
+export type AnyPgTable = PgTable<any>;

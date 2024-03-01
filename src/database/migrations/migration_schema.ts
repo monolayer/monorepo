@@ -7,7 +7,7 @@ import type {
 	TableColumnInfo,
 } from "../introspection/types.js";
 import type { AnyPgDatabase } from "../schema/pg_database.js";
-import type { AnyPgTable } from "../schema/pg_table.js";
+import type { AnyPgTable, ColumnRecord } from "../schema/pg_table.js";
 
 type TableName = string;
 type Name = string;
@@ -37,6 +37,18 @@ export function findColumn(
 	if (table !== undefined && table[columName] !== undefined) {
 		return table[columName];
 	}
+}
+
+export function primaryKeyColumns(columns: ColumnRecord) {
+	return Object.entries(columns).reduce<string[]>(
+		(acc, [columnName, column]) => {
+			if (column._isPrimaryKey === true) {
+				acc.push(columnName);
+			}
+			return acc;
+		},
+		[],
+	);
 }
 
 export function findPrimaryKey(schema: MigrationSchema, tableName: string) {

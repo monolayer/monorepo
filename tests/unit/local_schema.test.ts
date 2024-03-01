@@ -278,13 +278,12 @@ test("#localSchema", () => {
 
 	const users = pgTable({
 		columns: {
-			id: serial(),
+			id: serial().primaryKey(),
 			name: varchar().notNull(),
 			email: varchar().notNull(),
 			book_id: integer(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
-		primaryKey: ["id"],
 		foreignKeys: [foreignKey(["book_id"], books, ["id"])],
 		uniqueConstraints: [unique(["name"]), unique(["email"]).nullsNotDistinct()],
 		triggers: {
@@ -298,11 +297,10 @@ test("#localSchema", () => {
 
 	const teams = pgTable({
 		columns: {
-			id: bigserial(),
+			id: bigserial().primaryKey(),
 			name: varchar().notNull(),
 			active: boolean(),
 		},
-		primaryKey: ["id"],
 		indexes: [index("name")],
 		triggers: {
 			foo_before_insert: trigger()

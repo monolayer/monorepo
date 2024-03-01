@@ -177,6 +177,14 @@ export class PgColumn<S, I, U = I>
 		};
 	}
 
+	primaryKey() {
+		this._isPrimaryKey = true;
+		return this as this & {
+			_columnType: ColumnType<S, I, U>;
+			nullable: false;
+		};
+	}
+
 	defaultTo(value: I | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
@@ -223,6 +231,14 @@ export class PgGeneratedColumn<T, U>
 		this._generatedByDefault = true;
 		this._hasDefault = true;
 		this._isPrimaryKey = false;
+	}
+
+	primaryKey() {
+		this._isPrimaryKey = true;
+		return this as this & {
+			_columnType: ColumnType<T, U, U>;
+			nullable: false;
+		};
 	}
 }
 
@@ -411,7 +427,7 @@ export type NestedRecord = {
 type ByteaZodType<T extends PgBytea> = z.ZodType<
 	T extends { nullable: false } ? Buffer | string : Buffer | string | null,
 	z.ZodTypeDef,
-	Buffer | string | null
+	T extends { nullable: false } ? Buffer | string : Buffer | string | null
 >;
 
 export class PgBytea extends PgColumn<Buffer, Buffer | string> {
@@ -468,9 +484,15 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 			}
 			return false;
 		});
-		return base as ByteaZodType<typeof this>;
+		return base as unknown as ByteaZodType<typeof this>;
 	}
 }
+
+type DateZodType<T extends PgDate> = z.ZodType<
+	T extends { nullable: false } ? Date : Date | null,
+	z.ZodTypeDef,
+	T extends { nullable: false } ? Date | string : Date | string | null
+>;
 
 export function date() {
 	return new PgDate();
@@ -481,9 +503,9 @@ export class PgDate extends PgColumn<Date, Date | string> {
 		super("date", DefaultValueDataTypes.date);
 	}
 
-	zodSchema(): ZodType<typeof this> {
+	zodSchema(): DateZodType<typeof this> {
 		const base = z.date().or(z.string().pipe(z.coerce.date()));
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		return this.schemaWithoptions(base) as unknown as DateZodType<typeof this>;
 	}
 }
 
@@ -670,8 +692,11 @@ type JsonZodType<T extends PgJson | PgJsonB> = z.ZodType<
 		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		  string | number | boolean | Record<string, any> | null,
 	z.ZodTypeDef,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	string | number | boolean | Record<string, any> | null
+	T extends { nullable: false }
+		? // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		  string | number | boolean | Record<string, any>
+		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		  string | number | boolean | Record<string, any> | null
 >;
 
 export class PgJson extends PgColumn<JsonValue, string> {
@@ -868,9 +893,9 @@ export function timestamp(precision?: DateTimePrecision) {
 }
 
 export class PgTimestamp extends PgColumnWithPrecision<Date, Date | string> {
-	zodSchema(): ZodType<typeof this> {
+	zodSchema(): DateZodType<typeof this> {
 		const base = z.date().or(z.string().pipe(z.coerce.date()));
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		return this.schemaWithoptions(base) as unknown as DateZodType<typeof this>;
 	}
 }
 
@@ -879,9 +904,9 @@ export function timestamptz(precision?: DateTimePrecision) {
 }
 
 export class PgTimestampTz extends PgColumnWithPrecision<Date, Date | string> {
-	zodSchema(): ZodType<typeof this> {
+	zodSchema(): DateZodType<typeof this> {
 		const base = z.date().or(z.string().pipe(z.coerce.date()));
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		return this.schemaWithoptions(base) as unknown as DateZodType<typeof this>;
 	}
 }
 
@@ -956,6 +981,14 @@ export class PgEnum<
 
 	notNull() {
 		this.info.isNullable = false;
+		return this as this & {
+			_columnType: ColumnType<string, string, string>;
+			nullable: false;
+		};
+	}
+
+	primaryKey() {
+		this._isPrimaryKey = true;
 		return this as this & {
 			_columnType: ColumnType<string, string, string>;
 			nullable: false;

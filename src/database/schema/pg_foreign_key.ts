@@ -4,10 +4,7 @@ import type { AnyPgTable, PgTable } from "./pg_table.js";
 export function foreignKey<T, C = AnyPgTable>(
 	columns: T,
 	targetTable: C,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	targetColumns: C extends PgTable<infer U, any>
-		? (keyof U)[] | keyof U
-		: never,
+	targetColumns: C extends PgTable<infer U> ? (keyof U)[] | keyof U : never,
 	options?: {
 		deleteRule?: Lowercase<ForeignKeyRule>;
 		updateRule?: Lowercase<ForeignKeyRule>;
@@ -19,8 +16,7 @@ export function foreignKey<T, C = AnyPgTable>(
 export class PgForeignKey<T, C = AnyPgTable> {
 	cols: T;
 	targetTable: C;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	targetCols: C extends PgTable<infer U, any> ? (keyof U)[] | keyof U : never;
+	targetCols: C extends PgTable<infer U> ? (keyof U)[] | keyof U : never;
 	options: {
 		deleteRule: ForeignKeyRule;
 		updateRule: ForeignKeyRule;
@@ -29,8 +25,7 @@ export class PgForeignKey<T, C = AnyPgTable> {
 	constructor(
 		cols: T,
 		targetTable: C,
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		targetCols: C extends PgTable<infer U, any> ? (keyof U)[] | keyof U : never,
+		targetCols: C extends PgTable<infer U> ? (keyof U)[] | keyof U : never,
 		options?: {
 			deleteRule?: Lowercase<ForeignKeyRule>;
 			updateRule?: Lowercase<ForeignKeyRule>;
