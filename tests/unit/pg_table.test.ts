@@ -1,10 +1,14 @@
 import { Equal, Expect } from "type-testing";
 import { describe, expect, test } from "vitest";
+import { z } from "zod";
 import {
+	bigint,
 	boolean,
 	integer,
 	pgEnum,
 	serial,
+	text,
+	timestamptz,
 	varchar,
 } from "~/database/schema/pg_column.js";
 import { PgIndex, index } from "~/database/schema/pg_index.js";
@@ -1280,6 +1284,104 @@ describe("pgTable definition", () => {
 				},
 			});
 			expect(table.columns.status._isPrimaryKey).toBe(true);
+		});
+	});
+
+	describe("zod", () => {
+		test("schema types match column constraints and defaults", () => {
+			const table = pgTable({
+				columns: {
+					id: bigint(),
+					idPk: integer().primaryKey(),
+					name: varchar().notNull(),
+					createdAt: timestamptz().defaultTo("now()"),
+				},
+			});
+
+			const tableSchema = table.zodSchema();
+
+			type SchemaType = z.infer<typeof tableSchema>;
+			type Expected = {
+				name: string;
+				idPk: number;
+				id?: string | null | undefined;
+				createdAt?: Date | null | undefined;
+			};
+			const isEqualSchema: Expect<Equal<SchemaType, Expected>> = true;
+			expect(isEqualSchema).toBe(true);
+
+			type InputSchema = z.input<typeof tableSchema>;
+			type ExpectedInput = {
+				idPk: string | number;
+				name: string;
+				id?: string | number | bigint | null | undefined;
+				createdAt?: string | Date | null | undefined;
+			};
+			const isEqualInput: Expect<Equal<InputSchema, ExpectedInput>> = true;
+			expect(isEqualInput).toBe(true);
+
+			type OuputSchema = z.output<typeof tableSchema>;
+			type ExpectedOutput = {
+				idPk: number;
+				name: string;
+				id?: string | null | undefined;
+				createdAt?: Date | null | undefined;
+			};
+			const isEqualOutput: Expect<Equal<OuputSchema, ExpectedOutput>> = true;
+			expect(isEqualOutput).toBe(true);
+		});
+
+		test("schema parses successfully with undefined optionals", () => {
+			const table = pgTable({
+				columns: {
+					name: text(),
+					description: text().defaultTo("TDB"),
+				},
+			});
+
+			const tableSchema = table.zodSchema();
+			expect(tableSchema.safeParse({}).success).toBe(true);
+			const result = tableSchema.safeParse({
+				name: undefined,
+				description: undefined,
+			});
+			expect(result.success).toBe(true);
+			if (result.success) {
+				expect(result.data.name).toBeUndefined();
+				expect(result.data.description).toBeUndefined();
+			}
+		});
+
+		test("schema parse with defined constraints", () => {
+			const table = pgTable({
+				columns: {
+					id: integer().notNull(),
+					name: text().notNull(),
+				},
+			});
+
+			const tableSchema = table.zodSchema();
+			const resultFail = tableSchema.safeParse({});
+			expect(resultFail.success).toBe(false);
+			if (!resultFail.success) {
+				const formattedErrors = resultFail.error.format();
+				expect(formattedErrors.id?._errors).toStrictEqual([
+					"Required",
+					"Required",
+				]);
+				expect(formattedErrors.name?._errors).toStrictEqual(["Required"]);
+			}
+
+			const result = tableSchema.safeParse({
+				id: 1,
+				name: "John",
+			});
+
+			expect(result.success).toBe(true);
+			if (result.success) {
+				expect(result.data.id).toBe(1);
+				expect(result.data.name).toStrictEqual("John");
+			}
 		});
 	});
 });

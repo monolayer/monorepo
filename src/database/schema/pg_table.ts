@@ -5,7 +5,8 @@ import type {
 	Simplify,
 	Updateable,
 } from "kysely";
-import { PgColumnTypes } from "./pg_column.js";
+import { z } from "zod";
+import { type ColumnInfo, PgColumnTypes } from "./pg_column.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
 import { type PgIndex } from "./pg_index.js";
 import type { PgTrigger } from "./pg_trigger.js";
@@ -51,7 +52,45 @@ export class PgTable<T extends ColumnRecord> {
 	get triggers() {
 		return this.schema.triggers;
 	}
+
+	zodSchema() {
+		const cols = this.schema.columns as ColumnRecord;
+		const schema = Object.entries(cols).reduce(
+			(acc, [key, value]) => {
+				const info = Object.fromEntries(Object.entries(value))
+					.info as ColumnInfo;
+				const optional =
+					value._isPrimaryKey === false && info.isNullable === true;
+				if (optional === true) {
+					return acc.extend({
+						[key]: value.zodSchema().optional(),
+					}) as ZodSchemaObject<T>;
+				}
+				return acc.extend({
+					[key]: value.zodSchema(),
+				}) as ZodSchemaObject<T>;
+			},
+			z.object({}) as ZodSchemaObject<T>,
+		);
+		return z.object(schema.shape);
+	}
 }
+
+type ZodSchemaObject<T extends ColumnRecord> = z.ZodObject<
+	{
+		[K in keyof T]: T[K] extends { nullable: false }
+			? ReturnType<T[K]["zodSchema"]>
+			: z.ZodOptional<ReturnType<T[K]["zodSchema"]>>;
+	},
+	"strip",
+	z.ZodTypeAny,
+	{
+		[K in keyof T]: ReturnType<T[K]["zodSchema"]>["_output"];
+	},
+	{
+		[K in keyof T]: ReturnType<T[K]["zodSchema"]>["_input"];
+	}
+>;
 
 type InferColumTypes<T extends ColumnRecord> = Simplify<{
 	[P in keyof T]: Simplify<NonPrimaryKeyColumn<T[P]["_columnType"], T[P]>>;
