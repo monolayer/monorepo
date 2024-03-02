@@ -194,11 +194,6 @@ export class PgColumn<S, I, U = I>
 	}
 }
 
-export function nullableColumn(column: PgColumnTypes) {
-	const info = Object.fromEntries(Object.entries(column)).info as ColumnInfo;
-	return column._isPrimaryKey && info.isNullable;
-}
-
 export class PgGeneratedColumn<T, U>
 	extends PgColumnBase<NonNullable<T>, U, U>
 	implements QueryDataType, NativeDataType
