@@ -94,7 +94,7 @@ type ZodType<T extends PgColumnTypes> = z.ZodType<
 			  ? never
 			  : T["_columnType"]["__select__"] | null,
 	z.ZodTypeDef,
-	T["_generatedByDefault"] extends true
+	T extends { _generatedByDefault: true }
 		? NonOptional<T["_columnType"]["__insert__"]>
 		: T["_columnType"]["__insert__"]
 >;

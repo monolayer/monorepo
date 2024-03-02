@@ -101,11 +101,11 @@ type NonPrimaryKeyColumn<T, C extends PgColumnTypes> = T extends ColumnType<
 	infer I,
 	infer U
 >
-	? C["_hasDefault"] extends true
+	? C extends { _hasDefault: true }
 		? ColumnType<S, I | undefined, U>
-		: C["_generatedAlways"] extends true
+		: C extends { _generatedAlways: true }
 		  ? ColumnType<S, I, U>
-		  : C["_generatedByDefault"] extends true
+		  : C extends { _generatedByDefault: true }
 			  ? ColumnType<S, I | undefined, U>
 			  : ColumnType<S, I, U>
 	: never;
