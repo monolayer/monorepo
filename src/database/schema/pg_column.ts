@@ -1,4 +1,11 @@
-import { type ColumnDataType, type ColumnType, type Expression } from "kysely";
+import {
+	type ColumnDataType,
+	type ColumnType,
+	type Expression,
+	type InsertType,
+	type SelectType,
+} from "kysely";
+import type { Simplify } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 import { ZodIssueCode, z } from "zod";
 import {
@@ -85,24 +92,26 @@ export enum DefaultValueDataTypes {
 }
 
 type ZodType<T extends PgColumnTypes> = z.ZodType<
-	T extends { nullable: false }
-		? NonNullable<T["_columnType"]["__select__"]>
+	T extends { nullable: "no" }
+		? NonNullable<SelectType<InferColumType<T>>>
 		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		  T extends PgGeneratedColumn<any, any>
-		  ? T["_columnType"]["__select__"]
-		  : T extends { _generatedAlways: true }
+		  ? SelectType<InferColumType<T>>
+		  : T extends { _generatedAlways: "yes" }
 			  ? never
-			  : T["_columnType"]["__select__"] | null,
+			  : SelectType<InferColumType<T>> | null,
 	z.ZodTypeDef,
-	T extends { _generatedByDefault: true }
-		? NonOptional<T["_columnType"]["__insert__"]>
-		: T["_columnType"]["__insert__"]
+	T extends { _generatedByDefault: "yes" }
+		? NonOptional<InsertType<InferColumType<T>>>
+		: T extends { _generatedAlways: "yes" }
+		  ? never
+		  : Exclude<InsertType<InferColumType<T>>, undefined>
 >;
 
 interface QueryDataType {
 	/** @internal */
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	readonly _columnType: ColumnType<any, any, any>;
+	readonly _infer: ColumnType<any, any, any>;
 }
 
 export class PgColumnBase<S, I, U> {
@@ -138,7 +147,7 @@ export class PgColumn<S, I, U = I>
 	extends PgColumnBase<S, I, U>
 	implements QueryDataType
 {
-	declare readonly _columnType: ColumnType<S | null, I | null, U | null>;
+	declare readonly _infer: ColumnType<S, I, U>;
 
 	protected _isPrimaryKey: boolean;
 
@@ -156,16 +165,14 @@ export class PgColumn<S, I, U = I>
 	notNull() {
 		this.info.isNullable = false;
 		return this as this & {
-			_columnType: ColumnType<S, I, U>;
-			nullable: false;
+			nullable: "no";
 		};
 	}
 
 	primaryKey() {
 		this._isPrimaryKey = true;
 		return this as this & {
-			_columnType: ColumnType<S, I, U>;
-			nullable: false;
+			nullable: "no";
 		};
 	}
 
@@ -180,18 +187,17 @@ export class PgColumn<S, I, U = I>
 			this.info.defaultValue = `'${val}'::${this._native_data_type}`;
 		}
 		return this as this & {
-			_columnType: ColumnType<S, I | undefined | null, U | null>;
-			_hasDefault: true;
+			_hasDefault: "yes";
 		};
 	}
 }
 
 export class PgGeneratedColumn<T, U>
-	extends PgColumnBase<NonNullable<T>, U, U>
+	extends PgColumnBase<T, U, U>
 	implements QueryDataType
 {
-	declare readonly _columnType: ColumnType<T, U | undefined, U>;
-	declare readonly _generatedByDefault: true;
+	declare readonly _infer: ColumnType<T, U, U>;
+	declare readonly _generatedByDefault: "yes";
 	protected readonly _native_data_type: DefaultValueDataTypes;
 	protected _isPrimaryKey: boolean;
 
@@ -208,9 +214,45 @@ export class PgGeneratedColumn<T, U>
 	primaryKey() {
 		this._isPrimaryKey = true;
 		return this as this & {
-			_columnType: ColumnType<T, U, U>;
-			nullable: false;
+			nullable: "no";
 		};
+	}
+}
+
+export function bigserial() {
+	return new PgBigSerial();
+}
+
+export class PgBigSerial extends PgGeneratedColumn<
+	string,
+	number | bigint | string
+> {
+	constructor() {
+		super("bigserial", DefaultValueDataTypes.bigserial);
+	}
+
+	zodSchema(): ZodType<typeof this> {
+		return bigintSchema(!this._isPrimaryKey && this.info.isNullable === true)
+			.pipe(z.bigint().min(1n).max(9223372036854775807n))
+			.transform((val) => val.toString()) as unknown as ZodType<typeof this>;
+	}
+}
+
+export function serial() {
+	return new PgSerial();
+}
+
+export class PgSerial extends PgGeneratedColumn<number, number | string> {
+	constructor() {
+		super("serial", DefaultValueDataTypes.serial);
+	}
+
+	zodSchema(): ZodType<typeof this> {
+		return wholeNumberSchema(
+			1,
+			2147483647,
+			!this._isPrimaryKey && this.info.isNullable === true,
+		) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -219,9 +261,8 @@ export class IdentifiableColumn<S, I, U = I> extends PgColumn<S, I, U> {
 		this.info.identity = ColumnIdentity.ByDefault;
 		this.info.isNullable = false;
 		return this as this & {
-			_columnType: ColumnType<S, I | undefined, U>;
-			_generatedByDefault: true;
-			nullable: false;
+			_generatedByDefault: "yes";
+			nullable: "no";
 		};
 	}
 
@@ -229,8 +270,7 @@ export class IdentifiableColumn<S, I, U = I> extends PgColumn<S, I, U> {
 		this.info.identity = ColumnIdentity.Always;
 		this.info.isNullable = false;
 		return this as this & {
-			_columnType: ColumnType<S, never, never>;
-			_generatedAlways: true;
+			_generatedAlways: "yes";
 		};
 	}
 }
@@ -266,8 +306,7 @@ export class PgBoolean<
 			this.info.defaultValue = `${value}`;
 		}
 		return this as this & {
-			_columnType: ColumnType<boolean, I | null, I | null>;
-			_hasDefault: true;
+			_hasDefault: "yes";
 		};
 	}
 
@@ -396,25 +435,6 @@ export class PgBigInt extends IdentifiableColumn<
 	}
 }
 
-export function bigserial() {
-	return new PgBigSerial();
-}
-
-export class PgBigSerial extends PgGeneratedColumn<
-	string,
-	number | bigint | string
-> {
-	constructor() {
-		super("bigserial", DefaultValueDataTypes.bigserial);
-	}
-
-	zodSchema(): ZodType<typeof this> {
-		return bigintSchema(!this._isPrimaryKey && this.info.isNullable === true)
-			.pipe(z.bigint().min(1n).max(9223372036854775807n))
-			.transform((val) => val.toString()) as unknown as ZodType<typeof this>;
-	}
-}
-
 export function bytea() {
 	return new PgBytea();
 }
@@ -424,9 +444,9 @@ export type NestedRecord = {
 };
 
 type ByteaZodType<T extends PgBytea> = z.ZodType<
-	T extends { nullable: false } ? Buffer | string : Buffer | string | null,
+	T extends { nullable: "no" } ? Buffer | string : Buffer | string | null,
 	z.ZodTypeDef,
-	T extends { nullable: false } ? Buffer | string : Buffer | string | null
+	T extends { nullable: "no" } ? Buffer | string : Buffer | string | null
 >;
 
 export class PgBytea extends PgColumn<Buffer, Buffer | string> {
@@ -460,12 +480,7 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 			}
 		}
 		return this as this & {
-			_columnType: ColumnType<
-				Buffer,
-				Buffer | string | null,
-				Buffer | string | null
-			>;
-			_hasDefault: true;
+			_hasDefault: "yes";
 		};
 	}
 
@@ -490,9 +505,9 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 }
 
 type DateZodType<T extends PgDate> = z.ZodType<
-	T extends { nullable: false } ? Date : Date | null,
+	T extends { nullable: "no" } ? Date : Date | null,
 	z.ZodTypeDef,
-	T extends { nullable: false } ? Date | string : Date | string | null
+	T extends { nullable: "no" } ? Date | string : Date | string | null
 >;
 
 export function date() {
@@ -605,12 +620,7 @@ export class PgInt4 extends IdentifiableColumn<number, number | string> {
 			this.info.defaultValue = `${value}`;
 		}
 		return this as this & {
-			_columnType: ColumnType<
-				number,
-				number | string | undefined | null,
-				number | string | null
-			>;
-			_hasDefault: true;
+			_hasDefault: "yes";
 		};
 	}
 
@@ -672,12 +682,7 @@ export class PgInteger extends IdentifiableColumn<number, number | string> {
 			this.info.defaultValue = `${value}`;
 		}
 		return this as this & {
-			_columnType: ColumnType<
-				number,
-				number | string | undefined | null,
-				number | string | null
-			>;
-			_hasDefault: true;
+			_hasDefault: "yes";
 		};
 	}
 
@@ -706,18 +711,18 @@ export type JsonObject = {
 	[K in string]?: JsonValue;
 };
 
-export type JsonPrimitive = boolean | number | string | null;
+export type JsonPrimitive = boolean | number | string;
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
 type JsonZodType<T extends PgJson | PgJsonB> = z.ZodType<
-	T extends { nullable: false }
+	T extends { nullable: "no" }
 		? // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		  string | number | boolean | Record<string, any>
 		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		  string | number | boolean | Record<string, any> | null,
 	z.ZodTypeDef,
-	T extends { nullable: false }
+	T extends { nullable: "no" }
 		? // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		  string | number | boolean | Record<string, any>
 		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -776,24 +781,6 @@ export class PgReal extends PgColumn<number, number | bigint | string> {
 	}
 }
 
-export function serial() {
-	return new PgSerial();
-}
-
-export class PgSerial extends PgGeneratedColumn<number, number | string> {
-	constructor() {
-		super("serial", DefaultValueDataTypes.serial);
-	}
-
-	zodSchema(): ZodType<typeof this> {
-		return wholeNumberSchema(
-			1,
-			2147483647,
-			!this._isPrimaryKey && this.info.isNullable === true,
-		) as unknown as ZodType<typeof this>;
-	}
-}
-
 export function uuid() {
 	return new PgUuid();
 }
@@ -810,8 +797,7 @@ export class PgUuid extends PgColumn<string, string> {
 			this.info.defaultValue = `'${value.toLowerCase()}'::uuid`;
 		}
 		return this as this & {
-			_columnType: ColumnType<string, string | undefined | null, string | null>;
-			_hasDefault: true;
+			_hasDefault: "yes";
 		};
 	}
 
@@ -1011,15 +997,10 @@ export function pgEnum<N extends string, T extends string[]>(
 	return new PgEnum(name, values as unknown as T[number]);
 }
 
-export class PgEnum<
-	N,
-	T,
-	S = string | null,
-	I = string | null | undefined,
-	U = string | null,
-> {
-	declare readonly _columnType: ColumnType<S, I, U>;
+export class PgEnum<N, T> {
 	private _isPrimaryKey: boolean;
+
+	declare readonly _infer: ColumnType<string, string, string>;
 
 	readonly values: T;
 	readonly name: N;
@@ -1046,24 +1027,21 @@ export class PgEnum<
 	notNull() {
 		this.info.isNullable = false;
 		return this as this & {
-			_columnType: ColumnType<string, string, string>;
-			nullable: false;
+			nullable: "no";
 		};
 	}
 
 	primaryKey() {
 		this._isPrimaryKey = true;
 		return this as this & {
-			_columnType: ColumnType<string, string, string>;
-			nullable: false;
+			nullable: "no";
 		};
 	}
 
 	defaultTo(value: string) {
 		this.info.defaultValue = `'${value}'::${this.info.dataType}`;
 		return this as this & {
-			_columnType: ColumnType<string, string | undefined, string>;
-			_hasDefault: true;
+			_hasDefault: "yes";
 		};
 	}
 
@@ -1072,7 +1050,6 @@ export class PgEnum<
 		return this;
 	}
 
-	// 'user' | 'admin' | 'superuser'
 	zodSchema(): EnumZodyType<typeof this> {
 		const enumValues = this.values as unknown as [string, ...string[]];
 		const errorMessage = `Expected ${enumValues
@@ -1089,12 +1066,12 @@ export class PgEnum<
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type EnumZodyType<T extends PgEnum<any, any, any, any, any>> = z.ZodType<
-	T extends { nullable: false }
-		? NonNullable<T["_columnType"]["__select__"]>
-		: T["_columnType"]["__select__"],
+type EnumZodyType<T extends PgEnum<any, any>> = z.ZodType<
+	T extends { nullable: "no" }
+		? NonNullable<SelectType<InferColumType<T>>>
+		: SelectType<InferColumType<T>>,
 	z.ZodTypeDef,
-	NonOptional<T["_columnType"]["__insert__"]>
+	NonOptional<InsertType<InferColumType<T>>>
 >;
 
 type NonOptional<T> = Exclude<T, undefined>;
@@ -1127,7 +1104,7 @@ export type PgColumnTypes =
 	| PgUuid
 	| PgVarChar
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	| PgEnum<string, any, any, any, any>;
+	| PgEnum<string, any>;
 
 // From Kysely. To avoid bundling Kysely in client code.
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -1142,3 +1119,25 @@ export function isExpression(obj: unknown): obj is Expression<any> {
 function isObject(obj: unknown): obj is ShallowRecord<string, unknown> {
 	return typeof obj === "object" && obj !== null;
 }
+
+export type InferColumType<T extends PgColumnTypes> = T extends {
+	_infer: ColumnType<infer S, infer I, infer U>;
+}
+	? T extends { nullable: "no" }
+		? T extends { _hasDefault: "yes" }
+			? OptionalColumnType<S, I, U>
+			: T extends { _generatedAlways: "yes" }
+			  ? Simplify<ColumnType<S, never, never>>
+			  : T extends { _generatedByDefault: "yes" }
+				  ? OptionalColumnType<S, I, U>
+				  : Simplify<ColumnType<S, I, U>>
+		: T extends { _hasDefault: "yes" }
+		  ? Simplify<ColumnType<NonNullable<S>, I | null | undefined, U | null>>
+		  : T extends { _generatedAlways: "yes" }
+			  ? Simplify<ColumnType<NonNullable<S>, never, never>>
+			  : T extends { _generatedByDefault: "yes" }
+				  ? OptionalColumnType<S, I, U>
+				  : Simplify<ColumnType<S | null, I | null | undefined, U | null>>
+	: never;
+
+type OptionalColumnType<S, I, U> = Simplify<ColumnType<S, I | undefined, U>>;

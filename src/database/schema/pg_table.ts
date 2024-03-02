@@ -1,12 +1,10 @@
-import type {
-	ColumnType,
-	Insertable,
-	Selectable,
-	Simplify,
-	Updateable,
-} from "kysely";
+import type { Insertable, Selectable, Simplify, Updateable } from "kysely";
 import { z } from "zod";
-import { type ColumnInfo, PgColumnTypes } from "./pg_column.js";
+import {
+	type ColumnInfo,
+	type InferColumType,
+	PgColumnTypes,
+} from "./pg_column.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
 import { type PgIndex } from "./pg_index.js";
 import type { PgTrigger } from "./pg_trigger.js";
@@ -81,7 +79,7 @@ export class PgTable<T extends ColumnRecord> {
 
 type ZodSchemaObject<T extends ColumnRecord> = z.ZodObject<
 	{
-		[K in keyof T]: T[K] extends { nullable: false }
+		[K in keyof T]: T[K] extends { nullable: "no" }
 			? ReturnType<T[K]["zodSchema"]>
 			: z.ZodOptional<ReturnType<T[K]["zodSchema"]>>;
 	},
@@ -95,23 +93,9 @@ type ZodSchemaObject<T extends ColumnRecord> = z.ZodObject<
 	}
 >;
 
-type InferColumTypes<T extends ColumnRecord> = Simplify<{
-	[P in keyof T]: Simplify<NonPrimaryKeyColumn<T[P]["_columnType"], T[P]>>;
+export type InferColumTypes<T extends ColumnRecord> = Simplify<{
+	[P in keyof T]: InferColumType<T[P]>;
 }>;
-
-type NonPrimaryKeyColumn<T, C extends PgColumnTypes> = T extends ColumnType<
-	infer S,
-	infer I,
-	infer U
->
-	? C extends { _hasDefault: true }
-		? ColumnType<S, I | undefined, U>
-		: C extends { _generatedAlways: true }
-		  ? ColumnType<S, I, U>
-		  : C extends { _generatedByDefault: true }
-			  ? ColumnType<S, I | undefined, U>
-			  : ColumnType<S, I, U>
-	: never;
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type AnyPgTable = PgTable<any>;

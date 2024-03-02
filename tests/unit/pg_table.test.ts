@@ -169,7 +169,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: {
 						readonly __select__: number | null;
-						readonly __insert__: string | number | null;
+						readonly __insert__: string | number | null | undefined;
 						readonly __update__: string | number | null;
 					};
 				};
@@ -1063,7 +1063,7 @@ describe("pgTable definition", () => {
 					expect(equal).toBe(true);
 				});
 
-				test("non nullable and optional inserts", () => {
+				test("nullable and optional inserts", () => {
 					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
@@ -1072,14 +1072,14 @@ describe("pgTable definition", () => {
 						},
 					});
 					type expectedType = {
-						role?: string;
+						role?: string | null;
 					};
 					type InferredType = typeof tbl.inferInsert;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
 
-				test("non nullable and optional updates", () => {
+				test("nullable and optional updates", () => {
 					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
@@ -1088,7 +1088,7 @@ describe("pgTable definition", () => {
 						},
 					});
 					type expectedType = {
-						role?: string;
+						role?: string | null;
 					};
 					type InferredType = typeof tbl.inferUpdate;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1106,8 +1106,8 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role: {
 							readonly __select__: string;
-							readonly __insert__: string | undefined;
-							readonly __update__: string;
+							readonly __insert__: string | null | undefined;
+							readonly __update__: string | null;
 						};
 					};
 					type InferredType = typeof tbl.infer;
