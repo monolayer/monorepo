@@ -1365,10 +1365,7 @@ describe("pgTable definition", () => {
 			expect(resultFail.success).toBe(false);
 			if (!resultFail.success) {
 				const formattedErrors = resultFail.error.format();
-				expect(formattedErrors.id?._errors).toStrictEqual([
-					"Required",
-					"Required",
-				]);
+				expect(formattedErrors.id?._errors).toStrictEqual(["Required"]);
 				expect(formattedErrors.name?._errors).toStrictEqual(["Required"]);
 			}
 

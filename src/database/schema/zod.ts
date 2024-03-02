@@ -1,78 +1,87 @@
-import { z } from "zod";
+import { ZodIssueCode, z } from "zod";
 
-export function bigintSchema() {
+export function baseSchema(isNullable: boolean, errorMessage: string) {
 	return z
-		.bigint()
-		.or(z.number())
-		.or(z.string())
-		.transform((s, ctx) => {
-			try {
-				return BigInt(s);
-			} catch (e) {
-				ctx.addIssue({
-					code: z.ZodIssueCode.invalid_type,
-					expected: "bigint",
-					received: "string",
-					message: `Cannot convert '${s}' to a BigInt`,
-				});
-				return z.NEVER;
-			}
+		.any()
+		.superRefine(required)
+		.superRefine((val, ctx) => {
+			nullable(val, ctx, isNullable, errorMessage);
 		});
 }
 
-export function jsonSchema() {
-	return z
-		.string()
-		.or(z.number())
-		.or(z.boolean())
-		.or(z.record(z.any()))
-		.transform((val, ctx) => {
+export function finishSchema(isNullable: boolean, schema: z.ZodTypeAny) {
+	if (isNullable) return schema.nullable();
+	return schema;
+}
+
+export function bigintSchema(isNullable: boolean) {
+	return baseSchema(
+		isNullable,
+		"Expected BigInt, Number or String that can coerce to BigInt",
+	)
+		.superRefine((val, ctx) => {
 			try {
-				if (typeof val === "string") {
-					JSON.parse(val);
-				}
-				if (typeof val !== "number" || typeof val !== "boolean") {
-					JSON.stringify(val);
-				}
-				return val;
+				BigInt(val);
 			} catch (e) {
 				ctx.addIssue({
 					code: z.ZodIssueCode.custom,
-					message: "Invalid JSON",
+					message: "Invalid bigint",
 				});
 				return z.NEVER;
 			}
-		});
+		})
+		.transform((val) => BigInt(val));
 }
 
-export function columnSchemaFromNullAndUndefined<T extends z.ZodTypeAny>(
-	primaryKey: boolean,
-	nullable: boolean,
-	base: T,
+export function jsonSchema(isNullable: boolean) {
+	return baseSchema(
+		isNullable,
+		"Expected value that can be converted to JSON",
+	).superRefine((val, ctx) => {
+		const allowedTypes = ["boolean", "number", "string"];
+		if (
+			!allowedTypes.includes(typeof val) &&
+			val.constructor.name !== "Object"
+		) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "Invalid JSON",
+			});
+			return z.NEVER;
+		}
+		try {
+			if (typeof val === "string") {
+				JSON.parse(val);
+			}
+			JSON.stringify(val);
+		} catch (e) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "Invalid JSON",
+			});
+			return z.NEVER;
+		}
+	});
+}
+
+export function variablePrecisionSchema(
+	minimum: number,
+	maximum: number,
+	isNullable: boolean,
 ) {
-	if (!primaryKey && nullable === true) {
-		return base;
-	}
-	return base.refine((val) => val !== null);
-}
+	const errorMessage =
+		"Expected bigint, Number or String that can be converted to a floating-point number or a bigint";
 
-export function variablePrecisionSchema(minimum: number, maximum: number) {
-	return z
-		.bigint()
-		.or(z.number())
-		.or(z.string())
-		.transform((s, ctx) => {
+	return baseSchema(isNullable, errorMessage)
+		.superRefine((val: unknown, ctx: z.RefinementCtx) => {
 			try {
-				if (typeof s === "string") {
-					parseFloat(s) || BigInt(s);
+				if (typeof val === "string") {
+					parseFloat(val) || BigInt(val);
 				}
-				return s;
 			} catch (e) {
 				ctx.addIssue({
-					code: z.ZodIssueCode.invalid_type,
-					expected: "bigint",
-					received: "string",
-					message: `Cannot convert '${s}' to a Number or a BigInt`,
+					code: z.ZodIssueCode.custom,
+					message: errorMessage,
 				});
 				return z.NEVER;
 			}
@@ -80,30 +89,44 @@ export function variablePrecisionSchema(minimum: number, maximum: number) {
 		.pipe(z.coerce.number().min(minimum).max(maximum));
 }
 
-export function wholeNumberSchema(minimum: number, maximum: number) {
-	return z
-		.number()
-		.or(z.string())
+export function wholeNumberSchema(
+	minimum: number,
+	maximum: number,
+	isNullable: boolean,
+) {
+	return baseSchema(
+		isNullable,
+		"Expected Number or String that can be converted to a number",
+	)
+		.superRefine((val, ctx) => {
+			if (typeof val === "bigint") {
+				ctx.addIssue({
+					code: z.ZodIssueCode.invalid_type,
+					expected: "number",
+					received: typeof val,
+				});
+				return z.NEVER;
+			}
+		})
 		.pipe(z.coerce.number().int().min(minimum).max(maximum));
 }
 
-export function decimalSchema(precision: number | null, scale: number | null) {
-	return z
-		.bigint()
-		.or(z.number())
-		.or(z.string())
-		.transform((s, ctx) => {
+export function decimalSchema(
+	precision: number | null,
+	scale: number | null,
+	isNullable: boolean,
+	errorMessage: string,
+) {
+	return baseSchema(isNullable, errorMessage)
+		.superRefine((val: unknown, ctx: z.RefinementCtx) => {
 			try {
-				if (typeof s === "string") {
-					return parseFloat(s) || BigInt(s);
+				if (typeof val === "string") {
+					parseFloat(val) || BigInt(val);
 				}
-				return s;
 			} catch (e) {
 				ctx.addIssue({
-					code: z.ZodIssueCode.invalid_type,
-					expected: "bigint",
-					received: "string",
-					message: `Cannot convert '${s}' to a Number or a BigInt`,
+					code: z.ZodIssueCode.custom,
+					message: errorMessage,
 				});
 				return z.NEVER;
 			}
@@ -138,4 +161,58 @@ export function decimalSchema(precision: number | null, scale: number | null) {
 					},
 				),
 		);
+}
+
+export function stringSchema(
+	errorMessage: string,
+	isNullable: boolean,
+	constructors = [] as string[],
+) {
+	return baseSchema(isNullable, errorMessage).superRefine((val, ctx) => {
+		if (typeof val !== "string" && constructors.length === 0) {
+			ctx.addIssue({
+				code: ZodIssueCode.custom,
+				message: `${errorMessage}, received ${typeof val}`,
+			});
+			return z.NEVER;
+		}
+		if (
+			typeof val !== "string" &&
+			constructors.length > 0 &&
+			!constructors.includes(val.constructor.name)
+		) {
+			ctx.addIssue({
+				code: ZodIssueCode.custom,
+				message: `${errorMessage}, received ${typeof val}`,
+			});
+			return z.NEVER;
+		}
+	});
+}
+
+export function required(val: unknown, ctx: z.RefinementCtx) {
+	if (val === undefined) {
+		ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			message: "Required",
+			fatal: true,
+		});
+		return z.NEVER;
+	}
+}
+
+export function nullable(
+	val: unknown,
+	ctx: z.RefinementCtx,
+	nullable: boolean,
+	message: string,
+) {
+	if (val === null && !nullable) {
+		ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			message: `${message}, received null`,
+			fatal: true,
+		});
+		return z.NEVER;
+	}
 }

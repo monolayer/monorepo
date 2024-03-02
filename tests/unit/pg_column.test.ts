@@ -558,6 +558,63 @@ describe("pgBoolean", () => {
 					expect(schema.safeParse(undefined).success).toBe(false);
 				});
 			});
+
+			describe("errors", () => {
+				test("undefined", () => {
+					const column = boolean();
+					const schema = column.zodSchema();
+					const result = schema.safeParse(undefined);
+					expect(result.success).toBe(false);
+					if (!result.success) {
+						const expected = [
+							{
+								code: "invalid_type",
+								expected: "boolean",
+								received: "undefined",
+								path: [],
+								message: "Required",
+							},
+						];
+						expect(result.error.errors).toStrictEqual(expected);
+					}
+				});
+
+				test("null", () => {
+					const column = boolean().notNull();
+					const schema = column.zodSchema();
+					const result = schema.safeParse(null);
+					expect(result.success).toBe(false);
+					if (!result.success) {
+						const expected = [
+							{
+								code: "invalid_type",
+								expected: "boolean",
+								received: "null",
+								path: [],
+								message: "Expected boolean, received null",
+							},
+						];
+						expect(result.error.errors).toStrictEqual(expected);
+					}
+				});
+
+				test("not a boolean", () => {
+					const column = boolean();
+					const schema = column.zodSchema();
+					const result = schema.safeParse("hello");
+					expect(result.success).toBe(false);
+					if (!result.success) {
+						const expected = [
+							{
+								code: "custom",
+								path: [],
+								message: "Invalid boolean",
+							},
+						];
+						expect(result.error.errors).toStrictEqual(expected);
+					}
+				});
+			});
 		});
 	});
 });
@@ -746,6 +803,65 @@ describe("pgText", () => {
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = text();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "undefined",
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = text().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "null",
+							path: [],
+							message: "Expected string, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a string", () => {
+				const column = text();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "number",
+							path: [],
+							message: "Expected string, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});
@@ -1006,6 +1122,62 @@ describe("pgBigInt", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = bigint();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = bigint().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected BigInt, Number or String that can coerce to BigInt, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a bigint", () => {
+				const column = bigint();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -1142,6 +1314,103 @@ describe("pgBigSerial", () => {
 				expect(nullResult.success).toBe(false);
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
+				}
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = bigserial();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = bigserial();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected BigInt, Number or String that can coerce to BigInt, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a bigserial", () => {
+				const column = bigserial();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("lower than minimum", () => {
+				const column = bigserial();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(0);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_small",
+							inclusive: true,
+							path: [],
+							minimum: 1n,
+							type: "bigint",
+							message: "Invalid input",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("greater than maximum", () => {
+				const column = bigserial();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(elevenCentillionBitInt);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							inclusive: true,
+							path: [],
+							maximum: 9223372036854775807n,
+							type: "bigint",
+							message:
+								"BigInt must be less than or equal to 9223372036854775807",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
 				}
 			});
 		});
@@ -1364,6 +1633,61 @@ describe("pgBytea", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = bytea();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = bytea().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Expected Buffer or string, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a bytea", () => {
+				const column = bytea();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(new Date());
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Expected Buffer or string, received object",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -1566,6 +1890,62 @@ describe("pgDate", () => {
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = date();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = date().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected Date or String that can coerce to Date, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a date", () => {
+				const column = date();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_date",
+							path: [],
+							message: "Invalid date",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});
@@ -1812,6 +2192,105 @@ describe("pgDoublePrecision", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = doublePrecision();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = doublePrecision().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a double precision", () => {
+				const column = doublePrecision();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("smaller than minimum", () => {
+				const column = doublePrecision();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(-elevenCentillionBitInt);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_small",
+							exact: false,
+							inclusive: true,
+							message: "Number must be greater than or equal to -1e+308",
+							minimum: -1e308,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("greater than maximum", () => {
+				const column = doublePrecision();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(elevenCentillionBitInt);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							exact: false,
+							inclusive: true,
+							message: "Number must be less than or equal to 1e+308",
+							maximum: 1e308,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -2054,6 +2533,105 @@ describe("pgFloat4", () => {
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = float4();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = float4().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a float4", () => {
+				const column = float4();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("smaller than minimum", () => {
+				const column = float4();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(-eleventUnDecillionBigInt);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_small",
+							exact: false,
+							inclusive: true,
+							message: "Number must be greater than or equal to -1e+37",
+							minimum: -1e37,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("greater than maximum", () => {
+				const column = float4();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(eleventUnDecillionBigInt);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							exact: false,
+							inclusive: true,
+							message: "Number must be less than or equal to 1e+37",
+							maximum: 1e37,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});
@@ -2300,6 +2878,105 @@ describe("pgFloat8", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = float8();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = float8().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a float8", () => {
+				const column = float8();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("smaller than minimum", () => {
+				const column = float8();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(-elevenCentillionBitInt);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_small",
+							exact: false,
+							inclusive: true,
+							message: "Number must be greater than or equal to -1e+308",
+							minimum: -1e308,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("greater than maximum", () => {
+				const column = float8();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(elevenCentillionBitInt);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							exact: false,
+							inclusive: true,
+							message: "Number must be less than or equal to 1e+308",
+							maximum: 1e308,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -2442,7 +3119,7 @@ describe("pgInt2", () => {
 				expect(schema.safeParse(1.1).success).toBe(false);
 			});
 
-			test("does not parses bigint", () => {
+			test("does not parse bigint", () => {
 				const column = int2();
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1n).success).toBe(false);
@@ -2556,6 +3233,125 @@ describe("pgInt2", () => {
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
+		});
+	});
+
+	describe("errors", () => {
+		test("undefined", () => {
+			const column = int2();
+			const schema = column.zodSchema();
+			const result = schema.safeParse(undefined);
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "custom",
+						path: [],
+						message: "Required",
+						fatal: true,
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
+		});
+
+		test("null", () => {
+			const column = int2().notNull();
+			const schema = column.zodSchema();
+			const result = schema.safeParse(null);
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "custom",
+						path: [],
+						message:
+							"Expected Number or String that can be converted to a number, received null",
+						fatal: true,
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
+		});
+
+		test("not an int2", () => {
+			const column = int2();
+			const schema = column.zodSchema();
+			const result = schema.safeParse("hello");
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "invalid_type",
+						expected: "number",
+						received: "nan",
+						path: [],
+						message: "Expected number, received nan",
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
+		});
+
+		test("bigint", () => {
+			const column = int2();
+			const schema = column.zodSchema();
+			const result = schema.safeParse(1n);
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "invalid_type",
+						expected: "number",
+						received: "bigint",
+						path: [],
+						message: "Expected number, received bigint",
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
+		});
+
+		test("smaller than minimum", () => {
+			const column = int2();
+			const schema = column.zodSchema();
+			const result = schema.safeParse(-32769);
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "too_small",
+						exact: false,
+						inclusive: true,
+						message: "Number must be greater than or equal to -32768",
+						minimum: -32768,
+						path: [],
+						type: "number",
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
+		});
+
+		test("greater than maximum", () => {
+			const column = int2();
+			const schema = column.zodSchema();
+			const result = schema.safeParse(32768);
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "too_big",
+						exact: false,
+						inclusive: true,
+						message: "Number must be less than or equal to 32767",
+						maximum: 32767,
+						path: [],
+						type: "number",
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
 		});
 	});
 });
@@ -2703,7 +3499,7 @@ describe("pgInt4", () => {
 				expect(schema.safeParse(1.1).success).toBe(false);
 			});
 
-			test("does not parses bigint", () => {
+			test("does not parse bigint", () => {
 				const column = int4();
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1n).success).toBe(false);
@@ -2816,6 +3612,125 @@ describe("pgInt4", () => {
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = int4();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = int4().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected Number or String that can be converted to a number, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not an int4", () => {
+				const column = int4();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "number",
+							received: "nan",
+							path: [],
+							message: "Expected number, received nan",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("bigint", () => {
+				const column = int4();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(1n);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "number",
+							received: "bigint",
+							path: [],
+							message: "Expected number, received bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("smaller than minimum", () => {
+				const column = int4();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(-2147483649);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_small",
+							exact: false,
+							inclusive: true,
+							message: "Number must be greater than or equal to -2147483648",
+							minimum: -2147483648,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("greater than maximum", () => {
+				const column = int4();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(2147483648);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							exact: false,
+							inclusive: true,
+							message: "Number must be less than or equal to 2147483647",
+							maximum: 2147483647,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});
@@ -3097,6 +4012,62 @@ describe("pgInt8", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = int8();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = int8().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected BigInt, Number or String that can coerce to BigInt, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a bigint", () => {
+				const column = int8();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -3357,6 +4328,125 @@ describe("pgInteger", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = integer();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = integer().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected Number or String that can be converted to a number, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not an integer", () => {
+				const column = integer();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "number",
+							received: "nan",
+							path: [],
+							message: "Expected number, received nan",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("bigint", () => {
+				const column = integer();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(1n);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "number",
+							received: "bigint",
+							path: [],
+							message: "Expected number, received bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("smaller than minimum", () => {
+				const column = integer();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(-2147483649);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_small",
+							exact: false,
+							inclusive: true,
+							message: "Number must be greater than or equal to -2147483648",
+							minimum: -2147483648,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("greater than maximum", () => {
+				const column = integer();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(2147483648);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							exact: false,
+							inclusive: true,
+							message: "Number must be less than or equal to 2147483647",
+							maximum: 2147483647,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -3590,6 +4680,62 @@ describe("pgJson", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = json();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = json().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected value that can be converted to JSON, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not an json", () => {
+				const column = json();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(new Date());
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid JSON",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -3821,6 +4967,62 @@ describe("pgJsonB", () => {
 				expect(schema.safeParse("2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = jsonb();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = jsonb().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected value that can be converted to JSON, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not an json", () => {
+				const column = jsonb();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(new Date());
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid JSON",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});
@@ -4065,6 +5267,105 @@ describe("pgReal", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = real();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = real().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a real", () => {
+				const column = real();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("smaller than minimum", () => {
+				const column = real();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(-eleventUnDecillionBigInt);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_small",
+							exact: false,
+							inclusive: true,
+							message: "Number must be greater than or equal to -1e+37",
+							minimum: -1e37,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("greater than maximum", () => {
+				const column = real();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(eleventUnDecillionBigInt);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							exact: false,
+							inclusive: true,
+							message: "Number must be less than or equal to 1e+37",
+							maximum: 1e37,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -4177,13 +5478,13 @@ describe("pgSerial", () => {
 				expect(schema.safeParse("0").success).toBe(false);
 			});
 
-			test("maximum is 2147483648", () => {
+			test("maximum is 2147483647", () => {
 				const column = serial();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(2147483648).success).toBe(true);
-				expect(schema.safeParse("2147483648").success).toBe(true);
-				expect(schema.safeParse(2147483649).success).toBe(false);
-				expect(schema.safeParse("2147483649").success).toBe(false);
+				expect(schema.safeParse(2147483647).success).toBe(true);
+				expect(schema.safeParse("2147483647").success).toBe(true);
+				expect(schema.safeParse(2147483648).success).toBe(false);
+				expect(schema.safeParse("2147483648").success).toBe(false);
 			});
 		});
 
@@ -4204,6 +5505,104 @@ describe("pgSerial", () => {
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = serial();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = serial();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected Number or String that can be converted to a number, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a bigserial", () => {
+				const column = bigint();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("lower than minimum", () => {
+				const column = serial();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(0);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_small",
+							exact: false,
+							inclusive: true,
+							path: [],
+							minimum: 1,
+							type: "number",
+							message: "Number must be greater than or equal to 1",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("greater than maximum", () => {
+				const column = serial();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(2147483648);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							exact: false,
+							inclusive: true,
+							path: [],
+							maximum: 2147483647,
+							type: "number",
+							message: "Number must be less than or equal to 2147483647",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});
@@ -4431,6 +5830,62 @@ describe("pgUuid", () => {
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
+
+			describe("errors", () => {
+				test("undefined", () => {
+					const column = uuid();
+					const schema = column.zodSchema();
+					const result = schema.safeParse(undefined);
+					expect(result.success).toBe(false);
+					if (!result.success) {
+						const expected = [
+							{
+								code: "custom",
+								path: [],
+								message: "Required",
+								fatal: true,
+							},
+						];
+						expect(result.error.errors).toStrictEqual(expected);
+					}
+				});
+
+				test("null", () => {
+					const column = uuid().notNull();
+					const schema = column.zodSchema();
+					const result = schema.safeParse(null);
+					expect(result.success).toBe(false);
+					if (!result.success) {
+						const expected = [
+							{
+								code: "custom",
+								path: [],
+								message: "Expected uuid, received null",
+								fatal: true,
+							},
+						];
+						expect(result.error.errors).toStrictEqual(expected);
+					}
+				});
+
+				test("not a uuid", () => {
+					const column = uuid();
+					const schema = column.zodSchema();
+					const result = schema.safeParse("hello");
+					expect(result.success).toBe(false);
+					if (!result.success) {
+						const expected = [
+							{
+								code: "invalid_string",
+								path: [],
+								message: "Invalid uuid",
+								validation: "uuid",
+							},
+						];
+						expect(result.error.errors).toStrictEqual(expected);
+					}
+				});
+			});
 		});
 	});
 });
@@ -4657,6 +6112,86 @@ describe("pgVarChar", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = varchar();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "undefined",
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = varchar().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "null",
+							path: [],
+							message: "Expected string, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a string", () => {
+				const column = varchar();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "number",
+							path: [],
+							message: "Expected string, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("longer than maximum length", () => {
+				const column = varchar(5);
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello!");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							type: "string",
+							exact: false,
+							inclusive: true,
+							maximum: 5,
+							path: [],
+							message: "String must contain at most 5 character(s)",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -4873,6 +6408,86 @@ describe("pgChar", () => {
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = char();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "undefined",
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = char().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "null",
+							path: [],
+							message: "Expected string, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a string", () => {
+				const column = char();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "number",
+							path: [],
+							message: "Expected string, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("longer than maximum length", () => {
+				const column = char(10);
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello world!");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							type: "string",
+							exact: false,
+							inclusive: true,
+							maximum: 10,
+							path: [],
+							message: "String must contain at most 10 character(s)",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});
@@ -5115,6 +6730,79 @@ describe("pgTime", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = time();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							fatal: true,
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = time().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							fatal: true,
+							path: [],
+							message: "Expected string with time format, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a time", () => {
+				const column = time();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Expected string with time format, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a time string", () => {
+				const column = time();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("not a time");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_string",
+							path: [],
+							message: "Invalid time",
+							validation: "regex",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -5338,6 +7026,79 @@ describe("pgTimeTz", () => {
 				expect(schema.safeParse("10:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = timetz();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							fatal: true,
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = timetz().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							fatal: true,
+							path: [],
+							message: "Expected string with time format, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a time with time zone", () => {
+				const column = timetz();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Expected string with time format, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a time with time zone string", () => {
+				const column = timetz();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("not a time");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_string",
+							path: [],
+							message: "Invalid time with time zone",
+							validation: "regex",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});
@@ -5576,6 +7337,80 @@ describe("pgTimestamp", () => {
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = timestamp();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							fatal: true,
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = timestamp().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							fatal: true,
+							path: [],
+							message:
+								"Expected date or string with date format, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a timestamp", () => {
+				const column = timestamp();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected date or string with date format, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a timestamp string", () => {
+				const column = timestamp();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("not a timestamp");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_date",
+							path: [],
+							message: "Invalid date",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});
@@ -5817,6 +7652,80 @@ describe("pgTimestampTz", () => {
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = timestamptz();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							fatal: true,
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = timestamptz().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							fatal: true,
+							path: [],
+							message:
+								"Expected date or string with date format, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a timestamp", () => {
+				const column = timestamptz();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected date or string with date format, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a timestamp string", () => {
+				const column = timestamptz();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("not a timestamp");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_date",
+							path: [],
+							message: "Invalid date",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});
@@ -6226,6 +8135,97 @@ describe("pgNumeric", () => {
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = numeric();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = numeric().notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, number or string that can be converted to a number, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a numeric", () => {
+				const column = numeric();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, number or string that can be converted to a number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("numeric with greater precision", () => {
+				const column = numeric(4);
+				const schema = column.zodSchema();
+				const result = schema.safeParse(12345);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							message: "Precision of 4 exeeded.",
+							path: [],
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("numeric with greater scale", () => {
+				const column = numeric(4, 3);
+				const schema = column.zodSchema();
+				const result = schema.safeParse(1234.1234);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							message: "Maximum scale 3 exeeded.",
+							path: [],
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
 	});
 });
 
@@ -6321,6 +8321,9 @@ describe("pgEnum", () => {
 					expect(stringResult.data).toBe("user");
 				}
 				const nullResult = schema.safeParse(null);
+				if (!nullResult.success) {
+					console.dir(nullResult.error.errors, { depth: null });
+				}
 				expect(nullResult.success).toBe(true);
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
@@ -6472,6 +8475,64 @@ describe("pgEnum", () => {
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const column = pgEnum("role", ["user", "admin", "superuser"]);
+				const schema = column.zodSchema();
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const column = pgEnum("role", ["user", "admin", "superuser"]).notNull();
+				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Expected 'user' | 'admin' | 'superuser', received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not an enum", () => {
+				const column = pgEnum("role", ["user", "admin", "superuser"]);
+				const schema = column.zodSchema();
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_enum_value",
+							path: [],
+							message:
+								"Invalid enum value. Expected 'user' | 'admin' | 'superuser', received 'hello'",
+							options: ["user", "admin", "superuser"],
+							received: "hello",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
 			});
 		});
 	});

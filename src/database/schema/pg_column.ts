@@ -1,11 +1,13 @@
 import { type ColumnDataType, type ColumnType, type Expression } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
-import { z } from "zod";
+import { ZodIssueCode, z } from "zod";
 import {
+	baseSchema,
 	bigintSchema,
-	columnSchemaFromNullAndUndefined,
 	decimalSchema,
+	finishSchema,
 	jsonSchema,
+	stringSchema,
 	variablePrecisionSchema,
 	wholeNumberSchema,
 } from "./zod.js";
@@ -200,13 +202,11 @@ export class PgColumn<S, I, U = I>
 			_hasDefault: true;
 		};
 	}
+}
 
-	schemaWithoptions<T extends z.ZodTypeAny>(base: T) {
-		if (!this._isPrimaryKey && this.info.isNullable) {
-			return base.nullable();
-		}
-		return base;
-	}
+export function nullableColumn(column: PgColumnTypes) {
+	const info = Object.fromEntries(Object.entries(column)).info as ColumnInfo;
+	return column._isPrimaryKey && info.isNullable;
 }
 
 export class PgGeneratedColumn<T, U>
@@ -313,6 +313,9 @@ export class PgBoolean<
 				case "0":
 				case "on":
 				case "off":
+				case true:
+				case false:
+				case null:
 					return true;
 				default:
 					return false;
@@ -341,20 +344,37 @@ export class PgBoolean<
 		};
 
 		const nullable = !this._isPrimaryKey && this.info.isNullable;
-		const base = z
-			.custom<boolean | Boolish | null>((val) => {
-				if (val === undefined) return false;
-				if (val === null) return true;
-				if (typeof val === "boolean") return true;
-				return testBoolish(val);
-			})
-			.transform(toBooleanOrNull);
 
-		return base.refine((val) => {
-			if (nullable && val === null) return true;
-			if (!nullable && val === null) return false;
-			return true;
-		}) as unknown as ZodType<typeof this>;
+		return z
+			.any()
+			.superRefine((data, ctx) => {
+				if (!testBoolish(data)) {
+					if (data === undefined) {
+						ctx.addIssue({
+							code: ZodIssueCode.invalid_type,
+							expected: "boolean",
+							received: "undefined",
+						});
+					} else {
+						ctx.addIssue({
+							code: ZodIssueCode.custom,
+							message: "Invalid boolean",
+						});
+					}
+					return z.NEVER;
+				}
+			})
+			.transform(toBooleanOrNull)
+			.superRefine((val, ctx) => {
+				if (!nullable && val === null) {
+					ctx.addIssue({
+						code: ZodIssueCode.invalid_type,
+						expected: "boolean",
+						received: "null",
+					});
+					return z.NEVER;
+				}
+			}) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -369,7 +389,10 @@ export class PgText extends PgColumn<string, string> {
 
 	zodSchema(): ZodType<typeof this> {
 		const base = z.string();
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		return finishSchema(
+			!this._isPrimaryKey && this.info.isNullable,
+			base,
+		) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -389,11 +412,16 @@ export class PgBigInt extends IdentifiableColumn<
 		if (this.info.identity === ColumnIdentity.Always) {
 			return z.never() as unknown as ZodType<typeof this>;
 		}
-		const base = bigintSchema()
+		const base = bigintSchema(
+			!this._isPrimaryKey && this.info.isNullable === true,
+		)
 			.pipe(z.bigint().min(-9223372036854775808n).max(9223372036854775807n))
 			.transform((val) => val.toString());
 
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		return finishSchema(
+			!this._isPrimaryKey && this.info.isNullable,
+			base,
+		) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -410,7 +438,7 @@ export class PgBigSerial extends PgGeneratedColumn<
 	}
 
 	zodSchema(): ZodType<typeof this> {
-		return bigintSchema()
+		return bigintSchema(!this._isPrimaryKey && this.info.isNullable === true)
 			.pipe(z.bigint().min(1n).max(9223372036854775807n))
 			.transform((val) => val.toString()) as unknown as ZodType<typeof this>;
 	}
@@ -471,20 +499,22 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 	}
 
 	zodSchema(): ByteaZodType<typeof this> {
-		const nullable = !this._isPrimaryKey && this.info.isNullable === true;
-		const base = z.custom<string | Buffer | null>((val) => {
-			if (!nullable && val === null) return false;
-			if (val === undefined) return false;
+		return baseSchema(
+			!this._isPrimaryKey && this.info.isNullable === true,
+			"Expected Buffer or string",
+		).superRefine((val, ctx) => {
 			if (
-				typeof val === "string" ||
-				val?.constructor.name === "Buffer" ||
-				val === null
+				typeof val !== "string" &&
+				val?.constructor.name !== "Buffer" &&
+				val !== null
 			) {
-				return true;
+				ctx.addIssue({
+					code: ZodIssueCode.custom,
+					message: `Expected Buffer or string, received ${typeof val}`,
+				});
+				return z.NEVER;
 			}
-			return false;
-		});
-		return base as unknown as ByteaZodType<typeof this>;
+		}) as unknown as ByteaZodType<typeof this>;
 	}
 }
 
@@ -504,8 +534,14 @@ export class PgDate extends PgColumn<Date, Date | string> {
 	}
 
 	zodSchema(): DateZodType<typeof this> {
-		const base = z.date().or(z.string().pipe(z.coerce.date()));
-		return this.schemaWithoptions(base) as unknown as DateZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = baseSchema(
+			isNullable,
+			"Expected Date or String that can coerce to Date",
+		).pipe(z.coerce.date());
+		return finishSchema(isNullable, base) as unknown as DateZodType<
+			typeof this
+		>;
 	}
 }
 
@@ -522,8 +558,9 @@ export class PgDoublePrecision extends PgColumn<
 	}
 
 	zodSchema(): ZodType<typeof this> {
-		const base = variablePrecisionSchema(-1e308, 1e308);
-		return this.schemaWithoptions(base).transform((val) =>
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = variablePrecisionSchema(-1e308, 1e308, isNullable);
+		return finishSchema(isNullable, base).transform((val) =>
 			val === null ? val : val.toString(),
 		) as unknown as ZodType<typeof this>;
 	}
@@ -539,8 +576,9 @@ export class PgFloat4 extends PgColumn<number, number | bigint | string> {
 	}
 
 	zodSchema(): ZodType<typeof this> {
-		const base = variablePrecisionSchema(-1e37, 1e37);
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = variablePrecisionSchema(-1e37, 1e37, isNullable);
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -554,8 +592,9 @@ export class PgFloat8 extends PgColumn<number, number | bigint | string> {
 	}
 
 	zodSchema(): ZodType<typeof this> {
-		const base = variablePrecisionSchema(-1e308, 1e308);
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = variablePrecisionSchema(-1e308, 1e308, isNullable);
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -572,8 +611,10 @@ export class PgInt2 extends IdentifiableColumn<number, number | string> {
 		if (this.info.identity === ColumnIdentity.Always) {
 			return z.never() as unknown as ZodType<typeof this>;
 		}
-		const base = wholeNumberSchema(-32768, 32767);
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+
+		const base = wholeNumberSchema(-32768, 32767, isNullable);
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -606,9 +647,13 @@ export class PgInt4 extends IdentifiableColumn<number, number | string> {
 		if (this.info.identity === ColumnIdentity.Always) {
 			return z.never() as unknown as ZodType<typeof this>;
 		}
-
-		const base = wholeNumberSchema(-2147483648, 2147483647);
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = wholeNumberSchema(
+			-2147483648,
+			2147483647,
+			!this._isPrimaryKey && this.info.isNullable === true,
+		);
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -628,10 +673,13 @@ export class PgInt8 extends IdentifiableColumn<
 		if (this.info.identity === ColumnIdentity.Always) {
 			return z.never() as unknown as ZodType<typeof this>;
 		}
-		const base = bigintSchema().pipe(
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = bigintSchema(
+			!this._isPrimaryKey && this.info.isNullable === true,
+		).pipe(
 			z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
 		);
-		return this.schemaWithoptions(base).transform((val) =>
+		return finishSchema(isNullable, base).transform((val) =>
 			val !== null ? Number(val) : val,
 		) as unknown as ZodType<typeof this>;
 	}
@@ -666,8 +714,14 @@ export class PgInteger extends IdentifiableColumn<number, number | string> {
 		if (this.info.identity === ColumnIdentity.Always) {
 			return z.never() as unknown as ZodType<typeof this>;
 		}
-		const base = wholeNumberSchema(-2147483648, 2147483647);
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+
+		const base = wholeNumberSchema(
+			-2147483648,
+			2147483647,
+			!this._isPrimaryKey && this.info.isNullable === true,
+		);
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -705,8 +759,11 @@ export class PgJson extends PgColumn<JsonValue, string> {
 	}
 
 	zodSchema(): JsonZodType<typeof this> {
-		const base = jsonSchema();
-		return this.schemaWithoptions(base) as unknown as JsonZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = jsonSchema(isNullable);
+		return finishSchema(isNullable, base) as unknown as JsonZodType<
+			typeof this
+		>;
 	}
 }
 
@@ -720,8 +777,11 @@ export class PgJsonB extends PgColumn<JsonValue, string> {
 	}
 
 	zodSchema(): JsonZodType<typeof this> {
-		const base = jsonSchema();
-		return this.schemaWithoptions(base) as unknown as JsonZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = jsonSchema(isNullable);
+		return finishSchema(isNullable, base) as unknown as JsonZodType<
+			typeof this
+		>;
 	}
 }
 
@@ -735,8 +795,13 @@ export class PgReal extends PgColumn<number, number | bigint | string> {
 	}
 
 	zodSchema(): ZodType<typeof this> {
-		const base = variablePrecisionSchema(-1e37, 1e37);
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = variablePrecisionSchema(
+			-1e37,
+			1e37,
+			!this._isPrimaryKey && this.info.isNullable === true,
+		);
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -749,11 +814,12 @@ export class PgSerial extends PgGeneratedColumn<number, number | string> {
 		super("serial", DefaultValueDataTypes.serial);
 	}
 
-	zodSchema() {
-		return z
-			.number()
-			.or(z.string())
-			.pipe(z.coerce.number().min(1).max(2147483648));
+	zodSchema(): ZodType<typeof this> {
+		return wholeNumberSchema(
+			1,
+			2147483647,
+			!this._isPrimaryKey && this.info.isNullable === true,
+		) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -779,8 +845,12 @@ export class PgUuid extends PgColumn<string, string> {
 	}
 
 	zodSchema(): ZodType<typeof this> {
-		const base = z.string().uuid();
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = baseSchema(
+			!this._isPrimaryKey && this.info.isNullable === true,
+			"Expected uuid",
+		).pipe(z.string().uuid());
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -805,12 +875,14 @@ export function varchar(maximumLength?: number) {
 
 export class PgVarChar extends PgColumnWithMaximumLength<string, string> {
 	zodSchema(): ZodType<typeof this> {
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		if (this.info.characterMaximumLength !== null) {
-			return this.schemaWithoptions(
+			return finishSchema(
+				isNullable,
 				z.string().max(this.info.characterMaximumLength),
 			) as unknown as ZodType<typeof this>;
 		}
-		return this.schemaWithoptions(z.string()) as unknown as ZodType<
+		return finishSchema(isNullable, z.string()) as unknown as ZodType<
 			typeof this
 		>;
 	}
@@ -822,12 +894,14 @@ export function char(maximumLength?: number) {
 
 export class PgChar extends PgColumnWithMaximumLength<string, string> {
 	zodSchema(): ZodType<typeof this> {
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		if (this.info.characterMaximumLength !== null) {
-			return this.schemaWithoptions(
+			return finishSchema(
+				isNullable,
 				z.string().max(this.info.characterMaximumLength),
 			) as unknown as ZodType<typeof this>;
 		}
-		return this.schemaWithoptions(z.string()) as unknown as ZodType<
+		return finishSchema(isNullable, z.string()) as unknown as ZodType<
 			typeof this
 		>;
 	}
@@ -872,8 +946,12 @@ export function time(precision?: DateTimePrecision) {
 
 export class PgTime extends PgColumnWithPrecision<string, string> {
 	zodSchema(): ZodType<typeof this> {
-		const base = z.string().regex(TIME_REGEX);
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = stringSchema(
+			"Expected string with time format",
+			!this._isPrimaryKey && this.info.isNullable === true,
+		).pipe(z.string().regex(TIME_REGEX, "Invalid time"));
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -883,8 +961,12 @@ export function timetz(precision?: DateTimePrecision) {
 
 export class PgTimeTz extends PgColumnWithPrecision<string, string> {
 	zodSchema(): ZodType<typeof this> {
-		const base = z.string().regex(TIME_REGEX);
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = stringSchema(
+			"Expected string with time format",
+			!this._isPrimaryKey && this.info.isNullable === true,
+		).pipe(z.string().regex(TIME_REGEX, "Invalid time with time zone"));
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -894,8 +976,15 @@ export function timestamp(precision?: DateTimePrecision) {
 
 export class PgTimestamp extends PgColumnWithPrecision<Date, Date | string> {
 	zodSchema(): DateZodType<typeof this> {
-		const base = z.date().or(z.string().pipe(z.coerce.date()));
-		return this.schemaWithoptions(base) as unknown as DateZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = stringSchema(
+			"Expected date or string with date format",
+			!this._isPrimaryKey && this.info.isNullable === true,
+			["Date"],
+		).pipe(z.coerce.date());
+		return finishSchema(isNullable, base) as unknown as DateZodType<
+			typeof this
+		>;
 	}
 }
 
@@ -905,8 +994,15 @@ export function timestamptz(precision?: DateTimePrecision) {
 
 export class PgTimestampTz extends PgColumnWithPrecision<Date, Date | string> {
 	zodSchema(): DateZodType<typeof this> {
-		const base = z.date().or(z.string().pipe(z.coerce.date()));
-		return this.schemaWithoptions(base) as unknown as DateZodType<typeof this>;
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = stringSchema(
+			"Expected date or string with date format",
+			!this._isPrimaryKey && this.info.isNullable === true,
+			["Date"],
+		).pipe(z.coerce.date());
+		return finishSchema(isNullable, base) as unknown as DateZodType<
+			typeof this
+		>;
 	}
 }
 
@@ -926,11 +1022,14 @@ export class PgNumeric extends PgColumn<string, number | bigint | string> {
 	}
 
 	zodSchema(): ZodType<typeof this> {
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		const base = decimalSchema(
 			this.info.numericPrecision,
 			this.info.numericScale,
+			isNullable,
+			"Expected bigint, number or string that can be converted to a number",
 		);
-		return this.schemaWithoptions(base) as unknown as ZodType<typeof this>;
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -1008,16 +1107,19 @@ export class PgEnum<
 		return this;
 	}
 
+	// 'user' | 'admin' | 'superuser'
 	zodSchema(): EnumZodyType<typeof this> {
 		const enumValues = this.values as unknown as [string, ...string[]];
-		const base = z.null().or(z.enum(enumValues));
-		const schema: z.ZodType<string | null, z.ZodTypeDef, string | null> =
-			columnSchemaFromNullAndUndefined(
-				this._isPrimaryKey,
-				this.info.isNullable,
-				base,
-			);
-		return schema as unknown as EnumZodyType<typeof this>;
+		const errorMessage = `Expected ${enumValues
+			.map((v) => `'${v}'`)
+			.join(" | ")}`;
+
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+
+		const base = baseSchema(isNullable, errorMessage).pipe(z.enum(enumValues));
+		return finishSchema(isNullable, base) as unknown as EnumZodyType<
+			typeof this
+		>;
 	}
 }
 
