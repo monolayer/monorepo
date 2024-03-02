@@ -142,8 +142,6 @@ export class PgColumn<S, I, U = I>
 
 	protected _isPrimaryKey: boolean;
 
-	declare readonly _zodType: typeof this._columnType.__select__;
-
 	protected readonly _native_data_type: DefaultValueDataTypes;
 
 	constructor(
