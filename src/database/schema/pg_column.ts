@@ -103,12 +103,6 @@ interface QueryDataType {
 	/** @internal */
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	readonly _columnType: ColumnType<any, any, any>;
-	_isPrimaryKey: boolean;
-}
-
-interface NativeDataType {
-	/** @internal */
-	readonly _native_data_type: DefaultValueDataTypes;
 }
 
 export class PgColumnBase<S, I, U> {
@@ -142,15 +136,15 @@ export class PgColumnBase<S, I, U> {
 
 export class PgColumn<S, I, U = I>
 	extends PgColumnBase<S, I, U>
-	implements QueryDataType, NativeDataType
+	implements QueryDataType
 {
 	declare readonly _columnType: ColumnType<S | null, I | null, U | null>;
 
-	declare _isPrimaryKey: boolean;
+	protected _isPrimaryKey: boolean;
 
 	declare readonly _zodType: typeof this._columnType.__select__;
 
-	declare readonly _native_data_type: DefaultValueDataTypes;
+	protected readonly _native_data_type: DefaultValueDataTypes;
 
 	constructor(
 		dataType: ColumnDataType | "smallint",
@@ -196,12 +190,12 @@ export class PgColumn<S, I, U = I>
 
 export class PgGeneratedColumn<T, U>
 	extends PgColumnBase<NonNullable<T>, U, U>
-	implements QueryDataType, NativeDataType
+	implements QueryDataType
 {
 	declare readonly _columnType: ColumnType<T, U | undefined, U>;
 	declare readonly _generatedByDefault: true;
-	declare readonly _native_data_type: DefaultValueDataTypes;
-	declare _isPrimaryKey: boolean;
+	protected readonly _native_data_type: DefaultValueDataTypes;
+	protected _isPrimaryKey: boolean;
 
 	constructor(
 		dataType: "serial" | "bigserial",
@@ -229,6 +223,7 @@ export class IdentifiableColumn<S, I, U = I> extends PgColumn<S, I, U> {
 		return this as this & {
 			_columnType: ColumnType<S, I | undefined, U>;
 			_generatedByDefault: true;
+			nullable: false;
 		};
 	}
 
@@ -1026,7 +1021,7 @@ export class PgEnum<
 	U = string | null,
 > {
 	declare readonly _columnType: ColumnType<S, I, U>;
-	declare _isPrimaryKey: boolean;
+	private _isPrimaryKey: boolean;
 
 	readonly values: T;
 	readonly name: N;

@@ -57,10 +57,13 @@ export class PgTable<T extends ColumnRecord> {
 		const cols = this.schema.columns as ColumnRecord;
 		const schema = Object.entries(cols).reduce(
 			(acc, [key, value]) => {
-				const info = Object.fromEntries(Object.entries(value))
-					.info as ColumnInfo;
+				const columnObj = Object.fromEntries(Object.entries(value)) as {
+					info: ColumnInfo;
+					_isPrimaryKey: boolean;
+				};
 				const optional =
-					value._isPrimaryKey === false && info.isNullable === true;
+					columnObj._isPrimaryKey === false &&
+					columnObj.info.isNullable === true;
 				if (optional === true) {
 					return acc.extend({
 						[key]: value.zodSchema().optional(),

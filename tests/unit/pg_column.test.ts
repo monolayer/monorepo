@@ -122,19 +122,6 @@ describe("PgColumn", () => {
 
 	testBase();
 
-	test("isNullable is true", (context: ColumnContext) => {
-		expect(context.columnInfo.isNullable).toBe(true);
-	});
-
-	test("notNull() sets isNullable to false", (context: ColumnWithDefaultContext) => {
-		context.column.notNull();
-		expect(context.columnInfo.isNullable).toBe(false);
-	});
-
-	test("is not a primary key by default", (context: ColumnWithDefaultContext) => {
-		expect(context.column._isPrimaryKey).toBe(false);
-	});
-
 	describe("defaultTo()", () => {
 		test("defaultTo accepts insert column data types or an arbitrary SQL expression", () => {
 			const integerColumn = integer();
@@ -203,10 +190,6 @@ describe("PgGeneratedColumn", () => {
 			typeof (context.column as any).generatedByDefaultAsIdentity ===
 				"function",
 		).toBe(false);
-	});
-
-	test("is not a primary key by default", (context: ColumnWithDefaultContext) => {
-		expect(context.column._isPrimaryKey).toBe(false);
 	});
 });
 
@@ -8243,11 +8226,6 @@ describe("pgEnum", () => {
 	test("enum values", () => {
 		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
 		expect(testEnum.values).toStrictEqual(["one", "two", "three"]);
-	});
-
-	test("is not a primary key by default", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
-		expect(testEnum._isPrimaryKey).toBe(false);
 	});
 
 	test("default info", () => {

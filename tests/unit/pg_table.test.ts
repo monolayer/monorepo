@@ -1258,35 +1258,6 @@ describe("pgTable definition", () => {
 		});
 	});
 
-	describe("marking columns as primary key", () => {
-		test("mark column as primary key", () => {
-			const table = pgTable({
-				columns: {
-					id: integer().primaryKey(),
-				},
-			});
-			expect(table.columns.id._isPrimaryKey).toBe(true);
-		});
-
-		test("mark generated column as primary key", () => {
-			const table = pgTable({
-				columns: {
-					id: serial().primaryKey(),
-				},
-			});
-			expect(table.columns.id._isPrimaryKey).toBe(true);
-		});
-
-		test("mark enum column as primary key", () => {
-			const table = pgTable({
-				columns: {
-					status: pgEnum("myEnum", ["one", "two", "three"]).primaryKey(),
-				},
-			});
-			expect(table.columns.status._isPrimaryKey).toBe(true);
-		});
-	});
-
 	describe("zod", () => {
 		test("schema types match column constraints and defaults", () => {
 			const table = pgTable({

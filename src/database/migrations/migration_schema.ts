@@ -42,7 +42,9 @@ export function findColumn(
 export function primaryKeyColumns(columns: ColumnRecord) {
 	return Object.entries(columns).reduce<string[]>(
 		(acc, [columnName, column]) => {
-			if (column._isPrimaryKey === true) {
+			const primaryKey = Object.fromEntries(Object.entries(column))
+				._isPrimaryKey as boolean;
+			if (primaryKey === true) {
 				acc.push(columnName);
 			}
 			return acc;
