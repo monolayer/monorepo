@@ -10,7 +10,7 @@ export function baseSchema(isNullable: boolean, errorMessage: string) {
 }
 
 export function finishSchema(isNullable: boolean, schema: z.ZodTypeAny) {
-	if (isNullable) return schema.nullable().optional();
+	if (isNullable) return schema.nullish();
 	return schema;
 }
 
