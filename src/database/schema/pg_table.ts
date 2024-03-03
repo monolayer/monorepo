@@ -3,7 +3,6 @@ import { z } from "zod";
 import {
 	type GeneratedColumnType,
 	type InferColumType,
-	type NonNullableColumn,
 	type PgColumn,
 	PgColumnTypes,
 	type PgGeneratedColumn,
@@ -70,17 +69,13 @@ export class PgTable<T extends ColumnRecord> {
 
 type ZodSchemaObject<T extends ColumnRecord> = z.ZodObject<
 	{
-		[K in keyof T]: T[K] extends NonNullableColumn
-			? ReturnType<T[K]["zodSchema"]>
-			: z.ZodOptional<ReturnType<T[K]["zodSchema"]>>;
+		[K in keyof T]: ReturnType<T[K]["zodSchema"]>;
 	},
 	"strip",
 	z.ZodTypeAny,
 	{
-		[K in keyof T]: ReturnType<T[K]["zodSchema"]>["_output"];
-	},
-	{
-		[K in keyof T]: ReturnType<T[K]["zodSchema"]>["_input"];
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		[K in keyof T]: any;
 	}
 >;
 

@@ -178,14 +178,11 @@ export class PgGeneratedColumn<T, U> extends PgColumnBase<T, U, U> {
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type ZodTypeGenerated<T extends PgGeneratedColumn<any, any>> =
-	T extends PgGeneratedColumn<infer S, infer I>
-		? z.ZodType<
-				SelectType<GeneratedColumnType<S, I, I>>,
-				z.ZodTypeDef,
-				Exclude<InsertType<GeneratedColumnType<S, I, I>>, undefined>
-		  >
-		: never;
+type ZodTypeGenerated<T extends PgGeneratedColumn<any, any>> = z.ZodType<
+	never,
+	z.ZodTypeDef,
+	never
+>;
 
 export function bigserial() {
 	return new PgBigSerial();
@@ -200,11 +197,7 @@ export class PgBigSerial extends PgGeneratedColumn<
 	}
 
 	zodSchema(): ZodTypeGenerated<typeof this> {
-		return bigintSchema(!this._isPrimaryKey && this.info.isNullable === true)
-			.pipe(z.bigint().min(1n).max(9223372036854775807n))
-			.transform((val) => val.toString()) as unknown as ZodTypeGenerated<
-			typeof this
-		>;
+		return z.never() as unknown as ZodTypeGenerated<typeof this>;
 	}
 }
 
@@ -218,11 +211,7 @@ export class PgSerial extends PgGeneratedColumn<number, number | string> {
 	}
 
 	zodSchema(): ZodTypeGenerated<typeof this> {
-		return wholeNumberSchema(
-			1,
-			2147483647,
-			!this._isPrimaryKey && this.info.isNullable === true,
-		) as unknown as ZodTypeGenerated<typeof this>;
+		return z.never() as unknown as ZodTypeGenerated<typeof this>;
 	}
 }
 
