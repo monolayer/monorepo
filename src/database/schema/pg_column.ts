@@ -988,9 +988,7 @@ export class PgEnum extends PgColumn<string, string> {
 
 	defaultTo(value: string) {
 		this.info.defaultValue = `'${value}'::${this.info.dataType}`;
-		return this as this & {
-			_hasDefault: "yes";
-		};
+		return this as this & WithDefaultColumn;
 	}
 
 	zodSchema(): ZodType<typeof this> {
