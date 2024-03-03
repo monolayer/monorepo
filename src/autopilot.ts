@@ -60,10 +60,15 @@ export class AutoPilot {
 			return;
 		}
 		while (this.queue.length > 0) {
+			await this.delay();
 			const result = await runCommand("npx", ["kinetic-autopilot"]);
 			callback(result);
 			this.queue.shift();
 		}
+	}
+
+	async delay() {
+		new Promise((resolve) => setTimeout(resolve, 1500));
 	}
 
 	hasLock() {
