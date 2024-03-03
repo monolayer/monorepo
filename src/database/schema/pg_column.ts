@@ -412,7 +412,7 @@ export type NestedRecord = {
 type ByteaZodType<T extends PgBytea> = z.ZodType<
 	T extends NonNullableColumn
 		? SelectType<InferColumType<T>> | string
-		: T extends { _generatedAlways: "yes" }
+		: T extends GeneratedAlwaysColumn
 		  ? never
 		  : SelectType<InferColumType<T>> | string | undefined,
 	z.ZodTypeDef,
@@ -682,7 +682,7 @@ type ZodJson = string | number | boolean | Record<string, any>;
 type JsonZodType<T extends PgJson | PgJsonB> = z.ZodType<
 	T extends NonNullableColumn
 		? ZodJson
-		: T extends { _generatedAlways: "yes" }
+		: T extends GeneratedAlwaysColumn
 		  ? never
 		  : ZodJson | null | undefined,
 	z.ZodTypeDef,
