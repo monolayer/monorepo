@@ -90,24 +90,6 @@ export enum DefaultValueDataTypes {
 	xml = "xml",
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type ZodType<T extends PgColumn<any, any, any>> = z.ZodType<
-	T extends { nullable: "no" }
-		? NonNullable<SelectType<InferColumType<T>>>
-		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		  T extends PgGeneratedColumn<any, any>
-		  ? SelectType<InferColumType<T>>
-		  : T extends { _generatedAlways: "yes" }
-			  ? never
-			  : SelectType<InferColumType<T>> | null,
-	z.ZodTypeDef,
-	T extends { _generatedByDefault: "yes" }
-		? NonOptional<InsertType<InferColumType<T>>>
-		: T extends { _generatedAlways: "yes" }
-		  ? never
-		  : Exclude<InsertType<InferColumType<T>>, undefined>
->;
-
 export class PgColumnBase<S, I, U> {
 	protected declare readonly infer: ColumnType<S, I, U>;
 	protected info: Omit<ColumnInfo, "columnName" | "tableName">;
@@ -347,7 +329,7 @@ export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 
 		const nullable = !this._isPrimaryKey && this.info.isNullable;
 
-		return z
+		const base = z
 			.any()
 			.superRefine((data, ctx) => {
 				if (!testBoolish(data)) {
@@ -376,7 +358,13 @@ export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 					});
 					return z.NEVER;
 				}
+			});
+		if (nullable) {
+			return base.optional().superRefine((val, ctx) => {
+				console.log(ctx.path, "VAL", val);
 			}) as unknown as ZodType<typeof this>;
+		}
+		return base as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -436,9 +424,13 @@ export type NestedRecord = {
 };
 
 type ByteaZodType<T extends PgBytea> = z.ZodType<
-	T extends { nullable: "no" } ? Buffer | string : Buffer | string | null,
+	T extends { nullable: "no" }
+		? SelectType<InferColumType<T>> | string
+		: T extends { _generatedAlways: "yes" }
+		  ? never
+		  : SelectType<InferColumType<T>> | string | undefined,
 	z.ZodTypeDef,
-	T extends { nullable: "no" } ? Buffer | string : Buffer | string | null
+	InsertType<InferColumType<T>>
 >;
 
 export class PgBytea extends PgColumn<Buffer, Buffer | string> {
@@ -477,8 +469,9 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 	}
 
 	zodSchema(): ByteaZodType<typeof this> {
-		return baseSchema(
-			!this._isPrimaryKey && this.info.isNullable === true,
+		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
+		const base = baseSchema(
+			isNullable,
 			"Expected Buffer or string",
 		).superRefine((val, ctx) => {
 			if (
@@ -492,15 +485,13 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 				});
 				return z.NEVER;
 			}
-		}) as unknown as ByteaZodType<typeof this>;
+		});
+
+		return finishSchema(isNullable, base) as unknown as ByteaZodType<
+			typeof this
+		>;
 	}
 }
-
-type DateZodType<T extends PgDate> = z.ZodType<
-	T extends { nullable: "no" } ? Date : Date | null,
-	z.ZodTypeDef,
-	T extends { nullable: "no" } ? Date | string : Date | string | null
->;
 
 export function date() {
 	return new PgDate();
@@ -511,15 +502,13 @@ export class PgDate extends PgColumn<Date, Date | string> {
 		super("date", DefaultValueDataTypes.date);
 	}
 
-	zodSchema(): DateZodType<typeof this> {
+	zodSchema(): ZodType<typeof this> {
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		const base = baseSchema(
 			isNullable,
 			"Expected Date or String that can coerce to Date",
 		).pipe(z.coerce.date());
-		return finishSchema(isNullable, base) as unknown as DateZodType<
-			typeof this
-		>;
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -539,7 +528,7 @@ export class PgDoublePrecision extends PgColumn<
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		const base = variablePrecisionSchema(-1e308, 1e308, isNullable);
 		return finishSchema(isNullable, base).transform((val) =>
-			val === null ? val : val.toString(),
+			val === null || val === undefined ? val : val.toString(),
 		) as unknown as ZodType<typeof this>;
 	}
 }
@@ -707,21 +696,24 @@ export type JsonPrimitive = boolean | number | string;
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type ZodJson = string | number | boolean | Record<string, any>;
+
 type JsonZodType<T extends PgJson | PgJsonB> = z.ZodType<
 	T extends { nullable: "no" }
-		? // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		  string | number | boolean | Record<string, any>
-		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		  string | number | boolean | Record<string, any> | null,
+		? ZodJson
+		: T extends { _generatedAlways: "yes" }
+		  ? never
+		  : ZodJson | null | undefined,
 	z.ZodTypeDef,
-	T extends { nullable: "no" }
-		? // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		  string | number | boolean | Record<string, any>
-		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		  string | number | boolean | Record<string, any> | null
+	T extends { nullable: "no" } ? ZodJson : ZodJson | null | undefined
 >;
 
-export class PgJson extends PgColumn<JsonValue, string> {
+export class PgJson extends PgColumn<
+	JsonValue,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	string | number | boolean | Record<string, any>
+> {
 	constructor() {
 		super("json", DefaultValueDataTypes.json);
 	}
@@ -898,7 +890,7 @@ export class PgTime extends PgColumnWithPrecision<string, string> {
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		const base = stringSchema(
 			"Expected string with time format",
-			!this._isPrimaryKey && this.info.isNullable === true,
+			isNullable,
 		).pipe(z.string().regex(TIME_REGEX, "Invalid time"));
 		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
@@ -913,7 +905,7 @@ export class PgTimeTz extends PgColumnWithPrecision<string, string> {
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		const base = stringSchema(
 			"Expected string with time format",
-			!this._isPrimaryKey && this.info.isNullable === true,
+			isNullable,
 		).pipe(z.string().regex(TIME_REGEX, "Invalid time with time zone"));
 		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
@@ -924,16 +916,14 @@ export function timestamp(precision?: DateTimePrecision) {
 }
 
 export class PgTimestamp extends PgColumnWithPrecision<Date, Date | string> {
-	zodSchema(): DateZodType<typeof this> {
+	zodSchema(): ZodType<typeof this> {
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		const base = stringSchema(
 			"Expected date or string with date format",
-			!this._isPrimaryKey && this.info.isNullable === true,
+			isNullable,
 			["Date"],
 		).pipe(z.coerce.date());
-		return finishSchema(isNullable, base) as unknown as DateZodType<
-			typeof this
-		>;
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -942,16 +932,14 @@ export function timestamptz(precision?: DateTimePrecision) {
 }
 
 export class PgTimestampTz extends PgColumnWithPrecision<Date, Date | string> {
-	zodSchema(): DateZodType<typeof this> {
+	zodSchema(): ZodType<typeof this> {
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		const base = stringSchema(
 			"Expected date or string with date format",
-			!this._isPrimaryKey && this.info.isNullable === true,
+			isNullable,
 			["Date"],
 		).pipe(z.coerce.date());
-		return finishSchema(isNullable, base) as unknown as DateZodType<
-			typeof this
-		>;
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
 
@@ -1005,7 +993,7 @@ export class PgEnum extends PgColumn<string, string> {
 		};
 	}
 
-	zodSchema(): EnumZodyType<typeof this> {
+	zodSchema(): ZodType<typeof this> {
 		const enumValues = this.values as unknown as [string, ...string[]];
 		const errorMessage = `Expected ${enumValues
 			.map((v) => `'${v}'`)
@@ -1014,21 +1002,9 @@ export class PgEnum extends PgColumn<string, string> {
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 
 		const base = baseSchema(isNullable, errorMessage).pipe(z.enum(enumValues));
-		return finishSchema(isNullable, base) as unknown as EnumZodyType<
-			typeof this
-		>;
+		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
 	}
 }
-
-type EnumZodyType<T extends PgEnum> = z.ZodType<
-	T extends { nullable: "no" }
-		? NonNullable<SelectType<InferColumType<T>>>
-		: SelectType<InferColumType<T>>,
-	z.ZodTypeDef,
-	NonOptional<InsertType<InferColumType<T>>>
->;
-
-type NonOptional<T> = Exclude<T, undefined>;
 
 export type PgColumnTypes =
 	| PgBigInt
@@ -1094,3 +1070,15 @@ export type InferColumType<T extends PgColumn<any, any, any>> =
 
 type OptionalColumnType<S, I, U> = Simplify<ColumnType<S, I | undefined, U>>;
 export type GeneratedColumnType<S, I, U> = OptionalColumnType<S, I, U>;
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type ZodType<T extends PgColumn<any, any, any> | PgTimestamp | PgTimestampTz> =
+	z.ZodType<
+		T extends { nullable: "no" }
+			? SelectType<InferColumType<T>>
+			: T extends { _generatedAlways: "yes" }
+			  ? never
+			  : SelectType<InferColumType<T>> | null | undefined,
+		z.ZodTypeDef,
+		InsertType<InferColumType<T>>
+	>;

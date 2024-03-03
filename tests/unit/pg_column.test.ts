@@ -283,20 +283,20 @@ describe("pgBoolean", () => {
 
 		describe("Zod", () => {
 			describe("by default", () => {
-				test("input type is boolean, Boolish or null", () => {
+				test("input type is boolean, Boolish, null or undefined", () => {
 					const column = boolean();
 					const schema = column.zodSchema();
 					type InpuType = z.input<typeof schema>;
-					type Expected = boolean | Boolish | null;
+					type Expected = boolean | Boolish | null | undefined;
 					const isEqual: Expect<Equal<InpuType, Expected>> = true;
 					expect(isEqual).toBe(true);
 				});
 
-				test("output type is boolean or null", () => {
+				test("output type is boolean, null or undefined", () => {
 					const column = boolean();
 					const schema = column.zodSchema();
 					type OutputType = z.output<typeof schema>;
-					type Expected = boolean | null;
+					type Expected = boolean | null | undefined;
 					const isEqual: Expect<Equal<OutputType, Expected>> = true;
 					const booleanResult = schema.safeParse(true);
 					expect(booleanResult.success).toBe(true);
@@ -308,6 +308,15 @@ describe("pgBoolean", () => {
 					if (nullResult.success) {
 						expect(nullResult.data).toBe(null);
 					}
+					expect(isEqual).toBe(true);
+				});
+
+				test("input type is boolean, Boolish with notNull", () => {
+					const column = boolean().notNull();
+					const schema = column.zodSchema();
+					type InputType = z.input<typeof schema>;
+					type Expected = boolean | Boolish;
+					const isEqual: Expect<Equal<InputType, Expected>> = true;
 					expect(isEqual).toBe(true);
 				});
 
@@ -340,10 +349,10 @@ describe("pgBoolean", () => {
 					}
 				});
 
-				test("does not parse undefined", () => {
+				test("parses undefined", () => {
 					const column = boolean();
 					const schema = column.zodSchema();
-					expect(schema.safeParse(undefined).success).toBe(false);
+					expect(schema.safeParse(undefined).success).toBe(true);
 				});
 
 				test("parses with coercion with boolish values", () => {
@@ -404,12 +413,12 @@ describe("pgBoolean", () => {
 					expect(schema.safeParse(2).success).toBe(false);
 				});
 
-				test("with default value is nullable", () => {
+				test("with default value is nullable and optional", () => {
 					const column = boolean().defaultTo(true);
 					const schema = column.zodSchema();
 					expect(schema.safeParse(true).success).toBe(true);
 					expect(schema.safeParse(null).success).toBe(true);
-					expect(schema.safeParse(undefined).success).toBe(false);
+					expect(schema.safeParse(undefined).success).toBe(true);
 				});
 
 				test("with notNull is non nullable and required", () => {
@@ -483,7 +492,7 @@ describe("pgBoolean", () => {
 
 			describe("errors", () => {
 				test("undefined", () => {
-					const column = boolean();
+					const column = boolean().notNull();
 					const schema = column.zodSchema();
 					const result = schema.safeParse(undefined);
 					expect(result.success).toBe(false);
@@ -584,20 +593,20 @@ describe("pgText", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string or null", () => {
+			test("input type is string, null or undefined", () => {
 				const column = text();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string or null", () => {
+			test("output type is string, null or undefined", () => {
 				const column = text();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				const result = schema.safeParse("one");
 				expect(result.success).toBe(true);
@@ -610,6 +619,20 @@ describe("pgText", () => {
 					expect(nullResult.data).toBe(null);
 				}
 				expect(isEqual).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const column = text().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("one");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("one");
+				}
 			});
 
 			test("output type is string with notNull", () => {
@@ -638,10 +661,10 @@ describe("pgText", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = text();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -651,12 +674,12 @@ describe("pgText", () => {
 				expect(schema.safeParse(1).success).toBe(false);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = text().defaultTo("1");
 				const schema = column.zodSchema();
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -730,7 +753,7 @@ describe("pgText", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = text();
+				const column = text().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -834,20 +857,20 @@ describe("pgBigInt", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is bigint, number, string or null", () => {
+			test("input type is bigint, number, string, null, or undefined", () => {
 				const column = bigint();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = bigint | number | string | null;
+				type Expected = bigint | number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string or null", () => {
+			test("output type is string, null, or undefined", () => {
 				const column = bigint();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				const result = schema.safeParse(1000n);
 				expect(result.success).toBe(true);
@@ -860,6 +883,20 @@ describe("pgBigInt", () => {
 					expect(nullResult.data).toBe(null);
 				}
 				expect(isEqual).toBe(true);
+			});
+
+			test("input type is bigint, number, or string with notNull", () => {
+				const column = bigint().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = bigint | number | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse(10n);
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("10");
+				}
 			});
 
 			test("output type is string with notNull", () => {
@@ -886,6 +923,23 @@ describe("pgBigInt", () => {
 
 				const result = schema.safeParse(1);
 				expect(result.success).toBe(false);
+			});
+
+			test("input type is bigint, number, string, or undefined with generatedByDefaultAsIdentity", () => {
+				const column = bigint().generatedByDefaultAsIdentity();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = bigint | string | number | undefined;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse(10n);
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("10");
+				}
+
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
 			});
 
 			test("output type is string with generatedByDefaultAsIdentity", () => {
@@ -929,10 +983,10 @@ describe("pgBigInt", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = bigint();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("does not parse floats", () => {
@@ -949,13 +1003,13 @@ describe("pgBigInt", () => {
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = bigint().defaultTo("1");
 				const schema = column.zodSchema();
 
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("minimumValue is -9223372036854775808n", () => {
@@ -1047,7 +1101,7 @@ describe("pgBigInt", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = bigint();
+				const column = bigint().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -1176,6 +1230,12 @@ describe("pgBigSerial", () => {
 				const column = bigserial();
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1).success).toBe(true);
+			});
+
+			test("does not parse undefined", () => {
+				const column = bigserial();
+				const schema = column.zodSchema();
+				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("parses strings that can be coerced to bigint", () => {
@@ -1390,20 +1450,20 @@ describe("pgBytea", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is Buffer, string, or null", () => {
+			test("input type is Buffer, string, null, or undefined", () => {
 				const column = bytea();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = Buffer | string | null;
+				type Expected = Buffer | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type same as inputed", () => {
+			test("output type is Buffer, string, null, or undefined", () => {
 				const column = bytea();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = Buffer | string | null;
+				type Expected = Buffer | string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				const buffer = Buffer.from("hello");
 				const bufferResult = schema.safeParse(buffer);
@@ -1421,6 +1481,15 @@ describe("pgBytea", () => {
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
 				}
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is Buffer or string with notNull", () => {
+				const column = bytea().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = Buffer | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
@@ -1473,18 +1542,18 @@ describe("pgBytea", () => {
 				expect(schema.safeParse(Date).success).toBe(false);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = bytea();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable, and optional", () => {
 				const column = bytea().defaultTo(Buffer.from("1"));
 				const schema = column.zodSchema();
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -1558,7 +1627,7 @@ describe("pgBytea", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = bytea();
+				const column = bytea().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -1659,20 +1728,20 @@ describe("pgDate", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is Date, string or null", () => {
+			test("input type is Date, string, null, or undefined", () => {
 				const column = date();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = Date | string | null;
+				type Expected = Date | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is Date, or null", () => {
+			test("output type is Date, null, or undefined", () => {
 				const column = date();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = Date | null;
+				type Expected = Date | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const dateResult = schema.safeParse(new Date(1));
@@ -1690,6 +1759,15 @@ describe("pgDate", () => {
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
 				}
+			});
+
+			test("input type is Date or string with notNull", () => {
+				const column = date().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = Date | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is Date with notNull", () => {
@@ -1732,18 +1810,18 @@ describe("pgDate", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = date();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = date().defaultTo(new Date());
 				const schema = column.zodSchema();
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -1817,7 +1895,7 @@ describe("pgDate", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = date();
+				const column = date().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -1922,20 +2000,20 @@ describe("pgDoublePrecision", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is number, bigint, string or null", () => {
+			test("input type is number, bigint, string, null, or undefined", () => {
 				const column = doublePrecision();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = number | bigint | string | null;
+				type Expected = number | bigint | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string, or null", () => {
+			test("output type is string, null, or undefined", () => {
 				const column = doublePrecision();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const numberResult = schema.safeParse(1);
@@ -1958,6 +2036,15 @@ describe("pgDoublePrecision", () => {
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
 				}
+			});
+
+			test("input type is  number, bigint, or string with notNull", () => {
+				const column = doublePrecision().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = bigint | number | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is string with notNull", () => {
@@ -2018,18 +2105,18 @@ describe("pgDoublePrecision", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = doublePrecision();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = doublePrecision().defaultTo(30);
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -2117,7 +2204,7 @@ describe("pgDoublePrecision", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = doublePrecision();
+				const column = doublePrecision().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -2265,20 +2352,20 @@ describe("pgFloat4", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is number, bigint, string or null", () => {
+			test("input type is number, bigint, string, null, or undefined", () => {
 				const column = float4();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = number | bigint | string | null;
+				type Expected = number | bigint | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is number, or null", () => {
+			test("output type is number, null, or undefined", () => {
 				const column = float4();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = number | null;
+				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const numberResult = schema.safeParse(1);
@@ -2301,6 +2388,15 @@ describe("pgFloat4", () => {
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
 				}
+			});
+
+			test("input type is number, bigint, or string with notNull", () => {
+				const column = float4().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = number | bigint | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is number with notNull", () => {
@@ -2361,18 +2457,18 @@ describe("pgFloat4", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = float4();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = float4().defaultTo(30);
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -2460,7 +2556,7 @@ describe("pgFloat4", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = float4();
+				const column = float4().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -2608,20 +2704,20 @@ describe("pgFloat8", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is number, bigint, string or null", () => {
+			test("input type is number, bigint, string, null, or undefined", () => {
 				const column = float8();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = number | bigint | string | null;
+				type Expected = number | bigint | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is number, or null", () => {
+			test("output type is number, null, or undefined", () => {
 				const column = float8();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = number | null;
+				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const numberResult = schema.safeParse(1);
@@ -2644,6 +2740,15 @@ describe("pgFloat8", () => {
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
 				}
+			});
+
+			test("input type is number, bigint, or string with notNull", () => {
+				const column = float8().notNull();
+				const schema = column.zodSchema();
+				type OutputType = z.input<typeof schema>;
+				type Expected = number | bigint | string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is number with notNull", () => {
@@ -2704,18 +2809,18 @@ describe("pgFloat8", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = float8();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = float8().defaultTo(30);
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -2803,7 +2908,7 @@ describe("pgFloat8", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = float8();
+				const column = float8().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -2946,20 +3051,20 @@ describe("pgInt2", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is number, string or null", () => {
+			test("input type is number, string, null, or undefined", () => {
 				const column = int2();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = number | string | null;
+				type Expected = number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is number, or null", () => {
+			test("output type is number, null, or undefined", () => {
 				const column = int2();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = number | null;
+				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const numberResult = schema.safeParse(1);
@@ -2977,6 +3082,15 @@ describe("pgInt2", () => {
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
 				}
+			});
+
+			test("input type is number or string with notNull", () => {
+				const column = int2().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = number | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is number with notNull", () => {
@@ -3060,18 +3174,18 @@ describe("pgInt2", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = int2();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = int2().defaultTo(30);
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -3160,7 +3274,7 @@ describe("pgInt2", () => {
 
 	describe("errors", () => {
 		test("undefined", () => {
-			const column = int2();
+			const column = int2().notNull();
 			const schema = column.zodSchema();
 			const result = schema.safeParse(undefined);
 			expect(result.success).toBe(false);
@@ -3326,20 +3440,20 @@ describe("pgInt4", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is number, string or null", () => {
+			test("input type is number, string, null, or undefined", () => {
 				const column = int4();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = number | string | null;
+				type Expected = number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is number, or null", () => {
+			test("output type is number, null, or undefined", () => {
 				const column = int4();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = number | null;
+				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const numberResult = schema.safeParse(1);
@@ -3357,6 +3471,15 @@ describe("pgInt4", () => {
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
 				}
+			});
+
+			test("input type is number or string with notNull", () => {
+				const column = int4().notNull();
+				const schema = column.zodSchema();
+				type OutputType = z.input<typeof schema>;
+				type Expected = number | string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is number with notNull", () => {
@@ -3440,18 +3563,18 @@ describe("pgInt4", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = int4();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = int4().defaultTo(30);
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -3539,7 +3662,7 @@ describe("pgInt4", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = int4();
+				const column = int4().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -3705,20 +3828,20 @@ describe("pgInt8", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is bigint, number, string or null", () => {
+			test("input type is bigint, number, string, null, or undefined", () => {
 				const column = int8();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = bigint | number | string | null;
+				type Expected = bigint | number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is number or null", () => {
+			test("output type is number, null, or undefined", () => {
 				const column = int8();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = number | null;
+				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -3741,12 +3864,21 @@ describe("pgInt8", () => {
 				expect(nullResult.success).toBe(true);
 			});
 
-			test("output type is number with notNull", () => {
+			test("input type is number with notNull", () => {
 				const column = int8().notNull();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is bigint, number, or string with notNull", () => {
+				const column = int8().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = number | bigint | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const bigIntResult = schema.safeParse(100n);
 				expect(bigIntResult.success).toBe(true);
@@ -3820,10 +3952,10 @@ describe("pgInt8", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = int8();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("does not parse floats", () => {
@@ -3840,12 +3972,12 @@ describe("pgInt8", () => {
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = int8().defaultTo("1");
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("minimumValue is -9223372036854775808n", () => {
@@ -3937,7 +4069,7 @@ describe("pgInt8", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = int8();
+				const column = int8().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -4041,20 +4173,20 @@ describe("pgInteger", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is number, string or null", () => {
+			test("input type is number, string, null, or undefined", () => {
 				const column = integer();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = number | string | null;
+				type Expected = number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is number or null", () => {
+			test("output type is number, null, or undefined", () => {
 				const column = integer();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = number | null;
+				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -4070,6 +4202,15 @@ describe("pgInteger", () => {
 				}
 				const nullResult = schema.safeParse(null);
 				expect(nullResult.success).toBe(true);
+			});
+
+			test("input type is number or string with notNull", () => {
+				const column = integer().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = number | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is number with notNull", () => {
@@ -4154,18 +4295,18 @@ describe("pgInteger", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = integer();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = integer().defaultTo(30);
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -4253,7 +4394,7 @@ describe("pgInteger", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = integer();
+				const column = integer().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -4418,22 +4559,34 @@ describe("pgJson", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string, number, boolean, Record<string, any> or null", () => {
+			test("input type is string, number, boolean, Record<string, any>, null, or undefined", () => {
 				const column = json();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				type Expected = string | number | boolean | Record<string, any> | null;
+				type Expected =
+					| string
+					| number
+					| boolean
+					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					| Record<string, any>
+					| null
+					| undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is JsonArray, JsonObject, JsonPrimitive or null", () => {
+			test("output type is string, number, boolean, Record<string, any>, null or undefined", () => {
 				const column = json();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				type Expected = string | number | boolean | Record<string, any> | null;
+				type Expected =
+					| string
+					| number
+					| boolean
+					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					| Record<string, any>
+					| null
+					| undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -4454,6 +4607,16 @@ describe("pgJson", () => {
 				}
 				const nullResult = schema.safeParse(null);
 				expect(nullResult.success).toBe(true);
+			});
+
+			test("input type is string, number, boolean, Record<string, any> with notNull", () => {
+				const column = json().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				type Expected = string | number | boolean | Record<string, any>;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is string, number, boolean, Record<string, any> with notNull", () => {
@@ -4509,6 +4672,10 @@ describe("pgJson", () => {
 			test("parses null", () => {
 				const column = json();
 				const schema = column.zodSchema();
+				const result = schema.safeParse(null);
+				if (result.success) {
+					console.log(result.data);
+				}
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
@@ -4518,18 +4685,18 @@ describe("pgJson", () => {
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = json();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = json().defaultTo("1");
 				const schema = column.zodSchema();
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -4605,7 +4772,7 @@ describe("pgJson", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = json();
+				const column = json().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -4707,22 +4874,34 @@ describe("pgJsonB", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string, number, boolean, Record<string, any> or null", () => {
+			test("input type is string, number, boolean, Record<string, any>, null, or undefined", () => {
 				const column = jsonb();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				type Expected = string | number | boolean | Record<string, any> | null;
+				type Expected =
+					| string
+					| number
+					| boolean
+					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					| Record<string, any>
+					| null
+					| undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is JsonArray, JsonObject, JsonPrimitive or null", () => {
+			test("output type is string, number, boolean, Record<string, any>, null, or undefined", () => {
 				const column = jsonb();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				type Expected = string | number | boolean | Record<string, any> | null;
+				type Expected =
+					| string
+					| number
+					| boolean
+					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					| Record<string, any>
+					| null
+					| undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -4743,6 +4922,16 @@ describe("pgJsonB", () => {
 				}
 				const nullResult = schema.safeParse(null);
 				expect(nullResult.success).toBe(true);
+			});
+
+			test("input type is string, number, boolean, Record<string, any> with notNull", () => {
+				const column = jsonb().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				type Expected = string | number | boolean | Record<string, any>;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is string, number, boolean, Record<string, any> with notNull", () => {
@@ -4807,18 +4996,18 @@ describe("pgJsonB", () => {
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = jsonb();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = jsonb().defaultTo("1");
 				const schema = column.zodSchema();
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -4894,7 +5083,7 @@ describe("pgJsonB", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = jsonb();
+				const column = jsonb().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -4999,20 +5188,20 @@ describe("pgReal", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is bigint, number, string or null", () => {
+			test("input type is bigint, number, string, null, or undefined", () => {
 				const column = real();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = bigint | number | string | null;
+				type Expected = bigint | number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is number or null", () => {
+			test("output type is number, null, or undefined", () => {
 				const column = real();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = number | null;
+				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -5093,18 +5282,18 @@ describe("pgReal", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = real();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = real().defaultTo(30);
 				const schema = column.zodSchema();
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -5192,7 +5381,7 @@ describe("pgReal", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = real();
+				const column = real().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -5579,20 +5768,20 @@ describe("pgUuid", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string or null", () => {
+			test("input type is string, null, or undefined", () => {
 				const column = uuid();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string or null", () => {
+			test("output type is string, null, or undefined", () => {
 				const column = uuid();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -5607,6 +5796,15 @@ describe("pgUuid", () => {
 				}
 				const nullResult = schema.safeParse(null);
 				expect(nullResult.success).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const column = uuid().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is string with notNull", () => {
@@ -5650,20 +5848,20 @@ describe("pgUuid", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = uuid();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = uuid().defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
 				const schema = column.zodSchema();
 				expect(
 					schema.safeParse("B0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
 				).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -5755,7 +5953,7 @@ describe("pgUuid", () => {
 
 			describe("errors", () => {
 				test("undefined", () => {
-					const column = uuid();
+					const column = uuid().notNull();
 					const schema = column.zodSchema();
 					const result = schema.safeParse(undefined);
 					expect(result.success).toBe(false);
@@ -5876,20 +6074,20 @@ describe("pgVarChar", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string or null", () => {
+			test("input type is string, null or undefined", () => {
 				const column = varchar();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string or null", () => {
+			test("output type is string, null or undefined", () => {
 				const column = varchar();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -5900,6 +6098,15 @@ describe("pgVarChar", () => {
 				}
 				const nullResult = schema.safeParse(null);
 				expect(nullResult.success).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const column = varchar().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is string with notNull", () => {
@@ -5938,18 +6145,18 @@ describe("pgVarChar", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = varchar();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = varchar().defaultTo("hello");
 				const schema = column.zodSchema();
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -6037,7 +6244,7 @@ describe("pgVarChar", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = varchar();
+				const column = varchar().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -6187,20 +6394,20 @@ describe("pgChar", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string or null", () => {
+			test("input type is string, null or undefined", () => {
 				const column = char(10);
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string or null", () => {
+			test("output type is string, null or undefined", () => {
 				const column = char(10);
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -6211,6 +6418,15 @@ describe("pgChar", () => {
 				}
 				const nullResult = schema.safeParse(null);
 				expect(nullResult.success).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const column = char(10).notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is string with notNull", () => {
@@ -6250,18 +6466,18 @@ describe("pgChar", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = char();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = char(5).defaultTo("hello");
 				const schema = column.zodSchema();
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -6335,7 +6551,7 @@ describe("pgChar", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = char();
+				const column = char().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -6500,20 +6716,20 @@ describe("pgTime", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string or null", () => {
+			test("input type is string, null or undefined", () => {
 				const column = time();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string or null", () => {
+			test("output type is string, null or undefined", () => {
 				const column = time();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -6524,6 +6740,15 @@ describe("pgTime", () => {
 				}
 				const nullResult = schema.safeParse(null);
 				expect(nullResult.success).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const column = time().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is string with notNull", () => {
@@ -6570,18 +6795,18 @@ describe("pgTime", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = time();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = time().defaultTo("11:30");
 				const schema = column.zodSchema();
 				expect(schema.safeParse("01:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -6655,7 +6880,7 @@ describe("pgTime", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = time();
+				const column = time().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -6798,21 +7023,21 @@ describe("pgTimeTz", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string or null", () => {
+			test("input type is string, null, or undefined", () => {
 				const column = timetz();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string or null", () => {
+			test("output type is string, null, or undefined", () => {
 				const column = timetz();
 				const schema = column.zodSchema();
-				type OutputType = z.output<typeof schema>;
-				type Expected = string | null;
-				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				type InputType = z.input<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
 				const stringResult = schema.safeParse("04:05:06-08:00");
@@ -6822,6 +7047,15 @@ describe("pgTimeTz", () => {
 				}
 				const nullResult = schema.safeParse(null);
 				expect(nullResult.success).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const column = timetz().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is string with notNull", () => {
@@ -6868,18 +7102,18 @@ describe("pgTimeTz", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = timetz();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = timetz().defaultTo("11:30");
 				const schema = column.zodSchema();
 				expect(schema.safeParse("01:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -6953,7 +7187,7 @@ describe("pgTimeTz", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = timetz();
+				const column = timetz().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -7100,20 +7334,20 @@ describe("pgTimestamp", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is Date, string or null", () => {
+			test("input type is Date, string, null, or undefined", () => {
 				const column = timestamp();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = Date | string | null;
+				type Expected = Date | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is Date or null", () => {
+			test("output type is Date, null, or undefined", () => {
 				const column = timestamp();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = Date | null;
+				type Expected = Date | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -7132,7 +7366,16 @@ describe("pgTimestamp", () => {
 				expect(nullResult.success).toBe(true);
 			});
 
-			test("output type is string with notNull", () => {
+			test("input type is Date or string with notNull", () => {
+				const column = timestamp().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = Date | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is Date with notNull", () => {
 				const column = timestamp().notNull();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
@@ -7179,18 +7422,18 @@ describe("pgTimestamp", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = timestamp();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = timestamp().defaultTo(new Date());
 				const schema = column.zodSchema();
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -7264,7 +7507,7 @@ describe("pgTimestamp", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = timestamp();
+				const column = timestamp().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -7412,20 +7655,20 @@ describe("pgTimestampTz", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is Date, string or null", () => {
+			test("input type is Date, string, null, or undefined", () => {
 				const column = timestamptz();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = Date | string | null;
+				type Expected = Date | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is Date or null", () => {
+			test("output type is Date, null, or undefined", () => {
 				const column = timestamptz();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = Date | null;
+				type Expected = Date | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -7444,7 +7687,16 @@ describe("pgTimestampTz", () => {
 				expect(nullResult.success).toBe(true);
 			});
 
-			test("output type is string with notNull", () => {
+			test("input type is Date or string with notNull", () => {
+				const column = timestamptz().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = Date | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is Date with notNull", () => {
 				const column = timestamptz().notNull();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
@@ -7491,18 +7743,18 @@ describe("pgTimestampTz", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = timestamptz();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = timestamptz().defaultTo(new Date());
 				const schema = column.zodSchema();
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -7579,7 +7831,7 @@ describe("pgTimestampTz", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = timestamptz();
+				const column = timestamptz().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -7792,20 +8044,20 @@ describe("pgNumeric", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is number, bigint, string or null", () => {
+			test("input type is number, bigint, string, null or undefined", () => {
 				const column = numeric();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = number | bigint | string | null;
+				type Expected = number | bigint | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string, or null", () => {
+			test("output type is string, null, or undefined", () => {
 				const column = numeric();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const numberResult = schema.safeParse(1);
@@ -7828,6 +8080,15 @@ describe("pgNumeric", () => {
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
 				}
+			});
+
+			test("input type is number, bigint, string with notNull", () => {
+				const column = numeric().notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = number | bigint | string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is string with notNull", () => {
@@ -7888,18 +8149,18 @@ describe("pgNumeric", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = numeric();
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = numeric().defaultTo(2);
 				const schema = column.zodSchema();
 				expect(schema.safeParse(2).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -8060,7 +8321,7 @@ describe("pgNumeric", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = numeric();
+				const column = numeric().notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
@@ -8236,20 +8497,20 @@ describe("pgEnum", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string, or null", () => {
+			test("input type is string, null, or undefined", () => {
 				const column = pgEnum("role", ["user", "admin", "superuser"]);
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string, or null", () => {
+			test("output type is string, null, or undefined", () => {
 				const column = pgEnum("role", ["user", "admin", "superuser"]);
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				type Expected = string | null;
+				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const stringResult = schema.safeParse("user");
@@ -8265,6 +8526,15 @@ describe("pgEnum", () => {
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
 				}
+			});
+
+			test("input type is string with notNull", () => {
+				const column = pgEnum("role", ["user", "admin", "superuser"]).notNull();
+				const schema = column.zodSchema();
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
 
 			test("output type is string with notNull", () => {
@@ -8309,20 +8579,20 @@ describe("pgEnum", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("does not parse undefined", () => {
+			test("parses undefined", () => {
 				const column = pgEnum("role", ["user", "admin", "superuser"]);
 				const schema = column.zodSchema();
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
-			test("with default value is nullable", () => {
+			test("with default value is nullable and optional", () => {
 				const column = pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
 					"user",
 				);
 				const schema = column.zodSchema();
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -8417,7 +8687,7 @@ describe("pgEnum", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const column = pgEnum("role", ["user", "admin", "superuser"]);
+				const column = pgEnum("role", ["user", "admin", "superuser"]).notNull();
 				const schema = column.zodSchema();
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);

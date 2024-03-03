@@ -1,7 +1,6 @@
 import type { Insertable, Selectable, Simplify, Updateable } from "kysely";
 import { z } from "zod";
 import {
-	type ColumnInfo,
 	type GeneratedColumnType,
 	type InferColumType,
 	type PgColumn,
@@ -58,18 +57,6 @@ export class PgTable<T extends ColumnRecord> {
 		const cols = this.schema.columns as ColumnRecord;
 		const schema = Object.entries(cols).reduce(
 			(acc, [key, value]) => {
-				const columnObj = Object.fromEntries(Object.entries(value)) as {
-					info: ColumnInfo;
-					_isPrimaryKey: boolean;
-				};
-				const optional =
-					columnObj._isPrimaryKey === false &&
-					columnObj.info.isNullable === true;
-				if (optional === true) {
-					return acc.extend({
-						[key]: value.zodSchema().optional(),
-					}) as ZodSchemaObject<T>;
-				}
 				return acc.extend({
 					[key]: value.zodSchema(),
 				}) as ZodSchemaObject<T>;
