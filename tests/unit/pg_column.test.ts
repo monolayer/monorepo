@@ -13,7 +13,6 @@ import {
 	PgChar,
 	PgColumn,
 	PgColumnBase,
-	PgColumnWithPrecision,
 	PgDate,
 	PgDoublePrecision,
 	PgFloat4,
@@ -30,8 +29,10 @@ import {
 	PgSerial,
 	PgText,
 	PgTime,
+	PgTimeColumn,
 	PgTimeTz,
 	PgTimestamp,
+	PgTimestampColumn,
 	PgTimestampTz,
 	PgUuid,
 	PgVarChar,
@@ -6631,16 +6632,16 @@ describe("pgChar", () => {
 	});
 });
 
-describe("PgColumnWithPrecision", () => {
-	test("inherits from PgColumnWithDefault", () => {
-		const column = new PgColumnWithPrecision("time");
+describe("PgTimeColumn", () => {
+	test("inherits from PgColumn", () => {
+		const column = new PgTimeColumn("time");
 		expect(column).toBeInstanceOf(PgColumn);
 	});
 
 	test("optional precision accepts values from 0 to 6", () => {
 		type range = 0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined;
 		const expect: Expect<
-			Equal<range, ConstructorParameters<typeof PgColumnWithPrecision>[1]>
+			Equal<range, ConstructorParameters<typeof PgTimeColumn>[1]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -6653,8 +6654,8 @@ describe("pgTime", () => {
 	});
 
 	describe("PgTime", () => {
-		test("inherits from PgColumnWithPrecision", () => {
-			expect(time()).toBeInstanceOf(PgColumnWithPrecision);
+		test("inherits from PgTimeColumn", () => {
+			expect(time()).toBeInstanceOf(PgTimeColumn);
 		});
 
 		test("dataType is set to time", () => {
@@ -6960,8 +6961,8 @@ describe("pgTimeTz", () => {
 	});
 
 	describe("PgTimeTz", () => {
-		test("inherits from PgColumnWithPrecision", () => {
-			expect(timetz()).toBeInstanceOf(PgColumnWithPrecision);
+		test("inherits from PgTimeColumn", () => {
+			expect(timetz()).toBeInstanceOf(PgTimeColumn);
 		});
 
 		test("dataType is set to timetz", () => {
@@ -7268,7 +7269,7 @@ describe("pgTimestamp", () => {
 
 	describe("PgTimestamp", () => {
 		test("inherits from PgColumnWithPrecision", () => {
-			expect(timestamp()).toBeInstanceOf(PgColumnWithPrecision);
+			expect(timestamp()).toBeInstanceOf(PgTimestampColumn);
 		});
 
 		test("dataType is set to timestamp", () => {
@@ -7589,7 +7590,7 @@ describe("pgTimestampTz", () => {
 
 	describe("PgTimestampTz", () => {
 		test("inherits from PgColumnWithPrecision", () => {
-			expect(timestamptz()).toBeInstanceOf(PgColumnWithPrecision);
+			expect(timestamptz()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to timestamptz", () => {

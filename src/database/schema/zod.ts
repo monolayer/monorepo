@@ -190,6 +190,28 @@ export function stringSchema(
 	});
 }
 
+export function dateSchema(errorMessage: string, isNullable: boolean) {
+	return baseSchema(isNullable, errorMessage).superRefine((val, ctx) => {
+		if (val.constructor.name === "Date") return;
+		if (typeof val !== "string") {
+			ctx.addIssue({
+				code: ZodIssueCode.custom,
+				message: `${errorMessage}, received ${typeof val}`,
+			});
+			return z.NEVER;
+		}
+		try {
+			Date.parse(val);
+		} catch {
+			ctx.addIssue({
+				code: ZodIssueCode.custom,
+				message: `${errorMessage}, received ${typeof val}`,
+			});
+			return z.NEVER;
+		}
+	});
+}
+
 export function required(val: unknown, ctx: z.RefinementCtx) {
 	if (val === undefined) {
 		ctx.addIssue({

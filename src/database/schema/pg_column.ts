@@ -10,6 +10,7 @@ import { ZodIssueCode, z } from "zod";
 import {
 	baseSchema,
 	bigintSchema,
+	dateSchema,
 	decimalSchema,
 	finishSchema,
 	jsonSchema,
@@ -827,25 +828,12 @@ export class PgChar extends PgColumnWithMaximumLength<string, string> {
 
 type DateTimePrecision = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-type PgColumnWithPrecisionDataType =
-	| "time"
-	| "timetz"
-	| "timestamp"
-	| "timestamptz";
-
-export class PgColumnWithPrecision<T, U> extends PgColumn<T, U> {
-	constructor(
-		dataType: PgColumnWithPrecisionDataType,
-		precision?: DateTimePrecision,
-	) {
+export class PgTimeColumn<T, U> extends PgColumn<T, U> {
+	constructor(dataType: "time" | "timetz", precision?: DateTimePrecision) {
 		const postgresDataType =
 			dataType === "time"
 				? DefaultValueDataTypes["time without time zone"]
-				: dataType === "timetz"
-				  ? DefaultValueDataTypes["time with time zone"]
-				  : dataType === "timestamp"
-					  ? DefaultValueDataTypes["timestamp without time zone"]
-					  : DefaultValueDataTypes["timestamp with time zone"];
+				: DefaultValueDataTypes["time with time zone"];
 		if (precision !== undefined) {
 			super(`${dataType}(${precision})`, postgresDataType);
 			this.info.datetimePrecision = precision;
@@ -862,7 +850,7 @@ export function time(precision?: DateTimePrecision) {
 	return new PgTime("time", precision);
 }
 
-export class PgTime extends PgColumnWithPrecision<string, string> {
+export class PgTime extends PgTimeColumn<string, string> {
 	zodSchema(): ZodType<typeof this> {
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		const base = stringSchema(
@@ -873,11 +861,29 @@ export class PgTime extends PgColumnWithPrecision<string, string> {
 	}
 }
 
+export class PgTimestampColumn<T, U> extends PgColumn<T, U> {
+	constructor(
+		dataType: "timestamp" | "timestamptz",
+		precision?: DateTimePrecision,
+	) {
+		const postgresDataType =
+			dataType === "timestamp"
+				? DefaultValueDataTypes["timestamp without time zone"]
+				: DefaultValueDataTypes["timestamp with time zone"];
+		if (precision !== undefined) {
+			super(`${dataType}(${precision})`, postgresDataType);
+			this.info.datetimePrecision = precision;
+		} else {
+			super(dataType, postgresDataType);
+		}
+	}
+}
+
 export function timetz(precision?: DateTimePrecision) {
 	return new PgTimeTz("timetz", precision);
 }
 
-export class PgTimeTz extends PgColumnWithPrecision<string, string> {
+export class PgTimeTz extends PgTimeColumn<string, string> {
 	zodSchema(): ZodType<typeof this> {
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
 		const base = stringSchema(
@@ -892,15 +898,16 @@ export function timestamp(precision?: DateTimePrecision) {
 	return new PgTimestamp("timestamp", precision);
 }
 
-export class PgTimestamp extends PgColumnWithPrecision<Date, Date | string> {
-	zodSchema(): ZodType<typeof this> {
+export class PgTimestamp extends PgTimestampColumn<Date, Date | string> {
+	zodSchema(): DateZodType<typeof this> {
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
-		const base = stringSchema(
+		const base = dateSchema(
 			"Expected date or string with date format",
 			isNullable,
-			["Date"],
 		).pipe(z.coerce.date());
-		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
+		return finishSchema(isNullable, base) as unknown as DateZodType<
+			typeof this
+		>;
 	}
 }
 
@@ -908,17 +915,29 @@ export function timestamptz(precision?: DateTimePrecision) {
 	return new PgTimestampTz("timestamptz", precision);
 }
 
-export class PgTimestampTz extends PgColumnWithPrecision<Date, Date | string> {
-	zodSchema(): ZodType<typeof this> {
+export class PgTimestampTz extends PgTimestampColumn<Date, Date | string> {
+	zodSchema(): DateZodType<typeof this> {
 		const isNullable = !this._isPrimaryKey && this.info.isNullable === true;
-		const base = stringSchema(
+		const base = dateSchema(
 			"Expected date or string with date format",
 			isNullable,
-			["Date"],
 		).pipe(z.coerce.date());
-		return finishSchema(isNullable, base) as unknown as ZodType<typeof this>;
+
+		return finishSchema(isNullable, base) as unknown as DateZodType<
+			typeof this
+		>;
 	}
 }
+
+type DateZodType<T extends PgDate | PgTimestamp | PgTimestampTz> = z.ZodType<
+	T extends NonNullableColumn
+		? Date
+		: T extends GeneratedAlwaysColumn
+		  ? never
+		  : Date | null | undefined,
+	z.ZodTypeDef,
+	T extends NonNullableColumn ? Date | string : Date | string | null | undefined
+>;
 
 export function numeric(precision?: number, scale?: number) {
 	return new PgNumeric(precision, scale);
