@@ -1,6 +1,6 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, text, varchar } from "~/database/schema/pg_column.js";
+import { pgInteger, pgText, pgVarchar } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
@@ -31,14 +31,14 @@ describe("Table change migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						name: text(),
-						email: text(),
+						name: pgText(),
+						email: pgText(),
 					},
 				}),
 				teams: pgTable({
 					columns: {
-						id: integer(),
-						location: text(),
+						id: pgInteger(),
+						location: pgText(),
 					},
 				}),
 			},
@@ -106,12 +106,12 @@ describe("Table change migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						name: text(),
+						name: pgText(),
 					},
 				}),
 				teams: pgTable({
 					columns: {
-						id: integer(),
+						id: pgInteger(),
 					},
 				}),
 			},
@@ -171,7 +171,7 @@ describe("Table change migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						name: varchar(),
+						name: pgVarchar(),
 					},
 				}),
 			},
@@ -215,7 +215,7 @@ describe("Table change migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						name: text().defaultTo("bar"),
+						name: pgText().defaultTo("bar"),
 					},
 				}),
 			},
@@ -260,8 +260,8 @@ describe("Table change migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						name: text(),
-						email: text().notNull(),
+						name: pgText(),
+						email: pgText().notNull(),
 					},
 				}),
 			},
@@ -321,7 +321,7 @@ describe("Table change migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						name: varchar().defaultTo("foo").notNull(),
+						name: pgVarchar().defaultTo("foo").notNull(),
 					},
 				}),
 			},

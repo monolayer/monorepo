@@ -7,7 +7,7 @@ import {
 } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 
-export function index<T extends string>(columns: T | [T, ...T[]]) {
+export function pgIndex<T extends string>(columns: T | [T, ...T[]]) {
 	return new PgIndex<T>(columns);
 }
 

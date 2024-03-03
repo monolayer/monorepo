@@ -1,7 +1,7 @@
 import type { ForeignKeyRule } from "../introspection/database/foreign_key_constraint.js";
 import type { AnyPgTable, PgTable } from "./pg_table.js";
 
-export function foreignKey<T, C = AnyPgTable>(
+export function pgForeignKey<T, C = AnyPgTable>(
 	columns: T,
 	targetTable: C,
 	targetColumns: C extends PgTable<infer U> ? (keyof U)[] | keyof U : never,

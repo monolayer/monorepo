@@ -2,28 +2,28 @@ import { Equal, Expect } from "type-testing";
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
 import {
-	bigint,
-	boolean,
-	integer,
+	pgBigint,
+	pgBoolean,
 	pgEnum,
-	serial,
-	text,
-	timestamptz,
-	varchar,
+	pgInteger,
+	pgSerial,
+	pgText,
+	pgTimestamptz,
+	pgVarchar,
 } from "~/database/schema/pg_column.js";
-import { PgIndex, index } from "~/database/schema/pg_index.js";
+import { PgIndex, pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import {
 	PgForeignKey,
-	foreignKey,
+	pgForeignKey,
 } from "../../src/database/schema/pg_foreign_key.js";
-import { PgUnique, unique } from "../../src/database/schema/pg_unique.js";
+import { PgUnique, pgUnique } from "../../src/database/schema/pg_unique.js";
 
 describe("pgTable definition", () => {
 	test("has columns defined", () => {
 		const columns = {
-			name: varchar(),
-			subscribed: boolean(),
+			name: pgVarchar(),
+			subscribed: pgBoolean(),
 		};
 		const tbl = pgTable({
 			columns: columns,
@@ -33,8 +33,8 @@ describe("pgTable definition", () => {
 
 	test("columns with pgEnum", () => {
 		const columns = {
-			name: varchar(),
-			subscribed: boolean(),
+			name: pgVarchar(),
+			subscribed: pgBoolean(),
 			role: pgEnum("role", ["admin", "user"]),
 		};
 		const tbl = pgTable({
@@ -45,8 +45,8 @@ describe("pgTable definition", () => {
 
 	test("indexes are empty by default", () => {
 		const columns = {
-			name: varchar(),
-			subscribed: boolean(),
+			name: pgVarchar(),
+			subscribed: pgBoolean(),
 		};
 		const tbl = pgTable({
 			columns: columns,
@@ -56,14 +56,14 @@ describe("pgTable definition", () => {
 
 	test("indexes can be added", () => {
 		const columns = {
-			name: varchar(),
-			subscribed: boolean(),
+			name: pgVarchar(),
+			subscribed: pgBoolean(),
 		};
 		const tbl = pgTable({
 			columns: columns,
 			indexes: [
-				index("name").unique().using("btree"),
-				index("subscribed").unique().using("btree"),
+				pgIndex("name").unique().using("btree"),
+				pgIndex("subscribed").unique().using("btree"),
 			],
 		});
 		expect(tbl.indexes?.length).toBe(2);
@@ -76,21 +76,21 @@ describe("pgTable definition", () => {
 		test("foreign key constraints can be added", () => {
 			const books = pgTable({
 				columns: {
-					id: serial(),
-					name: varchar(),
-					location: varchar(),
+					id: pgSerial(),
+					name: pgVarchar(),
+					location: pgVarchar(),
 				},
-				uniqueConstraints: [unique(["name", "location"])],
+				uniqueConstraints: [pgUnique(["name", "location"])],
 			});
 
 			const users = pgTable({
 				columns: {
-					id: serial(),
-					name: varchar(),
-					subscribed: boolean(),
-					book_id: integer(),
+					id: pgSerial(),
+					name: pgVarchar(),
+					subscribed: pgBoolean(),
+					book_id: pgInteger(),
 				},
-				foreignKeys: [foreignKey(["book_id"], books, ["id"])],
+				foreignKeys: [pgForeignKey(["book_id"], books, ["id"])],
 			});
 			expect(users.schema.foreignKeys?.length).toBe(1);
 			for (const constraint of users.schema.foreignKeys || []) {
@@ -100,14 +100,14 @@ describe("pgTable definition", () => {
 
 		test("unique constraints can be added", () => {
 			const columns = {
-				id: serial(),
-				name: varchar(),
-				subscribed: boolean(),
+				id: pgSerial(),
+				name: pgVarchar(),
+				subscribed: pgBoolean(),
 			};
 
 			const tbl = pgTable({
 				columns: columns,
-				uniqueConstraints: [unique(["name"]), unique(["subscribed"])],
+				uniqueConstraints: [pgUnique(["name"]), pgUnique(["subscribed"])],
 			});
 			expect(tbl.schema.uniqueConstraints?.length).toBe(2);
 			for (const constraint of tbl.schema.uniqueConstraints || []) {
@@ -121,7 +121,7 @@ describe("pgTable definition", () => {
 			test("nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer(),
+						id: pgInteger(),
 					},
 				});
 				type expectedType = {
@@ -135,7 +135,7 @@ describe("pgTable definition", () => {
 			test("nullable and optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer(),
+						id: pgInteger(),
 					},
 				});
 				type expectedType = {
@@ -149,7 +149,7 @@ describe("pgTable definition", () => {
 			test("nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer(),
+						id: pgInteger(),
 					},
 				});
 				type expectedType = {
@@ -163,7 +163,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer(),
+						id: pgInteger(),
 					},
 				});
 				type expectedType = {
@@ -183,7 +183,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull(),
+						id: pgInteger().notNull(),
 					},
 				});
 				type expectedType = {
@@ -197,7 +197,7 @@ describe("pgTable definition", () => {
 			test("non nullable and required inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull(),
+						id: pgInteger().notNull(),
 					},
 				});
 				type expectedType = {
@@ -211,7 +211,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull(),
+						id: pgInteger().notNull(),
 					},
 				});
 				type expectedType = {
@@ -225,7 +225,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull(),
+						id: pgInteger().notNull(),
 					},
 				});
 				type expectedType = {
@@ -245,7 +245,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().defaultTo(0),
+						id: pgInteger().defaultTo(0),
 					},
 				});
 				type expectedType = {
@@ -259,7 +259,7 @@ describe("pgTable definition", () => {
 			test("nullable and optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().defaultTo(0),
+						id: pgInteger().defaultTo(0),
 					},
 				});
 				type expectedType = {
@@ -273,7 +273,7 @@ describe("pgTable definition", () => {
 			test("nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().defaultTo(0),
+						id: pgInteger().defaultTo(0),
 					},
 				});
 				type expectedType = {
@@ -287,7 +287,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().defaultTo(0),
+						id: pgInteger().defaultTo(0),
 					},
 				});
 				type expectedType = {
@@ -307,7 +307,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull().defaultTo(0),
+						id: pgInteger().notNull().defaultTo(0),
 					},
 				});
 				type expectedType = {
@@ -321,7 +321,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull().defaultTo(0),
+						id: pgInteger().notNull().defaultTo(0),
 					},
 				});
 				type expectedType = {
@@ -335,7 +335,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull().defaultTo(0),
+						id: pgInteger().notNull().defaultTo(0),
 					},
 				});
 				type expectedType = {
@@ -349,7 +349,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull().defaultTo(0),
+						id: pgInteger().notNull().defaultTo(0),
 					},
 				});
 				type expectedType = {
@@ -369,7 +369,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().defaultTo(0).notNull(),
+						id: pgInteger().defaultTo(0).notNull(),
 					},
 				});
 				type expectedType = {
@@ -383,7 +383,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().defaultTo(0).notNull(),
+						id: pgInteger().defaultTo(0).notNull(),
 					},
 				});
 				type expectedType = {
@@ -397,7 +397,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().defaultTo(0).notNull(),
+						id: pgInteger().defaultTo(0).notNull(),
 					},
 				});
 				type expectedType = {
@@ -411,7 +411,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().defaultTo(0).notNull(),
+						id: pgInteger().defaultTo(0).notNull(),
 					},
 				});
 				type expectedType = {
@@ -431,7 +431,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().primaryKey(),
+						id: pgInteger().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -445,7 +445,7 @@ describe("pgTable definition", () => {
 			test("non nullable and required inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().primaryKey(),
+						id: pgInteger().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -459,7 +459,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().primaryKey(),
+						id: pgInteger().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -473,7 +473,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().primaryKey(),
+						id: pgInteger().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -493,7 +493,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull().primaryKey(),
+						id: pgInteger().notNull().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -507,7 +507,7 @@ describe("pgTable definition", () => {
 			test("non nullable and required inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull().primaryKey(),
+						id: pgInteger().notNull().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -521,7 +521,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull().primaryKey(),
+						id: pgInteger().notNull().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -535,7 +535,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().notNull().primaryKey(),
+						id: pgInteger().notNull().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -555,7 +555,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: serial(),
+						id: pgSerial(),
 					},
 				});
 				type expectedType = {
@@ -569,7 +569,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: serial(),
+						id: pgSerial(),
 					},
 				});
 				type expectedType = {
@@ -583,7 +583,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: serial(),
+						id: pgSerial(),
 					},
 				});
 				type expectedType = {
@@ -597,7 +597,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: serial(),
+						id: pgSerial(),
 					},
 				});
 				type expectedType = {
@@ -617,7 +617,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: serial().primaryKey(),
+						id: pgSerial().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -631,7 +631,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: serial().primaryKey(),
+						id: pgSerial().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -645,7 +645,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: serial().primaryKey(),
+						id: pgSerial().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -659,7 +659,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: serial().primaryKey(),
+						id: pgSerial().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -679,7 +679,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedByDefaultAsIdentity(),
+						id: pgInteger().generatedByDefaultAsIdentity(),
 					},
 				});
 				type expectedType = {
@@ -693,7 +693,7 @@ describe("pgTable definition", () => {
 			test("non nullable optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedByDefaultAsIdentity(),
+						id: pgInteger().generatedByDefaultAsIdentity(),
 					},
 				});
 				type expectedType = {
@@ -707,7 +707,7 @@ describe("pgTable definition", () => {
 			test("non nullable optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedByDefaultAsIdentity(),
+						id: pgInteger().generatedByDefaultAsIdentity(),
 					},
 				});
 				type expectedType = {
@@ -721,7 +721,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedByDefaultAsIdentity(),
+						id: pgInteger().generatedByDefaultAsIdentity(),
 					},
 				});
 				type expectedType = {
@@ -741,7 +741,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedByDefaultAsIdentity().primaryKey(),
+						id: pgInteger().generatedByDefaultAsIdentity().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -755,7 +755,7 @@ describe("pgTable definition", () => {
 			test("non nullable optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedByDefaultAsIdentity().primaryKey(),
+						id: pgInteger().generatedByDefaultAsIdentity().primaryKey(),
 					},
 				});
 
@@ -771,7 +771,7 @@ describe("pgTable definition", () => {
 			test("non nullable optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedByDefaultAsIdentity().primaryKey(),
+						id: pgInteger().generatedByDefaultAsIdentity().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -785,7 +785,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedByDefaultAsIdentity().primaryKey(),
+						id: pgInteger().generatedByDefaultAsIdentity().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -805,7 +805,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedAlwaysAsIdentity().primaryKey(),
+						id: pgInteger().generatedAlwaysAsIdentity().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -819,7 +819,7 @@ describe("pgTable definition", () => {
 			test("does not accept inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedAlwaysAsIdentity().primaryKey(),
+						id: pgInteger().generatedAlwaysAsIdentity().primaryKey(),
 					},
 				});
 				// biome-ignore lint/complexity/noBannedTypes: <explanation>
@@ -832,7 +832,7 @@ describe("pgTable definition", () => {
 			test("does not accept updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedAlwaysAsIdentity().primaryKey(),
+						id: pgInteger().generatedAlwaysAsIdentity().primaryKey(),
 					},
 				});
 				// biome-ignore lint/complexity/noBannedTypes: <explanation>
@@ -845,7 +845,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedAlwaysAsIdentity().primaryKey(),
+						id: pgInteger().generatedAlwaysAsIdentity().primaryKey(),
 					},
 				});
 				type expectedType = {
@@ -865,7 +865,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedAlwaysAsIdentity(),
+						id: pgInteger().generatedAlwaysAsIdentity(),
 					},
 				});
 				type expectedType = {
@@ -879,7 +879,7 @@ describe("pgTable definition", () => {
 			test("does not accept inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedAlwaysAsIdentity(),
+						id: pgInteger().generatedAlwaysAsIdentity(),
 					},
 				});
 				// biome-ignore lint/complexity/noBannedTypes: <explanation>
@@ -892,7 +892,7 @@ describe("pgTable definition", () => {
 			test("does not accept updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedAlwaysAsIdentity(),
+						id: pgInteger().generatedAlwaysAsIdentity(),
 					},
 				});
 				// biome-ignore lint/complexity/noBannedTypes: <explanation>
@@ -905,7 +905,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: integer().generatedAlwaysAsIdentity(),
+						id: pgInteger().generatedAlwaysAsIdentity(),
 					},
 				});
 				type expectedType = {
@@ -1262,10 +1262,10 @@ describe("pgTable definition", () => {
 		test("schema types match column constraints and defaults", () => {
 			const table = pgTable({
 				columns: {
-					id: bigint(),
-					idPk: integer().primaryKey(),
-					name: varchar().notNull(),
-					createdAt: timestamptz().defaultTo("now()"),
+					id: pgBigint(),
+					idPk: pgInteger().primaryKey(),
+					name: pgVarchar().notNull(),
+					createdAt: pgTimestamptz().defaultTo("now()"),
 				},
 			});
 
@@ -1305,8 +1305,8 @@ describe("pgTable definition", () => {
 		test("schema parses successfully with undefined optionals", () => {
 			const table = pgTable({
 				columns: {
-					name: text(),
-					description: text().defaultTo("TDB"),
+					name: pgText(),
+					description: pgText().defaultTo("TDB"),
 				},
 			});
 
@@ -1326,8 +1326,8 @@ describe("pgTable definition", () => {
 		test("schema parse with defined constraints", () => {
 			const table = pgTable({
 				columns: {
-					id: integer().notNull(),
-					name: text().notNull(),
+					id: pgInteger().notNull(),
+					name: pgText().notNull(),
 				},
 			});
 

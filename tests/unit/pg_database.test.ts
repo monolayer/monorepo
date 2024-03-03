@@ -1,6 +1,11 @@
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { boolean, serial, text, varchar } from "~/database/schema/pg_column.js";
+import {
+	pgBoolean,
+	pgSerial,
+	pgText,
+	pgVarchar,
+} from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 
@@ -15,12 +20,12 @@ describe("pgDatabase definition", () => {
 	test("with tables", () => {
 		const users = pgTable({
 			columns: {
-				name: varchar(),
+				name: pgVarchar(),
 			},
 		});
 		const teams = pgTable({
 			columns: {
-				name: varchar(),
+				name: pgVarchar(),
 			},
 		});
 		const database = pgDatabase({
@@ -51,17 +56,17 @@ test("with extensions", () => {
 test("types for Kysely", () => {
 	const users = pgTable({
 		columns: {
-			id: serial(),
-			name: varchar().notNull(),
-			email: text().notNull(),
-			address: text(),
+			id: pgSerial(),
+			name: pgVarchar().notNull(),
+			email: pgText().notNull(),
+			address: pgText(),
 		},
 	});
 	const books = pgTable({
 		columns: {
-			id: serial(),
-			title: varchar().notNull(),
-			borrowed: boolean().notNull(),
+			id: pgSerial(),
+			title: pgVarchar().notNull(),
+			borrowed: pgBoolean().notNull(),
 		},
 	});
 	const database = pgDatabase({

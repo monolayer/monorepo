@@ -1,15 +1,15 @@
 import { describe, expect, test } from "vitest";
 import { compileUnique } from "~tests/helpers/indexes.js";
-import { PgUnique, unique } from "../../src/database/schema/pg_unique.js";
+import { PgUnique, pgUnique } from "../../src/database/schema/pg_unique.js";
 
 describe("PgUniqueConstraint", () => {
 	test("it can be instantiated with pgUniqueConstraint", () => {
-		const constraint = unique(["id"]);
+		const constraint = pgUnique(["id"]);
 		expect(constraint).toBeInstanceOf(PgUnique);
 	});
 
 	test("one column", () => {
-		const constraint = unique("id");
+		const constraint = pgUnique("id");
 		const compiled = compileUnique(constraint, "test_table");
 
 		const expected = {
@@ -20,7 +20,7 @@ describe("PgUniqueConstraint", () => {
 	});
 
 	test("multiple columns", () => {
-		const constraint = unique(["price", "name"]);
+		const constraint = pgUnique(["price", "name"]);
 		const compiled = compileUnique(constraint, "test_table");
 
 		const expected = {
@@ -31,7 +31,7 @@ describe("PgUniqueConstraint", () => {
 	});
 
 	test("null not distinct", () => {
-		const constraint = unique("id").nullsNotDistinct();
+		const constraint = pgUnique("id").nullsNotDistinct();
 		const compiled = compileUnique(constraint, "test_table");
 
 		const expected = {

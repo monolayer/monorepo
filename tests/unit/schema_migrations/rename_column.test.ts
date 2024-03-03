@@ -1,11 +1,11 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, text, varchar } from "~/database/schema/pg_column.js";
+import { pgInteger, pgText, pgVarchar } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
-import { foreignKey } from "~/database/schema/pg_foreign_key.js";
-import { index } from "~/database/schema/pg_index.js";
+import { pgForeignKey } from "~/database/schema/pg_foreign_key.js";
+import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import { unique } from "~/database/schema/pg_unique.js";
+import { pgUnique } from "~/database/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
@@ -30,7 +30,7 @@ describe("Rename column migrations", () => {
 				tables: {
 					users: pgTable({
 						columns: {
-							fullName: text().renameFrom("name"),
+							fullName: pgText().renameFrom("name"),
 						},
 					}),
 				},
@@ -74,7 +74,7 @@ describe("Rename column migrations", () => {
 				tables: {
 					users: pgTable({
 						columns: {
-							fullName: varchar(255).renameFrom("name"),
+							fullName: pgVarchar(255).renameFrom("name"),
 						},
 					}),
 				},
@@ -134,9 +134,9 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: text().renameFrom("name"),
+					fullName: pgText().renameFrom("name"),
 				},
-				uniqueConstraints: [unique(["fullName"]).nullsNotDistinct()],
+				uniqueConstraints: [pgUnique(["fullName"]).nullsNotDistinct()],
 			});
 
 			const database = pgDatabase({
@@ -203,9 +203,9 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: text().renameFrom("name"),
+					fullName: pgText().renameFrom("name"),
 				},
-				uniqueConstraints: [unique(["fullName"])],
+				uniqueConstraints: [pgUnique(["fullName"])],
 			});
 
 			const database = pgDatabase({
@@ -265,7 +265,7 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: text().renameFrom("name").primaryKey(),
+					fullName: pgText().renameFrom("name").primaryKey(),
 				},
 			});
 
@@ -333,7 +333,7 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: text().renameFrom("name").primaryKey(),
+					fullName: pgText().renameFrom("name").primaryKey(),
 				},
 			});
 
@@ -403,16 +403,16 @@ describe("Rename column migrations", () => {
 
 			const books = pgTable({
 				columns: {
-					id: integer().primaryKey(),
+					id: pgInteger().primaryKey(),
 				},
 			});
 
 			const users = pgTable({
 				columns: {
-					name: text(),
-					bookId: integer().renameFrom("book_id"),
+					name: pgText(),
+					bookId: pgInteger().renameFrom("book_id"),
 				},
-				foreignKeys: [foreignKey(["bookId"], books, ["id"])],
+				foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
 			});
 
 			const database = pgDatabase({
@@ -487,16 +487,16 @@ describe("Rename column migrations", () => {
 
 			const books = pgTable({
 				columns: {
-					id: integer().primaryKey(),
+					id: pgInteger().primaryKey(),
 				},
 			});
 
 			const users = pgTable({
 				columns: {
-					name: text(),
-					bookId: integer().renameFrom("book_id"),
+					name: pgText(),
+					bookId: pgInteger().renameFrom("book_id"),
 				},
-				foreignKeys: [foreignKey(["bookId"], books, ["id"])],
+				foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
 			});
 
 			const database = pgDatabase({
@@ -564,10 +564,10 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					name: text(),
-					bookId: integer().renameFrom("book_id"),
+					name: pgText(),
+					bookId: pgInteger().renameFrom("book_id"),
 				},
-				indexes: [index("bookId")],
+				indexes: [pgIndex("bookId")],
 			});
 
 			const database = pgDatabase({
@@ -635,10 +635,10 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					name: text(),
-					bookId: integer().renameFrom("book_id"),
+					name: pgText(),
+					bookId: pgInteger().renameFrom("book_id"),
 				},
-				indexes: [index("bookId")],
+				indexes: [pgIndex("bookId")],
 			});
 
 			const database = pgDatabase({
@@ -702,9 +702,9 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: text().renameFrom("name"),
+					fullName: pgText().renameFrom("name"),
 				},
-				uniqueConstraints: [unique(["fullName"])],
+				uniqueConstraints: [pgUnique(["fullName"])],
 			});
 
 			const database = pgDatabase({
@@ -730,9 +730,9 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: text().renameFrom("name"),
+					fullName: pgText().renameFrom("name"),
 				},
-				uniqueConstraints: [unique(["fullName"])],
+				uniqueConstraints: [pgUnique(["fullName"])],
 			});
 
 			const database = pgDatabase({
@@ -766,7 +766,7 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: text().renameFrom("name").primaryKey(),
+					fullName: pgText().renameFrom("name").primaryKey(),
 				},
 			});
 
@@ -796,7 +796,7 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: text().renameFrom("name").primaryKey(),
+					fullName: pgText().renameFrom("name").primaryKey(),
 				},
 			});
 
@@ -840,16 +840,16 @@ describe("Rename column migrations", () => {
 
 			const books = pgTable({
 				columns: {
-					id: integer().primaryKey(),
+					id: pgInteger().primaryKey(),
 				},
 			});
 
 			const users = pgTable({
 				columns: {
-					name: text(),
-					bookId: integer().renameFrom("book_id"),
+					name: pgText(),
+					bookId: pgInteger().renameFrom("book_id"),
 				},
-				foreignKeys: [foreignKey(["bookId"], books, ["id"])],
+				foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
 			});
 
 			const database = pgDatabase({
@@ -888,16 +888,16 @@ describe("Rename column migrations", () => {
 
 			const books = pgTable({
 				columns: {
-					id: integer().primaryKey(),
+					id: pgInteger().primaryKey(),
 				},
 			});
 
 			const users = pgTable({
 				columns: {
-					name: text(),
-					bookId: integer().renameFrom("book_id"),
+					name: pgText(),
+					bookId: pgInteger().renameFrom("book_id"),
 				},
-				foreignKeys: [foreignKey(["bookId"], books, ["id"])],
+				foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
 			});
 
 			const database = pgDatabase({
@@ -939,10 +939,10 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					name: text(),
-					bookId: integer().renameFrom("book_id"),
+					name: pgText(),
+					bookId: pgInteger().renameFrom("book_id"),
 				},
-				indexes: [index("bookId")],
+				indexes: [pgIndex("bookId")],
 			});
 
 			const database = pgDatabase({
@@ -1008,10 +1008,10 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					name: text(),
-					bookId: integer().renameFrom("book_id"),
+					name: pgText(),
+					bookId: pgInteger().renameFrom("book_id"),
 				},
-				indexes: [index("bookId")],
+				indexes: [pgIndex("bookId")],
 			});
 
 			const database = pgDatabase({
@@ -1038,7 +1038,7 @@ describe("Rename column migrations", () => {
 				tables: {
 					users: pgTable({
 						columns: {
-							fullName: text().renameFrom("name"),
+							fullName: pgText().renameFrom("name"),
 						},
 					}),
 				},
@@ -1062,7 +1062,7 @@ describe("Rename column migrations", () => {
 				tables: {
 					users: pgTable({
 						columns: {
-							fullName: varchar().renameFrom("name"),
+							fullName: pgVarchar().renameFrom("name"),
 						},
 					}),
 				},

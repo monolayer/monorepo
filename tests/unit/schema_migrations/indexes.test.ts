@@ -1,8 +1,8 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { text } from "~/database/schema/pg_column.js";
+import { pgText } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
-import { index } from "~/database/schema/pg_index.js";
+import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
@@ -35,10 +35,10 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				fullName: text(),
-				name: text(),
+				fullName: pgText(),
+				name: pgText(),
 			},
-			indexes: [index("fullName"), index("name")],
+			indexes: [pgIndex("fullName"), pgIndex("name")],
 		});
 
 		const database = pgDatabase({
@@ -94,10 +94,10 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				fullName: text(),
-				name: text(),
+				fullName: pgText(),
+				name: pgText(),
 			},
-			indexes: [index("name")],
+			indexes: [pgIndex("name")],
 		});
 
 		const database = pgDatabase({
@@ -153,10 +153,10 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				fullName: text(),
-				name: text(),
+				fullName: pgText(),
+				name: pgText(),
 			},
-			indexes: [index("name"), index(["name", "fullName"])],
+			indexes: [pgIndex("name"), pgIndex(["name", "fullName"])],
 		});
 
 		const database = pgDatabase({
@@ -223,10 +223,10 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				fullName: text(),
-				name: text(),
+				fullName: pgText(),
+				name: pgText(),
 			},
-			indexes: [index("name"), index("fullName").unique()],
+			indexes: [pgIndex("name"), pgIndex("fullName").unique()],
 		});
 
 		const database = pgDatabase({

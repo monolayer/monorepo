@@ -1,4 +1,4 @@
-export function unique<T>(columns: T) {
+export function pgUnique<T>(columns: T) {
 	return new PgUnique(columns);
 }
 

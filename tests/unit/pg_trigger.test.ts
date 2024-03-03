@@ -1,11 +1,11 @@
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
 import { compileTrigger } from "~tests/helpers/indexes.js";
-import { trigger } from "../../src/database/schema/pg_trigger.js";
+import { pgTrigger } from "../../src/database/schema/pg_trigger.js";
 
 describe("pg_trigger", () => {
 	test("trigger before", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("before")
 			.events(["update", "delete"])
 			.forEach("statement")
@@ -23,7 +23,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger after", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("after")
 			.events(["update", "delete"])
 			.forEach("statement")
@@ -41,7 +41,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger instead of", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("instead of")
 			.events(["update", "delete"])
 			.forEach("statement")
@@ -59,7 +59,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger on single event", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("instead of")
 			.events(["update"])
 			.forEach("statement")
@@ -77,7 +77,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger on multiple events", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("instead of")
 			.events(["update", "insert"])
 			.forEach("statement")
@@ -95,7 +95,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger on update of", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("instead of")
 			.events(["update of"])
 			.columns(["balance", "name"])
@@ -114,7 +114,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with default fire when", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("before")
 			.events(["update", "delete"])
 			.forEach("statement")
@@ -132,7 +132,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with for each row", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("before")
 			.events(["update", "delete"])
 			.forEach("row")
@@ -150,7 +150,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with referencing", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("before")
 			.events(["delete"])
 			.forEach("statement")
@@ -169,7 +169,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with referencing new table", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("before")
 			.events(["delete"])
 			.forEach("statement")
@@ -187,7 +187,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with referencing old table", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("before")
 			.events(["delete"])
 			.forEach("statement")
@@ -205,7 +205,7 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with function arguments", () => {
-		const trg = trigger()
+		const trg = pgTrigger()
 			.fireWhen("before")
 			.events(["delete"])
 			.forEach("statement")

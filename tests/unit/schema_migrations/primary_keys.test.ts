@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { text } from "~/database/schema/pg_column.js";
+import { pgText } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
@@ -29,14 +29,14 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				fullName: text().primaryKey(),
-				name: text().primaryKey(),
+				fullName: pgText().primaryKey(),
+				name: pgText().primaryKey(),
 			},
 		});
 
 		const books = pgTable({
 			columns: {
-				name: text().primaryKey(),
+				name: pgText().primaryKey(),
 			},
 		});
 
@@ -107,14 +107,14 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				fullName: text(),
-				name: text(),
+				fullName: pgText(),
+				name: pgText(),
 			},
 		});
 
 		const books = pgTable({
 			columns: {
-				name: text(),
+				name: pgText(),
 			},
 		});
 
@@ -175,8 +175,8 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				fullName: text(),
-				name: text().primaryKey(),
+				fullName: pgText(),
+				name: pgText().primaryKey(),
 			},
 		});
 
@@ -236,8 +236,8 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				fullName: text().notNull(),
-				name: text().primaryKey(),
+				fullName: pgText().notNull(),
+				name: pgText().primaryKey(),
 			},
 		});
 
@@ -294,8 +294,8 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				name: text(),
-				email: text().notNull().primaryKey(),
+				name: pgText(),
+				email: pgText().notNull().primaryKey(),
 			},
 		});
 

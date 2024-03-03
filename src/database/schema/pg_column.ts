@@ -184,7 +184,7 @@ type ZodTypeGenerated<T extends PgGeneratedColumn<any, any>> = z.ZodType<
 	never
 >;
 
-export function bigserial() {
+export function pgBigserial() {
 	return new PgBigSerial();
 }
 
@@ -201,7 +201,7 @@ export class PgBigSerial extends PgGeneratedColumn<
 	}
 }
 
-export function serial() {
+export function pgSerial() {
 	return new PgSerial();
 }
 
@@ -229,7 +229,7 @@ export class IdentifiableColumn<S, I, U = I> extends PgColumn<S, I, U> {
 	}
 }
 
-export function boolean() {
+export function pgBoolean() {
 	return new PgBoolean();
 }
 
@@ -343,7 +343,7 @@ export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 	}
 }
 
-export function text() {
+export function pgText() {
 	return new PgText();
 }
 
@@ -361,7 +361,7 @@ export class PgText extends PgColumn<string, string> {
 	}
 }
 
-export function bigint() {
+export function pgBigint() {
 	return new PgBigInt();
 }
 
@@ -390,7 +390,7 @@ export class PgBigInt extends IdentifiableColumn<
 	}
 }
 
-export function bytea() {
+export function pgBytea() {
 	return new PgBytea();
 }
 
@@ -466,7 +466,7 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 	}
 }
 
-export function date() {
+export function pgDate() {
 	return new PgDate();
 }
 
@@ -485,7 +485,7 @@ export class PgDate extends PgColumn<Date, Date | string> {
 	}
 }
 
-export function doublePrecision() {
+export function pgDoublePrecision() {
 	return new PgDoublePrecision();
 }
 
@@ -506,7 +506,7 @@ export class PgDoublePrecision extends PgColumn<
 	}
 }
 
-export function float4() {
+export function pgFloat4() {
 	return new PgFloat4();
 }
 
@@ -522,7 +522,7 @@ export class PgFloat4 extends PgColumn<number, number | bigint | string> {
 	}
 }
 
-export function float8() {
+export function pgFloat8() {
 	return new PgFloat8();
 }
 
@@ -538,7 +538,7 @@ export class PgFloat8 extends PgColumn<number, number | bigint | string> {
 	}
 }
 
-export function int2() {
+export function pgInt2() {
 	return new PgInt2();
 }
 
@@ -558,7 +558,7 @@ export class PgInt2 extends IdentifiableColumn<number, number | string> {
 	}
 }
 
-export function int4() {
+export function pgInt4() {
 	return new PgInt4();
 }
 
@@ -590,7 +590,7 @@ export class PgInt4 extends IdentifiableColumn<number, number | string> {
 	}
 }
 
-export function int8() {
+export function pgInt8() {
 	return new PgInt8();
 }
 
@@ -618,7 +618,7 @@ export class PgInt8 extends IdentifiableColumn<
 	}
 }
 
-export function integer() {
+export function pgInteger() {
 	return new PgInteger();
 }
 
@@ -651,7 +651,7 @@ export class PgInteger extends IdentifiableColumn<number, number | string> {
 	}
 }
 
-export function json() {
+export function pgJson() {
 	return new PgJson();
 }
 
@@ -696,7 +696,7 @@ export class PgJson extends PgColumn<
 	}
 }
 
-export function jsonb() {
+export function pgJsonb() {
 	return new PgJsonB();
 }
 
@@ -714,7 +714,7 @@ export class PgJsonB extends PgColumn<JsonValue, string> {
 	}
 }
 
-export function real() {
+export function pgReal() {
 	return new PgReal();
 }
 
@@ -734,7 +734,7 @@ export class PgReal extends PgColumn<number, number | bigint | string> {
 	}
 }
 
-export function uuid() {
+export function pgUuid() {
 	return new PgUuid();
 }
 
@@ -777,7 +777,7 @@ export class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
 	}
 }
 
-export function varchar(maximumLength?: number) {
+export function pgVarchar(maximumLength?: number) {
 	return new PgVarChar("varchar", maximumLength);
 }
 
@@ -796,7 +796,7 @@ export class PgVarChar extends PgColumnWithMaximumLength<string, string> {
 	}
 }
 
-export function char(maximumLength?: number) {
+export function pgChar(maximumLength?: number) {
 	return new PgChar("char", maximumLength ? maximumLength : 1);
 }
 
@@ -835,7 +835,7 @@ export class PgTimeColumn<T, U> extends PgColumn<T, U> {
 const TIME_REGEX =
 	/^((?:\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:[+-]\d{1,2}(?::?\d{2})?)?)|(\d{6}(?:[+-]\d{2}(?::?\d{2}){0,2})?))$/;
 
-export function time(precision?: DateTimePrecision) {
+export function pgTime(precision?: DateTimePrecision) {
 	return new PgTime("time", precision);
 }
 
@@ -868,7 +868,7 @@ export class PgTimestampColumn<T, U> extends PgColumn<T, U> {
 	}
 }
 
-export function timetz(precision?: DateTimePrecision) {
+export function pgTimetz(precision?: DateTimePrecision) {
 	return new PgTimeTz("timetz", precision);
 }
 
@@ -883,7 +883,7 @@ export class PgTimeTz extends PgTimeColumn<string, string> {
 	}
 }
 
-export function timestamp(precision?: DateTimePrecision) {
+export function pgTimestamp(precision?: DateTimePrecision) {
 	return new PgTimestamp("timestamp", precision);
 }
 
@@ -900,7 +900,7 @@ export class PgTimestamp extends PgTimestampColumn<Date, Date | string> {
 	}
 }
 
-export function timestamptz(precision?: DateTimePrecision) {
+export function pgTimestamptz(precision?: DateTimePrecision) {
 	return new PgTimestampTz("timestamptz", precision);
 }
 
@@ -928,7 +928,7 @@ type DateZodType<T extends PgDate | PgTimestamp | PgTimestampTz> = z.ZodType<
 	T extends NonNullableColumn ? Date | string : Date | string | null | undefined
 >;
 
-export function numeric(precision?: number, scale?: number) {
+export function pgNumeric(precision?: number, scale?: number) {
 	return new PgNumeric(precision, scale);
 }
 

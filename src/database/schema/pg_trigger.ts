@@ -21,7 +21,7 @@ export interface PgTriggerFunctionOptions {
 	functionArgs?: string[];
 }
 
-export function trigger() {
+export function pgTrigger() {
 	return new PgTrigger();
 }
 

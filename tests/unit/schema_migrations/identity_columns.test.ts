@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer } from "~/database/schema/pg_column.js";
+import { pgInteger } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
@@ -22,8 +22,8 @@ describe("Identity columns", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						id: integer().generatedAlwaysAsIdentity(),
-						count: integer().generatedByDefaultAsIdentity(),
+						id: pgInteger().generatedAlwaysAsIdentity(),
+						count: pgInteger().generatedByDefaultAsIdentity(),
 					},
 				}),
 			},
@@ -149,8 +149,8 @@ describe("Identity columns", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						id: integer().generatedAlwaysAsIdentity(),
-						count: integer().generatedByDefaultAsIdentity(),
+						id: pgInteger().generatedAlwaysAsIdentity(),
+						count: pgInteger().generatedByDefaultAsIdentity(),
 					},
 				}),
 			},
@@ -238,8 +238,8 @@ describe("Identity columns", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						id: integer(),
-						count: integer(),
+						id: pgInteger(),
+						count: pgInteger(),
 					},
 				}),
 			},

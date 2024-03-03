@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, serial, varchar } from "~/database/schema/pg_column.js";
+import { pgInteger, pgSerial, pgVarchar } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
-import { foreignKey } from "~/database/schema/pg_foreign_key.js";
+import { pgForeignKey } from "~/database/schema/pg_foreign_key.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
@@ -35,18 +35,18 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer().primaryKey(),
+				id: pgInteger().primaryKey(),
 			},
 		});
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
-				book_id: integer(),
-				name: varchar(),
+				id: pgSerial(),
+				book_id: pgInteger(),
+				name: pgVarchar(),
 			},
 			foreignKeys: [
-				foreignKey(["id"], books, ["id"], {
+				pgForeignKey(["id"], books, ["id"], {
 					updateRule: "set null",
 					deleteRule: "set null",
 				}),
@@ -130,14 +130,14 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer().primaryKey(),
+				id: pgInteger().primaryKey(),
 			},
 		});
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
-				book_id: integer(),
+				id: pgSerial(),
+				book_id: pgInteger(),
 			},
 		});
 
@@ -201,17 +201,17 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer().primaryKey(),
+				id: pgInteger().primaryKey(),
 			},
 		});
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
-				book_id: integer(),
+				id: pgSerial(),
+				book_id: pgInteger(),
 			},
 			foreignKeys: [
-				foreignKey(["id"], books, ["id"], {
+				pgForeignKey(["id"], books, ["id"], {
 					updateRule: "cascade",
 					deleteRule: "set null",
 				}),
@@ -289,17 +289,17 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer().primaryKey(),
+				id: pgInteger().primaryKey(),
 			},
 		});
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
-				book_id: integer(),
+				id: pgSerial(),
+				book_id: pgInteger(),
 			},
 			foreignKeys: [
-				foreignKey(["book_id"], books, ["id"], {
+				pgForeignKey(["book_id"], books, ["id"], {
 					updateRule: "cascade",
 					deleteRule: "set null",
 				}),

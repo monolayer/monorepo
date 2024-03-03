@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, serial, varchar } from "~/database/schema/pg_column.js";
+import { pgInteger, pgSerial, pgVarchar } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import { unique } from "~/database/schema/pg_unique.js";
+import { pgUnique } from "~/database/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";
@@ -30,17 +30,17 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer(),
+				id: pgInteger(),
 			},
-			uniqueConstraints: [unique("id").nullsNotDistinct()],
+			uniqueConstraints: [pgUnique("id").nullsNotDistinct()],
 		});
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
-				fullName: varchar(),
+				id: pgSerial(),
+				fullName: pgVarchar(),
 			},
-			uniqueConstraints: [unique(["id", "fullName"])],
+			uniqueConstraints: [pgUnique(["id", "fullName"])],
 		});
 
 		const database = pgDatabase({
@@ -109,15 +109,15 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer(),
+				id: pgInteger(),
 			},
-			uniqueConstraints: [unique("id").nullsNotDistinct()],
+			uniqueConstraints: [pgUnique("id").nullsNotDistinct()],
 		});
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
-				fullName: varchar(),
+				id: pgSerial(),
+				fullName: pgVarchar(),
 			},
 		});
 
@@ -176,17 +176,17 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer(),
+				id: pgInteger(),
 			},
-			uniqueConstraints: [unique("id").nullsNotDistinct()],
+			uniqueConstraints: [pgUnique("id").nullsNotDistinct()],
 		});
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
-				fullName: varchar(),
+				id: pgSerial(),
+				fullName: pgVarchar(),
 			},
-			uniqueConstraints: [unique(["id"])],
+			uniqueConstraints: [pgUnique(["id"])],
 		});
 
 		const database = pgDatabase({
@@ -255,17 +255,17 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer(),
+				id: pgInteger(),
 			},
-			uniqueConstraints: [unique("id").nullsNotDistinct()],
+			uniqueConstraints: [pgUnique("id").nullsNotDistinct()],
 		});
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
-				fullName: varchar(),
+				id: pgSerial(),
+				fullName: pgVarchar(),
 			},
-			uniqueConstraints: [unique(["id", "fullName"]).nullsNotDistinct()],
+			uniqueConstraints: [pgUnique(["id", "fullName"]).nullsNotDistinct()],
 		});
 
 		const database = pgDatabase({

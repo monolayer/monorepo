@@ -1,39 +1,39 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import {
-	bigint,
-	bigserial,
-	boolean,
-	bytea,
-	char,
-	date,
-	doublePrecision,
-	float4,
-	float8,
-	int2,
-	int4,
-	int8,
-	integer,
-	json,
-	jsonb,
-	numeric,
+	pgBigint,
+	pgBigserial,
+	pgBoolean,
+	pgBytea,
+	pgChar,
+	pgDate,
+	pgDoublePrecision,
 	pgEnum,
-	real,
-	serial,
-	text,
-	time,
-	timestamp,
-	timestamptz,
-	timetz,
-	uuid,
-	varchar,
+	pgFloat4,
+	pgFloat8,
+	pgInt2,
+	pgInt4,
+	pgInt8,
+	pgInteger,
+	pgJson,
+	pgJsonb,
+	pgNumeric,
+	pgReal,
+	pgSerial,
+	pgText,
+	pgTime,
+	pgTimestamp,
+	pgTimestamptz,
+	pgTimetz,
+	pgUuid,
+	pgVarchar,
 } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
-import { foreignKey } from "~/database/schema/pg_foreign_key.js";
-import { index } from "~/database/schema/pg_index.js";
+import { pgForeignKey } from "~/database/schema/pg_foreign_key.js";
+import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import { trigger } from "~/database/schema/pg_trigger.js";
-import { unique } from "~/database/schema/pg_unique.js";
+import { pgTrigger } from "~/database/schema/pg_trigger.js";
+import { pgUnique } from "~/database/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
@@ -89,47 +89,48 @@ describe("Table create migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						bigInt: bigint(),
-						bigInt2: bigint().notNull(),
-						bigSerial: bigserial(),
-						boolean: boolean(),
-						bytea: bytea(),
-						char: char(),
-						char_10: char(10),
-						date: date(),
-						doublePrecision: doublePrecision(),
-						float4: float4(),
-						float8: float8(),
-						int2: int2(),
-						int4: int4(),
-						int8: int8(),
-						integer: integer(),
-						integerAlwaysAsIdentity: integer().generatedAlwaysAsIdentity(),
-						integerDefaultAsIdentity: integer().generatedByDefaultAsIdentity(),
+						bigInt: pgBigint(),
+						bigInt2: pgBigint().notNull(),
+						bigSerial: pgBigserial(),
+						boolean: pgBoolean(),
+						bytea: pgBytea(),
+						char: pgChar(),
+						char_10: pgChar(10),
+						date: pgDate(),
+						doublePrecision: pgDoublePrecision(),
+						float4: pgFloat4(),
+						float8: pgFloat8(),
+						int2: pgInt2(),
+						int4: pgInt4(),
+						int8: pgInt8(),
+						integer: pgInteger(),
+						integerAlwaysAsIdentity: pgInteger().generatedAlwaysAsIdentity(),
+						integerDefaultAsIdentity:
+							pgInteger().generatedByDefaultAsIdentity(),
 					},
 				}),
 				books: pgTable({
 					columns: {
-						json: json(),
-						jsonB: jsonb(),
-						numeric: numeric(),
-						numeric_5: numeric(5),
-						numeric_5_2: numeric(5, 2),
-						real: real(),
-						serial: serial(),
-						text: text(),
-						time: time(),
-						time_4: time(4),
-						timeTz: timetz(),
-						timeTz_4: timetz(4),
-						timestamp: timestamp(),
-						timestamp_3: timestamp(3),
-						timestampTz: timestamptz(),
-						timestampTz_3: timestamptz(3),
-						uuid: uuid(),
-						varChar: varchar(),
-						varCharWithDefault: varchar().defaultTo("foo"),
-						varChar_255: varchar(255),
+						json: pgJson(),
+						jsonB: pgJsonb(),
+						numeric: pgNumeric(),
+						numeric_5: pgNumeric(5),
+						numeric_5_2: pgNumeric(5, 2),
+						real: pgReal(),
+						serial: pgSerial(),
+						text: pgText(),
+						time: pgTime(),
+						time_4: pgTime(4),
+						timeTz: pgTimetz(),
+						timeTz_4: pgTimetz(4),
+						timestamp: pgTimestamp(),
+						timestamp_3: pgTimestamp(3),
+						timestampTz: pgTimestamptz(),
+						timestampTz_3: pgTimestamptz(3),
+						uuid: pgUuid(),
+						varChar: pgVarchar(),
+						varCharWithDefault: pgVarchar().defaultTo("foo"),
+						varChar_255: pgVarchar(255),
 					},
 				}),
 			},
@@ -210,12 +211,12 @@ describe("Table create migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						id: serial().primaryKey(),
+						id: pgSerial().primaryKey(),
 					},
 				}),
 				books: pgTable({
 					columns: {
-						id: bigserial().primaryKey(),
+						id: pgBigserial().primaryKey(),
 					},
 				}),
 			},
@@ -279,13 +280,13 @@ describe("Table create migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						id: serial().primaryKey(),
-						name: varchar().primaryKey(),
+						id: pgSerial().primaryKey(),
+						name: pgVarchar().primaryKey(),
 					},
 				}),
 				books: pgTable({
 					columns: {
-						id: bigserial().primaryKey(),
+						id: pgBigserial().primaryKey(),
 					},
 				}),
 			},
@@ -348,17 +349,17 @@ describe("Table create migrations", () => {
 	test<DbContext>("create table with unique constraints", async (context) => {
 		const books = pgTable({
 			columns: {
-				id: integer(),
+				id: pgInteger(),
 			},
-			uniqueConstraints: [unique("id").nullsNotDistinct()],
+			uniqueConstraints: [pgUnique("id").nullsNotDistinct()],
 		});
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
-				fullName: varchar(),
+				id: pgSerial(),
+				fullName: pgVarchar(),
 			},
-			uniqueConstraints: [unique(["id"])],
+			uniqueConstraints: [pgUnique(["id"])],
 		});
 
 		const database = pgDatabase({
@@ -425,17 +426,17 @@ describe("Table create migrations", () => {
 	test<DbContext>("create table with foreign keys", async (context) => {
 		const books = pgTable({
 			columns: {
-				id: bigserial().primaryKey(),
+				id: pgBigserial().primaryKey(),
 			},
 		});
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
-				name: varchar(),
+				id: pgSerial(),
+				name: pgVarchar(),
 			},
 			foreignKeys: [
-				foreignKey(["id"], books, ["id"], {
+				pgForeignKey(["id"], books, ["id"], {
 					updateRule: "set null",
 					deleteRule: "set null",
 				}),
@@ -506,16 +507,16 @@ describe("Table create migrations", () => {
 	test<DbContext>("create table with indexes", async (context) => {
 		const users = pgTable({
 			columns: {
-				name: text(),
+				name: pgText(),
 			},
-			indexes: [index("name")],
+			indexes: [pgIndex("name")],
 		});
 
 		const books = pgTable({
 			columns: {
-				id: text(),
+				id: pgText(),
 			},
-			indexes: [index("id").unique()],
+			indexes: [pgIndex("id").unique()],
 		});
 
 		const database = pgDatabase({
@@ -581,7 +582,7 @@ describe("Table create migrations", () => {
 	test<DbContext>("create table with enums", async (context) => {
 		const users = pgTable({
 			columns: {
-				name: text(),
+				name: pgText(),
 				role: pgEnum("role", ["admin", "user"]),
 			},
 		});
@@ -630,11 +631,11 @@ describe("Table create migrations", () => {
 	test<DbContext>("create table with triggers", async (context) => {
 		const users = pgTable({
 			columns: {
-				id: integer(),
-				updatedAt: timestamp().defaultTo(sql`now()`),
+				id: pgInteger(),
+				updatedAt: pgTimestamp().defaultTo(sql`now()`),
 			},
 			triggers: {
-				foo_before_update: trigger()
+				foo_before_update: pgTrigger()
 					.fireWhen("before")
 					.events(["update"])
 					.forEach("row")

@@ -1,9 +1,9 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, timestamp } from "~/database/schema/pg_column.js";
+import { pgInteger, pgTimestamp } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import { trigger } from "~/database/schema/pg_trigger.js";
+import { pgTrigger } from "~/database/schema/pg_trigger.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";
@@ -26,11 +26,11 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				id: integer(),
-				updatedAt: timestamp().defaultTo(sql`now()`),
+				id: pgInteger(),
+				updatedAt: pgTimestamp().defaultTo(sql`now()`),
 			},
 			triggers: {
-				foo_before_update: trigger()
+				foo_before_update: pgTrigger()
 					.fireWhen("before")
 					.events(["update"])
 					.forEach("row")
@@ -100,8 +100,8 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 
 		const users = pgTable({
 			columns: {
-				id: integer(),
-				updatedAt: timestamp().defaultTo(sql`now()`),
+				id: pgInteger(),
+				updatedAt: pgTimestamp().defaultTo(sql`now()`),
 			},
 		});
 
@@ -155,11 +155,11 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 
 		const users = pgTable({
 			columns: {
-				id: integer(),
-				updatedAt: timestamp().defaultTo(sql`now()`),
+				id: pgInteger(),
+				updatedAt: pgTimestamp().defaultTo(sql`now()`),
 			},
 			triggers: {
-				foo_before_update: trigger()
+				foo_before_update: pgTrigger()
 					.fireWhen("after")
 					.events(["update"])
 					.forEach("row")

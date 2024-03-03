@@ -1,6 +1,6 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, pgEnum, serial } from "~/database/schema/pg_column.js";
+import { pgEnum, pgInteger, pgSerial } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
@@ -24,7 +24,7 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				id: integer(),
+				id: pgInteger(),
 				role: pgEnum("role", ["admin", "user"]),
 			},
 		});
@@ -90,7 +90,7 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
+				id: pgSerial(),
 			},
 		});
 
@@ -155,7 +155,7 @@ describe("Database migrations", () => {
 
 		const users = pgTable({
 			columns: {
-				id: serial(),
+				id: pgSerial(),
 				role: pgEnum("role", ["admin", "user", "superuser"]),
 			},
 		});

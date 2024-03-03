@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { serial } from "~/database/schema/pg_column.js";
+import { pgSerial } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
@@ -147,7 +147,7 @@ describe("findTableInDatabaseSchema", () => {
 	test("returns the name table of a table in the database schema", () => {
 		const users = pgTable({
 			columns: {
-				id: serial(),
+				id: pgSerial(),
 			},
 		});
 
@@ -163,7 +163,7 @@ describe("findTableInDatabaseSchema", () => {
 	test("returns the undefined if the table is not found", () => {
 		const users = pgTable({
 			columns: {
-				id: serial(),
+				id: pgSerial(),
 			},
 		});
 
@@ -177,13 +177,13 @@ describe("findTableInDatabaseSchema", () => {
 	test("returns the name table of a table in the database schema with multiple tables with same definition", () => {
 		const users = pgTable({
 			columns: {
-				id: serial(),
+				id: pgSerial(),
 			},
 		});
 
 		const desks = pgTable({
 			columns: {
-				id: serial(),
+				id: pgSerial(),
 			},
 		});
 

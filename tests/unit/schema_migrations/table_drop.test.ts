@@ -1,9 +1,9 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, text } from "~/database/schema/pg_column.js";
+import { pgInteger, pgText } from "~/database/schema/pg_column.js";
 import { pgDatabase } from "~/database/schema/pg_database.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import { unique } from "~/database/schema/pg_unique.js";
+import { pgUnique } from "~/database/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
@@ -290,9 +290,9 @@ describe("Table drop migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: integer(),
+				id: pgInteger(),
 			},
-			uniqueConstraints: [unique("id").nullsNotDistinct()],
+			uniqueConstraints: [pgUnique("id").nullsNotDistinct()],
 		});
 
 		const database = pgDatabase({
@@ -570,7 +570,7 @@ describe("Table drop migrations", () => {
 			tables: {
 				teams: pgTable({
 					columns: {
-						name: text(),
+						name: pgText(),
 					},
 				}),
 			},
