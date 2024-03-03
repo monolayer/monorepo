@@ -1,5 +1,4 @@
 import {
-	type ColumnDataType,
 	type ColumnType,
 	type Expression,
 	type InsertType,
@@ -122,7 +121,7 @@ export class PgColumnBase<S, I, U> {
 		return column.info;
 	}
 
-	constructor(dataType: ColumnDataType | "smallint") {
+	constructor(dataType: string) {
 		this.info = {
 			dataType: dataType,
 			isNullable: true,
@@ -153,10 +152,7 @@ export class PgColumn<S, I, U = I>
 
 	protected readonly _native_data_type: DefaultValueDataTypes;
 
-	constructor(
-		dataType: ColumnDataType | "smallint",
-		postgresDataType: DefaultValueDataTypes,
-	) {
+	constructor(dataType: string, postgresDataType: DefaultValueDataTypes) {
 		super(dataType);
 		this._native_data_type = postgresDataType;
 		this._isPrimaryKey = false;
@@ -994,45 +990,13 @@ export function pgEnum<N extends string, T extends string[]>(
 	return new PgEnum(name, values as unknown as string[]);
 }
 
-export class PgEnum {
-	private _isPrimaryKey: boolean;
-
-	declare readonly _infer: ColumnType<string, string, string>;
-
-	readonly values: string[];
-	readonly name: string;
-	readonly info: Omit<ColumnInfo, "columnName" | "tableName">;
+export class PgEnum extends PgColumn<string, string> {
+	protected readonly values: string[];
 
 	constructor(name: string, values: string[]) {
+		super(name, DefaultValueDataTypes.numeric);
 		this.values = values;
-		this.name = name;
-		this.info = {
-			dataType: name as string,
-			isNullable: true,
-			defaultValue: null,
-			characterMaximumLength: null,
-			numericPrecision: null,
-			numericScale: null,
-			datetimePrecision: null,
-			renameFrom: null,
-			identity: null,
-			enum: true,
-		};
-		this._isPrimaryKey = false;
-	}
-
-	notNull() {
-		this.info.isNullable = false;
-		return this as this & {
-			nullable: "no";
-		};
-	}
-
-	primaryKey() {
-		this._isPrimaryKey = true;
-		return this as this & {
-			nullable: "no";
-		};
+		this.info.enum = true;
 	}
 
 	defaultTo(value: string) {
@@ -1040,11 +1004,6 @@ export class PgEnum {
 		return this as this & {
 			_hasDefault: "yes";
 		};
-	}
-
-	renameFrom(name: string) {
-		this.info.renameFrom = name;
-		return this;
 	}
 
 	zodSchema(): EnumZodyType<typeof this> {

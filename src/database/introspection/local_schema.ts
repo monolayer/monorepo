@@ -298,9 +298,13 @@ export function schemaDbEnumInfo(schema: AnyPgDatabase) {
 			for (const key of keys) {
 				const column = tableDefinition.columns[key];
 				if (column instanceof PgEnum) {
-					const enumName = column.info.dataType;
+					const columnDef = Object.fromEntries(Object.entries(column)) as {
+						info: ColumnInfo;
+						values: string[];
+					};
+					const enumName = columnDef.info.dataType;
 					if (enumName !== null) {
-						enumInfo[enumName] = (column.values as string[]).join(", ");
+						enumInfo[enumName] = (columnDef.values as string[]).join(", ");
 					}
 				}
 			}

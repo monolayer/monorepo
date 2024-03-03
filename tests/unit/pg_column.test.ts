@@ -1,4 +1,4 @@
-import { ColumnDataType, type Expression, sql } from "kysely";
+import { type Expression, sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
@@ -91,16 +91,6 @@ const tenUnDecillionBigInt = 10000000000000000000000000000000000000n;
 const eleventUnDecillionBigInt = 100000000000000000000000000000000000000n;
 
 describe("PgColumnBase", () => {
-	test("constructor accepts kysely column data types and smallint", () => {
-		const expect: Expect<
-			Equal<
-				ColumnDataType | "smallint",
-				ConstructorParameters<typeof PgColumnBase>[0]
-			>
-		> = true;
-		expectTypeOf(expect).toMatchTypeOf<boolean>();
-	});
-
 	beforeEach((context: ColumnContext) => {
 		context.column = new PgColumnBase("integer");
 		context.columnInfo = Object.fromEntries(
@@ -8218,17 +8208,28 @@ describe("pgEnum", () => {
 
 	test("enum name", () => {
 		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
-		expect(testEnum.name).toBe("myEnum");
+		const columnInfo: ColumnInfo = Object.fromEntries(
+			Object.entries(testEnum),
+		).info;
+
+		expect(columnInfo.dataType).toBe("myEnum");
 	});
 
 	test("enum values", () => {
 		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
-		expect(testEnum.values).toStrictEqual(["one", "two", "three"]);
+		const columnDef = Object.fromEntries(Object.entries(testEnum)) as {
+			values: string[];
+		};
+		expect(columnDef.values).toStrictEqual(["one", "two", "three"]);
 	});
 
 	test("default info", () => {
 		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
-		expect(testEnum.info).toStrictEqual({
+		const columnInfo: ColumnInfo = Object.fromEntries(
+			Object.entries(testEnum),
+		).info;
+
+		expect(columnInfo).toStrictEqual({
 			dataType: "myEnum",
 			characterMaximumLength: null,
 			datetimePrecision: null,
@@ -8258,19 +8259,28 @@ describe("pgEnum", () => {
 
 	test("notNull()", () => {
 		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).notNull();
-		expect(testEnum.info.isNullable).toBe(false);
+		const columnInfo: ColumnInfo = Object.fromEntries(
+			Object.entries(testEnum),
+		).info;
+		expect(columnInfo.isNullable).toBe(false);
 	});
 
 	test("defaultTo()", () => {
 		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).defaultTo("one");
-		expect(testEnum.info.defaultValue).toBe("'one'::myEnum");
+		const columnInfo: ColumnInfo = Object.fromEntries(
+			Object.entries(testEnum),
+		).info;
+		expect(columnInfo.defaultValue).toBe("'one'::myEnum");
 	});
 
 	test("renameFrom()", () => {
 		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).renameFrom(
 			"old_name",
 		);
-		expect(testEnum.info.renameFrom).toBe("old_name");
+		const columnInfo: ColumnInfo = Object.fromEntries(
+			Object.entries(testEnum),
+		).info;
+		expect(columnInfo.renameFrom).toBe("old_name");
 	});
 
 	describe("zod", () => {
