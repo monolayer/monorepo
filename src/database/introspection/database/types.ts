@@ -1,4 +1,4 @@
-import type { ColumnIdentity } from "~/index.js";
+import type { ColumnIdentity } from "~/database/schema/pg_column.js";
 
 export type InformationSchemaTables = {
 	table_catalog: string | null;
