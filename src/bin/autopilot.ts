@@ -73,24 +73,25 @@ async function main() {
 
 	const cset = changeset(localInfo, remoteColumnInfo.result);
 
-	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
-	const migrationName = `${dateStr}-autopilot.ts`;
-	generateMigrationFiles(cset, ".kinetic", "autopilot", migrationName);
+	if (cset.length > 0) {
+		const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
+		const migrationName = `${dateStr}-autopilot.ts`;
+		generateMigrationFiles(cset, ".kinetic", "autopilot", migrationName);
 
-	try {
-		const migrationPath = path.join(
-			cwd(),
-			".kinetic",
-			"autopilot",
-			migrationName,
-		);
-		await fs.access(migrationPath, fs.constants.F_OK);
-		const autoPilotMigration = await import(migrationPath);
-		await autoPilotMigration.up(kysely);
-	} catch (error) {
-		console.log("Kinetic Autopilot Error:", error);
+		try {
+			const migrationPath = path.join(
+				cwd(),
+				".kinetic",
+				"autopilot",
+				migrationName,
+			);
+			await fs.access(migrationPath, fs.constants.F_OK);
+			const autoPilotMigration = await import(migrationPath);
+			await autoPilotMigration.up(kysely);
+		} catch (error) {
+			console.log("Kinetic Autopilot Error:", error);
+		}
 	}
-
 	exit(0);
 }
 
