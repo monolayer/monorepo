@@ -90,7 +90,8 @@ export enum DefaultValueDataTypes {
 	xml = "xml",
 }
 
-type ZodType<T extends PgColumnTypes> = z.ZodType<
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type ZodType<T extends PgColumn<any, any, any>> = z.ZodType<
 	T extends { nullable: "no" }
 		? NonNullable<SelectType<InferColumType<T>>>
 		: // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -107,13 +108,8 @@ type ZodType<T extends PgColumnTypes> = z.ZodType<
 		  : Exclude<InsertType<InferColumType<T>>, undefined>
 >;
 
-interface QueryDataType {
-	/** @internal */
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	readonly _infer: ColumnType<any, any, any>;
-}
-
 export class PgColumnBase<S, I, U> {
+	protected declare readonly infer: ColumnType<S, I, U>;
 	protected info: Omit<ColumnInfo, "columnName" | "tableName">;
 
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -142,12 +138,7 @@ export class PgColumnBase<S, I, U> {
 	}
 }
 
-export class PgColumn<S, I, U = I>
-	extends PgColumnBase<S, I, U>
-	implements QueryDataType
-{
-	declare readonly _infer: ColumnType<S, I, U>;
-
+export class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 	protected _isPrimaryKey: boolean;
 
 	protected readonly _native_data_type: DefaultValueDataTypes;
@@ -188,11 +179,7 @@ export class PgColumn<S, I, U = I>
 	}
 }
 
-export class PgGeneratedColumn<T, U>
-	extends PgColumnBase<T, U, U>
-	implements QueryDataType
-{
-	declare readonly _infer: ColumnType<T, U, U>;
+export class PgGeneratedColumn<T, U> extends PgColumnBase<T, U, U> {
 	declare readonly _generatedByDefault: "yes";
 	protected readonly _native_data_type: DefaultValueDataTypes;
 	protected _isPrimaryKey: boolean;
@@ -215,6 +202,16 @@ export class PgGeneratedColumn<T, U>
 	}
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type ZodTypeGenerated<T extends PgGeneratedColumn<any, any>> =
+	T extends PgGeneratedColumn<infer S, infer I>
+		? z.ZodType<
+				SelectType<GeneratedColumnType<S, I, I>>,
+				z.ZodTypeDef,
+				Exclude<InsertType<GeneratedColumnType<S, I, I>>, undefined>
+		  >
+		: never;
+
 export function bigserial() {
 	return new PgBigSerial();
 }
@@ -227,10 +224,12 @@ export class PgBigSerial extends PgGeneratedColumn<
 		super("bigserial", DefaultValueDataTypes.bigserial);
 	}
 
-	zodSchema(): ZodType<typeof this> {
+	zodSchema(): ZodTypeGenerated<typeof this> {
 		return bigintSchema(!this._isPrimaryKey && this.info.isNullable === true)
 			.pipe(z.bigint().min(1n).max(9223372036854775807n))
-			.transform((val) => val.toString()) as unknown as ZodType<typeof this>;
+			.transform((val) => val.toString()) as unknown as ZodTypeGenerated<
+			typeof this
+		>;
 	}
 }
 
@@ -243,12 +242,12 @@ export class PgSerial extends PgGeneratedColumn<number, number | string> {
 		super("serial", DefaultValueDataTypes.serial);
 	}
 
-	zodSchema(): ZodType<typeof this> {
+	zodSchema(): ZodTypeGenerated<typeof this> {
 		return wholeNumberSchema(
 			1,
 			2147483647,
 			!this._isPrimaryKey && this.info.isNullable === true,
-		) as unknown as ZodType<typeof this>;
+		) as unknown as ZodTypeGenerated<typeof this>;
 	}
 }
 
@@ -1073,24 +1072,25 @@ function isObject(obj: unknown): obj is ShallowRecord<string, unknown> {
 	return typeof obj === "object" && obj !== null;
 }
 
-export type InferColumType<T extends PgColumnTypes> = T extends {
-	_infer: ColumnType<infer S, infer I, infer U>;
-}
-	? T extends { nullable: "no" }
-		? T extends { _hasDefault: "yes" }
-			? OptionalColumnType<S, I, U>
-			: T extends { _generatedAlways: "yes" }
-			  ? Simplify<ColumnType<S, never, never>>
-			  : T extends { _generatedByDefault: "yes" }
-				  ? OptionalColumnType<S, I, U>
-				  : Simplify<ColumnType<S, I, U>>
-		: T extends { _hasDefault: "yes" }
-		  ? Simplify<ColumnType<NonNullable<S>, I | null | undefined, U | null>>
-		  : T extends { _generatedAlways: "yes" }
-			  ? Simplify<ColumnType<NonNullable<S>, never, never>>
-			  : T extends { _generatedByDefault: "yes" }
-				  ? OptionalColumnType<S, I, U>
-				  : Simplify<ColumnType<S | null, I | null | undefined, U | null>>
-	: never;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type InferColumType<T extends PgColumn<any, any, any>> =
+	T extends PgColumn<infer S, infer I, infer U>
+		? T extends { nullable: "no" }
+			? T extends { _hasDefault: "yes" }
+				? OptionalColumnType<S, I, U>
+				: T extends { _generatedAlways: "yes" }
+				  ? Simplify<ColumnType<S, never, never>>
+				  : T extends { _generatedByDefault: "yes" }
+					  ? OptionalColumnType<S, I, U>
+					  : Simplify<ColumnType<S, I, U>>
+			: T extends { _hasDefault: "yes" }
+			  ? Simplify<ColumnType<NonNullable<S>, I | null | undefined, U | null>>
+			  : T extends { _generatedAlways: "yes" }
+				  ? Simplify<ColumnType<NonNullable<S>, never, never>>
+				  : T extends { _generatedByDefault: "yes" }
+					  ? OptionalColumnType<S, I, U>
+					  : Simplify<ColumnType<S | null, I | null | undefined, U | null>>
+		: never;
 
 type OptionalColumnType<S, I, U> = Simplify<ColumnType<S, I | undefined, U>>;
+export type GeneratedColumnType<S, I, U> = OptionalColumnType<S, I, U>;

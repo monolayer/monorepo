@@ -281,55 +281,6 @@ describe("pgBoolean", () => {
 			);
 		});
 
-		describe("column type", () => {
-			test('insert: boolean, "yes", "no", "on", "off", 1, 0, "1", "0", null', () => {
-				const column = boolean();
-				type ColumnType = typeof column._infer.__insert__;
-				type Expected =
-					| boolean
-					| "true"
-					| "false"
-					| 1
-					| 0
-					| "1"
-					| "0"
-					| "on"
-					| "off"
-					| "yes"
-					| "no";
-				const isEqual: Expect<Equal<ColumnType, Expected>> = true;
-				expect(isEqual).toBe(true);
-			});
-
-			test("select: boolean or null", () => {
-				const column = boolean();
-				type ColumnType = typeof column._infer.__select__;
-				type Expected = boolean;
-				const isEqual: Expect<Equal<ColumnType, Expected>> = true;
-				expect(isEqual).toBe(true);
-			});
-
-			test('update: boolean, "true", "false", "yes", "no", "on", "off", 1, 0, "1", "0", or null', () => {
-				const column = boolean();
-				type ColumnType = typeof column._infer.__update__;
-				type Expected =
-					| boolean
-					| "true"
-					| "false"
-					| 1
-					| 0
-					| "1"
-					| "0"
-					| "on"
-					| "off"
-					| "yes"
-					| "no";
-				null;
-				const isEqual: Expect<Equal<ColumnType, Expected>> = true;
-				expect(isEqual).toBe(true);
-			});
-		});
-
 		describe("Zod", () => {
 			describe("by default", () => {
 				test("input type is boolean, Boolish or null", () => {

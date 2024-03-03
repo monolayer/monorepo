@@ -2,8 +2,11 @@ import type { Insertable, Selectable, Simplify, Updateable } from "kysely";
 import { z } from "zod";
 import {
 	type ColumnInfo,
+	type GeneratedColumnType,
 	type InferColumType,
+	type PgColumn,
 	PgColumnTypes,
+	type PgGeneratedColumn,
 } from "./pg_column.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
 import { type PgIndex } from "./pg_index.js";
@@ -94,7 +97,12 @@ type ZodSchemaObject<T extends ColumnRecord> = z.ZodObject<
 >;
 
 export type InferColumTypes<T extends ColumnRecord> = Simplify<{
-	[P in keyof T]: InferColumType<T[P]>;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	[P in keyof T]: T[P] extends PgColumn<any, any>
+		? InferColumType<T[P]>
+		: T[P] extends PgGeneratedColumn<infer S, infer U>
+		  ? GeneratedColumnType<S, U, U>
+		  : never;
 }>;
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
