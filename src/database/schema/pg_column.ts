@@ -291,15 +291,12 @@ export type Boolish =
 	| "on"
 	| "off";
 
-export class PgBoolean<
-	S extends boolean,
-	I extends boolean | Boolish,
-> extends PgColumn<S, I> {
+export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 	constructor() {
 		super("boolean", DefaultValueDataTypes.boolean);
 	}
 
-	defaultTo(value: I | Expression<unknown>) {
+	defaultTo(value: boolean | Boolish | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
@@ -993,20 +990,20 @@ export class PgNumeric extends PgColumn<string, number | bigint | string> {
 export function pgEnum<N extends string, T extends string[]>(
 	name: N,
 	values: [...T],
-): PgEnum<N, T[number]> {
-	return new PgEnum(name, values as unknown as T[number]);
+) {
+	return new PgEnum(name, values as unknown as string[]);
 }
 
-export class PgEnum<N, T> {
+export class PgEnum {
 	private _isPrimaryKey: boolean;
 
 	declare readonly _infer: ColumnType<string, string, string>;
 
-	readonly values: T;
-	readonly name: N;
+	readonly values: string[];
+	readonly name: string;
 	readonly info: Omit<ColumnInfo, "columnName" | "tableName">;
 
-	constructor(name: N, values: T) {
+	constructor(name: string, values: string[]) {
 		this.values = values;
 		this.name = name;
 		this.info = {
@@ -1065,8 +1062,7 @@ export class PgEnum<N, T> {
 	}
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type EnumZodyType<T extends PgEnum<any, any>> = z.ZodType<
+type EnumZodyType<T extends PgEnum> = z.ZodType<
 	T extends { nullable: "no" }
 		? NonNullable<SelectType<InferColumType<T>>>
 		: SelectType<InferColumType<T>>,
@@ -1079,8 +1075,7 @@ type NonOptional<T> = Exclude<T, undefined>;
 export type PgColumnTypes =
 	| PgBigInt
 	| PgBigSerial
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	| PgBoolean<any, any>
+	| PgBoolean
 	| PgBytea
 	| PgChar
 	| PgDate
@@ -1103,8 +1098,7 @@ export type PgColumnTypes =
 	| PgTimestampTz
 	| PgUuid
 	| PgVarChar
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	| PgEnum<string, any>;
+	| PgEnum;
 
 // From Kysely. To avoid bundling Kysely in client code.
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
