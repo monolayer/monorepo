@@ -4,7 +4,7 @@ import {
 	type InsertType,
 	type SelectType,
 } from "kysely";
-import type { Simplify } from "kysely";
+import type { GeneratedAlways, Simplify } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 import { ZodIssueCode, z } from "zod";
 import {
@@ -133,16 +133,12 @@ export class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 
 	notNull() {
 		this.info.isNullable = false;
-		return this as this & {
-			nullable: "no";
-		};
+		return this as this & NonNullableColumn;
 	}
 
 	primaryKey() {
 		this._isPrimaryKey = true;
-		return this as this & {
-			nullable: "no";
-		};
+		return this as this & NonNullableColumn;
 	}
 
 	defaultTo(value: I | Expression<unknown>) {
@@ -155,9 +151,7 @@ export class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 				val = val.split("T")[0];
 			this.info.defaultValue = `'${val}'::${this._native_data_type}`;
 		}
-		return this as this & {
-			_hasDefault: "yes";
-		};
+		return this as this & WithDefaultColumn;
 	}
 }
 
@@ -178,9 +172,7 @@ export class PgGeneratedColumn<T, U> extends PgColumnBase<T, U, U> {
 
 	primaryKey() {
 		this._isPrimaryKey = true;
-		return this as this & {
-			nullable: "no";
-		};
+		return this as this & NonNullableColumn;
 	}
 }
 
@@ -237,18 +229,13 @@ export class IdentifiableColumn<S, I, U = I> extends PgColumn<S, I, U> {
 	generatedByDefaultAsIdentity() {
 		this.info.identity = ColumnIdentity.ByDefault;
 		this.info.isNullable = false;
-		return this as this & {
-			_generatedByDefault: "yes";
-			nullable: "no";
-		};
+		return this as this & GeneratedColumn;
 	}
 
 	generatedAlwaysAsIdentity() {
 		this.info.identity = ColumnIdentity.Always;
 		this.info.isNullable = false;
-		return this as this & {
-			_generatedAlways: "yes";
-		};
+		return this as this & GeneratedAlwaysColumn;
 	}
 }
 
@@ -279,9 +266,7 @@ export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 		} else {
 			this.info.defaultValue = `${value}`;
 		}
-		return this as this & {
-			_hasDefault: "yes";
-		};
+		return this as this & WithDefaultColumn;
 	}
 
 	zodSchema(): ZodType<typeof this> {
@@ -424,7 +409,7 @@ export type NestedRecord = {
 };
 
 type ByteaZodType<T extends PgBytea> = z.ZodType<
-	T extends { nullable: "no" }
+	T extends NonNullableColumn
 		? SelectType<InferColumType<T>> | string
 		: T extends { _generatedAlways: "yes" }
 		  ? never
@@ -463,9 +448,7 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 				}
 			}
 		}
-		return this as this & {
-			_hasDefault: "yes";
-		};
+		return this as this & WithDefaultColumn;
 	}
 
 	zodSchema(): ByteaZodType<typeof this> {
@@ -600,9 +583,7 @@ export class PgInt4 extends IdentifiableColumn<number, number | string> {
 		} else {
 			this.info.defaultValue = `${value}`;
 		}
-		return this as this & {
-			_hasDefault: "yes";
-		};
+		return this as this & WithDefaultColumn;
 	}
 
 	zodSchema(): ZodType<typeof this> {
@@ -662,9 +643,7 @@ export class PgInteger extends IdentifiableColumn<number, number | string> {
 		} else {
 			this.info.defaultValue = `${value}`;
 		}
-		return this as this & {
-			_hasDefault: "yes";
-		};
+		return this as this & WithDefaultColumn;
 	}
 
 	zodSchema(): ZodType<typeof this> {
@@ -700,13 +679,13 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 type ZodJson = string | number | boolean | Record<string, any>;
 
 type JsonZodType<T extends PgJson | PgJsonB> = z.ZodType<
-	T extends { nullable: "no" }
+	T extends NonNullableColumn
 		? ZodJson
 		: T extends { _generatedAlways: "yes" }
 		  ? never
 		  : ZodJson | null | undefined,
 	z.ZodTypeDef,
-	T extends { nullable: "no" } ? ZodJson : ZodJson | null | undefined
+	T extends NonNullableColumn ? ZodJson : ZodJson | null | undefined
 >;
 
 export class PgJson extends PgColumn<
@@ -780,9 +759,7 @@ export class PgUuid extends PgColumn<string, string> {
 		} else {
 			this.info.defaultValue = `'${value.toLowerCase()}'::uuid`;
 		}
-		return this as this & {
-			_hasDefault: "yes";
-		};
+		return this as this & WithDefaultColumn;
 	}
 
 	zodSchema(): ZodType<typeof this> {
@@ -1049,21 +1026,19 @@ function isObject(obj: unknown): obj is ShallowRecord<string, unknown> {
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type InferColumType<T extends PgColumn<any, any, any>> =
 	T extends PgColumn<infer S, infer I, infer U>
-		? T extends { nullable: "no" }
-			? T extends { _hasDefault: "yes" }
+		? T extends NonNullableColumn
+			? T extends WithDefaultColumn
 				? OptionalColumnType<S, I, U>
-				: T extends { _generatedAlways: "yes" }
-				  ? Simplify<ColumnType<S, never, never>>
-				  : T extends { _generatedByDefault: "yes" }
+				: T extends GeneratedAlwaysColumn
+				  ? Simplify<GeneratedAlways<S>>
+				  : T extends GeneratedColumn
 					  ? OptionalColumnType<S, I, U>
 					  : Simplify<ColumnType<S, I, U>>
-			: T extends { _hasDefault: "yes" }
+			: T extends WithDefaultColumn
 			  ? Simplify<ColumnType<NonNullable<S>, I | null | undefined, U | null>>
-			  : T extends { _generatedAlways: "yes" }
-				  ? Simplify<ColumnType<NonNullable<S>, never, never>>
-				  : T extends { _generatedByDefault: "yes" }
-					  ? OptionalColumnType<S, I, U>
-					  : Simplify<ColumnType<S | null, I | null | undefined, U | null>>
+			  : T extends GeneratedAlwaysColumn
+				  ? Simplify<GeneratedAlways<S>>
+				  : Simplify<ColumnType<S | null, I | null | undefined, U | null>>
 		: never;
 
 type OptionalColumnType<S, I, U> = Simplify<ColumnType<S, I | undefined, U>>;
@@ -1072,11 +1047,26 @@ export type GeneratedColumnType<S, I, U> = OptionalColumnType<S, I, U>;
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type ZodType<T extends PgColumn<any, any, any> | PgTimestamp | PgTimestampTz> =
 	z.ZodType<
-		T extends { nullable: "no" }
+		T extends NonNullableColumn
 			? SelectType<InferColumType<T>>
-			: T extends { _generatedAlways: "yes" }
+			: T extends GeneratedAlwaysColumn
 			  ? never
 			  : SelectType<InferColumType<T>> | null | undefined,
 		z.ZodTypeDef,
 		InsertType<InferColumType<T>>
 	>;
+
+export type WithDefaultColumn = {
+	_hasDefault: "yes";
+};
+
+export type NonNullableColumn = { nullable: "no" };
+
+export type GeneratedColumn = {
+	_generatedByDefault: "yes";
+	nullable: "no";
+};
+
+export type GeneratedAlwaysColumn = {
+	_generatedAlways: "yes";
+};
