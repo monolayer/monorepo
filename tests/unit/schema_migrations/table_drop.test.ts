@@ -221,7 +221,10 @@ describe("Table drop migrations", () => {
 			{
 				down: [
 					[
-						'await sql`ALTER TABLE books ADD CONSTRAINT "books_id_kinetic_pk" PRIMARY KEY ("id")`.execute(db);',
+						"await db.schema",
+						'alterTable("books")',
+						'addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])',
+						"execute();",
 					],
 				],
 				priority: 1004,
@@ -232,7 +235,10 @@ describe("Table drop migrations", () => {
 			{
 				down: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_id_kinetic_pk" PRIMARY KEY ("id")`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addPrimaryKeyConstraint("users_id_kinetic_pk", ["id"])',
+						"execute();",
 					],
 				],
 				priority: 1004,
@@ -397,7 +403,10 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						'await sql`ALTER TABLE books ADD CONSTRAINT "books_id_kinetic_pk" PRIMARY KEY ("id")`.execute(db);',
+						"await db.schema",
+						'alterTable("books")',
+						'addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])',
+						"execute();",
 					],
 				],
 			},

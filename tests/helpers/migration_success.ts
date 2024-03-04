@@ -20,6 +20,9 @@ async function migrateDown(migrator: Migrator) {
 }
 
 function expectMigrationSuccess(resultSet: MigrationResultSet) {
+	if (resultSet.error) {
+		console.dir(resultSet.error);
+	}
 	expect(resultSet.error, resultSet.error as string).toBeUndefined();
 	if (resultSet.results === undefined) {
 		throw new Error("results is undefined");
@@ -46,6 +49,15 @@ export async function testUpAndDownMigrations(
 		case "reverse": {
 			const afterDownCs = await computeChangeset(context.kysely, database);
 			expect(afterDownCs).toEqual(cs.reverse());
+			// expect(afterDownCs).toEqual(
+			// 	cs.reverse().map((cs) => {
+			// 		return {
+			// 			...cs,
+			// 			up: cs.down.reverse(),
+			// 			down: cs.up.reverse(),
+			// 		};
+			// 	}),
+			// );
 			break;
 		}
 		case "same": {

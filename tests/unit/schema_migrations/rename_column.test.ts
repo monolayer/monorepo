@@ -314,12 +314,24 @@ describe("Rename column migrations", () => {
 					type: "dropPrimaryKey",
 					up: [
 						[
-							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_name_kinetic_pk", ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'dropConstraint("users_pk1_name_kinetic_pk")',
+							"execute();",
+						],
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_name_kinetic_pk" PRIMARY KEY ("name")`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'addPrimaryKeyConstraint("users_pk1_name_kinetic_pk", ["name"])',
+							"execute();",
 						],
 					],
 				},
@@ -350,12 +362,24 @@ describe("Rename column migrations", () => {
 					type: "createPrimaryKey",
 					up: [
 						[
-							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_fullName_kinetic_pk" PRIMARY KEY ("fullName")`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'addPrimaryKeyConstraint("users_pk1_fullName_kinetic_pk", ["fullName"])',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_fullName_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'dropConstraint("users_pk1_fullName_kinetic_pk")',
+							"execute();",
+						],
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'alterColumn("fullName", (col) => col.dropNotNull())',
+							"execute();",
 						],
 					],
 				},
@@ -415,12 +439,24 @@ describe("Rename column migrations", () => {
 					type: "createPrimaryKey",
 					up: [
 						[
-							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_fullName_kinetic_pk" PRIMARY KEY ("fullName")`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'addPrimaryKeyConstraint("users_pk1_fullName_kinetic_pk", ["fullName"])',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_fullName_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'dropConstraint("users_pk1_fullName_kinetic_pk")',
+							"execute();",
+						],
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'alterColumn("fullName", (col) => col.dropNotNull())',
+							"execute();",
 						],
 					],
 				},

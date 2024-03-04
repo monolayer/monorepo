@@ -3,7 +3,7 @@ import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { extractColumnsFromPrimaryKey } from "../migrations/migration_schema.js";
 import { findColumnByNameInTable } from "../migrations/migration_schema.js";
 import { ChangeSetType, type Changeset } from "./changeset.js";
-import { executeKyselyDbStatement } from "./helpers.js";
+import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
 
 export function primaryKeyMigrationOpGenerator(
@@ -116,22 +116,15 @@ function createPrimaryKeyMigration(
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreatePrimaryKey,
-		up: [
-			executeKyselyDbStatement(
-				`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
-			),
-		],
+		up: [addPrimaryKeyOp(tableName, primaryKeyName as string, primaryKeyValue)],
 		down: addedTables.includes(tableName)
 			? [[]]
-			: [
-					executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
-							primaryKeyValue,
-							tableName,
-							local,
-						)}`,
-					),
-			  ],
+			: dropPrimaryKeyOp(
+					tableName,
+					primaryKeyName as string,
+					primaryKeyValue,
+					local,
+			  ),
 	};
 	return changeset;
 }
@@ -155,19 +148,14 @@ function dropPrimaryKeyMigration(
 		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
 			? [[]]
-			: [
-					executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
-							primaryKeyValue,
-							tableName,
-							local,
-						)}`,
-					),
-			  ],
+			: dropPrimaryKeyOp(
+					tableName,
+					primaryKeyName as string,
+					primaryKeyValue,
+					local,
+			  ),
 		down: [
-			executeKyselyDbStatement(
-				`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
-			),
+			addPrimaryKeyOp(tableName, primaryKeyName as string, primaryKeyValue),
 		],
 	};
 	return changeset;
@@ -189,22 +177,10 @@ function updatePrimaryKeyMigration(
 		type: ChangeSetType.CreatePrimaryKey,
 		up: droppedTables.includes(tableName)
 			? [[]]
-			: [
-					executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
-					),
-			  ],
+			: [addPrimaryKeyOp(tableName, primaryKeyName, primaryKeyValue)],
 		down: addedTables.includes(tableName)
 			? [[]]
-			: [
-					executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
-							primaryKeyValue,
-							tableName,
-							local,
-						)}`,
-					),
-			  ],
+			: dropPrimaryKeyOp(tableName, primaryKeyName, primaryKeyValue, local),
 	};
 	return changeset;
 }
@@ -225,22 +201,10 @@ function replacePrimaryKeyMigration(
 		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
 			? [[]]
-			: [
-					executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
-							primaryKeyValue,
-							tableName,
-							local,
-						)}`,
-					),
-			  ],
+			: dropPrimaryKeyOp(tableName, primaryKeyName, primaryKeyValue, local),
 		down: addedTables.includes(tableName)
 			? [[]]
-			: [
-					executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
-					),
-			  ],
+			: [addPrimaryKeyOp(tableName, primaryKeyName, primaryKeyValue)],
 	};
 	return changeset;
 }
@@ -262,25 +226,62 @@ function dropNotNullStatements(
 					if (tableColumn.originalIsNullable === undefined) {
 						if (tableColumn.isNullable) {
 							dropNotNullStatements.push(
-								`ALTER COLUMN "${column}" DROP NOT NULL`,
+								executeKyselySchemaStatement(
+									`alterTable("${tableName}")`,
+									`alterColumn("${column}", (col) => col.dropNotNull())`,
+								),
 							);
 						}
 					} else {
 						if (tableColumn.originalIsNullable !== tableColumn.isNullable) {
 							dropNotNullStatements.push(
-								`ALTER COLUMN "${column}" DROP NOT NULL`,
+								executeKyselySchemaStatement(
+									`alterTable("${tableName}")`,
+									`alterColumn("${column}", (col) => col.dropNotNull())`,
+								),
 							);
 						}
 					}
 				}
 			} else {
-				dropNotNullStatements.push(`ALTER COLUMN "${column}" DROP NOT NULL`);
+				dropNotNullStatements.push(
+					executeKyselySchemaStatement(
+						`alterTable("${tableName}")`,
+						`alterColumn("${column}", (col) => col.dropNotNull())`,
+					),
+				);
 			}
 		}
 	}
-	const dropStatements =
-		dropNotNullStatements.length > 0
-			? `, ${dropNotNullStatements.join(", ")}`
-			: "";
-	return dropStatements;
+	return dropNotNullStatements;
+}
+
+function addPrimaryKeyOp(
+	tableName: string,
+	primaryKeyName: string,
+	primaryKeyValue: string,
+): string[] {
+	return executeKyselySchemaStatement(
+		`alterTable("${tableName}")`,
+		`addPrimaryKeyConstraint("${primaryKeyName}", [${extractColumnsFromPrimaryKey(
+			primaryKeyValue,
+		)
+			.map((col) => `"${col}"`)
+			.join(", ")}])`,
+	);
+}
+
+function dropPrimaryKeyOp(
+	tableName: string,
+	primaryKeyName: string,
+	primaryKeyValue: string,
+	local: LocalTableInfo,
+): string[][] {
+	return [
+		executeKyselySchemaStatement(
+			`alterTable("${tableName}")`,
+			`dropConstraint("${primaryKeyName}")`,
+		),
+		...dropNotNullStatements(primaryKeyValue, tableName, local),
+	];
 }
