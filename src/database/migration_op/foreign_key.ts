@@ -164,15 +164,7 @@ function dropforeignKeyLastConstraintMigration(
 	droppedTables: string[],
 ) {
 	const tableName = diff.path[1];
-	// console.dir(diff, { depth: null });
-	// const constraintName = Object.keys(
-	// 	diff.oldValue,
-	// )[0] as keyof typeof diff.oldValue;
-	// const constraintValue = diff.oldValue[
-	// 	constraintName
-	// ] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
-
-	const cs = Object.entries(diff.oldValue).reduce((acc, [_key, value]) => {
+	return Object.entries(diff.oldValue).reduce((acc, [_key, value]) => {
 		const constraintValue = value;
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.ConstraintDrop,
@@ -186,7 +178,6 @@ function dropforeignKeyLastConstraintMigration(
 		acc.push(changeset);
 		return acc;
 	}, [] as Changeset[]);
-	return cs;
 }
 
 function dropForeignKeyConstraintMigration(diff: ForeignKeyDropDiff) {

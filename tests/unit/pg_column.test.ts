@@ -4481,10 +4481,6 @@ describe("pgJson", () => {
 			test("parses null", () => {
 				const column = pgJson();
 				const schema = column.zodSchema();
-				const result = schema.safeParse(null);
-				if (result.success) {
-					console.log(result.data);
-				}
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 

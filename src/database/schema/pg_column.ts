@@ -335,9 +335,7 @@ export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 				}
 			});
 		if (nullable) {
-			return base.optional().superRefine((val, ctx) => {
-				console.log(ctx.path, "VAL", val);
-			}) as unknown as ZodType<typeof this>;
+			return base.optional() as unknown as ZodType<typeof this>;
 		}
 		return base as unknown as ZodType<typeof this>;
 	}
