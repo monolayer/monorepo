@@ -68,8 +68,7 @@ function isForeignKeyConstraintCreateFirst(
 		test.path.length === 2 &&
 		test.path[0] === "foreignKeyConstraints" &&
 		typeof test.path[1] === "string" &&
-		typeof test.value === "object" &&
-		Object.keys(test.value).length === 1
+		typeof test.value === "object"
 	);
 }
 
@@ -94,8 +93,7 @@ function isForeignKeyConstraintDropLast(
 		test.path.length === 2 &&
 		test.path[0] === "foreignKeyConstraints" &&
 		typeof test.path[1] === "string" &&
-		typeof test.oldValue === "object" &&
-		Object.keys(test.oldValue).length === 1
+		typeof test.oldValue === "object"
 	);
 }
 
@@ -131,21 +129,20 @@ function createforeignKeyFirstConstraintMigration(
 	addedTables: string[],
 ) {
 	const tableName = diff.path[1];
-	const constraintName = Object.keys(diff.value)[0] as keyof typeof diff.value;
-	const constraintValue = diff.value[
-		constraintName
-	] as (typeof diff.value)[keyof typeof diff.value];
-
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.ConstraintCreate,
-		tableName: tableName,
-		type: ChangeSetType.CreateConstraint,
-		up: [addForeigKeyOp(tableName, foreignKeyDefinition(constraintValue))],
-		down: addedTables.includes(tableName)
-			? [[]]
-			: [dropForeignKeyOp(tableName, foreignKeyDefinition(constraintValue))],
-	};
-	return changeset;
+	return Object.entries(diff.value).reduce((acc, [_key, value]) => {
+		const constraintValue = value;
+		const changeset: Changeset = {
+			priority: MigrationOpPriority.ConstraintCreate,
+			tableName: tableName,
+			type: ChangeSetType.CreateConstraint,
+			up: [addForeigKeyOp(tableName, foreignKeyDefinition(constraintValue))],
+			down: addedTables.includes(tableName)
+				? [[]]
+				: [dropForeignKeyOp(tableName, foreignKeyDefinition(constraintValue))],
+		};
+		acc.push(changeset);
+		return acc;
+	}, [] as Changeset[]);
 }
 
 function createForeignKeyConstraintMigration(diff: ForeignKeyCreateDiff) {
@@ -167,23 +164,29 @@ function dropforeignKeyLastConstraintMigration(
 	droppedTables: string[],
 ) {
 	const tableName = diff.path[1];
-	const constraintName = Object.keys(
-		diff.oldValue,
-	)[0] as keyof typeof diff.oldValue;
-	const constraintValue = diff.oldValue[
-		constraintName
-	] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
+	// console.dir(diff, { depth: null });
+	// const constraintName = Object.keys(
+	// 	diff.oldValue,
+	// )[0] as keyof typeof diff.oldValue;
+	// const constraintValue = diff.oldValue[
+	// 	constraintName
+	// ] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
 
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.ConstraintDrop,
-		tableName: tableName,
-		type: ChangeSetType.DropConstraint,
-		up: droppedTables.includes(tableName)
-			? [[]]
-			: [dropForeignKeyOp(tableName, foreignKeyDefinition(constraintValue))],
-		down: [addForeigKeyOp(tableName, foreignKeyDefinition(constraintValue))],
-	};
-	return changeset;
+	const cs = Object.entries(diff.oldValue).reduce((acc, [_key, value]) => {
+		const constraintValue = value;
+		const changeset: Changeset = {
+			priority: MigrationOpPriority.ConstraintDrop,
+			tableName: tableName,
+			type: ChangeSetType.DropConstraint,
+			up: droppedTables.includes(tableName)
+				? [[]]
+				: [dropForeignKeyOp(tableName, foreignKeyDefinition(constraintValue))],
+			down: [addForeigKeyOp(tableName, foreignKeyDefinition(constraintValue))],
+		};
+		acc.push(changeset);
+		return acc;
+	}, [] as Changeset[]);
+	return cs;
 }
 
 function dropForeignKeyConstraintMigration(diff: ForeignKeyDropDiff) {

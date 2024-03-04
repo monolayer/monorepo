@@ -20,6 +20,7 @@ describe("Database migrations", () => {
 		await context.kysely.schema
 			.createTable("books")
 			.addColumn("id", "integer")
+			.addColumn("name", "varchar")
 			.execute();
 
 		await context.kysely.schema
@@ -31,8 +32,9 @@ describe("Database migrations", () => {
 		const books = pgTable({
 			columns: {
 				id: pgInteger(),
+				name: pgVarchar(),
 			},
-			uniqueConstraints: [pgUnique("id").nullsNotDistinct()],
+			uniqueConstraints: [pgUnique("id").nullsNotDistinct(), pgUnique("name")],
 		});
 
 		const users = pgTable({
@@ -74,6 +76,27 @@ describe("Database migrations", () => {
 			},
 			{
 				priority: 4002,
+				tableName: "books",
+				type: "createConstraint",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("books")',
+						'addUniqueConstraint("books_name_kinetic_key", ["name"])',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						"await db.schema",
+						'alterTable("books")',
+						'dropConstraint("books_name_kinetic_key")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4002,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -107,6 +130,7 @@ describe("Database migrations", () => {
 		await context.kysely.schema
 			.createTable("books")
 			.addColumn("id", "integer")
+			.addColumn("name", "varchar")
 			.execute();
 
 		await context.kysely.schema
@@ -114,6 +138,11 @@ describe("Database migrations", () => {
 			.addUniqueConstraint("books_id_kinetic_key", ["id"], (uc) =>
 				uc.nullsNotDistinct(),
 			)
+			.execute();
+
+		await context.kysely.schema
+			.alterTable("books")
+			.addUniqueConstraint("books_name_kinetic_key", ["name"])
 			.execute();
 
 		await context.kysely.schema
@@ -130,8 +159,8 @@ describe("Database migrations", () => {
 		const books = pgTable({
 			columns: {
 				id: pgInteger(),
+				name: pgVarchar(),
 			},
-			uniqueConstraints: [pgUnique("id").nullsNotDistinct()],
 		});
 
 		const users = pgTable({
@@ -139,6 +168,7 @@ describe("Database migrations", () => {
 				id: pgSerial(),
 				fullName: pgVarchar(),
 			},
+			uniqueConstraints: [pgUnique(["fullName", "id"])],
 		});
 
 		const database = pgDatabase({
@@ -151,21 +181,42 @@ describe("Database migrations", () => {
 		const expected = [
 			{
 				priority: 1003,
-				tableName: "users",
+				tableName: "books",
 				type: "dropConstraint",
 				up: [
 					[
 						"await db.schema",
-						'alterTable("users")',
-						'dropConstraint("users_fullName_id_kinetic_key")',
+						'alterTable("books")',
+						'dropConstraint("books_id_kinetic_key")',
 						"execute();",
 					],
 				],
 				down: [
 					[
 						"await db.schema",
-						'alterTable("users")',
-						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"])',
+						'alterTable("books")',
+						'addUniqueConstraint("books_id_kinetic_key", ["id"], (col) => col.nullsNotDistinct())',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 1003,
+				tableName: "books",
+				type: "dropConstraint",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("books")',
+						'dropConstraint("books_name_kinetic_key")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						"await db.schema",
+						'alterTable("books")',
+						'addUniqueConstraint("books_name_kinetic_key", ["name"])',
 						"execute();",
 					],
 				],

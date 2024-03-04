@@ -35,6 +35,11 @@ describe("Database migrations", () => {
 					.events(["update"])
 					.forEach("row")
 					.function("moddatetime", ["updatedAt"]),
+				foo_after_update: pgTrigger()
+					.fireWhen("after")
+					.events(["update"])
+					.forEach("row")
+					.function("moddatetime", ["updatedAt"]),
 			},
 		});
 
@@ -77,6 +82,24 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 					],
 				],
 			},
+			{
+				priority: 4004,
+				tableName: "users",
+				type: "createTrigger",
+				up: [
+					[
+						`await sql\`CREATE OR REPLACE TRIGGER foo_after_update_trg
+AFTER UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_after_update_trg ON users IS '9463c7cd1a3fb577535fade640246675d0ac4097b6ed86ae9452363b82e43b0f';\`.execute(db);`,
+					],
+				],
+				down: [
+					[
+						"await sql`DROP TRIGGER foo_after_update_trg ON users`.execute(db);",
+					],
+				],
+			},
 		];
 
 		await testChangesetAndMigrations({
@@ -103,6 +126,14 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 								FOR EACH ROW
 								EXECUTE FUNCTION moddatetime(updatedAt);
 								COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(
+			context.kysely,
+		);
+
+		await sql`CREATE OR REPLACE TRIGGER foo_after_update_trg
+								AFTER UPDATE ON users
+								FOR EACH ROW
+								EXECUTE FUNCTION moddatetime(updatedAt);
+								COMMENT ON TRIGGER foo_after_update_trg ON users IS '9463c7cd1a3fb577535fade640246675d0ac4097b6ed86ae9452363b82e43b0f';`.execute(
 			context.kysely,
 		);
 
@@ -136,13 +167,28 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 					],
 				],
 			},
+			{
+				priority: 1001,
+				tableName: "users",
+				type: "dropTrigger",
+				up: [
+					[
+						"await sql`DROP TRIGGER foo_after_update_trg ON users`.execute(db);",
+					],
+				],
+				down: [
+					[
+						"await sql`CREATE OR REPLACE TRIGGER foo_after_update_trg AFTER UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat');COMMENT ON TRIGGER foo_after_update_trg ON users IS '9463c7cd1a3fb577535fade640246675d0ac4097b6ed86ae9452363b82e43b0f';`.execute(db);",
+					],
+				],
+			},
 		];
 
 		await testChangesetAndMigrations({
 			context,
 			database,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 

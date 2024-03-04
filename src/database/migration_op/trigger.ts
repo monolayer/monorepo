@@ -51,8 +51,7 @@ function isTriggerCreate(test: Difference): test is TriggerCreateDiff {
 		test.path.length === 2 &&
 		test.path[0] === "triggers" &&
 		typeof test.path[1] === "string" &&
-		typeof test.value === "object" &&
-		Object.keys(test.value).length === 1
+		typeof test.value === "object"
 	);
 }
 
@@ -62,8 +61,7 @@ function isTriggerDrop(test: Difference): test is TriggerDropDiff {
 		test.path.length === 2 &&
 		test.path[0] === "triggers" &&
 		typeof test.path[1] === "string" &&
-		typeof test.oldValue === "object" &&
-		Object.keys(test.oldValue).length === 1
+		typeof test.oldValue === "object"
 	);
 }
 
@@ -85,65 +83,48 @@ function createTriggerMigration(
 	addedTables: string[],
 ) {
 	const tableName = diff.path[1];
-	const triggerName = Object.keys(diff.value)[0] as keyof typeof diff.value;
-	const triggerValue = diff.value[
-		triggerName
-	] as (typeof diff.value)[keyof typeof diff.value];
-	const trigger = triggerValue.split(":");
-
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.TriggerCreate,
-		tableName: tableName,
-		type: ChangeSetType.CreateTrigger,
-		up: [
-			executeKyselyDbStatement(
-				`${trigger[1]};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}';`,
-			),
-		],
-		down: addedTables.includes(tableName)
-			? [[]]
-			: [
-					executeKyselyDbStatement(
-						`DROP TRIGGER ${triggerName} ON ${tableName}`,
-					),
-			  ],
-	};
-	return changeset;
+	return Object.entries(diff.value).reduce((acc, [key, value]) => {
+		const trigger = value.split(":");
+		const changeset: Changeset = {
+			priority: MigrationOpPriority.TriggerCreate,
+			tableName: tableName,
+			type: ChangeSetType.CreateTrigger,
+			up: [
+				executeKyselyDbStatement(
+					`${trigger[1]};COMMENT ON TRIGGER ${key} ON ${tableName} IS '${trigger[0]}';`,
+				),
+			],
+			down: addedTables.includes(tableName)
+				? [[]]
+				: [executeKyselyDbStatement(`DROP TRIGGER ${key} ON ${tableName}`)],
+		};
+		return acc.concat(changeset);
+	}, [] as Changeset[]);
 }
 
 function dropTriggerMigration(diff: TriggerDropDiff, droppedTables: string[]) {
 	const tableName = diff.path[1];
-	const triggerName = Object.keys(
-		diff.oldValue,
-	)[0] as keyof typeof diff.oldValue;
-	const triggerValue = diff.oldValue[
-		triggerName
-	] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
-	const trigger = triggerValue.split(":");
-
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.TriggerDrop,
-		tableName: tableName,
-		type: ChangeSetType.DropTrigger,
-		up: droppedTables.includes(tableName)
-			? [[]]
-			: [
-					executeKyselyDbStatement(
-						`DROP TRIGGER ${triggerName} ON ${tableName}`,
-					),
-			  ],
-		down: [
-			executeKyselyDbStatement(
-				`${trigger[1]?.replace(
-					"CREATE TRIGGER",
-					"CREATE OR REPLACE TRIGGER",
-				)};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${
-					trigger[0]
-				}';`,
-			),
-		],
-	};
-	return changeset;
+	return Object.entries(diff.oldValue).reduce((acc, [key, value]) => {
+		const trigger = value.split(":");
+		const changeset: Changeset = {
+			priority: MigrationOpPriority.TriggerDrop,
+			tableName: tableName,
+			type: ChangeSetType.DropTrigger,
+			up: droppedTables.includes(tableName)
+				? [[]]
+				: [executeKyselyDbStatement(`DROP TRIGGER ${key} ON ${tableName}`)],
+			down: [
+				executeKyselyDbStatement(
+					`${trigger[1]?.replace(
+						"CREATE TRIGGER",
+						"CREATE OR REPLACE TRIGGER",
+					)};COMMENT ON TRIGGER ${key} ON ${tableName} IS '${trigger[0]}';`,
+				),
+			],
+		};
+		acc.push(changeset);
+		return acc;
+	}, [] as Changeset[]);
 }
 
 function changeTriggerMigration(diff: TriggerChangeDiff) {
