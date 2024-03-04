@@ -329,7 +329,10 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_id_kinetic_key" UNIQUE NULLS DISTINCT ("fullName", "id")`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"])',
+						"execute();",
 					],
 				],
 			},

@@ -164,12 +164,18 @@ describe("Rename column migrations", () => {
 					type: "dropConstraint",
 					up: [
 						[
-							'await sql`ALTER TABLE users DROP CONSTRAINT "users_name_kinetic_key"`.execute(db);',
+							"await db.schema",
+							'alterTable("users")',
+							'dropConstraint("users_name_kinetic_key")',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`ALTER TABLE users ADD CONSTRAINT "users_name_kinetic_key" UNIQUE NULLS DISTINCT ("name")`.execute(db);',
+							"await db.schema",
+							'alterTable("users")',
+							'addUniqueConstraint("users_name_kinetic_key", ["name"])',
+							"execute();",
 						],
 					],
 				},
@@ -200,12 +206,18 @@ describe("Rename column migrations", () => {
 					type: "createConstraint",
 					up: [
 						[
-							'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_kinetic_key" UNIQUE NULLS NOT DISTINCT ("fullName")`.execute(db);',
+							"await db.schema",
+							'alterTable("users")',
+							'addUniqueConstraint("users_fullName_kinetic_key", ["fullName"], (col) => col.nullsNotDistinct())',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_kinetic_key"`.execute(db);',
+							"await db.schema",
+							'alterTable("users")',
+							'dropConstraint("users_fullName_kinetic_key")',
+							"execute();",
 						],
 					],
 				},
@@ -266,12 +278,18 @@ describe("Rename column migrations", () => {
 					type: "createConstraint",
 					up: [
 						[
-							'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_kinetic_key" UNIQUE NULLS DISTINCT ("fullName")`.execute(db);',
+							"await db.schema",
+							'alterTable("users")',
+							'addUniqueConstraint("users_fullName_kinetic_key", ["fullName"])',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_kinetic_key"`.execute(db);',
+							"await db.schema",
+							'alterTable("users")',
+							'dropConstraint("users_fullName_kinetic_key")',
+							"execute();",
 						],
 					],
 				},

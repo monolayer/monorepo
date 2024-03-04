@@ -57,12 +57,18 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE books ADD CONSTRAINT "books_id_kinetic_key" UNIQUE NULLS NOT DISTINCT ("id")`.execute(db);',
+						"await db.schema",
+						'alterTable("books")',
+						'addUniqueConstraint("books_id_kinetic_key", ["id"], (col) => col.nullsNotDistinct())',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE books DROP CONSTRAINT "books_id_kinetic_key"`.execute(db);',
+						"await db.schema",
+						'alterTable("books")',
+						'dropConstraint("books_id_kinetic_key")',
+						"execute();",
 					],
 				],
 			},
@@ -72,12 +78,18 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_id_kinetic_key" UNIQUE NULLS DISTINCT ("fullName", "id")`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"])',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_id_kinetic_key"`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_fullName_id_kinetic_key")',
+						"execute();",
 					],
 				],
 			},
@@ -143,12 +155,18 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_id_kinetic_key"`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_fullName_id_kinetic_key")',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_id_kinetic_key" UNIQUE NULLS DISTINCT ("fullName", "id")`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"])',
+						"execute();",
 					],
 				],
 			},
@@ -215,12 +233,18 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_id_kinetic_key"`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_fullName_id_kinetic_key")',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_id_kinetic_key" UNIQUE NULLS DISTINCT ("fullName", "id")`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"])',
+						"execute();",
 					],
 				],
 			},
@@ -230,12 +254,18 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_id_kinetic_key" UNIQUE NULLS DISTINCT ("id")`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addUniqueConstraint("users_id_kinetic_key", ["id"])',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_id_kinetic_key"`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_id_kinetic_key")',
+						"execute();",
 					],
 				],
 			},
@@ -302,12 +332,30 @@ describe("Database migrations", () => {
 				type: "changeConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_id_kinetic_key", ADD CONSTRAINT "users_fullName_id_kinetic_key" UNIQUE NULLS NOT DISTINCT ("fullName", "id")`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_fullName_id_kinetic_key")',
+						"execute();",
+					],
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"], (col) => col.nullsNotDistinct())',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_id_kinetic_key", ADD CONSTRAINT "users_fullName_id_kinetic_key" UNIQUE NULLS DISTINCT ("fullName", "id")`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_fullName_id_kinetic_key")',
+						"execute();",
+					],
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"])',
+						"execute();",
 					],
 				],
 			},

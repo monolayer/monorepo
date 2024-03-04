@@ -437,7 +437,10 @@ describe("Table create migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE books ADD CONSTRAINT "books_id_kinetic_key" UNIQUE NULLS NOT DISTINCT ("id")`.execute(db);',
+						"await db.schema",
+						'alterTable("books")',
+						'addUniqueConstraint("books_id_kinetic_key", ["id"], (col) => col.nullsNotDistinct())',
+						"execute();",
 					],
 				],
 				down: [[]],
@@ -448,7 +451,10 @@ describe("Table create migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_id_kinetic_key" UNIQUE NULLS DISTINCT ("id")`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addUniqueConstraint("users_id_kinetic_key", ["id"])',
+						"execute();",
 					],
 				],
 				down: [[]],
