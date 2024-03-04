@@ -1,5 +1,6 @@
 import type { MigrationResultSet, Migrator } from "kysely";
 import { expect } from "vitest";
+import type { CamelCaseOptions } from "~/config.js";
 import type { Changeset } from "~/database/migration_op/changeset.js";
 import { generateMigrationFiles } from "~/database/migrations/generate.js";
 import type { pgDatabase } from "~/database/schema/pg_database.js";
@@ -38,35 +39,39 @@ export async function testUpAndDownMigrations(
 	database: pgDatabase<any>,
 	cs: Changeset[],
 	down: "same" | "reverse" | "empty",
+	camelCase: CamelCaseOptions = { enabled: false },
 ) {
 	expectMigrationSuccess(await migrateUp(context.folder, context.migrator, cs));
 
-	const afterUpCs = await computeChangeset(context.kysely, database);
+	const afterUpCs = await computeChangeset(context.kysely, database, camelCase);
 	expect(afterUpCs).toEqual([]);
 
 	expectMigrationSuccess(await migrateDown(context.migrator));
 	switch (down) {
 		case "reverse": {
-			const afterDownCs = await computeChangeset(context.kysely, database);
+			const afterDownCs = await computeChangeset(
+				context.kysely,
+				database,
+				camelCase,
+			);
 			expect(afterDownCs).toEqual(cs.reverse());
-			// expect(afterDownCs).toEqual(
-			// 	cs.reverse().map((cs) => {
-			// 		return {
-			// 			...cs,
-			// 			up: cs.down.reverse(),
-			// 			down: cs.up.reverse(),
-			// 		};
-			// 	}),
-			// );
 			break;
 		}
 		case "same": {
-			const afterDownCs = await computeChangeset(context.kysely, database);
+			const afterDownCs = await computeChangeset(
+				context.kysely,
+				database,
+				camelCase,
+			);
 			expect(afterDownCs).toEqual(cs);
 			break;
 		}
 		case "empty": {
-			const afterDownCs = await computeChangeset(context.kysely, database);
+			const afterDownCs = await computeChangeset(
+				context.kysely,
+				database,
+				camelCase,
+			);
 			expect(afterDownCs).toEqual([]);
 			break;
 		}
@@ -78,6 +83,7 @@ export async function testChangesetAndMigrations({
 	database,
 	expected,
 	down,
+	useCamelCase = { enabled: false },
 }: {
 	context: DbContext;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -85,9 +91,11 @@ export async function testChangesetAndMigrations({
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	expected: any[];
 	down: "same" | "reverse" | "empty";
+	useCamelCase?: CamelCaseOptions;
 }) {
-	const cs = await computeChangeset(context.kysely, database);
+	const camelCase = useCamelCase ?? false;
+	const cs = await computeChangeset(context.kysely, database, camelCase);
 	expect(cs).toEqual(expected);
 
-	await testUpAndDownMigrations(context, database, cs, down);
+	await testUpAndDownMigrations(context, database, cs, down, camelCase);
 }

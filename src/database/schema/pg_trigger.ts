@@ -18,7 +18,10 @@ export interface PgTriggerFunctionOptions {
 	condition?: RawBuilder<string>;
 	forEach: "row" | "statement";
 	functionName: string;
-	functionArgs?: string[];
+	functionArgs?: {
+		value: string;
+		columnName?: true;
+	}[];
 }
 
 export function pgTrigger() {

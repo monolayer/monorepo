@@ -34,12 +34,12 @@ describe("Database migrations", () => {
 					.fireWhen("before")
 					.events(["update"])
 					.forEach("row")
-					.function("moddatetime", ["updatedAt"]),
+					.function("moddatetime", [{ value: "updatedAt" }]),
 				foo_after_update: pgTrigger()
 					.fireWhen("after")
 					.events(["update"])
 					.forEach("row")
-					.function("moddatetime", ["updatedAt"]),
+					.function("moddatetime", [{ value: "updatedAt" }]),
 			},
 		});
 
@@ -221,7 +221,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_after_update_trg 
 					.fireWhen("after")
 					.events(["update"])
 					.forEach("row")
-					.function("moddatetime", ["updatedAt"]),
+					.function("moddatetime", [{ value: "updatedAt" }]),
 			},
 		});
 

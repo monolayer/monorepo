@@ -1,4 +1,5 @@
 import toposort from "toposort";
+import type { CamelCaseOptions } from "~/config.js";
 import type {
 	ColumnsInfo,
 	EnumInfo,
@@ -6,6 +7,7 @@ import type {
 	IndexInfo,
 	TableColumnInfo,
 } from "../introspection/types.js";
+import { toSnakeCase } from "../migration_op/helpers.js";
 import type { AnyPgDatabase } from "../schema/pg_database.js";
 import type { AnyPgTable, ColumnRecord } from "../schema/pg_table.js";
 
@@ -39,13 +41,17 @@ export function findColumn(
 	}
 }
 
-export function primaryKeyColumns(columns: ColumnRecord) {
+export function primaryKeyColumns(
+	columns: ColumnRecord,
+	camelCase: CamelCaseOptions,
+) {
 	return Object.entries(columns).reduce<string[]>(
 		(acc, [columnName, column]) => {
+			const transformedColumnName = toSnakeCase(columnName, camelCase);
 			const primaryKey = Object.fromEntries(Object.entries(column))
 				._isPrimaryKey as boolean;
 			if (primaryKey === true) {
-				acc.push(columnName);
+				acc.push(transformedColumnName);
 			}
 			return acc;
 		},
@@ -120,11 +126,12 @@ export function findColumnByNameInTable(
 export function findTableInDatabaseSchema(
 	table: AnyPgTable,
 	schema: AnyPgDatabase,
+	camelCase: CamelCaseOptions = { enabled: false },
 ) {
 	const tableInSchema = Object.entries(schema.tables || {}).find(
 		([_key, value]) => value.columns === table.columns,
 	);
 	if (tableInSchema !== undefined) {
-		return tableInSchema[0];
+		return toSnakeCase(tableInSchema[0], camelCase);
 	}
 }

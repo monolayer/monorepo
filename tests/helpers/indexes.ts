@@ -17,7 +17,11 @@ export function compileIndex(index: PgIndex<any>, tableName: string) {
 			pool: new pg.Pool({}),
 		}),
 	});
-	return indexToInfo(index, tableName, kysely);
+	const opts = {
+		enabled: false,
+		options: {},
+	};
+	return indexToInfo(index, tableName, kysely, opts);
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -28,7 +32,10 @@ export function compileUnique(unique: PgUnique<any>, tableName: string) {
 			pool: new pg.Pool({}),
 		}),
 	});
-	return uniqueToInfo(unique, tableName, kysely);
+	return uniqueToInfo(unique, tableName, kysely, {
+		enabled: false,
+		options: {},
+	});
 }
 
 export function compileTrigger(
@@ -43,5 +50,8 @@ export function compileTrigger(
 		}),
 	});
 
-	return triggerInfo(trigger, triggerName, tableName, kysely);
+	return triggerInfo(trigger, triggerName, tableName, kysely, {
+		enabled: false,
+		options: {},
+	});
 }

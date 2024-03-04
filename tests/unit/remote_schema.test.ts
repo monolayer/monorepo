@@ -305,6 +305,175 @@ describe("#remoteSchema", () => {
 		expect(await remoteSchema(kysely)).toStrictEqual(expectedSchema);
 	});
 
+	test<DbContext>("returns schema from database with camel-cased tables", async ({
+		tableNames,
+		kysely,
+	}) => {
+		tableNames.push("remoteSchemaUsers");
+		tableNames.push("remoteSchemaBooks");
+
+		await kysely.schema
+			.createTable("remoteSchemaBooks")
+			.addColumn("id", "serial", (col) => col.primaryKey())
+			.addColumn("name", "varchar", (col) => col.unique())
+			.execute();
+
+		await kysely.schema
+			.createTable("remoteSchemaUsers")
+			.addColumn("id", "integer", (col) => col.generatedByDefaultAsIdentity())
+			.addColumn("name", "varchar")
+			.addColumn("email", "varchar")
+			.addColumn("book_id", "integer")
+			.addPrimaryKeyConstraint("remoteSchemaUsers_id_kinetic_pk", ["id"])
+			.addForeignKeyConstraint(
+				"remoteSchemaUsers_book_id_remoteSchemaBooks_id_kinetic_fk",
+				["book_id"],
+				"remoteSchemaBooks",
+				["id"],
+			)
+			.addUniqueConstraint(
+				"remoteSchemaUsers_name_kinetic_key",
+				["name"],
+				(builder) => builder.nullsNotDistinct(),
+			)
+			.execute();
+
+		await kysely.schema
+			.createIndex("remoteSchemaUsers_name_email_kntc_idx")
+			.on("remoteSchemaUsers")
+			.columns(["name", "email"])
+			.execute();
+
+		await sql`COMMENT ON INDEX "remoteSchemaUsers_name_email_kntc_idx" IS 'abcd'`.execute(
+			kysely,
+		);
+
+		const expectedSchema = {
+			status: "Success",
+			result: {
+				table: {
+					remoteSchemaUsers: {
+						id: {
+							characterMaximumLength: null,
+							columnName: "id",
+							dataType: "integer",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: "BY DEFAULT",
+							isNullable: false,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "remoteSchemaUsers",
+							enum: false,
+						},
+						name: {
+							characterMaximumLength: null,
+							columnName: "name",
+							dataType: "varchar",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "remoteSchemaUsers",
+							enum: false,
+						},
+						book_id: {
+							characterMaximumLength: null,
+							columnName: "book_id",
+							dataType: "integer",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "remoteSchemaUsers",
+							enum: false,
+						},
+						email: {
+							characterMaximumLength: null,
+							columnName: "email",
+							dataType: "varchar",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "remoteSchemaUsers",
+							enum: false,
+						},
+					},
+					remoteSchemaBooks: {
+						id: {
+							characterMaximumLength: null,
+							columnName: "id",
+							dataType: "serial",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: false,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "remoteSchemaBooks",
+							enum: false,
+						},
+						name: {
+							characterMaximumLength: null,
+							columnName: "name",
+							dataType: "varchar",
+							datetimePrecision: null,
+							defaultValue: null,
+							identity: null,
+							isNullable: true,
+							numericPrecision: null,
+							numericScale: null,
+							renameFrom: null,
+							tableName: "remoteSchemaBooks",
+							enum: false,
+						},
+					},
+				},
+				index: {
+					remoteSchemaUsers: {
+						remoteSchemaUsers_name_email_kntc_idx:
+							'abcd:CREATE INDEX "remoteSchemaUsers_name_email_kntc_idx" ON public."remoteSchemaUsers" USING btree (name, email)',
+					},
+				},
+				uniqueConstraints: {
+					remoteSchemaUsers: {
+						remoteSchemaUsers_name_kinetic_key:
+							'"remoteSchemaUsers_name_kinetic_key" UNIQUE NULLS NOT DISTINCT ("name")',
+					},
+				},
+				foreignKeyConstraints: {
+					remoteSchemaUsers: {
+						remoteSchemaUsers_book_id_remoteSchemaBooks_id_kinetic_fk:
+							'"remoteSchemaUsers_book_id_remoteSchemaBooks_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES remoteSchemaBooks ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+					},
+				},
+				primaryKey: {
+					remoteSchemaUsers: {
+						remoteSchemaUsers_id_kinetic_pk:
+							'"remoteSchemaUsers_id_kinetic_pk" PRIMARY KEY ("id")',
+					},
+				},
+				enums: {},
+				extensions: {},
+				triggers: {},
+			},
+		};
+
+		expect(await remoteSchema(kysely)).toStrictEqual(expectedSchema);
+	});
+
 	test<DbContext>("returns schema with empty tables", async ({
 		tableNames,
 		kysely,

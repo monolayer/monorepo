@@ -613,3 +613,318 @@ test("trigger names are downcased", () => {
 		expectedLocalSchema,
 	);
 });
+
+test("#localSchemaCamelCase", () => {
+	const books = pgTable({
+		columns: {
+			id: pgSerial(),
+			name: pgVarchar(),
+			location: pgVarchar(),
+			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
+		},
+		indexes: [pgIndex("name")],
+		uniqueConstraints: [pgUnique(["name", "location"])],
+	});
+
+	const users = pgTable({
+		columns: {
+			id: pgSerial(),
+			name: pgVarchar().notNull(),
+			fullName: pgVarchar().primaryKey(),
+			email: pgVarchar().notNull(),
+			bookId: pgInteger(),
+			status: pgEnum("user_status", ["active", "inactive"]),
+		},
+		indexes: [pgIndex("fullName")],
+		foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
+		uniqueConstraints: [
+			pgUnique(["name"]),
+			pgUnique(["fullName"]),
+			pgUnique(["email"]).nullsNotDistinct(),
+		],
+		triggers: {
+			foo_before_update: pgTrigger()
+				.fireWhen("before")
+				.events(["update"])
+				.forEach("statement")
+				.function("foo"),
+		},
+	});
+
+	const database = pgDatabase({
+		extensions: ["cube", "btree_gin"],
+		tables: {
+			users,
+			books,
+			new_books: books,
+		},
+	});
+
+	const expectedLocalSchema = {
+		table: {
+			books: {
+				id: {
+					characterMaximumLength: null,
+					columnName: "id",
+					dataType: "serial",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "books",
+					enum: false,
+				},
+				location: {
+					characterMaximumLength: null,
+					columnName: "location",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "books",
+					enum: false,
+				},
+				status: {
+					characterMaximumLength: null,
+					columnName: "status",
+					dataType: "book_status",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "books",
+					enum: true,
+				},
+				name: {
+					characterMaximumLength: null,
+					columnName: "name",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "books",
+					enum: false,
+				},
+			},
+			new_books: {
+				id: {
+					characterMaximumLength: null,
+					columnName: "id",
+					dataType: "serial",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "new_books",
+					enum: false,
+				},
+				location: {
+					characterMaximumLength: null,
+					columnName: "location",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "new_books",
+					enum: false,
+				},
+				status: {
+					characterMaximumLength: null,
+					columnName: "status",
+					dataType: "book_status",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "new_books",
+					enum: true,
+				},
+				name: {
+					characterMaximumLength: null,
+					columnName: "name",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "new_books",
+					enum: false,
+				},
+			},
+			users: {
+				book_id: {
+					characterMaximumLength: null,
+					columnName: "book_id",
+					dataType: "integer",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "users",
+					enum: false,
+				},
+				email: {
+					characterMaximumLength: null,
+					columnName: "email",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "users",
+					enum: false,
+				},
+				id: {
+					characterMaximumLength: null,
+					columnName: "id",
+					dataType: "serial",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "users",
+					enum: false,
+				},
+				name: {
+					characterMaximumLength: null,
+					columnName: "name",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: false,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "users",
+					enum: false,
+				},
+				full_name: {
+					characterMaximumLength: null,
+					columnName: "full_name",
+					dataType: "varchar",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "users",
+					enum: false,
+				},
+				status: {
+					characterMaximumLength: null,
+					columnName: "status",
+					dataType: "user_status",
+					datetimePrecision: null,
+					defaultValue: null,
+					identity: null,
+					isNullable: true,
+					numericPrecision: null,
+					numericScale: null,
+					renameFrom: null,
+					tableName: "users",
+					enum: true,
+				},
+			},
+		},
+		index: {
+			books: {
+				books_name_kntc_idx:
+					'77f3737b4f672295b1204a55da66fa8873cf81ba7ae3d785480c618455e3ac22:create index "books_name_kntc_idx" on "books" ("name")',
+			},
+			new_books: {
+				new_books_name_kntc_idx:
+					'd57da4dbeafbb0aa3a8de18a1a3a010c0880869f14afea3f222c5dbf349995c6:create index "new_books_name_kntc_idx" on "new_books" ("name")',
+			},
+			users: {
+				users_full_name_kntc_idx:
+					'0a2fa263f5ca54fa5d8dbb61c10f9a31c5c124e2482191f4ff7d1e6e0c9771ce:create index "users_full_name_kntc_idx" on "users" ("full_name")',
+			},
+		},
+		foreignKeyConstraints: {
+			users: {
+				users_book_id_books_id_kinetic_fk:
+					'"users_book_id_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+			},
+		},
+		uniqueConstraints: {
+			users: {
+				users_email_kinetic_key:
+					'"users_email_kinetic_key" UNIQUE NULLS NOT DISTINCT ("email")',
+				users_name_kinetic_key:
+					'"users_name_kinetic_key" UNIQUE NULLS DISTINCT ("name")',
+				users_full_name_kinetic_key:
+					'"users_full_name_kinetic_key" UNIQUE NULLS DISTINCT ("full_name")',
+			},
+			books: {
+				books_location_name_kinetic_key:
+					'"books_location_name_kinetic_key" UNIQUE NULLS DISTINCT ("location", "name")',
+			},
+			new_books: {
+				new_books_location_name_kinetic_key:
+					'"new_books_location_name_kinetic_key" UNIQUE NULLS DISTINCT ("location", "name")',
+			},
+		},
+		primaryKey: {
+			users: {
+				users_full_name_kinetic_pk:
+					'"users_full_name_kinetic_pk" PRIMARY KEY ("full_name")',
+			},
+		},
+		extensions: { btree_gin: true, cube: true },
+		triggers: {
+			users: {
+				foo_before_update_trg:
+					"a2b86e379795876db3ca7ffb7ae373b26287a1be74a33c46eee8a4d789e2a9f6:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+			},
+		},
+		enums: {
+			book_status: "available, checked_out, lost",
+			user_status: "active, inactive",
+		},
+	};
+	expect(
+		localSchema(database, migrationSchemaFactory(), {
+			enabled: true,
+			options: {},
+		}),
+	).toStrictEqual(expectedLocalSchema);
+});

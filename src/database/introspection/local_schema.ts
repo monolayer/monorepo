@@ -7,7 +7,9 @@ import {
 	isExpression,
 } from "kysely";
 import pg from "pg";
+import type { CamelCaseOptions } from "~/config.js";
 import { type AnyPgDatabase } from "~/database/schema/pg_database.js";
+import { toSnakeCase } from "../migration_op/helpers.js";
 import {
 	type ForeignKeyInfo,
 	type MigrationSchema,
@@ -107,25 +109,34 @@ function substituteSQLParameters(queryObject: {
 export function schemaDBColumnInfoByTable(
 	schema: AnyPgDatabase,
 	remoteSchema: MigrationSchema,
+	camelCase: CamelCaseOptions = { enabled: false },
 ) {
 	return Object.entries(schema.tables || {}).reduce<TableColumnInfo>(
 		(acc, [tableName, tableDefinition]) => {
+			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const columns = Object.entries(tableDefinition.columns);
-			acc[tableName] = columns.reduce<ColumnsInfo>(
+			acc[transformedTableName] = columns.reduce<ColumnsInfo>(
 				(columnAcc, [columnName, column]) => {
 					const columnInfo = schemaColumnInfo(
-						tableName,
+						transformedTableName,
 						columnName,
 						column as PgColumnTypes,
 					);
 					let columnKey = columnName;
-					const pKey = findPrimaryKey(remoteSchema, tableName);
+					const transformedColumnNname = toSnakeCase(columnName, camelCase);
+					columnInfo.columnName = transformedColumnNname;
+					columnKey = transformedColumnNname;
+					const pKey = findPrimaryKey(remoteSchema, transformedTableName);
 					if (columnInfo.renameFrom !== null) {
 						const appliedInRemote =
-							findColumn(remoteSchema, tableName, columnName) !== undefined;
-						const toApplyInRemote =
-							findColumn(remoteSchema, tableName, columnInfo.renameFrom) !==
+							findColumn(remoteSchema, transformedTableName, columnName) !==
 							undefined;
+						const toApplyInRemote =
+							findColumn(
+								remoteSchema,
+								transformedTableName,
+								columnInfo.renameFrom,
+							) !== undefined;
 						if (appliedInRemote && pKey?.includes(columnName)) {
 							columnInfo.originalIsNullable = columnInfo.isNullable;
 							columnInfo.isNullable = false;
@@ -157,21 +168,29 @@ export function schemaDBColumnInfoByTable(
 	);
 }
 
-export function schemaDBIndexInfoByTable(schema: AnyPgDatabase) {
+export function schemaDBIndexInfoByTable(
+	schema: AnyPgDatabase,
+	camelCase: CamelCaseOptions = { enabled: false },
+) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({}),
 		}),
 	});
-
 	return Object.entries(schema.tables || {}).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {
+			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const indexes = tableDefinition.indexes || [];
 			for (const index of indexes) {
-				const indexInfo = indexToInfo(index, tableName, kysely);
-				acc[tableName] = {
-					...acc[tableName],
+				const indexInfo = indexToInfo(
+					index,
+					transformedTableName,
+					kysely,
+					camelCase,
+				);
+				acc[transformedTableName] = {
+					...acc[transformedTableName],
 					...indexInfo,
 				};
 			}
@@ -187,15 +206,20 @@ export function indexToInfo(
 	tableName: string,
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	kysely: Kysely<any>,
+	camelCase: CamelCaseOptions,
 ) {
 	const indexCompileArgs = index.compileArgs();
-	const indexName = `${tableName}_${indexCompileArgs.columns.join(
+	const transformedTableName = toSnakeCase(tableName, camelCase);
+	const transformedColumnNames = indexCompileArgs.columns.map((column) =>
+		toSnakeCase(column, camelCase),
+	);
+	const indexName = `${transformedTableName}_${transformedColumnNames.join(
 		"_",
 	)}_kntc_idx`;
 	let kyselyBuilder = kysely.schema
 		.createIndex(indexName)
-		.on(tableName)
-		.columns(indexCompileArgs.columns);
+		.on(transformedTableName)
+		.columns(transformedColumnNames);
 
 	if (indexCompileArgs.ifnotExists) {
 		kyselyBuilder = kyselyBuilder.ifNotExists();
@@ -236,16 +260,17 @@ export function indexToInfo(
 export function localSchema(
 	schema: AnyPgDatabase,
 	remoteSchema: MigrationSchema,
+	camelCase: CamelCaseOptions = { enabled: false },
 ): MigrationSchema {
 	return {
 		extensions: schemaDBExtensionsInfo(schema),
-		table: schemaDBColumnInfoByTable(schema, remoteSchema),
-		index: schemaDBIndexInfoByTable(schema),
-		foreignKeyConstraints: foreignKeyConstraintInfo(schema),
-		uniqueConstraints: uniqueConstraintInfo(schema),
-		primaryKey: primaryKeyConstraintInfo(schema),
+		table: schemaDBColumnInfoByTable(schema, remoteSchema, camelCase),
+		index: schemaDBIndexInfoByTable(schema, camelCase),
+		foreignKeyConstraints: foreignKeyConstraintInfo(schema, camelCase),
+		uniqueConstraints: uniqueConstraintInfo(schema, camelCase),
+		primaryKey: primaryKeyConstraintInfo(schema, camelCase),
 		triggers: {
-			...schemaDBTriggersInfo(schema),
+			...schemaDBTriggersInfo(schema, camelCase),
 		},
 		enums: schemaDbEnumInfo(schema),
 	};
@@ -258,7 +283,10 @@ function schemaDBExtensionsInfo(schema: AnyPgDatabase) {
 	}, {});
 }
 
-function schemaDBTriggersInfo(schema: AnyPgDatabase) {
+function schemaDBTriggersInfo(
+	schema: AnyPgDatabase,
+	camelCase: CamelCaseOptions,
+) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
@@ -268,6 +296,7 @@ function schemaDBTriggersInfo(schema: AnyPgDatabase) {
 
 	return Object.entries(schema.tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
+			const transformedTableName = toSnakeCase(tableName, camelCase);
 			tableDefinition.triggers;
 			for (const trigger of Object.entries(tableDefinition.triggers || {})) {
 				const triggerName = `${trigger[0]}_trg`.toLowerCase();
@@ -275,13 +304,14 @@ function schemaDBTriggersInfo(schema: AnyPgDatabase) {
 				const compiledTrigger = triggerInfo(
 					trigger[1],
 					triggerName,
-					tableName,
+					transformedTableName,
 					kysely,
+					camelCase,
 				);
 				hash.update(compiledTrigger);
 
-				acc[tableName] = {
-					...acc[tableName],
+				acc[transformedTableName] = {
+					...acc[transformedTableName],
 					[triggerName]: `${hash.digest("hex")}:${compiledTrigger}`,
 				};
 			}
@@ -314,19 +344,23 @@ export function schemaDbEnumInfo(schema: AnyPgDatabase) {
 	);
 }
 
-function primaryKeyConstraintInfo(schema: AnyPgDatabase) {
+function primaryKeyConstraintInfo(
+	schema: AnyPgDatabase,
+	camelCase: CamelCaseOptions,
+) {
 	return Object.entries(schema.tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
+			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const columns = tableDefinition.schema.columns as ColumnRecord;
-			const primaryKeys = primaryKeyColumns(columns);
+			const primaryKeys = primaryKeyColumns(columns, camelCase);
 			if (primaryKeys.length !== 0) {
-				const keyName = `${tableName}_${primaryKeys
+				const keyName = `${transformedTableName}_${primaryKeys
 					.sort()
 					.join("_")}_kinetic_pk`;
-				acc[tableName] = {
+				acc[transformedTableName] = {
 					[keyName]: primaryKeyConstraintInfoToQuery({
 						constraintType: "PRIMARY KEY",
-						table: tableName,
+						table: transformedTableName,
 						columns: primaryKeys,
 					}),
 				};
@@ -337,30 +371,42 @@ function primaryKeyConstraintInfo(schema: AnyPgDatabase) {
 	);
 }
 
-function foreignKeyConstraintInfo(schema: AnyPgDatabase) {
+function foreignKeyConstraintInfo(
+	schema: AnyPgDatabase,
+	camelCase: CamelCaseOptions,
+) {
 	return Object.entries(schema.tables || {}).reduce<ForeignKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
+			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const foreignKeys = tableDefinition.schema.foreignKeys;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {
 					const targetTableName = findTableInDatabaseSchema(
 						foreignKey.targetTable,
 						schema,
+						camelCase,
+					);
+					const transformedColumNames = foreignKey.columns.map((column) =>
+						toSnakeCase(column, camelCase),
+					);
+
+					const transformedtargetColumnNames = foreignKey.targetColumns.map(
+						(column) => toSnakeCase(column, camelCase),
 					);
 					if (targetTableName !== undefined) {
-						const keyName = `${tableName}_${foreignKey.columns.join(
+						const keyName = `${transformedTableName}_${transformedColumNames.join(
 							"_",
-						)}_${targetTableName}_${foreignKey.targetColumns.join(
+						)}_${targetTableName}_${transformedtargetColumnNames.join(
 							"_",
 						)}_kinetic_fk`;
-						acc[tableName] = {
-							...acc[tableName],
+						acc[transformedTableName] = {
+							...acc[transformedTableName],
 							[keyName]: foreignKeyConstraintInfoToQuery({
 								constraintType: "FOREIGN KEY",
-								table: tableName,
-								column: foreignKey.columns,
+								table: transformedTableName,
+								column: transformedColumNames,
 								targetTable: targetTableName,
-								targetColumns: foreignKey.targetColumns,
+								targetColumns: transformedtargetColumnNames,
 								deleteRule: foreignKey.options.deleteRule,
 								updateRule: foreignKey.options.updateRule,
 							}),
@@ -374,7 +420,10 @@ function foreignKeyConstraintInfo(schema: AnyPgDatabase) {
 	);
 }
 
-function uniqueConstraintInfo(schema: AnyPgDatabase) {
+function uniqueConstraintInfo(
+	schema: AnyPgDatabase,
+	camelCase: CamelCaseOptions,
+) {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
@@ -387,7 +436,12 @@ function uniqueConstraintInfo(schema: AnyPgDatabase) {
 			const uniqueConstraints = tableDefinition.schema.uniqueConstraints;
 			if (uniqueConstraints !== undefined) {
 				for (const uniqueConstraint of uniqueConstraints) {
-					const unique = uniqueToInfo(uniqueConstraint, tableName, kysely);
+					const unique = uniqueToInfo(
+						uniqueConstraint,
+						tableName,
+						kysely,
+						camelCase,
+					);
 					acc[tableName] = {
 						...acc[tableName],
 						...unique,
@@ -406,13 +460,17 @@ export function uniqueToInfo(
 	tableName: string,
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	kysely: Kysely<any>,
+	camelCase: CamelCaseOptions,
 ) {
 	const args = unique.compileArgs();
-	const columns = args.cols.sort();
-	const keyName = `${tableName}_${columns.join("_")}_kinetic_key`;
+	const newTableName = toSnakeCase(tableName, camelCase);
+	const columns = args.cols
+		.sort()
+		.map((column) => toSnakeCase(column, camelCase));
+	const keyName = `${newTableName}_${columns.join("_")}_kinetic_key`;
 
 	const kyselyBuilder = kysely.schema
-		.alterTable(tableName)
+		.alterTable(newTableName)
 		.addUniqueConstraint(keyName, columns, (uc) => {
 			if (args.nullsDistinct === false) {
 				return uc.nullsNotDistinct();
@@ -446,19 +504,25 @@ export function triggerInfo(
 	tableName: string,
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	kysely: Kysely<any>,
+	camelCase: CamelCaseOptions,
 ) {
 	const compileArgs = trigger.compileArgs();
 
+	const transformedColumnNames = compileArgs.columns?.map((column) =>
+		toSnakeCase(column, camelCase),
+	);
 	const events = compileArgs.events?.map((event) => {
-		if (event === "update of" && compileArgs.columns !== undefined) {
-			return `UPDATE OF ${compileArgs.columns.join(", ")}`;
+		if (event === "update of" && transformedColumnNames !== undefined) {
+			return `UPDATE OF ${transformedColumnNames.join(", ")}`;
 		}
 		return event.toUpperCase();
 	});
 
 	const execute =
 		compileArgs.functionArgs !== undefined
-			? `${compileArgs.functionName}(${compileArgs.functionArgs.join(", ")})`
+			? `${compileArgs.functionName}(${compileArgs.functionArgs
+					.map((arg) => toSnakeCase(arg.value, camelCase))
+					.join(", ")})`
 			: `${compileArgs.functionName}`;
 
 	return [

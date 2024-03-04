@@ -34,7 +34,11 @@ export async function generate() {
 	await pendingMigrations(config, kysely);
 
 	const remoteColumnInfo = await analyzeRemoteSchema(environmentConfig, kysely);
-	const localInfo = await analyzeLocalSchema(config, remoteColumnInfo.result);
+	const localInfo = await analyzeLocalSchema(
+		config,
+		remoteColumnInfo.result,
+		config.camelCasePlugin,
+	);
 	const changeset = await computeChangeset(localInfo, remoteColumnInfo.result);
 
 	await generateMigrations(changeset, config);

@@ -210,7 +210,7 @@ EXECUTE FUNCTION check_account_update`;
 			.events(["delete"])
 			.forEach("statement")
 			.referencingOldTableAs("old_table")
-			.function("check_account_update", ["hello"]);
+			.function("check_account_update", [{ value: "hello" }]);
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
 BEFORE DELETE ON accounts

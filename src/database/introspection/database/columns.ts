@@ -45,93 +45,6 @@ async function fetchDbColumnInfo(
 
 	return kysely
 		.selectFrom("information_schema.columns")
-		.leftJoin(
-			(eb) =>
-				eb
-					.selectFrom("information_schema.table_constraints as tc")
-					.leftJoin("information_schema.key_column_usage as kcu", (join) =>
-						join
-							.onRef("tc.constraint_name", "=", "kcu.constraint_name")
-							.onRef("tc.table_schema", "=", "kcu.table_schema"),
-					)
-					.leftJoin(
-						"information_schema.referential_constraints as rc",
-						(join) =>
-							join
-								.onRef("tc.constraint_name", "=", "rc.constraint_name")
-								.onRef("tc.table_schema", "=", "rc.constraint_schema"),
-					)
-					.leftJoin(
-						(eb) =>
-							eb
-								.selectFrom("information_schema.referential_constraints as rc")
-								.leftJoin(
-									"information_schema.key_column_usage as kcu",
-									(join) =>
-										join.onRef(
-											"rc.unique_constraint_name",
-											"=",
-											"kcu.constraint_name",
-										),
-								)
-								.select([
-									"rc.constraint_name",
-									"kcu.table_name as target_table",
-									sql<string[]>`json_agg(kcu.column_name)`.as("target_columns"),
-								])
-								.groupBy(["rc.constraint_name", "kcu.table_name"])
-								.as("fk"),
-						(join) =>
-							join.onRef("tc.constraint_name", "=", "fk.constraint_name"),
-					)
-					.select([
-						"tc.table_schema",
-						"tc.table_name",
-						"kcu.column_name",
-						sql<
-							{
-								constraint_name: string;
-								constraint_type: string;
-								columns: string[];
-								delete_rule: string | null;
-								update_rule: string | null;
-								sequence_name: string | null;
-								target_table: string | null;
-								target_columns: string[];
-								nulls_distinct: string | null;
-							}[]
-						>`
-							json_agg(
-								DISTINCT jsonb_build_object(
-									'constraint_name', tc.constraint_name,
-									'constraint_type', tc.constraint_type,
-									'nulls_distinct', tc.nulls_distinct,
-									'columns', (SELECT array_agg(kcu_inner.column_name ORDER BY kcu_inner.ordinal_position)
-															FROM information_schema.key_column_usage kcu_inner
-															WHERE kcu_inner.constraint_name = tc.constraint_name
-															GROUP BY kcu_inner.constraint_name),
-									'delete_rule', rc.delete_rule,
-									'update_rule', rc.update_rule,
-									'sequence_name', pg_get_serial_sequence(tc.table_schema || '.' || tc.table_name, kcu.column_name),
-									'target_table', fk.target_table,
-									'target_columns', fk.target_columns
-									)
-								)
-							`.as("constraints"),
-					])
-					.where("tc.table_schema", "=", databaseSchema)
-					.where("tc.table_name", "in", tableNames)
-					.groupBy(["tc.table_schema", "tc.table_name", "kcu.column_name"])
-					.as("c"),
-			(join) =>
-				join
-					.onRef("c.table_name", "=", "information_schema.columns.table_name")
-					.onRef(
-						"c.column_name",
-						"=",
-						"information_schema.columns.column_name",
-					),
-		)
 		.fullJoin("pg_class", (eb) =>
 			eb.onRef(
 				"information_schema.columns.table_name",
@@ -170,15 +83,14 @@ async function fetchDbColumnInfo(
 			"information_schema.columns.datetime_precision",
 			sql<
 				string | null
-			>`(SELECT obj_description(('public.' || "information_schema"."columns"."table_name")::regclass, 'pg_class')::json->>'previousName')`.as(
+			>`(SELECT obj_description(('public.' || '"' || "information_schema"."columns"."table_name" || '"')::regclass, 'pg_class')::json->>'previousName')`.as(
 				"rename_from",
 			),
 			"information_schema.columns.identity_generation",
 			"information_schema.columns.is_identity",
-			sql`pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name)`.as(
+			sql`pg_get_serial_sequence('"' || information_schema.columns.table_name || '"', information_schema.columns.column_name)`.as(
 				"sequence_name",
 			),
-			"c.constraints",
 			"pg_attribute.atttypmod",
 		])
 		.select((eb) => [
@@ -186,13 +98,13 @@ async function fetchDbColumnInfo(
 				.case()
 				.when(
 					sql`
-						pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name) IS NOT NULL
+						pg_get_serial_sequence('"' || information_schema.columns.table_name || '"', information_schema.columns.column_name) IS NOT NULL
 						AND information_schema.columns.data_type = 'integer'
 						AND information_schema.columns.is_identity = 'NO'`,
 				)
 				.then("serial")
 				.when(sql`
-					pg_get_serial_sequence(information_schema.columns.table_name, information_schema.columns.column_name) IS NOT NULL
+					pg_get_serial_sequence('"' || information_schema.columns.table_name || '"', information_schema.columns.column_name) IS NOT NULL
 					AND information_schema.columns.data_type = 'bigint'
 					AND information_schema.columns.is_identity = 'NO'`)
 				.then("bigserial")

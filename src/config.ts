@@ -1,4 +1,5 @@
 import path from "path";
+import type { CamelCasePluginOptions } from "kysely";
 import type { ClientConfig, PoolConfig } from "pg";
 import { type AnyPgDatabase } from "./database/schema/pg_database.js";
 
@@ -10,6 +11,12 @@ export type Config = {
 	future?: {
 		unstable_auto_migrations: boolean;
 	};
+	camelCasePlugin?: CamelCaseOptions;
+};
+
+export type CamelCaseOptions = {
+	enabled: boolean;
+	options?: CamelCasePluginOptions;
 };
 
 type GlobalsWithDatabaseSchema = typeof globalThis & {

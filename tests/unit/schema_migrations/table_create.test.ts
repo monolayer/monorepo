@@ -713,7 +713,7 @@ describe("Table create migrations", () => {
 					.fireWhen("before")
 					.events(["update"])
 					.forEach("row")
-					.function("moddatetime", ["updatedAt"]),
+					.function("moddatetime", [{ value: "updatedAt" }]),
 			},
 		});
 
@@ -773,6 +773,332 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 			database,
 			expected,
 			down: "reverse",
+		});
+	});
+
+	test<DbContext>("create table camelCase", async (context) => {
+		const books = pgTable({
+			columns: {
+				id: pgBigserial().primaryKey(),
+			},
+			indexes: [pgIndex("id").unique()],
+		});
+
+		const libraryBuilding = pgTable({
+			columns: {
+				id: pgBigserial().primaryKey(),
+			},
+			indexes: [pgIndex("id").unique()],
+		});
+
+		const newBooks = pgTable({
+			columns: {
+				id: pgBigserial().primaryKey(),
+				oldBookId: pgBigint(),
+				libraryBuildingId: pgBigint(),
+			},
+			indexes: [pgIndex("id").unique()],
+			foreignKeys: [
+				pgForeignKey(["oldBookId"], books, ["id"]),
+				pgForeignKey(["libraryBuildingId"], libraryBuilding, ["id"]),
+			],
+		});
+
+		const users = pgTable({
+			columns: {
+				fullName: pgText(),
+				bookId: pgBigserial(),
+			},
+			indexes: [pgIndex("fullName")],
+			foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
+		});
+
+		const triggerTable = pgTable({
+			columns: {
+				updatedAt: pgTimestamp().defaultTo(sql`now()`),
+				role: pgEnum("role", ["admin", "user"]),
+			},
+			triggers: {
+				foo_before_update: pgTrigger()
+					.fireWhen("before")
+					.events(["update"])
+					.forEach("row")
+					.function("moddatetime", [{ value: "updatedAt", columnName: true }]),
+			},
+		});
+
+		const database = pgDatabase({
+			extensions: ["moddatetime"],
+
+			tables: {
+				users,
+				books,
+				newBooks,
+				triggerTable,
+				libraryBuilding,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 0,
+				tableName: "none",
+				type: "createExtension",
+				up: [
+					[
+						"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(db);",
+					],
+				],
+				down: [
+					["await sql`DROP EXTENSION IF EXISTS moddatetime;`.execute(db);"],
+				],
+			},
+			{
+				priority: 0,
+				tableName: "none",
+				type: "createEnum",
+				up: [
+					[
+						"await db.schema",
+						'createType("role")',
+						'asEnum(["admin", "user"])',
+						"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+					],
+				],
+				down: [["await db.schema", 'dropType("role")', "execute();"]],
+			},
+			{
+				priority: 2001,
+				tableName: "trigger_table",
+				type: "createTable",
+				up: [
+					[
+						"await db.schema",
+						'createTable("trigger_table")',
+						'addColumn("updated_at", "timestamp", (col) => col.defaultTo(sql`now()`))',
+						'addColumn("role", sql`role`)',
+						"execute();",
+					],
+				],
+				down: [["await db.schema", 'dropTable("trigger_table")', "execute();"]],
+			},
+			{
+				down: [
+					["await db.schema", 'dropTable("library_building")', "execute();"],
+				],
+				priority: 2001,
+				tableName: "library_building",
+				type: "createTable",
+				up: [
+					[
+						"await db.schema",
+						'createTable("library_building")',
+						'addColumn("id", "bigserial", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [["await db.schema", 'dropTable("books")', "execute();"]],
+				priority: 2001,
+				tableName: "books",
+				type: "createTable",
+				up: [
+					[
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("id", "bigserial", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [["await db.schema", 'dropTable("new_books")', "execute();"]],
+				priority: 2001,
+				tableName: "new_books",
+				type: "createTable",
+				up: [
+					[
+						"await db.schema",
+						'createTable("new_books")',
+						'addColumn("id", "bigserial", (col) => col.notNull())',
+						'addColumn("old_book_id", "bigint")',
+						'addColumn("library_building_id", "bigint")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 2001,
+				tableName: "users",
+				type: "createTable",
+				up: [
+					[
+						"await db.schema",
+						'createTable("users")',
+						'addColumn("full_name", "text")',
+						'addColumn("book_id", "bigserial", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+				down: [["await db.schema", 'dropTable("users")', "execute();"]],
+			},
+			{
+				down: [[]],
+				priority: 4001,
+				tableName: "books",
+				type: "createPrimaryKey",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("books")',
+						'addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [[]],
+				priority: 4001,
+				tableName: "new_books",
+				type: "createPrimaryKey",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("new_books")',
+						'addPrimaryKeyConstraint("new_books_id_kinetic_pk", ["id"])',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [[]],
+				priority: 4001,
+				tableName: "library_building",
+				type: "createPrimaryKey",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("library_building")',
+						'addPrimaryKeyConstraint("library_building_id_kinetic_pk", ["id"])',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4002,
+				tableName: "users",
+				type: "createConstraint",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'onDelete("no action")',
+						'onUpdate("no action")',
+						"execute();",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4002,
+				tableName: "new_books",
+				type: "createConstraint",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("new_books")',
+						'addForeignKeyConstraint("new_books_old_book_id_books_id_kinetic_fk", ["old_book_id"], "books", ["id"])',
+						'onDelete("no action")',
+						'onUpdate("no action")',
+						"execute();",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4002,
+				tableName: "new_books",
+				type: "createConstraint",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("new_books")',
+						'addForeignKeyConstraint("new_books_library_building_id_library_building_id_kinetic_fk", ["library_building_id"], "library_building", ["id"])',
+						'onDelete("no action")',
+						'onUpdate("no action")',
+						"execute();",
+					],
+				],
+				down: [[]],
+			},
+			{
+				down: [[]],
+				priority: 4003,
+				tableName: "users",
+				type: "createIndex",
+				up: [
+					[
+						'await sql`create index "users_full_name_kntc_idx" on "users" ("full_name");COMMENT ON INDEX "users_full_name_kntc_idx" IS \'0a2fa263f5ca54fa5d8dbb61c10f9a31c5c124e2482191f4ff7d1e6e0c9771ce\'`.execute(db);',
+					],
+				],
+			},
+			{
+				down: [[]],
+				priority: 4003,
+				tableName: "books",
+				type: "createIndex",
+				up: [
+					[
+						'await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX "books_id_kntc_idx" IS \'2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee\'`.execute(db);',
+					],
+				],
+			},
+			{
+				down: [[]],
+				priority: 4003,
+				tableName: "new_books",
+				type: "createIndex",
+				up: [
+					[
+						'await sql`create unique index "new_books_id_kntc_idx" on "new_books" ("id");COMMENT ON INDEX "new_books_id_kntc_idx" IS \'920c4448799d6236ce7977180a775763a1352666c3289c63055d9d3436c72033\'`.execute(db);',
+					],
+				],
+			},
+			{
+				down: [[]],
+				priority: 4003,
+				tableName: "library_building",
+				type: "createIndex",
+				up: [
+					[
+						'await sql`create unique index "library_building_id_kntc_idx" on "library_building" ("id");COMMENT ON INDEX "library_building_id_kntc_idx" IS \'9c7a73486d378aad269f62895f31d0b13e270b7df7cc83ff33e987fa4c837cd4\'`.execute(db);',
+					],
+				],
+			},
+			{
+				priority: 4004,
+				tableName: "trigger_table",
+				type: "createTrigger",
+				up: [
+					[
+						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
+BEFORE UPDATE ON trigger_table
+FOR EACH ROW
+EXECUTE FUNCTION moddatetime(updated_at);COMMENT ON TRIGGER foo_before_update_trg ON trigger_table IS '00cbf9f010850e03fc0639e52f47751d58b6a78c0d8bc5b8d65b30e723b722ba';\`.execute(db);`,
+					],
+				],
+				down: [[]],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			down: "reverse",
+			useCamelCase: { enabled: true, options: {} },
 		});
 	});
 });
