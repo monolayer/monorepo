@@ -547,7 +547,12 @@ describe("Table create migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_id_books_id_kinetic_fk" FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addForeignKeyConstraint("users_id_books_id_kinetic_fk", ["id"], "books", ["id"])',
+						'onDelete("set null")',
+						'onUpdate("set null")',
+						"execute();",
 					],
 				],
 			},

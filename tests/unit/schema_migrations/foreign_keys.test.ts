@@ -88,12 +88,20 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_id_books_id_kinetic_fk" FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addForeignKeyConstraint("users_id_books_id_kinetic_fk", ["id"], "books", ["id"])',
+						'onDelete("set null")',
+						'onUpdate("set null")',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_id_books_id_kinetic_fk"`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_id_books_id_kinetic_fk")',
+						"execute();",
 					],
 				],
 			},
@@ -163,12 +171,20 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_book_id_books_id_kinetic_fk"`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_book_id_books_id_kinetic_fk")',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_book_id_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'onDelete("set null")',
+						'onUpdate("set null")',
+						"execute();",
 					],
 				],
 			},
@@ -244,12 +260,20 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_book_id_books_id_kinetic_fk"`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_book_id_books_id_kinetic_fk")',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_book_id_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'onDelete("set null")',
+						'onUpdate("set null")',
+						"execute();",
 					],
 				],
 			},
@@ -259,12 +283,20 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_id_books_id_kinetic_fk" FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE CASCADE`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'addForeignKeyConstraint("users_id_books_id_kinetic_fk", ["id"], "books", ["id"])',
+						'onDelete("set null")',
+						'onUpdate("cascade")',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_id_books_id_kinetic_fk"`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_id_books_id_kinetic_fk")',
+						"execute();",
 					],
 				],
 			},
@@ -340,12 +372,34 @@ describe("Database migrations", () => {
 				type: "changeConstraint",
 				up: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_book_id_books_id_kinetic_fk", ADD CONSTRAINT "users_book_id_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE CASCADE`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_book_id_books_id_kinetic_fk")',
+						"execute();",
+					],
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'onDelete("set null")',
+						'onUpdate("cascade")',
+						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_book_id_books_id_kinetic_fk", ADD CONSTRAINT "users_book_id_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(db);',
+						"await db.schema",
+						'alterTable("users")',
+						'dropConstraint("users_book_id_books_id_kinetic_fk")',
+						"execute();",
+					],
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'onDelete("set null")',
+						'onUpdate("set null")',
+						"execute();",
 					],
 				],
 			},

@@ -535,12 +535,20 @@ describe("Rename column migrations", () => {
 					type: "dropConstraint",
 					up: [
 						[
-							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_book_id_books_pk1_id_kinetic_fk"`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'dropConstraint("users_pk1_book_id_books_pk1_id_kinetic_fk")',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_book_id_books_pk1_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'addForeignKeyConstraint("users_pk1_book_id_books_pk1_id_kinetic_fk", ["book_id"], "books_pk1", ["id"])',
+							'onDelete("no action")',
+							'onUpdate("no action")',
+							"execute();",
 						],
 					],
 				},
@@ -571,12 +579,20 @@ describe("Rename column migrations", () => {
 					type: "createConstraint",
 					up: [
 						[
-							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk" FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_kinetic_fk", ["bookId"], "books_pk1", ["id"])',
+							'onDelete("no action")',
+							'onUpdate("no action")',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk"`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'dropConstraint("users_pk1_bookId_books_pk1_id_kinetic_fk")',
+							"execute();",
 						],
 					],
 				},
@@ -652,12 +668,20 @@ describe("Rename column migrations", () => {
 					type: "createConstraint",
 					up: [
 						[
-							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk" FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_kinetic_fk", ["bookId"], "books_pk1", ["id"])',
+							'onDelete("no action")',
+							'onUpdate("no action")',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk"`.execute(db);',
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'dropConstraint("users_pk1_bookId_books_pk1_id_kinetic_fk")',
+							"execute();",
 						],
 					],
 				},

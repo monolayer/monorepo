@@ -1,6 +1,6 @@
 import type { Difference } from "microdiff";
 import { ChangeSetType, type Changeset } from "./changeset.js";
-import { executeKyselyDbStatement } from "./helpers.js";
+import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
 
 export function foreignKeyMigrationOpGenerator(
@@ -140,41 +140,24 @@ function createforeignKeyFirstConstraintMigration(
 		priority: MigrationOpPriority.ConstraintCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
-		up: [
-			executeKyselyDbStatement(
-				`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
-			),
-		],
+		up: [addForeigKeyOp(tableName, foreignKeyDefinition(constraintValue))],
 		down: addedTables.includes(tableName)
 			? [[]]
-			: [
-					executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
-					),
-			  ],
+			: [dropForeignKeyOp(tableName, foreignKeyDefinition(constraintValue))],
 	};
 	return changeset;
 }
 
 function createForeignKeyConstraintMigration(diff: ForeignKeyCreateDiff) {
 	const tableName = diff.path[1];
-	const constraintName = diff.path[2];
 	const constraintValue = diff.value;
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
-		up: [
-			executeKyselyDbStatement(
-				`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
-			),
-		],
-		down: [
-			executeKyselyDbStatement(
-				`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
-			),
-		],
+		up: [addForeigKeyOp(tableName, foreignKeyDefinition(constraintValue))],
+		down: [dropForeignKeyOp(tableName, foreignKeyDefinition(constraintValue))],
 	};
 	return changeset;
 }
@@ -197,62 +180,108 @@ function dropforeignKeyLastConstraintMigration(
 		type: ChangeSetType.DropConstraint,
 		up: droppedTables.includes(tableName)
 			? [[]]
-			: [
-					executeKyselyDbStatement(
-						`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
-					),
-			  ],
-		down: [
-			executeKyselyDbStatement(
-				`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
-			),
-		],
+			: [dropForeignKeyOp(tableName, foreignKeyDefinition(constraintValue))],
+		down: [addForeigKeyOp(tableName, foreignKeyDefinition(constraintValue))],
 	};
 	return changeset;
 }
 
 function dropForeignKeyConstraintMigration(diff: ForeignKeyDropDiff) {
 	const tableName = diff.path[1];
-	const constraintName = diff.path[2];
 	const constraintValue = diff.oldValue;
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropConstraint,
-		up: [
-			executeKyselyDbStatement(
-				`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
-			),
-		],
-		down: [
-			executeKyselyDbStatement(
-				`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
-			),
-		],
+		up: [dropForeignKeyOp(tableName, foreignKeyDefinition(constraintValue))],
+		down: [addForeigKeyOp(tableName, foreignKeyDefinition(constraintValue))],
 	};
 	return changeset;
 }
 
 function changeforeignKeyConstraintMigration(diff: ForeignKeyChangeDiff) {
 	const tableName = diff.path[1];
-	const constraintName = diff.path[2];
-	const newValue = diff.value;
-	const oldValue = diff.oldValue;
+	const newForeignKey = foreignKeyDefinition(diff.value);
+	const oldForeignKey = foreignKeyDefinition(diff.oldValue);
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
 		tableName: tableName,
 		type: ChangeSetType.ChangeConstraint,
 		up: [
-			executeKyselyDbStatement(
-				`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}", ADD CONSTRAINT ${newValue}`,
-			),
+			dropForeignKeyOp(tableName, oldForeignKey),
+			addForeigKeyOp(tableName, newForeignKey),
 		],
 		down: [
-			executeKyselyDbStatement(
-				`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}", ADD CONSTRAINT ${oldValue}`,
-			),
+			dropForeignKeyOp(tableName, newForeignKey),
+			addForeigKeyOp(tableName, oldForeignKey),
 		],
 	};
 	return changeset;
+}
+
+type ForeignKeyDefinition = {
+	name: string;
+	columns: string[];
+	targetTable: string;
+	targetColumns: string[];
+	onDelete: string;
+	onUpdate: string;
+};
+
+function foreignKeyDefinition(foreignKey: string) {
+	const definition: ForeignKeyDefinition = {
+		name: foreignKey.match(/\"(\w+)\"/)?.[1] || "",
+		columns: (foreignKey.match(/FOREIGN KEY \(((\w|\,|\s|\")+)\)/)?.[1] || "")
+			.replace(/ /g, "")
+			.replace(/\"/g, "")
+			.split(","),
+		targetTable: foreignKey.match(/REFERENCES (\w+)/)?.[1] || "",
+		targetColumns: (
+			foreignKey.match(/REFERENCES \w+ \(((\w|\,|\s|\")+)\)/)?.[1] || ""
+		)
+			.replace(/ /g, "")
+			.replace(/\"/g, "")
+			.split(","),
+		onDelete:
+			foreignKey
+				.match(
+					/ON DELETE (NO ACTION|RESTRICT|CASCADE|SET NULL|SET DEFAULT)/,
+				)?.[1]
+				?.toLowerCase() || "",
+		onUpdate:
+			foreignKey
+				.match(
+					/ON UPDATE (NO ACTION|RESTRICT|CASCADE|SET NULL|SET DEFAULT)/,
+				)?.[1]
+				?.toLowerCase() || "",
+	};
+	return definition;
+}
+
+function addForeigKeyOp(
+	tableName: string,
+	definition: ForeignKeyDefinition,
+): string[] {
+	const columns = definition.columns.map((col) => `"${col}"`).join(", ");
+	const targetColumns = definition.targetColumns
+		.map((col) => `"${col}"`)
+		.join(", ");
+	return executeKyselySchemaStatement(
+		`alterTable("${tableName}")`,
+		`addForeignKeyConstraint("${definition.name}", [${columns}], "${definition.targetTable}", [${targetColumns}])`,
+		`onDelete("${definition.onDelete}")`,
+		`onUpdate("${definition.onUpdate}")`,
+	);
+}
+
+function dropForeignKeyOp(
+	tableName: string,
+	definition: ForeignKeyDefinition,
+): string[] {
+	return executeKyselySchemaStatement(
+		`alterTable("${tableName}")`,
+		`dropConstraint("${definition.name}")`,
+	);
 }
