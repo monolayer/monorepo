@@ -31,16 +31,20 @@ describe("Database migrations", () => {
 				tableName: "none",
 				type: "createExtension",
 				up: [
-					"await sql`CREATE EXTENSION IF NOT EXISTS btree_gist;`.execute(db);",
+					[
+						"await sql`CREATE EXTENSION IF NOT EXISTS btree_gist;`.execute(db);",
+					],
 				],
-				down: ["await sql`DROP EXTENSION IF EXISTS btree_gist;`.execute(db);"],
+				down: [
+					["await sql`DROP EXTENSION IF EXISTS btree_gist;`.execute(db);"],
+				],
 			},
 			{
 				priority: 0,
 				tableName: "none",
 				type: "createExtension",
-				up: ["await sql`CREATE EXTENSION IF NOT EXISTS cube;`.execute(db);"],
-				down: ["await sql`DROP EXTENSION IF EXISTS cube;`.execute(db);"],
+				up: [["await sql`CREATE EXTENSION IF NOT EXISTS cube;`.execute(db);"]],
+				down: [["await sql`DROP EXTENSION IF EXISTS cube;`.execute(db);"]],
 			},
 		];
 
@@ -70,16 +74,20 @@ describe("Database migrations", () => {
 				priority: 0,
 				tableName: "none",
 				type: "dropExtension",
-				up: ["await sql`DROP EXTENSION IF EXISTS cube;`.execute(db);"],
-				down: ["await sql`CREATE EXTENSION IF NOT EXISTS cube;`.execute(db);"],
+				up: [["await sql`DROP EXTENSION IF EXISTS cube;`.execute(db);"]],
+				down: [
+					["await sql`CREATE EXTENSION IF NOT EXISTS cube;`.execute(db);"],
+				],
 			},
 			{
 				priority: 0,
 				tableName: "none",
 				type: "dropExtension",
-				up: ["await sql`DROP EXTENSION IF EXISTS btree_gist;`.execute(db);"],
+				up: [["await sql`DROP EXTENSION IF EXISTS btree_gist;`.execute(db);"]],
 				down: [
-					"await sql`CREATE EXTENSION IF NOT EXISTS btree_gist;`.execute(db);",
+					[
+						"await sql`CREATE EXTENSION IF NOT EXISTS btree_gist;`.execute(db);",
+					],
 				],
 			},
 		];

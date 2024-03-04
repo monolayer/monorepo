@@ -51,22 +51,30 @@ describe("Database migrations", () => {
 				tableName: "none",
 				type: "createExtension",
 				up: [
-					"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(db);",
+					[
+						"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(db);",
+					],
 				],
-				down: ["await sql`DROP EXTENSION IF EXISTS moddatetime;`.execute(db);"],
+				down: [
+					["await sql`DROP EXTENSION IF EXISTS moddatetime;`.execute(db);"],
+				],
 			},
 			{
 				priority: 4004,
 				tableName: "users",
 				type: "createTrigger",
 				up: [
-					`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
+					[
+						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';\`.execute(db);`,
+					],
 				],
 				down: [
-					"await sql`DROP TRIGGER foo_before_update_trg ON users`.execute(db);",
+					[
+						"await sql`DROP TRIGGER foo_before_update_trg ON users`.execute(db);",
+					],
 				],
 			},
 		];
@@ -118,10 +126,14 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 				tableName: "users",
 				type: "dropTrigger",
 				up: [
-					"await sql`DROP TRIGGER foo_before_update_trg ON users`.execute(db);",
+					[
+						"await sql`DROP TRIGGER foo_before_update_trg ON users`.execute(db);",
+					],
 				],
 				down: [
-					"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat');COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(db);",
+					[
+						"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat');COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(db);",
+					],
 				],
 			},
 		];
@@ -180,13 +192,17 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 				tableName: "users",
 				type: "updateTrigger",
 				up: [
-					`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
+					[
+						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 AFTER UPDATE ON users
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg ON users IS '4d94ebd94ecb1913d10aea79e05375e5dabea4ad3c2058570f561a51c01d5897';\`.execute(db);`,
+					],
 				],
 				down: [
-					"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat');COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(db);",
+					[
+						"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat');COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(db);",
+					],
 				],
 			},
 		];

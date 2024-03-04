@@ -1,6 +1,6 @@
 import type { Difference } from "microdiff";
 import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
-import { ChangeSetType } from "./changeset.js";
+import { ChangeSetType, type Changeset } from "./changeset.js";
 import { executeKyselyDbStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
 
@@ -133,19 +133,24 @@ function createUniqueFirstConstraintMigration(
 		constraintName
 	] as (typeof diff.value)[keyof typeof diff.value];
 
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
-		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
-		),
+		up: [
+			executeKyselyDbStatement(
+				`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
+			),
+		],
 		down: addedTables.includes(tableName)
-			? []
-			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
-			  ),
+			? [[]]
+			: [
+					executeKyselyDbStatement(
+						`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
+					),
+			  ],
 	};
+	return changeset;
 }
 
 function dropUniqueLastConstraintMigration(
@@ -160,19 +165,24 @@ function dropUniqueLastConstraintMigration(
 		constraintName
 	] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
 
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropConstraint,
 		up: droppedTables.includes(tableName)
-			? []
-			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
-			  ),
-		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
-		),
+			? [[]]
+			: [
+					executeKyselyDbStatement(
+						`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
+					),
+			  ],
+		down: [
+			executeKyselyDbStatement(
+				`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
+			),
+		],
 	};
+	return changeset;
 }
 
 function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
@@ -180,49 +190,64 @@ function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
 	const constraintName = diff.path[2];
 	const newValue = diff.value;
 	const oldValue = diff.oldValue;
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
 		tableName: tableName,
 		type: ChangeSetType.ChangeConstraint,
-		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}", ADD CONSTRAINT ${newValue}`,
-		),
-		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}", ADD CONSTRAINT ${oldValue}`,
-		),
+		up: [
+			executeKyselyDbStatement(
+				`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}", ADD CONSTRAINT ${newValue}`,
+			),
+		],
+		down: [
+			executeKyselyDbStatement(
+				`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}", ADD CONSTRAINT ${oldValue}`,
+			),
+		],
 	};
+	return changeset;
 }
 
 function createUniqueConstraintMigration(diff: UniqueCreateDiff) {
 	const tableName = diff.path[1];
 	const constraintName = diff.path[2];
 	const constraintValue = diff.value;
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
-		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
-		),
-		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
-		),
+		up: [
+			executeKyselyDbStatement(
+				`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
+			),
+		],
+		down: [
+			executeKyselyDbStatement(
+				`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
+			),
+		],
 	};
+	return changeset;
 }
 
 function dropUniqueConstraintMigration(diff: UuniqueDropDiff) {
 	const tableName = diff.path[1];
 	const constraintName = diff.path[2];
 	const constraintValue = diff.oldValue;
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropConstraint,
-		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
-		),
-		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
-		),
+		up: [
+			executeKyselyDbStatement(
+				`ALTER TABLE ${tableName} DROP CONSTRAINT "${constraintName}"`,
+			),
+		],
+		down: [
+			executeKyselyDbStatement(
+				`ALTER TABLE ${tableName} ADD CONSTRAINT ${constraintValue}`,
+			),
+		],
 	};
+	return changeset;
 }

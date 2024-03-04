@@ -45,17 +45,21 @@ function createColumnMigration(diff: CreateColumnDiff) {
 		priority: MigrationOpPriority.ColumnCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateColumn,
-		up: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`addColumn(\"${columnName}\", ${compileDataType(
-				columnDef.dataType,
-				columnDef.enum,
-			)}${optionsForColumn(columnDef)})`,
-		),
-		down: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`dropColumn(\"${columnName}\")`,
-		),
+		up: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`addColumn(\"${columnName}\", ${compileDataType(
+					columnDef.dataType,
+					columnDef.enum,
+				)}${optionsForColumn(columnDef)})`,
+			),
+		],
+		down: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`dropColumn(\"${columnName}\")`,
+			),
+		],
 	};
 	return changeset;
 }
@@ -81,18 +85,21 @@ function dropColumnMigration(diff: DropColumnDiff) {
 		priority: MigrationOpPriority.ColumnDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropColumn,
-		up: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`dropColumn(\"${columnName}\")`,
-		),
-
-		down: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`addColumn(\"${columnName}\", ${compileDataType(
-				columnDef.dataType,
-				columnDef.enum,
-			)}${optionsForColumn(columnDef)})`,
-		),
+		up: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`dropColumn(\"${columnName}\")`,
+			),
+		],
+		down: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`addColumn(\"${columnName}\", ${compileDataType(
+					columnDef.dataType,
+					columnDef.enum,
+				)}${optionsForColumn(columnDef)})`,
+			),
+		],
 	};
 	return changeset;
 }

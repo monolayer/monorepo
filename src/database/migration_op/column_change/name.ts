@@ -44,14 +44,18 @@ function columnNameMigrationOperation(diff: ColumnNameDifference) {
 		priority: MigrationOpPriority.ChangeColumnName,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumnName,
-		up: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`renameColumn("${columnName}", "${diff.value}")`,
-		),
-		down: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`renameColumn("${diff.value}", "${columnName}")`,
-		),
+		up: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`renameColumn("${columnName}", "${diff.value}")`,
+			),
+		],
+		down: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`renameColumn("${diff.value}", "${columnName}")`,
+			),
+		],
 	};
 	return changeset;
 }

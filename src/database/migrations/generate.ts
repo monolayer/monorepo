@@ -15,8 +15,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function down(db: Kysely<any>): Promise<void> {
-{%- for d in down %}
-  {{ d | safe }}
+{%- for downOps in down %}
+  {{ downOps | safe }}
 {% endfor -%}
 }
 `;
@@ -47,12 +47,20 @@ export function generateMigrationFiles(
 
 function extractMigrationOpChangesets(changesets: Changeset[]) {
 	const up = changesets
-		.filter((changeset) => changeset.up.length > 0)
-		.map((changeset) => changeset.up.join("\n    ."));
+		.filter(
+			(changeset) =>
+				changeset.up.length > 0 && (changeset.up[0] || []).length > 0,
+		)
+		.map((changeset) => changeset.up.map((u) => u.join("\n    .")).join("\n"));
 	const down = changesets
 		.reverse()
-		.filter((changeset) => changeset.down.length > 0)
-		.map((changeset) => changeset.down.join("\n    ."));
+		.filter(
+			(changeset) =>
+				changeset.down.length > 0 && (changeset.down[0] || []).length > 0,
+		)
+		.map((changeset) =>
+			changeset.down.map((d) => d.join("\n    .")).join("\n"),
+		);
 	return { up, down };
 }
 

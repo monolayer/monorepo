@@ -84,11 +84,13 @@ function createFirstIndexMigration(
 					tableName: tableName,
 					type: ChangeSetType.CreateIndex,
 					up: [
-						`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
+						[
+							`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
+						],
 					],
 					down: addedTables.includes(tableName)
-						? []
-						: [`await db.schema.dropIndex("${indexName}").execute();`],
+						? [[]]
+						: [[`await db.schema.dropIndex("${indexName}").execute();`]],
 				};
 				return changeSet;
 			}
@@ -113,10 +115,12 @@ function dropAllIndexesMigration(
 				tableName: tableName,
 				type: ChangeSetType.DropIndex,
 				up: droppedTables.includes(tableName)
-					? []
-					: [`await db.schema.dropIndex("${indexName}").execute();`],
+					? [[]]
+					: [[`await db.schema.dropIndex("${indexName}").execute();`]],
 				down: [
-					`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
+					[
+						`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
+					],
 				],
 			};
 			return changeSet;
@@ -134,10 +138,14 @@ function changeIndexMigration(diff: ChangeIndexDiff) {
 		tableName: tableName,
 		type: ChangeSetType.ChangeIndex,
 		up: [
-			`await sql\`DROP INDEX "${indexName}";${newIndex[1]};COMMENT ON INDEX "${indexName}" IS '${newIndex[0]}'\`.execute(db);`,
+			[
+				`await sql\`DROP INDEX "${indexName}";${newIndex[1]};COMMENT ON INDEX "${indexName}" IS '${newIndex[0]}'\`.execute(db);`,
+			],
 		],
 		down: [
-			`await sql\`DROP INDEX "${indexName}";${oldIndex[1]};COMMENT ON INDEX "${indexName}" IS '${oldIndex[0]}'\`.execute(db);`,
+			[
+				`await sql\`DROP INDEX "${indexName}";${oldIndex[1]};COMMENT ON INDEX "${indexName}" IS '${oldIndex[0]}'\`.execute(db);`,
+			],
 		],
 	};
 	return changeset;
@@ -162,16 +170,18 @@ function createIndexMigration(diff: CreateIndex) {
 	const tableName = diff.path[1];
 	const indexName = diff.path[2];
 	const index = diff.value.split(":");
-	const changeSet: Changeset = {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.IndexCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateIndex,
 		up: [
-			`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
+			[
+				`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
+			],
 		],
-		down: [`await db.schema.dropIndex("${indexName}").execute();`],
+		down: [[`await db.schema.dropIndex("${indexName}").execute();`]],
 	};
-	return changeSet;
+	return changeset;
 }
 
 type DropIndex = {
@@ -193,14 +203,16 @@ function dropIndexMigration(diff: DropIndex) {
 	const tableName = diff.path[1];
 	const indexName = diff.path[2];
 	const index = diff.oldValue.split(":");
-	const changeSet: Changeset = {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.IndexDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropIndex,
-		up: [`await db.schema.dropIndex("${indexName}").execute();`],
+		up: [[`await db.schema.dropIndex("${indexName}").execute();`]],
 		down: [
-			`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
+			[
+				`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
+			],
 		],
 	};
-	return changeSet;
+	return changeset;
 }

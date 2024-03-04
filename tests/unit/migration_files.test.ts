@@ -44,39 +44,45 @@ describe("Migrator", () => {
 					type: ChangeSetType.CreateTable,
 					priority: 1,
 					up: [
-						"await db.schema",
-						'createTable("books")',
-						'addColumn("name", "text")',
-						"execute();",
+						[
+							"await db.schema",
+							'createTable("books")',
+							'addColumn("name", "text")',
+							"execute();",
+						],
 					],
-					down: ["await db.schema", 'dropTable("books")', "execute();"],
+					down: [["await db.schema", 'dropTable("books")', "execute();"]],
 				},
 				{
 					tableName: "members",
 					priority: 1,
 					type: ChangeSetType.CreateTable,
 					up: [
-						"await db.schema",
-						'createTable("members")',
-						'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
-						'addColumn("email", "varchar(255)")',
-						'addColumn("city", "text", (col) => col.notNull())',
-						"execute();",
+						[
+							"await db.schema",
+							'createTable("members")',
+							'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
+							'addColumn("email", "varchar(255)")',
+							'addColumn("city", "text", (col) => col.notNull())',
+							"execute();",
+						],
 					],
-					down: ["await db.schema", 'dropTable("members")', "execute();"],
+					down: [["await db.schema", 'dropTable("members")', "execute();"]],
 				},
 				{
 					tableName: "shops",
 					priority: 1,
 					type: ChangeSetType.DropTable,
-					up: ["await db.schema", 'dropTable("shops")', "execute();"],
+					up: [["await db.schema", 'dropTable("shops")', "execute();"]],
 					down: [
-						"await db.schema",
-						'createTable("shops")',
-						'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
-						'addColumn("email", "varchar(255)")',
-						'addColumn("city", "text", (col) => col.notNull())',
-						"execute();",
+						[
+							"await db.schema",
+							'createTable("shops")',
+							'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
+							'addColumn("email", "varchar(255)")',
+							'addColumn("city", "text", (col) => col.notNull())',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -84,16 +90,20 @@ describe("Migrator", () => {
 					type: ChangeSetType.CreateColumn,
 					priority: 2,
 					up: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'addColumn("country", "text")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'addColumn("country", "text")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'dropColumn("country")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'dropColumn("country")',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -101,16 +111,20 @@ describe("Migrator", () => {
 					type: ChangeSetType.ChangeColumn,
 					priority: 3001,
 					up: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("name", (col) => col.setDataType("varchar"))',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.setDataType("varchar"))',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("name", (col) => col.setDataType("text"))',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.setDataType("text"))',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -118,16 +132,20 @@ describe("Migrator", () => {
 					type: ChangeSetType.ChangeColumn,
 					priority: 3001,
 					up: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("email", (col) => col.setDataType("varchar"))',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("email", (col) => col.setDataType("varchar"))',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("email", (col) => col.setDataType("varchar(255)"))',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("email", (col) => col.setDataType("varchar(255)"))',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -135,16 +153,20 @@ describe("Migrator", () => {
 					type: ChangeSetType.ChangeColumn,
 					priority: 3002,
 					up: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("name", (col) => col.setDefault("hello"))',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.setDefault("hello"))',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("name", (col) => col.dropDefault())',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.dropDefault())',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -152,16 +174,20 @@ describe("Migrator", () => {
 					type: ChangeSetType.ChangeColumn,
 					priority: 3002,
 					up: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("name", (col) => col.setNotNull())',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.setNotNull())',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("name", (col) => col.dropNotNull())',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -169,16 +195,20 @@ describe("Migrator", () => {
 					type: ChangeSetType.ChangeColumn,
 					priority: 3002,
 					up: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("city", (col) => col.dropDefault())',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("city", (col) => col.dropDefault())',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("city", (col) => col.setDefault("bcn"))',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("city", (col) => col.setDefault("bcn"))',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -186,16 +216,20 @@ describe("Migrator", () => {
 					type: ChangeSetType.ChangeColumn,
 					priority: 3002,
 					up: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("city", (col) => col.setNotNull())',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("city", (col) => col.setNotNull())',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("addresses")',
-						'alterColumn("city", (col) => col.dropNotNull())',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("addresses")',
+							'alterColumn("city", (col) => col.dropNotNull())',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -203,9 +237,11 @@ describe("Migrator", () => {
 					tableName: "books",
 					type: ChangeSetType.CreateIndex,
 					up: [
-						'await sql`create index "books_name_kntc_idx" on "books" ("name")`.execute(db);',
+						[
+							'await sql`create index "books_name_kntc_idx" on "books" ("name")`.execute(db);',
+						],
 					],
-					down: [],
+					down: [[]],
 				},
 				{
 					tableName: "shops",
@@ -213,7 +249,9 @@ describe("Migrator", () => {
 					type: ChangeSetType.DropIndex,
 					up: [],
 					down: [
-						'await sql`create unique index "shops_mail_kntc_idx" on "shops" using btree ("email")`.execute(db);',
+						[
+							'await sql`create unique index "shops_mail_kntc_idx" on "shops" using btree ("email")`.execute(db);',
+						],
 					],
 				},
 				{
@@ -222,7 +260,9 @@ describe("Migrator", () => {
 					type: ChangeSetType.DropIndex,
 					up: [],
 					down: [
-						'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city")`.execute(db);',
+						[
+							'await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city")`.execute(db);',
+						],
 					],
 				},
 				{
@@ -230,10 +270,12 @@ describe("Migrator", () => {
 					priority: 4003,
 					type: ChangeSetType.CreateIndex,
 					up: [
-						'await sql`create unique index "addresses_city_kntc_idx" on "addresses" using btree ("city")`.execute(db);',
+						[
+							'await sql`create unique index "addresses_city_kntc_idx" on "addresses" using btree ("city")`.execute(db);',
+						],
 					],
 					down: [
-						'await db.schema.dropIndex("addresses_city_kntc_idx").execute();',
+						['await db.schema.dropIndex("addresses_city_kntc_idx").execute();'],
 					],
 				},
 			];
@@ -252,6 +294,7 @@ describe("Migrator", () => {
 					const migrationContent = readFileSync(
 						`${context.migrationsFolder}/${file}`,
 					).toString();
+					console.dir(migrationContent, { depth: null });
 					expect(migrationContent).toBe(fixtureContent);
 				}
 			}
@@ -264,12 +307,14 @@ describe("Migrator", () => {
 					type: ChangeSetType.CreateTable,
 					priority: 1,
 					up: [
-						"await db.schema",
-						'createTable("books")',
-						'addColumn("name", "text")',
-						"execute();",
+						[
+							"await db.schema",
+							'createTable("books")',
+							'addColumn("name", "text")',
+							"execute();",
+						],
 					],
-					down: ["await db.schema", 'dropTable("books")', "execute();"],
+					down: [["await db.schema", 'dropTable("books")', "execute();"]],
 				},
 			];
 			generateMigrationFiles(changeset, context.folder);

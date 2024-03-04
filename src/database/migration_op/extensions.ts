@@ -1,6 +1,6 @@
 import type { Difference } from "microdiff";
 import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
-import { ChangeSetType } from "./changeset.js";
+import { ChangeSetType, type Changeset } from "./changeset.js";
 import { executeKyselyDbStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
 
@@ -51,28 +51,36 @@ function isDropExtensionDiff(test: Difference): test is DropExtensionDiff {
 
 function createExtensionMigration(diff: CreateExtensionDiff) {
 	const extensionName = diff.path[1];
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.Database,
 		tableName: "none",
 		type: ChangeSetType.CreateExtension,
-		up: executeKyselyDbStatement(
-			`CREATE EXTENSION IF NOT EXISTS ${extensionName};`,
-		),
-		down: executeKyselyDbStatement(
-			`DROP EXTENSION IF EXISTS ${extensionName};`,
-		),
+		up: [
+			executeKyselyDbStatement(
+				`CREATE EXTENSION IF NOT EXISTS ${extensionName};`,
+			),
+		],
+		down: [
+			executeKyselyDbStatement(`DROP EXTENSION IF EXISTS ${extensionName};`),
+		],
 	};
+	return changeset;
 }
 
 function dropExtensionMigration(diff: DropExtensionDiff) {
 	const extensionName = diff.path[1];
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.Database,
 		tableName: "none",
 		type: ChangeSetType.DropExtension,
-		up: executeKyselyDbStatement(`DROP EXTENSION IF EXISTS ${extensionName};`),
-		down: executeKyselyDbStatement(
-			`CREATE EXTENSION IF NOT EXISTS ${extensionName};`,
-		),
+		up: [
+			executeKyselyDbStatement(`DROP EXTENSION IF EXISTS ${extensionName};`),
+		],
+		down: [
+			executeKyselyDbStatement(
+				`CREATE EXTENSION IF NOT EXISTS ${extensionName};`,
+			),
+		],
 	};
+	return changeset;
 }

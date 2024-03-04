@@ -50,16 +50,20 @@ describe("Table change migrations", () => {
 				tableName: "teams",
 				type: "createColumn",
 				up: [
-					"await db.schema",
-					'alterTable("teams")',
-					'addColumn("location", "text")',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("teams")',
+						'addColumn("location", "text")',
+						"execute();",
+					],
 				],
 				down: [
-					"await db.schema",
-					'alterTable("teams")',
-					'dropColumn("location")',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("teams")',
+						'dropColumn("location")',
+						"execute();",
+					],
 				],
 			},
 			{
@@ -67,16 +71,20 @@ describe("Table change migrations", () => {
 				tableName: "users",
 				type: "createColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					'addColumn("email", "text")',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'addColumn("email", "text")',
+						"execute();",
+					],
 				],
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					'dropColumn("email")',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'dropColumn("email")',
+						"execute();",
+					],
 				],
 			},
 		];
@@ -123,16 +131,20 @@ describe("Table change migrations", () => {
 				tableName: "teams",
 				type: "dropColumn",
 				up: [
-					"await db.schema",
-					'alterTable("teams")',
-					'dropColumn("location")',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("teams")',
+						'dropColumn("location")',
+						"execute();",
+					],
 				],
 				down: [
-					"await db.schema",
-					'alterTable("teams")',
-					'addColumn("location", "text")',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("teams")',
+						'addColumn("location", "text")',
+						"execute();",
+					],
 				],
 			},
 			{
@@ -140,16 +152,20 @@ describe("Table change migrations", () => {
 				tableName: "users",
 				type: "dropColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					'dropColumn("email")',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'dropColumn("email")',
+						"execute();",
+					],
 				],
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					'addColumn("email", "text")',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'addColumn("email", "text")',
+						"execute();",
+					],
 				],
 			},
 		];
@@ -183,16 +199,20 @@ describe("Table change migrations", () => {
 				tableName: "users",
 				type: "changeColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					'alterColumn("name", (col) => col.setDataType("varchar"))',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.setDataType("varchar"))',
+						"execute();",
+					],
 				],
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					'alterColumn("name", (col) => col.setDataType("text"))',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.setDataType("text"))',
+						"execute();",
+					],
 				],
 			},
 		];
@@ -227,16 +247,20 @@ describe("Table change migrations", () => {
 				tableName: "users",
 				type: "changeColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					"alterColumn(\"name\", (col) => col.setDefault(sql`'bar'::text`))",
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						"alterColumn(\"name\", (col) => col.setDefault(sql`'bar'::text`))",
+						"execute();",
+					],
 				],
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::text`))",
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::text`))",
+						"execute();",
+					],
 				],
 			},
 		];
@@ -273,16 +297,20 @@ describe("Table change migrations", () => {
 				tableName: "users",
 				type: "changeColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					'alterColumn("email", (col) => col.setNotNull())',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("email", (col) => col.setNotNull())',
+						"execute();",
+					],
 				],
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					'alterColumn("email", (col) => col.dropNotNull())',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("email", (col) => col.dropNotNull())',
+						"execute();",
+					],
 				],
 			},
 			{
@@ -290,16 +318,20 @@ describe("Table change migrations", () => {
 				tableName: "users",
 				type: "changeColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					'alterColumn("name", (col) => col.dropNotNull())',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.dropNotNull())',
+						"execute();",
+					],
 				],
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					'alterColumn("name", (col) => col.setNotNull())',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.setNotNull())',
+						"execute();",
+					],
 				],
 			},
 		];
@@ -330,53 +362,65 @@ describe("Table change migrations", () => {
 		const expected = [
 			{
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					'alterColumn("name", (col) => col.setDataType("text"))',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.setDataType("text"))',
+						"execute();",
+					],
 				],
 				priority: 3001,
 				tableName: "users",
 				type: "changeColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					'alterColumn("name", (col) => col.setDataType("varchar"))',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.setDataType("varchar"))',
+						"execute();",
+					],
 				],
 			},
 			{
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::text`))",
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::text`))",
+						"execute();",
+					],
 				],
 				priority: 3007,
 				tableName: "users",
 				type: "changeColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::character varying`))",
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::character varying`))",
+						"execute();",
+					],
 				],
 			},
 			{
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					'alterColumn("name", (col) => col.dropNotNull())',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.dropNotNull())',
+						"execute();",
+					],
 				],
 				priority: 3008,
 				tableName: "users",
 				type: "changeColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					'alterColumn("name", (col) => col.setNotNull())',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.setNotNull())',
+						"execute();",
+					],
 				],
 			},
 		];

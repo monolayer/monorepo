@@ -43,23 +43,31 @@ function columnNullableMigrationOperation(diff: ColumnNullableDifference) {
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
 		up: diff.value
-			? executeKyselySchemaStatement(
-					`alterTable("${tableName}")`,
-					`alterColumn(\"${columnName}\", (col) => col.dropNotNull())`,
-			  )
-			: executeKyselySchemaStatement(
-					`alterTable("${tableName}")`,
-					`alterColumn(\"${columnName}\", (col) => col.setNotNull())`,
-			  ),
+			? [
+					executeKyselySchemaStatement(
+						`alterTable("${tableName}")`,
+						`alterColumn(\"${columnName}\", (col) => col.dropNotNull())`,
+					),
+			  ]
+			: [
+					executeKyselySchemaStatement(
+						`alterTable("${tableName}")`,
+						`alterColumn(\"${columnName}\", (col) => col.setNotNull())`,
+					),
+			  ],
 		down: diff.value
-			? executeKyselySchemaStatement(
-					`alterTable("${tableName}")`,
-					`alterColumn(\"${columnName}\", (col) => col.setNotNull())`,
-			  )
-			: executeKyselySchemaStatement(
-					`alterTable("${tableName}")`,
-					`alterColumn(\"${columnName}\", (col) => col.dropNotNull())`,
-			  ),
+			? [
+					executeKyselySchemaStatement(
+						`alterTable("${tableName}")`,
+						`alterColumn(\"${columnName}\", (col) => col.setNotNull())`,
+					),
+			  ]
+			: [
+					executeKyselySchemaStatement(
+						`alterTable("${tableName}")`,
+						`alterColumn(\"${columnName}\", (col) => col.dropNotNull())`,
+					),
+			  ],
 	};
 	return changeset;
 }

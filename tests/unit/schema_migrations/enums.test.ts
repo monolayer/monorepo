@@ -41,28 +41,34 @@ describe("Database migrations", () => {
 				tableName: "none",
 				type: "createEnum",
 				up: [
-					"await db.schema",
-					'createType("role")',
-					'asEnum(["admin", "user"])',
-					"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+					[
+						"await db.schema",
+						'createType("role")',
+						'asEnum(["admin", "user"])',
+						"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+					],
 				],
-				down: ["await db.schema", 'dropType("role")', "execute();"],
+				down: [["await db.schema", 'dropType("role")', "execute();"]],
 			},
 			{
 				priority: 2002,
 				tableName: "users",
 				type: "createColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					'addColumn("role", sql`role`)',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'addColumn("role", sql`role`)',
+						"execute();",
+					],
 				],
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					'dropColumn("role")',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'dropColumn("role")',
+						"execute();",
+					],
 				],
 			},
 		];
@@ -106,28 +112,34 @@ describe("Database migrations", () => {
 				tableName: "users",
 				type: "dropColumn",
 				up: [
-					"await db.schema",
-					'alterTable("users")',
-					'dropColumn("role")',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'dropColumn("role")',
+						"execute();",
+					],
 				],
 				down: [
-					"await db.schema",
-					'alterTable("users")',
-					'addColumn("role", sql`role`)',
-					"execute();",
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'addColumn("role", sql`role`)',
+						"execute();",
+					],
 				],
 			},
 			{
 				priority: 3009,
 				tableName: "none",
 				type: "dropEnum",
-				up: ["await db.schema", 'dropType("role")', "execute();"],
+				up: [["await db.schema", 'dropType("role")', "execute();"]],
 				down: [
-					"await db.schema",
-					'createType("role")',
-					'asEnum(["admin", "user"])',
-					"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+					[
+						"await db.schema",
+						'createType("role")',
+						'asEnum(["admin", "user"])',
+						"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+					],
 				],
 			},
 		];
@@ -172,7 +184,9 @@ describe("Database migrations", () => {
 				tableName: "none",
 				type: "changeEnum",
 				up: [
-					"await sql`ALTER TYPE role ADD VALUE IF NOT EXISTS 'superuser';`.execute(db);",
+					[
+						"await sql`ALTER TYPE role ADD VALUE IF NOT EXISTS 'superuser';`.execute(db);",
+					],
 				],
 				down: [],
 			},

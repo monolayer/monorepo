@@ -3,7 +3,10 @@ import {
 	type DbTableInfo,
 	type LocalTableInfo,
 } from "~/database/introspection/types.js";
-import { ChangeSetType } from "~/database/migration_op/changeset.js";
+import {
+	ChangeSetType,
+	type Changeset,
+} from "~/database/migration_op/changeset.js";
 import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
 import { type ColumnsInfoDiff, tableColumnsOps } from "./table_common.js";
@@ -37,16 +40,19 @@ export function isCreateTable(test: Difference): test is CreateTableDiff {
 
 function createTableMigration(diff: CreateTableDiff) {
 	const tableName = diff.path[1];
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.TableCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateTable,
-		up: executeKyselySchemaStatement(
-			`createTable("${tableName}")`,
-			...tableColumnsOps(diff.value),
-		),
-		down: executeKyselySchemaStatement(`dropTable("${tableName}")`),
+		up: [
+			executeKyselySchemaStatement(
+				`createTable("${tableName}")`,
+				...tableColumnsOps(diff.value),
+			),
+		],
+		down: [executeKyselySchemaStatement(`dropTable("${tableName}")`)],
 	};
+	return changeset;
 }
 
 export type DropTableTableDiff = {
@@ -63,14 +69,17 @@ export function isDropTable(test: Difference): test is DropTableTableDiff {
 
 function dropTableMigration(diff: DropTableTableDiff) {
 	const tableName = diff.path[1];
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.TableDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropTable,
-		up: executeKyselySchemaStatement(`dropTable("${tableName}")`),
-		down: executeKyselySchemaStatement(
-			`createTable("${tableName}")`,
-			...tableColumnsOps(diff.oldValue),
-		),
+		up: [executeKyselySchemaStatement(`dropTable("${tableName}")`)],
+		down: [
+			executeKyselySchemaStatement(
+				`createTable("${tableName}")`,
+				...tableColumnsOps(diff.oldValue),
+			),
+		],
 	};
+	return changeset;
 }

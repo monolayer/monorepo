@@ -34,7 +34,7 @@ export enum ChangeSetType {
 export type Changeset = {
 	tableName: string;
 	type: ChangeSetType;
-	up: string[];
-	down: string[];
+	up: string[][];
+	down: string[][];
 	priority: number;
 };

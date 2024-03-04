@@ -42,14 +42,18 @@ function columnDatatypeMigrationOperation(diff: ColumnDataTypeDifference) {
 		priority: MigrationOpPriority.ChangeColumnDatatype,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
-		up: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`alterColumn(\"${columnName}\", (col) => col.setDataType("${diff.value}"))`,
-		),
-		down: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`alterColumn(\"${columnName}\", (col) => col.setDataType("${diff.oldValue}"))`,
-		),
+		up: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`alterColumn(\"${columnName}\", (col) => col.setDataType("${diff.value}"))`,
+			),
+		],
+		down: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`alterColumn(\"${columnName}\", (col) => col.setDataType("${diff.oldValue}"))`,
+			),
+		],
 	};
 	return changeset;
 }

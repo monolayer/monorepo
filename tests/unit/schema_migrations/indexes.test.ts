@@ -53,9 +53,11 @@ describe("Database migrations", () => {
 				tableName: "users",
 				type: "createIndex",
 				up: [
-					'await sql`create index "users_name_kntc_idx" on "users" ("name");COMMENT ON INDEX "users_name_kntc_idx" IS \'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45\'`.execute(db);',
+					[
+						'await sql`create index "users_name_kntc_idx" on "users" ("name");COMMENT ON INDEX "users_name_kntc_idx" IS \'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45\'`.execute(db);',
+					],
 				],
-				down: ['await db.schema.dropIndex("users_name_kntc_idx").execute();'],
+				down: [['await db.schema.dropIndex("users_name_kntc_idx").execute();']],
 			},
 		];
 
@@ -111,9 +113,13 @@ describe("Database migrations", () => {
 				priority: 1002,
 				tableName: "users",
 				type: "dropIndex",
-				up: ['await db.schema.dropIndex("users_fullName_kntc_idx").execute();'],
+				up: [
+					['await db.schema.dropIndex("users_fullName_kntc_idx").execute();'],
+				],
 				down: [
-					'await sql`CREATE INDEX "users_fullName_kntc_idx" ON public.users USING btree ("fullName");COMMENT ON INDEX "users_fullName_kntc_idx" IS \'ad74f314032ddf2bfaa4c8df84eda0879a9c47265237c8fa3db2b788ebbb3c9c\'`.execute(db);',
+					[
+						'await sql`CREATE INDEX "users_fullName_kntc_idx" ON public.users USING btree ("fullName");COMMENT ON INDEX "users_fullName_kntc_idx" IS \'ad74f314032ddf2bfaa4c8df84eda0879a9c47265237c8fa3db2b788ebbb3c9c\'`.execute(db);',
+					],
 				],
 			},
 		];
@@ -170,9 +176,13 @@ describe("Database migrations", () => {
 				priority: 1002,
 				tableName: "users",
 				type: "dropIndex",
-				up: ['await db.schema.dropIndex("users_fullName_kntc_idx").execute();'],
+				up: [
+					['await db.schema.dropIndex("users_fullName_kntc_idx").execute();'],
+				],
 				down: [
-					'await sql`CREATE INDEX "users_fullName_kntc_idx" ON public.users USING btree ("fullName");COMMENT ON INDEX "users_fullName_kntc_idx" IS \'ad74f314032ddf2bfaa4c8df84eda0879a9c47265237c8fa3db2b788ebbb3c9c\'`.execute(db);',
+					[
+						'await sql`CREATE INDEX "users_fullName_kntc_idx" ON public.users USING btree ("fullName");COMMENT ON INDEX "users_fullName_kntc_idx" IS \'ad74f314032ddf2bfaa4c8df84eda0879a9c47265237c8fa3db2b788ebbb3c9c\'`.execute(db);',
+					],
 				],
 			},
 			{
@@ -180,10 +190,14 @@ describe("Database migrations", () => {
 				tableName: "users",
 				type: "createIndex",
 				up: [
-					'await sql`create index "users_name_fullName_kntc_idx" on "users" ("name", "fullName");COMMENT ON INDEX "users_name_fullName_kntc_idx" IS \'94f56c57e18c098a2ab70fd783fdeeaa660799088965d10d271817a7369bf4d7\'`.execute(db);',
+					[
+						'await sql`create index "users_name_fullName_kntc_idx" on "users" ("name", "fullName");COMMENT ON INDEX "users_name_fullName_kntc_idx" IS \'94f56c57e18c098a2ab70fd783fdeeaa660799088965d10d271817a7369bf4d7\'`.execute(db);',
+					],
 				],
 				down: [
-					'await db.schema.dropIndex("users_name_fullName_kntc_idx").execute();',
+					[
+						'await db.schema.dropIndex("users_name_fullName_kntc_idx").execute();',
+					],
 				],
 			},
 		];
@@ -241,10 +255,14 @@ describe("Database migrations", () => {
 				tableName: "users",
 				type: "changeIndex",
 				up: [
-					'await sql`DROP INDEX "users_fullName_kntc_idx";create unique index "users_fullName_kntc_idx" on "users" ("fullName");COMMENT ON INDEX "users_fullName_kntc_idx" IS \'713f9d140066f05644109e679bfb1f0307cda86277f6d7393ad1b0bfc78429a5\'`.execute(db);',
+					[
+						'await sql`DROP INDEX "users_fullName_kntc_idx";create unique index "users_fullName_kntc_idx" on "users" ("fullName");COMMENT ON INDEX "users_fullName_kntc_idx" IS \'713f9d140066f05644109e679bfb1f0307cda86277f6d7393ad1b0bfc78429a5\'`.execute(db);',
+					],
 				],
 				down: [
-					'await sql`DROP INDEX "users_fullName_kntc_idx";CREATE INDEX "users_fullName_kntc_idx" ON public.users USING btree ("fullName");COMMENT ON INDEX "users_fullName_kntc_idx" IS \'ad74f314032ddf2bfaa4c8df84eda0879a9c47265237c8fa3db2b788ebbb3c9c\'`.execute(db);',
+					[
+						'await sql`DROP INDEX "users_fullName_kntc_idx";CREATE INDEX "users_fullName_kntc_idx" ON public.users USING btree ("fullName");COMMENT ON INDEX "users_fullName_kntc_idx" IS \'ad74f314032ddf2bfaa4c8df84eda0879a9c47265237c8fa3db2b788ebbb3c9c\'`.execute(db);',
+					],
 				],
 			},
 		];

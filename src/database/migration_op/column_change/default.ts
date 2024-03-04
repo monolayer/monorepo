@@ -92,16 +92,20 @@ function columnDefaultAddMigrationOperation(diff: ColumnDefaultAddDifference) {
 		priority: MigrationOpPriority.ChangeColumnDefaultAdd,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
-		up: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
-				diff.value,
-			)}))`,
-		),
-		down: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`alterColumn(\"${columnName}\", (col) => col.dropDefault())`,
-		),
+		up: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
+					diff.value,
+				)}))`,
+			),
+		],
+		down: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`alterColumn(\"${columnName}\", (col) => col.dropDefault())`,
+			),
+		],
 	};
 	return changeset;
 }
@@ -115,16 +119,20 @@ function columnDefaultDropMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnDefaultDrop,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
-		up: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`alterColumn(\"${columnName}\", (col) => col.dropDefault())`,
-		),
-		down: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
-				diff.oldValue,
-			)}))`,
-		),
+		up: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`alterColumn(\"${columnName}\", (col) => col.dropDefault())`,
+			),
+		],
+		down: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
+					diff.oldValue,
+				)}))`,
+			),
+		],
 	};
 	return changeset;
 }
@@ -138,18 +146,22 @@ function columnDefaultChangeMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnDefaultChange,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
-		up: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
-				diff.value,
-			)}))`,
-		),
-		down: executeKyselySchemaStatement(
-			`alterTable("${tableName}")`,
-			`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
-				diff.oldValue,
-			)}))`,
-		),
+		up: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
+					diff.value,
+				)}))`,
+			),
+		],
+		down: [
+			executeKyselySchemaStatement(
+				`alterTable("${tableName}")`,
+				`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
+					diff.oldValue,
+				)}))`,
+			),
+		],
 	};
 	return changeset;
 }

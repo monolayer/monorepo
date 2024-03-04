@@ -112,23 +112,28 @@ function createPrimaryKeyMigration(
 		primaryKeyName
 	] as (typeof diff.value)[keyof typeof diff.value];
 
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreatePrimaryKey,
-		up: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
-		),
+		up: [
+			executeKyselyDbStatement(
+				`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
+			),
+		],
 		down: addedTables.includes(tableName)
-			? []
-			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
-						primaryKeyValue,
-						tableName,
-						local,
-					)}`,
-			  ),
+			? [[]]
+			: [
+					executeKyselyDbStatement(
+						`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
+							primaryKeyValue,
+							tableName,
+							local,
+						)}`,
+					),
+			  ],
 	};
+	return changeset;
 }
 
 function dropPrimaryKeyMigration(
@@ -144,23 +149,28 @@ function dropPrimaryKeyMigration(
 		primaryKeyName
 	] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
 
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
-			? []
-			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
-						primaryKeyValue,
-						tableName,
-						local,
-					)}`,
-			  ),
-		down: executeKyselyDbStatement(
-			`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
-		),
+			? [[]]
+			: [
+					executeKyselyDbStatement(
+						`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
+							primaryKeyValue,
+							tableName,
+							local,
+						)}`,
+					),
+			  ],
+		down: [
+			executeKyselyDbStatement(
+				`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
+			),
+		],
 	};
+	return changeset;
 }
 
 function updatePrimaryKeyMigration(
@@ -173,25 +183,30 @@ function updatePrimaryKeyMigration(
 	const primaryKeyName = diff.path[2];
 	const primaryKeyValue = diff.value;
 
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreatePrimaryKey,
 		up: droppedTables.includes(tableName)
-			? []
-			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
-			  ),
+			? [[]]
+			: [
+					executeKyselyDbStatement(
+						`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
+					),
+			  ],
 		down: addedTables.includes(tableName)
-			? []
-			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
-						primaryKeyValue,
-						tableName,
-						local,
-					)}`,
-			  ),
+			? [[]]
+			: [
+					executeKyselyDbStatement(
+						`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
+							primaryKeyValue,
+							tableName,
+							local,
+						)}`,
+					),
+			  ],
 	};
+	return changeset;
 }
 
 function replacePrimaryKeyMigration(
@@ -204,25 +219,30 @@ function replacePrimaryKeyMigration(
 	const primaryKeyName = diff.path[2];
 	const primaryKeyValue = diff.oldValue;
 
-	return {
+	const changeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
-			? []
-			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
-						primaryKeyValue,
-						tableName,
-						local,
-					)}`,
-			  ),
+			? [[]]
+			: [
+					executeKyselyDbStatement(
+						`ALTER TABLE ${tableName} DROP CONSTRAINT "${primaryKeyName}"${dropNotNullStatements(
+							primaryKeyValue,
+							tableName,
+							local,
+						)}`,
+					),
+			  ],
 		down: addedTables.includes(tableName)
-			? []
-			: executeKyselyDbStatement(
-					`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
-			  ),
+			? [[]]
+			: [
+					executeKyselyDbStatement(
+						`ALTER TABLE ${tableName} ADD CONSTRAINT ${primaryKeyValue}`,
+					),
+			  ],
 	};
+	return changeset;
 }
 
 function dropNotNullStatements(

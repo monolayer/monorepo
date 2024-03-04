@@ -42,16 +42,20 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "changeColumnName",
 					up: [
-						"await db.schema",
-						'alterTable("users")',
-						'renameColumn("name", "fullName")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users")',
+							'renameColumn("name", "fullName")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users")',
-						'renameColumn("fullName", "name")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users")',
+							'renameColumn("fullName", "name")',
+							"execute();",
+						],
 					],
 				},
 			];
@@ -86,16 +90,20 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "changeColumn",
 					up: [
-						"await db.schema",
-						'alterTable("users")',
-						'alterColumn("name", (col) => col.setDataType("varchar(255)"))',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.setDataType("varchar(255)"))',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users")',
-						'alterColumn("name", (col) => col.setDataType("text"))',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.setDataType("text"))',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -103,16 +111,20 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "changeColumnName",
 					up: [
-						"await db.schema",
-						'alterTable("users")',
-						'renameColumn("name", "fullName")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users")',
+							'renameColumn("name", "fullName")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users")',
-						'renameColumn("fullName", "name")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users")',
+							'renameColumn("fullName", "name")',
+							"execute();",
+						],
 					],
 				},
 			];
@@ -151,10 +163,14 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "dropConstraint",
 					up: [
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_name_kinetic_key"`.execute(db);',
+						[
+							'await sql`ALTER TABLE users DROP CONSTRAINT "users_name_kinetic_key"`.execute(db);',
+						],
 					],
 					down: [
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_name_kinetic_key" UNIQUE NULLS DISTINCT ("name")`.execute(db);',
+						[
+							'await sql`ALTER TABLE users ADD CONSTRAINT "users_name_kinetic_key" UNIQUE NULLS DISTINCT ("name")`.execute(db);',
+						],
 					],
 				},
 				{
@@ -162,16 +178,20 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "changeColumnName",
 					up: [
-						"await db.schema",
-						'alterTable("users")',
-						'renameColumn("name", "fullName")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users")',
+							'renameColumn("name", "fullName")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users")',
-						'renameColumn("fullName", "name")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users")',
+							'renameColumn("fullName", "name")',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -179,10 +199,14 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "createConstraint",
 					up: [
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_kinetic_key" UNIQUE NULLS NOT DISTINCT ("fullName")`.execute(db);',
+						[
+							'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_kinetic_key" UNIQUE NULLS NOT DISTINCT ("fullName")`.execute(db);',
+						],
 					],
 					down: [
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_kinetic_key"`.execute(db);',
+						[
+							'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_kinetic_key"`.execute(db);',
+						],
 					],
 				},
 			];
@@ -220,16 +244,20 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "changeColumnName",
 					up: [
-						"await db.schema",
-						'alterTable("users")',
-						'renameColumn("name", "fullName")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users")',
+							'renameColumn("name", "fullName")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users")',
-						'renameColumn("fullName", "name")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users")',
+							'renameColumn("fullName", "name")',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -237,10 +265,14 @@ describe("Rename column migrations", () => {
 					tableName: "users",
 					type: "createConstraint",
 					up: [
-						'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_kinetic_key" UNIQUE NULLS DISTINCT ("fullName")`.execute(db);',
+						[
+							'await sql`ALTER TABLE users ADD CONSTRAINT "users_fullName_kinetic_key" UNIQUE NULLS DISTINCT ("fullName")`.execute(db);',
+						],
 					],
 					down: [
-						'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_kinetic_key"`.execute(db);',
+						[
+							'await sql`ALTER TABLE users DROP CONSTRAINT "users_fullName_kinetic_key"`.execute(db);',
+						],
 					],
 				},
 			];
@@ -281,10 +313,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "dropPrimaryKey",
 					up: [
-						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_name_kinetic_pk", ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_name_kinetic_pk", ALTER COLUMN "name" DROP NOT NULL`.execute(db);',
+						],
 					],
 					down: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_name_kinetic_pk" PRIMARY KEY ("name")`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_name_kinetic_pk" PRIMARY KEY ("name")`.execute(db);',
+						],
 					],
 				},
 				{
@@ -292,16 +328,20 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("name", "fullName")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("name", "fullName")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("fullName", "name")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("fullName", "name")',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -309,10 +349,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createPrimaryKey",
 					up: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_fullName_kinetic_pk" PRIMARY KEY ("fullName")`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_fullName_kinetic_pk" PRIMARY KEY ("fullName")`.execute(db);',
+						],
 					],
 					down: [
-						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_fullName_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_fullName_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+						],
 					],
 				},
 			];
@@ -349,16 +393,20 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("name", "fullName")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("name", "fullName")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("fullName", "name")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("fullName", "name")',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -366,10 +414,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createPrimaryKey",
 					up: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_fullName_kinetic_pk" PRIMARY KEY ("fullName")`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_fullName_kinetic_pk" PRIMARY KEY ("fullName")`.execute(db);',
+						],
 					],
 					down: [
-						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_fullName_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_fullName_kinetic_pk", ALTER COLUMN "fullName" DROP NOT NULL`.execute(db);',
+						],
 					],
 				},
 			];
@@ -428,10 +480,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "dropConstraint",
 					up: [
-						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_book_id_books_pk1_id_kinetic_fk"`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_book_id_books_pk1_id_kinetic_fk"`.execute(db);',
+						],
 					],
 					down: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_book_id_books_pk1_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_book_id_books_pk1_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+						],
 					],
 				},
 				{
@@ -439,16 +495,20 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("book_id", "bookId")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("book_id", "bookId")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("bookId", "book_id")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("bookId", "book_id")',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -456,10 +516,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createConstraint",
 					up: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk" FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk" FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+						],
 					],
 					down: [
-						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk"`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk"`.execute(db);',
+						],
 					],
 				},
 			];
@@ -512,16 +576,20 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("book_id", "bookId")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("book_id", "bookId")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("bookId", "book_id")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("bookId", "book_id")',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -529,10 +597,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createConstraint",
 					up: [
-						'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk" FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 ADD CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk" FOREIGN KEY ("bookId") REFERENCES books_pk1 ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`.execute(db);',
+						],
 					],
 					down: [
-						'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk"`.execute(db);',
+						[
+							'await sql`ALTER TABLE users_pk1 DROP CONSTRAINT "users_pk1_bookId_books_pk1_id_kinetic_fk"`.execute(db);',
+						],
 					],
 				},
 			];
@@ -582,10 +654,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "dropIndex",
 					up: [
-						'await db.schema.dropIndex("users_pk1_book_id_kntc_idx").execute();',
+						[
+							'await db.schema.dropIndex("users_pk1_book_id_kntc_idx").execute();',
+						],
 					],
 					down: [
-						"await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree (book_id);COMMENT ON INDEX \"users_pk1_book_id_kntc_idx\" IS 'abcd'`.execute(db);",
+						[
+							"await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree (book_id);COMMENT ON INDEX \"users_pk1_book_id_kntc_idx\" IS 'abcd'`.execute(db);",
+						],
 					],
 				},
 				{
@@ -593,16 +669,20 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("book_id", "bookId")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("book_id", "bookId")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("bookId", "book_id")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("bookId", "book_id")',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -610,10 +690,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createIndex",
 					up: [
-						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+						[
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+						],
 					],
 					down: [
-						'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+						[
+							'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+						],
 					],
 				},
 			];
@@ -653,16 +737,20 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("book_id", "bookId")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("book_id", "bookId")',
+							"execute();",
+						],
 					],
 					down: [
-						"await db.schema",
-						'alterTable("users_pk1")',
-						'renameColumn("bookId", "book_id")',
-						"execute();",
+						[
+							"await db.schema",
+							'alterTable("users_pk1")',
+							'renameColumn("bookId", "book_id")',
+							"execute();",
+						],
 					],
 				},
 				{
@@ -670,10 +758,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createIndex",
 					up: [
-						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+						[
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+						],
 					],
 					down: [
-						'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+						[
+							'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+						],
 					],
 				},
 			];
@@ -957,10 +1049,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "dropIndex",
 					up: [
-						'await db.schema.dropIndex("users_pk1_book_id_kntc_idx").execute();',
+						[
+							'await db.schema.dropIndex("users_pk1_book_id_kntc_idx").execute();',
+						],
 					],
 					down: [
-						'await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree ("bookId");COMMENT ON INDEX "users_pk1_book_id_kntc_idx" IS \'abcd\'`.execute(db);',
+						[
+							'await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree ("bookId");COMMENT ON INDEX "users_pk1_book_id_kntc_idx" IS \'abcd\'`.execute(db);',
+						],
 					],
 				},
 				{
@@ -968,10 +1064,14 @@ describe("Rename column migrations", () => {
 					tableName: "users_pk1",
 					type: "createIndex",
 					up: [
-						'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+						[
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+						],
 					],
 					down: [
-						'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+						[
+							'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+						],
 					],
 				},
 			];
