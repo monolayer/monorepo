@@ -1,5 +1,4 @@
 import pg from "pg";
-import parse from "pg-connection-string";
 import color from "picocolors";
 import { exit } from "process";
 import { log } from "~/cli/utils/clack.js";
@@ -15,19 +14,10 @@ export function pgPoolAndConfig(config: Config, environment: string) {
 		);
 		exit(1);
 	}
-	const poolConfig =
-		environmentConfig.connectionString === undefined
-			? environmentConfig
-			: parse.parse(environmentConfig.connectionString);
 
 	return {
-		pool: new pg.Pool({
-			host: poolConfig.host || "",
-			port: poolConfig.port ? parseInt(poolConfig.port.toString()) : 5432,
-			user: poolConfig.user || "",
-			password: poolConfig.password || "",
-		}),
-		config: poolConfig,
+		pool: new pg.Pool(environmentConfig),
+		config: environmentConfig,
 	};
 }
 
