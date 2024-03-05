@@ -28,7 +28,8 @@ export function checkEnvironmentIsConfigured(
 	environment: string,
 	options: { spinner?: ReturnType<typeof p.spinner>; outro?: true } = {},
 ) {
-	if (config.environments[environment] === undefined) {
+	const envConfig = config.environments[environment];
+	if (envConfig === undefined) {
 		const errorMesage = `Configuration not found for environment '${environment}'. Please check your kinetic.ts file.`;
 		if (options.spinner !== undefined) {
 			options.spinner.stop(errorMesage, 1);
@@ -38,6 +39,7 @@ export function checkEnvironmentIsConfigured(
 		if (options.outro === true) p.outro(`${color.red("Failed")}`);
 		exit(1);
 	}
+	return envConfig;
 }
 
 export function checkAutoPilotLock(

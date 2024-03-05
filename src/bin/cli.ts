@@ -1,7 +1,8 @@
 #!/usr/bin/env tsx
 
-import { Command } from "commander";
+import { Command } from "@commander-js/extra-typings";
 import { exit } from "process";
+import { seed } from "~/cli/actions/seed.js";
 import { autopilotRevert } from "../cli/actions/autopilot_revert.js";
 import { dbCreate } from "../cli/actions/db_create.js";
 import { dbDrop } from "../cli/actions/db_drop.js";
@@ -34,8 +35,8 @@ async function main() {
 			"development",
 		)
 		.description("Create the database")
-		.action(async (_opts, cmd) => {
-			await dbCreate(cmd.opts().environment);
+		.action(async (opts) => {
+			await dbCreate(opts.environment);
 		});
 
 	program
@@ -46,8 +47,35 @@ async function main() {
 			"development",
 		)
 		.description("Drop the database")
-		.action(async (_opts, cmd) => {
-			await dbDrop(cmd.opts().environment);
+		.action(async (opts) => {
+			await dbDrop(opts.environment);
+		});
+
+	program
+		.command("seed")
+		.description("Seed database")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
+		.action(async (opts) => {
+			await seed(opts);
+		});
+
+	program
+		.command("seed:replant")
+		.description(
+			"Truncate tables in the current environment database and seed the database",
+		)
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
+		.option("-d, --disable-warnings", "disable truncation warnings")
+		.action(async (opts) => {
+			await seed(opts, true);
 		});
 
 	program
@@ -58,8 +86,8 @@ async function main() {
 			"environment as specified in kinetic.ts",
 			"development",
 		)
-		.action(async (_opts, cmd) => {
-			await structureDump(cmd.opts().environment);
+		.action(async (opts) => {
+			await structureDump(opts.environment);
 		});
 
 	program
@@ -70,8 +98,8 @@ async function main() {
 			"environment as specified in kinetic.ts",
 			"development",
 		)
-		.action(async (_opts, cmd) => {
-			await structureLoad(cmd.opts().environment);
+		.action(async (opts) => {
+			await structureLoad(opts.environment);
 		});
 
 	program
@@ -82,7 +110,7 @@ async function main() {
 			"generate migrations without warnings (destroys pending migration files)",
 			false,
 		)
-		.action(async (_opts, _cmd) => {
+		.action(async () => {
 			await generate();
 		});
 
@@ -94,8 +122,8 @@ async function main() {
 			"environment as specified in kinetic.ts",
 			"development",
 		)
-		.action(async (_opts, cmd) => {
-			await migrate(cmd.opts().environment);
+		.action(async (opts) => {
+			await migrate(opts.environment);
 		});
 
 	program
@@ -106,8 +134,8 @@ async function main() {
 			"environment as specified in kinetic.ts",
 			"development",
 		)
-		.action(async (_opts, cmd) => {
-			await migrateDown(cmd.opts().environment);
+		.action(async (opts) => {
+			await migrateDown(opts.environment);
 		});
 
 	program
@@ -118,14 +146,14 @@ async function main() {
 			"environment as specified in kinetic.ts",
 			"development",
 		)
-		.action(async (_opts, cmd) => {
-			await pendingMigrations(cmd.opts().environment);
+		.action(async (opts) => {
+			await pendingMigrations(opts.environment);
 		});
 
 	program
 		.command("autopilot:revert")
 		.description("Revert autopilot migrations")
-		.action(async (_opts, cmd) => {
+		.action(async () => {
 			await autopilotRevert();
 		});
 

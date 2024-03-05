@@ -37,6 +37,7 @@ export async function initFolderAndFiles() {
 	);
 	await createDir(folder.path, true);
 	await createFile(`${folder.path}/schema.ts`, schemaTemplate.render(), true);
+	await createFile(`${folder.path}/seed.ts`, seedTemplate.render(), true);
 	await createDir(`${folder.path}/migrations`, true);
 
 	await createFile(
@@ -93,4 +94,10 @@ export const kysely = new Kysely<DB>({
 		pool: pgPool(kineticConfig, process.env.KINETIC_ENV || "development"),
 	}),
 });
+`);
+
+export const seedTemplate = nunjucks.compile(`import type { Kysely } from "kysely";
+import type { DB } from "./schema.js";
+
+export async function seed(db: Kysely<DB>){}
 `);

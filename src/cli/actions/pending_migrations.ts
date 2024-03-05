@@ -13,10 +13,7 @@ import {
 export async function pendingMigrations(environment: string) {
 	p.intro("Pending Migrations");
 	const config = await importConfig();
-	const environmentConfig =
-		config.environments[environment as keyof (typeof config)["environments"]];
-
-	checkEnvironmentIsConfigured(config, environment, {
+	const environmentConfig = checkEnvironmentIsConfigured(config, environment, {
 		outro: true,
 	});
 	checkAutoPilotLock({

@@ -20,10 +20,7 @@ import {
 export async function migrate(environment: string) {
 	p.intro("Migrate");
 	const config = await importConfig();
-	const environmentConfig =
-		config.environments[environment as keyof (typeof config)["environments"]];
-
-	checkEnvironmentIsConfigured(config, environment, {
+	const environmentConfig = checkEnvironmentIsConfigured(config, environment, {
 		outro: true,
 	});
 	checkAutoPilotLock({ outro: true });

@@ -1,5 +1,5 @@
 import path from "path";
-import type { CamelCasePluginOptions } from "kysely";
+import type { CamelCasePluginOptions, Kysely } from "kysely";
 import type { ClientConfig, PoolConfig } from "pg";
 import { type AnyPgDatabase } from "./database/schema/pg_database.js";
 
@@ -51,12 +51,25 @@ type SchemaImport = {
 	database?: AnyPgDatabase;
 };
 
+export type SeedImport = {
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	seed?: (db: Kysely<any>) => Promise<void>;
+};
+
 export async function importSchema() {
 	const config = await importConfig();
 	const schema: SchemaImport = await import(
 		path.join(process.cwd(), config.folder, "schema.ts")
 	);
 	return schema;
+}
+
+export async function importSeedFunction() {
+	const config = await importConfig();
+	const seedImport: SeedImport = await import(
+		path.join(process.cwd(), config.folder, "seed.ts")
+	);
+	return seedImport;
 }
 
 function isEsmImport(imported: ConfigImport): imported is { default: Config } {

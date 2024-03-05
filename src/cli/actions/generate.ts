@@ -15,12 +15,13 @@ import {
 export async function generate() {
 	p.intro("Generate");
 	const config = await importConfig();
-	const environmentConfig =
-		config.environments["development" as keyof (typeof config)["environments"]];
-
-	checkEnvironmentIsConfigured(config, "development", {
-		outro: true,
-	});
+	const environmentConfig = checkEnvironmentIsConfigured(
+		config,
+		"development",
+		{
+			outro: true,
+		},
+	);
 
 	checkAutoPilotLock({ outro: true });
 
@@ -37,7 +38,7 @@ export async function generate() {
 	const localInfo = await analyzeLocalSchema(
 		config,
 		remoteColumnInfo.result,
-		config.camelCasePlugin,
+		config.camelCasePlugin ?? { enabled: false },
 	);
 	const changeset = await computeChangeset(localInfo, remoteColumnInfo.result);
 

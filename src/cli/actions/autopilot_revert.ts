@@ -13,10 +13,14 @@ export async function autopilotRevert() {
 	const s = p.spinner();
 
 	const config = await importConfig();
-	checkEnvironmentIsConfigured(config, "development", {
-		spinner: s,
-		outro: true,
-	});
+	const environmentConfig = checkEnvironmentIsConfigured(
+		config,
+		"development",
+		{
+			spinner: s,
+			outro: true,
+		},
+	);
 
 	const migrationFiles = await fs.readdir(
 		path.join(cwd(), ".kinetic", "autopilot"),
@@ -30,7 +34,7 @@ export async function autopilotRevert() {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
-			pool: new pg.Pool(config.environments.development),
+			pool: new pg.Pool(environmentConfig),
 		}),
 	});
 
