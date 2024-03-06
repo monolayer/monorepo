@@ -21,6 +21,7 @@ export function bigintSchema(isNullable: boolean) {
 	)
 		.superRefine((val, ctx) => {
 			try {
+				if (val === "") throw new Error("Invalid bigint");
 				BigInt(val);
 			} catch (e) {
 				ctx.addIssue({
@@ -75,8 +76,16 @@ export function variablePrecisionSchema(
 	return baseSchema(isNullable, errorMessage)
 		.superRefine((val: unknown, ctx: z.RefinementCtx) => {
 			try {
+				if (val === "") throw new Error("Invalid");
 				if (typeof val === "string") {
-					parseFloat(val) || BigInt(val);
+					const number = parseFloat(val);
+					if (typeof number === "number") {
+						if (Number.isNaN(number) && val !== "NaN") {
+							throw new Error("Invalid number");
+						}
+						return;
+					}
+					BigInt(val);
 				}
 			} catch (e) {
 				ctx.addIssue({
@@ -86,7 +95,37 @@ export function variablePrecisionSchema(
 				return z.NEVER;
 			}
 		})
-		.pipe(z.coerce.number().min(minimum).max(maximum));
+		.superRefine((val: unknown, ctx: z.RefinementCtx) => {
+			const stringValue = String(val);
+			if (
+				stringValue === "NaN" ||
+				stringValue === "Infinity" ||
+				stringValue === "-Infinity"
+			) {
+				return;
+			}
+		})
+		.superRefine((val: unknown, ctx: z.RefinementCtx) => {
+			const stringValue = String(val);
+			if (
+				stringValue === "NaN" ||
+				stringValue === "Infinity" ||
+				stringValue === "-Infinity"
+			) {
+				return;
+			}
+			const number = Number(val);
+			if (number < minimum || number > maximum) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: `Value must be between ${minimum} and ${maximum}, NaN, Infinity, or -Infinity`,
+				});
+				return z.NEVER;
+			}
+		})
+		.transform((val) => {
+			return Number(val);
+		});
 }
 
 export function wholeNumberSchema(
@@ -121,7 +160,21 @@ export function decimalSchema(
 		.superRefine((val: unknown, ctx: z.RefinementCtx) => {
 			try {
 				if (typeof val === "string") {
-					parseFloat(val) || BigInt(val);
+					if (val === "") {
+						ctx.addIssue({
+							code: z.ZodIssueCode.custom,
+							message: "Invalid decimal",
+						});
+						return z.NEVER;
+					}
+					const number = parseFloat(val);
+					if (typeof number === "number") {
+						if (Number.isNaN(number) && val !== "NaN") {
+							throw new Error("Invalid number");
+						}
+						return;
+					}
+					BigInt(val);
 				}
 			} catch (e) {
 				ctx.addIssue({
@@ -131,36 +184,43 @@ export function decimalSchema(
 				return z.NEVER;
 			}
 		})
-		.pipe(
-			z.coerce
-				.number()
-				.refine(
-					(n) => {
-						const numberString = n.toString();
-						const [wholeNumber, _decimals] = numberString.split(".");
-						if (wholeNumber !== undefined && precision !== null) {
-							return wholeNumber.length <= precision;
-						}
-						return true;
-					},
-					{
-						message: `Precision of ${precision} exeeded.`,
-					},
-				)
-				.refine(
-					(n) => {
-						const numberString = n.toString();
-						const [_wholeNumber, decimals] = numberString.split(".");
-						if (decimals !== undefined && scale !== null && scale !== 0) {
-							return decimals.length <= scale;
-						}
-						return true;
-					},
-					{
-						message: `Maximum scale ${scale} exeeded.`,
-					},
-				),
-		);
+		.superRefine((val: unknown, ctx: z.RefinementCtx) => {
+			const stringValue = String(val);
+			if (
+				stringValue === "NaN" ||
+				stringValue === "Infinity" ||
+				stringValue === "-Infinity"
+			) {
+				return;
+			}
+			const [wholeNumber, decimals] = stringValue.split(".");
+			if (
+				wholeNumber !== undefined &&
+				precision !== null &&
+				wholeNumber.length > precision
+			) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: `Precision of ${precision} exeeded.`,
+				});
+				return z.NEVER;
+			}
+			if (
+				decimals !== undefined &&
+				scale !== null &&
+				scale !== 0 &&
+				decimals.length > scale
+			) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: `Maximum scale ${scale} exeeded.`,
+				});
+				return z.NEVER;
+			}
+		})
+		.transform((val) => {
+			return parseFloat(val);
+		});
 }
 
 export function stringSchema(

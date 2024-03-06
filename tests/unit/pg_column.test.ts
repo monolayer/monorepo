@@ -1004,6 +1004,12 @@ describe("pgBigInt", () => {
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
+			test("fails on empty string", () => {
+				const column = pgBigint();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("").success).toBe(false);
+			});
+
 			test("with default value is nullable and optional", () => {
 				const column = pgBigint().defaultTo("1");
 				const schema = column.zodSchema();
@@ -1113,6 +1119,23 @@ describe("pgBigInt", () => {
 							path: [],
 							message: "Required",
 							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("empty string", () => {
+				const column = pgBigint();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid bigint",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -1905,6 +1928,20 @@ describe("pgDoublePrecision", () => {
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
+			test("parses string that can be parsed as a float but not as a bigint", () => {
+				const column = pgDoublePrecision();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("0.00000").success).toBe(true);
+			});
+
+			test("parses NaN, Infinity, and -Infinity strings", () => {
+				const column = pgDoublePrecision();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("NaN").success).toBe(true);
+				expect(schema.safeParse("Infinity").success).toBe(true);
+				expect(schema.safeParse("-Infinity").success).toBe(true);
+			});
+
 			test("parses null", () => {
 				const column = pgDoublePrecision();
 				const schema = column.zodSchema();
@@ -1915,6 +1952,12 @@ describe("pgDoublePrecision", () => {
 				const column = pgDoublePrecision();
 				const schema = column.zodSchema();
 				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("fails on empty string", () => {
+				const column = pgDoublePrecision();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -2030,6 +2073,24 @@ describe("pgDoublePrecision", () => {
 				}
 			});
 
+			test("empty string", () => {
+				const column = pgDoublePrecision();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
 			test("null", () => {
 				const column = pgDoublePrecision().notNull();
 				const schema = column.zodSchema();
@@ -2075,13 +2136,10 @@ describe("pgDoublePrecision", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "too_small",
-							exact: false,
-							inclusive: true,
-							message: "Number must be greater than or equal to -1e+308",
-							minimum: -1e308,
+							code: "custom",
+							message:
+								"Value must be between -1e+308 and 1e+308, NaN, Infinity, or -Infinity",
 							path: [],
-							type: "number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -2096,13 +2154,10 @@ describe("pgDoublePrecision", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "too_big",
-							exact: false,
-							inclusive: true,
-							message: "Number must be less than or equal to 1e+308",
-							maximum: 1e308,
+							code: "custom",
+							message:
+								"Value must be between -1e+308 and 1e+308, NaN, Infinity, or -Infinity",
 							path: [],
-							type: "number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -2260,6 +2315,20 @@ describe("pgFloat4", () => {
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
+			test("parses string that can be parsed as a float but not as a bigint", () => {
+				const column = pgFloat4();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("0.00000").success).toBe(true);
+			});
+
+			test("does parses NaN, Infinity, and -Infinity strings", () => {
+				const column = pgFloat4();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("NaN").success).toBe(true);
+				expect(schema.safeParse("Infinity").success).toBe(true);
+				expect(schema.safeParse("-Infinity").success).toBe(true);
+			});
+
 			test("parses null", () => {
 				const column = pgFloat4();
 				const schema = column.zodSchema();
@@ -2270,6 +2339,12 @@ describe("pgFloat4", () => {
 				const column = pgFloat4();
 				const schema = column.zodSchema();
 				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("fails on empty string", () => {
+				const column = pgFloat4();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -2382,6 +2457,24 @@ describe("pgFloat4", () => {
 				}
 			});
 
+			test("empty string", () => {
+				const column = pgFloat4();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
 			test("null", () => {
 				const column = pgFloat4().notNull();
 				const schema = column.zodSchema();
@@ -2427,13 +2520,10 @@ describe("pgFloat4", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "too_small",
-							exact: false,
-							inclusive: true,
-							message: "Number must be greater than or equal to -1e+37",
-							minimum: -1e37,
+							code: "custom",
+							message:
+								"Value must be between -1e+37 and 1e+37, NaN, Infinity, or -Infinity",
 							path: [],
-							type: "number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -2448,13 +2538,10 @@ describe("pgFloat4", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "too_big",
-							exact: false,
-							inclusive: true,
-							message: "Number must be less than or equal to 1e+37",
-							maximum: 1e37,
+							code: "custom",
+							message:
+								"Value must be between -1e+37 and 1e+37, NaN, Infinity, or -Infinity",
 							path: [],
-							type: "number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -2612,6 +2699,20 @@ describe("pgFloat8", () => {
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
+			test("passes on strings that can be parsed as a float but not as a bigint", () => {
+				const column = pgFloat8();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("0.00000").success).toBe(true);
+			});
+
+			test("parses NaN, Infinity, and -Infinity strings", () => {
+				const column = pgFloat8();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("NaN").success).toBe(true);
+				expect(schema.safeParse("Infinity").success).toBe(true);
+				expect(schema.safeParse("-Infinity").success).toBe(true);
+			});
+
 			test("parses null", () => {
 				const column = pgFloat8();
 				const schema = column.zodSchema();
@@ -2622,6 +2723,12 @@ describe("pgFloat8", () => {
 				const column = pgFloat8();
 				const schema = column.zodSchema();
 				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("fails on empty string", () => {
+				const column = pgFloat8();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -2734,6 +2841,24 @@ describe("pgFloat8", () => {
 				}
 			});
 
+			test("empty string", () => {
+				const column = pgFloat8();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
 			test("null", () => {
 				const column = pgFloat8().notNull();
 				const schema = column.zodSchema();
@@ -2779,13 +2904,10 @@ describe("pgFloat8", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "too_small",
-							exact: false,
-							inclusive: true,
-							message: "Number must be greater than or equal to -1e+308",
-							minimum: -1e308,
+							code: "custom",
+							message:
+								"Value must be between -1e+308 and 1e+308, NaN, Infinity, or -Infinity",
 							path: [],
-							type: "number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -2800,13 +2922,10 @@ describe("pgFloat8", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "too_big",
-							exact: false,
-							inclusive: true,
-							message: "Number must be less than or equal to 1e+308",
-							maximum: 1e308,
+							code: "custom",
+							message:
+								"Value must be between -1e+308 and 1e+308, NaN, Infinity, or -Infinity",
 							path: [],
-							type: "number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -3781,6 +3900,12 @@ describe("pgInt8", () => {
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
+			test("fails on empty string", () => {
+				const column = pgInt8();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("").success).toBe(false);
+			});
+
 			test("with default value is nullable and optional", () => {
 				const column = pgInt8().defaultTo("1");
 				const schema = column.zodSchema();
@@ -3889,6 +4014,23 @@ describe("pgInt8", () => {
 							path: [],
 							message: "Required",
 							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("empty string", () => {
+				const column = pgInt8();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid bigint",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -5081,6 +5223,20 @@ describe("pgReal", () => {
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
+			test("passes on strings that can be parsed as a float but not as a bigint", () => {
+				const column = pgReal();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("0.00000").success).toBe(true);
+			});
+
+			test("parses NaN, Infinity, and -Infinity strings", () => {
+				const column = pgReal();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("NaN").success).toBe(true);
+				expect(schema.safeParse("Infinity").success).toBe(true);
+				expect(schema.safeParse("-Infinity").success).toBe(true);
+			});
+
 			test("parses null", () => {
 				const column = pgReal();
 				const schema = column.zodSchema();
@@ -5091,6 +5247,12 @@ describe("pgReal", () => {
 				const column = pgReal();
 				const schema = column.zodSchema();
 				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("fails on empty string", () => {
+				const column = pgReal();
+				const schema = column.zodSchema();
+				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -5203,6 +5365,24 @@ describe("pgReal", () => {
 				}
 			});
 
+			test("empty string", () => {
+				const column = pgReal();
+				const schema = column.zodSchema();
+				const result = schema.safeParse("");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected bigint, Number or String that can be converted to a floating-point number or a bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
 			test("null", () => {
 				const column = pgReal().notNull();
 				const schema = column.zodSchema();
@@ -5248,13 +5428,10 @@ describe("pgReal", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "too_small",
-							exact: false,
-							inclusive: true,
-							message: "Number must be greater than or equal to -1e+37",
-							minimum: -1e37,
+							code: "custom",
+							message:
+								"Value must be between -1e+37 and 1e+37, NaN, Infinity, or -Infinity",
 							path: [],
-							type: "number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -5269,13 +5446,10 @@ describe("pgReal", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "too_big",
-							exact: false,
-							inclusive: true,
-							message: "Number must be less than or equal to 1e+37",
-							maximum: 1e37,
+							code: "custom",
+							message:
+								"Value must be between -1e+37 and 1e+37, NaN, Infinity, or -Infinity",
 							path: [],
-							type: "number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -7778,6 +7952,26 @@ describe("pgNumeric", () => {
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
+			test("fails on empty string", () => {
+				const column = pgNumeric(4, 5);
+				const schema = column.zodSchema();
+				expect(schema.safeParse("").success).toBe(false);
+			});
+
+			test("parses string that can be parsed as a float but not as a bigint", () => {
+				const column = pgNumeric(4, 5);
+				const schema = column.zodSchema();
+				expect(schema.safeParse("0.00000").success).toBe(true);
+			});
+
+			test("parses NaN, Infinity, and -Infinity strings", () => {
+				const column = pgNumeric(4, 5);
+				const schema = column.zodSchema();
+				expect(schema.safeParse("NaN").success).toBe(true);
+				expect(schema.safeParse("Infinity").success).toBe(true);
+				expect(schema.safeParse("-Infinity").success).toBe(true);
+			});
+
 			test("with default value is nullable and optional", () => {
 				const column = pgNumeric().defaultTo(2);
 				const schema = column.zodSchema();
@@ -7974,6 +8168,23 @@ describe("pgNumeric", () => {
 							message:
 								"Expected bigint, number or string that can be converted to a number, received null",
 							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("empty string", () => {
+				const column = pgNumeric(4, 5);
+				const schema = column.zodSchema();
+				const result = schema.safeParse("");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid decimal",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
