@@ -9,9 +9,13 @@ import { MigrationOpPriority } from "../priority.js";
 
 export function columnDataTypeMigrationOpGenerator(
 	diff: Difference,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_addedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_droppedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_local: LocalTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 ) {
 	if (isColumnDataType(diff)) {
@@ -45,13 +49,13 @@ function columnDatatypeMigrationOperation(diff: ColumnDataTypeDifference) {
 		up: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`alterColumn(\"${columnName}\", (col) => col.setDataType("${diff.value}"))`,
+				`alterColumn("${columnName}", (col) => col.setDataType("${diff.value}"))`,
 			),
 		],
 		down: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`alterColumn(\"${columnName}\", (col) => col.setDataType("${diff.oldValue}"))`,
+				`alterColumn("${columnName}", (col) => col.setDataType("${diff.oldValue}"))`,
 			),
 		],
 	};

@@ -20,7 +20,7 @@ import { pgForeignKey } from "~/index.js";
 describe("pgDatabase definition", () => {
 	test("without tables", () => {
 		const database = pgDatabase({ tables: {} });
-		// biome-ignore lint/complexity/noBannedTypes: <explanation>
+		// eslint-disable-next-line @typescript-eslint/ban-types
 		const expect: Expect<Equal<typeof database, pgDatabase<{}>>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});

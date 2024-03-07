@@ -25,7 +25,7 @@ export async function generate() {
 
 	checkAutoPilotLock({ outro: true });
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(environmentConfig),

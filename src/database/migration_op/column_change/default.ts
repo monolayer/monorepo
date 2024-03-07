@@ -9,9 +9,13 @@ import { MigrationOpPriority } from "../priority.js";
 
 export function columnDefaultMigrationOpGenerator(
 	diff: Difference,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_addedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_droppedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_local: LocalTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 ) {
 	if (isColumnDefaultAddValue(diff)) {
@@ -95,7 +99,7 @@ function columnDefaultAddMigrationOperation(diff: ColumnDefaultAddDifference) {
 		up: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
+				`alterColumn("${columnName}", (col) => col.setDefault(${sqlStatement(
 					diff.value,
 				)}))`,
 			),
@@ -103,7 +107,7 @@ function columnDefaultAddMigrationOperation(diff: ColumnDefaultAddDifference) {
 		down: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`alterColumn(\"${columnName}\", (col) => col.dropDefault())`,
+				`alterColumn("${columnName}", (col) => col.dropDefault())`,
 			),
 		],
 	};
@@ -122,13 +126,13 @@ function columnDefaultDropMigrationOperation(
 		up: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`alterColumn(\"${columnName}\", (col) => col.dropDefault())`,
+				`alterColumn("${columnName}", (col) => col.dropDefault())`,
 			),
 		],
 		down: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
+				`alterColumn("${columnName}", (col) => col.setDefault(${sqlStatement(
 					diff.oldValue,
 				)}))`,
 			),
@@ -149,7 +153,7 @@ function columnDefaultChangeMigrationOperation(
 		up: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
+				`alterColumn("${columnName}", (col) => col.setDefault(${sqlStatement(
 					diff.value,
 				)}))`,
 			),
@@ -157,7 +161,7 @@ function columnDefaultChangeMigrationOperation(
 		down: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`alterColumn(\"${columnName}\", (col) => col.setDefault(${sqlStatement(
+				`alterColumn("${columnName}", (col) => col.setDefault(${sqlStatement(
 					diff.oldValue,
 				)}))`,
 			),

@@ -17,10 +17,10 @@ export class PgIndex<T extends string | string[]> {
 		ifnotExists: boolean;
 		unique: boolean;
 		nullsNotDistinct: boolean;
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		expression: Expression<any> | undefined;
 		using: IndexType | string | undefined;
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		where: any[] | undefined;
 		columns: string[];
 	};
@@ -56,7 +56,7 @@ export class PgIndex<T extends string | string[]> {
 		return this;
 	}
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expression(expression: Expression<any>) {
 		this.#compileArgs.expression = expression;
 		return this;
@@ -68,7 +68,7 @@ export class PgIndex<T extends string | string[]> {
 	}
 
 	where(
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		lhs: any | Expression<any>,
 		op: ComparisonOperatorExpression,
 		rhs: unknown,
@@ -76,14 +76,14 @@ export class PgIndex<T extends string | string[]> {
 	where(
 		factory: (
 			qb: ExpressionBuilder<
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				ShallowRecord<string, ShallowRecord<any & string, any>>,
 				string
 			>,
 		) => Expression<SqlBool>,
 	): this;
 	where(expression: Expression<SqlBool>): this;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	where(...args: any[]) {
 		this.#compileArgs.where = args;
 		return this;

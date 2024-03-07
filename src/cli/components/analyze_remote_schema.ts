@@ -7,7 +7,7 @@ import { ActionStatus } from "../command.js";
 
 export async function analyzeRemoteSchema(
 	environmentConfig: (pg.ClientConfig & pg.PoolConfig) | undefined,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 ) {
 	const b = p.spinner();

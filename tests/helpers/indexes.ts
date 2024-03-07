@@ -9,9 +9,9 @@ import type { PgIndex } from "~/database/schema/pg_index.js";
 import type { PgTrigger } from "~/database/schema/pg_trigger.js";
 import type { PgUnique } from "~/database/schema/pg_unique.js";
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function compileIndex(index: PgIndex<any>, tableName: string) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({}),
@@ -24,9 +24,9 @@ export function compileIndex(index: PgIndex<any>, tableName: string) {
 	return indexToInfo(index, tableName, kysely, opts);
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function compileUnique(unique: PgUnique<any>, tableName: string) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({}),
@@ -43,7 +43,7 @@ export function compileTrigger(
 	triggerName: string,
 	tableName: string,
 ) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({}),

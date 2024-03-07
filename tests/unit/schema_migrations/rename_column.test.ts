@@ -38,7 +38,7 @@ describe("Rename column migrations", () => {
 
 			const expected = [
 				{
-					priority: 3008,
+					priority: 3010,
 					tableName: "users",
 					type: "changeColumnName",
 					up: [
@@ -107,7 +107,7 @@ describe("Rename column migrations", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3010,
 					tableName: "users",
 					type: "changeColumnName",
 					up: [
@@ -180,7 +180,7 @@ describe("Rename column migrations", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3010,
 					tableName: "users",
 					type: "changeColumnName",
 					up: [
@@ -252,7 +252,7 @@ describe("Rename column migrations", () => {
 
 			const expected = [
 				{
-					priority: 3008,
+					priority: 3010,
 					tableName: "users",
 					type: "changeColumnName",
 					up: [
@@ -354,7 +354,7 @@ describe("Rename column migrations", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3010,
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
@@ -431,7 +431,7 @@ describe("Rename column migrations", () => {
 
 			const expected = [
 				{
-					priority: 3008,
+					priority: 3010,
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
@@ -553,7 +553,7 @@ describe("Rename column migrations", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3010,
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
@@ -642,7 +642,7 @@ describe("Rename column migrations", () => {
 
 			const expected = [
 				{
-					priority: 3008,
+					priority: 3010,
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
@@ -743,7 +743,7 @@ describe("Rename column migrations", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3010,
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [
@@ -811,7 +811,7 @@ describe("Rename column migrations", () => {
 
 			const expected = [
 				{
-					priority: 3008,
+					priority: 3010,
 					tableName: "users_pk1",
 					type: "changeColumnName",
 					up: [

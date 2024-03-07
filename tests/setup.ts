@@ -1,18 +1,18 @@
-import { env } from "node:process";
 import dotenv from "dotenv";
 import { Kysely, Migrator, PostgresDialect } from "kysely";
+import { env } from "node:process";
 import pg from "pg";
 import type { GlobalThis } from "type-fest";
 dotenv.config();
 
 export type GlobalThisInTests = GlobalThis & {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any> | undefined;
 	pool: pg.Pool | undefined;
 };
 
 export interface DbContext {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>;
 	migrator: Migrator;
 	tableNames: string[];
@@ -33,7 +33,7 @@ export function globalKysely() {
 	const globalTestThis = globalThis as GlobalThisInTests;
 
 	if (globalTestThis.kysely === undefined) {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		globalTestThis.kysely = new Kysely<any>({
 			dialect: new PostgresDialect({
 				pool: new pg.Pool({

@@ -11,7 +11,7 @@ import { globalKysely } from "~tests/setup.js";
 type MigrationContext = {
 	folder: string;
 	migrationsFolder: string;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>;
 	pool: pg.Pool;
 	task: {

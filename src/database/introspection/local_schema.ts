@@ -1,27 +1,27 @@
 import { createHash } from "crypto";
 import {
-	type Expression,
 	Kysely,
 	PostgresDialect,
-	type RawBuilder,
 	isExpression,
+	type Expression,
+	type RawBuilder,
 } from "kysely";
 import pg from "pg";
 import type { CamelCaseOptions } from "~/config.js";
 import { type AnyPgDatabase } from "~/database/schema/pg_database.js";
 import { toSnakeCase } from "../migration_op/helpers.js";
 import {
+	findColumn,
+	findPrimaryKey,
+	findTableInDatabaseSchema,
+	primaryKeyColumns,
 	type ForeignKeyInfo,
 	type MigrationSchema,
 	type PrimaryKeyInfo,
 	type TriggerInfo,
 	type UniqueInfo,
-	findColumn,
-	findPrimaryKey,
-	findTableInDatabaseSchema,
-	primaryKeyColumns,
 } from "../migrations/migration_schema.js";
-import { type ColumnInfo, PgColumnTypes, PgEnum } from "../schema/pg_column.js";
+import { PgColumnTypes, PgEnum, type ColumnInfo } from "../schema/pg_column.js";
 import type { PgIndex } from "../schema/pg_index.js";
 import type { ColumnRecord } from "../schema/pg_table.js";
 import type { PgTrigger } from "../schema/pg_trigger.js";
@@ -32,10 +32,10 @@ import {
 } from "./info_to_query.js";
 import {
 	ColumnsInfo,
-	type EnumInfo,
-	type ExtensionInfo,
 	IndexInfo,
 	TableColumnInfo,
+	type EnumInfo,
+	type ExtensionInfo,
 } from "./types.js";
 
 export function schemaColumnInfo(
@@ -68,32 +68,32 @@ export function schemaColumnInfo(
 }
 
 export function compileDefaultExpression(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expression: Expression<any>,
 ) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({}),
 		}),
 	});
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const compiled = (expression as RawBuilder<any>).compile(kysely);
 	return substituteSQLParameters({
 		sql: compiled.sql,
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		parameters: compiled.parameters as any[],
 	});
 }
 
 function substituteSQLParameters(queryObject: {
 	sql: string;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	parameters: any[];
 }) {
-	let { sql, parameters } = queryObject;
-
+	let { sql } = queryObject;
+	const { parameters } = queryObject;
 	// Replace each placeholder with the corresponding parameter from the array
 	parameters.forEach((param, idx) => {
 		// Create a regular expression for each placeholder (e.g., $1, $2)
@@ -172,7 +172,7 @@ export function schemaDBIndexInfoByTable(
 	schema: AnyPgDatabase,
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({}),
@@ -201,10 +201,10 @@ export function schemaDBIndexInfoByTable(
 }
 
 export function indexToInfo(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	index: PgIndex<any>,
 	tableName: string,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
 ) {
@@ -287,7 +287,7 @@ function schemaDBTriggersInfo(
 	schema: AnyPgDatabase,
 	camelCase: CamelCaseOptions,
 ) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({}),
@@ -426,7 +426,7 @@ function uniqueConstraintInfo(
 	schema: AnyPgDatabase,
 	camelCase: CamelCaseOptions,
 ) {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({}),
@@ -457,10 +457,10 @@ function uniqueConstraintInfo(
 }
 
 export function uniqueToInfo(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	unique: PgUnique<any>,
 	tableName: string,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
 ) {
@@ -483,7 +483,7 @@ export function uniqueToInfo(
 	let compiledQuery = kyselyBuilder.compile().sql;
 
 	compiledQuery = compiledQuery.replace(
-		/alter table \"\w+\" add constraint /,
+		/alter table "\w+" add constraint /,
 		"",
 	);
 	if (args.nullsDistinct) {
@@ -504,7 +504,7 @@ export function triggerInfo(
 	trigger: PgTrigger,
 	triggerName: string,
 	tableName: string,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
 ) {
@@ -537,10 +537,10 @@ export function triggerInfo(
 			compileArgs.referencingOldTableAs !== undefined
 				? `REFERENCING NEW TABLE AS ${compileArgs.referencingNewTableAs} OLD TABLE AS ${compileArgs.referencingOldTableAs}`
 				: compileArgs.referencingNewTableAs !== undefined
-				  ? `REFERENCING NEW TABLE AS ${compileArgs.referencingNewTableAs}`
-				  : compileArgs.referencingOldTableAs !== undefined
-					  ? `REFERENCING OLD TABLE AS ${compileArgs.referencingOldTableAs}`
-					  : ""
+					? `REFERENCING NEW TABLE AS ${compileArgs.referencingNewTableAs}`
+					: compileArgs.referencingOldTableAs !== undefined
+						? `REFERENCING OLD TABLE AS ${compileArgs.referencingOldTableAs}`
+						: ""
 		}`,
 		`FOR EACH ${compileArgs.forEach?.toUpperCase()}`,
 		`${

@@ -2,15 +2,15 @@ import microdiff, { type Difference } from "microdiff";
 import type { DbTableInfo, LocalTableInfo } from "./introspection/types.js";
 import { Changeset } from "./migration_op/changeset.js";
 import {
-	type CreateTableDiff,
-	type DropTableTableDiff,
 	isCreateTable,
 	isDropTable,
+	type CreateTableDiff,
+	type DropTableTableDiff,
 } from "./migration_op/table.js";
 import { migrationOpGenerators } from "./migration_op_generators.js";
 import {
-	type MigrationSchema,
 	buildNodes,
+	type MigrationSchema,
 } from "./migrations/migration_schema.js";
 
 interface Generator {

@@ -3,15 +3,15 @@ import { z } from "zod";
 import type { ForeignKeyRule } from "../introspection/database/foreign_key_constraint.js";
 import { compileDefaultExpression } from "../introspection/local_schema.js";
 import {
+	PgBigSerial,
+	PgColumnTypes,
+	PgSerial,
+	isExpression,
 	type ColumnInfo,
 	type GeneratedColumnType,
 	type InferColumType,
-	PgBigSerial,
 	type PgColumn,
-	PgColumnTypes,
 	type PgGeneratedColumn,
-	PgSerial,
-	isExpression,
 } from "./pg_column.js";
 import type { AnyPgDatabase } from "./pg_database.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
@@ -47,10 +47,10 @@ export class PgTable<T extends ColumnRecord> {
 	database?: AnyPgDatabase;
 
 	constructor(public schema: TableSchema<T>) {
-		this.schema.indexes = this.schema.indexes || [];
-		this.schema.columns = this.schema.columns || {};
-		this.schema.foreignKeys = this.schema.foreignKeys;
-		this.schema.uniqueConstraints = this.schema.uniqueConstraints || [];
+		this.schema.indexes = schema.indexes || [];
+		this.schema.columns = schema.columns || {};
+		this.schema.foreignKeys = schema.foreignKeys;
+		this.schema.uniqueConstraints = schema.uniqueConstraints || [];
 		this.schema.triggers = this.schema.triggers || {};
 	}
 
@@ -176,7 +176,7 @@ export class PgTable<T extends ColumnRecord> {
 
 	#findTableInDatabaseSchema(table: AnyPgTable) {
 		const tableInSchema = Object.entries(this.database?.tables || {}).find(
-			([_key, value]) => value.schema.columns === table.schema.columns,
+			([, value]) => value.schema.columns === table.schema.columns,
 		);
 		if (tableInSchema !== undefined) {
 			return tableInSchema[0];
@@ -236,19 +236,19 @@ type ZodSchemaObject<T extends ColumnRecord> = z.ZodObject<
 	"strip",
 	z.ZodTypeAny,
 	{
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		[K in keyof T]: any;
 	}
 >;
 
 export type InferColumTypes<T extends ColumnRecord> = Simplify<{
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[P in keyof T]: T[P] extends PgColumn<any, any>
 		? InferColumType<T[P]>
 		: T[P] extends PgGeneratedColumn<infer S, infer U>
-		  ? GeneratedColumnType<S, U, U>
-		  : never;
+			? GeneratedColumnType<S, U, U>
+			: never;
 }>;
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyPgTable = PgTable<any>;

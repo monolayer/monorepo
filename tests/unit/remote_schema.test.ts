@@ -3,7 +3,7 @@ import pg from "pg";
 import { env } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { dropTables } from "~tests/helpers/dropTables.js";
-import { type DbContext, globalPool } from "~tests/setup.js";
+import { globalPool, type DbContext } from "~tests/setup.js";
 import { remoteSchema } from "../../src/database/introspection/remote_schema.js";
 
 describe("#remoteSchema", () => {
@@ -11,7 +11,7 @@ describe("#remoteSchema", () => {
 		const pool = globalPool();
 		await pool.query("DROP DATABASE IF EXISTS test_remote_schema");
 		await pool.query("CREATE DATABASE test_remote_schema");
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		context.kysely = new Kysely<any>({
 			dialect: new PostgresDialect({
 				pool: new pg.Pool({

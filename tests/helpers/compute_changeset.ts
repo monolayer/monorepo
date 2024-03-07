@@ -7,7 +7,7 @@ import { remoteSchema } from "~/database/introspection/remote_schema.js";
 import { type AnyPgDatabase } from "~/database/schema/pg_database.js";
 
 export async function computeChangeset(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 	db: AnyPgDatabase,
 	camelCase?: CamelCaseOptions,

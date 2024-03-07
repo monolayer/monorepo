@@ -1,6 +1,6 @@
-import path from "path";
 import * as p from "@clack/prompts";
 import nunjucks from "nunjucks";
+import path from "path";
 import { cwd } from "process";
 import { log } from "../utils/clack.js";
 import { createDir, createFile } from "./file.js";
@@ -52,7 +52,8 @@ export async function initFolderAndFiles() {
 	);
 }
 
-export const configTemplate = nunjucks.compile(`import type { Config } from "kysely-kinetic/config";
+export const configTemplate =
+	nunjucks.compile(`import type { Config } from "kysely-kinetic/config";
 
 export default ({
   folder: "{{ folder }}",
@@ -77,14 +78,16 @@ export default ({
   }
 } satisfies Config);`);
 
-export const schemaTemplate = nunjucks.compile(`import { pgDatabase } from "kysely-kinetic";
+export const schemaTemplate =
+	nunjucks.compile(`import { pgDatabase } from "kysely-kinetic";
 
 export const database = pgDatabase({});
 
 export type DB = typeof database.kyselyDatabase;
 `);
 
-export const kyselyTemplate = nunjucks.compile(`import { Kysely, PostgresDialect } from "kysely";
+export const kyselyTemplate =
+	nunjucks.compile(`import { Kysely, PostgresDialect } from "kysely";
 import { pgPool } from "kysely-kinetic/pool";
 import kineticConfig from "{{ kineticConfigPath }}";
 import type { DB } from "./schema.js";
@@ -96,7 +99,8 @@ export const kysely = new Kysely<DB>({
 });
 `);
 
-export const seedTemplate = nunjucks.compile(`import type { Kysely } from "kysely";
+export const seedTemplate =
+	nunjucks.compile(`import type { Kysely } from "kysely";
 import type { DB } from "./schema.js";
 
 export async function seed(db: Kysely<DB>){}

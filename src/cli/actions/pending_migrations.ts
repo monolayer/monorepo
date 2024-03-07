@@ -1,6 +1,6 @@
-import path from "path";
 import * as p from "@clack/prompts";
 import { Kysely, PostgresDialect } from "kysely";
+import path from "path";
 import pg from "pg";
 import color from "picocolors";
 import { importConfig } from "~/config.js";
@@ -20,7 +20,7 @@ export async function pendingMigrations(environment: string) {
 		outro: true,
 	});
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const db = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(environmentConfig),

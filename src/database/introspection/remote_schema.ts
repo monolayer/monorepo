@@ -16,7 +16,7 @@ import { dbTriggerInfo } from "./database/triggers.js";
 import { dbUniqueConstraintInfo } from "./database/unique_constraint.js";
 
 export async function remoteSchema(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 ): Promise<OperationSuccess<MigrationSchema> | OperationAnyError> {
 	const remoteTableInfo = await dbTableInfo(kysely, "public");

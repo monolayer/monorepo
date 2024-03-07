@@ -1,5 +1,5 @@
-import path from "path";
 import type { CamelCasePluginOptions, Kysely } from "kysely";
+import path from "path";
 import type { ClientConfig, PoolConfig } from "pg";
 import { type AnyPgDatabase } from "./database/schema/pg_database.js";
 
@@ -31,15 +31,17 @@ export function registerSchema(db: unknown) {
 	}
 }
 
-type ConfigImport =
-	| {
-			default: Config;
-	  }
-	| {
-			default: {
-				default: Config;
-			};
-	  };
+type CjsConfig = {
+	default: {
+		default: Config;
+	};
+};
+
+type EsmConfig = {
+	default: Config;
+};
+
+type ConfigImport = EsmConfig | CjsConfig;
 
 export async function importConfig() {
 	const def = await import(path.join(process.cwd(), "kinetic.ts"));
@@ -52,7 +54,7 @@ type SchemaImport = {
 };
 
 export type SeedImport = {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	seed?: (db: Kysely<any>) => Promise<void>;
 };
 

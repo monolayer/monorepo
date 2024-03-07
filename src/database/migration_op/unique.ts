@@ -8,7 +8,9 @@ export function uniqueConstraintMigrationOpGenerator(
 	diff: Difference,
 	addedTables: string[],
 	droppedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_local: LocalTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 ) {
 	if (isUniqueConstraintCreateFirst(diff)) {
@@ -126,7 +128,7 @@ function createUniqueFirstConstraintMigration(
 	addedTables: string[],
 ) {
 	const tableName = diff.path[1];
-	return Object.entries(diff.value).reduce((acc, [_key, value]) => {
+	return Object.entries(diff.value).reduce((acc, [, value]) => {
 		const uniqueConstraint = uniqueConstraintDefinition(value);
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.ConstraintCreate,
@@ -148,7 +150,7 @@ function dropUniqueLastConstraintMigration(
 ) {
 	const tableName = diff.path[1];
 
-	return Object.entries(diff.oldValue).reduce((acc, [_key, value]) => {
+	return Object.entries(diff.oldValue).reduce((acc, [, value]) => {
 		const constraintValue = value;
 		const uniqueConstraint = uniqueConstraintDefinition(constraintValue);
 		const changeset: Changeset = {
@@ -221,10 +223,10 @@ type ConstraintDefinition = {
 };
 
 function uniqueConstraintDefinition(unique: string) {
-	const [_, columns] = unique.split("DISTINCT (");
+	const [, columns] = unique.split("DISTINCT (");
 
 	const definition: ConstraintDefinition = {
-		name: unique.match(/\"(\w+)\"/)?.[1] || "",
+		name: unique.match(/"(\w+)"/)?.[1] || "",
 		distinct: unique.includes("UNIQUE NULLS DISTINCT"),
 		columns: columns?.replace(/"/g, "").split(")")[0]?.split(", ") || [],
 	};

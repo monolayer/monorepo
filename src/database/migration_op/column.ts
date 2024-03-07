@@ -4,16 +4,20 @@ import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
 import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
 import {
-	type ColumnInfoDiff,
 	compileDataType,
 	optionsForColumn,
+	type ColumnInfoDiff,
 } from "./table_common.js";
 
 export function columnMigrationOpGenerator(
 	diff: Difference,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_addedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_droppedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_local: LocalTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 ) {
 	if (isCreateColumn(diff)) {
@@ -48,7 +52,7 @@ function createColumnMigration(diff: CreateColumnDiff) {
 		up: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`addColumn(\"${columnName}\", ${compileDataType(
+				`addColumn("${columnName}", ${compileDataType(
 					columnDef.dataType,
 					columnDef.enum,
 				)}${optionsForColumn(columnDef)})`,
@@ -57,7 +61,7 @@ function createColumnMigration(diff: CreateColumnDiff) {
 		down: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`dropColumn(\"${columnName}\")`,
+				`dropColumn("${columnName}")`,
 			),
 		],
 	};
@@ -88,13 +92,13 @@ function dropColumnMigration(diff: DropColumnDiff) {
 		up: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`dropColumn(\"${columnName}\")`,
+				`dropColumn("${columnName}")`,
 			),
 		],
 		down: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`addColumn(\"${columnName}\", ${compileDataType(
+				`addColumn("${columnName}", ${compileDataType(
 					columnDef.dataType,
 					columnDef.enum,
 				)}${optionsForColumn(columnDef)})`,

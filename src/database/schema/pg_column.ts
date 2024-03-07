@@ -1,10 +1,10 @@
+import type { GeneratedAlways, Simplify } from "kysely";
 import {
 	type ColumnType,
 	type Expression,
 	type InsertType,
 	type SelectType,
 } from "kysely";
-import type { GeneratedAlways, Simplify } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 import { ZodIssueCode, z } from "zod";
 import {
@@ -95,7 +95,7 @@ export class PgColumnBase<S, I, U> {
 	protected declare readonly infer: ColumnType<S, I, U>;
 	protected info: Omit<ColumnInfo, "columnName" | "tableName">;
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static info(column: PgColumnBase<any, any, any>) {
 		return column.info;
 	}
@@ -177,12 +177,8 @@ export class PgGeneratedColumn<T, U> extends PgColumnBase<T, U, U> {
 	}
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-type ZodTypeGenerated<T extends PgGeneratedColumn<any, any>> = z.ZodType<
-	never,
-	z.ZodTypeDef,
-	never
->;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ZodTypeGenerated = z.ZodType<never, z.ZodTypeDef, never>;
 
 export function pgBigserial() {
 	return new PgBigSerial();
@@ -196,8 +192,8 @@ export class PgBigSerial extends PgGeneratedColumn<
 		super("bigserial", DefaultValueDataTypes.bigserial);
 	}
 
-	zodSchema(): ZodTypeGenerated<typeof this> {
-		return z.never() as unknown as ZodTypeGenerated<typeof this>;
+	zodSchema(): ZodTypeGenerated {
+		return z.never() as unknown as ZodTypeGenerated;
 	}
 }
 
@@ -210,8 +206,8 @@ export class PgSerial extends PgGeneratedColumn<number, number | string> {
 		super("serial", DefaultValueDataTypes.serial);
 	}
 
-	zodSchema(): ZodTypeGenerated<typeof this> {
-		return z.never() as unknown as ZodTypeGenerated<typeof this>;
+	zodSchema(): ZodTypeGenerated {
+		return z.never() as unknown as ZodTypeGenerated;
 	}
 }
 
@@ -400,8 +396,8 @@ type ByteaZodType<T extends PgBytea> = z.ZodType<
 	T extends NonNullableColumn
 		? SelectType<InferColumType<T>> | string
 		: T extends GeneratedAlwaysColumn
-		  ? never
-		  : SelectType<InferColumType<T>> | string | undefined,
+			? never
+			: SelectType<InferColumType<T>> | string | undefined,
 	z.ZodTypeDef,
 	InsertType<InferColumType<T>>
 >;
@@ -663,22 +659,22 @@ export type JsonPrimitive = boolean | number | string;
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ZodJson = string | number | boolean | Record<string, any>;
 
 type JsonZodType<T extends PgJson | PgJsonB> = z.ZodType<
 	T extends NonNullableColumn
 		? ZodJson
 		: T extends GeneratedAlwaysColumn
-		  ? never
-		  : ZodJson | null | undefined,
+			? never
+			: ZodJson | null | undefined,
 	z.ZodTypeDef,
 	T extends NonNullableColumn ? ZodJson : ZodJson | null | undefined
 >;
 
 export class PgJson extends PgColumn<
 	JsonValue,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	string | number | boolean | Record<string, any>
 > {
 	constructor() {
@@ -920,8 +916,8 @@ type DateZodType<T extends PgDate | PgTimestamp | PgTimestampTz> = z.ZodType<
 	T extends NonNullableColumn
 		? Date
 		: T extends GeneratedAlwaysColumn
-		  ? never
-		  : Date | null | undefined,
+			? never
+			: Date | null | undefined,
 	z.ZodTypeDef,
 	T extends NonNullableColumn ? Date | string : Date | string | null | undefined
 >;
@@ -1016,7 +1012,7 @@ export type PgColumnTypes =
 	| PgEnum;
 
 // From Kysely. To avoid bundling Kysely in client code.
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isExpression(obj: unknown): obj is Expression<any> {
 	return (
 		isObject(obj) &&
@@ -1029,35 +1025,35 @@ function isObject(obj: unknown): obj is ShallowRecord<string, unknown> {
 	return typeof obj === "object" && obj !== null;
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type InferColumType<T extends PgColumn<any, any, any>> =
 	T extends PgColumn<infer S, infer I, infer U>
 		? T extends NonNullableColumn
 			? T extends WithDefaultColumn
 				? OptionalColumnType<S, I, U>
 				: T extends GeneratedAlwaysColumn
-				  ? Simplify<GeneratedAlways<S>>
-				  : T extends GeneratedColumn
-					  ? OptionalColumnType<S, I, U>
-					  : Simplify<ColumnType<S, I, U>>
+					? Simplify<GeneratedAlways<S>>
+					: T extends GeneratedColumn
+						? OptionalColumnType<S, I, U>
+						: Simplify<ColumnType<S, I, U>>
 			: T extends WithDefaultColumn
-			  ? Simplify<ColumnType<NonNullable<S>, I | null | undefined, U | null>>
-			  : T extends GeneratedAlwaysColumn
-				  ? Simplify<GeneratedAlways<S>>
-				  : Simplify<ColumnType<S | null, I | null | undefined, U | null>>
+				? Simplify<ColumnType<NonNullable<S>, I | null | undefined, U | null>>
+				: T extends GeneratedAlwaysColumn
+					? Simplify<GeneratedAlways<S>>
+					: Simplify<ColumnType<S | null, I | null | undefined, U | null>>
 		: never;
 
 type OptionalColumnType<S, I, U> = Simplify<ColumnType<S, I | undefined, U>>;
 export type GeneratedColumnType<S, I, U> = OptionalColumnType<S, I, U>;
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ZodType<T extends PgColumn<any, any, any> | PgTimestamp | PgTimestampTz> =
 	z.ZodType<
 		T extends NonNullableColumn
 			? SelectType<InferColumType<T>>
 			: T extends GeneratedAlwaysColumn
-			  ? never
-			  : SelectType<InferColumType<T>> | null | undefined,
+				? never
+				: SelectType<InferColumType<T>> | null | undefined,
 		z.ZodTypeDef,
 		InsertType<InferColumType<T>>
 	>;

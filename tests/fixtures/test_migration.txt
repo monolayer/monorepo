@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("books")
@@ -59,7 +59,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await sql`create unique index "addresses_city_kntc_idx" on "addresses" using btree ("city")`.execute(db);
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropIndex("addresses_city_kntc_idx").execute();
 

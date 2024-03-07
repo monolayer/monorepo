@@ -1,6 +1,6 @@
+import * as p from "@clack/prompts";
 import { promises as fs } from "fs";
 import path from "path";
-import * as p from "@clack/prompts";
 import color from "picocolors";
 import { env, exit } from "process";
 import { importConfig } from "../../config.js";

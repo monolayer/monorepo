@@ -13,7 +13,10 @@ export type pgDatabase<T extends Record<string, AnyPgTable>> = {
 export function pgDatabase<T extends Record<string, AnyPgTable>>({
 	extensions,
 	tables,
-}: { extensions?: PgExtensions; tables?: T }) {
+}: {
+	extensions?: PgExtensions;
+	tables?: T;
+}) {
 	const tbl = tables !== undefined ? tables : ({} as T);
 	const database = <pgDatabase<T>>{
 		extensions: extensions !== undefined ? extensions : [],
@@ -28,7 +31,7 @@ export function pgDatabase<T extends Record<string, AnyPgTable>>({
 			);
 		},
 	};
-	for (const [_name, table] of Object.entries(tbl)) {
+	for (const [, table] of Object.entries(tbl)) {
 		table.database = database;
 	}
 	return database;

@@ -73,7 +73,7 @@ export function findPrimaryKey(schema: MigrationSchema, tableName: string) {
 }
 
 export function extractColumnsFromPrimaryKey(pkey: string) {
-	const [_, columns] = pkey.split("PRIMARY KEY (");
+	const [, columns] = pkey.split("PRIMARY KEY (");
 	return columns?.replace(/"/g, "").split(")")[0]?.split(", ") || [];
 }
 
@@ -86,7 +86,7 @@ export function findForeignKeysTargetTables(
 		return [];
 	}
 	return Object.values(foreignKeys).flatMap((fk) => {
-		const [_, targetTable] = fk.split("REFERENCES ");
+		const [, targetTable] = fk.split("REFERENCES ");
 		if (targetTable !== undefined) {
 			const targetTables = targetTable.split(" (")[0];
 			if (targetTables !== undefined) {
@@ -115,9 +115,7 @@ export function findColumnByNameInTable(
 	columnName: string,
 ) {
 	const entries = Object.entries(table);
-	const column = entries.find(
-		([_key, value]) => value.columnName === columnName,
-	);
+	const column = entries.find(([, value]) => value.columnName === columnName);
 	if (column !== undefined) {
 		return column[1];
 	}
@@ -129,7 +127,7 @@ export function findTableInDatabaseSchema(
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
 	const tableInSchema = Object.entries(schema.tables || {}).find(
-		([_key, value]) => value.schema.columns === table.schema.columns,
+		([, value]) => value.schema.columns === table.schema.columns,
 	);
 	if (tableInSchema !== undefined) {
 		return toSnakeCase(tableInSchema[0], camelCase);

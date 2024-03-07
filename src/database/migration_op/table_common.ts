@@ -7,9 +7,9 @@ export type ColumnInfoDiff = Omit<ColumnInfo, "defaultValue"> & {
 };
 
 export function tableColumnsOps(columnsInfo: ColumnsInfoDiff) {
-	return Object.entries(columnsInfo).flatMap(([_, column]) => {
+	return Object.entries(columnsInfo).flatMap(([, column]) => {
 		const base = [
-			`addColumn(\"${column.columnName}\", ${compileDataType(
+			`addColumn("${column.columnName}", ${compileDataType(
 				column.dataType,
 				column.enum,
 			)}${optionsForColumn(column)})`,

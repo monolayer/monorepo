@@ -7,7 +7,9 @@ export function indexMigrationOpGenerator(
 	diff: Difference,
 	addedTables: string[],
 	droppedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_local: LocalTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 ) {
 	if (isCreateFirstIndex(diff)) {

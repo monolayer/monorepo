@@ -103,10 +103,12 @@ async function fetchDbColumnInfo(
 						AND information_schema.columns.is_identity = 'NO'`,
 				)
 				.then("serial")
-				.when(sql`
+				.when(
+					sql`
 					pg_get_serial_sequence('"' || information_schema.columns.table_name || '"', information_schema.columns.column_name) IS NOT NULL
 					AND information_schema.columns.data_type = 'bigint'
-					AND information_schema.columns.is_identity = 'NO'`)
+					AND information_schema.columns.is_identity = 'NO'`,
+				)
 				.then("bigserial")
 				.else(sql<string>`information_schema.columns.data_type`)
 				.end()

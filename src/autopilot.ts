@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { cwd } from "process";
 import type { ViteDevServer } from "vite";
-import { type ExecaCommandResult, runCommand } from "./cli/command.js";
+import { runCommand, type ExecaCommandResult } from "./cli/command.js";
 import { type Config } from "./config.js";
 
 class FileLock {

@@ -1,6 +1,6 @@
+import * as p from "@clack/prompts";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { exit } from "node:process";
-import * as p from "@clack/prompts";
 import pg from "pg";
 import color from "picocolors";
 
@@ -22,17 +22,19 @@ function logCreation(path: string, overwritten = false): void {
 	p.log.info(`${color.green(overwritten ? "overwritten" : "created")} ${path}`);
 }
 
-export type Result =
-	| {
-			error: Error;
-			message: string;
-			code: 1;
-	  }
-	| {
-			message: string;
-			result: pg.QueryResult | { stdout: string; stderr: string };
-			code: 0;
-	  };
+type ErrorResult = {
+	error: Error;
+	message: string;
+	code: 1;
+};
+
+type SuccessResult = {
+	message: string;
+	result: pg.QueryResult | { stdout: string; stderr: string };
+	code: 0;
+};
+
+export type Result = ErrorResult | SuccessResult;
 
 export async function performSingleCommand({
 	name,

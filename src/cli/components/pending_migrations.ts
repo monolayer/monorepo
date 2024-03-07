@@ -1,6 +1,6 @@
-import { unlinkSync } from "fs";
 import * as p from "@clack/prompts";
 import { confirm } from "@clack/prompts";
+import { unlinkSync } from "fs";
 import { Kysely } from "kysely";
 import color from "picocolors";
 import { exit } from "process";
@@ -10,7 +10,7 @@ import { ActionStatus, throwableOperation } from "../command.js";
 
 export async function pendingMigrations(
 	config: Config,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 ) {
 	const pending = await fetchPendingMigrations(config, kysely);

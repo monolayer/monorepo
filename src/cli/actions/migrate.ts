@@ -1,5 +1,3 @@
-import fs from "node:fs/promises";
-import path from "path";
 import * as p from "@clack/prompts";
 import {
 	FileMigrationProvider,
@@ -7,6 +5,8 @@ import {
 	Migrator,
 	PostgresDialect,
 } from "kysely";
+import fs from "node:fs/promises";
+import path from "path";
 import pg from "pg";
 import color from "picocolors";
 import { cwd } from "process";
@@ -25,7 +25,7 @@ export async function migrate(environment: string) {
 	});
 	checkAutoPilotLock({ outro: true });
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const db = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(environmentConfig),

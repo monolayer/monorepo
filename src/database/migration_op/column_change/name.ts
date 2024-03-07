@@ -9,9 +9,13 @@ import { MigrationOpPriority } from "../priority.js";
 
 export function ColumnNameMigrationOpGenerator(
 	diff: Difference,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_addedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_droppedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_local: LocalTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 ) {
 	if (isColumnName(diff)) {

@@ -1,8 +1,7 @@
-import { mkdirSync, rmdirSync } from "fs";
-import { promises as fs } from "fs";
-import path from "path";
 import { execaSync } from "execa";
+import { promises as fs, mkdirSync, rmdirSync } from "fs";
 import { MockSTDIN, stdin } from "mock-stdin";
+import path from "path";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {

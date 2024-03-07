@@ -1,5 +1,4 @@
-import { promises as fs, writeFileSync } from "fs";
-import { mkdirSync } from "fs";
+import { promises as fs, mkdirSync, writeFileSync } from "fs";
 import color from "picocolors";
 import { log } from "../utils/clack.js";
 

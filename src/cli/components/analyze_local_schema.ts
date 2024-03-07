@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { exit } from "process";
-import { type CamelCaseOptions, Config, importSchema } from "~/config.js";
+import { Config, importSchema, type CamelCaseOptions } from "~/config.js";
 import { localSchema } from "~/database/introspection/local_schema.js";
 import type { MigrationSchema } from "~/database/migrations/migration_schema.js";
 

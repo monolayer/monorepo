@@ -35,7 +35,7 @@ function expectMigrationSuccess(resultSet: MigrationResultSet) {
 
 export async function testUpAndDownMigrations(
 	context: DbContext,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	database: pgDatabase<any>,
 	cs: Changeset[],
 	down: "same" | "reverse" | "empty",
@@ -86,9 +86,9 @@ export async function testChangesetAndMigrations({
 	useCamelCase = { enabled: false },
 }: {
 	context: DbContext;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	database: pgDatabase<any>;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expected: any[];
 	down: "same" | "reverse" | "empty";
 	useCamelCase?: CamelCaseOptions;

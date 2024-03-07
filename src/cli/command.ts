@@ -65,7 +65,7 @@ export function isCommanderError(error: unknown): error is CommanderError {
 }
 
 export function isExecaError(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	error: any,
 ): error is ExecaReturnBase<string | Buffer | undefined> {
 	return (
@@ -87,7 +87,7 @@ export type OperationSuccess<T> = {
 
 export type OperationAnyError = {
 	status: ActionStatus.Error;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	error: any;
 };
 
@@ -96,7 +96,7 @@ type OperationError = {
 	error: Error;
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function throwableOperation<T extends (...args: any) => any>(
 	operation: () => ReturnType<T>,
 ): Promise<

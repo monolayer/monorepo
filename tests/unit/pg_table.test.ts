@@ -822,7 +822,7 @@ describe("pgTable definition", () => {
 						id: pgInteger().generatedAlwaysAsIdentity().primaryKey(),
 					},
 				});
-				// biome-ignore lint/complexity/noBannedTypes: <explanation>
+				// eslint-disable-next-line @typescript-eslint/ban-types
 				type expectedType = {};
 				type InferredType = typeof tbl.inferInsert;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -835,7 +835,7 @@ describe("pgTable definition", () => {
 						id: pgInteger().generatedAlwaysAsIdentity().primaryKey(),
 					},
 				});
-				// biome-ignore lint/complexity/noBannedTypes: <explanation>
+				// eslint-disable-next-line @typescript-eslint/ban-types
 				type expectedType = {};
 				type InferredType = typeof tbl.inferUpdate;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -882,7 +882,7 @@ describe("pgTable definition", () => {
 						id: pgInteger().generatedAlwaysAsIdentity(),
 					},
 				});
-				// biome-ignore lint/complexity/noBannedTypes: <explanation>
+				// eslint-disable-next-line @typescript-eslint/ban-types
 				type expectedType = {};
 				type InferredType = typeof tbl.inferInsert;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -895,7 +895,7 @@ describe("pgTable definition", () => {
 						id: pgInteger().generatedAlwaysAsIdentity(),
 					},
 				});
-				// biome-ignore lint/complexity/noBannedTypes: <explanation>
+				// eslint-disable-next-line @typescript-eslint/ban-types
 				type expectedType = {};
 				type InferredType = typeof tbl.inferUpdate;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;

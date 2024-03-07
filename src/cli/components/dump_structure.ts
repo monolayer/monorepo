@@ -1,6 +1,6 @@
+import { execa } from "execa";
 import { appendFileSync } from "fs";
 import path from "path";
-import { execa } from "execa";
 import { env } from "process";
 import type { Config } from "~/config.js";
 import { pgPoolAndConfig } from "~/database/pg/pg_pool.js";

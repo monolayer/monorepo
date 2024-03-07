@@ -1,12 +1,12 @@
 import { promises as fs } from "fs";
-import { afterEach } from "node:test";
 import mock from "mock-fs";
+import { afterEach } from "node:test";
 import color from "picocolors";
 import { MockInstance, beforeEach, describe, expect, test, vi } from "vitest";
 import { createDir, createFile } from "~/cli/components/file.js";
 
 type TestContext = {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	stdoutWriteSpy: MockInstance<any>;
 };
 

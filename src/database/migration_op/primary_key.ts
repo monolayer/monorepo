@@ -1,7 +1,9 @@
 import type { Difference } from "microdiff";
 import type { DbTableInfo, LocalTableInfo } from "../introspection/types.js";
-import { extractColumnsFromPrimaryKey } from "../migrations/migration_schema.js";
-import { findColumnByNameInTable } from "../migrations/migration_schema.js";
+import {
+	extractColumnsFromPrimaryKey,
+	findColumnByNameInTable,
+} from "../migrations/migration_schema.js";
 import { ChangeSetType, type Changeset } from "./changeset.js";
 import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
@@ -11,6 +13,7 @@ export function primaryKeyMigrationOpGenerator(
 	addedTables: string[],
 	droppedTables: string[],
 	local: LocalTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 ) {
 	if (isPrimaryKeyCreateFirst(diff)) {
@@ -124,7 +127,7 @@ function createPrimaryKeyMigration(
 					primaryKeyName as string,
 					primaryKeyValue,
 					local,
-			  ),
+				),
 	};
 	return changeset;
 }
@@ -153,7 +156,7 @@ function dropPrimaryKeyMigration(
 					primaryKeyName as string,
 					primaryKeyValue,
 					local,
-			  ),
+				),
 		down: [
 			addPrimaryKeyOp(tableName, primaryKeyName as string, primaryKeyValue),
 		],

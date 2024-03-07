@@ -1,9 +1,8 @@
-import { type Expression, sql } from "kysely";
+import { sql, type Expression } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
 import {
-	type Boolish,
 	ColumnInfo,
 	DefaultValueDataTypes,
 	PgBigInt,
@@ -15,6 +14,7 @@ import {
 	PgColumnBase,
 	PgDate,
 	PgDoublePrecision,
+	PgEnum,
 	PgFloat4,
 	PgFloat8,
 	PgGeneratedColumn,
@@ -43,6 +43,7 @@ import {
 	pgChar,
 	pgDate,
 	pgDoublePrecision,
+	pgEnum,
 	pgFloat4,
 	pgFloat8,
 	pgInt2,
@@ -61,23 +62,23 @@ import {
 	pgTimetz,
 	pgUuid,
 	pgVarchar,
+	type Boolish,
 } from "../../src/database/schema/pg_column.js";
-import { PgEnum, pgEnum } from "../../src/database/schema/pg_column.js";
 
 type ColumnWithDefaultContext = {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	column: PgColumn<any, any>;
 	columnInfo: ColumnInfo;
 };
 
 type ColumnContext = {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	column: PgColumnBase<any, any, any>;
 	columnInfo: ColumnInfo;
 };
 
 type ColumnWithoutDefaultContext = {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	column: PgGeneratedColumn<any, any>;
 	columnInfo: ColumnInfo;
 };
@@ -134,7 +135,7 @@ describe("PgColumn", () => {
 			expectTypeOf(textColumnExpect).toMatchTypeOf<boolean>();
 		});
 
-		test("defaultTo sets default value", (context: ColumnWithDefaultContext) => {
+		test("defaultTo sets default value", () => {
 			const column = pgText();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
@@ -159,25 +160,25 @@ describe("PgGeneratedColumn", () => {
 	testBase("serial");
 
 	test("does not have defaultTo", (context: ColumnWithoutDefaultContext) => {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		expect(typeof (context.column as any).defaultTo === "function").toBe(false);
 	});
 
 	test("does not have notNull", (context: ColumnWithoutDefaultContext) => {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		expect(typeof (context.column as any).notNull === "function").toBe(false);
 	});
 
 	test("does not have generatedAlwaysAsIdentity", (context: ColumnWithoutDefaultContext) => {
 		expect(
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			typeof (context.column as any).generatedAlwaysAsIdentity === "function",
 		).toBe(false);
 	});
 
 	test("does not have generatedByDefaultAsIdentity", (context: ColumnWithoutDefaultContext) => {
 		expect(
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			typeof (context.column as any).generatedByDefaultAsIdentity ===
 				"function",
 		).toBe(false);
@@ -267,7 +268,7 @@ describe("pgBoolean", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgBoolean() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -275,7 +276,7 @@ describe("pgBoolean", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgBoolean() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -576,7 +577,7 @@ describe("pgText", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgText() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -584,7 +585,7 @@ describe("pgText", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgText() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -1197,16 +1198,16 @@ describe("pgBigSerial", () => {
 			expect(info.dataType).toBe("bigserial");
 		});
 
-		test("does not have generatedAlwaysAsIdentity", (context) => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgBigserial() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
 		});
 
-		test("does not have generatedByDefaultAsIdentity", (context) => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgBigserial() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -1261,7 +1262,7 @@ describe("pgBytea", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgBytea() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -1269,7 +1270,7 @@ describe("pgBytea", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgBytea() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -1539,7 +1540,7 @@ describe("pgDate", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgDate() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -1547,7 +1548,7 @@ describe("pgDate", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgDate() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -1811,7 +1812,7 @@ describe("pgDoublePrecision", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgDoublePrecision() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -1819,7 +1820,7 @@ describe("pgDoublePrecision", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgDoublePrecision() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -2198,7 +2199,7 @@ describe("pgFloat4", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgFloat4() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -2206,7 +2207,7 @@ describe("pgFloat4", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgFloat4() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -2582,7 +2583,7 @@ describe("pgFloat8", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgFloat8() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -2590,7 +2591,7 @@ describe("pgFloat8", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgFloat8() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -2963,13 +2964,13 @@ describe("pgInt2", () => {
 		});
 
 		test("has have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgInt2() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgInt2() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				true,
@@ -3352,13 +3353,13 @@ describe("pgInt4", () => {
 		});
 
 		test("has generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgInt4() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
 		});
 
 		test("has generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgInt4() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				true,
@@ -3740,13 +3741,13 @@ describe("pgInt8", () => {
 		});
 
 		test("has generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgInt8() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
 		});
 
 		test("has generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgInt8() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				true,
@@ -4108,13 +4109,13 @@ describe("pgInteger", () => {
 		});
 
 		test("has generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgInteger() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
 		});
 
 		test("has generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgInteger() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				true,
@@ -4492,7 +4493,7 @@ describe("pgJson", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgJson() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -4500,7 +4501,7 @@ describe("pgJson", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgJson() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -4518,7 +4519,7 @@ describe("pgJson", () => {
 					| string
 					| number
 					| boolean
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					| Record<string, any>
 					| null
 					| undefined;
@@ -4534,7 +4535,7 @@ describe("pgJson", () => {
 					| string
 					| number
 					| boolean
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					| Record<string, any>
 					| null
 					| undefined;
@@ -4564,7 +4565,7 @@ describe("pgJson", () => {
 				const column = pgJson().notNull();
 				const schema = column.zodSchema();
 				type InputType = z.input<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -4574,7 +4575,7 @@ describe("pgJson", () => {
 				const column = pgJson().notNull();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -4668,7 +4669,7 @@ describe("pgJson", () => {
 				const column = pgJson().primaryKey();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -4678,7 +4679,7 @@ describe("pgJson", () => {
 				const column = pgJson().primaryKey();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -4803,7 +4804,7 @@ describe("pgJsonB", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgJsonb() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -4811,7 +4812,7 @@ describe("pgJsonB", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgJsonb() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -4829,7 +4830,7 @@ describe("pgJsonB", () => {
 					| string
 					| number
 					| boolean
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					| Record<string, any>
 					| null
 					| undefined;
@@ -4845,7 +4846,7 @@ describe("pgJsonB", () => {
 					| string
 					| number
 					| boolean
-					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					| Record<string, any>
 					| null
 					| undefined;
@@ -4875,7 +4876,7 @@ describe("pgJsonB", () => {
 				const column = pgJsonb().notNull();
 				const schema = column.zodSchema();
 				type InputType = z.input<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -4885,7 +4886,7 @@ describe("pgJsonB", () => {
 				const column = pgJsonb().notNull();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -4979,7 +4980,7 @@ describe("pgJsonB", () => {
 				const column = pgJsonb().primaryKey();
 				const schema = column.zodSchema();
 				type InpuType = z.input<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -4989,7 +4990,7 @@ describe("pgJsonB", () => {
 				const column = pgJsonb().primaryKey();
 				const schema = column.zodSchema();
 				type OutputType = z.output<typeof schema>;
-				// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -5117,7 +5118,7 @@ describe("pgReal", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgReal() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -5125,7 +5126,7 @@ describe("pgReal", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgReal() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -5481,7 +5482,7 @@ describe("pgSerial", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgSerial() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -5489,7 +5490,7 @@ describe("pgSerial", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgSerial() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -5542,7 +5543,7 @@ describe("pgUuid", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgUuid() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -5550,7 +5551,7 @@ describe("pgUuid", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgUuid() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -5829,7 +5830,7 @@ describe("pgVarChar", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgVarchar() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -5837,7 +5838,7 @@ describe("pgVarChar", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgVarchar() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -6149,7 +6150,7 @@ describe("pgChar", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgChar() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -6157,7 +6158,7 @@ describe("pgChar", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgChar() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -6471,7 +6472,7 @@ describe("pgTime", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgTime() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -6479,7 +6480,7 @@ describe("pgTime", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgTime() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -6778,7 +6779,7 @@ describe("pgTimeTz", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgTimetz() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -6786,7 +6787,7 @@ describe("pgTimeTz", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgTimetz() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -7087,7 +7088,7 @@ describe("pgTimestamp", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgTimestamp() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -7095,7 +7096,7 @@ describe("pgTimestamp", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgTimestamp() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -7411,7 +7412,7 @@ describe("pgTimestampTz", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgTimestamptz() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -7419,7 +7420,7 @@ describe("pgTimestampTz", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgTimestamptz() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -7751,7 +7752,7 @@ describe("pgNumeric", () => {
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgNumeric() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
@@ -7759,7 +7760,7 @@ describe("pgNumeric", () => {
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const column = pgNumeric() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
@@ -8290,13 +8291,13 @@ describe("pgEnum", () => {
 	});
 
 	test("does not have generatedAlwaysAsIdentity", () => {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const column = pgEnum("myEnum", ["one", "two", "three"]) as any;
 		expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(false);
 	});
 
 	test("does not have generatedByDefaultAsIdentity", () => {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const column = pgEnum("myEnum", ["one", "two", "three"]) as any;
 		expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 			false,
@@ -8616,7 +8617,7 @@ function testColumnDefaults(expectedDataType: string) {
 	});
 }
 
-function testColumnMethods(testNull = true) {
+function testColumnMethods() {
 	test("renameFrom() sets renameFrom", (context: ColumnContext) => {
 		context.column.renameFrom("old_name");
 		expect(context.columnInfo.renameFrom).toBe("old_name");

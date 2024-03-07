@@ -9,13 +9,17 @@ import {
 } from "~/database/migration_op/changeset.js";
 import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
-import { type ColumnsInfoDiff, tableColumnsOps } from "./table_common.js";
+import { tableColumnsOps, type ColumnsInfoDiff } from "./table_common.js";
 
 export function tableMigrationOpGenerator(
 	diff: Difference,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_addedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_droppedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_local: LocalTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 ) {
 	if (isCreateTable(diff)) {

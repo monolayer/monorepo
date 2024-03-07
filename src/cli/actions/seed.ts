@@ -27,14 +27,14 @@ export async function seed(
 		},
 	);
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const db = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(environmentConfig),
 		}),
 		plugins: config.camelCasePlugin?.enabled ? [new CamelCasePlugin()] : [],
 	});
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const dbWithoutPlugins = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(environmentConfig),
@@ -45,7 +45,7 @@ export async function seed(
 
 	if (pending.length > 0) {
 		p.log.error("You have pending migrations. Cannot seed until they are run.");
-		const nextSteps = `1) Run \'npx kinetic migrate\' to migrate the database.
+		const nextSteps = `1) Run 'npx kinetic migrate' to migrate the database.
 2) Run again \`npx kinetic seed\`.`;
 		p.note(nextSteps, "Next Steps");
 		p.outro(`${color.red("Failed")}`);
@@ -81,8 +81,8 @@ export async function seed(
 		p.log.error(
 			"The local schema does not match the database schema. Cannot continue.",
 		);
-		const nextSteps = `1) Run \'npx kinetic generate\' to generate migrations.
-2) Run \'npx kinetic migrate\' to migrate the database.
+		const nextSteps = `1) Run 'npx kinetic generate' to generate migrations.
+2) Run 'npx kinetic migrate' to migrate the database.
 3) Run again \`npx kinetic seed\`.`;
 		p.note(nextSteps, "Next Steps");
 		p.outro(`${color.red("Failed")}`);
@@ -105,7 +105,7 @@ export async function seed(
 }
 
 async function truncateAllTables(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	db: Kysely<any>,
 	database: string,
 	disableWarnings: boolean,
@@ -138,7 +138,7 @@ async function truncateAllTables(
 }
 
 async function seedDb(
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	db: Kysely<any>,
 	database: string,
 ) {

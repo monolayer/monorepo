@@ -7,7 +7,7 @@ export enum MigrationOpPriority {
 	PrimaryKeyDrop = 1004,
 	ColumnDrop = 1005,
 	TableDrop = 1006,
-	DropEnum = 3009,
+	DropEnum = 3011,
 
 	TableCreate = 2001,
 	ColumnCreate = 2002,
@@ -21,7 +21,7 @@ export enum MigrationOpPriority {
 	ChangeColumnDefaultChange = 3007,
 	ChangeColumnNullable = 3008,
 
-	ChangeColumnName = 3008,
+	ChangeColumnName = 3010,
 
 	PrimaryKeyCreate = 4001,
 	ConstraintCreate = 4002,

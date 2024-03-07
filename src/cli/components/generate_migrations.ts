@@ -19,6 +19,6 @@ export async function generateMigrations(
 		console.error(result.error);
 		exit(1);
 	}
-	const nextSteps = `To apply migrations, run \'npx kinetic migrate\'`;
+	const nextSteps = "To apply migrations, run 'npx kinetic migrate'";
 	p.note(nextSteps, "Next Steps");
 }

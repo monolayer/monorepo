@@ -95,7 +95,7 @@ export function variablePrecisionSchema(
 				return z.NEVER;
 			}
 		})
-		.superRefine((val: unknown, ctx: z.RefinementCtx) => {
+		.superRefine((val: unknown) => {
 			const stringValue = String(val);
 			if (
 				stringValue === "NaN" ||

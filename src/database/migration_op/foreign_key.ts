@@ -129,7 +129,7 @@ function createforeignKeyFirstConstraintMigration(
 	addedTables: string[],
 ) {
 	const tableName = diff.path[1];
-	return Object.entries(diff.value).reduce((acc, [_key, value]) => {
+	return Object.entries(diff.value).reduce((acc, [, value]) => {
 		const constraintValue = value;
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.ConstraintCreate,
@@ -164,7 +164,7 @@ function dropforeignKeyLastConstraintMigration(
 	droppedTables: string[],
 ) {
 	const tableName = diff.path[1];
-	return Object.entries(diff.oldValue).reduce((acc, [_key, value]) => {
+	return Object.entries(diff.oldValue).reduce((acc, [, value]) => {
 		const constraintValue = value;
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.ConstraintDrop,
@@ -226,17 +226,17 @@ type ForeignKeyDefinition = {
 
 function foreignKeyDefinition(foreignKey: string) {
 	const definition: ForeignKeyDefinition = {
-		name: foreignKey.match(/\"(\w+)\"/)?.[1] || "",
-		columns: (foreignKey.match(/FOREIGN KEY \(((\w|\,|\s|\")+)\)/)?.[1] || "")
+		name: foreignKey.match(/"(\w+)"/)?.[1] || "",
+		columns: (foreignKey.match(/FOREIGN KEY \(((\w|,|\s|")+)\)/)?.[1] || "")
 			.replace(/ /g, "")
-			.replace(/\"/g, "")
+			.replace(/"/g, "")
 			.split(","),
 		targetTable: foreignKey.match(/REFERENCES (\w+)/)?.[1] || "",
 		targetColumns: (
-			foreignKey.match(/REFERENCES \w+ \(((\w|\,|\s|\")+)\)/)?.[1] || ""
+			foreignKey.match(/REFERENCES \w+ \(((\w|,|\s|")+)\)/)?.[1] || ""
 		)
 			.replace(/ /g, "")
-			.replace(/\"/g, "")
+			.replace(/"/g, "")
 			.split(","),
 		onDelete:
 			foreignKey

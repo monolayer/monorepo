@@ -5,5 +5,7 @@ export async function dropTables(context: DbContext) {
 		for (const tableName of context.tableNames) {
 			await context.kysely.schema.dropTable(tableName).execute();
 		}
-	} catch {}
+	} catch {
+		/* empty */
+	}
 }

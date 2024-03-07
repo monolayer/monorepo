@@ -1,14 +1,14 @@
-import fs from "node:fs/promises";
-import path from "path";
 import * as p from "@clack/prompts";
 import { FileMigrationProvider, Kysely, Migrator } from "kysely";
+import fs from "node:fs/promises";
+import path from "path";
 import { cwd, exit } from "process";
 import { ActionStatus, throwableOperation } from "~/cli/command.js";
 import { Config } from "~/config.js";
 
 export async function fetchPendingMigrations(
 	config: Config,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	db: Kysely<any>,
 	migrationsFolderName = "migrations",
 ) {
@@ -26,7 +26,7 @@ export async function fetchPendingMigrations(
 	}
 
 	const migrationFiles = await throwableOperation<
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(...args: any) => Promise<string[]>
 	>(async () => {
 		const results = await fs.readdir(migrationsFolder);
@@ -57,7 +57,7 @@ export async function fetchPendingMigrations(
 
 export async function migrations(
 	config: Config,
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	db: Kysely<any>,
 	migrationsFolderName = "migrations",
 ) {

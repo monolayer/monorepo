@@ -574,7 +574,7 @@ describe("Table drop migrations", () => {
 				],
 			},
 			{
-				priority: 3009,
+				priority: 3011,
 				tableName: "none",
 				type: "dropEnum",
 				up: [["await db.schema", 'dropType("role")', "execute();"]],

@@ -5,9 +5,13 @@ import { MigrationOpPriority } from "./priority.js";
 
 export function enumMigrationOpGenerator(
 	diff: Difference,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_addedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_droppedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_local: LocalTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 ) {
 	if (isCreateEnum(diff)) {
@@ -36,7 +40,7 @@ function createEnumMigration(diff: CreateEnumDiff) {
 				"await db.schema",
 				`createType("${enumName}")`,
 				`asEnum([${enumValues}])`,
-				`execute();await sql\`COMMENT ON TYPE \"${enumName}\" IS 'kinetic'\`.execute(db)`,
+				`execute();await sql\`COMMENT ON TYPE "${enumName}" IS 'kinetic'\`.execute(db)`,
 			],
 		],
 		down: [["await db.schema", `dropType("${enumName}")`, "execute();"]],
@@ -60,7 +64,7 @@ function dropEnumMigration(diff: DropEnumDiff) {
 				"await db.schema",
 				`createType("${enumName}")`,
 				`asEnum([${enumValues}])`,
-				`execute();await sql\`COMMENT ON TYPE \"${enumName}\" IS 'kinetic'\`.execute(db)`,
+				`execute();await sql\`COMMENT ON TYPE "${enumName}" IS 'kinetic'\`.execute(db)`,
 			],
 		],
 	};

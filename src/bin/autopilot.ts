@@ -1,8 +1,8 @@
 #!/usr/bin/env tsx
 
+import { Kysely, PostgresDialect } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
-import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { cwd, exit } from "process";
 import { ActionStatus } from "~/cli/command.js";
@@ -33,7 +33,7 @@ async function main() {
 
 	await copyFiles(srcDir, targetDir);
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(environmentConfig),

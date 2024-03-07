@@ -1,19 +1,12 @@
-export { pgTable } from "~/database/schema/pg_table.js";
-export { pgDatabase } from "~/database/schema/pg_database.js";
-export { pgIndex } from "~/database/schema/pg_index.js";
-export { pgForeignKey } from "~/database/schema/pg_foreign_key.js";
-export { pgUnique } from "~/database/schema/pg_unique.js";
-export { pgTrigger } from "~/database/schema/pg_trigger.js";
-export * from "~/database/schema/pg_extension.js";
 export {
-	pgBigserial,
-	pgSerial,
-	pgBoolean,
-	pgText,
 	pgBigint,
+	pgBigserial,
+	pgBoolean,
 	pgBytea,
+	pgChar,
 	pgDate,
 	pgDoublePrecision,
+	pgEnum,
 	pgFloat4,
 	pgFloat8,
 	pgInt2,
@@ -22,14 +15,21 @@ export {
 	pgInteger,
 	pgJson,
 	pgJsonb,
+	pgNumeric,
 	pgReal,
-	pgUuid,
-	pgVarchar,
-	pgChar,
+	pgSerial,
+	pgText,
 	pgTime,
-	pgTimetz,
 	pgTimestamp,
 	pgTimestamptz,
-	pgNumeric,
-	pgEnum,
+	pgTimetz,
+	pgUuid,
+	pgVarchar,
 } from "~/database/schema/pg_column.js";
+export { pgDatabase } from "~/database/schema/pg_database.js";
+export * from "~/database/schema/pg_extension.js";
+export { pgForeignKey } from "~/database/schema/pg_foreign_key.js";
+export { pgIndex } from "~/database/schema/pg_index.js";
+export { pgTable } from "~/database/schema/pg_table.js";
+export { pgTrigger } from "~/database/schema/pg_trigger.js";
+export { pgUnique } from "~/database/schema/pg_unique.js";
