@@ -28,7 +28,7 @@ export type ColumnRecord = Record<string, PgColumnTypes>;
 type TableSchema<T> = {
 	columns: T extends ColumnRecord ? T : never;
 	foreignKeys?: PgForeignKey<keyof T | Array<keyof T>>[];
-	uniqueConstraints?: PgUnique<keyof T | Array<keyof T>>[];
+	uniqueConstraints?: keyof T extends string ? PgUnique<keyof T>[] : [];
 	indexes?: keyof T extends string ? PgIndex<keyof T>[] : [];
 	triggers?: Record<string, PgTrigger>;
 };

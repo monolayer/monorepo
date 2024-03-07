@@ -9,7 +9,7 @@ describe("PgUniqueConstraint", () => {
 	});
 
 	test("one column", () => {
-		const constraint = pgUnique("id");
+		const constraint = pgUnique(["id"]);
 		const compiled = compileUnique(constraint, "test_table");
 
 		const expected = {
@@ -31,7 +31,7 @@ describe("PgUniqueConstraint", () => {
 	});
 
 	test("null not distinct", () => {
-		const constraint = pgUnique("id").nullsNotDistinct();
+		const constraint = pgUnique(["id"]).nullsNotDistinct();
 		const compiled = compileUnique(constraint, "test_table");
 
 		const expected = {

@@ -383,7 +383,7 @@ describe("Table create migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			uniqueConstraints: [pgUnique("id").nullsNotDistinct()],
+			uniqueConstraints: [pgUnique(["id"]).nullsNotDistinct()],
 		});
 
 		const users = pgTable({

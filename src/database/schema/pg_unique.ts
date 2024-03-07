@@ -1,23 +1,16 @@
-export function pgUnique<T>(columns: T) {
-	return new PgUnique(columns);
+export function pgUnique<T extends string>(columns: T[]) {
+	return new PgUnique<T>(columns);
 }
 
-export class PgUnique<T> {
+export class PgUnique<T extends string> {
 	#compileArgs: {
-		cols: string[];
+		cols: T[];
 		nullsDistinct: boolean;
 	};
 
-	constructor(cols: T) {
-		const colArray = [] as string[];
-		if (typeof cols === "string") {
-			colArray.push(cols);
-		} else {
-			colArray.push(...(cols as unknown as string[]));
-		}
-
+	constructor(cols: T[]) {
 		this.#compileArgs = {
-			cols: colArray,
+			cols: cols,
 			nullsDistinct: true,
 		};
 	}

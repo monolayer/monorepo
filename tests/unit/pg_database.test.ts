@@ -373,7 +373,7 @@ describe("introspect", () => {
 				location: pgText(),
 			},
 			uniqueConstraints: [
-				pgUnique("book_id"),
+				pgUnique(["book_id"]),
 				pgUnique(["description", "location"]).nullsNotDistinct(),
 			],
 		});
