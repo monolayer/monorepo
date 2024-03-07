@@ -3,17 +3,14 @@ import nunjucks from "nunjucks";
 import { createFile } from "~/utils.js";
 import { Changeset } from "../migration_op/changeset.js";
 
-const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Kysely, sql } from "kysely";
+const template = `import { Kysely, sql } from "kysely";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function up(db: Kysely<any>): Promise<void> {
 {%- for u in up %}
   {{ u | safe }}
 {% endfor -%}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
 {%- for downOps in down %}
   {{ downOps | safe }}
