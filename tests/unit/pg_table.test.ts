@@ -28,7 +28,7 @@ describe("pgTable definition", () => {
 		const tbl = pgTable({
 			columns: columns,
 		});
-		expect(tbl.columns).toBe(columns);
+		expect(tbl.schema.columns).toBe(columns);
 	});
 
 	test("columns with pgEnum", () => {
@@ -40,7 +40,7 @@ describe("pgTable definition", () => {
 		const tbl = pgTable({
 			columns: columns,
 		});
-		expect(tbl.columns).toBe(columns);
+		expect(tbl.schema.columns).toBe(columns);
 	});
 
 	test("indexes are empty by default", () => {
@@ -51,7 +51,7 @@ describe("pgTable definition", () => {
 		const tbl = pgTable({
 			columns: columns,
 		});
-		expect(tbl.indexes).toStrictEqual([]);
+		expect(tbl.schema.indexes).toStrictEqual([]);
 	});
 
 	test("indexes can be added", () => {
@@ -66,8 +66,8 @@ describe("pgTable definition", () => {
 				pgIndex("subscribed").unique().using("btree"),
 			],
 		});
-		expect(tbl.indexes?.length).toBe(2);
-		for (const idx of tbl.indexes || []) {
+		expect(tbl.schema.indexes?.length).toBe(2);
+		for (const idx of tbl.schema.indexes || []) {
 			expect(idx).toBeInstanceOf(PgIndex);
 		}
 	});

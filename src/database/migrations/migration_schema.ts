@@ -129,7 +129,7 @@ export function findTableInDatabaseSchema(
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
 	const tableInSchema = Object.entries(schema.tables || {}).find(
-		([_key, value]) => value.columns === table.columns,
+		([_key, value]) => value.schema.columns === table.schema.columns,
 	);
 	if (tableInSchema !== undefined) {
 		return toSnakeCase(tableInSchema[0], camelCase);

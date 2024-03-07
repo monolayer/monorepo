@@ -114,7 +114,7 @@ export function schemaDBColumnInfoByTable(
 	return Object.entries(schema.tables || {}).reduce<TableColumnInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const columns = Object.entries(tableDefinition.columns);
+			const columns = Object.entries(tableDefinition.schema.columns);
 			acc[transformedTableName] = columns.reduce<ColumnsInfo>(
 				(columnAcc, [columnName, column]) => {
 					const columnInfo = schemaColumnInfo(
@@ -181,7 +181,7 @@ export function schemaDBIndexInfoByTable(
 	return Object.entries(schema.tables || {}).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const indexes = tableDefinition.indexes || [];
+			const indexes = tableDefinition.schema.indexes || [];
 			for (const index of indexes) {
 				const indexInfo = indexToInfo(
 					index,
@@ -297,8 +297,10 @@ function schemaDBTriggersInfo(
 	return Object.entries(schema.tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			tableDefinition.triggers;
-			for (const trigger of Object.entries(tableDefinition.triggers || {})) {
+			tableDefinition.schema.triggers;
+			for (const trigger of Object.entries(
+				tableDefinition.schema.triggers || {},
+			)) {
 				const triggerName = `${trigger[0]}_trg`.toLowerCase();
 				const hash = createHash("sha256");
 				const compiledTrigger = triggerInfo(
@@ -324,9 +326,9 @@ function schemaDBTriggersInfo(
 export function schemaDbEnumInfo(schema: AnyPgDatabase) {
 	return Object.entries(schema.tables || {}).reduce<EnumInfo>(
 		(enumInfo, [, tableDefinition]) => {
-			const keys = Object.keys(tableDefinition.columns);
+			const keys = Object.keys(tableDefinition.schema.columns);
 			for (const key of keys) {
-				const column = tableDefinition.columns[key];
+				const column = tableDefinition.schema.columns[key];
 				if (column instanceof PgEnum) {
 					const columnDef = Object.fromEntries(Object.entries(column)) as {
 						info: ColumnInfo;

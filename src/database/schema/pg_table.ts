@@ -1,15 +1,26 @@
 import type { Insertable, Selectable, Simplify, Updateable } from "kysely";
 import { z } from "zod";
+import type { ForeignKeyRule } from "../introspection/database/foreign_key_constraint.js";
+import { compileDefaultExpression } from "../introspection/local_schema.js";
 import {
+	type ColumnInfo,
 	type GeneratedColumnType,
 	type InferColumType,
+	PgBigSerial,
 	type PgColumn,
 	PgColumnTypes,
 	type PgGeneratedColumn,
+	PgSerial,
+	isExpression,
 } from "./pg_column.js";
+import type { AnyPgDatabase } from "./pg_database.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
 import { type PgIndex } from "./pg_index.js";
-import type { PgTrigger } from "./pg_trigger.js";
+import type {
+	PgTrigger,
+	TriggerEvent,
+	TriggerFiringTime,
+} from "./pg_trigger.js";
 import type { PgUnique } from "./pg_unique.js";
 
 export type ColumnRecord = Record<string, PgColumnTypes>;
@@ -33,24 +44,14 @@ export class PgTable<T extends ColumnRecord> {
 	declare inferInsert: Simplify<Insertable<typeof this.infer>>;
 	declare inferUpdate: Simplify<Updateable<typeof this.infer>>;
 
+	database?: AnyPgDatabase;
+
 	constructor(public schema: TableSchema<T>) {
 		this.schema.indexes = this.schema.indexes || [];
 		this.schema.columns = this.schema.columns || {};
 		this.schema.foreignKeys = this.schema.foreignKeys;
 		this.schema.uniqueConstraints = this.schema.uniqueConstraints || [];
 		this.schema.triggers = this.schema.triggers || {};
-	}
-
-	get columns() {
-		return this.schema.columns;
-	}
-
-	get indexes() {
-		return this.schema.indexes;
-	}
-
-	get triggers() {
-		return this.schema.triggers;
 	}
 
 	zodSchema() {
@@ -65,7 +66,168 @@ export class PgTable<T extends ColumnRecord> {
 		);
 		return z.object(schema.shape);
 	}
+
+	introspect() {
+		const info: IntrospectedTable = {
+			primaryKey: this.#primaryKey(),
+			columns: this.#columnInfo(),
+			foreignKeys: this.#foreignKeyInfo(),
+			uniqueConstraints: this.#uniqueConstraintInfo(),
+			triggers: this.#triggerInfo(),
+		};
+		return info;
+	}
+
+	#primaryKey() {
+		return Object.entries(this.schema.columns).reduce((acc, [key, value]) => {
+			const columnDef = Object.fromEntries(Object.entries(value)) as {
+				_isPrimaryKey: boolean;
+			};
+
+			if (columnDef._isPrimaryKey) {
+				acc.push(key);
+			}
+			return acc;
+		}, [] as string[]);
+	}
+
+	#columnInfo() {
+		return Object.entries(this.schema.columns).reduce(
+			(acc, [key, value]) => {
+				const columnDef = Object.fromEntries(Object.entries(value)) as {
+					_isPrimaryKey: boolean;
+					info: ColumnInfo;
+				};
+				let generated = false;
+				if (columnDef.info.identity !== null) {
+					generated = true;
+				}
+				if (value instanceof PgSerial || value instanceof PgBigSerial) {
+					generated = true;
+				}
+				let defaultValue = columnDef.info.defaultValue;
+				if (isExpression(defaultValue)) {
+					defaultValue = `sql\`${compileDefaultExpression(defaultValue)}\``;
+				}
+				acc[key] = {
+					dataType: columnDef.info.dataType,
+					nullable:
+						columnDef.info.isNullable &&
+						columnDef.info.identity === null &&
+						!columnDef._isPrimaryKey,
+					generated,
+					defaultValue:
+						defaultValue === null ? defaultValue : String(defaultValue),
+					primaryKey: columnDef._isPrimaryKey,
+				};
+				return acc;
+			},
+			{} as Record<string, IntrospectedColum>,
+		);
+	}
+
+	#foreignKeyInfo() {
+		return (this.schema.foreignKeys || []).map<IntrospectedForeignKey>((fk) => {
+			return {
+				columns: fk.columns,
+				targetTable: this.#findTableInDatabaseSchema(fk.targetTable),
+				targetColumns: fk.targetColumns,
+				deleteRule: fk.options.deleteRule,
+				updateRule: fk.options.updateRule,
+			};
+		});
+	}
+
+	#uniqueConstraintInfo() {
+		return (
+			this.schema.uniqueConstraints || []
+		).map<IntrospectedUniqueConstraint>((uc) => {
+			return {
+				columns: uc.compileArgs().cols,
+				nullsDistinct: uc.compileArgs().nullsDistinct,
+			};
+		});
+	}
+
+	#triggerInfo() {
+		return Object.entries(this.schema.triggers || {}).reduce(
+			(acc, [key, value]) => {
+				const trigger = value.compileArgs();
+				const tr = Object.entries(trigger).reduce(
+					(acc, [key, value]) => {
+						if (value === undefined) {
+							return acc;
+						}
+						acc[key] = value;
+						return acc;
+					},
+					{} as Record<string, unknown>,
+				);
+				if (trigger.condition !== undefined) {
+					tr.condition = compileDefaultExpression(trigger.condition);
+				}
+				tr.name = key;
+				acc.push(tr as unknown as IntrospectionTrigger);
+				return acc;
+			},
+			[] as IntrospectionTrigger[],
+		);
+	}
+
+	#findTableInDatabaseSchema(table: AnyPgTable) {
+		const tableInSchema = Object.entries(this.database?.tables || {}).find(
+			([_key, value]) => value.schema.columns === table.schema.columns,
+		);
+		if (tableInSchema !== undefined) {
+			return tableInSchema[0];
+		}
+	}
 }
+
+export type IntrospectedTable = {
+	primaryKey: string[];
+	columns: Record<string, IntrospectedColum>;
+	foreignKeys: IntrospectedForeignKey[];
+	uniqueConstraints: IntrospectedUniqueConstraint[];
+	triggers: IntrospectionTrigger[];
+};
+
+type IntrospectedColum = {
+	dataType: string;
+	nullable: boolean;
+	generated: boolean;
+	defaultValue: string | null;
+	primaryKey: boolean;
+};
+
+type IntrospectedForeignKey = {
+	columns: string[];
+	targetTable?: string;
+	targetColumns?: string[];
+	deleteRule?: ForeignKeyRule;
+	updateRule?: ForeignKeyRule;
+};
+
+type IntrospectedUniqueConstraint = {
+	columns: string[];
+	nullsDistinct: boolean;
+};
+
+type IntrospectionTrigger = {
+	name: string;
+	firingTime: TriggerFiringTime;
+	events: TriggerEvent[];
+	columns?: string[];
+	referencingNewTableAs?: string;
+	referencingOldTableAs?: string;
+	condition?: string;
+	forEach: "row" | "statement";
+	functionName: string;
+	functionArgs?: {
+		value: string;
+		columnName?: true;
+	};
+};
 
 type ZodSchemaObject<T extends ColumnRecord> = z.ZodObject<
 	{

@@ -8353,9 +8353,6 @@ describe("pgEnum", () => {
 					expect(stringResult.data).toBe("user");
 				}
 				const nullResult = schema.safeParse(null);
-				if (!nullResult.success) {
-					console.dir(nullResult.error.errors, { depth: null });
-				}
 				expect(nullResult.success).toBe(true);
 				if (nullResult.success) {
 					expect(nullResult.data).toBe(null);
