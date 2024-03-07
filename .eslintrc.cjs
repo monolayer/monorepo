@@ -27,6 +27,7 @@ module.exports = {
 		"**/coverage/**",
 		"**/tmp/**",
 		"files/**",
+		"**/docs/**",
 	],
 	parser: "@typescript-eslint/parser",
 	parserOptions: {

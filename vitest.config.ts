@@ -7,11 +7,15 @@ export default defineConfig({
 		coverage: {
 			provider: "istanbul",
 			reporter: ["html", "json"],
-			exclude: ["**/tmp/**", "**/tests/**"],
+			exclude: ["**/tmp/**", "**/tests/**", "**/docs/**"],
 		},
 		setupFiles: ["tests/setup.ts"],
 		reporters: ["verbose"],
-		watchExclude: ["**/node_modules/**", "**/dist/**", "**/tmp/**"],
+	},
+	server: {
+		watch: {
+			ignored: ["**/node_modules/**", "**/dist/**", "**/tmp/**", "**/docs/**"],
+		},
 	},
 	plugins: [tsconfigPaths()],
 });
