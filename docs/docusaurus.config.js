@@ -60,6 +60,23 @@ const config = {
 		],
 	],
 
+	plugins: [
+		[
+			"docusaurus-plugin-typedoc",
+			{
+				entryPoints: ["../src/index.ts"],
+				tsconfig: "../tsconfig.json",
+				out: "api-docs",
+				sidebar: {
+					categoryLabel: "API documentation",
+					collapsed: false,
+					position: 4,
+					fullNames: true,
+				},
+			},
+		],
+	],
+
 	themeConfig:
 		/** @type {import('@docusaurus/preset-classic').ThemeConfig} */
 		({
