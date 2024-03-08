@@ -7,89 +7,105 @@ import {
 } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 
-export function pgIndex<T extends string>(columns: T | [T, ...T[]]) {
-	return new PgIndex<T>(columns);
+function where<T>(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	lhs: any | Expression<any>,
+	op: ComparisonOperatorExpression,
+	rhs: unknown,
+): T;
+function where<T>(
+	factory: (
+		qb: ExpressionBuilder<
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			ShallowRecord<string, ShallowRecord<any & string, any>>,
+			string
+		>,
+	) => Expression<SqlBool>,
+): T;
+function where<T>(expression: Expression<SqlBool>): T;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function where<T>(...args: any[]): T {
+	return args as T;
 }
 
-export class PgIndex<T extends string | string[]> {
+type CompileArgs = {
+	ifNotExists: boolean;
+	unique: boolean;
+	nullsNotDistinct: boolean;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	expression: Expression<any> | undefined;
+	using: IndexType | string | undefined;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	where: any[] | undefined;
+	columns: string[];
+};
+
+export type PgIndex<T extends string | string[]> = {
 	cols: T | [T, ...T[]];
-	#compileArgs: {
-		ifnotExists: boolean;
-		unique: boolean;
-		nullsNotDistinct: boolean;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		expression: Expression<any> | undefined;
-		using: IndexType | string | undefined;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		where: any[] | undefined;
-		columns: string[];
+	ifNotExists: () => PgIndex<T>;
+	unique: () => PgIndex<T>;
+	nullsNotDistinct: () => PgIndex<T>;
+	expression: (expression: Expression<SqlBool>) => PgIndex<T>;
+	using: (indexType: IndexType | string) => PgIndex<T>;
+	where: typeof where<PgIndex<T>>;
+	compileArgs: () => CompileArgs;
+};
+
+export function pgIndex<T extends string>(columns: T | [T, ...T[]]) {
+	const compileArgs: CompileArgs = {
+		ifNotExists: false,
+		unique: false,
+		nullsNotDistinct: false,
+		expression: undefined,
+		using: undefined,
+		where: undefined,
+		columns:
+			typeof columns === "string"
+				? ([columns] as unknown as string[])
+				: (columns as unknown as string[]),
 	};
 
-	constructor(cols: T | [T, ...T[]]) {
-		this.cols = cols;
-		this.#compileArgs = {
-			ifnotExists: false,
-			unique: false,
-			nullsNotDistinct: false,
-			expression: undefined,
-			using: undefined,
-			where: undefined,
-			columns:
-				typeof cols === "string"
-					? ([cols] as unknown as string[])
-					: (cols as unknown as string[]),
-		};
-	}
-
-	ifNotExists() {
-		this.#compileArgs.ifnotExists = true;
-		return this;
-	}
-
-	unique() {
-		this.#compileArgs.unique = true;
-		return this;
-	}
-
-	nullsNotDistinct() {
-		this.#compileArgs.nullsNotDistinct = true;
-		return this;
-	}
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	expression(expression: Expression<any>) {
-		this.#compileArgs.expression = expression;
-		return this;
-	}
-
-	using(indexType: IndexType | string) {
-		this.#compileArgs.using = indexType;
-		return this;
-	}
-
-	where(
+	const index: PgIndex<T> = {
+		cols: columns,
+		ifNotExists: () => {
+			compileArgs.ifNotExists = true;
+			return index;
+		},
+		unique: () => {
+			compileArgs.unique = true;
+			return index;
+		},
+		nullsNotDistinct: () => {
+			compileArgs.nullsNotDistinct = true;
+			return index;
+		},
+		expression: (expression) => {
+			compileArgs.expression = expression;
+			return index;
+		},
+		using: (indexType) => {
+			compileArgs.using = indexType;
+			return index;
+		},
+		compileArgs: () => {
+			return {
+				ifNotExists: compileArgs.ifNotExists ?? false,
+				unique: compileArgs.unique ?? false,
+				nullsNotDistinct: compileArgs.nullsNotDistinct ?? false,
+				expression: compileArgs.expression,
+				using: compileArgs.using,
+				where: compileArgs.where,
+				columns:
+					typeof columns === "string"
+						? ([columns] as unknown as string[])
+						: (columns as unknown as string[]),
+			};
+		},
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		lhs: any | Expression<any>,
-		op: ComparisonOperatorExpression,
-		rhs: unknown,
-	): this;
-	where(
-		factory: (
-			qb: ExpressionBuilder<
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				ShallowRecord<string, ShallowRecord<any & string, any>>,
-				string
-			>,
-		) => Expression<SqlBool>,
-	): this;
-	where(expression: Expression<SqlBool>): this;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	where(...args: any[]) {
-		this.#compileArgs.where = args;
-		return this;
-	}
-
-	compileArgs() {
-		return this.#compileArgs;
-	}
+		where: (...args: any[]) => {
+			compileArgs.where = args;
+			return index;
+		},
+	};
+	return index;
 }

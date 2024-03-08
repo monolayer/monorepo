@@ -1,18 +1,9 @@
 import { describe, expect, test } from "vitest";
 import { type PgSerial } from "../../src/database/schema/pg_column.js";
-import {
-	PgForeignKey,
-	pgForeignKey,
-} from "../../src/database/schema/pg_foreign_key.js";
+import { pgForeignKey } from "../../src/database/schema/pg_foreign_key.js";
 import { type PgTable } from "../../src/database/schema/pg_table.js";
 
 describe("PgForeignKeyConstraint", () => {
-	test("it can be instantiated with pgForeignKeyConstraint", () => {
-		const users = "users" as unknown as PgTable<{ id: PgSerial }>;
-		const constraint = pgForeignKey(["user_id"], users, ["id"]);
-		expect(constraint).toBeInstanceOf(PgForeignKey);
-	});
-
 	test("sets columns", () => {
 		const users = "users" as unknown as PgTable<{ id: PgSerial }>;
 		const constraint = pgForeignKey(["user_id"], users, ["id"]);

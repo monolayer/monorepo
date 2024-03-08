@@ -1,15 +1,9 @@
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
-import { PgIndex, pgIndex } from "~/database/schema/pg_index.js";
+import { pgIndex } from "~/database/schema/pg_index.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
 
 describe("pgIndex", () => {
-	test("type is pgIndex", () => {
-		const idx = pgIndex("test_index");
-
-		expect(idx).toBeInstanceOf(PgIndex);
-	});
-
 	test("one column", () => {
 		const idx = pgIndex("id").ifNotExists();
 		const compiledIndex = compileIndex(idx, "test_table");

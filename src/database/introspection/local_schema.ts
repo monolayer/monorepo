@@ -221,7 +221,7 @@ export function indexToInfo(
 		.on(transformedTableName)
 		.columns(transformedColumnNames);
 
-	if (indexCompileArgs.ifnotExists) {
+	if (indexCompileArgs.ifNotExists) {
 		kyselyBuilder = kyselyBuilder.ifNotExists();
 	}
 	if (indexCompileArgs.unique) {

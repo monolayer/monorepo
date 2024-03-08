@@ -1,13 +1,8 @@
 import { describe, expect, test } from "vitest";
 import { compileUnique } from "~tests/helpers/indexes.js";
-import { PgUnique, pgUnique } from "../../src/database/schema/pg_unique.js";
+import { pgUnique } from "../../src/database/schema/pg_unique.js";
 
 describe("PgUniqueConstraint", () => {
-	test("it can be instantiated with pgUniqueConstraint", () => {
-		const constraint = pgUnique(["id"]);
-		expect(constraint).toBeInstanceOf(PgUnique);
-	});
-
 	test("one column", () => {
 		const constraint = pgUnique(["id"]);
 		const compiled = compileUnique(constraint, "test_table");

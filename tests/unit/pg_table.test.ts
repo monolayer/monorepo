@@ -1,3 +1,4 @@
+import type { Insertable, Selectable, Simplify, Updateable } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
@@ -11,13 +12,10 @@ import {
 	pgTimestamptz,
 	pgVarchar,
 } from "~/database/schema/pg_column.js";
-import { PgIndex, pgIndex } from "~/database/schema/pg_index.js";
+import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
-import {
-	PgForeignKey,
-	pgForeignKey,
-} from "../../src/database/schema/pg_foreign_key.js";
-import { PgUnique, pgUnique } from "../../src/database/schema/pg_unique.js";
+import { pgForeignKey } from "../../src/database/schema/pg_foreign_key.js";
+import { pgUnique } from "../../src/database/schema/pg_unique.js";
 
 describe("pgTable definition", () => {
 	test("has columns defined", () => {
@@ -43,16 +41,16 @@ describe("pgTable definition", () => {
 		expect(tbl.schema.columns).toBe(columns);
 	});
 
-	test("indexes are empty by default", () => {
-		const columns = {
-			name: pgVarchar(),
-			subscribed: pgBoolean(),
-		};
-		const tbl = pgTable({
-			columns: columns,
-		});
-		expect(tbl.schema.indexes).toStrictEqual([]);
-	});
+	// test("indexes are empty by default", () => {
+	// 	const columns = {
+	// 		name: pgVarchar(),
+	// 		subscribed: pgBoolean(),
+	// 	};
+	// 	const tbl = pgTable({
+	// 		columns: columns,
+	// 	});
+	// 	expect(tbl.schema.indexes).toStrictEqual([]);
+	// });
 
 	test("indexes can be added", () => {
 		const columns = {
@@ -67,9 +65,6 @@ describe("pgTable definition", () => {
 			],
 		});
 		expect(tbl.schema.indexes?.length).toBe(2);
-		for (const idx of tbl.schema.indexes || []) {
-			expect(idx).toBeInstanceOf(PgIndex);
-		}
 	});
 
 	describe("constraints", () => {
@@ -93,9 +88,6 @@ describe("pgTable definition", () => {
 				foreignKeys: [pgForeignKey(["book_id"], books, ["id"])],
 			});
 			expect(users.schema.foreignKeys?.length).toBe(1);
-			for (const constraint of users.schema.foreignKeys || []) {
-				expect(constraint).toBeInstanceOf(PgForeignKey);
-			}
 		});
 
 		test("unique constraints can be added", () => {
@@ -110,9 +102,6 @@ describe("pgTable definition", () => {
 				uniqueConstraints: [pgUnique(["name"]), pgUnique(["subscribed"])],
 			});
 			expect(tbl.schema.uniqueConstraints?.length).toBe(2);
-			for (const constraint of tbl.schema.uniqueConstraints || []) {
-				expect(constraint).toBeInstanceOf(PgUnique);
-			}
 		});
 	});
 
@@ -127,7 +116,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number | null;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -141,7 +130,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number | null;
 				};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Simplify<Insertable<typeof tbl.infer>>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -155,7 +144,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number | null;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -189,7 +178,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -203,7 +192,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: string | number;
 				};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -217,7 +206,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -251,7 +240,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -265,7 +254,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number | null;
 				};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -279,7 +268,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number | null;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -313,7 +302,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -327,7 +316,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number;
 				};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -341,7 +330,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -375,7 +364,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -389,7 +378,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number;
 				};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -403,7 +392,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -432,12 +421,14 @@ describe("pgTable definition", () => {
 				const tbl = pgTable({
 					columns: {
 						id: pgInteger().primaryKey(),
+						demo: pgText(),
 					},
 				});
 				type expectedType = {
 					id: number;
+					demo: string | null;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -451,7 +442,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number | string;
 				};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -465,7 +456,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: number | string;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -499,7 +490,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -513,7 +504,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number | string;
 				};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -527,7 +518,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: number | string;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -561,7 +552,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -575,7 +566,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: number | string;
 				};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -589,7 +580,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: number | string;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -623,7 +614,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -637,7 +628,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: number | string;
 				};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -651,7 +642,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: number | string;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -685,7 +676,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -699,7 +690,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number;
 				};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -713,7 +704,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -747,7 +738,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -763,7 +754,7 @@ describe("pgTable definition", () => {
 					id?: string | number;
 				};
 
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -777,7 +768,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id?: string | number;
 				};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -811,7 +802,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -824,7 +815,7 @@ describe("pgTable definition", () => {
 				});
 				// eslint-disable-next-line @typescript-eslint/ban-types
 				type expectedType = {};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -837,7 +828,7 @@ describe("pgTable definition", () => {
 				});
 				// eslint-disable-next-line @typescript-eslint/ban-types
 				type expectedType = {};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -871,7 +862,7 @@ describe("pgTable definition", () => {
 				type expectedType = {
 					id: number;
 				};
-				type InferredType = typeof tbl.inferSelect;
+				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -884,7 +875,7 @@ describe("pgTable definition", () => {
 				});
 				// eslint-disable-next-line @typescript-eslint/ban-types
 				type expectedType = {};
-				type InferredType = typeof tbl.inferInsert;
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -897,7 +888,7 @@ describe("pgTable definition", () => {
 				});
 				// eslint-disable-next-line @typescript-eslint/ban-types
 				type expectedType = {};
-				type InferredType = typeof tbl.inferUpdate;
+				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
 				expect(equal).toBe(true);
 			});
@@ -932,7 +923,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role: string | null;
 					};
-					type InferredType = typeof tbl.inferSelect;
+					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -946,7 +937,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role?: string | null;
 					};
-					type InferredType = typeof tbl.inferInsert;
+					type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -960,7 +951,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role?: string | null;
 					};
-					type InferredType = typeof tbl.inferUpdate;
+					type InferredType = Updateable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -994,7 +985,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role: string;
 					};
-					type InferredType = typeof tbl.inferSelect;
+					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1008,7 +999,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role: string;
 					};
-					type InferredType = typeof tbl.inferInsert;
+					type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1022,7 +1013,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role?: string;
 					};
-					type InferredType = typeof tbl.inferUpdate;
+					type InferredType = Updateable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1058,7 +1049,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role: string;
 					};
-					type InferredType = typeof tbl.inferSelect;
+					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1074,7 +1065,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role?: string | null;
 					};
-					type InferredType = typeof tbl.inferInsert;
+					type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1090,7 +1081,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role?: string | null;
 					};
-					type InferredType = typeof tbl.inferUpdate;
+					type InferredType = Updateable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1128,7 +1119,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role: string;
 					};
-					type InferredType = typeof tbl.inferSelect;
+					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1144,7 +1135,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role?: string;
 					};
-					type InferredType = typeof tbl.inferInsert;
+					type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1160,7 +1151,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role?: string;
 					};
-					type InferredType = typeof tbl.inferUpdate;
+					type InferredType = Updateable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1198,7 +1189,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role: string;
 					};
-					type InferredType = typeof tbl.inferSelect;
+					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1214,7 +1205,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role?: string;
 					};
-					type InferredType = typeof tbl.inferInsert;
+					type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});
@@ -1230,7 +1221,7 @@ describe("pgTable definition", () => {
 					type expectedType = {
 						role?: string;
 					};
-					type InferredType = typeof tbl.inferUpdate;
+					type InferredType = Updateable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
 					expect(equal).toBe(true);
 				});

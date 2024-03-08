@@ -303,7 +303,7 @@ describe("introspect", () => {
 				book_id: pgInteger(),
 			},
 			foreignKeys: [
-				pgForeignKey("book_id", authors, "id", {
+				pgForeignKey(["book_id"], authors, "id", {
 					deleteRule: "cascade",
 					updateRule: "restrict",
 				}),

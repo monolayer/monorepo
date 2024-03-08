@@ -1,5 +1,6 @@
+import { type IntrospectedTable } from "./introspect_table.js";
 import type { PgExtensions } from "./pg_extension.js";
-import { type AnyPgTable, type IntrospectedTable } from "./pg_table.js";
+import { type AnyPgTable } from "./pg_table.js";
 
 export type pgDatabase<T extends Record<string, AnyPgTable>> = {
 	extensions: PgExtensions;
