@@ -38,7 +38,7 @@ describe("Database migrations", () => {
 				fullName: pgText(),
 				name: pgText(),
 			},
-			indexes: [pgIndex("fullName"), pgIndex("name")],
+			indexes: [pgIndex(["fullName"]), pgIndex(["name"])],
 		});
 
 		const database = pgDatabase({
@@ -99,7 +99,7 @@ describe("Database migrations", () => {
 				fullName: pgText(),
 				name: pgText(),
 			},
-			indexes: [pgIndex("name")],
+			indexes: [pgIndex(["name"])],
 		});
 
 		const database = pgDatabase({
@@ -162,7 +162,7 @@ describe("Database migrations", () => {
 				fullName: pgText(),
 				name: pgText(),
 			},
-			indexes: [pgIndex("name"), pgIndex(["name", "fullName"])],
+			indexes: [pgIndex(["name"]), pgIndex(["name", "fullName"])],
 		});
 
 		const database = pgDatabase({
@@ -240,7 +240,7 @@ describe("Database migrations", () => {
 				fullName: pgText(),
 				name: pgText(),
 			},
-			indexes: [pgIndex("name"), pgIndex("fullName").unique()],
+			indexes: [pgIndex(["name"]), pgIndex(["fullName"]).unique()],
 		});
 
 		const database = pgDatabase({

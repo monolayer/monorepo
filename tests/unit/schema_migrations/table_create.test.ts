@@ -571,14 +571,14 @@ describe("Table create migrations", () => {
 			columns: {
 				name: pgText(),
 			},
-			indexes: [pgIndex("name")],
+			indexes: [pgIndex(["name"])],
 		});
 
 		const books = pgTable({
 			columns: {
 				id: pgText(),
 			},
-			indexes: [pgIndex("id").unique()],
+			indexes: [pgIndex(["id"]).unique()],
 		});
 
 		const database = pgDatabase({
@@ -781,14 +781,14 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 			columns: {
 				id: pgBigserial().primaryKey(),
 			},
-			indexes: [pgIndex("id").unique()],
+			indexes: [pgIndex(["id"]).unique()],
 		});
 
 		const libraryBuilding = pgTable({
 			columns: {
 				id: pgBigserial().primaryKey(),
 			},
-			indexes: [pgIndex("id").unique()],
+			indexes: [pgIndex(["id"]).unique()],
 		});
 
 		const newBooks = pgTable({
@@ -797,7 +797,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 				oldBookId: pgBigint(),
 				libraryBuildingId: pgBigint(),
 			},
-			indexes: [pgIndex("id").unique()],
+			indexes: [pgIndex(["id"]).unique()],
 			foreignKeys: [
 				pgForeignKey(["oldBookId"], books, ["id"]),
 				pgForeignKey(["libraryBuildingId"], libraryBuilding, ["id"]),
@@ -809,7 +809,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 				fullName: pgText(),
 				bookId: pgBigserial(),
 			},
-			indexes: [pgIndex("fullName")],
+			indexes: [pgIndex(["fullName"])],
 			foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
 		});
 

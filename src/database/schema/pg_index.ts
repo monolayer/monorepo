@@ -40,8 +40,8 @@ type CompileArgs = {
 	columns: string[];
 };
 
-export type PgIndex<T extends string | string[]> = {
-	cols: T | [T, ...T[]];
+export type PgIndex<T extends string> = {
+	cols: T[];
 	ifNotExists: () => PgIndex<T>;
 	unique: () => PgIndex<T>;
 	nullsNotDistinct: () => PgIndex<T>;
@@ -51,7 +51,7 @@ export type PgIndex<T extends string | string[]> = {
 	compileArgs: () => CompileArgs;
 };
 
-export function pgIndex<T extends string>(columns: T | [T, ...T[]]) {
+export function pgIndex<T extends string>(columns: T[]) {
 	const compileArgs: CompileArgs = {
 		ifNotExists: false,
 		unique: false,
@@ -59,10 +59,7 @@ export function pgIndex<T extends string>(columns: T | [T, ...T[]]) {
 		expression: undefined,
 		using: undefined,
 		where: undefined,
-		columns:
-			typeof columns === "string"
-				? ([columns] as unknown as string[])
-				: (columns as unknown as string[]),
+		columns: columns as unknown as string[],
 	};
 
 	const index: PgIndex<T> = {

@@ -206,7 +206,7 @@ test("#schemaDBIndexInfoByTable", () => {
 			name: pgVarchar().notNull(),
 			email: pgVarchar().notNull(),
 		},
-		indexes: [pgIndex("name"), pgIndex("email")],
+		indexes: [pgIndex(["name"]), pgIndex(["email", "id"])],
 	});
 	const teams = pgTable({
 		columns: {
@@ -214,7 +214,7 @@ test("#schemaDBIndexInfoByTable", () => {
 			name: pgVarchar().notNull(),
 			active: pgBoolean(),
 		},
-		indexes: [pgIndex("id"), pgIndex("active")],
+		indexes: [pgIndex(["id"]), pgIndex(["active"])],
 	});
 	const database = pgDatabase({
 		tables: {
@@ -230,8 +230,8 @@ test("#schemaDBIndexInfoByTable", () => {
 				'43e5590f52736483e6877c00bccaf65586bb6dd7fae45bdc8159a05d2521dd7c:create index "teams_id_kntc_idx" on "teams" ("id")',
 		},
 		users: {
-			users_email_kntc_idx:
-				'd6d7731a163ff74b32643d72154f528ab2f7043dd3fb47a6131c70a535ca1513:create index "users_email_kntc_idx" on "users" ("email")',
+			users_email_id_kntc_idx:
+				'92c9e11e110ccb2b5d3c2c3cf34ddc9747a900cc7d3ab700763b92c4c00bf689:create index "users_email_id_kntc_idx" on "users" ("email", "id")',
 			users_name_kntc_idx:
 				'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45:create index "users_name_kntc_idx" on "users" ("name")',
 		},
@@ -272,7 +272,7 @@ test("#localSchema", () => {
 			location: pgVarchar(),
 			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
 		},
-		indexes: [pgIndex("name")],
+		indexes: [pgIndex(["name"])],
 		uniqueConstraints: [pgUnique(["name", "location"])],
 	});
 
@@ -304,7 +304,7 @@ test("#localSchema", () => {
 			name: pgVarchar().notNull(),
 			active: pgBoolean(),
 		},
-		indexes: [pgIndex("name")],
+		indexes: [pgIndex(["name"])],
 		triggers: {
 			foo_before_insert: pgTrigger()
 				.fireWhen("before")
@@ -622,7 +622,7 @@ test("#localSchemaCamelCase", () => {
 			location: pgVarchar(),
 			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
 		},
-		indexes: [pgIndex("name")],
+		indexes: [pgIndex(["name"])],
 		uniqueConstraints: [pgUnique(["name", "location"])],
 	});
 
@@ -635,7 +635,7 @@ test("#localSchemaCamelCase", () => {
 			bookId: pgInteger(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
-		indexes: [pgIndex("fullName")],
+		indexes: [pgIndex(["fullName"])],
 		foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
 		uniqueConstraints: [
 			pgUnique(["name"]),
