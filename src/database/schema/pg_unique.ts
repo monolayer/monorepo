@@ -1,26 +1,22 @@
-export function pgUnique<T extends string>(columns: T[]) {
-	return new PgUnique<T>(columns);
+export function pgUnique<T extends PropertyKey>(columns: T[]) {
+	return new PgUnique(columns);
 }
 
-export class PgUnique<T extends string> {
-	#compileArgs: {
-		cols: T[];
-		nullsDistinct: boolean;
-	};
-
-	constructor(cols: T[]) {
-		this.#compileArgs = {
-			cols: cols,
-			nullsDistinct: true,
-		};
-	}
+export class PgUnique<T> {
+	constructor(
+		private columns: T[],
+		private nullsDistinct = true,
+	) {}
 
 	nullsNotDistinct() {
-		this.#compileArgs.nullsDistinct = false;
+		this.nullsDistinct = false;
 		return this;
 	}
 
 	compileArgs() {
-		return this.#compileArgs;
+		return {
+			cols: this.columns as string[],
+			nullsDistinct: this.nullsDistinct,
+		};
 	}
 }
