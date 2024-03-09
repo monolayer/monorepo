@@ -30,7 +30,7 @@ export async function structureLoad(environment: string) {
 
 	const searchPathQueryResult = await pgQueryExecuteWithResult<{
 		datname: string;
-	}>(pool.pool, "SELECT datname FROM pg_database");
+	}>(pool.adminPool, "SELECT datname FROM pg_database");
 	if (searchPathQueryResult.status === ActionStatus.Error) {
 		s.stop(searchPathQueryResult.error.message, 1);
 		p.outro(`${color.red("Failed")}`);

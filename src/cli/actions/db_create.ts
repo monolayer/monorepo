@@ -28,7 +28,7 @@ export async function dbCreate(environment: string) {
 
 	const createDb = await pgQueryExecuteWithResult<{
 		datname: string;
-	}>(pool.pool, `CREATE DATABASE ${pool.config.database};`);
+	}>(pool.adminPool, `CREATE DATABASE ${pool.config.database};`);
 	if (createDb.status === ActionStatus.Error) {
 		s.stop(createDb.error.message, 1);
 		p.outro(`${color.red("Failed")}`);
