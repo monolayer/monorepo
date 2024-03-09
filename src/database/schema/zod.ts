@@ -37,7 +37,28 @@ import {
 } from "./pg_column.js";
 import type { ColumnRecord, PgTable } from "./pg_table.js";
 
-export function baseSchema(isNullable: boolean, errorMessage: string) {
+export type DateZodType<T extends PgTimestamp | PgTimestampTz> = z.ZodType<
+	T extends NonNullableColumn
+		? Date
+		: T extends GeneratedAlwaysColumn
+			? never
+			: Date | null | undefined,
+	z.ZodTypeDef,
+	T extends NonNullableColumn ? Date | string : Date | string | null | undefined
+>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function zodSchema<T extends PgTable<any, any>>(table: T) {
+	const cols = table.schema.columns as ColumnRecord;
+	const columnSchema = Object.entries(cols).reduce((acc, [key, value]) => {
+		return acc.extend({
+			[key]: pgColumnSchema<typeof value, false>(value),
+		});
+	}, z.object({}));
+	return z.object(columnSchema.shape) as unknown as TableSchema<T>;
+}
+
+function baseSchema(isNullable: boolean, errorMessage: string) {
 	return z
 		.any()
 		.superRefine(required)
@@ -46,12 +67,12 @@ export function baseSchema(isNullable: boolean, errorMessage: string) {
 		});
 }
 
-export function finishSchema(isNullable: boolean, schema: z.ZodTypeAny) {
+function finishSchema(isNullable: boolean, schema: z.ZodTypeAny) {
 	if (isNullable) return schema.nullish();
 	return schema;
 }
 
-export function bigintSchema(isNullable: boolean) {
+function bigintSchema(isNullable: boolean) {
 	return baseSchema(
 		isNullable,
 		"Expected BigInt, Number or String that can coerce to BigInt",
@@ -71,7 +92,7 @@ export function bigintSchema(isNullable: boolean) {
 		.transform((val) => BigInt(val));
 }
 
-export function jsonSchema(isNullable: boolean) {
+function jsonSchema(isNullable: boolean) {
 	return baseSchema(
 		isNullable,
 		"Expected value that can be converted to JSON",
@@ -102,7 +123,7 @@ export function jsonSchema(isNullable: boolean) {
 	});
 }
 
-export function variablePrecisionSchema(
+function variablePrecisionSchema(
 	minimum: number,
 	maximum: number,
 	isNullable: boolean,
@@ -165,7 +186,7 @@ export function variablePrecisionSchema(
 		});
 }
 
-export function wholeNumberSchema(
+function wholeNumberSchema(
 	minimum: number,
 	maximum: number,
 	isNullable: boolean,
@@ -187,7 +208,7 @@ export function wholeNumberSchema(
 		.pipe(z.coerce.number().int().min(minimum).max(maximum));
 }
 
-export function decimalSchema(
+function decimalSchema(
 	precision: number | null,
 	scale: number | null,
 	isNullable: boolean,
@@ -260,7 +281,7 @@ export function decimalSchema(
 		});
 }
 
-export function stringSchema(
+function stringSchema(
 	errorMessage: string,
 	isNullable: boolean,
 	constructors = [] as string[],
@@ -287,7 +308,7 @@ export function stringSchema(
 	});
 }
 
-export function dateSchema(errorMessage: string, isNullable: boolean) {
+function dateSchema(errorMessage: string, isNullable: boolean) {
 	return baseSchema(isNullable, errorMessage).superRefine((val, ctx) => {
 		if (val.constructor.name === "Date") return;
 		if (typeof val !== "string") {
@@ -309,7 +330,7 @@ export function dateSchema(errorMessage: string, isNullable: boolean) {
 	});
 }
 
-export function required(val: unknown, ctx: z.RefinementCtx) {
+function required(val: unknown, ctx: z.RefinementCtx) {
 	if (val === undefined) {
 		ctx.addIssue({
 			code: z.ZodIssueCode.custom,
@@ -320,7 +341,7 @@ export function required(val: unknown, ctx: z.RefinementCtx) {
 	}
 }
 
-export function nullable(
+function nullable(
 	val: unknown,
 	ctx: z.RefinementCtx,
 	nullable: boolean,
@@ -341,7 +362,7 @@ function columnInfo(column: PgColumnBase<unknown, unknown, unknown>) {
 	return info;
 }
 
-export function pgBooleanSchema<T extends PgBoolean, PK extends boolean>(
+function pgBooleanSchema<T extends PgBoolean, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const testBoolish = (val: unknown): val is Boolish => {
@@ -426,7 +447,7 @@ export function pgBooleanSchema<T extends PgBoolean, PK extends boolean>(
 	return base as unknown as ZodType<T, PK>;
 }
 
-export function pgTextSchema<T extends PgText, PK extends boolean>(
+function pgTextSchema<T extends PgText, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const base = z.string();
@@ -438,7 +459,7 @@ export function pgTextSchema<T extends PgText, PK extends boolean>(
 	) as unknown as ZodType<T, PK>;
 }
 
-export function pgBigintSchema<T extends PgBigInt, PK extends boolean>(
+function pgBigintSchema<T extends PgBigInt, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const info = columnInfo(column);
@@ -456,7 +477,7 @@ export function pgBigintSchema<T extends PgBigInt, PK extends boolean>(
 	) as unknown as ZodType<T, PK>;
 }
 
-export function pgByteaSchema<T extends PgBytea, PK extends boolean>(
+function pgByteaSchema<T extends PgBytea, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const info = columnInfo(column);
@@ -481,7 +502,7 @@ export function pgByteaSchema<T extends PgBytea, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgDateSchema<T extends PgDate, PK extends boolean>(
+function pgDateSchema<T extends PgDate, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const info = columnInfo(column);
@@ -493,7 +514,7 @@ export function pgDateSchema<T extends PgDate, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgDoublePrecisionSchema<
+function pgDoublePrecisionSchema<
 	T extends PgDoublePrecision,
 	PK extends boolean,
 >(column: T): ZodType<T, PK> {
@@ -505,7 +526,7 @@ export function pgDoublePrecisionSchema<
 	) as unknown as ZodType<T, PK>;
 }
 
-export function pgFloat4Schema<T extends PgFloat4, PK extends boolean>(
+function pgFloat4Schema<T extends PgFloat4, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const info = columnInfo(column);
@@ -514,7 +535,7 @@ export function pgFloat4Schema<T extends PgFloat4, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgFloat8Schema<T extends PgFloat8, PK extends boolean>(
+function pgFloat8Schema<T extends PgFloat8, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const info = columnInfo(column);
@@ -523,7 +544,7 @@ export function pgFloat8Schema<T extends PgFloat8, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function integerSchema<
+function integerSchema<
 	T extends PgInt2 | PgInt4 | PgInteger,
 	PK extends boolean,
 >(column: T, minimum: number, maximum: number): ZodType<T, PK> {
@@ -537,7 +558,7 @@ export function integerSchema<
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgInt2Schema<
+function pgInt2Schema<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	T extends PgInt2,
 	PK extends boolean,
@@ -545,13 +566,13 @@ export function pgInt2Schema<
 	return integerSchema<T, PK>(column, -32768, 32767);
 }
 
-export function pgInt4Schema<T extends PgInt4, PK extends boolean>(
+function pgInt4Schema<T extends PgInt4, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	return integerSchema<T, PK>(column, -2147483648, 2147483647);
 }
 
-export function pgInt8Schema<T extends PgInt8, PK extends boolean>(
+function pgInt8Schema<T extends PgInt8, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const info = columnInfo(column);
@@ -568,13 +589,13 @@ export function pgInt8Schema<T extends PgInt8, PK extends boolean>(
 	) as unknown as ZodType<T, PK>;
 }
 
-export function pgIntegerSchema<T extends PgInteger, PK extends boolean>(
+function pgIntegerSchema<T extends PgInteger, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	return integerSchema<T, PK>(column, -2147483648, 2147483647);
 }
 
-export function pgJsonSchema<
+function pgJsonSchema<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	T extends PgJson,
 	PK extends boolean,
@@ -585,7 +606,7 @@ export function pgJsonSchema<
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgJsonbSchema<
+function pgJsonbSchema<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	T extends PgJsonB,
 	PK extends boolean,
@@ -596,7 +617,7 @@ export function pgJsonbSchema<
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgRealSchema<T extends PgReal, PK extends boolean>(
+function pgRealSchema<T extends PgReal, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const info = columnInfo(column);
@@ -605,7 +626,7 @@ export function pgRealSchema<T extends PgReal, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgUuidSchema<T extends PgUuid, PK extends boolean>(
+function pgUuidSchema<T extends PgUuid, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const info = columnInfo(column);
@@ -628,13 +649,13 @@ function characterSchema<T extends PgChar | PgVarChar, PK extends boolean>(
 	return finishSchema(isNullable, z.string()) as unknown as ZodType<T, PK>;
 }
 
-export function pgVarcharSchema<T extends PgVarChar, PK extends boolean>(
+function pgVarcharSchema<T extends PgVarChar, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	return characterSchema<T, PK>(column);
 }
 
-export function pgCharSchema<T extends PgChar, PK extends boolean>(
+function pgCharSchema<T extends PgChar, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	return characterSchema<T, PK>(column);
@@ -656,27 +677,17 @@ function timeSchema<T extends PgTime | PgTimeTz, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgTimeSchema<T extends PgTime, PK extends boolean>(
+function pgTimeSchema<T extends PgTime, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	return timeSchema<T, PK>(column, "Invalid time");
 }
 
-export function pgTimeTzSchema<T extends PgTimeTz, PK extends boolean>(
+function pgTimeTzSchema<T extends PgTimeTz, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	return timeSchema<T, PK>(column, "Invalid time with time zone");
 }
-
-export type DateZodType<T extends PgTimestamp | PgTimestampTz> = z.ZodType<
-	T extends NonNullableColumn
-		? Date
-		: T extends GeneratedAlwaysColumn
-			? never
-			: Date | null | undefined,
-	z.ZodTypeDef,
-	T extends NonNullableColumn ? Date | string : Date | string | null | undefined
->;
 
 function timestampSchema<
 	T extends PgTimestamp | PgTimestampTz,
@@ -691,20 +702,19 @@ function timestampSchema<
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgTimestampSchema<T extends PgTimestamp, PK extends boolean>(
+function pgTimestampSchema<T extends PgTimestamp, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	return timestampSchema<T, PK>(column);
 }
 
-export function pgTimestampTzSchema<
-	T extends PgTimestampTz,
-	PK extends boolean,
->(column: T): ZodType<T, PK> {
+function pgTimestampTzSchema<T extends PgTimestampTz, PK extends boolean>(
+	column: T,
+): ZodType<T, PK> {
 	return timestampSchema<T, PK>(column);
 }
 
-export function pgNumericSchema<T extends PgNumeric, PK extends boolean>(
+function pgNumericSchema<T extends PgNumeric, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const info = columnInfo(column);
@@ -718,7 +728,7 @@ export function pgNumericSchema<T extends PgNumeric, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgEnumSchema<T extends PgEnum, PK extends boolean>(
+function pgEnumSchema<T extends PgEnum, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const info = columnInfo(column);
@@ -736,18 +746,7 @@ export function pgEnumSchema<T extends PgEnum, PK extends boolean>(
 type TableSchema<T extends PgTable<any, any>> =
 	T extends PgTable<infer C, infer PK> ? ZodSchemaObject<C, PK> : never;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function zodSchema<T extends PgTable<any, any>>(table: T) {
-	const cols = table.schema.columns as ColumnRecord;
-	const columnSchema = Object.entries(cols).reduce((acc, [key, value]) => {
-		return acc.extend({
-			[key]: pgColumnSchema<typeof value, false>(value),
-		});
-	}, z.object({}));
-	return z.object(columnSchema.shape) as unknown as TableSchema<T>;
-}
-
-export function generatedColumnSchema<
+function generatedColumnSchema<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	T extends PgGeneratedColumn<any, any>,
 	PK extends boolean,
@@ -756,7 +755,7 @@ export function generatedColumnSchema<
 	return z.never() as unknown as ZodType<T, PK>;
 }
 
-export function pgColumnSchema<
+function pgColumnSchema<
 	T extends
 		| PgColumn<unknown, unknown, unknown>
 		| PgGeneratedColumn<unknown, unknown>,
