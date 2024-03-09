@@ -7,7 +7,7 @@ import {
 	type ColumnInfo,
 } from "./pg_column.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
-import { AnyPgTable, ColumnRecord, type PgTable } from "./pg_table.js";
+import { AnyPgTable, ColumnRecord } from "./pg_table.js";
 import type {
 	PgTrigger,
 	TriggerEvent,
@@ -163,7 +163,7 @@ function primaryKey(columns?: ColumnRecord) {
 	}, [] as string[]);
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function introspectTable(table: PgTable<any>) {
+export function introspectTable(table: AnyPgTable) {
 	const info: IntrospectedTable = {
 		primaryKey: primaryKey(table.schema.columns),
 		columns: columnInfo(table.schema.columns),

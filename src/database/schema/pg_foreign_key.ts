@@ -4,7 +4,8 @@ import type { AnyPgTable, PgTable } from "./pg_table.js";
 export type PgForeignKey<T, C = AnyPgTable> = {
 	cols: T;
 	targetTable: C;
-	targetCols: C extends PgTable<infer U> ? (keyof U)[] | keyof U : never;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	targetCols: C extends PgTable<infer U, any> ? (keyof U)[] | keyof U : never;
 	options: {
 		deleteRule: ForeignKeyRule;
 		updateRule: ForeignKeyRule;
@@ -16,7 +17,10 @@ export type PgForeignKey<T, C = AnyPgTable> = {
 export function pgForeignKey<T, C = AnyPgTable>(
 	columns: T,
 	targetTable: C,
-	targetColumns: C extends PgTable<infer U> ? (keyof U)[] | keyof U : never,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	targetColumns: C extends PgTable<infer U, any>
+		? (keyof U)[] | keyof U
+		: never,
 	options?: {
 		deleteRule?: Lowercase<ForeignKeyRule>;
 		updateRule?: Lowercase<ForeignKeyRule>;

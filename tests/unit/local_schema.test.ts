@@ -278,12 +278,13 @@ test("#localSchema", () => {
 
 	const users = pgTable({
 		columns: {
-			id: pgSerial().primaryKey(),
+			id: pgSerial(),
 			name: pgVarchar().notNull(),
 			email: pgVarchar().notNull(),
 			book_id: pgInteger(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
+		primaryKey: ["id"],
 		foreignKeys: [pgForeignKey(["book_id"], books, ["id"])],
 		uniqueConstraints: [
 			pgUnique(["name"]),
@@ -300,10 +301,11 @@ test("#localSchema", () => {
 
 	const teams = pgTable({
 		columns: {
-			id: pgBigserial().primaryKey(),
+			id: pgBigserial(),
 			name: pgVarchar().notNull(),
 			active: pgBoolean(),
 		},
+		primaryKey: ["id"],
 		indexes: [pgIndex(["name"])],
 		triggers: {
 			foo_before_insert: pgTrigger()
@@ -630,11 +632,12 @@ test("#localSchemaCamelCase", () => {
 		columns: {
 			id: pgSerial(),
 			name: pgVarchar().notNull(),
-			fullName: pgVarchar().primaryKey(),
+			fullName: pgVarchar(),
 			email: pgVarchar().notNull(),
 			bookId: pgInteger(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
+		primaryKey: ["fullName"],
 		indexes: [pgIndex(["fullName"])],
 		foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
 		uniqueConstraints: [

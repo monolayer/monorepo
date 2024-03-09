@@ -1,4 +1,4 @@
-import type { GeneratedAlways, Simplify } from "kysely";
+import type { Simplify } from "kysely";
 import {
 	type ColumnType,
 	type Expression,
@@ -7,6 +7,7 @@ import {
 } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 import { ZodIssueCode, z } from "zod";
+import { InferColumType, ZodType } from "./inference.js";
 import {
 	baseSchema,
 	bigintSchema,
@@ -122,7 +123,7 @@ export class PgColumnBase<S, I, U> {
 }
 
 export class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
-	protected _isPrimaryKey: boolean;
+	_isPrimaryKey: boolean;
 
 	protected readonly _native_data_type: DefaultValueDataTypes;
 
@@ -159,7 +160,7 @@ export class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 export class PgGeneratedColumn<T, U> extends PgColumnBase<T, U, U> {
 	declare readonly _generatedByDefault: "yes";
 	protected readonly _native_data_type: DefaultValueDataTypes;
-	protected _isPrimaryKey: boolean;
+	_isPrimaryKey: boolean;
 
 	constructor(
 		dataType: "serial" | "bigserial",
@@ -1025,38 +1026,10 @@ function isObject(obj: unknown): obj is ShallowRecord<string, unknown> {
 	return typeof obj === "object" && obj !== null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type InferColumType<T extends PgColumn<any, any, any>> =
-	T extends PgColumn<infer S, infer I, infer U>
-		? T extends NonNullableColumn
-			? T extends WithDefaultColumn
-				? OptionalColumnType<S, I, U>
-				: T extends GeneratedAlwaysColumn
-					? Simplify<GeneratedAlways<S>>
-					: T extends GeneratedColumn
-						? OptionalColumnType<S, I, U>
-						: Simplify<ColumnType<S, I, U>>
-			: T extends WithDefaultColumn
-				? Simplify<ColumnType<NonNullable<S>, I | null | undefined, U | null>>
-				: T extends GeneratedAlwaysColumn
-					? Simplify<GeneratedAlways<S>>
-					: Simplify<ColumnType<S | null, I | null | undefined, U | null>>
-		: never;
-
-type OptionalColumnType<S, I, U> = Simplify<ColumnType<S, I | undefined, U>>;
+export type OptionalColumnType<S, I, U> = Simplify<
+	ColumnType<S, I | undefined, U>
+>;
 export type GeneratedColumnType<S, I, U> = OptionalColumnType<S, I, U>;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ZodType<T extends PgColumn<any, any, any> | PgTimestamp | PgTimestampTz> =
-	z.ZodType<
-		T extends NonNullableColumn
-			? SelectType<InferColumType<T>>
-			: T extends GeneratedAlwaysColumn
-				? never
-				: SelectType<InferColumType<T>> | null | undefined,
-		z.ZodTypeDef,
-		InsertType<InferColumType<T>>
-	>;
 
 export type WithDefaultColumn = {
 	_hasDefault: "yes";
@@ -1072,3 +1045,6 @@ export type GeneratedColumn = {
 export type GeneratedAlwaysColumn = {
 	_generatedAlways: "yes";
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyPGColumn = PgColumn<any, any>;
