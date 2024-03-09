@@ -315,8 +315,9 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: pgText().renameFrom("name").primaryKey(),
+					fullName: pgText().renameFrom("name"),
 				},
+				primaryKey: ["fullName"],
 			});
 
 			const database = pgDatabase({
@@ -419,8 +420,9 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: pgText().renameFrom("name").primaryKey(),
+					fullName: pgText().renameFrom("name"),
 				},
+				primaryKey: ["fullName"],
 			});
 
 			const database = pgDatabase({
@@ -509,8 +511,9 @@ describe("Rename column migrations", () => {
 
 			const books = pgTable({
 				columns: {
-					id: pgInteger().primaryKey(),
+					id: pgInteger(),
 				},
+				primaryKey: ["id"],
 			});
 
 			const users = pgTable({
@@ -621,8 +624,9 @@ describe("Rename column migrations", () => {
 
 			const books = pgTable({
 				columns: {
-					id: pgInteger().primaryKey(),
+					id: pgInteger(),
 				},
+				primaryKey: ["id"],
 			});
 
 			const users = pgTable({
@@ -936,8 +940,9 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: pgText().renameFrom("name").primaryKey(),
+					fullName: pgText().renameFrom("name"),
 				},
+				primaryKey: ["fullName"],
 			});
 
 			const database = pgDatabase({
@@ -966,8 +971,9 @@ describe("Rename column migrations", () => {
 
 			const users = pgTable({
 				columns: {
-					fullName: pgText().renameFrom("name").primaryKey(),
+					fullName: pgText().renameFrom("name"),
 				},
+				primaryKey: ["fullName"],
 			});
 
 			const database = pgDatabase({
@@ -1010,8 +1016,9 @@ describe("Rename column migrations", () => {
 
 			const books = pgTable({
 				columns: {
-					id: pgInteger().primaryKey(),
+					id: pgInteger(),
 				},
+				primaryKey: ["id"],
 			});
 
 			const users = pgTable({
@@ -1058,8 +1065,9 @@ describe("Rename column migrations", () => {
 
 			const books = pgTable({
 				columns: {
-					id: pgInteger().primaryKey(),
+					id: pgInteger(),
 				},
+				primaryKey: ["id"],
 			});
 
 			const users = pgTable({

@@ -215,13 +215,15 @@ describe("Table create migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						id: pgSerial().primaryKey(),
+						id: pgSerial(),
 					},
+					primaryKey: ["id"],
 				}),
 				books: pgTable({
 					columns: {
-						id: pgBigserial().primaryKey(),
+						id: pgBigserial(),
 					},
+					primaryKey: ["id"],
 				}),
 			},
 		});
@@ -298,14 +300,16 @@ describe("Table create migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						id: pgSerial().primaryKey(),
-						name: pgVarchar().primaryKey(),
+						id: pgSerial(),
+						name: pgVarchar(),
 					},
+					primaryKey: ["id", "name"],
 				}),
 				books: pgTable({
 					columns: {
-						id: pgBigserial().primaryKey(),
+						id: pgBigserial(),
 					},
+					primaryKey: ["id"],
 				}),
 			},
 		});
@@ -472,8 +476,9 @@ describe("Table create migrations", () => {
 	test<DbContext>("create table with foreign keys", async (context) => {
 		const books = pgTable({
 			columns: {
-				id: pgBigserial().primaryKey(),
+				id: pgBigserial(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const users = pgTable({
@@ -779,24 +784,27 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 	test<DbContext>("create table camelCase", async (context) => {
 		const books = pgTable({
 			columns: {
-				id: pgBigserial().primaryKey(),
+				id: pgBigserial(),
 			},
+			primaryKey: ["id"],
 			indexes: [pgIndex(["id"]).unique()],
 		});
 
 		const libraryBuilding = pgTable({
 			columns: {
-				id: pgBigserial().primaryKey(),
+				id: pgBigserial(),
 			},
+			primaryKey: ["id"],
 			indexes: [pgIndex(["id"]).unique()],
 		});
 
 		const newBooks = pgTable({
 			columns: {
-				id: pgBigserial().primaryKey(),
+				id: pgBigserial(),
 				oldBookId: pgBigint(),
 				libraryBuildingId: pgBigint(),
 			},
+			primaryKey: ["id"],
 			indexes: [pgIndex(["id"]).unique()],
 			foreignKeys: [
 				pgForeignKey(["oldBookId"], books, ["id"]),

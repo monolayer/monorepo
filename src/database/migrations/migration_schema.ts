@@ -49,7 +49,7 @@ export function primaryKeyColumns(
 		(acc, [columnName, column]) => {
 			const transformedColumnName = toSnakeCase(columnName, camelCase);
 			const primaryKey = Object.fromEntries(Object.entries(column))
-				._isPrimaryKey as boolean;
+				._primaryKey as boolean;
 			if (primaryKey === true) {
 				acc.push(transformedColumnName);
 			}

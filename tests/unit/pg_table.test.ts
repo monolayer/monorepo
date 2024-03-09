@@ -14,6 +14,7 @@ import {
 } from "~/database/schema/pg_column.js";
 import { pgIndex } from "~/database/schema/pg_index.js";
 import { pgTable } from "~/database/schema/pg_table.js";
+import { zodSchema } from "~/database/schema/zod.js";
 import { pgForeignKey } from "../../src/database/schema/pg_foreign_key.js";
 import { pgUnique } from "../../src/database/schema/pg_unique.js";
 
@@ -74,7 +75,7 @@ describe("pgTable definition", () => {
 					subscribed: pgBoolean(),
 					book_id: pgInteger(),
 				},
-				foreignKeys: [pgForeignKey(["book_id"], books, ["id"])],
+				foreignKeys: [pgForeignKey(["book_id"], books, ["name"])],
 			});
 			expect(users.schema.foreignKeys?.length).toBe(1);
 		});
@@ -1264,13 +1265,14 @@ describe("pgTable definition", () => {
 			const table = pgTable({
 				columns: {
 					id: pgBigint(),
-					idPk: pgInteger().primaryKey(),
+					idPk: pgInteger(),
 					name: pgVarchar().notNull(),
 					createdAt: pgTimestamptz().defaultTo("now()"),
 				},
+				primaryKey: ["idPk"],
 			});
 
-			const tableSchema = table.zodSchema();
+			const tableSchema = zodSchema(table);
 
 			type SchemaType = z.infer<typeof tableSchema>;
 			type Expected = {
@@ -1311,7 +1313,7 @@ describe("pgTable definition", () => {
 				},
 			});
 
-			const tableSchema = table.zodSchema();
+			const tableSchema = zodSchema(table);
 			expect(tableSchema.safeParse({}).success).toBe(true);
 			const result = tableSchema.safeParse({
 				name: undefined,
@@ -1332,7 +1334,7 @@ describe("pgTable definition", () => {
 				},
 			});
 
-			const tableSchema = table.zodSchema();
+			const tableSchema = zodSchema(table);
 			const resultFail = tableSchema.safeParse({});
 			expect(resultFail.success).toBe(false);
 			if (!resultFail.success) {

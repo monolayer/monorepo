@@ -1,6 +1,5 @@
 import type { Simplify } from "kysely";
-import { z } from "zod";
-import { InferColumnTypes, ZodSchemaObject } from "./inference.js";
+import { InferColumnTypes } from "./inference.js";
 import { IntrospectedTable, introspectTable } from "./introspect_table.js";
 import { PgColumnTypes } from "./pg_column.js";
 import type { AnyPgDatabase } from "./pg_database.js";
@@ -18,7 +17,8 @@ export type TableSchema<T, PK extends string> = {
 			? PK[]
 			: Array<keyof T>
 		: never;
-	foreignKeys?: PgForeignKey<Array<keyof T>>[];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	foreignKeys?: PgForeignKey<Array<keyof T>, any>[];
 	uniqueConstraints?: keyof T extends string ? PgUnique<keyof T>[] : [];
 	indexes?: keyof T extends string ? PgIndex<keyof T>[] : [];
 	triggers?: Record<string, PgTrigger>;
@@ -33,32 +33,22 @@ export function pgTable<T extends ColumnRecord, PK extends string>(
 		for (const key of primaryKey) {
 			const pkColumn = columns[key];
 			if (pkColumn !== undefined) {
-				pkColumn._isPrimaryKey = true;
+				pkColumn._primaryKey = true;
 			}
 		}
 	}
 	const table: PgTable<T, PK> = {
 		schema: tableSchema,
-		zodSchema: () => {
-			const cols = tableSchema.columns as ColumnRecord;
-			const schema = Object.entries(cols).reduce((acc, [key, value]) => {
-				return acc.extend({
-					[key]: value.zodSchema(),
-				});
-			}, z.object({}));
-			return z.object(schema.shape) as ZodSchemaObject<T>;
-		},
-		introspect: () => introspectTable(table),
-		inferPK: "infer" as unknown as PK extends keyof T
-			? Exclude<PK, undefined>
-			: never,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		introspect: () => introspectTable(table as PgTable<any, any>),
 		infer: "infer" as unknown as Simplify<InferColumnTypes<T, PK>>,
 	};
 	const columNames = Object.keys(tableSchema.columns);
 	for (const columnName of columNames) {
 		const column = columns[columnName];
 		if (column !== undefined) {
-			column.table = table;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			column.table = table as PgTable<any, any>;
 		}
 	}
 	return table as PgTable<T, PK>;
@@ -67,10 +57,8 @@ export function pgTable<T extends ColumnRecord, PK extends string>(
 export type PgTable<T extends ColumnRecord, PK extends string> = {
 	infer: Simplify<InferColumnTypes<T, PK>>;
 	database?: AnyPgDatabase;
-	zodSchema: () => ZodSchemaObject<T>;
 	introspect: () => IntrospectedTable;
 	schema: TableSchema<T, PK>;
-	inferPK: PK extends keyof T ? Exclude<PK, undefined> : never;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

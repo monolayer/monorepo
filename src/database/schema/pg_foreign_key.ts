@@ -1,7 +1,7 @@
 import type { ForeignKeyRule } from "../introspection/database/foreign_key_constraint.js";
-import type { AnyPgTable, PgTable } from "./pg_table.js";
+import type { PgTable } from "./pg_table.js";
 
-export type PgForeignKey<T, C = AnyPgTable> = {
+export type PgForeignKey<T, C> = {
 	cols: T;
 	targetTable: C;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,7 +14,7 @@ export type PgForeignKey<T, C = AnyPgTable> = {
 	targetColumns: string[];
 };
 
-export function pgForeignKey<T, C = AnyPgTable>(
+export function pgForeignKey<T, C>(
 	columns: T,
 	targetTable: C,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
