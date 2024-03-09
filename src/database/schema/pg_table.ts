@@ -11,7 +11,7 @@ import type { PgUnique } from "./pg_unique.js";
 
 export type ColumnRecord = Record<string, PgColumnTypes>;
 
-type TableSchema<T, PK extends string> = {
+export type TableSchema<T, PK extends string> = {
 	columns: T extends ColumnRecord ? T : never;
 	primaryKey?: keyof T extends string
 		? PK[] extends Array<keyof T>
@@ -54,6 +54,13 @@ export function pgTable<T extends ColumnRecord, PK extends string>(
 			: never,
 		infer: "infer" as unknown as Simplify<InferColumnTypes<T, PK>>,
 	};
+	const columNames = Object.keys(tableSchema.columns);
+	for (const columnName of columNames) {
+		const column = columns[columnName];
+		if (column !== undefined) {
+			column.table = table;
+		}
+	}
 	return table as PgTable<T, PK>;
 }
 

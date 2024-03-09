@@ -8,6 +8,7 @@ import {
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 import { ZodIssueCode, z } from "zod";
 import { InferColumType, ZodType } from "./inference.js";
+import type { AnyPgTable } from "./pg_table.js";
 import {
 	baseSchema,
 	bigintSchema,
@@ -95,6 +96,8 @@ export enum DefaultValueDataTypes {
 export class PgColumnBase<S, I, U> {
 	protected declare readonly infer: ColumnType<S, I, U>;
 	protected info: Omit<ColumnInfo, "columnName" | "tableName">;
+
+	table?: AnyPgTable;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static info(column: PgColumnBase<any, any, any>) {
