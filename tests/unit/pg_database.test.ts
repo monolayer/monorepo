@@ -129,8 +129,9 @@ describe("introspect", () => {
 	test("introspection returns primary key", () => {
 		const users = pgTable({
 			columns: {
-				id: pgSerial().primaryKey(),
+				id: pgSerial(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const database = pgDatabase({ tables: { users } });
@@ -160,9 +161,10 @@ describe("introspect", () => {
 	test("introspection returns composite primary key", () => {
 		const users = pgTable({
 			columns: {
-				email: pgText().primaryKey(),
-				name: pgInteger().primaryKey().generatedByDefaultAsIdentity(),
+				email: pgText(),
+				name: pgInteger().generatedByDefaultAsIdentity(),
 			},
+			primaryKey: ["email", "name"],
 		});
 		const database = pgDatabase({ tables: { users } });
 
@@ -200,14 +202,15 @@ describe("introspect", () => {
 			columns: {
 				id: pgSerial(),
 				id2: pgBigserial(),
-				name: pgText().primaryKey(),
+				name: pgText(),
 				email: pgText().notNull(),
 				count1: pgInteger().generatedByDefaultAsIdentity(),
 				count2: pgInteger().generatedAlwaysAsIdentity(),
 				description: pgText().defaultTo("TDB"),
 				createdAt: pgTimestamp().defaultTo(sql`now()`),
-				time: pgTime(4).primaryKey(),
+				time: pgTime(4),
 			},
+			primaryKey: ["name", "time"],
 		});
 
 		const database = pgDatabase({ tables: { demo } });
@@ -293,8 +296,9 @@ describe("introspect", () => {
 	test("introspection returns foreignKeys", () => {
 		const authors = pgTable({
 			columns: {
-				id: pgSerial().primaryKey(),
+				id: pgSerial(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const books = pgTable({

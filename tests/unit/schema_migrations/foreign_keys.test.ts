@@ -35,8 +35,9 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: pgInteger().primaryKey(),
+				id: pgInteger(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const users = pgTable({
@@ -144,14 +145,16 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: pgInteger().primaryKey(),
+				id: pgInteger(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const old_books = pgTable({
 			columns: {
-				id: pgInteger().primaryKey(),
+				id: pgInteger(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const users = pgTable({
@@ -311,8 +314,9 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: pgInteger().primaryKey(),
+				id: pgInteger(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const users = pgTable({
@@ -417,14 +421,16 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: pgInteger().primaryKey(),
+				id: pgInteger(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const old_books = pgTable({
 			columns: {
-				id: pgInteger().primaryKey(),
+				id: pgInteger(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const users = pgTable({
@@ -531,8 +537,9 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: pgInteger().primaryKey(),
+				id: pgInteger(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const users = pgTable({
@@ -643,8 +650,9 @@ describe("Database migrations", () => {
 
 		const books = pgTable({
 			columns: {
-				id: pgInteger().primaryKey(),
+				id: pgInteger(),
 			},
+			primaryKey: ["id"],
 		});
 
 		const users = pgTable({

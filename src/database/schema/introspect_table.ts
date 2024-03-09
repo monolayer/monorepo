@@ -7,7 +7,7 @@ import {
 	type ColumnInfo,
 } from "./pg_column.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
-import { AnyPgTable, ColumnRecord, type PgTable } from "./pg_table.js";
+import { AnyPgTable, ColumnRecord } from "./pg_table.js";
 import type {
 	PgTrigger,
 	TriggerEvent,
@@ -103,7 +103,7 @@ function uniqueConstraintInfo(uniqueConstraints?: PgUnique<any>[]) {
 }
 function foreignKeyInfo(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	foreignKeys?: PgForeignKey<any>[],
+	foreignKeys?: PgForeignKey<any, any>[],
 	tables?: Record<string, AnyPgTable>,
 ) {
 	return (foreignKeys || []).map<IntrospectedForeignKey>((fk) => {
@@ -120,7 +120,7 @@ function columnInfo(columns?: ColumnRecord) {
 	return Object.entries(columns || {}).reduce(
 		(acc, [key, value]) => {
 			const columnDef = Object.fromEntries(Object.entries(value)) as {
-				_isPrimaryKey: boolean;
+				_primaryKey: boolean;
 				info: ColumnInfo;
 			};
 			let generated = false;
@@ -139,11 +139,11 @@ function columnInfo(columns?: ColumnRecord) {
 				nullable:
 					columnDef.info.isNullable &&
 					columnDef.info.identity === null &&
-					!columnDef._isPrimaryKey,
+					!columnDef._primaryKey,
 				generated,
 				defaultValue:
 					defaultValue === null ? defaultValue : String(defaultValue),
-				primaryKey: columnDef._isPrimaryKey,
+				primaryKey: columnDef._primaryKey,
 			};
 			return acc;
 		},
@@ -153,17 +153,17 @@ function columnInfo(columns?: ColumnRecord) {
 function primaryKey(columns?: ColumnRecord) {
 	return Object.entries(columns || {}).reduce((acc, [key, value]) => {
 		const columnDef = Object.fromEntries(Object.entries(value)) as {
-			_isPrimaryKey: boolean;
+			_primaryKey: boolean;
 		};
 
-		if (columnDef._isPrimaryKey) {
+		if (columnDef._primaryKey) {
 			acc.push(key);
 		}
 		return acc;
 	}, [] as string[]);
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function introspectTable(table: PgTable<any>) {
+export function introspectTable(table: AnyPgTable) {
 	const info: IntrospectedTable = {
 		primaryKey: primaryKey(table.schema.columns),
 		columns: columnInfo(table.schema.columns),
