@@ -17,6 +17,10 @@ export function pgPoolAndConfig(config: Config, environment: string) {
 
 	return {
 		pool: new pg.Pool(environmentConfig),
+		adminPool: new pg.Pool({
+			...environmentConfig,
+			database: undefined,
+		}),
 		config: environmentConfig,
 	};
 }

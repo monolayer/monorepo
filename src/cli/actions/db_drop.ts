@@ -28,7 +28,7 @@ export async function dbDrop(environment: string) {
 
 	const dropDb = await pgQueryExecuteWithResult<{
 		datname: string;
-	}>(pool.pool, `DROP DATABASE ${pool.config.database};`);
+	}>(pool.adminPool, `DROP DATABASE ${pool.config.database};`);
 	if (dropDb.status === ActionStatus.Error) {
 		s.stop(dropDb.error.message, 1);
 		p.outro(`${color.red("Failed")}`);
