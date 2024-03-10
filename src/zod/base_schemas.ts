@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { ZodType } from "../database/schema/inference.js";
+import type { ZodType } from "../schema/inference.js";
 import {
 	ColumnIdentity,
 	PgTimestamp,
@@ -12,7 +12,7 @@ import {
 	type PgTime,
 	type PgTimeTz,
 	type PgVarChar,
-} from "../database/schema/pg_column.js";
+} from "../schema/pg_column.js";
 import { columnInfo, customIssue } from "./helpers.js";
 import { baseSchema } from "./zod_schema.js";
 

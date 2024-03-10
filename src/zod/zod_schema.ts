@@ -1,10 +1,7 @@
 import { z } from "zod";
-import type { ZodSchemaObject, ZodType } from "~/database/schema/inference.js";
-import type {
-	PgColumn,
-	PgGeneratedColumn,
-} from "~/database/schema/pg_column.js";
-import type { ColumnRecord, PgTable } from "../database/schema/pg_table.js";
+import type { ZodSchemaObject, ZodType } from "~/schema/inference.js";
+import type { PgColumn, PgGeneratedColumn } from "~/schema/pg_column.js";
+import type { ColumnRecord, PgTable } from "../schema/pg_table.js";
 import { generatedColumnSchema } from "./base_schemas.js";
 import {
 	isBigInt,

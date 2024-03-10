@@ -5,7 +5,7 @@ import { Kysely } from "kysely";
 import color from "picocolors";
 import { exit } from "process";
 import { Config } from "~/config.js";
-import { fetchPendingMigrations } from "~/database/migrations/info.js";
+import { fetchPendingMigrations } from "~/migrations/info.js";
 import { ActionStatus, throwableOperation } from "../command.js";
 
 export async function pendingMigrations(

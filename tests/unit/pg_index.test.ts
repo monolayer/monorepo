@@ -1,6 +1,6 @@
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
-import { pgIndex } from "~/database/schema/pg_index.js";
+import { pgIndex } from "~/schema/pg_index.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
 
 describe("pgIndex", () => {

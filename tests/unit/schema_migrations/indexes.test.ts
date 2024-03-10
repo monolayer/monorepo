@@ -1,9 +1,9 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgText } from "~/database/schema/pg_column.js";
-import { pgDatabase } from "~/database/schema/pg_database.js";
-import { pgIndex } from "~/database/schema/pg_index.js";
-import { pgTable } from "~/database/schema/pg_table.js";
+import { pgText } from "~/schema/pg_column.js";
+import { pgDatabase } from "~/schema/pg_database.js";
+import { pgIndex } from "~/schema/pg_index.js";
+import { pgTable } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";

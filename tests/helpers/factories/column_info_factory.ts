@@ -1,7 +1,7 @@
 import { isExpression } from "kysely";
 import { SetNonNullable } from "type-fest";
-import { compileDefaultExpression } from "~/database/introspection/schemas.js";
-import type { ColumnInfo } from "~/database/schema/pg_column.js";
+import { compileDefaultExpression } from "~/introspection/schemas.js";
+import type { ColumnInfo } from "~/schema/pg_column.js";
 
 type required = SetNonNullable<
 	Pick<ColumnInfo, "tableName" | "dataType" | "columnName">

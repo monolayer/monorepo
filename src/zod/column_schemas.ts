@@ -1,5 +1,5 @@
 import { ZodIssueCode, z } from "zod";
-import type { ZodType } from "../database/schema/inference.js";
+import type { ZodType } from "../schema/inference.js";
 import {
 	ColumnIdentity,
 	PgBigInt,
@@ -26,7 +26,7 @@ import {
 	PgTimestampTz,
 	PgUuid,
 	PgVarChar,
-} from "../database/schema/pg_column.js";
+} from "../schema/pg_column.js";
 import {
 	bigintSchema,
 	characterSchema,

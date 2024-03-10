@@ -1,9 +1,9 @@
 import * as p from "@clack/prompts";
 import color from "picocolors";
 import { exit } from "process";
-import { changeset } from "~/database/changeset.js";
-import { Changeset } from "~/database/migration_op/changeset.js";
-import type { MigrationSchema } from "~/database/migrations/migration_schema.js";
+import { changeset } from "~/changeset/changeset.js";
+import { Changeset } from "~/changeset/migration_op/changeset.js";
+import type { MigrationSchema } from "~/migrations/migration_schema.js";
 
 export async function computeChangeset(
 	local: MigrationSchema,

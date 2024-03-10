@@ -4,7 +4,7 @@ import path from "path";
 import pg from "pg";
 import color from "picocolors";
 import { importConfig } from "~/config.js";
-import { fetchPendingMigrations } from "~/database/migrations/info.js";
+import { fetchPendingMigrations } from "~/migrations/info.js";
 import {
 	checkAutoPilotLock,
 	checkEnvironmentIsConfigured,

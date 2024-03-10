@@ -12,12 +12,12 @@ import {
 	pgText,
 	pgTimestamptz,
 	pgVarchar,
-} from "~/database/schema/pg_column.js";
-import { pgIndex } from "~/database/schema/pg_index.js";
-import { pgTable } from "~/database/schema/pg_table.js";
+} from "~/schema/pg_column.js";
+import { pgIndex } from "~/schema/pg_index.js";
+import { pgTable } from "~/schema/pg_table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
-import { pgForeignKey } from "../../src/database/schema/pg_foreign_key.js";
-import { pgUnique } from "../../src/database/schema/pg_unique.js";
+import { pgForeignKey } from "../../src/schema/pg_foreign_key.js";
+import { pgUnique } from "../../src/schema/pg_unique.js";
 
 describe("pgTable definition", () => {
 	test("has columns defined", () => {

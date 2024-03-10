@@ -1,12 +1,12 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgInteger, pgText, pgVarchar } from "~/database/schema/pg_column.js";
-import { pgDatabase } from "~/database/schema/pg_database.js";
-import { pgForeignKey } from "~/database/schema/pg_foreign_key.js";
-import { pgIndex } from "~/database/schema/pg_index.js";
-import { pgTable } from "~/database/schema/pg_table.js";
-import { pgUnique } from "~/database/schema/pg_unique.js";
+import { pgInteger, pgText, pgVarchar } from "~/schema/pg_column.js";
+import { pgDatabase } from "~/schema/pg_database.js";
+import { pgForeignKey } from "~/schema/pg_foreign_key.js";
+import { pgIndex } from "~/schema/pg_index.js";
+import { pgTable } from "~/schema/pg_table.js";
+import { pgUnique } from "~/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";

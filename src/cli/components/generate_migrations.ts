@@ -1,8 +1,8 @@
 import * as p from "@clack/prompts";
 import { exit } from "process";
+import { Changeset } from "~/changeset/migration_op/changeset.js";
 import { Config } from "~/config.js";
-import { Changeset } from "~/database/migration_op/changeset.js";
-import { generateMigrationFiles } from "~/database/migrations/generate.js";
+import { generateMigrationFiles } from "~/migrations/generate.js";
 import { ActionStatus, throwableOperation } from "../command.js";
 
 export async function generateMigrations(

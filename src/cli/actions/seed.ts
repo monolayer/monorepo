@@ -3,11 +3,11 @@ import { CamelCasePlugin, Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
 import color from "picocolors";
 import { exit } from "process";
+import { changeset } from "~/changeset/changeset.js";
 import { importConfig, importSchema, importSeedFunction } from "~/config.js";
-import { changeset } from "~/database/changeset.js";
-import { localSchema, remoteSchema } from "~/database/introspection/schemas.js";
-import { dbTableInfo } from "~/database/introspection/tables.js";
-import { fetchPendingMigrations } from "~/database/migrations/info.js";
+import { localSchema, remoteSchema } from "~/introspection/schemas.js";
+import { dbTableInfo } from "~/introspection/tables.js";
+import { fetchPendingMigrations } from "~/migrations/info.js";
 import { ActionStatus } from "../command.js";
 import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 

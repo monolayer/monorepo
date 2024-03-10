@@ -5,12 +5,12 @@ import fs from "node:fs/promises";
 import path from "path";
 import pg from "pg";
 import { cwd, exit } from "process";
+import { changeset } from "~/changeset/changeset.js";
 import { ActionStatus } from "~/cli/command.js";
 import { importConfig } from "~/config.js";
-import { changeset } from "~/database/changeset.js";
-import { localSchema, remoteSchema } from "~/database/introspection/schemas.js";
-import { generateMigrationFiles } from "~/database/migrations/generate.js";
-import { fetchPendingMigrations } from "~/database/migrations/info.js";
+import { localSchema, remoteSchema } from "~/introspection/schemas.js";
+import { generateMigrationFiles } from "~/migrations/generate.js";
+import { fetchPendingMigrations } from "~/migrations/info.js";
 
 async function main() {
 	const config = await importConfig();

@@ -1,8 +1,8 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgEnum, pgInteger, pgSerial } from "~/database/schema/pg_column.js";
-import { pgDatabase } from "~/database/schema/pg_database.js";
-import { pgTable } from "~/database/schema/pg_table.js";
+import { pgEnum, pgInteger, pgSerial } from "~/schema/pg_column.js";
+import { pgDatabase } from "~/schema/pg_database.js";
+import { pgTable } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";

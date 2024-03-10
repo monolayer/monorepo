@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgInteger, pgSerial, pgVarchar } from "~/database/schema/pg_column.js";
-import { pgDatabase } from "~/database/schema/pg_database.js";
-import { pgTable } from "~/database/schema/pg_table.js";
-import { pgUnique } from "~/database/schema/pg_unique.js";
+import { pgInteger, pgSerial, pgVarchar } from "~/schema/pg_column.js";
+import { pgDatabase } from "~/schema/pg_database.js";
+import { pgTable } from "~/schema/pg_table.js";
+import { pgUnique } from "~/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";

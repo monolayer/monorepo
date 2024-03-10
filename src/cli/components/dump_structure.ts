@@ -3,8 +3,8 @@ import { appendFileSync } from "fs";
 import path from "path";
 import { env } from "process";
 import type { Config } from "~/config.js";
-import { pgPoolAndConfig } from "~/database/pg/pg_pool.js";
-import { pgQueryExecuteWithResult } from "~/database/pg/pg_query.js";
+import { pgPoolAndConfig } from "~/pg/pg_pool.js";
+import { pgQueryExecuteWithResult } from "~/pg/pg_query.js";
 import { ActionStatus, isExecaError, runCommand } from "../command.js";
 
 export async function dumpStructure(config: Config, environment: string) {

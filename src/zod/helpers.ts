@@ -4,7 +4,7 @@ import {
 	type ColumnInfo,
 	type PgColumnBase,
 	type PgColumnTypes,
-} from "../database/schema/pg_column.js";
+} from "../schema/pg_column.js";
 
 export function columnInfo(column: PgColumnBase<unknown, unknown, unknown>) {
 	const info: ColumnInfo = Object.fromEntries(Object.entries(column)).info;

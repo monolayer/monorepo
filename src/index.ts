@@ -25,12 +25,12 @@ export {
 	pgTimetz,
 	pgUuid,
 	pgVarchar,
-} from "~/database/schema/pg_column.js";
-export { pgDatabase } from "~/database/schema/pg_database.js";
-export * from "~/database/schema/pg_extension.js";
-export { pgForeignKey } from "~/database/schema/pg_foreign_key.js";
-export { pgIndex } from "~/database/schema/pg_index.js";
-export { pgTable } from "~/database/schema/pg_table.js";
-export { pgTrigger } from "~/database/schema/pg_trigger.js";
-export { pgUnique } from "~/database/schema/pg_unique.js";
+} from "~/schema/pg_column.js";
+export { pgDatabase } from "~/schema/pg_database.js";
+export * from "~/schema/pg_extension.js";
+export { pgForeignKey } from "~/schema/pg_foreign_key.js";
+export { pgIndex } from "~/schema/pg_index.js";
+export { pgTable } from "~/schema/pg_table.js";
+export { pgTrigger } from "~/schema/pg_trigger.js";
+export { pgUnique } from "~/schema/pg_unique.js";
 export { zodSchema } from "~/zod/zod_schema.js";

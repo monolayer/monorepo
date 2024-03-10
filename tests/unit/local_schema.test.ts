@@ -4,10 +4,10 @@ import { describe, expect, test } from "vitest";
 import {
 	localColumnInfoByTable,
 	schemaColumnInfo,
-} from "~/database/introspection/columns.js";
-import { localEnumInfo } from "~/database/introspection/enums.js";
-import { localIndexInfoByTable } from "~/database/introspection/indexes.js";
-import { localSchema } from "~/database/introspection/schemas.js";
+} from "~/introspection/columns.js";
+import { localEnumInfo } from "~/introspection/enums.js";
+import { localIndexInfoByTable } from "~/introspection/indexes.js";
+import { localSchema } from "~/introspection/schemas.js";
 import {
 	ColumnIdentity,
 	pgBigserial,
@@ -17,15 +17,15 @@ import {
 	pgSerial,
 	pgTimestamp,
 	pgVarchar,
-} from "~/database/schema/pg_column.js";
-import { pgDatabase } from "~/database/schema/pg_database.js";
-import { pgIndex } from "~/database/schema/pg_index.js";
+} from "~/schema/pg_column.js";
+import { pgDatabase } from "~/schema/pg_database.js";
+import { pgIndex } from "~/schema/pg_index.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
-import { pgForeignKey } from "../../src/database/schema/pg_foreign_key.js";
-import { pgTable } from "../../src/database/schema/pg_table.js";
-import { pgTrigger } from "../../src/database/schema/pg_trigger.js";
-import { pgUnique } from "../../src/database/schema/pg_unique.js";
+import { pgForeignKey } from "../../src/schema/pg_foreign_key.js";
+import { pgTable } from "../../src/schema/pg_table.js";
+import { pgTrigger } from "../../src/schema/pg_trigger.js";
+import { pgUnique } from "../../src/schema/pg_unique.js";
 
 describe("#schemaColumnInfo", () => {
 	test("default column", () => {

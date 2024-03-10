@@ -1,7 +1,7 @@
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
 import { compileTrigger } from "~tests/helpers/indexes.js";
-import { pgTrigger } from "../../src/database/schema/pg_trigger.js";
+import { pgTrigger } from "../../src/schema/pg_trigger.js";
 
 describe("pg_trigger", () => {
 	test("trigger before", () => {

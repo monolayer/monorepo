@@ -2,6 +2,7 @@
 import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
+import { pgForeignKey } from "~/index.js";
 import {
 	pgBigserial,
 	pgBoolean,
@@ -11,12 +12,11 @@ import {
 	pgTime,
 	pgTimestamp,
 	pgVarchar,
-} from "~/database/schema/pg_column.js";
-import { pgDatabase } from "~/database/schema/pg_database.js";
-import { pgTable } from "~/database/schema/pg_table.js";
-import { pgTrigger } from "~/database/schema/pg_trigger.js";
-import { pgUnique } from "~/database/schema/pg_unique.js";
-import { pgForeignKey } from "~/index.js";
+} from "~/schema/pg_column.js";
+import { pgDatabase } from "~/schema/pg_database.js";
+import { pgTable } from "~/schema/pg_table.js";
+import { pgTrigger } from "~/schema/pg_trigger.js";
+import { pgUnique } from "~/schema/pg_unique.js";
 
 describe("pgDatabase definition", () => {
 	test("without tables", () => {

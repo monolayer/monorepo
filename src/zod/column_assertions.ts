@@ -28,7 +28,7 @@ import {
 	type PgColumn,
 	type PgColumnBase,
 	type PgGeneratedColumn,
-} from "../database/schema/pg_column.js";
+} from "../schema/pg_column.js";
 
 export function isPgBoolean(
 	column: PgColumnBase<unknown, unknown, unknown>,

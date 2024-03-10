@@ -1,9 +1,9 @@
 import { Kysely } from "kysely";
+import { changeset } from "~/changeset/changeset.js";
 import { ActionStatus } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
-import { changeset } from "~/database/changeset.js";
-import { localSchema, remoteSchema } from "~/database/introspection/schemas.js";
-import { type AnyPgDatabase } from "~/database/schema/pg_database.js";
+import { localSchema, remoteSchema } from "~/introspection/schemas.js";
+import { type AnyPgDatabase } from "~/schema/pg_database.js";
 
 export async function computeChangeset(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

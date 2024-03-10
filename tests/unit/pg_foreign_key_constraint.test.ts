@@ -1,10 +1,10 @@
 import { describe, expect, test } from "vitest";
-import { type PgSerial } from "../../src/database/schema/pg_column.js";
+import { type PgSerial } from "../../src/schema/pg_column.js";
 import {
 	foreignKeyOptions,
 	pgForeignKey,
-} from "../../src/database/schema/pg_foreign_key.js";
-import { type PgTable } from "../../src/database/schema/pg_table.js";
+} from "../../src/schema/pg_foreign_key.js";
+import { type PgTable } from "../../src/schema/pg_table.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TableWithIdSerial = PgTable<{ id: PgSerial }, any>;

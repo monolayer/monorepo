@@ -3,7 +3,7 @@ import { sql, type Expression } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
-import { pgTable } from "~/database/schema/pg_table.js";
+import { pgTable } from "~/schema/pg_table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
 import {
 	ColumnInfo,
@@ -66,7 +66,7 @@ import {
 	pgUuid,
 	pgVarchar,
 	type Boolish,
-} from "../../src/database/schema/pg_column.js";
+} from "../../src/schema/pg_column.js";
 
 type ColumnWithDefaultContext = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { pgSerial } from "~/database/schema/pg_column.js";
-import { pgDatabase } from "~/database/schema/pg_database.js";
-import { pgTable } from "~/database/schema/pg_table.js";
+import { pgSerial } from "~/schema/pg_column.js";
+import { pgDatabase } from "~/schema/pg_database.js";
+import { pgTable } from "~/schema/pg_table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
 import {
@@ -9,7 +9,7 @@ import {
 	findForeignKeysTargetTables,
 	findPrimaryKey,
 	findTableInDatabaseSchema,
-} from "../../src/database/migrations/migration_schema.js";
+} from "../../src/migrations/migration_schema.js";
 
 describe("findColumn", () => {
 	test("returns the column definition of a table", () => {
