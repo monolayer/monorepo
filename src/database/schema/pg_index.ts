@@ -7,28 +7,7 @@ import {
 } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 
-function where<T>(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	lhs: any | Expression<any>,
-	op: ComparisonOperatorExpression,
-	rhs: unknown,
-): T;
-function where<T>(
-	factory: (
-		qb: ExpressionBuilder<
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			ShallowRecord<string, ShallowRecord<any & string, any>>,
-			string
-		>,
-	) => Expression<SqlBool>,
-): T;
-function where<T>(expression: Expression<SqlBool>): T;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function where<T>(...args: any[]): T {
-	return args as T;
-}
-
-type CompileArgs = {
+type IndexOptions = {
 	ifNotExists: boolean;
 	unique: boolean;
 	nullsNotDistinct: boolean;
@@ -40,69 +19,82 @@ type CompileArgs = {
 	columns: string[];
 };
 
-export type PgIndex<T extends string> = {
-	cols: T[];
-	ifNotExists: () => PgIndex<T>;
-	unique: () => PgIndex<T>;
-	nullsNotDistinct: () => PgIndex<T>;
-	expression: (expression: Expression<SqlBool>) => PgIndex<T>;
-	using: (indexType: IndexType | string) => PgIndex<T>;
-	where: typeof where<PgIndex<T>>;
-	compileArgs: () => CompileArgs;
-};
+export class PgIndex<T extends string> {
+	protected options: IndexOptions;
+
+	constructor(protected columns: T[]) {
+		this.options = {
+			ifNotExists: false,
+			unique: false,
+			nullsNotDistinct: false,
+			expression: undefined,
+			using: undefined,
+			where: undefined,
+			columns: this.columns,
+		};
+	}
+
+	ifNotExists() {
+		this.options.ifNotExists = true;
+		return this;
+	}
+
+	unique() {
+		this.options.unique = true;
+		return this;
+	}
+
+	nullsNotDistinct() {
+		this.options.nullsNotDistinct = true;
+		return this;
+	}
+
+	expression(expression: Expression<SqlBool>) {
+		this.options.expression = expression;
+		return this;
+	}
+
+	using(indexType: IndexType | string) {
+		this.options.using = indexType;
+		return this;
+	}
+
+	where(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		lhs: any | Expression<any>,
+		op: ComparisonOperatorExpression,
+		rhs: unknown,
+	): this;
+	where(
+		factory: (
+			qb: ExpressionBuilder<
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				ShallowRecord<string, ShallowRecord<any & string, any>>,
+				string
+			>,
+		) => Expression<SqlBool>,
+	): this;
+	where(expression: Expression<SqlBool>): this;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	where(...args: unknown[]) {
+		this.options.where = args;
+		return this;
+	}
+}
 
 export function pgIndex<T extends string>(columns: T[]) {
-	const compileArgs: CompileArgs = {
-		ifNotExists: false,
-		unique: false,
-		nullsNotDistinct: false,
-		expression: undefined,
-		using: undefined,
-		where: undefined,
-		columns: columns as unknown as string[],
-	};
+	return new PgIndex(columns);
+}
 
-	const index: PgIndex<T> = {
-		cols: columns,
-		ifNotExists: () => {
-			compileArgs.ifNotExists = true;
-			return index;
-		},
-		unique: () => {
-			compileArgs.unique = true;
-			return index;
-		},
-		nullsNotDistinct: () => {
-			compileArgs.nullsNotDistinct = true;
-			return index;
-		},
-		expression: (expression) => {
-			compileArgs.expression = expression;
-			return index;
-		},
-		using: (indexType) => {
-			compileArgs.using = indexType;
-			return index;
-		},
-		compileArgs: () => {
-			return {
-				ifNotExists: compileArgs.ifNotExists ?? false,
-				unique: compileArgs.unique ?? false,
-				nullsNotDistinct: compileArgs.nullsNotDistinct ?? false,
-				expression: compileArgs.expression,
-				using: compileArgs.using,
-				where: compileArgs.where,
-				columns:
-					typeof columns === "string"
-						? ([columns] as unknown as string[])
-						: (columns as unknown as string[]),
-			};
-		},
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		where: (...args: any[]) => {
-			compileArgs.where = args;
-			return index;
-		},
-	};
-	return index;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function indexOptions<T extends PgIndex<any>>(index: T) {
+	assertIndexWithOptions(index);
+	return index.options;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function assertIndexWithOptions<T extends PgIndex<any>>(
+	val: T,
+): asserts val is T & { options: IndexOptions } {
+	true;
 }

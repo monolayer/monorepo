@@ -1,48 +1,54 @@
 import type { ForeignKeyRule } from "../introspection/database/foreign_key_constraint.js";
-import type { AnyPgTable, PgTable } from "./pg_table.js";
+import type { PgTable } from "./pg_table.js";
 
-export type PgForeignKey<T extends string, C> = {
-	deleteRule: (rule: Lowercase<ForeignKeyRule>) => PgForeignKey<T, C>;
-	updateRule: (rule: Lowercase<ForeignKeyRule>) => PgForeignKey<T, C>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ForeignKeyOptions<T extends PgTable<any, any>> = {
+	columns: string[];
+	targetTable: T;
+	targetColumns: string[];
+	deleteRule: ForeignKeyRule;
+	updateRule: ForeignKeyRule;
 };
 
-export function pgForeignKey<T extends string, C extends AnyPgTable>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class PgForeignKey<T extends string, C extends PgTable<any, any>> {
+	protected options: ForeignKeyOptions<C>;
+
+	constructor(
+		protected columns: T[],
+		targetTable: C,
+		targetColumns: (keyof C)[],
+	) {
+		this.options = {
+			columns: this.columns,
+			targetTable,
+			targetColumns: targetColumns as string[],
+			deleteRule: "NO ACTION",
+			updateRule: "NO ACTION",
+		};
+	}
+
+	deleteRule(rule: Lowercase<ForeignKeyRule>) {
+		this.options.deleteRule = rule.toUpperCase() as ForeignKeyRule;
+		return this;
+	}
+
+	updateRule(rule: Lowercase<ForeignKeyRule>) {
+		this.options.updateRule = rule.toUpperCase() as ForeignKeyRule;
+		return this;
+	}
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function pgForeignKey<T extends string, C extends PgTable<any, any>>(
 	columns: T[],
 	targetTable: C,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	targetColumns: C extends PgTable<infer U, any> ? (keyof U)[] : never,
 ) {
-	const options: ForeignKeyOptions = {
-		columns,
-		targetTable,
-		targetColumns,
-		deleteRule: "NO ACTION",
-		updateRule: "NO ACTION",
-	};
-	const foreignKey: PgForeignKey<T, C> = {
-		deleteRule: (rule: Lowercase<ForeignKeyRule>) => {
-			options.deleteRule = rule.toUpperCase() as ForeignKeyRule;
-			return foreignKey as PgForeignKey<T, C>;
-		},
-		updateRule: (rule: Lowercase<ForeignKeyRule>) => {
-			options.updateRule = rule.toUpperCase() as ForeignKeyRule;
-			return foreignKey as PgForeignKey<T, C>;
-		},
-	};
-	Object.defineProperty(foreignKey, "options", {
-		value: options,
-		writable: false,
-	});
-	return foreignKey;
+	return new PgForeignKey(columns, targetTable, targetColumns as (keyof C)[]);
 }
 
-type ForeignKeyOptions = {
-	columns: string[];
-	targetTable: AnyPgTable;
-	targetColumns: string[];
-	deleteRule: ForeignKeyRule;
-	updateRule: ForeignKeyRule;
-};
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function foreignKeyOptions<T extends PgForeignKey<any, any>>(
 	foreignKey: T,
@@ -54,6 +60,7 @@ export function foreignKeyOptions<T extends PgForeignKey<any, any>>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function assertForeignKeyWithOptions<T extends PgForeignKey<any, any>>(
 	val: T,
-): asserts val is T & { options: ForeignKeyOptions } {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+): asserts val is T & { options: ForeignKeyOptions<PgTable<any, any>> } {
 	true;
 }

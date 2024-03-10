@@ -22,10 +22,10 @@ import {
 	type UniqueInfo,
 } from "../migrations/migration_schema.js";
 import { PgColumnTypes, PgEnum, type ColumnInfo } from "../schema/pg_column.js";
-import type { PgIndex } from "../schema/pg_index.js";
+import { indexOptions, type PgIndex } from "../schema/pg_index.js";
 import type { ColumnRecord } from "../schema/pg_table.js";
 import type { PgTrigger } from "../schema/pg_trigger.js";
-import type { PgUnique } from "../schema/pg_unique.js";
+import { uniqueConstraintOptions, type PgUnique } from "../schema/pg_unique.js";
 import {
 	foreignKeyConstraintInfoToQuery,
 	primaryKeyConstraintInfoToQuery,
@@ -208,7 +208,7 @@ export function indexToInfo(
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
 ) {
-	const indexCompileArgs = index.compileArgs();
+	const indexCompileArgs = indexOptions(index);
 	const transformedTableName = toSnakeCase(tableName, camelCase);
 	const transformedColumnNames = indexCompileArgs.columns.map((column) =>
 		toSnakeCase(column, camelCase),
@@ -465,9 +465,9 @@ export function uniqueToInfo(
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
 ) {
-	const args = unique.compileArgs();
+	const args = uniqueConstraintOptions(unique);
 	const newTableName = toSnakeCase(tableName, camelCase);
-	const columns = args.cols
+	const columns = args.columns
 		.sort()
 		.map((column) => toSnakeCase(column, camelCase));
 	const keyName = `${newTableName}_${columns.join("_")}_kinetic_key`;

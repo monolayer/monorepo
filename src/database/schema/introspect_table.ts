@@ -13,7 +13,7 @@ import type {
 	TriggerEvent,
 	TriggerFiringTime,
 } from "./pg_trigger.js";
-import type { PgUnique } from "./pg_unique.js";
+import { uniqueConstraintOptions, type PgUnique } from "./pg_unique.js";
 
 export type IntrospectedTable = {
 	primaryKey: string[];
@@ -95,9 +95,10 @@ function triggerInfo(triggers?: Record<string, PgTrigger>) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function uniqueConstraintInfo(uniqueConstraints?: PgUnique<any>[]) {
 	return (uniqueConstraints || []).map<IntrospectedUniqueConstraint>((uc) => {
+		const options = uniqueConstraintOptions(uc);
 		return {
-			columns: uc.compileArgs().cols,
-			nullsDistinct: uc.compileArgs().nullsDistinct,
+			columns: options.columns,
+			nullsDistinct: options.nullsDistinct,
 		};
 	});
 }
