@@ -236,7 +236,7 @@ describe("Table change migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						name: pgText().defaultTo("bar"),
+						name: pgText().default("bar"),
 					},
 				}),
 			},
@@ -354,7 +354,7 @@ describe("Table change migrations", () => {
 			tables: {
 				users: pgTable({
 					columns: {
-						name: pgVarchar().defaultTo("foo").notNull(),
+						name: pgVarchar().default("foo").notNull(),
 					},
 				}),
 			},

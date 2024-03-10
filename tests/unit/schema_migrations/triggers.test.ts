@@ -27,7 +27,7 @@ describe("Database migrations", () => {
 		const users = pgTable({
 			columns: {
 				id: pgInteger(),
-				updatedAt: pgTimestamp().defaultTo(sql`now()`),
+				updatedAt: pgTimestamp().default(sql`now()`),
 			},
 			triggers: {
 				foo_before_update: pgTrigger()
@@ -140,7 +140,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_after_update_trg 
 		const users = pgTable({
 			columns: {
 				id: pgInteger(),
-				updatedAt: pgTimestamp().defaultTo(sql`now()`),
+				updatedAt: pgTimestamp().default(sql`now()`),
 			},
 		});
 
@@ -214,7 +214,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_after_update_trg 
 		const users = pgTable({
 			columns: {
 				id: pgInteger(),
-				updatedAt: pgTimestamp().defaultTo(sql`now()`),
+				updatedAt: pgTimestamp().default(sql`now()`),
 			},
 			triggers: {
 				foo_before_update: pgTrigger()

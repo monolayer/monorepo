@@ -117,13 +117,13 @@ describe("PgColumn", () => {
 
 	testBase();
 
-	describe("defaultTo()", () => {
-		test("defaultTo accepts insert column data types or an arbitrary SQL expression", () => {
+	describe("default()", () => {
+		test("default accepts insert column data types or an arbitrary SQL expression", () => {
 			const integerColumn = pgInteger();
 			const integerColumnExpect: Expect<
 				Equal<
 					string | number | Expression<unknown>,
-					Parameters<typeof integerColumn.defaultTo>[0]
+					Parameters<typeof integerColumn.default>[0]
 				>
 			> = true;
 			expectTypeOf(integerColumnExpect).toMatchTypeOf<boolean>();
@@ -132,18 +132,18 @@ describe("PgColumn", () => {
 			const textColumnExpect: Expect<
 				Equal<
 					string | Expression<unknown>,
-					Parameters<typeof textColumn.defaultTo>[0]
+					Parameters<typeof textColumn.default>[0]
 				>
 			> = true;
 			expectTypeOf(textColumnExpect).toMatchTypeOf<boolean>();
 		});
 
-		test("defaultTo sets default value", () => {
+		test("default sets default value", () => {
 			const column = pgText();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			const someSqlExpression = sql`now()`;
-			column.defaultTo(someSqlExpression);
+			column.default(someSqlExpression);
 			expect(info.defaultValue).toBe(someSqlExpression);
 		});
 	});
@@ -162,9 +162,9 @@ describe("PgGeneratedColumn", () => {
 
 	testBase("serial");
 
-	test("does not have defaultTo", (context: ColumnWithoutDefaultContext) => {
+	test("does not have default", (context: ColumnWithoutDefaultContext) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		expect(typeof (context.column as any).defaultTo === "function").toBe(false);
+		expect(typeof (context.column as any).default === "function").toBe(false);
 	});
 
 	test("does not have notNull", (context: ColumnWithoutDefaultContext) => {
@@ -225,48 +225,48 @@ describe("pgBoolean", () => {
 			expect(info.dataType).toBe("boolean");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgBoolean();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(true);
+			column.default(true);
 			expect(info.defaultValue).toBe("true");
 
-			column.defaultTo(false);
+			column.default(false);
 			expect(info.defaultValue).toBe("false");
 
-			column.defaultTo("true");
+			column.default("true");
 			expect(info.defaultValue).toBe("true");
 
-			column.defaultTo("false");
+			column.default("false");
 			expect(info.defaultValue).toBe("false");
 
-			column.defaultTo("yes");
+			column.default("yes");
 			expect(info.defaultValue).toBe("yes");
 
-			column.defaultTo("no");
+			column.default("no");
 			expect(info.defaultValue).toBe("no");
 
-			column.defaultTo("on");
+			column.default("on");
 			expect(info.defaultValue).toBe("on");
 
-			column.defaultTo("off");
+			column.default("off");
 			expect(info.defaultValue).toBe("off");
 
-			column.defaultTo("1");
+			column.default("1");
 			expect(info.defaultValue).toBe("1");
 
-			column.defaultTo("0");
+			column.default("0");
 			expect(info.defaultValue).toBe("0");
 
-			column.defaultTo(1);
+			column.default(1);
 			expect(info.defaultValue).toBe("1");
 
-			column.defaultTo(0);
+			column.default(0);
 			expect(info.defaultValue).toBe("0");
 
 			const expression = sql`true`;
-			column.defaultTo(expression);
+			column.default(expression);
 			expect(info.defaultValue).toBe(expression);
 		});
 
@@ -455,7 +455,7 @@ describe("pgBoolean", () => {
 				test("with default value is nullable and optional", () => {
 					const table = pgTable({
 						columns: {
-							id: pgBoolean().defaultTo(true),
+							id: pgBoolean().default(true),
 						},
 					});
 					const schema = zodSchema(table).shape.id;
@@ -479,7 +479,7 @@ describe("pgBoolean", () => {
 				test("with default and notNull is non nullable", () => {
 					const table = pgTable({
 						columns: {
-							id: pgBoolean().notNull().defaultTo(true),
+							id: pgBoolean().notNull().default(true),
 						},
 					});
 					const schema = zodSchema(table).shape.id;
@@ -534,7 +534,7 @@ describe("pgBoolean", () => {
 				test("with default value is non nullable", () => {
 					const table = pgTable({
 						columns: {
-							id: pgBoolean().defaultTo(true),
+							id: pgBoolean().default(true),
 						},
 						primaryKey: ["id"],
 					});
@@ -560,7 +560,7 @@ describe("pgBoolean", () => {
 				test("with default and notNull is non nullable", () => {
 					const table = pgTable({
 						columns: {
-							id: pgBoolean().notNull().defaultTo(true),
+							id: pgBoolean().notNull().default(true),
 						},
 						primaryKey: ["id"],
 					});
@@ -659,11 +659,11 @@ describe("pgText", () => {
 			expect(info.dataType).toBe("text");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgText();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("foo");
+			column.default("foo");
 			expect(info.defaultValue).toBe("'foo'::text");
 		});
 
@@ -802,7 +802,7 @@ describe("pgText", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgText().defaultTo("1"),
+						id: pgText().default("1"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -826,7 +826,7 @@ describe("pgText", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgText().notNull().defaultTo("1"),
+						id: pgText().notNull().default("1"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -881,7 +881,7 @@ describe("pgText", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgText().defaultTo("hello"),
+						id: pgText().default("hello"),
 					},
 					primaryKey: ["id"],
 				});
@@ -894,7 +894,7 @@ describe("pgText", () => {
 			test("with notNull is non nullable and required", () => {
 				const table = pgTable({
 					columns: {
-						id: pgText().notNull().defaultTo("hello"),
+						id: pgText().notNull().default("hello"),
 					},
 					primaryKey: ["id"],
 				});
@@ -907,7 +907,7 @@ describe("pgText", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgText().defaultTo("2").notNull(),
+						id: pgText().default("2").notNull(),
 					},
 					primaryKey: ["id"],
 				});
@@ -1007,17 +1007,17 @@ describe("pgBigInt", () => {
 			expect(info.dataType).toBe("bigint");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgBigint();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(12234433444444455n);
+			column.default(12234433444444455n);
 			expect(info.defaultValue).toBe("'12234433444444455'::bigint");
 
-			column.defaultTo(12);
+			column.default(12);
 			expect(info.defaultValue).toBe("'12'::bigint");
 
-			column.defaultTo("12");
+			column.default("12");
 			expect(info.defaultValue).toBe("'12'::bigint");
 		});
 
@@ -1251,7 +1251,7 @@ describe("pgBigInt", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgBigint().defaultTo("1"),
+						id: pgBigint().default("1"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -1301,7 +1301,7 @@ describe("pgBigInt", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgBigint().notNull().defaultTo("1"),
+						id: pgBigint().notNull().default("1"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -1356,7 +1356,7 @@ describe("pgBigInt", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgBigint().defaultTo(1),
+						id: pgBigint().default(1),
 					},
 					primaryKey: ["id"],
 				});
@@ -1382,7 +1382,7 @@ describe("pgBigInt", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgBigint().notNull().defaultTo(1),
+						id: pgBigint().notNull().default(1),
 					},
 					primaryKey: ["id"],
 				});
@@ -1552,19 +1552,19 @@ describe("pgBytea", () => {
 			expect(info.dataType).toBe("bytea");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgBytea();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			const buffer = Buffer.from("hello");
-			column.defaultTo(buffer);
+			column.default(buffer);
 			expect(info.defaultValue).toBe("'\\x68656c6c6f'::bytea");
 
-			column.defaultTo("12");
+			column.default("12");
 			expect(info.defaultValue).toBe("'\\x3132'::bytea");
 
 			const expression = sql`\\x7b2261223a312c2262223a327d'::bytea`;
-			column.defaultTo(expression);
+			column.default(expression);
 			expect(info.defaultValue).toBe(expression);
 		});
 
@@ -1724,7 +1724,7 @@ describe("pgBytea", () => {
 			test("with default value is nullable, and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgBytea().defaultTo(Buffer.from("1")),
+						id: pgBytea().default(Buffer.from("1")),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -1748,7 +1748,7 @@ describe("pgBytea", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgBytea().notNull().defaultTo("1"),
+						id: pgBytea().notNull().default("1"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -1803,7 +1803,7 @@ describe("pgBytea", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgBytea().defaultTo("1"),
+						id: pgBytea().default("1"),
 					},
 					primaryKey: ["id"],
 				});
@@ -1829,7 +1829,7 @@ describe("pgBytea", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgBytea().notNull().defaultTo("1"),
+						id: pgBytea().notNull().default("1"),
 					},
 					primaryKey: ["id"],
 				});
@@ -1925,14 +1925,14 @@ describe("pgDate", () => {
 			expect(info.dataType).toBe("date");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgDate();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(new Date(1));
+			column.default(new Date(1));
 			expect(info.defaultValue).toBe("'1970-01-01'::date");
 
-			column.defaultTo(new Date(1).toISOString());
+			column.default(new Date(1).toISOString());
 			expect(info.defaultValue).toBe("'1970-01-01'::date");
 		});
 
@@ -2078,7 +2078,7 @@ describe("pgDate", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgDate().defaultTo(new Date()),
+						id: pgDate().default(new Date()),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -2102,7 +2102,7 @@ describe("pgDate", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgDate().notNull().defaultTo(new Date()),
+						id: pgDate().notNull().default(new Date()),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -2157,7 +2157,7 @@ describe("pgDate", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgDate().defaultTo(new Date()),
+						id: pgDate().default(new Date()),
 					},
 					primaryKey: ["id"],
 				});
@@ -2183,7 +2183,7 @@ describe("pgDate", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgDate().notNull().defaultTo(new Date()),
+						id: pgDate().notNull().default(new Date()),
 					},
 					primaryKey: ["id"],
 				});
@@ -2280,17 +2280,17 @@ describe("pgDoublePrecision", () => {
 			expect(info.dataType).toBe("double precision");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgDoublePrecision();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(10);
+			column.default(10);
 			expect(info.defaultValue).toBe("'10'::double precision");
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("'10'::double precision");
 
-			column.defaultTo(102n);
+			column.default(102n);
 			expect(info.defaultValue).toBe("'102'::double precision");
 		});
 
@@ -2499,7 +2499,7 @@ describe("pgDoublePrecision", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgDoublePrecision().defaultTo(30),
+						id: pgDoublePrecision().default(30),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -2523,7 +2523,7 @@ describe("pgDoublePrecision", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgDoublePrecision().notNull().defaultTo(1.1),
+						id: pgDoublePrecision().notNull().default(1.1),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -2600,7 +2600,7 @@ describe("pgDoublePrecision", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgDoublePrecision().defaultTo(1.1),
+						id: pgDoublePrecision().default(1.1),
 					},
 					primaryKey: ["id"],
 				});
@@ -2626,7 +2626,7 @@ describe("pgDoublePrecision", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgDoublePrecision().notNull().defaultTo(2.1),
+						id: pgDoublePrecision().notNull().default(2.1),
 					},
 					primaryKey: ["id"],
 				});
@@ -2790,17 +2790,17 @@ describe("pgFloat4", () => {
 			expect(info.dataType).toBe("real");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgFloat4();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(10.4);
+			column.default(10.4);
 			expect(info.defaultValue).toBe("'10.4'::real");
 
-			column.defaultTo("10.4");
+			column.default("10.4");
 			expect(info.defaultValue).toBe("'10.4'::real");
 
-			column.defaultTo(102n);
+			column.default(102n);
 			expect(info.defaultValue).toBe("'102'::real");
 		});
 
@@ -3009,7 +3009,7 @@ describe("pgFloat4", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgFloat4().defaultTo(30),
+						id: pgFloat4().default(30),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -3033,7 +3033,7 @@ describe("pgFloat4", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgFloat4().notNull().defaultTo(1.1),
+						id: pgFloat4().notNull().default(1.1),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -3110,7 +3110,7 @@ describe("pgFloat4", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgFloat4().defaultTo(1.1),
+						id: pgFloat4().default(1.1),
 					},
 					primaryKey: ["id"],
 				});
@@ -3136,7 +3136,7 @@ describe("pgFloat4", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgFloat4().notNull().defaultTo(2.1),
+						id: pgFloat4().notNull().default(2.1),
 					},
 					primaryKey: ["id"],
 				});
@@ -3300,17 +3300,17 @@ describe("pgFloat8", () => {
 			expect(info.dataType).toBe("double precision");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgFloat8();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(10.4);
+			column.default(10.4);
 			expect(info.defaultValue).toBe("'10.4'::double precision");
 
-			column.defaultTo("10.4");
+			column.default("10.4");
 			expect(info.defaultValue).toBe("'10.4'::double precision");
 
-			column.defaultTo(102n);
+			column.default(102n);
 			expect(info.defaultValue).toBe("'102'::double precision");
 		});
 
@@ -3519,7 +3519,7 @@ describe("pgFloat8", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgFloat8().defaultTo(30),
+						id: pgFloat8().default(30),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -3543,7 +3543,7 @@ describe("pgFloat8", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgFloat8().notNull().defaultTo(1.1),
+						id: pgFloat8().notNull().default(1.1),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -3620,7 +3620,7 @@ describe("pgFloat8", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgFloat8().defaultTo(1.1),
+						id: pgFloat8().default(1.1),
 					},
 					primaryKey: ["id"],
 				});
@@ -3646,7 +3646,7 @@ describe("pgFloat8", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgFloat8().notNull().defaultTo(2.1),
+						id: pgFloat8().notNull().default(2.1),
 					},
 					primaryKey: ["id"],
 				});
@@ -3810,14 +3810,14 @@ describe("pgInt2", () => {
 			expect(info.dataType).toBe("smallint");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgInt2();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(10);
+			column.default(10);
 			expect(info.defaultValue).toBe("'10'::smallint");
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("'10'::smallint");
 		});
 
@@ -4018,7 +4018,7 @@ describe("pgInt2", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt2().defaultTo(30),
+						id: pgInt2().default(30),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -4042,7 +4042,7 @@ describe("pgInt2", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt2().notNull().defaultTo(11),
+						id: pgInt2().notNull().default(11),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -4119,7 +4119,7 @@ describe("pgInt2", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt2().defaultTo(1),
+						id: pgInt2().default(1),
 					},
 					primaryKey: ["id"],
 				});
@@ -4145,7 +4145,7 @@ describe("pgInt2", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt2().notNull().defaultTo(40),
+						id: pgInt2().notNull().default(40),
 					},
 					primaryKey: ["id"],
 				});
@@ -4323,18 +4323,18 @@ describe("pgInt4", () => {
 			expect(info.dataType).toBe("integer");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgInt4();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(10);
+			column.default(10);
 			expect(info.defaultValue).toBe("10");
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("10");
 
 			const expression = sql`20`;
-			column.defaultTo(expression);
+			column.default(expression);
 			expect(info.defaultValue).toBe(expression);
 		});
 
@@ -4535,7 +4535,7 @@ describe("pgInt4", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt4().defaultTo(30),
+						id: pgInt4().default(30),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -4559,7 +4559,7 @@ describe("pgInt4", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt4().notNull().defaultTo(1.1),
+						id: pgInt4().notNull().default(1.1),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -4636,7 +4636,7 @@ describe("pgInt4", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt4().defaultTo(1),
+						id: pgInt4().default(1),
 					},
 					primaryKey: ["id"],
 				});
@@ -4649,7 +4649,7 @@ describe("pgInt4", () => {
 			test("with notNull is non nullable and required", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt4().notNull().defaultTo(1),
+						id: pgInt4().notNull().default(1),
 					},
 					primaryKey: ["id"],
 				});
@@ -4662,7 +4662,7 @@ describe("pgInt4", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt4().defaultTo(1).notNull(),
+						id: pgInt4().default(1).notNull(),
 					},
 					primaryKey: ["id"],
 				});
@@ -4834,17 +4834,17 @@ describe("pgInt8", () => {
 			expect(info.dataType).toBe("bigint");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgInt8();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(10);
+			column.default(10);
 			expect(info.defaultValue).toBe("'10'::bigint");
 
-			column.defaultTo(100n);
+			column.default(100n);
 			expect(info.defaultValue).toBe("'100'::bigint");
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("'10'::bigint");
 		});
 
@@ -5074,7 +5074,7 @@ describe("pgInt8", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt8().defaultTo("1"),
+						id: pgInt8().default("1"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -5124,7 +5124,7 @@ describe("pgInt8", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt8().notNull().defaultTo(1),
+						id: pgInt8().notNull().default(1),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -5179,7 +5179,7 @@ describe("pgInt8", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt8().defaultTo(1),
+						id: pgInt8().default(1),
 					},
 					primaryKey: ["id"],
 				});
@@ -5205,7 +5205,7 @@ describe("pgInt8", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInt8().notNull().defaultTo(1),
+						id: pgInt8().notNull().default(1),
 					},
 					primaryKey: ["id"],
 				});
@@ -5323,18 +5323,18 @@ describe("pgInteger", () => {
 			expect(info.dataType).toBe("integer");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgInteger();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(10);
+			column.default(10);
 			expect(info.defaultValue).toBe("10");
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("10");
 
 			const expression = sql`20`;
-			column.defaultTo(expression);
+			column.default(expression);
 			expect(info.defaultValue).toBe(expression);
 		});
 
@@ -5534,7 +5534,7 @@ describe("pgInteger", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInteger().defaultTo(30),
+						id: pgInteger().default(30),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -5558,7 +5558,7 @@ describe("pgInteger", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInteger().notNull().defaultTo(1.1),
+						id: pgInteger().notNull().default(1.1),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -5635,7 +5635,7 @@ describe("pgInteger", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInteger().defaultTo(1),
+						id: pgInteger().default(1),
 					},
 					primaryKey: ["id"],
 				});
@@ -5661,7 +5661,7 @@ describe("pgInteger", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgInteger().notNull().defaultTo(40),
+						id: pgInteger().notNull().default(40),
 					},
 					primaryKey: ["id"],
 				});
@@ -5833,14 +5833,14 @@ describe("pgJson", () => {
 			expect(info.dataType).toBe("json");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgJson();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("'10'::json");
 
-			column.defaultTo('{ "foo": "bar" }');
+			column.default('{ "foo": "bar" }');
 			expect(info.defaultValue).toBe('\'{ "foo": "bar" }\'::json');
 		});
 
@@ -6034,7 +6034,7 @@ describe("pgJson", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgJson().defaultTo("1"),
+						id: pgJson().default("1"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -6058,7 +6058,7 @@ describe("pgJson", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgJson().notNull().defaultTo("1"),
+						id: pgJson().notNull().default("1"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -6115,7 +6115,7 @@ describe("pgJson", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgJson().defaultTo("1"),
+						id: pgJson().default("1"),
 					},
 					primaryKey: ["id"],
 				});
@@ -6141,7 +6141,7 @@ describe("pgJson", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgJson().notNull().defaultTo("1"),
+						id: pgJson().notNull().default("1"),
 					},
 					primaryKey: ["id"],
 				});
@@ -6238,14 +6238,14 @@ describe("pgJsonB", () => {
 			expect(info.dataType).toBe("jsonb");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgJsonb();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("'10'::jsonb");
 
-			column.defaultTo('{ "foo": "bar" }');
+			column.default('{ "foo": "bar" }');
 			expect(info.defaultValue).toBe('\'{ "foo": "bar" }\'::jsonb');
 		});
 
@@ -6439,7 +6439,7 @@ describe("pgJsonB", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgJsonb().defaultTo("1"),
+						id: pgJsonb().default("1"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -6463,7 +6463,7 @@ describe("pgJsonB", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgJsonb().notNull().defaultTo("1"),
+						id: pgJsonb().notNull().default("1"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -6520,7 +6520,7 @@ describe("pgJsonB", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgJsonb().defaultTo("1"),
+						id: pgJsonb().default("1"),
 					},
 					primaryKey: ["id"],
 				});
@@ -6546,7 +6546,7 @@ describe("pgJsonB", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgJsonb().notNull().defaultTo("1"),
+						id: pgJsonb().notNull().default("1"),
 					},
 					primaryKey: ["id"],
 				});
@@ -6643,17 +6643,17 @@ describe("pgReal", () => {
 			expect(info.dataType).toBe("real");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgReal();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("'10'::real");
 
-			column.defaultTo(10);
+			column.default(10);
 			expect(info.defaultValue).toBe("'10'::real");
 
-			column.defaultTo(100n);
+			column.default(100n);
 			expect(info.defaultValue).toBe("'100'::real");
 		});
 
@@ -6847,7 +6847,7 @@ describe("pgReal", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgReal().defaultTo(30),
+						id: pgReal().default(30),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -6871,7 +6871,7 @@ describe("pgReal", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgReal().notNull().defaultTo(1.1),
+						id: pgReal().notNull().default(1.1),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -6948,7 +6948,7 @@ describe("pgReal", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgReal().defaultTo(2.2),
+						id: pgReal().default(2.2),
 					},
 					primaryKey: ["id"],
 				});
@@ -6974,7 +6974,7 @@ describe("pgReal", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgReal().notNull().defaultTo(2.2),
+						id: pgReal().notNull().default(2.2),
 					},
 					primaryKey: ["id"],
 				});
@@ -7195,17 +7195,17 @@ describe("pgUuid", () => {
 			expect(info.dataType).toBe("uuid");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgUuid();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
+			column.default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
 			expect(info.defaultValue).toBe(
 				"'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
 			);
 
 			const expression = sql`'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid`;
-			column.defaultTo(expression);
+			column.default(expression);
 			expect(info.defaultValue).toBe(expression);
 		});
 
@@ -7349,7 +7349,7 @@ describe("pgUuid", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgUuid().defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
+						id: pgUuid().default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -7379,7 +7379,7 @@ describe("pgUuid", () => {
 					columns: {
 						id: pgUuid()
 							.notNull()
-							.defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
+							.default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -7438,7 +7438,7 @@ describe("pgUuid", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgUuid().defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
+						id: pgUuid().default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
 					primaryKey: ["id"],
 				});
@@ -7470,7 +7470,7 @@ describe("pgUuid", () => {
 					columns: {
 						id: pgUuid()
 							.notNull()
-							.defaultTo("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
+							.default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
 					primaryKey: ["id"],
 				});
@@ -7569,11 +7569,11 @@ describe("pgVarChar", () => {
 			expect(info.dataType).toBe("varchar");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgVarchar();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("'10'::character varying");
 		});
 
@@ -7606,11 +7606,11 @@ describe("pgVarChar", () => {
 			expect(info.dataType).toBe("varchar(255)");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgVarchar(100);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("'10'::character varying");
 		});
 	});
@@ -7729,7 +7729,7 @@ describe("pgVarChar", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgVarchar().defaultTo("hello"),
+						id: pgVarchar().default("hello"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -7753,7 +7753,7 @@ describe("pgVarChar", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgVarchar().notNull().defaultTo("hello"),
+						id: pgVarchar().notNull().default("hello"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -7830,7 +7830,7 @@ describe("pgVarChar", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgVarchar().defaultTo("hello"),
+						id: pgVarchar().default("hello"),
 					},
 					primaryKey: ["id"],
 				});
@@ -7856,7 +7856,7 @@ describe("pgVarChar", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgVarchar().notNull().defaultTo("hello"),
+						id: pgVarchar().notNull().default("hello"),
 					},
 					primaryKey: ["id"],
 				});
@@ -7987,11 +7987,11 @@ describe("pgChar", () => {
 			expect(info.characterMaximumLength).toBe(1);
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgChar();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("'10'::character(1)");
 		});
 
@@ -8024,11 +8024,11 @@ describe("pgChar", () => {
 			expect(info.dataType).toBe("char(255)");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgChar(200);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("10");
+			column.default("10");
 			expect(info.defaultValue).toBe("'10'::character(1)");
 		});
 	});
@@ -8148,7 +8148,7 @@ describe("pgChar", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgChar(5).defaultTo("hello"),
+						id: pgChar(5).default("hello"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -8172,7 +8172,7 @@ describe("pgChar", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgChar(5).notNull().defaultTo("hello"),
+						id: pgChar(5).notNull().default("hello"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -8227,7 +8227,7 @@ describe("pgChar", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgChar(5).defaultTo("hello"),
+						id: pgChar(5).default("hello"),
 					},
 					primaryKey: ["id"],
 				});
@@ -8240,7 +8240,7 @@ describe("pgChar", () => {
 			test("with notNull is non nullable and required", () => {
 				const table = pgTable({
 					columns: {
-						id: pgChar(5).notNull().defaultTo("hello"),
+						id: pgChar(5).notNull().default("hello"),
 					},
 					primaryKey: ["id"],
 				});
@@ -8253,7 +8253,7 @@ describe("pgChar", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgChar(5).defaultTo("hello").notNull(),
+						id: pgChar(5).default("hello").notNull(),
 					},
 					primaryKey: ["id"],
 				});
@@ -8399,11 +8399,11 @@ describe("pgTime", () => {
 			expect(info.datetimePrecision).toBe(null);
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgTime();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("04:05 AM");
+			column.default("04:05 AM");
 			expect(info.defaultValue).toBe("'04:05 AM'::time without time zone");
 		});
 
@@ -8436,11 +8436,11 @@ describe("pgTime", () => {
 			expect(info.dataType).toBe("time(1)");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgTime(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("04:05 AM");
+			column.default("04:05 AM");
 			expect(info.defaultValue).toBe("'04:05 AM'::time without time zone");
 		});
 	});
@@ -8567,7 +8567,7 @@ describe("pgTime", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTime().defaultTo("11:30"),
+						id: pgTime().default("11:30"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -8591,7 +8591,7 @@ describe("pgTime", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTime().notNull().defaultTo("11:30"),
+						id: pgTime().notNull().default("11:30"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -8646,7 +8646,7 @@ describe("pgTime", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTime().defaultTo("11:30"),
+						id: pgTime().default("11:30"),
 					},
 					primaryKey: ["id"],
 				});
@@ -8672,7 +8672,7 @@ describe("pgTime", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTime().notNull().defaultTo("11:30"),
+						id: pgTime().notNull().default("11:30"),
 					},
 					primaryKey: ["id"],
 				});
@@ -8796,11 +8796,11 @@ describe("pgTimeTz", () => {
 			expect(info.datetimePrecision).toBe(null);
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgTimetz();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("04:05:06-08:00");
+			column.default("04:05:06-08:00");
 			expect(info.defaultValue).toBe("'04:05:06-08:00'::time with time zone");
 		});
 
@@ -8833,11 +8833,11 @@ describe("pgTimeTz", () => {
 			expect(info.dataType).toBe("timetz(1)");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgTimetz(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo("04:05:06-08:00");
+			column.default("04:05:06-08:00");
 			expect(info.defaultValue).toBe("'04:05:06-08:00'::time with time zone");
 		});
 	});
@@ -8964,7 +8964,7 @@ describe("pgTimeTz", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimetz().defaultTo("11:30"),
+						id: pgTimetz().default("11:30"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -8988,7 +8988,7 @@ describe("pgTimeTz", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimetz().notNull().defaultTo("11:30"),
+						id: pgTimetz().notNull().default("11:30"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -9043,7 +9043,7 @@ describe("pgTimeTz", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimetz().defaultTo("11:30"),
+						id: pgTimetz().default("11:30"),
 					},
 					primaryKey: ["id"],
 				});
@@ -9056,7 +9056,7 @@ describe("pgTimeTz", () => {
 			test("with notNull is non nullable and required", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimetz().notNull().defaultTo("11:30"),
+						id: pgTimetz().notNull().default("11:30"),
 					},
 					primaryKey: ["id"],
 				});
@@ -9069,7 +9069,7 @@ describe("pgTimeTz", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimetz().defaultTo("11:30").notNull(),
+						id: pgTimetz().default("11:30").notNull(),
 					},
 					primaryKey: ["id"],
 				});
@@ -9193,11 +9193,11 @@ describe("pgTimestamp", () => {
 			expect(info.datetimePrecision).toBe(null);
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgTimestamp();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(new Date(1));
+			column.default(new Date(1));
 			expect(info.defaultValue).toBe(
 				"'1970-01-01T00:00:00.001Z'::timestamp without time zone",
 			);
@@ -9232,11 +9232,11 @@ describe("pgTimestamp", () => {
 			expect(info.dataType).toBe("timestamp(1)");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgTimestamp(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(new Date(1));
+			column.default(new Date(1));
 			expect(info.defaultValue).toBe(
 				"'1970-01-01T00:00:00.001Z'::timestamp without time zone",
 			);
@@ -9378,7 +9378,7 @@ describe("pgTimestamp", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimestamp().defaultTo(new Date()),
+						id: pgTimestamp().default(new Date()),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -9402,7 +9402,7 @@ describe("pgTimestamp", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimestamp().notNull().defaultTo(new Date()),
+						id: pgTimestamp().notNull().default(new Date()),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -9457,7 +9457,7 @@ describe("pgTimestamp", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimestamp().defaultTo(new Date(2)),
+						id: pgTimestamp().default(new Date(2)),
 					},
 					primaryKey: ["id"],
 				});
@@ -9483,7 +9483,7 @@ describe("pgTimestamp", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimestamp().defaultTo(new Date()).notNull(),
+						id: pgTimestamp().default(new Date()).notNull(),
 					},
 					primaryKey: ["id"],
 				});
@@ -9608,11 +9608,11 @@ describe("pgTimestampTz", () => {
 			expect(info.datetimePrecision).toBe(null);
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgTimestamptz();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(new Date(1));
+			column.default(new Date(1));
 			expect(info.defaultValue).toBe(
 				"'1970-01-01T00:00:00.001Z'::timestamp with time zone",
 			);
@@ -9647,11 +9647,11 @@ describe("pgTimestampTz", () => {
 			expect(info.dataType).toBe("timestamptz(1)");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgTimestamptz(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(new Date(1));
+			column.default(new Date(1));
 			expect(info.defaultValue).toBe(
 				"'1970-01-01T00:00:00.001Z'::timestamp with time zone",
 			);
@@ -9793,7 +9793,7 @@ describe("pgTimestampTz", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimestamptz().defaultTo(new Date()),
+						id: pgTimestamptz().default(new Date()),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -9817,7 +9817,7 @@ describe("pgTimestampTz", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimestamptz().notNull().defaultTo(new Date()),
+						id: pgTimestamptz().notNull().default(new Date()),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -9872,7 +9872,7 @@ describe("pgTimestampTz", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimestamptz().defaultTo(new Date(2)),
+						id: pgTimestamptz().default(new Date(2)),
 					},
 					primaryKey: ["id"],
 				});
@@ -9898,7 +9898,7 @@ describe("pgTimestampTz", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgTimestamptz().defaultTo(new Date(2)).notNull(),
+						id: pgTimestamptz().default(new Date(2)).notNull(),
 					},
 					primaryKey: ["id"],
 				});
@@ -10029,23 +10029,23 @@ describe("pgNumeric", () => {
 			expect(info.numericScale).toBe(null);
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgNumeric();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(1);
+			column.default(1);
 			expect(info.defaultValue).toBe("'1'::numeric");
 
-			column.defaultTo("1");
+			column.default("1");
 			expect(info.defaultValue).toBe("'1'::numeric");
 
-			column.defaultTo(1.1);
+			column.default(1.1);
 			expect(info.defaultValue).toBe("'1.1'::numeric");
 
-			column.defaultTo("1.1");
+			column.default("1.1");
 			expect(info.defaultValue).toBe("'1.1'::numeric");
 
-			column.defaultTo(100n);
+			column.default(100n);
 			expect(info.defaultValue).toBe("'100'::numeric");
 		});
 
@@ -10084,23 +10084,23 @@ describe("pgNumeric", () => {
 			expect(info.dataType).toBe("numeric(5, 0)");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgNumeric(5);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(1);
+			column.default(1);
 			expect(info.defaultValue).toBe("'1'::numeric");
 
-			column.defaultTo("1");
+			column.default("1");
 			expect(info.defaultValue).toBe("'1'::numeric");
 
-			column.defaultTo(1.1);
+			column.default(1.1);
 			expect(info.defaultValue).toBe("'1.1'::numeric");
 
-			column.defaultTo("1.1");
+			column.default("1.1");
 			expect(info.defaultValue).toBe("'1.1'::numeric");
 
-			column.defaultTo(100n);
+			column.default(100n);
 			expect(info.defaultValue).toBe("'100'::numeric");
 		});
 	});
@@ -10117,23 +10117,23 @@ describe("pgNumeric", () => {
 			expect(info.dataType).toBe("numeric(4, 5)");
 		});
 
-		test("defaultTo with column data type", () => {
+		test("default with column data type", () => {
 			const column = pgNumeric(5, 1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			column.defaultTo(1);
+			column.default(1);
 			expect(info.defaultValue).toBe("'1'::numeric");
 
-			column.defaultTo("1");
+			column.default("1");
 			expect(info.defaultValue).toBe("'1'::numeric");
 
-			column.defaultTo(1.1);
+			column.default(1.1);
 			expect(info.defaultValue).toBe("'1.1'::numeric");
 
-			column.defaultTo("1.1");
+			column.default("1.1");
 			expect(info.defaultValue).toBe("'1.1'::numeric");
 
-			column.defaultTo(100n);
+			column.default(100n);
 			expect(info.defaultValue).toBe("'100'::numeric");
 		});
 	});
@@ -10326,7 +10326,7 @@ describe("pgNumeric", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgNumeric().defaultTo(2),
+						id: pgNumeric().default(2),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -10350,7 +10350,7 @@ describe("pgNumeric", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgNumeric().notNull().defaultTo(1),
+						id: pgNumeric().notNull().default(1),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -10532,7 +10532,7 @@ describe("pgNumeric", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgNumeric().defaultTo(1),
+						id: pgNumeric().default(1),
 					},
 					primaryKey: ["id"],
 				});
@@ -10558,7 +10558,7 @@ describe("pgNumeric", () => {
 			test("with default and notNull is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgNumeric().notNull().defaultTo(1),
+						id: pgNumeric().notNull().default(1),
 					},
 					primaryKey: ["id"],
 				});
@@ -10768,8 +10768,8 @@ describe("pgEnum", () => {
 		expect(columnInfo.isNullable).toBe(false);
 	});
 
-	test("defaultTo()", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).defaultTo("one");
+	test("default()", () => {
+		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).default("one");
 		const columnInfo: ColumnInfo = Object.fromEntries(
 			Object.entries(testEnum),
 		).info;
@@ -10908,9 +10908,7 @@ describe("pgEnum", () => {
 			test("with default value is nullable and optional", () => {
 				const table = pgTable({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
-							"user",
-						),
+						id: pgEnum("role", ["user", "admin", "superuser"]).default("user"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -10936,7 +10934,7 @@ describe("pgEnum", () => {
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"])
 							.notNull()
-							.defaultTo("user"),
+							.default("user"),
 					},
 				});
 				const schema = zodSchema(table).shape.id;
@@ -10991,9 +10989,7 @@ describe("pgEnum", () => {
 			test("with default value is non nullable", () => {
 				const table = pgTable({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
-							"user",
-						),
+						id: pgEnum("role", ["user", "admin", "superuser"]).default("user"),
 					},
 					primaryKey: ["id"],
 				});
@@ -11021,7 +11017,7 @@ describe("pgEnum", () => {
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"])
 							.notNull()
-							.defaultTo("user"),
+							.default("user"),
 					},
 					primaryKey: ["id"],
 				});

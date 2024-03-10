@@ -124,7 +124,7 @@ export class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 		return this as this & NonNullableColumn;
 	}
 
-	defaultTo(value: I | Expression<unknown>) {
+	default(value: I | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
@@ -212,7 +212,7 @@ export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 		super("boolean", DefaultValueDataTypes.boolean);
 	}
 
-	defaultTo(value: boolean | Boolish | Expression<unknown>) {
+	default(value: boolean | Boolish | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
@@ -258,7 +258,7 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 		super("bytea", DefaultValueDataTypes.bytea);
 	}
 
-	defaultTo(value: Buffer | string | Expression<unknown>) {
+	default(value: Buffer | string | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
@@ -349,7 +349,7 @@ export class PgInt4 extends IdentifiableColumn<number, number | string> {
 		super("integer", DefaultValueDataTypes.integer);
 	}
 
-	defaultTo(value: number | string | Expression<unknown>) {
+	default(value: number | string | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
@@ -381,7 +381,7 @@ export class PgInteger extends IdentifiableColumn<number, number | string> {
 		super("integer", DefaultValueDataTypes.integer);
 	}
 
-	defaultTo(value: number | string | Expression<unknown>) {
+	default(value: number | string | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
@@ -447,7 +447,7 @@ export class PgUuid extends PgColumn<string, string> {
 		super("uuid", DefaultValueDataTypes.uuid);
 	}
 
-	defaultTo(value: string | Expression<unknown>) {
+	default(value: string | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
 		} else {
@@ -575,7 +575,7 @@ export class PgEnum extends PgColumn<string, string> {
 		this.info.enum = true;
 	}
 
-	defaultTo(value: string) {
+	default(value: string) {
 		this.info.defaultValue = `'${value}'::${this.info.dataType}`;
 		return this as this & WithDefaultColumn;
 	}

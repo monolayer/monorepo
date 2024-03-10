@@ -130,7 +130,7 @@ describe("Table create migrations", () => {
 						timestampTz_3: pgTimestamptz(3),
 						uuid: pgUuid(),
 						varChar: pgVarchar(),
-						varCharWithDefault: pgVarchar().defaultTo("foo"),
+						varCharWithDefault: pgVarchar().default("foo"),
 						varChar_255: pgVarchar(255),
 					},
 				}),
@@ -711,7 +711,7 @@ describe("Table create migrations", () => {
 		const users = pgTable({
 			columns: {
 				id: pgInteger(),
-				updatedAt: pgTimestamp().defaultTo(sql`now()`),
+				updatedAt: pgTimestamp().default(sql`now()`),
 			},
 			triggers: {
 				foo_before_update: pgTrigger()
@@ -823,7 +823,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 
 		const triggerTable = pgTable({
 			columns: {
-				updatedAt: pgTimestamp().defaultTo(sql`now()`),
+				updatedAt: pgTimestamp().default(sql`now()`),
 				role: pgEnum("role", ["admin", "user"]),
 			},
 			triggers: {

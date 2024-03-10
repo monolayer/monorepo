@@ -53,8 +53,8 @@ describe("#schemaColumnInfo", () => {
 		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
 	});
 
-	test("column with defaultTo default data type", () => {
-		const column = pgVarchar(100).defaultTo("foo");
+	test("column with default default data type", () => {
+		const column = pgVarchar(100).default("foo");
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -66,8 +66,8 @@ describe("#schemaColumnInfo", () => {
 		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
 	});
 
-	test("column with defaultTo with expression", () => {
-		const column = pgTimestamp().defaultTo(sql`CURRENT_TIMESTAMP`);
+	test("column with default with expression", () => {
+		const column = pgTimestamp().default(sql`CURRENT_TIMESTAMP`);
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",

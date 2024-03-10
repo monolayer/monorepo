@@ -225,7 +225,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().defaultTo(0),
+						id: pgInteger().default(0),
 					},
 				});
 				type expectedType = {
@@ -239,7 +239,7 @@ describe("pgTable definition", () => {
 			test("nullable and optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().defaultTo(0),
+						id: pgInteger().default(0),
 					},
 				});
 				type expectedType = {
@@ -253,7 +253,7 @@ describe("pgTable definition", () => {
 			test("nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().defaultTo(0),
+						id: pgInteger().default(0),
 					},
 				});
 				type expectedType = {
@@ -267,7 +267,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().defaultTo(0),
+						id: pgInteger().default(0),
 					},
 				});
 				type expectedType = {
@@ -287,7 +287,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().notNull().defaultTo(0),
+						id: pgInteger().notNull().default(0),
 					},
 				});
 				type expectedType = {
@@ -301,7 +301,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().notNull().defaultTo(0),
+						id: pgInteger().notNull().default(0),
 					},
 				});
 				type expectedType = {
@@ -315,7 +315,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().notNull().defaultTo(0),
+						id: pgInteger().notNull().default(0),
 					},
 				});
 				type expectedType = {
@@ -329,7 +329,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().notNull().defaultTo(0),
+						id: pgInteger().notNull().default(0),
 					},
 				});
 				type expectedType = {
@@ -349,7 +349,7 @@ describe("pgTable definition", () => {
 			test("non nullable selects", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().defaultTo(0).notNull(),
+						id: pgInteger().default(0).notNull(),
 					},
 				});
 				type expectedType = {
@@ -363,7 +363,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional inserts", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().defaultTo(0).notNull(),
+						id: pgInteger().default(0).notNull(),
 					},
 				});
 				type expectedType = {
@@ -377,7 +377,7 @@ describe("pgTable definition", () => {
 			test("non nullable and optional updates", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().defaultTo(0).notNull(),
+						id: pgInteger().default(0).notNull(),
 					},
 				});
 				type expectedType = {
@@ -391,7 +391,7 @@ describe("pgTable definition", () => {
 			test("infer select, insert, and update", () => {
 				const tbl = pgTable({
 					columns: {
-						id: pgInteger().defaultTo(0).notNull(),
+						id: pgInteger().default(0).notNull(),
 					},
 				});
 				type expectedType = {
@@ -1053,7 +1053,7 @@ describe("pgTable definition", () => {
 				test("non nullable selects", () => {
 					const tbl = pgTable({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
+							role: pgEnum("role", ["user", "admin", "superuser"]).default(
 								"user",
 							),
 						},
@@ -1069,7 +1069,7 @@ describe("pgTable definition", () => {
 				test("nullable and optional inserts", () => {
 					const tbl = pgTable({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
+							role: pgEnum("role", ["user", "admin", "superuser"]).default(
 								"user",
 							),
 						},
@@ -1085,7 +1085,7 @@ describe("pgTable definition", () => {
 				test("nullable and optional updates", () => {
 					const tbl = pgTable({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
+							role: pgEnum("role", ["user", "admin", "superuser"]).default(
 								"user",
 							),
 						},
@@ -1101,7 +1101,7 @@ describe("pgTable definition", () => {
 				test("infer select, insert, and update", () => {
 					const tbl = pgTable({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).defaultTo(
+							role: pgEnum("role", ["user", "admin", "superuser"]).default(
 								"user",
 							),
 						},
@@ -1125,7 +1125,7 @@ describe("pgTable definition", () => {
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.notNull()
-								.defaultTo("user"),
+								.default("user"),
 						},
 					});
 					type expectedType = {
@@ -1141,7 +1141,7 @@ describe("pgTable definition", () => {
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.notNull()
-								.defaultTo("user"),
+								.default("user"),
 						},
 					});
 					type expectedType = {
@@ -1157,7 +1157,7 @@ describe("pgTable definition", () => {
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.notNull()
-								.defaultTo("user"),
+								.default("user"),
 						},
 					});
 					type expectedType = {
@@ -1173,7 +1173,7 @@ describe("pgTable definition", () => {
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
 								.notNull()
-								.defaultTo("user"),
+								.default("user"),
 						},
 					});
 					type expectedType = {
@@ -1194,7 +1194,7 @@ describe("pgTable definition", () => {
 					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
-								.defaultTo("user")
+								.default("user")
 								.notNull(),
 						},
 					});
@@ -1210,7 +1210,7 @@ describe("pgTable definition", () => {
 					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
-								.defaultTo("user")
+								.default("user")
 								.notNull(),
 						},
 					});
@@ -1226,7 +1226,7 @@ describe("pgTable definition", () => {
 					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
-								.defaultTo("user")
+								.default("user")
 								.notNull(),
 						},
 					});
@@ -1242,7 +1242,7 @@ describe("pgTable definition", () => {
 					const tbl = pgTable({
 						columns: {
 							role: pgEnum("role", ["user", "admin", "superuser"])
-								.defaultTo("user")
+								.default("user")
 								.notNull(),
 						},
 					});
@@ -1268,7 +1268,7 @@ describe("pgTable definition", () => {
 					id: pgBigint(),
 					idPk: pgInteger(),
 					name: pgVarchar().notNull(),
-					createdAt: pgTimestamptz().defaultTo("now()"),
+					createdAt: pgTimestamptz().default("now()"),
 				},
 				primaryKey: ["idPk"],
 			});
@@ -1310,7 +1310,7 @@ describe("pgTable definition", () => {
 			const table = pgTable({
 				columns: {
 					name: pgText(),
-					description: pgText().defaultTo("TDB"),
+					description: pgText().default("TDB"),
 				},
 			});
 
