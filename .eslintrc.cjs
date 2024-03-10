@@ -43,5 +43,6 @@ module.exports = {
 			"error",
 			{ max: 300, skipComments: true, skipBlankLines: true },
 		],
+		complexity: ["error"],
 	},
 };

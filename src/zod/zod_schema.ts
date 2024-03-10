@@ -79,6 +79,7 @@ export function baseSchema(isNullable: boolean, errorMessage: string) {
 			nullable(val, ctx, isNullable, errorMessage);
 		});
 }
+// eslint-disable-next-line complexity
 export function pgColumnSchema<
 	T extends
 		| PgColumn<unknown, unknown, unknown>

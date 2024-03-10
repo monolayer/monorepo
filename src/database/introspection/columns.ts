@@ -151,6 +151,7 @@ async function fetchDbColumnInfo(
 		.execute();
 }
 
+// eslint-disable-next-line complexity
 function transformDbColumnInfo(
 	info: Awaited<ReturnType<typeof fetchDbColumnInfo>>,
 ) {
