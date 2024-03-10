@@ -2,7 +2,6 @@
 import type { Simplify } from "kysely";
 import { type ColumnType, type Expression } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
-import type { AnyPgTable } from "./pg_table.js";
 
 export type ColumnInfo = {
 	columnName: string | null;
@@ -79,13 +78,6 @@ export enum DefaultValueDataTypes {
 export class PgColumnBase<S, I, U> {
 	protected declare readonly infer: ColumnType<S, I, U>;
 	protected info: Omit<ColumnInfo, "columnName" | "tableName">;
-
-	table?: AnyPgTable;
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static info(column: PgColumnBase<any, any, any>) {
-		return column.info;
-	}
 
 	constructor(dataType: string) {
 		this.info = {

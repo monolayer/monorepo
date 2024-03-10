@@ -43,14 +43,6 @@ export function pgTable<T extends ColumnRecord, PK extends string>(
 		introspect: () => introspectTable(table as PgTable<any, any>),
 		infer: "infer" as unknown as Simplify<InferColumnTypes<T, PK>>,
 	};
-	const columNames = Object.keys(tableSchema.columns);
-	for (const columnName of columNames) {
-		const column = columns[columnName];
-		if (column !== undefined) {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			column.table = table as PgTable<any, any>;
-		}
-	}
 	return table as PgTable<T, PK>;
 }
 
