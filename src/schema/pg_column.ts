@@ -131,9 +131,8 @@ export class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 }
 
 export class PgGeneratedColumn<T, U> extends PgColumnBase<T, U, U> {
-	declare readonly _generatedByDefault: "yes";
 	protected readonly _native_data_type: DefaultValueDataTypes;
-	_primaryKey: boolean;
+	protected _primaryKey: boolean;
 
 	constructor(
 		dataType: "serial" | "bigserial",
@@ -403,8 +402,6 @@ export class PgJson extends PgColumn<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	string | number | boolean | Record<string, any>
 > {
-	declare readonly _native_data_type: DefaultValueDataTypes;
-
 	constructor() {
 		super("json", DefaultValueDataTypes.json);
 	}
@@ -559,7 +556,7 @@ export function pgEnum<N extends string, T extends string[]>(
 }
 
 export class PgEnum extends PgColumn<string, string> {
-	readonly values: string[];
+	protected readonly values: string[];
 
 	constructor(name: string, values: string[]) {
 		super(name, DefaultValueDataTypes.numeric);

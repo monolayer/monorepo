@@ -288,7 +288,10 @@ export function pgEnumSchema<T extends PgEnum, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const isNullable = nullableColumn(column);
-	const enumValues = column.values as unknown as [string, ...string[]];
+	const data = Object.fromEntries(Object.entries(column)) as {
+		values: [string, ...string[]];
+	};
+	const enumValues = data.values as unknown as [string, ...string[]];
 	const errorMessage = `Expected ${enumValues
 		.map((v) => `'${v}'`)
 		.join(" | ")}`;
