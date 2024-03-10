@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Kysely, isExpression, sql } from "kysely";
 import {
 	ActionStatus,

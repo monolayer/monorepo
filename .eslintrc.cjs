@@ -39,5 +39,9 @@ module.exports = {
 		"linebreak-style": ["error", "unix"],
 		quotes: ["off", "double"],
 		semi: ["off", "always"],
+		"max-lines": [
+			"error",
+			{ max: 300, skipComments: true, skipBlankLines: true },
+		],
 	},
 };
