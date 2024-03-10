@@ -13,6 +13,7 @@ import {
 	type MigrationSchema,
 } from "~/migrations/migration_schema.js";
 import type { AnyPgDatabase } from "~/schema/pg_database.js";
+import { tableInfo } from "~/schema/pg_table.js";
 import { ColumnInfo, type PgColumnTypes } from "../schema/pg_column.js";
 import { TableColumnInfo, compileDefaultExpression } from "./schemas.js";
 import type { InformationSchemaDB } from "./types.js";
@@ -309,7 +310,7 @@ export function localColumnInfoByTable(
 	return Object.entries(schema.tables || {}).reduce<TableColumnInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const columns = Object.entries(tableDefinition.schema.columns);
+			const columns = Object.entries(tableInfo(tableDefinition).schema.columns);
 			acc[transformedTableName] = columns.reduce<ColumnsInfo>(
 				(columnAcc, [columnName, column]) => {
 					const columnInfo = schemaColumnInfo(

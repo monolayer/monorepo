@@ -14,7 +14,7 @@ import {
 	pgVarchar,
 } from "~/schema/pg_column.js";
 import { pgIndex } from "~/schema/pg_index.js";
-import { pgTable } from "~/schema/pg_table.js";
+import { pgTable, tableInfo } from "~/schema/pg_table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
 import { pgForeignKey } from "../../src/schema/pg_foreign_key.js";
 import { pgUnique } from "../../src/schema/pg_unique.js";
@@ -28,7 +28,7 @@ describe("pgTable definition", () => {
 		const tbl = pgTable({
 			columns: columns,
 		});
-		expect(tbl.schema.columns).toBe(columns);
+		expect(tableInfo(tbl).schema.columns).toBe(columns);
 	});
 
 	test("columns with pgEnum", () => {
@@ -40,7 +40,7 @@ describe("pgTable definition", () => {
 		const tbl = pgTable({
 			columns: columns,
 		});
-		expect(tbl.schema.columns).toBe(columns);
+		expect(tableInfo(tbl).schema.columns).toBe(columns);
 	});
 
 	test("indexes can be added", () => {
@@ -55,7 +55,7 @@ describe("pgTable definition", () => {
 				pgIndex(["subscribed"]).unique().using("btree"),
 			],
 		});
-		expect(tbl.schema.indexes?.length).toBe(2);
+		expect(tableInfo(tbl).schema.indexes?.length).toBe(2);
 	});
 
 	describe("constraints", () => {
@@ -78,7 +78,7 @@ describe("pgTable definition", () => {
 				},
 				foreignKeys: [pgForeignKey(["book_id"], books, ["name"])],
 			});
-			expect(users.schema.foreignKeys?.length).toBe(1);
+			expect(tableInfo(users).schema.foreignKeys?.length).toBe(1);
 		});
 
 		test("unique constraints can be added", () => {
@@ -92,7 +92,7 @@ describe("pgTable definition", () => {
 				columns: columns,
 				uniqueConstraints: [pgUnique(["name"]), pgUnique(["subscribed"])],
 			});
-			expect(tbl.schema.uniqueConstraints?.length).toBe(2);
+			expect(tableInfo(tbl).schema.uniqueConstraints?.length).toBe(2);
 		});
 	});
 

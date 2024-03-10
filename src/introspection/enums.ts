@@ -6,6 +6,7 @@ import {
 } from "~/cli/command.js";
 import { PgEnum, type ColumnInfo } from "~/schema/pg_column.js";
 import type { AnyPgDatabase } from "~/schema/pg_database.js";
+import { tableInfo } from "~/schema/pg_table.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbEnumInfo(
@@ -58,9 +59,10 @@ export async function dbEnumInfo(
 export function localEnumInfo(schema: AnyPgDatabase) {
 	return Object.entries(schema.tables || {}).reduce<EnumInfo>(
 		(enumInfo, [, tableDefinition]) => {
-			const keys = Object.keys(tableDefinition.schema.columns);
+			const columns = tableInfo(tableDefinition).schema.columns;
+			const keys = Object.keys(columns);
 			for (const key of keys) {
-				const column = tableDefinition.schema.columns[key];
+				const column = columns[key];
 				if (column instanceof PgEnum) {
 					const columnDef = Object.fromEntries(Object.entries(column)) as {
 						info: ColumnInfo;

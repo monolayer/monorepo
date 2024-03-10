@@ -11,6 +11,7 @@ import {
 	type ForeignKeyInfo,
 } from "~/migrations/migration_schema.js";
 import type { AnyPgDatabase } from "~/schema/pg_database.js";
+import { tableInfo } from "~/schema/pg_table.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export type ForeignKeyRule =
@@ -126,7 +127,7 @@ export function localForeignKeyConstraintInfo(
 	return Object.entries(schema.tables || {}).reduce<ForeignKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const introspect = tableDefinition.introspect();
+			const introspect = tableInfo(tableDefinition).introspect();
 			const foreignKeys = introspect.foreignKeys;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {

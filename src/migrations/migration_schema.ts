@@ -7,7 +7,11 @@ import type { ExtensionInfo } from "../introspection/extensions.js";
 import type { IndexInfo } from "../introspection/indexes.js";
 import type { TableColumnInfo } from "../introspection/schemas.js";
 import type { AnyPgDatabase } from "../schema/pg_database.js";
-import type { AnyPgTable, ColumnRecord } from "../schema/pg_table.js";
+import {
+	tableInfo,
+	type AnyPgTable,
+	type ColumnRecord,
+} from "../schema/pg_table.js";
 
 type TableName = string;
 type Name = string;
@@ -125,7 +129,8 @@ export function findTableInDatabaseSchema(
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
 	const tableInSchema = Object.entries(schema.tables || {}).find(
-		([, value]) => value.schema.columns === table.schema.columns,
+		([, value]) =>
+			tableInfo(value).schema.columns === tableInfo(table).schema.columns,
 	);
 	if (tableInSchema !== undefined) {
 		return toSnakeCase(tableInSchema[0], camelCase);

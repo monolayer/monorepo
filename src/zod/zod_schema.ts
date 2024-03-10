@@ -1,7 +1,11 @@
 import { z } from "zod";
 import type { ZodSchemaObject, ZodType } from "~/schema/inference.js";
 import type { PgColumn, PgGeneratedColumn } from "~/schema/pg_column.js";
-import type { ColumnRecord, PgTable } from "../schema/pg_table.js";
+import {
+	tableInfo,
+	type ColumnRecord,
+	type PgTable,
+} from "../schema/pg_table.js";
 import { generatedColumnSchema } from "./base_schemas.js";
 import {
 	isBigInt,
@@ -60,7 +64,7 @@ import { nullable, required } from "./refinements.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function zodSchema<T extends PgTable<any, any>>(table: T) {
-	const cols = table.schema.columns as ColumnRecord;
+	const cols = tableInfo(table).schema.columns as ColumnRecord;
 	const columnSchema = Object.entries(cols).reduce((acc, [key, value]) => {
 		return acc.extend({
 			[key]: pgColumnSchema<typeof value, false>(value),

@@ -1,6 +1,6 @@
 import { type IntrospectedTable } from "./introspect_table.js";
 import type { PgExtensions } from "./pg_extension.js";
-import { type AnyPgTable } from "./pg_table.js";
+import { tableInfo, type AnyPgTable } from "./pg_table.js";
 
 export type pgDatabase<T extends Record<string, AnyPgTable>> = {
 	extensions: PgExtensions;
@@ -25,7 +25,7 @@ export function pgDatabase<T extends Record<string, AnyPgTable>>({
 		instrospect: () => {
 			return Object.entries(tbl).reduce(
 				(acc, [name, table]) => {
-					acc.tables[name] = table.introspect();
+					acc.tables[name] = tableInfo(table).introspect();
 					return acc;
 				},
 				{ tables: {} } as IntrospectedDatabase,
@@ -33,7 +33,10 @@ export function pgDatabase<T extends Record<string, AnyPgTable>>({
 		},
 	};
 	for (const [, table] of Object.entries(tbl)) {
-		table.database = database;
+		Object.defineProperty(table, "database", {
+			value: database,
+			writable: false,
+		});
 	}
 	return database;
 }

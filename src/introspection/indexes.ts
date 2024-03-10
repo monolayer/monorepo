@@ -10,6 +10,7 @@ import {
 import type { CamelCaseOptions } from "~/config.js";
 import { type AnyPgDatabase } from "~/schema/pg_database.js";
 import { indexOptions, type PgIndex } from "~/schema/pg_index.js";
+import { tableInfo } from "~/schema/pg_table.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbIndexInfo(
@@ -85,7 +86,7 @@ export function localIndexInfoByTable(
 	return Object.entries(schema.tables || {}).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const indexes = tableDefinition.schema.indexes || [];
+			const indexes = tableInfo(tableDefinition).schema.indexes || [];
 			for (const index of indexes) {
 				const indexInfo = indexToInfo(
 					index,

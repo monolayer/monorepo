@@ -9,6 +9,7 @@ import {
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
 import { type AnyPgDatabase } from "~/schema/pg_database.js";
+import { tableInfo } from "~/schema/pg_table.js";
 import type { PgTrigger } from "~/schema/pg_trigger.js";
 import type { InformationSchemaDB } from "./types.js";
 
@@ -132,9 +133,8 @@ export function localTriggersInfo(
 	return Object.entries(schema.tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			tableDefinition.schema.triggers;
 			for (const trigger of Object.entries(
-				tableDefinition.schema.triggers || {},
+				tableInfo(tableDefinition).schema.triggers || {},
 			)) {
 				const triggerName = `${trigger[0]}_trg`.toLowerCase();
 				const hash = createHash("sha256");

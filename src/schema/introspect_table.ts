@@ -7,7 +7,7 @@ import {
 	type ColumnInfo,
 } from "./pg_column.js";
 import { foreignKeyOptions, type PgForeignKey } from "./pg_foreign_key.js";
-import { AnyPgTable, ColumnRecord } from "./pg_table.js";
+import { AnyPgTable, ColumnRecord, tableInfo } from "./pg_table.js";
 import type {
 	PgTrigger,
 	TriggerEvent,
@@ -64,9 +64,9 @@ function findTableInSchema(
 	table: AnyPgTable,
 	tables?: Record<string, AnyPgTable>,
 ) {
-	const tableInSchema = Object.entries(tables || {}).find(
-		([, value]) => value.schema.columns === table.schema.columns,
-	);
+	const tableInSchema = Object.entries(tables || {}).find(([, value]) => {
+		return tableInfo(value).schema.columns === tableInfo(table).schema.columns;
+	});
 	if (tableInSchema !== undefined) {
 		return tableInSchema[0];
 	}
@@ -167,15 +167,14 @@ function primaryKey(columns?: ColumnRecord) {
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function introspectTable(table: AnyPgTable) {
-	const info: IntrospectedTable = {
-		primaryKey: primaryKey(table.schema.columns),
-		columns: columnInfo(table.schema.columns),
-		foreignKeys: foreignKeyInfo(
-			table.schema.foreignKeys,
-			table.database?.tables,
-		),
-		uniqueConstraints: uniqueConstraintInfo(table.schema.uniqueConstraints),
-		triggers: triggerInfo(table.schema.triggers),
+	const info = tableInfo(table);
+	const schema = info.schema;
+	const introspectedTable: IntrospectedTable = {
+		primaryKey: primaryKey(schema.columns),
+		columns: columnInfo(schema.columns),
+		foreignKeys: foreignKeyInfo(schema.foreignKeys, info.database?.tables),
+		uniqueConstraints: uniqueConstraintInfo(schema.uniqueConstraints),
+		triggers: triggerInfo(schema.triggers),
 	};
-	return info;
+	return introspectedTable;
 }
