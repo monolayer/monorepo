@@ -6,9 +6,13 @@ import {
 	type PgColumnTypes,
 } from "../schema/pg_column.js";
 
-export function columnInfo(column: PgColumnBase<unknown, unknown, unknown>) {
-	const info: ColumnInfo = Object.fromEntries(Object.entries(column)).info;
-	return info;
+type ColumnData = {
+	info: ColumnInfo;
+	_primaryKey: boolean;
+};
+export function columnData(column: PgColumnBase<unknown, unknown, unknown>) {
+	const data = Object.fromEntries(Object.entries(column)) as ColumnData;
+	return data;
 }
 
 export function customIssue(ctx: z.RefinementCtx, message: string) {
@@ -40,5 +44,6 @@ export function toBooleanOrNull(val: boolean | Boolish | null): boolean | null {
 	}
 }
 export function nullableColumn<T extends PgColumnTypes>(column: T) {
-	return !column._primaryKey && columnInfo(column).isNullable === true;
+	const data = columnData(column);
+	return !data._primaryKey && data.info.isNullable === true;
 }

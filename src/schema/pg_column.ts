@@ -101,7 +101,7 @@ export class PgColumnBase<S, I, U> {
 }
 
 export class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
-	_primaryKey: boolean;
+	protected _primaryKey: boolean;
 
 	protected readonly _native_data_type: DefaultValueDataTypes;
 

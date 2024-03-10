@@ -33,7 +33,10 @@ export function pgTable<T extends ColumnRecord, PK extends string>(
 		for (const key of primaryKey) {
 			const pkColumn = columns[key];
 			if (pkColumn !== undefined) {
-				pkColumn._primaryKey = true;
+				Object.defineProperty(pkColumn, "_primaryKey", {
+					value: true,
+					writable: false,
+				});
 			}
 		}
 	}

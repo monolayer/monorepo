@@ -13,15 +13,15 @@ import {
 	type PgTimeTz,
 	type PgVarChar,
 } from "../schema/pg_column.js";
-import { columnInfo, customIssue } from "./helpers.js";
+import { columnData, customIssue } from "./helpers.js";
 import { baseSchema } from "./zod_schema.js";
 
 export function timestampSchema<
 	T extends PgTimestamp | PgTimestampTz,
 	PK extends boolean,
 >(column: T): ZodType<T, PK> {
-	const info = columnInfo(column);
-	const isNullable = !column._primaryKey && info.isNullable === true;
+	const data = columnData(column);
+	const isNullable = !data._primaryKey && data.info.isNullable === true;
 	const base = dateSchema(
 		"Expected date or string with date format",
 		isNullable,
@@ -36,8 +36,8 @@ export function timeSchema<T extends PgTime | PgTimeTz, PK extends boolean>(
 	column: T,
 	invalidTimeMessage: string,
 ): ZodType<T, PK> {
-	const info = columnInfo(column);
-	const isNullable = !column._primaryKey && info.isNullable === true;
+	const data = columnData(column);
+	const isNullable = !data._primaryKey && data.info.isNullable === true;
 	const base = stringSchema(
 		"Expected string with time format",
 		isNullable,
@@ -49,11 +49,11 @@ export function integerSchema<
 	T extends PgInt2 | PgInt4 | PgInteger,
 	PK extends boolean,
 >(column: T, minimum: number, maximum: number): ZodType<T, PK> {
-	const info = columnInfo(column);
-	if (info.identity === ColumnIdentity.Always) {
+	const data = columnData(column);
+	if (data.info.identity === ColumnIdentity.Always) {
 		return z.never() as unknown as ZodType<T, PK>;
 	}
-	const isNullable = !column._primaryKey && info.isNullable === true;
+	const isNullable = !data._primaryKey && data.info.isNullable === true;
 
 	const base = wholeNumberSchema(minimum, maximum, isNullable);
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
@@ -272,12 +272,12 @@ export function characterSchema<
 	T extends PgChar | PgVarChar,
 	PK extends boolean,
 >(column: T): ZodType<T, PK> {
-	const info = columnInfo(column);
-	const isNullable = !column._primaryKey && info.isNullable === true;
-	if (info.characterMaximumLength !== null) {
+	const data = columnData(column);
+	const isNullable = !data._primaryKey && data.info.isNullable === true;
+	if (data.info.characterMaximumLength !== null) {
 		return finishSchema(
 			isNullable,
-			z.string().max(info.characterMaximumLength),
+			z.string().max(data.info.characterMaximumLength),
 		) as unknown as ZodType<T, PK>;
 	}
 	return finishSchema(isNullable, z.string()) as unknown as ZodType<T, PK>;

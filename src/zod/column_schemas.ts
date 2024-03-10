@@ -40,7 +40,7 @@ import {
 } from "./base_schemas.js";
 import { testBoolish } from "./column_assertions.js";
 import {
-	columnInfo,
+	columnData,
 	customIssue,
 	nullableColumn,
 	toBooleanOrNull,
@@ -94,16 +94,16 @@ export function pgTextSchema<T extends PgText, PK extends boolean>(
 export function pgBigintSchema<T extends PgBigInt, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
-	const info = columnInfo(column);
-	if (info.identity === ColumnIdentity.Always) {
+	const data = columnData(column);
+	if (data.info.identity === ColumnIdentity.Always) {
 		return z.never() as unknown as ZodType<T, PK>;
 	}
-	const base = bigintSchema(!column._primaryKey && info.isNullable === true)
+	const base = bigintSchema(!data._primaryKey && data.info.isNullable === true)
 		.pipe(z.bigint().min(-9223372036854775808n).max(9223372036854775807n))
 		.transform((val) => val.toString());
 
 	return finishSchema(
-		!column._primaryKey && info.isNullable,
+		!data._primaryKey && data.info.isNullable,
 		base,
 	) as unknown as ZodType<T, PK>;
 }
@@ -182,8 +182,8 @@ export function pgInt4Schema<T extends PgInt4, PK extends boolean>(
 export function pgInt8Schema<T extends PgInt8, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
-	const info = columnInfo(column);
-	if (info.identity === ColumnIdentity.Always) {
+	const data = columnData(column);
+	if (data.info.identity === ColumnIdentity.Always) {
 		return z.never() as unknown as ZodType<T, PK>;
 	}
 	const isNullable = nullableColumn(column);
@@ -273,11 +273,11 @@ export function pgTimestampTzSchema<
 export function pgNumericSchema<T extends PgNumeric, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
-	const info = columnInfo(column);
+	const data = columnData(column);
 	const isNullable = nullableColumn(column);
 	const base = decimalSchema(
-		info.numericPrecision,
-		info.numericScale,
+		data.info.numericPrecision,
+		data.info.numericScale,
 		isNullable,
 		"Expected bigint, number or string that can be converted to a number",
 	);
