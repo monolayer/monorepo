@@ -33,4 +33,4 @@ export { pgIndex } from "~/database/schema/pg_index.js";
 export { pgTable } from "~/database/schema/pg_table.js";
 export { pgTrigger } from "~/database/schema/pg_trigger.js";
 export { pgUnique } from "~/database/schema/pg_unique.js";
-export { zodSchema } from "~/database/schema/zod.js";
+export { zodSchema } from "~/zod/zod_schema.js";

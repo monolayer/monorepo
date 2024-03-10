@@ -3,7 +3,7 @@ import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
 import { pgTable } from "~/database/schema/pg_table.js";
-import { zodSchema } from "~/database/schema/zod.js";
+import { zodSchema } from "~/zod/zod_schema.js";
 import {
 	ColumnInfo,
 	DefaultValueDataTypes,
