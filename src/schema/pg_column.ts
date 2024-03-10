@@ -618,18 +618,18 @@ export type OptionalColumnType<S, I, U> = Simplify<
 export type GeneratedColumnType<S, I, U> = OptionalColumnType<S, I, U>;
 
 export type WithDefaultColumn = {
-	_hasDefault: "yes";
+	_hasDefault: true;
 };
 
-export type NonNullableColumn = { nullable: "no" };
+export type NonNullableColumn = { _nullable: false };
 
 export type GeneratedColumn = {
-	_generatedByDefault: "yes";
-	nullable: "no";
+	_generatedByDefault: true;
+	_nullable: false;
 };
 
 export type GeneratedAlwaysColumn = {
-	_generatedAlways: "yes";
+	_generatedAlways: true;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
