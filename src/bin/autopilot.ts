@@ -8,8 +8,7 @@ import { cwd, exit } from "process";
 import { ActionStatus } from "~/cli/command.js";
 import { importConfig } from "~/config.js";
 import { changeset } from "~/database/changeset.js";
-import { localSchema } from "~/database/introspection/local_schema.js";
-import { remoteSchema } from "~/database/introspection/remote_schema.js";
+import { localSchema, remoteSchema } from "~/database/introspection/schemas.js";
 import { generateMigrationFiles } from "~/database/migrations/generate.js";
 import { fetchPendingMigrations } from "~/database/migrations/info.js";
 

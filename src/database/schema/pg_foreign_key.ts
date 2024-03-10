@@ -1,4 +1,4 @@
-import type { ForeignKeyRule } from "../introspection/database/foreign_key_constraint.js";
+import type { ForeignKeyRule } from "../introspection/foreign_key_constraint.js";
 import type { PgTable } from "./pg_table.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

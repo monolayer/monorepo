@@ -1,12 +1,10 @@
 import toposort from "toposort";
 import type { CamelCaseOptions } from "~/config.js";
-import type {
-	ColumnsInfo,
-	EnumInfo,
-	ExtensionInfo,
-	IndexInfo,
-	TableColumnInfo,
-} from "../introspection/types.js";
+import type { ColumnsInfo } from "../introspection/columns.js";
+import type { EnumInfo } from "../introspection/enums.js";
+import type { ExtensionInfo } from "../introspection/extensions.js";
+import type { IndexInfo } from "../introspection/indexes.js";
+import type { TableColumnInfo } from "../introspection/schemas.js";
 import { toSnakeCase } from "../migration_op/helpers.js";
 import type { AnyPgDatabase } from "../schema/pg_database.js";
 import type { AnyPgTable, ColumnRecord } from "../schema/pg_table.js";

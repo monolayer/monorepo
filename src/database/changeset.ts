@@ -1,5 +1,5 @@
 import microdiff, { type Difference } from "microdiff";
-import type { DbTableInfo, LocalTableInfo } from "./introspection/types.js";
+import type { DbTableInfo, LocalTableInfo } from "./introspection/schemas.js";
 import { Changeset } from "./migration_op/changeset.js";
 import {
 	isCreateTable,

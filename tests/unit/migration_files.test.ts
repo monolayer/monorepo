@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { createHash } from "crypto";
 import { mkdirSync, readFileSync, readdirSync, rmdirSync } from "fs";
 import { Kysely } from "kysely";

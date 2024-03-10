@@ -1,11 +1,19 @@
-import { Kysely, sql } from "kysely";
+import { Kysely, isExpression, sql } from "kysely";
 import {
 	ActionStatus,
 	OperationAnyError,
 	OperationSuccess,
 } from "~/cli/command.js";
-import { ColumnInfo } from "../../schema/pg_column.js";
-import { TableColumnInfo } from "../types.js";
+import type { CamelCaseOptions } from "~/config.js";
+import { toSnakeCase } from "~/database/migration_op/helpers.js";
+import {
+	findColumn,
+	findPrimaryKey,
+	type MigrationSchema,
+} from "~/database/migrations/migration_schema.js";
+import type { AnyPgDatabase } from "~/database/schema/pg_database.js";
+import { ColumnInfo, type PgColumnTypes } from "../schema/pg_column.js";
+import { TableColumnInfo, compileDefaultExpression } from "./schemas.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbColumnInfo(
@@ -268,6 +276,7 @@ function transformDbColumnInfo(
 	}
 	return transformed;
 }
+
 function mapColumnsToTables(columns: ColumnInfo[]) {
 	return columns.reduce<TableColumnInfo>((acc, curr) => {
 		if (curr.tableName !== null && curr.columnName !== null) {
@@ -289,3 +298,95 @@ function mapColumnsToTables(columns: ColumnInfo[]) {
 		return acc;
 	}, {});
 }
+
+export function localColumnInfoByTable(
+	schema: AnyPgDatabase,
+	remoteSchema: MigrationSchema,
+	camelCase: CamelCaseOptions = { enabled: false },
+) {
+	return Object.entries(schema.tables || {}).reduce<TableColumnInfo>(
+		(acc, [tableName, tableDefinition]) => {
+			const transformedTableName = toSnakeCase(tableName, camelCase);
+			const columns = Object.entries(tableDefinition.schema.columns);
+			acc[transformedTableName] = columns.reduce<ColumnsInfo>(
+				(columnAcc, [columnName, column]) => {
+					const columnInfo = schemaColumnInfo(
+						transformedTableName,
+						columnName,
+						column as PgColumnTypes,
+					);
+					let columnKey = columnName;
+					const transformedColumnNname = toSnakeCase(columnName, camelCase);
+					columnInfo.columnName = transformedColumnNname;
+					columnKey = transformedColumnNname;
+					const pKey = findPrimaryKey(remoteSchema, transformedTableName);
+					if (columnInfo.renameFrom !== null) {
+						const appliedInRemote =
+							findColumn(remoteSchema, transformedTableName, columnName) !==
+							undefined;
+						const toApplyInRemote =
+							findColumn(
+								remoteSchema,
+								transformedTableName,
+								columnInfo.renameFrom,
+							) !== undefined;
+						if (appliedInRemote && pKey?.includes(columnName)) {
+							columnInfo.originalIsNullable = columnInfo.isNullable;
+							columnInfo.isNullable = false;
+						}
+						if (appliedInRemote || toApplyInRemote) {
+							if (toApplyInRemote) {
+								columnKey = columnInfo.renameFrom;
+								if (pKey?.includes(columnInfo.renameFrom)) {
+									columnInfo.originalIsNullable = columnInfo.isNullable;
+									columnInfo.isNullable = false;
+								}
+							}
+						}
+						columnInfo.renameFrom = null;
+					} else {
+						if (pKey?.includes(columnName)) {
+							columnInfo.originalIsNullable = columnInfo.isNullable;
+							columnInfo.isNullable = false;
+						}
+					}
+					columnAcc[columnKey] = columnInfo;
+					return columnAcc;
+				},
+				{},
+			);
+			return acc;
+		},
+		{},
+	);
+}
+
+export function schemaColumnInfo(
+	tableName: string,
+	columnName: string,
+	column: PgColumnTypes,
+): ColumnInfo {
+	const columnInfo: ColumnInfo = Object.fromEntries(
+		Object.entries(column),
+	).info;
+	const meta = columnInfo;
+	return {
+		tableName: tableName,
+		columnName: columnName,
+		dataType: meta.dataType,
+		characterMaximumLength: meta.characterMaximumLength,
+		datetimePrecision: meta.datetimePrecision,
+		isNullable: meta.isNullable,
+		numericPrecision: meta.numericPrecision,
+		numericScale: meta.numericScale,
+		renameFrom: meta.renameFrom,
+		defaultValue: meta.defaultValue
+			? isExpression(meta.defaultValue)
+				? compileDefaultExpression(meta.defaultValue)
+				: meta.defaultValue.toString()
+			: null,
+		identity: meta.identity,
+		enum: meta.enum,
+	};
+}
+export type ColumnsInfo = Record<string, ColumnInfo>;

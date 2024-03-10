@@ -1,10 +1,8 @@
 import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
-import {
-	indexToInfo,
-	triggerInfo,
-	uniqueToInfo,
-} from "~/database/introspection/local_schema.js";
+import { indexToInfo } from "~/database/introspection/indexes.js";
+import { triggerInfo } from "~/database/introspection/triggers.js";
+import { uniqueToInfo } from "~/database/introspection/unique_constraint.js";
 import type { PgIndex } from "~/database/schema/pg_index.js";
 import type { PgTrigger } from "~/database/schema/pg_trigger.js";
 import type { PgUnique } from "~/database/schema/pg_unique.js";

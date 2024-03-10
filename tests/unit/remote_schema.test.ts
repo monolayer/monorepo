@@ -1,10 +1,11 @@
+/* eslint-disable max-lines */
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
 import { env } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { remoteSchema } from "~/database/introspection/schemas.js";
 import { dropTables } from "~tests/helpers/dropTables.js";
 import { globalPool, type DbContext } from "~tests/setup.js";
-import { remoteSchema } from "../../src/database/introspection/remote_schema.js";
 
 describe("#remoteSchema", () => {
 	beforeEach<DbContext>(async (context) => {

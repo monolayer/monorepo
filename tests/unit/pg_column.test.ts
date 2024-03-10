@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { sql, type Expression } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";

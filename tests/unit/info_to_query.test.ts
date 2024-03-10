@@ -1,12 +1,10 @@
 import { expect, test } from "vitest";
-import type { ForeignKeyConstraintInfo } from "../../src/database/introspection/database/foreign_key_constraint.js";
-import type { PrimaryKeyConstraintInfo } from "../../src/database/introspection/database/primary_key_constraint.js";
-import type { UniqueConstraintInfo } from "../../src/database/introspection/database/unique_constraint.js";
-import {
-	foreignKeyConstraintInfoToQuery,
-	primaryKeyConstraintInfoToQuery,
-	uniqueConstraintInfoToQuery,
-} from "../../src/database/introspection/info_to_query.js";
+import { foreignKeyConstraintInfoToQuery } from "~/database/introspection/foreign_key_constraint.js";
+import { primaryKeyConstraintInfoToQuery } from "~/database/introspection/primary_key_constraint.js";
+import { uniqueConstraintInfoToQuery } from "~/database/introspection/unique_constraint.js";
+import type { ForeignKeyConstraintInfo } from "../../src/database/introspection/foreign_key_constraint.js";
+import type { PrimaryKeyConstraintInfo } from "../../src/database/introspection/primary_key_constraint.js";
+import type { UniqueConstraintInfo } from "../../src/database/introspection/unique_constraint.js";
 
 test("#PrimaryKeyInfoToQuery", () => {
 	const info: PrimaryKeyConstraintInfo = {

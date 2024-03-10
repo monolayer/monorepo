@@ -1,12 +1,13 @@
+/* eslint-disable max-lines */
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
 import {
-	localSchema,
+	localColumnInfoByTable,
 	schemaColumnInfo,
-	schemaDBColumnInfoByTable,
-	schemaDBIndexInfoByTable,
-	schemaDbEnumInfo,
-} from "~/database/introspection/local_schema.js";
+} from "~/database/introspection/columns.js";
+import { localEnumInfo } from "~/database/introspection/enums.js";
+import { localIndexInfoByTable } from "~/database/introspection/indexes.js";
+import { localSchema } from "~/database/introspection/schemas.js";
 import {
 	ColumnIdentity,
 	pgBigserial,
@@ -119,7 +120,7 @@ describe("#schemaColumnInfo", () => {
 
 test("#schemaDBColumnInfoByTable on empty database", () => {
 	const database = pgDatabase({ tables: {} });
-	expect(schemaDBColumnInfoByTable(database, migrationSchemaFactory())).toEqual(
+	expect(localColumnInfoByTable(database, migrationSchemaFactory())).toEqual(
 		{},
 	);
 });
@@ -194,7 +195,7 @@ test("#schemaDBColumnInfoByTable", () => {
 			}),
 		},
 	};
-	expect(schemaDBColumnInfoByTable(database, migrationSchemaFactory())).toEqual(
+	expect(localColumnInfoByTable(database, migrationSchemaFactory())).toEqual(
 		expectedDbColumnInfoByTable,
 	);
 });
@@ -222,7 +223,7 @@ test("#schemaDBIndexInfoByTable", () => {
 			teams,
 		},
 	});
-	expect(schemaDBIndexInfoByTable(database)).toStrictEqual({
+	expect(localIndexInfoByTable(database)).toStrictEqual({
 		teams: {
 			teams_active_kntc_idx:
 				'c3c6080ff3d3e7bf8b6a6e729aff7aa2f79712f924cdc454cc615595f940a1e6:create index "teams_active_kntc_idx" on "teams" ("active")',
@@ -258,7 +259,7 @@ test("#schemaDbEnumInfo", () => {
 		tables: { users, books },
 	});
 
-	expect(schemaDbEnumInfo(database)).toStrictEqual({
+	expect(localEnumInfo(database)).toStrictEqual({
 		book_status: "available, checked_out, lost",
 		user_status: "active, inactive",
 	});
@@ -422,6 +423,7 @@ test("#localSchema", () => {
 					defaultValue: null,
 					identity: null,
 					isNullable: false,
+					// eslint-disable-next-line max-lines
 					numericPrecision: null,
 					numericScale: null,
 					renameFrom: null,

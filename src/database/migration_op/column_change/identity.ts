@@ -2,7 +2,7 @@ import { Difference } from "microdiff";
 import type {
 	DbTableInfo,
 	LocalTableInfo,
-} from "~/database/introspection/types.js";
+} from "~/database/introspection/schemas.js";
 import { ChangeSetType, Changeset } from "~/database/migration_op/changeset.js";
 import type { ColumnInfo } from "~/database/schema/pg_column.js";
 import { executeKyselyDbStatement } from "../helpers.js";

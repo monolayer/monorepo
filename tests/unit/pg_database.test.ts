@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
@@ -425,6 +426,7 @@ describe("introspect", () => {
 						},
 						{
 							columns: ["description", "location"],
+							// eslint-disable-next-line max-lines
 							nullsDistinct: false,
 						},
 					],

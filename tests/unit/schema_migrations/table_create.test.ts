@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import {

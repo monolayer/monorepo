@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { exit } from "process";
 import { Config, importSchema, type CamelCaseOptions } from "~/config.js";
-import { localSchema } from "~/database/introspection/local_schema.js";
+import { localSchema } from "~/database/introspection/schemas.js";
 import type { MigrationSchema } from "~/database/migrations/migration_schema.js";
 
 export async function analyzeLocalSchema(

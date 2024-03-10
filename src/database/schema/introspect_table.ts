@@ -1,5 +1,5 @@
-import type { ForeignKeyRule } from "../introspection/database/foreign_key_constraint.js";
-import { compileDefaultExpression } from "../introspection/local_schema.js";
+import type { ForeignKeyRule } from "../introspection/foreign_key_constraint.js";
+import { compileDefaultExpression } from "../introspection/schemas.js";
 import {
 	PgBigSerial,
 	PgSerial,

@@ -1,11 +1,16 @@
-import { sql, type Kysely } from "kysely";
+import { sql, type Kysely, type OnModifyForeignAction } from "kysely";
 import {
 	ActionStatus,
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
-import type { ForeignKeyInfo } from "~/database/migrations/migration_schema.js";
-import { foreignKeyConstraintInfoToQuery } from "../info_to_query.js";
+import type { CamelCaseOptions } from "~/config.js";
+import { toSnakeCase } from "~/database/migration_op/helpers.js";
+import {
+	findTableByNameInDatabaseSchema,
+	type ForeignKeyInfo,
+} from "~/database/migrations/migration_schema.js";
+import type { AnyPgDatabase } from "~/database/schema/pg_database.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export type ForeignKeyRule =
@@ -113,3 +118,74 @@ export async function dbForeignKeyConstraintInfo(
 		};
 	}
 }
+
+export function localForeignKeyConstraintInfo(
+	schema: AnyPgDatabase,
+	camelCase: CamelCaseOptions,
+) {
+	return Object.entries(schema.tables || {}).reduce<ForeignKeyInfo>(
+		(acc, [tableName, tableDefinition]) => {
+			const transformedTableName = toSnakeCase(tableName, camelCase);
+			const introspect = tableDefinition.introspect();
+			const foreignKeys = introspect.foreignKeys;
+			if (foreignKeys !== undefined) {
+				for (const foreignKey of foreignKeys) {
+					const targetTableName = findTableByNameInDatabaseSchema(
+						foreignKey.targetTable,
+						schema,
+						camelCase,
+					);
+					const transformedColumNames = foreignKey.columns.map((column) =>
+						toSnakeCase(column, camelCase),
+					);
+
+					const transformedtargetColumnNames = foreignKey.targetColumns.map(
+						(column) => toSnakeCase(column, camelCase),
+					);
+					if (targetTableName !== undefined) {
+						const keyName = `${transformedTableName}_${transformedColumNames.join(
+							"_",
+						)}_${targetTableName}_${transformedtargetColumnNames.join(
+							"_",
+						)}_kinetic_fk`;
+						acc[transformedTableName] = {
+							...acc[transformedTableName],
+							[keyName]: foreignKeyConstraintInfoToQuery({
+								constraintType: "FOREIGN KEY",
+								table: transformedTableName,
+								column: transformedColumNames,
+								targetTable: targetTableName,
+								targetColumns: transformedtargetColumnNames,
+								deleteRule: foreignKey.deleteRule ?? null,
+								updateRule: foreignKey.updateRule ?? null,
+							}),
+						};
+					}
+				}
+			}
+			return acc;
+		},
+		{},
+	);
+}
+
+export function foreignKeyConstraintInfoToQuery(
+	info: ForeignKeyConstraintInfo,
+) {
+	return [
+		`"${info.table}_${info.column.join("_")}_${info.targetTable}_${info.targetColumns.join("_")}_kinetic_fk"`,
+		"FOREIGN KEY",
+		`(${info.column.map((col) => `"${col}"`).join(", ")})`,
+		"REFERENCES",
+		info.targetTable,
+		`(${info.targetColumns.map((col) => `"${col}"`).join(", ")})`,
+		`ON DELETE ${info.deleteRule}`,
+		`ON UPDATE ${info.updateRule}`,
+	].join(" ");
+}
+
+export type ForeIgnKeyConstraintInfo = {
+	table: string;
+	column: string;
+	options: `${OnModifyForeignAction};${OnModifyForeignAction}`;
+};

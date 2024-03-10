@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { Insertable, Selectable, Simplify, Updateable } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { describe, expect, test } from "vitest";

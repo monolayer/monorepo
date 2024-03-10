@@ -1,12 +1,12 @@
 import { Difference } from "microdiff";
 import {
-	type DbTableInfo,
-	type LocalTableInfo,
-} from "~/database/introspection/types.js";
-import {
 	ChangeSetType,
 	type Changeset,
 } from "~/database/migration_op/changeset.js";
+import {
+	type DbTableInfo,
+	type LocalTableInfo,
+} from "../introspection/schemas.js";
 import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
 import { tableColumnsOps, type ColumnsInfoDiff } from "./table_common.js";

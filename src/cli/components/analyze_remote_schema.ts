@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { Kysely } from "kysely";
 import pg from "pg";
 import { exit } from "process";
-import { remoteSchema } from "~/database/introspection/remote_schema.js";
+import { remoteSchema } from "~/database/introspection/schemas.js";
 import { ActionStatus } from "../command.js";
 
 export async function analyzeRemoteSchema(

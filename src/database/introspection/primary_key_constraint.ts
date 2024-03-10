@@ -4,8 +4,14 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
-import type { PrimaryKeyInfo } from "~/database/migrations/migration_schema.js";
-import { primaryKeyConstraintInfoToQuery } from "../info_to_query.js";
+import type { CamelCaseOptions } from "~/config.js";
+import { toSnakeCase } from "~/database/migration_op/helpers.js";
+import {
+	primaryKeyColumns,
+	type PrimaryKeyInfo,
+} from "~/database/migrations/migration_schema.js";
+import type { AnyPgDatabase } from "~/database/schema/pg_database.js";
+import type { ColumnRecord } from "~/database/schema/pg_table.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export type PrimaryKeyConstraintInfo = {
@@ -77,4 +83,42 @@ export async function dbPrimaryKeyConstraintInfo(
 			error: error,
 		};
 	}
+}
+
+export function localPrimaryKeyConstraintInfo(
+	schema: AnyPgDatabase,
+	camelCase: CamelCaseOptions,
+) {
+	return Object.entries(schema.tables || {}).reduce<PrimaryKeyInfo>(
+		(acc, [tableName, tableDefinition]) => {
+			const transformedTableName = toSnakeCase(tableName, camelCase);
+			const columns = tableDefinition.schema.columns as ColumnRecord;
+			const primaryKeys = primaryKeyColumns(columns, camelCase);
+			if (primaryKeys.length !== 0) {
+				const keyName = `${transformedTableName}_${primaryKeys
+					.sort()
+					.join("_")}_kinetic_pk`;
+				acc[transformedTableName] = {
+					[keyName]: primaryKeyConstraintInfoToQuery({
+						constraintType: "PRIMARY KEY",
+						table: transformedTableName,
+						columns: primaryKeys,
+					}),
+				};
+			}
+			return acc;
+		},
+		{},
+	);
+}
+
+export function primaryKeyConstraintInfoToQuery(
+	info: PrimaryKeyConstraintInfo,
+) {
+	const columns = info.columns.sort();
+	return [
+		`"${info.table}_${columns.join("_")}_kinetic_pk"`,
+		"PRIMARY KEY",
+		`(${columns.map((col) => `"${col}"`).join(", ")})`,
+	].join(" ");
 }

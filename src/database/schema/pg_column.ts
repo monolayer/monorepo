@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { Simplify } from "kysely";
 import { type ColumnType, type Expression } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
