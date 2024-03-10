@@ -6,7 +6,7 @@ import {
 	isExpression,
 	type ColumnInfo,
 } from "./pg_column.js";
-import type { PgForeignKey } from "./pg_foreign_key.js";
+import { foreignKeyOptions, type PgForeignKey } from "./pg_foreign_key.js";
 import { AnyPgTable, ColumnRecord } from "./pg_table.js";
 import type {
 	PgTrigger,
@@ -33,8 +33,8 @@ export type IntrospectedColum = {
 
 export type IntrospectedForeignKey = {
 	columns: string[];
-	targetTable?: string;
-	targetColumns?: string[];
+	targetTable: string;
+	targetColumns: string[];
 	deleteRule?: ForeignKeyRule;
 	updateRule?: ForeignKeyRule;
 };
@@ -107,12 +107,14 @@ function foreignKeyInfo(
 	tables?: Record<string, AnyPgTable>,
 ) {
 	return (foreignKeys || []).map<IntrospectedForeignKey>((fk) => {
+		const options = foreignKeyOptions(fk);
+
 		return {
-			columns: fk.columns,
-			targetTable: findTableInSchema(fk.targetTable, tables),
-			targetColumns: fk.targetColumns,
-			deleteRule: fk.options.deleteRule,
-			updateRule: fk.options.updateRule,
+			columns: options.columns as string[],
+			targetTable: findTableInSchema(options.targetTable, tables) || "",
+			targetColumns: options.targetColumns,
+			deleteRule: options.deleteRule,
+			updateRule: options.updateRule,
 		};
 	});
 }

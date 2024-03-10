@@ -18,7 +18,7 @@ export type TableSchema<T, PK extends string> = {
 			: Array<keyof T>
 		: never;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	foreignKeys?: PgForeignKey<Array<keyof T>, any>[];
+	foreignKeys?: keyof T extends string ? PgForeignKey<keyof T, any>[] : [];
 	uniqueConstraints?: keyof T extends string ? PgUnique<keyof T>[] : [];
 	indexes?: keyof T extends string ? PgIndex<keyof T>[] : [];
 	triggers?: Record<string, PgTrigger>;

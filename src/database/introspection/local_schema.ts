@@ -13,7 +13,7 @@ import { toSnakeCase } from "../migration_op/helpers.js";
 import {
 	findColumn,
 	findPrimaryKey,
-	findTableInDatabaseSchema,
+	findTableByNameInDatabaseSchema,
 	primaryKeyColumns,
 	type ForeignKeyInfo,
 	type MigrationSchema,
@@ -380,10 +380,11 @@ function foreignKeyConstraintInfo(
 	return Object.entries(schema.tables || {}).reduce<ForeignKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const foreignKeys = tableDefinition.schema.foreignKeys;
+			const introspect = tableDefinition.introspect();
+			const foreignKeys = introspect.foreignKeys;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {
-					const targetTableName = findTableInDatabaseSchema(
+					const targetTableName = findTableByNameInDatabaseSchema(
 						foreignKey.targetTable,
 						schema,
 						camelCase,
@@ -409,8 +410,8 @@ function foreignKeyConstraintInfo(
 								column: transformedColumNames,
 								targetTable: targetTableName,
 								targetColumns: transformedtargetColumnNames,
-								deleteRule: foreignKey.options.deleteRule,
-								updateRule: foreignKey.options.updateRule,
+								deleteRule: foreignKey.deleteRule ?? null,
+								updateRule: foreignKey.updateRule ?? null,
 							}),
 						};
 					}

@@ -47,10 +47,9 @@ describe("Database migrations", () => {
 				name: pgVarchar(),
 			},
 			foreignKeys: [
-				pgForeignKey(["id"], books, ["id"], {
-					updateRule: "set null",
-					deleteRule: "set null",
-				}),
+				pgForeignKey(["id"], books, ["id"])
+					.updateRule("set null")
+					.deleteRule("set null"),
 			],
 		});
 
@@ -165,14 +164,12 @@ describe("Database migrations", () => {
 				name: pgVarchar(),
 			},
 			foreignKeys: [
-				pgForeignKey(["id"], books, ["id"], {
-					updateRule: "set null",
-					deleteRule: "set null",
-				}),
-				pgForeignKey(["second_book_id"], old_books, ["id"], {
-					updateRule: "set null",
-					deleteRule: "set null",
-				}),
+				pgForeignKey(["id"], books, ["id"])
+					.updateRule("set null")
+					.deleteRule("set null"),
+				pgForeignKey(["second_book_id"], old_books, ["id"])
+					.updateRule("set null")
+					.deleteRule("set null"),
 			],
 		});
 
@@ -548,10 +545,9 @@ describe("Database migrations", () => {
 				book_id: pgInteger(),
 			},
 			foreignKeys: [
-				pgForeignKey(["id"], books, ["id"], {
-					updateRule: "cascade",
-					deleteRule: "set null",
-				}),
+				pgForeignKey(["id"], books, ["id"])
+					.updateRule("cascade")
+					.deleteRule("set null"),
 			],
 		});
 
@@ -661,10 +657,9 @@ describe("Database migrations", () => {
 				book_id: pgInteger(),
 			},
 			foreignKeys: [
-				pgForeignKey(["book_id"], books, ["id"], {
-					updateRule: "cascade",
-					deleteRule: "set null",
-				}),
+				pgForeignKey(["book_id"], books, ["id"])
+					.updateRule("cascade")
+					.deleteRule("set null"),
 			],
 		});
 

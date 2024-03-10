@@ -133,3 +133,16 @@ export function findTableInDatabaseSchema(
 		return toSnakeCase(tableInSchema[0], camelCase);
 	}
 }
+
+export function findTableByNameInDatabaseSchema(
+	table: string,
+	schema: AnyPgDatabase,
+	camelCase: CamelCaseOptions = { enabled: false },
+) {
+	const tableInSchema = Object.entries(schema.tables || {}).find(
+		([tableName]) => tableName === table,
+	);
+	if (tableInSchema !== undefined) {
+		return toSnakeCase(tableInSchema[0], camelCase);
+	}
+}

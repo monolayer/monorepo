@@ -487,10 +487,9 @@ describe("Table create migrations", () => {
 				name: pgVarchar(),
 			},
 			foreignKeys: [
-				pgForeignKey(["id"], books, ["id"], {
-					updateRule: "set null",
-					deleteRule: "set null",
-				}),
+				pgForeignKey(["id"], books, ["id"])
+					.deleteRule("set null")
+					.updateRule("set null"),
 			],
 		});
 
