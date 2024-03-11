@@ -100,7 +100,7 @@ export class PgColumnBase<S, I, U> {
 	}
 }
 
-export class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
+export abstract class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 	protected _primaryKey: boolean;
 
 	protected readonly _native_data_type: DefaultValueDataTypes;
@@ -130,7 +130,7 @@ export class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 	}
 }
 
-export class PgGeneratedColumn<T, U> extends PgColumnBase<T, U, U> {
+export abstract class PgGeneratedColumn<T, U> extends PgColumnBase<T, U, U> {
 	protected readonly _native_data_type: DefaultValueDataTypes;
 	protected _primaryKey: boolean;
 
@@ -168,7 +168,11 @@ export class PgSerial extends PgGeneratedColumn<number, number | string> {
 	}
 }
 
-export class IdentifiableColumn<S, I, U = I> extends PgColumn<S, I, U> {
+export abstract class IdentifiableColumn<S, I, U = I> extends PgColumn<
+	S,
+	I,
+	U
+> {
 	generatedByDefaultAsIdentity() {
 		this.info.identity = ColumnIdentity.ByDefault;
 		this.info.isNullable = false;
@@ -446,7 +450,7 @@ export class PgUuid extends PgColumn<string, string> {
 	}
 }
 
-export class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
+export abstract class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
 	constructor(dataType: "varchar" | "char", maximumLength?: number) {
 		const postgresDataType =
 			dataType === "varchar"
@@ -475,7 +479,7 @@ export class PgChar extends PgColumnWithMaximumLength<string, string> {}
 
 type DateTimePrecision = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-export class PgTimeColumn<T, U> extends PgColumn<T, U> {
+export abstract class PgTimeColumn<T, U> extends PgColumn<T, U> {
 	constructor(dataType: "time" | "timetz", precision?: DateTimePrecision) {
 		const postgresDataType =
 			dataType === "time"
@@ -491,12 +495,16 @@ export class PgTimeColumn<T, U> extends PgColumn<T, U> {
 }
 
 export function pgTime(precision?: DateTimePrecision) {
-	return new PgTime("time", precision);
+	return new PgTime(precision);
 }
 
-export class PgTime extends PgTimeColumn<string, string> {}
+export class PgTime extends PgTimeColumn<string, string> {
+	constructor(precision?: DateTimePrecision) {
+		super("time", precision);
+	}
+}
 
-export class PgTimestampColumn<T, U> extends PgColumn<T, U> {
+export abstract class PgTimestampColumn<T, U> extends PgColumn<T, U> {
 	constructor(
 		dataType: "timestamp" | "timestamptz",
 		precision?: DateTimePrecision,
@@ -515,10 +523,14 @@ export class PgTimestampColumn<T, U> extends PgColumn<T, U> {
 }
 
 export function pgTimetz(precision?: DateTimePrecision) {
-	return new PgTimeTz("timetz", precision);
+	return new PgTimeTz(precision);
 }
 
-export class PgTimeTz extends PgTimeColumn<string, string> {}
+export class PgTimeTz extends PgTimeColumn<string, string> {
+	constructor(precision?: DateTimePrecision) {
+		super("timetz", precision);
+	}
+}
 
 export function pgTimestamp(precision?: DateTimePrecision) {
 	return new PgTimestamp("timestamp", precision);

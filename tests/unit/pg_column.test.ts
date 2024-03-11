@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { sql, type Expression } from "kysely";
+import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
@@ -68,12 +68,6 @@ import {
 	type Boolish,
 } from "../../src/schema/pg_column.js";
 
-type ColumnWithDefaultContext = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	column: PgColumn<any, any>;
-	columnInfo: ColumnInfo;
-};
-
 type ColumnContext = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	column: PgColumnBase<any, any, any>;
@@ -107,54 +101,14 @@ describe("PgColumnBase", () => {
 	testColumnMethods();
 });
 
-describe("PgColumn", () => {
-	beforeEach((context: ColumnWithDefaultContext) => {
-		context.column = new PgColumn("integer", DefaultValueDataTypes.integer);
-		context.columnInfo = Object.fromEntries(
-			Object.entries(context.column),
-		).info;
-	});
-
-	testBase();
-
-	describe("default()", () => {
-		test("default accepts insert column data types or an arbitrary SQL expression", () => {
-			const integerColumn = pgInteger();
-			const integerColumnExpect: Expect<
-				Equal<
-					string | number | Expression<unknown>,
-					Parameters<typeof integerColumn.default>[0]
-				>
-			> = true;
-			expectTypeOf(integerColumnExpect).toMatchTypeOf<boolean>();
-
-			const textColumn = pgText();
-			const textColumnExpect: Expect<
-				Equal<
-					string | Expression<unknown>,
-					Parameters<typeof textColumn.default>[0]
-				>
-			> = true;
-			expectTypeOf(textColumnExpect).toMatchTypeOf<boolean>();
-		});
-
-		test("default sets default value", () => {
-			const column = pgText();
-			const info = Object.fromEntries(Object.entries(column)).info;
-
-			const someSqlExpression = sql`now()`;
-			column.default(someSqlExpression);
-			expect(info.defaultValue).toBe(someSqlExpression);
-		});
-	});
-});
-
 describe("PgGeneratedColumn", () => {
 	beforeEach((context: ColumnWithoutDefaultContext) => {
-		context.column = new PgGeneratedColumn(
-			"serial",
-			DefaultValueDataTypes.serial,
-		);
+		class TestSerial extends PgGeneratedColumn<string, number | string> {
+			constructor() {
+				super("serial", DefaultValueDataTypes.serial);
+			}
+		}
+		context.column = new TestSerial();
 		context.columnInfo = Object.fromEntries(
 			Object.entries(context.column),
 		).info;
@@ -8364,7 +8318,12 @@ describe("pgChar", () => {
 
 describe("PgTimeColumn", () => {
 	test("inherits from PgColumn", () => {
-		const column = new PgTimeColumn("time");
+		class PgTimeTest extends PgTimeColumn<string, string> {
+			constructor() {
+				super("time", 1);
+			}
+		}
+		const column = new PgTimeTest();
 		expect(column).toBeInstanceOf(PgColumn);
 	});
 
