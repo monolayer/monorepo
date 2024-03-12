@@ -12,12 +12,12 @@ import {
 	bigint,
 	boolean,
 	integer,
-	pgEnum,
 	serial,
 	text,
 	timestamptz,
 	varchar,
 } from "~/schema/pg_column.js";
+import { enumType, enumerated } from "~/schema/pg_enumerated.js";
 import { index } from "~/schema/pg_index.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { table, tableInfo } from "~/schema/pg_table.js";
@@ -41,7 +41,7 @@ describe("pgTable definition", () => {
 		const columns = {
 			name: varchar(),
 			subscribed: boolean(),
-			role: pgEnum("role", ["admin", "user"]),
+			role: enumerated(enumType("role", ["admin", "user"])),
 		};
 		const tbl = table({
 			columns: columns,
@@ -981,7 +981,9 @@ describe("pgTable definition", () => {
 				test("nullable selects", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							),
 						},
 					});
 					type expectedType = {
@@ -995,7 +997,9 @@ describe("pgTable definition", () => {
 				test("nullable and optional inserts", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							),
 						},
 					});
 					type expectedType = {
@@ -1009,7 +1013,9 @@ describe("pgTable definition", () => {
 				test("nullable and optional updates", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							),
 						},
 					});
 					type expectedType = {
@@ -1023,7 +1029,9 @@ describe("pgTable definition", () => {
 				test("infer select, insert, and update", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							),
 						},
 					});
 					type expectedType = {
@@ -1043,7 +1051,9 @@ describe("pgTable definition", () => {
 				test("non nullable selects", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							).notNull(),
 						},
 					});
 					type expectedType = {
@@ -1057,7 +1067,9 @@ describe("pgTable definition", () => {
 				test("non nullable and required inserts", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							).notNull(),
 						},
 					});
 					type expectedType = {
@@ -1071,7 +1083,9 @@ describe("pgTable definition", () => {
 				test("non nullable and optional updates", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							).notNull(),
 						},
 					});
 					type expectedType = {
@@ -1085,7 +1099,9 @@ describe("pgTable definition", () => {
 				test("infer select, insert, and update", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							).notNull(),
 						},
 					});
 					type expectedType = {
@@ -1105,9 +1121,9 @@ describe("pgTable definition", () => {
 				test("non nullable selects", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).default(
-								"user",
-							),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							).default("user"),
 						},
 					});
 					type expectedType = {
@@ -1121,9 +1137,9 @@ describe("pgTable definition", () => {
 				test("nullable and optional inserts", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).default(
-								"user",
-							),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							).default("user"),
 						},
 					});
 					type expectedType = {
@@ -1137,9 +1153,9 @@ describe("pgTable definition", () => {
 				test("nullable and optional updates", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).default(
-								"user",
-							),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							).default("user"),
 						},
 					});
 					type expectedType = {
@@ -1153,9 +1169,9 @@ describe("pgTable definition", () => {
 				test("infer select, insert, and update", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"]).default(
-								"user",
-							),
+							role: enumerated(
+								enumType("role", ["user", "admin", "superuser"]),
+							).default("user"),
 						},
 					});
 					type expectedType = {
@@ -1175,7 +1191,7 @@ describe("pgTable definition", () => {
 				test("non nullable selects", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"])
+							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
 								.notNull()
 								.default("user"),
 						},
@@ -1191,7 +1207,7 @@ describe("pgTable definition", () => {
 				test("non nullable and optional inserts", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"])
+							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
 								.notNull()
 								.default("user"),
 						},
@@ -1207,7 +1223,7 @@ describe("pgTable definition", () => {
 				test("non nullable and optional updates", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"])
+							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
 								.notNull()
 								.default("user"),
 						},
@@ -1223,7 +1239,7 @@ describe("pgTable definition", () => {
 				test("infer select, insert, and update", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"])
+							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
 								.notNull()
 								.default("user"),
 						},
@@ -1245,7 +1261,7 @@ describe("pgTable definition", () => {
 				test("non nullable selects", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"])
+							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
 								.default("user")
 								.notNull(),
 						},
@@ -1261,7 +1277,7 @@ describe("pgTable definition", () => {
 				test("non nullable and optional inserts", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"])
+							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
 								.default("user")
 								.notNull(),
 						},
@@ -1277,7 +1293,7 @@ describe("pgTable definition", () => {
 				test("non nullable and optional updates", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"])
+							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
 								.default("user")
 								.notNull(),
 						},
@@ -1293,7 +1309,7 @@ describe("pgTable definition", () => {
 				test("infer select, insert, and update", () => {
 					const tbl = table({
 						columns: {
-							role: pgEnum("role", ["user", "admin", "superuser"])
+							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
 								.default("user")
 								.notNull(),
 						},

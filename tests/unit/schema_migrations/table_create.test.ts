@@ -18,7 +18,6 @@ import {
 	json,
 	jsonb,
 	numeric,
-	pgEnum,
 	real,
 	serial,
 	text,
@@ -30,6 +29,7 @@ import {
 	varchar,
 } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
+import { enumType, enumerated } from "~/schema/pg_enumerated.js";
 import { foreignKey } from "~/schema/pg_foreign_key.js";
 import { index } from "~/schema/pg_index.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
@@ -671,14 +671,16 @@ describe("Table create migrations", () => {
 	});
 
 	test<DbContext>("create table with enums", async (context) => {
+		const role = enumType("role", ["admin", "user"]);
 		const users = table({
 			columns: {
 				name: text(),
-				role: pgEnum("role", ["admin", "user"]),
+				role: enumerated(role),
 			},
 		});
 
 		const database = pgDatabase({
+			types: [role],
 			tables: {
 				users,
 			},
@@ -845,10 +847,12 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 			indexes: [index(["fullName"])],
 		});
 
+		const role = enumType("role", ["admin", "user"]);
+
 		const triggerTable = table({
 			columns: {
 				updatedAt: timestamp().default(sql`now()`),
-				role: pgEnum("role", ["admin", "user"]),
+				role: enumerated(role),
 			},
 			triggers: {
 				foo_before_update: trigger()
@@ -861,7 +865,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 
 		const database = pgDatabase({
 			extensions: ["moddatetime"],
-
+			types: [role],
 			tables: {
 				users,
 				books,

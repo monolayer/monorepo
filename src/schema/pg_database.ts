@@ -1,9 +1,11 @@
+import type { EnumType } from "./pg_enumerated.js";
 import type { PgExtensions } from "./pg_extension.js";
-import { type AnyPgTable } from "./pg_table.js";
+import type { AnyPgTable } from "./pg_table.js";
 
-export type DatabaseSchema<T> = {
+export type DatabaseSchema<T extends ColumnRecord> = {
 	extensions?: PgExtensions;
 	tables?: T;
+	types?: Array<EnumType>;
 };
 
 export class PgDatabase<T extends ColumnRecord> {
@@ -14,6 +16,7 @@ export class PgDatabase<T extends ColumnRecord> {
 		return {
 			extensions: db.#extensions ?? [],
 			tables: db.#tables ?? {},
+			types: db.#types || [],
 		};
 	}
 
@@ -107,9 +110,15 @@ export class PgDatabase<T extends ColumnRecord> {
 	/**
 	 * @hidden
 	 */
+	#types?: Array<EnumType>;
+
+	/**
+	 * @hidden
+	 */
 	constructor(schema: DatabaseSchema<T>) {
 		this.#tables = schema.tables;
 		this.#extensions = schema.extensions;
+		this.#types = schema.types;
 		for (const [, table] of Object.entries(schema.tables || {})) {
 			Object.defineProperty(table, "database", {
 				value: this,

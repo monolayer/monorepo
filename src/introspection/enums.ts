@@ -4,9 +4,8 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
-import { PgEnum, type ColumnInfo } from "~/schema/pg_column.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
-import { tableInfo } from "~/schema/pg_table.js";
+import { EnumType } from "~/schema/pg_enumerated.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbEnumInfo(
@@ -57,28 +56,13 @@ export async function dbEnumInfo(
 }
 
 export function localEnumInfo(schema: AnyPgDatabase) {
-	const tables = PgDatabase.info(schema).tables;
-	return Object.entries(tables).reduce<EnumInfo>(
-		(enumInfo, [, tableDefinition]) => {
-			const columns = tableInfo(tableDefinition).schema.columns;
-			const keys = Object.keys(columns);
-			for (const key of keys) {
-				const column = columns[key];
-				if (column instanceof PgEnum) {
-					const columnDef = Object.fromEntries(Object.entries(column)) as {
-						info: ColumnInfo;
-						values: string[];
-					};
-					const enumName = columnDef.info.dataType;
-					if (enumName !== null) {
-						enumInfo[enumName] = (columnDef.values as string[]).join(", ");
-					}
-				}
-			}
-			return enumInfo;
-		},
-		{},
-	);
+	const types = PgDatabase.info(schema).types;
+	return types.reduce<EnumInfo>((acc, type) => {
+		if (type instanceof EnumType) {
+			acc[type.name] = type.values.join(", ");
+		}
+		return acc;
+	}, {});
 }
 
 export type EnumInfo = Record<string, string>;

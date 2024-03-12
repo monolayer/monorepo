@@ -3,6 +3,7 @@ import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
 import { boolean, serial, text, varchar } from "~/schema/pg_column.js";
 import { PgDatabase, pgDatabase } from "~/schema/pg_database.js";
+import { enumType, enumerated } from "~/schema/pg_enumerated.js";
 import { table } from "~/schema/pg_table.js";
 
 describe("pgDatabase definition", () => {
@@ -51,6 +52,24 @@ test("with extensions", () => {
 		"pgcrypto",
 		"btree_gist",
 	]);
+});
+
+test("with enumerated types", () => {
+	const status = enumType("status", ["online", "offline"]);
+	const users = table({
+		columns: {
+			name: varchar(),
+			status: enumerated(status),
+		},
+	});
+	const database = pgDatabase({
+		types: [status],
+		tables: {
+			users,
+		},
+	});
+	const tables = PgDatabase.info(database).tables;
+	expect(tables.users).toBe(users);
 });
 
 test("types for Kysely", () => {

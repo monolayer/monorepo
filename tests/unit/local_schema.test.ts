@@ -13,12 +13,12 @@ import {
 	bigserial,
 	boolean,
 	integer,
-	pgEnum,
 	serial,
 	timestamp,
 	varchar,
 } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
+import { enumType, enumerated } from "~/schema/pg_enumerated.js";
 import { index } from "~/schema/pg_index.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
@@ -132,7 +132,7 @@ test("#schemaDBColumnInfoByTable", () => {
 			id: serial(),
 			name: varchar().notNull(),
 			email: varchar().notNull(),
-			role: pgEnum("role", ["user", "admin", "superuser"]),
+			role: enumerated(enumType("role", ["user", "admin", "superuser"])),
 		},
 	});
 	const teams = table({
@@ -241,22 +241,30 @@ test("#schemaDBIndexInfoByTable", () => {
 });
 
 test("#schemaDbEnumInfo", () => {
+	const bookStatus = enumType("book_status", [
+		"available",
+		"checked_out",
+		"lost",
+	]);
 	const books = table({
 		columns: {
 			id: serial(),
-			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
+			status: enumerated(bookStatus),
 		},
 	});
+
+	const userStatus = enumType("user_status", ["active", "inactive"]);
 
 	const users = table({
 		columns: {
 			id: serial(),
 			name: varchar(),
-			status: pgEnum("user_status", ["active", "inactive"]),
+			status: enumerated(userStatus),
 		},
 	});
 
 	const database = pgDatabase({
+		types: [bookStatus, userStatus],
 		tables: { users, books },
 	});
 
@@ -267,12 +275,17 @@ test("#schemaDbEnumInfo", () => {
 });
 
 test("#localSchema", () => {
+	const bookStatus = enumType("book_status", [
+		"available",
+		"checked_out",
+		"lost",
+	]);
 	const books = table({
 		columns: {
 			id: serial(),
 			name: varchar(),
 			location: varchar(),
-			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
+			status: enumerated(bookStatus),
 		},
 		constraints: {
 			unique: [unique(["name", "location"])],
@@ -280,13 +293,14 @@ test("#localSchema", () => {
 		indexes: [index(["name"])],
 	});
 
+	const userStatus = enumType("user_status", ["active", "inactive"]);
 	const users = table({
 		columns: {
 			id: serial(),
 			name: varchar().notNull(),
 			email: varchar().notNull(),
 			book_id: integer(),
-			status: pgEnum("user_status", ["active", "inactive"]),
+			status: enumerated(userStatus),
 		},
 		constraints: {
 			primaryKey: primaryKey(["id"]),
@@ -323,6 +337,7 @@ test("#localSchema", () => {
 
 	const database = pgDatabase({
 		extensions: ["cube", "btree_gin"],
+		types: [bookStatus, userStatus],
 		tables: {
 			users,
 			teams,
@@ -623,12 +638,17 @@ test("trigger names are downcased", () => {
 });
 
 test("#localSchemaCamelCase", () => {
+	const bookStatus = enumType("book_status", [
+		"available",
+		"checked_out",
+		"lost",
+	]);
 	const books = table({
 		columns: {
 			id: serial(),
 			name: varchar(),
 			location: varchar(),
-			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
+			status: enumerated(bookStatus),
 		},
 		indexes: [index(["name"])],
 		constraints: {
@@ -636,6 +656,7 @@ test("#localSchemaCamelCase", () => {
 		},
 	});
 
+	const userStatus = enumType("user_status", ["active", "inactive"]);
 	const users = table({
 		columns: {
 			id: serial(),
@@ -643,7 +664,7 @@ test("#localSchemaCamelCase", () => {
 			fullName: varchar(),
 			email: varchar().notNull(),
 			bookId: integer(),
-			status: pgEnum("user_status", ["active", "inactive"]),
+			status: enumerated(userStatus),
 		},
 		constraints: {
 			primaryKey: primaryKey(["fullName"]),
@@ -666,6 +687,7 @@ test("#localSchemaCamelCase", () => {
 
 	const database = pgDatabase({
 		extensions: ["cube", "btree_gin"],
+		types: [bookStatus, userStatus],
 		tables: {
 			users,
 			books,

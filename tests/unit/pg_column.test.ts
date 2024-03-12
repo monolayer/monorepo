@@ -3,6 +3,7 @@ import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
+import { enumType, enumerated } from "~/schema/pg_enumerated.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { table } from "~/schema/pg_table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
@@ -11027,7 +11028,7 @@ describe("pgEnum", () => {
 			test("input type is string, null, or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]),
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11040,7 +11041,7 @@ describe("pgEnum", () => {
 			test("output type is string, null, or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]),
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11063,7 +11064,9 @@ describe("pgEnum", () => {
 			test("input type is string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
+						id: enumerated(
+							enumType("role", ["user", "admin", "superuser"]),
+						).notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11076,7 +11079,9 @@ describe("pgEnum", () => {
 			test("output type is string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
+						id: enumerated(
+							enumType("role", ["user", "admin", "superuser"]),
+						).notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11096,7 +11101,7 @@ describe("pgEnum", () => {
 			test("parses enum members", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]),
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11108,7 +11113,7 @@ describe("pgEnum", () => {
 			test("does not parse other objects", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]),
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11124,7 +11129,7 @@ describe("pgEnum", () => {
 			test("parses null", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]),
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11134,7 +11139,7 @@ describe("pgEnum", () => {
 			test("parses undefined", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]),
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11144,7 +11149,9 @@ describe("pgEnum", () => {
 			test("with default value is nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]).default("user"),
+						id: enumerated(
+							enumType("role", ["user", "admin", "superuser"]),
+						).default("user"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11156,7 +11163,9 @@ describe("pgEnum", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
+						id: enumerated(
+							enumType("role", ["user", "admin", "superuser"]),
+						).notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11168,7 +11177,7 @@ describe("pgEnum", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"])
+						id: enumerated(enumType("role", ["user", "admin", "superuser"]))
 							.notNull()
 							.default("user"),
 					},
@@ -11184,7 +11193,7 @@ describe("pgEnum", () => {
 			test("input type is string", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]),
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11200,7 +11209,7 @@ describe("pgEnum", () => {
 			test("output type is string", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]),
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11216,7 +11225,7 @@ describe("pgEnum", () => {
 			test("is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]),
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11231,7 +11240,9 @@ describe("pgEnum", () => {
 			test("with default value is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]).default("user"),
+						id: enumerated(
+							enumType("role", ["user", "admin", "superuser"]),
+						).default("user"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11246,7 +11257,9 @@ describe("pgEnum", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
+						id: enumerated(
+							enumType("role", ["user", "admin", "superuser"]),
+						).notNull(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11261,7 +11274,7 @@ describe("pgEnum", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"])
+						id: enumerated(enumType("role", ["user", "admin", "superuser"]))
 							.notNull()
 							.default("user"),
 					},
@@ -11280,7 +11293,9 @@ describe("pgEnum", () => {
 			test("undefined", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
+						id: enumerated(
+							enumType("role", ["user", "admin", "superuser"]),
+						).notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11302,7 +11317,9 @@ describe("pgEnum", () => {
 			test("null", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
+						id: enumerated(
+							enumType("role", ["user", "admin", "superuser"]),
+						).notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11324,7 +11341,7 @@ describe("pgEnum", () => {
 			test("not an enum", () => {
 				const tbl = table({
 					columns: {
-						id: pgEnum("role", ["user", "admin", "superuser"]),
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;

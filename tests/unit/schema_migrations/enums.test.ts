@@ -1,7 +1,8 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, pgEnum, serial } from "~/schema/pg_column.js";
+import { integer, serial } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
+import { enumType, enumerated } from "~/schema/pg_enumerated.js";
 import { table } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
@@ -22,14 +23,16 @@ describe("Database migrations", () => {
 			.addColumn("id", "integer")
 			.execute();
 
+		const role = enumType("role", ["admin", "user"]);
 		const users = table({
 			columns: {
 				id: integer(),
-				role: pgEnum("role", ["admin", "user"]),
+				role: enumerated(role),
 			},
 		});
 
 		const database = pgDatabase({
+			types: [role],
 			tables: {
 				users,
 			},
@@ -165,14 +168,16 @@ describe("Database migrations", () => {
 			.addColumn("role", sql`role`)
 			.execute();
 
+		const role = enumType("role", ["admin", "user", "superuser"]);
 		const users = table({
 			columns: {
 				id: serial(),
-				role: pgEnum("role", ["admin", "user", "superuser"]),
+				role: enumerated(role),
 			},
 		});
 
 		const database = pgDatabase({
+			types: [role],
 			tables: {
 				users,
 			},

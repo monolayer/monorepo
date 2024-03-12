@@ -118,12 +118,12 @@ export abstract class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 	/**
 	 * @hidden
 	 */
-	protected readonly _native_data_type: DefaultValueDataTypes;
+	protected readonly _native_data_type: string;
 
 	/**
 	 * @hidden
 	 */
-	constructor(dataType: string, postgresDataType: DefaultValueDataTypes) {
+	constructor(dataType: string, postgresDataType: string) {
 		super(dataType);
 		this._native_data_type = postgresDataType;
 		this._primaryKey = false;
