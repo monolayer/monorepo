@@ -8,7 +8,7 @@ import {
 	type OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
-import { type AnyPgDatabase } from "~/schema/pg_database.js";
+import { databaseInfo, type AnyPgDatabase } from "~/schema/pg_database.js";
 import { tableInfo } from "~/schema/pg_table.js";
 import type { PgTrigger } from "~/schema/pg_trigger.js";
 import type { InformationSchemaDB } from "./types.js";
@@ -129,8 +129,8 @@ export function localTriggersInfo(
 			pool: new pg.Pool({}),
 		}),
 	});
-
-	return Object.entries(schema.tables || {}).reduce<TriggerInfo>(
+	const tables = databaseInfo(schema).tables ?? {};
+	return Object.entries(tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
 			for (const trigger of Object.entries(

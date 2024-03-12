@@ -100,6 +100,7 @@ const sidebars = {
         { type: "doc", id: "api/classes/PgBoolean", label: "PgBoolean" },
         { type: "doc", id: "api/classes/PgBytea", label: "PgBytea" },
         { type: "doc", id: "api/classes/PgChar", label: "PgChar" },
+        { type: "doc", id: "api/classes/PgDatabase", label: "PgDatabase" },
         { type: "doc", id: "api/classes/PgDate", label: "PgDate" },
         { type: "doc", id: "api/classes/PgDoublePrecision", label: "PgDoublePrecision" },
         { type: "doc", id: "api/classes/PgEnum", label: "PgEnum" },
@@ -138,7 +139,6 @@ const sidebars = {
           id: "api/type-aliases/ColumnRecord",
           label: "ColumnRecord",
         },
-        { type: "doc", id: "api/type-aliases/PgDatabase", label: "PgDatabase" },
         {
           type: "doc",
           id: "api/type-aliases/PgExtensions",

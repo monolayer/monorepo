@@ -5,7 +5,7 @@ import {
 	type OperationSuccess,
 } from "~/cli/command.js";
 import { PgEnum, type ColumnInfo } from "~/schema/pg_column.js";
-import type { AnyPgDatabase } from "~/schema/pg_database.js";
+import { databaseInfo, type AnyPgDatabase } from "~/schema/pg_database.js";
 import { tableInfo } from "~/schema/pg_table.js";
 import type { InformationSchemaDB } from "./types.js";
 
@@ -57,7 +57,8 @@ export async function dbEnumInfo(
 }
 
 export function localEnumInfo(schema: AnyPgDatabase) {
-	return Object.entries(schema.tables || {}).reduce<EnumInfo>(
+	const tables = databaseInfo(schema).tables ?? {};
+	return Object.entries(tables).reduce<EnumInfo>(
 		(enumInfo, [, tableDefinition]) => {
 			const columns = tableInfo(tableDefinition).schema.columns;
 			const keys = Object.keys(columns);

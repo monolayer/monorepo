@@ -12,7 +12,11 @@ import {
 	timestamp,
 	varchar,
 } from "~/schema/pg_column.js";
-import { pgDatabase, type PgDatabase } from "~/schema/pg_database.js";
+import {
+	databaseInfo,
+	pgDatabase,
+	type PgDatabase,
+} from "~/schema/pg_database.js";
 import { foreignKey } from "~/schema/pg_foreign_key.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { table } from "~/schema/pg_table.js";
@@ -41,8 +45,8 @@ describe("pgDatabase definition", () => {
 		const database = pgDatabase({
 			tables: { users, teams },
 		});
-		expect(database.tables?.users).toBe(users);
-		expect(database.tables?.teams).toBe(teams);
+		expect(databaseInfo(database).tables?.users).toBe(users);
+		expect(databaseInfo(database).tables?.teams).toBe(teams);
 
 		const expectation: Expect<
 			Equal<
@@ -60,7 +64,10 @@ test("with extensions", () => {
 		tables: {},
 	});
 
-	expect(database.extensions).toStrictEqual(["pgcrypto", "btree_gist"]);
+	expect(databaseInfo(database).extensions).toStrictEqual([
+		"pgcrypto",
+		"btree_gist",
+	]);
 });
 
 test("types for Kysely", () => {
@@ -97,6 +104,38 @@ test("types for Kysely", () => {
 });
 
 describe("introspect", () => {
+	test("introspection returns extensions", () => {
+		const users = table({
+			columns: {
+				id: serial(),
+			},
+		});
+
+		const database = pgDatabase({ extensions: ["hstore"], tables: { users } });
+
+		const expected = {
+			extensions: ["hstore"],
+			tables: {
+				users: {
+					primaryKey: [],
+					columns: {
+						id: {
+							dataType: "serial",
+							nullable: false,
+							generated: true,
+							defaultValue: null,
+							primaryKey: false,
+						},
+					},
+					foreignKeys: [],
+					uniqueConstraints: [],
+					triggers: [],
+				},
+			},
+		};
+		expect(database.instrospect()).toStrictEqual(expected);
+	});
+
 	test("introspection returns empty primary key", () => {
 		const users = table({
 			columns: {
@@ -107,6 +146,7 @@ describe("introspect", () => {
 		const database = pgDatabase({ tables: { users } });
 
 		const expected = {
+			extensions: [],
 			tables: {
 				users: {
 					primaryKey: [],
@@ -141,6 +181,7 @@ describe("introspect", () => {
 		const database = pgDatabase({ tables: { users } });
 
 		const expected = {
+			extensions: [],
 			tables: {
 				users: {
 					primaryKey: ["id"],
@@ -175,6 +216,7 @@ describe("introspect", () => {
 		const database = pgDatabase({ tables: { users } });
 
 		const expected = {
+			extensions: [],
 			tables: {
 				users: {
 					primaryKey: ["email", "name"],
@@ -224,6 +266,7 @@ describe("introspect", () => {
 		const database = pgDatabase({ tables: { demo } });
 
 		const expected = {
+			extensions: [],
 			tables: {
 				demo: {
 					primaryKey: ["name", "time"],
@@ -328,6 +371,7 @@ describe("introspect", () => {
 		const database = pgDatabase({ tables: { authors, books } });
 
 		const expected = {
+			extensions: [],
 			tables: {
 				authors: {
 					primaryKey: ["id"],
@@ -398,6 +442,7 @@ describe("introspect", () => {
 		const database = pgDatabase({ tables: { books } });
 
 		const expected = {
+			extensions: [],
 			tables: {
 				books: {
 					primaryKey: [],
@@ -472,6 +517,7 @@ describe("introspect", () => {
 		const database = pgDatabase({ tables: { books } });
 
 		const expected = {
+			extensions: [],
 			tables: {
 				books: {
 					primaryKey: [],

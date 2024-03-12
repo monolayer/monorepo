@@ -10,7 +10,7 @@ import {
 	findTableByNameInDatabaseSchema,
 	type ForeignKeyInfo,
 } from "~/migrations/migration_schema.js";
-import type { AnyPgDatabase } from "~/schema/pg_database.js";
+import { databaseInfo, type AnyPgDatabase } from "~/schema/pg_database.js";
 import { tableInfo } from "~/schema/pg_table.js";
 import type { InformationSchemaDB } from "./types.js";
 
@@ -124,7 +124,8 @@ export function localForeignKeyConstraintInfo(
 	schema: AnyPgDatabase,
 	camelCase: CamelCaseOptions,
 ) {
-	return Object.entries(schema.tables || {}).reduce<ForeignKeyInfo>(
+	const tables = databaseInfo(schema).tables ?? {};
+	return Object.entries(tables || {}).reduce<ForeignKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const introspect = tableInfo(tableDefinition).introspect();

@@ -12,7 +12,7 @@ import {
 	findPrimaryKey,
 	type MigrationSchema,
 } from "~/migrations/migration_schema.js";
-import type { AnyPgDatabase } from "~/schema/pg_database.js";
+import { databaseInfo, type AnyPgDatabase } from "~/schema/pg_database.js";
 import { tableInfo } from "~/schema/pg_table.js";
 import { ColumnInfo, type TableColumn } from "../schema/pg_column.js";
 import { TableColumnInfo, compileDefaultExpression } from "./schemas.js";
@@ -307,7 +307,8 @@ export function localColumnInfoByTable(
 	remoteSchema: MigrationSchema,
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
-	return Object.entries(schema.tables || {}).reduce<TableColumnInfo>(
+	const tables = databaseInfo(schema).tables ?? {};
+	return Object.entries(tables).reduce<TableColumnInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const columns = Object.entries(tableInfo(tableDefinition).schema.columns);

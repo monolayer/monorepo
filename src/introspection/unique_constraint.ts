@@ -8,7 +8,7 @@ import {
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
 import type { UniqueInfo } from "~/migrations/migration_schema.js";
-import { type AnyPgDatabase } from "~/schema/pg_database.js";
+import { databaseInfo, type AnyPgDatabase } from "~/schema/pg_database.js";
 import { tableInfo } from "~/schema/pg_table.js";
 import { uniqueConstraintOptions, type PgUnique } from "~/schema/pg_unique.js";
 import type { InformationSchemaDB } from "./types.js";
@@ -112,8 +112,8 @@ export function localUniqueConstraintInfo(
 			pool: new pg.Pool({}),
 		}),
 	});
-
-	return Object.entries(schema.tables || {}).reduce<UniqueInfo>(
+	const tables = databaseInfo(schema).tables ?? {};
+	return Object.entries(tables || {}).reduce<UniqueInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const uniqueConstraints =
 				tableInfo(tableDefinition).schema.constraints?.unique;

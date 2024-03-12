@@ -10,7 +10,7 @@ import {
 	primaryKeyColumns,
 	type PrimaryKeyInfo,
 } from "~/migrations/migration_schema.js";
-import type { AnyPgDatabase } from "~/schema/pg_database.js";
+import { databaseInfo, type AnyPgDatabase } from "~/schema/pg_database.js";
 import { tableInfo, type ColumnRecord } from "~/schema/pg_table.js";
 import type { InformationSchemaDB } from "./types.js";
 
@@ -89,7 +89,8 @@ export function localPrimaryKeyConstraintInfo(
 	schema: AnyPgDatabase,
 	camelCase: CamelCaseOptions,
 ) {
-	return Object.entries(schema.tables || {}).reduce<PrimaryKeyInfo>(
+	const tables = databaseInfo(schema).tables ?? {};
+	return Object.entries(tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const columns = tableInfo(tableDefinition).schema.columns as ColumnRecord;
