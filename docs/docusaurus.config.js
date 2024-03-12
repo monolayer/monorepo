@@ -70,6 +70,7 @@ const config = {
         entryPoints: ['../src/index.ts'],
         tsconfig: '../tsconfig.json',
 				groupOrder: ["Database", "Tables", "Columns", "Indexes", "Constraints", "Triggers", "*"],
+				parametersFormat: "table",
       },
     ],
 	],
