@@ -8,7 +8,7 @@ export type DatabaseSchema<T> = {
 };
 
 export class PgDatabase<T extends Record<string, AnyPgTable>> {
-	declare kyselyDatabase: {
+	declare infer: {
 		[K in keyof T]: T[K]["infer"];
 	};
 

@@ -98,7 +98,7 @@ test("types for Kysely", () => {
 		books: typeof books.infer;
 	};
 
-	type InferredDBTypes = typeof database.kyselyDatabase;
+	type InferredDBTypes = typeof database.infer;
 	const dbExpect: Expect<Equal<InferredDBTypes, ExpectedType>> = true;
 	expectTypeOf(dbExpect).toMatchTypeOf<boolean>();
 });
