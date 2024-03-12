@@ -3,7 +3,7 @@ import { expect } from "vitest";
 import type { Changeset } from "~/changeset/migration_op/changeset.js";
 import type { CamelCaseOptions } from "~/config.js";
 import { generateMigrationFiles } from "~/migrations/generate.js";
-import type { pgDatabase } from "~/schema/pg_database.js";
+import type { PgDatabase } from "~/schema/pg_database.js";
 import type { DbContext } from "~tests/setup.js";
 import { computeChangeset } from "./compute_changeset.js";
 
@@ -36,7 +36,7 @@ function expectMigrationSuccess(resultSet: MigrationResultSet) {
 export async function testUpAndDownMigrations(
 	context: DbContext,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	database: pgDatabase<any>,
+	database: PgDatabase<any>,
 	cs: Changeset[],
 	down: "same" | "reverse" | "empty",
 	camelCase: CamelCaseOptions = { enabled: false },
@@ -87,7 +87,7 @@ export async function testChangesetAndMigrations({
 }: {
 	context: DbContext;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	database: pgDatabase<any>;
+	database: PgDatabase<any>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expected: any[];
 	down: "same" | "reverse" | "empty";

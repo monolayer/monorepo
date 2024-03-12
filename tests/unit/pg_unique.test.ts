@@ -1,10 +1,10 @@
 import { describe, expect, test } from "vitest";
 import { compileUnique } from "~tests/helpers/indexes.js";
-import { pgUnique } from "../../src/schema/pg_unique.js";
+import { unique } from "../../src/schema/pg_unique.js";
 
 describe("PgUniqueConstraint", () => {
 	test("one column", () => {
-		const constraint = pgUnique(["id"]);
+		const constraint = unique(["id"]);
 		const compiled = compileUnique(constraint, "test_table");
 
 		const expected = {
@@ -15,7 +15,7 @@ describe("PgUniqueConstraint", () => {
 	});
 
 	test("multiple columns", () => {
-		const constraint = pgUnique(["price", "name"]);
+		const constraint = unique(["price", "name"]);
 		const compiled = compileUnique(constraint, "test_table");
 
 		const expected = {
@@ -26,7 +26,7 @@ describe("PgUniqueConstraint", () => {
 	});
 
 	test("null not distinct", () => {
-		const constraint = pgUnique(["id"]).nullsNotDistinct();
+		const constraint = unique(["id"]).nullsNotDistinct();
 		const compiled = compileUnique(constraint, "test_table");
 
 		const expected = {

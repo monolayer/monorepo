@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgInteger, pgText, pgVarchar } from "~/schema/pg_column.js";
+import { integer, text, varchar } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { pgTable } from "~/schema/pg_table.js";
+import { table } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
@@ -30,16 +30,16 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable({
+				users: table({
 					columns: {
-						name: pgText(),
-						email: pgText(),
+						name: text(),
+						email: text(),
 					},
 				}),
-				teams: pgTable({
+				teams: table({
 					columns: {
-						id: pgInteger(),
-						location: pgText(),
+						id: integer(),
+						location: text(),
 					},
 				}),
 			},
@@ -113,14 +113,14 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable({
+				users: table({
 					columns: {
-						name: pgText(),
+						name: text(),
 					},
 				}),
-				teams: pgTable({
+				teams: table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				}),
 			},
@@ -186,9 +186,9 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable({
+				users: table({
 					columns: {
-						name: pgVarchar(),
+						name: varchar(),
 					},
 				}),
 			},
@@ -234,9 +234,9 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable({
+				users: table({
 					columns: {
-						name: pgText().default("bar"),
+						name: text().default("bar"),
 					},
 				}),
 			},
@@ -283,10 +283,10 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable({
+				users: table({
 					columns: {
-						name: pgText(),
-						email: pgText().notNull(),
+						name: text(),
+						email: text().notNull(),
 					},
 				}),
 			},
@@ -352,9 +352,9 @@ describe("Table change migrations", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable({
+				users: table({
 					columns: {
-						name: pgVarchar().default("foo").notNull(),
+						name: varchar().default("foo").notNull(),
 					},
 				}),
 			},

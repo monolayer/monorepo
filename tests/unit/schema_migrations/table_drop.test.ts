@@ -1,10 +1,10 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgInteger, pgText } from "~/schema/pg_column.js";
+import { integer, text } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { pgTable } from "~/schema/pg_table.js";
-import { pgUnique } from "~/schema/pg_unique.js";
+import { table } from "~/schema/pg_table.js";
+import { unique } from "~/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
@@ -21,7 +21,7 @@ describe("Table drop migrations", () => {
 	test<DbContext>("drop empty tables", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				books: pgTable({
+				books: table({
 					columns: {},
 				}),
 			},
@@ -61,7 +61,7 @@ describe("Table drop migrations", () => {
 	test<DbContext>("drop table with columns", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				organizations: pgTable({
+				organizations: table({
 					columns: {},
 				}),
 			},
@@ -195,7 +195,7 @@ describe("Table drop migrations", () => {
 	test<DbContext>("drop table with primary key", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				organizations: pgTable({
+				organizations: table({
 					columns: {},
 				}),
 			},
@@ -309,12 +309,12 @@ describe("Table drop migrations", () => {
 			.addUniqueConstraint("users_id_fullName_kinetic_key", ["id", "fullName"])
 			.execute();
 
-		const books = pgTable({
+		const books = table({
 			columns: {
-				id: pgInteger(),
+				id: integer(),
 			},
 			constraints: {
-				unique: [pgUnique(["id"]).nullsNotDistinct()],
+				unique: [unique(["id"]).nullsNotDistinct()],
 			},
 		});
 
@@ -367,7 +367,7 @@ describe("Table drop migrations", () => {
 	test<DbContext>("drop table with foreign keys", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				organizations: pgTable({
+				organizations: table({
 					columns: {},
 				}),
 			},
@@ -462,7 +462,7 @@ describe("Table drop migrations", () => {
 	test<DbContext>("drop table with indexes", async (context) => {
 		const database = pgDatabase({
 			tables: {
-				organizations: pgTable({
+				organizations: table({
 					columns: {},
 				}),
 			},
@@ -626,9 +626,9 @@ describe("Table drop migrations", () => {
 		const database = pgDatabase({
 			extensions: ["moddatetime"],
 			tables: {
-				teams: pgTable({
+				teams: table({
 					columns: {
-						name: pgText(),
+						name: text(),
 					},
 				}),
 			},

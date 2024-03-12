@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { pgSerial } from "~/schema/pg_column.js";
+import { serial } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { pgTable } from "~/schema/pg_table.js";
+import { table } from "~/schema/pg_table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
 import {
@@ -145,9 +145,9 @@ describe("findForeignKeysTargetTables", () => {
 
 describe("findTableInDatabaseSchema", () => {
 	test("returns the name table of a table in the database schema", () => {
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgSerial(),
+				id: serial(),
 			},
 		});
 
@@ -161,9 +161,9 @@ describe("findTableInDatabaseSchema", () => {
 	});
 
 	test("returns the undefined if the table is not found", () => {
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgSerial(),
+				id: serial(),
 			},
 		});
 
@@ -175,15 +175,15 @@ describe("findTableInDatabaseSchema", () => {
 	});
 
 	test("returns the name table of a table in the database schema with multiple tables with same definition", () => {
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgSerial(),
+				id: serial(),
 			},
 		});
 
-		const desks = pgTable({
+		const desks = table({
 			columns: {
-				id: pgSerial(),
+				id: serial(),
 			},
 		});
 

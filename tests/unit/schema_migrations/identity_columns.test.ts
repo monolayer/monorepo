@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgInteger } from "~/schema/pg_column.js";
+import { integer } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { pgTable } from "~/schema/pg_table.js";
+import { table } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup.js";
@@ -21,10 +21,10 @@ describe("Identity columns", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable({
+				users: table({
 					columns: {
-						id: pgInteger().generatedAlwaysAsIdentity(),
-						count: pgInteger().generatedByDefaultAsIdentity(),
+						id: integer().generatedAlwaysAsIdentity(),
+						count: integer().generatedByDefaultAsIdentity(),
 					},
 				}),
 			},
@@ -96,7 +96,7 @@ describe("Identity columns", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable({
+				users: table({
 					columns: {},
 				}),
 			},
@@ -164,10 +164,10 @@ describe("Identity columns", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable({
+				users: table({
 					columns: {
-						id: pgInteger().generatedAlwaysAsIdentity(),
-						count: pgInteger().generatedByDefaultAsIdentity(),
+						id: integer().generatedAlwaysAsIdentity(),
+						count: integer().generatedByDefaultAsIdentity(),
 					},
 				}),
 			},
@@ -269,10 +269,10 @@ describe("Identity columns", () => {
 
 		const database = pgDatabase({
 			tables: {
-				users: pgTable({
+				users: table({
 					columns: {
-						id: pgInteger(),
-						count: pgInteger(),
+						id: integer(),
+						count: integer(),
 					},
 				}),
 			},

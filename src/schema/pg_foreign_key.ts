@@ -1,5 +1,5 @@
 import type { ForeignKeyRule } from "../introspection/foreign_key_constraint.js";
-import type { PgTable } from "./pg_table.js";
+import type { AnyPgTable, PgTable } from "./pg_table.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ForeignKeyOptions<T extends PgTable<any, any>> = {
@@ -11,7 +11,7 @@ type ForeignKeyOptions<T extends PgTable<any, any>> = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class PgForeignKey<T extends string, C extends PgTable<any, any>> {
+export class PgForeignKey<T extends string, C extends AnyPgTable> {
 	protected options: ForeignKeyOptions<C>;
 
 	constructor(
@@ -39,8 +39,10 @@ export class PgForeignKey<T extends string, C extends PgTable<any, any>> {
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function pgForeignKey<T extends string, C extends PgTable<any, any>>(
+/**
+ * @group Constraints
+ */
+export function foreignKey<T extends string, C extends AnyPgTable>(
 	columns: T[],
 	targetTable: C,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

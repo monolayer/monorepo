@@ -3,7 +3,7 @@ import {
 	type Boolish,
 	type ColumnInfo,
 	type PgColumnBase,
-	type PgColumnTypes,
+	type TableColumn,
 } from "../schema/pg_column.js";
 
 type ColumnData = {
@@ -43,7 +43,7 @@ export function toBooleanOrNull(val: boolean | Boolish | null): boolean | null {
 			return null;
 	}
 }
-export function nullableColumn<T extends PgColumnTypes>(column: T) {
+export function nullableColumn<T extends TableColumn>(column: T) {
 	const data = columnData(column);
 	return !data._primaryKey && data.info.isNullable === true;
 }

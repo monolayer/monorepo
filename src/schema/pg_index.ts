@@ -19,7 +19,7 @@ type IndexOptions = {
 	columns: string[];
 };
 
-export class PgIndex<T extends string> {
+export class PgIndex<T extends string | (string & Record<string, never>)> {
 	protected options: IndexOptions;
 
 	constructor(protected columns: T[]) {
@@ -82,7 +82,9 @@ export class PgIndex<T extends string> {
 	}
 }
 
-export function pgIndex<T extends string>(columns: T[]) {
+export function index<T extends string | (string & Record<string, never>)>(
+	columns: T[],
+) {
 	return new PgIndex(columns);
 }
 

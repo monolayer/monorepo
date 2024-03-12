@@ -1,9 +1,9 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgInteger, pgTimestamp } from "~/schema/pg_column.js";
+import { integer, timestamp } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { pgTable } from "~/schema/pg_table.js";
-import { pgTrigger } from "~/schema/pg_trigger.js";
+import { table } from "~/schema/pg_table.js";
+import { trigger } from "~/schema/pg_trigger.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";
@@ -24,18 +24,18 @@ describe("Database migrations", () => {
 			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
 			.execute();
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgInteger(),
-				updatedAt: pgTimestamp().default(sql`now()`),
+				id: integer(),
+				updatedAt: timestamp().default(sql`now()`),
 			},
 			triggers: {
-				foo_before_update: pgTrigger()
+				foo_before_update: trigger()
 					.fireWhen("before")
 					.events(["update"])
 					.forEach("row")
 					.function("moddatetime", [{ value: "updatedAt" }]),
-				foo_after_update: pgTrigger()
+				foo_after_update: trigger()
 					.fireWhen("after")
 					.events(["update"])
 					.forEach("row")
@@ -137,10 +137,10 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_after_update_trg 
 			context.kysely,
 		);
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgInteger(),
-				updatedAt: pgTimestamp().default(sql`now()`),
+				id: integer(),
+				updatedAt: timestamp().default(sql`now()`),
 			},
 		});
 
@@ -211,13 +211,13 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_after_update_trg 
 			context.kysely,
 		);
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgInteger(),
-				updatedAt: pgTimestamp().default(sql`now()`),
+				id: integer(),
+				updatedAt: timestamp().default(sql`now()`),
 			},
 			triggers: {
-				foo_before_update: pgTrigger()
+				foo_before_update: trigger()
 					.fireWhen("after")
 					.events(["update"])
 					.forEach("row")

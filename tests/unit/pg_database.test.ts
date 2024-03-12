@@ -2,40 +2,40 @@
 import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { pgForeignKey } from "~/index.js";
 import {
-	pgBigserial,
-	pgBoolean,
-	pgInteger,
-	pgSerial,
-	pgText,
-	pgTime,
-	pgTimestamp,
-	pgVarchar,
+	bigserial,
+	boolean,
+	integer,
+	serial,
+	text,
+	time,
+	timestamp,
+	varchar,
 } from "~/schema/pg_column.js";
-import { pgDatabase } from "~/schema/pg_database.js";
-import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
-import { pgTable } from "~/schema/pg_table.js";
-import { pgTrigger } from "~/schema/pg_trigger.js";
-import { pgUnique } from "~/schema/pg_unique.js";
+import { pgDatabase, type PgDatabase } from "~/schema/pg_database.js";
+import { foreignKey } from "~/schema/pg_foreign_key.js";
+import { primaryKey } from "~/schema/pg_primary_key.js";
+import { table } from "~/schema/pg_table.js";
+import { trigger } from "~/schema/pg_trigger.js";
+import { unique } from "~/schema/pg_unique.js";
 
 describe("pgDatabase definition", () => {
 	test("without tables", () => {
 		const database = pgDatabase({ tables: {} });
 		// eslint-disable-next-line @typescript-eslint/ban-types
-		const expect: Expect<Equal<typeof database, pgDatabase<{}>>> = true;
+		const expect: Expect<Equal<typeof database, PgDatabase<{}>>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
 
 	test("with tables", () => {
-		const users = pgTable({
+		const users = table({
 			columns: {
-				name: pgVarchar(),
+				name: varchar(),
 			},
 		});
-		const teams = pgTable({
+		const teams = table({
 			columns: {
-				name: pgVarchar(),
+				name: varchar(),
 			},
 		});
 		const database = pgDatabase({
@@ -47,7 +47,7 @@ describe("pgDatabase definition", () => {
 		const expectation: Expect<
 			Equal<
 				typeof database,
-				pgDatabase<{ users: typeof users; teams: typeof teams }>
+				PgDatabase<{ users: typeof users; teams: typeof teams }>
 			>
 		> = true;
 		expectTypeOf(expectation).toMatchTypeOf<boolean>();
@@ -64,19 +64,19 @@ test("with extensions", () => {
 });
 
 test("types for Kysely", () => {
-	const users = pgTable({
+	const users = table({
 		columns: {
-			id: pgSerial(),
-			name: pgVarchar().notNull(),
-			email: pgText().notNull(),
-			address: pgText(),
+			id: serial(),
+			name: varchar().notNull(),
+			email: text().notNull(),
+			address: text(),
 		},
 	});
-	const books = pgTable({
+	const books = table({
 		columns: {
-			id: pgSerial(),
-			title: pgVarchar().notNull(),
-			borrowed: pgBoolean().notNull(),
+			id: serial(),
+			title: varchar().notNull(),
+			borrowed: boolean().notNull(),
 		},
 	});
 	const database = pgDatabase({
@@ -98,9 +98,9 @@ test("types for Kysely", () => {
 
 describe("introspect", () => {
 	test("introspection returns empty primary key", () => {
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgSerial(),
+				id: serial(),
 			},
 		});
 
@@ -129,12 +129,12 @@ describe("introspect", () => {
 	});
 
 	test("introspection returns primary key", () => {
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgSerial(),
+				id: serial(),
 			},
 			constraints: {
-				primaryKey: pgPrimaryKey(["id"]),
+				primaryKey: primaryKey(["id"]),
 			},
 		});
 
@@ -163,13 +163,13 @@ describe("introspect", () => {
 	});
 
 	test("introspection returns composite primary key", () => {
-		const users = pgTable({
+		const users = table({
 			columns: {
-				email: pgText(),
-				name: pgInteger().generatedByDefaultAsIdentity(),
+				email: text(),
+				name: integer().generatedByDefaultAsIdentity(),
 			},
 			constraints: {
-				primaryKey: pgPrimaryKey(["email", "name"]),
+				primaryKey: primaryKey(["email", "name"]),
 			},
 		});
 		const database = pgDatabase({ tables: { users } });
@@ -204,20 +204,20 @@ describe("introspect", () => {
 	});
 
 	test("introspection returns column info", () => {
-		const demo = pgTable({
+		const demo = table({
 			columns: {
-				id: pgSerial(),
-				id2: pgBigserial(),
-				name: pgText(),
-				email: pgText().notNull(),
-				count1: pgInteger().generatedByDefaultAsIdentity(),
-				count2: pgInteger().generatedAlwaysAsIdentity(),
-				description: pgText().default("TDB"),
-				createdAt: pgTimestamp().default(sql`now()`),
-				time: pgTime(4),
+				id: serial(),
+				id2: bigserial(),
+				name: text(),
+				email: text().notNull(),
+				count1: integer().generatedByDefaultAsIdentity(),
+				count2: integer().generatedAlwaysAsIdentity(),
+				description: text().default("TDB"),
+				createdAt: timestamp().default(sql`now()`),
+				time: time(4),
 			},
 			constraints: {
-				primaryKey: pgPrimaryKey(["name", "time"]),
+				primaryKey: primaryKey(["name", "time"]),
 			},
 		});
 
@@ -302,23 +302,23 @@ describe("introspect", () => {
 	});
 
 	test("introspection returns foreignKeys", () => {
-		const authors = pgTable({
+		const authors = table({
 			columns: {
-				id: pgSerial(),
+				id: serial(),
 			},
 			constraints: {
-				primaryKey: pgPrimaryKey(["id"]),
+				primaryKey: primaryKey(["id"]),
 			},
 		});
 
-		const books = pgTable({
+		const books = table({
 			columns: {
-				id: pgSerial(),
-				book_id: pgInteger(),
+				id: serial(),
+				book_id: integer(),
 			},
 			constraints: {
 				foreignKeys: [
-					pgForeignKey(["book_id"], authors, ["id"])
+					foreignKey(["book_id"], authors, ["id"])
 						.updateRule("restrict")
 						.deleteRule("cascade"),
 				],
@@ -380,17 +380,17 @@ describe("introspect", () => {
 	});
 
 	test("introspection returns unique constraints", () => {
-		const books = pgTable({
+		const books = table({
 			columns: {
-				id: pgSerial(),
-				book_id: pgInteger(),
-				description: pgText(),
-				location: pgText(),
+				id: serial(),
+				book_id: integer(),
+				description: text(),
+				location: text(),
 			},
 			constraints: {
 				unique: [
-					pgUnique(["book_id"]),
-					pgUnique(["description", "location"]).nullsNotDistinct(),
+					unique(["book_id"]),
+					unique(["description", "location"]).nullsNotDistinct(),
 				],
 			},
 		});
@@ -451,15 +451,15 @@ describe("introspect", () => {
 	});
 
 	test("introspection returns triggers", () => {
-		const books = pgTable({
+		const books = table({
 			columns: {
-				id: pgSerial(),
-				book_id: pgInteger(),
-				description: pgText(),
-				location: pgText(),
+				id: serial(),
+				book_id: integer(),
+				description: text(),
+				location: text(),
 			},
 			triggers: {
-				foo_before_update: pgTrigger()
+				foo_before_update: trigger()
 					.fireWhen("before")
 					.events(["delete"])
 					.forEach("statement")

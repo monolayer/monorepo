@@ -43,7 +43,7 @@ export type PgTrigger = {
 	compileArgs: () => Partial<PgTriggerFunctionOptions>;
 };
 
-export function pgTrigger() {
+export function trigger() {
 	const compileArgs: Partial<PgTriggerFunctionOptions> = {};
 	const trigger: PgTrigger = {
 		events: (events) => {

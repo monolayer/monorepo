@@ -10,27 +10,27 @@ import { localIndexInfoByTable } from "~/introspection/indexes.js";
 import { localSchema } from "~/introspection/schemas.js";
 import {
 	ColumnIdentity,
-	pgBigserial,
-	pgBoolean,
+	bigserial,
+	boolean,
+	integer,
 	pgEnum,
-	pgInteger,
-	pgSerial,
-	pgTimestamp,
-	pgVarchar,
+	serial,
+	timestamp,
+	varchar,
 } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { pgIndex } from "~/schema/pg_index.js";
-import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
+import { index } from "~/schema/pg_index.js";
+import { primaryKey } from "~/schema/pg_primary_key.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
-import { pgForeignKey } from "../../src/schema/pg_foreign_key.js";
-import { pgTable } from "../../src/schema/pg_table.js";
-import { pgTrigger } from "../../src/schema/pg_trigger.js";
-import { pgUnique } from "../../src/schema/pg_unique.js";
+import { foreignKey } from "../../src/schema/pg_foreign_key.js";
+import { table } from "../../src/schema/pg_table.js";
+import { trigger } from "../../src/schema/pg_trigger.js";
+import { unique } from "../../src/schema/pg_unique.js";
 
 describe("#schemaColumnInfo", () => {
 	test("default column", () => {
-		const column = pgVarchar(100);
+		const column = varchar(100);
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -42,7 +42,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("not null column", () => {
-		const column = pgVarchar(100).notNull();
+		const column = varchar(100).notNull();
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -55,7 +55,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with default default data type", () => {
-		const column = pgVarchar(100).default("foo");
+		const column = varchar(100).default("foo");
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -68,7 +68,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with default with expression", () => {
-		const column = pgTimestamp().default(sql`CURRENT_TIMESTAMP`);
+		const column = timestamp().default(sql`CURRENT_TIMESTAMP`);
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -80,7 +80,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with renameFrom", () => {
-		const column = pgVarchar(100).renameFrom("old_column_name");
+		const column = varchar(100).renameFrom("old_column_name");
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -93,7 +93,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with always as identity", () => {
-		const column = pgInteger().generatedAlwaysAsIdentity();
+		const column = integer().generatedAlwaysAsIdentity();
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -106,7 +106,7 @@ describe("#schemaColumnInfo", () => {
 	});
 
 	test("column with by default as identity", () => {
-		const column = pgInteger().generatedByDefaultAsIdentity();
+		const column = integer().generatedByDefaultAsIdentity();
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
@@ -127,19 +127,19 @@ test("#schemaDBColumnInfoByTable on empty database", () => {
 });
 
 test("#schemaDBColumnInfoByTable", () => {
-	const users = pgTable({
+	const users = table({
 		columns: {
-			id: pgSerial(),
-			name: pgVarchar().notNull(),
-			email: pgVarchar().notNull(),
+			id: serial(),
+			name: varchar().notNull(),
+			email: varchar().notNull(),
 			role: pgEnum("role", ["user", "admin", "superuser"]),
 		},
 	});
-	const teams = pgTable({
+	const teams = table({
 		columns: {
-			id: pgBigserial(),
-			name: pgVarchar().notNull(),
-			active: pgBoolean(),
+			id: bigserial(),
+			name: varchar().notNull(),
+			active: boolean(),
 		},
 	});
 	const database = pgDatabase({
@@ -202,21 +202,21 @@ test("#schemaDBColumnInfoByTable", () => {
 });
 
 test("#schemaDBIndexInfoByTable", () => {
-	const users = pgTable({
+	const users = table({
 		columns: {
-			id: pgSerial(),
-			name: pgVarchar().notNull(),
-			email: pgVarchar().notNull(),
+			id: serial(),
+			name: varchar().notNull(),
+			email: varchar().notNull(),
 		},
-		indexes: [pgIndex(["name"]), pgIndex(["email", "id"])],
+		indexes: [index(["name"]), index(["email", "id"])],
 	});
-	const teams = pgTable({
+	const teams = table({
 		columns: {
-			id: pgBigserial(),
-			name: pgVarchar().notNull(),
-			active: pgBoolean(),
+			id: bigserial(),
+			name: varchar().notNull(),
+			active: boolean(),
 		},
-		indexes: [pgIndex(["id"]), pgIndex(["active"])],
+		indexes: [index(["id"]), index(["active"])],
 	});
 	const database = pgDatabase({
 		tables: {
@@ -241,17 +241,17 @@ test("#schemaDBIndexInfoByTable", () => {
 });
 
 test("#schemaDbEnumInfo", () => {
-	const books = pgTable({
+	const books = table({
 		columns: {
-			id: pgSerial(),
+			id: serial(),
 			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
 		},
 	});
 
-	const users = pgTable({
+	const users = table({
 		columns: {
-			id: pgSerial(),
-			name: pgVarchar(),
+			id: serial(),
+			name: varchar(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
 	});
@@ -267,37 +267,34 @@ test("#schemaDbEnumInfo", () => {
 });
 
 test("#localSchema", () => {
-	const books = pgTable({
+	const books = table({
 		columns: {
-			id: pgSerial(),
-			name: pgVarchar(),
-			location: pgVarchar(),
+			id: serial(),
+			name: varchar(),
+			location: varchar(),
 			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
 		},
 		constraints: {
-			unique: [pgUnique(["name", "location"])],
+			unique: [unique(["name", "location"])],
 		},
-		indexes: [pgIndex(["name"])],
+		indexes: [index(["name"])],
 	});
 
-	const users = pgTable({
+	const users = table({
 		columns: {
-			id: pgSerial(),
-			name: pgVarchar().notNull(),
-			email: pgVarchar().notNull(),
-			book_id: pgInteger(),
+			id: serial(),
+			name: varchar().notNull(),
+			email: varchar().notNull(),
+			book_id: integer(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
 		constraints: {
-			primaryKey: pgPrimaryKey(["id"]),
-			foreignKeys: [pgForeignKey(["book_id"], books, ["id"])],
+			primaryKey: primaryKey(["id"]),
+			foreignKeys: [foreignKey(["book_id"], books, ["id"])],
+			unique: [unique(["name"]), unique(["email"]).nullsNotDistinct()],
 		},
-		uniqueConstraints: [
-			pgUnique(["name"]),
-			pgUnique(["email"]).nullsNotDistinct(),
-		],
 		triggers: {
-			foo_before_update: pgTrigger()
+			foo_before_update: trigger()
 				.fireWhen("before")
 				.events(["update"])
 				.forEach("statement")
@@ -305,18 +302,18 @@ test("#localSchema", () => {
 		},
 	});
 
-	const teams = pgTable({
+	const teams = table({
 		columns: {
-			id: pgBigserial(),
-			name: pgVarchar().notNull(),
-			active: pgBoolean(),
+			id: bigserial(),
+			name: varchar().notNull(),
+			active: boolean(),
 		},
 		constraints: {
-			primaryKey: pgPrimaryKey(["id"]),
+			primaryKey: primaryKey(["id"]),
 		},
-		indexes: [pgIndex(["name"])],
+		indexes: [index(["name"])],
 		triggers: {
-			foo_before_insert: pgTrigger()
+			foo_before_insert: trigger()
 				.fireWhen("before")
 				.events(["insert"])
 				.forEach("row")
@@ -569,12 +566,12 @@ test("#localSchema", () => {
 });
 
 test("trigger names are downcased", () => {
-	const users = pgTable({
+	const users = table({
 		columns: {
-			id: pgSerial(),
+			id: serial(),
 		},
 		triggers: {
-			foo_Before_update: pgTrigger()
+			foo_Before_update: trigger()
 				.fireWhen("before")
 				.events(["update"])
 				.forEach("statement")
@@ -626,38 +623,40 @@ test("trigger names are downcased", () => {
 });
 
 test("#localSchemaCamelCase", () => {
-	const books = pgTable({
+	const books = table({
 		columns: {
-			id: pgSerial(),
-			name: pgVarchar(),
-			location: pgVarchar(),
+			id: serial(),
+			name: varchar(),
+			location: varchar(),
 			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
 		},
-		indexes: [pgIndex(["name"])],
-		uniqueConstraints: [pgUnique(["name", "location"])],
+		indexes: [index(["name"])],
+		constraints: {
+			unique: [unique(["name", "location"])],
+		},
 	});
 
-	const users = pgTable({
+	const users = table({
 		columns: {
-			id: pgSerial(),
-			name: pgVarchar().notNull(),
-			fullName: pgVarchar(),
-			email: pgVarchar().notNull(),
-			bookId: pgInteger(),
+			id: serial(),
+			name: varchar().notNull(),
+			fullName: varchar(),
+			email: varchar().notNull(),
+			bookId: integer(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
 		constraints: {
-			primaryKey: pgPrimaryKey(["fullName"]),
-			foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
+			primaryKey: primaryKey(["fullName"]),
+			foreignKeys: [foreignKey(["bookId"], books, ["id"])],
+			unique: [
+				unique(["name"]),
+				unique(["fullName"]),
+				unique(["email"]).nullsNotDistinct(),
+			],
 		},
-		indexes: [pgIndex(["fullName"])],
-		uniqueConstraints: [
-			pgUnique(["name"]),
-			pgUnique(["fullName"]),
-			pgUnique(["email"]).nullsNotDistinct(),
-		],
+		indexes: [index(["fullName"])],
 		triggers: {
-			foo_before_update: pgTrigger()
+			foo_before_update: trigger()
 				.fireWhen("before")
 				.events(["update"])
 				.forEach("statement")

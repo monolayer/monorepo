@@ -1,7 +1,7 @@
 import type { Simplify } from "kysely";
 import { InferColumnTypes } from "./inference.js";
 import { introspectTable, type IntrospectedTable } from "./introspect_table.js";
-import { PgColumnTypes } from "./pg_column.js";
+import { TableColumn } from "./pg_column.js";
 import type { AnyPgDatabase } from "./pg_database.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
 import { type PgIndex } from "./pg_index.js";
@@ -9,7 +9,9 @@ import type { PgPrimaryKey } from "./pg_primary_key.js";
 import type { PgTrigger } from "./pg_trigger.js";
 import type { PgUnique } from "./pg_unique.js";
 
-export type ColumnRecord = Record<string, PgColumnTypes>;
+export type ColumnName = string;
+
+export type ColumnRecord = Record<ColumnName, TableColumn>;
 
 export type TableSchema<T, PK extends string> = {
 	columns: T extends ColumnRecord ? T : never;
@@ -27,7 +29,7 @@ export type TableSchema<T, PK extends string> = {
 	};
 };
 
-export function pgTable<T extends ColumnRecord, PK extends string>(
+export function table<T extends ColumnRecord, PK extends string>(
 	tableSchema: TableSchema<T, PK>,
 ) {
 	return new PgTable<T, PK>(tableSchema);

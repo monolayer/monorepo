@@ -2,7 +2,7 @@ import { type IntrospectedTable } from "./introspect_table.js";
 import type { PgExtensions } from "./pg_extension.js";
 import { tableInfo, type AnyPgTable } from "./pg_table.js";
 
-export type pgDatabase<T extends Record<string, AnyPgTable>> = {
+export type PgDatabase<T extends Record<string, AnyPgTable>> = {
 	extensions: PgExtensions;
 	tables?: T;
 	kyselyDatabase: {
@@ -19,7 +19,7 @@ export function pgDatabase<T extends Record<string, AnyPgTable>>({
 	tables?: T;
 }) {
 	const tbl = tables !== undefined ? tables : ({} as T);
-	const database = <pgDatabase<T>>{
+	const database = <PgDatabase<T>>{
 		extensions: extensions !== undefined ? extensions : [],
 		tables: tbl,
 		instrospect: () => {
@@ -41,7 +41,7 @@ export function pgDatabase<T extends Record<string, AnyPgTable>>({
 	return database;
 }
 
-export type AnyPgDatabase = pgDatabase<Record<string, AnyPgTable>>;
+export type AnyPgDatabase = PgDatabase<Record<string, AnyPgTable>>;
 
 type IntrospectedDatabase = {
 	tables: Record<string, IntrospectedTable>;

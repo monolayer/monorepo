@@ -3,8 +3,8 @@ import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
-import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
-import { pgTable } from "~/schema/pg_table.js";
+import { primaryKey } from "~/schema/pg_primary_key.js";
+import { table } from "~/schema/pg_table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
 import {
 	ColumnInfo,
@@ -40,32 +40,32 @@ import {
 	PgTimestampTz,
 	PgUuid,
 	PgVarChar,
-	pgBigint,
-	pgBigserial,
-	pgBoolean,
-	pgBytea,
-	pgChar,
-	pgDate,
-	pgDoublePrecision,
+	bigint,
+	bigserial,
+	boolean,
+	bytea,
+	char,
+	date,
+	doublePrecision,
+	float4,
+	float8,
+	int2,
+	int4,
+	int8,
+	integer,
+	json,
+	jsonb,
+	numeric,
 	pgEnum,
-	pgFloat4,
-	pgFloat8,
-	pgInt2,
-	pgInt4,
-	pgInt8,
-	pgInteger,
-	pgJson,
-	pgJsonb,
-	pgNumeric,
-	pgReal,
-	pgSerial,
-	pgText,
-	pgTime,
-	pgTimestamp,
-	pgTimestamptz,
-	pgTimetz,
-	pgUuid,
-	pgVarchar,
+	real,
+	serial,
+	text,
+	time,
+	timestamp,
+	timestamptz,
+	timetz,
+	uuid,
+	varchar,
 	type Boolish,
 } from "../../src/schema/pg_column.js";
 
@@ -145,14 +145,14 @@ describe("PgGeneratedColumn", () => {
 
 describe("PgIdentifiableColumn", () => {
 	test("generatedAlwaysAsIdentity sets identity to ALWAYS", () => {
-		const column = pgInteger();
+		const column = integer();
 		column.generatedAlwaysAsIdentity();
 		const columnInfo = Object.fromEntries(Object.entries(column)).info;
 		expect(columnInfo.identity).toBe("ALWAYS");
 	});
 
 	test("generatedByDefaultAsIdentity sets identity to BY DEFAULT", () => {
-		const column = pgInteger();
+		const column = integer();
 		column.generatedByDefaultAsIdentity();
 		const columnInfo = Object.fromEntries(Object.entries(column)).info;
 		expect(columnInfo.identity).toBe("BY DEFAULT");
@@ -166,22 +166,22 @@ function testBase(expectedDataType = "integer") {
 
 describe("pgBoolean", () => {
 	test("returns a PgBoolean instance", () => {
-		const column = pgBoolean();
+		const column = boolean();
 		expect(column).toBeInstanceOf(PgBoolean);
 	});
 
 	describe("PgBoolean", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgBoolean()).toBeInstanceOf(PgColumn);
+			expect(boolean()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to boolean", () => {
-			const info = Object.fromEntries(Object.entries(pgBoolean())).info;
+			const info = Object.fromEntries(Object.entries(boolean())).info;
 			expect(info.dataType).toBe("boolean");
 		});
 
 		test("default with column data type", () => {
-			const column = pgBoolean();
+			const column = boolean();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(true);
@@ -227,7 +227,7 @@ describe("pgBoolean", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgBoolean() as any;
+			const column = boolean() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -235,7 +235,7 @@ describe("pgBoolean", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgBoolean() as any;
+			const column = boolean() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -244,12 +244,12 @@ describe("pgBoolean", () => {
 		describe("Zod", () => {
 			describe("by default", () => {
 				test("input type is boolean, Boolish, null or undefined", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean(),
+							id: boolean(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					type InpuType = z.input<typeof schema>;
 					type Expected = boolean | Boolish | null | undefined;
 					const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -257,12 +257,12 @@ describe("pgBoolean", () => {
 				});
 
 				test("output type is boolean, null or undefined", () => {
-					const table = pgTable({
+					const tb = table({
 						columns: {
-							id: pgBoolean(),
+							id: boolean(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tb).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = boolean | null | undefined;
 					const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -280,12 +280,12 @@ describe("pgBoolean", () => {
 				});
 
 				test("input type is boolean, Boolish with notNull", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean().notNull(),
+							id: boolean().notNull(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					type InputType = z.input<typeof schema>;
 					type Expected = boolean | Boolish;
 					const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -293,12 +293,12 @@ describe("pgBoolean", () => {
 				});
 
 				test("output type is boolean with notNull", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean().notNull(),
+							id: boolean().notNull(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = boolean;
 					const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -306,12 +306,12 @@ describe("pgBoolean", () => {
 				});
 
 				test("parses boolean", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean(),
+							id: boolean(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse(true);
 					expect(result.success).toBe(true);
 					if (result.success) {
@@ -320,12 +320,12 @@ describe("pgBoolean", () => {
 				});
 
 				test("parses null", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean(),
+							id: boolean(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse(null);
 					expect(result.success).toBe(true);
 					if (result.success) {
@@ -334,18 +334,18 @@ describe("pgBoolean", () => {
 				});
 
 				test("parses undefined", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean(),
+							id: boolean(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(undefined).success).toBe(true);
 				});
 
 				test("parses with coercion with boolish values", () => {
-					const column = pgBoolean();
-					const table = pgTable({
+					const column = boolean();
+					const tbl = table({
 						columns: {
 							true: column,
 							false: column,
@@ -359,7 +359,7 @@ describe("pgBoolean", () => {
 							off: column,
 						},
 					});
-					const schema = zodSchema(table);
+					const schema = zodSchema(tbl);
 					const data = {
 						true: "true",
 						false: "false",
@@ -394,12 +394,12 @@ describe("pgBoolean", () => {
 				});
 
 				test("does not parse non boolish values", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean(),
+							id: boolean(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse("TRUE").success).toBe(false);
 					expect(schema.safeParse("FALSE").success).toBe(false);
 					expect(schema.safeParse("undefined").success).toBe(false);
@@ -408,36 +408,36 @@ describe("pgBoolean", () => {
 				});
 
 				test("with default value is nullable and optional", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean().default(true),
+							id: boolean().default(true),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
 					expect(schema.safeParse(null).success).toBe(true);
 					expect(schema.safeParse(undefined).success).toBe(true);
 				});
 
 				test("with notNull is non nullable and required", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean().notNull(),
+							id: boolean().notNull(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
 					expect(schema.safeParse(null).success).toBe(false);
 					expect(schema.safeParse(undefined).success).toBe(false);
 				});
 
 				test("with default and notNull is non nullable", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean().notNull().default(true),
+							id: boolean().notNull().default(true),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
 					expect(schema.safeParse(null).success).toBe(false);
 					expect(schema.safeParse(undefined).success).toBe(false);
@@ -446,15 +446,15 @@ describe("pgBoolean", () => {
 
 			describe("as primary key", () => {
 				test("input type is boolean, Boolish", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean(),
+							id: boolean(),
 						},
 						constraints: {
-							primaryKey: pgPrimaryKey(["id"]),
+							primaryKey: primaryKey(["id"]),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					type InpuType = z.input<typeof schema>;
 					type Expected = boolean | Boolish;
 					const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -462,15 +462,15 @@ describe("pgBoolean", () => {
 				});
 
 				test("input type is boolean", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean(),
+							id: boolean(),
 						},
 						constraints: {
-							primaryKey: pgPrimaryKey(["id"]),
+							primaryKey: primaryKey(["id"]),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = boolean;
 					const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -478,60 +478,60 @@ describe("pgBoolean", () => {
 				});
 
 				test("is non nullable and required", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean(),
+							id: boolean(),
 						},
 						constraints: {
-							primaryKey: pgPrimaryKey(["id"]),
+							primaryKey: primaryKey(["id"]),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
 					expect(schema.safeParse(null).success).toBe(false);
 					expect(schema.safeParse(undefined).success).toBe(false);
 				});
 
 				test("with default value is non nullable", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean().default(true),
+							id: boolean().default(true),
 						},
 						constraints: {
-							primaryKey: pgPrimaryKey(["id"]),
+							primaryKey: primaryKey(["id"]),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
 					expect(schema.safeParse(null).success).toBe(false);
 					expect(schema.safeParse(undefined).success).toBe(false);
 				});
 
 				test("with notNull is non nullable and required", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean().notNull(),
+							id: boolean().notNull(),
 						},
 						constraints: {
-							primaryKey: pgPrimaryKey(["id"]),
+							primaryKey: primaryKey(["id"]),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
 					expect(schema.safeParse(null).success).toBe(false);
 					expect(schema.safeParse(undefined).success).toBe(false);
 				});
 
 				test("with default and notNull is non nullable", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean().notNull().default(true),
+							id: boolean().notNull().default(true),
 						},
 						constraints: {
-							primaryKey: pgPrimaryKey(["id"]),
+							primaryKey: primaryKey(["id"]),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
 					expect(schema.safeParse(null).success).toBe(false);
 					expect(schema.safeParse(undefined).success).toBe(false);
@@ -540,12 +540,12 @@ describe("pgBoolean", () => {
 
 			describe("errors", () => {
 				test("undefined", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean().notNull(),
+							id: boolean().notNull(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse(undefined);
 					expect(result.success).toBe(false);
 					if (!result.success) {
@@ -563,12 +563,12 @@ describe("pgBoolean", () => {
 				});
 
 				test("null", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean().notNull(),
+							id: boolean().notNull(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse(null);
 					expect(result.success).toBe(false);
 					if (!result.success) {
@@ -586,12 +586,12 @@ describe("pgBoolean", () => {
 				});
 
 				test("not a boolean", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgBoolean(),
+							id: boolean(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse("hello");
 					expect(result.success).toBe(false);
 					if (!result.success) {
@@ -612,22 +612,22 @@ describe("pgBoolean", () => {
 
 describe("pgText", () => {
 	test("returns a PgText instance", () => {
-		const column = pgText();
+		const column = text();
 		expect(column).toBeInstanceOf(PgText);
 	});
 
 	describe("PgText", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgText()).toBeInstanceOf(PgColumn);
+			expect(text()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to text", () => {
-			const info = Object.fromEntries(Object.entries(pgText())).info;
+			const info = Object.fromEntries(Object.entries(text())).info;
 			expect(info.dataType).toBe("text");
 		});
 
 		test("default with column data type", () => {
-			const column = pgText();
+			const column = text();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("foo");
@@ -636,7 +636,7 @@ describe("pgText", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgText() as any;
+			const column = text() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -644,7 +644,7 @@ describe("pgText", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgText() as any;
+			const column = text() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -654,12 +654,12 @@ describe("pgText", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is string, null or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText(),
+						id: text(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -667,12 +667,12 @@ describe("pgText", () => {
 			});
 
 			test("output type is string, null or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText(),
+						id: text(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -690,12 +690,12 @@ describe("pgText", () => {
 			});
 
 			test("input type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText().notNull(),
+						id: text().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -708,12 +708,12 @@ describe("pgText", () => {
 			});
 
 			test("output type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText().notNull(),
+						id: text().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -726,77 +726,77 @@ describe("pgText", () => {
 			});
 
 			test("parses strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText(),
+						id: text(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText(),
+						id: text(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText(),
+						id: text(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText(),
+						id: text(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(false);
 				expect(schema.safeParse(1).success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText().default("1"),
+						id: text().default("1"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText().notNull(),
+						id: text().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText().notNull().default("1"),
+						id: text().notNull().default("1"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -805,15 +805,15 @@ describe("pgText", () => {
 
 		describe("as primary key", () => {
 			test("input type is string with primary key", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText(),
+						id: text(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -821,15 +821,15 @@ describe("pgText", () => {
 			});
 
 			test("output type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText(),
+						id: text(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -837,60 +837,60 @@ describe("pgText", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText(),
+						id: text(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText().default("hello"),
+						id: text().default("hello"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText().notNull().default("hello"),
+						id: text().notNull().default("hello"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText().default("2").notNull(),
+						id: text().default("2").notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -899,12 +899,12 @@ describe("pgText", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText().notNull(),
+						id: text().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -922,12 +922,12 @@ describe("pgText", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText().notNull(),
+						id: text().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -945,12 +945,12 @@ describe("pgText", () => {
 			});
 
 			test("not a string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgText(),
+						id: text(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(12);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -972,22 +972,22 @@ describe("pgText", () => {
 
 describe("pgBigInt", () => {
 	test("returns a PgBigInt instance", () => {
-		const column = pgBigint();
+		const column = bigint();
 		expect(column).toBeInstanceOf(PgBigInt);
 	});
 
 	describe("PgBigInt", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgBigint()).toBeInstanceOf(PgColumn);
+			expect(bigint()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to bigint", () => {
-			const info = Object.fromEntries(Object.entries(pgBigint())).info;
+			const info = Object.fromEntries(Object.entries(bigint())).info;
 			expect(info.dataType).toBe("bigint");
 		});
 
 		test("default with column data type", () => {
-			const column = pgBigint();
+			const column = bigint();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(12234433444444455n);
@@ -1001,12 +1001,12 @@ describe("pgBigInt", () => {
 		});
 
 		test("has generatedAlwaysAsIdentity", () => {
-			const column = pgBigint();
+			const column = bigint();
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
 		});
 
 		test("has generatedByDefaultAsIdentity", () => {
-			const column = pgBigint();
+			const column = bigint();
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				true,
 			);
@@ -1016,12 +1016,12 @@ describe("pgBigInt", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is bigint, number, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -1029,12 +1029,12 @@ describe("pgBigInt", () => {
 			});
 
 			test("output type is string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -1052,12 +1052,12 @@ describe("pgBigInt", () => {
 			});
 
 			test("input type is bigint, number, or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().notNull(),
+						id: bigint().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = bigint | number | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -1070,12 +1070,12 @@ describe("pgBigInt", () => {
 			});
 
 			test("output type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().notNull(),
+						id: bigint().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -1088,12 +1088,12 @@ describe("pgBigInt", () => {
 			});
 
 			test("has never type when generatedAlwaysAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().generatedAlwaysAsIdentity(),
+						id: bigint().generatedAlwaysAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type SchemaType = typeof schema;
 				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
 				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
@@ -1104,12 +1104,12 @@ describe("pgBigInt", () => {
 			});
 
 			test("input type is bigint, number, string, or undefined with generatedByDefaultAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().generatedByDefaultAsIdentity(),
+						id: bigint().generatedByDefaultAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = bigint | string | number | undefined;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -1125,12 +1125,12 @@ describe("pgBigInt", () => {
 			});
 
 			test("output type is string with generatedByDefaultAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().generatedByDefaultAsIdentity(),
+						id: bigint().generatedByDefaultAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -1146,106 +1146,106 @@ describe("pgBigInt", () => {
 			});
 
 			test("parses bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 			});
 
 			test("parses number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 			});
 
 			test("parses string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("does not parse floats", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(false);
 			});
 
 			test("fails on invalid string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
 			test("fails on empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().default("1"),
+						id: bigint().default("1"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("minimumValue is -9223372036854775808n", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(-9223372036854775808n).success).toBe(true);
 				expect(schema.safeParse("-9223372036854775808").success).toBe(true);
 				expect(schema.safeParse(-9223372036854775809n).success).toBe(false);
@@ -1253,12 +1253,12 @@ describe("pgBigInt", () => {
 			});
 
 			test("maximumValue is 9223372036854775807n", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(9223372036854775807n).success).toBe(true);
 				expect(schema.safeParse("9223372036854775807").success).toBe(true);
 				expect(schema.safeParse(9223372036854775808n).success).toBe(false);
@@ -1266,24 +1266,24 @@ describe("pgBigInt", () => {
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().notNull(),
+						id: bigint().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().notNull().default("1"),
+						id: bigint().notNull().default("1"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -1292,15 +1292,15 @@ describe("pgBigInt", () => {
 
 		describe("as primary key", () => {
 			test("input type is bigint, number, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -1308,15 +1308,15 @@ describe("pgBigInt", () => {
 			});
 
 			test("output type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -1324,60 +1324,60 @@ describe("pgBigInt", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().default(1),
+						id: bigint().default(1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().notNull(),
+						id: bigint().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().notNull().default(1),
+						id: bigint().notNull().default(1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -1386,12 +1386,12 @@ describe("pgBigInt", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().notNull(),
+						id: bigint().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -1408,12 +1408,12 @@ describe("pgBigInt", () => {
 			});
 
 			test("empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -1429,12 +1429,12 @@ describe("pgBigInt", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint().notNull(),
+						id: bigint().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -1452,12 +1452,12 @@ describe("pgBigInt", () => {
 			});
 
 			test("not a bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -1477,23 +1477,23 @@ describe("pgBigInt", () => {
 
 describe("pgBigSerial", () => {
 	test("returns a PgBigSerial instance", () => {
-		const column = pgBigserial();
+		const column = bigserial();
 		expect(column).toBeInstanceOf(PgBigSerial);
 	});
 
 	describe("PgBigSerial", () => {
 		test("inherits from PgColumnWithoutDefault", () => {
-			expect(pgBigserial()).toBeInstanceOf(PgGeneratedColumn);
+			expect(bigserial()).toBeInstanceOf(PgGeneratedColumn);
 		});
 
 		test("dataType is set to bigserial", () => {
-			const info = Object.fromEntries(Object.entries(pgBigserial())).info;
+			const info = Object.fromEntries(Object.entries(bigserial())).info;
 			expect(info.dataType).toBe("bigserial");
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgBigserial() as any;
+			const column = bigserial() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -1501,7 +1501,7 @@ describe("pgBigSerial", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgBigserial() as any;
+			const column = bigserial() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -1510,12 +1510,12 @@ describe("pgBigSerial", () => {
 
 	describe("zod", () => {
 		test("has never type", () => {
-			const table = pgTable({
+			const tbl = table({
 				columns: {
-					id: pgBigserial(),
+					id: bigserial(),
 				},
 			});
-			const schema = zodSchema(table).shape.id;
+			const schema = zodSchema(tbl).shape.id;
 
 			type SchemaType = typeof schema;
 			type Expected = z.ZodType<never, z.ZodTypeDef, never>;
@@ -1529,22 +1529,22 @@ describe("pgBigSerial", () => {
 
 describe("pgBytea", () => {
 	test("returns a PgBytea instance", () => {
-		const column = pgBytea();
+		const column = bytea();
 		expect(column).toBeInstanceOf(PgBytea);
 	});
 
 	describe("PgBytea", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgBytea()).toBeInstanceOf(PgColumn);
+			expect(bytea()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to bytea", () => {
-			const info = Object.fromEntries(Object.entries(pgBytea())).info;
+			const info = Object.fromEntries(Object.entries(bytea())).info;
 			expect(info.dataType).toBe("bytea");
 		});
 
 		test("default with column data type", () => {
-			const column = pgBytea();
+			const column = bytea();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			const buffer = Buffer.from("hello");
@@ -1561,7 +1561,7 @@ describe("pgBytea", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgBytea() as any;
+			const column = bytea() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -1569,7 +1569,7 @@ describe("pgBytea", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgBytea() as any;
+			const column = bytea() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -1579,12 +1579,12 @@ describe("pgBytea", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is Buffer, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Buffer | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -1592,12 +1592,12 @@ describe("pgBytea", () => {
 			});
 
 			test("output type is Buffer, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Buffer | string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -1621,12 +1621,12 @@ describe("pgBytea", () => {
 			});
 
 			test("input type is Buffer or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea().notNull(),
+						id: bytea().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Buffer | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -1634,12 +1634,12 @@ describe("pgBytea", () => {
 			});
 
 			test("output type is Buffer or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea().notNull(),
+						id: bytea().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Buffer | string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -1658,42 +1658,42 @@ describe("pgBytea", () => {
 			});
 
 			test("parses buffers", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(Buffer.from("hello")).success).toBe(true);
 			});
 
 			test("parses strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("does not parse other objects", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(false);
 				expect(schema.safeParse(10.123).success).toBe(false);
 				expect(schema.safeParse(true).success).toBe(false);
@@ -1703,46 +1703,46 @@ describe("pgBytea", () => {
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable, and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea().default(Buffer.from("1")),
+						id: bytea().default(Buffer.from("1")),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea().notNull(),
+						id: bytea().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea().notNull().default("1"),
+						id: bytea().notNull().default("1"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -1751,15 +1751,15 @@ describe("pgBytea", () => {
 
 		describe("as primary key", () => {
 			test("input type is Buffer or string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Buffer | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -1767,15 +1767,15 @@ describe("pgBytea", () => {
 			});
 
 			test("output type is Buffer or string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Buffer | string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -1783,60 +1783,60 @@ describe("pgBytea", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea().default("1"),
+						id: bytea().default("1"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea().notNull(),
+						id: bytea().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea().notNull().default("1"),
+						id: bytea().notNull().default("1"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -1845,12 +1845,12 @@ describe("pgBytea", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea().notNull(),
+						id: bytea().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -1867,12 +1867,12 @@ describe("pgBytea", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea().notNull(),
+						id: bytea().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -1889,12 +1889,12 @@ describe("pgBytea", () => {
 			});
 
 			test("not a bytea", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBytea(),
+						id: bytea(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(new Date());
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -1914,22 +1914,22 @@ describe("pgBytea", () => {
 
 describe("pgDate", () => {
 	test("returns a PgDate instance", () => {
-		const column = pgDate();
+		const column = date();
 		expect(column).toBeInstanceOf(PgDate);
 	});
 
 	describe("PgDate", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgDate()).toBeInstanceOf(PgColumn);
+			expect(date()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to date", () => {
-			const info = Object.fromEntries(Object.entries(pgDate())).info;
+			const info = Object.fromEntries(Object.entries(date())).info;
 			expect(info.dataType).toBe("date");
 		});
 
 		test("default with column data type", () => {
-			const column = pgDate();
+			const column = date();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(new Date(1));
@@ -1941,7 +1941,7 @@ describe("pgDate", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgDate() as any;
+			const column = date() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -1949,7 +1949,7 @@ describe("pgDate", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgDate() as any;
+			const column = date() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -1959,12 +1959,12 @@ describe("pgDate", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is Date, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate(),
+						id: date(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -1972,12 +1972,12 @@ describe("pgDate", () => {
 			});
 
 			test("output type is Date, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate(),
+						id: date(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -2000,12 +2000,12 @@ describe("pgDate", () => {
 			});
 
 			test("input type is Date or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate().notNull(),
+						id: date().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Date | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -2013,12 +2013,12 @@ describe("pgDate", () => {
 			});
 
 			test("output type is Date with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate().notNull(),
+						id: date().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -2038,77 +2038,77 @@ describe("pgDate", () => {
 			});
 
 			test("parses dates", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate(),
+						id: date(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 			});
 
 			test("parses strings that can be coerced into dates", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate(),
+						id: date(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date().toISOString()).success).toBe(true);
 				expect(schema.safeParse("not a date").success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate(),
+						id: date(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate(),
+						id: date(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate().default(new Date()),
+						id: date().default(new Date()),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate().notNull(),
+						id: date().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate().notNull().default(new Date()),
+						id: date().notNull().default(new Date()),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -2117,15 +2117,15 @@ describe("pgDate", () => {
 
 		describe("as primary key", () => {
 			test("input type is Date, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate(),
+						id: date(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -2133,15 +2133,15 @@ describe("pgDate", () => {
 			});
 
 			test("output type is Date", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate(),
+						id: date(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -2149,60 +2149,60 @@ describe("pgDate", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate(),
+						id: date(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate().default(new Date()),
+						id: date().default(new Date()),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate().notNull(),
+						id: date().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate().notNull().default(new Date()),
+						id: date().notNull().default(new Date()),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -2211,12 +2211,12 @@ describe("pgDate", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate().notNull(),
+						id: date().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -2233,12 +2233,12 @@ describe("pgDate", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate().notNull(),
+						id: date().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -2256,12 +2256,12 @@ describe("pgDate", () => {
 			});
 
 			test("not a date", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDate(),
+						id: date(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -2281,22 +2281,22 @@ describe("pgDate", () => {
 
 describe("pgDoublePrecision", () => {
 	test("returns a PgDoublePrecision instance", () => {
-		const column = pgDoublePrecision();
+		const column = doublePrecision();
 		expect(column).toBeInstanceOf(PgDoublePrecision);
 	});
 
 	describe("PgDoublePrecision", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgDoublePrecision()).toBeInstanceOf(PgColumn);
+			expect(doublePrecision()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to double precision", () => {
-			const info = Object.fromEntries(Object.entries(pgDoublePrecision())).info;
+			const info = Object.fromEntries(Object.entries(doublePrecision())).info;
 			expect(info.dataType).toBe("double precision");
 		});
 
 		test("default with column data type", () => {
-			const column = pgDoublePrecision();
+			const column = doublePrecision();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
@@ -2311,7 +2311,7 @@ describe("pgDoublePrecision", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgDoublePrecision() as any;
+			const column = doublePrecision() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -2319,7 +2319,7 @@ describe("pgDoublePrecision", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgDoublePrecision() as any;
+			const column = doublePrecision() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -2329,12 +2329,12 @@ describe("pgDoublePrecision", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is number, bigint, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -2342,12 +2342,12 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("output type is string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -2375,12 +2375,12 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("input type is  number, bigint, or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision().notNull(),
+						id: doublePrecision().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = bigint | number | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -2388,12 +2388,12 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("output type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision().notNull(),
+						id: doublePrecision().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -2418,153 +2418,153 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("parses bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 			});
 
 			test("parses number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 			});
 
 			test("parses decimals", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 			});
 
 			test("parses strings that can be coerced to number or bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse("1.1").success).toBe(true);
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
 			test("parses string that can be parsed as a float but not as a bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("0.00000").success).toBe(true);
 			});
 
 			test("parses NaN, Infinity, and -Infinity strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("NaN").success).toBe(true);
 				expect(schema.safeParse("Infinity").success).toBe(true);
 				expect(schema.safeParse("-Infinity").success).toBe(true);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("fails on empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision().default(30),
+						id: doublePrecision().default(30),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision().notNull(),
+						id: doublePrecision().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision().notNull().default(1.1),
+						id: doublePrecision().notNull().default(1.1),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(3.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("minimum is -1e308", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(-tenCentillionBitInt).success).toBe(true);
 				expect(schema.safeParse(-elevenCentillionBitInt).success).toBe(false);
 			});
 
 			test("maximum is 1e308", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(tenCentillionBitInt).success).toBe(true);
 				expect(schema.safeParse(elevenCentillionBitInt).success).toBe(false);
 			});
@@ -2572,15 +2572,15 @@ describe("pgDoublePrecision", () => {
 
 		describe("as primary key", () => {
 			test("input type is number, bigint, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -2588,15 +2588,15 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("output type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -2604,60 +2604,60 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision().default(1.1),
+						id: doublePrecision().default(1.1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision().notNull(),
+						id: doublePrecision().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision().notNull().default(2.1),
+						id: doublePrecision().notNull().default(2.1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -2666,12 +2666,12 @@ describe("pgDoublePrecision", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision().notNull(),
+						id: doublePrecision().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -2688,12 +2688,12 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -2710,12 +2710,12 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision().notNull(),
+						id: doublePrecision().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -2733,12 +2733,12 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("not a double precision", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -2755,12 +2755,12 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("smaller than minimum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(-elevenCentillionBitInt);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -2777,12 +2777,12 @@ describe("pgDoublePrecision", () => {
 			});
 
 			test("greater than maximum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgDoublePrecision(),
+						id: doublePrecision(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(elevenCentillionBitInt);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -2803,22 +2803,22 @@ describe("pgDoublePrecision", () => {
 
 describe("pgFloat4", () => {
 	test("returns a PgFloat4 instance", () => {
-		const column = pgFloat4();
+		const column = float4();
 		expect(column).toBeInstanceOf(PgFloat4);
 	});
 
 	describe("PgFloat4", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgFloat4()).toBeInstanceOf(PgColumn);
+			expect(float4()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to real", () => {
-			const info = Object.fromEntries(Object.entries(pgFloat4())).info;
+			const info = Object.fromEntries(Object.entries(float4())).info;
 			expect(info.dataType).toBe("real");
 		});
 
 		test("default with column data type", () => {
-			const column = pgFloat4();
+			const column = float4();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10.4);
@@ -2833,7 +2833,7 @@ describe("pgFloat4", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgFloat4() as any;
+			const column = float4() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -2841,7 +2841,7 @@ describe("pgFloat4", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgFloat4() as any;
+			const column = float4() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -2851,12 +2851,12 @@ describe("pgFloat4", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is number, bigint, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -2864,12 +2864,12 @@ describe("pgFloat4", () => {
 			});
 
 			test("output type is number, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -2897,12 +2897,12 @@ describe("pgFloat4", () => {
 			});
 
 			test("input type is number, bigint, or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4().notNull(),
+						id: float4().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -2910,12 +2910,12 @@ describe("pgFloat4", () => {
 			});
 
 			test("output type is number with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4().notNull(),
+						id: float4().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -2940,153 +2940,153 @@ describe("pgFloat4", () => {
 			});
 
 			test("parses bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 			});
 
 			test("parses number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 			});
 
 			test("parses decimals", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 			});
 
 			test("parses strings that can be coerced to number or bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse("1.1").success).toBe(true);
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
 			test("parses string that can be parsed as a float but not as a bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("0.00000").success).toBe(true);
 			});
 
 			test("does parses NaN, Infinity, and -Infinity strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("NaN").success).toBe(true);
 				expect(schema.safeParse("Infinity").success).toBe(true);
 				expect(schema.safeParse("-Infinity").success).toBe(true);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("fails on empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4().default(30),
+						id: float4().default(30),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4().notNull(),
+						id: float4().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4().notNull().default(1.1),
+						id: float4().notNull().default(1.1),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(3.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("minimum is -1e37", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(-tenUnDecillionBigInt).success).toBe(true);
 				expect(schema.safeParse(-eleventUnDecillionBigInt).success).toBe(false);
 			});
 
 			test("maximum is 1e37", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(tenUnDecillionBigInt).success).toBe(true);
 				expect(schema.safeParse(eleventUnDecillionBigInt).success).toBe(false);
 			});
@@ -3094,15 +3094,15 @@ describe("pgFloat4", () => {
 
 		describe("as primary key", () => {
 			test("input type is number, bigint, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -3110,15 +3110,15 @@ describe("pgFloat4", () => {
 			});
 
 			test("output type is number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -3126,60 +3126,60 @@ describe("pgFloat4", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4().default(1.1),
+						id: float4().default(1.1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4().notNull(),
+						id: float4().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4().notNull().default(2.1),
+						id: float4().notNull().default(2.1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -3188,12 +3188,12 @@ describe("pgFloat4", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4().notNull(),
+						id: float4().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3210,12 +3210,12 @@ describe("pgFloat4", () => {
 			});
 
 			test("empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3232,12 +3232,12 @@ describe("pgFloat4", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4().notNull(),
+						id: float4().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3255,12 +3255,12 @@ describe("pgFloat4", () => {
 			});
 
 			test("not a float4", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3277,12 +3277,12 @@ describe("pgFloat4", () => {
 			});
 
 			test("smaller than minimum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(-eleventUnDecillionBigInt);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3299,12 +3299,12 @@ describe("pgFloat4", () => {
 			});
 
 			test("greater than maximum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat4(),
+						id: float4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(eleventUnDecillionBigInt);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3325,22 +3325,22 @@ describe("pgFloat4", () => {
 
 describe("pgFloat8", () => {
 	test("returns a PgFloat8 instance", () => {
-		const column = pgFloat8();
+		const column = float8();
 		expect(column).toBeInstanceOf(PgFloat8);
 	});
 
 	describe("PgFloat8", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgFloat8()).toBeInstanceOf(PgColumn);
+			expect(float8()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to double precision", () => {
-			const info = Object.fromEntries(Object.entries(pgFloat8())).info;
+			const info = Object.fromEntries(Object.entries(float8())).info;
 			expect(info.dataType).toBe("double precision");
 		});
 
 		test("default with column data type", () => {
-			const column = pgFloat8();
+			const column = float8();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10.4);
@@ -3355,7 +3355,7 @@ describe("pgFloat8", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgFloat8() as any;
+			const column = float8() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -3363,7 +3363,7 @@ describe("pgFloat8", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgFloat8() as any;
+			const column = float8() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -3373,12 +3373,12 @@ describe("pgFloat8", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is number, bigint, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -3386,12 +3386,12 @@ describe("pgFloat8", () => {
 			});
 
 			test("output type is number, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -3419,12 +3419,12 @@ describe("pgFloat8", () => {
 			});
 
 			test("input type is number, bigint, or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8().notNull(),
+						id: float8().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -3432,12 +3432,12 @@ describe("pgFloat8", () => {
 			});
 
 			test("output type is number with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8().notNull(),
+						id: float8().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -3462,153 +3462,153 @@ describe("pgFloat8", () => {
 			});
 
 			test("parses bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 			});
 
 			test("parses number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 			});
 
 			test("parses decimals", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 			});
 
 			test("parses strings that can be coerced to number or bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse("1.1").success).toBe(true);
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
 			test("passes on strings that can be parsed as a float but not as a bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("0.00000").success).toBe(true);
 			});
 
 			test("parses NaN, Infinity, and -Infinity strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("NaN").success).toBe(true);
 				expect(schema.safeParse("Infinity").success).toBe(true);
 				expect(schema.safeParse("-Infinity").success).toBe(true);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("fails on empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8().default(30),
+						id: float8().default(30),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8().notNull(),
+						id: float8().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8().notNull().default(1.1),
+						id: float8().notNull().default(1.1),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(3.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("minimum is -1e308", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(-tenCentillionBitInt).success).toBe(true);
 				expect(schema.safeParse(-elevenCentillionBitInt).success).toBe(false);
 			});
 
 			test("maximum is 1e308", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(tenCentillionBitInt).success).toBe(true);
 				expect(schema.safeParse(elevenCentillionBitInt).success).toBe(false);
 			});
@@ -3616,15 +3616,15 @@ describe("pgFloat8", () => {
 
 		describe("as primary key", () => {
 			test("input type is number, bigint, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -3632,15 +3632,15 @@ describe("pgFloat8", () => {
 			});
 
 			test("output type is number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -3648,60 +3648,60 @@ describe("pgFloat8", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8().default(1.1),
+						id: float8().default(1.1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8().notNull(),
+						id: float8().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8().notNull().default(2.1),
+						id: float8().notNull().default(2.1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -3710,12 +3710,12 @@ describe("pgFloat8", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8().notNull(),
+						id: float8().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3732,12 +3732,12 @@ describe("pgFloat8", () => {
 			});
 
 			test("empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3754,12 +3754,12 @@ describe("pgFloat8", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8().notNull(),
+						id: float8().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3777,12 +3777,12 @@ describe("pgFloat8", () => {
 			});
 
 			test("not a float8", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3799,12 +3799,12 @@ describe("pgFloat8", () => {
 			});
 
 			test("smaller than minimum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(-elevenCentillionBitInt);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3821,12 +3821,12 @@ describe("pgFloat8", () => {
 			});
 
 			test("greater than maximum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgFloat8(),
+						id: float8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(elevenCentillionBitInt);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -3847,22 +3847,22 @@ describe("pgFloat8", () => {
 
 describe("pgInt2", () => {
 	test("returns a PgInt2 instance", () => {
-		const column = pgInt2();
+		const column = int2();
 		expect(column).toBeInstanceOf(PgInt2);
 	});
 
 	describe("PgInt2", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgInt2()).toBeInstanceOf(PgColumn);
+			expect(int2()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to smallint", () => {
-			const info = Object.fromEntries(Object.entries(pgInt2())).info;
+			const info = Object.fromEntries(Object.entries(int2())).info;
 			expect(info.dataType).toBe("smallint");
 		});
 
 		test("default with column data type", () => {
-			const column = pgInt2();
+			const column = int2();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
@@ -3874,13 +3874,13 @@ describe("pgInt2", () => {
 
 		test("has have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgInt2() as any;
+			const column = int2() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgInt2() as any;
+			const column = int2() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				true,
 			);
@@ -3890,12 +3890,12 @@ describe("pgInt2", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is number, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -3903,12 +3903,12 @@ describe("pgInt2", () => {
 			});
 
 			test("output type is number, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -3931,12 +3931,12 @@ describe("pgInt2", () => {
 			});
 
 			test("input type is number or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2().notNull(),
+						id: int2().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -3944,12 +3944,12 @@ describe("pgInt2", () => {
 			});
 
 			test("output type is number with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2().notNull(),
+						id: int2().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -3969,12 +3969,12 @@ describe("pgInt2", () => {
 			});
 
 			test("has never type when generatedAlwaysAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2().generatedAlwaysAsIdentity(),
+						id: int2().generatedAlwaysAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type SchemaType = typeof schema;
 				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
 				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
@@ -3985,12 +3985,12 @@ describe("pgInt2", () => {
 			});
 
 			test("output type is number with generatedByDefaultAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2().generatedByDefaultAsIdentity(),
+						id: int2().generatedByDefaultAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -4006,120 +4006,120 @@ describe("pgInt2", () => {
 			});
 
 			test("parses number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 			});
 
 			test("does not parse decimals", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(false);
 			});
 
 			test("does not parse bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(false);
 			});
 
 			test("parses strings that can be coerced to number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2().default(30),
+						id: int2().default(30),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2().notNull(),
+						id: int2().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2().notNull().default(11),
+						id: int2().notNull().default(11),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("minimum is -32768", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(-32768).success).toBe(true);
 				expect(schema.safeParse(-32769).success).toBe(false);
 			});
 
 			test("maximum is 32767", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(32767).success).toBe(true);
 				expect(schema.safeParse(32768).success).toBe(false);
 			});
@@ -4127,15 +4127,15 @@ describe("pgInt2", () => {
 
 		describe("as primary key", () => {
 			test("input type is number, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -4143,15 +4143,15 @@ describe("pgInt2", () => {
 			});
 
 			test("output type is number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -4159,60 +4159,60 @@ describe("pgInt2", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2(),
+						id: int2(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2().default(1),
+						id: int2().default(1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2().notNull(),
+						id: int2().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt2().notNull().default(40),
+						id: int2().notNull().default(40),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -4222,12 +4222,12 @@ describe("pgInt2", () => {
 
 	describe("errors", () => {
 		test("undefined", () => {
-			const table = pgTable({
+			const tbl = table({
 				columns: {
-					id: pgInt2().notNull(),
+					id: int2().notNull(),
 				},
 			});
-			const schema = zodSchema(table).shape.id;
+			const schema = zodSchema(tbl).shape.id;
 
 			const result = schema.safeParse(undefined);
 			expect(result.success).toBe(false);
@@ -4245,12 +4245,12 @@ describe("pgInt2", () => {
 		});
 
 		test("null", () => {
-			const table = pgTable({
+			const tbl = table({
 				columns: {
-					id: pgInt2().notNull(),
+					id: int2().notNull(),
 				},
 			});
-			const schema = zodSchema(table).shape.id;
+			const schema = zodSchema(tbl).shape.id;
 
 			const result = schema.safeParse(null);
 			expect(result.success).toBe(false);
@@ -4269,12 +4269,12 @@ describe("pgInt2", () => {
 		});
 
 		test("not an int2", () => {
-			const table = pgTable({
+			const tbl = table({
 				columns: {
-					id: pgInt2(),
+					id: int2(),
 				},
 			});
-			const schema = zodSchema(table).shape.id;
+			const schema = zodSchema(tbl).shape.id;
 
 			const result = schema.safeParse("hello");
 			expect(result.success).toBe(false);
@@ -4293,12 +4293,12 @@ describe("pgInt2", () => {
 		});
 
 		test("bigint", () => {
-			const table = pgTable({
+			const tbl = table({
 				columns: {
-					id: pgInt2(),
+					id: int2(),
 				},
 			});
-			const schema = zodSchema(table).shape.id;
+			const schema = zodSchema(tbl).shape.id;
 
 			const result = schema.safeParse(1n);
 			expect(result.success).toBe(false);
@@ -4317,12 +4317,12 @@ describe("pgInt2", () => {
 		});
 
 		test("smaller than minimum", () => {
-			const table = pgTable({
+			const tbl = table({
 				columns: {
-					id: pgInt2(),
+					id: int2(),
 				},
 			});
-			const schema = zodSchema(table).shape.id;
+			const schema = zodSchema(tbl).shape.id;
 
 			const result = schema.safeParse(-32769);
 			expect(result.success).toBe(false);
@@ -4343,12 +4343,12 @@ describe("pgInt2", () => {
 		});
 
 		test("greater than maximum", () => {
-			const table = pgTable({
+			const tbl = table({
 				columns: {
-					id: pgInt2(),
+					id: int2(),
 				},
 			});
-			const schema = zodSchema(table).shape.id;
+			const schema = zodSchema(tbl).shape.id;
 
 			const result = schema.safeParse(32768);
 			expect(result.success).toBe(false);
@@ -4372,22 +4372,22 @@ describe("pgInt2", () => {
 
 describe("pgInt4", () => {
 	test("returns a PgInt4 instance", () => {
-		const column = pgInt4();
+		const column = int4();
 		expect(column).toBeInstanceOf(PgInt4);
 	});
 
 	describe("PgInt4", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgInt4()).toBeInstanceOf(PgColumn);
+			expect(int4()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to int4", () => {
-			const info = Object.fromEntries(Object.entries(pgInt4())).info;
+			const info = Object.fromEntries(Object.entries(int4())).info;
 			expect(info.dataType).toBe("integer");
 		});
 
 		test("default with column data type", () => {
-			const column = pgInt4();
+			const column = int4();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
@@ -4403,13 +4403,13 @@ describe("pgInt4", () => {
 
 		test("has generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgInt4() as any;
+			const column = int4() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
 		});
 
 		test("has generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgInt4() as any;
+			const column = int4() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				true,
 			);
@@ -4419,12 +4419,12 @@ describe("pgInt4", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is number, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -4432,12 +4432,12 @@ describe("pgInt4", () => {
 			});
 
 			test("output type is number, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -4460,12 +4460,12 @@ describe("pgInt4", () => {
 			});
 
 			test("input type is number or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().notNull(),
+						id: int4().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.input<typeof schema>;
 				type Expected = number | string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -4473,12 +4473,12 @@ describe("pgInt4", () => {
 			});
 
 			test("output type is number with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().notNull(),
+						id: int4().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -4498,12 +4498,12 @@ describe("pgInt4", () => {
 			});
 
 			test("has never type when generatedAlwaysAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().generatedAlwaysAsIdentity(),
+						id: int4().generatedAlwaysAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type SchemaType = typeof schema;
 				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
 				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
@@ -4514,12 +4514,12 @@ describe("pgInt4", () => {
 			});
 
 			test("output type is number with generatedByDefaultAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().generatedByDefaultAsIdentity(),
+						id: int4().generatedByDefaultAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -4535,120 +4535,120 @@ describe("pgInt4", () => {
 			});
 
 			test("parses number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 			});
 
 			test("does not parse decimals", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(false);
 			});
 
 			test("does not parse bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(false);
 			});
 
 			test("parses strings that can be coerced to number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().default(30),
+						id: int4().default(30),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().notNull(),
+						id: int4().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().notNull().default(1.1),
+						id: int4().notNull().default(1.1),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("minimum is -2147483648", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(-2147483648).success).toBe(true);
 				expect(schema.safeParse(-2147483649).success).toBe(false);
 			});
 
 			test("maximum is 2147483647", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(2147483647).success).toBe(true);
 				expect(schema.safeParse(2147483648).success).toBe(false);
 			});
@@ -4656,15 +4656,15 @@ describe("pgInt4", () => {
 
 		describe("as primary key", () => {
 			test("input type is number, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -4672,15 +4672,15 @@ describe("pgInt4", () => {
 			});
 
 			test("output type is number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -4688,60 +4688,60 @@ describe("pgInt4", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().default(1),
+						id: int4().default(1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().notNull().default(1),
+						id: int4().notNull().default(1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().default(1).notNull(),
+						id: int4().default(1).notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -4750,12 +4750,12 @@ describe("pgInt4", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().notNull(),
+						id: int4().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -4772,12 +4772,12 @@ describe("pgInt4", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4().notNull(),
+						id: int4().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -4795,12 +4795,12 @@ describe("pgInt4", () => {
 			});
 
 			test("not an int4", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -4818,12 +4818,12 @@ describe("pgInt4", () => {
 			});
 
 			test("bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(1n);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -4841,12 +4841,12 @@ describe("pgInt4", () => {
 			});
 
 			test("smaller than minimum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(-2147483649);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -4866,12 +4866,12 @@ describe("pgInt4", () => {
 			});
 
 			test("greater than maximum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt4(),
+						id: int4(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(2147483648);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -4895,22 +4895,22 @@ describe("pgInt4", () => {
 
 describe("pgInt8", () => {
 	test("returns a PgInt8 instance", () => {
-		const column = pgInt8();
+		const column = int8();
 		expect(column).toBeInstanceOf(PgInt8);
 	});
 
 	describe("PgInt8", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgInt8()).toBeInstanceOf(PgColumn);
+			expect(int8()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to int8", () => {
-			const info = Object.fromEntries(Object.entries(pgInt8())).info;
+			const info = Object.fromEntries(Object.entries(int8())).info;
 			expect(info.dataType).toBe("bigint");
 		});
 
 		test("default with column data type", () => {
-			const column = pgInt8();
+			const column = int8();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
@@ -4925,13 +4925,13 @@ describe("pgInt8", () => {
 
 		test("has generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgInt8() as any;
+			const column = int8() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
 		});
 
 		test("has generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgInt8() as any;
+			const column = int8() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				true,
 			);
@@ -4941,12 +4941,12 @@ describe("pgInt8", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is bigint, number, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -4954,12 +4954,12 @@ describe("pgInt8", () => {
 			});
 
 			test("output type is number, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -4985,12 +4985,12 @@ describe("pgInt8", () => {
 			});
 
 			test("input type is number with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().notNull(),
+						id: int8().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -4998,12 +4998,12 @@ describe("pgInt8", () => {
 			});
 
 			test("output type is bigint, number, or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().notNull(),
+						id: int8().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -5028,12 +5028,12 @@ describe("pgInt8", () => {
 			});
 
 			test("has never type when generatedAlwaysAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().generatedAlwaysAsIdentity(),
+						id: int8().generatedAlwaysAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type SchemaType = typeof schema;
 				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
 				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
@@ -5044,12 +5044,12 @@ describe("pgInt8", () => {
 			});
 
 			test("output type is number with generatedByDefaultAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().generatedByDefaultAsIdentity(),
+						id: int8().generatedByDefaultAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -5065,106 +5065,106 @@ describe("pgInt8", () => {
 			});
 
 			test("parses bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 			});
 
 			test("parses number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 			});
 
 			test("parses string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("does not parse floats", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgBigint(),
+						id: bigint(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(false);
 			});
 
 			test("fails on invalid string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
 			test("fails on empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().default("1"),
+						id: int8().default("1"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("minimumValue is -9223372036854775808n", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(-9223372036854775808n).success).toBe(true);
 				expect(schema.safeParse("-9223372036854775808").success).toBe(true);
 				expect(schema.safeParse(-9223372036854775809n).success).toBe(false);
@@ -5172,12 +5172,12 @@ describe("pgInt8", () => {
 			});
 
 			test("maximumValue is 9223372036854775807n", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(9223372036854775807n).success).toBe(true);
 				expect(schema.safeParse("9223372036854775807").success).toBe(true);
 				expect(schema.safeParse(9223372036854775808n).success).toBe(false);
@@ -5185,24 +5185,24 @@ describe("pgInt8", () => {
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().notNull(),
+						id: int8().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().notNull().default(1),
+						id: int8().notNull().default(1),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -5211,15 +5211,15 @@ describe("pgInt8", () => {
 
 		describe("as primary key", () => {
 			test("input type is bigint, number, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -5227,15 +5227,15 @@ describe("pgInt8", () => {
 			});
 
 			test("output type is number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -5243,60 +5243,60 @@ describe("pgInt8", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().default(1),
+						id: int8().default(1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().notNull(),
+						id: int8().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().notNull().default(1),
+						id: int8().notNull().default(1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -5305,12 +5305,12 @@ describe("pgInt8", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().notNull(),
+						id: int8().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -5327,12 +5327,12 @@ describe("pgInt8", () => {
 			});
 
 			test("empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -5348,12 +5348,12 @@ describe("pgInt8", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8().notNull(),
+						id: int8().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -5371,12 +5371,12 @@ describe("pgInt8", () => {
 			});
 
 			test("not a bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInt8(),
+						id: int8(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -5396,22 +5396,22 @@ describe("pgInt8", () => {
 
 describe("pgInteger", () => {
 	test("returns a PgInteger instance", () => {
-		const column = pgInteger();
+		const column = integer();
 		expect(column).toBeInstanceOf(PgInteger);
 	});
 
 	describe("PgInteger", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgInteger()).toBeInstanceOf(PgColumn);
+			expect(integer()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to integer", () => {
-			const info = Object.fromEntries(Object.entries(pgInteger())).info;
+			const info = Object.fromEntries(Object.entries(integer())).info;
 			expect(info.dataType).toBe("integer");
 		});
 
 		test("default with column data type", () => {
-			const column = pgInteger();
+			const column = integer();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
@@ -5427,13 +5427,13 @@ describe("pgInteger", () => {
 
 		test("has generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgInteger() as any;
+			const column = integer() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
 		});
 
 		test("has generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgInteger() as any;
+			const column = integer() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				true,
 			);
@@ -5443,12 +5443,12 @@ describe("pgInteger", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is number, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -5456,12 +5456,12 @@ describe("pgInteger", () => {
 			});
 
 			test("output type is number, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -5482,12 +5482,12 @@ describe("pgInteger", () => {
 			});
 
 			test("input type is number or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().notNull(),
+						id: integer().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -5495,12 +5495,12 @@ describe("pgInteger", () => {
 			});
 
 			test("output type is number with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().notNull(),
+						id: integer().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -5521,12 +5521,12 @@ describe("pgInteger", () => {
 			});
 
 			test("has never type when generatedAlwaysAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().generatedAlwaysAsIdentity(),
+						id: integer().generatedAlwaysAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type SchemaType = typeof schema;
 				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
 				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
@@ -5537,12 +5537,12 @@ describe("pgInteger", () => {
 			});
 
 			test("output type is number with generatedByDefaultAsIdentity", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().generatedByDefaultAsIdentity(),
+						id: integer().generatedByDefaultAsIdentity(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -5558,120 +5558,120 @@ describe("pgInteger", () => {
 			});
 
 			test("parses number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 			});
 
 			test("does not parse decimals", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(false);
 			});
 
 			test("does not parse bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(false);
 			});
 
 			test("parses strings that can be coerced to number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().default(30),
+						id: integer().default(30),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().notNull(),
+						id: integer().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().notNull().default(1.1),
+						id: integer().notNull().default(1.1),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("minimum is -2147483648", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(-2147483648).success).toBe(true);
 				expect(schema.safeParse(-2147483649).success).toBe(false);
 			});
 
 			test("maximum is 2147483647", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(2147483647).success).toBe(true);
 				expect(schema.safeParse(2147483648).success).toBe(false);
 			});
@@ -5679,15 +5679,15 @@ describe("pgInteger", () => {
 
 		describe("as primary key", () => {
 			test("input type is number or string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -5695,15 +5695,15 @@ describe("pgInteger", () => {
 			});
 
 			test("output type is number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -5711,60 +5711,60 @@ describe("pgInteger", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().default(1),
+						id: integer().default(1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().notNull(),
+						id: integer().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().notNull().default(40),
+						id: integer().notNull().default(40),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -5773,12 +5773,12 @@ describe("pgInteger", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().notNull(),
+						id: integer().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -5795,12 +5795,12 @@ describe("pgInteger", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger().notNull(),
+						id: integer().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -5818,12 +5818,12 @@ describe("pgInteger", () => {
 			});
 
 			test("not an integer", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -5841,12 +5841,12 @@ describe("pgInteger", () => {
 			});
 
 			test("bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(1n);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -5864,12 +5864,12 @@ describe("pgInteger", () => {
 			});
 
 			test("smaller than minimum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(-2147483649);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -5889,12 +5889,12 @@ describe("pgInteger", () => {
 			});
 
 			test("greater than maximum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgInteger(),
+						id: integer(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(2147483648);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -5918,22 +5918,22 @@ describe("pgInteger", () => {
 
 describe("pgJson", () => {
 	test("returns a PgJson instance", () => {
-		const column = pgJson();
+		const column = json();
 		expect(column).toBeInstanceOf(PgJson);
 	});
 
 	describe("PgJson", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgJson()).toBeInstanceOf(PgColumn);
+			expect(json()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to json", () => {
-			const info = Object.fromEntries(Object.entries(pgJson())).info;
+			const info = Object.fromEntries(Object.entries(json())).info;
 			expect(info.dataType).toBe("json");
 		});
 
 		test("default with column data type", () => {
-			const column = pgJson();
+			const column = json();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
@@ -5945,7 +5945,7 @@ describe("pgJson", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgJson() as any;
+			const column = json() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -5953,7 +5953,7 @@ describe("pgJson", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgJson() as any;
+			const column = json() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -5963,12 +5963,12 @@ describe("pgJson", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is string, number, boolean, Record<string, any>, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected =
 					| string
@@ -5983,12 +5983,12 @@ describe("pgJson", () => {
 			});
 
 			test("output type is string, number, boolean, Record<string, any>, null or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected =
 					| string
@@ -6021,12 +6021,12 @@ describe("pgJson", () => {
 			});
 
 			test("input type is string, number, boolean, Record<string, any> with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson().notNull(),
+						id: json().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
@@ -6035,12 +6035,12 @@ describe("pgJson", () => {
 			});
 
 			test("output type is string, number, boolean, Record<string, any> with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson().notNull(),
+						id: json().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
@@ -6067,12 +6067,12 @@ describe("pgJson", () => {
 			});
 
 			test("parses strings that can be coerced into JSON objects", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("12").success).toBe(true);
 				expect(schema.safeParse('{"foo": "bar"}').success).toBe(true);
 				expect(schema.safeParse('{"foo"}').success).toBe(false);
@@ -6080,87 +6080,87 @@ describe("pgJson", () => {
 			});
 
 			test("parses numbers", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(10.123).success).toBe(true);
 			});
 
 			test("parses boolean", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(true).success).toBe(true);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses objects", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson().default("1"),
+						id: json().default("1"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson().notNull(),
+						id: json().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson().notNull().default("1"),
+						id: json().notNull().default("1"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -6169,15 +6169,15 @@ describe("pgJson", () => {
 
 		describe("as primary key", () => {
 			test("input type is string, number, boolean, or Record<string, any>", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
@@ -6186,15 +6186,15 @@ describe("pgJson", () => {
 			});
 
 			test("output type is JsonArray, JsonObject, or JsonPrimitive", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
@@ -6203,60 +6203,60 @@ describe("pgJson", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson().default("1"),
+						id: json().default("1"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson().notNull(),
+						id: json().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson().notNull().default("1"),
+						id: json().notNull().default("1"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -6265,12 +6265,12 @@ describe("pgJson", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson().notNull(),
+						id: json().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -6287,12 +6287,12 @@ describe("pgJson", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson().notNull(),
+						id: json().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -6310,12 +6310,12 @@ describe("pgJson", () => {
 			});
 
 			test("not an json", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJson(),
+						id: json(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(new Date());
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -6335,22 +6335,22 @@ describe("pgJson", () => {
 
 describe("pgJsonB", () => {
 	test("returns a PgJsonB instance", () => {
-		const column = pgJsonb();
+		const column = jsonb();
 		expect(column).toBeInstanceOf(PgJsonB);
 	});
 
 	describe("PgJsonB", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgJsonb()).toBeInstanceOf(PgColumn);
+			expect(jsonb()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to jsonb", () => {
-			const info = Object.fromEntries(Object.entries(pgJsonb())).info;
+			const info = Object.fromEntries(Object.entries(jsonb())).info;
 			expect(info.dataType).toBe("jsonb");
 		});
 
 		test("default with column data type", () => {
-			const column = pgJsonb();
+			const column = jsonb();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
@@ -6362,7 +6362,7 @@ describe("pgJsonB", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgJsonb() as any;
+			const column = jsonb() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -6370,7 +6370,7 @@ describe("pgJsonB", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgJsonb() as any;
+			const column = jsonb() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -6380,12 +6380,12 @@ describe("pgJsonB", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is string, number, boolean, Record<string, any>, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected =
 					| string
@@ -6400,12 +6400,12 @@ describe("pgJsonB", () => {
 			});
 
 			test("output type is string, number, boolean, Record<string, any>, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected =
 					| string
@@ -6438,12 +6438,12 @@ describe("pgJsonB", () => {
 			});
 
 			test("input type is string, number, boolean, Record<string, any> with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb().notNull(),
+						id: jsonb().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
@@ -6452,12 +6452,12 @@ describe("pgJsonB", () => {
 			});
 
 			test("output type is string, number, boolean, Record<string, any> with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb().notNull(),
+						id: jsonb().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
@@ -6484,12 +6484,12 @@ describe("pgJsonB", () => {
 			});
 
 			test("parses strings that can be coerced into JSON objects", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("12").success).toBe(true);
 				expect(schema.safeParse('{"foo": "bar"}').success).toBe(true);
 				expect(schema.safeParse('{"foo"}').success).toBe(false);
@@ -6497,87 +6497,87 @@ describe("pgJsonB", () => {
 			});
 
 			test("parses numbers", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(10.123).success).toBe(true);
 			});
 
 			test("parses boolean", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(true).success).toBe(true);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses objects", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb().default("1"),
+						id: jsonb().default("1"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb().notNull(),
+						id: jsonb().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb().notNull().default("1"),
+						id: jsonb().notNull().default("1"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -6586,15 +6586,15 @@ describe("pgJsonB", () => {
 
 		describe("as primary key", () => {
 			test("input type is string, number, boolean, or Record<string, any>", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
@@ -6603,15 +6603,15 @@ describe("pgJsonB", () => {
 			});
 
 			test("output type is JsonArray, JsonObject, JsonPrimitive", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				type Expected = string | number | boolean | Record<string, any>;
@@ -6620,60 +6620,60 @@ describe("pgJsonB", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb().default("1"),
+						id: jsonb().default("1"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb().notNull(),
+						id: jsonb().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb().notNull().default("1"),
+						id: jsonb().notNull().default("1"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -6682,12 +6682,12 @@ describe("pgJsonB", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb().notNull(),
+						id: jsonb().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -6704,12 +6704,12 @@ describe("pgJsonB", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb().notNull(),
+						id: jsonb().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -6727,12 +6727,12 @@ describe("pgJsonB", () => {
 			});
 
 			test("not an json", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgJsonb(),
+						id: jsonb(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(new Date());
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -6752,22 +6752,22 @@ describe("pgJsonB", () => {
 
 describe("pgReal", () => {
 	test("returns a PgReal instance", () => {
-		const column = pgReal();
+		const column = real();
 		expect(column).toBeInstanceOf(PgReal);
 	});
 
 	describe("PgReal", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgReal()).toBeInstanceOf(PgColumn);
+			expect(real()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to real", () => {
-			const info = Object.fromEntries(Object.entries(pgReal())).info;
+			const info = Object.fromEntries(Object.entries(real())).info;
 			expect(info.dataType).toBe("real");
 		});
 
 		test("default with column data type", () => {
-			const column = pgReal();
+			const column = real();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
@@ -6782,7 +6782,7 @@ describe("pgReal", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgReal() as any;
+			const column = real() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -6790,7 +6790,7 @@ describe("pgReal", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgReal() as any;
+			const column = real() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -6800,12 +6800,12 @@ describe("pgReal", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is bigint, number, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -6813,12 +6813,12 @@ describe("pgReal", () => {
 			});
 
 			test("output type is number, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -6844,12 +6844,12 @@ describe("pgReal", () => {
 			});
 
 			test("output type is number with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal().notNull(),
+						id: real().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -6874,153 +6874,153 @@ describe("pgReal", () => {
 			});
 
 			test("parses bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 			});
 
 			test("parses number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 			});
 
 			test("parses decimals", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 			});
 
 			test("parses strings that can be coerced to number or bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse("1.1").success).toBe(true);
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
 			test("passes on strings that can be parsed as a float but not as a bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("0.00000").success).toBe(true);
 			});
 
 			test("parses NaN, Infinity, and -Infinity strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("NaN").success).toBe(true);
 				expect(schema.safeParse("Infinity").success).toBe(true);
 				expect(schema.safeParse("-Infinity").success).toBe(true);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("fails on empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal().default(30),
+						id: real().default(30),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal().notNull(),
+						id: real().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal().notNull().default(1.1),
+						id: real().notNull().default(1.1),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(3.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("minimum is -1e37", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(-tenUnDecillionBigInt).success).toBe(true);
 				expect(schema.safeParse(-eleventUnDecillionBigInt).success).toBe(false);
 			});
 
 			test("maximum is 1e37", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(tenUnDecillionBigInt).success).toBe(true);
 				expect(schema.safeParse(eleventUnDecillionBigInt).success).toBe(false);
 			});
@@ -7028,15 +7028,15 @@ describe("pgReal", () => {
 
 		describe("as primary key", () => {
 			test("input type is bigint, number, or string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -7044,15 +7044,15 @@ describe("pgReal", () => {
 			});
 
 			test("output type is number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -7060,60 +7060,60 @@ describe("pgReal", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal().default(2.2),
+						id: real().default(2.2),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal().notNull(),
+						id: real().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal().notNull().default(2.2),
+						id: real().notNull().default(2.2),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -7122,12 +7122,12 @@ describe("pgReal", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal().notNull(),
+						id: real().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -7144,12 +7144,12 @@ describe("pgReal", () => {
 			});
 
 			test("empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -7166,12 +7166,12 @@ describe("pgReal", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal().notNull(),
+						id: real().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -7189,12 +7189,12 @@ describe("pgReal", () => {
 			});
 
 			test("not a real", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -7211,12 +7211,12 @@ describe("pgReal", () => {
 			});
 
 			test("smaller than minimum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(-eleventUnDecillionBigInt);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -7233,12 +7233,12 @@ describe("pgReal", () => {
 			});
 
 			test("greater than maximum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgReal(),
+						id: real(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(eleventUnDecillionBigInt);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -7259,28 +7259,28 @@ describe("pgReal", () => {
 
 describe("pgSerial", () => {
 	test("returns a PgSerial instance", () => {
-		const column = pgSerial();
+		const column = serial();
 		expect(column).toBeInstanceOf(PgSerial);
 	});
 
 	describe("PgSerial", () => {
 		test("inherits from PgColumnWithoutDefault", () => {
-			expect(pgSerial()).toBeInstanceOf(PgGeneratedColumn);
+			expect(serial()).toBeInstanceOf(PgGeneratedColumn);
 		});
 
 		test("dataType is set to serial", () => {
-			const info = Object.fromEntries(Object.entries(pgSerial())).info;
+			const info = Object.fromEntries(Object.entries(serial())).info;
 			expect(info.dataType).toBe("serial");
 		});
 
 		test("isNullable is false", () => {
-			const info = Object.fromEntries(Object.entries(pgSerial())).info;
+			const info = Object.fromEntries(Object.entries(serial())).info;
 			expect(info.isNullable).toBe(false);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgSerial() as any;
+			const column = serial() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -7288,7 +7288,7 @@ describe("pgSerial", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgSerial() as any;
+			const column = serial() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -7297,12 +7297,12 @@ describe("pgSerial", () => {
 
 	describe("zod", () => {
 		test("has never type", () => {
-			const table = pgTable({
+			const tbl = table({
 				columns: {
-					id: pgSerial(),
+					id: serial(),
 				},
 			});
-			const schema = zodSchema(table).shape.id;
+			const schema = zodSchema(tbl).shape.id;
 
 			type SchemaType = typeof schema;
 			type Expected = z.ZodType<never, z.ZodTypeDef, never>;
@@ -7316,22 +7316,22 @@ describe("pgSerial", () => {
 
 describe("pgUuid", () => {
 	test("returns a PgUuid instance", () => {
-		const column = pgUuid();
+		const column = uuid();
 		expect(column).toBeInstanceOf(PgUuid);
 	});
 
 	describe("PgUuid", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgUuid()).toBeInstanceOf(PgColumn);
+			expect(uuid()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to uuid", () => {
-			const info = Object.fromEntries(Object.entries(pgUuid())).info;
+			const info = Object.fromEntries(Object.entries(uuid())).info;
 			expect(info.dataType).toBe("uuid");
 		});
 
 		test("default with column data type", () => {
-			const column = pgUuid();
+			const column = uuid();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
@@ -7346,7 +7346,7 @@ describe("pgUuid", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgUuid() as any;
+			const column = uuid() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -7354,7 +7354,7 @@ describe("pgUuid", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgUuid() as any;
+			const column = uuid() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -7364,12 +7364,12 @@ describe("pgUuid", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid(),
+						id: uuid(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -7377,12 +7377,12 @@ describe("pgUuid", () => {
 			});
 
 			test("output type is string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid(),
+						id: uuid(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -7402,12 +7402,12 @@ describe("pgUuid", () => {
 			});
 
 			test("input type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid().notNull(),
+						id: uuid().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -7415,12 +7415,12 @@ describe("pgUuid", () => {
 			});
 
 			test("output type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid().notNull(),
+						id: uuid().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -7440,54 +7440,54 @@ describe("pgUuid", () => {
 			});
 
 			test("parses strings that can be coerced into uuid", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid(),
+						id: uuid(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(
 					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
 				).toBe(true);
 			});
 
 			test("does not parse other strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid(),
+						id: uuid(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid(),
+						id: uuid(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid(),
+						id: uuid(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid().default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
+						id: uuid().default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(
 					schema.safeParse("B0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
 				).toBe(true);
@@ -7496,12 +7496,12 @@ describe("pgUuid", () => {
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid().notNull(),
+						id: uuid().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(
 					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
 				).toBe(true);
@@ -7510,14 +7510,14 @@ describe("pgUuid", () => {
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid()
+						id: uuid()
 							.notNull()
 							.default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(
 					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A12").success,
 				).toBe(true);
@@ -7528,15 +7528,15 @@ describe("pgUuid", () => {
 
 		describe("as primary key", () => {
 			test("input type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid(),
+						id: uuid(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -7544,15 +7544,15 @@ describe("pgUuid", () => {
 			});
 
 			test("output type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid(),
+						id: uuid(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -7560,15 +7560,15 @@ describe("pgUuid", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid(),
+						id: uuid(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(
 					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
 				).toBe(true);
@@ -7577,15 +7577,15 @@ describe("pgUuid", () => {
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid().default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
+						id: uuid().default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(
 					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A12").success,
 				).toBe(true);
@@ -7594,15 +7594,15 @@ describe("pgUuid", () => {
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid().notNull(),
+						id: uuid().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(
 					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
 				).toBe(true);
@@ -7611,17 +7611,17 @@ describe("pgUuid", () => {
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgUuid()
+						id: uuid()
 							.notNull()
 							.default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(
 					schema.safeParse("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A12").success,
 				).toBe(true);
@@ -7631,12 +7631,12 @@ describe("pgUuid", () => {
 
 			describe("errors", () => {
 				test("undefined", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgUuid().notNull(),
+							id: uuid().notNull(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse(undefined);
 					expect(result.success).toBe(false);
 					if (!result.success) {
@@ -7653,12 +7653,12 @@ describe("pgUuid", () => {
 				});
 
 				test("null", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgUuid().notNull(),
+							id: uuid().notNull(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse(null);
 					expect(result.success).toBe(false);
 					if (!result.success) {
@@ -7675,12 +7675,12 @@ describe("pgUuid", () => {
 				});
 
 				test("not a uuid", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgUuid(),
+							id: uuid(),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse("hello");
 					expect(result.success).toBe(false);
 					if (!result.success) {
@@ -7702,22 +7702,22 @@ describe("pgUuid", () => {
 
 describe("pgVarChar", () => {
 	test("returns a PgVarChar instance", () => {
-		const column = pgVarchar();
+		const column = varchar();
 		expect(column).toBeInstanceOf(PgVarChar);
 	});
 
 	describe("PgVarChar", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgVarchar()).toBeInstanceOf(PgColumn);
+			expect(varchar()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to varchar", () => {
-			const info = Object.fromEntries(Object.entries(pgVarchar())).info;
+			const info = Object.fromEntries(Object.entries(varchar())).info;
 			expect(info.dataType).toBe("varchar");
 		});
 
 		test("default with column data type", () => {
-			const column = pgVarchar();
+			const column = varchar();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
@@ -7726,7 +7726,7 @@ describe("pgVarChar", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgVarchar() as any;
+			const column = varchar() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -7734,7 +7734,7 @@ describe("pgVarChar", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgVarchar() as any;
+			const column = varchar() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -7743,18 +7743,18 @@ describe("pgVarChar", () => {
 
 	describe("with optional maximumLength", () => {
 		test("characterMaximumLength is set to maximumLength", () => {
-			const column = pgVarchar(255);
+			const column = varchar(255);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.characterMaximumLength).toBe(255);
 		});
 
 		test("data type has maximumLength", () => {
-			const info = Object.fromEntries(Object.entries(pgVarchar(255))).info;
+			const info = Object.fromEntries(Object.entries(varchar(255))).info;
 			expect(info.dataType).toBe("varchar(255)");
 		});
 
 		test("default with column data type", () => {
-			const column = pgVarchar(100);
+			const column = varchar(100);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
@@ -7765,12 +7765,12 @@ describe("pgVarChar", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is string, null or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -7778,12 +7778,12 @@ describe("pgVarChar", () => {
 			});
 
 			test("output type is string, null or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -7799,12 +7799,12 @@ describe("pgVarChar", () => {
 			});
 
 			test("input type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar().notNull(),
+						id: varchar().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -7812,12 +7812,12 @@ describe("pgVarChar", () => {
 			});
 
 			test("output type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar().notNull(),
+						id: varchar().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -7832,101 +7832,101 @@ describe("pgVarChar", () => {
 			});
 
 			test("parses strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 			});
 
 			test("does not parse other objects", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(false);
 				expect(schema.safeParse(new Date()).success).toBe(false);
 				expect(schema.safeParse({ foo: "bar" }).success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar().default("hello"),
+						id: varchar().default("hello"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar().notNull(),
+						id: varchar().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar().notNull().default("hello"),
+						id: varchar().notNull().default("hello"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("without maximum length", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse("hello!").success).toBe(true);
 			});
 
 			test("with maximum length", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(5),
+						id: varchar(5),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse("hello!").success).toBe(false);
 			});
@@ -7934,15 +7934,15 @@ describe("pgVarChar", () => {
 
 		describe("as primary key", () => {
 			test("input type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -7950,15 +7950,15 @@ describe("pgVarChar", () => {
 			});
 
 			test("output type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -7966,60 +7966,60 @@ describe("pgVarChar", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar().default("hello"),
+						id: varchar().default("hello"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar().notNull(),
+						id: varchar().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar().notNull().default("hello"),
+						id: varchar().notNull().default("hello"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -8028,12 +8028,12 @@ describe("pgVarChar", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar().notNull(),
+						id: varchar().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8051,12 +8051,12 @@ describe("pgVarChar", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar().notNull(),
+						id: varchar().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8074,12 +8074,12 @@ describe("pgVarChar", () => {
 			});
 
 			test("not a string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(),
+						id: varchar(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(12);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8097,12 +8097,12 @@ describe("pgVarChar", () => {
 			});
 
 			test("longer than maximum length", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgVarchar(5),
+						id: varchar(5),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello!");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8126,28 +8126,28 @@ describe("pgVarChar", () => {
 
 describe("pgChar", () => {
 	test("returns a PgChar instance", () => {
-		const column = pgChar();
+		const column = char();
 		expect(column).toBeInstanceOf(PgChar);
 	});
 
 	describe("PgChar", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgChar()).toBeInstanceOf(PgColumn);
+			expect(char()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to char(1)", () => {
-			const info = Object.fromEntries(Object.entries(pgChar())).info;
+			const info = Object.fromEntries(Object.entries(char())).info;
 			expect(info.dataType).toBe("char(1)");
 		});
 
 		test("characterMaximumLength is set to 1", () => {
-			const column = pgChar();
+			const column = char();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.characterMaximumLength).toBe(1);
 		});
 
 		test("default with column data type", () => {
-			const column = pgChar();
+			const column = char();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
@@ -8156,7 +8156,7 @@ describe("pgChar", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgChar() as any;
+			const column = char() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -8164,7 +8164,7 @@ describe("pgChar", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgChar() as any;
+			const column = char() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -8173,18 +8173,18 @@ describe("pgChar", () => {
 
 	describe("with optional maximumLength", () => {
 		test("characterMaximumLength is set to maximumLength", () => {
-			const column = pgChar(255);
+			const column = char(255);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.characterMaximumLength).toBe(255);
 		});
 
 		test("data type has maximumLength", () => {
-			const info = Object.fromEntries(Object.entries(pgChar(255))).info;
+			const info = Object.fromEntries(Object.entries(char(255))).info;
 			expect(info.dataType).toBe("char(255)");
 		});
 
 		test("default with column data type", () => {
-			const column = pgChar(200);
+			const column = char(200);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
@@ -8195,12 +8195,12 @@ describe("pgChar", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is string, null or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(10),
+						id: char(10),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -8208,12 +8208,12 @@ describe("pgChar", () => {
 			});
 
 			test("output type is string, null or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(10),
+						id: char(10),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -8229,12 +8229,12 @@ describe("pgChar", () => {
 			});
 
 			test("input type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(10).notNull(),
+						id: char(10).notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -8242,12 +8242,12 @@ describe("pgChar", () => {
 			});
 
 			test("output type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(10).notNull(),
+						id: char(10).notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -8262,79 +8262,79 @@ describe("pgChar", () => {
 			});
 
 			test("parses strings up to the maximum length", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(5),
+						id: char(5),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse("hello!").success).toBe(false);
 			});
 
 			test("does not parse other objects", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(5),
+						id: char(5),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(false);
 				expect(schema.safeParse(new Date()).success).toBe(false);
 				expect(schema.safeParse({ foo: "bar" }).success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(),
+						id: char(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(),
+						id: char(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(5).default("hello"),
+						id: char(5).default("hello"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(5).notNull(),
+						id: char(5).notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(5).notNull().default("hello"),
+						id: char(5).notNull().default("hello"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -8343,15 +8343,15 @@ describe("pgChar", () => {
 
 		describe("as primary key", () => {
 			test("input type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(10),
+						id: char(10),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -8359,15 +8359,15 @@ describe("pgChar", () => {
 			});
 
 			test("output type is string or null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(10),
+						id: char(10),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -8375,60 +8375,60 @@ describe("pgChar", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(5),
+						id: char(5),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(5).default("hello"),
+						id: char(5).default("hello"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(5).notNull().default("hello"),
+						id: char(5).notNull().default("hello"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(5).default("hello").notNull(),
+						id: char(5).default("hello").notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -8437,12 +8437,12 @@ describe("pgChar", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar().notNull(),
+						id: char().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8460,12 +8460,12 @@ describe("pgChar", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar().notNull(),
+						id: char().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8483,12 +8483,12 @@ describe("pgChar", () => {
 			});
 
 			test("not a string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(),
+						id: char(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(12);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8506,12 +8506,12 @@ describe("pgChar", () => {
 			});
 
 			test("longer than maximum length", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgChar(10),
+						id: char(10),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello world!");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8555,28 +8555,28 @@ describe("PgTimeColumn", () => {
 
 describe("pgTime", () => {
 	test("returns a PgTime instance", () => {
-		const column = pgTime();
+		const column = time();
 		expect(column).toBeInstanceOf(PgTime);
 	});
 
 	describe("PgTime", () => {
 		test("inherits from PgTimeColumn", () => {
-			expect(pgTime()).toBeInstanceOf(PgTimeColumn);
+			expect(time()).toBeInstanceOf(PgTimeColumn);
 		});
 
 		test("dataType is set to time", () => {
-			const info = Object.fromEntries(Object.entries(pgTime())).info;
+			const info = Object.fromEntries(Object.entries(time())).info;
 			expect(info.dataType).toBe("time");
 		});
 
 		test("datetimePrecision is set to null", () => {
-			const column = pgTime();
+			const column = time();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
 
 		test("default with column data type", () => {
-			const column = pgTime();
+			const column = time();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("04:05 AM");
@@ -8585,7 +8585,7 @@ describe("pgTime", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgTime() as any;
+			const column = time() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -8593,7 +8593,7 @@ describe("pgTime", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgTime() as any;
+			const column = time() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -8602,18 +8602,18 @@ describe("pgTime", () => {
 
 	describe("with optional precision", () => {
 		test("datetimePrecision is set to precision", () => {
-			const column = pgTime(1);
+			const column = time(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(1);
 		});
 
 		test("data type has precision", () => {
-			const info = Object.fromEntries(Object.entries(pgTime(1))).info;
+			const info = Object.fromEntries(Object.entries(time(1))).info;
 			expect(info.dataType).toBe("time(1)");
 		});
 
 		test("default with column data type", () => {
-			const column = pgTime(1);
+			const column = time(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("04:05 AM");
@@ -8624,12 +8624,12 @@ describe("pgTime", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is string, null or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -8637,12 +8637,12 @@ describe("pgTime", () => {
 			});
 
 			test("output type is string, null or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -8658,12 +8658,12 @@ describe("pgTime", () => {
 			});
 
 			test("input type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime().notNull(),
+						id: time().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -8671,12 +8671,12 @@ describe("pgTime", () => {
 			});
 
 			test("output type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime().notNull(),
+						id: time().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -8691,12 +8691,12 @@ describe("pgTime", () => {
 			});
 
 			test("parses time strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
 				expect(schema.safeParse("11:30:01").success).toBe(true);
 				expect(schema.safeParse("11:30:01.129").success).toBe(true);
@@ -8711,66 +8711,66 @@ describe("pgTime", () => {
 			});
 
 			test("does not parse other strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime().default("11:30"),
+						id: time().default("11:30"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("01:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime().notNull(),
+						id: time().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime().notNull().default("11:30"),
+						id: time().notNull().default("11:30"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("02:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -8779,15 +8779,15 @@ describe("pgTime", () => {
 
 		describe("as primary key", () => {
 			test("input type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -8795,15 +8795,15 @@ describe("pgTime", () => {
 			});
 
 			test("output type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -8811,60 +8811,60 @@ describe("pgTime", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime().default("11:30"),
+						id: time().default("11:30"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("10:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime().notNull(),
+						id: time().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime().notNull().default("11:30"),
+						id: time().notNull().default("11:30"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("10:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -8873,12 +8873,12 @@ describe("pgTime", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime().notNull(),
+						id: time().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8895,12 +8895,12 @@ describe("pgTime", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime().notNull(),
+						id: time().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8917,12 +8917,12 @@ describe("pgTime", () => {
 			});
 
 			test("not a time", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(12);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8938,12 +8938,12 @@ describe("pgTime", () => {
 			});
 
 			test("not a time string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTime(),
+						id: time(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("not a time");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -8964,28 +8964,28 @@ describe("pgTime", () => {
 
 describe("pgTimeTz", () => {
 	test("returns a PgTimeTz instance", () => {
-		const column = pgTimetz();
+		const column = timetz();
 		expect(column).toBeInstanceOf(PgTimeTz);
 	});
 
 	describe("PgTimeTz", () => {
 		test("inherits from PgTimeColumn", () => {
-			expect(pgTimetz()).toBeInstanceOf(PgTimeColumn);
+			expect(timetz()).toBeInstanceOf(PgTimeColumn);
 		});
 
 		test("dataType is set to timetz", () => {
-			const info = Object.fromEntries(Object.entries(pgTimetz())).info;
+			const info = Object.fromEntries(Object.entries(timetz())).info;
 			expect(info.dataType).toBe("timetz");
 		});
 
 		test("datetimePrecision is set to null", () => {
-			const column = pgTimetz();
+			const column = timetz();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
 
 		test("default with column data type", () => {
-			const column = pgTimetz();
+			const column = timetz();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("04:05:06-08:00");
@@ -8994,7 +8994,7 @@ describe("pgTimeTz", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgTimetz() as any;
+			const column = timetz() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -9002,7 +9002,7 @@ describe("pgTimeTz", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgTimetz() as any;
+			const column = timetz() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -9011,18 +9011,18 @@ describe("pgTimeTz", () => {
 
 	describe("with optional precision", () => {
 		test("datetimePrecision is set to precision", () => {
-			const column = pgTimetz(1);
+			const column = timetz(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(1);
 		});
 
 		test("data type has precision", () => {
-			const info = Object.fromEntries(Object.entries(pgTimetz(1))).info;
+			const info = Object.fromEntries(Object.entries(timetz(1))).info;
 			expect(info.dataType).toBe("timetz(1)");
 		});
 
 		test("default with column data type", () => {
-			const column = pgTimetz(1);
+			const column = timetz(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("04:05:06-08:00");
@@ -9033,12 +9033,12 @@ describe("pgTimeTz", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -9046,12 +9046,12 @@ describe("pgTimeTz", () => {
 			});
 
 			test("output type is string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -9067,12 +9067,12 @@ describe("pgTimeTz", () => {
 			});
 
 			test("input type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz().notNull(),
+						id: timetz().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -9080,12 +9080,12 @@ describe("pgTimeTz", () => {
 			});
 
 			test("output type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz().notNull(),
+						id: timetz().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -9100,12 +9100,12 @@ describe("pgTimeTz", () => {
 			});
 
 			test("parses time strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
 				expect(schema.safeParse("11:30:01").success).toBe(true);
 				expect(schema.safeParse("11:30:01.129").success).toBe(true);
@@ -9120,66 +9120,66 @@ describe("pgTimeTz", () => {
 			});
 
 			test("does not parse other strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz().default("11:30"),
+						id: timetz().default("11:30"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("01:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz().notNull(),
+						id: timetz().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz().notNull().default("11:30"),
+						id: timetz().notNull().default("11:30"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("02:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -9188,15 +9188,15 @@ describe("pgTimeTz", () => {
 
 		describe("as primary key", () => {
 			test("input type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -9204,15 +9204,15 @@ describe("pgTimeTz", () => {
 			});
 
 			test("output type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -9220,60 +9220,60 @@ describe("pgTimeTz", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz().default("11:30"),
+						id: timetz().default("11:30"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("10:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz().notNull().default("11:30"),
+						id: timetz().notNull().default("11:30"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz().default("11:30").notNull(),
+						id: timetz().default("11:30").notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("10:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -9282,12 +9282,12 @@ describe("pgTimeTz", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz().notNull(),
+						id: timetz().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -9304,12 +9304,12 @@ describe("pgTimeTz", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz().notNull(),
+						id: timetz().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -9326,12 +9326,12 @@ describe("pgTimeTz", () => {
 			});
 
 			test("not a time with time zone", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(12);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -9347,12 +9347,12 @@ describe("pgTimeTz", () => {
 			});
 
 			test("not a time with time zone string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimetz(),
+						id: timetz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("not a time");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -9373,28 +9373,28 @@ describe("pgTimeTz", () => {
 
 describe("pgTimestamp", () => {
 	test("returns a PgTimestamp instance", () => {
-		const column = pgTimestamp();
+		const column = timestamp();
 		expect(column).toBeInstanceOf(PgTimestamp);
 	});
 
 	describe("PgTimestamp", () => {
 		test("inherits from PgColumnWithPrecision", () => {
-			expect(pgTimestamp()).toBeInstanceOf(PgTimestampColumn);
+			expect(timestamp()).toBeInstanceOf(PgTimestampColumn);
 		});
 
 		test("dataType is set to timestamp", () => {
-			const info = Object.fromEntries(Object.entries(pgTimestamp())).info;
+			const info = Object.fromEntries(Object.entries(timestamp())).info;
 			expect(info.dataType).toBe("timestamp");
 		});
 
 		test("datetimePrecision is set to null", () => {
-			const column = pgTimestamp();
+			const column = timestamp();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
 
 		test("default with column data type", () => {
-			const column = pgTimestamp();
+			const column = timestamp();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(new Date(1));
@@ -9405,7 +9405,7 @@ describe("pgTimestamp", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgTimestamp() as any;
+			const column = timestamp() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -9413,7 +9413,7 @@ describe("pgTimestamp", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgTimestamp() as any;
+			const column = timestamp() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -9422,18 +9422,18 @@ describe("pgTimestamp", () => {
 
 	describe("with optional precision", () => {
 		test("datetimePrecision is set to precision", () => {
-			const column = pgTimestamp(1);
+			const column = timestamp(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(1);
 		});
 
 		test("data type has precision", () => {
-			const info = Object.fromEntries(Object.entries(pgTimestamp(1))).info;
+			const info = Object.fromEntries(Object.entries(timestamp(1))).info;
 			expect(info.dataType).toBe("timestamp(1)");
 		});
 
 		test("default with column data type", () => {
-			const column = pgTimestamp(1);
+			const column = timestamp(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(new Date(1));
@@ -9446,12 +9446,12 @@ describe("pgTimestamp", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is Date, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -9459,12 +9459,12 @@ describe("pgTimestamp", () => {
 			});
 
 			test("output type is Date, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -9486,12 +9486,12 @@ describe("pgTimestamp", () => {
 			});
 
 			test("input type is Date or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp().notNull(),
+						id: timestamp().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Date | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -9499,12 +9499,12 @@ describe("pgTimestamp", () => {
 			});
 
 			test("output type is Date with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp().notNull(),
+						id: timestamp().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -9526,86 +9526,86 @@ describe("pgTimestamp", () => {
 			});
 
 			test("parses dates", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 			});
 
 			test("parses strings that can be coerced into dates", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date().toISOString()).success).toBe(true);
 			});
 
 			test("does not parse other strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp().default(new Date()),
+						id: timestamp().default(new Date()),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp().notNull(),
+						id: timestamp().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp().notNull().default(new Date()),
+						id: timestamp().notNull().default(new Date()),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -9614,15 +9614,15 @@ describe("pgTimestamp", () => {
 
 		describe("as primary key", () => {
 			test("input type is Date, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -9630,15 +9630,15 @@ describe("pgTimestamp", () => {
 			});
 
 			test("output type is Date", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -9646,60 +9646,60 @@ describe("pgTimestamp", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp().default(new Date(2)),
+						id: timestamp().default(new Date(2)),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp().notNull(),
+						id: timestamp().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp().default(new Date()).notNull(),
+						id: timestamp().default(new Date()).notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -9708,12 +9708,12 @@ describe("pgTimestamp", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp().notNull(),
+						id: timestamp().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -9730,12 +9730,12 @@ describe("pgTimestamp", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp().notNull(),
+						id: timestamp().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -9753,12 +9753,12 @@ describe("pgTimestamp", () => {
 			});
 
 			test("not a timestamp", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(12);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -9775,12 +9775,12 @@ describe("pgTimestamp", () => {
 			});
 
 			test("not a timestamp string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamp(),
+						id: timestamp(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("not a timestamp");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -9800,28 +9800,28 @@ describe("pgTimestamp", () => {
 
 describe("pgTimestampTz", () => {
 	test("returns a PgTimestampTz instance", () => {
-		const column = pgTimestamptz();
+		const column = timestamptz();
 		expect(column).toBeInstanceOf(PgTimestampTz);
 	});
 
 	describe("PgTimestampTz", () => {
 		test("inherits from PgColumnWithPrecision", () => {
-			expect(pgTimestamptz()).toBeInstanceOf(PgColumn);
+			expect(timestamptz()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to timestamptz", () => {
-			const info = Object.fromEntries(Object.entries(pgTimestamptz())).info;
+			const info = Object.fromEntries(Object.entries(timestamptz())).info;
 			expect(info.dataType).toBe("timestamptz");
 		});
 
 		test("datetimePrecision is set to null", () => {
-			const column = pgTimestamptz();
+			const column = timestamptz();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
 
 		test("default with column data type", () => {
-			const column = pgTimestamptz();
+			const column = timestamptz();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(new Date(1));
@@ -9832,7 +9832,7 @@ describe("pgTimestampTz", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgTimestamptz() as any;
+			const column = timestamptz() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -9840,7 +9840,7 @@ describe("pgTimestampTz", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgTimestamptz() as any;
+			const column = timestamptz() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -9849,18 +9849,18 @@ describe("pgTimestampTz", () => {
 
 	describe("with optional precision", () => {
 		test("datetimePrecision is set to precision", () => {
-			const column = pgTimestamptz(1);
+			const column = timestamptz(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(1);
 		});
 
 		test("data type has precision", () => {
-			const info = Object.fromEntries(Object.entries(pgTimestamptz(1))).info;
+			const info = Object.fromEntries(Object.entries(timestamptz(1))).info;
 			expect(info.dataType).toBe("timestamptz(1)");
 		});
 
 		test("default with column data type", () => {
-			const column = pgTimestamptz(1);
+			const column = timestamptz(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(new Date(1));
@@ -9873,12 +9873,12 @@ describe("pgTimestampTz", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is Date, string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -9886,12 +9886,12 @@ describe("pgTimestampTz", () => {
 			});
 
 			test("output type is Date, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -9913,12 +9913,12 @@ describe("pgTimestampTz", () => {
 			});
 
 			test("input type is Date or string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz().notNull(),
+						id: timestamptz().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Date | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -9926,12 +9926,12 @@ describe("pgTimestampTz", () => {
 			});
 
 			test("output type is Date with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz().notNull(),
+						id: timestamptz().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -9953,86 +9953,86 @@ describe("pgTimestampTz", () => {
 			});
 
 			test("parses dates", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 			});
 
 			test("parses strings that can be coerced into dates", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date().toISOString()).success).toBe(true);
 			});
 
 			test("does not parse other strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz().default(new Date()),
+						id: timestamptz().default(new Date()),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz().notNull(),
+						id: timestamptz().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz().notNull().default(new Date()),
+						id: timestamptz().notNull().default(new Date()),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -10041,15 +10041,15 @@ describe("pgTimestampTz", () => {
 
 		describe("as primary key", () => {
 			test("input type is Date, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -10057,15 +10057,15 @@ describe("pgTimestampTz", () => {
 			});
 
 			test("output type is Date", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -10073,60 +10073,60 @@ describe("pgTimestampTz", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz().default(new Date(2)),
+						id: timestamptz().default(new Date(2)),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz().notNull(),
+						id: timestamptz().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz().default(new Date(2)).notNull(),
+						id: timestamptz().default(new Date(2)).notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -10135,12 +10135,12 @@ describe("pgTimestampTz", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz().notNull(),
+						id: timestamptz().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -10157,12 +10157,12 @@ describe("pgTimestampTz", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz().notNull(),
+						id: timestamptz().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -10180,12 +10180,12 @@ describe("pgTimestampTz", () => {
 			});
 
 			test("not a timestamp", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(12);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -10202,12 +10202,12 @@ describe("pgTimestampTz", () => {
 			});
 
 			test("not a timestamp string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgTimestamptz(),
+						id: timestamptz(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("not a timestamp");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -10227,34 +10227,34 @@ describe("pgTimestampTz", () => {
 
 describe("pgNumeric", () => {
 	test("returns a PgNumeric instance", () => {
-		const column = pgNumeric();
+		const column = numeric();
 		expect(column).toBeInstanceOf(PgNumeric);
 	});
 
 	describe("PgNumeric", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(pgNumeric()).toBeInstanceOf(PgColumn);
+			expect(numeric()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to numeric", () => {
-			const info = Object.fromEntries(Object.entries(pgNumeric())).info;
+			const info = Object.fromEntries(Object.entries(numeric())).info;
 			expect(info.dataType).toBe("numeric");
 		});
 
 		test("numericPrecision is set to null", () => {
-			const column = pgNumeric();
+			const column = numeric();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericPrecision).toBe(null);
 		});
 
 		test("numericScale is set to null", () => {
-			const column = pgNumeric();
+			const column = numeric();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericScale).toBe(null);
 		});
 
 		test("default with column data type", () => {
-			const column = pgNumeric();
+			const column = numeric();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(1);
@@ -10275,7 +10275,7 @@ describe("pgNumeric", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgNumeric() as any;
+			const column = numeric() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -10283,7 +10283,7 @@ describe("pgNumeric", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = pgNumeric() as any;
+			const column = numeric() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -10292,24 +10292,24 @@ describe("pgNumeric", () => {
 
 	describe("with optional precision", () => {
 		test("numericPrecision is set to precision", () => {
-			const column = pgNumeric(4);
+			const column = numeric(4);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericPrecision).toBe(4);
 		});
 
 		test("numericScale is set to 0", () => {
-			const column = pgNumeric(4);
+			const column = numeric(4);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericScale).toBe(0);
 		});
 
 		test("data type has precision and scale", () => {
-			const info = Object.fromEntries(Object.entries(pgNumeric(5))).info;
+			const info = Object.fromEntries(Object.entries(numeric(5))).info;
 			expect(info.dataType).toBe("numeric(5, 0)");
 		});
 
 		test("default with column data type", () => {
-			const column = pgNumeric(5);
+			const column = numeric(5);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(1);
@@ -10331,18 +10331,18 @@ describe("pgNumeric", () => {
 
 	describe("with scale", () => {
 		test("numericScale is set to scale", () => {
-			const column = pgNumeric(4, 5);
+			const column = numeric(4, 5);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.numericScale).toBe(5);
 		});
 
 		test("data type has precision and scale", () => {
-			const info = Object.fromEntries(Object.entries(pgNumeric(4, 5))).info;
+			const info = Object.fromEntries(Object.entries(numeric(4, 5))).info;
 			expect(info.dataType).toBe("numeric(4, 5)");
 		});
 
 		test("default with column data type", () => {
-			const column = pgNumeric(5, 1);
+			const column = numeric(5, 1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(1);
@@ -10365,12 +10365,12 @@ describe("pgNumeric", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is number, bigint, string, null or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -10378,12 +10378,12 @@ describe("pgNumeric", () => {
 			});
 
 			test("output type is string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -10411,12 +10411,12 @@ describe("pgNumeric", () => {
 			});
 
 			test("input type is number, bigint, string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric().notNull(),
+						id: numeric().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -10424,12 +10424,12 @@ describe("pgNumeric", () => {
 			});
 
 			test("output type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric().notNull(),
+						id: numeric().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -10454,142 +10454,142 @@ describe("pgNumeric", () => {
 			});
 
 			test("parses bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 			});
 
 			test("parses number", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 			});
 
 			test("parses decimals", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 			});
 
 			test("parses strings that can be coerced to number or bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse("1.1").success).toBe(true);
 				expect(schema.safeParse("alpha").success).toBe(false);
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("fails on empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(4, 5),
+						id: numeric(4, 5),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("").success).toBe(false);
 			});
 
 			test("parses string that can be parsed as a float but not as a bigint", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(4, 5),
+						id: numeric(4, 5),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("0.00000").success).toBe(true);
 			});
 
 			test("parses NaN, Infinity, and -Infinity strings", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(4, 5),
+						id: numeric(4, 5),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("NaN").success).toBe(true);
 				expect(schema.safeParse("Infinity").success).toBe(true);
 				expect(schema.safeParse("-Infinity").success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric().default(2),
+						id: numeric().default(2),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(2).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric().notNull(),
+						id: numeric().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric().notNull().default(1),
+						id: numeric().notNull().default(1),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(2).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("unconstrained", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(123423442.1).success).toBe(true);
 				expect(schema.safeParse(123423442.12345).success).toBe(true);
 				expect(schema.safeParse(12342.123452323).success).toBe(true);
@@ -10597,12 +10597,12 @@ describe("pgNumeric", () => {
 
 			describe("constrained with precision", () => {
 				test("parses on digit count before decimal less than precision", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgNumeric(5),
+							id: numeric(5),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(1234.1).success).toBe(true);
 					expect(schema.safeParse(1234).success).toBe(true);
 					expect(schema.safeParse("1234.1").success).toBe(true);
@@ -10610,12 +10610,12 @@ describe("pgNumeric", () => {
 				});
 
 				test("parses on digit count before decimal equal to precision", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgNumeric(5),
+							id: numeric(5),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(12345).success).toBe(true);
 					expect(schema.safeParse(12345.1234).success).toBe(true);
 					expect(schema.safeParse("12345").success).toBe(true);
@@ -10623,12 +10623,12 @@ describe("pgNumeric", () => {
 				});
 
 				test("does not parse on digit count before decimal greater than precision", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgNumeric(5),
+							id: numeric(5),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(123456).success).toBe(false);
 					expect(schema.safeParse(123456.1234).success).toBe(false);
 					expect(schema.safeParse("123456").success).toBe(false);
@@ -10638,12 +10638,12 @@ describe("pgNumeric", () => {
 
 			describe("constrained with precision and scale", () => {
 				test("parses on digit count before decimal less than precision", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgNumeric(5, 2),
+							id: numeric(5, 2),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(1234.1).success).toBe(true);
 					expect(schema.safeParse(1234).success).toBe(true);
 					expect(schema.safeParse("1234.1").success).toBe(true);
@@ -10651,12 +10651,12 @@ describe("pgNumeric", () => {
 				});
 
 				test("parses on digit count before decimal equal to precision", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgNumeric(5, 4),
+							id: numeric(5, 4),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(12345).success).toBe(true);
 					expect(schema.safeParse(12345.1234).success).toBe(true);
 					expect(schema.safeParse("12345").success).toBe(true);
@@ -10664,12 +10664,12 @@ describe("pgNumeric", () => {
 				});
 
 				test("does not parse on digit count before decimal greater than precision", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgNumeric(5, 2),
+							id: numeric(5, 2),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(123456).success).toBe(false);
 					expect(schema.safeParse(123456.1234).success).toBe(false);
 					expect(schema.safeParse("123456").success).toBe(false);
@@ -10677,34 +10677,34 @@ describe("pgNumeric", () => {
 				});
 
 				test("parses on decimal count less than scale", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgNumeric(5, 4),
+							id: numeric(5, 4),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(1234.1).success).toBe(true);
 					expect(schema.safeParse("1234.1").success).toBe(true);
 				});
 
 				test("parses on decimal count equal to scale", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgNumeric(5, 4),
+							id: numeric(5, 4),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(1234.1234).success).toBe(true);
 					expect(schema.safeParse("1234.1234").success).toBe(true);
 				});
 
 				test("does not parse decimal count grater than scale", () => {
-					const table = pgTable({
+					const tbl = table({
 						columns: {
-							id: pgNumeric(5, 4),
+							id: numeric(5, 4),
 						},
 					});
-					const schema = zodSchema(table).shape.id;
+					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(1234.12345).success).toBe(false);
 					expect(schema.safeParse("1234.12345").success).toBe(false);
 				});
@@ -10713,15 +10713,15 @@ describe("pgNumeric", () => {
 
 		describe("as primary key", () => {
 			test("input type is number, bigint, string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -10729,15 +10729,15 @@ describe("pgNumeric", () => {
 			});
 
 			test("output type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -10745,60 +10745,60 @@ describe("pgNumeric", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric().default(1),
+						id: numeric().default(1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(2).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric().notNull(),
+						id: numeric().notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric().notNull().default(1),
+						id: numeric().notNull().default(1),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(2).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -10807,12 +10807,12 @@ describe("pgNumeric", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric().notNull(),
+						id: numeric().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -10829,12 +10829,12 @@ describe("pgNumeric", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric().notNull(),
+						id: numeric().notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -10852,12 +10852,12 @@ describe("pgNumeric", () => {
 			});
 
 			test("empty string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(4, 5),
+						id: numeric(4, 5),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -10873,12 +10873,12 @@ describe("pgNumeric", () => {
 			});
 
 			test("not a numeric", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(),
+						id: numeric(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -10895,12 +10895,12 @@ describe("pgNumeric", () => {
 			});
 
 			test("numeric with greater precision", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(4),
+						id: numeric(4),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(12345);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -10916,12 +10916,12 @@ describe("pgNumeric", () => {
 			});
 
 			test("numeric with greater scale", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
-						id: pgNumeric(4, 3),
+						id: numeric(4, 3),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(1234.1234);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -11025,12 +11025,12 @@ describe("pgEnum", () => {
 	describe("zod", () => {
 		describe("by default", () => {
 			test("input type is string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -11038,12 +11038,12 @@ describe("pgEnum", () => {
 			});
 
 			test("output type is string, null, or undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -11061,12 +11061,12 @@ describe("pgEnum", () => {
 			});
 
 			test("input type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
@@ -11074,12 +11074,12 @@ describe("pgEnum", () => {
 			});
 
 			test("output type is string with notNull", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -11094,24 +11094,24 @@ describe("pgEnum", () => {
 			});
 
 			test("parses enum members", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse("admin").success).toBe(true);
 				expect(schema.safeParse("superuser").success).toBe(true);
 			});
 
 			test("does not parse other objects", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(false);
 				expect(schema.safeParse(1).success).toBe(false);
 				expect(schema.safeParse(10.123).success).toBe(false);
@@ -11122,58 +11122,58 @@ describe("pgEnum", () => {
 			});
 
 			test("parses null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
 			test("parses undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]).default("user"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"])
 							.notNull()
 							.default("user"),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -11182,15 +11182,15 @@ describe("pgEnum", () => {
 
 		describe("as primary key", () => {
 			test("input type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
@@ -11198,15 +11198,15 @@ describe("pgEnum", () => {
 			});
 
 			test("output type is string", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -11214,62 +11214,62 @@ describe("pgEnum", () => {
 			});
 
 			test("is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default value is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]).default("user"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with notNull is non nullable and required", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
 
 			test("with default and notNull is non nullable", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"])
 							.notNull()
 							.default("user"),
 					},
 					constraints: {
-						primaryKey: pgPrimaryKey(["id"]),
+						primaryKey: primaryKey(["id"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
@@ -11278,12 +11278,12 @@ describe("pgEnum", () => {
 
 		describe("errors", () => {
 			test("undefined", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(undefined);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -11300,12 +11300,12 @@ describe("pgEnum", () => {
 			});
 
 			test("null", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse(null);
 				expect(result.success).toBe(false);
 				if (!result.success) {
@@ -11322,12 +11322,12 @@ describe("pgEnum", () => {
 			});
 
 			test("not an enum", () => {
-				const table = pgTable({
+				const tbl = table({
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
 				});
-				const schema = zodSchema(table).shape.id;
+				const schema = zodSchema(tbl).shape.id;
 				const result = schema.safeParse("hello");
 				expect(result.success).toBe(false);
 				if (!result.success) {

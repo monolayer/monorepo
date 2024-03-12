@@ -1,9 +1,9 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgText } from "~/schema/pg_column.js";
+import { text } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { pgIndex } from "~/schema/pg_index.js";
-import { pgTable } from "~/schema/pg_table.js";
+import { index } from "~/schema/pg_index.js";
+import { table } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";
@@ -33,12 +33,12 @@ describe("Database migrations", () => {
 			context.kysely,
 		);
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				fullName: pgText(),
-				name: pgText(),
+				fullName: text(),
+				name: text(),
 			},
-			indexes: [pgIndex(["fullName"]), pgIndex(["name"])],
+			indexes: [index(["fullName"]), index(["name"])],
 		});
 
 		const database = pgDatabase({
@@ -94,12 +94,12 @@ describe("Database migrations", () => {
 			context.kysely,
 		);
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				fullName: pgText(),
-				name: pgText(),
+				fullName: text(),
+				name: text(),
 			},
-			indexes: [pgIndex(["name"])],
+			indexes: [index(["name"])],
 		});
 
 		const database = pgDatabase({
@@ -157,12 +157,12 @@ describe("Database migrations", () => {
 			context.kysely,
 		);
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				fullName: pgText(),
-				name: pgText(),
+				fullName: text(),
+				name: text(),
 			},
-			indexes: [pgIndex(["name"]), pgIndex(["name", "fullName"])],
+			indexes: [index(["name"]), index(["name", "fullName"])],
 		});
 
 		const database = pgDatabase({
@@ -235,12 +235,12 @@ describe("Database migrations", () => {
 			context.kysely,
 		);
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				fullName: pgText(),
-				name: pgText(),
+				fullName: text(),
+				name: text(),
 			},
-			indexes: [pgIndex(["name"]), pgIndex(["fullName"]).unique()],
+			indexes: [index(["name"]), index(["fullName"]).unique()],
 		});
 
 		const database = pgDatabase({

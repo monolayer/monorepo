@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgText } from "~/schema/pg_column.js";
+import { text } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
-import { pgTable } from "~/schema/pg_table.js";
+import { primaryKey } from "~/schema/pg_primary_key.js";
+import { table } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";
@@ -29,22 +29,22 @@ describe("Database migrations", () => {
 			.addColumn("name", "text")
 			.execute();
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				fullName: pgText(),
-				name: pgText(),
+				fullName: text(),
+				name: text(),
 			},
 			constraints: {
-				primaryKey: pgPrimaryKey(["fullName", "name"]),
+				primaryKey: primaryKey(["fullName", "name"]),
 			},
 		});
 
-		const books = pgTable({
+		const books = table({
 			columns: {
-				name: pgText(),
+				name: text(),
 			},
 			constraints: {
-				primaryKey: pgPrimaryKey(["name"]),
+				primaryKey: primaryKey(["name"]),
 			},
 		});
 
@@ -151,16 +151,16 @@ describe("Database migrations", () => {
 			.addPrimaryKeyConstraint("books_name_kinetic_pk", ["name"])
 			.execute();
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				fullName: pgText(),
-				name: pgText(),
+				fullName: text(),
+				name: text(),
 			},
 		});
 
-		const books = pgTable({
+		const books = table({
 			columns: {
-				name: pgText(),
+				name: text(),
 			},
 		});
 
@@ -257,13 +257,13 @@ describe("Database migrations", () => {
 			])
 			.execute();
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				fullName: pgText(),
-				name: pgText(),
+				fullName: text(),
+				name: text(),
 			},
 			constraints: {
-				primaryKey: pgPrimaryKey(["name"]),
+				primaryKey: primaryKey(["name"]),
 			},
 		});
 
@@ -359,13 +359,13 @@ describe("Database migrations", () => {
 			])
 			.execute();
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				fullName: pgText().notNull(),
-				name: pgText(),
+				fullName: text().notNull(),
+				name: text(),
 			},
 			constraints: {
-				primaryKey: pgPrimaryKey(["name"]),
+				primaryKey: primaryKey(["name"]),
 			},
 		});
 
@@ -452,13 +452,13 @@ describe("Database migrations", () => {
 			.addPrimaryKeyConstraint("users_name_kinetic_pk", ["name"])
 			.execute();
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				name: pgText(),
-				email: pgText().notNull(),
+				name: text(),
+				email: text().notNull(),
 			},
 			constraints: {
-				primaryKey: pgPrimaryKey(["email"]),
+				primaryKey: primaryKey(["email"]),
 			},
 		});
 

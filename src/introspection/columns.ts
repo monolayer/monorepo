@@ -14,7 +14,7 @@ import {
 } from "~/migrations/migration_schema.js";
 import type { AnyPgDatabase } from "~/schema/pg_database.js";
 import { tableInfo } from "~/schema/pg_table.js";
-import { ColumnInfo, type PgColumnTypes } from "../schema/pg_column.js";
+import { ColumnInfo, type TableColumn } from "../schema/pg_column.js";
 import { TableColumnInfo, compileDefaultExpression } from "./schemas.js";
 import type { InformationSchemaDB } from "./types.js";
 
@@ -316,7 +316,7 @@ export function localColumnInfoByTable(
 					const columnInfo = schemaColumnInfo(
 						transformedTableName,
 						columnName,
-						column as PgColumnTypes,
+						column as TableColumn,
 					);
 					let columnKey = columnName;
 					const transformedColumnNname = toSnakeCase(columnName, camelCase);
@@ -367,7 +367,7 @@ export function localColumnInfoByTable(
 export function schemaColumnInfo(
 	tableName: string,
 	columnName: string,
-	column: PgColumnTypes,
+	column: TableColumn,
 ): ColumnInfo {
 	const columnInfo: ColumnInfo = Object.fromEntries(
 		Object.entries(column),

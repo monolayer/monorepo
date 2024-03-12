@@ -1,11 +1,11 @@
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
-import { pgIndex } from "~/schema/pg_index.js";
+import { index } from "~/schema/pg_index.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
 
 describe("pgIndex", () => {
 	test("one column", () => {
-		const idx = pgIndex(["id"]).ifNotExists();
+		const idx = index(["id"]).ifNotExists();
 		const compiledIndex = compileIndex(idx, "test_table");
 
 		const expected = {
@@ -16,7 +16,7 @@ describe("pgIndex", () => {
 	});
 
 	test("multiple columns", () => {
-		const idx = pgIndex(["id", "name"]).ifNotExists();
+		const idx = index(["id", "name"]).ifNotExists();
 		const compiledIndex = compileIndex(idx, "test_table");
 
 		const expected = {
@@ -27,7 +27,7 @@ describe("pgIndex", () => {
 	});
 
 	test("ifNotExists", () => {
-		const idx = pgIndex(["id"]).ifNotExists();
+		const idx = index(["id"]).ifNotExists();
 		const compiledIndex = compileIndex(idx, "test_table");
 
 		const expected = {
@@ -38,7 +38,7 @@ describe("pgIndex", () => {
 	});
 
 	test("unique", () => {
-		const idx = pgIndex(["id"]).unique();
+		const idx = index(["id"]).unique();
 		const compiledIndex = compileIndex(idx, "test_table");
 
 		const expected = {
@@ -49,7 +49,7 @@ describe("pgIndex", () => {
 	});
 
 	test("nullsNotDistinct", () => {
-		const idx = pgIndex(["id"]).nullsNotDistinct();
+		const idx = index(["id"]).nullsNotDistinct();
 		const compiledIndex = compileIndex(idx, "test_table");
 
 		const expected = {
@@ -60,7 +60,7 @@ describe("pgIndex", () => {
 	});
 
 	test("expression", () => {
-		const idx = pgIndex(["first_name"]).expression(
+		const idx = index(["first_name"]).expression(
 			sql`first_name COLLATE "fi_FI"`,
 		);
 		const compiledIndex = compileIndex(idx, "test_table");
@@ -73,7 +73,7 @@ describe("pgIndex", () => {
 	});
 
 	test("using", () => {
-		const idx = pgIndex(["id"]).using("btree");
+		const idx = index(["id"]).using("btree");
 		const compiledIndex = compileIndex(idx, "test_table");
 
 		const expected = {
@@ -84,7 +84,7 @@ describe("pgIndex", () => {
 	});
 
 	test("where comparison", () => {
-		const idx = pgIndex(["order_nr"]).where(sql.ref("billed"), "is not", true);
+		const idx = index(["order_nr"]).where(sql.ref("billed"), "is not", true);
 		const compiledIndex = compileIndex(idx, "test_table");
 
 		const expected = {
@@ -95,7 +95,7 @@ describe("pgIndex", () => {
 	});
 
 	test("where expression builder", () => {
-		const idx = pgIndex(["id"]).where((eb) =>
+		const idx = index(["id"]).where((eb) =>
 			eb.and([eb("first_name", "=", "Igal"), eb(sql.ref("age"), ">=", 18)]),
 		);
 
@@ -109,7 +109,7 @@ describe("pgIndex", () => {
 	});
 
 	test("where expression", () => {
-		const idx = pgIndex(["id"]).where(sql<boolean>`SELECT 1`);
+		const idx = index(["id"]).where(sql<boolean>`SELECT 1`);
 		const compiledIndex = compileIndex(idx, "test_table");
 
 		const expected = {

@@ -1,4 +1,4 @@
-export function pgPrimaryKey<T extends string, PK extends string>(
+export function primaryKey<T extends string, PK extends string>(
 	columns: (PK | T)[],
 ) {
 	return new PgPrimaryKey<T, PK>(columns);

@@ -1,8 +1,8 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgEnum, pgInteger, pgSerial } from "~/schema/pg_column.js";
+import { integer, pgEnum, serial } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { pgTable } from "~/schema/pg_table.js";
+import { table } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";
@@ -22,9 +22,9 @@ describe("Database migrations", () => {
 			.addColumn("id", "integer")
 			.execute();
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgInteger(),
+				id: integer(),
 				role: pgEnum("role", ["admin", "user"]),
 			},
 		});
@@ -94,9 +94,9 @@ describe("Database migrations", () => {
 			.addColumn("role", sql`role`)
 			.execute();
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgSerial(),
+				id: serial(),
 			},
 		});
 
@@ -165,9 +165,9 @@ describe("Database migrations", () => {
 			.addColumn("role", sql`role`)
 			.execute();
 
-		const users = pgTable({
+		const users = table({
 			columns: {
-				id: pgSerial(),
+				id: serial(),
 				role: pgEnum("role", ["admin", "user", "superuser"]),
 			},
 		});
