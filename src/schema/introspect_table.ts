@@ -172,8 +172,11 @@ export function introspectTable(table: AnyPgTable) {
 	const introspectedTable: IntrospectedTable = {
 		primaryKey: primaryKey(schema.columns),
 		columns: columnInfo(schema.columns),
-		foreignKeys: foreignKeyInfo(schema.foreignKeys, info.database?.tables),
-		uniqueConstraints: uniqueConstraintInfo(schema.uniqueConstraints),
+		foreignKeys: foreignKeyInfo(
+			schema.constraints?.foreignKeys,
+			info.database?.tables,
+		),
+		uniqueConstraints: uniqueConstraintInfo(schema.constraints?.unique),
 		triggers: triggerInfo(schema.triggers),
 	};
 	return introspectedTable;

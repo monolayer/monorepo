@@ -14,6 +14,7 @@ import {
 	pgVarchar,
 } from "~/schema/pg_column.js";
 import { pgIndex } from "~/schema/pg_index.js";
+import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
 import { pgTable, tableInfo } from "~/schema/pg_table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
 import { pgForeignKey } from "../../src/schema/pg_foreign_key.js";
@@ -66,7 +67,9 @@ describe("pgTable definition", () => {
 					name: pgVarchar(),
 					location: pgVarchar(),
 				},
-				uniqueConstraints: [pgUnique(["name", "location"])],
+				constraints: {
+					unique: [pgUnique(["name", "location"])],
+				},
 			});
 
 			const users = pgTable({
@@ -76,9 +79,11 @@ describe("pgTable definition", () => {
 					subscribed: pgBoolean(),
 					book_id: pgInteger(),
 				},
-				foreignKeys: [pgForeignKey(["book_id"], books, ["name"])],
+				constraints: {
+					foreignKeys: [pgForeignKey(["book_id"], books, ["name"])],
+				},
 			});
-			expect(tableInfo(users).schema.foreignKeys?.length).toBe(1);
+			expect(tableInfo(users).schema.constraints?.foreignKeys?.length).toBe(1);
 		});
 
 		test("unique constraints can be added", () => {
@@ -90,9 +95,11 @@ describe("pgTable definition", () => {
 
 			const tbl = pgTable({
 				columns: columns,
-				uniqueConstraints: [pgUnique(["name"]), pgUnique(["subscribed"])],
+				constraints: {
+					unique: [pgUnique(["name"]), pgUnique(["subscribed"])],
+				},
 			});
-			expect(tableInfo(tbl).schema.uniqueConstraints?.length).toBe(2);
+			expect(tableInfo(tbl).schema.constraints?.unique?.length).toBe(2);
 		});
 	});
 
@@ -414,7 +421,9 @@ describe("pgTable definition", () => {
 						demo: pgBigint(),
 						id: pgInteger(),
 					},
-					primaryKey: ["demo", "id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["demo", "id"]),
+					},
 				});
 				type expectedType = {
 					id: number;
@@ -431,7 +440,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: number | string;
@@ -446,7 +457,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id?: number | string;
@@ -461,7 +474,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: {
@@ -482,7 +497,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: number;
@@ -497,7 +514,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: number | string;
@@ -512,7 +531,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id?: number | string;
@@ -527,7 +548,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: {
@@ -610,7 +633,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgSerial(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: number;
@@ -625,7 +650,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgSerial(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id?: number | string;
@@ -640,7 +667,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgSerial(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id?: number | string;
@@ -655,7 +684,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgSerial(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: {
@@ -738,7 +769,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().generatedByDefaultAsIdentity(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: number;
@@ -753,7 +786,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().generatedByDefaultAsIdentity(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 
 				type expectedType = {
@@ -770,7 +805,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().generatedByDefaultAsIdentity(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id?: string | number;
@@ -785,7 +822,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().generatedByDefaultAsIdentity(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: {
@@ -806,7 +845,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().generatedAlwaysAsIdentity(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: number;
@@ -821,7 +862,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().generatedAlwaysAsIdentity(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				// eslint-disable-next-line @typescript-eslint/ban-types
 				type expectedType = {};
@@ -835,7 +878,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().generatedAlwaysAsIdentity(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				// eslint-disable-next-line @typescript-eslint/ban-types
 				type expectedType = {};
@@ -849,7 +894,9 @@ describe("pgTable definition", () => {
 					columns: {
 						id: pgInteger().generatedAlwaysAsIdentity(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				type expectedType = {
 					id: {
@@ -1270,7 +1317,9 @@ describe("pgTable definition", () => {
 					name: pgVarchar().notNull(),
 					createdAt: pgTimestamptz().default("now()"),
 				},
-				primaryKey: ["idPk"],
+				constraints: {
+					primaryKey: pgPrimaryKey(["idPk"]),
+				},
 			});
 
 			const tableSchema = zodSchema(table);

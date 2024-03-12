@@ -20,6 +20,7 @@ import {
 } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
 import { pgIndex } from "~/schema/pg_index.js";
+import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration_schema.js";
 import { pgForeignKey } from "../../src/schema/pg_foreign_key.js";
@@ -273,8 +274,10 @@ test("#localSchema", () => {
 			location: pgVarchar(),
 			status: pgEnum("book_status", ["available", "checked_out", "lost"]),
 		},
+		constraints: {
+			unique: [pgUnique(["name", "location"])],
+		},
 		indexes: [pgIndex(["name"])],
-		uniqueConstraints: [pgUnique(["name", "location"])],
 	});
 
 	const users = pgTable({
@@ -285,8 +288,10 @@ test("#localSchema", () => {
 			book_id: pgInteger(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
-		primaryKey: ["id"],
-		foreignKeys: [pgForeignKey(["book_id"], books, ["id"])],
+		constraints: {
+			primaryKey: pgPrimaryKey(["id"]),
+			foreignKeys: [pgForeignKey(["book_id"], books, ["id"])],
+		},
 		uniqueConstraints: [
 			pgUnique(["name"]),
 			pgUnique(["email"]).nullsNotDistinct(),
@@ -306,7 +311,9 @@ test("#localSchema", () => {
 			name: pgVarchar().notNull(),
 			active: pgBoolean(),
 		},
-		primaryKey: ["id"],
+		constraints: {
+			primaryKey: pgPrimaryKey(["id"]),
+		},
 		indexes: [pgIndex(["name"])],
 		triggers: {
 			foo_before_insert: pgTrigger()
@@ -639,9 +646,11 @@ test("#localSchemaCamelCase", () => {
 			bookId: pgInteger(),
 			status: pgEnum("user_status", ["active", "inactive"]),
 		},
-		primaryKey: ["fullName"],
+		constraints: {
+			primaryKey: pgPrimaryKey(["fullName"]),
+			foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
+		},
 		indexes: [pgIndex(["fullName"])],
-		foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
 		uniqueConstraints: [
 			pgUnique(["name"]),
 			pgUnique(["fullName"]),

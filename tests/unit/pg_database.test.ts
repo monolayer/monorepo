@@ -14,6 +14,7 @@ import {
 	pgVarchar,
 } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
+import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
 import { pgTable } from "~/schema/pg_table.js";
 import { pgTrigger } from "~/schema/pg_trigger.js";
 import { pgUnique } from "~/schema/pg_unique.js";
@@ -132,7 +133,9 @@ describe("introspect", () => {
 			columns: {
 				id: pgSerial(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const database = pgDatabase({ tables: { users } });
@@ -165,7 +168,9 @@ describe("introspect", () => {
 				email: pgText(),
 				name: pgInteger().generatedByDefaultAsIdentity(),
 			},
-			primaryKey: ["email", "name"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["email", "name"]),
+			},
 		});
 		const database = pgDatabase({ tables: { users } });
 
@@ -211,7 +216,9 @@ describe("introspect", () => {
 				createdAt: pgTimestamp().default(sql`now()`),
 				time: pgTime(4),
 			},
-			primaryKey: ["name", "time"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["name", "time"]),
+			},
 		});
 
 		const database = pgDatabase({ tables: { demo } });
@@ -299,7 +306,9 @@ describe("introspect", () => {
 			columns: {
 				id: pgSerial(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const books = pgTable({
@@ -307,11 +316,13 @@ describe("introspect", () => {
 				id: pgSerial(),
 				book_id: pgInteger(),
 			},
-			foreignKeys: [
-				pgForeignKey(["book_id"], authors, ["id"])
-					.updateRule("restrict")
-					.deleteRule("cascade"),
-			],
+			constraints: {
+				foreignKeys: [
+					pgForeignKey(["book_id"], authors, ["id"])
+						.updateRule("restrict")
+						.deleteRule("cascade"),
+				],
+			},
 		});
 
 		const database = pgDatabase({ tables: { authors, books } });
@@ -376,10 +387,12 @@ describe("introspect", () => {
 				description: pgText(),
 				location: pgText(),
 			},
-			uniqueConstraints: [
-				pgUnique(["book_id"]),
-				pgUnique(["description", "location"]).nullsNotDistinct(),
-			],
+			constraints: {
+				unique: [
+					pgUnique(["book_id"]),
+					pgUnique(["description", "location"]).nullsNotDistinct(),
+				],
+			},
 		});
 
 		const database = pgDatabase({ tables: { books } });

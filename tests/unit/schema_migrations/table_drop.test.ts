@@ -313,7 +313,9 @@ describe("Table drop migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			uniqueConstraints: [pgUnique(["id"]).nullsNotDistinct()],
+			constraints: {
+				unique: [pgUnique(["id"]).nullsNotDistinct()],
+			},
 		});
 
 		const database = pgDatabase({

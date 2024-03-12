@@ -32,6 +32,7 @@ import {
 import { pgDatabase } from "~/schema/pg_database.js";
 import { pgForeignKey } from "~/schema/pg_foreign_key.js";
 import { pgIndex } from "~/schema/pg_index.js";
+import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
 import { pgTable } from "~/schema/pg_table.js";
 import { pgTrigger } from "~/schema/pg_trigger.js";
 import { pgUnique } from "~/schema/pg_unique.js";
@@ -218,13 +219,17 @@ describe("Table create migrations", () => {
 					columns: {
 						id: pgSerial(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				}),
 				books: pgTable({
 					columns: {
 						id: pgBigserial(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				}),
 			},
 		});
@@ -304,13 +309,17 @@ describe("Table create migrations", () => {
 						id: pgSerial(),
 						name: pgVarchar(),
 					},
-					primaryKey: ["id", "name"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id", "name"]),
+					},
 				}),
 				books: pgTable({
 					columns: {
 						id: pgBigserial(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				}),
 			},
 		});
@@ -388,7 +397,9 @@ describe("Table create migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			uniqueConstraints: [pgUnique(["id"]).nullsNotDistinct()],
+			constraints: {
+				unique: [pgUnique(["id"]).nullsNotDistinct()],
+			},
 		});
 
 		const users = pgTable({
@@ -396,7 +407,9 @@ describe("Table create migrations", () => {
 				id: pgSerial(),
 				fullName: pgVarchar(),
 			},
-			uniqueConstraints: [pgUnique(["id"])],
+			constraints: {
+				unique: [pgUnique(["id"])],
+			},
 		});
 
 		const database = pgDatabase({
@@ -479,7 +492,9 @@ describe("Table create migrations", () => {
 			columns: {
 				id: pgBigserial(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const users = pgTable({
@@ -487,11 +502,13 @@ describe("Table create migrations", () => {
 				id: pgSerial(),
 				name: pgVarchar(),
 			},
-			foreignKeys: [
-				pgForeignKey(["id"], books, ["id"])
-					.deleteRule("set null")
-					.updateRule("set null"),
-			],
+			constraints: {
+				foreignKeys: [
+					pgForeignKey(["id"], books, ["id"])
+						.deleteRule("set null")
+						.updateRule("set null"),
+				],
+			},
 		});
 
 		const database = pgDatabase({
@@ -786,7 +803,9 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 			columns: {
 				id: pgBigserial(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 			indexes: [pgIndex(["id"]).unique()],
 		});
 
@@ -794,7 +813,9 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 			columns: {
 				id: pgBigserial(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 			indexes: [pgIndex(["id"]).unique()],
 		});
 
@@ -804,12 +825,14 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 				oldBookId: pgBigint(),
 				libraryBuildingId: pgBigint(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+				foreignKeys: [
+					pgForeignKey(["oldBookId"], books, ["id"]),
+					pgForeignKey(["libraryBuildingId"], libraryBuilding, ["id"]),
+				],
+			},
 			indexes: [pgIndex(["id"]).unique()],
-			foreignKeys: [
-				pgForeignKey(["oldBookId"], books, ["id"]),
-				pgForeignKey(["libraryBuildingId"], libraryBuilding, ["id"]),
-			],
 		});
 
 		const users = pgTable({
@@ -817,8 +840,10 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 				fullName: pgText(),
 				bookId: pgBigserial(),
 			},
+			constraints: {
+				foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
+			},
 			indexes: [pgIndex(["fullName"])],
-			foreignKeys: [pgForeignKey(["bookId"], books, ["id"])],
 		});
 
 		const triggerTable = pgTable({

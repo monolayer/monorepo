@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, test } from "vitest";
 import { pgInteger, pgSerial, pgVarchar } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
 import { pgForeignKey } from "~/schema/pg_foreign_key.js";
+import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
 import { pgTable } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
@@ -38,7 +39,9 @@ describe("Database migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const users = pgTable({
@@ -47,11 +50,13 @@ describe("Database migrations", () => {
 				book_id: pgInteger(),
 				name: pgVarchar(),
 			},
-			foreignKeys: [
-				pgForeignKey(["id"], books, ["id"])
-					.updateRule("set null")
-					.deleteRule("set null"),
-			],
+			constraints: {
+				foreignKeys: [
+					pgForeignKey(["id"], books, ["id"])
+						.updateRule("set null")
+						.deleteRule("set null"),
+				],
+			},
 		});
 
 		const database = pgDatabase({
@@ -147,14 +152,18 @@ describe("Database migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const old_books = pgTable({
 			columns: {
 				id: pgInteger(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const users = pgTable({
@@ -164,14 +173,16 @@ describe("Database migrations", () => {
 				second_book_id: pgInteger(),
 				name: pgVarchar(),
 			},
-			foreignKeys: [
-				pgForeignKey(["id"], books, ["id"])
-					.updateRule("set null")
-					.deleteRule("set null"),
-				pgForeignKey(["second_book_id"], old_books, ["id"])
-					.updateRule("set null")
-					.deleteRule("set null"),
-			],
+			constraints: {
+				foreignKeys: [
+					pgForeignKey(["id"], books, ["id"])
+						.updateRule("set null")
+						.deleteRule("set null"),
+					pgForeignKey(["second_book_id"], old_books, ["id"])
+						.updateRule("set null")
+						.deleteRule("set null"),
+				],
+			},
 		});
 
 		const database = pgDatabase({
@@ -314,7 +325,9 @@ describe("Database migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const users = pgTable({
@@ -421,14 +434,18 @@ describe("Database migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const old_books = pgTable({
 			columns: {
 				id: pgInteger(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const users = pgTable({
@@ -537,7 +554,9 @@ describe("Database migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const users = pgTable({
@@ -545,11 +564,13 @@ describe("Database migrations", () => {
 				id: pgSerial(),
 				book_id: pgInteger(),
 			},
-			foreignKeys: [
-				pgForeignKey(["id"], books, ["id"])
-					.updateRule("cascade")
-					.deleteRule("set null"),
-			],
+			constraints: {
+				foreignKeys: [
+					pgForeignKey(["id"], books, ["id"])
+						.updateRule("cascade")
+						.deleteRule("set null"),
+				],
+			},
 		});
 
 		const database = pgDatabase({
@@ -649,7 +670,9 @@ describe("Database migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			primaryKey: ["id"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["id"]),
+			},
 		});
 
 		const users = pgTable({
@@ -657,11 +680,13 @@ describe("Database migrations", () => {
 				id: pgSerial(),
 				book_id: pgInteger(),
 			},
-			foreignKeys: [
-				pgForeignKey(["book_id"], books, ["id"])
-					.updateRule("cascade")
-					.deleteRule("set null"),
-			],
+			constraints: {
+				foreignKeys: [
+					pgForeignKey(["book_id"], books, ["id"])
+						.updateRule("cascade")
+						.deleteRule("set null"),
+				],
+			},
 		});
 
 		const database = pgDatabase({

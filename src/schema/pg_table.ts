@@ -5,6 +5,7 @@ import { PgColumnTypes } from "./pg_column.js";
 import type { AnyPgDatabase } from "./pg_database.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
 import { type PgIndex } from "./pg_index.js";
+import type { PgPrimaryKey } from "./pg_primary_key.js";
 import type { PgTrigger } from "./pg_trigger.js";
 import type { PgUnique } from "./pg_unique.js";
 
@@ -12,16 +13,18 @@ export type ColumnRecord = Record<string, PgColumnTypes>;
 
 export type TableSchema<T, PK extends string> = {
 	columns: T extends ColumnRecord ? T : never;
-	primaryKey?: keyof T extends string
-		? PK[] extends Array<keyof T>
-			? PK[]
-			: Array<keyof T>
-		: never;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	foreignKeys?: keyof T extends string ? PgForeignKey<keyof T, any>[] : [];
-	uniqueConstraints?: keyof T extends string ? PgUnique<keyof T>[] : [];
 	indexes?: keyof T extends string ? PgIndex<keyof T>[] : [];
 	triggers?: Record<string, PgTrigger>;
+	constraints?: {
+		primaryKey?: keyof T extends string
+			? PK[] extends Array<keyof T>
+				? PgPrimaryKey<keyof T, PK>
+				: PgPrimaryKey<keyof T, PK>
+			: never;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		foreignKeys?: keyof T extends string ? PgForeignKey<keyof T, any>[] : [];
+		unique?: keyof T extends string ? PgUnique<keyof T>[] : [];
+	};
 };
 
 export function pgTable<T extends ColumnRecord, PK extends string>(
@@ -36,9 +39,12 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 
 	constructor(protected schema: TableSchema<T, PK>) {
 		const columns = this.schema.columns;
-		const primaryKey = this.schema.primaryKey;
-		if (primaryKey !== undefined && primaryKey.length !== 0) {
-			for (const key of primaryKey) {
+		const primaryKey = this.schema.constraints?.primaryKey;
+		if (primaryKey !== undefined) {
+			const primaryKeyDef = Object.fromEntries(Object.entries(primaryKey)) as {
+				columns: string[];
+			};
+			for (const key of primaryKeyDef.columns) {
 				const pkColumn = columns[key];
 				if (pkColumn !== undefined) {
 					Object.defineProperty(pkColumn, "_primaryKey", {

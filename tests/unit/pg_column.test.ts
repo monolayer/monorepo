@@ -3,6 +3,7 @@ import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
+import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
 import { pgTable } from "~/schema/pg_table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
 import {
@@ -449,7 +450,9 @@ describe("pgBoolean", () => {
 						columns: {
 							id: pgBoolean(),
 						},
-						primaryKey: ["id"],
+						constraints: {
+							primaryKey: pgPrimaryKey(["id"]),
+						},
 					});
 					const schema = zodSchema(table).shape.id;
 					type InpuType = z.input<typeof schema>;
@@ -463,7 +466,9 @@ describe("pgBoolean", () => {
 						columns: {
 							id: pgBoolean(),
 						},
-						primaryKey: ["id"],
+						constraints: {
+							primaryKey: pgPrimaryKey(["id"]),
+						},
 					});
 					const schema = zodSchema(table).shape.id;
 					type OutputType = z.output<typeof schema>;
@@ -477,7 +482,9 @@ describe("pgBoolean", () => {
 						columns: {
 							id: pgBoolean(),
 						},
-						primaryKey: ["id"],
+						constraints: {
+							primaryKey: pgPrimaryKey(["id"]),
+						},
 					});
 					const schema = zodSchema(table).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
@@ -490,7 +497,9 @@ describe("pgBoolean", () => {
 						columns: {
 							id: pgBoolean().default(true),
 						},
-						primaryKey: ["id"],
+						constraints: {
+							primaryKey: pgPrimaryKey(["id"]),
+						},
 					});
 					const schema = zodSchema(table).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
@@ -503,7 +512,9 @@ describe("pgBoolean", () => {
 						columns: {
 							id: pgBoolean().notNull(),
 						},
-						primaryKey: ["id"],
+						constraints: {
+							primaryKey: pgPrimaryKey(["id"]),
+						},
 					});
 					const schema = zodSchema(table).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
@@ -516,7 +527,9 @@ describe("pgBoolean", () => {
 						columns: {
 							id: pgBoolean().notNull().default(true),
 						},
-						primaryKey: ["id"],
+						constraints: {
+							primaryKey: pgPrimaryKey(["id"]),
+						},
 					});
 					const schema = zodSchema(table).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
@@ -796,7 +809,9 @@ describe("pgText", () => {
 					columns: {
 						id: pgText(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -810,7 +825,9 @@ describe("pgText", () => {
 					columns: {
 						id: pgText(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -824,7 +841,9 @@ describe("pgText", () => {
 					columns: {
 						id: pgText(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
@@ -837,7 +856,9 @@ describe("pgText", () => {
 					columns: {
 						id: pgText().default("hello"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
@@ -850,7 +871,9 @@ describe("pgText", () => {
 					columns: {
 						id: pgText().notNull().default("hello"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
@@ -863,7 +886,9 @@ describe("pgText", () => {
 					columns: {
 						id: pgText().default("2").notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
@@ -1271,7 +1296,9 @@ describe("pgBigInt", () => {
 					columns: {
 						id: pgBigint(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -1285,7 +1312,9 @@ describe("pgBigInt", () => {
 					columns: {
 						id: pgBigint(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -1299,7 +1328,9 @@ describe("pgBigInt", () => {
 					columns: {
 						id: pgBigint(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
@@ -1312,7 +1343,9 @@ describe("pgBigInt", () => {
 					columns: {
 						id: pgBigint().default(1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
@@ -1325,7 +1358,9 @@ describe("pgBigInt", () => {
 					columns: {
 						id: pgBigint().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
@@ -1338,7 +1373,9 @@ describe("pgBigInt", () => {
 					columns: {
 						id: pgBigint().notNull().default(1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
@@ -1718,7 +1755,9 @@ describe("pgBytea", () => {
 					columns: {
 						id: pgBytea(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -1732,7 +1771,9 @@ describe("pgBytea", () => {
 					columns: {
 						id: pgBytea(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -1746,7 +1787,9 @@ describe("pgBytea", () => {
 					columns: {
 						id: pgBytea(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
@@ -1759,7 +1802,9 @@ describe("pgBytea", () => {
 					columns: {
 						id: pgBytea().default("1"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
@@ -1772,7 +1817,9 @@ describe("pgBytea", () => {
 					columns: {
 						id: pgBytea().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
@@ -1785,7 +1832,9 @@ describe("pgBytea", () => {
 					columns: {
 						id: pgBytea().notNull().default("1"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
@@ -2072,7 +2121,9 @@ describe("pgDate", () => {
 					columns: {
 						id: pgDate(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -2086,7 +2137,9 @@ describe("pgDate", () => {
 					columns: {
 						id: pgDate(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -2100,7 +2153,9 @@ describe("pgDate", () => {
 					columns: {
 						id: pgDate(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
@@ -2113,7 +2168,9 @@ describe("pgDate", () => {
 					columns: {
 						id: pgDate().default(new Date()),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
@@ -2126,7 +2183,9 @@ describe("pgDate", () => {
 					columns: {
 						id: pgDate().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
@@ -2139,7 +2198,9 @@ describe("pgDate", () => {
 					columns: {
 						id: pgDate().notNull().default(new Date()),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
@@ -2515,7 +2576,9 @@ describe("pgDoublePrecision", () => {
 					columns: {
 						id: pgDoublePrecision(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -2529,7 +2592,9 @@ describe("pgDoublePrecision", () => {
 					columns: {
 						id: pgDoublePrecision(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -2543,7 +2608,9 @@ describe("pgDoublePrecision", () => {
 					columns: {
 						id: pgDoublePrecision(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -2556,7 +2623,9 @@ describe("pgDoublePrecision", () => {
 					columns: {
 						id: pgDoublePrecision().default(1.1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -2569,7 +2638,9 @@ describe("pgDoublePrecision", () => {
 					columns: {
 						id: pgDoublePrecision().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -2582,7 +2653,9 @@ describe("pgDoublePrecision", () => {
 					columns: {
 						id: pgDoublePrecision().notNull().default(2.1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -3025,7 +3098,9 @@ describe("pgFloat4", () => {
 					columns: {
 						id: pgFloat4(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -3039,7 +3114,9 @@ describe("pgFloat4", () => {
 					columns: {
 						id: pgFloat4(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -3053,7 +3130,9 @@ describe("pgFloat4", () => {
 					columns: {
 						id: pgFloat4(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -3066,7 +3145,9 @@ describe("pgFloat4", () => {
 					columns: {
 						id: pgFloat4().default(1.1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -3079,7 +3160,9 @@ describe("pgFloat4", () => {
 					columns: {
 						id: pgFloat4().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -3092,7 +3175,9 @@ describe("pgFloat4", () => {
 					columns: {
 						id: pgFloat4().notNull().default(2.1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -3535,7 +3620,9 @@ describe("pgFloat8", () => {
 					columns: {
 						id: pgFloat8(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -3549,7 +3636,9 @@ describe("pgFloat8", () => {
 					columns: {
 						id: pgFloat8(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -3563,7 +3652,9 @@ describe("pgFloat8", () => {
 					columns: {
 						id: pgFloat8(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -3576,7 +3667,9 @@ describe("pgFloat8", () => {
 					columns: {
 						id: pgFloat8().default(1.1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -3589,7 +3682,9 @@ describe("pgFloat8", () => {
 					columns: {
 						id: pgFloat8().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -3602,7 +3697,9 @@ describe("pgFloat8", () => {
 					columns: {
 						id: pgFloat8().notNull().default(2.1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -4034,7 +4131,9 @@ describe("pgInt2", () => {
 					columns: {
 						id: pgInt2(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -4048,7 +4147,9 @@ describe("pgInt2", () => {
 					columns: {
 						id: pgInt2(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -4062,7 +4163,9 @@ describe("pgInt2", () => {
 					columns: {
 						id: pgInt2(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -4075,7 +4178,9 @@ describe("pgInt2", () => {
 					columns: {
 						id: pgInt2().default(1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -4088,7 +4193,9 @@ describe("pgInt2", () => {
 					columns: {
 						id: pgInt2().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -4101,7 +4208,9 @@ describe("pgInt2", () => {
 					columns: {
 						id: pgInt2().notNull().default(40),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -4551,7 +4660,9 @@ describe("pgInt4", () => {
 					columns: {
 						id: pgInt4(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -4565,7 +4676,9 @@ describe("pgInt4", () => {
 					columns: {
 						id: pgInt4(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -4579,7 +4692,9 @@ describe("pgInt4", () => {
 					columns: {
 						id: pgInt4(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -4592,7 +4707,9 @@ describe("pgInt4", () => {
 					columns: {
 						id: pgInt4().default(1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -4605,7 +4722,9 @@ describe("pgInt4", () => {
 					columns: {
 						id: pgInt4().notNull().default(1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -4618,7 +4737,9 @@ describe("pgInt4", () => {
 					columns: {
 						id: pgInt4().default(1).notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -5094,7 +5215,9 @@ describe("pgInt8", () => {
 					columns: {
 						id: pgInt8(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -5108,7 +5231,9 @@ describe("pgInt8", () => {
 					columns: {
 						id: pgInt8(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -5122,7 +5247,9 @@ describe("pgInt8", () => {
 					columns: {
 						id: pgInt8(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
@@ -5135,7 +5262,9 @@ describe("pgInt8", () => {
 					columns: {
 						id: pgInt8().default(1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
@@ -5148,7 +5277,9 @@ describe("pgInt8", () => {
 					columns: {
 						id: pgInt8().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
@@ -5161,7 +5292,9 @@ describe("pgInt8", () => {
 					columns: {
 						id: pgInt8().notNull().default(1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
@@ -5550,7 +5683,9 @@ describe("pgInteger", () => {
 					columns: {
 						id: pgInteger(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -5564,7 +5699,9 @@ describe("pgInteger", () => {
 					columns: {
 						id: pgInteger(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -5578,7 +5715,9 @@ describe("pgInteger", () => {
 					columns: {
 						id: pgInteger(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -5591,7 +5730,9 @@ describe("pgInteger", () => {
 					columns: {
 						id: pgInteger().default(1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -5604,7 +5745,9 @@ describe("pgInteger", () => {
 					columns: {
 						id: pgInteger().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -5617,7 +5760,9 @@ describe("pgInteger", () => {
 					columns: {
 						id: pgInteger().notNull().default(40),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -6028,7 +6173,9 @@ describe("pgJson", () => {
 					columns: {
 						id: pgJson(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -6043,7 +6190,9 @@ describe("pgJson", () => {
 					columns: {
 						id: pgJson(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -6058,7 +6207,9 @@ describe("pgJson", () => {
 					columns: {
 						id: pgJson(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
@@ -6071,7 +6222,9 @@ describe("pgJson", () => {
 					columns: {
 						id: pgJson().default("1"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
@@ -6084,7 +6237,9 @@ describe("pgJson", () => {
 					columns: {
 						id: pgJson().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
@@ -6097,7 +6252,9 @@ describe("pgJson", () => {
 					columns: {
 						id: pgJson().notNull().default("1"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
@@ -6433,7 +6590,9 @@ describe("pgJsonB", () => {
 					columns: {
 						id: pgJsonb(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -6448,7 +6607,9 @@ describe("pgJsonB", () => {
 					columns: {
 						id: pgJsonb(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -6463,7 +6624,9 @@ describe("pgJsonB", () => {
 					columns: {
 						id: pgJsonb(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
@@ -6476,7 +6639,9 @@ describe("pgJsonB", () => {
 					columns: {
 						id: pgJsonb().default("1"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
@@ -6489,7 +6654,9 @@ describe("pgJsonB", () => {
 					columns: {
 						id: pgJsonb().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
@@ -6502,7 +6669,9 @@ describe("pgJsonB", () => {
 					columns: {
 						id: pgJsonb().notNull().default("1"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("2").success).toBe(true);
@@ -6863,7 +7032,9 @@ describe("pgReal", () => {
 					columns: {
 						id: pgReal(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -6877,7 +7048,9 @@ describe("pgReal", () => {
 					columns: {
 						id: pgReal(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -6891,7 +7064,9 @@ describe("pgReal", () => {
 					columns: {
 						id: pgReal(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -6904,7 +7079,9 @@ describe("pgReal", () => {
 					columns: {
 						id: pgReal().default(2.2),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -6917,7 +7094,9 @@ describe("pgReal", () => {
 					columns: {
 						id: pgReal().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -6930,7 +7109,9 @@ describe("pgReal", () => {
 					columns: {
 						id: pgReal().notNull().default(2.2),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
@@ -7351,7 +7532,9 @@ describe("pgUuid", () => {
 					columns: {
 						id: pgUuid(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -7365,7 +7548,9 @@ describe("pgUuid", () => {
 					columns: {
 						id: pgUuid(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -7379,7 +7564,9 @@ describe("pgUuid", () => {
 					columns: {
 						id: pgUuid(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(
@@ -7394,7 +7581,9 @@ describe("pgUuid", () => {
 					columns: {
 						id: pgUuid().default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(
@@ -7409,7 +7598,9 @@ describe("pgUuid", () => {
 					columns: {
 						id: pgUuid().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(
@@ -7426,7 +7617,9 @@ describe("pgUuid", () => {
 							.notNull()
 							.default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(
@@ -7745,7 +7938,9 @@ describe("pgVarChar", () => {
 					columns: {
 						id: pgVarchar(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -7759,7 +7954,9 @@ describe("pgVarChar", () => {
 					columns: {
 						id: pgVarchar(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -7773,7 +7970,9 @@ describe("pgVarChar", () => {
 					columns: {
 						id: pgVarchar(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
@@ -7786,7 +7985,9 @@ describe("pgVarChar", () => {
 					columns: {
 						id: pgVarchar().default("hello"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
@@ -7799,7 +8000,9 @@ describe("pgVarChar", () => {
 					columns: {
 						id: pgVarchar().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
@@ -7812,7 +8015,9 @@ describe("pgVarChar", () => {
 					columns: {
 						id: pgVarchar().notNull().default("hello"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
@@ -8142,7 +8347,9 @@ describe("pgChar", () => {
 					columns: {
 						id: pgChar(10),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -8156,7 +8363,9 @@ describe("pgChar", () => {
 					columns: {
 						id: pgChar(10),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -8170,7 +8379,9 @@ describe("pgChar", () => {
 					columns: {
 						id: pgChar(5),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
@@ -8183,7 +8394,9 @@ describe("pgChar", () => {
 					columns: {
 						id: pgChar(5).default("hello"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
@@ -8196,7 +8409,9 @@ describe("pgChar", () => {
 					columns: {
 						id: pgChar(5).notNull().default("hello"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
@@ -8209,7 +8424,9 @@ describe("pgChar", () => {
 					columns: {
 						id: pgChar(5).default("hello").notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
@@ -8566,7 +8783,9 @@ describe("pgTime", () => {
 					columns: {
 						id: pgTime(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -8580,7 +8799,9 @@ describe("pgTime", () => {
 					columns: {
 						id: pgTime(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -8594,7 +8815,9 @@ describe("pgTime", () => {
 					columns: {
 						id: pgTime(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
@@ -8607,7 +8830,9 @@ describe("pgTime", () => {
 					columns: {
 						id: pgTime().default("11:30"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("10:30").success).toBe(true);
@@ -8620,7 +8845,9 @@ describe("pgTime", () => {
 					columns: {
 						id: pgTime().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
@@ -8633,7 +8860,9 @@ describe("pgTime", () => {
 					columns: {
 						id: pgTime().notNull().default("11:30"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("10:30").success).toBe(true);
@@ -8963,7 +9192,9 @@ describe("pgTimeTz", () => {
 					columns: {
 						id: pgTimetz(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -8977,7 +9208,9 @@ describe("pgTimeTz", () => {
 					columns: {
 						id: pgTimetz(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -8991,7 +9224,9 @@ describe("pgTimeTz", () => {
 					columns: {
 						id: pgTimetz(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
@@ -9004,7 +9239,9 @@ describe("pgTimeTz", () => {
 					columns: {
 						id: pgTimetz().default("11:30"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("10:30").success).toBe(true);
@@ -9017,7 +9254,9 @@ describe("pgTimeTz", () => {
 					columns: {
 						id: pgTimetz().notNull().default("11:30"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("11:30").success).toBe(true);
@@ -9030,7 +9269,9 @@ describe("pgTimeTz", () => {
 					columns: {
 						id: pgTimetz().default("11:30").notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("10:30").success).toBe(true);
@@ -9377,7 +9618,9 @@ describe("pgTimestamp", () => {
 					columns: {
 						id: pgTimestamp(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -9391,7 +9634,9 @@ describe("pgTimestamp", () => {
 					columns: {
 						id: pgTimestamp(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -9405,7 +9650,9 @@ describe("pgTimestamp", () => {
 					columns: {
 						id: pgTimestamp(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
@@ -9418,7 +9665,9 @@ describe("pgTimestamp", () => {
 					columns: {
 						id: pgTimestamp().default(new Date(2)),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
@@ -9431,7 +9680,9 @@ describe("pgTimestamp", () => {
 					columns: {
 						id: pgTimestamp().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
@@ -9444,7 +9695,9 @@ describe("pgTimestamp", () => {
 					columns: {
 						id: pgTimestamp().default(new Date()).notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
@@ -9792,7 +10045,9 @@ describe("pgTimestampTz", () => {
 					columns: {
 						id: pgTimestamptz(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -9806,7 +10061,9 @@ describe("pgTimestampTz", () => {
 					columns: {
 						id: pgTimestamptz(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -9820,7 +10077,9 @@ describe("pgTimestampTz", () => {
 					columns: {
 						id: pgTimestamptz(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
@@ -9833,7 +10092,9 @@ describe("pgTimestampTz", () => {
 					columns: {
 						id: pgTimestamptz().default(new Date(2)),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
@@ -9846,7 +10107,9 @@ describe("pgTimestampTz", () => {
 					columns: {
 						id: pgTimestamptz().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
@@ -9859,7 +10122,9 @@ describe("pgTimestampTz", () => {
 					columns: {
 						id: pgTimestamptz().default(new Date(2)).notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
@@ -10452,7 +10717,9 @@ describe("pgNumeric", () => {
 					columns: {
 						id: pgNumeric(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -10466,7 +10733,9 @@ describe("pgNumeric", () => {
 					columns: {
 						id: pgNumeric(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -10480,7 +10749,9 @@ describe("pgNumeric", () => {
 					columns: {
 						id: pgNumeric(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -10493,7 +10764,9 @@ describe("pgNumeric", () => {
 					columns: {
 						id: pgNumeric().default(1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(2).success).toBe(true);
@@ -10506,7 +10779,9 @@ describe("pgNumeric", () => {
 					columns: {
 						id: pgNumeric().notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
@@ -10519,7 +10794,9 @@ describe("pgNumeric", () => {
 					columns: {
 						id: pgNumeric().notNull().default(1),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse(2).success).toBe(true);
@@ -10909,7 +11186,9 @@ describe("pgEnum", () => {
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type InpuType = z.input<typeof schema>;
@@ -10923,7 +11202,9 @@ describe("pgEnum", () => {
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				type OutputType = z.output<typeof schema>;
@@ -10937,7 +11218,9 @@ describe("pgEnum", () => {
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
@@ -10950,7 +11233,9 @@ describe("pgEnum", () => {
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]).default("user"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
@@ -10963,7 +11248,9 @@ describe("pgEnum", () => {
 					columns: {
 						id: pgEnum("role", ["user", "admin", "superuser"]).notNull(),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
@@ -10978,7 +11265,9 @@ describe("pgEnum", () => {
 							.notNull()
 							.default("user"),
 					},
-					primaryKey: ["id"],
+					constraints: {
+						primaryKey: pgPrimaryKey(["id"]),
+					},
 				});
 				const schema = zodSchema(table).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);

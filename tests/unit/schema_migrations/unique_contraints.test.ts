@@ -35,10 +35,9 @@ describe("Database migrations", () => {
 				id: pgInteger(),
 				name: pgVarchar(),
 			},
-			uniqueConstraints: [
-				pgUnique(["id"]).nullsNotDistinct(),
-				pgUnique(["name"]),
-			],
+			constraints: {
+				unique: [pgUnique(["id"]).nullsNotDistinct(), pgUnique(["name"])],
+			},
 		});
 
 		const users = pgTable({
@@ -46,7 +45,9 @@ describe("Database migrations", () => {
 				id: pgSerial(),
 				fullName: pgVarchar(),
 			},
-			uniqueConstraints: [pgUnique(["id", "fullName"])],
+			constraints: {
+				unique: [pgUnique(["id", "fullName"])],
+			},
 		});
 
 		const database = pgDatabase({
@@ -172,7 +173,9 @@ describe("Database migrations", () => {
 				id: pgSerial(),
 				fullName: pgVarchar(),
 			},
-			uniqueConstraints: [pgUnique(["fullName", "id"])],
+			constraints: {
+				unique: [pgUnique(["fullName", "id"])],
+			},
 		});
 
 		const database = pgDatabase({
@@ -263,7 +266,9 @@ describe("Database migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			uniqueConstraints: [pgUnique(["id"]).nullsNotDistinct()],
+			constraints: {
+				unique: [pgUnique(["id"]).nullsNotDistinct()],
+			},
 		});
 
 		const users = pgTable({
@@ -271,7 +276,9 @@ describe("Database migrations", () => {
 				id: pgSerial(),
 				fullName: pgVarchar(),
 			},
-			uniqueConstraints: [pgUnique(["id"])],
+			constraints: {
+				unique: [pgUnique(["id"])],
+			},
 		});
 
 		const database = pgDatabase({
@@ -362,7 +369,9 @@ describe("Database migrations", () => {
 			columns: {
 				id: pgInteger(),
 			},
-			uniqueConstraints: [pgUnique(["id"]).nullsNotDistinct()],
+			constraints: {
+				unique: [pgUnique(["id"]).nullsNotDistinct()],
+			},
 		});
 
 		const users = pgTable({
@@ -370,7 +379,9 @@ describe("Database migrations", () => {
 				id: pgSerial(),
 				fullName: pgVarchar(),
 			},
-			uniqueConstraints: [pgUnique(["id", "fullName"]).nullsNotDistinct()],
+			constraints: {
+				unique: [pgUnique(["id", "fullName"]).nullsNotDistinct()],
+			},
 		});
 
 		const database = pgDatabase({

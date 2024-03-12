@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { pgText } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
+import { pgPrimaryKey } from "~/schema/pg_primary_key.js";
 import { pgTable } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
@@ -33,14 +34,18 @@ describe("Database migrations", () => {
 				fullName: pgText(),
 				name: pgText(),
 			},
-			primaryKey: ["fullName", "name"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["fullName", "name"]),
+			},
 		});
 
 		const books = pgTable({
 			columns: {
 				name: pgText(),
 			},
-			primaryKey: ["name"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["name"]),
+			},
 		});
 
 		const database = pgDatabase({
@@ -257,7 +262,9 @@ describe("Database migrations", () => {
 				fullName: pgText(),
 				name: pgText(),
 			},
-			primaryKey: ["name"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["name"]),
+			},
 		});
 
 		const database = pgDatabase({
@@ -357,7 +364,9 @@ describe("Database migrations", () => {
 				fullName: pgText().notNull(),
 				name: pgText(),
 			},
-			primaryKey: ["name"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["name"]),
+			},
 		});
 
 		const database = pgDatabase({
@@ -448,7 +457,9 @@ describe("Database migrations", () => {
 				name: pgText(),
 				email: pgText().notNull(),
 			},
-			primaryKey: ["email"],
+			constraints: {
+				primaryKey: pgPrimaryKey(["email"]),
+			},
 		});
 
 		const database = pgDatabase({

@@ -116,7 +116,7 @@ export function localUniqueConstraintInfo(
 	return Object.entries(schema.tables || {}).reduce<UniqueInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const uniqueConstraints =
-				tableInfo(tableDefinition).schema.uniqueConstraints;
+				tableInfo(tableDefinition).schema.constraints?.unique;
 			if (uniqueConstraints !== undefined) {
 				for (const uniqueConstraint of uniqueConstraints) {
 					const unique = uniqueToInfo(
