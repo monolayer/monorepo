@@ -6,7 +6,7 @@ import {
 	isExpression,
 	type ColumnInfo,
 } from "./pg_column.js";
-import { databaseInfo, type AnyPgDatabase } from "./pg_database.js";
+import { PgDatabase, type AnyPgDatabase } from "./pg_database.js";
 import { foreignKeyOptions, type PgForeignKey } from "./pg_foreign_key.js";
 import { AnyPgTable, ColumnRecord, tableInfo } from "./pg_table.js";
 import type {
@@ -175,7 +175,7 @@ export function introspectTable(table: AnyPgTable) {
 		columns: columnInfo(schema.columns),
 		foreignKeys: foreignKeyInfo(
 			schema.constraints?.foreignKeys,
-			databaseInfo(info.database || ({} as AnyPgDatabase)).tables,
+			PgDatabase.info(info.database || ({} as AnyPgDatabase)).tables,
 		),
 		uniqueConstraints: uniqueConstraintInfo(schema.constraints?.unique),
 		triggers: triggerInfo(schema.triggers),

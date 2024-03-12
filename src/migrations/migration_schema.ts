@@ -6,7 +6,7 @@ import type { EnumInfo } from "../introspection/enums.js";
 import type { ExtensionInfo } from "../introspection/extensions.js";
 import type { IndexInfo } from "../introspection/indexes.js";
 import type { TableColumnInfo } from "../introspection/schemas.js";
-import { databaseInfo, type AnyPgDatabase } from "../schema/pg_database.js";
+import { PgDatabase, type AnyPgDatabase } from "../schema/pg_database.js";
 import {
 	tableInfo,
 	type AnyPgTable,
@@ -128,7 +128,7 @@ export function findTableInDatabaseSchema(
 	schema: AnyPgDatabase,
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
-	const tables = databaseInfo(schema).tables ?? {};
+	const tables = PgDatabase.info(schema).tables;
 	const tableInSchema = Object.entries(tables || {}).find(
 		([, value]) =>
 			tableInfo(value).schema.columns === tableInfo(table).schema.columns,
@@ -143,7 +143,7 @@ export function findTableByNameInDatabaseSchema(
 	schema: AnyPgDatabase,
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
-	const tables = databaseInfo(schema).tables ?? {};
+	const tables = PgDatabase.info(schema).tables;
 	const tableInSchema = Object.entries(tables || {}).find(
 		([tableName]) => tableName === table,
 	);

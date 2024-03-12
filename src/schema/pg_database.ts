@@ -8,6 +8,16 @@ export type DatabaseSchema<T> = {
 };
 
 export class PgDatabase<T extends Record<string, AnyPgTable>> {
+	/**
+	 * @hidden
+	 */
+	static info(db: AnyPgDatabase) {
+		return {
+			extensions: db.#extensions ?? [],
+			tables: db.#tables ?? {},
+		};
+	}
+
 	declare infer: {
 		[K in keyof T]: T[K]["infer"];
 	};
@@ -15,18 +25,18 @@ export class PgDatabase<T extends Record<string, AnyPgTable>> {
 	/**
 	 * @hidden
 	 */
-	protected extensions?: PgExtensions;
+	#extensions?: PgExtensions;
 	/**
 	 * @hidden
 	 */
-	protected tables?: T;
+	#tables?: T;
 
 	/**
 	 * @hidden
 	 */
 	constructor(schema: DatabaseSchema<T>) {
-		this.tables = schema.tables;
-		this.extensions = schema.extensions;
+		this.#tables = schema.tables;
+		this.#extensions = schema.extensions;
 		for (const [, table] of Object.entries(schema.tables || {})) {
 			Object.defineProperty(table, "database", {
 				value: this,
@@ -36,7 +46,7 @@ export class PgDatabase<T extends Record<string, AnyPgTable>> {
 	}
 
 	instrospect() {
-		const tables = Object.entries(this.tables || {}).reduce(
+		const tables = Object.entries(this.#tables || {}).reduce(
 			(acc, [name, table]) => {
 				acc[name] = tableInfo(table).introspect();
 				return acc;
@@ -46,7 +56,7 @@ export class PgDatabase<T extends Record<string, AnyPgTable>> {
 
 		const introspectedDatabase: IntrospectedDatabase = {
 			tables,
-			extensions: this.extensions ?? [],
+			extensions: this.#extensions ?? [],
 		};
 		return introspectedDatabase;
 	}
@@ -64,10 +74,3 @@ type IntrospectedDatabase = {
 	extensions: Array<string>;
 	tables: Record<string, IntrospectedTable>;
 };
-
-export function databaseInfo(database: AnyPgDatabase) {
-	return Object.fromEntries(Object.entries(database)) as {
-		extensions?: PgExtensions;
-		tables?: Record<string, AnyPgTable>;
-	};
-}

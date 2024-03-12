@@ -12,11 +12,7 @@ import {
 	timestamp,
 	varchar,
 } from "~/schema/pg_column.js";
-import {
-	databaseInfo,
-	pgDatabase,
-	type PgDatabase,
-} from "~/schema/pg_database.js";
+import { PgDatabase, pgDatabase } from "~/schema/pg_database.js";
 import { foreignKey } from "~/schema/pg_foreign_key.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { table } from "~/schema/pg_table.js";
@@ -45,8 +41,9 @@ describe("pgDatabase definition", () => {
 		const database = pgDatabase({
 			tables: { users, teams },
 		});
-		expect(databaseInfo(database).tables?.users).toBe(users);
-		expect(databaseInfo(database).tables?.teams).toBe(teams);
+		const tables = PgDatabase.info(database).tables;
+		expect(tables.users).toBe(users);
+		expect(tables.teams).toBe(teams);
 
 		const expectation: Expect<
 			Equal<
@@ -64,7 +61,7 @@ test("with extensions", () => {
 		tables: {},
 	});
 
-	expect(databaseInfo(database).extensions).toStrictEqual([
+	expect(PgDatabase.info(database).extensions).toStrictEqual([
 		"pgcrypto",
 		"btree_gist",
 	]);

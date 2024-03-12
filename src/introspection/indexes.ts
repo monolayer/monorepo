@@ -8,7 +8,7 @@ import {
 	OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
-import { databaseInfo, type AnyPgDatabase } from "~/schema/pg_database.js";
+import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
 import { indexOptions, type PgIndex } from "~/schema/pg_index.js";
 import { tableInfo } from "~/schema/pg_table.js";
 import type { InformationSchemaDB } from "./types.js";
@@ -83,7 +83,7 @@ export function localIndexInfoByTable(
 			pool: new pg.Pool({}),
 		}),
 	});
-	const tables = databaseInfo(schema).tables ?? {};
+	const tables = PgDatabase.info(schema).tables;
 	return Object.entries(tables || {}).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
