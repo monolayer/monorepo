@@ -1,13 +1,12 @@
-import { type IntrospectedTable } from "./introspect_table.js";
 import type { PgExtensions } from "./pg_extension.js";
-import { tableInfo, type AnyPgTable } from "./pg_table.js";
+import { type AnyPgTable } from "./pg_table.js";
 
 export type DatabaseSchema<T> = {
 	extensions?: PgExtensions;
 	tables?: T;
 };
 
-export class PgDatabase<T extends Record<string, AnyPgTable>> {
+export class PgDatabase<T extends ColumnRecord> {
 	/**
 	 * @hidden
 	 */
@@ -44,33 +43,12 @@ export class PgDatabase<T extends Record<string, AnyPgTable>> {
 			});
 		}
 	}
-
-	instrospect() {
-		const tables = Object.entries(this.#tables || {}).reduce(
-			(acc, [name, table]) => {
-				acc[name] = tableInfo(table).introspect();
-				return acc;
-			},
-			{} as Record<string, IntrospectedTable>,
-		);
-
-		const introspectedDatabase: IntrospectedDatabase = {
-			tables,
-			extensions: this.#extensions ?? [],
-		};
-		return introspectedDatabase;
-	}
 }
 
-export function pgDatabase<T extends Record<string, AnyPgTable>>(
-	schema: DatabaseSchema<T>,
-) {
+export function pgDatabase<T extends ColumnRecord>(schema: DatabaseSchema<T>) {
 	return new PgDatabase(schema);
 }
 
-export type AnyPgDatabase = PgDatabase<Record<string, AnyPgTable>>;
+export type AnyPgDatabase = PgDatabase<ColumnRecord>;
 
-type IntrospectedDatabase = {
-	extensions: Array<string>;
-	tables: Record<string, IntrospectedTable>;
-};
+type ColumnRecord = Record<string, AnyPgTable>;

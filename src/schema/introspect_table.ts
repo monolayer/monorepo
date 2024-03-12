@@ -16,36 +16,36 @@ import type {
 } from "./pg_trigger.js";
 import { uniqueConstraintOptions, type PgUnique } from "./pg_unique.js";
 
-export type IntrospectedTable = {
+export interface TableIntrospection {
 	primaryKey: string[];
-	columns: Record<string, IntrospectedColum>;
-	foreignKeys: IntrospectedForeignKey[];
-	uniqueConstraints: IntrospectedUniqueConstraint[];
-	triggers: IntrospectionTrigger[];
-};
+	columns: Record<string, ColumnInstrospection>;
+	foreignKeys: ForeignKeyIntrospection[];
+	uniqueConstraints: UniqueConstraintIntrospection[];
+	triggers: TriggerInstrospection[];
+}
 
-export type IntrospectedColum = {
+interface ColumnInstrospection {
 	dataType: string;
 	nullable: boolean;
 	generated: boolean;
 	defaultValue: string | null;
 	primaryKey: boolean;
-};
+}
 
-export type IntrospectedForeignKey = {
+interface ForeignKeyIntrospection {
 	columns: string[];
 	targetTable: string;
 	targetColumns: string[];
 	deleteRule?: ForeignKeyRule;
 	updateRule?: ForeignKeyRule;
-};
+}
 
-export type IntrospectedUniqueConstraint = {
+interface UniqueConstraintIntrospection {
 	columns: string[];
 	nullsDistinct: boolean;
-};
+}
 
-export type IntrospectionTrigger = {
+interface TriggerInstrospection {
 	name: string;
 	firingTime: TriggerFiringTime;
 	events: TriggerEvent[];
@@ -59,7 +59,7 @@ export type IntrospectionTrigger = {
 		value: string;
 		columnName?: true;
 	};
-};
+}
 
 function findTableInSchema(
 	table: AnyPgTable,
@@ -89,13 +89,13 @@ function triggerInfo(triggers?: Record<string, PgTrigger>) {
 			tr.condition = compileDefaultExpression(trigger.condition);
 		}
 		tr.name = key;
-		acc.push(tr as unknown as IntrospectionTrigger);
+		acc.push(tr as unknown as TriggerInstrospection);
 		return acc;
-	}, [] as IntrospectionTrigger[]);
+	}, [] as TriggerInstrospection[]);
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function uniqueConstraintInfo(uniqueConstraints?: PgUnique<any>[]) {
-	return (uniqueConstraints || []).map<IntrospectedUniqueConstraint>((uc) => {
+	return (uniqueConstraints || []).map<UniqueConstraintIntrospection>((uc) => {
 		const options = uniqueConstraintOptions(uc);
 		return {
 			columns: options.columns,
@@ -108,7 +108,7 @@ function foreignKeyInfo(
 	foreignKeys?: PgForeignKey<any, any>[],
 	tables?: Record<string, AnyPgTable>,
 ) {
-	return (foreignKeys || []).map<IntrospectedForeignKey>((fk) => {
+	return (foreignKeys || []).map<ForeignKeyIntrospection>((fk) => {
 		const options = foreignKeyOptions(fk);
 
 		return {
@@ -151,7 +151,7 @@ function columnInfo(columns?: ColumnRecord) {
 			};
 			return acc;
 		},
-		{} as Record<string, IntrospectedColum>,
+		{} as Record<string, ColumnInstrospection>,
 	);
 }
 function primaryKey(columns?: ColumnRecord) {
@@ -170,7 +170,7 @@ function primaryKey(columns?: ColumnRecord) {
 export function introspectTable(table: AnyPgTable) {
 	const info = tableInfo(table);
 	const schema = info.schema;
-	const introspectedTable: IntrospectedTable = {
+	const introspectedTable: TableIntrospection = {
 		primaryKey: primaryKey(schema.columns),
 		columns: columnInfo(schema.columns),
 		foreignKeys: foreignKeyInfo(

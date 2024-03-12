@@ -1,6 +1,9 @@
 import type { Simplify } from "kysely";
 import { InferColumnTypes } from "./inference.js";
-import { introspectTable, type IntrospectedTable } from "./introspect_table.js";
+import {
+	introspectTable,
+	type TableIntrospection,
+} from "./introspect_table.js";
 import { TableColumn } from "./pg_column.js";
 import type { AnyPgDatabase } from "./pg_database.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
@@ -80,7 +83,7 @@ export function tableInfo<T extends AnyPgTable>(table: T) {
 	const info = Object.fromEntries(Object.entries(table)) as unknown as {
 		schema: InferTableSchema<T>;
 		database?: AnyPgDatabase;
-		introspect(): IntrospectedTable;
+		introspect(): TableIntrospection;
 	};
 	info.introspect = () => {
 		return introspectTable(table);
