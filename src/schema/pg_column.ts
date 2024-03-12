@@ -1190,20 +1190,17 @@ export class PgNumeric extends PgColumn<string, number | bigint | string> {
 	}
 }
 
-export function pgEnum<N extends string, T extends string[]>(
-	name: N,
-	values: [...T],
-) {
-	return new PgEnum(name, values as unknown as string[]);
+export function pgEnum<N extends string>(name: string, values: N[]) {
+	return new PgEnum(name, values);
 }
 
-export class PgEnum extends PgColumn<string, string> {
-	protected readonly values: string[];
+export class PgEnum<N extends string> extends PgColumn<N, N> {
+	protected readonly values: N[];
 
 	/**
 	 * @hidden
 	 */
-	constructor(name: string, values: string[]) {
+	constructor(name: string, values: N[]) {
 		super(name, DefaultValueDataTypes.numeric);
 		this.values = values;
 		this.info.enum = true;
@@ -1266,7 +1263,7 @@ export class PgEnum extends PgColumn<string, string> {
 	 * and
 	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
 	 */
-	default(value: string) {
+	default(value: N) {
 		this.info.defaultValue = `'${value}'::${this.info.dataType}`;
 		return this as this & WithDefaultColumn;
 	}
@@ -1298,7 +1295,8 @@ export type TableColumn =
 	| PgTimestampTz
 	| PgUuid
 	| PgVarChar
-	| PgEnum;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	| PgEnum<any>;
 
 // From Kysely. To avoid bundling Kysely in client code.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

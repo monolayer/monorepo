@@ -284,7 +284,8 @@ export function pgNumericSchema<T extends PgNumeric, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgEnumSchema<T extends PgEnum, PK extends boolean>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function pgEnumSchema<T extends PgEnum<any>, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const isNullable = nullableColumn(column);

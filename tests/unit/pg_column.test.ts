@@ -11025,28 +11025,30 @@ describe("pgEnum", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string, null, or undefined", () => {
+			test("input type is enum values, null, or undefined", () => {
+				const role = enumType("role", ["user", "admin", "superuser"]);
 				const tbl = table({
 					columns: {
-						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
+						id: enumerated(role),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
-				type Expected = string | null | undefined;
+				type Expected = "user" | "admin" | "superuser" | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string, null, or undefined", () => {
+			test("output type is enum values, null, or undefined", () => {
+				const role = enumType("role", ["user", "admin", "superuser"]);
 				const tbl = table({
 					columns: {
-						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
+						id: enumerated(role),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				type Expected = string | null | undefined;
+				type Expected = "user" | "admin" | "superuser" | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const stringResult = schema.safeParse("user");
@@ -11061,7 +11063,7 @@ describe("pgEnum", () => {
 				}
 			});
 
-			test("input type is string with notNull", () => {
+			test("input type is enum values with notNull", () => {
 				const tbl = table({
 					columns: {
 						id: enumerated(
@@ -11071,12 +11073,12 @@ describe("pgEnum", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
-				type Expected = string;
+				type Expected = "user" | "admin" | "superuser";
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string with notNull", () => {
+			test("output type is enum values with notNull", () => {
 				const tbl = table({
 					columns: {
 						id: enumerated(
@@ -11086,7 +11088,7 @@ describe("pgEnum", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				type Expected = string;
+				type Expected = "user" | "admin" | "superuser";
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 				const stringResult = schema.safeParse("user");

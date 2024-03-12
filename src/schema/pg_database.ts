@@ -5,7 +5,8 @@ import type { AnyPgTable } from "./pg_table.js";
 export type DatabaseSchema<T extends ColumnRecord> = {
 	extensions?: PgExtensions;
 	tables?: T;
-	types?: Array<EnumType>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	types?: Array<EnumType<any>>;
 };
 
 export class PgDatabase<T extends ColumnRecord> {
@@ -110,7 +111,8 @@ export class PgDatabase<T extends ColumnRecord> {
 	/**
 	 * @hidden
 	 */
-	#types?: Array<EnumType>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	#types?: Array<EnumType<any>>;
 
 	/**
 	 * @hidden

@@ -38,10 +38,11 @@ describe("pgTable definition", () => {
 	});
 
 	test("columns with pgEnum", () => {
+		const role = enumType("role", ["admin", "user"]);
 		const columns = {
 			name: varchar(),
 			subscribed: boolean(),
-			role: enumerated(enumType("role", ["admin", "user"])),
+			role: enumerated(role),
 		};
 		const tbl = table({
 			columns: columns,
@@ -979,15 +980,14 @@ describe("pgTable definition", () => {
 		describe("enum columns", () => {
 			describe("defaults", () => {
 				test("nullable selects", () => {
+					const role = enumType("role", ["admin", "user"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							),
+							role: enumerated(role),
 						},
 					});
 					type expectedType = {
-						role: string | null;
+						role: "admin" | "user" | null;
 					};
 					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -995,15 +995,14 @@ describe("pgTable definition", () => {
 				});
 
 				test("nullable and optional inserts", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							),
+							role: enumerated(role),
 						},
 					});
 					type expectedType = {
-						role?: string | null;
+						role?: "user" | "admin" | "superuser" | null;
 					};
 					type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1011,15 +1010,14 @@ describe("pgTable definition", () => {
 				});
 
 				test("nullable and optional updates", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							),
+							role: enumerated(role),
 						},
 					});
 					type expectedType = {
-						role?: string | null;
+						role?: "user" | "admin" | "superuser" | null;
 					};
 					type InferredType = Updateable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1027,18 +1025,22 @@ describe("pgTable definition", () => {
 				});
 
 				test("infer select, insert, and update", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							),
+							role: enumerated(role),
 						},
 					});
 					type expectedType = {
 						role: {
-							readonly __select__: string | null;
-							readonly __insert__: string | null | undefined;
-							readonly __update__: string | null;
+							readonly __select__: "user" | "admin" | "superuser" | null;
+							readonly __insert__:
+								| "user"
+								| "admin"
+								| "superuser"
+								| null
+								| undefined;
+							readonly __update__: "user" | "admin" | "superuser" | null;
 						};
 					};
 					type InferredType = typeof tbl.infer;
@@ -1049,15 +1051,14 @@ describe("pgTable definition", () => {
 
 			describe("non nullable", () => {
 				test("non nullable selects", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							).notNull(),
+							role: enumerated(role).notNull(),
 						},
 					});
 					type expectedType = {
-						role: string;
+						role: "user" | "admin" | "superuser";
 					};
 					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1065,15 +1066,14 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and required inserts", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							).notNull(),
+							role: enumerated(role).notNull(),
 						},
 					});
 					type expectedType = {
-						role: string;
+						role: "user" | "admin" | "superuser";
 					};
 					type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1081,15 +1081,14 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional updates", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							).notNull(),
+							role: enumerated(role).notNull(),
 						},
 					});
 					type expectedType = {
-						role?: string;
+						role?: "user" | "admin" | "superuser";
 					};
 					type InferredType = Updateable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1097,18 +1096,17 @@ describe("pgTable definition", () => {
 				});
 
 				test("infer select, insert, and update", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							).notNull(),
+							role: enumerated(role).notNull(),
 						},
 					});
 					type expectedType = {
 						role: {
-							readonly __select__: string;
-							readonly __insert__: string;
-							readonly __update__: string;
+							readonly __select__: "user" | "admin" | "superuser";
+							readonly __insert__: "user" | "admin" | "superuser";
+							readonly __update__: "user" | "admin" | "superuser";
 						};
 					};
 					type InferredType = typeof tbl.infer;
@@ -1119,15 +1117,14 @@ describe("pgTable definition", () => {
 
 			describe("with default", () => {
 				test("non nullable selects", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							).default("user"),
+							role: enumerated(role).default("user"),
 						},
 					});
 					type expectedType = {
-						role: string;
+						role: "user" | "admin" | "superuser";
 					};
 					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1135,15 +1132,14 @@ describe("pgTable definition", () => {
 				});
 
 				test("nullable and optional inserts", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							).default("user"),
+							role: enumerated(role).default("user"),
 						},
 					});
 					type expectedType = {
-						role?: string | null;
+						role?: "user" | "admin" | "superuser" | null;
 					};
 					type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1151,15 +1147,14 @@ describe("pgTable definition", () => {
 				});
 
 				test("nullable and optional updates", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							).default("user"),
+							role: enumerated(role).default("user"),
 						},
 					});
 					type expectedType = {
-						role?: string | null;
+						role?: "user" | "admin" | "superuser" | null;
 					};
 					type InferredType = Updateable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1167,18 +1162,22 @@ describe("pgTable definition", () => {
 				});
 
 				test("infer select, insert, and update", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(
-								enumType("role", ["user", "admin", "superuser"]),
-							).default("user"),
+							role: enumerated(role).default("user"),
 						},
 					});
 					type expectedType = {
 						role: {
-							readonly __select__: string;
-							readonly __insert__: string | null | undefined;
-							readonly __update__: string | null;
+							readonly __select__: "user" | "admin" | "superuser";
+							readonly __insert__:
+								| "user"
+								| "admin"
+								| "superuser"
+								| null
+								| undefined;
+							readonly __update__: "user" | "admin" | "superuser" | null;
 						};
 					};
 					type InferredType = typeof tbl.infer;
@@ -1189,15 +1188,14 @@ describe("pgTable definition", () => {
 
 			describe("non nullable with default", () => {
 				test("non nullable selects", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
-								.notNull()
-								.default("user"),
+							role: enumerated(role).notNull().default("user"),
 						},
 					});
 					type expectedType = {
-						role: string;
+						role: "user" | "admin" | "superuser";
 					};
 					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1205,15 +1203,14 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional inserts", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
-								.notNull()
-								.default("user"),
+							role: enumerated(role).notNull().default("user"),
 						},
 					});
 					type expectedType = {
-						role?: string;
+						role?: "user" | "admin" | "superuser";
 					};
 					type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1221,15 +1218,14 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional updates", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
-								.notNull()
-								.default("user"),
+							role: enumerated(role).notNull().default("user"),
 						},
 					});
 					type expectedType = {
-						role?: string;
+						role?: "user" | "admin" | "superuser";
 					};
 					type InferredType = Updateable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1237,18 +1233,17 @@ describe("pgTable definition", () => {
 				});
 
 				test("infer select, insert, and update", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
-								.notNull()
-								.default("user"),
+							role: enumerated(role).notNull().default("user"),
 						},
 					});
 					type expectedType = {
 						role: {
-							readonly __select__: string;
-							readonly __insert__: string | undefined;
-							readonly __update__: string;
+							readonly __select__: "user" | "admin" | "superuser";
+							readonly __insert__: "user" | "admin" | "superuser" | undefined;
+							readonly __update__: "user" | "admin" | "superuser";
 						};
 					};
 					type InferredType = typeof tbl.infer;
@@ -1259,15 +1254,14 @@ describe("pgTable definition", () => {
 
 			describe("with default non nullable", () => {
 				test("non nullable selects", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
-								.default("user")
-								.notNull(),
+							role: enumerated(role).default("user").notNull(),
 						},
 					});
 					type expectedType = {
-						role: string;
+						role: "user" | "admin" | "superuser";
 					};
 					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1275,15 +1269,14 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional inserts", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
-								.default("user")
-								.notNull(),
+							role: enumerated(role).default("user").notNull(),
 						},
 					});
 					type expectedType = {
-						role?: string;
+						role?: "user" | "admin" | "superuser";
 					};
 					type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1291,15 +1284,14 @@ describe("pgTable definition", () => {
 				});
 
 				test("non nullable and optional updates", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
-								.default("user")
-								.notNull(),
+							role: enumerated(role).default("user").notNull(),
 						},
 					});
 					type expectedType = {
-						role?: string;
+						role?: "user" | "admin" | "superuser";
 					};
 					type InferredType = Updateable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1307,18 +1299,17 @@ describe("pgTable definition", () => {
 				});
 
 				test("infer select, insert, and update", () => {
+					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
-							role: enumerated(enumType("role", ["user", "admin", "superuser"]))
-								.default("user")
-								.notNull(),
+							role: enumerated(role).default("user").notNull(),
 						},
 					});
 					type expectedType = {
 						role: {
-							readonly __select__: string;
-							readonly __insert__: string | undefined;
-							readonly __update__: string;
+							readonly __select__: "user" | "admin" | "superuser";
+							readonly __insert__: "user" | "admin" | "superuser" | undefined;
+							readonly __update__: "user" | "admin" | "superuser";
 						};
 					};
 					type InferredType = typeof tbl.infer;

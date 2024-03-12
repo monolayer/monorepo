@@ -204,7 +204,8 @@ export function isEnum(
 	column:
 		| PgColumn<unknown, unknown, unknown>
 		| PgGeneratedColumn<unknown, unknown>,
-): column is PgEnum {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+): column is PgEnum<any> {
 	return column instanceof PgEnum;
 }
 
