@@ -76,9 +76,18 @@ export enum DefaultValueDataTypes {
 }
 
 export class PgColumnBase<S, I, U> {
+	/**
+	 * @hidden
+	 */
 	protected declare readonly infer: ColumnType<S, I, U>;
+	/**
+	 * @hidden
+	 */
 	protected info: Omit<ColumnInfo, "columnName" | "tableName">;
 
+	/**
+	 * @hidden
+	 */
 	constructor(dataType: string) {
 		this.info = {
 			dataType: dataType,
@@ -101,21 +110,94 @@ export class PgColumnBase<S, I, U> {
 }
 
 export abstract class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
+	/**
+	 * @hidden
+	 */
 	protected _primaryKey: boolean;
 
+	/**
+	 * @hidden
+	 */
 	protected readonly _native_data_type: DefaultValueDataTypes;
 
+	/**
+	 * @hidden
+	 */
 	constructor(dataType: string, postgresDataType: DefaultValueDataTypes) {
 		super(dataType);
 		this._native_data_type = postgresDataType;
 		this._primaryKey = false;
 	}
 
+	/**
+	 * Adds a not null constraint to the column.
+	 * @public
+	 * The column is not allowed to contain null values.
+	 *
+	 * @see PostgreSQL Docs: {@link https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-NOT-NULL | Not-Null Constraints }
+	 */
 	notNull() {
 		this.info.isNullable = false;
 		return this as this & NonNullableColumn;
 	}
 
+	/**
+	 * Assigns a default default data value for the column.
+	 *
+	 * **Note:** When adding or changing a default value on an existing column, the new value be applied to inserted or updated rows. Default values in rows already in the table will not change.
+
+	 * Generated Kysely database schema type definition:
+	 *  - *Selection*: non nullable.
+	 *  - *Insertion*: optional.
+	 *  - *Update*: optional.
+	 *
+	 * @example
+	 *
+	 *
+	 * For the following table schema:
+	 *
+	 * ```ts
+	 * const books = pgTable({
+	 *   columns: {
+	 *     description: pgText().default("TBD"),
+	 *     created_at: pgTimestampTz().default(sql`now()`),
+	 *   }
+	 * })
+	 * ```
+	 *
+	 * The generated up migration will be:
+	 *
+	 * ```ts
+	 * await kysely.schema
+	 *   .createTable("books")
+	 *   .addColumn("description", "text", (col) => col.defaultTo(sql`'TBD'::text`))
+	 *   .addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`),
+	 * )
+	 * ```
+	 *
+	 * and the Kysely database schema type definition for the `books` table will be:
+	 *
+	 * ```ts
+	 * type books = {
+	 *   description: {
+	 *     readonly __select__: string;
+	 *     readonly __insert__: string | null;
+	 *     readonly __update__: string | null;
+	 *   },
+	 *   created_at: {
+	 *     readonly __select__: Date;
+	 *     readonly __insert__: Date | string | null;
+	 *     readonly __update__: Date | string | null;
+	 *   }
+	 * }
+	 *
+	 * ```
+
+	 * @see PostgreSQL Docs:
+	 * {@link https://www.postgresql.org/docs/16/sql-createtable.html#SQL-CREATETABLE-PARMS-DEFAULT | Create Table Default }
+	 * and
+	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
+	 */
 	default(value: I | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
@@ -131,9 +213,18 @@ export abstract class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 }
 
 export abstract class PgGeneratedColumn<T, U> extends PgColumnBase<T, U, U> {
+	/**
+	 * @hidden
+	 */
 	protected readonly _native_data_type: DefaultValueDataTypes;
+	/**
+	 * @hidden
+	 */
 	protected _primaryKey: boolean;
 
+	/**
+	 * @hidden
+	 */
 	constructor(
 		dataType: "serial" | "bigserial",
 		postgresDataType: DefaultValueDataTypes,
@@ -153,6 +244,9 @@ export class PgBigSerial extends PgGeneratedColumn<
 	string,
 	number | bigint | string
 > {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("bigserial", DefaultValueDataTypes.bigserial);
 	}
@@ -163,6 +257,9 @@ export function serial() {
 }
 
 export class PgSerial extends PgGeneratedColumn<number, number | string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("serial", DefaultValueDataTypes.serial);
 	}
@@ -173,12 +270,124 @@ export abstract class IdentifiableColumn<S, I, U = I> extends PgColumn<
 	I,
 	U
 > {
+	/**
+	 * Assigns a default default data value for the column.
+	 *
+	 * **Note:** When adding or changing a default value on an existing column, the new value be applied to inserted or updated rows. Default values in rows already in the table will not change.
+
+	 * Generated Kysely database schema type definition:
+	 *  - *Selection*: non nullable.
+	 *  - *Insertion*: optional.
+	 *  - *Update*: optional.
+	 *
+	 * @example
+	 *
+	 *
+	 * For the following table schema:
+	 *
+	 * ```ts
+	 * const books = pgTable({
+	 *   columns: {
+	 *     description: pgText().default("TBD"),
+	 *     created_at: pgTimestampTz().default(sql`now()`),
+	 *   }
+	 * })
+	 * ```
+	 *
+	 * The generated up migration will be:
+	 *
+	 * ```ts
+	 * await kysely.schema
+	 *   .createTable("books")
+	 *   .addColumn("description", "text", (col) => col.defaultTo(sql`'TBD'::text`))
+	 *   .addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`),
+	 * )
+	 * ```
+	 *
+	 * and the Kysely database schema type definition for the `books` table will be:
+	 *
+	 * ```ts
+	 * type books = {
+	 *   description: {
+	 *     readonly __select__: string;
+	 *     readonly __insert__: string | null;
+	 *     readonly __update__: string | null;
+	 *   },
+	 *   created_at: {
+	 *     readonly __select__: Date;
+	 *     readonly __insert__: Date | string | null;
+	 *     readonly __update__: Date | string | null;
+	 *   }
+	 * }
+	 *
+	 * ```
+	 * @see PostgreSQL Docs:
+	 * {@link https://www.postgresql.org/docs/16/sql-createtable.html#SQL-CREATETABLE-PARMS-DEFAULT | Create Table Default }
+	 * and
+	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
+	 */
 	generatedByDefaultAsIdentity() {
 		this.info.identity = ColumnIdentity.ByDefault;
 		this.info.isNullable = false;
 		return this as this & GeneratedColumn;
 	}
 
+	/**
+	 * Assigns a default default data value for the column.
+	 *
+	 * **Note:** When adding or changing a default value on an existing column, the new value be applied to inserted or updated rows. Default values in rows already in the table will not change.
+
+	 * Generated Kysely database schema type definition:
+	 *  - *Selection*: non nullable.
+	 *  - *Insertion*: optional.
+	 *  - *Update*: optional.
+	 *
+	 * @example
+	 *
+	 *
+	 * For the following table schema:
+	 *
+	 * ```ts
+	 * const books = pgTable({
+	 *   columns: {
+	 *     description: pgText().default("TBD"),
+	 *     created_at: pgTimestampTz().default(sql`now()`),
+	 *   }
+	 * })
+	 * ```
+	 *
+	 * The generated up migration will be:
+	 *
+	 * ```ts
+	 * await kysely.schema
+	 *   .createTable("books")
+	 *   .addColumn("description", "text", (col) => col.defaultTo(sql`'TBD'::text`))
+	 *   .addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`),
+	 * )
+	 * ```
+	 *
+	 * and the Kysely database schema type definition for the `books` table will be:
+	 *
+	 * ```ts
+	 * type books = {
+	 *   description: {
+	 *     readonly __select__: string;
+	 *     readonly __insert__: string | null;
+	 *     readonly __update__: string | null;
+	 *   },
+	 *   created_at: {
+	 *     readonly __select__: Date;
+	 *     readonly __insert__: Date | string | null;
+	 *     readonly __update__: Date | string | null;
+	 *   }
+	 * }
+	 *
+	 * ```
+	 * @see PostgreSQL Docs:
+	 * {@link https://www.postgresql.org/docs/16/sql-createtable.html#SQL-CREATETABLE-PARMS-DEFAULT | Create Table Default }
+	 * and
+	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
+	 */
 	generatedAlwaysAsIdentity() {
 		this.info.identity = ColumnIdentity.Always;
 		this.info.isNullable = false;
@@ -203,10 +412,70 @@ export type Boolish =
 	| "off";
 
 export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("boolean", DefaultValueDataTypes.boolean);
 	}
 
+	/**
+	 * Assigns a default default data value for the column.
+	 *
+	 * **Note:** When adding or changing a default value on an existing column, the new value be applied to inserted or updated rows. Default values in rows already in the table will not change.
+
+	 * Generated Kysely database schema type definition:
+	 *  - *Selection*: non nullable.
+	 *  - *Insertion*: optional.
+	 *  - *Update*: optional.
+	 *
+	 * @example
+	 *
+	 *
+	 * For the following table schema:
+	 *
+	 * ```ts
+	 * const books = pgTable({
+	 *   columns: {
+	 *     description: pgText().default("TBD"),
+	 *     created_at: pgTimestampTz().default(sql`now()`),
+	 *   }
+	 * })
+	 * ```
+	 *
+	 * The generated up migration will be:
+	 *
+	 * ```ts
+	 * await kysely.schema
+	 *   .createTable("books")
+	 *   .addColumn("description", "text", (col) => col.defaultTo(sql`'TBD'::text`))
+	 *   .addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`),
+	 * )
+	 * ```
+	 *
+	 * and the Kysely database schema type definition for the `books` table will be:
+	 *
+	 * ```ts
+	 * type books = {
+	 *   description: {
+	 *     readonly __select__: string;
+	 *     readonly __insert__: string | null;
+	 *     readonly __update__: string | null;
+	 *   },
+	 *   created_at: {
+	 *     readonly __select__: Date;
+	 *     readonly __insert__: Date | string | null;
+	 *     readonly __update__: Date | string | null;
+	 *   }
+	 * }
+	 *
+	 * ```
+	 *
+	 * @see PostgreSQL Docs:
+	 * {@link https://www.postgresql.org/docs/16/sql-createtable.html#SQL-CREATETABLE-PARMS-DEFAULT | Create Table Default }
+	 * and
+	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
+	 */
 	default(value: boolean | Boolish | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
@@ -222,6 +491,9 @@ export function text() {
 }
 
 export class PgText extends PgColumn<string, string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("text", DefaultValueDataTypes.text);
 	}
@@ -235,6 +507,9 @@ export class PgBigInt extends IdentifiableColumn<
 	string,
 	number | bigint | string
 > {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("bigint", DefaultValueDataTypes.bigint);
 	}
@@ -249,10 +524,69 @@ export type NestedRecord = {
 };
 
 export class PgBytea extends PgColumn<Buffer, Buffer | string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("bytea", DefaultValueDataTypes.bytea);
 	}
 
+	/**
+	 * Assigns a default default data value for the column.
+	 *
+	 * **Note:** When adding or changing a default value on an existing column, the new value be applied to inserted or updated rows. Default values in rows already in the table will not change.
+
+	 * Generated Kysely database schema type definition:
+	 *  - *Selection*: non nullable.
+	 *  - *Insertion*: optional.
+	 *  - *Update*: optional.
+	 *
+	 * @example
+	 *
+	 *
+	 * For the following table schema:
+	 *
+	 * ```ts
+	 * const books = pgTable({
+	 *   columns: {
+	 *     description: pgText().default("TBD"),
+	 *     created_at: pgTimestampTz().default(sql`now()`),
+	 *   }
+	 * })
+	 * ```
+	 *
+	 * The generated up migration will be:
+	 *
+	 * ```ts
+	 * await kysely.schema
+	 *   .createTable("books")
+	 *   .addColumn("description", "text", (col) => col.defaultTo(sql`'TBD'::text`))
+	 *   .addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`),
+	 * )
+	 * ```
+	 *
+	 * and the Kysely database schema type definition for the `books` table will be:
+	 *
+	 * ```ts
+	 * type books = {
+	 *   description: {
+	 *     readonly __select__: string;
+	 *     readonly __insert__: string | null;
+	 *     readonly __update__: string | null;
+	 *   },
+	 *   created_at: {
+	 *     readonly __select__: Date;
+	 *     readonly __insert__: Date | string | null;
+	 *     readonly __update__: Date | string | null;
+	 *   }
+	 * }
+	 *
+	 * ```
+	 * @see PostgreSQL Docs:
+	 * {@link https://www.postgresql.org/docs/16/sql-createtable.html#SQL-CREATETABLE-PARMS-DEFAULT | Create Table Default }
+	 * and
+	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
+	 */
 	default(value: Buffer | string | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
@@ -287,6 +621,9 @@ export function date() {
 }
 
 export class PgDate extends PgColumn<Date, Date | string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("date", DefaultValueDataTypes.date);
 	}
@@ -300,6 +637,9 @@ export class PgDoublePrecision extends PgColumn<
 	string,
 	number | bigint | string
 > {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("double precision", DefaultValueDataTypes["double precision"]);
 	}
@@ -310,6 +650,9 @@ export function float4() {
 }
 
 export class PgFloat4 extends PgColumn<number, number | bigint | string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("real", DefaultValueDataTypes.real);
 	}
@@ -320,6 +663,9 @@ export function float8() {
 }
 
 export class PgFloat8 extends PgColumn<number, number | bigint | string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("double precision", DefaultValueDataTypes["double precision"]);
 	}
@@ -330,6 +676,9 @@ export function int2() {
 }
 
 export class PgInt2 extends IdentifiableColumn<number, number | string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("smallint", DefaultValueDataTypes.smallint);
 	}
@@ -340,10 +689,70 @@ export function int4() {
 }
 
 export class PgInt4 extends IdentifiableColumn<number, number | string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("integer", DefaultValueDataTypes.integer);
 	}
 
+	/**
+	 * Assigns a default default data value for the column.
+	 *
+	 * **Note:** When adding or changing a default value on an existing column, the new value be applied to inserted or updated rows. Default values in rows already in the table will not change.
+
+	 * Generated Kysely database schema type definition:
+	 *  - *Selection*: non nullable.
+	 *  - *Insertion*: optional.
+	 *  - *Update*: optional.
+	 *
+	 * @example
+	 *
+	 *
+	 * For the following table schema:
+	 *
+	 * ```ts
+	 * const books = pgTable({
+	 *   columns: {
+	 *     description: pgText().default("TBD"),
+	 *     created_at: pgTimestampTz().default(sql`now()`),
+	 *   }
+	 * })
+	 * ```
+	 *
+	 * The generated up migration will be:
+	 *
+	 * ```ts
+	 * await kysely.schema
+	 *   .createTable("books")
+	 *   .addColumn("description", "text", (col) => col.defaultTo(sql`'TBD'::text`))
+	 *   .addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`),
+	 * )
+	 * ```
+	 *
+	 * and the Kysely database schema type definition for the `books` table will be:
+	 *
+	 * ```ts
+	 * type books = {
+	 *   description: {
+	 *     readonly __select__: string;
+	 *     readonly __insert__: string | null;
+	 *     readonly __update__: string | null;
+	 *   },
+	 *   created_at: {
+	 *     readonly __select__: Date;
+	 *     readonly __insert__: Date | string | null;
+	 *     readonly __update__: Date | string | null;
+	 *   }
+	 * }
+	 *
+	 * ```
+	 *
+	 * @see PostgreSQL Docs:
+	 * {@link https://www.postgresql.org/docs/16/sql-createtable.html#SQL-CREATETABLE-PARMS-DEFAULT | Create Table Default }
+	 * and
+	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
+	 */
 	default(value: number | string | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
@@ -362,6 +771,9 @@ export class PgInt8 extends IdentifiableColumn<
 	number,
 	number | bigint | string
 > {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("bigint", DefaultValueDataTypes.bigint);
 	}
@@ -372,10 +784,70 @@ export function integer() {
 }
 
 export class PgInteger extends IdentifiableColumn<number, number | string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("integer", DefaultValueDataTypes.integer);
 	}
 
+	/**
+	 * Assigns a default default data value for the column.
+	 *
+	 * **Note:** When adding or changing a default value on an existing column, the new value be applied to inserted or updated rows. Default values in rows already in the table will not change.
+
+	 * Generated Kysely database schema type definition:
+	 *  - *Selection*: non nullable.
+	 *  - *Insertion*: optional.
+	 *  - *Update*: optional.
+	 *
+	 * @example
+	 *
+	 *
+	 * For the following table schema:
+	 *
+	 * ```ts
+	 * const books = pgTable({
+	 *   columns: {
+	 *     description: pgText().default("TBD"),
+	 *     created_at: pgTimestampTz().default(sql`now()`),
+	 *   }
+	 * })
+	 * ```
+	 *
+	 * The generated up migration will be:
+	 *
+	 * ```ts
+	 * await kysely.schema
+	 *   .createTable("books")
+	 *   .addColumn("description", "text", (col) => col.defaultTo(sql`'TBD'::text`))
+	 *   .addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`),
+	 * )
+	 * ```
+	 *
+	 * and the Kysely database schema type definition for the `books` table will be:
+	 *
+	 * ```ts
+	 * type books = {
+	 *   description: {
+	 *     readonly __select__: string;
+	 *     readonly __insert__: string | null;
+	 *     readonly __update__: string | null;
+	 *   },
+	 *   created_at: {
+	 *     readonly __select__: Date;
+	 *     readonly __insert__: Date | string | null;
+	 *     readonly __update__: Date | string | null;
+	 *   }
+	 * }
+	 *
+	 * ```
+	 *
+	 * @see PostgreSQL Docs:
+	 * {@link https://www.postgresql.org/docs/16/sql-createtable.html#SQL-CREATETABLE-PARMS-DEFAULT | Create Table Default }
+	 * and
+	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
+	 */
 	default(value: number | string | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
@@ -406,6 +878,9 @@ export class PgJson extends PgColumn<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	string | number | boolean | Record<string, any>
 > {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("json", DefaultValueDataTypes.json);
 	}
@@ -416,6 +891,9 @@ export function jsonb() {
 }
 
 export class PgJsonB extends PgColumn<JsonValue, string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("jsonb", DefaultValueDataTypes.jsonb);
 	}
@@ -426,6 +904,9 @@ export function real() {
 }
 
 export class PgReal extends PgColumn<number, number | bigint | string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("real", DefaultValueDataTypes.real);
 	}
@@ -436,10 +917,69 @@ export function uuid() {
 }
 
 export class PgUuid extends PgColumn<string, string> {
+	/**
+	 * @hidden
+	 */
 	constructor() {
 		super("uuid", DefaultValueDataTypes.uuid);
 	}
 
+	/**
+	 * Assigns a default default data value for the column.
+	 *
+	 * **Note:** When adding or changing a default value on an existing column, the new value be applied to inserted or updated rows. Default values in rows already in the table will not change.
+
+	 * Generated Kysely database schema type definition:
+	 *  - *Selection*: non nullable.
+	 *  - *Insertion*: optional.
+	 *  - *Update*: optional.
+	 *
+	 * @example
+	 *
+	 *
+	 * For the following table schema:
+	 *
+	 * ```ts
+	 * const books = pgTable({
+	 *   columns: {
+	 *     description: pgText().default("TBD"),
+	 *     created_at: pgTimestampTz().default(sql`now()`),
+	 *   }
+	 * })
+	 * ```
+	 *
+	 * The generated up migration will be:
+	 *
+	 * ```ts
+	 * await kysely.schema
+	 *   .createTable("books")
+	 *   .addColumn("description", "text", (col) => col.defaultTo(sql`'TBD'::text`))
+	 *   .addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`),
+	 * )
+	 * ```
+	 *
+	 * and the Kysely database schema type definition for the `books` table will be:
+	 *
+	 * ```ts
+	 * type books = {
+	 *   description: {
+	 *     readonly __select__: string;
+	 *     readonly __insert__: string | null;
+	 *     readonly __update__: string | null;
+	 *   },
+	 *   created_at: {
+	 *     readonly __select__: Date;
+	 *     readonly __insert__: Date | string | null;
+	 *     readonly __update__: Date | string | null;
+	 *   }
+	 * }
+	 *
+	 * ```
+	 * @see PostgreSQL Docs:
+	 * {@link https://www.postgresql.org/docs/16/sql-createtable.html#SQL-CREATETABLE-PARMS-DEFAULT | Create Table Default }
+	 * and
+	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
+	 */
 	default(value: string | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = value;
@@ -451,6 +991,9 @@ export class PgUuid extends PgColumn<string, string> {
 }
 
 export abstract class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
+	/**
+	 * @hidden
+	 */
 	constructor(dataType: "varchar" | "char", maximumLength?: number) {
 		const postgresDataType =
 			dataType === "varchar"
@@ -465,6 +1008,78 @@ export abstract class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
 	}
 }
 
+/**
+ * Column that stores variable-length string up an optional characters of n length.
+ *
+ * Without a `maximumLength` specified, the column accepts strings of any length.
+ *
+ * @param maximumLength - Optional Maximum character length of strings in the column. Must be greater than zero and cannot exceed 10,485,760.
+ * @remarks
+ * *PostgreSQL native data type*: `character varying(n)`.
+ *
+ * The longest possible character string that can be stored is about 1 GB.
+ * @example
+ *
+ * Kinetic schema for a database with a `users` table with `name` and `description` columns:
+ *
+ * ```ts
+ * const users = pgTable({
+ *   columns: {
+ *     name: pgVarchar(255),
+ *     description: pgVarchar(),
+ *   }
+ * });
+ *
+ * const database = pgDatabase({
+ *   tables: {
+ *     users,
+ *   },
+ * });
+ * ```
+ *
+ * The generated Kysely database schema type definition (`typeof database.kyselyDatabase`) will be:
+ * ```ts
+ * type DB = {
+ *   users: {
+ *     name: {
+ *       readonly __select__: string | null;
+ *       readonly __insert__: string | null | undefined;
+ *       readonly __update__: string | null;
+ *     },
+ *     description: {
+ *       readonly __select__: string | null;
+ *       readonly __insert__: string | null | undefined;
+ *       readonly __update__: string | null;
+ *     }
+ *   }
+ * }
+ * ```
+ *
+ * The generated migration with `npx kinetic generate` will be:
+ * ```ts
+ * export async function up(db: Kysely<any>): Promise<void> {
+ *   await kysely.schema
+ *     .createTable("users")
+ *     .addColumn("name", "varchar(255)")
+ *     .addColumn("description", "varchar")
+ *     .execute();
+ * }
+ *
+ * export async function down(db: Kysely<any>): Promise<void> {
+ *   await kysely.schema
+ *     .dropTable("users")
+ *     .execute();
+ * }
+ * ```
+ * @see
+ * {@link pgDatabase}
+ *
+ * {@link pgTable}
+ *
+ * PostgreSQL Docs: {@link https://www.postgresql.org/docs/current/datatype-character.html#DATATYPE-CHARACTER | character varying(n)}
+ *
+ * @group Columns
+ */
 export function varchar(maximumLength?: number) {
 	return new PgVarChar("varchar", maximumLength);
 }
@@ -480,6 +1095,9 @@ export class PgChar extends PgColumnWithMaximumLength<string, string> {}
 type DateTimePrecision = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export abstract class PgTimeColumn<T, U> extends PgColumn<T, U> {
+	/**
+	 * @hidden
+	 */
 	constructor(dataType: "time" | "timetz", precision?: DateTimePrecision) {
 		const postgresDataType =
 			dataType === "time"
@@ -499,12 +1117,18 @@ export function time(precision?: DateTimePrecision) {
 }
 
 export class PgTime extends PgTimeColumn<string, string> {
+	/**
+	 * @hidden
+	 */
 	constructor(precision?: DateTimePrecision) {
 		super("time", precision);
 	}
 }
 
 export abstract class PgTimestampColumn<T, U> extends PgColumn<T, U> {
+	/**
+	 * @hidden
+	 */
 	constructor(
 		dataType: "timestamp" | "timestamptz",
 		precision?: DateTimePrecision,
@@ -527,6 +1151,9 @@ export function timetz(precision?: DateTimePrecision) {
 }
 
 export class PgTimeTz extends PgTimeColumn<string, string> {
+	/**
+	 * @hidden
+	 */
 	constructor(precision?: DateTimePrecision) {
 		super("timetz", precision);
 	}
@@ -549,6 +1176,9 @@ export function numeric(precision?: number, scale?: number) {
 }
 
 export class PgNumeric extends PgColumn<string, number | bigint | string> {
+	/**
+	 * @hidden
+	 */
 	constructor(precision?: number, scale = 0) {
 		if (precision !== undefined) {
 			super(`numeric(${precision}, ${scale})`, DefaultValueDataTypes.numeric);
@@ -570,12 +1200,72 @@ export function pgEnum<N extends string, T extends string[]>(
 export class PgEnum extends PgColumn<string, string> {
 	protected readonly values: string[];
 
+	/**
+	 * @hidden
+	 */
 	constructor(name: string, values: string[]) {
 		super(name, DefaultValueDataTypes.numeric);
 		this.values = values;
 		this.info.enum = true;
 	}
 
+	/**
+	 * Assigns a default default data value for the column.
+	 *
+	 * **Note:** When adding or changing a default value on an existing column, the new value be applied to inserted or updated rows. Default values in rows already in the table will not change.
+
+	 * Generated Kysely database schema type definition:
+	 *  - *Selection*: non nullable.
+	 *  - *Insertion*: optional.
+	 *  - *Update*: optional.
+	 *
+	 * @example
+	 *
+	 *
+	 * For the following table schema:
+	 *
+	 * ```ts
+	 * const books = pgTable({
+	 *   columns: {
+	 *     description: pgText().default("TBD"),
+	 *     created_at: pgTimestampTz().default(sql`now()`),
+	 *   }
+	 * })
+	 * ```
+	 *
+	 * The generated up migration will be:
+	 *
+	 * ```ts
+	 * await kysely.schema
+	 *   .createTable("books")
+	 *   .addColumn("description", "text", (col) => col.defaultTo(sql`'TBD'::text`))
+	 *   .addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`),
+	 * )
+	 * ```
+	 *
+	 * and the Kysely database schema type definition for the `books` table will be:
+	 *
+	 * ```ts
+	 * type books = {
+	 *   description: {
+	 *     readonly __select__: string;
+	 *     readonly __insert__: string | null;
+	 *     readonly __update__: string | null;
+	 *   },
+	 *   created_at: {
+	 *     readonly __select__: Date;
+	 *     readonly __insert__: Date | string | null;
+	 *     readonly __update__: Date | string | null;
+	 *   }
+	 * }
+	 *
+	 * ```
+	 *
+	 * @see PostgreSQL Docs:
+	 * {@link https://www.postgresql.org/docs/16/sql-createtable.html#SQL-CREATETABLE-PARMS-DEFAULT | Create Table Default }
+	 * and
+	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
+	 */
 	default(value: string) {
 		this.info.defaultValue = `'${value}'::${this.info.dataType}`;
 		return this as this & WithDefaultColumn;

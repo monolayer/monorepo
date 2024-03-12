@@ -20,9 +20,20 @@ type IndexOptions = {
 };
 
 export class PgIndex<T extends string | (string & Record<string, never>)> {
+	/**
+	 * @hidden
+	 */
 	protected options: IndexOptions;
 
-	constructor(protected columns: T[]) {
+	/**
+	 * @hidden
+	 */
+	constructor(
+		/**
+		 * @hidden
+		 */
+		protected columns: T[],
+	) {
 		this.options = {
 			ifNotExists: false,
 			unique: false,

@@ -5,5 +5,8 @@ export function primaryKey<T extends string, PK extends string>(
 }
 
 export class PgPrimaryKey<T extends string, PK extends string> {
+	/**
+	 * @hidden
+	 */
 	constructor(protected columns: (PK | T)[]) {}
 }

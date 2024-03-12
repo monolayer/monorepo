@@ -4,6 +4,7 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
+import path from "path";
 import { themes as prismThemes } from "prism-react-renderer";
 
 /** @type {import('@docusaurus/types').Config} */
@@ -16,12 +17,12 @@ const config = {
 	url: "https://your-docusaurus-site.example.com",
 	// Set the /<baseUrl>/ pathname under which your site is served
 	// For GitHub pages deployment, it is often '/<projectName>/'
-	baseUrl: "/",
-
+	// baseUrl: "/",
+	baseUrl: "/Users/marcessindi/Development/kysely-kinetic/docs/build/",
 	// GitHub pages deployment config.
 	// If you aren't using GitHub pages, you don't need these.
-	organizationName: "facebook", // Usually your GitHub org/user name.
-	projectName: "docusaurus", // Usually your repo name.
+	organizationName: "dunkelbraun", // Usually your GitHub org/user name.
+	projectName: "Kinetic", // Usually your repo name.
 
 	onBrokenLinks: "throw",
 	onBrokenMarkdownLinks: "warn",
@@ -40,6 +41,7 @@ const config = {
 			/** @type {import('@docusaurus/preset-classic').Options} */
 			({
 				docs: {
+					breadcrumbs: true,
 					sidebarPath: "./sidebars.js",
 					// Please change this to your repo.
 					// Remove this to remove the "edit this page" links.
@@ -62,20 +64,14 @@ const config = {
 
 	plugins: [
 		require.resolve("docusaurus-lunr-search"),
-		[
-			"docusaurus-plugin-typedoc",
-			{
-				entryPoints: ["../src/index.ts"],
-				tsconfig: "../tsconfig.json",
-				out: "api-docs",
-				sidebar: {
-					categoryLabel: "API documentation",
-					collapsed: false,
-					position: 4,
-					fullNames: true,
-				},
-			},
-		],
+    [
+      'docusaurus-plugin-typedoc',
+      {
+        entryPoints: ['../src/index.ts'],
+        tsconfig: '../tsconfig.json',
+				groupOrder: ["Database", "Tables", "Columns", "Indexes", "Constraints", "Triggers", "*"],
+      },
+    ],
 	],
 
 	themeConfig:
@@ -94,7 +90,13 @@ const config = {
 						type: "docSidebar",
 						sidebarId: "tutorialSidebar",
 						position: "left",
-						label: "Tutorial",
+						label: "Docs",
+					},
+					{
+						type: "docSidebar",
+						sidebarId: "typedocSidebar",
+						position: "left",
+						label: "Schema API",
 					},
 					{ to: "/blog", label: "Blog", position: "left" },
 					{

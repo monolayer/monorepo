@@ -8,9 +8,20 @@ type UniqueConstraintOptions = {
 };
 
 export class PgUnique<T extends string> {
+	/**
+	 * @hidden
+	 */
 	protected options: UniqueConstraintOptions;
 
-	constructor(protected columns: T[]) {
+	/**
+	 * @hidden
+	 */
+	constructor(
+		/**
+		 * @hidden
+		 */
+		protected columns: T[],
+	) {
 		this.options = {
 			columns: this.columns,
 			nullsDistinct: true,

@@ -37,9 +37,20 @@ export function table<T extends ColumnRecord, PK extends string>(
 
 export class PgTable<T extends ColumnRecord, PK extends string> {
 	declare infer: Simplify<InferColumnTypes<T, PK>>;
+	/**
+	 * @hidden
+	 */
 	protected database?: AnyPgDatabase;
 
-	constructor(protected schema: TableSchema<T, PK>) {
+	/**
+	 * @hidden
+	 */
+	constructor(
+		/**
+		 * @hidden
+		 */
+		protected schema: TableSchema<T, PK>,
+	) {
 		const columns = this.schema.columns;
 		const primaryKey = this.schema.constraints?.primaryKey;
 		if (primaryKey !== undefined) {

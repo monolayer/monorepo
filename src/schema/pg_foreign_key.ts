@@ -12,9 +12,18 @@ type ForeignKeyOptions<T extends PgTable<any, any>> = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class PgForeignKey<T extends string, C extends AnyPgTable> {
+	/**
+	 * @hidden
+	 */
 	protected options: ForeignKeyOptions<C>;
 
+	/**
+	 * @hidden
+	 */
 	constructor(
+		/**
+		 * @hidden
+		 */
 		protected columns: T[],
 		targetTable: C,
 		targetColumns: (keyof C)[],
