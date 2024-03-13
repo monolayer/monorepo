@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { pgDatabase } from "~/schema/pg_database.js";
 import { extension } from "~/schema/pg_extension.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
-import { type DbContext } from "~tests/setup.js";
+import { type DbContext } from "~tests/setup/kysely.js";
 import { computeChangeset } from "../../helpers/compute_changeset.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";
 

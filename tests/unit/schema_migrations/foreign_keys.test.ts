@@ -6,7 +6,7 @@ import { foreignKey } from "~/schema/pg_foreign_key.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { table } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
-import { type DbContext } from "~tests/setup.js";
+import { type DbContext } from "~tests/setup/kysely.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";
 
 describe("Database migrations", () => {

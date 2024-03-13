@@ -6,7 +6,7 @@ import { extension } from "~/schema/pg_extension.js";
 import { table } from "~/schema/pg_table.js";
 import { trigger } from "~/schema/pg_trigger.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
-import { type DbContext } from "~tests/setup.js";
+import { type DbContext } from "~tests/setup/kysely.js";
 import { setUpContext, teardownContext } from "../../helpers/test_context.js";
 
 describe("Database migrations", () => {

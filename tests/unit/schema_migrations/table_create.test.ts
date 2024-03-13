@@ -39,7 +39,7 @@ import { trigger } from "~/schema/pg_trigger.js";
 import { unique } from "~/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
-import { type DbContext } from "~tests/setup.js";
+import { type DbContext } from "~tests/setup/kysely.js";
 
 describe("Table create migrations", () => {
 	beforeEach<DbContext>(async (context) => {

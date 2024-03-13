@@ -1,4 +1,4 @@
-import { DbContext } from "~tests/setup.js";
+import { DbContext } from "~tests/setup/kysely.js";
 
 export async function dropTables(context: DbContext) {
 	try {

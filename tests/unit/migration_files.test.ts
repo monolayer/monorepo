@@ -10,7 +10,7 @@ import {
 	Changeset,
 } from "~/changeset/migration_op/changeset.js";
 import { generateMigrationFiles } from "~/migrations/generate.js";
-import { globalKysely } from "~tests/setup.js";
+import { kyselyWithCustomDB } from "~tests/setup/kysely.js";
 
 type MigrationContext = {
 	folder: string;
@@ -26,7 +26,7 @@ type MigrationContext = {
 describe("Migrator", () => {
 	describe("#generateMigrationFiles", () => {
 		beforeEach((context: MigrationContext) => {
-			context.kysely = globalKysely();
+			context.kysely = kyselyWithCustomDB("test_kysely_kinetic");
 			const digest = createHash("sha256")
 				.update(context.task.name)
 				.digest("hex");

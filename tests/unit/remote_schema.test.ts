@@ -1,25 +1,17 @@
 /* eslint-disable max-lines */
-import { Kysely, PostgresDialect, sql } from "kysely";
-import pg from "pg";
-import { env } from "process";
+import { sql } from "kysely";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { remoteSchema } from "~/introspection/schemas.js";
 import { dropTables } from "~tests/helpers/dropTables.js";
-import { globalPool, type DbContext } from "~tests/setup.js";
+import { globalPool } from "~tests/setup.js";
+import { kyselyWithCustomDB, type DbContext } from "~tests/setup/kysely.js";
 
 describe("#remoteSchema", () => {
 	beforeEach<DbContext>(async (context) => {
 		const pool = globalPool();
 		await pool.query("DROP DATABASE IF EXISTS test_remote_schema");
 		await pool.query("CREATE DATABASE test_remote_schema");
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		context.kysely = new Kysely<any>({
-			dialect: new PostgresDialect({
-				pool: new pg.Pool({
-					connectionString: `${env.POSTGRES_URL}/test_remote_schema?schema=public`,
-				}),
-			}),
-		});
+		context.kysely = kyselyWithCustomDB("test_remote_schema");
 		context.tableNames = [];
 		await dropTables(context);
 	});

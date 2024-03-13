@@ -4,7 +4,7 @@ import type { Changeset } from "~/changeset/migration_op/changeset.js";
 import type { CamelCaseOptions } from "~/config.js";
 import { generateMigrationFiles } from "~/migrations/generate.js";
 import type { PgDatabase } from "~/schema/pg_database.js";
-import type { DbContext } from "~tests/setup.js";
+import type { DbContext } from "~tests/setup/kysely.js";
 import { computeChangeset } from "./compute_changeset.js";
 
 async function migrateUp(

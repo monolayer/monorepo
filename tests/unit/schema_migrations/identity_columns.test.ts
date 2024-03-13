@@ -5,7 +5,7 @@ import { pgDatabase } from "~/schema/pg_database.js";
 import { table } from "~/schema/pg_table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
-import { type DbContext } from "~tests/setup.js";
+import { type DbContext } from "~tests/setup/kysely.js";
 
 describe("Identity columns", () => {
 	beforeEach<DbContext>(async (context) => {
