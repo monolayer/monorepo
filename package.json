@@ -63,7 +63,7 @@
 		"pack": "npm pack --pack-destination ./build",
 		"test": "vitest unit src integration --run --coverage",
 		"pretest:unit": "tsx ./tests/setup/create_test_db.ts",
-		"test:unit": "vitest unit src --run --coverage",
+		"test:unit": "./tests/bin/test-with-kysely-version",
 		"posttest:unit": "tsx ./tests/setup/drop_test_db.ts",
 		"pretest:integration": "npm run pack && tsx ./tests/setup/create_test_db.ts",
 		"posttest:integration": "tsx ./tests/setup/drop_test_db.ts",
@@ -93,6 +93,10 @@
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-react": "^7.34.0",
+		"kysely-0270": "npm:kysely@^0.27.0",
+		"kysely-0271": "npm:kysely@^0.27.1",
+		"kysely-0272": "npm:kysely@^0.27.2",
+		"kysely-0273": "npm:kysely@^0.27.3",
 		"mock-fs": "^5.2.0",
 		"mock-stdin": "^1.0.0",
 		"postcss": "^8.4.35",
@@ -119,7 +123,7 @@
 		"zod": "^3.22.4"
 	},
 	"peerDependencies": {
-		"kysely": ">=0.27.2",
+		"kysely": "^0.27.3",
 		"pg": ">=8.11.3"
 	},
 	"engines": {
