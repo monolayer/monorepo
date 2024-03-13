@@ -25,12 +25,12 @@ export async function setUpContext(context: TaskContext & DbContext) {
 	await pool.query(`DROP DATABASE IF EXISTS ${context.dbName}`);
 	await pool.query(`CREATE DATABASE ${context.dbName}`);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	context.kysely = kyselyWithCustomDB(context.dbName);
+	context.kysely = await kyselyWithCustomDB(context.dbName);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
 	context.folder = path.join(
 		cwd(),
 		`tmp/schema_migrations/${dateStr}-${context.dbName}`,
 	);
 	mkdirSync(path.join(context.folder, "migrations"), { recursive: true });
-	context.migrator = kyselyMigrator(context.kysely, context.folder);
+	context.migrator = await kyselyMigrator(context.kysely, context.folder);
 }

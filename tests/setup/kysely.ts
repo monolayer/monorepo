@@ -1,15 +1,20 @@
-import {
-	FileMigrationProvider,
-	Kysely,
-	Migrator,
-	PostgresDialect,
-} from "kysely";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { env } from "node:process";
 import pg from "pg";
 
-export function kyselyWithCustomDB(databaseName: string) {
+async function importKysely() {
+	const kyselyImport = await import("kysely");
+	return {
+		Kysely: kyselyImport.Kysely,
+		FileMigrationProvider: kyselyImport.FileMigrationProvider,
+		Migrator: kyselyImport.Migrator,
+		PostgresDialect: kyselyImport.PostgresDialect,
+	};
+}
+
+export async function kyselyWithCustomDB(databaseName: string) {
+	const { Kysely, PostgresDialect } = await importKysely();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return new Kysely<any>({
 		dialect: new PostgresDialect({
@@ -20,7 +25,8 @@ export function kyselyWithCustomDB(databaseName: string) {
 	});
 }
 
-export function kyselyWithEmptyPool() {
+export async function kyselyWithEmptyPool() {
+	const { Kysely, PostgresDialect } = await importKysely();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return new Kysely<any>({
 		dialect: new PostgresDialect({
@@ -28,8 +34,12 @@ export function kyselyWithEmptyPool() {
 		}),
 	});
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function kyselyMigrator(kysely: Kysely<any>, folder: string) {
+
+export async function kyselyMigrator(
+	kysely: Awaited<ReturnType<typeof kyselyWithCustomDB>>,
+	folder: string,
+) {
+	const { Migrator, FileMigrationProvider } = await importKysely();
 	return new Migrator({
 		db: kysely,
 		provider: new FileMigrationProvider({
@@ -41,8 +51,8 @@ export function kyselyMigrator(kysely: Kysely<any>, folder: string) {
 }
 export interface DbContext {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	kysely: Kysely<any>;
-	migrator: Migrator;
+	kysely: Awaited<ReturnType<typeof kyselyWithCustomDB>>;
+	migrator: InstanceType<Awaited<ReturnType<typeof importKysely>>["Migrator"]>;
 	tableNames: string[];
 	dbName: string;
 	folder: string;

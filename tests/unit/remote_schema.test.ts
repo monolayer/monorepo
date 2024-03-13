@@ -11,7 +11,7 @@ describe("#remoteSchema", () => {
 		const pool = globalPool();
 		await pool.query("DROP DATABASE IF EXISTS test_remote_schema");
 		await pool.query("CREATE DATABASE test_remote_schema");
-		context.kysely = kyselyWithCustomDB("test_remote_schema");
+		context.kysely = await kyselyWithCustomDB("test_remote_schema");
 		context.tableNames = [];
 		await dropTables(context);
 	});

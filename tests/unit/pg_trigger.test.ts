@@ -4,7 +4,7 @@ import { compileTrigger } from "~tests/helpers/indexes.js";
 import { trigger } from "../../src/schema/pg_trigger.js";
 
 describe("pg_trigger", () => {
-	test("trigger before", () => {
+	test("trigger before", async () => {
 		const trg = trigger()
 			.fireWhen("before")
 			.events(["update", "delete"])
@@ -18,11 +18,11 @@ FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger after", () => {
+	test("trigger after", async () => {
 		const trg = trigger()
 			.fireWhen("after")
 			.events(["update", "delete"])
@@ -36,11 +36,11 @@ FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger instead of", () => {
+	test("trigger instead of", async () => {
 		const trg = trigger()
 			.fireWhen("instead of")
 			.events(["update", "delete"])
@@ -54,11 +54,11 @@ FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger on single event", () => {
+	test("trigger on single event", async () => {
 		const trg = trigger()
 			.fireWhen("instead of")
 			.events(["update"])
@@ -72,11 +72,11 @@ FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger on multiple events", () => {
+	test("trigger on multiple events", async () => {
 		const trg = trigger()
 			.fireWhen("instead of")
 			.events(["update", "insert"])
@@ -90,11 +90,11 @@ FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger on update of", () => {
+	test("trigger on update of", async () => {
 		const trg = trigger()
 			.fireWhen("instead of")
 			.events(["update of"])
@@ -109,11 +109,11 @@ FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger with default fire when", () => {
+	test("trigger with default fire when", async () => {
 		const trg = trigger()
 			.fireWhen("before")
 			.events(["update", "delete"])
@@ -127,11 +127,11 @@ FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger with for each row", () => {
+	test("trigger with for each row", async () => {
 		const trg = trigger()
 			.fireWhen("before")
 			.events(["update", "delete"])
@@ -145,11 +145,11 @@ FOR EACH ROW
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger with referencing", () => {
+	test("trigger with referencing", async () => {
 		const trg = trigger()
 			.fireWhen("before")
 			.events(["delete"])
@@ -164,11 +164,11 @@ REFERENCING NEW TABLE AS new_table OLD TABLE AS old_table
 FOR EACH STATEMENT
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger_2", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger_2", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger with referencing new table", () => {
+	test("trigger with referencing new table", async () => {
 		const trg = trigger()
 			.fireWhen("before")
 			.events(["delete"])
@@ -182,11 +182,11 @@ REFERENCING NEW TABLE AS new_table
 FOR EACH STATEMENT
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger_2", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger_2", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger with referencing old table", () => {
+	test("trigger with referencing old table", async () => {
 		const trg = trigger()
 			.fireWhen("before")
 			.events(["delete"])
@@ -200,11 +200,11 @@ REFERENCING OLD TABLE AS old_table
 FOR EACH STATEMENT
 EXECUTE FUNCTION check_account_update`;
 
-		const compiled = compileTrigger(trg, "my_trigger_2", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger_2", "accounts");
 		expect(compiled).toBe(expected);
 	});
 
-	test("trigger with function arguments", () => {
+	test("trigger with function arguments", async () => {
 		const trg = trigger()
 			.fireWhen("before")
 			.events(["delete"])
@@ -218,7 +218,7 @@ REFERENCING OLD TABLE AS old_table
 FOR EACH STATEMENT
 EXECUTE FUNCTION check_account_update(hello)`;
 
-		const compiled = compileTrigger(trg, "my_trigger_2", "accounts");
+		const compiled = await compileTrigger(trg, "my_trigger_2", "accounts");
 		expect(compiled).toBe(expected);
 	});
 });

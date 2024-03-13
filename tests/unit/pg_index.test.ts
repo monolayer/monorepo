@@ -4,9 +4,9 @@ import { index } from "~/schema/pg_index.js";
 import { compileIndex } from "~tests/helpers/indexes.js";
 
 describe("pgIndex", () => {
-	test("one column", () => {
+	test("one column", async () => {
 		const idx = index(["id"]).ifNotExists();
-		const compiledIndex = compileIndex(idx, "test_table");
+		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
 			test_table_id_kntc_idx:
@@ -15,9 +15,9 @@ describe("pgIndex", () => {
 		expect(compiledIndex).toEqual(expected);
 	});
 
-	test("multiple columns", () => {
+	test("multiple columns", async () => {
 		const idx = index(["id", "name"]).ifNotExists();
-		const compiledIndex = compileIndex(idx, "test_table");
+		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
 			test_table_id_name_kntc_idx:
@@ -26,9 +26,9 @@ describe("pgIndex", () => {
 		expect(compiledIndex).toEqual(expected);
 	});
 
-	test("ifNotExists", () => {
+	test("ifNotExists", async () => {
 		const idx = index(["id"]).ifNotExists();
-		const compiledIndex = compileIndex(idx, "test_table");
+		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
 			test_table_id_kntc_idx:
@@ -37,9 +37,9 @@ describe("pgIndex", () => {
 		expect(compiledIndex).toEqual(expected);
 	});
 
-	test("unique", () => {
+	test("unique", async () => {
 		const idx = index(["id"]).unique();
-		const compiledIndex = compileIndex(idx, "test_table");
+		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
 			test_table_id_kntc_idx:
@@ -48,9 +48,9 @@ describe("pgIndex", () => {
 		expect(compiledIndex).toEqual(expected);
 	});
 
-	test("nullsNotDistinct", () => {
+	test("nullsNotDistinct", async () => {
 		const idx = index(["id"]).nullsNotDistinct();
-		const compiledIndex = compileIndex(idx, "test_table");
+		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
 			test_table_id_kntc_idx:
@@ -59,11 +59,11 @@ describe("pgIndex", () => {
 		expect(compiledIndex).toEqual(expected);
 	});
 
-	test("expression", () => {
+	test("expression", async () => {
 		const idx = index(["first_name"]).expression(
 			sql`first_name COLLATE "fi_FI"`,
 		);
-		const compiledIndex = compileIndex(idx, "test_table");
+		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
 			test_table_first_name_kntc_idx:
@@ -72,9 +72,9 @@ describe("pgIndex", () => {
 		expect(compiledIndex).toEqual(expected);
 	});
 
-	test("using", () => {
+	test("using", async () => {
 		const idx = index(["id"]).using("btree");
-		const compiledIndex = compileIndex(idx, "test_table");
+		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
 			test_table_id_kntc_idx:
@@ -83,9 +83,9 @@ describe("pgIndex", () => {
 		expect(compiledIndex).toEqual(expected);
 	});
 
-	test("where comparison", () => {
+	test("where comparison", async () => {
 		const idx = index(["order_nr"]).where(sql.ref("billed"), "is not", true);
-		const compiledIndex = compileIndex(idx, "test_table");
+		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
 			test_table_order_nr_kntc_idx:
@@ -94,12 +94,12 @@ describe("pgIndex", () => {
 		expect(compiledIndex).toEqual(expected);
 	});
 
-	test("where expression builder", () => {
+	test("where expression builder", async () => {
 		const idx = index(["id"]).where((eb) =>
 			eb.and([eb("first_name", "=", "Igal"), eb(sql.ref("age"), ">=", 18)]),
 		);
 
-		const compiledIndex = compileIndex(idx, "test_table");
+		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
 			test_table_id_kntc_idx:
@@ -108,9 +108,9 @@ describe("pgIndex", () => {
 		expect(compiledIndex).toEqual(expected);
 	});
 
-	test("where expression", () => {
+	test("where expression", async () => {
 		const idx = index(["id"]).where(sql<boolean>`SELECT 1`);
-		const compiledIndex = compileIndex(idx, "test_table");
+		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
 			test_table_id_kntc_idx:

@@ -7,8 +7,8 @@ import type { PgUnique } from "~/schema/pg_unique.js";
 import { kyselyWithEmptyPool } from "~tests/setup/kysely.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function compileIndex(index: PgIndex<any>, tableName: string) {
-	const kysely = kyselyWithEmptyPool();
+export async function compileIndex(index: PgIndex<any>, tableName: string) {
+	const kysely = await kyselyWithEmptyPool();
 	const opts = {
 		enabled: false,
 		options: {},
@@ -17,20 +17,20 @@ export function compileIndex(index: PgIndex<any>, tableName: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function compileUnique(unique: PgUnique<any>, tableName: string) {
-	const kysely = kyselyWithEmptyPool();
+export async function compileUnique(unique: PgUnique<any>, tableName: string) {
+	const kysely = await kyselyWithEmptyPool();
 	return uniqueToInfo(unique, tableName, kysely, {
 		enabled: false,
 		options: {},
 	});
 }
 
-export function compileTrigger(
+export async function compileTrigger(
 	trigger: PgTrigger,
 	triggerName: string,
 	tableName: string,
 ) {
-	const kysely = kyselyWithEmptyPool();
+	const kysely = await kyselyWithEmptyPool();
 
 	return triggerInfo(trigger, triggerName, tableName, kysely, {
 		enabled: false,

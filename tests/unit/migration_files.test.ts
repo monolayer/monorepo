@@ -25,8 +25,8 @@ type MigrationContext = {
 
 describe("Migrator", () => {
 	describe("#generateMigrationFiles", () => {
-		beforeEach((context: MigrationContext) => {
-			context.kysely = kyselyWithCustomDB("test_kysely_kinetic");
+		beforeEach(async (context: MigrationContext) => {
+			context.kysely = await kyselyWithCustomDB("test_kysely_kinetic");
 			const digest = createHash("sha256")
 				.update(context.task.name)
 				.digest("hex");

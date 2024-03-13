@@ -3,9 +3,9 @@ import { compileUnique } from "~tests/helpers/indexes.js";
 import { unique } from "../../src/schema/pg_unique.js";
 
 describe("PgUniqueConstraint", () => {
-	test("one column", () => {
+	test("one column", async () => {
 		const constraint = unique(["id"]);
-		const compiled = compileUnique(constraint, "test_table");
+		const compiled = await compileUnique(constraint, "test_table");
 
 		const expected = {
 			test_table_id_kinetic_key:
@@ -14,9 +14,9 @@ describe("PgUniqueConstraint", () => {
 		expect(compiled).toStrictEqual(expected);
 	});
 
-	test("multiple columns", () => {
+	test("multiple columns", async () => {
 		const constraint = unique(["price", "name"]);
-		const compiled = compileUnique(constraint, "test_table");
+		const compiled = await compileUnique(constraint, "test_table");
 
 		const expected = {
 			test_table_name_price_kinetic_key:
@@ -25,9 +25,9 @@ describe("PgUniqueConstraint", () => {
 		expect(compiled).toStrictEqual(expected);
 	});
 
-	test("null not distinct", () => {
+	test("null not distinct", async () => {
 		const constraint = unique(["id"]).nullsNotDistinct();
-		const compiled = compileUnique(constraint, "test_table");
+		const compiled = await compileUnique(constraint, "test_table");
 
 		const expected = {
 			test_table_id_kinetic_key:
