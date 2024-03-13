@@ -42,5 +42,8 @@ export function compileDataType(dataType: string, isEnum: boolean) {
 	if (dataType === "smallint") {
 		return "sql`smallint`";
 	}
+	if (dataType.includes("timetz(")) {
+		return `sql\`${dataType}\``;
+	}
 	return `"${dataType}"`;
 }

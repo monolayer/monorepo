@@ -107,7 +107,7 @@ describe("Table drop migrations", () => {
 			.addColumn("time", "time")
 			.addColumn("time4", "time(4)")
 			.addColumn("timeTz", "timetz")
-			.addColumn("timeTz4", "timetz(4)")
+			.addColumn("timeTz4", sql`timetz(4)`)
 			.addColumn("timestamp", "timestamp")
 			.addColumn("timestamp3", "timestamp(3)")
 			.addColumn("timestampTz", "timestamptz")
@@ -140,7 +140,7 @@ describe("Table drop migrations", () => {
 						'addColumn("time", "time")',
 						'addColumn("time4", "time(4)")',
 						'addColumn("timeTz", "timetz")',
-						'addColumn("timeTz4", "timetz(4)")',
+						'addColumn("timeTz4", sql`timetz(4)`)',
 						'addColumn("timestamp", "timestamp")',
 						'addColumn("timestamp3", "timestamp(3)")',
 						'addColumn("timestampTz", "timestamptz")',

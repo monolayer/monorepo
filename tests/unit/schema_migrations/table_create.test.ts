@@ -158,7 +158,7 @@ describe("Table create migrations", () => {
 						'addColumn("time", "time")',
 						'addColumn("time_4", "time(4)")',
 						'addColumn("timeTz", "timetz")',
-						'addColumn("timeTz_4", "timetz(4)")',
+						'addColumn("timeTz_4", sql`timetz(4)`)',
 						'addColumn("timestamp", "timestamp")',
 						'addColumn("timestamp_3", "timestamp(3)")',
 						'addColumn("timestampTz", "timestamptz")',
