@@ -9,11 +9,7 @@ import {
 import { PgDatabase, type AnyPgDatabase } from "./pg_database.js";
 import { foreignKeyOptions, type PgForeignKey } from "./pg_foreign_key.js";
 import { AnyPgTable, ColumnRecord, tableInfo } from "./pg_table.js";
-import type {
-	PgTrigger,
-	TriggerEvent,
-	TriggerFiringTime,
-} from "./pg_trigger.js";
+import { PgTrigger, TriggerEvent, TriggerFiringTime } from "./pg_trigger.js";
 import { uniqueConstraintOptions, type PgUnique } from "./pg_unique.js";
 
 export interface TableIntrospection {
@@ -74,7 +70,7 @@ function findTableInSchema(
 }
 function triggerInfo(triggers?: Record<string, PgTrigger>) {
 	return Object.entries(triggers || {}).reduce((acc, [key, value]) => {
-		const trigger = value.compileArgs();
+		const trigger = PgTrigger.info(value);
 		const tr = Object.entries(trigger).reduce(
 			(acc, [key, value]) => {
 				if (value === undefined) {

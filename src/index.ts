@@ -67,9 +67,10 @@ export {
 	type TableSchema,
 } from "~/schema/pg_table.js";
 export {
-	PgTriggerFunctionOptions,
 	trigger,
 	type PgTrigger,
+	type TriggerEvent,
+	type TriggerFiringTime,
 } from "~/schema/pg_trigger.js";
 export { unique, type PgUnique } from "~/schema/pg_unique.js";
 export { zodSchema } from "~/zod/zod_schema.js";

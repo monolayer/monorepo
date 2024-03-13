@@ -10,7 +10,7 @@ import {
 import type { CamelCaseOptions } from "~/config.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
 import { tableInfo } from "~/schema/pg_table.js";
-import type { PgTrigger } from "~/schema/pg_trigger.js";
+import { PgTrigger } from "~/schema/pg_trigger.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbTriggerInfo(
@@ -73,7 +73,7 @@ export function triggerInfo(
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
 ) {
-	const compileArgs = trigger.compileArgs();
+	const compileArgs = PgTrigger.info(trigger);
 
 	const transformedColumnNames = compileArgs.columns?.map((column) =>
 		toSnakeCase(column, camelCase),
@@ -133,9 +133,11 @@ export function localTriggersInfo(
 	return Object.entries(tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			for (const trigger of Object.entries(
-				tableInfo(tableDefinition).schema.triggers || {},
-			)) {
+			const triggers = tableInfo(tableDefinition).schema.triggers;
+			if (triggers === undefined) {
+				return acc;
+			}
+			for (const trigger of Object.entries(triggers || {})) {
 				const triggerName = `${trigger[0]}_trg`.toLowerCase();
 				const hash = createHash("sha256");
 				const compiledTrigger = triggerInfo(
