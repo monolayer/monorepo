@@ -1,6 +1,7 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { pgDatabase } from "~/schema/pg_database.js";
+import { extension } from "~/schema/pg_extension.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { type DbContext } from "~tests/setup.js";
 import { computeChangeset } from "../../helpers/compute_changeset.js";
@@ -23,7 +24,7 @@ describe("Database migrations", () => {
 
 	test<DbContext>("add extensions", async (context) => {
 		const database = pgDatabase({
-			extensions: ["btree_gist", "cube"],
+			extensions: [extension("btree_gist"), extension("cube")],
 		});
 		const expected = [
 			{
@@ -66,7 +67,7 @@ describe("Database migrations", () => {
 		);
 
 		const database = pgDatabase({
-			extensions: ["btree_gin"],
+			extensions: [extension("btree_gin")],
 		});
 
 		const expected = [

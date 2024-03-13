@@ -5,6 +5,7 @@ import {
 	type OperationSuccess,
 } from "~/cli/command.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
+import { PgExtension } from "~/schema/pg_extension.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbExtensionInfo(
@@ -40,7 +41,8 @@ export async function dbExtensionInfo(
 export function localExtensionInfo(schema: AnyPgDatabase) {
 	return (PgDatabase.info(schema).extensions || []).reduce<ExtensionInfo>(
 		(acc, curr) => {
-			acc[curr] = true;
+			const name = PgExtension.info(curr).name;
+			acc[name] = true;
 			return acc;
 		},
 		{},

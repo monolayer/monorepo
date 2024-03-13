@@ -55,6 +55,7 @@ export {
 } from "~/schema/pg_column.js";
 export { pgDatabase, type PgDatabase } from "~/schema/pg_database.js";
 export * from "~/schema/pg_extension.js";
+export { PgExtension, extension } from "~/schema/pg_extension.js";
 export { foreignKey, type PgForeignKey } from "~/schema/pg_foreign_key.js";
 export { index, type PgIndex } from "~/schema/pg_index.js";
 export { primaryKey, type PgPrimaryKey } from "~/schema/pg_primary_key.js";

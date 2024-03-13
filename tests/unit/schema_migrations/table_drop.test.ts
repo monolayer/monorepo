@@ -3,6 +3,7 @@ import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { integer, text } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
+import { extension } from "~/schema/pg_extension.js";
 import { table } from "~/schema/pg_table.js";
 import { unique } from "~/schema/pg_unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
@@ -624,7 +625,7 @@ describe("Table drop migrations", () => {
 		);
 
 		const database = pgDatabase({
-			extensions: ["moddatetime"],
+			extensions: [extension("moddatetime")],
 			tables: {
 				teams: table({
 					columns: {

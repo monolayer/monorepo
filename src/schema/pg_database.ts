@@ -1,9 +1,9 @@
 import type { EnumType } from "./pg_enumerated.js";
-import type { PgExtensions } from "./pg_extension.js";
+import type { PgExtension } from "./pg_extension.js";
 import type { AnyPgTable } from "./pg_table.js";
 
 export type DatabaseSchema<T extends ColumnRecord> = {
-	extensions?: PgExtensions;
+	extensions?: Array<PgExtension>;
 	tables?: T;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	types?: Array<EnumType<any>>;
@@ -102,7 +102,7 @@ export class PgDatabase<T extends ColumnRecord> {
 	/**
 	 * @hidden
 	 */
-	#extensions?: PgExtensions;
+	#extensions?: Array<PgExtension>;
 	/**
 	 * @hidden
 	 */

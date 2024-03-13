@@ -30,6 +30,7 @@ import {
 } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
 import { enumType, enumerated } from "~/schema/pg_enumerated.js";
+import { extension } from "~/schema/pg_extension.js";
 import { foreignKey } from "~/schema/pg_foreign_key.js";
 import { index } from "~/schema/pg_index.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
@@ -741,7 +742,7 @@ describe("Table create migrations", () => {
 		});
 
 		const database = pgDatabase({
-			extensions: ["moddatetime"],
+			extensions: [extension("moddatetime")],
 			tables: {
 				users,
 			},
@@ -864,7 +865,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 		});
 
 		const database = pgDatabase({
-			extensions: ["moddatetime"],
+			extensions: [extension("moddatetime")],
 			types: [role],
 			tables: {
 				users,

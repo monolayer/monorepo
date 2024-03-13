@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
+import { extension } from "~/index.js";
 import {
 	localColumnInfoByTable,
 	schemaColumnInfo,
@@ -336,7 +337,7 @@ test("#localSchema", () => {
 	});
 
 	const database = pgDatabase({
-		extensions: ["cube", "btree_gin"],
+		extensions: [extension("cube"), extension("btree_gin")],
 		types: [bookStatus, userStatus],
 		tables: {
 			users,
@@ -686,7 +687,7 @@ test("#localSchemaCamelCase", () => {
 	});
 
 	const database = pgDatabase({
-		extensions: ["cube", "btree_gin"],
+		extensions: [extension("cube"), extension("btree_gin")],
 		types: [bookStatus, userStatus],
 		tables: {
 			users,

@@ -1,50 +1,77 @@
-export type PgExtensions = PgExtension[];
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function extension(name: ContribExtension | (string & {})) {
+	return new PgExtension(name);
+}
 
-type PgExtension =
-	| "pgrowlocks"
-	| "hstore"
-	| "pageinspect"
-	| "unaccent"
-	| "tablefunc"
+export class PgExtension {
+	/**
+	 * @hidden
+	 */
+	static info(extension: PgExtension) {
+		return {
+			name: extension.#name,
+		};
+	}
+
+	/**
+	 * @hidden
+	 */
+	#name: string;
+
+	/**
+	 * @hidden
+	 */
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	constructor(name: ContribExtension | (string & {})) {
+		this.#name = name;
+	}
+}
+
+type ContribExtension =
+	| "adminpack"
+	| "amcheck"
+	| "autoinc"
 	| "bloom"
-	| "ltree"
-	| "pgcrypto"
-	| "tcn"
-	| "pg_trgm"
+	| "btree_gin"
+	| "btree_gist"
+	| "citext"
+	| "cube"
+	| "dblink"
+	| "dict_int"
+	| "dict_xsyn"
+	| "earthdistance"
+	| "file_fdw"
+	| "fuzzystrmatch"
+	| "hstore"
+	| "insert_username"
+	| "intagg"
 	| "intarray"
+	| "isn"
 	| "lo"
+	| "ltree"
+	| "moddatetime"
+	| "old_snapshot"
+	| "pageinspect"
+	| "pg_buffercache"
+	| "pg_freespacemap"
+	| "pg_prewarm"
 	| "pg_stat_statements"
 	| "pg_surgery"
-	| "uuid-ossp"
-	| "file_fdw"
+	| "pg_trgm"
 	| "pg_visibility"
-	| "seg"
-	| "btree_gin"
-	| "dict_xsyn"
-	| "old_snapshot"
-	| "earthdistance"
-	| "postgres_fdw"
-	| "isn"
-	| "tsm_system_time"
-	| "pgstattuple"
-	| "cube"
-	| "plpgsql"
-	| "sslinfo"
-	| "insert_username"
-	| "adminpack"
-	| "tsm_system_rows"
-	| "pg_prewarm"
-	| "intagg"
-	| "fuzzystrmatch"
-	| "pg_freespacemap"
-	| "dblink"
-	| "autoinc"
-	| "pg_buffercache"
 	| "pg_walinspect"
-	| "citext"
-	| "amcheck"
-	| "moddatetime"
-	| "dict_int"
-	| "xml2"
-	| "btree_gist"
-	| "refint";
+	| "pgcrypto"
+	| "pgrowlocks"
+	| "pgstattuple"
+	| "plpgsql"
+	| "postgres_fdw"
+	| "refint"
+	| "seg"
+	| "sslinfo"
+	| "tablefunc"
+	| "tcn"
+	| "tsm_system_rows"
+	| "tsm_system_time"
+	| "unaccent"
+	| "uuid-ossp"
+	| "xml2";

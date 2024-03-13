@@ -4,6 +4,7 @@ import { describe, expect, expectTypeOf, test } from "vitest";
 import { boolean, serial, text, varchar } from "~/schema/pg_column.js";
 import { PgDatabase, pgDatabase } from "~/schema/pg_database.js";
 import { enumType, enumerated } from "~/schema/pg_enumerated.js";
+import { PgExtension, extension } from "~/schema/pg_extension.js";
 import { table } from "~/schema/pg_table.js";
 
 describe("pgDatabase definition", () => {
@@ -44,14 +45,14 @@ describe("pgDatabase definition", () => {
 
 test("with extensions", () => {
 	const database = pgDatabase({
-		extensions: ["pgcrypto", "btree_gist"],
+		extensions: [extension("pgcrypto"), extension("btree_gist")],
 		tables: {},
 	});
 
-	expect(PgDatabase.info(database).extensions).toStrictEqual([
-		"pgcrypto",
-		"btree_gist",
-	]);
+	const extensions = PgDatabase.info(database).extensions.map(
+		(ext) => PgExtension.info(ext).name,
+	);
+	expect(extensions).toStrictEqual(["pgcrypto", "btree_gist"]);
 });
 
 test("with enumerated types", () => {
