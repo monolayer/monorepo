@@ -38,6 +38,7 @@ jobs:
         run: npm run check:prettier
 
   test:
+    needs: [lint, format]
     name: Test
     runs-on: ubuntu-latest
     services:
@@ -72,6 +73,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
 
   test-matrix:
+    needs: [lint, format]
     name: Test (Kysely v${{ matrix.kysely_version }})
     runs-on: ubuntu-latest
     strategy:
@@ -112,6 +114,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    needs: [lint, format, test, test-matrix]
     steps:
       - uses: actions/checkout@v4
         with:
