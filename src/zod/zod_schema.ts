@@ -62,9 +62,6 @@ import {
 } from "./column_schemas.js";
 import { nullable, required } from "./refinements.js";
 
-/**
- * @group ZOD
- */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function zodSchema<T extends PgTable<any, any>>(table: T) {
 	const cols = tableInfo(table).schema.columns as ColumnRecord;
