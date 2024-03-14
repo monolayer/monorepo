@@ -19,7 +19,11 @@ export async function kyselyWithCustomDB(databaseName: string) {
 	return new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({
-				connectionString: `${env.POSTGRES_URL}/${databaseName}?schema=public`,
+				user: env.POSTGRES_USER,
+				password: env.POSTGRES_PASSWORD,
+				host: env.POSTGRES_HOST,
+				port: Number(env.POSTGRES_PORT ?? 5432),
+				database: databaseName,
 			}),
 		}),
 	});

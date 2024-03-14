@@ -12,7 +12,12 @@ export function globalPool() {
 	const globalTestThis = globalThis as GlobalThisInTests;
 
 	if (globalTestThis.pool === undefined) {
-		globalTestThis.pool = new pg.Pool({ connectionString: env.POSTGRES_URL });
+		globalTestThis.pool = new pg.Pool({
+			user: env.POSTGRES_USER,
+			password: env.POSTGRES_PASSWORD,
+			host: env.POSTGRES_HOST,
+			port: Number(env.POSTGRES_PORT ?? 5432),
+		});
 	}
 	return globalTestThis.pool;
 }
