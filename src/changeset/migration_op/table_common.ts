@@ -77,5 +77,18 @@ export function compileDataType(dataType: string, isEnum: boolean) {
 	if (dataType.includes("timetz(")) {
 		return `sql\`${dataType}\``;
 	}
+	if (isStringColumn(dataType)) {
+		return `sql\`${dataType}\``;
+	}
 	return `"${dataType}"`;
+}
+
+function isStringColumn(dataType: string) {
+	switch (dataType) {
+		case "tsvector":
+		case "tsquery":
+			return true;
+		default:
+			return false;
+	}
 }

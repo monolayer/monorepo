@@ -27,6 +27,7 @@ import {
 	isPgBoolean,
 	isPgText,
 	isReal,
+	isStringColumn,
 	isTime,
 	isTimeTz,
 	isTimestamp,
@@ -59,6 +60,7 @@ import {
 	pgTimestampTzSchema,
 	pgUuidSchema,
 	pgVarcharSchema,
+	stringSchema,
 } from "./column_schemas.js";
 import { nullable, required } from "./refinements.js";
 
@@ -80,6 +82,7 @@ export function baseSchema(isNullable: boolean, errorMessage: string) {
 			nullable(val, ctx, isNullable, errorMessage);
 		});
 }
+
 // eslint-disable-next-line complexity
 export function pgColumnSchema<
 	T extends
@@ -161,6 +164,9 @@ export function pgColumnSchema<
 	}
 	if (isChar(column)) {
 		return pgCharSchema(column);
+	}
+	if (isStringColumn(column)) {
+		return stringSchema(column);
 	}
 	return z.never() as unknown as ZodType<T, PK>;
 }

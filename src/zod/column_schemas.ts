@@ -26,6 +26,7 @@ import {
 	PgTimestampTz,
 	PgUuid,
 	PgVarChar,
+	type PgStringColumn,
 } from "../schema/pg_column.js";
 import {
 	bigintSchema,
@@ -299,4 +300,12 @@ export function pgEnumSchema<T extends PgEnum<any>, PK extends boolean>(
 
 	const base = baseSchema(isNullable, errorMessage).pipe(z.enum(enumValues));
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+}
+
+export function stringSchema<T extends PgStringColumn, PK extends boolean>(
+	column: T,
+): ZodType<T, PK> {
+	const data = columnData(column);
+	const isNullable = !data._primaryKey && data.info.isNullable === true;
+	return finishSchema(isNullable, z.string()) as unknown as ZodType<T, PK>;
 }

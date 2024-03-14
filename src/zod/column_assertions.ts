@@ -17,11 +17,13 @@ import {
 	PgJsonB,
 	PgNumeric,
 	PgReal,
+	PgStringColumn,
 	PgText,
 	PgTime,
 	PgTimeTz,
 	PgTimestamp,
 	PgTimestampTz,
+	PgTsvector,
 	PgUuid,
 	PgVarChar,
 	type Boolish,
@@ -223,6 +225,22 @@ export function isChar(
 		| PgGeneratedColumn<unknown, unknown>,
 ): column is PgChar {
 	return column instanceof PgChar;
+}
+
+export function isTsVector(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgTsvector {
+	return column instanceof PgTsvector;
+}
+
+export function isStringColumn(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgStringColumn {
+	return column instanceof PgStringColumn;
 }
 
 export function testBoolish(val: unknown): val is Boolish {

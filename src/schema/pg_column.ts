@@ -1279,6 +1279,41 @@ export class PgEnum<N extends string> extends PgColumn<N, N> {
 	}
 }
 
+export abstract class PgStringColumn extends PgColumn<string, string> {
+	/**
+	 * @hidden
+	 */
+	constructor(dataType: string) {
+		super(dataType, dataType);
+	}
+}
+
+export function tsquery() {
+	return new PgTsquery();
+}
+
+export class PgTsquery extends PgStringColumn {
+	/**
+	 * @hidden
+	 */
+	constructor() {
+		super("tsquery");
+	}
+}
+
+export function tsvector() {
+	return new PgTsvector();
+}
+
+export class PgTsvector extends PgStringColumn {
+	/**
+	 * @hidden
+	 */
+	constructor() {
+		super("tsvector");
+	}
+}
+
 export type TableColumn =
 	| PgBigInt
 	| PgBigSerial
