@@ -55,12 +55,13 @@ describe("#remoteSchema", () => {
 			.createTable("remote_schema_books")
 			.addColumn("id", "serial", (col) => col.primaryKey())
 			.addColumn("name", "varchar", (col) => col.unique())
-			.addColumn("updated_at", "timestamp", (col) =>
-				col.defaultTo(sql`CURRENT_TIMESTAMP`),
-			)
+			.addColumn("updated_at", "timestamp", (col) => col.defaultTo(sql`now()`))
 			.addColumn("status", sql`status`)
 			.execute();
 
+		await sql`COMMENT ON COLUMN "remote_schema_books"."updated_at" IS '28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f'`.execute(
+			kysely,
+		);
 		await kysely.schema
 			.createTable("remote_schema_users")
 			.addColumn("id", "integer", (col) => col.generatedByDefaultAsIdentity())
@@ -83,6 +84,10 @@ describe("#remoteSchema", () => {
 				(builder) => builder.nullsNotDistinct(),
 			)
 			.execute();
+
+		await sql`COMMENT ON COLUMN "remote_schema_users"."updated_at" IS '9ff7b5b715046baeffdb1af30ed68f6e43b40bf43d1f76734de5b26ecacb58e8'`.execute(
+			kysely,
+		);
 
 		await kysely.schema
 			.createIndex("remote_schema_users_name_email_kntc_idx")
@@ -184,7 +189,8 @@ describe("#remoteSchema", () => {
 							columnName: "updated_at",
 							dataType: "timestamp",
 							datetimePrecision: null,
-							defaultValue: "CURRENT_TIMESTAMP",
+							defaultValue:
+								"9ff7b5b715046baeffdb1af30ed68f6e43b40bf43d1f76734de5b26ecacb58e8:CURRENT_TIMESTAMP",
 							identity: null,
 							isNullable: true,
 							numericPrecision: null,
@@ -229,7 +235,8 @@ describe("#remoteSchema", () => {
 							columnName: "updated_at",
 							dataType: "timestamp",
 							datetimePrecision: null,
-							defaultValue: "CURRENT_TIMESTAMP",
+							defaultValue:
+								"28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f:now()",
 							identity: null,
 							isNullable: true,
 							numericPrecision: null,
@@ -591,6 +598,82 @@ describe("#remoteSchema", () => {
 			)
 			.execute();
 
+		await sql`COMMENT ON COLUMN "test_column_default_value"."bigint" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."boolean" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."bytea" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."char" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."char_10" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."date" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."double_precision" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."bigint" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."float4" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."float8" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."int2" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."int4" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."int8" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."integer" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."json" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."jsonb" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."numeric" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."real" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."time" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."timetz" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."timestamp" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."timestamptz" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."text" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."uuid" IS 'abcd'`.execute(
+			kysely,
+		);
+		await sql`COMMENT ON COLUMN "test_column_default_value"."varchar" IS 'abcd'`.execute(
+			kysely,
+		);
+
 		const schema = await remoteSchema(kysely);
 		if (schema.status === "Error") {
 			throw new Error("Error fetching schema");
@@ -605,30 +688,30 @@ describe("#remoteSchema", () => {
 		);
 
 		const expected = {
-			bigint: "'1'::bigint",
-			boolean: "false",
-			bytea: "'\\x74727565'::bytea",
-			char: "'a'::character(1)",
-			char_10: "'abc'::character(1)",
-			date: "'1999-01-08'::date",
-			double_precision: "'1'::double precision",
-			float4: "'1'::real",
-			float8: "'1'::double precision",
-			int2: "'1'::smallint",
-			int4: "1",
-			int8: "'1'::bigint",
-			integer: "1",
-			json: "'1'::json",
-			jsonb: "'1'::jsonb",
-			numeric: "'1'::numeric",
-			real: "'1'::real",
-			time: "'04:05:06'::time without time zone",
-			timetz: "'04:05:06+00'::time with time zone",
-			timestamp: "'2004-10-19 10:23:54'::timestamp without time zone",
-			timestamptz: "'2004-10-19 10:23:54+00'::timestamp with time zone",
-			text: "'1'::text",
-			uuid: "'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
-			varchar: "'1'::character varying",
+			bigint: "abcd:'1'::bigint",
+			boolean: "abcd:false",
+			bytea: "abcd:'\\x74727565'::bytea",
+			char: "abcd:'a'::character(1)",
+			char_10: "abcd:'abc'::character(1)",
+			date: "abcd:'1999-01-08'::date",
+			double_precision: "abcd:'1'::double precision",
+			float4: "abcd:'1'::real",
+			float8: "abcd:'1'::double precision",
+			int2: "abcd:'1'::smallint",
+			int4: "abcd:1",
+			int8: "abcd:'1'::bigint",
+			integer: "abcd:1",
+			json: "abcd:'1'::json",
+			jsonb: "abcd:'1'::jsonb",
+			numeric: "abcd:'1'::numeric",
+			real: "abcd:'1'::real",
+			time: "abcd:'04:05:06'::time without time zone",
+			timetz: "abcd:'04:05:06+00'::time with time zone",
+			timestamp: "abcd:'2004-10-19 10:23:54'::timestamp without time zone",
+			timestamptz: "abcd:'2004-10-19 10:23:54+00'::timestamp with time zone",
+			text: "abcd:'1'::text",
+			uuid: "abcd:'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
+			varchar: "abcd:'1'::character varying",
 		};
 		expect(columDefaults).toStrictEqual(expected);
 	});

@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Kysely, isExpression, sql } from "kysely";
+import { Kysely, sql } from "kysely";
 import { toSnakeCase } from "~/changeset/migration_op/helpers.js";
 import {
 	ActionStatus,
@@ -15,7 +15,7 @@ import {
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
 import { tableInfo } from "~/schema/pg_table.js";
 import { ColumnInfo, type TableColumn } from "../schema/pg_column.js";
-import { TableColumnInfo, compileDefaultExpression } from "./schemas.js";
+import { TableColumnInfo } from "./schemas.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbColumnInfo(
@@ -52,6 +52,22 @@ async function fetchDbColumnInfo(
 	if (tableNames.length === 0) {
 		return [];
 	}
+
+	// 	SELECT
+	//     pg_attribute.attname AS column_name,
+	//     obj_description(pg_attribute.attrelid, 'pg_class') AS table_comment,
+	//     col_description(pg_attribute.attrelid, pg_attribute.attnum) AS column_comment
+	// FROM
+	//     pg_attribute
+	// JOIN
+	//     pg_class tbl ON pg_attribute.attrelid = tbl.oid
+	// JOIN
+	//     pg_namespace nsp ON tbl.relnamespace = nsp.oid
+	// WHERE
+	//     tbl.relkind = 'r' -- r = regular table
+	//     AND tbl.relname = 'your_table_name' -- Replace with your table name
+	//     AND nsp.nspname = 'your_schema_name' -- Replace with your schema name, e.g., 'public'
+	//     AND pg_attribute.attname = 'your_column_name'; -- Replace with your column name
 
 	return kysely
 		.selectFrom("information_schema.columns")
@@ -102,6 +118,9 @@ async function fetchDbColumnInfo(
 				"sequence_name",
 			),
 			"pg_attribute.atttypmod",
+			sql`col_description(pg_attribute.attrelid, pg_attribute.attnum)`.as(
+				"column_comment",
+			),
 		])
 		.select((eb) => [
 			eb
@@ -263,7 +282,12 @@ function transformDbColumnInfo(
 				row.user_defined_type_name !== null
 					? row.user_defined_type_name
 					: dataTypeFullName,
-			defaultValue: row.sequence_name === null ? row.column_default : null,
+			defaultValue:
+				row.sequence_name === null
+					? row.column_default !== null
+						? `${row.column_comment !== null ? row.column_comment : ""}:${row.column_default}`
+						: null
+					: null,
 			isNullable: row.is_nullable,
 			numericPrecision: row.numeric_precision,
 			numericScale: row.numeric_scale,
@@ -384,11 +408,7 @@ export function schemaColumnInfo(
 		numericPrecision: meta.numericPrecision,
 		numericScale: meta.numericScale,
 		renameFrom: meta.renameFrom,
-		defaultValue: meta.defaultValue
-			? isExpression(meta.defaultValue)
-				? compileDefaultExpression(meta.defaultValue)
-				: meta.defaultValue.toString()
-			: null,
+		defaultValue: meta.defaultValue !== null ? meta.defaultValue : null,
 		identity: meta.identity,
 		enum: meta.enum,
 	};

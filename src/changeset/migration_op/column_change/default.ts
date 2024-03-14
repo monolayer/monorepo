@@ -6,6 +6,7 @@ import {
 import type { DbTableInfo, LocalTableInfo } from "~/introspection/schemas.js";
 import { executeKyselySchemaStatement, sqlStatement } from "../helpers.js";
 import { MigrationOpPriority } from "../priority.js";
+import { toValueAndHash } from "../table_common.js";
 
 export function columnDefaultMigrationOpGenerator(
 	diff: Difference,
@@ -146,26 +147,44 @@ function columnDefaultChangeMigrationOperation(
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
+
+	const newDefaultValueAndHash = toValueAndHash(String(diff.value));
+	const oldDefaultValueAndHash = toValueAndHash(String(diff.oldValue));
+
+	if (newDefaultValueAndHash.hash === oldDefaultValueAndHash.hash) {
+		return [];
+	}
+
+	const up = [
+		executeKyselySchemaStatement(
+			`alterTable("${tableName}")`,
+			`alterColumn("${columnName}", (col) => col.setDefault(${sqlStatement(
+				newDefaultValueAndHash.value ?? "",
+			)}))`,
+		),
+	];
+	up.push([
+		`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${newDefaultValueAndHash.hash}'\`.execute(db);`,
+	]);
+
+	const down = [
+		executeKyselySchemaStatement(
+			`alterTable("${tableName}")`,
+			`alterColumn("${columnName}", (col) => col.setDefault(${sqlStatement(
+				oldDefaultValueAndHash.value ?? "",
+			)}))`,
+		),
+	];
+	down.push([
+		`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${oldDefaultValueAndHash.hash}'\`.execute(db);`,
+	]);
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultChange,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
-		up: [
-			executeKyselySchemaStatement(
-				`alterTable("${tableName}")`,
-				`alterColumn("${columnName}", (col) => col.setDefault(${sqlStatement(
-					diff.value,
-				)}))`,
-			),
-		],
-		down: [
-			executeKyselySchemaStatement(
-				`alterTable("${tableName}")`,
-				`alterColumn("${columnName}", (col) => col.setDefault(${sqlStatement(
-					diff.oldValue,
-				)}))`,
-			),
-		],
+		up: up,
+		down: down,
 	};
 	return changeset;
 }

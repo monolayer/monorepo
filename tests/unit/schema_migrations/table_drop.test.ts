@@ -119,6 +119,11 @@ describe("Table drop migrations", () => {
 			)
 			.addColumn("varChar255", "varchar(255)")
 			.execute();
+
+		await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
+			context.kysely,
+		);
+
 		const expected = [
 			{
 				tableName: "books",
@@ -150,6 +155,9 @@ describe("Table drop migrations", () => {
 						'addColumn("varChar255", "varchar(255)")',
 						'addColumn("varCharWithDefault", "varchar", (col) => col.defaultTo(sql`\'foo\'::character varying`))',
 						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS \'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c\'`.execute(db);',
 					],
 				],
 			},
@@ -606,11 +614,21 @@ describe("Table drop migrations", () => {
 			.createTable("teams")
 			.addColumn("name", "text")
 			.execute();
+
 		await context.kysely.schema
 			.createTable("users")
 			.addColumn("id", "integer")
+			.addColumn("createdAt", "timestamp", (col) => col.defaultTo(sql`now()`))
 			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
 			.execute();
+
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
+			context.kysely,
+		);
+
+		await sql`COMMENT ON COLUMN "users"."createdAt" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
+			context.kysely,
+		);
 
 		await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(
 			context.kysely,
@@ -656,9 +674,16 @@ describe("Table drop migrations", () => {
 					[
 						"await db.schema",
 						'createTable("users")',
+						'addColumn("createdAt", "timestamp", (col) => col.defaultTo(sql`now()`))',
 						'addColumn("id", "integer")',
 						'addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))',
 						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "users"."createdAt" IS \'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c\'`.execute(db);',
+					],
+					[
+						'await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c\'`.execute(db);',
 					],
 				],
 			},

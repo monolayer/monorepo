@@ -186,44 +186,70 @@ describe("pgBoolean", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(true);
-			expect(info.defaultValue).toBe("true");
+			expect(info.defaultValue).toBe(
+				"b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b:true",
+			);
 
 			column.default(false);
-			expect(info.defaultValue).toBe("false");
+			expect(info.defaultValue).toBe(
+				"fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa:false",
+			);
 
 			column.default("true");
-			expect(info.defaultValue).toBe("true");
+			expect(info.defaultValue).toBe(
+				"b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b:true",
+			);
 
 			column.default("false");
-			expect(info.defaultValue).toBe("false");
+			expect(info.defaultValue).toBe(
+				"fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa:false",
+			);
 
 			column.default("yes");
-			expect(info.defaultValue).toBe("yes");
+			expect(info.defaultValue).toBe(
+				"8a798890fe93817163b10b5f7bd2ca4d25d84c52739a645a889c173eee7d9d3d:yes",
+			);
 
 			column.default("no");
-			expect(info.defaultValue).toBe("no");
+			expect(info.defaultValue).toBe(
+				"9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59:no",
+			);
 
 			column.default("on");
-			expect(info.defaultValue).toBe("on");
+			expect(info.defaultValue).toBe(
+				"b8d31e852725afb1e26d53bab6095b2bff1749c9275be13ed1c05a56ed31ec09:on",
+			);
 
 			column.default("off");
-			expect(info.defaultValue).toBe("off");
+			expect(info.defaultValue).toBe(
+				"b4dc66dde806261bdda8607d8707aa727d308cd80272381a5583f63899918467:off",
+			);
 
 			column.default("1");
-			expect(info.defaultValue).toBe("1");
+			expect(info.defaultValue).toBe(
+				"6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b:1",
+			);
 
 			column.default("0");
-			expect(info.defaultValue).toBe("0");
+			expect(info.defaultValue).toBe(
+				"5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9:0",
+			);
 
 			column.default(1);
-			expect(info.defaultValue).toBe("1");
+			expect(info.defaultValue).toBe(
+				"6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b:1",
+			);
 
 			column.default(0);
-			expect(info.defaultValue).toBe("0");
+			expect(info.defaultValue).toBe(
+				"5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9:0",
+			);
 
 			const expression = sql`true`;
 			column.default(expression);
-			expect(info.defaultValue).toBe("true");
+			expect(info.defaultValue).toBe(
+				"b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b:true",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -632,7 +658,9 @@ describe("pgText", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("foo");
-			expect(info.defaultValue).toBe("'foo'::text");
+			expect(info.defaultValue).toBe(
+				"ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c:'foo'::text",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -992,13 +1020,19 @@ describe("pgBigInt", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(12234433444444455n);
-			expect(info.defaultValue).toBe("'12234433444444455'::bigint");
+			expect(info.defaultValue).toBe(
+				"731746a587af8fdb9fce577caf7db2443d7005ae1fd4e1b543e3e907d4ded78a:'12234433444444455'::bigint",
+			);
 
 			column.default(12);
-			expect(info.defaultValue).toBe("'12'::bigint");
+			expect(info.defaultValue).toBe(
+				"0f70dd7ff7e1419c557fb31c8d2d0a4c13ef91a201fbb5f619a513b5aa2bab0b:'12'::bigint",
+			);
 
 			column.default("12");
-			expect(info.defaultValue).toBe("'12'::bigint");
+			expect(info.defaultValue).toBe(
+				"0f70dd7ff7e1419c557fb31c8d2d0a4c13ef91a201fbb5f619a513b5aa2bab0b:'12'::bigint",
+			);
 		});
 
 		test("has generatedAlwaysAsIdentity", () => {
@@ -1550,14 +1584,20 @@ describe("pgBytea", () => {
 
 			const buffer = Buffer.from("hello");
 			column.default(buffer);
-			expect(info.defaultValue).toBe("'\\x68656c6c6f'::bytea");
+			expect(info.defaultValue).toBe(
+				"65bd012026507a8ec89cbb3a5729e3ef4bea49928cf84172bc8a0253eae48811:'\\x68656c6c6f'::bytea",
+			);
 
 			column.default("12");
-			expect(info.defaultValue).toBe("'\\x3132'::bytea");
+			expect(info.defaultValue).toBe(
+				"f35f708dac82142a4a8bc47b71ccb3e881318fa7f6cf8e5de1958e47e1944219:'\\x3132'::bytea",
+			);
 
 			const expression = sql`\\x7b2261223a312c2262223a327d'::bytea`;
 			column.default(expression);
-			expect(info.defaultValue).toBe("\\x7b2261223a312c2262223a327d'::bytea");
+			expect(info.defaultValue).toBe(
+				"4aa78882924cdbb4d5f0126096a293d7eb8414ddffe5040115db3eebe6aada6e:\\x7b2261223a312c2262223a327d'::bytea",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -1934,10 +1974,14 @@ describe("pgDate", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(new Date(1));
-			expect(info.defaultValue).toBe("'1970-01-01'::date");
+			expect(info.defaultValue).toBe(
+				"dd41adb1dd48c7d6dc08379f9856e91d116c1b2c770e94e6acd667f2268bab2d:'1970-01-01'::date",
+			);
 
 			column.default(new Date(1).toISOString());
-			expect(info.defaultValue).toBe("'1970-01-01'::date");
+			expect(info.defaultValue).toBe(
+				"dd41adb1dd48c7d6dc08379f9856e91d116c1b2c770e94e6acd667f2268bab2d:'1970-01-01'::date",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -2301,13 +2345,19 @@ describe("pgDoublePrecision", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
-			expect(info.defaultValue).toBe("'10'::double precision");
+			expect(info.defaultValue).toBe(
+				"c4e1ae94f6421007df710b41d12df2c3ddf8b687dcf2f6a2927e30102b59c902:'10'::double precision",
+			);
 
 			column.default("10");
-			expect(info.defaultValue).toBe("'10'::double precision");
+			expect(info.defaultValue).toBe(
+				"c4e1ae94f6421007df710b41d12df2c3ddf8b687dcf2f6a2927e30102b59c902:'10'::double precision",
+			);
 
 			column.default(102n);
-			expect(info.defaultValue).toBe("'102'::double precision");
+			expect(info.defaultValue).toBe(
+				"0ae2ddfa6bd14ee9de8fe2269ab3a77961e04460ed67d2f3b2b823ee7c3787c5:'102'::double precision",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -2823,13 +2873,19 @@ describe("pgFloat4", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10.4);
-			expect(info.defaultValue).toBe("'10.4'::real");
+			expect(info.defaultValue).toBe(
+				"f03c1703ea37d80780f731761c0d025c2b2ce32253b109dbd37a8c5f6b52829e:'10.4'::real",
+			);
 
 			column.default("10.4");
-			expect(info.defaultValue).toBe("'10.4'::real");
+			expect(info.defaultValue).toBe(
+				"f03c1703ea37d80780f731761c0d025c2b2ce32253b109dbd37a8c5f6b52829e:'10.4'::real",
+			);
 
 			column.default(102n);
-			expect(info.defaultValue).toBe("'102'::real");
+			expect(info.defaultValue).toBe(
+				"53d1e4a901b2c885491f5a1c80cad4c42135419b75965d94a7f0be699d110106:'102'::real",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -3345,13 +3401,19 @@ describe("pgFloat8", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10.4);
-			expect(info.defaultValue).toBe("'10.4'::double precision");
+			expect(info.defaultValue).toBe(
+				"22cf03d9936daece004ae3ef6a569619156b73346b633466881a5c107118cc64:'10.4'::double precision",
+			);
 
 			column.default("10.4");
-			expect(info.defaultValue).toBe("'10.4'::double precision");
+			expect(info.defaultValue).toBe(
+				"22cf03d9936daece004ae3ef6a569619156b73346b633466881a5c107118cc64:'10.4'::double precision",
+			);
 
 			column.default(102n);
-			expect(info.defaultValue).toBe("'102'::double precision");
+			expect(info.defaultValue).toBe(
+				"0ae2ddfa6bd14ee9de8fe2269ab3a77961e04460ed67d2f3b2b823ee7c3787c5:'102'::double precision",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -3867,10 +3929,14 @@ describe("pgInt2", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
-			expect(info.defaultValue).toBe("'10'::smallint");
+			expect(info.defaultValue).toBe(
+				"235f517de3724edf50dca23736509e6843bf404a4c46fa34c5474ca1cdac734c:'10'::smallint",
+			);
 
 			column.default("10");
-			expect(info.defaultValue).toBe("'10'::smallint");
+			expect(info.defaultValue).toBe(
+				"235f517de3724edf50dca23736509e6843bf404a4c46fa34c5474ca1cdac734c:'10'::smallint",
+			);
 		});
 
 		test("has have generatedAlwaysAsIdentity", () => {
@@ -4392,14 +4458,20 @@ describe("pgInt4", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
-			expect(info.defaultValue).toBe("10");
+			expect(info.defaultValue).toBe(
+				"4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5:10",
+			);
 
 			column.default("10");
-			expect(info.defaultValue).toBe("10");
+			expect(info.defaultValue).toBe(
+				"4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5:10",
+			);
 
 			const expression = sql`20`;
 			column.default(expression);
-			expect(info.defaultValue).toBe("20");
+			expect(info.defaultValue).toBe(
+				"f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b:20",
+			);
 		});
 
 		test("has generatedAlwaysAsIdentity", () => {
@@ -4915,13 +4987,19 @@ describe("pgInt8", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
-			expect(info.defaultValue).toBe("'10'::bigint");
+			expect(info.defaultValue).toBe(
+				"f8f54bb5372f60cbf79aabafee1e85e3b3ddfc138c3ccbdf45d9da4926f9d1d8:'10'::bigint",
+			);
 
 			column.default(100n);
-			expect(info.defaultValue).toBe("'100'::bigint");
+			expect(info.defaultValue).toBe(
+				"c36b037c720720549814b687189305ff7e1f8f7eb16edaa6e44219b918824bab:'100'::bigint",
+			);
 
 			column.default("10");
-			expect(info.defaultValue).toBe("'10'::bigint");
+			expect(info.defaultValue).toBe(
+				"f8f54bb5372f60cbf79aabafee1e85e3b3ddfc138c3ccbdf45d9da4926f9d1d8:'10'::bigint",
+			);
 		});
 
 		test("has generatedAlwaysAsIdentity", () => {
@@ -5416,14 +5494,20 @@ describe("pgInteger", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
-			expect(info.defaultValue).toBe("10");
+			expect(info.defaultValue).toBe(
+				"4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5:10",
+			);
 
 			column.default("10");
-			expect(info.defaultValue).toBe("10");
+			expect(info.defaultValue).toBe(
+				"4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5:10",
+			);
 
 			const expression = sql`20`;
 			column.default(expression);
-			expect(info.defaultValue).toBe("20");
+			expect(info.defaultValue).toBe(
+				"f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b:20",
+			);
 		});
 
 		test("has generatedAlwaysAsIdentity", () => {
@@ -5938,10 +6022,14 @@ describe("pgJson", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
-			expect(info.defaultValue).toBe("'10'::json");
+			expect(info.defaultValue).toBe(
+				"8db3268586549ff99ffd9554457b0f9a75d99d8763ee1cc53219ceb9e65b383e:'10'::json",
+			);
 
 			column.default('{ "foo": "bar" }');
-			expect(info.defaultValue).toBe('\'{ "foo": "bar" }\'::json');
+			expect(info.defaultValue).toBe(
+				'b3b793dd8020bb0400088062c17852e05265bff8644a5c400a2f045966231350:\'{ "foo": "bar" }\'::json',
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -6355,10 +6443,14 @@ describe("pgJsonB", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
-			expect(info.defaultValue).toBe("'10'::jsonb");
+			expect(info.defaultValue).toBe(
+				"fde695d0ea8fc6d22c70f09dceb18b57fb2d38d7303da859521366a402c504cc:'10'::jsonb",
+			);
 
 			column.default('{ "foo": "bar" }');
-			expect(info.defaultValue).toBe('\'{ "foo": "bar" }\'::jsonb');
+			expect(info.defaultValue).toBe(
+				'df3dc0bbfd3773f0f143e8c92be3fb66a7e9f8aa3cf7004560c16f19f9ae17c4:\'{ "foo": "bar" }\'::jsonb',
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -6772,13 +6864,19 @@ describe("pgReal", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
-			expect(info.defaultValue).toBe("'10'::real");
+			expect(info.defaultValue).toBe(
+				"1c848dd03f978de2c274fc23aae863c2dcd47e8ad1bd0e5d06cf6a36e83f2cee:'10'::real",
+			);
 
 			column.default(10);
-			expect(info.defaultValue).toBe("'10'::real");
+			expect(info.defaultValue).toBe(
+				"1c848dd03f978de2c274fc23aae863c2dcd47e8ad1bd0e5d06cf6a36e83f2cee:'10'::real",
+			);
 
 			column.default(100n);
-			expect(info.defaultValue).toBe("'100'::real");
+			expect(info.defaultValue).toBe(
+				"df0c433b262498d55e19e36686a41ca8904cb0647c1f7ab0717b9da6b85fc7a3:'100'::real",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -7337,13 +7435,13 @@ describe("pgUuid", () => {
 
 			column.default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
 			expect(info.defaultValue).toBe(
-				"'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
+				"70020243c327967d6eac932a0e5be9f3dae4458fedb2e632b76ae8df0cc72f5a:'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
 			);
 
 			const expression = sql`'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid`;
 			column.default(expression);
 			expect(info.defaultValue).toBe(
-				"'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
+				"70020243c327967d6eac932a0e5be9f3dae4458fedb2e632b76ae8df0cc72f5a:'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
 			);
 		});
 
@@ -7724,7 +7822,9 @@ describe("pgVarChar", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
-			expect(info.defaultValue).toBe("'10'::character varying");
+			expect(info.defaultValue).toBe(
+				"26d70a00a0e7d4086d932c50c0ed71e25280719d184f0124b9fd503810d1165a:'10'::character varying",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -7761,7 +7861,9 @@ describe("pgVarChar", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
-			expect(info.defaultValue).toBe("'10'::character varying");
+			expect(info.defaultValue).toBe(
+				"26d70a00a0e7d4086d932c50c0ed71e25280719d184f0124b9fd503810d1165a:'10'::character varying",
+			);
 		});
 	});
 
@@ -8154,7 +8256,9 @@ describe("pgChar", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
-			expect(info.defaultValue).toBe("'10'::character(1)");
+			expect(info.defaultValue).toBe(
+				"7204625dc617fc37c5c926b31e938d15318be81b3b747cb566c9d27b5eba0b59:'10'::character(1)",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -8191,7 +8295,9 @@ describe("pgChar", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
-			expect(info.defaultValue).toBe("'10'::character(1)");
+			expect(info.defaultValue).toBe(
+				"7204625dc617fc37c5c926b31e938d15318be81b3b747cb566c9d27b5eba0b59:'10'::character(1)",
+			);
 		});
 	});
 
@@ -8583,7 +8689,9 @@ describe("pgTime", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("04:05 AM");
-			expect(info.defaultValue).toBe("'04:05 AM'::time without time zone");
+			expect(info.defaultValue).toBe(
+				"48a39507e37d269ce120df97969e690ebd554ce5fd1de464a5d6af87a4328cb8:'04:05 AM'::time without time zone",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -8620,7 +8728,9 @@ describe("pgTime", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("04:05 AM");
-			expect(info.defaultValue).toBe("'04:05 AM'::time without time zone");
+			expect(info.defaultValue).toBe(
+				"48a39507e37d269ce120df97969e690ebd554ce5fd1de464a5d6af87a4328cb8:'04:05 AM'::time without time zone",
+			);
 		});
 	});
 
@@ -8992,7 +9102,9 @@ describe("pgTimeTz", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("04:05:06-08:00");
-			expect(info.defaultValue).toBe("'04:05:06-08:00'::time with time zone");
+			expect(info.defaultValue).toBe(
+				"12621bc0fc91b8ffe1a17c5a189ba965397ff91e30d5fb9d3c7b8e9c94a179be:'04:05:06-08:00'::time with time zone",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -9029,7 +9141,9 @@ describe("pgTimeTz", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("04:05:06-08:00");
-			expect(info.defaultValue).toBe("'04:05:06-08:00'::time with time zone");
+			expect(info.defaultValue).toBe(
+				"12621bc0fc91b8ffe1a17c5a189ba965397ff91e30d5fb9d3c7b8e9c94a179be:'04:05:06-08:00'::time with time zone",
+			);
 		});
 	});
 
@@ -9402,7 +9516,7 @@ describe("pgTimestamp", () => {
 
 			column.default(new Date(1));
 			expect(info.defaultValue).toBe(
-				"'1970-01-01T00:00:00.001Z'::timestamp without time zone",
+				"36813bcc8cc9d36d8fe40ba21beb99337d99f4df0ddc37996da862d944d12f06:'1970-01-01T00:00:00.001Z'::timestamp without time zone",
 			);
 		});
 
@@ -9441,7 +9555,7 @@ describe("pgTimestamp", () => {
 
 			column.default(new Date(1));
 			expect(info.defaultValue).toBe(
-				"'1970-01-01T00:00:00.001Z'::timestamp without time zone",
+				"36813bcc8cc9d36d8fe40ba21beb99337d99f4df0ddc37996da862d944d12f06:'1970-01-01T00:00:00.001Z'::timestamp without time zone",
 			);
 		});
 	});
@@ -9829,7 +9943,7 @@ describe("pgTimestampTz", () => {
 
 			column.default(new Date(1));
 			expect(info.defaultValue).toBe(
-				"'1970-01-01T00:00:00.001Z'::timestamp with time zone",
+				"e50fefac61c5aeedd0ed5bf69850522f2699de2d53e093612c49eb4ac489b088:'1970-01-01T00:00:00.001Z'::timestamp with time zone",
 			);
 		});
 
@@ -9868,7 +9982,7 @@ describe("pgTimestampTz", () => {
 
 			column.default(new Date(1));
 			expect(info.defaultValue).toBe(
-				"'1970-01-01T00:00:00.001Z'::timestamp with time zone",
+				"e50fefac61c5aeedd0ed5bf69850522f2699de2d53e093612c49eb4ac489b088:'1970-01-01T00:00:00.001Z'::timestamp with time zone",
 			);
 		});
 	});
@@ -10261,19 +10375,29 @@ describe("pgNumeric", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(1);
-			expect(info.defaultValue).toBe("'1'::numeric");
+			expect(info.defaultValue).toBe(
+				"4f353dbdc87eb3ca403c34baf16ecbb3ef55fe22846dd303b9acb8b50896268b:'1'::numeric",
+			);
 
 			column.default("1");
-			expect(info.defaultValue).toBe("'1'::numeric");
+			expect(info.defaultValue).toBe(
+				"4f353dbdc87eb3ca403c34baf16ecbb3ef55fe22846dd303b9acb8b50896268b:'1'::numeric",
+			);
 
 			column.default(1.1);
-			expect(info.defaultValue).toBe("'1.1'::numeric");
+			expect(info.defaultValue).toBe(
+				"d8bd8ef0fcb95aec3aabe856cd1e4f05933b65361faf60f8a5f984247da8e5a5:'1.1'::numeric",
+			);
 
 			column.default("1.1");
-			expect(info.defaultValue).toBe("'1.1'::numeric");
+			expect(info.defaultValue).toBe(
+				"d8bd8ef0fcb95aec3aabe856cd1e4f05933b65361faf60f8a5f984247da8e5a5:'1.1'::numeric",
+			);
 
 			column.default(100n);
-			expect(info.defaultValue).toBe("'100'::numeric");
+			expect(info.defaultValue).toBe(
+				"0fa161673b4412c80ed81ca088d0603c89c03d6a9876b9121a426c1e0af97934:'100'::numeric",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -10316,19 +10440,29 @@ describe("pgNumeric", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(1);
-			expect(info.defaultValue).toBe("'1'::numeric");
+			expect(info.defaultValue).toBe(
+				"4f353dbdc87eb3ca403c34baf16ecbb3ef55fe22846dd303b9acb8b50896268b:'1'::numeric",
+			);
 
 			column.default("1");
-			expect(info.defaultValue).toBe("'1'::numeric");
+			expect(info.defaultValue).toBe(
+				"4f353dbdc87eb3ca403c34baf16ecbb3ef55fe22846dd303b9acb8b50896268b:'1'::numeric",
+			);
 
 			column.default(1.1);
-			expect(info.defaultValue).toBe("'1.1'::numeric");
+			expect(info.defaultValue).toBe(
+				"d8bd8ef0fcb95aec3aabe856cd1e4f05933b65361faf60f8a5f984247da8e5a5:'1.1'::numeric",
+			);
 
 			column.default("1.1");
-			expect(info.defaultValue).toBe("'1.1'::numeric");
+			expect(info.defaultValue).toBe(
+				"d8bd8ef0fcb95aec3aabe856cd1e4f05933b65361faf60f8a5f984247da8e5a5:'1.1'::numeric",
+			);
 
 			column.default(100n);
-			expect(info.defaultValue).toBe("'100'::numeric");
+			expect(info.defaultValue).toBe(
+				"0fa161673b4412c80ed81ca088d0603c89c03d6a9876b9121a426c1e0af97934:'100'::numeric",
+			);
 		});
 	});
 
@@ -10349,19 +10483,29 @@ describe("pgNumeric", () => {
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(1);
-			expect(info.defaultValue).toBe("'1'::numeric");
+			expect(info.defaultValue).toBe(
+				"4f353dbdc87eb3ca403c34baf16ecbb3ef55fe22846dd303b9acb8b50896268b:'1'::numeric",
+			);
 
 			column.default("1");
-			expect(info.defaultValue).toBe("'1'::numeric");
+			expect(info.defaultValue).toBe(
+				"4f353dbdc87eb3ca403c34baf16ecbb3ef55fe22846dd303b9acb8b50896268b:'1'::numeric",
+			);
 
 			column.default(1.1);
-			expect(info.defaultValue).toBe("'1.1'::numeric");
+			expect(info.defaultValue).toBe(
+				"d8bd8ef0fcb95aec3aabe856cd1e4f05933b65361faf60f8a5f984247da8e5a5:'1.1'::numeric",
+			);
 
 			column.default("1.1");
-			expect(info.defaultValue).toBe("'1.1'::numeric");
+			expect(info.defaultValue).toBe(
+				"d8bd8ef0fcb95aec3aabe856cd1e4f05933b65361faf60f8a5f984247da8e5a5:'1.1'::numeric",
+			);
 
 			column.default(100n);
-			expect(info.defaultValue).toBe("'100'::numeric");
+			expect(info.defaultValue).toBe(
+				"0fa161673b4412c80ed81ca088d0603c89c03d6a9876b9121a426c1e0af97934:'100'::numeric",
+			);
 		});
 	});
 
@@ -11012,7 +11156,9 @@ describe("pgEnum", () => {
 		const columnInfo: ColumnInfo = Object.fromEntries(
 			Object.entries(testEnum),
 		).info;
-		expect(columnInfo.defaultValue).toBe("'one'::myEnum");
+		expect(columnInfo.defaultValue).toBe(
+			"611b3196a4cc22a8a14e236708f7ac402bf45838f24ceafa8ac25675231561d0:'one'::myEnum",
+		);
 	});
 
 	test("renameFrom()", () => {

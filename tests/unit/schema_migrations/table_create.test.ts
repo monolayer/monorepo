@@ -169,6 +169,9 @@ describe("Table create migrations", () => {
 						'addColumn("varChar_255", "varchar(255)")',
 						"execute();",
 					],
+					[
+						'await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS \'2bc6768278e7f14b6f18480c616c1687a575d330a2e8e471a48bede1a90d5720\'`.execute(db);',
+					],
 				],
 				down: [["await db.schema", 'dropTable("books")', "execute();"]],
 			},
@@ -774,6 +777,9 @@ describe("Table create migrations", () => {
 						'addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))',
 						"execute();",
 					],
+					[
+						'await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(db);',
+					],
 				],
 				down: [["await db.schema", 'dropTable("users")', "execute();"]],
 			},
@@ -915,6 +921,9 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 						'addColumn("updated_at", "timestamp", (col) => col.defaultTo(sql`now()`))',
 						'addColumn("role", sql`role`)',
 						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "trigger_table"."updated_at" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(db);',
 					],
 				],
 				down: [["await db.schema", 'dropTable("trigger_table")', "execute();"]],

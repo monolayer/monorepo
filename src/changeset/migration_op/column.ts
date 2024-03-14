@@ -12,6 +12,7 @@ import { MigrationOpPriority } from "./priority.js";
 import {
 	compileDataType,
 	optionsForColumn,
+	toValueAndHash,
 	type ColumnInfoDiff,
 } from "./table_common.js";
 
@@ -51,19 +52,27 @@ function createColumnMigration(diff: CreateColumnDiff) {
 	const columnName = diff.path[2];
 	const columnDef = diff.value;
 
+	const up = [
+		executeKyselySchemaStatement(
+			`alterTable("${tableName}")`,
+			`addColumn("${columnName}", ${compileDataType(
+				columnDef.dataType,
+				columnDef.enum,
+			)}${optionsForColumn(columnDef)})`,
+		),
+	];
+	const defaultValueAndHash = toValueAndHash(String(columnDef.defaultValue));
+
+	if (columnDef.defaultValue !== null) {
+		up.push([
+			`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'\`.execute(db);`,
+		]);
+	}
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateColumn,
-		up: [
-			executeKyselySchemaStatement(
-				`alterTable("${tableName}")`,
-				`addColumn("${columnName}", ${compileDataType(
-					columnDef.dataType,
-					columnDef.enum,
-				)}${optionsForColumn(columnDef)})`,
-			),
-		],
+		up: up,
 		down: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
@@ -91,6 +100,21 @@ function dropColumnMigration(diff: DropColumnDiff) {
 	const columnDef = diff.oldValue;
 	const columnName = diff.path[2];
 
+	const down = [
+		executeKyselySchemaStatement(
+			`alterTable("${tableName}")`,
+			`addColumn("${columnName}", ${compileDataType(
+				columnDef.dataType,
+				columnDef.enum,
+			)}${optionsForColumn(columnDef)})`,
+		),
+	];
+	if (columnDef.defaultValue !== null) {
+		const defaultValueAndHash = toValueAndHash(String(columnDef.defaultValue));
+		down.push([
+			`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'\`.execute(db);`,
+		]);
+	}
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnDrop,
 		tableName: tableName,
@@ -101,15 +125,7 @@ function dropColumnMigration(diff: DropColumnDiff) {
 				`dropColumn("${columnName}")`,
 			),
 		],
-		down: [
-			executeKyselySchemaStatement(
-				`alterTable("${tableName}")`,
-				`addColumn("${columnName}", ${compileDataType(
-					columnDef.dataType,
-					columnDef.enum,
-				)}${optionsForColumn(columnDef)})`,
-			),
-		],
+		down: down,
 	};
 	return changeset;
 }

@@ -9,7 +9,11 @@ import {
 } from "../../introspection/schemas.js";
 import { executeKyselySchemaStatement } from "./helpers.js";
 import { MigrationOpPriority } from "./priority.js";
-import { tableColumnsOps, type ColumnsInfoDiff } from "./table_common.js";
+import {
+	tableColumnsOps,
+	toValueAndHash,
+	type ColumnsInfoDiff,
+} from "./table_common.js";
 
 export function tableMigrationOpGenerator(
 	diff: Difference,
@@ -44,16 +48,27 @@ export function isCreateTable(test: Difference): test is CreateTableDiff {
 
 function createTableMigration(diff: CreateTableDiff) {
 	const tableName = diff.path[1];
+	const up = [
+		executeKyselySchemaStatement(
+			`createTable("${tableName}")`,
+			...tableColumnsOps(diff.value),
+		),
+	];
+
+	Object.entries(diff.value).flatMap(([, column]) => {
+		if (column.defaultValue !== null) {
+			const valueAndHash = toValueAndHash(column.defaultValue);
+			up.push([
+				`await sql\`COMMENT ON COLUMN "${column.tableName}"."${column.columnName}" IS '${valueAndHash.hash}'\`.execute(db);`,
+			]);
+		}
+	});
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TableCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateTable,
-		up: [
-			executeKyselySchemaStatement(
-				`createTable("${tableName}")`,
-				...tableColumnsOps(diff.value),
-			),
-		],
+		up: up,
 		down: [executeKyselySchemaStatement(`dropTable("${tableName}")`)],
 	};
 	return changeset;
@@ -73,17 +88,28 @@ export function isDropTable(test: Difference): test is DropTableTableDiff {
 
 function dropTableMigration(diff: DropTableTableDiff) {
 	const tableName = diff.path[1];
+	const down = [
+		executeKyselySchemaStatement(
+			`createTable("${tableName}")`,
+			...tableColumnsOps(diff.oldValue),
+		),
+	];
+
+	Object.entries(diff.oldValue).flatMap(([, column]) => {
+		if (column.defaultValue !== null) {
+			const valueAndHash = toValueAndHash(column.defaultValue);
+			down.push([
+				`await sql\`COMMENT ON COLUMN "${column.tableName}"."${column.columnName}" IS '${valueAndHash.hash}'\`.execute(db);`,
+			]);
+		}
+	});
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TableDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropTable,
 		up: [executeKyselySchemaStatement(`dropTable("${tableName}")`)],
-		down: [
-			executeKyselySchemaStatement(
-				`createTable("${tableName}")`,
-				...tableColumnsOps(diff.oldValue),
-			),
-		],
+		down: down,
 	};
 	return changeset;
 }

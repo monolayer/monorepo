@@ -18,6 +18,36 @@ export function tableColumnsOps(columnsInfo: ColumnsInfoDiff) {
 	});
 }
 
+export function tableColumnsComments(columnsInfo: ColumnsInfoDiff) {
+	return Object.entries(columnsInfo).flatMap(([, column]) => {
+		if (column.defaultValue !== null) {
+			const valueAndHash = toValueAndHash(column.defaultValue);
+			return [
+				`await sql\`COMMENT ON COLUMN "${column.tableName}"."${column.columnName}" IS '${valueAndHash.hash}'\`.execute(db);`,
+			];
+		} else {
+			return [];
+		}
+	});
+}
+
+interface DefaultValueAndHash {
+	value?: string;
+	hash?: string;
+}
+
+export function toValueAndHash(value: string) {
+	const match = value.match(/(\w+):(.+)/);
+
+	const valueAndHash: DefaultValueAndHash = {};
+
+	if (match !== null && match[1] !== undefined && match[2] !== undefined) {
+		valueAndHash.hash = match[1];
+		valueAndHash.value = match[2];
+	}
+	return valueAndHash;
+}
+
 export function optionsForColumn(column: ColumnInfoDiff) {
 	let columnOptions = "";
 	const options = [];
@@ -28,7 +58,9 @@ export function optionsForColumn(column: ColumnInfoDiff) {
 		options.push("generatedByDefaultAsIdentity()");
 
 	if (column.defaultValue !== null) {
-		options.push(`defaultTo(${sqlStatement(column.defaultValue)})`);
+		const defaultValueAndHash = toValueAndHash(String(column.defaultValue));
+
+		options.push(`defaultTo(${sqlStatement(defaultValueAndHash.value ?? "")})`);
 	}
 	if (options.length !== 0)
 		columnOptions = `, (col) => col.${options.join(".")}`;

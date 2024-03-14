@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { createHash } from "crypto";
 import type { Simplify } from "kysely";
 import { type ColumnType, type Expression } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
@@ -201,13 +202,15 @@ export abstract class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 	 */
 	default(value: I | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = compileDefaultExpression(value);
+			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
 		} else {
 			let val: unknown = value;
 			if (val instanceof Date) val = val.toISOString();
 			if (typeof val === "string" && this instanceof PgDate)
 				val = val.split("T")[0];
-			this.info.defaultValue = `'${val}'::${this._native_data_type}`;
+			this.info.defaultValue = valueWithHash(
+				`'${val}'::${this._native_data_type}`,
+			);
 		}
 		return this as this & WithDefaultColumn;
 	}
@@ -479,9 +482,9 @@ export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 	 */
 	default(value: boolean | Boolish | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = compileDefaultExpression(value);
+			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
 		} else {
-			this.info.defaultValue = `${value}`;
+			this.info.defaultValue = valueWithHash(`${value}`);
 		}
 		return this as this & WithDefaultColumn;
 	}
@@ -590,7 +593,7 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 	 */
 	default(value: Buffer | string | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = compileDefaultExpression(value);
+			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
 		} else {
 			const valueType = typeof value;
 			switch (valueType) {
@@ -598,16 +601,22 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 				case "boolean":
 				case "number": {
 					const hexVal = Buffer.from(String(value)).toString("hex");
-					this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
+					this.info.defaultValue = valueWithHash(
+						`'\\x${hexVal}'::${this._native_data_type}`,
+					);
 					break;
 				}
 				case "object": {
 					if (value instanceof Buffer) {
 						const hexVal = value.toString("hex");
-						this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
+						this.info.defaultValue = valueWithHash(
+							`'\\x${hexVal}'::${this._native_data_type}`,
+						);
 					} else {
 						const hexVal = Buffer.from(JSON.stringify(value)).toString("hex");
-						this.info.defaultValue = `'\\x${hexVal}'::${this._native_data_type}`;
+						this.info.defaultValue = valueWithHash(
+							`'\\x${hexVal}'::${this._native_data_type}`,
+						);
 					}
 					break;
 				}
@@ -756,9 +765,9 @@ export class PgInt4 extends IdentifiableColumn<number, number | string> {
 	 */
 	default(value: number | string | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = compileDefaultExpression(value);
+			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
 		} else {
-			this.info.defaultValue = `${value}`;
+			this.info.defaultValue = valueWithHash(`${value}`);
 		}
 		return this as this & WithDefaultColumn;
 	}
@@ -851,9 +860,9 @@ export class PgInteger extends IdentifiableColumn<number, number | string> {
 	 */
 	default(value: number | string | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = compileDefaultExpression(value);
+			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
 		} else {
-			this.info.defaultValue = `${value}`;
+			this.info.defaultValue = valueWithHash(`${value}`);
 		}
 		return this as this & WithDefaultColumn;
 	}
@@ -983,9 +992,9 @@ export class PgUuid extends PgColumn<string, string> {
 	 */
 	default(value: string | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = compileDefaultExpression(value);
+			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
 		} else {
-			this.info.defaultValue = `'${value.toLowerCase()}'::uuid`;
+			this.info.defaultValue = valueWithHash(`'${value.toLowerCase()}'::uuid`);
 		}
 		return this as this & WithDefaultColumn;
 	}
@@ -1265,7 +1274,7 @@ export class PgEnum<N extends string> extends PgColumn<N, N> {
 	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
 	 */
 	default(value: N) {
-		this.info.defaultValue = `'${value}'::${this.info.dataType}`;
+		this.info.defaultValue = valueWithHash(`'${value}'::${this.info.dataType}`);
 		return this as this & WithDefaultColumn;
 	}
 }
@@ -1311,6 +1320,12 @@ export function isExpression(obj: unknown): obj is Expression<any> {
 
 function isObject(obj: unknown): obj is ShallowRecord<string, unknown> {
 	return typeof obj === "object" && obj !== null;
+}
+
+export function valueWithHash(value: string): `${string}:${string}` {
+	const hash = createHash("sha256");
+	hash.update(value);
+	return `${hash.digest("hex")}:${value}`;
 }
 
 export type OptionalColumnType<S, I, U> = Simplify<

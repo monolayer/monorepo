@@ -22,13 +22,19 @@ describe("Database migrations", () => {
 		await context.kysely.schema
 			.createTable("users")
 			.addColumn("id", "integer")
-			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
+			.addColumn("updatedAt", "timestamp", (col) =>
+				col.defaultTo(sql`CURRENT_TIMESTAMP`),
+			)
 			.execute();
+
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS '9ff7b5b715046baeffdb1af30ed68f6e43b40bf43d1f76734de5b26ecacb58e8'`.execute(
+			context.kysely,
+		);
 
 		const users = table({
 			columns: {
 				id: integer(),
-				updatedAt: timestamp().default(sql`now()`),
+				updatedAt: timestamp().default(sql`CURRENT_TIMESTAMP`),
 			},
 			triggers: {
 				foo_before_update: trigger()
@@ -118,6 +124,10 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_after_update_trg 
 			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
 			.execute();
 
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS '28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f'`.execute(
+			context.kysely,
+		);
+
 		await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(
 			context.kysely,
 		);
@@ -199,6 +209,10 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_after_update_trg 
 			.addColumn("id", "integer")
 			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
 			.execute();
+
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS '28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f'`.execute(
+			context.kysely,
+		);
 
 		await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(
 			context.kysely,

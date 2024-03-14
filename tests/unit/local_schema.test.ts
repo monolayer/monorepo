@@ -61,7 +61,8 @@ describe("#schemaColumnInfo", () => {
 			tableName: "foo",
 			columnName: "bar",
 			dataType: "varchar(100)",
-			defaultValue: "'foo'::character varying",
+			defaultValue:
+				"2bc6768278e7f14b6f18480c616c1687a575d330a2e8e471a48bede1a90d5720:'foo'::character varying",
 			characterMaximumLength: 100,
 		});
 
@@ -74,7 +75,8 @@ describe("#schemaColumnInfo", () => {
 			tableName: "foo",
 			columnName: "bar",
 			dataType: "timestamp",
-			defaultValue: "CURRENT_TIMESTAMP",
+			defaultValue:
+				"9ff7b5b715046baeffdb1af30ed68f6e43b40bf43d1f76734de5b26ecacb58e8:CURRENT_TIMESTAMP",
 		});
 
 		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
