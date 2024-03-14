@@ -63,7 +63,7 @@
 		"pack": "npm pack --pack-destination ./build",
 		"test": "vitest unit src integration --run --coverage",
 		"pretest:unit": "tsx ./tests/setup/create_test_db.ts",
-		"test:unit": "./tests/bin/test-with-kysely-version",
+		"test:unit": "./tests/bin/run-tests",
 		"posttest:unit": "tsx ./tests/setup/drop_test_db.ts",
 		"pretest:integration": "npm run pack && tsx ./tests/setup/create_test_db.ts",
 		"posttest:integration": "tsx ./tests/setup/drop_test_db.ts",
