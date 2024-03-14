@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -euo pipefail
 
@@ -6,6 +6,12 @@ KYSELY_VERSION=${KYSELY_VERSION:-0.27.3}
 echo "Testing with Kysely version $KYSELY_VERSION"
 
 KYSELY_VERSION=${KYSELY_VERSION//./}
-sed -i '' 's|await import(.*)|await import(\"kysely-'$KYSELY_VERSION'\")|g' tests/setup/kysely.ts
-vitest unit src --run
-sed -i '' 's|await import(.*)|await import(\"kysely\")|g' tests/setup/kysely.ts
+
+sed_option=
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  sed_option="''"
+fi
+
+sed -i $sed_option "s/await import(.*)/await import('kysely-$KYSELY_VERSION')/g" ./tests/setup/kysely.ts
+vitest unit src --run --coverage
+sed -i $sed_option "s/await import(.*)/await import(\"kysely\")/g" ./tests/setup/kysely.ts

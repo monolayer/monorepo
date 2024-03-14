@@ -23,6 +23,7 @@ export function generateMigrationFiles(
 	folder: string,
 	migrationsFolder = "migrations",
 	name?: string,
+	log = true,
 ) {
 	const { up, down } = extractMigrationOpChangesets(changesets);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
@@ -38,7 +39,7 @@ export function generateMigrationFiles(
 	createFile(
 		migrationFilePath,
 		rendered.includes("sql`") ? rendered : rendered.replace(", sql", ""),
-		true,
+		log,
 	);
 }
 

@@ -12,7 +12,7 @@ async function migrateUp(
 	migrator: Migrator,
 	changeset: Changeset[],
 ) {
-	generateMigrationFiles(changeset, folder);
+	generateMigrationFiles(changeset, folder, "migrations", undefined, false);
 	return await migrator.migrateToLatest();
 }
 

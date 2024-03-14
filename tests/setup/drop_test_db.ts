@@ -1,9 +1,6 @@
-import dotenv from "dotenv";
-import pg from "pg";
-import { env } from "process";
-dotenv.config();
+import { globalPool } from "~tests/setup.js";
 
-const pool = new pg.Pool({ connectionString: env.POSTGRES_URL });
-pool.query(`DROP DATABASE IF EXISTS ${env.DATABASE_NAME}`).then(() => {
-	pool.end().then(() => {});
-});
+const pool = globalPool();
+await pool.query(`DROP DATABASE IF EXISTS test_kysely_kinetic;`);
+await pool.query(`DROP DATABASE IF EXISTS test_remote_schema;`);
+pool.end();

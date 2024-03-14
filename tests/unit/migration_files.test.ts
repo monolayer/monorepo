@@ -283,7 +283,13 @@ describe("Migrator", () => {
 					],
 				},
 			];
-			generateMigrationFiles(changeset, context.folder);
+			generateMigrationFiles(
+				changeset,
+				context.folder,
+				"migrations",
+				undefined,
+				false,
+			);
 			const dir = readdirSync(context.migrationsFolder);
 			const fileMatch = /^\w+-(\w+)-(\w+)\.ts$/;
 			for (const file of dir) {
@@ -298,7 +304,6 @@ describe("Migrator", () => {
 					const migrationContent = readFileSync(
 						`${context.migrationsFolder}/${file}`,
 					).toString();
-					console.dir(migrationContent, { depth: null });
 					expect(migrationContent).toBe(fixtureContent);
 				}
 			}
@@ -321,7 +326,13 @@ describe("Migrator", () => {
 					down: [["await db.schema", 'dropTable("books")', "execute();"]],
 				},
 			];
-			generateMigrationFiles(changeset, context.folder);
+			generateMigrationFiles(
+				changeset,
+				context.folder,
+				"migrations",
+				undefined,
+				false,
+			);
 			const dir = readdirSync(context.migrationsFolder);
 			const fileMatch = /^\w+-(\w+)-(\w+)\.ts$/;
 			for (const file of dir) {
