@@ -1,4 +1,4 @@
-import { mkdirSync } from "fs";
+import { mkdirSync, rmSync } from "fs";
 import path from "path";
 import { cwd } from "process";
 import { type TaskContext } from "vitest";
@@ -13,6 +13,7 @@ import { dbNameForTest } from "./db_name_for_test.js";
 export async function teardownContext(context: TaskContext & DbContext) {
 	try {
 		await context.kysely.destroy();
+		rmSync(context.folder, { recursive: true, force: true });
 	} catch (e) {
 		/* empty */
 	}
