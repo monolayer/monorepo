@@ -29,6 +29,7 @@ import {
 	tsvector,
 	uuid,
 	varchar,
+	xml,
 } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
 import { enumType, enumerated } from "~/schema/pg_enumerated.js";
@@ -139,6 +140,7 @@ describe("Table create migrations", () => {
 						vectorWithDefault: tsvector().default(sql`to_tsvector('a b')`),
 						tsquery: tsquery(),
 						tsqueryWithDefault: tsquery().default(sql`to_tsquery('a b')`),
+						xml: xml(),
 					},
 				}),
 			},
@@ -177,6 +179,7 @@ describe("Table create migrations", () => {
 						"addColumn(\"vectorWithDefault\", sql`tsvector`, (col) => col.defaultTo(sql`to_tsvector('a b')`))",
 						'addColumn("tsquery", sql`tsquery`)',
 						"addColumn(\"tsqueryWithDefault\", sql`tsquery`, (col) => col.defaultTo(sql`to_tsquery('a b')`))",
+						'addColumn("xml", sql`xml`)',
 						"execute();",
 					],
 					[

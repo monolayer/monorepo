@@ -43,6 +43,7 @@ import {
 	PgTsvector,
 	PgUuid,
 	PgVarChar,
+	PgXML,
 	bigint,
 	bigserial,
 	boolean,
@@ -71,6 +72,7 @@ import {
 	tsvector,
 	uuid,
 	varchar,
+	xml,
 	type Boolish,
 } from "../../src/schema/pg_column.js";
 
@@ -12253,6 +12255,387 @@ describe("tsquery", () => {
 				const tbl = table({
 					columns: {
 						id: tsquery(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "number",
+							path: [],
+							message: "Expected string, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
+	});
+});
+
+describe("xml", () => {
+	test("returns a PgXML instance", () => {
+		const column = xml();
+		expect(column).toBeInstanceOf(PgXML);
+	});
+
+	describe("PgXML", () => {
+		test("inherits from PgColumn", () => {
+			expect(xml()).toBeInstanceOf(PgColumn);
+		});
+
+		test("dataType is set to xml", () => {
+			const info = Object.fromEntries(Object.entries(xml())).info;
+			expect(info.dataType).toBe("xml");
+		});
+
+		test("default with string", () => {
+			const column = xml().default(
+				'<?xml version="1.0"?><book><title>Manual</title></book>',
+			);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			expect(info.defaultValue).toBe(
+				"a0c8e47fed125e57a1455989687aaa94ec3720abc77876574347d565c21872ec:'<?xml version=\"1.0\"?><book><title>Manual</title></book>'::xml",
+			);
+		});
+
+		test("default with expression", () => {
+			const column = xml();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.default(
+				sql`'<?xml version="1.0"?><book><title>Manual</title></book>'`,
+			);
+			expect(info.defaultValue).toBe(
+				"ed4277f620db24d48eb4d2bd84b94a73352a5829322dad6132addf581e948c34:'<?xml version=\"1.0\"?><book><title>Manual</title></book>'",
+			);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = xml() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = xml() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
+	});
+
+	describe("zod", () => {
+		describe("by default", () => {
+			test("input type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				const result = schema.safeParse("one");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("one");
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(true);
+				if (nullResult.success) {
+					expect(nullResult.data).toBe(null);
+				}
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: xml().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("one");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("one");
+				}
+			});
+
+			test("output type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: xml().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("one");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("one");
+				}
+			});
+
+			test("parses strings", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(true);
+			});
+
+			test("parses null", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("does not parse other types", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(new Date()).success).toBe(false);
+				expect(schema.safeParse(1).success).toBe(false);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: xml().default(sql`to_xml("foo")`),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: xml().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: xml()
+							.notNull()
+							.default(sql`to_xml("foo")`),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("input type is string with primary key", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("foo").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: xml().default(sql`to_xml("foo")`),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: xml()
+							.notNull()
+							.default(sql`to_xml("foo")`),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: xml()
+							.default(sql`to_xml("foo")`)
+							.notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const tbl = table({
+					columns: {
+						id: xml().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "undefined",
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const tbl = table({
+					columns: {
+						id: xml().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "null",
+							path: [],
+							message: "Expected string, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a string", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;

@@ -87,6 +87,7 @@ function isStringColumn(dataType: string) {
 	switch (dataType) {
 		case "tsvector":
 		case "tsquery":
+		case "xml":
 			return true;
 		default:
 			return false;

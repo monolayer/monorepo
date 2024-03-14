@@ -1314,6 +1314,19 @@ export class PgTsvector extends PgStringColumn {
 	}
 }
 
+export function xml() {
+	return new PgXML();
+}
+
+export class PgXML extends PgStringColumn {
+	/**
+	 * @hidden
+	 */
+	constructor() {
+		super("xml");
+	}
+}
+
 export type TableColumn =
 	| PgBigInt
 	| PgBigSerial
