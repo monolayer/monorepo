@@ -2,12 +2,13 @@
 import type { Simplify } from "kysely";
 import { type ColumnType, type Expression } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
+import { compileDefaultExpression } from "~/introspection/schemas.js";
 
 export type ColumnInfo = {
 	columnName: string | null;
 	tableName: string | null;
 	dataType: string;
-	defaultValue: unknown | Expression<unknown> | null;
+	defaultValue: string | null;
 	isNullable: boolean;
 	originalIsNullable?: boolean | null;
 	numericPrecision: number | null;
@@ -200,7 +201,7 @@ export abstract class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 	 */
 	default(value: I | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = value;
+			this.info.defaultValue = compileDefaultExpression(value);
 		} else {
 			let val: unknown = value;
 			if (val instanceof Date) val = val.toISOString();
@@ -478,7 +479,7 @@ export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 	 */
 	default(value: boolean | Boolish | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = value;
+			this.info.defaultValue = compileDefaultExpression(value);
 		} else {
 			this.info.defaultValue = `${value}`;
 		}
@@ -589,7 +590,7 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 	 */
 	default(value: Buffer | string | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = value;
+			this.info.defaultValue = compileDefaultExpression(value);
 		} else {
 			const valueType = typeof value;
 			switch (valueType) {
@@ -755,7 +756,7 @@ export class PgInt4 extends IdentifiableColumn<number, number | string> {
 	 */
 	default(value: number | string | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = value;
+			this.info.defaultValue = compileDefaultExpression(value);
 		} else {
 			this.info.defaultValue = `${value}`;
 		}
@@ -850,7 +851,7 @@ export class PgInteger extends IdentifiableColumn<number, number | string> {
 	 */
 	default(value: number | string | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = value;
+			this.info.defaultValue = compileDefaultExpression(value);
 		} else {
 			this.info.defaultValue = `${value}`;
 		}
@@ -982,7 +983,7 @@ export class PgUuid extends PgColumn<string, string> {
 	 */
 	default(value: string | Expression<unknown>) {
 		if (isExpression(value)) {
-			this.info.defaultValue = value;
+			this.info.defaultValue = compileDefaultExpression(value);
 		} else {
 			this.info.defaultValue = `'${value.toLowerCase()}'::uuid`;
 		}

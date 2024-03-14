@@ -223,7 +223,7 @@ describe("pgBoolean", () => {
 
 			const expression = sql`true`;
 			column.default(expression);
-			expect(info.defaultValue).toBe(expression);
+			expect(info.defaultValue).toBe("true");
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -1557,7 +1557,7 @@ describe("pgBytea", () => {
 
 			const expression = sql`\\x7b2261223a312c2262223a327d'::bytea`;
 			column.default(expression);
-			expect(info.defaultValue).toBe(expression);
+			expect(info.defaultValue).toBe("\\x7b2261223a312c2262223a327d'::bytea");
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -4399,7 +4399,7 @@ describe("pgInt4", () => {
 
 			const expression = sql`20`;
 			column.default(expression);
-			expect(info.defaultValue).toBe(expression);
+			expect(info.defaultValue).toBe("20");
 		});
 
 		test("has generatedAlwaysAsIdentity", () => {
@@ -5423,7 +5423,7 @@ describe("pgInteger", () => {
 
 			const expression = sql`20`;
 			column.default(expression);
-			expect(info.defaultValue).toBe(expression);
+			expect(info.defaultValue).toBe("20");
 		});
 
 		test("has generatedAlwaysAsIdentity", () => {
@@ -7342,7 +7342,9 @@ describe("pgUuid", () => {
 
 			const expression = sql`'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid`;
 			column.default(expression);
-			expect(info.defaultValue).toBe(expression);
+			expect(info.defaultValue).toBe(
+				"'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid",
+			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
