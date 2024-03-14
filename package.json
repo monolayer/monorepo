@@ -44,7 +44,7 @@
 		"dist/**/*"
 	],
 	"scripts": {
-		"prebuild": "rm -rf dist && npm run check",
+		"prebuild": "rm -rf dist",
 		"build": "npm run build:esm && npm run build:cjs",
 		"build:cjs": "tsc -p tsconfig.cjs.json --outDir dist/cjs",
 		"build:esm": "tsc -p tsconfig.esm.json --outDir dist/esm",
@@ -59,7 +59,7 @@
 		"check:type": "tsc --noEmit",
 		"cli": "src/cli/cli.ts",
 		"format": "prettier --write .",
-		"prepack": "npm run build && rm -rf build && mkdir build",
+		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
 		"pack": "npm pack --pack-destination ./build",
 		"test": "vitest unit src integration --run --coverage",
 		"pretest:unit": "tsx ./tests/setup/create_test_db.ts",
