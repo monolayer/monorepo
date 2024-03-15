@@ -8,14 +8,20 @@ import type { MigrationSchema } from "~/migrations/migration_schema.js";
 export async function computeChangeset(
 	local: MigrationSchema,
 	remote: MigrationSchema,
+	log = true,
 ): Promise<Changeset[]> {
 	const c = p.spinner();
-	c.start("Computing change set");
+	if (log) {
+		c.start("Computing change set");
+	}
 	const cset = changeset(local, remote);
-	c.stop("Computed change set.");
-
+	if (log) {
+		c.stop("Computed change set.");
+	}
 	if (cset.length === 0) {
-		p.outro(`${color.green("Nothing to do")}. No schema changes found.`);
+		if (log) {
+			p.outro(`${color.green("Nothing to do")}. No schema changes found.`);
+		}
 		exit(0);
 	}
 	return cset;
