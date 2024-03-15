@@ -53,22 +53,6 @@ async function fetchDbColumnInfo(
 		return [];
 	}
 
-	// 	SELECT
-	//     pg_attribute.attname AS column_name,
-	//     obj_description(pg_attribute.attrelid, 'pg_class') AS table_comment,
-	//     col_description(pg_attribute.attrelid, pg_attribute.attnum) AS column_comment
-	// FROM
-	//     pg_attribute
-	// JOIN
-	//     pg_class tbl ON pg_attribute.attrelid = tbl.oid
-	// JOIN
-	//     pg_namespace nsp ON tbl.relnamespace = nsp.oid
-	// WHERE
-	//     tbl.relkind = 'r' -- r = regular table
-	//     AND tbl.relname = 'your_table_name' -- Replace with your table name
-	//     AND nsp.nspname = 'your_schema_name' -- Replace with your schema name, e.g., 'public'
-	//     AND pg_attribute.attname = 'your_column_name'; -- Replace with your column name
-
 	return kysely
 		.selectFrom("information_schema.columns")
 		.fullJoin("pg_class", (eb) =>
