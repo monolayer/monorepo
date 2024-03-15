@@ -5,8 +5,8 @@ import fs from "node:fs/promises";
 import path from "path";
 import pg from "pg";
 import { cwd, exit } from "process";
-import { changeset } from "~/changeset/changeset.js";
 import { ActionStatus } from "~/cli/command.js";
+import { computeChangeset } from "~/cli/components/compute_changeset.js";
 import { importConfig } from "~/config.js";
 import { localSchema, remoteSchema } from "~/introspection/schemas.js";
 import { generateMigrationFiles } from "~/migrations/generate.js";
@@ -68,9 +68,17 @@ async function main() {
 		exit(0);
 	}
 
-	const localInfo = localSchema(lc.database, remoteColumnInfo.result);
+	const localInfo = localSchema(
+		lc.database,
+		remoteColumnInfo.result,
+		config.camelCasePlugin ?? { enabled: false },
+	);
 
-	const cset = changeset(localInfo, remoteColumnInfo.result);
+	const cset = await computeChangeset(
+		localInfo,
+		remoteColumnInfo.result,
+		false,
+	);
 
 	if (cset.length > 0) {
 		const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
