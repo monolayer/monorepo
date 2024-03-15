@@ -284,6 +284,112 @@ describe("Table change migrations", () => {
 		});
 	});
 
+	test<DbContext>("add column default", async (context) => {
+		await context.kysely.schema
+			.createTable("users")
+			.addColumn("name", "text")
+			.execute();
+
+		const database = pgDatabase({
+			tables: {
+				users: table({
+					columns: {
+						name: text().default("bar"),
+					},
+				}),
+			},
+		});
+
+		const expected = [
+			{
+				priority: 3005,
+				tableName: "users",
+				type: "changeColumn",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("users")',
+						"alterColumn(\"name\", (col) => col.setDefault(sql`'bar'::text`))",
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad971115c7afe985010204f7608c87986137124ed4732b058c685e67d0e\'`.execute(db);',
+					],
+				],
+				down: [
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.dropDefault())',
+						"execute();",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			down: "reverse",
+		});
+	});
+
+	test<DbContext>("drop column default", async (context) => {
+		await context.kysely.schema
+			.createTable("users")
+			.addColumn("name", "text", (col) => col.defaultTo(sql`'foo'::text`))
+			.execute();
+
+		await sql`COMMENT ON COLUMN "users"."name" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
+			context.kysely,
+		);
+
+		const database = pgDatabase({
+			tables: {
+				users: table({
+					columns: {
+						name: text(),
+					},
+				}),
+			},
+		});
+
+		const expected = [
+			{
+				priority: 3006,
+				tableName: "users",
+				type: "changeColumn",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.dropDefault())',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						"await db.schema",
+						'alterTable("users")',
+						"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::text`))",
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c\'`.execute(db);',
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			down: "reverse",
+		});
+	});
+
 	test<DbContext>("change column nullable", async (context) => {
 		await context.kysely.schema
 			.createTable("users")

@@ -93,6 +93,9 @@ function isColumnDefaultChangeValue(
 function columnDefaultAddMigrationOperation(diff: ColumnDefaultAddDifference) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
+
+	const defaultValueAndHash = toValueAndHash(String(diff.value));
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultAdd,
 		tableName: tableName,
@@ -101,9 +104,12 @@ function columnDefaultAddMigrationOperation(diff: ColumnDefaultAddDifference) {
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
 				`alterColumn("${columnName}", (col) => col.setDefault(${sqlStatement(
-					diff.value,
+					defaultValueAndHash.value ?? "",
 				)}))`,
 			),
+			[
+				`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'\`.execute(db);`,
+			],
 		],
 		down: [
 			executeKyselySchemaStatement(
@@ -120,6 +126,9 @@ function columnDefaultDropMigrationOperation(
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
+
+	const defaultValueAndHash = toValueAndHash(String(diff.oldValue));
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultDrop,
 		tableName: tableName,
@@ -134,9 +143,12 @@ function columnDefaultDropMigrationOperation(
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
 				`alterColumn("${columnName}", (col) => col.setDefault(${sqlStatement(
-					diff.oldValue,
+					defaultValueAndHash.value ?? "",
 				)}))`,
 			),
+			[
+				`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'\`.execute(db);`,
+			],
 		],
 	};
 	return changeset;
