@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -euo pipefail
+
+TYPESCRIPT_VERSION=${TYPESCRIPT_VERSION:-default}
+if [[ "$TYPESCRIPT_VERSION" == "default" ]]; then
+  echo "Typescript $(tsc --version)"
+  tsc --noEmit
+else
+  TYPESCRIPT_VERSION=${TYPESCRIPT_VERSION//./}
+  echo "Typescript $(./node_modules/typescript-${TYPESCRIPT_VERSION}/bin/tsc --version)"
+  ./node_modules/typescript-${TYPESCRIPT_VERSION}/bin/tsc --noEmit
+fi
