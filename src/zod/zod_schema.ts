@@ -12,18 +12,22 @@ import {
 	isBitColumn,
 	isBytea,
 	isChar,
+	isCidrColumn,
 	isDate,
 	isDoublePrecision,
 	isEnum,
 	isFloat4,
 	isFloat8,
 	isGeneratedColumn,
+	isInetColumn,
 	isInt2,
 	isInt4,
 	isInt8,
 	isInteger,
 	isJson,
 	isJsonB,
+	isMacaddr8Column,
+	isMacaddrColumn,
 	isNumeric,
 	isPgBoolean,
 	isPgText,
@@ -41,6 +45,10 @@ import {
 } from "./column_assertions.js";
 import {
 	bitSchema,
+	cidrSchema,
+	inetSchema,
+	macaddr8Schema,
+	macaddrSchema,
 	pgBigintSchema,
 	pgBooleanSchema,
 	pgByteaSchema,
@@ -185,6 +193,18 @@ export function pgColumnSchema<
 	}
 	if (isVarbitColumn(column)) {
 		return varbitSchema(column);
+	}
+	if (isInetColumn(column)) {
+		return inetSchema(column);
+	}
+	if (isCidrColumn(column)) {
+		return cidrSchema(column);
+	}
+	if (isMacaddrColumn(column)) {
+		return macaddrSchema(column);
+	}
+	if (isMacaddr8Column(column)) {
+		return macaddr8Schema(column);
 	}
 	return z.never() as unknown as ZodType<T, PK>;
 }

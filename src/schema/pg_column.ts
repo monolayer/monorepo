@@ -1367,6 +1367,58 @@ export class PgVarbit extends PgBitStringColumn {
 	}
 }
 
+export function inet() {
+	return new PgInet();
+}
+
+export class PgInet extends PgStringColumn {
+	/**
+	 * @hidden
+	 */
+	constructor() {
+		super("inet");
+	}
+}
+
+export function cidr() {
+	return new PgCIDR();
+}
+
+export class PgCIDR extends PgStringColumn {
+	/**
+	 * @hidden
+	 */
+	constructor() {
+		super("cidr");
+	}
+}
+
+export function macaddr() {
+	return new PgMacaddr();
+}
+
+export class PgMacaddr extends PgStringColumn {
+	/**
+	 * @hidden
+	 */
+	constructor() {
+		super("macaddr");
+	}
+}
+
+export function macaddr8() {
+	return new PgMacaddr8();
+}
+
+export class PgMacaddr8 extends PgStringColumn {
+	/**
+	 * @hidden
+	 */
+	constructor() {
+		super("macaddr8");
+	}
+}
+
 export type TableColumn =
 	| PgBigInt
 	| PgBigSerial

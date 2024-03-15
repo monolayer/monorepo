@@ -15,6 +15,7 @@ import {
 	PgBit,
 	PgBoolean,
 	PgBytea,
+	PgCIDR,
 	PgChar,
 	PgColumn,
 	PgColumnBase,
@@ -24,12 +25,15 @@ import {
 	PgFloat4,
 	PgFloat8,
 	PgGeneratedColumn,
+	PgInet,
 	PgInt2,
 	PgInt4,
 	PgInt8,
 	PgInteger,
 	PgJson,
 	PgJsonB,
+	PgMacaddr,
+	PgMacaddr8,
 	PgNumeric,
 	PgReal,
 	PgSerial,
@@ -52,16 +56,20 @@ import {
 	boolean,
 	bytea,
 	char,
+	cidr,
 	date,
 	doublePrecision,
 	float4,
 	float8,
+	inet,
 	int2,
 	int4,
 	int8,
 	integer,
 	json,
 	jsonb,
+	macaddr,
+	macaddr8,
 	numeric,
 	pgEnum,
 	real,
@@ -13577,6 +13585,1680 @@ describe("varbit", () => {
 				];
 				expect(result.error.errors).toStrictEqual(expected);
 			}
+		});
+	});
+});
+
+describe("inet", () => {
+	test("returns a PgInet instance", () => {
+		const column = inet();
+		expect(column).toBeInstanceOf(PgInet);
+	});
+
+	describe("PgInet", () => {
+		test("inherits from PgColumn", () => {
+			expect(inet()).toBeInstanceOf(PgColumn);
+		});
+
+		test("dataType is set to inet", () => {
+			const info = Object.fromEntries(Object.entries(inet())).info;
+			expect(info.dataType).toBe("inet");
+		});
+
+		test("default with string", () => {
+			const column = inet().default("192.168.0.1");
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			expect(info.defaultValue).toBe(
+				"840df3363333e0d0a993db5bd423bcfc372afcc4d6c94dae75cfb78551c174a1:'192.168.0.1'::inet",
+			);
+		});
+
+		test("default with expression", () => {
+			const column = inet();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.default(sql`'192.168.0.1'::inet`);
+			expect(info.defaultValue).toBe(
+				"840df3363333e0d0a993db5bd423bcfc372afcc4d6c94dae75cfb78551c174a1:'192.168.0.1'::inet",
+			);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = inet() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = inet() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
+	});
+
+	describe("zod", () => {
+		describe("by default", () => {
+			test("input type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				const result = schema.safeParse("192.168.0.1");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("192.168.0.1");
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(true);
+				if (nullResult.success) {
+					expect(nullResult.data).toBe(null);
+				}
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: inet().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("192.168.0.1");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("192.168.0.1");
+				}
+			});
+
+			test("output type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: inet().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("192.168.0.1");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("192.168.0.1");
+				}
+			});
+
+			test("parses IPv4 addresses", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.0.1").success).toBe(true);
+			});
+
+			test("parses IPv6 addresses", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(
+					schema.safeParse("84d5:51a0:9114:1855:4cfa:f2d7:1f12:7003").success,
+				).toBe(true);
+				expect(schema.safeParse("2001:db8:85a3::8a2e:370:7334").success).toBe(
+					true,
+				);
+				expect(
+					schema.safeParse("fe80:0000:0000:0000:0204:61ff:fe9d:f156").success,
+				).toBe(true);
+				expect(schema.safeParse("::1").success).toBe(true);
+			});
+
+			test("does not parse invalid ip addresses", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(false);
+				expect(schema.safeParse("256.1.1.1").success).toBe(false);
+				expect(schema.safeParse("2001:db8::8a2e:370:7334:").success).toBe(
+					false,
+				);
+			});
+
+			test("parses null", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("does not parse other types", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(new Date()).success).toBe(false);
+				expect(schema.safeParse(1).success).toBe(false);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: inet().default("192.168.0.1"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.0.2").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: inet().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.0.1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: inet().notNull().default("192.168.0.1"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.0.1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("input type is string with primary key", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.1.1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: inet().default("192.168.1.1"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.1.2").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: inet().notNull().default("192.168.1.1"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.1.2").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: inet().default("192.168.1.1").notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.1.2").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const tbl = table({
+					columns: {
+						id: inet().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "undefined",
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const tbl = table({
+					columns: {
+						id: inet().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "null",
+							path: [],
+							message: "Expected string, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a string", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "number",
+							path: [],
+							message: "Expected string, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a valid ip", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse("192.23");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_string",
+							path: [],
+							message: "Invalid ip",
+							validation: "ip",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
+	});
+});
+
+describe("cidr", () => {
+	test("returns a PgCIDR instance", () => {
+		const column = cidr();
+		expect(column).toBeInstanceOf(PgCIDR);
+	});
+
+	describe("PgCIDR", () => {
+		test("inherits from PgColumn", () => {
+			expect(cidr()).toBeInstanceOf(PgColumn);
+		});
+
+		test("dataType is set to inet", () => {
+			const info = Object.fromEntries(Object.entries(cidr())).info;
+			expect(info.dataType).toBe("cidr");
+		});
+
+		test("default with string", () => {
+			const column = cidr().default("192.168.100.128/25");
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			expect(info.defaultValue).toBe(
+				"720ecbec1cb585bc75ec8b4a0960bf9afc32e28bd465e3070126fcf60df0b31b:'192.168.100.128/25'::cidr",
+			);
+		});
+
+		test("default with expression", () => {
+			const column = cidr();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.default(sql`'192.168.100.128/25'::cidr`);
+			expect(info.defaultValue).toBe(
+				"720ecbec1cb585bc75ec8b4a0960bf9afc32e28bd465e3070126fcf60df0b31b:'192.168.100.128/25'::cidr",
+			);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = cidr() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = cidr() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
+	});
+
+	describe("zod", () => {
+		describe("by default", () => {
+			test("input type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				const result = schema.safeParse("192.168.100.128/25");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("192.168.100.128/25");
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(true);
+				if (nullResult.success) {
+					expect(nullResult.data).toBe(null);
+				}
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: cidr().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("192.0.2.0/24");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("192.0.2.0/24");
+				}
+			});
+
+			test("output type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: cidr().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("192.0.2.0/24");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("192.0.2.0/24");
+				}
+			});
+
+			test("parses CIDRs (IPv4 and IPv6", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.0.2.0/24").success).toBe(true);
+				expect(schema.safeParse("::8/24").success).toBe(true);
+				expect(schema.safeParse("::1/128").success).toBe(true);
+				expect(schema.safeParse("ff02::1/16").success).toBe(true);
+				expect(schema.safeParse("2001:db8::8a2e:370:7334/48").success).toBe(
+					true,
+				);
+				expect(schema.safeParse("2001:4f8:3:ba::/64").success).toBe(true);
+				expect(
+					schema.safeParse("2001:0db8:85a3:0000:0000:8a2e:0370:7334/128")
+						.success,
+				).toBe(true);
+				expect(schema.safeParse("fe80::1/10").success).toBe(true);
+				expect(schema.safeParse("fd00:0:0:0:0:0:0:0/8").success).toBe(true);
+				expect(schema.safeParse("::ffff:1.2.3.0/128").success).toBe(true);
+				expect(schema.safeParse("2001:db8:100::/64").success).toBe(true);
+				expect(schema.safeParse("64:ff9b::192.168.0.1/96").success).toBe(true);
+				expect(schema.safeParse("fd12:3456:789a:1::/64").success).toBe(true);
+			});
+
+			test("does not parse invalid CIDR", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(false);
+				expect(schema.safeParse("256.1.1.1").success).toBe(false);
+				expect(schema.safeParse(" 192.0.2.0/24").success).toBe(false);
+				expect(schema.safeParse("::8/129").success).toBe(false);
+				expect(schema.safeParse("2001:4f8:3:ba::/129").success).toBe(false);
+				expect(schema.safeParse("::ffff:1.2.3.0/129").success).toBe(false);
+				expect(schema.safeParse(" ::8/24").success).toBe(false);
+				expect(schema.safeParse(" 2001:4f8:3:ba::/64").success).toBe(false);
+				expect(schema.safeParse(" ::ffff:1.2.3.0/128").success).toBe(false);
+				expect(schema.safeParse("2001:db8::8a2e:370:7334/129").success).toBe(
+					false,
+				);
+				expect(schema.safeParse("2001:db8::8a2e:370:7334:").success).toBe(
+					false,
+				);
+			});
+
+			test("parses null", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("does not parse other types", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(new Date()).success).toBe(false);
+				expect(schema.safeParse(1).success).toBe(false);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: cidr().default("192.168.0.1/24"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.0.2/24").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: cidr().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.0.1/24").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: cidr().notNull().default("192.168.0.1/24"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.0.1/24").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("input type is string with primary key", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.1.1/24").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: cidr().default("192.168.1.1"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.1.2/24").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: cidr().notNull().default("192.168.1.1"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.1.2/24").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: cidr().default("192.168.1.1/24").notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.1.2/24").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const tbl = table({
+					columns: {
+						id: cidr().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "undefined",
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const tbl = table({
+					columns: {
+						id: cidr().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "null",
+							path: [],
+							message: "Expected string, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a string", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "number",
+							path: [],
+							message: "Expected string, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a valid cidr", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse("192.23");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_string",
+							path: [],
+							message: "Invalid cidr",
+							validation: "regex",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
+	});
+});
+
+describe("macaddr", () => {
+	test("returns a PgMacaddr instance", () => {
+		const column = macaddr();
+		expect(column).toBeInstanceOf(PgMacaddr);
+	});
+
+	describe("PgMacaddr", () => {
+		test("inherits from PgColumn", () => {
+			expect(macaddr()).toBeInstanceOf(PgColumn);
+		});
+
+		test("dataType is set to macaddr", () => {
+			const info = Object.fromEntries(Object.entries(macaddr())).info;
+			expect(info.dataType).toBe("macaddr");
+		});
+
+		test("default with string", () => {
+			const column = macaddr().default("08:00:2b:01:02:03");
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			expect(info.defaultValue).toBe(
+				"c14cc2c97ca666f962466c35fa1710dcd9182023915eda00a85f5c73e0f4a6ef:'08:00:2b:01:02:03'::macaddr",
+			);
+		});
+
+		test("default with expression", () => {
+			const column = macaddr();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.default(sql`'08:00:2b:01:02:03'::macaddr`);
+			expect(info.defaultValue).toBe(
+				"c14cc2c97ca666f962466c35fa1710dcd9182023915eda00a85f5c73e0f4a6ef:'08:00:2b:01:02:03'::macaddr",
+			);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = macaddr() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = macaddr() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
+	});
+
+	describe("zod", () => {
+		describe("by default", () => {
+			test("input type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				const result = schema.safeParse("08:00:2b:01:02:03");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("08:00:2b:01:02:03");
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(true);
+				if (nullResult.success) {
+					expect(nullResult.data).toBe(null);
+				}
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("08:00:2b:01:02:03");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("08:00:2b:01:02:03");
+				}
+			});
+
+			test("output type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("08:00:2b:01:02:03");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("08:00:2b:01:02:03");
+				}
+			});
+
+			test("parses 48 bit mac addresses", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03").success).toBe(true);
+				expect(schema.safeParse("08-00-2b-01-02-03").success).toBe(true);
+			});
+
+			test("does not parse invalid 48 bit mac addresses", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(false);
+				expect(schema.safeParse("256.1.1.1").success).toBe(false);
+				expect(schema.safeParse("08:00:2b:01:02").success).toBe(false);
+				expect(schema.safeParse("08:00:2b:01:02:03:04:05").success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("does not parse other types", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(new Date()).success).toBe(false);
+				expect(schema.safeParse(1).success).toBe(false);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr().default("08:00:2b:01:02:03"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr().notNull().default("08:00:2b:01:02:03"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("input type is string with primary key", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr().default("08:00:2b:01:02:03"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr().notNull().default("08:00:2b:01:02:03"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr().default("08:00:2b:01:02:03").notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "undefined",
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "null",
+							path: [],
+							message: "Expected string, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a string", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "number",
+							path: [],
+							message: "Expected string, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a valid mac address", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse("192.23");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_string",
+							path: [],
+							message: "Invalid macaddr",
+							validation: "regex",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
+	});
+});
+
+describe("macaddr8", () => {
+	test("returns a PgMacaddr8 instance", () => {
+		const column = macaddr8();
+		expect(column).toBeInstanceOf(PgMacaddr8);
+	});
+
+	describe("PgMacaddr8", () => {
+		test("inherits from PgColumn", () => {
+			expect(macaddr8()).toBeInstanceOf(PgColumn);
+		});
+
+		test("dataType is set to macaddr8", () => {
+			const info = Object.fromEntries(Object.entries(macaddr8())).info;
+			expect(info.dataType).toBe("macaddr8");
+		});
+
+		test("default with string", () => {
+			const column = macaddr8().default("08:00:2b:01:02:03:04:05");
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			expect(info.defaultValue).toBe(
+				"d2247d08ab0a4e3182ee395a96f1bca39f4b3af439c8126df4707d69d68b7eb7:'08:00:2b:01:02:03:04:05'::macaddr8",
+			);
+		});
+
+		test("default with expression", () => {
+			const column = macaddr8();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.default(sql`'08:00:2b:01:02:03:04:05'::macaddr8`);
+			expect(info.defaultValue).toBe(
+				"d2247d08ab0a4e3182ee395a96f1bca39f4b3af439c8126df4707d69d68b7eb7:'08:00:2b:01:02:03:04:05'::macaddr8",
+			);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = macaddr8() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = macaddr8() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
+	});
+
+	describe("zod", () => {
+		describe("by default", () => {
+			test("input type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				const result = schema.safeParse("08:00:2b:01:02:03:04:05");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("08:00:2b:01:02:03:04:05");
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(true);
+				if (nullResult.success) {
+					expect(nullResult.data).toBe(null);
+				}
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("08:00:2b:01:02:03:04:05");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("08:00:2b:01:02:03:04:05");
+				}
+			});
+
+			test("output type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("08:00:2b:01:02:03:04:05");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("08:00:2b:01:02:03:04:05");
+				}
+			});
+
+			test("parses 64 bit mac addresses", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03:04:05").success).toBe(true);
+				expect(schema.safeParse("08-00-2b-01-02-03-04-05").success).toBe(true);
+			});
+
+			test("does not parse invalid mac 64 bit addresses", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("hello").success).toBe(false);
+				expect(schema.safeParse("256.1.1.1").success).toBe(false);
+				expect(schema.safeParse("08:00:2b:01:02").success).toBe(false);
+				expect(schema.safeParse("08:00:2b:01:02:05").success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("does not parse other types", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(new Date()).success).toBe(false);
+				expect(schema.safeParse(1).success).toBe(false);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8().default("08:00:2b:01:02:03:04:05"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03:04:05").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03:04:05").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8().notNull().default("08:00:2b:01:02:03:04:05"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03:04:05").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("input type is string with primary key", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03:04:05").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8().default("08:00:2b:01:02:03:04:05"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03:04:05").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8().notNull().default("08:00:2b:01:02:03:04:05"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03:04:05").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8().default("08:00:2b:01:02:03:04:05").notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("08:00:2b:01:02:03:04:05").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "undefined",
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "null",
+							path: [],
+							message: "Expected string, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a string", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "number",
+							path: [],
+							message: "Expected string, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a valid mac address", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse("192.23");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_string",
+							path: [],
+							message: "Invalid macaddr8",
+							validation: "regex",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
 		});
 	});
 });

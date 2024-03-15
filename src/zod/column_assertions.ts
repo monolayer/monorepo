@@ -1,21 +1,26 @@
+/* eslint-disable max-lines */
 import {
 	PgBigInt,
 	PgBigSerial,
 	PgBit,
 	PgBoolean,
 	PgBytea,
+	PgCIDR,
 	PgChar,
 	PgDate,
 	PgDoublePrecision,
 	PgEnum,
 	PgFloat4,
 	PgFloat8,
+	PgInet,
 	PgInt2,
 	PgInt4,
 	PgInt8,
 	PgInteger,
 	PgJson,
 	PgJsonB,
+	PgMacaddr,
+	PgMacaddr8,
 	PgNumeric,
 	PgReal,
 	PgStringColumn,
@@ -285,6 +290,38 @@ export function isVarbitColumn(
 		| PgGeneratedColumn<unknown, unknown>,
 ): column is PgVarbit {
 	return column instanceof PgVarbit;
+}
+
+export function isInetColumn(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgInet {
+	return column instanceof PgInet;
+}
+
+export function isCidrColumn(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgCIDR {
+	return column instanceof PgCIDR;
+}
+
+export function isMacaddrColumn(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgMacaddr {
+	return column instanceof PgMacaddr;
+}
+
+export function isMacaddr8Column(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgMacaddr8 {
+	return column instanceof PgMacaddr8;
 }
 
 export function testBoolish(val: unknown): val is Boolish {

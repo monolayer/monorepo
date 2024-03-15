@@ -90,6 +90,10 @@ function useSqlInDataType(dataType: string) {
 		case "xml":
 		case "bit":
 		case "varbit":
+		case "inet":
+		case "cidr":
+		case "macaddr":
+		case "macaddr8":
 			return true;
 		default:
 			break;

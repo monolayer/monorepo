@@ -4,6 +4,7 @@ import {
 	ColumnIdentity,
 	PgTimestamp,
 	PgTimestampTz,
+	type AnyPGColumn,
 	type PgChar,
 	type PgGeneratedColumn,
 	type PgInt2,
@@ -14,6 +15,7 @@ import {
 	type PgVarChar,
 } from "../schema/pg_column.js";
 import { columnData, customIssue } from "./helpers.js";
+import { timeRegex } from "./regexes/regex.js";
 import { baseSchema } from "./zod_schema.js";
 
 export function timestampSchema<
@@ -29,9 +31,6 @@ export function timestampSchema<
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-const TIME_REGEX =
-	/^((?:\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:[+-]\d{1,2}(?::?\d{2})?)?)|(\d{6}(?:[+-]\d{2}(?::?\d{2}){0,2})?))$/;
-
 export function timeSchema<T extends PgTime | PgTimeTz, PK extends boolean>(
 	column: T,
 	invalidTimeMessage: string,
@@ -41,7 +40,7 @@ export function timeSchema<T extends PgTime | PgTimeTz, PK extends boolean>(
 	const base = stringSchema(
 		"Expected string with time format",
 		isNullable,
-	).pipe(z.string().regex(TIME_REGEX, invalidTimeMessage));
+	).pipe(z.string().regex(timeRegex, invalidTimeMessage));
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
@@ -281,6 +280,17 @@ export function characterSchema<
 		) as unknown as ZodType<T, PK>;
 	}
 	return finishSchema(isNullable, z.string()) as unknown as ZodType<T, PK>;
+}
+
+export function regexStringSchema<T extends AnyPGColumn, PK extends boolean>(
+	column: AnyPGColumn,
+	regexp: RegExp,
+	errorMessage: string,
+): ZodType<T, PK> {
+	const data = columnData(column);
+	const isNullable = !data._primaryKey && data.info.isNullable === true;
+	const base = z.string().regex(regexp, errorMessage);
+	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
 export function generatedColumnSchema<

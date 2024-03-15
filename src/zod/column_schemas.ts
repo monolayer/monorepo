@@ -28,6 +28,10 @@ import {
 	PgUuid,
 	PgVarChar,
 	type PgBit,
+	type PgCIDR,
+	type PgInet,
+	type PgMacaddr,
+	type PgMacaddr8,
 	type PgTsquery,
 	type PgTsvector,
 	type PgVarbit,
@@ -40,6 +44,7 @@ import {
 	finishSchema,
 	integerSchema,
 	jsonSchema,
+	regexStringSchema,
 	timeSchema,
 	timestampSchema,
 	variablePrecisionSchema,
@@ -51,6 +56,12 @@ import {
 	nullableColumn,
 	toBooleanOrNull,
 } from "./helpers.js";
+import {
+	bitRegex,
+	cidrRegex,
+	macaddr8Regex,
+	macaddrRegex,
+} from "./regexes/regex.js";
 import { baseSchema } from "./zod_schema.js";
 
 export function pgBooleanSchema<T extends PgBoolean, PK extends boolean>(
@@ -316,14 +327,12 @@ export function stringSchema<
 	return finishSchema(isNullable, z.string()) as unknown as ZodType<T, PK>;
 }
 
-const BIT_REGEX = /^(0|1)+$/;
-
 export function bitSchema<T extends PgBit, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
-	const base = z.string().regex(BIT_REGEX, "Invalid bit");
+	const base = z.string().regex(bitRegex, "Invalid bit");
 	if (data.info.characterMaximumLength === null) {
 		data.info.characterMaximumLength = 1;
 	}
@@ -341,7 +350,7 @@ export function varbitSchema<T extends PgVarbit, PK extends boolean>(
 ): ZodType<T, PK> {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
-	const base = z.string().regex(BIT_REGEX, "Invalid bit");
+	const base = z.string().regex(bitRegex, "Invalid bit");
 	if (data.info.characterMaximumLength !== null) {
 		return finishSchema(
 			isNullable,
@@ -352,4 +361,31 @@ export function varbitSchema<T extends PgVarbit, PK extends boolean>(
 		) as unknown as ZodType<T, PK>;
 	}
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+}
+
+export function inetSchema<T extends PgInet, PK extends boolean>(
+	column: T,
+): ZodType<T, PK> {
+	const data = columnData(column);
+	const isNullable = !data._primaryKey && data.info.isNullable === true;
+	const base = z.string().ip();
+	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+}
+
+export function cidrSchema<T extends PgCIDR, PK extends boolean>(
+	column: T,
+): ZodType<T, PK> {
+	return regexStringSchema(column, cidrRegex, "Invalid cidr");
+}
+
+export function macaddrSchema<T extends PgMacaddr, PK extends boolean>(
+	column: T,
+): ZodType<T, PK> {
+	return regexStringSchema(column, macaddrRegex, "Invalid macaddr");
+}
+
+export function macaddr8Schema<T extends PgMacaddr8, PK extends boolean>(
+	column: T,
+): ZodType<T, PK> {
+	return regexStringSchema(column, macaddr8Regex, "Invalid macaddr8");
 }
