@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { ZodIssueCode, z } from "zod";
 import type { ZodType } from "../schema/inference.js";
 import {
@@ -26,7 +27,11 @@ import {
 	PgTimestampTz,
 	PgUuid,
 	PgVarChar,
-	type PgStringColumn,
+	type PgBit,
+	type PgTsquery,
+	type PgTsvector,
+	type PgVarbit,
+	type PgXML,
 } from "../schema/pg_column.js";
 import {
 	bigintSchema,
@@ -302,10 +307,49 @@ export function pgEnumSchema<T extends PgEnum<any>, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function stringSchema<T extends PgStringColumn, PK extends boolean>(
+export function stringSchema<
+	T extends PgTsquery | PgTsvector | PgXML,
+	PK extends boolean,
+>(column: T): ZodType<T, PK> {
+	const data = columnData(column);
+	const isNullable = !data._primaryKey && data.info.isNullable === true;
+	return finishSchema(isNullable, z.string()) as unknown as ZodType<T, PK>;
+}
+
+const BIT_REGEX = /^(0|1)+$/;
+
+export function bitSchema<T extends PgBit, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
-	return finishSchema(isNullable, z.string()) as unknown as ZodType<T, PK>;
+	const base = z.string().regex(BIT_REGEX, "Invalid bit");
+	if (data.info.characterMaximumLength === null) {
+		data.info.characterMaximumLength = 1;
+	}
+	return finishSchema(
+		isNullable,
+		base.max(
+			data.info.characterMaximumLength,
+			"Bit string length does not match type",
+		),
+	) as unknown as ZodType<T, PK>;
+}
+
+export function varbitSchema<T extends PgVarbit, PK extends boolean>(
+	column: T,
+): ZodType<T, PK> {
+	const data = columnData(column);
+	const isNullable = !data._primaryKey && data.info.isNullable === true;
+	const base = z.string().regex(BIT_REGEX, "Invalid bit");
+	if (data.info.characterMaximumLength !== null) {
+		return finishSchema(
+			isNullable,
+			base.max(
+				data.info.characterMaximumLength,
+				"Bit string length does not match type",
+			),
+		) as unknown as ZodType<T, PK>;
+	}
+	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }

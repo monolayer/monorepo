@@ -254,6 +254,17 @@ function transformDbColumnInfo(
 				row.datetime_precision =
 					row.atttypmod === -1 ? null : row.datetime_precision;
 				break;
+			case "bit varying":
+				dataTypeFullName =
+					row.atttypmod === -1
+						? "varbit"
+						: `varbit(${row.character_maximum_length})`;
+				break;
+			case "bit":
+				dataTypeFullName =
+					row.atttypmod === -1 ? "bit" : `bit(${row.character_maximum_length})`;
+				break;
+
 			default:
 				dataTypeFullName = row.data_type || "";
 				break;

@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, test } from "vitest";
 import {
 	bigint,
 	bigserial,
+	bit,
 	boolean,
 	bytea,
 	char,
@@ -28,6 +29,7 @@ import {
 	tsquery,
 	tsvector,
 	uuid,
+	varbit,
 	varchar,
 	xml,
 } from "~/schema/pg_column.js";
@@ -112,6 +114,11 @@ describe("Table create migrations", () => {
 						integer: integer(),
 						integerAlwaysAsIdentity: integer().generatedAlwaysAsIdentity(),
 						integerDefaultAsIdentity: integer().generatedByDefaultAsIdentity(),
+						bit: bit(),
+						secondBit: bit(10),
+						bitWithDefault: bit().default("1"),
+						varbit: varbit(),
+						varbitWithLength: varbit(10),
 					},
 				}),
 				books: table({
@@ -219,7 +226,15 @@ describe("Table create migrations", () => {
 						'addColumn("integer", "integer")',
 						'addColumn("integerAlwaysAsIdentity", "integer", (col) => col.notNull().generatedAlwaysAsIdentity())',
 						'addColumn("integerDefaultAsIdentity", "integer", (col) => col.notNull().generatedByDefaultAsIdentity())',
+						'addColumn("bit", sql`bit(1)`)',
+						'addColumn("secondBit", sql`bit(10)`)',
+						"addColumn(\"bitWithDefault\", sql`bit(1)`, (col) => col.defaultTo(sql`'1'::bit`))",
+						'addColumn("varbit", sql`varbit`)',
+						'addColumn("varbitWithLength", sql`varbit(10)`)',
 						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "users"."bitWithDefault" IS \'e7152e0146f926294bab63df630eed6658c5ce33ef4a38f1e030e0baaf3a3652\'`.execute(db);',
 					],
 				],
 				down: [["await db.schema", 'dropTable("users")', "execute();"]],

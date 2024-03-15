@@ -12,6 +12,7 @@ import {
 	DefaultValueDataTypes,
 	PgBigInt,
 	PgBigSerial,
+	PgBit,
 	PgBoolean,
 	PgBytea,
 	PgChar,
@@ -43,9 +44,11 @@ import {
 	PgTsvector,
 	PgUuid,
 	PgVarChar,
+	PgVarbit,
 	PgXML,
 	bigint,
 	bigserial,
+	bit,
 	boolean,
 	bytea,
 	char,
@@ -71,6 +74,7 @@ import {
 	tsquery,
 	tsvector,
 	uuid,
+	varbit,
 	varchar,
 	xml,
 	type Boolish,
@@ -12654,6 +12658,925 @@ describe("xml", () => {
 					expect(result.error.errors).toStrictEqual(expected);
 				}
 			});
+		});
+	});
+});
+
+describe("bit", () => {
+	test("returns a PgBit instance", () => {
+		const column = bit();
+		expect(column).toBeInstanceOf(PgBit);
+	});
+
+	describe("PgBit", () => {
+		test("inherits from PgColumn", () => {
+			expect(bit()).toBeInstanceOf(PgColumn);
+		});
+
+		test("default dataType is bit", () => {
+			const info = Object.fromEntries(Object.entries(bit())).info;
+			expect(info.dataType).toBe("bit(1)");
+		});
+
+		test("dataType with fixed length", () => {
+			const info = Object.fromEntries(Object.entries(bit(10))).info;
+			expect(info.dataType).toBe("bit(10)");
+		});
+
+		test("can set characterMaximumLength", () => {
+			const column = bit(5);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			expect(info.characterMaximumLength).toBe(5);
+		});
+
+		test("default with string", () => {
+			const column = bit().default("0");
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			expect(info.defaultValue).toBe(
+				"e96fd7d9805fd967e2596e131b4ff0f355bef764d1ee80151c9fee99be79ce58:'0'::bit",
+			);
+		});
+
+		test("default with expression", () => {
+			const column = bit();
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.default(sql`'0101'::bit(4)`);
+			expect(info.defaultValue).toBe(
+				"bb1177bbb02d51f4a99fe59ba3dba058b10e1a6a53990082b94fe8f82357a04a:'0101'::bit(4)",
+			);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = bit() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = bit() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
+	});
+
+	describe("zod", () => {
+		describe("by default", () => {
+			test("input type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				const result = schema.safeParse("1");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("1");
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(true);
+				if (nullResult.success) {
+					expect(nullResult.data).toBe(null);
+				}
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: bit().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("1");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("1");
+				}
+			});
+
+			test("output type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: bit().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("1");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("1");
+				}
+			});
+
+			test("parses strings", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+			});
+
+			test("parses null", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("does not parse other types", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(new Date()).success).toBe(false);
+				expect(schema.safeParse(1).success).toBe(false);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: bit().default("1"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: bit().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: bit()
+							.notNull()
+							.default(sql`to_bit("foo")`),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("input type is string with primary key", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: bit().default("0"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: bit().notNull().default("1"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("0").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: bit().default("1").notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("0").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bit().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "undefined",
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const tbl = table({
+					columns: {
+						id: bit().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "null",
+							path: [],
+							message: "Expected string, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a string", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "number",
+							path: [],
+							message: "Expected string, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a bit value", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse("a");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_string",
+							path: [],
+							message: "Invalid bit",
+							validation: "regex",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
+
+		test("bit value exceed default length", () => {
+			const tbl = table({
+				columns: {
+					id: bit(),
+				},
+			});
+			const schema = zodSchema(tbl).shape.id;
+			const result = schema.safeParse("11");
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "too_big",
+						type: "string",
+						exact: false,
+						inclusive: true,
+						maximum: 1,
+						path: [],
+						message: "Bit string length does not match type",
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
+		});
+
+		test("bit value exceed specified length", () => {
+			const tbl = table({
+				columns: {
+					id: bit(5),
+				},
+			});
+			const schema = zodSchema(tbl).shape.id;
+			const result = schema.safeParse("110010");
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "too_big",
+						type: "string",
+						exact: false,
+						inclusive: true,
+						maximum: 5,
+						path: [],
+						message: "Bit string length does not match type",
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
+		});
+	});
+});
+
+describe("varbit", () => {
+	test("returns a PgVarbit instance", () => {
+		const column = varbit();
+		expect(column).toBeInstanceOf(PgVarbit);
+	});
+
+	describe("PgVarbit", () => {
+		test("inherits from PgColumn", () => {
+			expect(varbit()).toBeInstanceOf(PgColumn);
+		});
+
+		test("dataType is set to varbit", () => {
+			const info = Object.fromEntries(Object.entries(varbit())).info;
+			expect(info.dataType).toBe("varbit");
+		});
+
+		test("can set characterMaximumLength", () => {
+			const column = varbit(5);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			expect(info.characterMaximumLength).toBe(5);
+		});
+
+		test("default with string", () => {
+			const column = varbit().default("0101");
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			expect(info.defaultValue).toBe(
+				"921497e4b9359b6df360e49e585561fa797eecd672737e20dea8ef2e7d80430a:'0101'::varbit",
+			);
+		});
+
+		test("default with expression", () => {
+			const column = varbit(4);
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.default(sql`'0101'::varbit(4)`);
+			expect(info.defaultValue).toBe(
+				"f84a42e2b9c47842767773d213daf8dc1d83a6c60fa27bcf86f4769992fd8e38:'0101'::varbit(4)",
+			);
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = varbit() as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = varbit() as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
+	});
+
+	describe("zod", () => {
+		describe("by default", () => {
+			test("input type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string | null | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				const result = schema.safeParse("1");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("1");
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(true);
+				if (nullResult.success) {
+					expect(nullResult.data).toBe(null);
+				}
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: varbit().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("1");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("1");
+				}
+			});
+
+			test("output type is string with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: varbit().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+				const result = schema.safeParse("1");
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toBe("1");
+				}
+			});
+
+			test("parses strings", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+			});
+
+			test("parses bit string of arbitrary length", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("11100").success).toBe(true);
+			});
+
+			test("parses null", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses undefined", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("does not parse other types", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(new Date()).success).toBe(false);
+				expect(schema.safeParse(1).success).toBe(false);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: varbit().default("1"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: varbit().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: varbit()
+							.notNull()
+							.default(sql`to_varbit("foo")`),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("input type is string with primary key", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: varbit().default("0"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: varbit().notNull().default("1"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("0").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: varbit().default("1").notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("0").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const tbl = table({
+					columns: {
+						id: varbit().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "undefined",
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const tbl = table({
+					columns: {
+						id: varbit().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "null",
+							path: [],
+							message: "Expected string, received null",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a string", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(12);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "string",
+							received: "number",
+							path: [],
+							message: "Expected string, received number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a bit value", () => {
+				const tbl = table({
+					columns: {
+						id: varbit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse("a");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_string",
+							path: [],
+							message: "Invalid bit",
+							validation: "regex",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
+
+		test("bit value exceed maximum length", () => {
+			const tbl = table({
+				columns: {
+					id: varbit(5),
+				},
+			});
+			const schema = zodSchema(tbl).shape.id;
+			const result = schema.safeParse("111011");
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "too_big",
+						type: "string",
+						exact: false,
+						inclusive: true,
+						maximum: 5,
+						path: [],
+						message: "Bit string length does not match type",
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
+		});
+
+		test("bit value exceed specified length", () => {
+			const tbl = table({
+				columns: {
+					id: varbit(5),
+				},
+			});
+			const schema = zodSchema(tbl).shape.id;
+			const result = schema.safeParse("110010");
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "too_big",
+						type: "string",
+						exact: false,
+						inclusive: true,
+						maximum: 5,
+						path: [],
+						message: "Bit string length does not match type",
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
 		});
 	});
 });

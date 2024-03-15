@@ -1,6 +1,7 @@
 import {
 	PgBigInt,
 	PgBigSerial,
+	PgBit,
 	PgBoolean,
 	PgBytea,
 	PgChar,
@@ -23,9 +24,12 @@ import {
 	PgTimeTz,
 	PgTimestamp,
 	PgTimestampTz,
+	PgTsquery,
 	PgTsvector,
 	PgUuid,
 	PgVarChar,
+	PgVarbit,
+	PgXML,
 	type Boolish,
 	type PgColumn,
 	type PgColumnBase,
@@ -241,6 +245,46 @@ export function isStringColumn(
 		| PgGeneratedColumn<unknown, unknown>,
 ): column is PgStringColumn {
 	return column instanceof PgStringColumn;
+}
+
+export function isTsvectorColumn(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgTsvector {
+	return column instanceof PgTsvector;
+}
+
+export function isXMLColumn(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgXML {
+	return column instanceof PgXML;
+}
+
+export function isTsQueryColumn(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgTsquery {
+	return column instanceof PgTsquery;
+}
+
+export function isBitColumn(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgBit {
+	return column instanceof PgBit;
+}
+
+export function isVarbitColumn(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgVarbit {
+	return column instanceof PgVarbit;
 }
 
 export function testBoolish(val: unknown): val is Boolish {

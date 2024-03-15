@@ -9,6 +9,7 @@ import {
 import { generatedColumnSchema } from "./base_schemas.js";
 import {
 	isBigInt,
+	isBitColumn,
 	isBytea,
 	isChar,
 	isDate,
@@ -27,15 +28,19 @@ import {
 	isPgBoolean,
 	isPgText,
 	isReal,
-	isStringColumn,
 	isTime,
 	isTimeTz,
 	isTimestamp,
 	isTimestampTz,
+	isTsQueryColumn,
+	isTsVector,
 	isUuid,
+	isVarbitColumn,
 	isVarchar,
+	isXMLColumn,
 } from "./column_assertions.js";
 import {
+	bitSchema,
 	pgBigintSchema,
 	pgBooleanSchema,
 	pgByteaSchema,
@@ -61,6 +66,7 @@ import {
 	pgUuidSchema,
 	pgVarcharSchema,
 	stringSchema,
+	varbitSchema,
 } from "./column_schemas.js";
 import { nullable, required } from "./refinements.js";
 
@@ -165,8 +171,20 @@ export function pgColumnSchema<
 	if (isChar(column)) {
 		return pgCharSchema(column);
 	}
-	if (isStringColumn(column)) {
+	if (isTsVector(column)) {
 		return stringSchema(column);
+	}
+	if (isTsQueryColumn(column)) {
+		return stringSchema(column);
+	}
+	if (isXMLColumn(column)) {
+		return stringSchema(column);
+	}
+	if (isBitColumn(column)) {
+		return bitSchema(column);
+	}
+	if (isVarbitColumn(column)) {
+		return varbitSchema(column);
 	}
 	return z.never() as unknown as ZodType<T, PK>;
 }

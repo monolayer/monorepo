@@ -1327,6 +1327,46 @@ export class PgXML extends PgStringColumn {
 	}
 }
 
+export abstract class PgBitStringColumn extends PgColumn<string, string> {
+	/**
+	 * @hidden
+	 */
+	constructor(dataType: string, maximumLength?: number) {
+		if (maximumLength !== undefined) {
+			super(`${dataType}(${maximumLength})`, dataType);
+			this.info.characterMaximumLength = maximumLength;
+		} else {
+			super(dataType, dataType);
+		}
+	}
+}
+
+export function bit(fixedLength?: number) {
+	return new PgBit(fixedLength);
+}
+
+export class PgBit extends PgBitStringColumn {
+	/**
+	 * @hidden
+	 */
+	constructor(fixedLength?: number) {
+		super("bit", fixedLength ?? 1);
+	}
+}
+
+export function varbit(maximumLength?: number) {
+	return new PgVarbit(maximumLength);
+}
+
+export class PgVarbit extends PgBitStringColumn {
+	/**
+	 * @hidden
+	 */
+	constructor(maximumLength?: number) {
+		super("varbit", maximumLength);
+	}
+}
+
 export type TableColumn =
 	| PgBigInt
 	| PgBigSerial
