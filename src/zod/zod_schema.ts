@@ -6,77 +6,85 @@ import {
 	type ColumnRecord,
 	type PgTable,
 } from "../schema/pg_table.js";
-import { generatedColumnSchema } from "./base_schemas.js";
 import {
-	isBigInt,
+	bitSchema,
 	isBitColumn,
-	isBytea,
+	isVarbitColumn,
+	varbitSchema,
+} from "./column_schemas/bit_string.js";
+import { isPgBoolean, pgBooleanSchema } from "./column_schemas/boolean.js";
+import { isBytea, pgByteaSchema } from "./column_schemas/bytea.js";
+import {
 	isChar,
-	isCidrColumn,
-	isDate,
-	isDoublePrecision,
-	isEnum,
-	isFloat4,
-	isFloat8,
-	isGeneratedColumn,
-	isInetColumn,
-	isInt2,
-	isInt4,
-	isInt8,
-	isInteger,
-	isJson,
-	isJsonB,
-	isMacaddr8Column,
-	isMacaddrColumn,
-	isNumeric,
-	isPgBoolean,
 	isPgText,
-	isReal,
+	isVarchar,
+	pgCharSchema,
+	pgTextSchema,
+	pgVarcharSchema,
+} from "./column_schemas/character.js";
+import {
+	isDate,
 	isTime,
 	isTimeTz,
 	isTimestamp,
 	isTimestampTz,
-	isTsQueryColumn,
-	isTsVector,
-	isUuid,
-	isVarbitColumn,
-	isVarchar,
-	isXMLColumn,
-} from "./column_assertions.js";
+	pgDateSchema,
+	pgTimeSchema,
+	pgTimeTzSchema,
+	pgTimestampSchema,
+	pgTimestampTzSchema,
+} from "./column_schemas/date_time.js";
+import { isEnum, pgEnumSchema } from "./column_schemas/enum.js";
 import {
-	bitSchema,
+	generatedColumnSchema,
+	isGeneratedColumn,
+} from "./column_schemas/generated.js";
+import {
+	isJson,
+	isJsonB,
+	pgJsonSchema,
+	pgJsonbSchema,
+} from "./column_schemas/json.js";
+import {
 	cidrSchema,
 	inetSchema,
+	isCidrColumn,
+	isInetColumn,
+	isMacaddr8Column,
+	isMacaddrColumn,
 	macaddr8Schema,
 	macaddrSchema,
+} from "./column_schemas/network_address.js";
+import {
+	isBigInt,
+	isDoublePrecision,
+	isFloat4,
+	isFloat8,
+	isInt2,
+	isInt4,
+	isInt8,
+	isInteger,
+	isNumeric,
+	isReal,
 	pgBigintSchema,
-	pgBooleanSchema,
-	pgByteaSchema,
-	pgCharSchema,
-	pgDateSchema,
 	pgDoublePrecisionSchema,
-	pgEnumSchema,
 	pgFloat4Schema,
 	pgFloat8Schema,
 	pgInt2Schema,
 	pgInt4Schema,
 	pgInt8Schema,
 	pgIntegerSchema,
-	pgJsonSchema,
-	pgJsonbSchema,
 	pgNumericSchema,
 	pgRealSchema,
-	pgTextSchema,
-	pgTimeSchema,
-	pgTimeTzSchema,
-	pgTimestampSchema,
-	pgTimestampTzSchema,
-	pgUuidSchema,
-	pgVarcharSchema,
-	stringSchema,
-	varbitSchema,
-} from "./column_schemas.js";
-import { nullable, required } from "./refinements.js";
+} from "./column_schemas/numeric.js";
+import {
+	isTsQueryColumn,
+	isTsvectorColumn,
+	tsquerySchema,
+	tsvectorSchema,
+} from "./column_schemas/text_search.js";
+import { isUuid, pgUuidSchema } from "./column_schemas/uuid.js";
+import { isXMLColumn, xmlSchema } from "./column_schemas/xml.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function zodSchema<T extends PgTable<any, any>>(table: T) {
@@ -87,14 +95,6 @@ export function zodSchema<T extends PgTable<any, any>>(table: T) {
 		});
 	}, z.object({}));
 	return z.object(columnSchema.shape) as unknown as TableSchema<T>;
-}
-export function baseSchema(isNullable: boolean, errorMessage: string) {
-	return z
-		.any()
-		.superRefine(required)
-		.superRefine((val, ctx) => {
-			nullable(val, ctx, isNullable, errorMessage);
-		});
 }
 
 // eslint-disable-next-line complexity
@@ -179,14 +179,14 @@ export function pgColumnSchema<
 	if (isChar(column)) {
 		return pgCharSchema(column);
 	}
-	if (isTsVector(column)) {
-		return stringSchema(column);
+	if (isTsvectorColumn(column)) {
+		return tsvectorSchema(column);
 	}
 	if (isTsQueryColumn(column)) {
-		return stringSchema(column);
+		return tsquerySchema(column);
 	}
 	if (isXMLColumn(column)) {
-		return stringSchema(column);
+		return xmlSchema(column);
 	}
 	if (isBitColumn(column)) {
 		return bitSchema(column);
@@ -210,5 +210,5 @@ export function pgColumnSchema<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type TableSchema<T extends PgTable<any, any>> =
+type TableSchema<T extends PgTable<any, any>> =
 	T extends PgTable<infer C, infer PK> ? ZodSchemaObject<C, PK> : never;

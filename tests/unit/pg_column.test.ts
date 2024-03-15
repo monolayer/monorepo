@@ -11851,9 +11851,8 @@ describe("tsvector", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "invalid_type",
-							expected: "string",
-							received: "undefined",
+							code: "custom",
+							fatal: true,
 							path: [],
 							message: "Required",
 						},
@@ -11874,11 +11873,10 @@ describe("tsvector", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "invalid_type",
-							expected: "string",
-							received: "null",
+							code: "custom",
+							fatal: true,
 							path: [],
-							message: "Expected string, received null",
+							message: "Expected string with tsvector format, received null",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -11897,11 +11895,9 @@ describe("tsvector", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "invalid_type",
-							expected: "string",
-							received: "number",
+							code: "custom",
 							path: [],
-							message: "Expected string, received number",
+							message: "Expected string with tsvector format, received number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -12229,9 +12225,8 @@ describe("tsquery", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "invalid_type",
-							expected: "string",
-							received: "undefined",
+							code: "custom",
+							fatal: true,
 							path: [],
 							message: "Required",
 						},
@@ -12252,11 +12247,10 @@ describe("tsquery", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "invalid_type",
-							expected: "string",
-							received: "null",
+							code: "custom",
+							fatal: true,
 							path: [],
-							message: "Expected string, received null",
+							message: "Expected string with tsquery format, received null",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -12275,11 +12269,9 @@ describe("tsquery", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "invalid_type",
-							expected: "string",
-							received: "number",
+							code: "custom",
 							path: [],
-							message: "Expected string, received number",
+							message: "Expected string with tsquery format, received number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -12610,9 +12602,8 @@ describe("xml", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "invalid_type",
-							expected: "string",
-							received: "undefined",
+							code: "custom",
+							fatal: true,
 							path: [],
 							message: "Required",
 						},
@@ -12633,11 +12624,10 @@ describe("xml", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "invalid_type",
-							expected: "string",
-							received: "null",
+							code: "custom",
+							fatal: true,
 							path: [],
-							message: "Expected string, received null",
+							message: "Expected string with xml format, received null",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
@@ -12656,11 +12646,9 @@ describe("xml", () => {
 				if (!result.success) {
 					const expected = [
 						{
-							code: "invalid_type",
-							expected: "string",
-							received: "number",
+							code: "custom",
 							path: [],
-							message: "Expected string, received number",
+							message: "Expected string with xml format, received number",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
