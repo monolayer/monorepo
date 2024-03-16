@@ -1,4 +1,5 @@
 import {
+	CamelCasePlugin,
 	Kysely,
 	PostgresDialect,
 	type Expression,
@@ -13,6 +14,10 @@ import {
 import type { CamelCaseOptions } from "~/config.js";
 import { type AnyPgDatabase } from "~/schema/pg_database.js";
 import { type MigrationSchema } from "../migrations/migration_schema.js";
+import {
+	dbCheckConstraintInfo,
+	localCheckConstraintInfo,
+} from "./check_constraints.js";
 import {
 	dbColumnInfo,
 	localColumnInfoByTable,
@@ -43,12 +48,14 @@ import {
 export function compileDefaultExpression(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expression: Expression<any>,
+	camelCase = false,
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({}),
 		}),
+		plugins: camelCase ? [new CamelCasePlugin()] : [],
 	});
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,6 +97,7 @@ export function localSchema(
 		index: localIndexInfoByTable(schema, camelCase),
 		foreignKeyConstraints: localForeignKeyConstraintInfo(schema, camelCase),
 		uniqueConstraints: localUniqueConstraintInfo(schema, camelCase),
+		checkConstraints: localCheckConstraintInfo(schema, camelCase),
 		primaryKey: localPrimaryKeyConstraintInfo(schema, camelCase),
 		triggers: {
 			...localTriggersInfo(schema, camelCase),
@@ -149,6 +157,15 @@ export async function remoteSchema(
 	const enumInfo = await dbEnumInfo(kysely, "public");
 	if (enumInfo.status === ActionStatus.Error) return enumInfo;
 
+	const remoteCheckConstraintInfo = await dbCheckConstraintInfo(
+		kysely,
+		"public",
+		tables,
+	);
+
+	if (remoteCheckConstraintInfo.status === ActionStatus.Error)
+		return remoteCheckConstraintInfo;
+
 	return {
 		status: ActionStatus.Success,
 		result: {
@@ -157,6 +174,7 @@ export async function remoteSchema(
 			index: remoteIndexInfo.result,
 			foreignKeyConstraints: remoteForeignKeyConstraintInfo.result,
 			uniqueConstraints: remoteUniqueConstraintInfo.result,
+			checkConstraints: remoteCheckConstraintInfo.result,
 			primaryKey: primaryKeyConstraintInfo.result,
 			triggers: triggerInfo.result,
 			enums: enumInfo.result,

@@ -4,6 +4,7 @@ import {
 	introspectTable,
 	type TableIntrospection,
 } from "./introspect_table.js";
+import type { PgCheck } from "./pg_check.js";
 import { TableColumn } from "./pg_column.js";
 import type { AnyPgDatabase } from "./pg_database.js";
 import type { PgForeignKey } from "./pg_foreign_key.js";
@@ -29,6 +30,7 @@ export type TableSchema<T, PK extends string> = {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		foreignKeys?: keyof T extends string ? PgForeignKey<keyof T, any>[] : [];
 		unique?: keyof T extends string ? PgUnique<keyof T>[] : [];
+		checks?: PgCheck[];
 	};
 };
 

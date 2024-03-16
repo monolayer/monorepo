@@ -20,6 +20,7 @@ export type PrimaryKeyInfo = Record<TableName, Record<Name, Definition>>;
 export type ForeignKeyInfo = Record<TableName, Record<Name, Definition>>;
 export type UniqueInfo = Record<TableName, Record<Name, Definition>>;
 export type TriggerInfo = Record<TableName, Record<Name, Definition>>;
+export type CheckInfo = Record<TableName, Record<Name, Definition>>;
 
 export type MigrationSchema = {
 	extensions: ExtensionInfo;
@@ -27,6 +28,7 @@ export type MigrationSchema = {
 	index: IndexInfo;
 	foreignKeyConstraints: ForeignKeyInfo;
 	uniqueConstraints: UniqueInfo;
+	checkConstraints: CheckInfo;
 	primaryKey: PrimaryKeyInfo;
 	triggers: TriggerInfo;
 	enums: EnumInfo;

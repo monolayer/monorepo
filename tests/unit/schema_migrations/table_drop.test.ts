@@ -468,6 +468,69 @@ describe("Table drop migrations", () => {
 		});
 	});
 
+	test<DbContext>("drop table with check constraints", async (context) => {
+		const database = pgDatabase({
+			tables: {
+				organizations: table({
+					columns: {},
+				}),
+			},
+		});
+		await context.kysely.schema.createTable("organizations").execute();
+
+		await context.kysely.schema
+			.createTable("books")
+			.addColumn("id", "integer", (col) => col.notNull())
+			.execute();
+
+		await context.kysely.schema
+			.alterTable("books")
+			.addCheckConstraint("971041d9_kinetic_chk", sql`"id" > 50`)
+			.execute();
+
+		await sql`COMMENT ON CONSTRAINT "971041d9_kinetic_chk" ON "books" IS \'971041d9_kinetic_chk\'`.execute(
+			context.kysely,
+		);
+
+		const expected = [
+			{
+				priority: 1003,
+				tableName: "books",
+				type: "dropConstraint",
+				down: [
+					[
+						'await sql`ALTER TABLE "books" ADD CONSTRAINT "971041d9_kinetic_chk" CHECK ((id > 50))`.execute(db);',
+					],
+					[
+						'await sql`COMMENT ON CONSTRAINT "971041d9_kinetic_chk" ON "books" IS \'971041d9_kinetic_chk\'`.execute(db);',
+					],
+				],
+				up: [[]],
+			},
+			{
+				priority: 1006,
+				tableName: "books",
+				type: "dropTable",
+				up: [["await db.schema", 'dropTable("books")', "execute();"]],
+				down: [
+					[
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("id", "integer", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			down: "reverse",
+		});
+	});
+
 	test<DbContext>("drop table with indexes", async (context) => {
 		const database = pgDatabase({
 			tables: {

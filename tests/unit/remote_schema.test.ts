@@ -118,6 +118,15 @@ describe("#remoteSchema", () => {
       COMMENT ON TRIGGER updated_at_remote_schema_books_trg ON remote_schema_books IS 'abcd';
     `.execute(kysely);
 
+		await kysely.schema
+			.alterTable("remote_schema_users")
+			.addCheckConstraint("book_id_kinetic_chk", sql`book_id > 5`)
+			.execute();
+
+		await sql`COMMENT ON CONSTRAINT "book_id_kinetic_chk" ON "remote_schema_users" IS 'abcd'`.execute(
+			kysely,
+		);
+
 		const expectedSchema = {
 			status: "Success",
 			result: {
@@ -279,6 +288,12 @@ describe("#remoteSchema", () => {
 							'"remote_schema_users_book_id_remote_schema_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES remote_schema_books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 					},
 				},
+				checkConstraints: {
+					remote_schema_users: {
+						book_id_kinetic_chk: "abcd:CHECK ((book_id > 5))",
+					},
+				},
+
 				primaryKey: {
 					remote_schema_users: {
 						remote_schema_users_id_kinetic_pk:
@@ -453,6 +468,7 @@ describe("#remoteSchema", () => {
 							'"remoteSchemaUsers_name_kinetic_key" UNIQUE NULLS NOT DISTINCT ("name")',
 					},
 				},
+				checkConstraints: {},
 				foreignKeyConstraints: {
 					remoteSchemaUsers: {
 						remoteSchemaUsers_book_id_remoteSchemaBooks_id_kinetic_fk:
@@ -528,6 +544,7 @@ describe("#remoteSchema", () => {
 				index: {},
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
+				checkConstraints: {},
 				primaryKey: {},
 				extensions: {},
 				triggers: {},
@@ -917,6 +934,7 @@ describe("#remoteSchema", () => {
 				index: {},
 				uniqueConstraints: {},
 				foreignKeyConstraints: {},
+				checkConstraints: {},
 				primaryKey: {},
 				triggers: {},
 				enums: {},

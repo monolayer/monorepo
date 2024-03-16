@@ -1,3 +1,4 @@
+import { CheckMigrationOpGenerator } from "./check.js";
 import { columnMigrationOpGenerator } from "./column.js";
 import { columnDataTypeMigrationOpGenerator } from "./column_change/data_type.js";
 import { columnDefaultMigrationOpGenerator } from "./column_change/default.js";
@@ -28,4 +29,5 @@ export const migrationOpGenerators = [
 	triggerMigrationOpGenerator,
 	enumMigrationOpGenerator,
 	ColumnNameMigrationOpGenerator,
+	CheckMigrationOpGenerator,
 ];

@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
+import { check } from "~/schema/pg_check.js";
 import {
 	bigint,
 	bigserial,
@@ -548,6 +549,99 @@ describe("Table create migrations", () => {
 		});
 	});
 
+	test<DbContext>("create table with check constraints", async (context) => {
+		const firstCheck = check(sql`${sql.ref("id")} > 50`);
+		const secondCheck = check(sql`${sql.ref("id")} < 50000`);
+
+		const books = table({
+			columns: {
+				id: integer(),
+			},
+			constraints: {
+				unique: [unique(["id"]).nullsNotDistinct()],
+				checks: [firstCheck, secondCheck],
+			},
+		});
+
+		const database = pgDatabase({
+			tables: {
+				books,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 2001,
+				tableName: "books",
+				type: "createTable",
+				up: [
+					[
+						"await db.schema",
+						'createTable("books")',
+						'addColumn("id", "integer")',
+						"execute();",
+					],
+				],
+				down: [["await db.schema", 'dropTable("books")', "execute();"]],
+			},
+			{
+				priority: 4002,
+				tableName: "books",
+				type: "createConstraint",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("books")',
+						'addUniqueConstraint("books_id_kinetic_key", ["id"], (col) => col.nullsNotDistinct())',
+						"execute();",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4002,
+				tableName: "books",
+				type: "createConstraint",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("books")',
+						'addCheckConstraint("918b4271_kinetic_chk", sql`"id" > 50`)',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON CONSTRAINT "918b4271_kinetic_chk" ON "books" IS \'918b4271\'`.execute(db);',
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4002,
+				tableName: "books",
+				type: "createConstraint",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("books")',
+						'addCheckConstraint("e37c55a5_kinetic_chk", sql`"id" < 50000`)',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_kinetic_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
+					],
+				],
+				down: [[]],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			down: "reverse",
+		});
+	});
+
 	test<DbContext>("create table with foreign keys", async (context) => {
 		const books = table({
 			columns: {
@@ -908,6 +1002,8 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 			},
 			indexes: [index(["id"]).unique()],
 		});
+		const firstCheck = check(sql`${sql.ref("oldBookId")} > 50`);
+		const secondCheck = check(sql`${sql.ref("oldBookId")} < 50000`);
 
 		const newBooks = table({
 			columns: {
@@ -921,6 +1017,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 					foreignKey(["oldBookId"], books, ["id"]),
 					foreignKey(["libraryBuildingId"], libraryBuilding, ["id"]),
 				],
+				checks: [firstCheck, secondCheck],
 			},
 			indexes: [index(["id"]).unique()],
 		});
@@ -1157,6 +1254,40 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 						'onDelete("no action")',
 						'onUpdate("no action")',
 						"execute();",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4002,
+				tableName: "new_books",
+				type: "createConstraint",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("new_books")',
+						'addCheckConstraint("60bcaca1_kinetic_chk", sql`"old_book_id" > 50`)',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON CONSTRAINT "60bcaca1_kinetic_chk" ON "new_books" IS \'60bcaca1\'`.execute(db);',
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4002,
+				tableName: "new_books",
+				type: "createConstraint",
+				up: [
+					[
+						"await db.schema",
+						'alterTable("new_books")',
+						'addCheckConstraint("1c05ff9f_kinetic_chk", sql`"old_book_id" < 50000`)',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON CONSTRAINT "1c05ff9f_kinetic_chk" ON "new_books" IS \'1c05ff9f\'`.execute(db);',
 					],
 				],
 				down: [[]],
