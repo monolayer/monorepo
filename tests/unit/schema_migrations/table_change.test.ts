@@ -590,7 +590,7 @@ describe("Table change migrations", () => {
 		BEFORE UPDATE ON users
 		FOR EACH ROW
 		EXECUTE FUNCTION moddatetime(updatedAt);
-		COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';
+		COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c272b6a6d0fd27c4c8374d3fa195f2f807743dc05c6862407641426841a';
 		`.execute(context.kysely);
 
 		const database = pgDatabase({
@@ -607,12 +607,16 @@ describe("Table change migrations", () => {
 							.fireWhen("before")
 							.events(["update"])
 							.forEach("row")
-							.function("moddatetime", [{ value: "updatedAt" }]),
+							.function("moddatetime", [
+								{ value: "updatedAt", columnName: true },
+							]),
 						foo_before_update_two: trigger()
 							.fireWhen("before")
 							.events(["update"])
 							.forEach("row")
-							.function("moddatetime", [{ value: "updatedAtTwo" }]),
+							.function("moddatetime", [
+								{ value: "updatedAtTwo", columnName: true },
+							]),
 					},
 				}),
 			},
@@ -628,7 +632,7 @@ describe("Table change migrations", () => {
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime(updatedAtTwo);COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b96840bff9ed3b7a45a66674d6934fd5507e7999c946416d53122eb5f3c8';\`.execute(db);`,
 					],
 				],
 				down: [
@@ -673,15 +677,15 @@ EXECUTE FUNCTION moddatetime(updatedAtTwo);COMMENT ON TRIGGER foo_before_update_
 			CREATE OR REPLACE TRIGGER foo_before_update_trg
 			BEFORE UPDATE ON users
 			FOR EACH ROW
-			EXECUTE FUNCTION moddatetime(updatedAt);
-			COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';
+			EXECUTE FUNCTION moddatetime('updatedAt');
+			COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c272b6a6d0fd27c4c8374d3fa195f2f807743dc05c6862407641426841a';
 		`.execute(context.kysely);
 
 		await sql`
 			CREATE OR REPLACE TRIGGER foo_before_update_two_trg
 			BEFORE UPDATE ON users
 			FOR EACH ROW
-			EXECUTE FUNCTION moddatetime(updatedAtTwo);
+			EXECUTE FUNCTION moddatetime('updatedAtTwo');
 			COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';
 			`.execute(context.kysely);
 
@@ -699,7 +703,9 @@ EXECUTE FUNCTION moddatetime(updatedAtTwo);COMMENT ON TRIGGER foo_before_update_
 							.fireWhen("before")
 							.events(["update"])
 							.forEach("row")
-							.function("moddatetime", [{ value: "updatedAt" }]),
+							.function("moddatetime", [
+								{ value: "updatedAt", columnName: true },
+							]),
 					},
 				}),
 			},
@@ -717,7 +723,7 @@ EXECUTE FUNCTION moddatetime(updatedAtTwo);COMMENT ON TRIGGER foo_before_update_
 				],
 				down: [
 					[
-						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedattwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';\`.execute(db);`,
+						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';\`.execute(db);`,
 					],
 				],
 			},

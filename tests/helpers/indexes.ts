@@ -29,11 +29,12 @@ export async function compileTrigger(
 	trigger: PgTrigger,
 	triggerName: string,
 	tableName: string,
+	camelCase = false,
 ) {
 	const kysely = await kyselyWithEmptyPool();
 
 	return triggerInfo(trigger, triggerName, tableName, kysely, {
-		enabled: false,
+		enabled: camelCase,
 		options: {},
 	});
 }

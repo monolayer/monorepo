@@ -216,9 +216,54 @@ EXECUTE FUNCTION check_account_update`;
 BEFORE DELETE ON accounts
 REFERENCING OLD TABLE AS old_table
 FOR EACH STATEMENT
-EXECUTE FUNCTION check_account_update(hello)`;
+EXECUTE FUNCTION check_account_update('hello')`;
 
 		const compiled = await compileTrigger(trg, "my_trigger_2", "accounts");
+		expect(compiled).toBe(expected);
+	});
+
+	test("trigger with function arguments as columns without camelCase", async () => {
+		const trg = trigger()
+			.fireWhen("before")
+			.events(["delete"])
+			.forEach("statement")
+			.referencingOldTableAs("old_table")
+			.function("check_account_update", [
+				{ value: "updatedAt", columnName: true },
+			]);
+
+		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
+BEFORE DELETE ON accounts
+REFERENCING OLD TABLE AS old_table
+FOR EACH STATEMENT
+EXECUTE FUNCTION check_account_update('updatedAt')`;
+
+		const compiled = await compileTrigger(trg, "my_trigger_2", "accounts");
+		expect(compiled).toBe(expected);
+	});
+
+	test("trigger with function arguments as columns with camelCase", async () => {
+		const trg = trigger()
+			.fireWhen("before")
+			.events(["delete"])
+			.forEach("statement")
+			.referencingOldTableAs("old_table")
+			.function("check_account_update", [
+				{ value: "updatedAt", columnName: true },
+			]);
+
+		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
+BEFORE DELETE ON accounts
+REFERENCING OLD TABLE AS old_table
+FOR EACH STATEMENT
+EXECUTE FUNCTION check_account_update('updated_at')`;
+
+		const compiled = await compileTrigger(
+			trg,
+			"my_trigger_2",
+			"accounts",
+			true,
+		);
 		expect(compiled).toBe(expected);
 	});
 });

@@ -799,12 +799,14 @@ describe("Table create migrations", () => {
 					.fireWhen("before")
 					.events(["update"])
 					.forEach("row")
-					.function("moddatetime", [{ value: "updatedAt" }]),
+					.function("moddatetime", [{ value: "updatedAt", columnName: true }]),
 				foo_before_update_two: trigger()
 					.fireWhen("before")
 					.events(["update"])
 					.forEach("row")
-					.function("moddatetime", [{ value: "updatedAtTwo" }]),
+					.function("moddatetime", [
+						{ value: "updatedAtTwo", columnName: true },
+					]),
 			},
 		});
 
@@ -860,7 +862,7 @@ describe("Table create migrations", () => {
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c272b6a6d0fd27c4c8374d3fa195f2f807743dc05c6862407641426841a';\`.execute(db);`,
 					],
 				],
 				down: [[]],
@@ -874,7 +876,7 @@ EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime(updatedAtTwo);COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b96840bff9ed3b7a45a66674d6934fd5507e7999c946416d53122eb5f3c8';\`.execute(db);`,
 					],
 				],
 				down: [[]],
@@ -1214,7 +1216,7 @@ EXECUTE FUNCTION moddatetime(updatedAtTwo);COMMENT ON TRIGGER foo_before_update_
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 BEFORE UPDATE ON trigger_table
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime(updated_at);COMMENT ON TRIGGER foo_before_update_trg ON trigger_table IS '00cbf9f010850e03fc0639e52f47751d58b6a78c0d8bc5b8d65b30e723b722ba';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER foo_before_update_trg ON trigger_table IS '7666bcb776b337bfab1e587a745579bd449dc6f961f5b51fad22cc2fb6166b6a';\`.execute(db);`,
 					],
 				],
 				down: [[]],
