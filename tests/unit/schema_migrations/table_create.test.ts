@@ -792,6 +792,7 @@ describe("Table create migrations", () => {
 			columns: {
 				id: integer(),
 				updatedAt: timestamp().default(sql`now()`),
+				updatedAtTwo: timestamp().default(sql`now()`),
 			},
 			triggers: {
 				foo_before_update: trigger()
@@ -799,6 +800,11 @@ describe("Table create migrations", () => {
 					.events(["update"])
 					.forEach("row")
 					.function("moddatetime", [{ value: "updatedAt" }]),
+				foo_before_update_two: trigger()
+					.fireWhen("before")
+					.events(["update"])
+					.forEach("row")
+					.function("moddatetime", [{ value: "updatedAtTwo" }]),
 			},
 		});
 
@@ -833,10 +839,14 @@ describe("Table create migrations", () => {
 						'createTable("users")',
 						'addColumn("id", "integer")',
 						'addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))',
+						'addColumn("updatedAtTwo", "timestamp", (col) => col.defaultTo(sql`now()`))',
 						"execute();",
 					],
 					[
 						'await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(db);',
+					],
+					[
+						'await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(db);',
 					],
 				],
 				down: [["await db.schema", 'dropTable("users")', "execute();"]],
@@ -851,6 +861,20 @@ describe("Table create migrations", () => {
 BEFORE UPDATE ON users
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime(updatedAt);COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';\`.execute(db);`,
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4004,
+				tableName: "users",
+				type: "createTrigger",
+				up: [
+					[
+						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION moddatetime(updatedAtTwo);COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';\`.execute(db);`,
 					],
 				],
 				down: [[]],

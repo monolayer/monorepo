@@ -16,18 +16,24 @@ export function triggerMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 ) {
+	if (isTriggerCreateFirst(diff)) {
+		return createTriggerFirstMigration(diff, addedTables);
+	}
 	if (isTriggerCreate(diff)) {
-		return createTriggerMigration(diff, addedTables);
+		return createTriggerMigration(diff);
+	}
+	if (isTriggerDropFirst(diff)) {
+		return dropTriggerFirstMigration(diff, droppedTables);
 	}
 	if (isTriggerDrop(diff)) {
-		return dropTriggerMigration(diff, droppedTables);
+		return dropTriggerMigration(diff);
 	}
 	if (isTriggerChange(diff)) {
 		return changeTriggerMigration(diff);
 	}
 }
 
-type TriggerCreateDiff = {
+type TriggerCreateFirstDiff = {
 	type: "CREATE";
 	path: ["triggers", string];
 	value: {
@@ -35,12 +41,24 @@ type TriggerCreateDiff = {
 	};
 };
 
-type TriggerDropDiff = {
+type TriggerCreateDiff = {
+	type: "CREATE";
+	path: ["triggers", string, string];
+	value: string;
+};
+
+type TriggerDropFirstDiff = {
 	type: "REMOVE";
 	path: ["triggers", string];
 	oldValue: {
 		[key: string]: string;
 	};
+};
+
+type TriggerDropDiff = {
+	type: "REMOVE";
+	path: ["triggers", string, string];
+	oldValue: string;
 };
 
 type TriggerChangeDiff = {
@@ -50,7 +68,9 @@ type TriggerChangeDiff = {
 	oldValue: string;
 };
 
-function isTriggerCreate(test: Difference): test is TriggerCreateDiff {
+function isTriggerCreateFirst(
+	test: Difference,
+): test is TriggerCreateFirstDiff {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 2 &&
@@ -60,13 +80,35 @@ function isTriggerCreate(test: Difference): test is TriggerCreateDiff {
 	);
 }
 
-function isTriggerDrop(test: Difference): test is TriggerDropDiff {
+function isTriggerCreate(test: Difference): test is TriggerCreateDiff {
+	return (
+		test.type === "CREATE" &&
+		test.path.length === 3 &&
+		test.path[0] === "triggers" &&
+		typeof test.path[1] === "string" &&
+		typeof test.path[2] === "string" &&
+		typeof test.value === "string"
+	);
+}
+
+function isTriggerDropFirst(test: Difference): test is TriggerDropFirstDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 2 &&
 		test.path[0] === "triggers" &&
 		typeof test.path[1] === "string" &&
 		typeof test.oldValue === "object"
+	);
+}
+
+function isTriggerDrop(test: Difference): test is TriggerDropDiff {
+	return (
+		test.type === "REMOVE" &&
+		test.path.length === 3 &&
+		test.path[0] === "triggers" &&
+		typeof test.path[1] === "string" &&
+		typeof test.path[2] === "string" &&
+		typeof test.oldValue === "string"
 	);
 }
 
@@ -83,8 +125,8 @@ function isTriggerChange(test: Difference): test is TriggerChangeDiff {
 	);
 }
 
-function createTriggerMigration(
-	diff: TriggerCreateDiff,
+function createTriggerFirstMigration(
+	diff: TriggerCreateFirstDiff,
 	addedTables: string[],
 ) {
 	const tableName = diff.path[1];
@@ -107,7 +149,30 @@ function createTriggerMigration(
 	}, [] as Changeset[]);
 }
 
-function dropTriggerMigration(diff: TriggerDropDiff, droppedTables: string[]) {
+function createTriggerMigration(diff: TriggerCreateDiff) {
+	const tableName = diff.path[1];
+	const triggerName = diff.path[2];
+	const trigger = diff.value.split(":");
+	const changeset: Changeset = {
+		priority: MigrationOpPriority.TriggerCreate,
+		tableName: tableName,
+		type: ChangeSetType.CreateTrigger,
+		up: [
+			executeKyselyDbStatement(
+				`${trigger[1]};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}';`,
+			),
+		],
+		down: [
+			executeKyselyDbStatement(`DROP TRIGGER ${triggerName} ON ${tableName}`),
+		],
+	};
+	return changeset;
+}
+
+function dropTriggerFirstMigration(
+	diff: TriggerDropFirstDiff,
+	droppedTables: string[],
+) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.oldValue).reduce((acc, [key, value]) => {
 		const trigger = value.split(":");
@@ -130,6 +195,29 @@ function dropTriggerMigration(diff: TriggerDropDiff, droppedTables: string[]) {
 		acc.push(changeset);
 		return acc;
 	}, [] as Changeset[]);
+}
+
+function dropTriggerMigration(diff: TriggerDropDiff) {
+	const tableName = diff.path[1];
+	const triggerName = diff.path[2];
+	const trigger = diff.oldValue.split(":");
+	const changeset: Changeset = {
+		priority: MigrationOpPriority.TriggerDrop,
+		tableName: tableName,
+		type: ChangeSetType.DropTrigger,
+		up: [
+			executeKyselyDbStatement(`DROP TRIGGER ${triggerName} ON ${tableName}`),
+		],
+		down: [
+			executeKyselyDbStatement(
+				`${trigger[1]?.replace(
+					"CREATE TRIGGER",
+					"CREATE OR REPLACE TRIGGER",
+				)};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}';`,
+			),
+		],
+	};
+	return changeset;
 }
 
 function changeTriggerMigration(diff: TriggerChangeDiff) {

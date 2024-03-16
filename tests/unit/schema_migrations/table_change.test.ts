@@ -1,9 +1,11 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, text, varchar } from "~/schema/pg_column.js";
+import { integer, text, timestamp, varchar } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
+import { extension } from "~/schema/pg_extension.js";
 import { table } from "~/schema/pg_table.js";
+import { trigger } from "~/schema/pg_trigger.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration_success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test_context.js";
 import { type DbContext } from "~tests/setup/kysely.js";
@@ -178,6 +180,7 @@ describe("Table change migrations", () => {
 			down: "reverse",
 		});
 	});
+
 	test<DbContext>("change column type", async (context) => {
 		await context.kysely.schema
 			.createTable("users")
@@ -556,6 +559,174 @@ describe("Table change migrations", () => {
 			context,
 			database,
 			expected,
+			down: "reverse",
+		});
+	});
+
+	test<DbContext>("add trigger", async (context) => {
+		await context.kysely.schema
+			.createTable("users")
+			.addColumn("name", "text")
+			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
+			.addColumn("updatedAtTwo", "timestamp", (col) =>
+				col.defaultTo(sql`now()`),
+			)
+			.execute();
+
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(
+			context.kysely,
+		);
+
+		await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(
+			context.kysely,
+		);
+
+		await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(
+			context.kysely,
+		);
+
+		await sql`
+		CREATE OR REPLACE TRIGGER foo_before_update_trg
+		BEFORE UPDATE ON users
+		FOR EACH ROW
+		EXECUTE FUNCTION moddatetime(updatedAt);
+		COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';
+		`.execute(context.kysely);
+
+		const database = pgDatabase({
+			extensions: [extension("moddatetime")],
+			tables: {
+				users: table({
+					columns: {
+						name: text(),
+						updatedAt: timestamp().default(sql`now()`),
+						updatedAtTwo: timestamp().default(sql`now()`),
+					},
+					triggers: {
+						foo_before_update: trigger()
+							.fireWhen("before")
+							.events(["update"])
+							.forEach("row")
+							.function("moddatetime", [{ value: "updatedAt" }]),
+						foo_before_update_two: trigger()
+							.fireWhen("before")
+							.events(["update"])
+							.forEach("row")
+							.function("moddatetime", [{ value: "updatedAtTwo" }]),
+					},
+				}),
+			},
+		});
+
+		const expected = [
+			{
+				priority: 4004,
+				tableName: "users",
+				type: "createTrigger",
+				up: [
+					[
+						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION moddatetime(updatedAtTwo);COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';\`.execute(db);`,
+					],
+				],
+				down: [
+					[
+						"await sql`DROP TRIGGER foo_before_update_two_trg ON users`.execute(db);",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected: expected,
+			down: "reverse",
+		});
+	});
+
+	test<DbContext>("remove trigger", async (context) => {
+		await context.kysely.schema
+			.createTable("users")
+			.addColumn("name", "text")
+			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
+			.addColumn("updatedAtTwo", "timestamp", (col) =>
+				col.defaultTo(sql`now()`),
+			)
+			.execute();
+
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(
+			context.kysely,
+		);
+
+		await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(
+			context.kysely,
+		);
+
+		await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(
+			context.kysely,
+		);
+
+		await sql`
+			CREATE OR REPLACE TRIGGER foo_before_update_trg
+			BEFORE UPDATE ON users
+			FOR EACH ROW
+			EXECUTE FUNCTION moddatetime(updatedAt);
+			COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';
+		`.execute(context.kysely);
+
+		await sql`
+			CREATE OR REPLACE TRIGGER foo_before_update_two_trg
+			BEFORE UPDATE ON users
+			FOR EACH ROW
+			EXECUTE FUNCTION moddatetime(updatedAtTwo);
+			COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';
+			`.execute(context.kysely);
+
+		const database = pgDatabase({
+			extensions: [extension("moddatetime")],
+			tables: {
+				users: table({
+					columns: {
+						name: text(),
+						updatedAt: timestamp().default(sql`now()`),
+						updatedAtTwo: timestamp().default(sql`now()`),
+					},
+					triggers: {
+						foo_before_update: trigger()
+							.fireWhen("before")
+							.events(["update"])
+							.forEach("row")
+							.function("moddatetime", [{ value: "updatedAt" }]),
+					},
+				}),
+			},
+		});
+
+		const expected = [
+			{
+				priority: 1001,
+				tableName: "users",
+				type: "dropTrigger",
+				up: [
+					[
+						"await sql`DROP TRIGGER foo_before_update_two_trg ON users`.execute(db);",
+					],
+				],
+				down: [
+					[
+						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedattwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';\`.execute(db);`,
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected: expected,
 			down: "reverse",
 		});
 	});
