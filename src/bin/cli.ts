@@ -2,6 +2,7 @@
 
 import { Command } from "@commander-js/extra-typings";
 import { exit } from "process";
+import { migrationScaffold } from "~/cli/actions/migration_scaffold.js";
 import { seed } from "~/cli/actions/seed.js";
 import { dbCreate } from "../cli/actions/db_create.js";
 import { dbDrop } from "../cli/actions/db_drop.js";
@@ -146,6 +147,13 @@ async function main() {
 		)
 		.action(async (opts) => {
 			await pendingMigrations(opts.environment);
+		});
+
+	migration
+		.command("scaffold")
+		.description("create and empty migration file")
+		.action(async () => {
+			await migrationScaffold();
 		});
 
 	program.exitOverride();
