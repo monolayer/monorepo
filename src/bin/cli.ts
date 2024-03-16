@@ -57,25 +57,11 @@ async function main() {
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in kinetic.ts",
-			"development",
 		)
-		.action(async (opts) => {
-			await seed(opts);
-		});
-
-	program
-		.command("seed:replant")
-		.description(
-			"Truncate tables in the current environment database and seed the database",
-		)
-		.option(
-			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
-			"development",
-		)
+		.option("-r, --replant", "Truncate tables before seeding")
 		.option("-d, --disable-warnings", "disable truncation warnings")
 		.action(async (opts) => {
-			await seed(opts, true);
+			await seed(opts);
 		});
 
 	program

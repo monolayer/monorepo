@@ -11,16 +11,17 @@ import { fetchPendingMigrations } from "~/migrations/info.js";
 import { ActionStatus } from "../command.js";
 import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
-export async function seed(
-	options: { environment: string; disableWarnings?: boolean },
-	replant = false,
-) {
-	p.intro(`${replant ? "Truncate and " : ""}Seed Database`);
+export async function seed(options: {
+	environment?: string;
+	disableWarnings?: true;
+	replant?: true;
+}) {
+	p.intro(`${options.replant ? "Truncate and " : ""}Seed Database`);
 	const config = await importConfig();
 
 	const environmentConfig = checkEnvironmentIsConfigured(
 		config,
-		options.environment,
+		options.environment || "development",
 		{
 			outro: true,
 		},
@@ -89,7 +90,7 @@ export async function seed(
 		exit(1);
 	}
 
-	if (replant) {
+	if (options.replant) {
 		await truncateAllTables(
 			db,
 			environmentConfig.database || "",
