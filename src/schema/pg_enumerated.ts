@@ -8,10 +8,21 @@ export class EnumType<V extends string> {
 	/**
 	 * @hidden
 	 */
+	protected isExternal: boolean;
+	/**
+	 * @hidden
+	 */
 	constructor(
 		public name: string,
 		public values: V[],
-	) {}
+	) {
+		this.isExternal = false;
+	}
+
+	external() {
+		this.isExternal = true;
+		return this;
+	}
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

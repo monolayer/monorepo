@@ -59,10 +59,28 @@ export function localEnumInfo(schema: AnyPgDatabase) {
 	const types = PgDatabase.info(schema).types;
 	return types.reduce<EnumInfo>((acc, type) => {
 		if (type instanceof EnumType) {
+			if (isExternalEnum(type)) {
+				return acc;
+			}
 			acc[type.name] = type.values.join(", ");
 		}
 		return acc;
 	}, {});
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isExternalEnum(enumType: EnumType<any>): boolean {
+	assertEnumWithInfo(enumType);
+	return enumType.isExternal;
+}
+
 export type EnumInfo = Record<string, string>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function assertEnumWithInfo<T extends EnumType<any>>(
+	val: T,
+): asserts val is T & {
+	isExternal: boolean;
+} {
+	true;
+}

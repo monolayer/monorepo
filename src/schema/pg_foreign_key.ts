@@ -15,6 +15,11 @@ export class PgForeignKey<T extends string, C extends AnyPgTable> {
 	/**
 	 * @hidden
 	 */
+	protected isExternal: boolean;
+
+	/**
+	 * @hidden
+	 */
 	protected options: ForeignKeyOptions<C>;
 
 	/**
@@ -28,6 +33,7 @@ export class PgForeignKey<T extends string, C extends AnyPgTable> {
 		targetTable: C,
 		targetColumns: (keyof C)[],
 	) {
+		this.isExternal = false;
 		this.options = {
 			columns: this.columns,
 			targetTable,
@@ -44,6 +50,11 @@ export class PgForeignKey<T extends string, C extends AnyPgTable> {
 
 	updateRule(rule: Lowercase<ForeignKeyRule>) {
 		this.options.updateRule = rule.toUpperCase() as ForeignKeyRule;
+		return this;
+	}
+
+	external() {
+		this.isExternal = true;
 		return this;
 	}
 }
@@ -64,14 +75,25 @@ export function foreignKey<T extends string, C extends AnyPgTable>(
 export function foreignKeyOptions<T extends PgForeignKey<any, any>>(
 	foreignKey: T,
 ) {
-	assertForeignKeyWithOptions(foreignKey);
+	assertForeignKeyWithInfo(foreignKey);
 	return foreignKey.options;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function assertForeignKeyWithOptions<T extends PgForeignKey<any, any>>(
+export function isExternalForeignKey<T extends PgForeignKey<any, any>>(
+	foreignKey: T,
+) {
+	assertForeignKeyWithInfo(foreignKey);
+	return foreignKey.isExternal;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function assertForeignKeyWithInfo<T extends PgForeignKey<any, any>>(
 	val: T,
+): asserts val is T & {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-): asserts val is T & { options: ForeignKeyOptions<PgTable<any, any>> } {
+	options: ForeignKeyOptions<PgTable<any, any>>;
+	isExternal: boolean;
+} {
 	true;
 }

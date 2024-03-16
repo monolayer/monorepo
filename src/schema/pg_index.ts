@@ -23,6 +23,11 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
 	/**
 	 * @hidden
 	 */
+	protected isExternal: boolean;
+
+	/**
+	 * @hidden
+	 */
 	protected options: IndexOptions;
 
 	/**
@@ -34,6 +39,7 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
 		 */
 		protected columns: T[],
 	) {
+		this.isExternal = false;
 		this.options = {
 			ifNotExists: false,
 			unique: false,
@@ -91,6 +97,11 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
 		this.options.where = args;
 		return this;
 	}
+
+	external() {
+		this.isExternal = true;
+		return this;
+	}
 }
 
 export function index<T extends string | (string & Record<string, never>)>(
@@ -101,13 +112,19 @@ export function index<T extends string | (string & Record<string, never>)>(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function indexOptions<T extends PgIndex<any>>(index: T) {
-	assertIndexWithOptions(index);
+	assertIndexWithInfo(index);
 	return index.options;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function assertIndexWithOptions<T extends PgIndex<any>>(
+export function isExternalIndex<T extends PgIndex<any>>(index: T) {
+	assertIndexWithInfo(index);
+	return index.isExternal;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function assertIndexWithInfo<T extends PgIndex<any>>(
 	val: T,
-): asserts val is T & { options: IndexOptions } {
+): asserts val is T & { options: IndexOptions; isExternal: boolean } {
 	true;
 }

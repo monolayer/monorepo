@@ -7,7 +7,11 @@ import {
 	type ColumnInfo,
 } from "./pg_column.js";
 import { PgDatabase, type AnyPgDatabase } from "./pg_database.js";
-import { foreignKeyOptions, type PgForeignKey } from "./pg_foreign_key.js";
+import {
+	foreignKeyOptions,
+	isExternalForeignKey,
+	type PgForeignKey,
+} from "./pg_foreign_key.js";
 import { AnyPgTable, ColumnRecord, tableInfo } from "./pg_table.js";
 import { PgTrigger, TriggerEvent, TriggerFiringTime } from "./pg_trigger.js";
 import { uniqueConstraintOptions, type PgUnique } from "./pg_unique.js";
@@ -34,6 +38,7 @@ interface ForeignKeyIntrospection {
 	targetColumns: string[];
 	deleteRule?: ForeignKeyRule;
 	updateRule?: ForeignKeyRule;
+	isExternal: boolean;
 }
 
 interface UniqueConstraintIntrospection {
@@ -106,13 +111,14 @@ function foreignKeyInfo(
 ) {
 	return (foreignKeys || []).map<ForeignKeyIntrospection>((fk) => {
 		const options = foreignKeyOptions(fk);
-
+		const isExternal = isExternalForeignKey(fk);
 		return {
 			columns: options.columns as string[],
 			targetTable: findTableInSchema(options.targetTable, tables) || "",
 			targetColumns: options.targetColumns,
 			deleteRule: options.deleteRule,
 			updateRule: options.updateRule,
+			isExternal: isExternal,
 		};
 	});
 }
@@ -172,7 +178,7 @@ export function introspectTable(table: AnyPgTable) {
 		foreignKeys: foreignKeyInfo(
 			schema.constraints?.foreignKeys,
 			PgDatabase.info(info.database || ({} as AnyPgDatabase)).tables,
-		),
+		).filter((fk) => fk.isExternal === false),
 		uniqueConstraints: uniqueConstraintInfo(schema.constraints?.unique),
 		triggers: triggerInfo(schema.triggers),
 	};

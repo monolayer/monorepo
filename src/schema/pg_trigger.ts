@@ -13,6 +13,11 @@ export class PgTrigger {
 	/**
 	 * @hidden
 	 */
+	protected isExternal: boolean;
+
+	/**
+	 * @hidden
+	 */
 	static info(trigger: PgTrigger) {
 		return {
 			firingTime: trigger.#firingTime,
@@ -24,6 +29,7 @@ export class PgTrigger {
 			forEach: trigger.#forEach,
 			functionName: trigger.#functionName,
 			functionArgs: trigger.#functionArgs,
+			isExternal: trigger.isExternal,
 		};
 	}
 
@@ -67,7 +73,9 @@ export class PgTrigger {
 	/**
 	 * @hidden
 	 */
-	constructor() {}
+	constructor() {
+		this.isExternal = false;
+	}
 
 	events(events: TriggerEvent[]) {
 		this.#events = events;
@@ -110,6 +118,11 @@ export class PgTrigger {
 	) {
 		this.#functionName = functionName;
 		this.#functionArgs = functionArgs;
+		return this;
+	}
+
+	external() {
+		this.isExternal = true;
 		return this;
 	}
 }

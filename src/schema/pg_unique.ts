@@ -11,6 +11,11 @@ export class PgUnique<T extends string> {
 	/**
 	 * @hidden
 	 */
+	protected isExternal: boolean;
+
+	/**
+	 * @hidden
+	 */
 	protected options: UniqueConstraintOptions;
 
 	/**
@@ -22,6 +27,7 @@ export class PgUnique<T extends string> {
 		 */
 		protected columns: T[],
 	) {
+		this.isExternal = false;
 		this.options = {
 			columns: this.columns,
 			nullsDistinct: true,
@@ -32,19 +38,36 @@ export class PgUnique<T extends string> {
 		this.options.nullsDistinct = false;
 		return this;
 	}
+
+	external() {
+		this.isExternal = true;
+		return this;
+	}
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function uniqueConstraintOptions<T extends PgUnique<any>>(
 	uniqueConstraint: T,
 ) {
-	assertUniqueConstraintWithOptions(uniqueConstraint);
+	assertUniqueConstraintWithInfo(uniqueConstraint);
 	return uniqueConstraint.options;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function assertUniqueConstraintWithOptions<T extends PgUnique<any>>(
+export function isExternalUnique<T extends PgUnique<any>>(uniqueConstraint: T) {
+	assertUniqueConstraintWithInfo(uniqueConstraint);
+	return uniqueConstraint.isExternal;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function assertUniqueConstraintWithInfo<T extends PgUnique<any>>(
 	val: T,
-): asserts val is T & { options: UniqueConstraintOptions } {
+): asserts val is T & {
+	options: UniqueConstraintOptions;
+	isExternal: boolean;
+} {
 	true;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyPgUnique = PgUnique<any>;

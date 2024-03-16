@@ -144,6 +144,9 @@ export function localTriggersInfo(
 			}
 			for (const trigger of Object.entries(triggers || {})) {
 				const triggerName = `${trigger[0]}_trg`.toLowerCase();
+				if (PgTrigger.info(trigger[1]).isExternal) {
+					return acc;
+				}
 				const hash = createHash("sha256");
 				const compiledTrigger = triggerInfo(
 					trigger[1],

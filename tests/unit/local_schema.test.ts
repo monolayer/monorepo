@@ -966,3 +966,249 @@ test("#localSchemaCamelCase", () => {
 		}),
 	).toStrictEqual(expectedLocalSchema);
 });
+
+describe("#localSchema with external objects", () => {
+	test("discard primary and foreign keys", () => {
+		const books = table({
+			columns: {
+				id: integer().notNull(),
+			},
+			constraints: {
+				primaryKey: primaryKey(["id"]).external(),
+			},
+		});
+
+		const authors = table({
+			columns: {
+				name: varchar().notNull(),
+				book_id: integer(),
+			},
+			constraints: {
+				foreignKeys: [foreignKey(["book_id"], books, ["id"]).external()],
+			},
+		});
+		const database = pgDatabase({
+			tables: {
+				books,
+				authors,
+			},
+		});
+
+		const expectedLocalSchema = {
+			table: {
+				books: {
+					id: {
+						characterMaximumLength: null,
+						columnName: "id",
+						dataType: "integer",
+						datetimePrecision: null,
+						defaultValue: null,
+						identity: null,
+						isNullable: false,
+						numericPrecision: null,
+						numericScale: null,
+						renameFrom: null,
+						tableName: "books",
+						enum: false,
+					},
+				},
+				authors: {
+					book_id: {
+						characterMaximumLength: null,
+						columnName: "book_id",
+						dataType: "integer",
+						datetimePrecision: null,
+						defaultValue: null,
+						enum: false,
+						identity: null,
+						isNullable: true,
+						numericPrecision: null,
+						numericScale: null,
+						renameFrom: null,
+						tableName: "authors",
+					},
+					name: {
+						characterMaximumLength: null,
+						columnName: "name",
+						dataType: "varchar",
+						datetimePrecision: null,
+						defaultValue: null,
+						enum: false,
+						identity: null,
+						isNullable: false,
+						numericPrecision: null,
+						numericScale: null,
+						renameFrom: null,
+						tableName: "authors",
+					},
+				},
+			},
+			index: {},
+			foreignKeyConstraints: {},
+			uniqueConstraints: {},
+			primaryKey: {},
+			extensions: {},
+			triggers: {},
+			enums: {},
+		};
+
+		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+			expectedLocalSchema,
+		);
+	});
+
+	test("discard indexes", () => {
+		const books = table({
+			columns: {
+				id: integer().notNull(),
+			},
+			indexes: [index(["id"]).external()],
+		});
+		const database = pgDatabase({
+			tables: {
+				books,
+			},
+		});
+
+		const expectedLocalSchema = {
+			table: {
+				books: {
+					id: {
+						characterMaximumLength: null,
+						columnName: "id",
+						dataType: "integer",
+						datetimePrecision: null,
+						defaultValue: null,
+						identity: null,
+						isNullable: false,
+						numericPrecision: null,
+						numericScale: null,
+						renameFrom: null,
+						tableName: "books",
+						enum: false,
+					},
+				},
+			},
+			index: {},
+			foreignKeyConstraints: {},
+			uniqueConstraints: {},
+			primaryKey: {},
+			extensions: {},
+			triggers: {},
+			enums: {},
+		};
+
+		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+			expectedLocalSchema,
+		);
+	});
+
+	test("discard unique constraints", () => {
+		const books = table({
+			columns: {
+				name: integer(),
+			},
+			constraints: {
+				unique: [unique(["name"]).external()],
+			},
+		});
+		const database = pgDatabase({
+			tables: {
+				books,
+			},
+		});
+
+		const expectedLocalSchema = {
+			table: {
+				books: {
+					name: {
+						characterMaximumLength: null,
+						columnName: "name",
+						dataType: "integer",
+						datetimePrecision: null,
+						defaultValue: null,
+						identity: null,
+						isNullable: true,
+						numericPrecision: null,
+						numericScale: null,
+						renameFrom: null,
+						tableName: "books",
+						enum: false,
+					},
+				},
+			},
+			index: {},
+			foreignKeyConstraints: {},
+			uniqueConstraints: {},
+			primaryKey: {},
+			extensions: {},
+			triggers: {},
+			enums: {},
+		};
+
+		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+			expectedLocalSchema,
+		);
+	});
+
+	test("discard triggers", () => {
+		const database = pgDatabase({
+			tables: {
+				users: table({
+					columns: {},
+					triggers: {
+						foo_before_update: trigger()
+							.fireWhen("before")
+							.events(["update"])
+							.forEach("row")
+							.function("moddatetime", [{ column: "updatedAt" }])
+							.external(),
+					},
+				}),
+			},
+		});
+
+		const expectedLocalSchema = {
+			table: {
+				users: {},
+			},
+			index: {},
+			foreignKeyConstraints: {},
+			uniqueConstraints: {},
+			primaryKey: {},
+			extensions: {},
+			triggers: {},
+			enums: {},
+		};
+
+		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+			expectedLocalSchema,
+		);
+	});
+
+	test("discard enums", () => {
+		const userStatus = enumType("user_status", [
+			"active",
+			"inactive",
+		]).external();
+		const database = pgDatabase({
+			types: [userStatus],
+			tables: {},
+		});
+
+		const expectedLocalSchema = {
+			table: {},
+			index: {},
+			foreignKeyConstraints: {},
+			uniqueConstraints: {},
+			primaryKey: {},
+			extensions: {},
+			triggers: {},
+			enums: {},
+		};
+
+		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+			expectedLocalSchema,
+		);
+	});
+});

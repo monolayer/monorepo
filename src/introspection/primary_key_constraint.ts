@@ -11,7 +11,12 @@ import {
 	type PrimaryKeyInfo,
 } from "~/migrations/migration_schema.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
-import { tableInfo, type ColumnRecord } from "~/schema/pg_table.js";
+import { PgPrimaryKey, type AnyPgPrimaryKey } from "~/schema/pg_primary_key.js";
+import {
+	tableInfo,
+	type AnyPgTable,
+	type ColumnRecord,
+} from "~/schema/pg_table.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export type PrimaryKeyConstraintInfo = {
@@ -95,7 +100,7 @@ export function localPrimaryKeyConstraintInfo(
 			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const columns = tableInfo(tableDefinition).schema.columns as ColumnRecord;
 			const primaryKeys = primaryKeyColumns(columns, camelCase);
-			if (primaryKeys.length !== 0) {
+			if (primaryKeys.length !== 0 && !isExternalPrimaryKey(tableDefinition)) {
 				const keyName = `${transformedTableName}_${primaryKeys
 					.sort()
 					.join("_")}_kinetic_pk`;
@@ -110,6 +115,14 @@ export function localPrimaryKeyConstraintInfo(
 			return acc;
 		},
 		{},
+	);
+}
+
+function isExternalPrimaryKey(table: AnyPgTable) {
+	const pgPrimaryKey = tableInfo(table).schema?.constraints
+		?.primaryKey as unknown as AnyPgPrimaryKey | undefined;
+	return (
+		pgPrimaryKey !== undefined && PgPrimaryKey.info(pgPrimaryKey).isExternal
 	);
 }
 

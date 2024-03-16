@@ -497,6 +497,83 @@ describe("pgTable definition", () => {
 			});
 		});
 
+		describe("external primary key columns", () => {
+			test("non nullable selects", () => {
+				const tbl = table({
+					columns: {
+						demo: bigint(),
+						id: integer(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["demo", "id"]).external(),
+					},
+				});
+				type expectedType = {
+					id: number;
+					demo: string;
+				};
+
+				type InferredType = Selectable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("non nullable and required inserts", () => {
+				const tbl = table({
+					columns: {
+						id: integer(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id: number | string;
+				};
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("non nullable and optional updates", () => {
+				const tbl = table({
+					columns: {
+						id: integer(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id?: number | string;
+				};
+				type InferredType = Updateable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("infer select, insert, and update", () => {
+				const tbl = table({
+					columns: {
+						id: integer(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id: {
+						readonly __select__: number;
+						readonly __insert__: string | number;
+						readonly __update__: string | number;
+					};
+				};
+				type InferredType = typeof tbl.infer;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+		});
+
 		describe("non nullable primary key columns", () => {
 			test("non nullable selects", () => {
 				const tbl = table({
@@ -556,6 +633,80 @@ describe("pgTable definition", () => {
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
+					},
+				});
+				type expectedType = {
+					id: {
+						readonly __select__: number;
+						readonly __insert__: string | number;
+						readonly __update__: string | number;
+					};
+				};
+				type InferredType = typeof tbl.infer;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+		});
+
+		describe("non nullable external primary key columns", () => {
+			test("non nullable selects", () => {
+				const tbl = table({
+					columns: {
+						id: integer().notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id: number;
+				};
+				type InferredType = Selectable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("non nullable and required inserts", () => {
+				const tbl = table({
+					columns: {
+						id: integer().notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id: number | string;
+				};
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("non nullable and optional updates", () => {
+				const tbl = table({
+					columns: {
+						id: integer().notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id?: number | string;
+				};
+				type InferredType = Updateable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("infer select, insert, and update", () => {
+				const tbl = table({
+					columns: {
+						id: integer().notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
 					},
 				});
 				type expectedType = {
@@ -692,6 +843,80 @@ describe("pgTable definition", () => {
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
+					},
+				});
+				type expectedType = {
+					id: {
+						readonly __select__: number;
+						readonly __insert__: string | number | undefined;
+						readonly __update__: string | number;
+					};
+				};
+				type InferredType = typeof tbl.infer;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+		});
+
+		describe("generated (serial) external primary key columns", () => {
+			test("non nullable selects", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id: number;
+				};
+				type InferredType = Selectable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("non nullable and optional inserts", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id?: number | string;
+				};
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("non nullable and optional updates", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id?: number | string;
+				};
+				type InferredType = Updateable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("infer select, insert, and update", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
 					},
 				});
 				type expectedType = {
@@ -845,6 +1070,82 @@ describe("pgTable definition", () => {
 			});
 		});
 
+		describe("generated (by default as identity) external primary key columns", () => {
+			test("non nullable selects", () => {
+				const tbl = table({
+					columns: {
+						id: integer().generatedByDefaultAsIdentity(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id: number;
+				};
+				type InferredType = Selectable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("non nullable optional inserts", () => {
+				const tbl = table({
+					columns: {
+						id: integer().generatedByDefaultAsIdentity(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+
+				type expectedType = {
+					id?: string | number;
+				};
+
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("non nullable optional updates", () => {
+				const tbl = table({
+					columns: {
+						id: integer().generatedByDefaultAsIdentity(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id?: string | number;
+				};
+				type InferredType = Updateable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("infer select, insert, and update", () => {
+				const tbl = table({
+					columns: {
+						id: integer().generatedByDefaultAsIdentity(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id: {
+						readonly __select__: number;
+						readonly __insert__: string | number | undefined;
+						readonly __update__: string | number;
+					};
+				};
+				type InferredType = typeof tbl.infer;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+		});
+
 		describe("generated (always as identity) primary key columns", () => {
 			test("non nullable selects", () => {
 				const tbl = table({
@@ -902,6 +1203,78 @@ describe("pgTable definition", () => {
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
+					},
+				});
+				type expectedType = {
+					id: {
+						readonly __select__: number;
+						readonly __insert__: never;
+						readonly __update__: never;
+					};
+				};
+				type InferredType = typeof tbl.infer;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+		});
+
+		describe("generated (always as identity) external primary key columns", () => {
+			test("non nullable selects", () => {
+				const tbl = table({
+					columns: {
+						id: integer().generatedAlwaysAsIdentity(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				type expectedType = {
+					id: number;
+				};
+				type InferredType = Selectable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("does not accept inserts", () => {
+				const tbl = table({
+					columns: {
+						id: integer().generatedAlwaysAsIdentity(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				// eslint-disable-next-line @typescript-eslint/ban-types
+				type expectedType = {};
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("does not accept updates", () => {
+				const tbl = table({
+					columns: {
+						id: integer().generatedAlwaysAsIdentity(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
+					},
+				});
+				// eslint-disable-next-line @typescript-eslint/ban-types
+				type expectedType = {};
+				type InferredType = Updateable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("infer select, insert, and update", () => {
+				const tbl = table({
+					columns: {
+						id: integer().generatedAlwaysAsIdentity(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]).external(),
 					},
 				});
 				type expectedType = {

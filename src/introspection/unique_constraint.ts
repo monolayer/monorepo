@@ -10,7 +10,12 @@ import type { CamelCaseOptions } from "~/config.js";
 import type { UniqueInfo } from "~/migrations/migration_schema.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
 import { tableInfo } from "~/schema/pg_table.js";
-import { uniqueConstraintOptions, type PgUnique } from "~/schema/pg_unique.js";
+import {
+	isExternalUnique,
+	uniqueConstraintOptions,
+	type AnyPgUnique,
+	type PgUnique,
+} from "~/schema/pg_unique.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export type UniqueConstraintInfo = {
@@ -115,10 +120,13 @@ export function localUniqueConstraintInfo(
 	const tables = PgDatabase.info(schema).tables;
 	return Object.entries(tables || {}).reduce<UniqueInfo>(
 		(acc, [tableName, tableDefinition]) => {
-			const uniqueConstraints =
-				tableInfo(tableDefinition).schema.constraints?.unique;
+			const uniqueConstraints = tableInfo(tableDefinition).schema.constraints
+				?.unique as AnyPgUnique[];
 			if (uniqueConstraints !== undefined) {
 				for (const uniqueConstraint of uniqueConstraints) {
+					if (isExternalUnique(uniqueConstraint)) {
+						return acc;
+					}
 					const unique = uniqueToInfo(
 						uniqueConstraint,
 						tableName,

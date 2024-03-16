@@ -9,7 +9,11 @@ import {
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
-import { indexOptions, type PgIndex } from "~/schema/pg_index.js";
+import {
+	indexOptions,
+	isExternalIndex,
+	type PgIndex,
+} from "~/schema/pg_index.js";
 import { tableInfo } from "~/schema/pg_table.js";
 import type { InformationSchemaDB } from "./types.js";
 
@@ -87,8 +91,13 @@ export function localIndexInfoByTable(
 	return Object.entries(tables || {}).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const indexes = tableInfo(tableDefinition).schema.indexes || [];
+			const indexes =
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				tableInfo(tableDefinition).schema.indexes || ([] as PgIndex<any>[]);
 			for (const index of indexes) {
+				if (isExternalIndex(index)) {
+					return acc;
+				}
 				const indexInfo = indexToInfo(
 					index,
 					transformedTableName,
