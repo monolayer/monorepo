@@ -62,10 +62,7 @@ export class PgTrigger {
 	/**
 	 * @hidden
 	 */
-	#functionArgs?: {
-		value: string;
-		columnName?: true;
-	}[] = [];
+	#functionArgs?: (string | { column: string })[] = [];
 
 	/**
 	 * @hidden
@@ -109,10 +106,7 @@ export class PgTrigger {
 
 	function(
 		functionName: string,
-		functionArgs?: {
-			value: string;
-			columnName?: true;
-		}[],
+		functionArgs?: (string | { column: string })[],
 	) {
 		this.#functionName = functionName;
 		this.#functionArgs = functionArgs;

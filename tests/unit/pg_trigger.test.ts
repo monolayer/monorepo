@@ -210,7 +210,7 @@ EXECUTE FUNCTION check_account_update`;
 			.events(["delete"])
 			.forEach("statement")
 			.referencingOldTableAs("old_table")
-			.function("check_account_update", [{ value: "hello" }]);
+			.function("check_account_update", ["hello"]);
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
 BEFORE DELETE ON accounts
@@ -228,9 +228,7 @@ EXECUTE FUNCTION check_account_update('hello')`;
 			.events(["delete"])
 			.forEach("statement")
 			.referencingOldTableAs("old_table")
-			.function("check_account_update", [
-				{ value: "updatedAt", columnName: true },
-			]);
+			.function("check_account_update", [{ column: "updatedAt" }]);
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
 BEFORE DELETE ON accounts
@@ -248,9 +246,7 @@ EXECUTE FUNCTION check_account_update('updatedAt')`;
 			.events(["delete"])
 			.forEach("statement")
 			.referencingOldTableAs("old_table")
-			.function("check_account_update", [
-				{ value: "updatedAt", columnName: true },
-			]);
+			.function("check_account_update", [{ column: "updatedAt" }]);
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
 BEFORE DELETE ON accounts

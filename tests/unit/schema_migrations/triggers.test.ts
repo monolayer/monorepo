@@ -41,12 +41,12 @@ describe("Database migrations", () => {
 					.fireWhen("before")
 					.events(["update"])
 					.forEach("row")
-					.function("moddatetime", [{ value: "updatedAt", columnName: true }]),
+					.function("moddatetime", [{ column: "updatedAt" }]),
 				foo_after_update: trigger()
 					.fireWhen("after")
 					.events(["update"])
 					.forEach("row")
-					.function("moddatetime", [{ value: "updatedAt", columnName: true }]),
+					.function("moddatetime", [{ column: "updatedAt" }]),
 			},
 		});
 
@@ -236,7 +236,7 @@ EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_after_update_tr
 					.fireWhen("after")
 					.events(["update"])
 					.forEach("row")
-					.function("moddatetime", [{ value: "updatedAt", columnName: true }]),
+					.function("moddatetime", [{ column: "updatedAt" }]),
 			},
 		});
 

@@ -89,10 +89,10 @@ export function triggerInfo(
 		compileArgs.functionArgs !== undefined
 			? `${compileArgs.functionName}(${compileArgs.functionArgs
 					.map((arg) => {
-						if (arg.columnName === true) {
-							return `'${toSnakeCase(arg.value, camelCase)}'`;
+						if (typeof arg === "string") {
+							return `'${arg}'`;
 						}
-						return `'${arg.value}'`;
+						return `'${toSnakeCase(arg.column, camelCase)}'`;
 					})
 					.join(", ")})`
 			: `${compileArgs.functionName}`;

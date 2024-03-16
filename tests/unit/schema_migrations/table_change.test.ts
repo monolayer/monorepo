@@ -607,16 +607,12 @@ describe("Table change migrations", () => {
 							.fireWhen("before")
 							.events(["update"])
 							.forEach("row")
-							.function("moddatetime", [
-								{ value: "updatedAt", columnName: true },
-							]),
+							.function("moddatetime", [{ column: "updatedAt" }]),
 						foo_before_update_two: trigger()
 							.fireWhen("before")
 							.events(["update"])
 							.forEach("row")
-							.function("moddatetime", [
-								{ value: "updatedAtTwo", columnName: true },
-							]),
+							.function("moddatetime", [{ column: "updatedAtTwo" }]),
 					},
 				}),
 			},
@@ -703,9 +699,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 							.fireWhen("before")
 							.events(["update"])
 							.forEach("row")
-							.function("moddatetime", [
-								{ value: "updatedAt", columnName: true },
-							]),
+							.function("moddatetime", [{ column: "updatedAt" }]),
 					},
 				}),
 			},
