@@ -27,33 +27,62 @@ async function main() {
 			await initCommand();
 		});
 
-	program
-		.command("db:create")
+	const db = program
+		.command("db")
+		.description("perform database operations: create, drop, migrate");
+
+	db.command("create")
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in kinetic.ts",
 			"development",
 		)
-		.description("Create the database")
+		.description("create the database")
 		.action(async (opts) => {
 			await dbCreate(opts.environment);
 		});
 
-	program
-		.command("db:drop")
+	db.command("drop")
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in kinetic.ts",
 			"development",
 		)
-		.description("Drop the database")
+		.description("drop the database")
 		.action(async (opts) => {
 			await dbDrop(opts.environment);
 		});
 
-	program
-		.command("seed")
-		.description("Seed database")
+	const dbMigrate = db
+		.command("migrate")
+		.description("database migration operations: latest, down");
+
+	dbMigrate
+		.command("latest")
+		.description("apply pending migrations")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
+		.action(async (opts) => {
+			await migrate(opts.environment);
+		});
+
+	dbMigrate
+		.command("down")
+		.description("migrate one step down")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in kinetic.ts",
+			"development",
+		)
+		.action(async (opts) => {
+			await migrateDown(opts.environment);
+		});
+
+	db.command("seed")
+		.description("seed database")
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in kinetic.ts",
@@ -64,9 +93,13 @@ async function main() {
 			await seed(opts);
 		});
 
-	program
-		.command("structure:dump")
-		.description("Dump the database structure")
+	const structure = program
+		.command("structure")
+		.description("database structure operations: dump, load");
+
+	structure
+		.command("dump")
+		.description("dump the database structure")
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in kinetic.ts",
@@ -76,9 +109,9 @@ async function main() {
 			await structureDump(opts.environment);
 		});
 
-	program
-		.command("structure:load")
-		.description("Load the database structure")
+	structure
+		.command("load")
+		.description("load the database structure")
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in kinetic.ts",
@@ -88,9 +121,13 @@ async function main() {
 			await structureLoad(opts.environment);
 		});
 
-	program
+	const migration = program
+		.command("migration")
+		.description("migration operations: generate, pending");
+
+	migration
 		.command("generate")
-		.description("Generate migrations based on the current defined schema")
+		.description("generate migrations based on the current defined schema")
 		.option(
 			"-f, --force",
 			"generate migrations without warnings (destroys pending migration files)",
@@ -100,33 +137,9 @@ async function main() {
 			await generate();
 		});
 
-	program
-		.command("migrate")
-		.description("Apply pending migrations")
-		.option(
-			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
-			"development",
-		)
-		.action(async (opts) => {
-			await migrate(opts.environment);
-		});
-
-	program
-		.command("migrate:down")
-		.description("Migrate one step down")
-		.option(
-			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
-			"development",
-		)
-		.action(async (opts) => {
-			await migrateDown(opts.environment);
-		});
-
-	program
-		.command("migrate:pending")
-		.description("List pending migrations")
+	migration
+		.command("pending")
+		.description("list pending migrations")
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in kinetic.ts",
@@ -138,7 +151,7 @@ async function main() {
 
 	program
 		.command("autopilot:revert")
-		.description("Revert autopilot migrations")
+		.description("revert autopilot migrations")
 		.action(async () => {
 			await autopilotRevert();
 		});
