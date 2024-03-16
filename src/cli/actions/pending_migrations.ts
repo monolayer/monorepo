@@ -5,18 +5,12 @@ import pg from "pg";
 import color from "picocolors";
 import { importConfig } from "~/config.js";
 import { fetchPendingMigrations } from "~/migrations/info.js";
-import {
-	checkAutoPilotLock,
-	checkEnvironmentIsConfigured,
-} from "../utils/clack.js";
+import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
 export async function pendingMigrations(environment: string) {
 	p.intro("Pending Migrations");
 	const config = await importConfig();
 	const environmentConfig = checkEnvironmentIsConfigured(config, environment, {
-		outro: true,
-	});
-	checkAutoPilotLock({
 		outro: true,
 	});
 

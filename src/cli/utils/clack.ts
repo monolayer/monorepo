@@ -1,7 +1,6 @@
 import * as p from "@clack/prompts";
 import color from "picocolors";
 import { exit } from "process";
-import { AutoPilot } from "~/autopilot.js";
 import { Config } from "../../config.js";
 
 type LogWithSimpleMessage = typeof p.log & {
@@ -40,24 +39,4 @@ export function checkEnvironmentIsConfigured(
 		exit(1);
 	}
 	return envConfig;
-}
-
-export function checkAutoPilotLock(
-	options: { spinner?: ReturnType<typeof p.spinner>; outro?: true } = {},
-) {
-	if (AutoPilot.getInstance().hasLock()) {
-		if (options.spinner !== undefined) {
-			options.spinner.stop("Cannot continue while autopilot is running.", 1);
-		} else {
-			p.log.error("Cannot continue while autopilot is running.");
-		}
-
-		const nextSteps = `1) Make sure the dev server is not running.
-2) Run \`npx kinetic autopilot:revert\` to revert the autopilot migrations.`;
-		p.note(nextSteps, "Next Steps");
-
-		if (options.outro === true) p.outro(`${color.red("Failed")}`);
-
-		exit(1);
-	}
 }

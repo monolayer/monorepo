@@ -5,10 +5,7 @@ import { pgPoolAndConfig } from "~/pg/pg_pool.js";
 import { pgQueryExecuteWithResult } from "~/pg/pg_query.js";
 import { importConfig } from "../../config.js";
 import { ActionStatus } from "../command.js";
-import {
-	checkAutoPilotLock,
-	checkEnvironmentIsConfigured,
-} from "../utils/clack.js";
+import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
 export async function dbDrop(environment: string) {
 	p.intro("Drop Database");
@@ -16,10 +13,6 @@ export async function dbDrop(environment: string) {
 	s.start("Dropping database");
 	const config = await importConfig();
 	checkEnvironmentIsConfigured(config, environment, {
-		spinner: s,
-		outro: true,
-	});
-	checkAutoPilotLock({
 		spinner: s,
 		outro: true,
 	});

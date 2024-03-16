@@ -7,10 +7,7 @@ import { importConfig } from "../../config.js";
 import { pgPoolAndConfig } from "../../pg/pg_pool.js";
 import { pgQueryExecuteWithResult } from "../../pg/pg_query.js";
 import { ActionStatus, runCommand } from "../command.js";
-import {
-	checkAutoPilotLock,
-	checkEnvironmentIsConfigured,
-} from "../utils/clack.js";
+import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
 export async function structureLoad(environment: string) {
 	p.intro("Structure Load");
@@ -18,10 +15,6 @@ export async function structureLoad(environment: string) {
 	s.start("Loading database structure");
 	const config = await importConfig();
 	checkEnvironmentIsConfigured(config, environment, {
-		spinner: s,
-		outro: true,
-	});
-	checkAutoPilotLock({
 		spinner: s,
 		outro: true,
 	});

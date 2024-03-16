@@ -7,10 +7,7 @@ import { analyzeRemoteSchema } from "../components/analyze_remote_schema.js";
 import { computeChangeset } from "../components/compute_changeset.js";
 import { generateMigrations } from "../components/generate_migrations.js";
 import { pendingMigrations } from "../components/pending_migrations.js";
-import {
-	checkAutoPilotLock,
-	checkEnvironmentIsConfigured,
-} from "../utils/clack.js";
+import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
 export async function generate() {
 	p.intro("Generate");
@@ -22,8 +19,6 @@ export async function generate() {
 			outro: true,
 		},
 	);
-
-	checkAutoPilotLock({ outro: true });
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({

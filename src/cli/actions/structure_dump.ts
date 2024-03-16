@@ -3,10 +3,7 @@ import color from "picocolors";
 import { exit } from "process";
 import { importConfig } from "../../config.js";
 import { dumpStructure } from "../components/dump_structure.js";
-import {
-	checkAutoPilotLock,
-	checkEnvironmentIsConfigured,
-} from "../utils/clack.js";
+import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
 export async function structureDump(environment: string) {
 	p.intro("Structure Dump");
@@ -14,10 +11,6 @@ export async function structureDump(environment: string) {
 	s.start("Dumping database structure");
 	const config = await importConfig();
 	checkEnvironmentIsConfigured(config, environment, {
-		spinner: s,
-		outro: true,
-	});
-	checkAutoPilotLock({
 		spinner: s,
 		outro: true,
 	});

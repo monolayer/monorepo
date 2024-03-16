@@ -3,7 +3,6 @@
 import { Command } from "@commander-js/extra-typings";
 import { exit } from "process";
 import { seed } from "~/cli/actions/seed.js";
-import { autopilotRevert } from "../cli/actions/autopilot_revert.js";
 import { dbCreate } from "../cli/actions/db_create.js";
 import { dbDrop } from "../cli/actions/db_drop.js";
 import { generate } from "../cli/actions/generate.js";
@@ -147,13 +146,6 @@ async function main() {
 		)
 		.action(async (opts) => {
 			await pendingMigrations(opts.environment);
-		});
-
-	program
-		.command("autopilot:revert")
-		.description("revert autopilot migrations")
-		.action(async () => {
-			await autopilotRevert();
 		});
 
 	program.exitOverride();

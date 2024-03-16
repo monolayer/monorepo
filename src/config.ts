@@ -8,9 +8,6 @@ export type Config = {
 	environments: {
 		[key: string]: ClientConfig & PoolConfig;
 	};
-	future?: {
-		unstable_auto_migrations: boolean;
-	};
 	camelCasePlugin?: CamelCaseOptions;
 };
 

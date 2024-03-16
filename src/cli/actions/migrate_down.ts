@@ -12,10 +12,7 @@ import color from "picocolors";
 import { cwd } from "process";
 import { importConfig } from "~/config.js";
 import { dumpStructure } from "../components/dump_structure.js";
-import {
-	checkAutoPilotLock,
-	checkEnvironmentIsConfigured,
-} from "../utils/clack.js";
+import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
 export async function migrateDown(environment: string) {
 	p.intro("Migrate Down");
@@ -23,7 +20,6 @@ export async function migrateDown(environment: string) {
 	const environmentConfig = checkEnvironmentIsConfigured(config, environment, {
 		outro: true,
 	});
-	checkAutoPilotLock({ outro: true });
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const db = new Kysely<any>({
