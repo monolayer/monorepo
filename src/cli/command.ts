@@ -1,5 +1,6 @@
 import { CommanderError } from "commander";
 import { ExecaReturnBase, SyncOptions, execa } from "execa";
+import type { Writable } from "stream";
 
 export enum ActionStatus {
 	KyselyInstallationNotInstalled = "KyselyInstallationNotInstalled",
@@ -52,6 +53,28 @@ export async function runCommand(
 		return {
 			success: true,
 			value: await result,
+		};
+	} catch (error) {
+		if (isExecaError(error)) return { success: false, error: error };
+		if (isError(error)) return { success: false, error: error };
+		return { success: false, error: error };
+	}
+}
+
+export async function runAndPipeCommand(
+	command: string,
+	args: readonly string[] = [],
+	writable: Writable,
+	options?: SyncOptions,
+): Promise<ExecaCommandResult> {
+	try {
+		const cmd = execa(command, args, options);
+		if (cmd.pipeStdout === undefined) {
+			throw new Error("pipeStdout is undefined");
+		}
+		return {
+			success: true,
+			value: await cmd.pipeStdout(writable),
 		};
 	} catch (error) {
 		if (isExecaError(error)) return { success: false, error: error };
