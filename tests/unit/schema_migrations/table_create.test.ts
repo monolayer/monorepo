@@ -11,6 +11,8 @@ import {
 	char,
 	date,
 	doublePrecision,
+	enumType,
+	enumerated,
 	float4,
 	float8,
 	inet,
@@ -38,7 +40,6 @@ import {
 	xml,
 } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { enumType, enumerated } from "~/schema/pg_enumerated.js";
 import { extension } from "~/schema/pg_extension.js";
 import { foreignKey } from "~/schema/pg_foreign_key.js";
 import { index } from "~/schema/pg_index.js";

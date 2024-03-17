@@ -11,13 +11,14 @@ import { z } from "zod";
 import {
 	bigint,
 	boolean,
+	enumType,
+	enumerated,
 	integer,
 	serial,
 	text,
 	timestamptz,
 	varchar,
 } from "~/schema/pg_column.js";
-import { enumType, enumerated } from "~/schema/pg_enumerated.js";
 import { index } from "~/schema/pg_index.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { table, tableInfo } from "~/schema/pg_table.js";

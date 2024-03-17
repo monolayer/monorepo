@@ -1,9 +1,15 @@
 /* eslint-disable max-lines */
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { boolean, serial, text, varchar } from "~/schema/pg_column.js";
+import {
+	boolean,
+	enumType,
+	enumerated,
+	serial,
+	text,
+	varchar,
+} from "~/schema/pg_column.js";
 import { PgDatabase, pgDatabase } from "~/schema/pg_database.js";
-import { enumType, enumerated } from "~/schema/pg_enumerated.js";
 import { PgExtension, extension } from "~/schema/pg_extension.js";
 import { table } from "~/schema/pg_table.js";
 

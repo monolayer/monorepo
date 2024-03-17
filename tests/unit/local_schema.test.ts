@@ -14,13 +14,14 @@ import {
 	ColumnIdentity,
 	bigserial,
 	boolean,
+	enumType,
+	enumerated,
 	integer,
 	serial,
 	timestamp,
 	varchar,
 } from "~/schema/pg_column.js";
 import { pgDatabase } from "~/schema/pg_database.js";
-import { enumType, enumerated } from "~/schema/pg_enumerated.js";
 import { index } from "~/schema/pg_index.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column_info_factory.js";

@@ -1200,8 +1200,29 @@ export class PgNumeric extends PgColumn<string, number | bigint | string> {
 	}
 }
 
-export function pgEnum<N extends string>(name: string, values: N[]) {
-	return new PgEnum(name, values);
+export class EnumType<V extends string> {
+	/**
+	 * @hidden
+	 */
+	protected isExternal: boolean;
+	/**
+	 * @hidden
+	 */
+	constructor(
+		public name: string,
+		public values: V[],
+	) {
+		this.isExternal = false;
+	}
+
+	external() {
+		this.isExternal = true;
+		return this;
+	}
+}
+
+export function enumerated<E extends string>(enumerated: EnumType<E>) {
+	return new PgEnum(enumerated.name, enumerated.values);
 }
 
 export class PgEnum<N extends string> extends PgColumn<N, N> {
@@ -1490,3 +1511,6 @@ export type GeneratedAlwaysColumn = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyPGColumn = PgColumn<any, any>;
+export function enumType<V extends string>(name: string, values: V[]) {
+	return new EnumType(name, values);
+}

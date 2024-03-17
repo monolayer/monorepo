@@ -15,7 +15,6 @@ export {
 	json,
 	jsonb,
 	numeric,
-	pgEnum,
 	real,
 	serial,
 	text,

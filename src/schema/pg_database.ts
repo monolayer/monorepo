@@ -1,4 +1,4 @@
-import type { EnumType } from "./pg_enumerated.js";
+import type { EnumType } from "./pg_column.js";
 import type { PgExtension } from "./pg_extension.js";
 import type { AnyPgTable } from "./pg_table.js";
 

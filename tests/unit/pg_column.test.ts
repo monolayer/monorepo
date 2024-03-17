@@ -3,7 +3,7 @@ import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
-import { enumType, enumerated } from "~/schema/pg_enumerated.js";
+import { enumType, enumerated } from "~/schema/pg_column.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { table } from "~/schema/pg_table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
@@ -71,7 +71,6 @@ import {
 	macaddr,
 	macaddr8,
 	numeric,
-	pgEnum,
 	real,
 	serial,
 	text,
@@ -11104,14 +11103,16 @@ describe("pgNumeric", () => {
 	});
 });
 
-describe("pgEnum", () => {
+describe("enumerated", () => {
 	test("returns a PgEnum instance", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
+		const role = enumType("role", ["user", "admin", "superuser"]);
+		const testEnum = enumerated(role);
 		expect(testEnum).toBeInstanceOf(PgEnum);
 	});
 
 	test("enum name", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
+		const role = enumType("myEnum", ["one", "two", "three"]);
+		const testEnum = enumerated(role);
 		const columnInfo: ColumnInfo = Object.fromEntries(
 			Object.entries(testEnum),
 		).info;
@@ -11120,7 +11121,8 @@ describe("pgEnum", () => {
 	});
 
 	test("enum values", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
+		const role = enumType("myEnum", ["one", "two", "three"]);
+		const testEnum = enumerated(role);
 		const columnDef = Object.fromEntries(Object.entries(testEnum)) as {
 			values: string[];
 		};
@@ -11128,7 +11130,8 @@ describe("pgEnum", () => {
 	});
 
 	test("default info", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]);
+		const role = enumType("myEnum", ["one", "two", "three"]);
+		const testEnum = enumerated(role);
 		const columnInfo: ColumnInfo = Object.fromEntries(
 			Object.entries(testEnum),
 		).info;
@@ -11148,21 +11151,24 @@ describe("pgEnum", () => {
 	});
 
 	test("does not have generatedAlwaysAsIdentity", () => {
+		const role = enumType("myEnum", ["one", "two", "three"]);
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const column = pgEnum("myEnum", ["one", "two", "three"]) as any;
+		const column = enumerated(role) as any;
 		expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(false);
 	});
 
 	test("does not have generatedByDefaultAsIdentity", () => {
+		const role = enumType("myEnum", ["one", "two", "three"]);
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const column = pgEnum("myEnum", ["one", "two", "three"]) as any;
+		const column = enumerated(role) as any;
 		expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 			false,
 		);
 	});
 
 	test("notNull()", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).notNull();
+		const role = enumType("myEnum", ["one", "two", "three"]);
+		const testEnum = enumerated(role).notNull();
 		const columnInfo: ColumnInfo = Object.fromEntries(
 			Object.entries(testEnum),
 		).info;
@@ -11170,7 +11176,8 @@ describe("pgEnum", () => {
 	});
 
 	test("default()", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).default("one");
+		const role = enumType("myEnum", ["one", "two", "three"]);
+		const testEnum = enumerated(role).default("one");
 		const columnInfo: ColumnInfo = Object.fromEntries(
 			Object.entries(testEnum),
 		).info;
@@ -11180,9 +11187,8 @@ describe("pgEnum", () => {
 	});
 
 	test("renameFrom()", () => {
-		const testEnum = pgEnum("myEnum", ["one", "two", "three"]).renameFrom(
-			"old_name",
-		);
+		const role = enumType("myEnum", ["one", "two", "three"]);
+		const testEnum = enumerated(role).renameFrom("old_name");
 		const columnInfo: ColumnInfo = Object.fromEntries(
 			Object.entries(testEnum),
 		).info;
