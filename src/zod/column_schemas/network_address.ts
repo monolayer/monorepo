@@ -11,15 +11,17 @@ import {
 } from "~/schema/pg_column.js";
 import { finishSchema } from "../common.js";
 import { columnData } from "../helpers.js";
-import { cidrRegex, macaddr8Regex, macaddrRegex } from "../regexes/regex.js";
+import {
+	cidrRegex,
+	ipRegex,
+	macaddr8Regex,
+	macaddrRegex,
+} from "../regexes/regex.js";
 
 export function inetSchema<T extends PgInet, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
-	const data = columnData(column);
-	const isNullable = !data._primaryKey && data.info.isNullable === true;
-	const base = z.string().ip();
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return regexStringSchema(column, ipRegex, "Invalid inet");
 }
 
 export function cidrSchema<T extends PgCIDR, PK extends boolean>(

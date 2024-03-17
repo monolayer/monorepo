@@ -13719,6 +13719,16 @@ describe("inet", () => {
 				expect(schema.safeParse("192.168.0.1").success).toBe(true);
 			});
 
+			test("parses IPv4 addresses with subnet", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("192.168.0.1/24").success).toBe(true);
+			});
+
 			test("parses IPv6 addresses", () => {
 				const tbl = table({
 					columns: {
@@ -13738,6 +13748,27 @@ describe("inet", () => {
 				expect(schema.safeParse("::1").success).toBe(true);
 			});
 
+			test("parses IPv6 addresses with subnet", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(
+					schema.safeParse("84d5:51a0:9114:1855:4cfa:f2d7:1f12:7003/64")
+						.success,
+				).toBe(true);
+				expect(
+					schema.safeParse("2001:db8:85a3::8a2e:370:7334/48").success,
+				).toBe(true);
+				expect(
+					schema.safeParse("fe80:0000:0000:0000:0204:61ff:fe9d:f156/46")
+						.success,
+				).toBe(true);
+				expect(schema.safeParse("::1/128").success).toBe(true);
+			});
+
 			test("does not parse invalid ip addresses", () => {
 				const tbl = table({
 					columns: {
@@ -13746,8 +13777,16 @@ describe("inet", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(false);
+				expect(schema.safeParse("256.1").success).toBe(false);
 				expect(schema.safeParse("256.1.1.1").success).toBe(false);
+				expect(schema.safeParse(" 256.1.1.1").success).toBe(false);
 				expect(schema.safeParse("2001:db8::8a2e:370:7334:").success).toBe(
+					false,
+				);
+				expect(schema.safeParse(" 2001:db8::8a2e:370:7334:").success).toBe(
+					false,
+				);
+				expect(schema.safeParse("2001:db8::8a2e:0370:7334/129").success).toBe(
 					false,
 				);
 			});
@@ -13998,8 +14037,8 @@ describe("inet", () => {
 						{
 							code: "invalid_string",
 							path: [],
-							message: "Invalid ip",
-							validation: "ip",
+							message: "Invalid inet",
+							validation: "regex",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
