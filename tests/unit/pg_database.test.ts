@@ -100,8 +100,17 @@ test("types for Kysely", () => {
 		users: typeof users.infer;
 		books: typeof books.infer;
 	};
-
 	type InferredDBTypes = typeof database.infer;
+	const dbExpect: Expect<Equal<InferredDBTypes, ExpectedType>> = true;
+	expectTypeOf(dbExpect).toMatchTypeOf<boolean>();
+});
+
+test("types for Kysely on database without tables", () => {
+	const database = pgDatabase({});
+	type InferredDBTypes = typeof database.infer;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	type ExpectedType = any;
+
 	const dbExpect: Expect<Equal<InferredDBTypes, ExpectedType>> = true;
 	expectTypeOf(dbExpect).toMatchTypeOf<boolean>();
 });

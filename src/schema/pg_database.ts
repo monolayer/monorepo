@@ -95,9 +95,12 @@ export class PgDatabase<T extends ColumnRecord> {
 	 * };
 	 * ```
 	 */
-	declare infer: {
-		[K in keyof T]: T[K]["infer"];
-	};
+	declare infer: string extends keyof T
+		? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+			any
+		: {
+				[K in keyof T]: T[K]["infer"];
+			};
 
 	/**
 	 * @hidden
