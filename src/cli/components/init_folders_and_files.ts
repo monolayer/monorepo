@@ -41,7 +41,7 @@ export async function initFolderAndFiles() {
 	await createDir(`${folder.path}/migrations`, true);
 
 	await createFile(
-		path.join(`${folder.path}/kysely.ts`),
+		path.join(`${folder.path}/db.ts`),
 		kyselyTemplate.render({
 			kineticConfigPath: path.relative(
 				path.join(cwd(), folder.path),
@@ -92,7 +92,7 @@ import { pgPool } from "kysely-kinetic/pool";
 import kineticConfig from "{{ kineticConfigPath }}";
 import type { DB } from "./schema.js";
 
-export const kysely = new Kysely<DB>({
+export const db = new Kysely<DB>({
 	dialect: new PostgresDialect({
 		pool: pgPool(kineticConfig, process.env.KINETIC_ENV || "development"),
 	}),
