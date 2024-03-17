@@ -23,9 +23,9 @@
 			"types": "./dist/esm/src/config.js"
 		},
 		"./pool": {
-			"import": "./dist/esm/src/database/pg/pg_pool.js",
-			"require": "./dist/cjs/src/database/pg/pg_pool.js",
-			"types": "./dist/esm/src/database/pg/pg_pool.js"
+			"import": "./dist/esm/src/pool.js",
+			"require": "./dist/cjs/src/pool.js",
+			"types": "./dist/esm/src/pool.js"
 		},
 		"./zod": {
 			"import": "./dist/esm/src/database/schema/zod.js",
