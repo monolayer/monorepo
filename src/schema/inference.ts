@@ -77,9 +77,9 @@ type InferColumType<
 			? T extends WithDefaultColumn
 				? PK extends true
 					? OptionalColumnType<
-							NonNullable<S>,
-							NonNullable<I> | undefined,
-							NonNullable<U>
+							Exclude<S, null>,
+							Exclude<I, null> | undefined,
+							Exclude<U, null>
 						>
 					: OptionalColumnType<S, I, U>
 				: T extends GeneratedAlwaysColumn
@@ -87,31 +87,37 @@ type InferColumType<
 					: T extends GeneratedColumn
 						? PK extends true
 							? OptionalColumnType<
-									NonNullable<S>,
-									NonNullable<I> | undefined,
-									NonNullable<U>
+									Exclude<S, null>,
+									Exclude<I, null> | undefined,
+									Exclude<U, null>
 								>
 							: OptionalColumnType<S, I, U>
 						: PK extends true
 							? Simplify<
-									ColumnType<NonNullable<S>, NonNullable<I>, NonNullable<U>>
+									ColumnType<
+										Exclude<S, null>,
+										Exclude<I, null>,
+										Exclude<U, null>
+									>
 								>
 							: Simplify<ColumnType<S, I, U>>
 			: T extends WithDefaultColumn
 				? PK extends true
 					? Simplify<
 							ColumnType<
-								NonNullable<S>,
-								NonNullable<I> | undefined,
-								NonNullable<U>
+								Exclude<S, null>,
+								Exclude<I, null> | undefined,
+								Exclude<U, null>
 							>
 						>
-					: Simplify<ColumnType<NonNullable<S>, I | null | undefined, U | null>>
+					: Simplify<
+							ColumnType<Exclude<S, null>, I | null | undefined, U | null>
+						>
 				: T extends GeneratedAlwaysColumn
 					? Simplify<GeneratedAlways<S>>
 					: PK extends true
 						? Simplify<
-								ColumnType<NonNullable<S>, NonNullable<I>, NonNullable<U>>
+								ColumnType<NonNullable<S>, Exclude<I, null>, Exclude<U, null>>
 							>
 						: Simplify<ColumnType<S | null, I | null | undefined, U | null>>
 		: never;
