@@ -3,7 +3,7 @@ import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
-import { enumType, enumerated } from "~/schema/pg_column.js";
+import { enumType, enumerated, type JsonValue } from "~/schema/pg_column.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { table } from "~/schema/pg_table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
@@ -6068,7 +6068,7 @@ describe("pgJson", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string, number, boolean, Record<string, any>, null, or undefined", () => {
+			test("input type is JsonValue, null, or undefined", () => {
 				const tbl = table({
 					columns: {
 						id: json(),
@@ -6076,19 +6076,12 @@ describe("pgJson", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
-				type Expected =
-					| string
-					| number
-					| boolean
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					| Record<string, any>
-					| null
-					| undefined;
+				type Expected = JsonValue | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string, number, boolean, Record<string, any>, null or undefined", () => {
+			test("output type is JsonValue, null or undefined", () => {
 				const tbl = table({
 					columns: {
 						id: json(),
@@ -6096,14 +6089,7 @@ describe("pgJson", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				type Expected =
-					| string
-					| number
-					| boolean
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					| Record<string, any>
-					| null
-					| undefined;
+				type Expected = JsonValue | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -6111,6 +6097,11 @@ describe("pgJson", () => {
 				expect(objectResult.success).toBe(true);
 				if (objectResult.success) {
 					expect(objectResult.data).toEqual({ a: 1 });
+				}
+				const arrayObjectResult = schema.safeParse({ a: 1 });
+				expect(arrayObjectResult.success).toBe(true);
+				if (arrayObjectResult.success) {
+					expect(arrayObjectResult.data).toEqual({ a: 1 });
 				}
 				const numberResult = schema.safeParse(1);
 				expect(numberResult.success).toBe(true);
@@ -6135,7 +6126,7 @@ describe("pgJson", () => {
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				type Expected = string | number | boolean | Record<string, any>;
+				type Expected = JsonValue;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -6149,7 +6140,7 @@ describe("pgJson", () => {
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				type Expected = string | number | boolean | Record<string, any>;
+				type Expected = JsonValue;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -6286,7 +6277,7 @@ describe("pgJson", () => {
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				type Expected = string | number | boolean | Record<string, any>;
+				type Expected = JsonValue;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -6303,7 +6294,7 @@ describe("pgJson", () => {
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				type Expected = string | number | boolean | Record<string, any>;
+				type Expected = JsonValue;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -6497,14 +6488,7 @@ describe("pgJsonB", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
-				type Expected =
-					| string
-					| number
-					| boolean
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					| Record<string, any>
-					| null
-					| undefined;
+				type Expected = JsonValue | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -6517,14 +6501,7 @@ describe("pgJsonB", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				type Expected =
-					| string
-					| number
-					| boolean
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					| Record<string, any>
-					| null
-					| undefined;
+				type Expected = JsonValue | null | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -6555,8 +6532,7 @@ describe("pgJsonB", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				type Expected = string | number | boolean | Record<string, any>;
+				type Expected = JsonValue;
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -6570,7 +6546,7 @@ describe("pgJsonB", () => {
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				type Expected = string | number | boolean | Record<string, any>;
+				type Expected = JsonValue;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -6706,8 +6682,7 @@ describe("pgJsonB", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				type Expected = string | number | boolean | Record<string, any>;
+				type Expected = JsonValue;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -6724,7 +6699,7 @@ describe("pgJsonB", () => {
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				type Expected = string | number | boolean | Record<string, any>;
+				type Expected = JsonValue;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});

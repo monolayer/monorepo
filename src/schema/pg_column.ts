@@ -874,20 +874,11 @@ export function json() {
 
 export type JsonArray = JsonValue[];
 
-export type JsonObject = {
+export type JsonValue =
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	[K in string]?: any;
-};
+	boolean | number | string | Record<string, any> | JsonArray;
 
-export type JsonPrimitive = boolean | number | string;
-
-export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
-
-export class PgJson extends PgColumn<
-	JsonValue,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	string | number | boolean | Record<string, any>
-> {
+export class PgJson extends PgColumn<JsonValue, JsonValue> {
 	/**
 	 * @hidden
 	 */

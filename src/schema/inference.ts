@@ -222,7 +222,7 @@ type ByteaZodType<T extends AnyPGColumn> = z.ZodType<
 >;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ZodJson = string | number | boolean | Record<string, any>;
+type ZodJson = JsonValue;
 
 type JsonZodType<T extends AnyPGColumn> = z.ZodType<
 	T extends NonNullableColumn
