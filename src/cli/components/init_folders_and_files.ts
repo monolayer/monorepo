@@ -83,7 +83,7 @@ export const schemaTemplate =
 
 export const database = pgDatabase({});
 
-export type DB = typeof database.kyselyDatabase;
+export type DB = typeof database.infer;
 `);
 
 export const kyselyTemplate =
