@@ -14174,31 +14174,23 @@ describe("cidr", () => {
 				}
 			});
 
-			test("parses CIDRs (IPv4 and IPv6", () => {
+			test("parses CIDRs (IPv4 and IPv6)", () => {
 				const tbl = table({
 					columns: {
 						id: cidr(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse("192.0.2.0/24").success).toBe(true);
-				expect(schema.safeParse("::8/24").success).toBe(true);
-				expect(schema.safeParse("::1/128").success).toBe(true);
-				expect(schema.safeParse("ff02::1/16").success).toBe(true);
-				expect(schema.safeParse("2001:db8::8a2e:370:7334/48").success).toBe(
-					true,
-				);
-				expect(schema.safeParse("2001:4f8:3:ba::/64").success).toBe(true);
-				expect(
-					schema.safeParse("2001:0db8:85a3:0000:0000:8a2e:0370:7334/128")
-						.success,
-				).toBe(true);
-				expect(schema.safeParse("fe80::1/10").success).toBe(true);
-				expect(schema.safeParse("fd00:0:0:0:0:0:0:0/8").success).toBe(true);
-				expect(schema.safeParse("::ffff:1.2.3.0/128").success).toBe(true);
-				expect(schema.safeParse("2001:db8:100::/64").success).toBe(true);
-				expect(schema.safeParse("64:ff9b::192.168.0.1/96").success).toBe(true);
-				expect(schema.safeParse("fd12:3456:789a:1::/64").success).toBe(true);
+				expect(schema.safeParse("192.168.0.0/16").success).toBe(true);
+				expect(schema.safeParse("10.0.0.0/8").success).toBe(true);
+				expect(schema.safeParse("172.16.0.0/12").success).toBe(true);
+				expect(schema.safeParse("10.10.0.0/23").success).toBe(true);
+				expect(schema.safeParse("192.168.1.0/24").success).toBe(true);
+				expect(schema.safeParse("2001:db8::/32").success).toBe(true);
+				expect(schema.safeParse("fd00::/8").success).toBe(true);
+				expect(schema.safeParse("fe80::/10").success).toBe(true);
+				expect(schema.safeParse("2001:0db8:85a3::/48").success).toBe(true);
+				expect(schema.safeParse("2607:f0d0:1002:51::/64").success).toBe(true);
 			});
 
 			test("does not parse invalid CIDR", () => {
@@ -14213,18 +14205,39 @@ describe("cidr", () => {
 				expect(schema.safeParse(" 192.0.2.0/24").success).toBe(false);
 				expect(schema.safeParse("::8/129").success).toBe(false);
 				expect(schema.safeParse("2001:4f8:3:ba::/129").success).toBe(false);
-				expect(schema.safeParse("::ffff:1.2.3.0/129").success).toBe(false);
-				expect(schema.safeParse(" ::8/24").success).toBe(false);
-				expect(schema.safeParse(" 2001:4f8:3:ba::/64").success).toBe(false);
-				expect(schema.safeParse(" ::ffff:1.2.3.0/128").success).toBe(false);
-				expect(schema.safeParse("2001:db8::8a2e:370:7334/129").success).toBe(
-					false,
-				);
-				expect(schema.safeParse("2001:db8::8a2e:370:7334:").success).toBe(
-					false,
-				);
 			});
 
+			test("does not parse CIDR with nonzero bits to the right of the netmask", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+
+				expect(schema.safeParse("192.168.0.1/16").success).toBe(false);
+				expect(schema.safeParse("10.0.1.255/8").success).toBe(false);
+				expect(schema.safeParse("172.16.255.128/12").success).toBe(false);
+				expect(schema.safeParse("192.168.1.128/24").success).toBe(false);
+				expect(schema.safeParse("10.10.1.1/23").success).toBe(false);
+				expect(schema.safeParse("2001:db8::1/64").success).toBe(false);
+				expect(schema.safeParse("2001:db8::1234/32").success).toBe(false);
+				expect(
+					schema.safeParse("fd00:abcd:ef01:2345:6789:abcd:ef01:2345/8").success,
+				).toBe(false);
+				expect(schema.safeParse("fe80:0000:0000:0001::1/10").success).toBe(
+					false,
+				);
+				expect(
+					schema.safeParse("2001:0db8:85a3:0000:0000:8a2e:0370:7334/48")
+						.success,
+				).toBe(false);
+				expect(
+					schema.safeParse("2607:f0d0:1002:51::dead:beef/64").success,
+				).toBe(false);
+			});
+
+			//
 			test("parses null", () => {
 				const tbl = table({
 					columns: {
@@ -14259,11 +14272,11 @@ describe("cidr", () => {
 			test("with default value is nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: cidr().default("192.168.0.1/24"),
+						id: cidr().default("192.168.0.0/24"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse("192.168.0.2/24").success).toBe(true);
+				expect(schema.safeParse("192.168.0.0/24").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
 				expect(schema.safeParse(undefined).success).toBe(true);
 			});
@@ -14275,7 +14288,7 @@ describe("cidr", () => {
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse("192.168.0.1/24").success).toBe(true);
+				expect(schema.safeParse("192.168.0.0/24").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
@@ -14283,11 +14296,11 @@ describe("cidr", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: cidr().notNull().default("192.168.0.1/24"),
+						id: cidr().notNull().default("192.168.0.0/24"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse("192.168.0.1/24").success).toBe(true);
+				expect(schema.safeParse("192.168.0.0/24").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
@@ -14336,7 +14349,7 @@ describe("cidr", () => {
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse("192.168.1.1/24").success).toBe(true);
+				expect(schema.safeParse("192.168.0.0/24").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
@@ -14344,14 +14357,14 @@ describe("cidr", () => {
 			test("with default value is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: cidr().default("192.168.1.1"),
+						id: cidr().default("192.168.0.0/24"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse("192.168.1.2/24").success).toBe(true);
+				expect(schema.safeParse("192.168.0.0/24").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
@@ -14359,14 +14372,14 @@ describe("cidr", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: cidr().notNull().default("192.168.1.1"),
+						id: cidr().notNull().default("192.168.0.0/24"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse("192.168.1.2/24").success).toBe(true);
+				expect(schema.safeParse("192.168.0.0/24").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
@@ -14374,14 +14387,14 @@ describe("cidr", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: cidr().default("192.168.1.1/24").notNull(),
+						id: cidr().default("192.168.0.0/24").notNull(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse("192.168.1.2/24").success).toBe(true);
+				expect(schema.safeParse("192.168.0.0/24").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
@@ -14476,6 +14489,40 @@ describe("cidr", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("Value has bits set to right of mask", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse("10.10.1.1/23");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid cidr. Value has bits set to right of mask",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const anotherResult = schema.safeParse("2001:db8::1/64");
+				expect(anotherResult.success).toBe(false);
+				if (!anotherResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid cidr. Value has bits set to right of mask",
+						},
+					];
+					expect(anotherResult.error.errors).toStrictEqual(expected);
 				}
 			});
 		});
