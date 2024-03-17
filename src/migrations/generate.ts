@@ -4,7 +4,8 @@ import { createFile } from "~/utils.js";
 import { Changeset } from "../changeset/migration_op/changeset.js";
 import { randomName } from "./random_name.js";
 
-const template = `import { Kysely, sql } from "kysely";
+const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
 {%- for u in up %}
