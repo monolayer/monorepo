@@ -151,7 +151,7 @@ async function main() {
 
 	migration
 		.command("scaffold")
-		.description("create and empty migration file")
+		.description("create an empty migration file")
 		.action(async () => {
 			await migrationScaffold();
 		});
