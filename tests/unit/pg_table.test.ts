@@ -1710,16 +1710,6 @@ describe("pgTable definition", () => {
 
 			const tableSchema = zodSchema(tbl);
 
-			type SchemaType = z.infer<typeof tableSchema>;
-			type Expected = {
-				name: string;
-				idPk: number;
-				id?: string | null | undefined;
-				createdAt?: Date | null | undefined;
-			};
-			const isEqualSchema: Expect<Equal<SchemaType, Expected>> = true;
-			expect(isEqualSchema).toBe(true);
-
 			type InputSchema = z.input<typeof tableSchema>;
 			type ExpectedInput = {
 				idPk: string | number;
@@ -1751,14 +1741,39 @@ describe("pgTable definition", () => {
 
 			const tableSchema = zodSchema(tbl);
 			expect(tableSchema.safeParse({}).success).toBe(true);
+		});
+
+		test("schema does not parse successfully with explicit undefined", () => {
+			const tbl = table({
+				columns: {
+					name: text().notNull(),
+					description: text().default("TDB"),
+				},
+			});
+
+			const tableSchema = zodSchema(tbl);
 			const result = tableSchema.safeParse({
 				name: undefined,
 				description: undefined,
 			});
-			expect(result.success).toBe(true);
-			if (result.success) {
-				expect(result.data.name).toBeUndefined();
-				expect(result.data.description).toBeUndefined();
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "invalid_type",
+						expected: "string",
+						message: "Required",
+						path: ["name"],
+						received: "undefined",
+					},
+					{
+						code: "custom",
+						path: ["description"],
+						message: "Value cannot be undefined",
+						fatal: true,
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
 			}
 		});
 

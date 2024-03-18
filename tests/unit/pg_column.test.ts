@@ -377,14 +377,17 @@ describe("pgBoolean", () => {
 					}
 				});
 
-				test("parses undefined", () => {
+				test("does not parse explicit undefined", () => {
 					const tbl = table({
 						columns: {
 							id: boolean(),
 						},
 					});
 					const schema = zodSchema(tbl).shape.id;
-					expect(schema.safeParse(undefined).success).toBe(true);
+					expect(schema.safeParse(undefined).success).toBe(false);
+					const tableSchema = zodSchema(tbl);
+					expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+					expect(tableSchema.safeParse({}).success).toBe(true);
 				});
 
 				test("parses with coercion with boolish values", () => {
@@ -460,7 +463,6 @@ describe("pgBoolean", () => {
 					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(true).success).toBe(true);
 					expect(schema.safeParse(null).success).toBe(true);
-					expect(schema.safeParse(undefined).success).toBe(true);
 				});
 
 				test("with notNull is non nullable and required", () => {
@@ -531,6 +533,18 @@ describe("pgBoolean", () => {
 						},
 					});
 					const schema = zodSchema(tbl).shape.id;
+
+					type InputType = z.input<typeof schema>;
+					type ExpectedInputType = boolean | Boolish;
+					const isEqualInput: Expect<Equal<InputType, ExpectedInputType>> =
+						true;
+					expect(isEqualInput).toBe(true);
+					type OutputType = z.output<typeof schema>;
+					type ExpectedOutputType = boolean;
+					const isEqualOutput: Expect<Equal<OutputType, ExpectedOutputType>> =
+						true;
+					expect(isEqualOutput).toBe(true);
+
 					expect(schema.safeParse(true).success).toBe(true);
 					expect(schema.safeParse(null).success).toBe(false);
 					expect(schema.safeParse(undefined).success).toBe(false);
@@ -583,6 +597,43 @@ describe("pgBoolean", () => {
 			});
 
 			describe("errors", () => {
+				test("explicit undefined", () => {
+					const tbl = table({
+						columns: {
+							id: boolean(),
+						},
+					});
+					const schema = zodSchema(tbl).shape.id;
+					const result = schema.safeParse(undefined);
+					expect(result.success).toBe(false);
+					if (!result.success) {
+						const expected = [
+							{
+								code: "custom",
+								path: [],
+								message: "Value cannot be undefined",
+								fatal: true,
+							},
+						];
+						expect(result.error.errors).toStrictEqual(expected);
+					}
+
+					const tableSchema = zodSchema(tbl);
+					const tableResult = tableSchema.safeParse({ id: undefined });
+					expect(tableResult.success).toBe(false);
+					if (!tableResult.success) {
+						const expected = [
+							{
+								code: "custom",
+								path: ["id"],
+								message: "Value cannot be undefined",
+								fatal: true,
+							},
+						];
+						expect(tableResult.error.errors).toStrictEqual(expected);
+					}
+				});
+
 				test("undefined", () => {
 					const tbl = table({
 						columns: {
@@ -791,14 +842,17 @@ describe("pgText", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("rejects explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: text(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -821,7 +875,6 @@ describe("pgText", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -964,6 +1017,43 @@ describe("pgText", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: text(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -1237,14 +1327,17 @@ describe("pgBigInt", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: bigint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse floats", () => {
@@ -1288,7 +1381,6 @@ describe("pgBigInt", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1n).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("minimumValue is -9223372036854775808n", () => {
@@ -1456,6 +1548,43 @@ describe("pgBigInt", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bigint(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -1760,14 +1889,17 @@ describe("pgBytea", () => {
 				expect(schema.safeParse(Date).success).toBe(false);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: bytea(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable, and optional", () => {
@@ -1779,7 +1911,6 @@ describe("pgBytea", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -1921,6 +2052,43 @@ describe("pgBytea", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bytea(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -2130,14 +2298,17 @@ describe("pgDate", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: date(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -2149,7 +2320,6 @@ describe("pgDate", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date()).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -2291,6 +2461,43 @@ describe("pgDate", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: date(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -2559,14 +2766,17 @@ describe("pgDoublePrecision", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: doublePrecision(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("fails on empty string", () => {
@@ -2588,7 +2798,6 @@ describe("pgDoublePrecision", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -2774,6 +2983,43 @@ describe("pgDoublePrecision", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: doublePrecision(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -3084,14 +3330,17 @@ describe("smallint", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -3103,7 +3352,6 @@ describe("smallint", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -3269,6 +3517,43 @@ describe("smallint", () => {
 					},
 				];
 				expect(result.error.errors).toStrictEqual(expected);
+			}
+		});
+
+		test("explicit undefined", () => {
+			const tbl = table({
+				columns: {
+					id: smallint(),
+				},
+			});
+			const schema = zodSchema(tbl).shape.id;
+			const result = schema.safeParse(undefined);
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				const expected = [
+					{
+						code: "custom",
+						path: [],
+						message: "Value cannot be undefined",
+						fatal: true,
+					},
+				];
+				expect(result.error.errors).toStrictEqual(expected);
+			}
+
+			const tableSchema = zodSchema(tbl);
+			const tableResult = tableSchema.safeParse({ id: undefined });
+			expect(tableResult.success).toBe(false);
+			if (!tableResult.success) {
+				const expected = [
+					{
+						code: "custom",
+						path: ["id"],
+						message: "Value cannot be undefined",
+						fatal: true,
+					},
+				];
+				expect(tableResult.error.errors).toStrictEqual(expected);
 			}
 		});
 
@@ -3618,14 +3903,17 @@ describe("pgInteger", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: integer(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -3637,7 +3925,6 @@ describe("pgInteger", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -3801,6 +4088,43 @@ describe("pgInteger", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: integer(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -4125,14 +4449,17 @@ describe("pgJson", () => {
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: json(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -4144,7 +4471,6 @@ describe("pgJson", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -4288,6 +4614,43 @@ describe("pgJson", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: json(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -4531,14 +4894,17 @@ describe("pgJsonB", () => {
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: jsonb(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -4550,7 +4916,6 @@ describe("pgJsonB", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse({ a: 1 }).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -4693,6 +5058,43 @@ describe("pgJsonB", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -4946,14 +5348,17 @@ describe("pgReal", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: real(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("fails on empty string", () => {
@@ -4975,7 +5380,6 @@ describe("pgReal", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(1.1).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -5161,6 +5565,43 @@ describe("pgReal", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: real(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -5472,14 +5913,17 @@ describe("pgUuid", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: uuid(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -5493,7 +5937,6 @@ describe("pgUuid", () => {
 					schema.safeParse("B0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").success,
 				).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -5650,6 +6093,43 @@ describe("pgUuid", () => {
 							},
 						];
 						expect(result.error.errors).toStrictEqual(expected);
+					}
+				});
+
+				test("explicit undefined", () => {
+					const tbl = table({
+						columns: {
+							id: uuid(),
+						},
+					});
+					const schema = zodSchema(tbl).shape.id;
+					const result = schema.safeParse(undefined);
+					expect(result.success).toBe(false);
+					if (!result.success) {
+						const expected = [
+							{
+								code: "custom",
+								path: [],
+								message: "Value cannot be undefined",
+								fatal: true,
+							},
+						];
+						expect(result.error.errors).toStrictEqual(expected);
+					}
+
+					const tableSchema = zodSchema(tbl);
+					const tableResult = tableSchema.safeParse({ id: undefined });
+					expect(tableResult.success).toBe(false);
+					if (!tableResult.success) {
+						const expected = [
+							{
+								code: "custom",
+								path: ["id"],
+								message: "Value cannot be undefined",
+								fatal: true,
+							},
+						];
+						expect(tableResult.error.errors).toStrictEqual(expected);
 					}
 				});
 
@@ -5875,14 +6355,17 @@ describe("characterVarying", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: characterVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -5894,7 +6377,6 @@ describe("characterVarying", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -6059,6 +6541,43 @@ describe("characterVarying", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: characterVarying(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -6315,14 +6834,17 @@ describe("character", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: character(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -6334,7 +6856,6 @@ describe("character", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("foo").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -6477,6 +6998,43 @@ describe("character", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: character(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -6755,14 +7313,17 @@ describe("pgTime", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: time(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -6774,7 +7335,6 @@ describe("pgTime", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("01:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -6916,6 +7476,43 @@ describe("pgTime", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: time(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -7173,14 +7770,17 @@ describe("timeWithTimeZone", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: timeWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -7192,7 +7792,6 @@ describe("timeWithTimeZone", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("01:30").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -7334,6 +7933,43 @@ describe("timeWithTimeZone", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: timeWithTimeZone(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -7599,14 +8235,17 @@ describe("timestamp", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: timestamp(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -7618,7 +8257,6 @@ describe("timestamp", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -7760,6 +8398,43 @@ describe("timestamp", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: timestamp(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -8039,14 +8714,17 @@ describe("timestampWithTimeZone", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: timestampWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -8058,7 +8736,6 @@ describe("timestampWithTimeZone", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(new Date(1)).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -8200,6 +8877,43 @@ describe("timestampWithTimeZone", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: timestampWithTimeZone(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -8582,14 +9296,17 @@ describe("pgNumeric", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: numeric(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("fails on empty string", () => {
@@ -8633,7 +9350,6 @@ describe("pgNumeric", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse(2).success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -8902,6 +9618,43 @@ describe("pgNumeric", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: numeric(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -9223,14 +9976,17 @@ describe("enumerated", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("with default value is nullable and optional", () => {
@@ -9244,7 +10000,6 @@ describe("enumerated", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("user").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -9398,6 +10153,43 @@ describe("enumerated", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -9599,14 +10391,17 @@ describe("tsvector", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: tsvector(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -9629,7 +10424,6 @@ describe("tsvector", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -9777,6 +10571,43 @@ describe("tsvector", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: tsvector(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -9973,14 +10804,17 @@ describe("tsquery", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: tsquery(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -10003,7 +10837,6 @@ describe("tsquery", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -10151,6 +10984,43 @@ describe("tsquery", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: tsquery(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -10350,14 +11220,17 @@ describe("xml", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: xml(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -10380,7 +11253,6 @@ describe("xml", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("hello").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -10528,6 +11400,43 @@ describe("xml", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -10735,14 +11644,17 @@ describe("bit", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: bit(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -10765,7 +11677,6 @@ describe("bit", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -10910,6 +11821,43 @@ describe("bit", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -11202,14 +12150,17 @@ describe("bit varying", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: bitVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -11232,7 +12183,6 @@ describe("bit varying", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("1").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -11377,6 +12327,43 @@ describe("bit varying", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bitVarying(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -11719,14 +12706,17 @@ describe("inet", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: inet(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -11749,7 +12739,6 @@ describe("inet", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("192.168.0.2").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -11892,6 +12881,43 @@ describe("inet", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -12166,14 +13192,17 @@ describe("cidr", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: cidr(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -12196,7 +13225,6 @@ describe("cidr", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("192.168.0.0/24").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -12339,6 +13367,43 @@ describe("cidr", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -12607,14 +13672,17 @@ describe("macaddr", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: macaddr(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -12637,7 +13705,6 @@ describe("macaddr", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("08:00:2b:01:02:03").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -12780,6 +13847,43 @@ describe("macaddr", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 
@@ -13014,14 +14118,17 @@ describe("macaddr8", () => {
 				expect(schema.safeParse(null).success).toBe(true);
 			});
 
-			test("parses undefined", () => {
+			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
 						id: macaddr8(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				expect(schema.safeParse(undefined).success).toBe(true);
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
 			});
 
 			test("does not parse other types", () => {
@@ -13044,7 +14151,6 @@ describe("macaddr8", () => {
 				const schema = zodSchema(tbl).shape.id;
 				expect(schema.safeParse("08:00:2b:01:02:03:04:05").success).toBe(true);
 				expect(schema.safeParse(null).success).toBe(true);
-				expect(schema.safeParse(undefined).success).toBe(true);
 			});
 
 			test("with notNull is non nullable and required", () => {
@@ -13187,6 +14293,43 @@ describe("macaddr8", () => {
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
 				}
 			});
 

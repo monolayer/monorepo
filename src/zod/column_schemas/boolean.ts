@@ -5,6 +5,7 @@ import {
 	type Boolish,
 	type PgColumnBase,
 } from "~/schema/pg_column.js";
+import { finishSchema } from "../common.js";
 import { customIssue, nullableColumn } from "../helpers.js";
 
 export function isPgBoolean(
@@ -64,10 +65,7 @@ export function pgBooleanSchema<T extends PgBoolean, PK extends boolean>(
 				return z.NEVER;
 			}
 		});
-	if (isNullable) {
-		return base.optional() as unknown as ZodType<T, PK>;
-	}
-	return base as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
 export function toBooleanOrNull(val: boolean | Boolish | null): boolean | null {
