@@ -60,22 +60,22 @@ import {
 	isDoublePrecision,
 	isFloat4,
 	isFloat8,
-	isInt2,
 	isInt4,
 	isInt8,
 	isInteger,
 	isNumeric,
 	isReal,
+	isSmallint,
 	pgBigintSchema,
 	pgDoublePrecisionSchema,
 	pgFloat4Schema,
 	pgFloat8Schema,
-	pgInt2Schema,
 	pgInt4Schema,
 	pgInt8Schema,
 	pgIntegerSchema,
 	pgNumericSchema,
 	pgRealSchema,
+	pgSmallintSchema,
 } from "./column_schemas/numeric.js";
 import {
 	isTsQueryColumn,
@@ -137,8 +137,8 @@ export function pgColumnSchema<
 	if (isFloat8(column)) {
 		return pgFloat8Schema(column);
 	}
-	if (isInt2(column)) {
-		return pgInt2Schema(column);
+	if (isSmallint(column)) {
+		return pgSmallintSchema(column);
 	}
 	if (isInt4(column)) {
 		return pgInt4Schema(column);

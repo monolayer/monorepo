@@ -47,7 +47,7 @@ export class PgDatabase<T extends ColumnRecord> {
 	 *     books: table({
 	 *       id: integer().generatedByDefaultAsIdentity(),
 	 *       title: varchar(),
-	 *       copies: int2().notNull().default(0),
+	 *       copies: smallint().notNull().default(0),
 	 *     }),
 	 *   }
 	 * });

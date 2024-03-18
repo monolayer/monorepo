@@ -681,11 +681,11 @@ export class PgFloat8 extends PgColumn<number, number | bigint | string> {
 	}
 }
 
-export function int2() {
-	return new PgInt2();
+export function smallint() {
+	return new PgSmallint();
 }
 
-export class PgInt2 extends IdentifiableColumn<number, number | string> {
+export class PgSmallint extends IdentifiableColumn<number, number | string> {
 	/**
 	 * @hidden
 	 */
@@ -1441,7 +1441,7 @@ export type TableColumn =
 	| PgDoublePrecision
 	| PgFloat4
 	| PgFloat8
-	| PgInt2
+	| PgSmallint
 	| PgInt4
 	| PgInt8
 	| PgInteger

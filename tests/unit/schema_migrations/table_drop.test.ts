@@ -82,7 +82,7 @@ describe("Table drop migrations", () => {
 			.addColumn("doublePrecision", "double precision")
 			.addColumn("float4", "float4")
 			.addColumn("float8", "float8")
-			.addColumn("int2", "int2")
+			.addColumn("smallint", "smallint")
 			.addColumn("int4", "int4")
 			.addColumn("int8", "int8")
 			.addColumn("integer", "integer")
@@ -181,12 +181,12 @@ describe("Table drop migrations", () => {
 						'addColumn("doublePrecision", "double precision")',
 						'addColumn("float4", "real")',
 						'addColumn("float8", "double precision")',
-						'addColumn("int2", sql`smallint`)',
 						'addColumn("int4", "integer")',
 						'addColumn("int8", "bigint")',
 						'addColumn("integer", "integer")',
 						'addColumn("integerAlwaysAsIdentity", "integer", (col) => col.notNull().generatedAlwaysAsIdentity())',
 						'addColumn("integerDefaultAsIdentity", "integer", (col) => col.notNull().generatedByDefaultAsIdentity())',
+						'addColumn("smallint", sql`smallint`)',
 						"execute();",
 					],
 				],

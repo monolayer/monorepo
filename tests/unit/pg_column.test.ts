@@ -26,7 +26,6 @@ import {
 	PgFloat8,
 	PgGeneratedColumn,
 	PgInet,
-	PgInt2,
 	PgInt4,
 	PgInt8,
 	PgInteger,
@@ -37,6 +36,7 @@ import {
 	PgNumeric,
 	PgReal,
 	PgSerial,
+	PgSmallint,
 	PgText,
 	PgTime,
 	PgTimeColumn,
@@ -62,7 +62,6 @@ import {
 	float4,
 	float8,
 	inet,
-	int2,
 	int4,
 	int8,
 	integer,
@@ -73,6 +72,7 @@ import {
 	numeric,
 	real,
 	serial,
+	smallint,
 	text,
 	time,
 	timestamp,
@@ -3925,24 +3925,24 @@ describe("pgFloat8", () => {
 	});
 });
 
-describe("pgInt2", () => {
-	test("returns a PgInt2 instance", () => {
-		const column = int2();
-		expect(column).toBeInstanceOf(PgInt2);
+describe("smallint", () => {
+	test("returns a PgSmallint instance", () => {
+		const column = smallint();
+		expect(column).toBeInstanceOf(PgSmallint);
 	});
 
-	describe("PgInt2", () => {
+	describe("PgSmallint", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(int2()).toBeInstanceOf(PgColumn);
+			expect(smallint()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to smallint", () => {
-			const info = Object.fromEntries(Object.entries(int2())).info;
+			const info = Object.fromEntries(Object.entries(smallint())).info;
 			expect(info.dataType).toBe("smallint");
 		});
 
 		test("default with column data type", () => {
-			const column = int2();
+			const column = smallint();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(10);
@@ -3958,13 +3958,13 @@ describe("pgInt2", () => {
 
 		test("has have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = int2() as any;
+			const column = smallint() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(true);
 		});
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = int2() as any;
+			const column = smallint() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				true,
 			);
@@ -3976,7 +3976,7 @@ describe("pgInt2", () => {
 			test("input type is number, string, null, or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -3989,7 +3989,7 @@ describe("pgInt2", () => {
 			test("output type is number, null, or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4017,7 +4017,7 @@ describe("pgInt2", () => {
 			test("input type is number or string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: int2().notNull(),
+						id: smallint().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4030,7 +4030,7 @@ describe("pgInt2", () => {
 			test("output type is number with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: int2().notNull(),
+						id: smallint().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4055,7 +4055,7 @@ describe("pgInt2", () => {
 			test("has never type when generatedAlwaysAsIdentity", () => {
 				const tbl = table({
 					columns: {
-						id: int2().generatedAlwaysAsIdentity(),
+						id: smallint().generatedAlwaysAsIdentity(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4071,7 +4071,7 @@ describe("pgInt2", () => {
 			test("output type is number with generatedByDefaultAsIdentity", () => {
 				const tbl = table({
 					columns: {
-						id: int2().generatedByDefaultAsIdentity(),
+						id: smallint().generatedByDefaultAsIdentity(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4092,7 +4092,7 @@ describe("pgInt2", () => {
 			test("parses number", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4102,7 +4102,7 @@ describe("pgInt2", () => {
 			test("does not parse decimals", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4112,7 +4112,7 @@ describe("pgInt2", () => {
 			test("does not parse bigint", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4122,7 +4122,7 @@ describe("pgInt2", () => {
 			test("parses strings that can be coerced to number", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4133,7 +4133,7 @@ describe("pgInt2", () => {
 			test("parses null", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4143,7 +4143,7 @@ describe("pgInt2", () => {
 			test("parses undefined", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4153,7 +4153,7 @@ describe("pgInt2", () => {
 			test("with default value is nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: int2().default(30),
+						id: smallint().default(30),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4165,7 +4165,7 @@ describe("pgInt2", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: int2().notNull(),
+						id: smallint().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4177,7 +4177,7 @@ describe("pgInt2", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: int2().notNull().default(11),
+						id: smallint().notNull().default(11),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4189,7 +4189,7 @@ describe("pgInt2", () => {
 			test("minimum is -32768", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4200,7 +4200,7 @@ describe("pgInt2", () => {
 			test("maximum is 32767", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -4213,7 +4213,7 @@ describe("pgInt2", () => {
 			test("input type is number, string", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -4229,7 +4229,7 @@ describe("pgInt2", () => {
 			test("output type is number", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -4245,7 +4245,7 @@ describe("pgInt2", () => {
 			test("is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: int2(),
+						id: smallint(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -4260,7 +4260,7 @@ describe("pgInt2", () => {
 			test("with default value is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: int2().default(1),
+						id: smallint().default(1),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -4275,7 +4275,7 @@ describe("pgInt2", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: int2().notNull(),
+						id: smallint().notNull(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -4290,7 +4290,7 @@ describe("pgInt2", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: int2().notNull().default(40),
+						id: smallint().notNull().default(40),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -4308,7 +4308,7 @@ describe("pgInt2", () => {
 		test("undefined", () => {
 			const tbl = table({
 				columns: {
-					id: int2().notNull(),
+					id: smallint().notNull(),
 				},
 			});
 			const schema = zodSchema(tbl).shape.id;
@@ -4331,7 +4331,7 @@ describe("pgInt2", () => {
 		test("null", () => {
 			const tbl = table({
 				columns: {
-					id: int2().notNull(),
+					id: smallint().notNull(),
 				},
 			});
 			const schema = zodSchema(tbl).shape.id;
@@ -4352,10 +4352,10 @@ describe("pgInt2", () => {
 			}
 		});
 
-		test("not an int2", () => {
+		test("not smallint", () => {
 			const tbl = table({
 				columns: {
-					id: int2(),
+					id: smallint(),
 				},
 			});
 			const schema = zodSchema(tbl).shape.id;
@@ -4379,7 +4379,7 @@ describe("pgInt2", () => {
 		test("bigint", () => {
 			const tbl = table({
 				columns: {
-					id: int2(),
+					id: smallint(),
 				},
 			});
 			const schema = zodSchema(tbl).shape.id;
@@ -4403,7 +4403,7 @@ describe("pgInt2", () => {
 		test("smaller than minimum", () => {
 			const tbl = table({
 				columns: {
-					id: int2(),
+					id: smallint(),
 				},
 			});
 			const schema = zodSchema(tbl).shape.id;
@@ -4429,7 +4429,7 @@ describe("pgInt2", () => {
 		test("greater than maximum", () => {
 			const tbl = table({
 				columns: {
-					id: int2(),
+					id: smallint(),
 				},
 			});
 			const schema = zodSchema(tbl).shape.id;

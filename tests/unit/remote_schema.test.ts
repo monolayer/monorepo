@@ -582,7 +582,9 @@ describe("#remoteSchema", () => {
 			)
 			.addColumn("float4", "float4", (col) => col.defaultTo(sql`'1'::float4`))
 			.addColumn("float8", "float8", (col) => col.defaultTo(sql`'1'::float8`))
-			.addColumn("int2", "int2", (col) => col.defaultTo(sql`'1'::int2`))
+			.addColumn("smallint", "smallint", (col) =>
+				col.defaultTo(sql`'1'::smallint`),
+			)
 			.addColumn("int4", "int4", (col) => col.defaultTo(sql`'1'::int4`))
 			.addColumn("int8", "int8", (col) => col.defaultTo(sql`'1'::bigint`))
 			.addColumn("integer", "integer", (col) =>
@@ -645,7 +647,7 @@ describe("#remoteSchema", () => {
 		await sql`COMMENT ON COLUMN "test_column_default_value"."float8" IS 'abcd'`.execute(
 			kysely,
 		);
-		await sql`COMMENT ON COLUMN "test_column_default_value"."int2" IS 'abcd'`.execute(
+		await sql`COMMENT ON COLUMN "test_column_default_value"."smallint" IS 'abcd'`.execute(
 			kysely,
 		);
 		await sql`COMMENT ON COLUMN "test_column_default_value"."int4" IS 'abcd'`.execute(
@@ -714,7 +716,7 @@ describe("#remoteSchema", () => {
 			double_precision: "abcd:'1'::double precision",
 			float4: "abcd:'1'::real",
 			float8: "abcd:'1'::double precision",
-			int2: "abcd:'1'::smallint",
+			smallint: "abcd:'1'::smallint",
 			int4: "abcd:1",
 			int8: "abcd:'1'::bigint",
 			integer: "abcd:1",
@@ -744,7 +746,7 @@ describe("#remoteSchema", () => {
 			.addColumn("bigint", "bigint")
 			.addColumn("char", "char")
 			.addColumn("doublePrecision", "double precision")
-			.addColumn("int2", "int2")
+			.addColumn("smallint", "smallint")
 			.addColumn("int4", "int4")
 			.addColumn("int8", "int8")
 			.addColumn("integer", "integer")
@@ -831,9 +833,9 @@ describe("#remoteSchema", () => {
 							tableName: "user_native_data_types_test",
 							enum: false,
 						},
-						int2: {
+						smallint: {
 							characterMaximumLength: null,
-							columnName: "int2",
+							columnName: "smallint",
 							dataType: "smallint",
 							datetimePrecision: null,
 							defaultValue: null,

@@ -7,12 +7,12 @@ import {
 	PgDoublePrecision,
 	PgFloat4,
 	PgFloat8,
-	PgInt2,
 	PgInt4,
 	PgInt8,
 	PgInteger,
 	PgNumeric,
 	PgReal,
+	PgSmallint,
 	type PgColumn,
 	type PgColumnBase,
 	type PgGeneratedColumn,
@@ -52,12 +52,12 @@ export function isFloat8(
 	return column instanceof PgFloat8;
 }
 
-export function isInt2(
+export function isSmallint(
 	column:
 		| PgColumn<unknown, unknown, unknown>
 		| PgGeneratedColumn<unknown, unknown>,
-): column is PgInt2 {
-	return column instanceof PgInt2;
+): column is PgSmallint {
+	return column instanceof PgSmallint;
 }
 
 export function isInt4(
@@ -142,7 +142,7 @@ export function pgFloat8Schema<T extends PgFloat8, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-export function pgInt2Schema<T extends PgInt2, PK extends boolean>(
+export function pgSmallintSchema<T extends PgSmallint, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	return integerSchema<T, PK>(column, -32768, 32767);
@@ -199,7 +199,7 @@ export function pgNumericSchema<T extends PgNumeric, PK extends boolean>(
 }
 
 function integerSchema<
-	T extends PgInt2 | PgInt4 | PgInteger,
+	T extends PgSmallint | PgInt4 | PgInteger,
 	PK extends boolean,
 >(column: T, minimum: number, maximum: number): ZodType<T, PK> {
 	const data = columnData(column);
