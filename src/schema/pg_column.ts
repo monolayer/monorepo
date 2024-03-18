@@ -655,32 +655,6 @@ export class PgDoublePrecision extends PgColumn<
 	}
 }
 
-export function float4() {
-	return new PgFloat4();
-}
-
-export class PgFloat4 extends PgColumn<number, number | bigint | string> {
-	/**
-	 * @hidden
-	 */
-	constructor() {
-		super("real", DefaultValueDataTypes.real);
-	}
-}
-
-export function float8() {
-	return new PgFloat8();
-}
-
-export class PgFloat8 extends PgColumn<number, number | bigint | string> {
-	/**
-	 * @hidden
-	 */
-	constructor() {
-		super("double precision", DefaultValueDataTypes["double precision"]);
-	}
-}
-
 export function smallint() {
 	return new PgSmallint();
 }
@@ -691,101 +665,6 @@ export class PgSmallint extends IdentifiableColumn<number, number | string> {
 	 */
 	constructor() {
 		super("smallint", DefaultValueDataTypes.smallint);
-	}
-}
-
-export function int4() {
-	return new PgInt4();
-}
-
-export class PgInt4 extends IdentifiableColumn<number, number | string> {
-	/**
-	 * @hidden
-	 */
-	constructor() {
-		super("integer", DefaultValueDataTypes.integer);
-	}
-
-	/**
-	 * Assigns a default default data value for the column.
-	 *
-	 * **Note:** When adding or changing a default value on an existing column, the new value be applied to inserted or updated rows. Default values in rows already in the table will not change.
-
-	 * Generated Kysely database schema type definition:
-	 *  - *Selection*: non nullable.
-	 *  - *Insertion*: optional.
-	 *  - *Update*: optional.
-	 *
-	 * @example
-	 *
-	 *
-	 * For the following table schema:
-	 *
-	 * ```ts
-	 * const books = pgTable({
-	 *   columns: {
-	 *     description: pgText().default("TBD"),
-	 *     created_at: pgTimestampTz().default(sql`now()`),
-	 *   }
-	 * })
-	 * ```
-	 *
-	 * The generated up migration will be:
-	 *
-	 * ```ts
-	 * await kysely.schema
-	 *   .createTable("books")
-	 *   .addColumn("description", "text", (col) => col.defaultTo(sql`'TBD'::text`))
-	 *   .addColumn("created_at", "timestamptz", (col) => col.defaultTo(sql`now()`),
-	 * )
-	 * ```
-	 *
-	 * and the Kysely database schema type definition for the `books` table will be:
-	 *
-	 * ```ts
-	 * type books = {
-	 *   description: {
-	 *     readonly __select__: string;
-	 *     readonly __insert__: string | null;
-	 *     readonly __update__: string | null;
-	 *   },
-	 *   created_at: {
-	 *     readonly __select__: Date;
-	 *     readonly __insert__: Date | string | null;
-	 *     readonly __update__: Date | string | null;
-	 *   }
-	 * }
-	 *
-	 * ```
-	 *
-	 * @see PostgreSQL Docs:
-	 * {@link https://www.postgresql.org/docs/16/sql-createtable.html#SQL-CREATETABLE-PARMS-DEFAULT | Create Table Default }
-	 * and
-	 * {@link https://www.postgresql.org/docs/16/sql-altertable.html#SQL-ALTERTABLE-DESC-SET-DROP-DEFAULT | Set/Drop Default }
-	 */
-	default(value: number | string | Expression<unknown>) {
-		if (isExpression(value)) {
-			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
-		} else {
-			this.info.defaultValue = valueWithHash(`${value}`);
-		}
-		return this as this & WithDefaultColumn;
-	}
-}
-
-export function int8() {
-	return new PgInt8();
-}
-
-export class PgInt8 extends IdentifiableColumn<
-	number,
-	number | bigint | string
-> {
-	/**
-	 * @hidden
-	 */
-	constructor() {
-		super("bigint", DefaultValueDataTypes.bigint);
 	}
 }
 
@@ -1439,11 +1318,7 @@ export type TableColumn =
 	| PgChar
 	| PgDate
 	| PgDoublePrecision
-	| PgFloat4
-	| PgFloat8
 	| PgSmallint
-	| PgInt4
-	| PgInt8
 	| PgInteger
 	| PgJson
 	| PgJsonB

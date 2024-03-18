@@ -58,20 +58,12 @@ import {
 import {
 	isBigInt,
 	isDoublePrecision,
-	isFloat4,
-	isFloat8,
-	isInt4,
-	isInt8,
 	isInteger,
 	isNumeric,
 	isReal,
 	isSmallint,
 	pgBigintSchema,
 	pgDoublePrecisionSchema,
-	pgFloat4Schema,
-	pgFloat8Schema,
-	pgInt4Schema,
-	pgInt8Schema,
 	pgIntegerSchema,
 	pgNumericSchema,
 	pgRealSchema,
@@ -131,20 +123,8 @@ export function pgColumnSchema<
 	if (isDoublePrecision(column)) {
 		return pgDoublePrecisionSchema(column);
 	}
-	if (isFloat4(column)) {
-		return pgFloat4Schema(column);
-	}
-	if (isFloat8(column)) {
-		return pgFloat8Schema(column);
-	}
 	if (isSmallint(column)) {
 		return pgSmallintSchema(column);
-	}
-	if (isInt4(column)) {
-		return pgInt4Schema(column);
-	}
-	if (isInt8(column)) {
-		return pgInt8Schema(column);
 	}
 	if (isInteger(column)) {
 		return pgIntegerSchema(column);

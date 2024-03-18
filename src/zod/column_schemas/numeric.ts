@@ -5,10 +5,6 @@ import {
 	ColumnIdentity,
 	PgBigInt,
 	PgDoublePrecision,
-	PgFloat4,
-	PgFloat8,
-	PgInt4,
-	PgInt8,
 	PgInteger,
 	PgNumeric,
 	PgReal,
@@ -36,44 +32,12 @@ export function isDoublePrecision(
 	return column instanceof PgDoublePrecision;
 }
 
-export function isFloat4(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
-): column is PgFloat4 {
-	return column instanceof PgFloat4;
-}
-
-export function isFloat8(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
-): column is PgFloat8 {
-	return column instanceof PgFloat8;
-}
-
 export function isSmallint(
 	column:
 		| PgColumn<unknown, unknown, unknown>
 		| PgGeneratedColumn<unknown, unknown>,
 ): column is PgSmallint {
 	return column instanceof PgSmallint;
-}
-
-export function isInt4(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
-): column is PgInt4 {
-	return column instanceof PgInt4;
-}
-
-export function isInt8(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
-): column is PgInt8 {
-	return column instanceof PgInt8;
 }
 
 export function isInteger(
@@ -126,48 +90,10 @@ export function pgDoublePrecisionSchema<
 	) as unknown as ZodType<T, PK>;
 }
 
-export function pgFloat4Schema<T extends PgFloat4, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
-	const isNullable = nullableColumn(column);
-	const base = variablePrecisionSchema(-1e37, 1e37, isNullable);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
-}
-
-export function pgFloat8Schema<T extends PgFloat8, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
-	const isNullable = nullableColumn(column);
-	const base = variablePrecisionSchema(-1e308, 1e308, isNullable);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
-}
-
 export function pgSmallintSchema<T extends PgSmallint, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	return integerSchema<T, PK>(column, -32768, 32767);
-}
-
-export function pgInt4Schema<T extends PgInt4, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
-	return integerSchema<T, PK>(column, -2147483648, 2147483647);
-}
-
-export function pgInt8Schema<T extends PgInt8, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
-	const data = columnData(column);
-	if (data.info.identity === ColumnIdentity.Always) {
-		return z.never() as unknown as ZodType<T, PK>;
-	}
-	const isNullable = nullableColumn(column);
-	const base = bigintSchema(isNullable).pipe(
-		z.coerce.bigint().min(-9223372036854775808n).max(9223372036854775807n),
-	);
-	return finishSchema(isNullable, base).transform((val) =>
-		val !== null ? Number(val) : val,
-	) as unknown as ZodType<T, PK>;
 }
 
 export function pgIntegerSchema<T extends PgInteger, PK extends boolean>(
@@ -198,10 +124,11 @@ export function pgNumericSchema<T extends PgNumeric, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-function integerSchema<
-	T extends PgSmallint | PgInt4 | PgInteger,
-	PK extends boolean,
->(column: T, minimum: number, maximum: number): ZodType<T, PK> {
+function integerSchema<T extends PgSmallint | PgInteger, PK extends boolean>(
+	column: T,
+	minimum: number,
+	maximum: number,
+): ZodType<T, PK> {
 	const data = columnData(column);
 	if (data.info.identity === ColumnIdentity.Always) {
 		return z.never() as unknown as ZodType<T, PK>;
