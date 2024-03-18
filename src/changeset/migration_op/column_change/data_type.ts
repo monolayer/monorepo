@@ -42,6 +42,9 @@ function isColumnDataType(test: Difference): test is ColumnDataTypeDifference {
 function columnDatatypeMigrationOperation(diff: ColumnDataTypeDifference) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
+	const newDataType = `sql\`${diff.value}\``;
+	const oldDataType = `sql\`${diff.oldValue}\``;
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDatatype,
 		tableName: tableName,
@@ -49,13 +52,13 @@ function columnDatatypeMigrationOperation(diff: ColumnDataTypeDifference) {
 		up: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`alterColumn("${columnName}", (col) => col.setDataType("${diff.value}"))`,
+				`alterColumn("${columnName}", (col) => col.setDataType(${newDataType}))`,
 			),
 		],
 		down: [
 			executeKyselySchemaStatement(
 				`alterTable("${tableName}")`,
-				`alterColumn("${columnName}", (col) => col.setDataType("${diff.oldValue}"))`,
+				`alterColumn("${columnName}", (col) => col.setDataType(${oldDataType}))`,
 			),
 		],
 	};

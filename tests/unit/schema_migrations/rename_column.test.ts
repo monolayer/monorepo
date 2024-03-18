@@ -95,7 +95,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users")',
-							'alterColumn("name", (col) => col.setDataType("varchar(255)"))',
+							'alterColumn("name", (col) => col.setDataType(sql`character varying(255)`))',
 							"execute();",
 						],
 					],
@@ -103,7 +103,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users")',
-							'alterColumn("name", (col) => col.setDataType("text"))',
+							'alterColumn("name", (col) => col.setDataType(sql`text`))',
 							"execute();",
 						],
 					],

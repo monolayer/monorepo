@@ -154,7 +154,7 @@ describe("#remoteSchema", () => {
 						name: {
 							characterMaximumLength: null,
 							columnName: "name",
-							dataType: "varchar",
+							dataType: "character varying",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,
@@ -182,7 +182,7 @@ describe("#remoteSchema", () => {
 						email: {
 							characterMaximumLength: null,
 							columnName: "email",
-							dataType: "varchar",
+							dataType: "character varying",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,
@@ -228,7 +228,7 @@ describe("#remoteSchema", () => {
 						name: {
 							characterMaximumLength: null,
 							columnName: "name",
-							dataType: "varchar",
+							dataType: "character varying",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,
@@ -385,7 +385,7 @@ describe("#remoteSchema", () => {
 						name: {
 							characterMaximumLength: null,
 							columnName: "name",
-							dataType: "varchar",
+							dataType: "character varying",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,
@@ -413,7 +413,7 @@ describe("#remoteSchema", () => {
 						email: {
 							characterMaximumLength: null,
 							columnName: "email",
-							dataType: "varchar",
+							dataType: "character varying",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,
@@ -443,7 +443,7 @@ describe("#remoteSchema", () => {
 						name: {
 							characterMaximumLength: null,
 							columnName: "name",
-							dataType: "varchar",
+							dataType: "character varying",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,
@@ -528,7 +528,7 @@ describe("#remoteSchema", () => {
 						name: {
 							characterMaximumLength: null,
 							columnName: "name",
-							dataType: "varchar",
+							dataType: "character varying",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,
@@ -878,7 +878,7 @@ describe("#remoteSchema", () => {
 						varchar: {
 							characterMaximumLength: null,
 							columnName: "varchar",
-							dataType: "varchar",
+							dataType: "character varying",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,
@@ -892,7 +892,7 @@ describe("#remoteSchema", () => {
 						char: {
 							characterMaximumLength: 1,
 							columnName: "char",
-							dataType: "char(1)",
+							dataType: "character(1)",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,
@@ -906,7 +906,7 @@ describe("#remoteSchema", () => {
 						timetz: {
 							characterMaximumLength: null,
 							columnName: "timetz",
-							dataType: "timetz",
+							dataType: "time with time zone",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,
@@ -920,7 +920,7 @@ describe("#remoteSchema", () => {
 						timestamptz: {
 							characterMaximumLength: null,
 							columnName: "timestamptz",
-							dataType: "timestamptz",
+							dataType: "timestamp with time zone",
 							datetimePrecision: null,
 							defaultValue: null,
 							identity: null,

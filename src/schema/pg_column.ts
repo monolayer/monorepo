@@ -874,16 +874,12 @@ export abstract class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
 	/**
 	 * @hidden
 	 */
-	constructor(dataType: "varchar" | "char", maximumLength?: number) {
-		const postgresDataType =
-			dataType === "varchar"
-				? DefaultValueDataTypes["character varying"]
-				: DefaultValueDataTypes.character;
+	constructor(dataType: string, maximumLength?: number) {
 		if (maximumLength !== undefined) {
-			super(`${dataType}(${maximumLength})`, postgresDataType);
+			super(`${dataType}(${maximumLength})`, dataType);
 			this.info.characterMaximumLength = maximumLength;
 		} else {
-			super(dataType, postgresDataType);
+			super(dataType, dataType);
 		}
 	}
 }
@@ -940,7 +936,7 @@ export abstract class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
  * export async function up(db: Kysely<any>): Promise<void> {
  *   await kysely.schema
  *     .createTable("users")
- *     .addColumn("name", "varchar(255)")
+ *     .addColumn("name", "character varying(255)")
  *     .addColumn("description", "varchar")
  *     .execute();
  * }
@@ -960,17 +956,28 @@ export abstract class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
  *
  * @group Columns
  */
-export function varchar(maximumLength?: number) {
-	return new PgVarChar("varchar", maximumLength);
+export function characterVarying(maximumLength?: number) {
+	return new PgCharacterVarying("character varying", maximumLength);
 }
 
-export class PgVarChar extends PgColumnWithMaximumLength<string, string> {}
+export function varchar(maximumLength?: number) {
+	return characterVarying(maximumLength);
+}
+
+export class PgCharacterVarying extends PgColumnWithMaximumLength<
+	string,
+	string
+> {}
+
+export function character(maximumLength?: number) {
+	return new PgCharacter("character", maximumLength ? maximumLength : 1);
+}
 
 export function char(maximumLength?: number) {
-	return new PgChar("char", maximumLength ? maximumLength : 1);
+	return character(maximumLength);
 }
 
-export class PgChar extends PgColumnWithMaximumLength<string, string> {}
+export class PgCharacter extends PgColumnWithMaximumLength<string, string> {}
 
 type DateTimePrecision = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -978,16 +985,27 @@ export abstract class PgTimeColumn<T, U> extends PgColumn<T, U> {
 	/**
 	 * @hidden
 	 */
-	constructor(dataType: "time" | "timetz", precision?: DateTimePrecision) {
-		const postgresDataType =
-			dataType === "time"
-				? DefaultValueDataTypes["time without time zone"]
-				: DefaultValueDataTypes["time with time zone"];
+	constructor(
+		dataType: string,
+		withTimeZone: boolean,
+		precision?: DateTimePrecision,
+	) {
 		if (precision !== undefined) {
-			super(`${dataType}(${precision})`, postgresDataType);
+			if (withTimeZone) {
+				super(
+					`${dataType}(${precision}) with time zone`,
+					`${dataType} with time zone`,
+				);
+			} else {
+				super(`${dataType}(${precision})`, `${dataType} without time zone`);
+			}
 			this.info.datetimePrecision = precision;
 		} else {
-			super(dataType, postgresDataType);
+			if (withTimeZone) {
+				super(`${dataType} with time zone`, `${dataType} with time zone`);
+			} else {
+				super(dataType, `${dataType} without time zone`);
+			}
 		}
 	}
 }
@@ -1001,55 +1019,45 @@ export class PgTime extends PgTimeColumn<string, string> {
 	 * @hidden
 	 */
 	constructor(precision?: DateTimePrecision) {
-		super("time", precision);
+		super("time", false, precision);
 	}
 }
 
-export abstract class PgTimestampColumn<T, U> extends PgColumn<T, U> {
-	/**
-	 * @hidden
-	 */
-	constructor(
-		dataType: "timestamp" | "timestamptz",
-		precision?: DateTimePrecision,
-	) {
-		const postgresDataType =
-			dataType === "timestamp"
-				? DefaultValueDataTypes["timestamp without time zone"]
-				: DefaultValueDataTypes["timestamp with time zone"];
-		if (precision !== undefined) {
-			super(`${dataType}(${precision})`, postgresDataType);
-			this.info.datetimePrecision = precision;
-		} else {
-			super(dataType, postgresDataType);
-		}
-	}
+export function timeWithTimeZone(precision?: DateTimePrecision) {
+	return new PgTimeWithTimeZone(precision);
 }
 
 export function timetz(precision?: DateTimePrecision) {
-	return new PgTimeTz(precision);
+	return timeWithTimeZone(precision);
 }
 
-export class PgTimeTz extends PgTimeColumn<string, string> {
+export class PgTimeWithTimeZone extends PgTimeColumn<string, string> {
 	/**
 	 * @hidden
 	 */
 	constructor(precision?: DateTimePrecision) {
-		super("timetz", precision);
+		super("time", true, precision);
 	}
 }
 
 export function timestamp(precision?: DateTimePrecision) {
-	return new PgTimestamp("timestamp", precision);
+	return new PgTimestamp("timestamp", false, precision);
 }
 
-export class PgTimestamp extends PgTimestampColumn<Date, Date | string> {}
+export class PgTimestamp extends PgTimeColumn<Date, Date | string> {}
+
+export function timestampWithTimeZone(precision?: DateTimePrecision) {
+	return new PgTimestampWithTimeZone("timestamp", true, precision);
+}
 
 export function timestamptz(precision?: DateTimePrecision) {
-	return new PgTimestampTz("timestamptz", precision);
+	return timestampWithTimeZone(precision);
 }
 
-export class PgTimestampTz extends PgTimestampColumn<Date, Date | string> {}
+export class PgTimestampWithTimeZone extends PgTimeColumn<
+	Date,
+	Date | string
+> {}
 
 export function numeric(precision?: number, scale?: number) {
 	return new PgNumeric(precision, scale);
@@ -1246,10 +1254,14 @@ export class PgBit extends PgBitStringColumn {
 }
 
 export function varbit(maximumLength?: number) {
-	return new PgVarbit(maximumLength);
+	return new PgBitVarying(maximumLength);
 }
 
-export class PgVarbit extends PgBitStringColumn {
+export function bitVarying(maximumLength?: number) {
+	return varbit(maximumLength);
+}
+
+export class PgBitVarying extends PgBitStringColumn {
 	/**
 	 * @hidden
 	 */
@@ -1315,7 +1327,7 @@ export type TableColumn =
 	| PgBigSerial
 	| PgBoolean
 	| PgBytea
-	| PgChar
+	| PgCharacter
 	| PgDate
 	| PgDoublePrecision
 	| PgSmallint
@@ -1327,11 +1339,11 @@ export type TableColumn =
 	| PgSerial
 	| PgText
 	| PgTime
-	| PgTimeTz
+	| PgTimeWithTimeZone
 	| PgTimestamp
-	| PgTimestampTz
+	| PgTimestampWithTimeZone
 	| PgUuid
-	| PgVarChar
+	| PgCharacterVarying
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	| PgEnum<any>;
 

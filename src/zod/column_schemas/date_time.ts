@@ -3,9 +3,9 @@ import type { ZodType } from "~/schema/inference.js";
 import {
 	PgDate,
 	PgTime,
-	PgTimeTz,
+	PgTimeWithTimeZone,
 	PgTimestamp,
-	PgTimestampTz,
+	PgTimestampWithTimeZone,
 	type PgColumn,
 	type PgGeneratedColumn,
 } from "~/schema/pg_column.js";
@@ -25,8 +25,8 @@ export function isTimeTz(
 	column:
 		| PgColumn<unknown, unknown, unknown>
 		| PgGeneratedColumn<unknown, unknown>,
-): column is PgTimeTz {
-	return column instanceof PgTimeTz;
+): column is PgTimeWithTimeZone {
+	return column instanceof PgTimeWithTimeZone;
 }
 
 export function isTimestamp(
@@ -41,8 +41,8 @@ export function isTimestampTz(
 	column:
 		| PgColumn<unknown, unknown, unknown>
 		| PgGeneratedColumn<unknown, unknown>,
-): column is PgTimestampTz {
-	return column instanceof PgTimestampTz;
+): column is PgTimestampWithTimeZone {
+	return column instanceof PgTimestampWithTimeZone;
 }
 
 export function isDate(
@@ -59,9 +59,10 @@ export function pgTimeSchema<T extends PgTime, PK extends boolean>(
 	return timeSchema<T, PK>(column, "Invalid time");
 }
 
-export function pgTimeTzSchema<T extends PgTimeTz, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgTimeTzSchema<
+	T extends PgTimeWithTimeZone,
+	PK extends boolean,
+>(column: T): ZodType<T, PK> {
 	return timeSchema<T, PK>(column, "Invalid time with time zone");
 }
 
@@ -72,7 +73,7 @@ export function pgTimestampSchema<T extends PgTimestamp, PK extends boolean>(
 }
 
 export function pgTimestampTzSchema<
-	T extends PgTimestampTz,
+	T extends PgTimestampWithTimeZone,
 	PK extends boolean,
 >(column: T): ZodType<T, PK> {
 	return timestampSchema<T, PK>(column);
@@ -90,7 +91,7 @@ export function pgDateSchema<T extends PgDate, PK extends boolean>(
 }
 
 function timestampSchema<
-	T extends PgTimestamp | PgTimestampTz,
+	T extends PgTimestamp | PgTimestampWithTimeZone,
 	PK extends boolean,
 >(column: T): ZodType<T, PK> {
 	const data = columnData(column);
@@ -102,7 +103,7 @@ function timestampSchema<
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-function timeSchema<T extends PgTime | PgTimeTz, PK extends boolean>(
+function timeSchema<T extends PgTime | PgTimeWithTimeZone, PK extends boolean>(
 	column: T,
 	invalidTimeMessage: string,
 ): ZodType<T, PK> {

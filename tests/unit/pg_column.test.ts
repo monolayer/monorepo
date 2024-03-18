@@ -3,7 +3,17 @@ import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod";
-import { enumType, enumerated, type JsonValue } from "~/schema/pg_column.js";
+import {
+	char,
+	character,
+	enumType,
+	enumerated,
+	timestampWithTimeZone,
+	timetz,
+	varbit,
+	varchar,
+	type JsonValue,
+} from "~/schema/pg_column.js";
 import { primaryKey } from "~/schema/pg_primary_key.js";
 import { table } from "~/schema/pg_table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
@@ -13,10 +23,12 @@ import {
 	PgBigInt,
 	PgBigSerial,
 	PgBit,
+	PgBitVarying,
 	PgBoolean,
 	PgBytea,
 	PgCIDR,
-	PgChar,
+	PgCharacter,
+	PgCharacterVarying,
 	PgColumn,
 	PgColumnBase,
 	PgDate,
@@ -36,22 +48,20 @@ import {
 	PgText,
 	PgTime,
 	PgTimeColumn,
-	PgTimeTz,
+	PgTimeWithTimeZone,
 	PgTimestamp,
-	PgTimestampColumn,
-	PgTimestampTz,
+	PgTimestampWithTimeZone,
 	PgTsquery,
 	PgTsvector,
 	PgUuid,
-	PgVarChar,
-	PgVarbit,
 	PgXML,
 	bigint,
 	bigserial,
 	bit,
+	bitVarying,
 	boolean,
 	bytea,
-	char,
+	characterVarying,
 	cidr,
 	date,
 	doublePrecision,
@@ -67,14 +77,12 @@ import {
 	smallint,
 	text,
 	time,
+	timeWithTimeZone,
 	timestamp,
 	timestamptz,
-	timetz,
 	tsquery,
 	tsvector,
 	uuid,
-	varbit,
-	varchar,
 	xml,
 	type Boolish,
 } from "../../src/schema/pg_column.js";
@@ -5693,24 +5701,29 @@ describe("pgUuid", () => {
 	});
 });
 
-describe("pgVarChar", () => {
+describe("characterVarying", () => {
 	test("returns a PgVarChar instance", () => {
+		const column = characterVarying();
+		expect(column).toBeInstanceOf(PgCharacterVarying);
+	});
+
+	test("has varchar as an alias", () => {
 		const column = varchar();
-		expect(column).toBeInstanceOf(PgVarChar);
+		expect(column).toBeInstanceOf(PgCharacterVarying);
 	});
 
 	describe("PgVarChar", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(varchar()).toBeInstanceOf(PgColumn);
+			expect(characterVarying()).toBeInstanceOf(PgColumn);
 		});
 
-		test("dataType is set to varchar", () => {
-			const info = Object.fromEntries(Object.entries(varchar())).info;
-			expect(info.dataType).toBe("varchar");
+		test("dataType is set to character varying", () => {
+			const info = Object.fromEntries(Object.entries(characterVarying())).info;
+			expect(info.dataType).toBe("character varying");
 		});
 
 		test("default with column data type", () => {
-			const column = varchar();
+			const column = characterVarying();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
@@ -5721,7 +5734,7 @@ describe("pgVarChar", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = varchar() as any;
+			const column = characterVarying() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -5729,7 +5742,7 @@ describe("pgVarChar", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = varchar() as any;
+			const column = characterVarying() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -5738,18 +5751,20 @@ describe("pgVarChar", () => {
 
 	describe("with optional maximumLength", () => {
 		test("characterMaximumLength is set to maximumLength", () => {
-			const column = varchar(255);
+			const column = characterVarying(255);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.characterMaximumLength).toBe(255);
 		});
 
 		test("data type has maximumLength", () => {
-			const info = Object.fromEntries(Object.entries(varchar(255))).info;
-			expect(info.dataType).toBe("varchar(255)");
+			const info = Object.fromEntries(
+				Object.entries(characterVarying(255)),
+			).info;
+			expect(info.dataType).toBe("character varying(255)");
 		});
 
 		test("default with column data type", () => {
-			const column = varchar(100);
+			const column = characterVarying(100);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
@@ -5764,7 +5779,7 @@ describe("pgVarChar", () => {
 			test("input type is string, null or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5777,7 +5792,7 @@ describe("pgVarChar", () => {
 			test("output type is string, null or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5798,7 +5813,7 @@ describe("pgVarChar", () => {
 			test("input type is string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: varchar().notNull(),
+						id: characterVarying().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5811,7 +5826,7 @@ describe("pgVarChar", () => {
 			test("output type is string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: varchar().notNull(),
+						id: characterVarying().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5831,7 +5846,7 @@ describe("pgVarChar", () => {
 			test("parses strings", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5841,7 +5856,7 @@ describe("pgVarChar", () => {
 			test("does not parse other objects", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5853,7 +5868,7 @@ describe("pgVarChar", () => {
 			test("parses null", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5863,7 +5878,7 @@ describe("pgVarChar", () => {
 			test("parses undefined", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5873,7 +5888,7 @@ describe("pgVarChar", () => {
 			test("with default value is nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: varchar().default("hello"),
+						id: characterVarying().default("hello"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5885,7 +5900,7 @@ describe("pgVarChar", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: varchar().notNull(),
+						id: characterVarying().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5897,7 +5912,7 @@ describe("pgVarChar", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: varchar().notNull().default("hello"),
+						id: characterVarying().notNull().default("hello"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5909,7 +5924,7 @@ describe("pgVarChar", () => {
 			test("without maximum length", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5920,7 +5935,7 @@ describe("pgVarChar", () => {
 			test("with maximum length", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(5),
+						id: characterVarying(5),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -5933,7 +5948,7 @@ describe("pgVarChar", () => {
 			test("input type is string", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -5949,7 +5964,7 @@ describe("pgVarChar", () => {
 			test("output type is string", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -5965,7 +5980,7 @@ describe("pgVarChar", () => {
 			test("is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -5980,7 +5995,7 @@ describe("pgVarChar", () => {
 			test("with default value is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: varchar().default("hello"),
+						id: characterVarying().default("hello"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -5995,7 +6010,7 @@ describe("pgVarChar", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: varchar().notNull(),
+						id: characterVarying().notNull(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -6010,7 +6025,7 @@ describe("pgVarChar", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: varchar().notNull().default("hello"),
+						id: characterVarying().notNull().default("hello"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -6027,7 +6042,7 @@ describe("pgVarChar", () => {
 			test("undefined", () => {
 				const tbl = table({
 					columns: {
-						id: varchar().notNull(),
+						id: characterVarying().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6050,7 +6065,7 @@ describe("pgVarChar", () => {
 			test("null", () => {
 				const tbl = table({
 					columns: {
-						id: varchar().notNull(),
+						id: characterVarying().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6073,7 +6088,7 @@ describe("pgVarChar", () => {
 			test("not a string", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(),
+						id: characterVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6096,7 +6111,7 @@ describe("pgVarChar", () => {
 			test("longer than maximum length", () => {
 				const tbl = table({
 					columns: {
-						id: varchar(5),
+						id: characterVarying(5),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6121,41 +6136,46 @@ describe("pgVarChar", () => {
 	});
 });
 
-describe("pgChar", () => {
+describe("character", () => {
 	test("returns a PgChar instance", () => {
+		const column = character();
+		expect(column).toBeInstanceOf(PgCharacter);
+	});
+
+	test("has char as an alias", () => {
 		const column = char();
-		expect(column).toBeInstanceOf(PgChar);
+		expect(column).toBeInstanceOf(PgCharacter);
 	});
 
 	describe("PgChar", () => {
 		test("inherits from PgColumnWithDefault", () => {
-			expect(char()).toBeInstanceOf(PgColumn);
+			expect(character()).toBeInstanceOf(PgColumn);
 		});
 
-		test("dataType is set to char(1)", () => {
-			const info = Object.fromEntries(Object.entries(char())).info;
-			expect(info.dataType).toBe("char(1)");
+		test("dataType is set to character(1)", () => {
+			const info = Object.fromEntries(Object.entries(character())).info;
+			expect(info.dataType).toBe("character(1)");
 		});
 
 		test("characterMaximumLength is set to 1", () => {
-			const column = char();
+			const column = character();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.characterMaximumLength).toBe(1);
 		});
 
 		test("default with column data type", () => {
-			const column = char();
+			const column = character();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
 			expect(info.defaultValue).toBe(
-				"7204625dc617fc37c5c926b31e938d15318be81b3b747cb566c9d27b5eba0b59:'10'::character(1)",
+				"2adbd9e96e499b1d87e00e40e5ca1b992a4bc8eeeefd5560d4efbeae8a4a13c4:'10'::character",
 			);
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = char() as any;
+			const column = character() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -6163,7 +6183,7 @@ describe("pgChar", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = char() as any;
+			const column = character() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -6172,23 +6192,23 @@ describe("pgChar", () => {
 
 	describe("with optional maximumLength", () => {
 		test("characterMaximumLength is set to maximumLength", () => {
-			const column = char(255);
+			const column = character(255);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.characterMaximumLength).toBe(255);
 		});
 
 		test("data type has maximumLength", () => {
-			const info = Object.fromEntries(Object.entries(char(255))).info;
-			expect(info.dataType).toBe("char(255)");
+			const info = Object.fromEntries(Object.entries(character(255))).info;
+			expect(info.dataType).toBe("character(255)");
 		});
 
 		test("default with column data type", () => {
-			const column = char(200);
+			const column = character(200);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("10");
 			expect(info.defaultValue).toBe(
-				"7204625dc617fc37c5c926b31e938d15318be81b3b747cb566c9d27b5eba0b59:'10'::character(1)",
+				"2adbd9e96e499b1d87e00e40e5ca1b992a4bc8eeeefd5560d4efbeae8a4a13c4:'10'::character",
 			);
 		});
 	});
@@ -6198,7 +6218,7 @@ describe("pgChar", () => {
 			test("input type is string, null or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: char(10),
+						id: character(10),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6211,7 +6231,7 @@ describe("pgChar", () => {
 			test("output type is string, null or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: char(10),
+						id: character(10),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6232,7 +6252,7 @@ describe("pgChar", () => {
 			test("input type is string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: char(10).notNull(),
+						id: character(10).notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6245,7 +6265,7 @@ describe("pgChar", () => {
 			test("output type is string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: char(10).notNull(),
+						id: character(10).notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6265,7 +6285,7 @@ describe("pgChar", () => {
 			test("parses strings up to the maximum length", () => {
 				const tbl = table({
 					columns: {
-						id: char(5),
+						id: character(5),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6276,7 +6296,7 @@ describe("pgChar", () => {
 			test("does not parse other objects", () => {
 				const tbl = table({
 					columns: {
-						id: char(5),
+						id: character(5),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6288,7 +6308,7 @@ describe("pgChar", () => {
 			test("parses null", () => {
 				const tbl = table({
 					columns: {
-						id: char(),
+						id: character(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6298,7 +6318,7 @@ describe("pgChar", () => {
 			test("parses undefined", () => {
 				const tbl = table({
 					columns: {
-						id: char(),
+						id: character(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6308,7 +6328,7 @@ describe("pgChar", () => {
 			test("with default value is nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: char(5).default("hello"),
+						id: character(5).default("hello"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6320,7 +6340,7 @@ describe("pgChar", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: char(5).notNull(),
+						id: character(5).notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6332,7 +6352,7 @@ describe("pgChar", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: char(5).notNull().default("hello"),
+						id: character(5).notNull().default("hello"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6346,7 +6366,7 @@ describe("pgChar", () => {
 			test("input type is string", () => {
 				const tbl = table({
 					columns: {
-						id: char(10),
+						id: character(10),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -6362,7 +6382,7 @@ describe("pgChar", () => {
 			test("output type is string or null", () => {
 				const tbl = table({
 					columns: {
-						id: char(10),
+						id: character(10),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -6378,7 +6398,7 @@ describe("pgChar", () => {
 			test("is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: char(5),
+						id: character(5),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -6393,7 +6413,7 @@ describe("pgChar", () => {
 			test("with default value is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: char(5).default("hello"),
+						id: character(5).default("hello"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -6408,7 +6428,7 @@ describe("pgChar", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: char(5).notNull().default("hello"),
+						id: character(5).notNull().default("hello"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -6423,7 +6443,7 @@ describe("pgChar", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: char(5).default("hello").notNull(),
+						id: character(5).default("hello").notNull(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -6440,7 +6460,7 @@ describe("pgChar", () => {
 			test("undefined", () => {
 				const tbl = table({
 					columns: {
-						id: char().notNull(),
+						id: character().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6463,7 +6483,7 @@ describe("pgChar", () => {
 			test("null", () => {
 				const tbl = table({
 					columns: {
-						id: char().notNull(),
+						id: character().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6486,7 +6506,7 @@ describe("pgChar", () => {
 			test("not a string", () => {
 				const tbl = table({
 					columns: {
-						id: char(),
+						id: character(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6509,7 +6529,7 @@ describe("pgChar", () => {
 			test("longer than maximum length", () => {
 				const tbl = table({
 					columns: {
-						id: char(10),
+						id: character(10),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -6538,7 +6558,7 @@ describe("PgTimeColumn", () => {
 	test("inherits from PgColumn", () => {
 		class PgTimeTest extends PgTimeColumn<string, string> {
 			constructor() {
-				super("time", 1);
+				super("time", false, 1);
 			}
 		}
 		const column = new PgTimeTest();
@@ -6548,7 +6568,7 @@ describe("PgTimeColumn", () => {
 	test("optional precision accepts values from 0 to 6", () => {
 		type range = 0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined;
 		const expect: Expect<
-			Equal<range, ConstructorParameters<typeof PgTimeColumn>[1]>
+			Equal<range, ConstructorParameters<typeof PgTimeColumn>[2]>
 		> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -6967,30 +6987,35 @@ describe("pgTime", () => {
 	});
 });
 
-describe("pgTimeTz", () => {
+describe("timeWithTimeZone", () => {
 	test("returns a PgTimeTz instance", () => {
+		const column = timeWithTimeZone();
+		expect(column).toBeInstanceOf(PgTimeWithTimeZone);
+	});
+
+	test("timetz alias", () => {
 		const column = timetz();
-		expect(column).toBeInstanceOf(PgTimeTz);
+		expect(column).toBeInstanceOf(PgTimeWithTimeZone);
 	});
 
 	describe("PgTimeTz", () => {
 		test("inherits from PgTimeColumn", () => {
-			expect(timetz()).toBeInstanceOf(PgTimeColumn);
+			expect(timeWithTimeZone()).toBeInstanceOf(PgTimeColumn);
 		});
 
-		test("dataType is set to timetz", () => {
-			const info = Object.fromEntries(Object.entries(timetz())).info;
-			expect(info.dataType).toBe("timetz");
+		test("dataType is set to timeWithTimeZone", () => {
+			const info = Object.fromEntries(Object.entries(timeWithTimeZone())).info;
+			expect(info.dataType).toBe("time with time zone");
 		});
 
 		test("datetimePrecision is set to null", () => {
-			const column = timetz();
+			const column = timeWithTimeZone();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
 
 		test("default with column data type", () => {
-			const column = timetz();
+			const column = timeWithTimeZone();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("04:05:06-08:00");
@@ -7001,7 +7026,7 @@ describe("pgTimeTz", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = timetz() as any;
+			const column = timeWithTimeZone() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -7009,7 +7034,7 @@ describe("pgTimeTz", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = timetz() as any;
+			const column = timeWithTimeZone() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -7018,18 +7043,18 @@ describe("pgTimeTz", () => {
 
 	describe("with optional precision", () => {
 		test("datetimePrecision is set to precision", () => {
-			const column = timetz(1);
+			const column = timeWithTimeZone(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(1);
 		});
 
 		test("data type has precision", () => {
-			const info = Object.fromEntries(Object.entries(timetz(1))).info;
-			expect(info.dataType).toBe("timetz(1)");
+			const info = Object.fromEntries(Object.entries(timeWithTimeZone(1))).info;
+			expect(info.dataType).toBe("time(1) with time zone");
 		});
 
 		test("default with column data type", () => {
-			const column = timetz(1);
+			const column = timeWithTimeZone(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default("04:05:06-08:00");
@@ -7044,7 +7069,7 @@ describe("pgTimeTz", () => {
 			test("input type is string, null, or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7057,7 +7082,7 @@ describe("pgTimeTz", () => {
 			test("output type is string, null, or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7078,7 +7103,7 @@ describe("pgTimeTz", () => {
 			test("input type is string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: timetz().notNull(),
+						id: timeWithTimeZone().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7091,7 +7116,7 @@ describe("pgTimeTz", () => {
 			test("output type is string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: timetz().notNull(),
+						id: timeWithTimeZone().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7111,7 +7136,7 @@ describe("pgTimeTz", () => {
 			test("parses time strings", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7131,7 +7156,7 @@ describe("pgTimeTz", () => {
 			test("does not parse other strings", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7141,7 +7166,7 @@ describe("pgTimeTz", () => {
 			test("parses null", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7151,7 +7176,7 @@ describe("pgTimeTz", () => {
 			test("parses undefined", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7161,7 +7186,7 @@ describe("pgTimeTz", () => {
 			test("with default value is nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: timetz().default("11:30"),
+						id: timeWithTimeZone().default("11:30"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7173,7 +7198,7 @@ describe("pgTimeTz", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: timetz().notNull(),
+						id: timeWithTimeZone().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7185,7 +7210,7 @@ describe("pgTimeTz", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: timetz().notNull().default("11:30"),
+						id: timeWithTimeZone().notNull().default("11:30"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7199,7 +7224,7 @@ describe("pgTimeTz", () => {
 			test("input type is string", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -7215,7 +7240,7 @@ describe("pgTimeTz", () => {
 			test("output type is string", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -7231,7 +7256,7 @@ describe("pgTimeTz", () => {
 			test("is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -7246,7 +7271,7 @@ describe("pgTimeTz", () => {
 			test("with default value is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: timetz().default("11:30"),
+						id: timeWithTimeZone().default("11:30"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -7261,7 +7286,7 @@ describe("pgTimeTz", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: timetz().notNull().default("11:30"),
+						id: timeWithTimeZone().notNull().default("11:30"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -7276,7 +7301,7 @@ describe("pgTimeTz", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: timetz().default("11:30").notNull(),
+						id: timeWithTimeZone().default("11:30").notNull(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -7293,7 +7318,7 @@ describe("pgTimeTz", () => {
 			test("undefined", () => {
 				const tbl = table({
 					columns: {
-						id: timetz().notNull(),
+						id: timeWithTimeZone().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7315,7 +7340,7 @@ describe("pgTimeTz", () => {
 			test("null", () => {
 				const tbl = table({
 					columns: {
-						id: timetz().notNull(),
+						id: timeWithTimeZone().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7337,7 +7362,7 @@ describe("pgTimeTz", () => {
 			test("not a time with time zone", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7358,7 +7383,7 @@ describe("pgTimeTz", () => {
 			test("not a time with time zone string", () => {
 				const tbl = table({
 					columns: {
-						id: timetz(),
+						id: timeWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7380,15 +7405,15 @@ describe("pgTimeTz", () => {
 	});
 });
 
-describe("pgTimestamp", () => {
+describe("timestamp", () => {
 	test("returns a PgTimestamp instance", () => {
 		const column = timestamp();
 		expect(column).toBeInstanceOf(PgTimestamp);
 	});
 
 	describe("PgTimestamp", () => {
-		test("inherits from PgColumnWithPrecision", () => {
-			expect(timestamp()).toBeInstanceOf(PgTimestampColumn);
+		test("inherits from PgTimeColumn", () => {
+			expect(timestamp()).toBeInstanceOf(PgTimeColumn);
 		});
 
 		test("dataType is set to timestamp", () => {
@@ -7807,30 +7832,41 @@ describe("pgTimestamp", () => {
 	});
 });
 
-describe("pgTimestampTz", () => {
+describe("timestampWithTimeZone", () => {
 	test("returns a PgTimestampTz instance", () => {
+		const column = timestampWithTimeZone();
+		expect(column).toBeInstanceOf(PgTimestampWithTimeZone);
+	});
+
+	test("inherits from PgTimeColumn", () => {
+		expect(timestampWithTimeZone()).toBeInstanceOf(PgTimeColumn);
+	});
+
+	test("timestamptz alias", () => {
 		const column = timestamptz();
-		expect(column).toBeInstanceOf(PgTimestampTz);
+		expect(column).toBeInstanceOf(PgTimestampWithTimeZone);
 	});
 
 	describe("PgTimestampTz", () => {
 		test("inherits from PgColumnWithPrecision", () => {
-			expect(timestamptz()).toBeInstanceOf(PgColumn);
+			expect(timestampWithTimeZone()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to timestamptz", () => {
-			const info = Object.fromEntries(Object.entries(timestamptz())).info;
-			expect(info.dataType).toBe("timestamptz");
+			const info = Object.fromEntries(
+				Object.entries(timestampWithTimeZone()),
+			).info;
+			expect(info.dataType).toBe("timestamp with time zone");
 		});
 
 		test("datetimePrecision is set to null", () => {
-			const column = timestamptz();
+			const column = timestampWithTimeZone();
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(null);
 		});
 
 		test("default with column data type", () => {
-			const column = timestamptz();
+			const column = timestampWithTimeZone();
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(new Date(1));
@@ -7841,7 +7877,7 @@ describe("pgTimestampTz", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = timestamptz() as any;
+			const column = timestampWithTimeZone() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -7849,7 +7885,7 @@ describe("pgTimestampTz", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = timestamptz() as any;
+			const column = timestampWithTimeZone() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -7858,18 +7894,20 @@ describe("pgTimestampTz", () => {
 
 	describe("with optional precision", () => {
 		test("datetimePrecision is set to precision", () => {
-			const column = timestamptz(1);
+			const column = timestampWithTimeZone(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 			expect(info.datetimePrecision).toBe(1);
 		});
 
 		test("data type has precision", () => {
-			const info = Object.fromEntries(Object.entries(timestamptz(1))).info;
-			expect(info.dataType).toBe("timestamptz(1)");
+			const info = Object.fromEntries(
+				Object.entries(timestampWithTimeZone(1)),
+			).info;
+			expect(info.dataType).toBe("timestamp(1) with time zone");
 		});
 
 		test("default with column data type", () => {
-			const column = timestamptz(1);
+			const column = timestampWithTimeZone(1);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(new Date(1));
@@ -7884,7 +7922,7 @@ describe("pgTimestampTz", () => {
 			test("input type is Date, string, null, or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7897,7 +7935,7 @@ describe("pgTimestampTz", () => {
 			test("output type is Date, null, or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7924,7 +7962,7 @@ describe("pgTimestampTz", () => {
 			test("input type is Date or string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz().notNull(),
+						id: timestampWithTimeZone().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7937,7 +7975,7 @@ describe("pgTimestampTz", () => {
 			test("output type is Date with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz().notNull(),
+						id: timestampWithTimeZone().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7964,7 +8002,7 @@ describe("pgTimestampTz", () => {
 			test("parses dates", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7974,7 +8012,7 @@ describe("pgTimestampTz", () => {
 			test("parses strings that can be coerced into dates", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7984,7 +8022,7 @@ describe("pgTimestampTz", () => {
 			test("does not parse other strings", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -7994,7 +8032,7 @@ describe("pgTimestampTz", () => {
 			test("parses null", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -8004,7 +8042,7 @@ describe("pgTimestampTz", () => {
 			test("parses undefined", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -8014,7 +8052,7 @@ describe("pgTimestampTz", () => {
 			test("with default value is nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz().default(new Date()),
+						id: timestampWithTimeZone().default(new Date()),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -8026,7 +8064,7 @@ describe("pgTimestampTz", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz().notNull(),
+						id: timestampWithTimeZone().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -8038,7 +8076,7 @@ describe("pgTimestampTz", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz().notNull().default(new Date()),
+						id: timestampWithTimeZone().notNull().default(new Date()),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -8052,7 +8090,7 @@ describe("pgTimestampTz", () => {
 			test("input type is Date, string", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -8068,7 +8106,7 @@ describe("pgTimestampTz", () => {
 			test("output type is Date", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -8084,7 +8122,7 @@ describe("pgTimestampTz", () => {
 			test("is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -8099,7 +8137,7 @@ describe("pgTimestampTz", () => {
 			test("with default value is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz().default(new Date(2)),
+						id: timestampWithTimeZone().default(new Date(2)),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -8114,7 +8152,7 @@ describe("pgTimestampTz", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz().notNull(),
+						id: timestampWithTimeZone().notNull(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -8129,7 +8167,7 @@ describe("pgTimestampTz", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz().default(new Date(2)).notNull(),
+						id: timestampWithTimeZone().default(new Date(2)).notNull(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -8146,7 +8184,7 @@ describe("pgTimestampTz", () => {
 			test("undefined", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz().notNull(),
+						id: timestampWithTimeZone().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -8168,7 +8206,7 @@ describe("pgTimestampTz", () => {
 			test("null", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz().notNull(),
+						id: timestampWithTimeZone().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -8191,7 +8229,7 @@ describe("pgTimestampTz", () => {
 			test("not a timestamp", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -8213,7 +8251,7 @@ describe("pgTimestampTz", () => {
 			test("not a timestamp string", () => {
 				const tbl = table({
 					columns: {
-						id: timestamptz(),
+						id: timestampWithTimeZone(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -10996,31 +11034,36 @@ describe("bit", () => {
 	});
 });
 
-describe("varbit", () => {
+describe("bit varying", () => {
 	test("returns a PgVarbit instance", () => {
+		const column = bitVarying();
+		expect(column).toBeInstanceOf(PgBitVarying);
+	});
+
+	test("has varbit as alias", () => {
 		const column = varbit();
-		expect(column).toBeInstanceOf(PgVarbit);
+		expect(column).toBeInstanceOf(PgBitVarying);
 	});
 
 	describe("PgVarbit", () => {
 		test("inherits from PgColumn", () => {
-			expect(varbit()).toBeInstanceOf(PgColumn);
+			expect(bitVarying()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to varbit", () => {
-			const info = Object.fromEntries(Object.entries(varbit())).info;
+			const info = Object.fromEntries(Object.entries(bitVarying())).info;
 			expect(info.dataType).toBe("varbit");
 		});
 
 		test("can set characterMaximumLength", () => {
-			const column = varbit(5);
+			const column = bitVarying(5);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			expect(info.characterMaximumLength).toBe(5);
 		});
 
 		test("default with string", () => {
-			const column = varbit().default("0101");
+			const column = bitVarying().default("0101");
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			expect(info.defaultValue).toBe(
@@ -11029,7 +11072,7 @@ describe("varbit", () => {
 		});
 
 		test("default with expression", () => {
-			const column = varbit(4);
+			const column = bitVarying(4);
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(sql`'0101'::varbit(4)`);
@@ -11040,7 +11083,7 @@ describe("varbit", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = varbit() as any;
+			const column = bitVarying() as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -11048,7 +11091,7 @@ describe("varbit", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = varbit() as any;
+			const column = bitVarying() as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
@@ -11060,7 +11103,7 @@ describe("varbit", () => {
 			test("input type is string, null or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11073,7 +11116,7 @@ describe("varbit", () => {
 			test("output type is string, null or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11096,7 +11139,7 @@ describe("varbit", () => {
 			test("input type is string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: varbit().notNull(),
+						id: bitVarying().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11114,7 +11157,7 @@ describe("varbit", () => {
 			test("output type is string with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: varbit().notNull(),
+						id: bitVarying().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11132,7 +11175,7 @@ describe("varbit", () => {
 			test("parses strings", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11142,7 +11185,7 @@ describe("varbit", () => {
 			test("parses bit string of arbitrary length", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11152,7 +11195,7 @@ describe("varbit", () => {
 			test("parses null", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11162,7 +11205,7 @@ describe("varbit", () => {
 			test("parses undefined", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11172,7 +11215,7 @@ describe("varbit", () => {
 			test("does not parse other types", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11183,7 +11226,7 @@ describe("varbit", () => {
 			test("with default value is nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: varbit().default("1"),
+						id: bitVarying().default("1"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11195,7 +11238,7 @@ describe("varbit", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: varbit().notNull(),
+						id: bitVarying().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11207,7 +11250,7 @@ describe("varbit", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: varbit()
+						id: bitVarying()
 							.notNull()
 							.default(sql`to_varbit("foo")`),
 					},
@@ -11223,7 +11266,7 @@ describe("varbit", () => {
 			test("input type is string with primary key", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11239,7 +11282,7 @@ describe("varbit", () => {
 			test("output type is string", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11255,7 +11298,7 @@ describe("varbit", () => {
 			test("is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11270,7 +11313,7 @@ describe("varbit", () => {
 			test("with default value is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: varbit().default("0"),
+						id: bitVarying().default("0"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11285,7 +11328,7 @@ describe("varbit", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: varbit().notNull().default("1"),
+						id: bitVarying().notNull().default("1"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11300,7 +11343,7 @@ describe("varbit", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: varbit().default("1").notNull(),
+						id: bitVarying().default("1").notNull(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -11317,7 +11360,7 @@ describe("varbit", () => {
 			test("undefined", () => {
 				const tbl = table({
 					columns: {
-						id: varbit().notNull(),
+						id: bitVarying().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11340,7 +11383,7 @@ describe("varbit", () => {
 			test("null", () => {
 				const tbl = table({
 					columns: {
-						id: varbit().notNull(),
+						id: bitVarying().notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11363,7 +11406,7 @@ describe("varbit", () => {
 			test("not a string", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11386,7 +11429,7 @@ describe("varbit", () => {
 			test("not a bit value", () => {
 				const tbl = table({
 					columns: {
-						id: varbit(),
+						id: bitVarying(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -11409,7 +11452,7 @@ describe("varbit", () => {
 		test("bit value exceed maximum length", () => {
 			const tbl = table({
 				columns: {
-					id: varbit(5),
+					id: bitVarying(5),
 				},
 			});
 			const schema = zodSchema(tbl).shape.id;
@@ -11434,7 +11477,7 @@ describe("varbit", () => {
 		test("bit value exceed specified length", () => {
 			const tbl = table({
 				columns: {
-					id: varbit(5),
+					id: bitVarying(5),
 				},
 			});
 			const schema = zodSchema(tbl).shape.id;

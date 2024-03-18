@@ -37,7 +37,7 @@ describe("#schemaColumnInfo", () => {
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
-			dataType: "varchar(100)",
+			dataType: "character varying(100)",
 			characterMaximumLength: 100,
 		});
 
@@ -49,7 +49,7 @@ describe("#schemaColumnInfo", () => {
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
-			dataType: "varchar(100)",
+			dataType: "character varying(100)",
 			isNullable: false,
 			characterMaximumLength: 100,
 		});
@@ -62,7 +62,7 @@ describe("#schemaColumnInfo", () => {
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
-			dataType: "varchar(100)",
+			dataType: "character varying(100)",
 			defaultValue:
 				"2bc6768278e7f14b6f18480c616c1687a575d330a2e8e471a48bede1a90d5720:'foo'::character varying",
 			characterMaximumLength: 100,
@@ -89,7 +89,7 @@ describe("#schemaColumnInfo", () => {
 		const expectedInfo = columnInfoFactory({
 			tableName: "foo",
 			columnName: "bar",
-			dataType: "varchar(100)",
+			dataType: "character varying(100)",
 			characterMaximumLength: 100,
 			renameFrom: "old_column_name",
 		});
@@ -164,13 +164,13 @@ test("#schemaDBColumnInfoByTable", () => {
 			name: columnInfoFactory({
 				tableName: "users",
 				columnName: "name",
-				dataType: "varchar",
+				dataType: "character varying",
 				isNullable: false,
 			}),
 			email: columnInfoFactory({
 				tableName: "users",
 				columnName: "email",
-				dataType: "varchar",
+				dataType: "character varying",
 				isNullable: false,
 			}),
 			role: columnInfoFactory({
@@ -190,7 +190,7 @@ test("#schemaDBColumnInfoByTable", () => {
 			name: columnInfoFactory({
 				tableName: "teams",
 				columnName: "name",
-				dataType: "varchar",
+				dataType: "character varying",
 				isNullable: false,
 			}),
 			active: columnInfoFactory({
@@ -378,7 +378,7 @@ describe("schema", () => {
 					location: {
 						characterMaximumLength: null,
 						columnName: "location",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -406,7 +406,7 @@ describe("schema", () => {
 					name: {
 						characterMaximumLength: null,
 						columnName: "name",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -450,7 +450,7 @@ describe("schema", () => {
 					name: {
 						characterMaximumLength: null,
 						columnName: "name",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -481,7 +481,7 @@ describe("schema", () => {
 					email: {
 						characterMaximumLength: null,
 						columnName: "email",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -509,7 +509,7 @@ describe("schema", () => {
 					name: {
 						characterMaximumLength: null,
 						columnName: "name",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -680,7 +680,7 @@ describe("schema", () => {
 					location: {
 						characterMaximumLength: null,
 						columnName: "location",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -708,7 +708,7 @@ describe("schema", () => {
 					name: {
 						characterMaximumLength: null,
 						columnName: "name",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -738,7 +738,7 @@ describe("schema", () => {
 					location: {
 						characterMaximumLength: null,
 						columnName: "location",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -766,7 +766,7 @@ describe("schema", () => {
 					name: {
 						characterMaximumLength: null,
 						columnName: "name",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -796,7 +796,7 @@ describe("schema", () => {
 					email: {
 						characterMaximumLength: null,
 						columnName: "email",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -824,7 +824,7 @@ describe("schema", () => {
 					name: {
 						characterMaximumLength: null,
 						columnName: "name",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -838,7 +838,7 @@ describe("schema", () => {
 					full_name: {
 						characterMaximumLength: null,
 						columnName: "full_name",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						identity: null,
@@ -1073,7 +1073,7 @@ test("#localSchemaCamelCase", () => {
 				location: {
 					characterMaximumLength: null,
 					columnName: "location",
-					dataType: "varchar",
+					dataType: "character varying",
 					datetimePrecision: null,
 					defaultValue: null,
 					identity: null,
@@ -1101,7 +1101,7 @@ test("#localSchemaCamelCase", () => {
 				name: {
 					characterMaximumLength: null,
 					columnName: "name",
-					dataType: "varchar",
+					dataType: "character varying",
 					datetimePrecision: null,
 					defaultValue: null,
 					identity: null,
@@ -1131,7 +1131,7 @@ test("#localSchemaCamelCase", () => {
 				location: {
 					characterMaximumLength: null,
 					columnName: "location",
-					dataType: "varchar",
+					dataType: "character varying",
 					datetimePrecision: null,
 					defaultValue: null,
 					identity: null,
@@ -1159,7 +1159,7 @@ test("#localSchemaCamelCase", () => {
 				name: {
 					characterMaximumLength: null,
 					columnName: "name",
-					dataType: "varchar",
+					dataType: "character varying",
 					datetimePrecision: null,
 					defaultValue: null,
 					identity: null,
@@ -1189,7 +1189,7 @@ test("#localSchemaCamelCase", () => {
 				email: {
 					characterMaximumLength: null,
 					columnName: "email",
-					dataType: "varchar",
+					dataType: "character varying",
 					datetimePrecision: null,
 					defaultValue: null,
 					identity: null,
@@ -1217,7 +1217,7 @@ test("#localSchemaCamelCase", () => {
 				name: {
 					characterMaximumLength: null,
 					columnName: "name",
-					dataType: "varchar",
+					dataType: "character varying",
 					datetimePrecision: null,
 					defaultValue: null,
 					identity: null,
@@ -1231,7 +1231,7 @@ test("#localSchemaCamelCase", () => {
 				full_name: {
 					characterMaximumLength: null,
 					columnName: "full_name",
-					dataType: "varchar",
+					dataType: "character varying",
 					datetimePrecision: null,
 					defaultValue: null,
 					identity: null,
@@ -1386,7 +1386,7 @@ describe("#localSchema with external objects", () => {
 					name: {
 						characterMaximumLength: null,
 						columnName: "name",
-						dataType: "varchar",
+						dataType: "character varying",
 						datetimePrecision: null,
 						defaultValue: null,
 						enum: false,

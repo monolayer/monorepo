@@ -2,9 +2,9 @@ import { z } from "zod";
 import type { ZodType } from "~/schema/inference.js";
 import {
 	PgBit,
+	PgBitVarying,
 	PgColumn,
 	PgGeneratedColumn,
-	PgVarbit,
 } from "~/schema/pg_column.js";
 import { finishSchema } from "../common.js";
 import { columnData } from "../helpers.js";
@@ -28,7 +28,7 @@ export function bitSchema<T extends PgBit, PK extends boolean>(
 	) as unknown as ZodType<T, PK>;
 }
 
-export function varbitSchema<T extends PgVarbit, PK extends boolean>(
+export function varbitSchema<T extends PgBitVarying, PK extends boolean>(
 	column: T,
 ): ZodType<T, PK> {
 	const data = columnData(column);
@@ -58,6 +58,6 @@ export function isVarbitColumn(
 	column:
 		| PgColumn<unknown, unknown, unknown>
 		| PgGeneratedColumn<unknown, unknown>,
-): column is PgVarbit {
-	return column instanceof PgVarbit;
+): column is PgBitVarying {
+	return column instanceof PgBitVarying;
 }

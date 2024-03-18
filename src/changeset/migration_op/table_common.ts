@@ -71,10 +71,13 @@ export function compileDataType(dataType: string, isEnum: boolean) {
 	if (isEnum) {
 		return `sql\`${dataType}\``;
 	}
-	if (dataType === "smallint") {
-		return "sql`smallint`";
+	if (dataType.includes("character(")) {
+		return `sql\`${dataType}\``;
 	}
-	if (dataType.includes("timetz(")) {
+	if (dataType.includes("character varying(")) {
+		return `sql\`${dataType}\``;
+	}
+	if (dataType.includes("with time zone")) {
 		return `sql\`${dataType}\``;
 	}
 	if (useSqlInDataType(dataType)) {
@@ -85,6 +88,11 @@ export function compileDataType(dataType: string, isEnum: boolean) {
 
 function useSqlInDataType(dataType: string) {
 	switch (dataType) {
+		case "smallint":
+		case "character":
+		case "character varying":
+		case "time with time zone":
+		case "timestamp with time zone":
 		case "tsvector":
 		case "tsquery":
 		case "xml":

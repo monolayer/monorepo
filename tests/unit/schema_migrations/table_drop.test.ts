@@ -117,7 +117,7 @@ describe("Table drop migrations", () => {
 			.addColumn("varCharWithDefault", "varchar", (col) =>
 				col.defaultTo(sql`\'foo\'::character varying`),
 			)
-			.addColumn("varChar255", "varchar(255)")
+			.addColumn("varChar255", sql`character varying(255)`)
 			.execute();
 
 		await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
@@ -144,16 +144,16 @@ describe("Table drop migrations", () => {
 						'addColumn("text", "text")',
 						'addColumn("time", "time")',
 						'addColumn("time4", "time(4)")',
-						'addColumn("timeTz", "timetz")',
-						'addColumn("timeTz4", sql`timetz(4)`)',
+						'addColumn("timeTz", sql`time with time zone`)',
+						'addColumn("timeTz4", sql`time(4) with time zone`)',
 						'addColumn("timestamp", "timestamp")',
 						'addColumn("timestamp3", "timestamp(3)")',
-						'addColumn("timestampTz", "timestamptz")',
-						'addColumn("timestampTz3", "timestamptz(3)")',
+						'addColumn("timestampTz", sql`timestamp with time zone`)',
+						'addColumn("timestampTz3", sql`timestamp(3) with time zone`)',
 						'addColumn("uuid", "uuid")',
-						'addColumn("varChar", "varchar")',
-						'addColumn("varChar255", "varchar(255)")',
-						'addColumn("varCharWithDefault", "varchar", (col) => col.defaultTo(sql`\'foo\'::character varying`))',
+						'addColumn("varChar", sql`character varying`)',
+						'addColumn("varChar255", sql`character varying(255)`)',
+						"addColumn(\"varCharWithDefault\", sql`character varying`, (col) => col.defaultTo(sql`'foo'::character varying`))",
 						"execute();",
 					],
 					[
@@ -175,8 +175,8 @@ describe("Table drop migrations", () => {
 						'addColumn("bigSerial", "bigserial", (col) => col.notNull())',
 						'addColumn("boolean", "boolean")',
 						'addColumn("bytea", "bytea")',
-						'addColumn("char", "char(1)")',
-						'addColumn("char10", "char(10)")',
+						'addColumn("char", sql`character(1)`)',
+						'addColumn("char10", sql`character(10)`)',
 						'addColumn("date", "date")',
 						'addColumn("doublePrecision", "double precision")',
 						'addColumn("float4", "real")',
@@ -357,7 +357,7 @@ describe("Table drop migrations", () => {
 					[
 						"await db.schema",
 						'createTable("users")',
-						'addColumn("fullName", "varchar")',
+						'addColumn("fullName", sql`character varying`)',
 						'addColumn("id", "serial", (col) => col.notNull())',
 						"execute();",
 					],

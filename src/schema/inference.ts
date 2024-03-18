@@ -20,7 +20,7 @@ import {
 	type PgEnum,
 	type PgGeneratedColumn,
 	type PgTimestamp,
-	type PgTimestampTz,
+	type PgTimestampWithTimeZone,
 } from "./pg_column.js";
 import { ColumnRecord } from "./pg_table.js";
 
@@ -172,7 +172,7 @@ type DefaultZodType<
 		| PgGeneratedColumn<unknown, unknown>,
 > =
 	T extends PgColumn<infer U, unknown, unknown>
-		? T extends PgTimestamp | PgTimestampTz
+		? T extends PgTimestamp | PgTimestampWithTimeZone
 			? DateZodType<T>
 			: T extends PgBytea
 				? ByteaZodType<T>

@@ -206,7 +206,7 @@ describe("Table change migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'alterColumn("name", (col) => col.setDataType("varchar"))',
+						'alterColumn("name", (col) => col.setDataType(sql`character varying`))',
 						"execute();",
 					],
 				],
@@ -214,7 +214,7 @@ describe("Table change migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'alterColumn("name", (col) => col.setDataType("text"))',
+						'alterColumn("name", (col) => col.setDataType(sql`text`))',
 						"execute();",
 					],
 				],
@@ -489,7 +489,7 @@ describe("Table change migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'alterColumn("name", (col) => col.setDataType("text"))',
+						'alterColumn("name", (col) => col.setDataType(sql`text`))',
 						"execute();",
 					],
 				],
@@ -500,7 +500,7 @@ describe("Table change migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'alterColumn("name", (col) => col.setDataType("varchar"))',
+						'alterColumn("name", (col) => col.setDataType(sql`character varying`))',
 						"execute();",
 					],
 				],

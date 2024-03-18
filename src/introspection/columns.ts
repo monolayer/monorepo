@@ -182,14 +182,14 @@ function transformDbColumnInfo(
 			case "character":
 				dataTypeFullName =
 					row.atttypmod === -1
-						? "char"
-						: `char(${row.character_maximum_length})`;
+						? "character"
+						: `character(${row.character_maximum_length})`;
 				break;
 			case "character varying":
 				if (row.character_maximum_length !== null) {
-					dataTypeFullName = `varchar(${row.character_maximum_length})`;
+					dataTypeFullName = `character varying(${row.character_maximum_length})`;
 				} else {
-					dataTypeFullName = "varchar";
+					dataTypeFullName = "character varying";
 				}
 				break;
 			case "date":
@@ -237,14 +237,16 @@ function transformDbColumnInfo(
 			case "timestamp with time zone":
 				dataTypeFullName =
 					row.atttypmod === -1
-						? "timestamptz"
-						: `timestamptz(${row.datetime_precision})`;
+						? "timestamp with time zone"
+						: `timestamp(${row.datetime_precision}) with time zone`;
 				row.datetime_precision =
 					row.atttypmod === -1 ? null : row.datetime_precision;
 				break;
 			case "time with time zone":
 				dataTypeFullName =
-					row.atttypmod === -1 ? "timetz" : `timetz(${row.datetime_precision})`;
+					row.atttypmod === -1
+						? "time with time zone"
+						: `time(${row.datetime_precision}) with time zone`;
 				row.datetime_precision =
 					row.atttypmod === -1 ? null : row.datetime_precision;
 				break;

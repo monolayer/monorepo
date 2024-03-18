@@ -24,7 +24,8 @@ export {
 	type PgBigSerial,
 	type PgBoolean,
 	type PgBytea,
-	type PgChar,
+	type PgCharacter,
+	type PgCharacterVarying,
 	type PgDate,
 	type PgDoublePrecision,
 	type PgEnum,
@@ -37,11 +38,10 @@ export {
 	type PgSmallint,
 	type PgText,
 	type PgTime,
-	type PgTimeTz,
+	type PgTimeWithTimeZone,
 	type PgTimestamp,
-	type PgTimestampTz,
+	type PgTimestampWithTimeZone,
 	type PgUuid,
-	type PgVarChar,
 	type TableColumn,
 } from "~/schema/pg_column.js";
 export { pgDatabase, type PgDatabase } from "~/schema/pg_database.js";
