@@ -523,10 +523,6 @@ export function bytea() {
 	return new PgBytea();
 }
 
-export type NestedRecord = {
-	[k: string]: string | number | boolean | NestedRecord;
-};
-
 export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 	/**
 	 * @hidden
