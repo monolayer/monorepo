@@ -168,7 +168,9 @@ export type ZodType<
 		? OptionalNonNullableZodType<DefaultZodType<T>>
 		: T extends PgGeneratedColumn<unknown, unknown>
 			? OptionalNonNullableZodType<DefaultZodType<T>>
-			: NonNullableZodType<DefaultZodType<T>>
+			: T extends GeneratedColumn
+				? OptionalNonNullableZodType<DefaultZodType<T>>
+				: NonNullableZodType<DefaultZodType<T>>
 	: DefaultZodType<T>;
 
 type DefaultZodType<
