@@ -723,6 +723,80 @@ describe("pgTable definition", () => {
 			});
 		});
 
+		describe("primary key columns with default", () => {
+			test("non nullable selects", () => {
+				const tbl = table({
+					columns: {
+						id: integer().notNull().default(1),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				type expectedType = {
+					id: number;
+				};
+				type InferredType = Selectable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("non nullable and optional inserts", () => {
+				const tbl = table({
+					columns: {
+						id: integer().notNull().default(1),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				type expectedType = {
+					id?: number | string;
+				};
+				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("non nullable and optional updates", () => {
+				const tbl = table({
+					columns: {
+						id: integer().notNull().default(1),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				type expectedType = {
+					id?: number | string;
+				};
+				type InferredType = Updateable<typeof tbl.infer>;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+
+			test("infer select, insert, and update", () => {
+				const tbl = table({
+					columns: {
+						id: integer().notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				type expectedType = {
+					id: {
+						readonly __select__: number;
+						readonly __insert__: string | number;
+						readonly __update__: string | number;
+					};
+				};
+				type InferredType = typeof tbl.infer;
+				const equal: Expect<Equal<InferredType, expectedType>> = true;
+				expect(equal).toBe(true);
+			});
+		});
+
 		describe("generated (serial) columns", () => {
 			test("non nullable selects", () => {
 				const tbl = table({
