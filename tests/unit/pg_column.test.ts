@@ -1846,20 +1846,315 @@ describe("pgBigSerial", () => {
 	});
 
 	describe("zod", () => {
-		test("has never type", () => {
-			const tbl = table({
-				columns: {
-					id: bigserial(),
-				},
+		describe("by default", () => {
+			test("input type is bigint, number, string, or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = bigint | number | string | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
-			const schema = zodSchema(tbl).shape.id;
 
-			type SchemaType = typeof schema;
-			type Expected = z.ZodType<never, z.ZodTypeDef, never>;
-			const isEqual: Expect<Equal<SchemaType, Expected>> = true;
-			expect(isEqual).toBe(true);
-			const result = schema.safeParse(1);
-			expect(result.success).toBe(false);
+			test("output type is string, or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const numberResult = schema.safeParse(1);
+				expect(numberResult.success).toBe(true);
+				if (numberResult.success) {
+					expect(numberResult.data).toEqual("1");
+				}
+				const stringResult = schema.safeParse("10");
+				expect(stringResult.success).toBe(true);
+				if (stringResult.success) {
+					expect(stringResult.data).toBe("10");
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
+			test("parses bigint", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(1n).success).toBe(true);
+			});
+
+			test("parses number", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(1).success).toBe(true);
+			});
+
+			test("parses string", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+			});
+
+			test("does not parse null", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(false);
+			});
+
+			test("does not parse explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+			});
+
+			test("does not parse floats", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(1.1).success).toBe(false);
+			});
+
+			test("fails on invalid string", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(1n).success).toBe(true);
+				expect(schema.safeParse(1).success).toBe(true);
+				expect(schema.safeParse("alpha").success).toBe(false);
+			});
+
+			test("fails on empty string", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("").success).toBe(false);
+			});
+
+			test("minimumValue is -9223372036854775808n", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(-9223372036854775808n).success).toBe(true);
+				expect(schema.safeParse("-9223372036854775808").success).toBe(true);
+				expect(schema.safeParse(-9223372036854775809n).success).toBe(false);
+				expect(schema.safeParse("-9223372036854775809").success).toBe(false);
+			});
+
+			test("maximumValue is 9223372036854775807n", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(9223372036854775807n).success).toBe(true);
+				expect(schema.safeParse("9223372036854775807").success).toBe(true);
+				expect(schema.safeParse(9223372036854775808n).success).toBe(false);
+				expect(schema.safeParse("9223372036854775808").success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("input type is bigint, number, string | undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = bigint | number | string | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("empty string", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse("");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected BigInt, Number or String that can coerce to BigInt, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not a bigint", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Invalid bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
 		});
 	});
 });
@@ -6244,20 +6539,370 @@ describe("pgSerial", () => {
 	});
 
 	describe("zod", () => {
-		test("has never type", () => {
-			const tbl = table({
-				columns: {
-					id: serial(),
-				},
+		describe("by default", () => {
+			test("input type is number, string, or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = number | string | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
 			});
-			const schema = zodSchema(tbl).shape.id;
 
-			type SchemaType = typeof schema;
-			type Expected = z.ZodType<never, z.ZodTypeDef, never>;
-			const isEqual: Expect<Equal<SchemaType, Expected>> = true;
-			expect(isEqual).toBe(true);
-			const result = schema.safeParse(1);
-			expect(result.success).toBe(false);
+			test("output type is number, or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = number | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const numberResult = schema.safeParse(1);
+				expect(numberResult.success).toBe(true);
+				if (numberResult.success) {
+					expect(numberResult.data).toEqual(1);
+				}
+				const stringResult = schema.safeParse("10");
+				expect(stringResult.success).toBe(true);
+				if (stringResult.success) {
+					expect(stringResult.data).toBe(10);
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
+			test("parses number", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(1).success).toBe(true);
+			});
+
+			test("does not parse decimals", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(1.1).success).toBe(false);
+			});
+
+			test("does not parse bigint", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(1n).success).toBe(false);
+			});
+
+			test("parses strings that can be coerced to number", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("1").success).toBe(true);
+				expect(schema.safeParse("alpha").success).toBe(false);
+			});
+
+			test("does not parse null", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(false);
+			});
+
+			test("does not parse explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+			});
+
+			test("minimum is -2147483648", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(-2147483648).success).toBe(true);
+				expect(schema.safeParse(-2147483649).success).toBe(false);
+			});
+
+			test("maximum is 2147483647", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(2147483647).success).toBe(true);
+				expect(schema.safeParse(2147483648).success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("input type is number, string or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = number | string | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is number or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = number | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("is non nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+
+				type InputType = z.input<typeof schema>;
+				type ExpectedInputType = number | string | undefined;
+				const isEqualInput: Expect<Equal<InputType, ExpectedInputType>> = true;
+				expect(isEqualInput).toBe(true);
+				type OutputType = z.output<typeof schema>;
+				type ExpectedOutputType = number | undefined;
+				const isEqualOutput: Expect<Equal<OutputType, ExpectedOutputType>> =
+					true;
+				expect(isEqualOutput).toBe(true);
+
+				expect(schema.safeParse(1).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Required",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message:
+								"Expected Number or String that can be converted to a number, received null",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("not an integer", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse("hello");
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "number",
+							received: "nan",
+							path: [],
+							message: "Expected number, received nan",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("bigint", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(1n);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "invalid_type",
+							expected: "number",
+							received: "bigint",
+							path: [],
+							message: "Expected number, received bigint",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("smaller than minimum", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(-2147483649);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_small",
+							exact: false,
+							inclusive: true,
+							message: "Number must be greater than or equal to -2147483648",
+							minimum: -2147483648,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("greater than maximum", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(2147483648);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "too_big",
+							exact: false,
+							inclusive: true,
+							message: "Number must be less than or equal to 2147483647",
+							maximum: 2147483647,
+							path: [],
+							type: "number",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
 		});
 	});
 });

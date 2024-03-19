@@ -35,10 +35,7 @@ import {
 	pgTimestampTzSchema,
 } from "./column_schemas/date_time.js";
 import { isEnum, pgEnumSchema } from "./column_schemas/enum.js";
-import {
-	generatedColumnSchema,
-	isGeneratedColumn,
-} from "./column_schemas/generated.js";
+import { isBigserial, isSerial } from "./column_schemas/generated.js";
 import {
 	isJson,
 	isJsonB,
@@ -105,8 +102,11 @@ export function pgColumnSchema<
 	if (isBigInt(column)) {
 		return pgBigintSchema(column);
 	}
-	if (isGeneratedColumn(column)) {
-		return generatedColumnSchema<typeof column, PK>();
+	if (isSerial(column)) {
+		return pgIntegerSchema(column);
+	}
+	if (isBigserial(column)) {
+		return pgBigintSchema(column);
 	}
 	if (isBytea(column)) {
 		return pgByteaSchema(column);

@@ -166,7 +166,9 @@ export type ZodType<
 > = true extends PK
 	? T extends WithDefaultColumn
 		? OptionalNonNullableZodType<DefaultZodType<T>>
-		: NonNullableZodType<DefaultZodType<T>>
+		: T extends PgGeneratedColumn<unknown, unknown>
+			? OptionalNonNullableZodType<DefaultZodType<T>>
+			: NonNullableZodType<DefaultZodType<T>>
 	: DefaultZodType<T>;
 
 type DefaultZodType<
@@ -182,7 +184,9 @@ type DefaultZodType<
 				: JsonValue extends U
 					? JsonZodType<T>
 					: PgColumnZodType<T>
-		: z.ZodType<never, z.ZodTypeDef, never>;
+		: T extends PgGeneratedColumn<infer S, infer I>
+			? z.ZodType<S | undefined, z.ZodTypeDef, I | undefined>
+			: z.ZodType<never, z.ZodTypeDef, never>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type NonNullableZodType<T extends z.ZodType<any, any, any>> =

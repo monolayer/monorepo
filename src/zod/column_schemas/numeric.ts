@@ -9,9 +9,11 @@ import {
 	PgNumeric,
 	PgReal,
 	PgSmallint,
+	type PgBigSerial,
 	type PgColumn,
 	type PgColumnBase,
 	type PgGeneratedColumn,
+	type PgSerial,
 } from "~/schema/pg_column.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { columnData, customIssue, nullableColumn } from "../helpers.js";
@@ -62,9 +64,10 @@ export function isBigInt(
 	return column instanceof PgBigInt;
 }
 
-export function pgBigintSchema<T extends PgBigInt, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgBigintSchema<
+	T extends PgBigInt | PgBigSerial,
+	PK extends boolean,
+>(column: T): ZodType<T, PK> {
 	const data = columnData(column);
 	if (data.info.identity === ColumnIdentity.Always) {
 		return z.never() as unknown as ZodType<T, PK>;
@@ -96,9 +99,10 @@ export function pgSmallintSchema<T extends PgSmallint, PK extends boolean>(
 	return integerSchema<T, PK>(column, -32768, 32767);
 }
 
-export function pgIntegerSchema<T extends PgInteger, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgIntegerSchema<
+	T extends PgInteger | PgSerial | PgSerial,
+	PK extends boolean,
+>(column: T): ZodType<T, PK> {
 	return integerSchema<T, PK>(column, -2147483648, 2147483647);
 }
 
@@ -124,11 +128,10 @@ export function pgNumericSchema<T extends PgNumeric, PK extends boolean>(
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
-function integerSchema<T extends PgSmallint | PgInteger, PK extends boolean>(
-	column: T,
-	minimum: number,
-	maximum: number,
-): ZodType<T, PK> {
+function integerSchema<
+	T extends PgSmallint | PgInteger | PgSerial,
+	PK extends boolean,
+>(column: T, minimum: number, maximum: number): ZodType<T, PK> {
 	const data = columnData(column);
 	if (data.info.identity === ColumnIdentity.Always) {
 		return z.never() as unknown as ZodType<T, PK>;

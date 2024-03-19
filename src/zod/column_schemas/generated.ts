@@ -1,24 +1,22 @@
-import { z } from "zod";
-import type { ZodType } from "~/schema/inference.js";
 import {
 	PgBigSerial,
+	PgSerial,
 	type PgColumn,
 	type PgGeneratedColumn,
 } from "~/schema/pg_column.js";
 
-export function generatedColumnSchema<
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	T extends PgGeneratedColumn<any, any>,
-	PK extends boolean,
->(): ZodType<T, PK> {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return z.never() as unknown as ZodType<T, PK>;
-}
-
-export function isGeneratedColumn(
+export function isBigserial(
 	column:
 		| PgColumn<unknown, unknown, unknown>
 		| PgGeneratedColumn<unknown, unknown>,
-): column is PgGeneratedColumn<unknown, unknown> {
+): column is PgBigSerial {
 	return column instanceof PgBigSerial;
+}
+
+export function isSerial(
+	column:
+		| PgColumn<unknown, unknown, unknown>
+		| PgGeneratedColumn<unknown, unknown>,
+): column is PgSerial {
+	return column instanceof PgSerial;
 }
