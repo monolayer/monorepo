@@ -164,7 +164,11 @@ export type ZodType<
 		| PgColumn<unknown, unknown, unknown>
 		| PgGeneratedColumn<unknown, unknown>,
 	PK extends boolean,
-> = true extends PK ? NonNullableZodType<DefaultZodType<T>> : DefaultZodType<T>;
+> = true extends PK
+	? T extends WithDefaultColumn
+		? OptionalNonNullableZodType<DefaultZodType<T>>
+		: NonNullableZodType<DefaultZodType<T>>
+	: DefaultZodType<T>;
 
 type DefaultZodType<
 	T extends
@@ -190,6 +194,16 @@ type NonNullableZodType<T extends z.ZodType<any, any, any>> =
 		? z.ZodType<NonNullable<Output>, Def, NonNullable<Input>>
 		: never;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type OptionalNonNullableZodType<T extends z.ZodType<any, any, any>> =
+	T extends z.ZodType<infer Output, infer Def, infer Input>
+		? z.ZodType<
+				Exclude<Output, null> | undefined,
+				Def,
+				Exclude<Input, null> | undefined
+			>
+		: never;
+
 type PgColumnZodType<T extends AnyPGColumn> = z.ZodType<
 	T extends NonNullableColumn
 		? SelectType<InferColumType<T, false>>
@@ -197,7 +211,9 @@ type PgColumnZodType<T extends AnyPGColumn> = z.ZodType<
 			? never
 			: SelectType<InferColumType<T, false>> | null | undefined,
 	z.ZodTypeDef,
-	InsertType<InferColumType<T, false>>
+	T extends WithDefaultColumn
+		? InsertType<InferColumType<T, false>>
+		: InsertType<InferColumType<T, false>>
 >;
 
 type EnumZodType<T extends AnyPGColumn> = z.ZodType<
