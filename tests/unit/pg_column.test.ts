@@ -2960,6 +2960,21 @@ describe("pgDate", () => {
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
+
+			test("does not parse dates before 4713 BC", () => {
+				const tbl = table({
+					columns: {
+						id: date(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(
+					schema.safeParse(new Date("-004713-12-31T23:59:59.999Z")).success,
+				).toBe(true);
+				expect(
+					schema.safeParse(new Date("-004714-01-01T00:00:00.000Z")).success,
+				).toBe(false);
+			});
 		});
 
 		describe("as primary key", () => {

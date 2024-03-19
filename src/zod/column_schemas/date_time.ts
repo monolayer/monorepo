@@ -86,7 +86,7 @@ export function pgDateSchema<T extends PgDate, PK extends boolean>(
 	const base = baseSchema(
 		isNullable,
 		"Expected Date or String that can coerce to Date",
-	).pipe(z.coerce.date());
+	).pipe(z.coerce.date().min(new Date("-004713-12-31T23:59:59.999Z")));
 	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
 }
 
