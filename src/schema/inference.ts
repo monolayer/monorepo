@@ -17,7 +17,6 @@ import {
 	type JsonValue,
 	type NonNullableColumn,
 	type PgBytea,
-	type PgEnum,
 	type PgGeneratedColumn,
 	type PgTimestamp,
 	type PgTimestampWithTimeZone,
@@ -182,10 +181,7 @@ type DefaultZodType<
 				? ByteaZodType<T>
 				: JsonValue extends U
 					? JsonZodType<T>
-					: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-						T extends PgEnum<any>
-						? EnumZodType<T>
-						: PgColumnZodType<T>
+					: PgColumnZodType<T>
 		: z.ZodType<never, z.ZodTypeDef, never>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -214,17 +210,6 @@ type PgColumnZodType<T extends AnyPGColumn> = z.ZodType<
 	T extends WithDefaultColumn
 		? InsertType<InferColumType<T, false>>
 		: InsertType<InferColumType<T, false>>
->;
-
-type EnumZodType<T extends AnyPGColumn> = z.ZodType<
-	T extends NonNullableColumn
-		? SelectType<InferColumType<T, false>>
-		: T extends GeneratedAlwaysColumn
-			? never
-			: SelectType<InferColumType<T, false>> | null | undefined,
-	z.ZodTypeDef,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	T extends NonNullableColumn ? string : string | null | undefined
 >;
 
 type ByteaZodType<T extends AnyPGColumn> = z.ZodType<

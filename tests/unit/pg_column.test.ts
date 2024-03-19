@@ -10712,7 +10712,7 @@ describe("enumerated", () => {
 
 	describe("zod", () => {
 		describe("by default", () => {
-			test("input type is string, null, or undefined", () => {
+			test("input type is enum values, null, or undefined", () => {
 				const role = enumType("role", ["user", "admin", "superuser"]);
 				const tbl = table({
 					columns: {
@@ -10721,7 +10721,7 @@ describe("enumerated", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
-				type Expected = string | null | undefined;
+				type Expected = "user" | "admin" | "superuser" | null | undefined;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -10750,7 +10750,7 @@ describe("enumerated", () => {
 				}
 			});
 
-			test("input type is string with notNull", () => {
+			test("input type is enum values with notNull", () => {
 				const tbl = table({
 					columns: {
 						id: enumerated(
@@ -10760,7 +10760,7 @@ describe("enumerated", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
-				type Expected = string;
+				type Expected = "user" | "admin" | "superuser";
 				const isEqual: Expect<Equal<InputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
@@ -10881,7 +10881,7 @@ describe("enumerated", () => {
 		});
 
 		describe("as primary key", () => {
-			test("input type is string", () => {
+			test("input type is enum values", () => {
 				const tbl = table({
 					columns: {
 						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
@@ -10897,10 +10897,11 @@ describe("enumerated", () => {
 				expect(isEqual).toBe(true);
 			});
 
-			test("output type is string", () => {
+			test("output type is enum values", () => {
+				const enumRole = enumType("role", ["user", "admin", "superuser"]);
 				const tbl = table({
 					columns: {
-						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
+						id: enumerated(enumRole),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -10908,15 +10909,16 @@ describe("enumerated", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				type Expected = string;
+				type Expected = "user" | "admin" | "superuser";
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});
 
 			test("is non nullable and required", () => {
+				const enumRole = enumType("role", ["user", "admin", "superuser"]);
 				const tbl = table({
 					columns: {
-						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
+						id: enumerated(enumRole),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -10925,11 +10927,11 @@ describe("enumerated", () => {
 				const schema = zodSchema(tbl).shape.id;
 
 				type InputType = z.input<typeof schema>;
-				type ExpectedInputType = string;
+				type ExpectedInputType = "user" | "admin" | "superuser";
 				const isEqualInput: Expect<Equal<InputType, ExpectedInputType>> = true;
 				expect(isEqualInput).toBe(true);
 				type OutputType = z.output<typeof schema>;
-				type ExpectedOutputType = string;
+				type ExpectedOutputType = "user" | "admin" | "superuser";
 				const isEqualOutput: Expect<Equal<OutputType, ExpectedOutputType>> =
 					true;
 				expect(isEqualOutput).toBe(true);
@@ -10953,7 +10955,7 @@ describe("enumerated", () => {
 				const schema = zodSchema(tbl).shape.id;
 
 				type InputType = z.input<typeof schema>;
-				type ExpectedInputType = string | undefined;
+				type ExpectedInputType = "user" | "admin" | "superuser" | undefined;
 				const isEqualInput: Expect<Equal<InputType, ExpectedInputType>> = true;
 				expect(isEqualInput).toBe(true);
 				type OutputType = z.output<typeof schema>;
@@ -10981,7 +10983,7 @@ describe("enumerated", () => {
 				const schema = zodSchema(tbl).shape.id;
 
 				type InputType = z.input<typeof schema>;
-				type ExpectedInputType = string;
+				type ExpectedInputType = "user" | "admin" | "superuser";
 				const isEqualInput: Expect<Equal<InputType, ExpectedInputType>> = true;
 				expect(isEqualInput).toBe(true);
 				type OutputType = z.output<typeof schema>;
@@ -11009,7 +11011,7 @@ describe("enumerated", () => {
 				const schema = zodSchema(tbl).shape.id;
 
 				type InputType = z.input<typeof schema>;
-				type ExpectedInputType = string | undefined;
+				type ExpectedInputType = "user" | "admin" | "superuser" | undefined;
 				const isEqualInput: Expect<Equal<InputType, ExpectedInputType>> = true;
 				expect(isEqualInput).toBe(true);
 				type OutputType = z.output<typeof schema>;
