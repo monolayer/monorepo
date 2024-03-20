@@ -430,8 +430,11 @@ export function json() {
 export type JsonArray = JsonValue[];
 
 export type JsonValue =
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	boolean | number | string | Record<string, any> | JsonArray;
+	| boolean
+	| number
+	| string
+	| Record<string, unknown>
+	| JsonArray;
 
 export class PgJson extends PgColumn<JsonValue, JsonValue> {
 	/**
