@@ -77,11 +77,11 @@ export enum DefaultValueDataTypes {
 	xml = "xml",
 }
 
-export class PgColumnBase<S, I, U> {
+export class PgColumnBase<Select, Insert, Update> {
 	/**
 	 * @hidden
 	 */
-	protected declare readonly infer: ColumnType<S, I, U>;
+	protected declare readonly infer: ColumnType<Select, Insert, Update>;
 	/**
 	 * @hidden
 	 */
@@ -111,7 +111,11 @@ export class PgColumnBase<S, I, U> {
 	}
 }
 
-export abstract class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
+export abstract class PgColumn<
+	Select,
+	Insert,
+	Update = Insert,
+> extends PgColumnBase<Select, Insert, Update> {
 	/**
 	 * @hidden
 	 */
@@ -143,7 +147,7 @@ export abstract class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 		return this as this & NonNullableColumn;
 	}
 
-	default(value: I | Expression<unknown>) {
+	default(value: Insert | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
 		} else {
@@ -155,12 +159,16 @@ export abstract class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 	/**
 	 * @hidden
 	 */
-	protected transformDefault(value: I) {
+	protected transformDefault(value: Insert) {
 		return valueWithHash(`'${value}'::${this._native_data_type}`);
 	}
 }
 
-export abstract class PgGeneratedColumn<T, U> extends PgColumnBase<T, U, U> {
+export abstract class PgGeneratedColumn<Select, Insert> extends PgColumnBase<
+	Select,
+	Insert,
+	Insert
+> {
 	/**
 	 * @hidden
 	 */
@@ -213,10 +221,9 @@ export class PgSerial extends PgGeneratedColumn<number, number | string> {
 	}
 }
 
-export abstract class IdentifiableColumn<S, I, U = I> extends PgColumn<
-	S,
-	I,
-	U
+export abstract class IdentifiableColumn<Select, Insert> extends PgColumn<
+	Select,
+	Insert
 > {
 	generatedByDefaultAsIdentity() {
 		this.info.identity = ColumnIdentity.ByDefault;
@@ -520,7 +527,10 @@ export class PgCharacter extends PgColumnWithMaximumLength<string, string> {}
 
 type DateTimePrecision = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-export abstract class PgTimeColumn<T, U> extends PgColumn<T, U> {
+export abstract class PgTimeColumn<Select, Insert> extends PgColumn<
+	Select,
+	Insert
+> {
 	/**
 	 * @hidden
 	 */
@@ -640,7 +650,7 @@ export class PgNumeric extends PgColumn<string, number | bigint | string> {
 	}
 }
 
-export class EnumType<V extends string> {
+export class EnumType<Value extends string> {
 	/**
 	 * @hidden
 	 */
@@ -650,7 +660,7 @@ export class EnumType<V extends string> {
 	 */
 	constructor(
 		public name: string,
-		public values: V[],
+		public values: Value[],
 	) {
 		this.isExternal = false;
 	}
@@ -661,17 +671,17 @@ export class EnumType<V extends string> {
 	}
 }
 
-export function enumerated<E extends string>(enumerated: EnumType<E>) {
+export function enumerated<Value extends string>(enumerated: EnumType<Value>) {
 	return new PgEnum(enumerated.name, enumerated.values);
 }
 
-export class PgEnum<N extends string> extends PgColumn<N, N> {
-	protected readonly values: N[];
+export class PgEnum<Value extends string> extends PgColumn<Value, Value> {
+	protected readonly values: Value[];
 
 	/**
 	 * @hidden
 	 */
-	constructor(name: string, values: N[]) {
+	constructor(name: string, values: Value[]) {
 		super(name, name);
 		this.values = values;
 		this.info.enum = true;
@@ -867,10 +877,14 @@ export function valueWithHash(value: string): `${string}:${string}` {
 	return `${hash.digest("hex")}:${value}`;
 }
 
-export type OptionalColumnType<S, I, U> = Simplify<
-	ColumnType<S, I | undefined, U>
+export type OptionalColumnType<Select, Insert, Update> = Simplify<
+	ColumnType<Select, Insert | undefined, Update>
 >;
-export type GeneratedColumnType<S, I, U> = OptionalColumnType<S, I, U>;
+export type GeneratedColumnType<Select, Insert, Update> = OptionalColumnType<
+	Select,
+	Insert,
+	Update
+>;
 
 export type WithDefaultColumn = {
 	_hasDefault: true;
