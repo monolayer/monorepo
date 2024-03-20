@@ -650,6 +650,10 @@ export class PgNumeric extends PgColumn<string, number | bigint | string> {
 	}
 }
 
+export function enumType<V extends string>(name: string, values: V[]) {
+	return new EnumType(name, values);
+}
+
 export class EnumType<Value extends string> {
 	/**
 	 * @hidden
@@ -903,6 +907,3 @@ export type GeneratedAlwaysColumn = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyPGColumn = PgColumn<any, any>;
-export function enumType<V extends string>(name: string, values: V[]) {
-	return new EnumType(name, values);
-}
