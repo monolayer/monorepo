@@ -147,15 +147,16 @@ export abstract class PgColumn<S, I, U = I> extends PgColumnBase<S, I, U> {
 		if (isExpression(value)) {
 			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
 		} else {
-			let val: unknown = value;
-			if (val instanceof Date) val = val.toISOString();
-			if (typeof val === "string" && this instanceof PgDate)
-				val = val.split("T")[0];
-			this.info.defaultValue = valueWithHash(
-				`'${val}'::${this._native_data_type}`,
-			);
+			this.info.defaultValue = this.transformDefault(value);
 		}
 		return this as this & WithDefaultColumn;
+	}
+
+	/**
+	 * @hidden
+	 */
+	protected transformDefault(value: I) {
+		return valueWithHash(`'${value}'::${this._native_data_type}`);
 	}
 }
 
@@ -254,13 +255,11 @@ export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 		super("boolean", DefaultValueDataTypes.boolean);
 	}
 
-	default(value: boolean | Boolish | Expression<unknown>) {
-		if (isExpression(value)) {
-			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
-		} else {
-			this.info.defaultValue = valueWithHash(`${value}`);
-		}
-		return this as this & WithDefaultColumn;
+	/**
+	 * @hidden
+	 */
+	protected transformDefault(value: boolean | Boolish) {
+		return valueWithHash(`${value}`);
 	}
 }
 
@@ -305,38 +304,29 @@ export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 		super("bytea", DefaultValueDataTypes.bytea);
 	}
 
-	default(value: Buffer | string | Expression<unknown>) {
-		if (isExpression(value)) {
-			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
-		} else {
-			const valueType = typeof value;
-			switch (valueType) {
-				case "string":
-				case "boolean":
-				case "number": {
-					const hexVal = Buffer.from(String(value)).toString("hex");
-					this.info.defaultValue = valueWithHash(
-						`'\\x${hexVal}'::${this._native_data_type}`,
-					);
-					break;
-				}
-				case "object": {
-					if (value instanceof Buffer) {
-						const hexVal = value.toString("hex");
-						this.info.defaultValue = valueWithHash(
-							`'\\x${hexVal}'::${this._native_data_type}`,
-						);
-					} else {
-						const hexVal = Buffer.from(JSON.stringify(value)).toString("hex");
-						this.info.defaultValue = valueWithHash(
-							`'\\x${hexVal}'::${this._native_data_type}`,
-						);
-					}
-					break;
-				}
+	/**
+	 * @hidden
+	 */
+	protected transformDefault(value: string | Buffer) {
+		const valueType = typeof value;
+		switch (valueType) {
+			case "string":
+			case "boolean":
+			case "number": {
+				const hexVal = Buffer.from(String(value)).toString("hex");
+				return valueWithHash(`'\\x${hexVal}'::${this._native_data_type}`);
 			}
+			case "object": {
+				if (value instanceof Buffer) {
+					const hexVal = value.toString("hex");
+					return valueWithHash(`'\\x${hexVal}'::${this._native_data_type}`);
+				}
+				const hexVal = Buffer.from(JSON.stringify(value)).toString("hex");
+				return valueWithHash(`'\\x${hexVal}'::${this._native_data_type}`);
+			}
+			default:
+				return "::";
 		}
-		return this as this & WithDefaultColumn;
 	}
 }
 
@@ -350,6 +340,21 @@ export class PgDate extends PgColumn<Date, Date | string> {
 	 */
 	constructor() {
 		super("date", DefaultValueDataTypes.date);
+	}
+
+	/**
+	 * @hidden
+	 */
+	protected transformDefault(value: string | Date) {
+		let val: string;
+		if (value instanceof Date) {
+			val = value.toISOString();
+		} else {
+			val = value;
+		}
+		return valueWithHash(
+			`'${val.split("T")[0] || ""}'::${this._native_data_type}`,
+		);
 	}
 }
 
@@ -401,6 +406,13 @@ export class PgInteger extends IdentifiableColumn<number, number | string> {
 			this.info.defaultValue = valueWithHash(`${value}`);
 		}
 		return this as this & WithDefaultColumn;
+	}
+
+	/**
+	 * @hidden
+	 */
+	protected transformDefault(value: string | number) {
+		return valueWithHash(`${value}`);
 	}
 }
 
@@ -461,13 +473,11 @@ export class PgUuid extends PgColumn<string, string> {
 		super("uuid", DefaultValueDataTypes.uuid);
 	}
 
-	default(value: string | Expression<unknown>) {
-		if (isExpression(value)) {
-			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
-		} else {
-			this.info.defaultValue = valueWithHash(`'${value.toLowerCase()}'::uuid`);
-		}
-		return this as this & WithDefaultColumn;
+	/**
+	 * @hidden
+	 */
+	protected transformDefault(value: string) {
+		return valueWithHash(`'${value.toLowerCase()}'::uuid`);
 	}
 }
 
@@ -485,78 +495,6 @@ export abstract class PgColumnWithMaximumLength<T, U> extends PgColumn<T, U> {
 	}
 }
 
-/**
- * Column that stores variable-length string up an optional characters of n length.
- *
- * Without a `maximumLength` specified, the column accepts strings of any length.
- *
- * @param maximumLength - Optional Maximum character length of strings in the column. Must be greater than zero and cannot exceed 10,485,760.
- * @remarks
- * *PostgreSQL native data type*: `character varying(n)`.
- *
- * The longest possible character string that can be stored is about 1 GB.
- * @example
- *
- * Kinetic schema for a database with a `users` table with `name` and `description` columns:
- *
- * ```ts
- * const users = pgTable({
- *   columns: {
- *     name: pgVarchar(255),
- *     description: pgVarchar(),
- *   }
- * });
- *
- * const database = pgDatabase({
- *   tables: {
- *     users,
- *   },
- * });
- * ```
- *
- * The generated Kysely database schema type definition (`typeof database.kyselyDatabase`) will be:
- * ```ts
- * type DB = {
- *   users: {
- *     name: {
- *       readonly __select__: string | null;
- *       readonly __insert__: string | null | undefined;
- *       readonly __update__: string | null;
- *     },
- *     description: {
- *       readonly __select__: string | null;
- *       readonly __insert__: string | null | undefined;
- *       readonly __update__: string | null;
- *     }
- *   }
- * }
- * ```
- *
- * The generated migration with `npx kinetic generate` will be:
- * ```ts
- * export async function up(db: Kysely<any>): Promise<void> {
- *   await kysely.schema
- *     .createTable("users")
- *     .addColumn("name", "character varying(255)")
- *     .addColumn("description", "varchar")
- *     .execute();
- * }
- *
- * export async function down(db: Kysely<any>): Promise<void> {
- *   await kysely.schema
- *     .dropTable("users")
- *     .execute();
- * }
- * ```
- * @see
- * {@link pgDatabase}
- *
- * {@link pgTable}
- *
- * PostgreSQL Docs: {@link https://www.postgresql.org/docs/current/datatype-character.html#DATATYPE-CHARACTER | character varying(n)}
- *
- * @group Columns
- */
 export function characterVarying(maximumLength?: number) {
 	return new PgCharacterVarying("character varying", maximumLength);
 }
@@ -645,7 +583,20 @@ export function timestamp(precision?: DateTimePrecision) {
 	return new PgTimestamp("timestamp", false, precision);
 }
 
-export class PgTimestamp extends PgTimeColumn<Date, Date | string> {}
+export class PgTimestamp extends PgTimeColumn<Date, Date | string> {
+	/**
+	 * @hidden
+	 */
+	protected transformDefault(value: string | Date) {
+		let val: string;
+		if (value instanceof Date) {
+			val = value.toISOString();
+		} else {
+			val = value;
+		}
+		return valueWithHash(`'${val}'::${this._native_data_type}`);
+	}
+}
 
 export function timestampWithTimeZone(precision?: DateTimePrecision) {
 	return new PgTimestampWithTimeZone("timestamp", true, precision);
@@ -655,10 +606,20 @@ export function timestamptz(precision?: DateTimePrecision) {
 	return timestampWithTimeZone(precision);
 }
 
-export class PgTimestampWithTimeZone extends PgTimeColumn<
-	Date,
-	Date | string
-> {}
+export class PgTimestampWithTimeZone extends PgTimeColumn<Date, Date | string> {
+	/**
+	 * @hidden
+	 */
+	protected transformDefault(value: string | Date) {
+		let val: string;
+		if (value instanceof Date) {
+			val = value.toISOString();
+		} else {
+			val = value;
+		}
+		return valueWithHash(`'${val}'::${this._native_data_type}`);
+	}
+}
 
 export function numeric(precision?: number, scale?: number) {
 	return new PgNumeric(precision, scale);
@@ -711,14 +672,9 @@ export class PgEnum<N extends string> extends PgColumn<N, N> {
 	 * @hidden
 	 */
 	constructor(name: string, values: N[]) {
-		super(name, DefaultValueDataTypes.numeric);
+		super(name, name);
 		this.values = values;
 		this.info.enum = true;
-	}
-
-	default(value: N) {
-		this.info.defaultValue = valueWithHash(`'${value}'::${this.info.dataType}`);
-		return this as this & WithDefaultColumn;
 	}
 }
 
