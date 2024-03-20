@@ -95,12 +95,7 @@ export class PgDatabase<T extends ColumnRecord> {
 	 * };
 	 * ```
 	 */
-	declare infer: string extends keyof T
-		? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-			any
-		: {
-				[K in keyof T]: T[K]["infer"];
-			};
+	declare infer: TableInfer<T>;
 
 	/**
 	 * @hidden
@@ -132,6 +127,13 @@ export class PgDatabase<T extends ColumnRecord> {
 		}
 	}
 }
+
+type TableInfer<T extends ColumnRecord> = string extends keyof T
+	? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+		any
+	: {
+			[K in keyof T]: T[K]["infer"];
+		};
 
 export function pgDatabase<T extends ColumnRecord>(schema: DatabaseSchema<T>) {
 	return new PgDatabase(schema);
