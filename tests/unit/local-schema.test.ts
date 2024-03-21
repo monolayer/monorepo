@@ -4,7 +4,6 @@ import { describe, expect, test, type Mock } from "vitest";
 import { extension } from "~/index.js";
 import { localSchema } from "~/introspection/schemas.js";
 import { check } from "~/schema/check/check.js";
-import { ColumnIdentity } from "~/schema/column/column.js";
 import { bigserial } from "~/schema/column/data-types/bigserial.js";
 import { boolean } from "~/schema/column/data-types/boolean.js";
 import { varchar } from "~/schema/column/data-types/character-varying.js";
@@ -17,13 +16,13 @@ import {
 	schemaColumnInfo,
 } from "~/schema/column/instrospection.js";
 import { localEnumInfo } from "~/schema/enum/introspection.js";
+import { foreignKey } from "~/schema/foreign-key/foreign-key.js";
 import { index } from "~/schema/index/index.js";
 import { localIndexInfoByTable } from "~/schema/index/introspection.js";
 import { pgDatabase } from "~/schema/pg-database.js";
 import { primaryKey } from "~/schema/primary-key/primary-key.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column-info-factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration-schema.js";
-import { foreignKey } from "../../src/schema/foreign-key/foreign-key.js";
 import { table } from "../../src/schema/table/table.js";
 import { trigger } from "../../src/schema/trigger/trigger.js";
 import { unique } from "../../src/schema/unique/unique.js";
@@ -100,7 +99,7 @@ describe("#schemaColumnInfo", () => {
 			tableName: "foo",
 			columnName: "bar",
 			dataType: "integer",
-			identity: ColumnIdentity.Always,
+			identity: "ALWAYS",
 			isNullable: false,
 		});
 
@@ -113,7 +112,7 @@ describe("#schemaColumnInfo", () => {
 			tableName: "foo",
 			columnName: "bar",
 			dataType: "integer",
-			identity: ColumnIdentity.ByDefault,
+			identity: "BY DEFAULT",
 			isNullable: false,
 		});
 

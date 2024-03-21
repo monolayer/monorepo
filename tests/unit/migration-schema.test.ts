@@ -24,7 +24,7 @@ describe("findColumn", () => {
 				},
 			},
 		});
-		expect(findColumn(schema, "books", "id")).toStrictEqual(
+		expect(findColumn("id", schema.table["books"])).toStrictEqual(
 			columnInfoFactory({
 				tableName: "books",
 				columnName: "id",
@@ -45,7 +45,7 @@ describe("findColumn", () => {
 				},
 			},
 		});
-		expect(findColumn(schema, "books", "name")).toBeUndefined();
+		expect(findColumn("name", schema.table["books"])).toBeUndefined();
 	});
 });
 
@@ -61,8 +61,8 @@ describe("findPrimaryKey", () => {
 				},
 			},
 		});
-		expect(findPrimaryKey(schema, "books")).toStrictEqual(["id"]);
-		expect(findPrimaryKey(schema, "teams")).toStrictEqual(["id"]);
+		expect(findPrimaryKey("books", schema.primaryKey)).toStrictEqual(["id"]);
+		expect(findPrimaryKey("teams", schema.primaryKey)).toStrictEqual(["id"]);
 	});
 
 	test("returns the primary key columns of a table", () => {
@@ -76,8 +76,14 @@ describe("findPrimaryKey", () => {
 				},
 			},
 		});
-		expect(findPrimaryKey(schema, "books")).toStrictEqual(["id", "name"]);
-		expect(findPrimaryKey(schema, "teams")).toStrictEqual(["id", "name"]);
+		expect(findPrimaryKey("books", schema.primaryKey)).toStrictEqual([
+			"id",
+			"name",
+		]);
+		expect(findPrimaryKey("teams", schema.primaryKey)).toStrictEqual([
+			"id",
+			"name",
+		]);
 	});
 
 	test("returns an empty array when the primary key of a table is not found", () => {
@@ -86,7 +92,7 @@ describe("findPrimaryKey", () => {
 				books: {},
 			},
 		});
-		expect(findPrimaryKey(schema, "books")).toStrictEqual([]);
+		expect(findPrimaryKey("books", schema.primaryKey)).toStrictEqual([]);
 	});
 
 	test("returns an empty array the table is not found", () => {
@@ -95,7 +101,7 @@ describe("findPrimaryKey", () => {
 				books: {},
 			},
 		});
-		expect(findPrimaryKey(schema, "teams")).toStrictEqual([]);
+		expect(findPrimaryKey("teams", schema.primaryKey)).toStrictEqual([]);
 	});
 
 	test("returns an empty array on malformed schema", () => {
@@ -106,7 +112,7 @@ describe("findPrimaryKey", () => {
 				},
 			},
 		});
-		expect(findPrimaryKey(schema, "books")).toStrictEqual([]);
+		expect(findPrimaryKey("books", schema.primaryKey)).toStrictEqual([]);
 	});
 });
 

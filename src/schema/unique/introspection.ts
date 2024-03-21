@@ -7,9 +7,9 @@ import {
 	type OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
+import { tableInfo } from "~/introspection/helpers.js";
 import type { UniqueInfo } from "~/migrations/migration-schema.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
-import { tableInfo } from "~/schema/table/table.js";
 import {
 	isExternalUnique,
 	uniqueConstraintOptions,

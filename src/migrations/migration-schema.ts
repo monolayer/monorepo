@@ -1,17 +1,12 @@
 import toposort from "toposort";
 import type { CamelCaseOptions } from "~/config.js";
+import { tableInfo } from "~/introspection/helpers.js";
+import { MigrationSchema } from "~/introspection/schemas.js";
+import { type ColumnRecord } from "~/schema/table/table-column.js";
+import type { AnyPgTable } from "~/schema/table/table.js";
 import { toSnakeCase } from "../changeset/helpers.js";
-import type { TableColumnInfo } from "../introspection/schemas.js";
 import type { ColumnsInfo } from "../schema/column/instrospection.js";
-import type { EnumInfo } from "../schema/enum/introspection.js";
-import type { ExtensionInfo } from "../schema/extension/introspection.js";
-import type { IndexInfo } from "../schema/index/introspection.js";
 import { PgDatabase, type AnyPgDatabase } from "../schema/pg-database.js";
-import {
-	tableInfo,
-	type AnyPgTable,
-	type ColumnRecord,
-} from "../schema/table/table.js";
 
 type TableName = string;
 type Name = string;
@@ -22,24 +17,8 @@ export type UniqueInfo = Record<TableName, Record<Name, Definition>>;
 export type TriggerInfo = Record<TableName, Record<Name, Definition>>;
 export type CheckInfo = Record<TableName, Record<Name, Definition>>;
 
-export type MigrationSchema = {
-	extensions: ExtensionInfo;
-	table: TableColumnInfo;
-	index: IndexInfo;
-	foreignKeyConstraints: ForeignKeyInfo;
-	uniqueConstraints: UniqueInfo;
-	checkConstraints: CheckInfo;
-	primaryKey: PrimaryKeyInfo;
-	triggers: TriggerInfo;
-	enums: EnumInfo;
-};
-
-export function findColumn(
-	schema: MigrationSchema,
-	tableName: string,
-	columName: string,
-) {
-	const table = schema.table[tableName];
+export function findColumn(columName: string, schemaTable?: ColumnsInfo) {
+	const table = schemaTable;
 	if (table !== undefined && table[columName] !== undefined) {
 		return table[columName];
 	}
@@ -63,8 +42,11 @@ export function primaryKeyColumns(
 	);
 }
 
-export function findPrimaryKey(schema: MigrationSchema, tableName: string) {
-	return Object.entries(schema.primaryKey).flatMap(
+export function findPrimaryKey(
+	tableName: string,
+	primaryKeyInfo?: PrimaryKeyInfo,
+) {
+	return Object.entries(primaryKeyInfo || {}).flatMap(
 		([schemaTableName, primaryKeyRecord]) => {
 			if (schemaTableName === tableName) {
 				for (const primaryKeyDefinition of Object.values(primaryKeyRecord)) {

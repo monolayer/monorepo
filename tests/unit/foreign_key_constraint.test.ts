@@ -3,7 +3,7 @@ import { type PgSerial } from "~/schema/column/data-types/serial.js";
 import {
 	foreignKey,
 	foreignKeyOptions,
-} from "../../src/schema/foreign-key/foreign-key.js";
+} from "~/schema/foreign-key/foreign-key.js";
 import { type PgTable } from "../../src/schema/table/table.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

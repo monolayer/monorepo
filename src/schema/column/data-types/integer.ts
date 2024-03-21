@@ -1,5 +1,5 @@
 import { type Expression } from "kysely";
-import { compileDefaultExpression } from "~/introspection/schemas.js";
+import { compileDefaultExpression } from "~/introspection/helpers.js";
 import { IdentifiableColumn, isExpression, valueWithHash } from "../column.js";
 import { WithDefaultColumn } from "../types.js";
 

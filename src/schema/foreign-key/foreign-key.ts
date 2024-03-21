@@ -1,8 +1,42 @@
 import type { AnyPgTable, PgTable } from "../table/table.js";
 import type { ForeignKeyRule } from "./introspection.js";
 
+export function foreignKey<T extends string, C extends AnyPgTable>(
+	columns: T[],
+	targetTable: C,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	targetColumns: C extends PgTable<infer U, any> ? (keyof U)[] : never,
+) {
+	return new PgForeignKey(columns, targetTable, targetColumns as (keyof C)[]);
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ForeignKeyOptions<T extends PgTable<any, any>> = {
+export function foreignKeyOptions<T extends PgForeignKey<any, any>>(
+	foreignKey: T,
+) {
+	assertForeignKeyWithInfo(foreignKey);
+	return foreignKey.options;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isExternalForeignKey<T extends PgForeignKey<any, any>>(
+	foreignKey: T,
+) {
+	assertForeignKeyWithInfo(foreignKey);
+	return foreignKey.isExternal;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function assertForeignKeyWithInfo<T extends PgForeignKey<any, any>>(
+	val: T,
+): asserts val is T & {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	options: ForeignKeyOptions<AnyPgTable>;
+	isExternal: boolean;
+} {
+	true;
+}
+export type ForeignKeyOptions<T extends AnyPgTable> = {
 	columns: string[];
 	targetTable: T;
 	targetColumns: string[];
@@ -10,7 +44,6 @@ type ForeignKeyOptions<T extends PgTable<any, any>> = {
 	updateRule: ForeignKeyRule;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class PgForeignKey<T extends string, C extends AnyPgTable> {
 	/**
 	 * @hidden
@@ -57,43 +90,4 @@ export class PgForeignKey<T extends string, C extends AnyPgTable> {
 		this.isExternal = true;
 		return this;
 	}
-}
-
-/**
- * @group Constraints
- */
-export function foreignKey<T extends string, C extends AnyPgTable>(
-	columns: T[],
-	targetTable: C,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	targetColumns: C extends PgTable<infer U, any> ? (keyof U)[] : never,
-) {
-	return new PgForeignKey(columns, targetTable, targetColumns as (keyof C)[]);
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function foreignKeyOptions<T extends PgForeignKey<any, any>>(
-	foreignKey: T,
-) {
-	assertForeignKeyWithInfo(foreignKey);
-	return foreignKey.options;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isExternalForeignKey<T extends PgForeignKey<any, any>>(
-	foreignKey: T,
-) {
-	assertForeignKeyWithInfo(foreignKey);
-	return foreignKey.isExternal;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function assertForeignKeyWithInfo<T extends PgForeignKey<any, any>>(
-	val: T,
-): asserts val is T & {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	options: ForeignKeyOptions<PgTable<any, any>>;
-	isExternal: boolean;
-} {
-	true;
 }

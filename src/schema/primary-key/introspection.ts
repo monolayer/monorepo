@@ -6,6 +6,7 @@ import {
 	type OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
+import { tableInfo } from "~/introspection/helpers.js";
 import {
 	primaryKeyColumns,
 	type PrimaryKeyInfo,
@@ -15,12 +16,9 @@ import {
 	PgPrimaryKey,
 	type AnyPgPrimaryKey,
 } from "~/schema/primary-key/primary-key.js";
-import {
-	tableInfo,
-	type AnyPgTable,
-	type ColumnRecord,
-} from "~/schema/table/table.js";
 import type { InformationSchemaDB } from "../../introspection/types.js";
+import { type ColumnRecord } from "../table/table-column.js";
+import type { AnyPgTable } from "../table/table.js";
 
 export type PrimaryKeyConstraintInfo = {
 	constraintType: "PRIMARY KEY";

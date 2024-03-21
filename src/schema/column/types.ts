@@ -1,5 +1,4 @@
 import type { ColumnType, Simplify } from "kysely";
-import { ColumnIdentity } from "./column.js";
 
 export type JsonArray = JsonValue[];
 
@@ -49,6 +48,6 @@ export type ColumnInfo = {
 	characterMaximumLength: number | null;
 	datetimePrecision: number | null;
 	renameFrom: string | null;
-	identity: ColumnIdentity.Always | ColumnIdentity.ByDefault | null;
+	identity: "ALWAYS" | "BY DEFAULT" | null;
 	enum: boolean;
 };

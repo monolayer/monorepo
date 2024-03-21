@@ -8,8 +8,8 @@ import {
 	type OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
+import { tableInfo } from "~/introspection/helpers.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
-import { tableInfo } from "~/schema/table/table.js";
 import { PgTrigger } from "~/schema/trigger/trigger.js";
 import type { InformationSchemaDB } from "../../introspection/types.js";
 

@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { z } from "zod";
 import {
-	ColumnIdentity,
 	type PgColumn,
 	type PgColumnBase,
 	type SerialColumn,
@@ -59,7 +58,7 @@ export function pgBigintSchema<
 	PK extends boolean,
 >(column: T): ZodType<T, PK> {
 	const data = columnData(column);
-	if (data.info.identity === ColumnIdentity.Always) {
+	if (data.info.identity === "ALWAYS") {
 		return z.never() as unknown as ZodType<T, PK>;
 	}
 	const base = bigintSchema(!data._primaryKey && data.info.isNullable === true)
@@ -123,7 +122,7 @@ function integerSchema<
 	PK extends boolean,
 >(column: T, minimum: number, maximum: number): ZodType<T, PK> {
 	const data = columnData(column);
-	if (data.info.identity === ColumnIdentity.Always) {
+	if (data.info.identity === "ALWAYS") {
 		return z.never() as unknown as ZodType<T, PK>;
 	}
 	const isNullable = !data._primaryKey && data.info.isNullable === true;

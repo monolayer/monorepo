@@ -2,7 +2,7 @@
 import { createHash } from "crypto";
 import { type ColumnType, type Expression } from "kysely";
 import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
-import { compileDefaultExpression } from "~/introspection/schemas.js";
+import { compileDefaultExpression } from "~/introspection/helpers.js";
 import {
 	type ColumnInfo,
 	type GeneratedAlwaysColumn,
@@ -131,23 +131,18 @@ export abstract class StringColumn<
 	}
 }
 
-export enum ColumnIdentity {
-	Always = "ALWAYS",
-	ByDefault = "BY DEFAULT",
-}
-
 export abstract class IdentifiableColumn<Select, Insert> extends PgColumn<
 	Select,
 	Insert
 > {
 	generatedByDefaultAsIdentity() {
-		this.info.identity = ColumnIdentity.ByDefault;
+		this.info.identity = "BY DEFAULT";
 		this.info.isNullable = false;
 		return this as this & GeneratedColumn;
 	}
 
 	generatedAlwaysAsIdentity() {
-		this.info.identity = ColumnIdentity.Always;
+		this.info.identity = "ALWAYS";
 		this.info.isNullable = false;
 		return this as this & GeneratedAlwaysColumn;
 	}

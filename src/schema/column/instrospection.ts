@@ -7,23 +7,19 @@ import {
 	OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
-import {
-	findColumn,
-	findPrimaryKey,
-	type MigrationSchema,
-} from "~/migrations/migration-schema.js";
+import { tableInfo } from "~/introspection/helpers.js";
+import { type MigrationSchema } from "~/introspection/schemas.js";
+import { findColumn, findPrimaryKey } from "~/migrations/migration-schema.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
-import { tableInfo } from "~/schema/table/table.js";
-import { TableColumnInfo } from "../../introspection/schemas.js";
 import type { InformationSchemaDB } from "../../introspection/types.js";
-import { type TableColumn } from "../table/table.js";
+import { type TableColumn } from "../table/table-column.js";
 import { ColumnInfo } from "./types.js";
 
 export async function dbColumnInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
-): Promise<OperationSuccess<TableColumnInfo> | OperationAnyError> {
+): Promise<OperationSuccess<Record<string, ColumnsInfo>> | OperationAnyError> {
 	try {
 		const results = await fetchDbColumnInfo(kysely, databaseSchema, tableNames);
 		const transformed = transformDbColumnInfo(results);
@@ -303,7 +299,7 @@ function transformDbColumnInfo(
 }
 
 function mapColumnsToTables(columns: ColumnInfo[]) {
-	return columns.reduce<TableColumnInfo>((acc, curr) => {
+	return columns.reduce<Record<string, ColumnsInfo>>((acc, curr) => {
 		if (curr.tableName !== null && curr.columnName !== null) {
 			const currentTable = acc[curr.tableName];
 			if (currentTable === undefined) {
@@ -330,7 +326,7 @@ export function localColumnInfoByTable(
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
 	const tables = PgDatabase.info(schema).tables ?? {};
-	return Object.entries(tables).reduce<TableColumnInfo>(
+	return Object.entries(tables).reduce<Record<string, ColumnsInfo>>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const columns = Object.entries(tableInfo(tableDefinition).schema.columns);
@@ -345,17 +341,16 @@ export function localColumnInfoByTable(
 					const transformedColumnNname = toSnakeCase(columnName, camelCase);
 					columnInfo.columnName = transformedColumnNname;
 					columnKey = transformedColumnNname;
-					const pKey = findPrimaryKey(remoteSchema, transformedTableName);
+					const pKey = findPrimaryKey(
+						transformedTableName,
+						remoteSchema.primaryKey,
+					);
 					if (columnInfo.renameFrom !== null) {
+						const schemaTable = remoteSchema.table[transformedTableName];
 						const appliedInRemote =
-							findColumn(remoteSchema, transformedTableName, columnName) !==
-							undefined;
+							findColumn(columnName, schemaTable) !== undefined;
 						const toApplyInRemote =
-							findColumn(
-								remoteSchema,
-								transformedTableName,
-								columnInfo.renameFrom,
-							) !== undefined;
+							findColumn(columnInfo.renameFrom, schemaTable) !== undefined;
 						if (appliedInRemote && pKey?.includes(columnName)) {
 							columnInfo.originalIsNullable = columnInfo.isNullable;
 							columnInfo.isNullable = false;

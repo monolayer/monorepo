@@ -23,7 +23,7 @@ import {
 	type JsonValue,
 	type NonNullableColumn,
 } from "./column/types.js";
-import { ColumnRecord } from "./table/table.js";
+import { ColumnRecord } from "./table/table-column.js";
 
 export type InferColumnTypes<
 	T extends ColumnRecord,

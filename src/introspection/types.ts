@@ -1,5 +1,3 @@
-import type { ColumnIdentity } from "~/schema/column/column.js";
-
 export type InformationSchemaTables = {
 	table_catalog: string | null;
 	table_schema: string | null;
@@ -56,7 +54,7 @@ export type InformationSchemaColumns = {
 	dtd_identifier: string | null;
 	is_self_referencing: string | null;
 	is_identity: "YES" | "NO" | null;
-	identity_generation: ColumnIdentity.ByDefault | ColumnIdentity.Always | null;
+	identity_generation: "BY DEFAULT" | "ALWAYS" | null;
 	identity_start: string | null;
 	identity_increment: string | null;
 	identity_maximum: string | null;

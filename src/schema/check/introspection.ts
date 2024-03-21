@@ -7,11 +7,13 @@ import {
 	type OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
+import {
+	compileDefaultExpression,
+	tableInfo,
+} from "~/introspection/helpers.js";
 import type { CheckInfo } from "~/migrations/migration-schema.js";
 import { assertCheckWithInfo, type PgCheck } from "~/schema/check/check.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
-import { tableInfo } from "~/schema/table/table.js";
-import { compileDefaultExpression } from "../../introspection/schemas.js";
 import type { InformationSchemaDB } from "../../introspection/types.js";
 
 export async function dbCheckConstraintInfo(

@@ -6,12 +6,12 @@ import {
 	type OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
+import { tableInfo } from "~/introspection/helpers.js";
 import {
 	findTableByNameInDatabaseSchema,
 	type ForeignKeyInfo,
 } from "~/migrations/migration-schema.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
-import { tableInfo } from "~/schema/table/table.js";
 import type { InformationSchemaDB } from "../../introspection/types.js";
 
 export type ForeignKeyRule =
@@ -128,7 +128,7 @@ export function localForeignKeyConstraintInfo(
 	return Object.entries(tables || {}).reduce<ForeignKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const introspect = tableInfo(tableDefinition).introspect();
+			const introspect = tableInfo(tableDefinition).introspect(tables);
 			const foreignKeys = introspect.foreignKeys;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {

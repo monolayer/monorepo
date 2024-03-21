@@ -3,7 +3,7 @@ import color from "picocolors";
 import { exit } from "process";
 import { changeset } from "~/changeset/changeset.js";
 import { Changeset } from "~/changeset/types.js";
-import type { MigrationSchema } from "~/migrations/migration-schema.js";
+import type { MigrationSchema } from "~/introspection/schemas.js";
 
 export async function computeChangeset(
 	local: MigrationSchema,

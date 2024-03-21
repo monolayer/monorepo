@@ -211,12 +211,6 @@ export class PgDatabase<T extends ColumnRecord> {
 		this.#tables = schema.tables;
 		this.#extensions = schema.extensions;
 		this.#types = schema.types;
-		for (const [, table] of Object.entries(schema.tables || {})) {
-			Object.defineProperty(table, "database", {
-				value: this,
-				writable: false,
-			});
-		}
 	}
 }
 
@@ -231,6 +225,5 @@ export function pgDatabase<T extends ColumnRecord>(schema: DatabaseSchema<T>) {
 	return new PgDatabase(schema);
 }
 
-export type AnyPgDatabase = PgDatabase<ColumnRecord>;
-
-type ColumnRecord = Record<string, AnyPgTable>;
+export type ColumnRecord = Record<string, AnyPgTable>;
+export type AnyPgDatabase = PgDatabase<Record<string, AnyPgTable>>;

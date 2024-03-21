@@ -1,11 +1,9 @@
 import { z } from "zod";
+import { tableInfo } from "~/introspection/helpers.js";
 import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
 import type { ZodSchemaObject, ZodType } from "~/schema/inference.js";
-import {
-	tableInfo,
-	type ColumnRecord,
-	type PgTable,
-} from "../schema/table/table.js";
+import { type ColumnRecord } from "~/schema/table/table-column.js";
+import { type PgTable } from "../schema/table/table.js";
 import {
 	bitSchema,
 	isBitColumn,

@@ -8,13 +8,13 @@ import {
 	OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
+import { tableInfo } from "~/introspection/helpers.js";
 import {
 	indexOptions,
 	isExternalIndex,
 	type PgIndex,
 } from "~/schema/index/index.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
-import { tableInfo } from "~/schema/table/table.js";
 import type { InformationSchemaDB } from "../../introspection/types.js";
 
 export async function dbIndexInfo(

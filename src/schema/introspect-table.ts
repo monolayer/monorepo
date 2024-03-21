@@ -1,4 +1,7 @@
-import { compileDefaultExpression } from "../introspection/schemas.js";
+import {
+	compileDefaultExpression,
+	tableInfo,
+} from "~/introspection/helpers.js";
 import { isExpression } from "./column/column.js";
 import { type ColumnInfo } from "./column/types.js";
 import {
@@ -7,8 +10,8 @@ import {
 	type PgForeignKey,
 } from "./foreign-key/foreign-key.js";
 import type { ForeignKeyRule } from "./foreign-key/introspection.js";
-import { PgDatabase, type AnyPgDatabase } from "./pg-database.js";
-import { AnyPgTable, ColumnRecord, tableInfo } from "./table/table.js";
+import { ColumnRecord } from "./table/table-column.js";
+import type { AnyPgTable } from "./table/table.js";
 import {
 	PgTrigger,
 	TriggerEvent,
@@ -170,8 +173,12 @@ function primaryKey(columns?: ColumnRecord) {
 		return acc;
 	}, [] as string[]);
 }
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function introspectTable(table: AnyPgTable) {
+export function introspectTable(
+	table: AnyPgTable,
+	dbTables?: Record<string, AnyPgTable>,
+) {
 	const info = tableInfo(table);
 	const schema = info.schema;
 	const introspectedTable: TableIntrospection = {
@@ -179,7 +186,7 @@ export function introspectTable(table: AnyPgTable) {
 		columns: columnInfo(schema.columns),
 		foreignKeys: foreignKeyInfo(
 			schema.constraints?.foreignKeys,
-			PgDatabase.info(info.database || ({} as AnyPgDatabase)).tables,
+			dbTables || {},
 		).filter((fk) => fk.isExternal === false),
 		uniqueConstraints: uniqueConstraintInfo(schema.constraints?.unique),
 		triggers: triggerInfo(schema.triggers),

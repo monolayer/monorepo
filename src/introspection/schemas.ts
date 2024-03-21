@@ -1,19 +1,18 @@
-import {
-	CamelCasePlugin,
-	Kysely,
-	PostgresDialect,
-	type Expression,
-	type RawBuilder,
-} from "kysely";
-import pg from "pg";
+import { Kysely } from "kysely";
 import {
 	ActionStatus,
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
-import { type AnyPgDatabase } from "~/schema/pg-database.js";
-import { type MigrationSchema } from "../migrations/migration-schema.js";
+import type {
+	CheckInfo,
+	ForeignKeyInfo,
+	PrimaryKeyInfo,
+	TriggerInfo,
+	UniqueInfo,
+} from "~/migrations/migration-schema.js";
+import type { AnyPgDatabase } from "~/schema/pg-database.js";
 import {
 	dbCheckConstraintInfo,
 	localCheckConstraintInfo,
@@ -23,10 +22,15 @@ import {
 	localColumnInfoByTable,
 	type ColumnsInfo,
 } from "../schema/column/instrospection.js";
-import { dbEnumInfo, localEnumInfo } from "../schema/enum/introspection.js";
+import {
+	dbEnumInfo,
+	localEnumInfo,
+	type EnumInfo,
+} from "../schema/enum/introspection.js";
 import {
 	dbExtensionInfo,
 	localExtensionInfo,
+	type ExtensionInfo,
 } from "../schema/extension/introspection.js";
 import {
 	dbForeignKeyConstraintInfo,
@@ -50,47 +54,6 @@ import {
 	dbUniqueConstraintInfo,
 	localUniqueConstraintInfo,
 } from "../schema/unique/introspection.js";
-
-export function compileDefaultExpression(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	expression: Expression<any>,
-	camelCase = false,
-) {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const kysely = new Kysely<any>({
-		dialect: new PostgresDialect({
-			pool: new pg.Pool({}),
-		}),
-		plugins: camelCase ? [new CamelCasePlugin()] : [],
-	});
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const compiled = (expression as RawBuilder<any>).compile(kysely);
-	return substituteSQLParameters({
-		sql: compiled.sql,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		parameters: compiled.parameters as any[],
-	});
-}
-
-function substituteSQLParameters(queryObject: {
-	sql: string;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	parameters: any[];
-}) {
-	let { sql } = queryObject;
-	const { parameters } = queryObject;
-	// Replace each placeholder with the corresponding parameter from the array
-	parameters.forEach((param, idx) => {
-		// Create a regular expression for each placeholder (e.g., $1, $2)
-		// Note: The backslash is escaped in the string, and '$' is escaped in the regex
-		const regex = new RegExp(`\\$${idx + 1}`, "g");
-		const value = typeof param === "object" ? JSON.stringify(param) : param;
-		sql = sql.replace(regex, value);
-	});
-
-	return sql;
-}
 
 export function localSchema(
 	schema: AnyPgDatabase,
@@ -187,6 +150,7 @@ export async function remoteSchema(
 		},
 	};
 }
+
 export type DbTableInfo = {
 	table: TableColumnInfo;
 	index?: IndexInfo;
@@ -197,4 +161,15 @@ export type TableColumnInfo = Record<string, ColumnsInfo>;
 export type LocalTableInfo = {
 	table: TableColumnInfo;
 	index?: IndexInfo;
+};
+export type MigrationSchema = {
+	extensions: ExtensionInfo;
+	table: TableColumnInfo;
+	index: IndexInfo;
+	foreignKeyConstraints: ForeignKeyInfo;
+	uniqueConstraints: UniqueInfo;
+	checkConstraints: CheckInfo;
+	primaryKey: PrimaryKeyInfo;
+	triggers: TriggerInfo;
+	enums: EnumInfo;
 };
