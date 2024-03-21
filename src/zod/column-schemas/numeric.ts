@@ -1,19 +1,19 @@
 /* eslint-disable max-lines */
 import { z } from "zod";
+import type { ZodType } from "~/schema/inference.js";
 import {
 	type PgColumn,
 	type PgColumnBase,
 	type SerialColumn,
-} from "~/schema/column/column.js";
-import { PgBigInt } from "~/schema/column/data-types/bigint.js";
-import { type PgBigSerial } from "~/schema/column/data-types/bigserial.js";
-import { PgDoublePrecision } from "~/schema/column/data-types/double-precision.js";
-import { PgInteger } from "~/schema/column/data-types/integer.js";
-import { PgNumeric } from "~/schema/column/data-types/numeric.js";
-import { PgReal } from "~/schema/column/data-types/real.js";
-import { type PgSerial } from "~/schema/column/data-types/serial.js";
-import { PgSmallint } from "~/schema/column/data-types/smallint.js";
-import type { ZodType } from "~/schema/inference.js";
+} from "~/schema/table/column/column.js";
+import { PgBigInt } from "~/schema/table/column/data-types/bigint.js";
+import { type PgBigSerial } from "~/schema/table/column/data-types/bigserial.js";
+import { PgDoublePrecision } from "~/schema/table/column/data-types/double-precision.js";
+import { PgInteger } from "~/schema/table/column/data-types/integer.js";
+import { PgNumeric } from "~/schema/table/column/data-types/numeric.js";
+import { PgReal } from "~/schema/table/column/data-types/real.js";
+import { type PgSerial } from "~/schema/table/column/data-types/serial.js";
+import { PgSmallint } from "~/schema/table/column/data-types/smallint.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { columnData, customIssue, nullableColumn } from "../helpers.js";
 

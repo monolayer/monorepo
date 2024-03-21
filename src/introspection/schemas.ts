@@ -14,46 +14,46 @@ import type {
 } from "~/migrations/migration-schema.js";
 import type { AnyPgDatabase } from "~/schema/pg-database.js";
 import {
-	dbCheckConstraintInfo,
-	localCheckConstraintInfo,
-} from "../schema/check/introspection.js";
-import {
-	dbColumnInfo,
-	localColumnInfoByTable,
-	type ColumnsInfo,
-} from "../schema/column/instrospection.js";
-import {
-	dbEnumInfo,
-	localEnumInfo,
-	type EnumInfo,
-} from "../schema/enum/introspection.js";
-import {
 	dbExtensionInfo,
 	localExtensionInfo,
 	type ExtensionInfo,
 } from "../schema/extension/introspection.js";
 import {
+	dbColumnInfo,
+	localColumnInfoByTable,
+	type ColumnsInfo,
+} from "../schema/table/column/instrospection.js";
+import {
+	dbCheckConstraintInfo,
+	localCheckConstraintInfo,
+} from "../schema/table/constraints/check/introspection.js";
+import {
 	dbForeignKeyConstraintInfo,
 	localForeignKeyConstraintInfo,
-} from "../schema/foreign-key/introspection.js";
+} from "../schema/table/constraints/foreign-key/introspection.js";
+import {
+	dbPrimaryKeyConstraintInfo,
+	localPrimaryKeyConstraintInfo,
+} from "../schema/table/constraints/primary-key/introspection.js";
+import {
+	dbUniqueConstraintInfo,
+	localUniqueConstraintInfo,
+} from "../schema/table/constraints/unique/introspection.js";
 import {
 	dbIndexInfo,
 	localIndexInfoByTable,
 	type IndexInfo,
-} from "../schema/index/introspection.js";
-import {
-	dbPrimaryKeyConstraintInfo,
-	localPrimaryKeyConstraintInfo,
-} from "../schema/primary-key/introspection.js";
+} from "../schema/table/index/introspection.js";
 import { dbTableInfo } from "../schema/table/introspection.js";
 import {
 	dbTriggerInfo,
 	localTriggersInfo,
-} from "../schema/trigger/introspection.js";
+} from "../schema/table/trigger/introspection.js";
 import {
-	dbUniqueConstraintInfo,
-	localUniqueConstraintInfo,
-} from "../schema/unique/introspection.js";
+	dbEnumInfo,
+	localEnumInfo,
+	type EnumInfo,
+} from "../schema/types/enum/introspection.js";
 
 export function localSchema(
 	schema: AnyPgDatabase,

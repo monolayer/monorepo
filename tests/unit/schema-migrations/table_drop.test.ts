@@ -1,12 +1,12 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer } from "~/schema/column/data-types/integer.js";
-import { text } from "~/schema/column/data-types/text.js";
 import { extension } from "~/schema/extension/extension.js";
 import { pgDatabase } from "~/schema/pg-database.js";
+import { integer } from "~/schema/table/column/data-types/integer.js";
+import { text } from "~/schema/table/column/data-types/text.js";
+import { unique } from "~/schema/table/constraints/unique/unique.js";
 import { table } from "~/schema/table/table.js";
-import { unique } from "~/schema/unique/unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test-context.js";
 import { type DbContext } from "~tests/setup/kysely.js";

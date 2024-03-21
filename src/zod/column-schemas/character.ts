@@ -1,13 +1,13 @@
 import { z } from "zod";
+import type { ZodType } from "~/schema/inference.js";
 import {
 	type PgColumn,
 	type PgColumnBase,
 	type SerialColumn,
-} from "~/schema/column/column.js";
-import { PgCharacterVarying } from "~/schema/column/data-types/character-varying.js";
-import { PgCharacter } from "~/schema/column/data-types/character.js";
-import { PgText } from "~/schema/column/data-types/text.js";
-import type { ZodType } from "~/schema/inference.js";
+} from "~/schema/table/column/column.js";
+import { PgCharacterVarying } from "~/schema/table/column/data-types/character-varying.js";
+import { PgCharacter } from "~/schema/table/column/data-types/character.js";
+import { PgText } from "~/schema/table/column/data-types/text.js";
 import { finishSchema } from "../common.js";
 import { columnData, nullableColumn } from "../helpers.js";
 

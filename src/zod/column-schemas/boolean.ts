@@ -1,7 +1,10 @@
 import { ZodIssueCode, z } from "zod";
-import { type PgColumnBase } from "~/schema/column/column.js";
-import { PgBoolean, type Boolish } from "~/schema/column/data-types/boolean.js";
 import type { ZodType } from "~/schema/inference.js";
+import { type PgColumnBase } from "~/schema/table/column/column.js";
+import {
+	PgBoolean,
+	type Boolish,
+} from "~/schema/table/column/data-types/boolean.js";
 import { finishSchema } from "../common.js";
 import { customIssue, nullableColumn } from "../helpers.js";
 

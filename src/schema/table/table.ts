@@ -1,12 +1,12 @@
 import type { Simplify } from "kysely";
-import type { PgCheck } from "../check/check.js";
-import type { PgForeignKey } from "../foreign-key/foreign-key.js";
-import type { PgIndex } from "../index/index.js";
 import type { InferColumnTypes } from "../inference.js";
-import type { PgPrimaryKey } from "../primary-key/primary-key.js";
-import type { PgTrigger } from "../trigger/trigger.js";
-import type { PgUnique } from "../unique/unique.js";
+import type { PgCheck } from "./constraints/check/check.js";
+import type { PgForeignKey } from "./constraints/foreign-key/foreign-key.js";
+import type { PgPrimaryKey } from "./constraints/primary-key/primary-key.js";
+import type { PgUnique } from "./constraints/unique/unique.js";
+import type { PgIndex } from "./index/index.js";
 import type { ColumnRecord } from "./table-column.js";
+import type { PgTrigger } from "./trigger/trigger.js";
 
 export type TableSchema<T, PK extends string> = {
 	columns: T extends ColumnRecord ? T : never;

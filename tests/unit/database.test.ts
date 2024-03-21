@@ -1,14 +1,15 @@
 /* eslint-disable max-lines */
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { boolean } from "~/schema/column/data-types/boolean.js";
-import { varchar } from "~/schema/column/data-types/character-varying.js";
-import { enumType, enumerated } from "~/schema/column/data-types/enumerated.js";
-import { serial } from "~/schema/column/data-types/serial.js";
-import { text } from "~/schema/column/data-types/text.js";
 import { PgExtension, extension } from "~/schema/extension/extension.js";
 import { PgDatabase, pgDatabase } from "~/schema/pg-database.js";
+import { boolean } from "~/schema/table/column/data-types/boolean.js";
+import { varchar } from "~/schema/table/column/data-types/character-varying.js";
+import { enumerated } from "~/schema/table/column/data-types/enumerated.js";
+import { serial } from "~/schema/table/column/data-types/serial.js";
+import { text } from "~/schema/table/column/data-types/text.js";
 import { table } from "~/schema/table/table.js";
+import { enumType } from "~/schema/types/enum/enum.js";
 
 describe("pgDatabase definition", () => {
 	test("without tables", () => {

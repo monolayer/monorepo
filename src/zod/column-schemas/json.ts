@@ -1,7 +1,10 @@
-import { type PgColumn, type SerialColumn } from "~/schema/column/column.js";
-import { PgJson } from "~/schema/column/data-types/json.js";
-import { PgJsonB } from "~/schema/column/data-types/jsonb.js";
 import type { ZodType } from "~/schema/inference.js";
+import {
+	type PgColumn,
+	type SerialColumn,
+} from "~/schema/table/column/column.js";
+import { PgJson } from "~/schema/table/column/data-types/json.js";
+import { PgJsonB } from "~/schema/table/column/data-types/jsonb.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { customIssue, nullableColumn } from "../helpers.js";
 

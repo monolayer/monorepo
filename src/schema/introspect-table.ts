@@ -2,22 +2,25 @@ import {
 	compileDefaultExpression,
 	tableInfo,
 } from "~/introspection/helpers.js";
-import { isExpression } from "./column/column.js";
-import { type ColumnInfo } from "./column/types.js";
+import { isExpression } from "./table/column/column.js";
+import { type ColumnInfo } from "./table/column/types.js";
 import {
 	foreignKeyOptions,
 	isExternalForeignKey,
 	type PgForeignKey,
-} from "./foreign-key/foreign-key.js";
-import type { ForeignKeyRule } from "./foreign-key/introspection.js";
+} from "./table/constraints/foreign-key/foreign-key.js";
+import type { ForeignKeyRule } from "./table/constraints/foreign-key/introspection.js";
+import {
+	uniqueConstraintOptions,
+	type PgUnique,
+} from "./table/constraints/unique/unique.js";
 import { ColumnRecord } from "./table/table-column.js";
 import type { AnyPgTable } from "./table/table.js";
 import {
 	PgTrigger,
 	TriggerEvent,
 	TriggerFiringTime,
-} from "./trigger/trigger.js";
-import { uniqueConstraintOptions, type PgUnique } from "./unique/unique.js";
+} from "./table/trigger/trigger.js";
 
 export interface TableIntrospection {
 	primaryKey: string[];

@@ -5,8 +5,8 @@ import { MigrationSchema } from "~/introspection/schemas.js";
 import { type ColumnRecord } from "~/schema/table/table-column.js";
 import type { AnyPgTable } from "~/schema/table/table.js";
 import { toSnakeCase } from "../changeset/helpers.js";
-import type { ColumnsInfo } from "../schema/column/instrospection.js";
 import { PgDatabase, type AnyPgDatabase } from "../schema/pg-database.js";
+import type { ColumnsInfo } from "../schema/table/column/instrospection.js";
 
 type TableName = string;
 type Name = string;

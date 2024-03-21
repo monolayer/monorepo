@@ -10,10 +10,10 @@ import {
 	PgColumn,
 	type AnyPGColumn,
 	type SerialColumn,
-} from "./column/column.js";
-import { type PgBytea } from "./column/data-types/bytea.js";
-import { type PgTimestampWithTimeZone } from "./column/data-types/timestamp-with-time-zone.js";
-import { type PgTimestamp } from "./column/data-types/timestamp.js";
+} from "./table/column/column.js";
+import { type PgBytea } from "./table/column/data-types/bytea.js";
+import { type PgTimestampWithTimeZone } from "./table/column/data-types/timestamp-with-time-zone.js";
+import { type PgTimestamp } from "./table/column/data-types/timestamp.js";
 import {
 	GeneratedColumn,
 	OptionalColumnType,
@@ -22,7 +22,7 @@ import {
 	type GeneratedColumnType,
 	type JsonValue,
 	type NonNullableColumn,
-} from "./column/types.js";
+} from "./table/column/types.js";
 import { ColumnRecord } from "./table/table-column.js";
 
 export type InferColumnTypes<

@@ -1,5 +1,5 @@
 import { SetNonNullable } from "type-fest";
-import type { ColumnInfo } from "~/schema/column/types.js";
+import type { ColumnInfo } from "~/schema/table/column/types.js";
 
 type required = SetNonNullable<
 	Pick<ColumnInfo, "tableName" | "dataType" | "columnName">

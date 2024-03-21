@@ -1,10 +1,11 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { enumType, enumerated } from "~/schema/column/data-types/enumerated.js";
-import { integer } from "~/schema/column/data-types/integer.js";
-import { serial } from "~/schema/column/data-types/serial.js";
 import { pgDatabase } from "~/schema/pg-database.js";
+import { enumerated } from "~/schema/table/column/data-types/enumerated.js";
+import { integer } from "~/schema/table/column/data-types/integer.js";
+import { serial } from "~/schema/table/column/data-types/serial.js";
 import { table } from "~/schema/table/table.js";
+import { enumType } from "~/schema/types/enum/enum.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { type DbContext } from "~tests/setup/kysely.js";
 import { setUpContext, teardownContext } from "../../helpers/test-context.js";

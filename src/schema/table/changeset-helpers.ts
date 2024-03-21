@@ -1,5 +1,5 @@
 import { sqlStatement } from "../../changeset/helpers.js";
-import { type ColumnInfo } from "../column/types.js";
+import { type ColumnInfo } from "./column/types.js";
 export type ColumnsInfoDiff = Record<string, ColumnInfoDiff>;
 
 export type ColumnInfoDiff = Omit<ColumnInfo, "defaultValue"> & {

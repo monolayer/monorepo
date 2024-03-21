@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { text } from "~/schema/column/data-types/text.js";
 import { pgDatabase } from "~/schema/pg-database.js";
-import { primaryKey } from "~/schema/primary-key/primary-key.js";
+import { text } from "~/schema/table/column/data-types/text.js";
+import { primaryKey } from "~/schema/table/constraints/primary-key/primary-key.js";
 import { table } from "~/schema/table/table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { type DbContext } from "~tests/setup/kysely.js";

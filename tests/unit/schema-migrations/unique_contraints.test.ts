@@ -1,11 +1,11 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { varchar } from "~/schema/column/data-types/character-varying.js";
-import { integer } from "~/schema/column/data-types/integer.js";
-import { serial } from "~/schema/column/data-types/serial.js";
 import { pgDatabase } from "~/schema/pg-database.js";
+import { varchar } from "~/schema/table/column/data-types/character-varying.js";
+import { integer } from "~/schema/table/column/data-types/integer.js";
+import { serial } from "~/schema/table/column/data-types/serial.js";
+import { unique } from "~/schema/table/constraints/unique/unique.js";
 import { table } from "~/schema/table/table.js";
-import { unique } from "~/schema/unique/unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { type DbContext } from "~tests/setup/kysely.js";
 import { setUpContext, teardownContext } from "../../helpers/test-context.js";

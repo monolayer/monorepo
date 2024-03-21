@@ -1,7 +1,10 @@
-import { type PgColumn, type SerialColumn } from "~/schema/column/column.js";
-import { PgTsquery } from "~/schema/column/data-types/tsquery.js";
-import { PgTsvector } from "~/schema/column/data-types/tsvector.js";
 import type { ZodType } from "~/schema/inference.js";
+import {
+	type PgColumn,
+	type SerialColumn,
+} from "~/schema/table/column/column.js";
+import { PgTsquery } from "~/schema/table/column/data-types/tsquery.js";
+import { PgTsvector } from "~/schema/table/column/data-types/tsvector.js";
 import { finishSchema, stringSchema } from "../common.js";
 import { columnData } from "../helpers.js";
 

@@ -1,7 +1,10 @@
 import { z } from "zod";
-import { type PgColumn, type SerialColumn } from "~/schema/column/column.js";
-import { PgUuid } from "~/schema/column/data-types/uuid.js";
 import type { ZodType } from "~/schema/inference.js";
+import {
+	type PgColumn,
+	type SerialColumn,
+} from "~/schema/table/column/column.js";
+import { PgUuid } from "~/schema/table/column/data-types/uuid.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { nullableColumn } from "../helpers.js";
 

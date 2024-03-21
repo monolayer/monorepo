@@ -1,14 +1,14 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { varchar } from "~/schema/column/data-types/character-varying.js";
-import { integer } from "~/schema/column/data-types/integer.js";
-import { text } from "~/schema/column/data-types/text.js";
-import { timestamp } from "~/schema/column/data-types/timestamp.js";
 import { extension } from "~/schema/extension/extension.js";
 import { pgDatabase } from "~/schema/pg-database.js";
+import { varchar } from "~/schema/table/column/data-types/character-varying.js";
+import { integer } from "~/schema/table/column/data-types/integer.js";
+import { text } from "~/schema/table/column/data-types/text.js";
+import { timestamp } from "~/schema/table/column/data-types/timestamp.js";
 import { table } from "~/schema/table/table.js";
-import { trigger } from "~/schema/trigger/trigger.js";
+import { trigger } from "~/schema/table/trigger/trigger.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test-context.js";
 import { type DbContext } from "~tests/setup/kysely.js";

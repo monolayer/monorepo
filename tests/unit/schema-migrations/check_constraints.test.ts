@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { check } from "~/schema/check/check.js";
-import { integer } from "~/schema/column/data-types/integer.js";
 import { pgDatabase } from "~/schema/pg-database.js";
+import { integer } from "~/schema/table/column/data-types/integer.js";
+import { check } from "~/schema/table/constraints/check/check.js";
 import { table } from "~/schema/table/table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { type DbContext } from "~tests/setup/kysely.js";

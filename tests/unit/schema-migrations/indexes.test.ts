@@ -1,8 +1,8 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { text } from "~/schema/column/data-types/text.js";
-import { index } from "~/schema/index/index.js";
 import { pgDatabase } from "~/schema/pg-database.js";
+import { text } from "~/schema/table/column/data-types/text.js";
+import { index } from "~/schema/table/index/index.js";
 import { table } from "~/schema/table/table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { type DbContext } from "~tests/setup/kysely.js";

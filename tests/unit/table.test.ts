@@ -9,20 +9,21 @@ import { Equal, Expect } from "type-testing";
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
 import { tableInfo } from "~/introspection/helpers.js";
-import { bigint } from "~/schema/column/data-types/bigint.js";
-import { boolean } from "~/schema/column/data-types/boolean.js";
-import { varchar } from "~/schema/column/data-types/character-varying.js";
-import { enumType, enumerated } from "~/schema/column/data-types/enumerated.js";
-import { integer } from "~/schema/column/data-types/integer.js";
-import { serial } from "~/schema/column/data-types/serial.js";
-import { text } from "~/schema/column/data-types/text.js";
-import { timestamptz } from "~/schema/column/data-types/timestamp-with-time-zone.js";
-import { foreignKey } from "~/schema/foreign-key/foreign-key.js";
-import { index } from "~/schema/index/index.js";
-import { primaryKey } from "~/schema/primary-key/primary-key.js";
+import { bigint } from "~/schema/table/column/data-types/bigint.js";
+import { boolean } from "~/schema/table/column/data-types/boolean.js";
+import { varchar } from "~/schema/table/column/data-types/character-varying.js";
+import { enumerated } from "~/schema/table/column/data-types/enumerated.js";
+import { integer } from "~/schema/table/column/data-types/integer.js";
+import { serial } from "~/schema/table/column/data-types/serial.js";
+import { text } from "~/schema/table/column/data-types/text.js";
+import { timestamptz } from "~/schema/table/column/data-types/timestamp-with-time-zone.js";
+import { foreignKey } from "~/schema/table/constraints/foreign-key/foreign-key.js";
+import { primaryKey } from "~/schema/table/constraints/primary-key/primary-key.js";
+import { index } from "~/schema/table/index/index.js";
 import { table } from "~/schema/table/table.js";
+import { enumType } from "~/schema/types/enum/enum.js";
 import { zodSchema } from "~/zod/zod_schema.js";
-import { unique } from "../../src/schema/unique/unique.js";
+import { unique } from "../../src/schema/table/constraints/unique/unique.js";
 
 describe("pgTable definition", () => {
 	test("has columns defined", () => {

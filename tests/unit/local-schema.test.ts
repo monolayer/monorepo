@@ -3,29 +3,30 @@ import { sql } from "kysely";
 import { describe, expect, test, type Mock } from "vitest";
 import { extension } from "~/index.js";
 import { localSchema } from "~/introspection/schemas.js";
-import { check } from "~/schema/check/check.js";
-import { bigserial } from "~/schema/column/data-types/bigserial.js";
-import { boolean } from "~/schema/column/data-types/boolean.js";
-import { varchar } from "~/schema/column/data-types/character-varying.js";
-import { enumType, enumerated } from "~/schema/column/data-types/enumerated.js";
-import { integer } from "~/schema/column/data-types/integer.js";
-import { serial } from "~/schema/column/data-types/serial.js";
-import { timestamp } from "~/schema/column/data-types/timestamp.js";
+import { pgDatabase } from "~/schema/pg-database.js";
+import { bigserial } from "~/schema/table/column/data-types/bigserial.js";
+import { boolean } from "~/schema/table/column/data-types/boolean.js";
+import { varchar } from "~/schema/table/column/data-types/character-varying.js";
+import { enumerated } from "~/schema/table/column/data-types/enumerated.js";
+import { integer } from "~/schema/table/column/data-types/integer.js";
+import { serial } from "~/schema/table/column/data-types/serial.js";
+import { timestamp } from "~/schema/table/column/data-types/timestamp.js";
 import {
 	localColumnInfoByTable,
 	schemaColumnInfo,
-} from "~/schema/column/instrospection.js";
-import { localEnumInfo } from "~/schema/enum/introspection.js";
-import { foreignKey } from "~/schema/foreign-key/foreign-key.js";
-import { index } from "~/schema/index/index.js";
-import { localIndexInfoByTable } from "~/schema/index/introspection.js";
-import { pgDatabase } from "~/schema/pg-database.js";
-import { primaryKey } from "~/schema/primary-key/primary-key.js";
+} from "~/schema/table/column/instrospection.js";
+import { check } from "~/schema/table/constraints/check/check.js";
+import { foreignKey } from "~/schema/table/constraints/foreign-key/foreign-key.js";
+import { primaryKey } from "~/schema/table/constraints/primary-key/primary-key.js";
+import { index } from "~/schema/table/index/index.js";
+import { localIndexInfoByTable } from "~/schema/table/index/introspection.js";
+import { enumType } from "~/schema/types/enum/enum.js";
+import { localEnumInfo } from "~/schema/types/enum/introspection.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column-info-factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration-schema.js";
+import { unique } from "../../src/schema/table/constraints/unique/unique.js";
 import { table } from "../../src/schema/table/table.js";
-import { trigger } from "../../src/schema/trigger/trigger.js";
-import { unique } from "../../src/schema/unique/unique.js";
+import { trigger } from "../../src/schema/table/trigger/trigger.js";
 
 describe("#schemaColumnInfo", () => {
 	test("default column", () => {

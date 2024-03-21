@@ -1,11 +1,11 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer } from "~/schema/column/data-types/integer.js";
-import { timestamp } from "~/schema/column/data-types/timestamp.js";
 import { extension } from "~/schema/extension/extension.js";
 import { pgDatabase } from "~/schema/pg-database.js";
+import { integer } from "~/schema/table/column/data-types/integer.js";
+import { timestamp } from "~/schema/table/column/data-types/timestamp.js";
 import { table } from "~/schema/table/table.js";
-import { trigger } from "~/schema/trigger/trigger.js";
+import { trigger } from "~/schema/table/trigger/trigger.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { type DbContext } from "~tests/setup/kysely.js";
 import { setUpContext, teardownContext } from "../../helpers/test-context.js";

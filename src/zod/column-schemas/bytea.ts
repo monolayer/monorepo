@@ -1,9 +1,9 @@
+import type { ZodType } from "~/schema/inference.js";
 import {
 	type PgColumnBase,
 	type SerialColumn,
-} from "~/schema/column/column.js";
-import { PgBytea } from "~/schema/column/data-types/bytea.js";
-import type { ZodType } from "~/schema/inference.js";
+} from "~/schema/table/column/column.js";
+import { PgBytea } from "~/schema/table/column/data-types/bytea.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { customIssue, nullableColumn } from "../helpers.js";
 
