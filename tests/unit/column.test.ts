@@ -3,7 +3,6 @@ import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, test } from "vitest";
 import { z } from "zod";
-import { PgEnum } from "~/schema/column/column.js";
 import { PgBigInt, bigint } from "~/schema/column/data-types/bigint.js";
 import {
 	PgBigSerial,
@@ -37,7 +36,11 @@ import {
 	PgDoublePrecision,
 	doublePrecision,
 } from "~/schema/column/data-types/double-precision.js";
-import { enumType, enumerated } from "~/schema/column/data-types/enumerated.js";
+import {
+	PgEnum,
+	enumType,
+	enumerated,
+} from "~/schema/column/data-types/enumerated.js";
 import { PgInet, inet } from "~/schema/column/data-types/inet.js";
 import { PgInteger, integer } from "~/schema/column/data-types/integer.js";
 import { PgJson, json } from "~/schema/column/data-types/json.js";

@@ -1,4 +1,3 @@
-import type { PgEnum } from "../column/column.js";
 import type { PgBigInt } from "../column/data-types/bigint.js";
 import type { PgBigSerial } from "../column/data-types/bigserial.js";
 import type { PgBoolean } from "../column/data-types/boolean.js";
@@ -7,6 +6,7 @@ import type { PgCharacterVarying } from "../column/data-types/character-varying.
 import type { PgCharacter } from "../column/data-types/character.js";
 import type { PgDate } from "../column/data-types/date.js";
 import type { PgDoublePrecision } from "../column/data-types/double-precision.js";
+import type { PgEnum } from "../column/data-types/enumerated.js";
 import type { PgInteger } from "../column/data-types/integer.js";
 import type { PgJson } from "../column/data-types/json.js";
 import type { PgJsonB } from "../column/data-types/jsonb.js";

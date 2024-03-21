@@ -1,9 +1,6 @@
 import { z } from "zod";
-import {
-	PgEnum,
-	type PgColumn,
-	type SerialColumn,
-} from "~/schema/column/column.js";
+import { type PgColumn, type SerialColumn } from "~/schema/column/column.js";
+import { PgEnum } from "~/schema/column/data-types/enumerated.js";
 import type { ZodType } from "~/schema/inference.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { nullableColumn } from "../helpers.js";

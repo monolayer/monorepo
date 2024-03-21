@@ -181,20 +181,5 @@ export function valueWithHash(value: string): `${string}:${string}` {
 	return `${hash.digest("hex")}:${value}`;
 }
 
-export class PgEnum<Value extends string> extends StringColumn<Value, Value> {
-	/**
-	 * @hidden
-	 */
-	protected readonly values: Value[];
-	/**
-	 * @hidden
-	 */
-	constructor(name: string, values: Value[]) {
-		super(name);
-		this.info.enum = true;
-		this.values = values;
-	}
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyPGColumn = PgColumn<any, any>;
