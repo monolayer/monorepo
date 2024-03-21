@@ -8,7 +8,7 @@ import {
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { type MigrationSchema } from "~/introspection/schemas.js";
+import { type MigrationSchema } from "~/introspection/introspection.js";
 import { findColumn, findPrimaryKey } from "~/migrations/migration-schema.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
 import type { InformationSchemaDB } from "../../../introspection/types.js";

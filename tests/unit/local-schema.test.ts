@@ -2,7 +2,7 @@
 import { sql } from "kysely";
 import { describe, expect, test, type Mock } from "vitest";
 import { extension } from "~/index.js";
-import { localSchema } from "~/introspection/schemas.js";
+import { localSchema } from "~/introspection/introspection.js";
 import { pgDatabase } from "~/schema/pg-database.js";
 import { bigserial } from "~/schema/table/column/data-types/bigserial.js";
 import { boolean } from "~/schema/table/column/data-types/boolean.js";

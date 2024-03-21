@@ -8,7 +8,7 @@ import { executeKyselyDbStatement } from "../../changeset/helpers.js";
 import type {
 	DbTableInfo,
 	LocalTableInfo,
-} from "../../introspection/schemas.js";
+} from "../../introspection/introspection.js";
 
 export function extensionMigrationOpGenerator(
 	diff: Difference,

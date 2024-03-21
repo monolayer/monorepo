@@ -1,4 +1,4 @@
-import type { MigrationSchema } from "~/introspection/schemas.js";
+import type { MigrationSchema } from "~/introspection/introspection.js";
 
 export function migrationSchemaFactory(
 	options?: Partial<MigrationSchema>,

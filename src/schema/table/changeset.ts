@@ -8,7 +8,7 @@ import { executeKyselySchemaStatement } from "../../changeset/helpers.js";
 import {
 	type DbTableInfo,
 	type LocalTableInfo,
-} from "../../introspection/schemas.js";
+} from "../../introspection/introspection.js";
 import {
 	tableColumnsOps,
 	toValueAndHash,

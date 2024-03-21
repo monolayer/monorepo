@@ -4,7 +4,10 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
-import type { DbTableInfo, LocalTableInfo } from "~/introspection/schemas.js";
+import type {
+	DbTableInfo,
+	LocalTableInfo,
+} from "~/introspection/introspection.js";
 import { executeKyselyDbStatement } from "../../../../changeset/helpers.js";
 import type { ColumnInfo } from "../types.js";
 

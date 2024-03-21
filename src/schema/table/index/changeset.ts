@@ -7,7 +7,7 @@ import {
 import type {
 	DbTableInfo,
 	LocalTableInfo,
-} from "../../../introspection/schemas.js";
+} from "../../../introspection/introspection.js";
 
 export function indexMigrationOpGenerator(
 	diff: Difference,

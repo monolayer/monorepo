@@ -1,7 +1,7 @@
 import toposort from "toposort";
 import type { CamelCaseOptions } from "~/config.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { MigrationSchema } from "~/introspection/schemas.js";
+import { MigrationSchema } from "~/introspection/introspection.js";
 import { type ColumnRecord } from "~/schema/table/table-column.js";
 import type { AnyPgTable } from "~/schema/table/table.js";
 import { toSnakeCase } from "../changeset/helpers.js";

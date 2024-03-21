@@ -5,7 +5,7 @@ import color from "picocolors";
 import { exit } from "process";
 import { changeset } from "~/changeset/changeset.js";
 import { importConfig, importSchema, importSeedFunction } from "~/config.js";
-import { localSchema, remoteSchema } from "~/introspection/schemas.js";
+import { localSchema, remoteSchema } from "~/introspection/introspection.js";
 import { fetchPendingMigrations } from "~/migrations/info.js";
 import { dbTableInfo } from "~/schema/table/introspection.js";
 import { ActionStatus } from "../command.js";

@@ -2,7 +2,7 @@ import { Kysely } from "kysely";
 import { changeset } from "~/changeset/changeset.js";
 import { ActionStatus } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
-import { localSchema, remoteSchema } from "~/introspection/schemas.js";
+import { localSchema, remoteSchema } from "~/introspection/introspection.js";
 import type { AnyPgDatabase } from "~/schema/pg-database.js";
 
 export async function computeChangeset(

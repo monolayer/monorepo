@@ -4,7 +4,10 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
-import type { DbTableInfo, LocalTableInfo } from "~/introspection/schemas.js";
+import type {
+	DbTableInfo,
+	LocalTableInfo,
+} from "~/introspection/introspection.js";
 import { executeKyselySchemaStatement } from "../../../../changeset/helpers.js";
 
 export function columnNullableMigrationOpGenerator(

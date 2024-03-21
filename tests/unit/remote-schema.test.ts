@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { remoteSchema } from "~/introspection/schemas.js";
+import { remoteSchema } from "~/introspection/introspection.js";
 import { dropTables } from "~tests/helpers/drop-tables.js";
 import { globalPool } from "~tests/setup.js";
 import { kyselyWithCustomDB, type DbContext } from "~tests/setup/kysely.js";

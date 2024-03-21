@@ -8,7 +8,7 @@ import { executeKyselySchemaStatement } from "../../../../changeset/helpers.js";
 import type {
 	DbTableInfo,
 	LocalTableInfo,
-} from "../../../../introspection/schemas.js";
+} from "../../../../introspection/introspection.js";
 import {
 	extractColumnsFromPrimaryKey,
 	findColumnByNameInTable,

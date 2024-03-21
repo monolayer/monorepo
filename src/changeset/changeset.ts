@@ -1,6 +1,9 @@
 import microdiff, { type Difference } from "microdiff";
-import { type MigrationSchema } from "~/introspection/schemas.js";
-import type { DbTableInfo, LocalTableInfo } from "../introspection/schemas.js";
+import { type MigrationSchema } from "~/introspection/introspection.js";
+import type {
+	DbTableInfo,
+	LocalTableInfo,
+} from "../introspection/introspection.js";
 import { buildNodes } from "../migrations/migration-schema.js";
 import {
 	isCreateTable,
