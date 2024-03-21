@@ -10,7 +10,7 @@ export {
 	type PgBigSerial,
 } from "./schema/table/column/data-types/bigserial.js";
 export {
-	boolean as bool,
+	boolean,
 	type PgBoolean,
 } from "./schema/table/column/data-types/boolean.js";
 export { bytea, type PgBytea } from "./schema/table/column/data-types/bytea.js";
