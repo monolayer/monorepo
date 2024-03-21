@@ -210,7 +210,9 @@ type OptionalNonNullableZodType<T extends z.ZodType<any, any, any>> =
 
 type PgColumnZodType<T extends AnyPGColumn> = z.ZodType<
 	T extends NonNullableColumn
-		? SelectType<InferColumType<T, false>>
+		? T extends WithDefaultColumn
+			? SelectType<InferColumType<T, false>> | undefined
+			: SelectType<InferColumType<T, false>>
 		: T extends GeneratedAlwaysColumn
 			? never
 			: SelectType<InferColumType<T, false>> | null | undefined,
@@ -222,7 +224,9 @@ type PgColumnZodType<T extends AnyPGColumn> = z.ZodType<
 
 type ByteaZodType<T extends AnyPGColumn> = z.ZodType<
 	T extends NonNullableColumn
-		? SelectType<InferColumType<T, false>> | string
+		? T extends WithDefaultColumn
+			? SelectType<InferColumType<T, false>> | string | undefined
+			: SelectType<InferColumType<T, false>> | string
 		: T extends GeneratedAlwaysColumn
 			? never
 			: SelectType<InferColumType<T, false>> | string | undefined,
@@ -235,20 +239,32 @@ type ZodJson = JsonValue;
 
 type JsonZodType<T extends AnyPGColumn> = z.ZodType<
 	T extends NonNullableColumn
-		? ZodJson
+		? T extends WithDefaultColumn
+			? ZodJson | undefined
+			: ZodJson
 		: T extends GeneratedAlwaysColumn
 			? never
 			: ZodJson | null | undefined,
 	z.ZodTypeDef,
-	T extends NonNullableColumn ? ZodJson : ZodJson | null | undefined
+	T extends NonNullableColumn
+		? T extends WithDefaultColumn
+			? ZodJson | undefined
+			: ZodJson
+		: ZodJson | null | undefined
 >;
 // T extends PgTimestamp | PgTimestampTz
 type DateZodType<T extends AnyPGColumn> = z.ZodType<
 	T extends NonNullableColumn
-		? Date
+		? T extends WithDefaultColumn
+			? Date | undefined
+			: Date
 		: T extends GeneratedAlwaysColumn
 			? never
 			: Date | null | undefined,
 	z.ZodTypeDef,
-	T extends NonNullableColumn ? Date | string : Date | string | null | undefined
+	T extends NonNullableColumn
+		? T extends WithDefaultColumn
+			? Date | string | undefined
+			: Date | string
+		: Date | string | null | undefined
 >;
