@@ -1,10 +1,7 @@
 import { z } from "zod";
-import {
-	PgBit,
-	PgBitVarying,
-	PgColumn,
-	PgGeneratedColumn,
-} from "~/schema/column/column.js";
+import { PgColumn, SerialColumn } from "~/schema/column/column.js";
+import { PgBitVarying } from "~/schema/column/data-types/bit-varying.js";
+import { PgBit } from "~/schema/column/data-types/bit.js";
 import type { ZodType } from "~/schema/inference.js";
 import { finishSchema } from "../common.js";
 import { columnData } from "../helpers.js";
@@ -47,17 +44,13 @@ export function varbitSchema<T extends PgBitVarying, PK extends boolean>(
 }
 
 export function isBitColumn(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgBit {
 	return column instanceof PgBit;
 }
 
 export function isVarbitColumn(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgBitVarying {
 	return column instanceof PgBitVarying;
 }

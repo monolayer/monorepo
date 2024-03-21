@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { serial } from "~/schema/column/column.js";
+import { serial } from "~/schema/column/data-types/serial.js";
 import { pgDatabase } from "~/schema/pg-database.js";
 import { table } from "~/schema/table/table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column-info-factory.js";

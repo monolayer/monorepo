@@ -1,8 +1,5 @@
-import {
-	PgXML,
-	type PgColumn,
-	type PgGeneratedColumn,
-} from "~/schema/column/column.js";
+import { type PgColumn, type SerialColumn } from "~/schema/column/column.js";
+import { PgXML } from "~/schema/column/data-types/xml.js";
 import type { ZodType } from "~/schema/inference.js";
 import { finishSchema, stringSchema } from "../common.js";
 import { columnData } from "../helpers.js";
@@ -17,9 +14,7 @@ export function xmlSchema<T extends PgXML, PK extends boolean>(
 }
 
 export function isXMLColumn(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgXML {
 	return column instanceof PgXML;
 }

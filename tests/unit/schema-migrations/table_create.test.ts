@@ -2,39 +2,36 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { check } from "~/schema/check/check.js";
-import {
-	bigint,
-	bigserial,
-	bit,
-	bitVarying,
-	boolean,
-	bytea,
-	char,
-	date,
-	doublePrecision,
-	enumType,
-	enumerated,
-	inet,
-	integer,
-	json,
-	jsonb,
-	macaddr,
-	macaddr8,
-	numeric,
-	real,
-	serial,
-	smallint,
-	text,
-	time,
-	timestamp,
-	timestamptz,
-	timetz,
-	tsquery,
-	tsvector,
-	uuid,
-	varchar,
-	xml,
-} from "~/schema/column/column.js";
+import { bigint } from "~/schema/column/data-types/bigint.js";
+import { bigserial } from "~/schema/column/data-types/bigserial.js";
+import { bitVarying } from "~/schema/column/data-types/bit-varying.js";
+import { bit } from "~/schema/column/data-types/bit.js";
+import { boolean } from "~/schema/column/data-types/boolean.js";
+import { bytea } from "~/schema/column/data-types/bytea.js";
+import { varchar } from "~/schema/column/data-types/character-varying.js";
+import { char } from "~/schema/column/data-types/character.js";
+import { date } from "~/schema/column/data-types/date.js";
+import { doublePrecision } from "~/schema/column/data-types/double-precision.js";
+import { enumType, enumerated } from "~/schema/column/data-types/enumerated.js";
+import { inet } from "~/schema/column/data-types/inet.js";
+import { integer } from "~/schema/column/data-types/integer.js";
+import { json } from "~/schema/column/data-types/json.js";
+import { jsonb } from "~/schema/column/data-types/jsonb.js";
+import { macaddr } from "~/schema/column/data-types/macaddr.js";
+import { macaddr8 } from "~/schema/column/data-types/macaddr8.js";
+import { numeric } from "~/schema/column/data-types/numeric.js";
+import { real } from "~/schema/column/data-types/real.js";
+import { serial } from "~/schema/column/data-types/serial.js";
+import { smallint } from "~/schema/column/data-types/smallint.js";
+import { text } from "~/schema/column/data-types/text.js";
+import { timetz } from "~/schema/column/data-types/time-with-time-zone.js";
+import { time } from "~/schema/column/data-types/time.js";
+import { timestamptz } from "~/schema/column/data-types/timestamp-with-time-zone.js";
+import { timestamp } from "~/schema/column/data-types/timestamp.js";
+import { tsquery } from "~/schema/column/data-types/tsquery.js";
+import { tsvector } from "~/schema/column/data-types/tsvector.js";
+import { uuid } from "~/schema/column/data-types/uuid.js";
+import { xml } from "~/schema/column/data-types/xml.js";
 import { extension } from "~/schema/extension/extension.js";
 import { foreignKey } from "~/schema/foreign-key/foreign-key.js";
 import { index } from "~/schema/index/index.js";

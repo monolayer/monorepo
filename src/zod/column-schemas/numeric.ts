@@ -2,58 +2,48 @@
 import { z } from "zod";
 import {
 	ColumnIdentity,
-	PgBigInt,
-	PgDoublePrecision,
-	PgInteger,
-	PgNumeric,
-	PgReal,
-	PgSmallint,
-	type PgBigSerial,
 	type PgColumn,
 	type PgColumnBase,
-	type PgGeneratedColumn,
-	type PgSerial,
+	type SerialColumn,
 } from "~/schema/column/column.js";
+import { PgBigInt } from "~/schema/column/data-types/bigint.js";
+import { type PgBigSerial } from "~/schema/column/data-types/bigserial.js";
+import { PgDoublePrecision } from "~/schema/column/data-types/double-precision.js";
+import { PgInteger } from "~/schema/column/data-types/integer.js";
+import { PgNumeric } from "~/schema/column/data-types/numeric.js";
+import { PgReal } from "~/schema/column/data-types/real.js";
+import { type PgSerial } from "~/schema/column/data-types/serial.js";
+import { PgSmallint } from "~/schema/column/data-types/smallint.js";
 import type { ZodType } from "~/schema/inference.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { columnData, customIssue, nullableColumn } from "../helpers.js";
 
 export function isNumeric(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgNumeric {
 	return column instanceof PgNumeric;
 }
 
 export function isDoublePrecision(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgDoublePrecision {
 	return column instanceof PgDoublePrecision;
 }
 
 export function isSmallint(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgSmallint {
 	return column instanceof PgSmallint;
 }
 
 export function isInteger(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgInteger {
 	return column instanceof PgInteger;
 }
 
 export function isReal(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgReal {
 	return column instanceof PgReal;
 }

@@ -1,14 +1,14 @@
 import { Address4, Address6 } from "ip-address";
 import { z } from "zod";
 import {
-	PgCIDR,
 	PgColumn,
-	PgGeneratedColumn,
-	PgInet,
-	PgMacaddr,
-	PgMacaddr8,
+	SerialColumn,
 	type AnyPGColumn,
 } from "~/schema/column/column.js";
+import { PgCIDR } from "~/schema/column/data-types/cidr.js";
+import { PgInet } from "~/schema/column/data-types/inet.js";
+import { PgMacaddr } from "~/schema/column/data-types/macaddr.js";
+import { PgMacaddr8 } from "~/schema/column/data-types/macaddr8.js";
 import type { ZodType } from "~/schema/inference.js";
 import { finishSchema } from "../common.js";
 import { columnData, customIssue } from "../helpers.js";
@@ -69,33 +69,25 @@ export function macaddr8Schema<T extends PgMacaddr8, PK extends boolean>(
 }
 
 export function isInetColumn(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgInet {
 	return column instanceof PgInet;
 }
 
 export function isCidrColumn(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgCIDR {
 	return column instanceof PgCIDR;
 }
 
 export function isMacaddrColumn(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgMacaddr {
 	return column instanceof PgMacaddr;
 }
 
 export function isMacaddr8Column(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgMacaddr8 {
 	return column instanceof PgMacaddr8;
 }

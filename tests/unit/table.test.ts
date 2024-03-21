@@ -8,17 +8,14 @@ import {
 import { Equal, Expect } from "type-testing";
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
-import {
-	bigint,
-	boolean,
-	enumType,
-	enumerated,
-	integer,
-	serial,
-	text,
-	timestamptz,
-	varchar,
-} from "~/schema/column/column.js";
+import { bigint } from "~/schema/column/data-types/bigint.js";
+import { boolean } from "~/schema/column/data-types/boolean.js";
+import { varchar } from "~/schema/column/data-types/character-varying.js";
+import { enumType, enumerated } from "~/schema/column/data-types/enumerated.js";
+import { integer } from "~/schema/column/data-types/integer.js";
+import { serial } from "~/schema/column/data-types/serial.js";
+import { text } from "~/schema/column/data-types/text.js";
+import { timestamptz } from "~/schema/column/data-types/timestamp-with-time-zone.js";
 import { index } from "~/schema/index/index.js";
 import { primaryKey } from "~/schema/primary-key/primary-key.js";
 import { table, tableInfo } from "~/schema/table/table.js";

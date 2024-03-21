@@ -1,54 +1,41 @@
 import { z } from "zod";
-import {
-	PgDate,
-	PgTime,
-	PgTimeWithTimeZone,
-	PgTimestamp,
-	PgTimestampWithTimeZone,
-	type PgColumn,
-	type PgGeneratedColumn,
-} from "~/schema/column/column.js";
+import { type PgColumn, type SerialColumn } from "~/schema/column/column.js";
+import { PgDate } from "~/schema/column/data-types/date.js";
+import { PgTimeWithTimeZone } from "~/schema/column/data-types/time-with-time-zone.js";
+import { PgTime } from "~/schema/column/data-types/time.js";
+import { PgTimestampWithTimeZone } from "~/schema/column/data-types/timestamp-with-time-zone.js";
+import { PgTimestamp } from "~/schema/column/data-types/timestamp.js";
 import type { ZodType } from "~/schema/inference.js";
 import { baseSchema, finishSchema, stringSchema } from "../common.js";
 import { columnData, customIssue, nullableColumn } from "../helpers.js";
 import { timeRegex } from "../regexes/regex.js";
 
 export function isTime(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgTime {
 	return column instanceof PgTime;
 }
 
 export function isTimeTz(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgTimeWithTimeZone {
 	return column instanceof PgTimeWithTimeZone;
 }
 
 export function isTimestamp(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgTimestamp {
 	return column instanceof PgTimestamp;
 }
 
 export function isTimestampTz(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgTimestampWithTimeZone {
 	return column instanceof PgTimestampWithTimeZone;
 }
 
 export function isDate(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgDate {
 	return column instanceof PgDate;
 }

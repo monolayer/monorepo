@@ -4,17 +4,14 @@ import { describe, expect, test, type Mock } from "vitest";
 import { extension } from "~/index.js";
 import { localSchema } from "~/introspection/schemas.js";
 import { check } from "~/schema/check/check.js";
-import {
-	ColumnIdentity,
-	bigserial,
-	boolean,
-	enumType,
-	enumerated,
-	integer,
-	serial,
-	timestamp,
-	varchar,
-} from "~/schema/column/column.js";
+import { ColumnIdentity } from "~/schema/column/column.js";
+import { bigserial } from "~/schema/column/data-types/bigserial.js";
+import { boolean } from "~/schema/column/data-types/boolean.js";
+import { varchar } from "~/schema/column/data-types/character-varying.js";
+import { enumType, enumerated } from "~/schema/column/data-types/enumerated.js";
+import { integer } from "~/schema/column/data-types/integer.js";
+import { serial } from "~/schema/column/data-types/serial.js";
+import { timestamp } from "~/schema/column/data-types/timestamp.js";
 import {
 	localColumnInfoByTable,
 	schemaColumnInfo,

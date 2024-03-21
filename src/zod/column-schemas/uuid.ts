@@ -1,17 +1,12 @@
 import { z } from "zod";
-import {
-	PgUuid,
-	type PgColumn,
-	type PgGeneratedColumn,
-} from "~/schema/column/column.js";
+import { type PgColumn, type SerialColumn } from "~/schema/column/column.js";
+import { PgUuid } from "~/schema/column/data-types/uuid.js";
 import type { ZodType } from "~/schema/inference.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { nullableColumn } from "../helpers.js";
 
 export function isUuid(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgUuid {
 	return column instanceof PgUuid;
 }

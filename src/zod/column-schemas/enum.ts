@@ -2,16 +2,14 @@ import { z } from "zod";
 import {
 	PgEnum,
 	type PgColumn,
-	type PgGeneratedColumn,
+	type SerialColumn,
 } from "~/schema/column/column.js";
 import type { ZodType } from "~/schema/inference.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { nullableColumn } from "../helpers.js";
 
 export function isEnum(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): column is PgEnum<any> {
 	return column instanceof PgEnum;

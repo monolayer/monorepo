@@ -4,9 +4,9 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
-import { EnumType } from "~/schema/column/column.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
 import type { InformationSchemaDB } from "../../introspection/types.js";
+import { EnumType } from "../column/data-types/enumerated.js";
 
 export async function dbEnumInfo(
 	kysely: Kysely<InformationSchemaDB>,

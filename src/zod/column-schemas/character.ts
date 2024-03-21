@@ -1,12 +1,12 @@
 import { z } from "zod";
 import {
-	PgCharacter,
-	PgCharacterVarying,
-	PgText,
 	type PgColumn,
 	type PgColumnBase,
-	type PgGeneratedColumn,
+	type SerialColumn,
 } from "~/schema/column/column.js";
+import { PgCharacterVarying } from "~/schema/column/data-types/character-varying.js";
+import { PgCharacter } from "~/schema/column/data-types/character.js";
+import { PgText } from "~/schema/column/data-types/text.js";
 import type { ZodType } from "~/schema/inference.js";
 import { finishSchema } from "../common.js";
 import { columnData, nullableColumn } from "../helpers.js";
@@ -25,17 +25,13 @@ export function pgCharSchema<T extends PgCharacter, PK extends boolean>(
 }
 
 export function isVarchar(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgCharacterVarying {
 	return column instanceof PgCharacterVarying;
 }
 
 export function isChar(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgCharacter {
 	return column instanceof PgCharacter;
 }

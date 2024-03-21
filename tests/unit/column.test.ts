@@ -1,90 +1,81 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { Equal, Expect } from "type-testing";
-import { beforeEach, describe, expect, expectTypeOf, test } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 import { z } from "zod";
+import { PgEnum } from "~/schema/column/column.js";
+import { PgBigInt, bigint } from "~/schema/column/data-types/bigint.js";
 import {
+	PgBigSerial,
+	bigserial,
+} from "~/schema/column/data-types/bigserial.js";
+import {
+	PgBitVarying,
+	bitVarying,
+	varbit,
+} from "~/schema/column/data-types/bit-varying.js";
+import { PgBit, bit } from "~/schema/column/data-types/bit.js";
+import {
+	PgBoolean,
+	boolean,
+	type Boolish,
+} from "~/schema/column/data-types/boolean.js";
+import { PgBytea, bytea } from "~/schema/column/data-types/bytea.js";
+import {
+	PgCharacterVarying,
+	characterVarying,
+	varchar,
+} from "~/schema/column/data-types/character-varying.js";
+import {
+	PgCharacter,
 	char,
 	character,
-	enumType,
-	enumerated,
-	timestampWithTimeZone,
+} from "~/schema/column/data-types/character.js";
+import { PgCIDR, cidr } from "~/schema/column/data-types/cidr.js";
+import { PgDate, date } from "~/schema/column/data-types/date.js";
+import {
+	PgDoublePrecision,
+	doublePrecision,
+} from "~/schema/column/data-types/double-precision.js";
+import { enumType, enumerated } from "~/schema/column/data-types/enumerated.js";
+import { PgInet, inet } from "~/schema/column/data-types/inet.js";
+import { PgInteger, integer } from "~/schema/column/data-types/integer.js";
+import { PgJson, json } from "~/schema/column/data-types/json.js";
+import { PgJsonB, jsonb } from "~/schema/column/data-types/jsonb.js";
+import { PgMacaddr, macaddr } from "~/schema/column/data-types/macaddr.js";
+import { PgMacaddr8, macaddr8 } from "~/schema/column/data-types/macaddr8.js";
+import { PgNumeric, numeric } from "~/schema/column/data-types/numeric.js";
+import { PgReal, real } from "~/schema/column/data-types/real.js";
+import { PgSerial, serial } from "~/schema/column/data-types/serial.js";
+import { PgSmallint, smallint } from "~/schema/column/data-types/smallint.js";
+import { PgText, text } from "~/schema/column/data-types/text.js";
+import {
+	PgTimeWithTimeZone,
+	timeWithTimeZone,
 	timetz,
-	varbit,
-	varchar,
-	type JsonValue,
-} from "~/schema/column/column.js";
+} from "~/schema/column/data-types/time-with-time-zone.js";
+import { PgTime, time } from "~/schema/column/data-types/time.js";
+import {
+	PgTimestampWithTimeZone,
+	timestampWithTimeZone,
+	timestamptz,
+} from "~/schema/column/data-types/timestamp-with-time-zone.js";
+import {
+	PgTimestamp,
+	timestamp,
+} from "~/schema/column/data-types/timestamp.js";
+import { PgTsquery, tsquery } from "~/schema/column/data-types/tsquery.js";
+import { PgTsvector, tsvector } from "~/schema/column/data-types/tsvector.js";
+import { PgUuid, uuid } from "~/schema/column/data-types/uuid.js";
+import { PgXML, xml } from "~/schema/column/data-types/xml.js";
+import { ColumnInfo, type JsonValue } from "~/schema/column/types.js";
 import { primaryKey } from "~/schema/primary-key/primary-key.js";
 import { table } from "~/schema/table/table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
 import {
-	ColumnInfo,
-	DefaultValueDataTypes,
-	PgBigInt,
-	PgBigSerial,
-	PgBit,
-	PgBitVarying,
-	PgBoolean,
-	PgBytea,
-	PgCIDR,
-	PgCharacter,
-	PgCharacterVarying,
 	PgColumn,
 	PgColumnBase,
-	PgDate,
-	PgDoublePrecision,
-	PgEnum,
-	PgGeneratedColumn,
-	PgInet,
-	PgInteger,
-	PgJson,
-	PgJsonB,
-	PgMacaddr,
-	PgMacaddr8,
-	PgNumeric,
-	PgReal,
-	PgSerial,
-	PgSmallint,
-	PgText,
-	PgTime,
-	PgTimeColumn,
-	PgTimeWithTimeZone,
-	PgTimestamp,
-	PgTimestampWithTimeZone,
-	PgTsquery,
-	PgTsvector,
-	PgUuid,
-	PgXML,
-	bigint,
-	bigserial,
-	bit,
-	bitVarying,
-	boolean,
-	bytea,
-	characterVarying,
-	cidr,
-	date,
-	doublePrecision,
-	inet,
-	integer,
-	json,
-	jsonb,
-	macaddr,
-	macaddr8,
-	numeric,
-	real,
-	serial,
-	smallint,
-	text,
-	time,
-	timeWithTimeZone,
-	timestamp,
-	timestamptz,
-	tsquery,
-	tsvector,
-	uuid,
-	xml,
-	type Boolish,
+	SerialColumn,
 } from "../../src/schema/column/column.js";
 
 type ColumnContext = {
@@ -95,7 +86,7 @@ type ColumnContext = {
 
 type ColumnWithoutDefaultContext = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	column: PgGeneratedColumn<any, any>;
+	column: SerialColumn<any, any>;
 	columnInfo: ColumnInfo;
 };
 
@@ -108,23 +99,11 @@ const elevenCentillionBitInt =
 const tenUnDecillionBigInt = 10000000000000000000000000000000000000n;
 const eleventUnDecillionBigInt = 100000000000000000000000000000000000000n;
 
-describe("PgColumnBase", () => {
-	beforeEach((context: ColumnContext) => {
-		context.column = new PgColumnBase("integer");
-		context.columnInfo = Object.fromEntries(
-			Object.entries(context.column),
-		).info;
-	});
-
-	testColumnDefaults("integer");
-	testColumnMethods();
-});
-
 describe("PgGeneratedColumn", () => {
 	beforeEach((context: ColumnWithoutDefaultContext) => {
-		class TestSerial extends PgGeneratedColumn<string, number | string> {
+		class TestSerial extends SerialColumn<string, number | string> {
 			constructor() {
-				super("serial", DefaultValueDataTypes.serial);
+				super("serial", "integer");
 			}
 		}
 		context.column = new TestSerial();
@@ -1940,7 +1919,7 @@ describe("pgBigSerial", () => {
 
 	describe("PgBigSerial", () => {
 		test("inherits from PgColumnWithoutDefault", () => {
-			expect(bigserial()).toBeInstanceOf(PgGeneratedColumn);
+			expect(bigserial()).toBeInstanceOf(SerialColumn);
 		});
 
 		test("dataType is set to bigserial", () => {
@@ -6887,7 +6866,7 @@ describe("pgSerial", () => {
 
 	describe("PgSerial", () => {
 		test("inherits from PgColumnWithoutDefault", () => {
-			expect(serial()).toBeInstanceOf(PgGeneratedColumn);
+			expect(serial()).toBeInstanceOf(SerialColumn);
 		});
 
 		test("dataType is set to serial", () => {
@@ -8776,26 +8755,6 @@ describe("character", () => {
 	});
 });
 
-describe("PgTimeColumn", () => {
-	test("inherits from PgColumn", () => {
-		class PgTimeTest extends PgTimeColumn<string, string> {
-			constructor() {
-				super("time", false, 1);
-			}
-		}
-		const column = new PgTimeTest();
-		expect(column).toBeInstanceOf(PgColumn);
-	});
-
-	test("optional precision accepts values from 0 to 6", () => {
-		type range = 0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined;
-		const expect: Expect<
-			Equal<range, ConstructorParameters<typeof PgTimeColumn>[2]>
-		> = true;
-		expectTypeOf(expect).toMatchTypeOf<boolean>();
-	});
-});
-
 describe("pgTime", () => {
 	test("returns a PgTime instance", () => {
 		const column = time();
@@ -8804,7 +8763,7 @@ describe("pgTime", () => {
 
 	describe("PgTime", () => {
 		test("inherits from PgTimeColumn", () => {
-			expect(time()).toBeInstanceOf(PgTimeColumn);
+			expect(time()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to time", () => {
@@ -9305,7 +9264,7 @@ describe("timeWithTimeZone", () => {
 
 	describe("PgTimeTz", () => {
 		test("inherits from PgTimeColumn", () => {
-			expect(timeWithTimeZone()).toBeInstanceOf(PgTimeColumn);
+			expect(timeWithTimeZone()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to timeWithTimeZone", () => {
@@ -9801,7 +9760,7 @@ describe("timestamp", () => {
 
 	describe("PgTimestamp", () => {
 		test("inherits from PgTimeColumn", () => {
-			expect(timestamp()).toBeInstanceOf(PgTimeColumn);
+			expect(timestamp()).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to timestamp", () => {
@@ -10310,7 +10269,7 @@ describe("timestampWithTimeZone", () => {
 	});
 
 	test("inherits from PgTimeColumn", () => {
-		expect(timestampWithTimeZone()).toBeInstanceOf(PgTimeColumn);
+		expect(timestampWithTimeZone()).toBeInstanceOf(PgColumn);
 	});
 
 	test("timestamptz alias", () => {

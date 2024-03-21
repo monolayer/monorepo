@@ -1,25 +1,18 @@
-import {
-	PgJson,
-	PgJsonB,
-	type PgColumn,
-	type PgGeneratedColumn,
-} from "~/schema/column/column.js";
+import { type PgColumn, type SerialColumn } from "~/schema/column/column.js";
+import { PgJson } from "~/schema/column/data-types/json.js";
+import { PgJsonB } from "~/schema/column/data-types/jsonb.js";
 import type { ZodType } from "~/schema/inference.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { customIssue, nullableColumn } from "../helpers.js";
 
 export function isJson(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgJson {
 	return column instanceof PgJson;
 }
 
 export function isJsonB(
-	column:
-		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,
 ): column is PgJsonB {
 	return column instanceof PgJsonB;
 }

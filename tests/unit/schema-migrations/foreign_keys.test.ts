@@ -1,6 +1,8 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, serial, varchar } from "~/schema/column/column.js";
+import { varchar } from "~/schema/column/data-types/character-varying.js";
+import { integer } from "~/schema/column/data-types/integer.js";
+import { serial } from "~/schema/column/data-types/serial.js";
 import { foreignKey } from "~/schema/foreign-key/foreign-key.js";
 import { pgDatabase } from "~/schema/pg-database.js";
 import { primaryKey } from "~/schema/primary-key/primary-key.js";

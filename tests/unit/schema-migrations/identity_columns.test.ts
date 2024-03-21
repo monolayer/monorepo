@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer } from "~/schema/column/column.js";
+import { integer } from "~/schema/column/data-types/integer.js";
 import { pgDatabase } from "~/schema/pg-database.js";
 import { table } from "~/schema/table/table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";

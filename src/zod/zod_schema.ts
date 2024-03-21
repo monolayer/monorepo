@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { PgColumn, PgGeneratedColumn } from "~/schema/column/column.js";
+import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
 import type { ZodSchemaObject, ZodType } from "~/schema/inference.js";
 import {
 	tableInfo,
@@ -204,7 +204,7 @@ export function zodSchema<T extends PgTable<any, any>>(table: T) {
 export function pgColumnSchema<
 	T extends
 		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+		| SerialColumn<unknown, unknown>,
 	PK extends boolean = false,
 >(column: T): ZodType<T, PK> {
 	if (isPgBoolean(column)) {

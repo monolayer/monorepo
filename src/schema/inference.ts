@@ -7,20 +7,22 @@ import type {
 } from "kysely";
 import { z } from "zod";
 import {
+	PgColumn,
+	type AnyPGColumn,
+	type SerialColumn,
+} from "./column/column.js";
+import { type PgBytea } from "./column/data-types/bytea.js";
+import { type PgTimestampWithTimeZone } from "./column/data-types/timestamp-with-time-zone.js";
+import { type PgTimestamp } from "./column/data-types/timestamp.js";
+import {
 	GeneratedColumn,
 	OptionalColumnType,
-	PgColumn,
 	WithDefaultColumn,
-	type AnyPGColumn,
 	type GeneratedAlwaysColumn,
 	type GeneratedColumnType,
 	type JsonValue,
 	type NonNullableColumn,
-	type PgBytea,
-	type PgGeneratedColumn,
-	type PgTimestamp,
-	type PgTimestampWithTimeZone,
-} from "./column/column.js";
+} from "./column/types.js";
 import { ColumnRecord } from "./table/table.js";
 
 export type InferColumnTypes<
@@ -38,7 +40,7 @@ type PrimaryKeyColumns<
 			{
 				[P in keyof T]: T[P] extends AnyPGColumn
 					? InferColumType<T[P], true>
-					: T[P] extends PgGeneratedColumn<infer S, infer U>
+					: T[P] extends SerialColumn<infer S, infer U>
 						? GeneratedColumnType<S, U, U>
 						: never;
 			},
@@ -52,7 +54,7 @@ type NonPrimaryKeyColumns<
 	? {
 			[P in keyof T]: T[P] extends AnyPGColumn
 				? InferColumType<T[P], false>
-				: T[P] extends PgGeneratedColumn<infer S, infer U>
+				: T[P] extends SerialColumn<infer S, infer U>
 					? GeneratedColumnType<S, U, U>
 					: never;
 		}
@@ -60,7 +62,7 @@ type NonPrimaryKeyColumns<
 			{
 				[P in keyof T]: T[P] extends AnyPGColumn
 					? InferColumType<T[P], false>
-					: T[P] extends PgGeneratedColumn<infer S, infer U>
+					: T[P] extends SerialColumn<infer S, infer U>
 						? GeneratedColumnType<S, U, U>
 						: never;
 			},
@@ -161,12 +163,12 @@ type NonPrimaryZodSchemaObject<
 export type ZodType<
 	T extends
 		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+		| SerialColumn<unknown, unknown>,
 	PK extends boolean,
 > = true extends PK
 	? T extends WithDefaultColumn
 		? OptionalNonNullableZodType<DefaultZodType<T>>
-		: T extends PgGeneratedColumn<unknown, unknown>
+		: T extends SerialColumn<unknown, unknown>
 			? OptionalNonNullableZodType<DefaultZodType<T>>
 			: T extends GeneratedColumn
 				? OptionalNonNullableZodType<DefaultZodType<T>>
@@ -176,7 +178,7 @@ export type ZodType<
 type DefaultZodType<
 	T extends
 		| PgColumn<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+		| SerialColumn<unknown, unknown>,
 > =
 	T extends PgColumn<infer U, unknown, unknown>
 		? T extends PgTimestamp | PgTimestampWithTimeZone
@@ -186,7 +188,7 @@ type DefaultZodType<
 				: JsonValue extends U
 					? JsonZodType<T>
 					: PgColumnZodType<T>
-		: T extends PgGeneratedColumn<infer S, infer I>
+		: T extends SerialColumn<infer S, infer I>
 			? z.ZodType<S | undefined, z.ZodTypeDef, I | undefined>
 			: z.ZodType<never, z.ZodTypeDef, never>;
 

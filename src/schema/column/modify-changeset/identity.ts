@@ -5,8 +5,8 @@ import {
 	MigrationOpPriority,
 } from "~/changeset/types.js";
 import type { DbTableInfo, LocalTableInfo } from "~/introspection/schemas.js";
-import type { ColumnInfo } from "~/schema/column/column.js";
 import { executeKyselyDbStatement } from "../../../changeset/helpers.js";
+import type { ColumnInfo } from "../types.js";
 
 export function columnIdentityMigrationOpGenerator(
 	diff: Difference,

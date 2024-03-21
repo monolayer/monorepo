@@ -1,7 +1,10 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { integer, text, timestamp, varchar } from "~/schema/column/column.js";
+import { varchar } from "~/schema/column/data-types/character-varying.js";
+import { integer } from "~/schema/column/data-types/integer.js";
+import { text } from "~/schema/column/data-types/text.js";
+import { timestamp } from "~/schema/column/data-types/timestamp.js";
 import { extension } from "~/schema/extension/extension.js";
 import { pgDatabase } from "~/schema/pg-database.js";
 import { table } from "~/schema/table/table.js";

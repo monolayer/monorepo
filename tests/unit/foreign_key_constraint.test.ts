@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { type PgSerial } from "../../src/schema/column/column.js";
+import { type PgSerial } from "~/schema/column/data-types/serial.js";
 import {
 	foreignKey,
 	foreignKeyOptions,

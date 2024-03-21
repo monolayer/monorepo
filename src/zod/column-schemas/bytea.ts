@@ -1,8 +1,8 @@
 import {
-	PgBytea,
 	type PgColumnBase,
-	type PgGeneratedColumn,
+	type SerialColumn,
 } from "~/schema/column/column.js";
+import { PgBytea } from "~/schema/column/data-types/bytea.js";
 import type { ZodType } from "~/schema/inference.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { customIssue, nullableColumn } from "../helpers.js";
@@ -10,7 +10,7 @@ import { customIssue, nullableColumn } from "../helpers.js";
 export function isBytea(
 	column:
 		| PgColumnBase<unknown, unknown, unknown>
-		| PgGeneratedColumn<unknown, unknown>,
+		| SerialColumn<unknown, unknown>,
 ): column is PgBytea {
 	return column instanceof PgBytea;
 }

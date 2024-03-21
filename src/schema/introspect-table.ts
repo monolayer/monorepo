@@ -1,10 +1,6 @@
 import { compileDefaultExpression } from "../introspection/schemas.js";
-import {
-	PgBigSerial,
-	PgSerial,
-	isExpression,
-	type ColumnInfo,
-} from "./column/column.js";
+import { isExpression } from "./column/column.js";
+import { type ColumnInfo } from "./column/types.js";
 import {
 	foreignKeyOptions,
 	isExternalForeignKey,
@@ -133,12 +129,13 @@ function columnInfo(columns?: ColumnRecord) {
 			const columnDef = Object.fromEntries(Object.entries(value)) as {
 				_primaryKey: boolean;
 				info: ColumnInfo;
+				_generatedColumn?: boolean;
 			};
 			let generated = false;
 			if (columnDef.info.identity !== null) {
 				generated = true;
 			}
-			if (value instanceof PgSerial || value instanceof PgBigSerial) {
+			if (columnDef._generatedColumn === true) {
 				generated = true;
 			}
 			let defaultValue = columnDef.info.defaultValue;

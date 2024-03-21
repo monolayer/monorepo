@@ -1,9 +1,7 @@
 import { z } from "zod";
-import {
-	type ColumnInfo,
-	type PgColumnBase,
-	type TableColumn,
-} from "../schema/column/column.js";
+import { type ColumnInfo } from "~/schema/column/types.js";
+import { type TableColumn } from "~/schema/table/table.js";
+import { type PgColumnBase } from "../schema/column/column.js";
 
 type ColumnData = {
 	info: ColumnInfo;

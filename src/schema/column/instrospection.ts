@@ -16,7 +16,8 @@ import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
 import { tableInfo } from "~/schema/table/table.js";
 import { TableColumnInfo } from "../../introspection/schemas.js";
 import type { InformationSchemaDB } from "../../introspection/types.js";
-import { ColumnInfo, type TableColumn } from "./column.js";
+import { type TableColumn } from "../table/table.js";
+import { ColumnInfo } from "./types.js";
 
 export async function dbColumnInfo(
 	kysely: Kysely<InformationSchemaDB>,
