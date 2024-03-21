@@ -11,16 +11,13 @@ import {
 	type AnyPGColumn,
 	type SerialColumn,
 } from "./table/column/column.js";
-import { type PgBytea } from "./table/column/data-types/bytea.js";
-import { type PgTimestampWithTimeZone } from "./table/column/data-types/timestamp-with-time-zone.js";
-import { type PgTimestamp } from "./table/column/data-types/timestamp.js";
+import type { PgBytea } from "./table/column/data-types/bytea.js";
 import {
 	GeneratedColumn,
 	OptionalColumnType,
 	WithDefaultColumn,
 	type GeneratedAlwaysColumn,
 	type GeneratedColumnType,
-	type JsonValue,
 	type NonNullableColumn,
 } from "./table/column/types.js";
 import { ColumnRecord } from "./table/table-column.js";
@@ -180,14 +177,9 @@ type DefaultZodType<
 		| PgColumn<unknown, unknown, unknown>
 		| SerialColumn<unknown, unknown>,
 > =
-	T extends PgColumn<infer U, unknown, unknown>
-		? T extends PgTimestamp | PgTimestampWithTimeZone
-			? DateZodType<T>
-			: T extends PgBytea
-				? ByteaZodType<T>
-				: JsonValue extends U
-					? JsonZodType<T>
-					: PgColumnZodType<T>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	T extends PgColumn<any, unknown, unknown>
+		? PgColumnZodType<T>
 		: T extends SerialColumn<infer S, infer I>
 			? z.ZodType<S | undefined, z.ZodTypeDef, I | undefined>
 			: z.ZodType<never, z.ZodTypeDef, never>;
@@ -208,19 +200,19 @@ type OptionalNonNullableZodType<T extends z.ZodType<any, any, any>> =
 			>
 		: never;
 
-type PgColumnZodType<T extends AnyPGColumn> = z.ZodType<
-	T extends NonNullableColumn
-		? T extends WithDefaultColumn
-			? SelectType<InferColumType<T, false>> | undefined
-			: SelectType<InferColumType<T, false>>
-		: T extends GeneratedAlwaysColumn
-			? never
-			: SelectType<InferColumType<T, false>> | null | undefined,
-	z.ZodTypeDef,
-	T extends WithDefaultColumn
-		? InsertType<InferColumType<T, false>>
-		: InsertType<InferColumType<T, false>>
->;
+type PgColumnZodType<T extends AnyPGColumn> = T extends PgBytea
+	? ByteaZodType<T>
+	: z.ZodType<
+			T extends NonNullableColumn
+				? T extends WithDefaultColumn
+					? SelectType<InferColumType<T, false>> | undefined
+					: SelectType<InferColumType<T, false>>
+				: T extends GeneratedAlwaysColumn
+					? never
+					: SelectType<InferColumType<T, false>> | null | undefined,
+			z.ZodTypeDef,
+			InsertType<InferColumType<T, false>>
+		>;
 
 type ByteaZodType<T extends AnyPGColumn> = z.ZodType<
 	T extends NonNullableColumn
@@ -232,39 +224,4 @@ type ByteaZodType<T extends AnyPGColumn> = z.ZodType<
 			: SelectType<InferColumType<T, false>> | string | undefined,
 	z.ZodTypeDef,
 	InsertType<InferColumType<T, false>>
->;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ZodJson = JsonValue;
-
-type JsonZodType<T extends AnyPGColumn> = z.ZodType<
-	T extends NonNullableColumn
-		? T extends WithDefaultColumn
-			? ZodJson | undefined
-			: ZodJson
-		: T extends GeneratedAlwaysColumn
-			? never
-			: ZodJson | null | undefined,
-	z.ZodTypeDef,
-	T extends NonNullableColumn
-		? T extends WithDefaultColumn
-			? ZodJson | undefined
-			: ZodJson
-		: ZodJson | null | undefined
->;
-// T extends PgTimestamp | PgTimestampTz
-type DateZodType<T extends AnyPGColumn> = z.ZodType<
-	T extends NonNullableColumn
-		? T extends WithDefaultColumn
-			? Date | undefined
-			: Date
-		: T extends GeneratedAlwaysColumn
-			? never
-			: Date | null | undefined,
-	z.ZodTypeDef,
-	T extends NonNullableColumn
-		? T extends WithDefaultColumn
-			? Date | string | undefined
-			: Date | string
-		: Date | string | null | undefined
 >;
