@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { Kysely, sql } from "kysely";
-import { toSnakeCase } from "~/changeset/migration_op/helpers.js";
+import { toSnakeCase } from "~/changeset/migration-op/helpers.js";
 import {
 	ActionStatus,
 	OperationAnyError,
@@ -11,10 +11,10 @@ import {
 	findColumn,
 	findPrimaryKey,
 	type MigrationSchema,
-} from "~/migrations/migration_schema.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
-import { tableInfo } from "~/schema/pg_table.js";
-import { ColumnInfo, type TableColumn } from "../schema/pg_column.js";
+} from "~/migrations/migration-schema.js";
+import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { tableInfo } from "~/schema/table.js";
+import { ColumnInfo, type TableColumn } from "../schema/column.js";
 import { TableColumnInfo } from "./schemas.js";
 import type { InformationSchemaDB } from "./types.js";
 

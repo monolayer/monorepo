@@ -3,15 +3,15 @@ import type { DbTableInfo, LocalTableInfo } from "../introspection/schemas.js";
 import {
 	buildNodes,
 	type MigrationSchema,
-} from "../migrations/migration_schema.js";
-import { Changeset } from "./migration_op/changeset.js";
-import { migrationOpGenerators } from "./migration_op/migration_op_generators.js";
+} from "../migrations/migration-schema.js";
+import { Changeset } from "./migration-op/changeset.js";
+import { migrationOpGenerators } from "./migration-op/migration-op-generators.js";
 import {
 	isCreateTable,
 	isDropTable,
 	type CreateTableDiff,
 	type DropTableTableDiff,
-} from "./migration_op/table.js";
+} from "./migration-op/table.js";
 
 interface Generator {
 	(

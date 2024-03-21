@@ -1,7 +1,7 @@
 import type { CamelCasePluginOptions, Kysely } from "kysely";
 import path from "path";
 import type { ClientConfig, PoolConfig } from "pg";
-import { type AnyPgDatabase } from "./schema/pg_database.js";
+import { type AnyPgDatabase } from "./schema/pg-database.js";
 
 export type Config = {
 	folder: string;

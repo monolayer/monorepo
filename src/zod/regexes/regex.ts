@@ -1,4 +1,4 @@
-import { ipRegex as ipRegexFn } from "./ip_regex.js";
+import { ipRegex as ipRegexFn } from "./ip-regex.js";
 
 export const bitRegex = /^(0|1)+$/;
 

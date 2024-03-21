@@ -1,16 +1,16 @@
 import { createHash } from "crypto";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
-import { toSnakeCase } from "~/changeset/migration_op/helpers.js";
+import { toSnakeCase } from "~/changeset/migration-op/helpers.js";
 import {
 	ActionStatus,
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
-import { tableInfo } from "~/schema/pg_table.js";
-import { PgTrigger } from "~/schema/pg_trigger.js";
+import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { tableInfo } from "~/schema/table.js";
+import { PgTrigger } from "~/schema/trigger.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbTriggerInfo(

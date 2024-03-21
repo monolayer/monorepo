@@ -4,8 +4,8 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
-import { PgExtension } from "~/schema/pg_extension.js";
+import { PgExtension } from "~/schema/extension.js";
+import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbExtensionInfo(

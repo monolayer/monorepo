@@ -1,20 +1,16 @@
 import { createHash } from "crypto";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
-import { toSnakeCase } from "~/changeset/migration_op/helpers.js";
+import { toSnakeCase } from "~/changeset/migration-op/helpers.js";
 import {
 	ActionStatus,
 	OperationAnyError,
 	OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
-import {
-	indexOptions,
-	isExternalIndex,
-	type PgIndex,
-} from "~/schema/pg_index.js";
-import { tableInfo } from "~/schema/pg_table.js";
+import { indexOptions, isExternalIndex, type PgIndex } from "~/schema/index.js";
+import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { tableInfo } from "~/schema/table.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbIndexInfo(

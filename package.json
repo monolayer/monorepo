@@ -56,13 +56,13 @@
 		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
 		"pack": "npm pack --pack-destination ./build",
 		"test": "vitest unit src integration --run --coverage",
-		"pretest:unit": "tsx ./tests/setup/create_test_db.ts",
+		"pretest:unit": "tsx ./tests/setup/create-test-db.ts",
 		"test:unit": "./tests/bin/run-tests",
-		"posttest:unit": "tsx ./tests/setup/drop_test_db.ts",
-		"pretest:integration": "npm run pack && tsx ./tests/setup/create_test_db.ts",
-		"posttest:integration": "tsx ./tests/setup/drop_test_db.ts",
+		"posttest:unit": "tsx ./tests/setup/drop-test-db.ts",
+		"pretest:integration": "npm run pack && tsx ./tests/setup/create-test-db.ts",
+		"posttest:integration": "tsx ./tests/setup/drop-test-db.ts",
 		"test:integration": "vitest integration --run --coverage",
-		"pretest:watch": "tsx ./tests/setup/create_test_db.ts",
+		"pretest:watch": "tsx ./tests/setup/create-test-db.ts",
 		"test:watch": "vitest unit src --watch --ui --open --coverage"
 	},
 	"repository": {

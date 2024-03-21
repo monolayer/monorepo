@@ -1,8 +1,8 @@
 import path from "node:path";
 import nunjucks from "nunjucks";
 import { createFile } from "~/utils.js";
-import { Changeset } from "../changeset/migration_op/changeset.js";
-import { randomName } from "./random_name.js";
+import { Changeset } from "../changeset/migration-op/changeset.js";
+import { randomName } from "./random-name.js";
 
 const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";

@@ -2,17 +2,17 @@
 
 import { Command } from "@commander-js/extra-typings";
 import { exit } from "process";
-import { migrationScaffold } from "~/cli/actions/migration_scaffold.js";
+import { migrationScaffold } from "~/cli/actions/migration-scaffold.js";
 import { seed } from "~/cli/actions/seed.js";
-import { dbCreate } from "../cli/actions/db_create.js";
-import { dbDrop } from "../cli/actions/db_drop.js";
+import { dbCreate } from "../cli/actions/db-create.js";
+import { dbDrop } from "../cli/actions/db-drop.js";
 import { generate } from "../cli/actions/generate.js";
 import { initCommand } from "../cli/actions/init.js";
+import { migrateDown } from "../cli/actions/migrate-down.js";
 import { migrate } from "../cli/actions/migrate.js";
-import { migrateDown } from "../cli/actions/migrate_down.js";
-import { pendingMigrations } from "../cli/actions/pending_migrations.js";
-import { structureDump } from "../cli/actions/structure_dump.js";
-import { structureLoad } from "../cli/actions/structure_load.js";
+import { pendingMigrations } from "../cli/actions/pending-migrations.js";
+import { structureDump } from "../cli/actions/structure-dump.js";
+import { structureLoad } from "../cli/actions/structure-load.js";
 import { isCommanderError } from "../cli/command.js";
 
 async function main() {

@@ -20,8 +20,8 @@ import {
 	type PgGeneratedColumn,
 	type PgTimestamp,
 	type PgTimestampWithTimeZone,
-} from "./pg_column.js";
-import { ColumnRecord } from "./pg_table.js";
+} from "./column.js";
+import { ColumnRecord } from "./table.js";
 
 export type InferColumnTypes<
 	T extends ColumnRecord,

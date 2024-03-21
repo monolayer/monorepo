@@ -11,7 +11,7 @@ import pg from "pg";
 import color from "picocolors";
 import { cwd } from "process";
 import { importConfig } from "~/config.js";
-import { dumpStructure } from "../components/dump_structure.js";
+import { dumpStructure } from "../components/dump-structure.js";
 import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 
 export async function migrate(environment: string) {

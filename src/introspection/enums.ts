@@ -4,8 +4,8 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
-import { EnumType } from "~/schema/pg_column.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg_database.js";
+import { EnumType } from "~/schema/column.js";
+import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
 import type { InformationSchemaDB } from "./types.js";
 
 export async function dbEnumInfo(

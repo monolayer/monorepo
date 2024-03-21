@@ -12,12 +12,12 @@ import {
 	type OperationSuccess,
 } from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
-import { type AnyPgDatabase } from "~/schema/pg_database.js";
-import { type MigrationSchema } from "../migrations/migration_schema.js";
+import { type AnyPgDatabase } from "~/schema/pg-database.js";
+import { type MigrationSchema } from "../migrations/migration-schema.js";
 import {
 	dbCheckConstraintInfo,
 	localCheckConstraintInfo,
-} from "./check_constraints.js";
+} from "./check-constraints.js";
 import {
 	dbColumnInfo,
 	localColumnInfoByTable,
@@ -28,7 +28,7 @@ import { dbExtensionInfo, localExtensionInfo } from "./extensions.js";
 import {
 	dbForeignKeyConstraintInfo,
 	localForeignKeyConstraintInfo,
-} from "./foreign_key_constraint.js";
+} from "./foreign-key-constraint.js";
 import {
 	dbIndexInfo,
 	localIndexInfoByTable,
@@ -37,13 +37,13 @@ import {
 import {
 	dbPrimaryKeyConstraintInfo,
 	localPrimaryKeyConstraintInfo,
-} from "./primary_key_constraint.js";
+} from "./primary-key-constraint.js";
 import { dbTableInfo } from "./tables.js";
 import { dbTriggerInfo, localTriggersInfo } from "./triggers.js";
 import {
 	dbUniqueConstraintInfo,
 	localUniqueConstraintInfo,
-} from "./unique_constraint.js";
+} from "./unique-constraint.js";
 
 export function compileDefaultExpression(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

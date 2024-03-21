@@ -2,11 +2,11 @@ import * as p from "@clack/prompts";
 import { program } from "commander";
 import { exit } from "process";
 import { ActionStatus, CommandSuccess } from "../command.js";
-import { initFolderAndFiles } from "../components/init_folders_and_files.js";
+import { initFolderAndFiles } from "../components/init-folders-and-files.js";
 import {
 	checkPgTypesInstallation,
 	installPgTypes,
-} from "../components/install_pg.js";
+} from "../components/install-pg.js";
 import { exitProgramWithError } from "../utils/program.js";
 
 export async function initCommand() {

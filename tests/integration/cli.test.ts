@@ -8,9 +8,9 @@ import {
 	configTemplate,
 	kyselyTemplate,
 	schemaTemplate,
-} from "~/cli/components/init_folders_and_files.js";
+} from "~/cli/components/init-folders-and-files.js";
 import { npmInstall, npmList, npx } from "~/cli/utils/npm.js";
-import { keys } from "~tests/helpers/key_codes.js";
+import { keys } from "~tests/helpers/key-codes.js";
 
 type CliTestContext = {
 	appFolder: string;
