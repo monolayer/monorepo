@@ -1,17 +1,17 @@
 import toposort from "toposort";
 import type { CamelCaseOptions } from "~/config.js";
-import { toSnakeCase } from "../changeset/migration-op/helpers.js";
-import type { ColumnsInfo } from "../introspection/columns.js";
-import type { EnumInfo } from "../introspection/enums.js";
-import type { ExtensionInfo } from "../introspection/extensions.js";
-import type { IndexInfo } from "../introspection/indexes.js";
+import { toSnakeCase } from "../changeset/helpers.js";
 import type { TableColumnInfo } from "../introspection/schemas.js";
+import type { ColumnsInfo } from "../schema/column/instrospection.js";
+import type { EnumInfo } from "../schema/enum/introspection.js";
+import type { ExtensionInfo } from "../schema/extension/introspection.js";
+import type { IndexInfo } from "../schema/index/introspection.js";
 import { PgDatabase, type AnyPgDatabase } from "../schema/pg-database.js";
 import {
 	tableInfo,
 	type AnyPgTable,
 	type ColumnRecord,
-} from "../schema/table.js";
+} from "../schema/table/table.js";
 
 type TableName = string;
 type Name = string;

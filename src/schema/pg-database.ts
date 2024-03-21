@@ -1,6 +1,6 @@
-import type { EnumType } from "./column.js";
-import type { PgExtension } from "./extension.js";
-import type { AnyPgTable } from "./table.js";
+import type { EnumType } from "./column/column.js";
+import type { PgExtension } from "./extension/extension.js";
+import type { AnyPgTable } from "./table/table.js";
 
 export type DatabaseSchema<T extends ColumnRecord> = {
 	extensions?: Array<PgExtension>;

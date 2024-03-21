@@ -2,14 +2,8 @@
 import { sql } from "kysely";
 import { describe, expect, test, type Mock } from "vitest";
 import { extension } from "~/index.js";
-import {
-	localColumnInfoByTable,
-	schemaColumnInfo,
-} from "~/introspection/columns.js";
-import { localEnumInfo } from "~/introspection/enums.js";
-import { localIndexInfoByTable } from "~/introspection/indexes.js";
 import { localSchema } from "~/introspection/schemas.js";
-import { check } from "~/schema/check.js";
+import { check } from "~/schema/check/check.js";
 import {
 	ColumnIdentity,
 	bigserial,
@@ -20,16 +14,22 @@ import {
 	serial,
 	timestamp,
 	varchar,
-} from "~/schema/column.js";
-import { index } from "~/schema/index.js";
+} from "~/schema/column/column.js";
+import {
+	localColumnInfoByTable,
+	schemaColumnInfo,
+} from "~/schema/column/instrospection.js";
+import { localEnumInfo } from "~/schema/enum/introspection.js";
+import { index } from "~/schema/index/index.js";
+import { localIndexInfoByTable } from "~/schema/index/introspection.js";
 import { pgDatabase } from "~/schema/pg-database.js";
-import { primaryKey } from "~/schema/primary-key.js";
+import { primaryKey } from "~/schema/primary-key/primary-key.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column-info-factory.js";
 import { migrationSchemaFactory } from "~tests/helpers/factories/migration-schema.js";
-import { foreignKey } from "../../src/schema/foreign-key.js";
-import { table } from "../../src/schema/table.js";
-import { trigger } from "../../src/schema/trigger.js";
-import { unique } from "../../src/schema/unique.js";
+import { foreignKey } from "../../src/schema/foreign-key/foreign-key.js";
+import { table } from "../../src/schema/table/table.js";
+import { trigger } from "../../src/schema/trigger/trigger.js";
+import { unique } from "../../src/schema/unique/unique.js";
 
 describe("#schemaColumnInfo", () => {
 	test("default column", () => {

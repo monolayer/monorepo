@@ -8,10 +8,10 @@ import {
 	serial,
 	text,
 	varchar,
-} from "~/schema/column.js";
-import { PgExtension, extension } from "~/schema/extension.js";
+} from "~/schema/column/column.js";
+import { PgExtension, extension } from "~/schema/extension/extension.js";
 import { PgDatabase, pgDatabase } from "~/schema/pg-database.js";
-import { table } from "~/schema/table.js";
+import { table } from "~/schema/table/table.js";
 
 describe("pgDatabase definition", () => {
 	test("without tables", () => {

@@ -1,9 +1,9 @@
-import { indexToInfo } from "~/introspection/indexes.js";
-import { triggerInfo } from "~/introspection/triggers.js";
-import { uniqueToInfo } from "~/introspection/unique-constraint.js";
-import type { PgIndex } from "~/schema/index.js";
-import type { PgTrigger } from "~/schema/trigger.js";
-import type { PgUnique } from "~/schema/unique.js";
+import type { PgIndex } from "~/schema/index/index.js";
+import { indexToInfo } from "~/schema/index/introspection.js";
+import { triggerInfo } from "~/schema/trigger/introspection.js";
+import type { PgTrigger } from "~/schema/trigger/trigger.js";
+import { uniqueToInfo } from "~/schema/unique/introspection.js";
+import type { PgUnique } from "~/schema/unique/unique.js";
 import { kyselyWithEmptyPool } from "~tests/setup/kysely.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

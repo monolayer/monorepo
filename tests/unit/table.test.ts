@@ -18,13 +18,13 @@ import {
 	text,
 	timestamptz,
 	varchar,
-} from "~/schema/column.js";
-import { index } from "~/schema/index.js";
-import { primaryKey } from "~/schema/primary-key.js";
-import { table, tableInfo } from "~/schema/table.js";
+} from "~/schema/column/column.js";
+import { index } from "~/schema/index/index.js";
+import { primaryKey } from "~/schema/primary-key/primary-key.js";
+import { table, tableInfo } from "~/schema/table/table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
-import { foreignKey } from "../../src/schema/foreign-key.js";
-import { unique } from "../../src/schema/unique.js";
+import { foreignKey } from "../../src/schema/foreign-key/foreign-key.js";
+import { unique } from "../../src/schema/unique/unique.js";
 
 describe("pgTable definition", () => {
 	test("has columns defined", () => {

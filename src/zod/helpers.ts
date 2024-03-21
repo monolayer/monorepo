@@ -3,7 +3,7 @@ import {
 	type ColumnInfo,
 	type PgColumnBase,
 	type TableColumn,
-} from "../schema/column.js";
+} from "../schema/column/column.js";
 
 type ColumnData = {
 	info: ColumnInfo;

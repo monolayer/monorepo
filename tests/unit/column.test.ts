@@ -13,9 +13,9 @@ import {
 	varbit,
 	varchar,
 	type JsonValue,
-} from "~/schema/column.js";
-import { primaryKey } from "~/schema/primary-key.js";
-import { table } from "~/schema/table.js";
+} from "~/schema/column/column.js";
+import { primaryKey } from "~/schema/primary-key/primary-key.js";
+import { table } from "~/schema/table/table.js";
 import { zodSchema } from "~/zod/zod_schema.js";
 import {
 	ColumnInfo,
@@ -85,7 +85,7 @@ import {
 	uuid,
 	xml,
 	type Boolish,
-} from "../../src/schema/column.js";
+} from "../../src/schema/column/column.js";
 
 type ColumnContext = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

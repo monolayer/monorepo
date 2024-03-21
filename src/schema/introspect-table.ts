@@ -1,20 +1,24 @@
-import type { ForeignKeyRule } from "../introspection/foreign-key-constraint.js";
 import { compileDefaultExpression } from "../introspection/schemas.js";
 import {
 	PgBigSerial,
 	PgSerial,
 	isExpression,
 	type ColumnInfo,
-} from "./column.js";
+} from "./column/column.js";
 import {
 	foreignKeyOptions,
 	isExternalForeignKey,
 	type PgForeignKey,
-} from "./foreign-key.js";
+} from "./foreign-key/foreign-key.js";
+import type { ForeignKeyRule } from "./foreign-key/introspection.js";
 import { PgDatabase, type AnyPgDatabase } from "./pg-database.js";
-import { AnyPgTable, ColumnRecord, tableInfo } from "./table.js";
-import { PgTrigger, TriggerEvent, TriggerFiringTime } from "./trigger.js";
-import { uniqueConstraintOptions, type PgUnique } from "./unique.js";
+import { AnyPgTable, ColumnRecord, tableInfo } from "./table/table.js";
+import {
+	PgTrigger,
+	TriggerEvent,
+	TriggerFiringTime,
+} from "./trigger/trigger.js";
+import { uniqueConstraintOptions, type PgUnique } from "./unique/unique.js";
 
 export interface TableIntrospection {
 	primaryKey: string[];
@@ -73,6 +77,7 @@ function findTableInSchema(
 		return tableInSchema[0];
 	}
 }
+
 function triggerInfo(triggers?: Record<string, PgTrigger>) {
 	return Object.entries(triggers || {}).reduce((acc, [key, value]) => {
 		const trigger = PgTrigger.info(value);

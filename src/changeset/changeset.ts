@@ -4,14 +4,14 @@ import {
 	buildNodes,
 	type MigrationSchema,
 } from "../migrations/migration-schema.js";
-import { Changeset } from "./migration-op/changeset.js";
-import { migrationOpGenerators } from "./migration-op/migration-op-generators.js";
 import {
 	isCreateTable,
 	isDropTable,
 	type CreateTableDiff,
 	type DropTableTableDiff,
-} from "./migration-op/table.js";
+} from "../schema/table/changeset.js";
+import { migrationOpGenerators } from "./generators.js";
+import { Changeset } from "./types.js";
 
 interface Generator {
 	(

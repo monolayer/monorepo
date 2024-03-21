@@ -7,7 +7,7 @@ import {
 	PgTimestampWithTimeZone,
 	type PgColumn,
 	type PgGeneratedColumn,
-} from "~/schema/column.js";
+} from "~/schema/column/column.js";
 import type { ZodType } from "~/schema/inference.js";
 import { baseSchema, finishSchema, stringSchema } from "../common.js";
 import { columnData, customIssue, nullableColumn } from "../helpers.js";

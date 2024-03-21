@@ -3,7 +3,7 @@ import {
 	PgJsonB,
 	type PgColumn,
 	type PgGeneratedColumn,
-} from "~/schema/column.js";
+} from "~/schema/column/column.js";
 import type { ZodType } from "~/schema/inference.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { customIssue, nullableColumn } from "../helpers.js";

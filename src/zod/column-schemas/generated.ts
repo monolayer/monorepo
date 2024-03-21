@@ -3,7 +3,7 @@ import {
 	PgSerial,
 	type PgColumn,
 	type PgGeneratedColumn,
-} from "~/schema/column.js";
+} from "~/schema/column/column.js";
 
 export function isBigserial(
 	column:

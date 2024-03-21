@@ -1,7 +1,7 @@
 import path from "node:path";
 import nunjucks from "nunjucks";
+import { Changeset } from "~/changeset/types.js";
 import { createFile } from "~/utils.js";
-import { Changeset } from "../changeset/migration-op/changeset.js";
 import { randomName } from "./random-name.js";
 
 const template = `/* eslint-disable @typescript-eslint/no-explicit-any */

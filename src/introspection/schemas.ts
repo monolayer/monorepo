@@ -17,33 +17,39 @@ import { type MigrationSchema } from "../migrations/migration-schema.js";
 import {
 	dbCheckConstraintInfo,
 	localCheckConstraintInfo,
-} from "./check-constraints.js";
+} from "../schema/check/introspection.js";
 import {
 	dbColumnInfo,
 	localColumnInfoByTable,
 	type ColumnsInfo,
-} from "./columns.js";
-import { dbEnumInfo, localEnumInfo } from "./enums.js";
-import { dbExtensionInfo, localExtensionInfo } from "./extensions.js";
+} from "../schema/column/instrospection.js";
+import { dbEnumInfo, localEnumInfo } from "../schema/enum/introspection.js";
+import {
+	dbExtensionInfo,
+	localExtensionInfo,
+} from "../schema/extension/introspection.js";
 import {
 	dbForeignKeyConstraintInfo,
 	localForeignKeyConstraintInfo,
-} from "./foreign-key-constraint.js";
+} from "../schema/foreign-key/introspection.js";
 import {
 	dbIndexInfo,
 	localIndexInfoByTable,
 	type IndexInfo,
-} from "./indexes.js";
+} from "../schema/index/introspection.js";
 import {
 	dbPrimaryKeyConstraintInfo,
 	localPrimaryKeyConstraintInfo,
-} from "./primary-key-constraint.js";
-import { dbTableInfo } from "./tables.js";
-import { dbTriggerInfo, localTriggersInfo } from "./triggers.js";
+} from "../schema/primary-key/introspection.js";
+import { dbTableInfo } from "../schema/table/introspection.js";
+import {
+	dbTriggerInfo,
+	localTriggersInfo,
+} from "../schema/trigger/introspection.js";
 import {
 	dbUniqueConstraintInfo,
 	localUniqueConstraintInfo,
-} from "./unique-constraint.js";
+} from "../schema/unique/introspection.js";
 
 export function compileDefaultExpression(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

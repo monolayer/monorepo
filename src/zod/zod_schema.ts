@@ -1,7 +1,11 @@
 import { z } from "zod";
-import type { PgColumn, PgGeneratedColumn } from "~/schema/column.js";
+import type { PgColumn, PgGeneratedColumn } from "~/schema/column/column.js";
 import type { ZodSchemaObject, ZodType } from "~/schema/inference.js";
-import { tableInfo, type ColumnRecord, type PgTable } from "../schema/table.js";
+import {
+	tableInfo,
+	type ColumnRecord,
+	type PgTable,
+} from "../schema/table/table.js";
 import {
 	bitSchema,
 	isBitColumn,

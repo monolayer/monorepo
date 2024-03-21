@@ -6,7 +6,7 @@ import {
 	type PgColumn,
 	type PgColumnBase,
 	type PgGeneratedColumn,
-} from "~/schema/column.js";
+} from "~/schema/column/column.js";
 import type { ZodType } from "~/schema/inference.js";
 import { finishSchema } from "../common.js";
 import { columnData, nullableColumn } from "../helpers.js";

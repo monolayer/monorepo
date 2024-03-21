@@ -13,7 +13,7 @@ import {
 	type PgColumnBase,
 	type PgGeneratedColumn,
 	type PgSerial,
-} from "~/schema/column.js";
+} from "~/schema/column/column.js";
 import type { ZodType } from "~/schema/inference.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { columnData, customIssue, nullableColumn } from "../helpers.js";

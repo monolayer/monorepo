@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { check } from "~/schema/check.js";
+import { check } from "~/schema/check/check.js";
 import {
 	bigint,
 	bigserial,
@@ -34,15 +34,15 @@ import {
 	uuid,
 	varchar,
 	xml,
-} from "~/schema/column.js";
-import { extension } from "~/schema/extension.js";
-import { foreignKey } from "~/schema/foreign-key.js";
-import { index } from "~/schema/index.js";
+} from "~/schema/column/column.js";
+import { extension } from "~/schema/extension/extension.js";
+import { foreignKey } from "~/schema/foreign-key/foreign-key.js";
+import { index } from "~/schema/index/index.js";
 import { pgDatabase } from "~/schema/pg-database.js";
-import { primaryKey } from "~/schema/primary-key.js";
-import { table } from "~/schema/table.js";
-import { trigger } from "~/schema/trigger.js";
-import { unique } from "~/schema/unique.js";
+import { primaryKey } from "~/schema/primary-key/primary-key.js";
+import { table } from "~/schema/table/table.js";
+import { trigger } from "~/schema/trigger/trigger.js";
+import { unique } from "~/schema/unique/unique.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test-context.js";
 import { type DbContext } from "~tests/setup/kysely.js";

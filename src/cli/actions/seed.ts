@@ -6,8 +6,8 @@ import { exit } from "process";
 import { changeset } from "~/changeset/changeset.js";
 import { importConfig, importSchema, importSeedFunction } from "~/config.js";
 import { localSchema, remoteSchema } from "~/introspection/schemas.js";
-import { dbTableInfo } from "~/introspection/tables.js";
 import { fetchPendingMigrations } from "~/migrations/info.js";
+import { dbTableInfo } from "~/schema/table/introspection.js";
 import { ActionStatus } from "../command.js";
 import { checkEnvironmentIsConfigured } from "../utils/clack.js";
 

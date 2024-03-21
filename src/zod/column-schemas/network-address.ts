@@ -8,7 +8,7 @@ import {
 	PgMacaddr,
 	PgMacaddr8,
 	type AnyPGColumn,
-} from "~/schema/column.js";
+} from "~/schema/column/column.js";
 import type { ZodType } from "~/schema/inference.js";
 import { finishSchema } from "../common.js";
 import { columnData, customIssue } from "../helpers.js";

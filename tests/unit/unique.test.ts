@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { compileUnique } from "~tests/helpers/indexes.js";
-import { unique } from "../../src/schema/unique.js";
+import { unique } from "../../src/schema/unique/unique.js";
 
 describe("PgUniqueConstraint", () => {
 	test("one column", async () => {

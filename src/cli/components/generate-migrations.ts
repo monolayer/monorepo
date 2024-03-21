@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { exit } from "process";
-import { Changeset } from "~/changeset/migration-op/changeset.js";
+import { Changeset } from "~/changeset/types.js";
 import { Config } from "~/config.js";
 import { generateMigrationFiles } from "~/migrations/generate.js";
 import { ActionStatus, throwableOperation } from "../command.js";

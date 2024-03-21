@@ -1,6 +1,6 @@
 import type { MigrationResultSet, Migrator } from "kysely";
 import { expect } from "vitest";
-import type { Changeset } from "~/changeset/migration-op/changeset.js";
+import type { Changeset } from "~/changeset/types.js";
 import type { CamelCaseOptions } from "~/config.js";
 import { generateMigrationFiles } from "~/migrations/generate.js";
 import type { PgDatabase } from "~/schema/pg-database.js";
