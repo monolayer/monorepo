@@ -15,9 +15,9 @@ export class PgDatabase<T extends ColumnRecord> {
 	 */
 	static info(db: AnyPgDatabase) {
 		return {
-			extensions: db.#extensions ?? [],
-			tables: db.#tables ?? {},
-			types: db.#types || [],
+			extensions: db.extensions ?? [],
+			tables: db.tables ?? {},
+			types: db.types || [],
 		};
 	}
 
@@ -194,25 +194,25 @@ export class PgDatabase<T extends ColumnRecord> {
 	/**
 	 * @hidden
 	 */
-	#extensions?: Array<PgExtension>;
+	protected extensions?: Array<PgExtension>;
 	/**
 	 * @hidden
 	 */
-	#tables?: T;
+	protected tables?: T;
 
 	/**
 	 * @hidden
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	#types?: Array<EnumType<any>>;
+	protected types?: Array<EnumType<any>>;
 
 	/**
 	 * @hidden
 	 */
 	constructor(schema: DatabaseSchema<T>) {
-		this.#tables = schema.tables;
-		this.#extensions = schema.extensions;
-		this.#types = schema.types;
+		this.tables = schema.tables;
+		this.extensions = schema.extensions;
+		this.types = schema.types;
 	}
 }
 
