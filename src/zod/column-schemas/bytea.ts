@@ -1,4 +1,3 @@
-import type { ZodType } from "~/schema/inference.js";
 import {
 	type PgColumnBase,
 	type SerialColumn,
@@ -15,9 +14,7 @@ export function isBytea(
 	return column instanceof PgBytea;
 }
 
-export function pgByteaSchema<T extends PgBytea, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgByteaSchema(column: PgBytea) {
 	const isNullable = nullableColumn(column);
 	const base = baseSchema(isNullable, "Expected Buffer or string").superRefine(
 		(val, ctx) => {
@@ -33,5 +30,5 @@ export function pgByteaSchema<T extends PgBytea, PK extends boolean>(
 			}
 		},
 	);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }

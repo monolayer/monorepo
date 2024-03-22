@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { ZodType } from "~/schema/inference.js";
 import { PgColumn, SerialColumn } from "~/schema/table/column/column.js";
 import { PgBitVarying } from "~/schema/table/column/data-types/bit-varying.js";
 import { PgBit } from "~/schema/table/column/data-types/bit.js";
@@ -7,9 +6,7 @@ import { finishSchema } from "../common.js";
 import { columnData } from "../helpers.js";
 import { bitRegex } from "../regexes/regex.js";
 
-export function bitSchema<T extends PgBit, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function bitSchema(column: PgBit) {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 	const base = z.string().regex(bitRegex, "Invalid bit");
@@ -22,12 +19,10 @@ export function bitSchema<T extends PgBit, PK extends boolean>(
 			data.info.characterMaximumLength,
 			"Bit string length does not match type",
 		),
-	) as unknown as ZodType<T, PK>;
+	);
 }
 
-export function varbitSchema<T extends PgBitVarying, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function varbitSchema(column: PgBitVarying) {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 	const base = z.string().regex(bitRegex, "Invalid bit");
@@ -38,9 +33,9 @@ export function varbitSchema<T extends PgBitVarying, PK extends boolean>(
 				data.info.characterMaximumLength,
 				"Bit string length does not match type",
 			),
-		) as unknown as ZodType<T, PK>;
+		);
 	}
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
 export function isBitColumn(

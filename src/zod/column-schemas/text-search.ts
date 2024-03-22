@@ -1,4 +1,3 @@
-import type { ZodType } from "~/schema/inference.js";
 import {
 	type PgColumn,
 	type SerialColumn,
@@ -8,22 +7,18 @@ import { PgTsvector } from "~/schema/table/column/data-types/tsvector.js";
 import { finishSchema, stringSchema } from "../common.js";
 import { columnData } from "../helpers.js";
 
-export function tsvectorSchema<T extends PgTsvector, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function tsvectorSchema(column: PgTsvector) {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 	const base = stringSchema("Expected string with tsvector format", isNullable);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
-export function tsquerySchema<T extends PgTsquery, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function tsquerySchema(column: PgTsquery) {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 	const base = stringSchema("Expected string with tsquery format", isNullable);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
 export function isTsvectorColumn(

@@ -1,4 +1,3 @@
-import type { ZodType } from "~/schema/inference.js";
 import {
 	type PgColumn,
 	type SerialColumn,
@@ -19,20 +18,16 @@ export function isJsonB(
 ): column is PgJsonB {
 	return column instanceof PgJsonB;
 }
-export function pgJsonSchema<T extends PgJson, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgJsonSchema(column: PgJson) {
 	const isNullable = nullableColumn(column);
 	const base = jsonSchema(isNullable);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
-export function pgJsonbSchema<T extends PgJsonB, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgJsonbSchema(column: PgJsonB) {
 	const isNullable = nullableColumn(column);
 	const base = jsonSchema(isNullable);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
 export function jsonSchema(isNullable: boolean) {

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { ZodType } from "~/schema/inference.js";
 import {
 	type PgColumn,
 	type SerialColumn,
@@ -16,9 +15,7 @@ export function isEnum(
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function pgEnumSchema<T extends PgEnum<any>, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgEnumSchema(column: PgEnum<any>) {
 	const isNullable = nullableColumn(column);
 	const data = Object.fromEntries(Object.entries(column)) as {
 		values: [string, ...string[]];
@@ -29,5 +26,5 @@ export function pgEnumSchema<T extends PgEnum<any>, PK extends boolean>(
 		.join(" | ")}`;
 
 	const base = baseSchema(isNullable, errorMessage).pipe(z.enum(enumValues));
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }

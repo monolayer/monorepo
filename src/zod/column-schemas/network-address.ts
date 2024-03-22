@@ -1,6 +1,5 @@
 import { Address4, Address6 } from "ip-address";
 import { z } from "zod";
-import type { ZodType } from "~/schema/inference.js";
 import {
 	PgColumn,
 	SerialColumn,
@@ -21,15 +20,11 @@ import {
 	v6str,
 } from "../regexes/regex.js";
 
-export function inetSchema<T extends PgInet, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function inetSchema(column: PgInet) {
 	return regexStringSchema(column, ipRegex, "Invalid inet");
 }
 
-export function cidrSchema<T extends PgCIDR, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function cidrSchema(column: PgCIDR) {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 	const base = z
@@ -53,18 +48,14 @@ export function cidrSchema<T extends PgCIDR, PK extends boolean>(
 				}
 			}
 		});
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
-export function macaddrSchema<T extends PgMacaddr, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function macaddrSchema(column: PgMacaddr) {
 	return regexStringSchema(column, macaddrRegex, "Invalid macaddr");
 }
 
-export function macaddr8Schema<T extends PgMacaddr8, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function macaddr8Schema(column: PgMacaddr8) {
 	return regexStringSchema(column, macaddr8Regex, "Invalid macaddr8");
 }
 
@@ -92,15 +83,15 @@ export function isMacaddr8Column(
 	return column instanceof PgMacaddr8;
 }
 
-function regexStringSchema<T extends AnyPGColumn, PK extends boolean>(
+function regexStringSchema(
 	column: AnyPGColumn,
 	regexp: RegExp,
 	errorMessage: string,
-): ZodType<T, PK> {
+) {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 	const base = z.string().regex(regexp, errorMessage);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
 function isValidIpv4Cidr(cidr: string) {

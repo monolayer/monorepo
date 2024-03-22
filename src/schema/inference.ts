@@ -6,11 +6,7 @@ import type {
 	Simplify,
 } from "kysely";
 import { z } from "zod";
-import {
-	PgColumn,
-	type AnyPGColumn,
-	type SerialColumn,
-} from "./table/column/column.js";
+import { PgColumn, type SerialColumn } from "./table/column/column.js";
 import type { PgBytea } from "./table/column/data-types/bytea.js";
 import {
 	GeneratedColumn,
@@ -30,46 +26,35 @@ export type InferColumnTypes<
 
 type PrimaryKeyColumns<
 	T extends ColumnRecord,
-	M extends string,
-> = string extends M
+	PK extends string,
+> = string extends PK
 	? // eslint-disable-next-line @typescript-eslint/ban-types
 		{}
 	: Pick<
 			{
-				[P in keyof T]: T[P] extends AnyPGColumn
-					? InferColumType<T[P], true>
-					: T[P] extends SerialColumn<infer S, infer U>
-						? GeneratedColumnType<S, U, U>
-						: never;
+				[P in keyof T]: Simplify<InferColumType<T[P], true>>;
 			},
-			M
+			PK
 		>;
 
 type NonPrimaryKeyColumns<
 	T extends ColumnRecord,
-	M extends string,
-> = string extends M
+	PK extends string,
+> = string extends PK
 	? {
-			[P in keyof T]: T[P] extends AnyPGColumn
-				? InferColumType<T[P], false>
-				: T[P] extends SerialColumn<infer S, infer U>
-					? GeneratedColumnType<S, U, U>
-					: never;
+			[P in keyof T]: Simplify<InferColumType<T[P], false>>;
 		}
 	: Omit<
 			{
-				[P in keyof T]: T[P] extends AnyPGColumn
-					? InferColumType<T[P], false>
-					: T[P] extends SerialColumn<infer S, infer U>
-						? GeneratedColumnType<S, U, U>
-						: never;
+				[P in keyof T]: Simplify<InferColumType<T[P], false>>;
 			},
-			M
+			PK
 		>;
 
 type InferColumType<
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	T extends PgColumn<any, any, any>,
+	T extends
+		| PgColumn<unknown, unknown, unknown>
+		| SerialColumn<unknown, unknown>,
 	PK extends boolean,
 > =
 	T extends PgColumn<infer S, infer I, infer U>
@@ -90,7 +75,9 @@ type InferColumType<
 					: PK extends true
 						? ColumnType<S, I, U>
 						: OptionalNullableColumnType<S, I, U>
-		: never;
+		: T extends SerialColumn<infer S, infer U>
+			? GeneratedColumnType<S, U, U>
+			: never;
 
 export type ZodSchemaObject<
 	T extends ColumnRecord,
@@ -134,65 +121,37 @@ export type ZodType<
 		| SerialColumn<unknown, unknown>,
 	PK extends boolean,
 > = true extends PK
-	? T extends WithDefaultColumn
-		? OptionalNonNullableZodType<DefaultZodType<T>>
-		: T extends SerialColumn<unknown, unknown>
-			? OptionalNonNullableZodType<DefaultZodType<T>>
-			: T extends GeneratedColumn
-				? OptionalNonNullableZodType<DefaultZodType<T>>
-				: NonNullableZodType<DefaultZodType<T>>
-	: DefaultZodType<T>;
+	? T extends
+			| WithDefaultColumn
+			| SerialColumn<unknown, unknown>
+			| GeneratedColumn
+		? InferZodType<T, PK, true>
+		: InferZodType<T, PK, false>
+	: T extends NonNullableColumn & WithDefaultColumn
+		? InferZodType<T, PK, true>
+		: T extends NonNullableColumn
+			? InferZodType<T, PK, false>
+			: InferZodType<T, PK, true>;
 
-type DefaultZodType<
+type InferZodType<
 	T extends
 		| PgColumn<unknown, unknown, unknown>
 		| SerialColumn<unknown, unknown>,
-> =
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	T extends PgColumn<any, unknown, unknown>
-		? PgColumnZodType<T>
-		: T extends SerialColumn<infer S, infer I>
-			? z.ZodType<S | undefined, z.ZodTypeDef, I | undefined>
-			: z.ZodType<never, z.ZodTypeDef, never>;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type NonNullableZodType<T extends z.ZodType<any, any, any>> =
-	T extends z.ZodType<infer Output, infer Def, infer Input>
-		? z.ZodType<NonNullable<Output>, Def, NonNullable<Input>>
-		: never;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type OptionalNonNullableZodType<T extends z.ZodType<any, any, any>> =
-	T extends z.ZodType<infer Output, infer Def, infer Input>
-		? z.ZodType<
-				Exclude<Output, null> | undefined,
-				Def,
-				Exclude<Input, null> | undefined
-			>
-		: never;
-
-type PgColumnZodType<T extends AnyPGColumn> = T extends PgBytea
-	? ByteaZodType<T>
-	: z.ZodType<
-			T extends NonNullableColumn
-				? T extends WithDefaultColumn
-					? SelectType<InferColumType<T, false>> | undefined
-					: SelectType<InferColumType<T, false>>
-				: T extends GeneratedAlwaysColumn
-					? never
-					: SelectType<InferColumType<T, false>> | null | undefined,
-			z.ZodTypeDef,
-			InsertType<InferColumType<T, false>>
-		>;
-
-type ByteaZodType<T extends AnyPGColumn> = z.ZodType<
-	T extends NonNullableColumn
-		? T extends WithDefaultColumn
-			? SelectType<InferColumType<T, false>> | string | undefined
-			: SelectType<InferColumType<T, false>> | string
+	PK extends boolean,
+	Optional extends boolean = false,
+> = z.ZodType<
+	T extends SerialColumn<unknown, unknown>
+		? SelectType<InferColumType<T, PK>> | undefined
 		: T extends GeneratedAlwaysColumn
 			? never
-			: SelectType<InferColumType<T, false>> | string | undefined,
+			: T extends PgBytea
+				?
+						| SelectType<InferColumType<T, PK>>
+						| string
+						| (Optional extends true ? undefined : never)
+				:
+						| SelectType<InferColumType<T, PK>>
+						| (Optional extends true ? undefined : never),
 	z.ZodTypeDef,
-	InsertType<InferColumType<T, false>>
+	InsertType<InferColumType<T, PK>>
 >;

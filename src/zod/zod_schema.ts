@@ -204,99 +204,99 @@ export function pgColumnSchema<
 		| PgColumn<unknown, unknown, unknown>
 		| SerialColumn<unknown, unknown>,
 	PK extends boolean = false,
->(column: T): ZodType<T, PK> {
+>(column: T) {
 	if (isPgBoolean(column)) {
-		return pgBooleanSchema(column);
+		return pgBooleanSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isPgText(column)) {
-		return pgTextSchema(column);
+		return pgTextSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isBigInt(column)) {
-		return pgBigintSchema(column);
+		return pgBigintSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isSerial(column)) {
-		return pgIntegerSchema(column);
+		return pgIntegerSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isBigserial(column)) {
-		return pgBigintSchema(column);
+		return pgBigintSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isBytea(column)) {
-		return pgByteaSchema(column);
+		return pgByteaSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isJson(column)) {
-		return pgJsonSchema(column);
+		return pgJsonSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isJsonB(column)) {
-		return pgJsonbSchema(column);
+		return pgJsonbSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isDate(column)) {
-		return pgDateSchema(column);
+		return pgDateSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isDoublePrecision(column)) {
-		return pgDoublePrecisionSchema(column);
+		return pgDoublePrecisionSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isSmallint(column)) {
-		return pgSmallintSchema(column);
+		return pgSmallintSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isInteger(column)) {
-		return pgIntegerSchema(column);
+		return pgIntegerSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isReal(column)) {
-		return pgRealSchema(column);
+		return pgRealSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isUuid(column)) {
-		return pgUuidSchema(column);
+		return pgUuidSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isTime(column)) {
-		return pgTimeSchema(column);
+		return pgTimeSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isTimeTz(column)) {
-		return pgTimeTzSchema(column);
+		return pgTimeTzSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isTimestamp(column)) {
-		return pgTimestampSchema(column);
+		return pgTimestampSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isTimestampTz(column)) {
-		return pgTimestampTzSchema(column);
+		return pgTimestampTzSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isNumeric(column)) {
-		return pgNumericSchema(column);
+		return pgNumericSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isEnum(column)) {
-		return pgEnumSchema(column);
+		return pgEnumSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isVarchar(column)) {
-		return pgVarcharSchema(column);
+		return pgVarcharSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isChar(column)) {
-		return pgCharSchema(column);
+		return pgCharSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isTsvectorColumn(column)) {
-		return tsvectorSchema(column);
+		return tsvectorSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isTsQueryColumn(column)) {
-		return tsquerySchema(column);
+		return tsquerySchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isXMLColumn(column)) {
-		return xmlSchema(column);
+		return xmlSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isBitColumn(column)) {
-		return bitSchema(column);
+		return bitSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isVarbitColumn(column)) {
-		return varbitSchema(column);
+		return varbitSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isInetColumn(column)) {
-		return inetSchema(column);
+		return inetSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isCidrColumn(column)) {
-		return cidrSchema(column);
+		return cidrSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isMacaddrColumn(column)) {
-		return macaddrSchema(column);
+		return macaddrSchema(column) as unknown as ZodType<T, PK>;
 	}
 	if (isMacaddr8Column(column)) {
-		return macaddr8Schema(column);
+		return macaddr8Schema(column) as unknown as ZodType<T, PK>;
 	}
 	return z.never() as unknown as ZodType<T, PK>;
 }

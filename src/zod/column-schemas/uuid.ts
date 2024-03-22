@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { ZodType } from "~/schema/inference.js";
 import {
 	type PgColumn,
 	type SerialColumn,
@@ -13,10 +12,8 @@ export function isUuid(
 ): column is PgUuid {
 	return column instanceof PgUuid;
 }
-export function pgUuidSchema<T extends PgUuid, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgUuidSchema(column: PgUuid) {
 	const isNullable = nullableColumn(column);
 	const base = baseSchema(isNullable, "Expected uuid").pipe(z.string().uuid());
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }

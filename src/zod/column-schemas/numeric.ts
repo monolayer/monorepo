@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { z } from "zod";
-import type { ZodType } from "~/schema/inference.js";
 import {
 	type PgColumn,
 	type PgColumnBase,
@@ -53,59 +52,41 @@ export function isBigInt(
 	return column instanceof PgBigInt;
 }
 
-export function pgBigintSchema<
-	T extends PgBigInt | PgBigSerial,
-	PK extends boolean,
->(column: T): ZodType<T, PK> {
+export function pgBigintSchema(column: PgBigInt | PgBigSerial) {
 	const data = columnData(column);
 	if (data.info.identity === "ALWAYS") {
-		return z.never() as unknown as ZodType<T, PK>;
+		return z.never();
 	}
 	const base = bigintSchema(!data._primaryKey && data.info.isNullable === true)
 		.pipe(z.bigint().min(-9223372036854775808n).max(9223372036854775807n))
 		.transform((val) => val.toString());
 
-	return finishSchema(
-		!data._primaryKey && data.info.isNullable,
-		base,
-	) as unknown as ZodType<T, PK>;
+	return finishSchema(!data._primaryKey && data.info.isNullable, base);
 }
 
-export function pgDoublePrecisionSchema<
-	T extends PgDoublePrecision,
-	PK extends boolean,
->(column: T): ZodType<T, PK> {
+export function pgDoublePrecisionSchema(column: PgDoublePrecision) {
 	const isNullable = nullableColumn(column);
 	const base = variablePrecisionSchema(-1e308, 1e308, isNullable);
 	return finishSchema(isNullable, base).transform((val) =>
 		val === null || val === undefined ? val : val.toString(),
-	) as unknown as ZodType<T, PK>;
+	);
 }
 
-export function pgSmallintSchema<T extends PgSmallint, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
-	return integerSchema<T, PK>(column, -32768, 32767);
+export function pgSmallintSchema(column: PgSmallint) {
+	return integerSchema(column, -32768, 32767);
 }
 
-export function pgIntegerSchema<
-	T extends PgInteger | PgSerial | PgSerial,
-	PK extends boolean,
->(column: T): ZodType<T, PK> {
-	return integerSchema<T, PK>(column, -2147483648, 2147483647);
+export function pgIntegerSchema(column: PgInteger | PgSerial | PgSerial) {
+	return integerSchema(column, -2147483648, 2147483647);
 }
 
-export function pgRealSchema<T extends PgReal, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgRealSchema(column: PgReal) {
 	const isNullable = nullableColumn(column);
 	const base = variablePrecisionSchema(-1e37, 1e37, isNullable);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
-export function pgNumericSchema<T extends PgNumeric, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgNumericSchema(column: PgNumeric) {
 	const data = columnData(column);
 	const isNullable = nullableColumn(column);
 	const base = decimalSchema(
@@ -114,21 +95,22 @@ export function pgNumericSchema<T extends PgNumeric, PK extends boolean>(
 		isNullable,
 		"Expected bigint, number or string that can be converted to a number",
 	);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
-function integerSchema<
-	T extends PgSmallint | PgInteger | PgSerial,
-	PK extends boolean,
->(column: T, minimum: number, maximum: number): ZodType<T, PK> {
+function integerSchema(
+	column: PgSmallint | PgInteger | PgSerial,
+	minimum: number,
+	maximum: number,
+) {
 	const data = columnData(column);
 	if (data.info.identity === "ALWAYS") {
-		return z.never() as unknown as ZodType<T, PK>;
+		return z.never();
 	}
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 
 	const base = wholeNumberSchema(minimum, maximum, isNullable);
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
 function bigintSchema(isNullable: boolean) {

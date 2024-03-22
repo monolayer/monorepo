@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { ZodType } from "~/schema/inference.js";
 import {
 	type PgColumn,
 	type SerialColumn,
@@ -43,67 +42,52 @@ export function isDate(
 	return column instanceof PgDate;
 }
 
-export function pgTimeSchema<T extends PgTime, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
-	return timeSchema<T, PK>(column, "Invalid time");
+export function pgTimeSchema(column: PgTime) {
+	return timeSchema(column, "Invalid time");
 }
 
-export function pgTimeTzSchema<
-	T extends PgTimeWithTimeZone,
-	PK extends boolean,
->(column: T): ZodType<T, PK> {
-	return timeSchema<T, PK>(column, "Invalid time with time zone");
+export function pgTimeTzSchema(column: PgTimeWithTimeZone) {
+	return timeSchema(column, "Invalid time with time zone");
 }
 
-export function pgTimestampSchema<T extends PgTimestamp, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
-	return timestampSchema<T, PK>(column);
+export function pgTimestampSchema(column: PgTimestamp) {
+	return timestampSchema(column);
 }
 
-export function pgTimestampTzSchema<
-	T extends PgTimestampWithTimeZone,
-	PK extends boolean,
->(column: T): ZodType<T, PK> {
-	return timestampSchema<T, PK>(column);
+export function pgTimestampTzSchema(column: PgTimestampWithTimeZone) {
+	return timestampSchema(column);
 }
 
-export function pgDateSchema<T extends PgDate, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgDateSchema(column: PgDate) {
 	const isNullable = nullableColumn(column);
 	const base = baseSchema(
 		isNullable,
 		"Expected Date or String that can coerce to Date",
 	).pipe(z.coerce.date().min(new Date("-004713-12-31T23:59:59.999Z")));
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
-function timestampSchema<
-	T extends PgTimestamp | PgTimestampWithTimeZone,
-	PK extends boolean,
->(column: T): ZodType<T, PK> {
+function timestampSchema(column: PgTimestamp | PgTimestampWithTimeZone) {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 	const base = dateSchema(
 		"Expected date or string with date format",
 		isNullable,
 	).pipe(z.coerce.date());
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
-function timeSchema<T extends PgTime | PgTimeWithTimeZone, PK extends boolean>(
-	column: T,
+function timeSchema(
+	column: PgTime | PgTimeWithTimeZone,
 	invalidTimeMessage: string,
-): ZodType<T, PK> {
+) {
 	const data = columnData(column);
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 	const base = stringSchema(
 		"Expected string with time format",
 		isNullable,
 	).pipe(z.string().regex(timeRegex, invalidTimeMessage));
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
 function dateSchema(errorMessage: string, isNullable: boolean) {

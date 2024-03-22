@@ -1,5 +1,4 @@
 import { ZodIssueCode, z } from "zod";
-import type { ZodType } from "~/schema/inference.js";
 import { type PgColumnBase } from "~/schema/table/column/column.js";
 import {
 	PgBoolean,
@@ -34,9 +33,7 @@ export function testBoolish(val: unknown): val is Boolish {
 			return false;
 	}
 }
-export function pgBooleanSchema<T extends PgBoolean, PK extends boolean>(
-	column: T,
-): ZodType<T, PK> {
+export function pgBooleanSchema<T extends PgBoolean>(column: T) {
 	const isNullable = nullableColumn(column);
 	const base = z
 		.any()
@@ -65,7 +62,7 @@ export function pgBooleanSchema<T extends PgBoolean, PK extends boolean>(
 				return z.NEVER;
 			}
 		});
-	return finishSchema(isNullable, base) as unknown as ZodType<T, PK>;
+	return finishSchema(isNullable, base);
 }
 
 export function toBooleanOrNull(val: boolean | Boolish | null): boolean | null {
