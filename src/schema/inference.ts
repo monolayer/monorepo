@@ -19,6 +19,7 @@ import {
 	type GeneratedAlwaysColumn,
 	type GeneratedColumnType,
 	type NonNullableColumn,
+	type OptionalNullableColumnType,
 } from "./table/column/types.js";
 import { ColumnRecord } from "./table/table-column.js";
 
@@ -74,51 +75,21 @@ type InferColumType<
 	T extends PgColumn<infer S, infer I, infer U>
 		? T extends NonNullableColumn
 			? T extends WithDefaultColumn
-				? PK extends true
-					? OptionalColumnType<
-							Exclude<S, null>,
-							Exclude<I, null> | undefined,
-							Exclude<U, null>
-						>
-					: OptionalColumnType<S, I, U>
+				? OptionalColumnType<S, I, U>
 				: T extends GeneratedAlwaysColumn
-					? Simplify<GeneratedAlways<S>>
+					? GeneratedAlways<S>
 					: T extends GeneratedColumn
-						? PK extends true
-							? OptionalColumnType<
-									Exclude<S, null>,
-									Exclude<I, null> | undefined,
-									Exclude<U, null>
-								>
-							: OptionalColumnType<S, I, U>
-						: PK extends true
-							? Simplify<
-									ColumnType<
-										Exclude<S, null>,
-										Exclude<I, null>,
-										Exclude<U, null>
-									>
-								>
-							: Simplify<ColumnType<S, I, U>>
+						? OptionalColumnType<S, I, U>
+						: ColumnType<S, I, U>
 			: T extends WithDefaultColumn
 				? PK extends true
-					? Simplify<
-							ColumnType<
-								Exclude<S, null>,
-								Exclude<I, null> | undefined,
-								Exclude<U, null>
-							>
-						>
-					: Simplify<
-							ColumnType<Exclude<S, null>, I | null | undefined, U | null>
-						>
+					? OptionalColumnType<S, I, U>
+					: OptionalNullableColumnType<S, I, U>
 				: T extends GeneratedAlwaysColumn
-					? Simplify<GeneratedAlways<S>>
+					? GeneratedAlways<S>
 					: PK extends true
-						? Simplify<
-								ColumnType<NonNullable<S>, Exclude<I, null>, Exclude<U, null>>
-							>
-						: Simplify<ColumnType<S | null, I | null | undefined, U | null>>
+						? ColumnType<S, I, U>
+						: OptionalNullableColumnType<S, I, U>
 		: never;
 
 export type ZodSchemaObject<

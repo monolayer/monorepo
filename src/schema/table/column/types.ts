@@ -15,6 +15,10 @@ export type OptionalColumnType<Select, Insert, Update> = Simplify<
 	ColumnType<Select, Insert | undefined, Update>
 >;
 
+export type OptionalNullableColumnType<Select, Insert, Update> = Simplify<
+	ColumnType<Select | null, Insert | null | undefined, Update | null>
+>;
+
 export type GeneratedColumnType<Select, Insert, Update> = OptionalColumnType<
 	Select,
 	Insert,

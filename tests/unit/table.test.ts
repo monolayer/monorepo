@@ -235,14 +235,14 @@ describe("pgTable definition", () => {
 		});
 
 		describe("columns with default", () => {
-			test("non nullable selects", () => {
+			test("nullable selects", () => {
 				const tbl = table({
 					columns: {
 						id: integer().default(0),
 					},
 				});
 				type expectedType = {
-					id: number;
+					id: number | null;
 				};
 				type InferredType = Selectable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -285,7 +285,7 @@ describe("pgTable definition", () => {
 				});
 				type expectedType = {
 					id: {
-						readonly __select__: number;
+						readonly __select__: number | null;
 						readonly __insert__: string | number | null | undefined;
 						readonly __update__: string | number | null;
 					};
@@ -1563,7 +1563,7 @@ describe("pgTable definition", () => {
 			});
 
 			describe("with default", () => {
-				test("non nullable selects", () => {
+				test("nullable selects", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
 					const tbl = table({
 						columns: {
@@ -1571,7 +1571,7 @@ describe("pgTable definition", () => {
 						},
 					});
 					type expectedType = {
-						role: "user" | "admin" | "superuser";
+						role: "user" | "admin" | "superuser" | null;
 					};
 					type InferredType = Selectable<typeof tbl.infer>;
 					const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1617,7 +1617,7 @@ describe("pgTable definition", () => {
 					});
 					type expectedType = {
 						role: {
-							readonly __select__: "user" | "admin" | "superuser";
+							readonly __select__: "user" | "admin" | "superuser" | null;
 							readonly __insert__:
 								| "user"
 								| "admin"

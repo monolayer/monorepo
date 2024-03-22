@@ -74,14 +74,16 @@ export class PgDatabase<T extends ColumnRecord> {
 	 *
 	 * **Optionality and nullability**
 	 *
-	 * By default, columns have optional inserts and updates:
+	 * By default, columns have:
+	 * - Nullable selects, inserts and updated.
+	 * - Optional inserts and updates.
 	 *
 	 * *Type of an `integer` named id*
 	 * ```ts
 	 * type id = {
-	 *   readonly __select__: number;
-	 *   readonly __insert__: number | string | undefined;
-	 *   readonly __update__: number | string;
+	 *   readonly __select__: number | null;
+	 *   readonly __insert__: number | string | null | undefined;
+	 *   readonly __update__: number | string | null;
 	 * };
 	 * ```
 	 * Columns that are generated always as identity will not accept inserts or updates:
