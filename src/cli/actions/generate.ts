@@ -1,10 +1,12 @@
 import * as p from "@clack/prompts";
 import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
-import { importConfig } from "~/config.js";
-import { analyzeLocalSchema } from "../components/analyze-local-schema.js";
-import { analyzeRemoteSchema } from "../components/analyze-remote-schema.js";
-import { computeChangeset } from "../components/compute-changeset.js";
+import color from "picocolors";
+import { exit } from "process";
+import { changeset } from "~/changeset/changeset.js";
+import { importConfig, importSchema } from "~/config.js";
+import { localSchema, remoteSchema } from "~/introspection/introspection.js";
+import { ActionStatus } from "../command.js";
 import { generateMigrations } from "../components/generate-migrations.js";
 import { pendingMigrations } from "../components/pending-migrations.js";
 import { checkEnvironmentIsConfigured } from "../utils/clack.js";
@@ -29,15 +31,35 @@ export async function generate() {
 
 	await pendingMigrations(config, kysely);
 
-	const remoteColumnInfo = await analyzeRemoteSchema(environmentConfig, kysely);
-	const localInfo = await analyzeLocalSchema(
-		config,
+	const remoteColumnInfo = await remoteSchema(kysely);
+	if (remoteColumnInfo.status === ActionStatus.Error) {
+		console.error(remoteColumnInfo.error);
+		exit(1);
+	}
+
+	const localSchemaFile = await importSchema();
+	if (localSchemaFile.database === undefined) {
+		p.log.warning(
+			`Nothing to do. No database schema exported at ${config.folder}/schema.ts.`,
+		);
+		p.outro("Done");
+		exit(0);
+	}
+
+	const localInfo = localSchema(
+		localSchemaFile.database,
 		remoteColumnInfo.result,
 		config.camelCasePlugin ?? { enabled: false },
 	);
-	const changeset = await computeChangeset(localInfo, remoteColumnInfo.result);
 
-	await generateMigrations(changeset, config);
+	const cset = changeset(localInfo, remoteColumnInfo.result);
+
+	if (cset.length === 0) {
+		p.outro(`${color.green("Nothing to do")}. No schema changes found.`);
+		exit(0);
+	}
+
+	await generateMigrations(cset, config);
 
 	kysely.destroy();
 
