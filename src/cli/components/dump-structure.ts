@@ -1,5 +1,5 @@
 import { execa } from "execa";
-import { appendFileSync, unlinkSync } from "fs";
+import { appendFileSync, writeFileSync } from "fs";
 import path from "path";
 import { env } from "process";
 import { Writable, type WritableOptions } from "stream";
@@ -95,8 +95,7 @@ class DumpWritable extends Writable {
 	}
 
 	end() {
-		unlinkSync(this.#dumpPath);
-		appendFileSync(this.#dumpPath, this.#contents.join("\n"));
+		writeFileSync(this.#dumpPath, this.#contents.join("\n"));
 		return this;
 	}
 }
