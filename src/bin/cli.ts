@@ -27,11 +27,8 @@ async function main() {
 			await initCommand();
 		});
 
-	const db = program
-		.command("db")
-		.description("perform database operations: create, drop, migrate");
-
-	db.command("create")
+	program
+		.command("db:create")
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in kinetic.ts",
@@ -42,7 +39,8 @@ async function main() {
 			await dbCreate(opts.environment);
 		});
 
-	db.command("drop")
+	program
+		.command("db:drop")
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in kinetic.ts",
@@ -53,12 +51,8 @@ async function main() {
 			await dbDrop(opts.environment);
 		});
 
-	const dbMigrate = db
+	program
 		.command("migrate")
-		.description("database migration operations: latest, down");
-
-	dbMigrate
-		.command("latest")
 		.description("apply pending migrations")
 		.option(
 			"-e, --environment <environment-name>",
@@ -69,8 +63,8 @@ async function main() {
 			await migrate(opts.environment);
 		});
 
-	dbMigrate
-		.command("down")
+	program
+		.command("migrate:down")
 		.description("migrate one step down")
 		.option(
 			"-e, --environment <environment-name>",
@@ -81,7 +75,8 @@ async function main() {
 			await migrateDown(opts.environment);
 		});
 
-	db.command("seed")
+	program
+		.command("seed")
 		.description("seed database")
 		.option(
 			"-e, --environment <environment-name>",
@@ -93,12 +88,8 @@ async function main() {
 			await seed(opts);
 		});
 
-	const structure = program
-		.command("structure")
-		.description("database structure operations: dump, load");
-
-	structure
-		.command("dump")
+	program
+		.command("structure:dump")
 		.description("dump the database structure")
 		.option(
 			"-e, --environment <environment-name>",
@@ -109,8 +100,8 @@ async function main() {
 			await structureDump(opts.environment);
 		});
 
-	structure
-		.command("load")
+	program
+		.command("structure:load")
 		.description("load the database structure")
 		.option(
 			"-e, --environment <environment-name>",
@@ -121,11 +112,7 @@ async function main() {
 			await structureLoad(opts.environment);
 		});
 
-	const migration = program
-		.command("migration")
-		.description("migration operations: generate, pending");
-
-	migration
+	program
 		.command("generate")
 		.description("generate migrations based on the current defined schema")
 		.option(
@@ -137,7 +124,7 @@ async function main() {
 			await generate();
 		});
 
-	migration
+	program
 		.command("pending")
 		.description("list pending migrations")
 		.option(
@@ -149,7 +136,7 @@ async function main() {
 			await pendingMigrations(opts.environment);
 		});
 
-	migration
+	program
 		.command("scaffold")
 		.description("create an empty migration file")
 		.action(async () => {
