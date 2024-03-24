@@ -87,4 +87,3 @@ export {
 	type TriggerFiringTime,
 } from "./schema/table/trigger/trigger.js";
 export { enumType, type EnumType } from "./schema/types/enum/enum.js";
-export { zodSchema } from "./zod/zod_schema.js";
