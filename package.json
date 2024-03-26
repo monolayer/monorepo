@@ -28,9 +28,9 @@
 			"types": "./dist/esm/src/pool.js"
 		},
 		"./zod": {
-			"import": "./dist/esm/src/database/schema/zod.js",
-			"require": "./dist/cjs/src/database/schema/zod.js",
-			"types": "./dist/esm/src/database/schema/zod.js"
+			"import": "./dist/esm/src/zod.js",
+			"require": "./dist/cjs/src/zod.js",
+			"types": "./dist/esm/src/zod.js"
 		}
 	},
 	"types": "./dist/esm/src/index.d.ts",
