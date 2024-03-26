@@ -195,10 +195,8 @@ export class PgDatabase<T extends ColumnRecord> {
 	 * @hidden
 	 */
 	protected extensions?: Array<PgExtension>;
-	/**
-	 * @hidden
-	 */
-	protected tables?: T;
+
+	public tables: T;
 
 	/**
 	 * @hidden
@@ -210,7 +208,7 @@ export class PgDatabase<T extends ColumnRecord> {
 	 * @hidden
 	 */
 	constructor(schema: DatabaseSchema<T>) {
-		this.tables = schema.tables;
+		this.tables = schema.tables || ({} as T);
 		this.extensions = schema.extensions;
 		this.types = schema.types;
 	}
