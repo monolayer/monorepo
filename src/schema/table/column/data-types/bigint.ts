@@ -1,12 +1,9 @@
 import { IdentifiableColumn } from "../column.js";
 
 /**
- * Column that store whole numbers.
- *
+ * Column that stores whole numbers.
  * @remarks
  * Range: -9223372036854775808 to +9223372036854775807.
- *
- * *PostgreSQL native data type*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT | bigint}
  *
  * **Kysely database schema type definition**
  * ```ts
@@ -16,29 +13,30 @@ import { IdentifiableColumn } from "../column.js";
  *   readonly __update__: bigint | number | string | null;
  * };
  * ```
- * Column constraints, generated values, and default data values will be taken into account in the type inference.
- *
- * **Note**: Read the {@link PgDatabase.infer} function documentation for more information.
+ * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
  * **Zod Schema**
  *
- * - Input value is `bigint`, `number`, `string`, or `null`.
- * - Output value is `string` or `null`.
+ * *Types:*
+ * ```ts
+ * {
+ *   input?: bigint | number | string | null | undefined;
+ *   output?: string | null | undefined;
+ * }
+ * ```
+ * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
+ *
+ * *Validations:*
  * - Explicit `undefined` values are rejected.
  * - Value must be a valid `bigint`.
  * - Value cannot be lower than -9223372036854775808.
  * - Value cannot be greater than 9223372036854775807.
- * - Input and output values are optional by default. This depends on the column's:
- *   - Constraints.
- *   - Generated values.
- *   - Default data values.
- *
- * **Note**: Read the {@link zodSchema} function documentation for more information on how the validations and
- * type inference change based on the column constraints, generated values and default data values.
  *
  * @example
  * ```ts
  * import { bigint, pgDatabase, table } from "kysely-kinetic";
+ * import { zodSchema } from "kysely-kinetic/zod";
+ *
  * const database = pgDatabase({
  *   tables: {
  *     example: table({
@@ -48,7 +46,14 @@ import { IdentifiableColumn } from "../column.js";
  *     }),
  *   },
  * });
+ *
+ * // Kysely database schema type
+ * type DB = typeof database.infer;
+ * // Zod Schema
+ * const schema = zodSchema(database.tables.example);
  * ```
+ * @see
+ * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT | bigint}
  */
 export function bigint() {
 	return new PgBigInt();

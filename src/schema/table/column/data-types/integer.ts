@@ -3,6 +3,61 @@ import { compileDefaultExpression } from "~/introspection/helpers.js";
 import { IdentifiableColumn, isExpression, valueWithHash } from "../column.js";
 import { WithDefaultColumn } from "../types.js";
 
+/**
+ * Column that stores whole numbers.
+ *
+ * @remarks
+ * Range: -2147483648 to +2147483647.
+ * **Kysely database schema type definition**
+ * ```ts
+ * {
+ *   readonly __select__: number | null;
+ *   readonly __insert__: number | string | null | undefined;
+ *   readonly __update__: number | string | null;
+ * };
+ * ```
+ * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
+ *
+ * **Zod Schema**
+ *
+ * *Types:*
+ * ```ts
+ * {
+ *   input?: number | string | null | undefined;
+ *   output?: number | null | undefined;
+ * }
+ * ```
+ * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
+ *
+ * *Validations:*
+ * - Input value must be `number`, `string`, or `null`.
+ * - Non-null values must be:
+ *   - Coercible to `number`.
+ *   - Greater or equal than -2147483648.
+ *   - Less than 2147483647.
+ * @example
+ * ```ts
+ * import { integer, pgDatabase, table } from "kysely-kinetic";
+ * import { zodSchema } from "kysely-kinetic/zod";
+ *
+ * const database = pgDatabase({
+ *   tables: {
+ *     example: table({
+ *       columns: {
+ *         id: integer(),
+ *       },
+ *     }),
+ *   },
+ * });
+ *
+ * // Kysely database schema type
+ * type DB = typeof database.infer;
+ * // Zod Schema
+ * const schema = zodSchema(database.tables.example);
+ * ```
+ * @see
+ * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT | integer }
+ */
 export function integer() {
 	return new PgInteger();
 }
