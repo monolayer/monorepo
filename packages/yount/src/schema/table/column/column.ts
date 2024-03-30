@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { createHash } from "crypto";
 import { type ColumnType, type Expression } from "kysely";
-import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 import { compileDefaultExpression } from "~/introspection/helpers.js";
 import {
 	type ColumnInfo,
@@ -170,6 +169,13 @@ export function isExpression(obj: unknown): obj is Expression<any> {
 		typeof obj.toOperationNode === "function"
 	);
 }
+
+type DrainOuterGeneric<T> = [T] extends [unknown] ? T : never;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ShallowRecord<K extends keyof any, T> = DrainOuterGeneric<{
+	[P in K]: T;
+}>;
 
 function isObject(obj: unknown): obj is ShallowRecord<string, unknown> {
 	return typeof obj === "object" && obj !== null;

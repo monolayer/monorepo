@@ -1,6 +1,9 @@
-name: Build
+name: Yount
 
-on: push
+on:
+  push:
+    paths:
+      - 'packages/yount/**'
 
 jobs:
   lint:
@@ -17,8 +20,10 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: ./packages/yount
       - name: Run check:lint
         run: npm run check:lint
+        working-directory: ./packages/yount
 
   format:
     name: Format
@@ -34,8 +39,10 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: ./packages/yount
       - name: Run check:prettier
         run: npm run check:prettier
+        working-directory: ./packages/yount
 
   types:
     name: ts@${{ matrix.typescript_version }} zod@${{ matrix.zod_version }}
@@ -55,10 +62,13 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: ./packages/yount
       - name: Install zod
         run: npm install --save-exact zod@${{ matrix.zod_version }}
+        working-directory: ./packages/yount
       - name: Run check:type
         run: npm run check:type
+        working-directory: ./packages/yount
         env:
           TYPESCRIPT_VERSION: ${{ matrix.typescript_version }}
 
@@ -76,8 +86,10 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: ./packages/yount
       - name: Run check:skott
         run: npm run check:skott
+        working-directory: ./packages/yount
 
   test:
     needs: [lint, format, types, graph]
@@ -106,8 +118,10 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: ./packages/yount
       - name: Run test:unit
         run: npm run test:unit
+        working-directory: ./packages/yount
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
@@ -145,10 +159,13 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: ./packages/yount
       - name: Install zod
         run: npm install --save-exact zod@${{ matrix.zod_version }}
+        working-directory: ./packages/yount
       - name: Run test:unit
         run: npm run test:unit
+        working-directory: ./packages/yount
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
@@ -171,5 +188,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: ./packages/yount
       - name: Run build
         run: npm run build
+        working-directory: ./packages/yount

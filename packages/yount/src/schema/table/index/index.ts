@@ -5,7 +5,6 @@ import {
 	type IndexType,
 	type SqlBool,
 } from "kysely";
-import type { ShallowRecord } from "node_modules/kysely/dist/esm/util/type-utils.js";
 
 type IndexOptions = {
 	ifNotExists: boolean;
@@ -128,3 +127,10 @@ function assertIndexWithInfo<T extends PgIndex<any>>(
 ): asserts val is T & { options: IndexOptions; isExternal: boolean } {
 	true;
 }
+
+type DrainOuterGeneric<T> = [T] extends [unknown] ? T : never;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ShallowRecord<K extends keyof any, T> = DrainOuterGeneric<{
+	[P in K]: T;
+}>;
