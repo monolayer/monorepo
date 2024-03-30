@@ -3,6 +3,7 @@
   "private": true,
   "license": "MIT",
   "workspaces": [
+    "packages/init-yount",
     "packages/yount"
   ],
   "engines": {
