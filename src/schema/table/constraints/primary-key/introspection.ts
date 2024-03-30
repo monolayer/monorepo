@@ -58,15 +58,13 @@ export async function dbPrimaryKeyConstraintInfo(
 			])
 			.where("con.contype", "=", "p")
 			.where("ns.nspname", "=", databaseSchema)
-			.where("con.conname", "~", "kinetic_pk$")
+			.where("con.conname", "~", "yount_pk$")
 			.where("tbl.relname", "in", tableNames)
 			.groupBy(["tbl.relname"])
 			.orderBy(["table"])
 			.execute();
 		const transformedResults = results.reduce<PrimaryKeyInfo>((acc, result) => {
-			const key = `${result.table}_${result.columns
-				.sort()
-				.join("_")}_kinetic_pk`;
+			const key = `${result.table}_${result.columns.sort().join("_")}_yount_pk`;
 			const constraintInfo = {
 				[key]: primaryKeyConstraintInfoToQuery(result),
 			};
@@ -104,7 +102,7 @@ export function localPrimaryKeyConstraintInfo(
 			if (primaryKeys.length !== 0 && !isExternalPrimaryKey(tableDefinition)) {
 				const keyName = `${transformedTableName}_${primaryKeys
 					.sort()
-					.join("_")}_kinetic_pk`;
+					.join("_")}_yount_pk`;
 				acc[transformedTableName] = {
 					[keyName]: primaryKeyConstraintInfoToQuery({
 						constraintType: "PRIMARY KEY",
@@ -132,7 +130,7 @@ export function primaryKeyConstraintInfoToQuery(
 ) {
 	const columns = info.columns.sort();
 	return [
-		`"${info.table}_${columns.join("_")}_kinetic_pk"`,
+		`"${info.table}_${columns.join("_")}_yount_pk"`,
 		"PRIMARY KEY",
 		`(${columns.map((col) => `"${col}"`).join(", ")})`,
 	].join(" ");

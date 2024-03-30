@@ -33,8 +33,8 @@ import { MaxLengthColumn } from "../column.js";
  * - Value must match the `fixedLength` exactly.
  * @example
  * ```ts
- * import { bit, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { bit, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

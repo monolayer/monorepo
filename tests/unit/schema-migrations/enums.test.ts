@@ -50,7 +50,7 @@ describe("Database migrations", () => {
 						"await db.schema",
 						'createType("role")',
 						'asEnum(["admin", "user"])',
-						"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+						"execute();await sql`COMMENT ON TYPE \"role\" IS 'yount'`.execute(db)",
 					],
 				],
 				down: [["await db.schema", 'dropType("role")', "execute();"]],
@@ -91,7 +91,7 @@ describe("Database migrations", () => {
 			.createType("role")
 			.asEnum(["admin", "user"])
 			.execute();
-		await sql`COMMENT ON TYPE "role" IS 'kinetic'`.execute(context.kysely);
+		await sql`COMMENT ON TYPE "role" IS 'yount'`.execute(context.kysely);
 
 		await context.kysely.schema
 			.createTable("users")
@@ -143,7 +143,7 @@ describe("Database migrations", () => {
 						"await db.schema",
 						'createType("role")',
 						'asEnum(["admin", "user"])',
-						"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+						"execute();await sql`COMMENT ON TYPE \"role\" IS 'yount'`.execute(db)",
 					],
 				],
 			},
@@ -162,7 +162,7 @@ describe("Database migrations", () => {
 			.createType("role")
 			.asEnum(["admin", "user"])
 			.execute();
-		await sql`COMMENT ON TYPE "role" IS 'kinetic'`.execute(context.kysely);
+		await sql`COMMENT ON TYPE "role" IS 'yount'`.execute(context.kysely);
 
 		await context.kysely.schema
 			.createTable("users")

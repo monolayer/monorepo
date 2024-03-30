@@ -145,7 +145,7 @@ describe("Rename column migrations", () => {
 			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
-				.addUniqueConstraint("users_name_kinetic_key", ["name"])
+				.addUniqueConstraint("users_name_yount_key", ["name"])
 				.execute();
 
 			const users = table({
@@ -172,7 +172,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users")',
-							'dropConstraint("users_name_kinetic_key")',
+							'dropConstraint("users_name_yount_key")',
 							"execute();",
 						],
 					],
@@ -180,7 +180,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users")',
-							'addUniqueConstraint("users_name_kinetic_key", ["name"])',
+							'addUniqueConstraint("users_name_yount_key", ["name"])',
 							"execute();",
 						],
 					],
@@ -214,7 +214,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users")',
-							'addUniqueConstraint("users_fullName_kinetic_key", ["fullName"], (col) => col.nullsNotDistinct())',
+							'addUniqueConstraint("users_fullName_yount_key", ["fullName"], (col) => col.nullsNotDistinct())',
 							"execute();",
 						],
 					],
@@ -222,7 +222,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users")',
-							'dropConstraint("users_fullName_kinetic_key")',
+							'dropConstraint("users_fullName_yount_key")',
 							"execute();",
 						],
 					],
@@ -288,7 +288,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users")',
-							'addUniqueConstraint("users_fullName_kinetic_key", ["fullName"])',
+							'addUniqueConstraint("users_fullName_yount_key", ["fullName"])',
 							"execute();",
 						],
 					],
@@ -296,7 +296,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users")',
-							'dropConstraint("users_fullName_kinetic_key")',
+							'dropConstraint("users_fullName_yount_key")',
 							"execute();",
 						],
 					],
@@ -317,7 +317,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.execute();
 
-			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY (\"name\")`.execute(
+			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_yount_pk PRIMARY KEY (\"name\")`.execute(
 				context.kysely,
 			);
 
@@ -345,7 +345,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_name_kinetic_pk")',
+							'dropConstraint("users_pk1_name_yount_pk")',
 							"execute();",
 						],
 						[
@@ -359,7 +359,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'addPrimaryKeyConstraint("users_pk1_name_kinetic_pk", ["name"])',
+							'addPrimaryKeyConstraint("users_pk1_name_yount_pk", ["name"])',
 							"execute();",
 						],
 					],
@@ -393,7 +393,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'addPrimaryKeyConstraint("users_pk1_fullName_kinetic_pk", ["fullName"])',
+							'addPrimaryKeyConstraint("users_pk1_fullName_yount_pk", ["fullName"])',
 							"execute();",
 						],
 					],
@@ -401,7 +401,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_fullName_kinetic_pk")',
+							'dropConstraint("users_pk1_fullName_yount_pk")',
 							"execute();",
 						],
 						[
@@ -473,7 +473,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'addPrimaryKeyConstraint("users_pk1_fullName_kinetic_pk", ["fullName"])',
+							'addPrimaryKeyConstraint("users_pk1_fullName_yount_pk", ["fullName"])',
 							"execute();",
 						],
 					],
@@ -481,7 +481,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_fullName_kinetic_pk")',
+							'dropConstraint("users_pk1_fullName_yount_pk")',
 							"execute();",
 						],
 						[
@@ -506,7 +506,7 @@ describe("Rename column migrations", () => {
 			await context.kysely.schema
 				.createTable("books_pk1")
 				.addColumn("id", "integer")
-				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
+				.addPrimaryKeyConstraint("books_pk1_id_yount_pk", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -514,7 +514,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
 				.addForeignKeyConstraint(
-					"users_pk1_book_id_books_pk1_id_kinetic_fk",
+					"users_pk1_book_id_books_pk1_id_yount_fk",
 					["book_id"],
 					"books_pk1",
 					["id"],
@@ -556,7 +556,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_book_id_books_pk1_id_kinetic_fk")',
+							'dropConstraint("users_pk1_book_id_books_pk1_id_yount_fk")',
 							"execute();",
 						],
 					],
@@ -564,7 +564,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'addForeignKeyConstraint("users_pk1_book_id_books_pk1_id_kinetic_fk", ["book_id"], "books_pk1", ["id"])',
+							'addForeignKeyConstraint("users_pk1_book_id_books_pk1_id_yount_fk", ["book_id"], "books_pk1", ["id"])',
 							'onDelete("no action")',
 							'onUpdate("no action")',
 							"execute();",
@@ -600,7 +600,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_kinetic_fk", ["bookId"], "books_pk1", ["id"])',
+							'addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_yount_fk", ["bookId"], "books_pk1", ["id"])',
 							'onDelete("no action")',
 							'onUpdate("no action")',
 							"execute();",
@@ -610,7 +610,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_bookId_books_pk1_id_kinetic_fk")',
+							'dropConstraint("users_pk1_bookId_books_pk1_id_yount_fk")',
 							"execute();",
 						],
 					],
@@ -629,7 +629,7 @@ describe("Rename column migrations", () => {
 			await context.kysely.schema
 				.createTable("books_pk1")
 				.addColumn("id", "integer")
-				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
+				.addPrimaryKeyConstraint("books_pk1_id_yount_pk", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -694,7 +694,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_kinetic_fk", ["bookId"], "books_pk1", ["id"])',
+							'addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_yount_fk", ["bookId"], "books_pk1", ["id"])',
 							'onDelete("no action")',
 							'onUpdate("no action")',
 							"execute();",
@@ -704,7 +704,7 @@ describe("Rename column migrations", () => {
 						[
 							"await db.schema",
 							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_bookId_books_pk1_id_kinetic_fk")',
+							'dropConstraint("users_pk1_bookId_books_pk1_id_yount_fk")',
 							"execute();",
 						],
 					],
@@ -886,7 +886,7 @@ describe("Rename column migrations", () => {
 			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
-				.addUniqueConstraint("users_name_kinetic_key", ["name"])
+				.addUniqueConstraint("users_name_yount_key", ["name"])
 				.execute();
 
 			await context.kysely.schema
@@ -921,7 +921,7 @@ describe("Rename column migrations", () => {
 			await context.kysely.schema
 				.createTable("users6")
 				.addColumn("fullName", "text")
-				.addUniqueConstraint("usersh_fullName_kinetic_key", ["fullName"])
+				.addUniqueConstraint("usersh_fullName_yount_key", ["fullName"])
 				.execute();
 
 			const users = table({
@@ -953,7 +953,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.execute();
 
-			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_kinetic_pk PRIMARY KEY (name)`.execute(
+			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_yount_pk PRIMARY KEY (name)`.execute(
 				context.kysely,
 			);
 
@@ -991,7 +991,7 @@ describe("Rename column migrations", () => {
 				.addColumn("fullName", "text")
 				.execute();
 
-			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_kinetic_pk PRIMARY KEY (\"fullName\")`.execute(
+			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_fullName_yount_pk PRIMARY KEY (\"fullName\")`.execute(
 				context.kysely,
 			);
 
@@ -1022,7 +1022,7 @@ describe("Rename column migrations", () => {
 			await context.kysely.schema
 				.createTable("books_pk1")
 				.addColumn("id", "integer")
-				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
+				.addPrimaryKeyConstraint("books_pk1_id_yount_pk", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -1030,7 +1030,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
 				.addForeignKeyConstraint(
-					"users_pk1_book_id_books_pk1_id_kinetic_fk",
+					"users_pk1_book_id_books_pk1_id_yount_fk",
 					["book_id"],
 					"books_pk1",
 					["id"],
@@ -1080,7 +1080,7 @@ describe("Rename column migrations", () => {
 			await context.kysely.schema
 				.createTable("books_pk1")
 				.addColumn("id", "integer")
-				.addPrimaryKeyConstraint("books_pk1_id_kinetic_pk", ["id"])
+				.addPrimaryKeyConstraint("books_pk1_id_yount_pk", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -1088,7 +1088,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.addColumn("bookId", "integer")
 				.addForeignKeyConstraint(
-					"users_pk1_book_id_books_pk1_id_kinetic_fk",
+					"users_pk1_book_id_books_pk1_id_yount_fk",
 					["bookId"],
 					"books_pk1",
 					["id"],

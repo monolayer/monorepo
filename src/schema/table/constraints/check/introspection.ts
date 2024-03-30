@@ -49,7 +49,7 @@ export async function dbCheckConstraintInfo(
 			])
 			.where("pg_constraint.contype", "=", "c")
 			.where("pg_namespace.nspname", "=", databaseSchema)
-			.where("pg_constraint.conname", "~", "kinetic_chk$")
+			.where("pg_constraint.conname", "~", "yount_chk$")
 			.where("pg_class.relname", "in", tableNames)
 			.execute();
 		const transformedResults = results.reduce<CheckInfo>((acc, result) => {
@@ -101,7 +101,7 @@ export function localCheckConstraintInfo(
 					const hash = createHash("sha256");
 					hash.update(checkExpression);
 					const key = hash.digest("hex").substring(0, 8);
-					const name = `${key}_kinetic_chk`;
+					const name = `${key}_yount_chk`;
 					const checkObject = {
 						[`${name}`]: `${key}:${checkExpression}`,
 					};

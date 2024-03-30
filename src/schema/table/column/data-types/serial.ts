@@ -32,8 +32,8 @@ import { SerialColumn } from "../column.js";
  * - Value cannot be greater than 2147483647.
  * @example
  * ```ts
- * import { pgDatabase, table, serial } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { pgDatabase, table, serial } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

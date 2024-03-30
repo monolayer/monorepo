@@ -37,8 +37,8 @@ import { WithDefaultColumn } from "../types.js";
  *   - Less than 2147483647.
  * @example
  * ```ts
- * import { integer, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { integer, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

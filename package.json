@@ -1,15 +1,15 @@
 {
-	"name": "kysely-kinetic",
+	"name": "yount",
 	"version": "1.0.0",
 	"description": "",
 	"author": "Marcos Essindi",
 	"license": "MIT",
-	"homepage": "https://github.com/dunkelbraun/kysely-kinetic",
+	"homepage": "https://github.com/dunkelbraun/yount",
 	"type": "module",
 	"main": "dist/cjs/index.js",
 	"module": "./dist/esm/index.js",
 	"bin": {
-		"kinetic": "dist/esm/src/bin/cli.js"
+		"yount": "dist/esm/src/bin/cli.js"
 	},
 	"exports": {
 		".": {
@@ -68,10 +68,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/dunkelbraun/kysely-kinetic.git"
+		"url": "git+ssh://git@github.com/dunkelbraun/yount.git"
 	},
 	"bugs": {
-		"url": "https://github.com/dunkelbraun/kysely-kinetic/issues"
+		"url": "https://github.com/dunkelbraun/yount/issues"
 	},
 	"devDependencies": {
 		"@types/mock-fs": "^4.13.4",

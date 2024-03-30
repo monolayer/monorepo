@@ -31,7 +31,7 @@ export async function initFolderAndFiles() {
 	log.lineMessage("");
 
 	await createFile(
-		path.join(cwd(), "kinetic.ts"),
+		path.join(cwd(), "yount.ts"),
 		configTemplate.render({ folder: folder.path }),
 		true,
 	);
@@ -42,10 +42,10 @@ export async function initFolderAndFiles() {
 
 	await createFile(
 		path.join(`${folder.path}/db.ts`),
-		kyselyTemplate.render({
-			kineticConfigPath: path.relative(
+		yountTemplate.render({
+			yountConfigPath: path.relative(
 				path.join(cwd(), folder.path),
-				path.join(cwd(), "kinetic.js"),
+				path.join(cwd(), "db.js"),
 			),
 		}),
 		true,
@@ -53,7 +53,7 @@ export async function initFolderAndFiles() {
 }
 
 export const configTemplate =
-	nunjucks.compile(`import type { Config } from "kysely-kinetic/config";
+	nunjucks.compile(`import type { Config } from "yount/config";
 
 export default ({
   folder: "{{ folder }}",
@@ -79,22 +79,22 @@ export default ({
 } satisfies Config);`);
 
 export const schemaTemplate =
-	nunjucks.compile(`import { pgDatabase } from "kysely-kinetic";
+	nunjucks.compile(`import { pgDatabase } from "yount";
 
 export const database = pgDatabase({});
 
 export type DB = typeof database.infer;
 `);
 
-export const kyselyTemplate =
+export const yountTemplate =
 	nunjucks.compile(`import { Kysely, PostgresDialect } from "kysely";
-import { pgPool } from "kysely-kinetic/pool";
-import kineticConfig from "{{ kineticConfigPath }}";
+import { pgPool } from "yount/pool";
+import yountConfig from "{{ yountConfigPath }}";
 import type { DB } from "./schema.js";
 
 export const db = new Kysely<DB>({
 	dialect: new PostgresDialect({
-		pool: pgPool(kineticConfig, process.env.KINETIC_ENV || "development"),
+		pool: pgPool(yountConfig, process.env.KINETIC_ENV || "development"),
 	}),
 });
 `);

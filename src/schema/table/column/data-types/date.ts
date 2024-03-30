@@ -37,8 +37,8 @@ import { PgColumn, valueWithHash } from "../column.js";
  * - String values must be coercible to `Date`.
  * @example
  * ```ts
- * import { date, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { date, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

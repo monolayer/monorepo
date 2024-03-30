@@ -54,10 +54,10 @@ describe("findPrimaryKey", () => {
 		const schema = migrationSchemaFactory({
 			primaryKey: {
 				books: {
-					books_kinetic_pk: 'books_id_kinetic_pk PRIMARY KEY ("id")',
+					books_yount_pk: 'books_id_yount_pk PRIMARY KEY ("id")',
 				},
 				teams: {
-					teams_kinetic_pk: "teams_id_kinetic_pk PRIMARY KEY (id)",
+					teams_yount_pk: "teams_id_yount_pk PRIMARY KEY (id)",
 				},
 			},
 		});
@@ -69,10 +69,10 @@ describe("findPrimaryKey", () => {
 		const schema = migrationSchemaFactory({
 			primaryKey: {
 				books: {
-					books_kinetic_pk: 'books_id_kinetic_pk PRIMARY KEY ("id", "name")',
+					books_yount_pk: 'books_id_yount_pk PRIMARY KEY ("id", "name")',
 				},
 				teams: {
-					teams_kinetic_pk: "teams_id_kinetic_pk PRIMARY KEY (id, name)",
+					teams_yount_pk: "teams_id_yount_pk PRIMARY KEY (id, name)",
 				},
 			},
 		});
@@ -108,7 +108,7 @@ describe("findPrimaryKey", () => {
 		const schema = migrationSchemaFactory({
 			primaryKey: {
 				books: {
-					books_kinetic_pk: "this is not a definition",
+					books_yount_pk: "this is not a definition",
 				},
 			},
 		});
@@ -121,7 +121,7 @@ describe("findForeignKeysTargetTables", () => {
 		const schema = migrationSchemaFactory({
 			foreignKeyConstraints: {
 				books: {
-					books_author_id_authors_id_kinetic_fk:
+					books_author_id_authors_id_yount_fk:
 						'FOREIGN KEY ("author_id") REFERENCES "authors" ("id")',
 				},
 			},
@@ -135,9 +135,9 @@ describe("findForeignKeysTargetTables", () => {
 		const schema = migrationSchemaFactory({
 			foreignKeyConstraints: {
 				books: {
-					books_author_id_authors_id_kinetic_fk:
+					books_author_id_authors_id_yount_fk:
 						'FOREIGN KEY ("author_id") REFERENCES "authors" ("id")',
-					books_building_id_buildings_id_kinetic_fk:
+					books_building_id_buildings_id_yount_fk:
 						'FOREIGN KEY ("building_id") REFERENCES "buildings" ("id")',
 				},
 			},

@@ -82,7 +82,7 @@ export async function dbForeignKeyConstraintInfo(
 			])
 			.where("con.contype", "=", "f")
 			.where("ns.nspname", "=", databaseSchema)
-			.where("con.conname", "~", "kinetic_fk$")
+			.where("con.conname", "~", "yount_fk$")
 			.where("tbl.relname", "in", tableNames)
 			.groupBy([
 				"tbl.relname",
@@ -95,7 +95,7 @@ export async function dbForeignKeyConstraintInfo(
 		const transformedResults = results.reduce<ForeignKeyInfo>((acc, result) => {
 			const key = `${result.table}_${result.column.join("_")}_${
 				result.targetTable
-			}_${result.targetColumns.join("_")}_kinetic_fk`;
+			}_${result.targetColumns.join("_")}_yount_fk`;
 			const constraintInfo = {
 				[key]: foreignKeyConstraintInfoToQuery(result),
 			};
@@ -149,7 +149,7 @@ export function localForeignKeyConstraintInfo(
 							"_",
 						)}_${targetTableName}_${transformedtargetColumnNames.join(
 							"_",
-						)}_kinetic_fk`;
+						)}_yount_fk`;
 						acc[transformedTableName] = {
 							...acc[transformedTableName],
 							[keyName]: foreignKeyConstraintInfoToQuery({
@@ -175,7 +175,7 @@ export function foreignKeyConstraintInfoToQuery(
 	info: ForeignKeyConstraintInfo,
 ) {
 	return [
-		`"${info.table}_${info.column.join("_")}_${info.targetTable}_${info.targetColumns.join("_")}_kinetic_fk"`,
+		`"${info.table}_${info.column.join("_")}_${info.targetTable}_${info.targetColumns.join("_")}_yount_fk"`,
 		"FOREIGN KEY",
 		`(${info.column.map((col) => `"${col}"`).join(", ")})`,
 		"REFERENCES",

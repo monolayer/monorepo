@@ -545,35 +545,35 @@ describe("schema", () => {
 			},
 			foreignKeyConstraints: {
 				users: {
-					users_book_id_books_id_kinetic_fk:
-						'"users_book_id_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+					users_book_id_books_id_yount_fk:
+						'"users_book_id_books_id_yount_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 				},
 			},
 			uniqueConstraints: {
 				users: {
-					users_email_kinetic_key:
-						'"users_email_kinetic_key" UNIQUE NULLS NOT DISTINCT ("email")',
-					users_name_kinetic_key:
-						'"users_name_kinetic_key" UNIQUE NULLS DISTINCT ("name")',
+					users_email_yount_key:
+						'"users_email_yount_key" UNIQUE NULLS NOT DISTINCT ("email")',
+					users_name_yount_key:
+						'"users_name_yount_key" UNIQUE NULLS DISTINCT ("name")',
 				},
 				books: {
-					books_location_name_kinetic_key:
-						'"books_location_name_kinetic_key" UNIQUE NULLS DISTINCT ("location", "name")',
+					books_location_name_yount_key:
+						'"books_location_name_yount_key" UNIQUE NULLS DISTINCT ("location", "name")',
 				},
 			},
 			checkConstraints: {
 				books: {
-					"918b4271_kinetic_chk": '918b4271:"id" > 50',
-					e37c55a5_kinetic_chk: 'e37c55a5:"id" < 50000',
+					"918b4271_yount_chk": '918b4271:"id" > 50',
+					e37c55a5_yount_chk: 'e37c55a5:"id" < 50000',
 				},
 			},
 
 			primaryKey: {
 				teams: {
-					teams_id_kinetic_pk: '"teams_id_kinetic_pk" PRIMARY KEY ("id")',
+					teams_id_yount_pk: '"teams_id_yount_pk" PRIMARY KEY ("id")',
 				},
 				users: {
-					users_id_kinetic_pk: '"users_id_kinetic_pk" PRIMARY KEY ("id")',
+					users_id_yount_pk: '"users_id_yount_pk" PRIMARY KEY ("id")',
 				},
 			},
 			extensions: { btree_gin: true, cube: true },
@@ -878,39 +878,39 @@ describe("schema", () => {
 			},
 			foreignKeyConstraints: {
 				users: {
-					users_book_id_books_id_kinetic_fk:
-						'"users_book_id_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+					users_book_id_books_id_yount_fk:
+						'"users_book_id_books_id_yount_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 				},
 			},
 			uniqueConstraints: {
 				users: {
-					users_email_kinetic_key:
-						'"users_email_kinetic_key" UNIQUE NULLS NOT DISTINCT ("email")',
-					users_name_kinetic_key:
-						'"users_name_kinetic_key" UNIQUE NULLS DISTINCT ("name")',
-					users_full_name_kinetic_key:
-						'"users_full_name_kinetic_key" UNIQUE NULLS DISTINCT ("full_name")',
+					users_email_yount_key:
+						'"users_email_yount_key" UNIQUE NULLS NOT DISTINCT ("email")',
+					users_name_yount_key:
+						'"users_name_yount_key" UNIQUE NULLS DISTINCT ("name")',
+					users_full_name_yount_key:
+						'"users_full_name_yount_key" UNIQUE NULLS DISTINCT ("full_name")',
 				},
 				books: {
-					books_location_name_kinetic_key:
-						'"books_location_name_kinetic_key" UNIQUE NULLS DISTINCT ("location", "name")',
+					books_location_name_yount_key:
+						'"books_location_name_yount_key" UNIQUE NULLS DISTINCT ("location", "name")',
 				},
 				new_books: {
-					new_books_location_name_kinetic_key:
-						'"new_books_location_name_kinetic_key" UNIQUE NULLS DISTINCT ("location", "name")',
+					new_books_location_name_yount_key:
+						'"new_books_location_name_yount_key" UNIQUE NULLS DISTINCT ("location", "name")',
 				},
 			},
 			checkConstraints: {
 				users: {
-					f685097b_kinetic_chk: 'f685097b:"book_id" < 50000',
-					fa9b3b3f_kinetic_chk: 'fa9b3b3f:"book_id" > 50',
+					f685097b_yount_chk: 'f685097b:"book_id" < 50000',
+					fa9b3b3f_yount_chk: 'fa9b3b3f:"book_id" > 50',
 				},
 			},
 
 			primaryKey: {
 				users: {
-					users_full_name_kinetic_pk:
-						'"users_full_name_kinetic_pk" PRIMARY KEY ("full_name")',
+					users_full_name_yount_pk:
+						'"users_full_name_yount_pk" PRIMARY KEY ("full_name")',
 				},
 			},
 			extensions: { btree_gin: true, cube: true },
@@ -1271,33 +1271,33 @@ test("#localSchemaCamelCase", () => {
 		},
 		foreignKeyConstraints: {
 			users: {
-				users_book_id_books_id_kinetic_fk:
-					'"users_book_id_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+				users_book_id_books_id_yount_fk:
+					'"users_book_id_books_id_yount_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 			},
 		},
 		uniqueConstraints: {
 			users: {
-				users_email_kinetic_key:
-					'"users_email_kinetic_key" UNIQUE NULLS NOT DISTINCT ("email")',
-				users_name_kinetic_key:
-					'"users_name_kinetic_key" UNIQUE NULLS DISTINCT ("name")',
-				users_full_name_kinetic_key:
-					'"users_full_name_kinetic_key" UNIQUE NULLS DISTINCT ("full_name")',
+				users_email_yount_key:
+					'"users_email_yount_key" UNIQUE NULLS NOT DISTINCT ("email")',
+				users_name_yount_key:
+					'"users_name_yount_key" UNIQUE NULLS DISTINCT ("name")',
+				users_full_name_yount_key:
+					'"users_full_name_yount_key" UNIQUE NULLS DISTINCT ("full_name")',
 			},
 			books: {
-				books_location_name_kinetic_key:
-					'"books_location_name_kinetic_key" UNIQUE NULLS DISTINCT ("location", "name")',
+				books_location_name_yount_key:
+					'"books_location_name_yount_key" UNIQUE NULLS DISTINCT ("location", "name")',
 			},
 			new_books: {
-				new_books_location_name_kinetic_key:
-					'"new_books_location_name_kinetic_key" UNIQUE NULLS DISTINCT ("location", "name")',
+				new_books_location_name_yount_key:
+					'"new_books_location_name_yount_key" UNIQUE NULLS DISTINCT ("location", "name")',
 			},
 		},
 		checkConstraints: {},
 		primaryKey: {
 			users: {
-				users_full_name_kinetic_pk:
-					'"users_full_name_kinetic_pk" PRIMARY KEY ("full_name")',
+				users_full_name_yount_pk:
+					'"users_full_name_yount_pk" PRIMARY KEY ("full_name")',
 			},
 		},
 		extensions: { btree_gin: true, cube: true },

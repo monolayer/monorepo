@@ -68,7 +68,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addUniqueConstraint("books_id_kinetic_key", ["id"], (col) => col.nullsNotDistinct())',
+						'addUniqueConstraint("books_id_yount_key", ["id"], (col) => col.nullsNotDistinct())',
 						"execute();",
 					],
 				],
@@ -76,7 +76,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'dropConstraint("books_id_kinetic_key")',
+						'dropConstraint("books_id_yount_key")',
 						"execute();",
 					],
 				],
@@ -89,7 +89,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addUniqueConstraint("books_name_kinetic_key", ["name"])',
+						'addUniqueConstraint("books_name_yount_key", ["name"])',
 						"execute();",
 					],
 				],
@@ -97,7 +97,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'dropConstraint("books_name_kinetic_key")',
+						'dropConstraint("books_name_yount_key")',
 						"execute();",
 					],
 				],
@@ -110,7 +110,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"])',
+						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"])',
 						"execute();",
 					],
 				],
@@ -118,7 +118,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_fullName_id_kinetic_key")',
+						'dropConstraint("users_fullName_id_yount_key")',
 						"execute();",
 					],
 				],
@@ -142,14 +142,14 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addUniqueConstraint("books_id_kinetic_key", ["id"], (uc) =>
+			.addUniqueConstraint("books_id_yount_key", ["id"], (uc) =>
 				uc.nullsNotDistinct(),
 			)
 			.execute();
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addUniqueConstraint("books_name_kinetic_key", ["name"])
+			.addUniqueConstraint("books_name_yount_key", ["name"])
 			.execute();
 
 		await context.kysely.schema
@@ -160,7 +160,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addUniqueConstraint("users_fullName_id_kinetic_key", ["id", "fullName"])
+			.addUniqueConstraint("users_fullName_id_yount_key", ["id", "fullName"])
 			.execute();
 
 		const books = table({
@@ -196,7 +196,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'dropConstraint("books_id_kinetic_key")',
+						'dropConstraint("books_id_yount_key")',
 						"execute();",
 					],
 				],
@@ -204,7 +204,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addUniqueConstraint("books_id_kinetic_key", ["id"], (col) => col.nullsNotDistinct())',
+						'addUniqueConstraint("books_id_yount_key", ["id"], (col) => col.nullsNotDistinct())',
 						"execute();",
 					],
 				],
@@ -217,7 +217,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'dropConstraint("books_name_kinetic_key")',
+						'dropConstraint("books_name_yount_key")',
 						"execute();",
 					],
 				],
@@ -225,7 +225,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addUniqueConstraint("books_name_kinetic_key", ["name"])',
+						'addUniqueConstraint("books_name_yount_key", ["name"])',
 						"execute();",
 					],
 				],
@@ -248,7 +248,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addUniqueConstraint("books_id_kinetic_key", ["id"], (uc) =>
+			.addUniqueConstraint("books_id_yount_key", ["id"], (uc) =>
 				uc.nullsNotDistinct(),
 			)
 			.execute();
@@ -261,7 +261,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addUniqueConstraint("users_fullName_id_kinetic_key", ["id", "fullName"])
+			.addUniqueConstraint("users_fullName_id_yount_key", ["id", "fullName"])
 			.execute();
 
 		const books = table({
@@ -299,7 +299,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_fullName_id_kinetic_key")',
+						'dropConstraint("users_fullName_id_yount_key")',
 						"execute();",
 					],
 				],
@@ -307,7 +307,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"])',
+						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"])',
 						"execute();",
 					],
 				],
@@ -320,7 +320,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addUniqueConstraint("users_id_kinetic_key", ["id"])',
+						'addUniqueConstraint("users_id_yount_key", ["id"])',
 						"execute();",
 					],
 				],
@@ -328,7 +328,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_id_kinetic_key")',
+						'dropConstraint("users_id_yount_key")',
 						"execute();",
 					],
 				],
@@ -351,7 +351,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addUniqueConstraint("books_id_kinetic_key", ["id"], (uc) =>
+			.addUniqueConstraint("books_id_yount_key", ["id"], (uc) =>
 				uc.nullsNotDistinct(),
 			)
 			.execute();
@@ -364,7 +364,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addUniqueConstraint("users_fullName_id_kinetic_key", ["id", "fullName"])
+			.addUniqueConstraint("users_fullName_id_yount_key", ["id", "fullName"])
 			.execute();
 
 		const books = table({
@@ -402,13 +402,13 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_fullName_id_kinetic_key")',
+						'dropConstraint("users_fullName_id_yount_key")',
 						"execute();",
 					],
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"], (col) => col.nullsNotDistinct())',
+						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"], (col) => col.nullsNotDistinct())',
 						"execute();",
 					],
 				],
@@ -416,13 +416,13 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_fullName_id_kinetic_key")',
+						'dropConstraint("users_fullName_id_yount_key")',
 						"execute();",
 					],
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"])',
+						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"])',
 						"execute();",
 					],
 				],

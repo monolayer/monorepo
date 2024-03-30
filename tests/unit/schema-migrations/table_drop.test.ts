@@ -216,7 +216,7 @@ describe("Table drop migrations", () => {
 			.createTable("users")
 			.addColumn("id", "serial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE users ADD CONSTRAINT users_id_kinetic_pk PRIMARY KEY ("id")`.execute(
+		await sql`ALTER TABLE users ADD CONSTRAINT users_id_yount_pk PRIMARY KEY ("id")`.execute(
 			context.kysely,
 		);
 
@@ -224,7 +224,7 @@ describe("Table drop migrations", () => {
 			.createTable("books")
 			.addColumn("id", "bigserial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(
+		await sql`ALTER TABLE books ADD CONSTRAINT books_id_yount_pk PRIMARY KEY ("id")`.execute(
 			context.kysely,
 		);
 
@@ -234,7 +234,7 @@ describe("Table drop migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_id_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -248,7 +248,7 @@ describe("Table drop migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_id_kinetic_pk", ["id"])',
+						'addPrimaryKeyConstraint("users_id_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -303,7 +303,7 @@ describe("Table drop migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addUniqueConstraint("books_id_kinetic_key", ["id"], (uc) =>
+			.addUniqueConstraint("books_id_yount_key", ["id"], (uc) =>
 				uc.nullsNotDistinct(),
 			)
 			.execute();
@@ -316,7 +316,7 @@ describe("Table drop migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addUniqueConstraint("users_id_fullName_kinetic_key", ["id", "fullName"])
+			.addUniqueConstraint("users_id_fullName_yount_key", ["id", "fullName"])
 			.execute();
 
 		const books = table({
@@ -344,7 +344,7 @@ describe("Table drop migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addUniqueConstraint("users_fullName_id_kinetic_key", ["fullName", "id"])',
+						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"])',
 						"execute();",
 					],
 				],
@@ -388,7 +388,7 @@ describe("Table drop migrations", () => {
 			.createTable("books")
 			.addColumn("id", "bigserial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE books ADD CONSTRAINT books_id_kinetic_pk PRIMARY KEY ("id")`.execute(
+		await sql`ALTER TABLE books ADD CONSTRAINT books_id_yount_pk PRIMARY KEY ("id")`.execute(
 			context.kysely,
 		);
 
@@ -396,7 +396,7 @@ describe("Table drop migrations", () => {
 			.createTable("users")
 			.addColumn("id", "serial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE users ADD CONSTRAINT users_id_books_id_kinetic_fk FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(
+		await sql`ALTER TABLE users ADD CONSTRAINT users_id_books_id_yount_fk FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(
 			context.kysely,
 		);
 
@@ -410,7 +410,7 @@ describe("Table drop migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_id_books_id_kinetic_fk", ["id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("set null")',
 						"execute();",
@@ -426,7 +426,7 @@ describe("Table drop migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_id_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -486,10 +486,10 @@ describe("Table drop migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addCheckConstraint("971041d9_kinetic_chk", sql`"id" > 50`)
+			.addCheckConstraint("971041d9_yount_chk", sql`"id" > 50`)
 			.execute();
 
-		await sql`COMMENT ON CONSTRAINT "971041d9_kinetic_chk" ON "books" IS \'971041d9_kinetic_chk\'`.execute(
+		await sql`COMMENT ON CONSTRAINT "971041d9_yount_chk" ON "books" IS \'971041d9_yount_chk\'`.execute(
 			context.kysely,
 		);
 
@@ -500,10 +500,10 @@ describe("Table drop migrations", () => {
 				type: "dropConstraint",
 				down: [
 					[
-						'await sql`ALTER TABLE "books" ADD CONSTRAINT "971041d9_kinetic_chk" CHECK ((id > 50))`.execute(db);',
+						'await sql`ALTER TABLE "books" ADD CONSTRAINT "971041d9_yount_chk" CHECK ((id > 50))`.execute(db);',
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "971041d9_kinetic_chk" ON "books" IS \'971041d9_kinetic_chk\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "971041d9_yount_chk" ON "books" IS \'971041d9_yount_chk\'`.execute(db);',
 					],
 				],
 				up: [[]],
@@ -625,7 +625,7 @@ describe("Table drop migrations", () => {
 			.createType("role")
 			.asEnum(["admin", "user"])
 			.execute();
-		await sql`COMMENT ON TYPE "role" IS 'kinetic'`.execute(context.kysely);
+		await sql`COMMENT ON TYPE "role" IS 'yount'`.execute(context.kysely);
 
 		await context.kysely.schema
 			.createTable("users")
@@ -659,7 +659,7 @@ describe("Table drop migrations", () => {
 						"await db.schema",
 						'createType("role")',
 						'asEnum(["admin", "user"])',
-						"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+						"execute();await sql`COMMENT ON TYPE \"role\" IS 'yount'`.execute(db)",
 					],
 				],
 			},

@@ -33,8 +33,8 @@ import { MaxLengthColumn } from "../column.js";
  * - Value cannot exceed `maximumLength` (when specified).
  * @example
  * ```ts
- * import { characteVarying, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { characteVarying, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {
@@ -91,8 +91,8 @@ export function characterVarying(maximumLength?: number) {
  * - Value cannot exceed `maximumLength` (when specified).
  * @example
  * ```ts
- * import { characteVarying, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { characteVarying, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

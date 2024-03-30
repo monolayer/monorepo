@@ -34,8 +34,8 @@ import { IdentifiableColumn } from "../column.js";
  *
  * @example
  * ```ts
- * import { bigint, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { bigint, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

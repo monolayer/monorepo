@@ -46,7 +46,7 @@ function createEnumMigration(diff: CreateEnumDiff) {
 				"await db.schema",
 				`createType("${enumName}")`,
 				`asEnum([${enumValues}])`,
-				`execute();await sql\`COMMENT ON TYPE "${enumName}" IS 'kinetic'\`.execute(db)`,
+				`execute();await sql\`COMMENT ON TYPE "${enumName}" IS 'yount'\`.execute(db)`,
 			],
 		],
 		down: [["await db.schema", `dropType("${enumName}")`, "execute();"]],
@@ -70,7 +70,7 @@ function dropEnumMigration(diff: DropEnumDiff) {
 				"await db.schema",
 				`createType("${enumName}")`,
 				`asEnum([${enumValues}])`,
-				`execute();await sql\`COMMENT ON TYPE "${enumName}" IS 'kinetic'\`.execute(db)`,
+				`execute();await sql\`COMMENT ON TYPE "${enumName}" IS 'yount'\`.execute(db)`,
 			],
 		],
 	};

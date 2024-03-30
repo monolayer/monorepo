@@ -28,7 +28,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])
+			.addPrimaryKeyConstraint("books_id_yount_pk", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -98,7 +98,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_id_books_id_kinetic_fk", ["id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("set null")',
 						"execute();",
@@ -108,7 +108,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_id_books_id_kinetic_fk")',
+						'dropConstraint("users_id_books_id_yount_fk")',
 						"execute();",
 					],
 				],
@@ -131,7 +131,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("old_books")
-			.addPrimaryKeyConstraint("old_books_id_kinetic_pk", ["id"])
+			.addPrimaryKeyConstraint("old_books_id_yount_pk", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -141,7 +141,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])
+			.addPrimaryKeyConstraint("books_id_yount_pk", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -246,7 +246,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_id_books_id_kinetic_fk", ["id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("set null")',
 						"execute();",
@@ -256,7 +256,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_id_books_id_kinetic_fk")',
+						'dropConstraint("users_id_books_id_yount_fk")',
 						"execute();",
 					],
 				],
@@ -269,7 +269,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_second_book_id_old_books_id_kinetic_fk", ["second_book_id"], "old_books", ["id"])',
+						'addForeignKeyConstraint("users_second_book_id_old_books_id_yount_fk", ["second_book_id"], "old_books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("set null")',
 						"execute();",
@@ -279,7 +279,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_second_book_id_old_books_id_kinetic_fk")',
+						'dropConstraint("users_second_book_id_old_books_id_yount_fk")',
 						"execute();",
 					],
 				],
@@ -302,7 +302,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])
+			.addPrimaryKeyConstraint("books_id_yount_pk", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -314,7 +314,7 @@ describe("Database migrations", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_book_id_books_id_kinetic_fk",
+				"users_book_id_books_id_yount_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -355,7 +355,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_book_id_books_id_kinetic_fk")',
+						'dropConstraint("users_book_id_books_id_yount_fk")',
 						"execute();",
 					],
 				],
@@ -363,7 +363,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("set null")',
 						"execute();",
@@ -388,7 +388,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])
+			.addPrimaryKeyConstraint("books_id_yount_pk", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -398,7 +398,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("old_books")
-			.addPrimaryKeyConstraint("old_books_id_kinetic_pk", ["id"])
+			.addPrimaryKeyConstraint("old_books_id_yount_pk", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -411,7 +411,7 @@ describe("Database migrations", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_book_id_books_id_kinetic_fk",
+				"users_book_id_books_id_yount_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -423,7 +423,7 @@ describe("Database migrations", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_old_book_id_old_books_id_kinetic_fk",
+				"users_old_book_id_old_books_id_yount_fk",
 				["old_book_id"],
 				"old_books",
 				["id"],
@@ -475,7 +475,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_book_id_books_id_kinetic_fk")',
+						'dropConstraint("users_book_id_books_id_yount_fk")',
 						"execute();",
 					],
 				],
@@ -483,7 +483,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("set null")',
 						"execute();",
@@ -498,7 +498,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_old_book_id_old_books_id_kinetic_fk")',
+						'dropConstraint("users_old_book_id_old_books_id_yount_fk")',
 						"execute();",
 					],
 				],
@@ -506,7 +506,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_old_book_id_old_books_id_kinetic_fk", ["old_book_id"], "old_books", ["id"])',
+						'addForeignKeyConstraint("users_old_book_id_old_books_id_yount_fk", ["old_book_id"], "old_books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("set null")',
 						"execute();",
@@ -531,7 +531,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])
+			.addPrimaryKeyConstraint("books_id_yount_pk", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -543,7 +543,7 @@ describe("Database migrations", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_book_id_books_id_kinetic_fk",
+				"users_book_id_books_id_yount_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -591,7 +591,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_book_id_books_id_kinetic_fk")',
+						'dropConstraint("users_book_id_books_id_yount_fk")',
 						"execute();",
 					],
 				],
@@ -599,7 +599,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("set null")',
 						"execute();",
@@ -614,7 +614,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_id_books_id_kinetic_fk", ["id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("cascade")',
 						"execute();",
@@ -624,7 +624,7 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_id_books_id_kinetic_fk")',
+						'dropConstraint("users_id_books_id_yount_fk")',
 						"execute();",
 					],
 				],
@@ -647,7 +647,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])
+			.addPrimaryKeyConstraint("books_id_yount_pk", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -659,7 +659,7 @@ describe("Database migrations", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_book_id_books_id_kinetic_fk",
+				"users_book_id_books_id_yount_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -707,13 +707,13 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_book_id_books_id_kinetic_fk")',
+						'dropConstraint("users_book_id_books_id_yount_fk")',
 						"execute();",
 					],
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("cascade")',
 						"execute();",
@@ -723,13 +723,13 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'dropConstraint("users_book_id_books_id_kinetic_fk")',
+						'dropConstraint("users_book_id_books_id_yount_fk")',
 						"execute();",
 					],
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("set null")',
 						"execute();",

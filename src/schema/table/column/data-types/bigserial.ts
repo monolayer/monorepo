@@ -33,8 +33,8 @@ import { SerialColumn } from "../column.js";
  *
  * @example
  * ```ts
- * import { bigserial, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { bigserial, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

@@ -30,8 +30,8 @@ import { PgColumn, valueWithHash } from "../column.js";
  * - String values must be a valid UUID.
  * @example
  * ```ts
- * import { uuid, pgDatabase, sql, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { uuid, pgDatabase, sql, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

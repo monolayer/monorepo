@@ -32,7 +32,7 @@ export async function dbEnumInfo(
 			])
 			.where("pg_namespace.nspname", "=", databaseSchema)
 			.where("pg_type.typtype", "=", "e")
-			.where("pg_description.description", "=", "kinetic")
+			.where("pg_description.description", "=", "yount")
 			.groupBy("pg_type.typname")
 			.groupBy("pg_namespace.nspname")
 			.orderBy("pg_type.typname")

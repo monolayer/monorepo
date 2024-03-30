@@ -41,8 +41,8 @@ import { JsonValue } from "../types.js";
  * - Record values must be convertible to a JSON string.
  * @example
  * ```ts
- * import { json, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { json, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

@@ -30,8 +30,8 @@ import { StringColumn } from "../column.js";
  * - String values must be a valid MAC address in EUI-64 format.
  * @example
  * ```ts
- * import { macaddr8, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { macaddr8, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

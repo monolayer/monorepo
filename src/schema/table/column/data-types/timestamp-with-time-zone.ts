@@ -42,8 +42,8 @@ import { DateTimePrecision } from "../types.js";
  *   - Date must be 4713 BC or later.
  * @example
  * ```ts
- * import { pgDatabase, table, timestampWithTimeZone } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { pgDatabase, table, timestampWithTimeZone } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {
@@ -108,8 +108,8 @@ export function timestampWithTimeZone(precision?: DateTimePrecision) {
  *   - Date must be 4713 BC or later.
  * @example
  * ```ts
- * import { pgDatabase, table, timestamptz } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { pgDatabase, table, timestamptz } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

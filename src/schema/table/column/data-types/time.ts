@@ -34,8 +34,8 @@ import { DateTimePrecision } from "../types.js";
  * - Non-values must be a valid string that matches a time format.
  * @example
  * ```ts
- * import { pgDatabase, table, time } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { pgDatabase, table, time } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

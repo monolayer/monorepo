@@ -13,7 +13,7 @@ test("#PrimaryKeyInfoToQuery", () => {
 		columns: ["book_id", "location_id"],
 	};
 	const expected =
-		'"test_users_book_id_location_id_kinetic_pk" PRIMARY KEY ("book_id", "location_id")';
+		'"test_users_book_id_location_id_yount_pk" PRIMARY KEY ("book_id", "location_id")';
 	expect(primaryKeyConstraintInfoToQuery(info)).toBe(expected);
 });
 
@@ -28,7 +28,7 @@ test("#foreigKeyInfoToQuery", () => {
 		deleteRule: "NO ACTION",
 	};
 	const expected =
-		'"test_users_book_id_location_id_test_books_fk_id_location_kinetic_fk" FOREIGN KEY ("book_id", "location_id") REFERENCES test_books_fk ("id", "location") ON DELETE NO ACTION ON UPDATE CASCADE';
+		'"test_users_book_id_location_id_test_books_fk_id_location_yount_fk" FOREIGN KEY ("book_id", "location_id") REFERENCES test_books_fk ("id", "location") ON DELETE NO ACTION ON UPDATE CASCADE';
 	expect(foreignKeyConstraintInfoToQuery(info)).toBe(expected);
 });
 
@@ -41,11 +41,11 @@ test("#uniqueConstraintInfoToQuery", () => {
 	};
 
 	expect(uniqueConstraintInfoToQuery(info)).toBe(
-		'"test_users_book_id_location_id_kinetic_key" UNIQUE NULLS DISTINCT ("book_id", "location_id")',
+		'"test_users_book_id_location_id_yount_key" UNIQUE NULLS DISTINCT ("book_id", "location_id")',
 	);
 
 	info.nullsDistinct = false;
 	expect(uniqueConstraintInfoToQuery(info)).toBe(
-		'"test_users_book_id_location_id_kinetic_key" UNIQUE NULLS NOT DISTINCT ("book_id", "location_id")',
+		'"test_users_book_id_location_id_yount_key" UNIQUE NULLS NOT DISTINCT ("book_id", "location_id")',
 	);
 });

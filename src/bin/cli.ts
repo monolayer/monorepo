@@ -18,11 +18,11 @@ import { isCommanderError } from "../cli/command.js";
 async function main() {
 	const program = new Command();
 
-	program.name("kinetic").version("1.0.0");
+	program.name("yount").version("1.0.0");
 
 	program
 		.command("init")
-		.description("initialize kinetic in a project")
+		.description("initialize yount in a project")
 		.action(async () => {
 			await initCommand();
 		});
@@ -31,7 +31,7 @@ async function main() {
 		.command("db:create")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
+			"environment as specified in yount.ts",
 			"development",
 		)
 		.description("create the database")
@@ -43,7 +43,7 @@ async function main() {
 		.command("db:drop")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
+			"environment as specified in yount.ts",
 			"development",
 		)
 		.description("drop the database")
@@ -56,7 +56,7 @@ async function main() {
 		.description("apply pending migrations")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
+			"environment as specified in yount.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -68,7 +68,7 @@ async function main() {
 		.description("migrate one step down")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
+			"environment as specified in yount.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -80,7 +80,7 @@ async function main() {
 		.description("seed database")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
+			"environment as specified in yount.ts",
 		)
 		.option("-r, --replant", "Truncate tables before seeding")
 		.option("-d, --disable-warnings", "disable truncation warnings")
@@ -93,7 +93,7 @@ async function main() {
 		.description("dump the database structure")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
+			"environment as specified in yount.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -105,7 +105,7 @@ async function main() {
 		.description("load the database structure")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
+			"environment as specified in yount.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -129,7 +129,7 @@ async function main() {
 		.description("list pending migrations")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in kinetic.ts",
+			"environment as specified in yount.ts",
 			"development",
 		)
 		.action(async (opts) => {

@@ -29,8 +29,8 @@ import { StringColumn } from "../column.js";
  * - Input value must be `string`, or `null`.
  * @example
  * ```ts
- * import { pgDatabase, table, xml } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { pgDatabase, table, xml } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

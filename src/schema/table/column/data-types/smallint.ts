@@ -34,8 +34,8 @@ import { IdentifiableColumn } from "../column.js";
  *   - Cannot be greater than 32767.
  * @example
  * ```ts
- * import { pgDatabase, smallint, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { pgDatabase, smallint, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

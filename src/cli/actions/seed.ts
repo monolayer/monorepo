@@ -45,8 +45,8 @@ export async function seed(options: {
 
 	if (pending.length > 0) {
 		p.log.error("You have pending migrations. Cannot seed until they are run.");
-		const nextSteps = `1) Run 'npx kinetic migrate' to migrate the database.
-2) Run again \`npx kinetic seed\`.`;
+		const nextSteps = `1) Run 'npx yount migrate' to migrate the database.
+2) Run again \`npx yount seed\`.`;
 		p.note(nextSteps, "Next Steps");
 		p.outro(`${color.red("Failed")}`);
 		db.destroy();
@@ -81,9 +81,9 @@ export async function seed(options: {
 		p.log.error(
 			"The local schema does not match the database schema. Cannot continue.",
 		);
-		const nextSteps = `1) Run 'npx kinetic generate' to generate migrations.
-2) Run 'npx kinetic migrate' to migrate the database.
-3) Run again \`npx kinetic seed\`.`;
+		const nextSteps = `1) Run 'npx yount generate' to generate migrations.
+2) Run 'npx yount migrate' to migrate the database.
+3) Run again \`npx yount seed\`.`;
 		p.note(nextSteps, "Next Steps");
 		p.outro(`${color.red("Failed")}`);
 		db.destroy();

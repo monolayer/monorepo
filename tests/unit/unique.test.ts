@@ -8,8 +8,8 @@ describe("PgUniqueConstraint", () => {
 		const compiled = await compileUnique(constraint, "test_table");
 
 		const expected = {
-			test_table_id_kinetic_key:
-				'"test_table_id_kinetic_key" UNIQUE NULLS DISTINCT ("id")',
+			test_table_id_yount_key:
+				'"test_table_id_yount_key" UNIQUE NULLS DISTINCT ("id")',
 		};
 		expect(compiled).toStrictEqual(expected);
 	});
@@ -19,8 +19,8 @@ describe("PgUniqueConstraint", () => {
 		const compiled = await compileUnique(constraint, "test_table");
 
 		const expected = {
-			test_table_name_price_kinetic_key:
-				'"test_table_name_price_kinetic_key" UNIQUE NULLS DISTINCT ("name", "price")',
+			test_table_name_price_yount_key:
+				'"test_table_name_price_yount_key" UNIQUE NULLS DISTINCT ("name", "price")',
 		};
 		expect(compiled).toStrictEqual(expected);
 	});
@@ -30,8 +30,8 @@ describe("PgUniqueConstraint", () => {
 		const compiled = await compileUnique(constraint, "test_table");
 
 		const expected = {
-			test_table_id_kinetic_key:
-				'"test_table_id_kinetic_key" UNIQUE NULLS NOT DISTINCT ("id")',
+			test_table_id_yount_key:
+				'"test_table_id_yount_key" UNIQUE NULLS NOT DISTINCT ("id")',
 		};
 		expect(compiled).toStrictEqual(expected);
 	});

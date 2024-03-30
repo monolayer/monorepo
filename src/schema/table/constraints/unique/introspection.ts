@@ -74,7 +74,7 @@ export async function dbUniqueConstraintInfo(
 					.as("nullsDistinct"),
 			])
 			.where("pg_constraint.contype", "=", "u")
-			.where("pg_constraint.conname", "~", "kinetic_key$")
+			.where("pg_constraint.conname", "~", "yount_key$")
 			.where("pg_namespace.nspname", "=", databaseSchema)
 			.where("pg_class.relname", "in", tableNames)
 			.groupBy(["table", "information_schema.table_constraints.nulls_distinct"])
@@ -82,7 +82,7 @@ export async function dbUniqueConstraintInfo(
 		const transformedResults = results.reduce<UniqueInfo>((acc, result) => {
 			const keyName = `${result.table}_${result.columns
 				.sort()
-				.join("_")}_kinetic_key`;
+				.join("_")}_yount_key`;
 			const constraintInfo = {
 				[keyName]: uniqueConstraintInfoToQuery(result),
 			};
@@ -158,7 +158,7 @@ export function uniqueToInfo(
 	const columns = args.columns
 		.sort()
 		.map((column) => toSnakeCase(column, camelCase));
-	const keyName = `${newTableName}_${columns.join("_")}_kinetic_key`;
+	const keyName = `${newTableName}_${columns.join("_")}_yount_key`;
 
 	const kyselyBuilder = kysely.schema
 		.alterTable(newTableName)
@@ -191,7 +191,7 @@ export function uniqueToInfo(
 
 export function uniqueConstraintInfoToQuery(info: UniqueConstraintInfo) {
 	return [
-		`"${info.table}_${info.columns.sort().join("_")}_kinetic_key"`,
+		`"${info.table}_${info.columns.sort().join("_")}_yount_key"`,
 		"UNIQUE",
 		info.nullsDistinct ? "NULLS DISTINCT" : "NULLS NOT DISTINCT",
 		`(${info.columns

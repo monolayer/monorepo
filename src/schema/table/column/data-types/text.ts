@@ -31,8 +31,8 @@ import { PgColumn } from "../column.js";
  * - Input value must be `string` or `null`.
  * @example
  * ```ts
- * import { pgDatabase, table, text } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { pgDatabase, table, text } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

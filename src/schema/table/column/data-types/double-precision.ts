@@ -45,8 +45,8 @@ import { PgColumn } from "../column.js";
  *   - Greater than 1e308.
  * @example
  * ```ts
- * import { doublePrecision, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { doublePrecision, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

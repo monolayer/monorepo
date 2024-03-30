@@ -44,12 +44,12 @@ describe("#remoteSchema", () => {
 			.execute();
 
 		await kysely.schema
-			.createType("not_kinetic")
+			.createType("not_yount")
 			.asEnum(["failed", "success"])
 			.execute();
 
-		await sql`COMMENT ON TYPE status IS 'kinetic'`.execute(kysely);
-		await sql`COMMENT ON TYPE role IS 'kinetic'`.execute(kysely);
+		await sql`COMMENT ON TYPE status IS 'yount'`.execute(kysely);
+		await sql`COMMENT ON TYPE role IS 'yount'`.execute(kysely);
 
 		await kysely.schema
 			.createTable("remote_schema_books")
@@ -71,15 +71,15 @@ describe("#remoteSchema", () => {
 			.addColumn("updated_at", "timestamp", (col) =>
 				col.defaultTo(sql`CURRENT_TIMESTAMP`),
 			)
-			.addPrimaryKeyConstraint("remote_schema_users_id_kinetic_pk", ["id"])
+			.addPrimaryKeyConstraint("remote_schema_users_id_yount_pk", ["id"])
 			.addForeignKeyConstraint(
-				"remote_schema_users_book_id_remote_schema_books_id_kinetic_fk",
+				"remote_schema_users_book_id_remote_schema_books_id_yount_fk",
 				["book_id"],
 				"remote_schema_books",
 				["id"],
 			)
 			.addUniqueConstraint(
-				"remote_schema_users_email_kinetic_key",
+				"remote_schema_users_email_yount_key",
 				["email"],
 				(builder) => builder.nullsNotDistinct(),
 			)
@@ -120,10 +120,10 @@ describe("#remoteSchema", () => {
 
 		await kysely.schema
 			.alterTable("remote_schema_users")
-			.addCheckConstraint("book_id_kinetic_chk", sql`book_id > 5`)
+			.addCheckConstraint("book_id_yount_chk", sql`book_id > 5`)
 			.execute();
 
-		await sql`COMMENT ON CONSTRAINT "book_id_kinetic_chk" ON "remote_schema_users" IS 'abcd'`.execute(
+		await sql`COMMENT ON CONSTRAINT "book_id_yount_chk" ON "remote_schema_users" IS 'abcd'`.execute(
 			kysely,
 		);
 
@@ -278,26 +278,26 @@ describe("#remoteSchema", () => {
 				},
 				uniqueConstraints: {
 					remote_schema_users: {
-						remote_schema_users_email_kinetic_key:
-							'"remote_schema_users_email_kinetic_key" UNIQUE NULLS NOT DISTINCT ("email")',
+						remote_schema_users_email_yount_key:
+							'"remote_schema_users_email_yount_key" UNIQUE NULLS NOT DISTINCT ("email")',
 					},
 				},
 				foreignKeyConstraints: {
 					remote_schema_users: {
-						remote_schema_users_book_id_remote_schema_books_id_kinetic_fk:
-							'"remote_schema_users_book_id_remote_schema_books_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES remote_schema_books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+						remote_schema_users_book_id_remote_schema_books_id_yount_fk:
+							'"remote_schema_users_book_id_remote_schema_books_id_yount_fk" FOREIGN KEY ("book_id") REFERENCES remote_schema_books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 					},
 				},
 				checkConstraints: {
 					remote_schema_users: {
-						book_id_kinetic_chk: "abcd:CHECK ((book_id > 5))",
+						book_id_yount_chk: "abcd:CHECK ((book_id > 5))",
 					},
 				},
 
 				primaryKey: {
 					remote_schema_users: {
-						remote_schema_users_id_kinetic_pk:
-							'"remote_schema_users_id_kinetic_pk" PRIMARY KEY ("id")',
+						remote_schema_users_id_yount_pk:
+							'"remote_schema_users_id_yount_pk" PRIMARY KEY ("id")',
 					},
 				},
 				triggers: {
@@ -339,15 +339,15 @@ describe("#remoteSchema", () => {
 			.addColumn("name", "varchar")
 			.addColumn("email", "varchar")
 			.addColumn("book_id", "integer")
-			.addPrimaryKeyConstraint("remoteSchemaUsers_id_kinetic_pk", ["id"])
+			.addPrimaryKeyConstraint("remoteSchemaUsers_id_yount_pk", ["id"])
 			.addForeignKeyConstraint(
-				"remoteSchemaUsers_book_id_remoteSchemaBooks_id_kinetic_fk",
+				"remoteSchemaUsers_book_id_remoteSchemaBooks_id_yount_fk",
 				["book_id"],
 				"remoteSchemaBooks",
 				["id"],
 			)
 			.addUniqueConstraint(
-				"remoteSchemaUsers_name_kinetic_key",
+				"remoteSchemaUsers_name_yount_key",
 				["name"],
 				(builder) => builder.nullsNotDistinct(),
 			)
@@ -464,21 +464,21 @@ describe("#remoteSchema", () => {
 				},
 				uniqueConstraints: {
 					remoteSchemaUsers: {
-						remoteSchemaUsers_name_kinetic_key:
-							'"remoteSchemaUsers_name_kinetic_key" UNIQUE NULLS NOT DISTINCT ("name")',
+						remoteSchemaUsers_name_yount_key:
+							'"remoteSchemaUsers_name_yount_key" UNIQUE NULLS NOT DISTINCT ("name")',
 					},
 				},
 				checkConstraints: {},
 				foreignKeyConstraints: {
 					remoteSchemaUsers: {
-						remoteSchemaUsers_book_id_remoteSchemaBooks_id_kinetic_fk:
-							'"remoteSchemaUsers_book_id_remoteSchemaBooks_id_kinetic_fk" FOREIGN KEY ("book_id") REFERENCES remoteSchemaBooks ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+						remoteSchemaUsers_book_id_remoteSchemaBooks_id_yount_fk:
+							'"remoteSchemaUsers_book_id_remoteSchemaBooks_id_yount_fk" FOREIGN KEY ("book_id") REFERENCES remoteSchemaBooks ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 					},
 				},
 				primaryKey: {
 					remoteSchemaUsers: {
-						remoteSchemaUsers_id_kinetic_pk:
-							'"remoteSchemaUsers_id_kinetic_pk" PRIMARY KEY ("id")',
+						remoteSchemaUsers_id_yount_pk:
+							'"remoteSchemaUsers_id_yount_pk" PRIMARY KEY ("id")',
 					},
 				},
 				enums: {},

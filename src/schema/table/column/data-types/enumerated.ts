@@ -34,8 +34,8 @@ import { StringColumn } from "../column.js";
  * - Input values must be an enum value, or `null`.
  * @example
  * ```ts
- * import { enumerated, enumType, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { enumerated, enumType, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const role = enumType("role", ["admin", "user"]);
  * const database = pgDatabase({

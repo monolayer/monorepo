@@ -321,7 +321,7 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_id_kinetic_pk", ["id"])',
+						'addPrimaryKeyConstraint("users_id_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -335,7 +335,7 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_id_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -412,7 +412,7 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_id_name_kinetic_pk", ["id", "name"])',
+						'addPrimaryKeyConstraint("users_id_name_yount_pk", ["id", "name"])',
 						"execute();",
 					],
 				],
@@ -426,7 +426,7 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_id_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -506,7 +506,7 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addUniqueConstraint("books_id_kinetic_key", ["id"], (col) => col.nullsNotDistinct())',
+						'addUniqueConstraint("books_id_yount_key", ["id"], (col) => col.nullsNotDistinct())',
 						"execute();",
 					],
 				],
@@ -520,7 +520,7 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addUniqueConstraint("users_id_kinetic_key", ["id"])',
+						'addUniqueConstraint("users_id_yount_key", ["id"])',
 						"execute();",
 					],
 				],
@@ -579,7 +579,7 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addUniqueConstraint("books_id_kinetic_key", ["id"], (col) => col.nullsNotDistinct())',
+						'addUniqueConstraint("books_id_yount_key", ["id"], (col) => col.nullsNotDistinct())',
 						"execute();",
 					],
 				],
@@ -593,11 +593,11 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addCheckConstraint("918b4271_kinetic_chk", sql`"id" > 50`)',
+						'addCheckConstraint("918b4271_yount_chk", sql`"id" > 50`)',
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "918b4271_kinetic_chk" ON "books" IS \'918b4271\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`.execute(db);',
 					],
 				],
 				down: [[]],
@@ -610,11 +610,11 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addCheckConstraint("e37c55a5_kinetic_chk", sql`"id" < 50000`)',
+						'addCheckConstraint("e37c55a5_yount_chk", sql`"id" < 50000`)',
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_kinetic_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
 					],
 				],
 				down: [[]],
@@ -699,7 +699,7 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_id_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -713,7 +713,7 @@ describe("Table create migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_id_books_id_kinetic_fk", ["id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
 						'onDelete("set null")',
 						'onUpdate("set null")',
 						"execute();",
@@ -838,7 +838,7 @@ describe("Table create migrations", () => {
 						"await db.schema",
 						'createType("role")',
 						'asEnum(["admin", "user"])',
-						"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+						"execute();await sql`COMMENT ON TYPE \"role\" IS 'yount'`.execute(db)",
 					],
 				],
 				down: [["await db.schema", 'dropType("role")', "execute();"]],
@@ -1071,7 +1071,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 						"await db.schema",
 						'createType("role")',
 						'asEnum(["admin", "user"])',
-						"execute();await sql`COMMENT ON TYPE \"role\" IS 'kinetic'`.execute(db)",
+						"execute();await sql`COMMENT ON TYPE \"role\" IS 'yount'`.execute(db)",
 					],
 				],
 				down: [["await db.schema", 'dropType("role")', "execute();"]],
@@ -1164,7 +1164,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_id_kinetic_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_id_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -1178,7 +1178,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 					[
 						"await db.schema",
 						'alterTable("new_books")',
-						'addPrimaryKeyConstraint("new_books_id_kinetic_pk", ["id"])',
+						'addPrimaryKeyConstraint("new_books_id_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -1192,7 +1192,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 					[
 						"await db.schema",
 						'alterTable("library_building")',
-						'addPrimaryKeyConstraint("library_building_id_kinetic_pk", ["id"])',
+						'addPrimaryKeyConstraint("library_building_id_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -1205,7 +1205,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 					[
 						"await db.schema",
 						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_kinetic_fk", ["book_id"], "books", ["id"])',
+						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("no action")',
 						'onUpdate("no action")',
 						"execute();",
@@ -1221,7 +1221,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 					[
 						"await db.schema",
 						'alterTable("new_books")',
-						'addForeignKeyConstraint("new_books_old_book_id_books_id_kinetic_fk", ["old_book_id"], "books", ["id"])',
+						'addForeignKeyConstraint("new_books_old_book_id_books_id_yount_fk", ["old_book_id"], "books", ["id"])',
 						'onDelete("no action")',
 						'onUpdate("no action")',
 						"execute();",
@@ -1237,7 +1237,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 					[
 						"await db.schema",
 						'alterTable("new_books")',
-						'addForeignKeyConstraint("new_books_library_building_id_library_building_id_kinetic_fk", ["library_building_id"], "library_building", ["id"])',
+						'addForeignKeyConstraint("new_books_library_building_id_library_building_id_yount_fk", ["library_building_id"], "library_building", ["id"])',
 						'onDelete("no action")',
 						'onUpdate("no action")',
 						"execute();",
@@ -1253,11 +1253,11 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 					[
 						"await db.schema",
 						'alterTable("new_books")',
-						'addCheckConstraint("60bcaca1_kinetic_chk", sql`"old_book_id" > 50`)',
+						'addCheckConstraint("60bcaca1_yount_chk", sql`"old_book_id" > 50`)',
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "60bcaca1_kinetic_chk" ON "new_books" IS \'60bcaca1\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "60bcaca1_yount_chk" ON "new_books" IS \'60bcaca1\'`.execute(db);',
 					],
 				],
 				down: [[]],
@@ -1270,11 +1270,11 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 					[
 						"await db.schema",
 						'alterTable("new_books")',
-						'addCheckConstraint("1c05ff9f_kinetic_chk", sql`"old_book_id" < 50000`)',
+						'addCheckConstraint("1c05ff9f_yount_chk", sql`"old_book_id" < 50000`)',
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "1c05ff9f_kinetic_chk" ON "new_books" IS \'1c05ff9f\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "1c05ff9f_yount_chk" ON "new_books" IS \'1c05ff9f\'`.execute(db);',
 					],
 				],
 				down: [[]],

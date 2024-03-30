@@ -30,8 +30,8 @@ import { StringColumn } from "../column.js";
  * - String values must be a valid IPv4 or IPv6 network specification without bits set to the right of the mask.
  * @example
  * ```ts
- * import { cidr, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { cidr, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

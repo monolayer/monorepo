@@ -29,10 +29,10 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addCheckConstraint("918b4271_kinetic_chk", sql`"id" > 50`)
+			.addCheckConstraint("918b4271_yount_chk", sql`"id" > 50`)
 			.execute();
 
-		await sql`COMMENT ON CONSTRAINT "918b4271_kinetic_chk" ON "books" IS \'918b4271\'`.execute(
+		await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`.execute(
 			context.kysely,
 		);
 
@@ -60,18 +60,18 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addCheckConstraint("e37c55a5_kinetic_chk", sql`"id" < 50000`)',
+						'addCheckConstraint("e37c55a5_yount_chk", sql`"id" < 50000`)',
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_kinetic_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
 					],
 				],
 				down: [
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'dropConstraint("e37c55a5_kinetic_chk")',
+						'dropConstraint("e37c55a5_yount_chk")',
 						"execute();",
 					],
 				],
@@ -119,18 +119,18 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addCheckConstraint("918b4271_kinetic_chk", sql`"id" > 50`)',
+						'addCheckConstraint("918b4271_yount_chk", sql`"id" > 50`)',
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "918b4271_kinetic_chk" ON "books" IS \'918b4271\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`.execute(db);',
 					],
 				],
 				down: [
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'dropConstraint("918b4271_kinetic_chk")',
+						'dropConstraint("918b4271_yount_chk")',
 						"execute();",
 					],
 				],
@@ -143,18 +143,18 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'addCheckConstraint("e37c55a5_kinetic_chk", sql`"id" < 50000`)',
+						'addCheckConstraint("e37c55a5_yount_chk", sql`"id" < 50000`)',
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_kinetic_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
 					],
 				],
 				down: [
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'dropConstraint("e37c55a5_kinetic_chk")',
+						'dropConstraint("e37c55a5_yount_chk")',
 						"execute();",
 					],
 				],
@@ -179,19 +179,19 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addCheckConstraint("2f1f415e_kinetic_chk", sql`"id" > 5`)
+			.addCheckConstraint("2f1f415e_yount_chk", sql`"id" > 5`)
 			.execute();
 
-		await sql`COMMENT ON CONSTRAINT "2f1f415e_kinetic_chk" ON "books" IS \'2f1f415e\'`.execute(
+		await sql`COMMENT ON CONSTRAINT "2f1f415e_yount_chk" ON "books" IS \'2f1f415e\'`.execute(
 			context.kysely,
 		);
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addCheckConstraint("e37c55a5_kinetic_chk", sql`"id" < 50000`)
+			.addCheckConstraint("e37c55a5_yount_chk", sql`"id" < 50000`)
 			.execute();
 
-		await sql`COMMENT ON CONSTRAINT "e37c55a5_kinetic_chk" ON "books" IS \'e37c55a5\'`.execute(
+		await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`.execute(
 			context.kysely,
 		);
 
@@ -219,16 +219,16 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'dropConstraint("e37c55a5_kinetic_chk")',
+						'dropConstraint("e37c55a5_yount_chk")',
 						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "books" ADD CONSTRAINT "e37c55a5_kinetic_chk" CHECK ((id < 50000))`.execute(db);',
+						'await sql`ALTER TABLE "books" ADD CONSTRAINT "e37c55a5_yount_chk" CHECK ((id < 50000))`.execute(db);',
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_kinetic_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
 					],
 				],
 			},
@@ -250,10 +250,10 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addCheckConstraint("918b4271_kinetic_chk", sql`"id" < 50000`)
+			.addCheckConstraint("918b4271_yount_chk", sql`"id" < 50000`)
 			.execute();
 
-		await sql`COMMENT ON CONSTRAINT "918b4271_kinetic_chk" ON "books" IS \'918b4271\'`.execute(
+		await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`.execute(
 			context.kysely,
 		);
 
@@ -278,16 +278,16 @@ describe("Database migrations", () => {
 					[
 						"await db.schema",
 						'alterTable("books")',
-						'dropConstraint("918b4271_kinetic_chk")',
+						'dropConstraint("918b4271_yount_chk")',
 						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "books" ADD CONSTRAINT "918b4271_kinetic_chk" CHECK ((id < 50000))`.execute(db);',
+						'await sql`ALTER TABLE "books" ADD CONSTRAINT "918b4271_yount_chk" CHECK ((id < 50000))`.execute(db);',
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "918b4271_kinetic_chk" ON "books" IS \'918b4271\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`.execute(db);',
 					],
 				],
 			},

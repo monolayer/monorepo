@@ -42,8 +42,8 @@ import { PgColumn } from "../column.js";
  * - Precision and scale are enforced when specified.
  * @example
  * ```ts
- * import { pgDatabase, numeric, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { pgDatabase, numeric, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

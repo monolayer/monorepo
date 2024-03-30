@@ -46,8 +46,8 @@ import { PgColumn } from "../column.js";
  *   - Cannot be greater than 1e37.
  * @example
  * ```ts
- * import { pgDatabase, real, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { pgDatabase, real, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

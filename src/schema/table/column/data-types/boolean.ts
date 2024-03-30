@@ -32,8 +32,8 @@ import { PgColumn, valueWithHash } from "../column.js";
  * - Value must be `boolean` or `Boolish`.
  * @example
  * ```ts
- * import { boolean, pgDatabase, table } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { boolean, pgDatabase, table } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {

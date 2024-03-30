@@ -6,8 +6,8 @@ import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {
 	configTemplate,
-	kyselyTemplate,
 	schemaTemplate,
+	yountTemplate,
 } from "~/cli/components/init-folders-and-files.js";
 import { npmInstall, npmList, npx } from "~/cli/utils/npm.js";
 import { keys } from "~tests/helpers/key-codes.js";
@@ -20,7 +20,7 @@ type CliTestContext = {
 	io: MockSTDIN;
 };
 
-describe("kinetic CLI", () => {
+describe("yount CLI", () => {
 	beforeEach(async (context: CliTestContext) => {
 		context.io = stdin();
 		context.appFolder = `${cwd()}/tmp/${context.task.name.replace(/ /g, "-")}`;
@@ -32,7 +32,7 @@ describe("kinetic CLI", () => {
 		execaSync("npm", ["install"], {
 			cwd: context.appFolder,
 		});
-		execaSync("npm", ["install", `${cwd()}/build/kysely-kinetic-1.0.0.tgz`], {
+		execaSync("npm", ["install", `${cwd()}/build/yount-1.0.0.tgz`], {
 			cwd: context.appFolder,
 		});
 	});
@@ -43,13 +43,13 @@ describe("kinetic CLI", () => {
 	});
 
 	test("installs and exits with success", async (context: CliTestContext) => {
-		const result = await npx(["kinetic"], context.appFolder);
+		const result = await npx(["yount"], context.appFolder);
 		expect(result.exitCode).toBe(0);
 	});
 
 	describe("init command", () => {
 		test("installs dependencies in the project when missing", async (context: CliTestContext) => {
-			const result = npx(["kinetic", "init"], context.appFolder);
+			const result = npx(["yount", "init"], context.appFolder);
 			if (result.stdout !== null) {
 				result.stdout.on("data", (data: Buffer | string) => {
 					const read = data instanceof Buffer ? data.toString() : data;
@@ -79,7 +79,7 @@ describe("kinetic CLI", () => {
 		test("skips install of dependecies already in the project", async (context: CliTestContext) => {
 			await npmInstall(["@types/pg@8.10.9"], context.appFolder);
 
-			const result = npx(["kinetic", "init"], context.appFolder);
+			const result = npx(["yount", "init"], context.appFolder);
 			if (result.stdout !== null) {
 				result.stdout.on("data", (data: Buffer | string) => {
 					const read = data instanceof Buffer ? data.toString() : data;
@@ -111,7 +111,7 @@ describe("kinetic CLI", () => {
 		});
 
 		test("initializes config and db in default folder", async (context: CliTestContext) => {
-			const result = npx(["kinetic", "init"], context.appFolder);
+			const result = npx(["yount", "init"], context.appFolder);
 			if (result.stdout !== null) {
 				result.stdout.on("data", (data: Buffer | string) => {
 					const read = data instanceof Buffer ? data.toString() : data;
@@ -126,15 +126,15 @@ describe("kinetic CLI", () => {
 
 			expect(result.exitCode).toBe(0);
 			expect(
-				fs.readFile(path.join(context.appFolder, "kinetic.ts"), "utf8"),
+				fs.readFile(path.join(context.appFolder, "yount.ts"), "utf8"),
 			).resolves.toMatch(configTemplate.render({ folder: "app/db" }));
 			expect(
 				fs.readFile(path.join(context.appFolder, "app/db/schema.ts"), "utf8"),
 			).resolves.toMatch(schemaTemplate.render());
 			expect(
-				fs.readFile(path.join(context.appFolder, "app/db/kysely.ts"), "utf8"),
+				fs.readFile(path.join(context.appFolder, "app/db/db.ts"), "utf8"),
 			).resolves.toMatch(
-				kyselyTemplate.render({ kineticConfigPath: "../../kinetic.js" }),
+				yountTemplate.render({ yountConfigPath: "../../db.js" }),
 			);
 			expect(
 				fs.stat(path.join(context.appFolder, "app/db")),
@@ -145,7 +145,7 @@ describe("kinetic CLI", () => {
 		});
 
 		test("initializes config and db in custom folder", async (context: CliTestContext) => {
-			const result = npx(["kinetic", "init"], context.appFolder);
+			const result = npx(["yount", "init"], context.appFolder);
 			if (result.stdout !== null) {
 				result.stdout.on("data", (data: Buffer | string) => {
 					const read = data instanceof Buffer ? data.toString() : data;
@@ -160,15 +160,15 @@ describe("kinetic CLI", () => {
 
 			expect(result.exitCode).toBe(0);
 			expect(
-				fs.readFile(path.join(context.appFolder, "kinetic.ts"), "utf8"),
+				fs.readFile(path.join(context.appFolder, "yount.ts"), "utf8"),
 			).resolves.toMatch(configTemplate.render({ folder: "src/db" }));
 			expect(
 				fs.readFile(path.join(context.appFolder, "src/db/schema.ts"), "utf8"),
 			).resolves.toMatch(schemaTemplate.render());
 			expect(
-				fs.readFile(path.join(context.appFolder, "src/db/kysely.ts"), "utf8"),
+				fs.readFile(path.join(context.appFolder, "src/db/db.ts"), "utf8"),
 			).resolves.toMatch(
-				kyselyTemplate.render({ kineticConfigPath: "../../kinetic.js" }),
+				yountTemplate.render({ yountConfigPath: "../../db.js" }),
 			);
 			expect(
 				fs.stat(path.join(context.appFolder, "src/db")),

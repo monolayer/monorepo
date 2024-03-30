@@ -40,9 +40,9 @@ export async function structureLoad(environment: string) {
 			`To resolve this error:
 
 - Check that the database ${pool.config.database} is created.
-  You may need to create it with: npx kinetic db:create -e ${environment}
+  You may need to create it with: npx yount db:create -e ${environment}
 
-- Check your kinetic.ts configuration.
+- Check your yount.ts configuration.
   The ${environment} environment database name should be: ${pool.config.database}.`,
 		);
 		p.outro(`${color.red("Failed")}`);

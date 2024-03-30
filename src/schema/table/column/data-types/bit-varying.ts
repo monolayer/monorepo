@@ -34,8 +34,8 @@ import { MaxLengthColumn } from "../column.js";
  * - Value cannot exceed `maximumLength`.
  * @example
  * ```ts
- * import { pgDatabase, table, varbit } from "kysely-kinetic";
- * import { zodSchema } from "kysely-kinetic/zod";
+ * import { pgDatabase, table, varbit } from "yount";
+ * import { zodSchema } from "yount/zod";
  *
  * const database = pgDatabase({
  *   tables: {
@@ -92,7 +92,7 @@ export function varbit(maximumLength?: number) {
  * - Value cannot exceed `maximumLength`.
  * @example
  * ```ts
- * import { pgDatabase, table, varbit } from "kysely-kinetic";
+ * import { pgDatabase, table, varbit } from "yount";
  * const database = pgDatabase({
  *   tables: {
  *     example: table({
