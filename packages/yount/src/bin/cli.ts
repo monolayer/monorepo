@@ -7,7 +7,6 @@ import { seed } from "~/cli/actions/seed.js";
 import { dbCreate } from "../cli/actions/db-create.js";
 import { dbDrop } from "../cli/actions/db-drop.js";
 import { generate } from "../cli/actions/generate.js";
-import { initCommand } from "../cli/actions/init.js";
 import { migrateDown } from "../cli/actions/migrate-down.js";
 import { migrate } from "../cli/actions/migrate.js";
 import { pendingMigrations } from "../cli/actions/pending-migrations.js";
@@ -19,13 +18,6 @@ async function main() {
 	const program = new Command();
 
 	program.name("yount").version("1.0.0");
-
-	program
-		.command("init")
-		.description("initialize yount in a project")
-		.action(async () => {
-			await initCommand();
-		});
 
 	program
 		.command("db:create")
