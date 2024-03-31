@@ -4,7 +4,8 @@
   "license": "MIT",
   "workspaces": [
     "packages/init-yount",
-    "packages/yount"
+    "packages/yount",
+    "docs"
   ],
   "engines": {
     "node": ">=18.0.0"

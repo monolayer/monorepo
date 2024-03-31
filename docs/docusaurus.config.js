@@ -22,7 +22,7 @@ const config = {
 	// GitHub pages deployment config.
 	// If you aren't using GitHub pages, you don't need these.
 	organizationName: "dunkelbraun", // Usually your GitHub org/user name.
-	projectName: "Kinetic", // Usually your repo name.
+	projectName: "Yount", // Usually your repo name.
 
 	onBrokenLinks: "throw",
 	onBrokenMarkdownLinks: "warn",
@@ -67,7 +67,7 @@ const config = {
     [
       'docusaurus-plugin-typedoc',
       {
-        entryPoints: ['../src/index.ts'],
+        entryPoints: ['../packages/yount/src/index.ts'],
         tsconfig: '../tsconfig.json',
 				groupOrder: ["Database", "Tables", "Columns", "Indexes", "Constraints", "Triggers", "*"],
 				parametersFormat: "table",
