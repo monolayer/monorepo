@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README.md.
 - Install yount in script.
 
+### Changed
+
+- Remove .js extension in template imports.
+
 ### Fixed
 
 - Script intro message.

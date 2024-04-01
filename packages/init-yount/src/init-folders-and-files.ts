@@ -138,7 +138,7 @@ export const yountTemplate =
 	nunjucks.compile(`import { Kysely, PostgresDialect } from "kysely";
 import { pgPool } from "yount/pool";
 import yountConfig from "{{ yountConfigPath }}";
-import type { DB } from "./schema.js";
+import type { DB } from "./schema";
 
 export const db = new Kysely<DB>({
 	dialect: new PostgresDialect({
@@ -149,7 +149,7 @@ export const db = new Kysely<DB>({
 
 export const seedTemplate =
 	nunjucks.compile(`import type { Kysely } from "kysely";
-import type { DB } from "./schema.js";
+import type { DB } from "./schema";
 
 export async function seed(db: Kysely<DB>){}
 `);
