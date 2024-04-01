@@ -1,4 +1,5 @@
 import pg from "pg";
+import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 import { exit } from "process";
 import { log } from "~/cli/utils/clack.js";
@@ -21,7 +22,10 @@ export function pgPoolAndConfig(config: Config, environment: string) {
 			...environmentConfig,
 			database: undefined,
 		}),
-		config: environmentConfig,
+		config:
+			environmentConfig.connectionString !== undefined
+				? pgConnectionString.parse(environmentConfig.connectionString)
+				: environmentConfig,
 	};
 }
 

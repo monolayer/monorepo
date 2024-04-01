@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - db:clear CLI action.
 
+### Fixed
+
+- Fix database name usage with connection strings.
+
 ## [1.0.0-beta-1] - 2023-03-31
 
 Initial release.
