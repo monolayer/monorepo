@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - db:clear CLI action.
 
+### Changed
+
+- Configuration file name.
+
 ### Fixed
 
 - Fix database name usage with connection strings.

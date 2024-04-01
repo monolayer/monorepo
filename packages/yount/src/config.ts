@@ -41,7 +41,7 @@ type EsmConfig = {
 type ConfigImport = EsmConfig | CjsConfig;
 
 export async function importConfig() {
-	const def = await import(path.join(process.cwd(), "yount.ts"));
+	const def = await import(path.join(process.cwd(), "yount.config.ts"));
 	const config: Config = isEsmImport(def) ? def.default : def.default.default;
 	return config;
 }

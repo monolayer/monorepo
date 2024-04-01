@@ -11,7 +11,7 @@ export function pgPoolAndConfig(config: Config, environment: string) {
 		log.lineMessage(
 			`${color.red(
 				"error",
-			)} No configuration found for environment: '${environment}'. Please check your yount.ts file.`,
+			)} No configuration found for environment: '${environment}'. Please check your yount.config.ts file.`,
 		);
 		exit(1);
 	}

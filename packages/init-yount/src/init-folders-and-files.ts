@@ -71,7 +71,7 @@ export function initFolderAndFiles() {
 		log.lineMessage("");
 
 		await createFile(
-			path.join(cwd(), "yount.ts"),
+			path.join(cwd(), "yount.config.ts"),
 			configTemplate.render({ folder: folder.path }),
 			true,
 		);
@@ -85,13 +85,13 @@ export function initFolderAndFiles() {
 			yountTemplate.render({
 				yountConfigPath: path.relative(
 					path.join(cwd(), folder.path),
-					path.join(cwd(), "yount"),
+					path.join(cwd(), "yount.config"),
 				),
 			}),
 			true,
 		);
 
-		const nextSteps = `1) Edit the database connection details at \`yount.ts\`.
+		const nextSteps = `1) Edit the database connection details at \`yount.config.ts\`.
 2) Run \`npx yount db:create\` to create the database.
 3) Edit the schema file at \`${path.join(folder.path, "schema.ts")}\`.
 4) Run 'npx yount generate' to create migrations.

@@ -24,7 +24,7 @@ async function main() {
 		.command("db:create")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in yount.ts",
+			"environment as specified in yount.config.ts",
 			"development",
 		)
 		.description("create the database")
@@ -36,7 +36,7 @@ async function main() {
 		.command("db:drop")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in yount.ts",
+			"environment as specified in yount.config.ts",
 			"development",
 		)
 		.description("drop the database")
@@ -48,7 +48,7 @@ async function main() {
 		.command("db:clear")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in yount.ts",
+			"environment as specified in yount.config.ts",
 			"development",
 		)
 		.description("remove tables and types")
@@ -61,7 +61,7 @@ async function main() {
 		.description("apply pending migrations")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in yount.ts",
+			"environment as specified in yount.config.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -73,7 +73,7 @@ async function main() {
 		.description("migrate one step down")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in yount.ts",
+			"environment as specified in yount.config.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -85,7 +85,7 @@ async function main() {
 		.description("seed database")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in yount.ts",
+			"environment as specified in yount.config.ts",
 		)
 		.option("-r, --replant", "Truncate tables before seeding")
 		.option("-d, --disable-warnings", "disable truncation warnings")
@@ -98,7 +98,7 @@ async function main() {
 		.description("dump the database structure")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in yount.ts",
+			"environment as specified in yount.config.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -110,7 +110,7 @@ async function main() {
 		.description("load the database structure")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in yount.ts",
+			"environment as specified in yount.config.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -134,7 +134,7 @@ async function main() {
 		.description("list pending migrations")
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in yount.ts",
+			"environment as specified in yount.config.ts",
 			"development",
 		)
 		.action(async (opts) => {

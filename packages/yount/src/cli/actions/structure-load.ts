@@ -42,7 +42,7 @@ export async function structureLoad(environment: string) {
 - Check that the database ${pool.config.database} is created.
   You may need to create it with: npx yount db:create -e ${environment}
 
-- Check your yount.ts configuration.
+- Check your yount.config.ts configuration.
   The ${environment} environment database name should be: ${pool.config.database}.`,
 		);
 		p.outro(`${color.red("Failed")}`);

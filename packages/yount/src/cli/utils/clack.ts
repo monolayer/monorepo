@@ -29,7 +29,7 @@ export function checkEnvironmentIsConfigured(
 ) {
 	const envConfig = config.environments[environment];
 	if (envConfig === undefined) {
-		const errorMesage = `Configuration not found for environment '${environment}'. Please check your yount.ts file.`;
+		const errorMesage = `Configuration not found for environment '${environment}'. Please check your yount.config.ts file.`;
 		if (options.spinner !== undefined) {
 			options.spinner.stop(errorMesage, 1);
 		} else {
