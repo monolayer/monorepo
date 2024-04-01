@@ -19,6 +19,7 @@ export function installPackage(options: {
 			s.stop(`Failed to install ${options.packageName} via npm`, 1);
 			throw error;
 		}
+		return Effect.succeed(true);
 	});
 }
 
@@ -39,5 +40,6 @@ export function installDevPackage(options: {
 			s.stop(`Failed to install ${options.packageName} via npm`, 1);
 			throw error;
 		}
+		return Effect.succeed(true);
 	});
 }
