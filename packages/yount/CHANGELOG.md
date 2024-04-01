@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Configuration file name.
+- Show spinner while dumping database structure after migrate.
 
 ### Fixed
 

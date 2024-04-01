@@ -57,13 +57,18 @@ export async function migrate(environment: string) {
 		}
 	}
 
+	const s = p.spinner();
+	s.start("Dumping database structure");
+
 	const result = await dumpStructure(config, environment);
 	if (result instanceof Error) {
 		p.log.error(`${color.red("error")} while dumping structure`);
 		console.error(result);
 		process.exit(1);
 	}
-	p.log.info(`${color.green("dumped")} ${result}`);
+
+	s.stop(`${color.green("dumped")} ${result}`);
+
 	db.destroy();
 
 	p.outro("Done");
