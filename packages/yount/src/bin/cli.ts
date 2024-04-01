@@ -2,6 +2,7 @@
 
 import { Command } from "@commander-js/extra-typings";
 import { exit } from "process";
+import { dbClear } from "~/cli/actions/db-clear.js";
 import { migrationScaffold } from "~/cli/actions/migration-scaffold.js";
 import { seed } from "~/cli/actions/seed.js";
 import { dbCreate } from "../cli/actions/db-create.js";
@@ -41,6 +42,18 @@ async function main() {
 		.description("drop the database")
 		.action(async (opts) => {
 			await dbDrop(opts.environment);
+		});
+
+	program
+		.command("db:clear")
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in yount.ts",
+			"development",
+		)
+		.description("remove tables and types")
+		.action(async (opts) => {
+			await dbClear(opts.environment);
 		});
 
 	program
