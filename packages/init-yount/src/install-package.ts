@@ -2,29 +2,41 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { execa } from "execa";
 
-export function installPackage(packageName: string) {
+export function installPackage(options: {
+	packageName: string;
+	installed: boolean;
+}) {
 	return Effect.tryPromise(async () => {
+		if (options.installed) {
+			return;
+		}
 		const s = p.spinner();
-		s.start(`Installing ${packageName} via npm`);
+		s.start(`Installing ${options.packageName} via npm`);
 		try {
-			await execa("npm", ["install", packageName]);
-			s.stop(`Installed ${packageName} via npm`);
+			await execa("npm", ["install", options.packageName]);
+			s.stop(`Installed ${options.packageName} via npm`);
 		} catch (error) {
-			s.stop(`Failed to install ${packageName} via npm`, 1);
+			s.stop(`Failed to install ${options.packageName} via npm`, 1);
 			throw error;
 		}
 	});
 }
 
-export function installDevPackage(packageName: string) {
+export function installDevPackage(options: {
+	packageName: string;
+	installed: boolean;
+}) {
 	return Effect.tryPromise(async () => {
+		if (options.installed) {
+			return;
+		}
 		const s = p.spinner();
-		s.start(`Installing ${packageName} via npm`);
+		s.start(`Installing ${options.packageName} via npm`);
 		try {
-			await execa("npm", ["install", packageName, "--save-dev"]);
-			s.stop(`Installed ${packageName} via npm`);
+			await execa("npm", ["install", options.packageName, "--save-dev"]);
+			s.stop(`Installed ${options.packageName} via npm`);
 		} catch (error) {
-			s.stop(`Failed to install ${packageName} via npm`, 1);
+			s.stop(`Failed to install ${options.packageName} via npm`, 1);
 			throw error;
 		}
 	});

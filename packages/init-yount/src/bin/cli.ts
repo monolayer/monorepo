@@ -16,9 +16,10 @@ function exitWithError(cause: string) {
 
 async function installPgTypes() {
 	const program = Effect.succeed("@types/pg").pipe(
-		Effect.tap(checkPackageInstallation),
+		Effect.flatMap(checkPackageInstallation),
 		Effect.tap(installDevPackage),
 	);
+
 	const result = await Effect.runPromiseExit(program);
 	if (result._tag !== "Success") {
 		exitWithError(result.cause.toString());
@@ -27,9 +28,10 @@ async function installPgTypes() {
 
 async function installYount() {
 	const program = Effect.succeed("yount").pipe(
-		Effect.tap(checkPackageInstallation),
+		Effect.flatMap(checkPackageInstallation),
 		Effect.tap(installPackage),
 	);
+
 	const result = await Effect.runPromiseExit(program);
 	if (result._tag !== "Success") {
 		exitWithError(result.cause.toString());
