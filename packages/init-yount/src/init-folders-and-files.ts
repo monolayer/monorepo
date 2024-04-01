@@ -90,6 +90,13 @@ export function initFolderAndFiles() {
 			}),
 			true,
 		);
+
+		const nextSteps = `1) Edit the database connection details at \`yount.ts\`.
+		2) Run \`npx yount db:create\` to create the database.
+		3) Edit the schema file at \`app/db/schema.ts\`.
+		4) Run 'npx yount generate' to create migrations.
+		5) Run 'npx yount migrate' to migrate the database.`;
+		p.note(nextSteps, "Next Steps");
 	});
 }
 
