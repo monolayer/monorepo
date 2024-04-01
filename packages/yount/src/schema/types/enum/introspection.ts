@@ -58,12 +58,10 @@ export async function dbEnumInfo(
 export function localEnumInfo(schema: AnyPgDatabase) {
 	const types = PgDatabase.info(schema).types;
 	return types.reduce<EnumInfo>((acc, type) => {
-		if (type instanceof EnumType) {
-			if (isExternalEnum(type)) {
-				return acc;
-			}
-			acc[type.name] = type.values.join(", ");
+		if (isExternalEnum(type)) {
+			return acc;
 		}
+		acc[type.name] = type.values.join(", ");
 		return acc;
 	}, {});
 }
