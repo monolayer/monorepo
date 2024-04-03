@@ -1,11 +1,22 @@
-import pg from "pg";
-import pgConnectionString from "pg-connection-string";
+import pg, { type ClientConfig, type PoolConfig } from "pg";
+import pgConnectionString, {
+	type ConnectionOptions,
+} from "pg-connection-string";
 import color from "picocolors";
 import { exit } from "process";
 import { log } from "~/cli/utils/clack.js";
 import { Config } from "~/config.js";
 
-export function pgPoolAndConfig(config: Config, environment: string) {
+export type PoolAndConfig = {
+	pool: pg.Pool;
+	adminPool: pg.Pool;
+	config: (ClientConfig & PoolConfig) | ConnectionOptions;
+};
+
+export function pgPoolAndConfig(
+	config: Config,
+	environment: string,
+): PoolAndConfig {
 	const environmentConfig = config.environments[environment];
 	if (environmentConfig === undefined) {
 		log.lineMessage(

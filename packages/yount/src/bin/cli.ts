@@ -2,9 +2,9 @@
 
 import { Command } from "@commander-js/extra-typings";
 import { exit } from "process";
-import { dbClear } from "~/cli/actions/db-clear.js";
 import { migrationScaffold } from "~/cli/actions/migration-scaffold.js";
 import { seed } from "~/cli/actions/seed.js";
+import { dbClear } from "~/cli/commands/db-clear.js";
 import { dbCreate } from "../cli/actions/db-create.js";
 import { dbDrop } from "../cli/actions/db-drop.js";
 import { generate } from "../cli/actions/generate.js";
@@ -52,9 +52,7 @@ async function main() {
 			"development",
 		)
 		.description("remove tables and types")
-		.action(async (opts) => {
-			await dbClear(opts.environment);
-		});
+		.action(async (opts) => await dbClear(opts.environment));
 
 	program
 		.command("migrate")

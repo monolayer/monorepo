@@ -71,7 +71,7 @@ async function dumpMigrationInfoArgs(database: string, dumpPath: string) {
 	}
 }
 
-class DumpWritable extends Writable {
+export class DumpWritable extends Writable {
 	#dumpPath: string;
 	#contents: string[] = [];
 	constructor(dumpPath: string, opts?: WritableOptions) {
@@ -100,7 +100,7 @@ class DumpWritable extends Writable {
 	}
 }
 
-class InsertWritable extends Writable {
+export class InsertWritable extends Writable {
 	#dumpPath: string;
 	#contents: string[] = [];
 
