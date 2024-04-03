@@ -5,8 +5,8 @@ import { exit } from "process";
 import { migrationScaffold } from "~/cli/actions/migration-scaffold.js";
 import { seed } from "~/cli/actions/seed.js";
 import { dbClear } from "~/cli/commands/db-clear.js";
-import { dbCreate } from "../cli/actions/db-create.js";
-import { dbDrop } from "../cli/actions/db-drop.js";
+import { dbCreate } from "~/cli/commands/db-create.js";
+import { dbDrop } from "~/cli/commands/db-drop.js";
 import { generate } from "../cli/actions/generate.js";
 import { migrateDown } from "../cli/actions/migrate-down.js";
 import { migrate } from "../cli/actions/migrate.js";
@@ -28,9 +28,7 @@ async function main() {
 			"development",
 		)
 		.description("create the database")
-		.action(async (opts) => {
-			await dbCreate(opts.environment);
-		});
+		.action(async (opts) => await dbCreate(opts.environment));
 
 	program
 		.command("db:drop")
@@ -40,9 +38,7 @@ async function main() {
 			"development",
 		)
 		.description("drop the database")
-		.action(async (opts) => {
-			await dbDrop(opts.environment);
-		});
+		.action(async (opts) => await dbDrop(opts.environment));
 
 	program
 		.command("db:clear")
