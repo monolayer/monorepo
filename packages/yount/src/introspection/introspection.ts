@@ -74,39 +74,33 @@ export function localSchema(
 		enums: localEnumInfo(schema),
 	};
 }
+
 export async function remoteSchema(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 ): Promise<OperationSuccess<MigrationSchema> | OperationAnyError> {
 	const remoteTableInfo = await dbTableInfo(kysely, "public");
-	if (remoteTableInfo.status === ActionStatus.Error) return remoteTableInfo;
 
-	const tables = remoteTableInfo.result.reduce<string[]>((acc, table) => {
+	const tables = remoteTableInfo.reduce<string[]>((acc, table) => {
 		if (table.name !== null) acc.push(table.name);
 		return acc;
 	}, []);
 
 	const remoteColumnInfo = await dbColumnInfo(kysely, "public", tables);
-	if (remoteColumnInfo.status === ActionStatus.Error) return remoteColumnInfo;
 
 	const remoteIndexInfo = await dbIndexInfo(kysely, "public", tables);
-	if (remoteIndexInfo.status === ActionStatus.Error) return remoteIndexInfo;
 
 	const remoteUniqueConstraintInfo = await dbUniqueConstraintInfo(
 		kysely,
 		"public",
 		tables,
 	);
-	if (remoteUniqueConstraintInfo.status === ActionStatus.Error)
-		return remoteUniqueConstraintInfo;
 
 	const remoteForeignKeyConstraintInfo = await dbForeignKeyConstraintInfo(
 		kysely,
 		"public",
 		tables,
 	);
-	if (remoteForeignKeyConstraintInfo.status === ActionStatus.Error)
-		return remoteForeignKeyConstraintInfo;
 
 	const primaryKeyConstraintInfo = await dbPrimaryKeyConstraintInfo(
 		kysely,
@@ -114,17 +108,11 @@ export async function remoteSchema(
 		tables,
 	);
 
-	if (primaryKeyConstraintInfo.status === ActionStatus.Error)
-		return primaryKeyConstraintInfo;
-
 	const extensionInfo = await dbExtensionInfo(kysely, "public");
-	if (extensionInfo.status === ActionStatus.Error) return extensionInfo;
 
 	const triggerInfo = await dbTriggerInfo(kysely, "public", tables);
-	if (triggerInfo.status === ActionStatus.Error) return triggerInfo;
 
 	const enumInfo = await dbEnumInfo(kysely, "public");
-	if (enumInfo.status === ActionStatus.Error) return enumInfo;
 
 	const remoteCheckConstraintInfo = await dbCheckConstraintInfo(
 		kysely,
@@ -132,21 +120,18 @@ export async function remoteSchema(
 		tables,
 	);
 
-	if (remoteCheckConstraintInfo.status === ActionStatus.Error)
-		return remoteCheckConstraintInfo;
-
 	return {
 		status: ActionStatus.Success,
 		result: {
-			extensions: extensionInfo.result,
-			table: remoteColumnInfo.result,
-			index: remoteIndexInfo.result,
-			foreignKeyConstraints: remoteForeignKeyConstraintInfo.result,
-			uniqueConstraints: remoteUniqueConstraintInfo.result,
-			checkConstraints: remoteCheckConstraintInfo.result,
-			primaryKey: primaryKeyConstraintInfo.result,
-			triggers: triggerInfo.result,
-			enums: enumInfo.result,
+			extensions: extensionInfo,
+			table: remoteColumnInfo,
+			index: remoteIndexInfo,
+			foreignKeyConstraints: remoteForeignKeyConstraintInfo,
+			uniqueConstraints: remoteUniqueConstraintInfo,
+			checkConstraints: remoteCheckConstraintInfo,
+			primaryKey: primaryKeyConstraintInfo,
+			triggers: triggerInfo,
+			enums: enumInfo,
 		},
 	};
 }

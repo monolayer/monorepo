@@ -7,7 +7,7 @@ import { seed } from "~/cli/actions/seed.js";
 import { dbClear } from "~/cli/commands/db-clear.js";
 import { dbCreate } from "~/cli/commands/db-create.js";
 import { dbDrop } from "~/cli/commands/db-drop.js";
-import { generate } from "../cli/actions/generate.js";
+import { generate } from "~/cli/commands/generate.js";
 import { migrateDown } from "../cli/actions/migrate-down.js";
 import { migrate } from "../cli/actions/migrate.js";
 import { pendingMigrations } from "../cli/actions/pending-migrations.js";
@@ -120,7 +120,7 @@ async function main() {
 			false,
 		)
 		.action(async () => {
-			await generate();
+			await generate("development");
 		});
 
 	program

@@ -122,14 +122,8 @@ async function truncateAllTables(
 		}
 	}
 	const result = await dbTableInfo(db, "public");
-	if (result.status === ActionStatus.Error) {
-		p.log.error("Error while getting database information.");
-		console.error(result.error);
-		p.outro(`${color.red("Failed")}`);
-		exit(1);
-	}
 
-	for (const table of result.result) {
+	for (const table of result) {
 		await sql`truncate table ${sql.table(
 			`${table.name}`,
 		)} RESTART IDENTITY CASCADE`.execute(db);

@@ -1,10 +1,5 @@
 import { sql, type Kysely } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
-import {
-	ActionStatus,
-	type OperationAnyError,
-	type OperationSuccess,
-} from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import {
@@ -30,63 +25,50 @@ export async function dbPrimaryKeyConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
-): Promise<OperationSuccess<PrimaryKeyInfo> | OperationAnyError> {
-	try {
-		if (tableNames.length === 0) {
-			return {
-				status: ActionStatus.Success,
-				result: {},
+) {
+	if (tableNames.length === 0) {
+		return {};
+	}
+	const results = await kysely
+		.selectFrom("pg_constraint as con")
+		.fullJoin("pg_class as tbl", (join) =>
+			join.onRef("tbl.oid", "=", "con.conrelid"),
+		)
+		.fullJoin("pg_namespace as ns", (join) =>
+			join.onRef("tbl.relnamespace", "=", "ns.oid"),
+		)
+		.fullJoin("pg_attribute as att", (join) =>
+			join
+				.onRef("att.attrelid", "=", "tbl.oid")
+				.on("att.attnum", "=", sql`ANY(con.conkey)`),
+		)
+		.select([
+			sql<"PRIMARY KEY">`'PRIMARY KEY'`.as("constraintType"),
+			"tbl.relname as table",
+			sql<string[]>`json_agg(att.attname ORDER BY att.attnum)`.as("columns"),
+		])
+		.where("con.contype", "=", "p")
+		.where("ns.nspname", "=", databaseSchema)
+		.where("con.conname", "~", "yount_pk$")
+		.where("tbl.relname", "in", tableNames)
+		.groupBy(["tbl.relname"])
+		.orderBy(["table"])
+		.execute();
+	const transformedResults = results.reduce<PrimaryKeyInfo>((acc, result) => {
+		const key = `${result.table}_${result.columns.sort().join("_")}_yount_pk`;
+		const constraintInfo = {
+			[key]: primaryKeyConstraintInfoToQuery(result),
+		};
+		const table = result.table;
+		if (table !== null) {
+			acc[table] = {
+				...acc[table],
+				...constraintInfo,
 			};
 		}
-		const results = await kysely
-			.selectFrom("pg_constraint as con")
-			.fullJoin("pg_class as tbl", (join) =>
-				join.onRef("tbl.oid", "=", "con.conrelid"),
-			)
-			.fullJoin("pg_namespace as ns", (join) =>
-				join.onRef("tbl.relnamespace", "=", "ns.oid"),
-			)
-			.fullJoin("pg_attribute as att", (join) =>
-				join
-					.onRef("att.attrelid", "=", "tbl.oid")
-					.on("att.attnum", "=", sql`ANY(con.conkey)`),
-			)
-			.select([
-				sql<"PRIMARY KEY">`'PRIMARY KEY'`.as("constraintType"),
-				"tbl.relname as table",
-				sql<string[]>`json_agg(att.attname ORDER BY att.attnum)`.as("columns"),
-			])
-			.where("con.contype", "=", "p")
-			.where("ns.nspname", "=", databaseSchema)
-			.where("con.conname", "~", "yount_pk$")
-			.where("tbl.relname", "in", tableNames)
-			.groupBy(["tbl.relname"])
-			.orderBy(["table"])
-			.execute();
-		const transformedResults = results.reduce<PrimaryKeyInfo>((acc, result) => {
-			const key = `${result.table}_${result.columns.sort().join("_")}_yount_pk`;
-			const constraintInfo = {
-				[key]: primaryKeyConstraintInfoToQuery(result),
-			};
-			const table = result.table;
-			if (table !== null) {
-				acc[table] = {
-					...acc[table],
-					...constraintInfo,
-				};
-			}
-			return acc;
-		}, {});
-		return {
-			status: ActionStatus.Success,
-			result: transformedResults,
-		};
-	} catch (error) {
-		return {
-			status: ActionStatus.Error,
-			error: error,
-		};
-	}
+		return acc;
+	}, {});
+	return transformedResults;
 }
 
 export function localPrimaryKeyConstraintInfo(

@@ -1,11 +1,6 @@
 /* eslint-disable max-lines */
 import { Kysely, sql } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
-import {
-	ActionStatus,
-	OperationAnyError,
-	OperationSuccess,
-} from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/config.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { type MigrationSchema } from "~/introspection/introspection.js";
@@ -19,29 +14,19 @@ export async function dbColumnInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
-): Promise<OperationSuccess<Record<string, ColumnsInfo>> | OperationAnyError> {
-	try {
-		const results = await fetchDbColumnInfo(kysely, databaseSchema, tableNames);
-		const transformed = transformDbColumnInfo(results);
-		const mapped = mapColumnsToTables(transformed);
-		for (const table of tableNames) {
-			if (mapped[table] === undefined) {
-				mapped[table] = {};
-			}
+) {
+	const results = await fetchDbColumnInfo(kysely, databaseSchema, tableNames);
+	const transformed = transformDbColumnInfo(results);
+	const mapped = mapColumnsToTables(transformed);
+	for (const table of tableNames) {
+		if (mapped[table] === undefined) {
+			mapped[table] = {};
 		}
-		return {
-			status: ActionStatus.Success,
-			result: mapped,
-		};
-	} catch (error) {
-		return {
-			status: ActionStatus.Error,
-			error: error,
-		};
 	}
+	return mapped;
 }
 
-async function fetchDbColumnInfo(
+export async function fetchDbColumnInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
@@ -153,7 +138,7 @@ async function fetchDbColumnInfo(
 }
 
 // eslint-disable-next-line complexity
-function transformDbColumnInfo(
+export function transformDbColumnInfo(
 	info: Awaited<ReturnType<typeof fetchDbColumnInfo>>,
 ) {
 	const transformed: ColumnInfo[] = [];
@@ -298,7 +283,7 @@ function transformDbColumnInfo(
 	return transformed;
 }
 
-function mapColumnsToTables(columns: ColumnInfo[]) {
+export function mapColumnsToTables(columns: ColumnInfo[]) {
 	return columns.reduce<Record<string, ColumnsInfo>>((acc, curr) => {
 		if (curr.tableName !== null && curr.columnName !== null) {
 			const currentTable = acc[curr.tableName];
