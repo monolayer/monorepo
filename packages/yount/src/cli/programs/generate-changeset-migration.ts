@@ -22,7 +22,7 @@ import { dbTriggerInfo } from "~/schema/table/trigger/introspection.js";
 import { dbEnumInfo } from "~/schema/types/enum/introspection.js";
 import { Environment } from "../services/environment.js";
 import { Db } from "../services/kysely.js";
-import { ExitWithSuccess, abortEarlyWithSuccess } from "../utils/cli-action.js";
+import { ExitWithSuccess } from "../utils/cli-action.js";
 
 export function generateChangesetMigration() {
 	return Effect.all([Environment, Db]).pipe(
@@ -32,14 +32,28 @@ export function generateChangesetMigration() {
 				localDatabaseSchema(environment.config),
 				Effect.succeed(environment.config),
 			]).pipe(
-				Effect.flatMap(([databaseSchema, localDatabaseSchema, config]) =>
+				Effect.tap(([databaseSchema, localDatabaseSchema, config]) =>
 					computeChangeset(localDatabaseSchema, databaseSchema, config).pipe(
-						Effect.tap((changeset) => {
-							generateMigrationFiles(changeset, config.folder);
-							const nextSteps = "To apply migrations, run 'npx yount migrate'";
-							p.note(nextSteps, "Next Steps");
-							return Effect.succeed(true);
-						}),
+						Effect.tap((changeset) =>
+							Effect.if(changeset.length > 0, {
+								onTrue: Effect.succeed(changeset).pipe(
+									Effect.tap((cset) => {
+										generateMigrationFiles(cset, config.folder);
+										p.note(
+											"To apply migrations, run 'npx yount migrate'",
+											"Next Steps",
+										);
+									}),
+								),
+								onFalse: Effect.succeed(true).pipe(
+									Effect.tap(() => {
+										p.log.info(
+											`${color.green("Nothing to do")}. No schema changes found.`,
+										);
+									}),
+								),
+							}),
+						),
 					),
 				),
 			),
@@ -52,22 +66,15 @@ function computeChangeset(
 	remoteSchema: MigrationSchema,
 	config: Config,
 ) {
-	const localInfo = localSchema(
-		localDatabaseSchema,
-		remoteSchema,
-		config.camelCasePlugin ?? { enabled: false },
-	);
-	const cset = changeset(localInfo, remoteSchema);
-	return Effect.succeed(cset).pipe(
-		Effect.tap((cset) =>
-			Effect.if(cset.length === 0, {
-				onTrue: abortEarlyWithSuccess(
-					`${color.green("Nothing to do")}. No schema changes found.`,
-				),
-				onFalse: Effect.unit,
-			}),
+	const cset = changeset(
+		localSchema(
+			localDatabaseSchema,
+			remoteSchema,
+			config.camelCasePlugin ?? { enabled: false },
 		),
+		remoteSchema,
 	);
+	return Effect.succeed(cset);
 }
 
 function localDatabaseSchema(config: Config) {

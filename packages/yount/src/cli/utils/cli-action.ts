@@ -11,19 +11,6 @@ export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 	readonly cause: string;
 }> {}
 
-export function abortEarlyWithSuccess(message: string) {
-	return Effect.gen(function* (_) {
-		p.log.info(message);
-		yield* _(
-			Effect.fail(
-				new ExitWithSuccess({
-					cause: "abortEarlyWithSuccess",
-				}),
-			),
-		);
-	});
-}
-
 export async function cliAction(
 	name: string,
 	environment: string,
