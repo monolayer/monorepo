@@ -10,7 +10,7 @@ import { spinnerTask } from "../utils/spinner-task.js";
 import { pgQuery } from "./pg-query.js";
 import { pipeCommandStdoutToWritable } from "./pipe-command-stdout-to-writable.js";
 
-export function dumpDatabaseStructureTask() {
+export function dumpDatabaseStructure() {
 	return spinnerTask("Dump database structure", () =>
 		Effect.gen(function* (_) {
 			const environment = yield* _(Environment);

@@ -7,7 +7,7 @@ import { seed } from "~/cli/actions/seed.js";
 import { createDatabase } from "~/cli/programs/create-database.js";
 import { dropDatabase } from "~/cli/programs/drop-database.js";
 import { dropTablesAndTypes } from "~/cli/programs/drop-tables-and-types.js";
-import { dumpDatabaseStructureTask } from "~/cli/programs/dump-database-structure.js";
+import { dumpDatabaseStructure } from "~/cli/programs/dump-database-structure.js";
 import { generateChangesetMigration } from "~/cli/programs/generate-changeset-migration.js";
 import { handlePendingMigrations } from "~/cli/programs/pending-migrations.js";
 import { cliAction } from "~/cli/utils/cli-action.js";
@@ -63,7 +63,7 @@ async function main() {
 			async (opts) =>
 				await cliAction("yount db:clear", opts.environment, [
 					dropTablesAndTypes(),
-					dumpDatabaseStructureTask(),
+					dumpDatabaseStructure(),
 				]),
 		);
 
