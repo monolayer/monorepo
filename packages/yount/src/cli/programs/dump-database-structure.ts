@@ -1,10 +1,10 @@
 import { Effect } from "effect";
-import { appendFileSync } from "fs";
+import { appendFileSync, writeFileSync } from "fs";
 import path from "path";
 import type { ClientConfig, Pool, PoolConfig } from "pg";
 import type { ConnectionOptions } from "pg-connection-string";
 import { env } from "process";
-import { DumpWritable, InsertWritable } from "../components/dump-structure.js";
+import { Writable, type WritableOptions } from "stream";
 import { Environment } from "../services/environment.js";
 import { spinnerTask } from "../utils/spinner-task.js";
 import { pgQuery } from "./pg-query.js";
@@ -92,4 +92,62 @@ function databaseSearchPath(pool: Pool) {
 			return yield* _(Effect.succeed(result[0].search_path));
 		}
 	});
+}
+
+class DumpWritable extends Writable {
+	#dumpPath: string;
+	#contents: string[] = [];
+	constructor(dumpPath: string, opts?: WritableOptions) {
+		super(opts);
+		this.#dumpPath = dumpPath;
+	}
+
+	_write(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		chunk: any,
+		_encoding: BufferEncoding,
+		callback: (error?: Error | null) => void,
+	) {
+		const lines = chunk.toString().split("\n");
+		for (const line of lines) {
+			if (!line.startsWith("-- Dumped")) {
+				this.#contents.push(line);
+			}
+		}
+		callback();
+	}
+
+	end() {
+		writeFileSync(this.#dumpPath, this.#contents.join("\n"));
+		return this;
+	}
+}
+
+class InsertWritable extends Writable {
+	#dumpPath: string;
+	#contents: string[] = [];
+
+	constructor(dumpPath: string, opts?: WritableOptions) {
+		super(opts);
+		this.#dumpPath = dumpPath;
+	}
+
+	_write(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		chunk: any,
+		_encoding: BufferEncoding,
+		callback: (error?: Error | null) => void,
+	) {
+		const lines = chunk.toString().split("\n");
+		for (const line of lines) {
+			if (line.startsWith("INSERT INTO")) {
+				this.#contents.push(line);
+			}
+		}
+		callback();
+	}
+	end() {
+		appendFileSync(this.#dumpPath, this.#contents.join("\n"));
+		return this;
+	}
 }

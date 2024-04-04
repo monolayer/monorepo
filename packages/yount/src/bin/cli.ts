@@ -1,6 +1,7 @@
 #!/usr/bin/env tsx
 
 import { Command } from "@commander-js/extra-typings";
+import { Effect } from "effect";
 import { exit } from "process";
 import { seed } from "~/cli/actions/seed.js";
 import { createDatabase } from "~/cli/programs/create-database.js";
@@ -9,11 +10,11 @@ import { dropTablesAndTypes } from "~/cli/programs/drop-tables-and-types.js";
 import { dumpDatabaseStructure } from "~/cli/programs/dump-database-structure.js";
 import { generateChangesetMigration } from "~/cli/programs/generate-changeset-migration.js";
 import { handlePendingMigrations } from "~/cli/programs/handle-pending-migrations.js";
+import { migrateDown } from "~/cli/programs/migrate-down.js";
+import { migrate } from "~/cli/programs/migrate.js";
 import { pendingMigrations } from "~/cli/programs/pending-migrations.js";
 import { scaffoldMigration } from "~/cli/programs/scaffold-migration.js";
 import { cliAction } from "~/cli/utils/cli-action.js";
-import { migrateDown } from "../cli/actions/migrate-down.js";
-import { migrate } from "../cli/actions/migrate.js";
 import { structureLoad } from "../cli/actions/structure-load.js";
 import { isCommanderError } from "../cli/command.js";
 
@@ -75,7 +76,16 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await migrate(opts.environment);
+			await cliAction("yount migrate", opts.environment, [
+				migrate().pipe(
+					Effect.tap((result) =>
+						Effect.if(result, {
+							onTrue: dumpDatabaseStructure(),
+							onFalse: Effect.succeed(true),
+						}),
+					),
+				),
+			]);
 		});
 
 	program
@@ -87,7 +97,16 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await migrateDown(opts.environment);
+			await cliAction("yount migrate:down", opts.environment, [
+				migrateDown().pipe(
+					Effect.tap((result) =>
+						Effect.if(result, {
+							onTrue: dumpDatabaseStructure(),
+							onFalse: Effect.succeed(true),
+						}),
+					),
+				),
+			]);
 		});
 
 	program
