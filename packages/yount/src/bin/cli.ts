@@ -8,12 +8,12 @@ import { dropDatabase } from "~/cli/programs/drop-database.js";
 import { dropTablesAndTypes } from "~/cli/programs/drop-tables-and-types.js";
 import { dumpDatabaseStructure } from "~/cli/programs/dump-database-structure.js";
 import { generateChangesetMigration } from "~/cli/programs/generate-changeset-migration.js";
-import { handlePendingMigrations } from "~/cli/programs/pending-migrations.js";
+import { handlePendingMigrations } from "~/cli/programs/handle-pending-migrations.js";
+import { pendingMigrations } from "~/cli/programs/pending-migrations.js";
 import { scaffoldMigration } from "~/cli/programs/scaffold-migration.js";
 import { cliAction } from "~/cli/utils/cli-action.js";
 import { migrateDown } from "../cli/actions/migrate-down.js";
 import { migrate } from "../cli/actions/migrate.js";
-import { pendingMigrations } from "../cli/actions/pending-migrations.js";
 import { structureLoad } from "../cli/actions/structure-load.js";
 import { isCommanderError } from "../cli/command.js";
 
@@ -153,7 +153,7 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await pendingMigrations(opts.environment);
+			await cliAction("yount pending", opts.environment, [pendingMigrations()]);
 		});
 
 	program
