@@ -9,12 +9,6 @@ import { exit } from "process";
 import { Environment } from "../services/environment.js";
 import { Migrator } from "../services/migrator.js";
 
-export function migrationFiles(folder: string) {
-	return Effect.tryPromise(async () => {
-		return await readdir(folder);
-	});
-}
-
 export function handlePendingMigrations() {
 	return pipe(
 		localPendingMigrations(),
@@ -31,7 +25,9 @@ function localPendingMigrations() {
 	return Effect.gen(function* (_) {
 		const environment = yield* _(Environment);
 		const migrationFolder = environment.config.migrationFolder;
-		const localMigrationFiles = yield* _(migrationFiles(migrationFolder));
+		const localMigrationFiles = yield* _(
+			Effect.tryPromise(async () => await readdir(migrationFolder)),
+		);
 		const migrations = yield* _(allMigrations());
 		const filtered = migrations
 			.filter((m) => m.executedAt === undefined)

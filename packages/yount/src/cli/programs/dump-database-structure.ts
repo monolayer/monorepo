@@ -1,13 +1,14 @@
 import { Effect } from "effect";
 import { appendFileSync } from "fs";
 import path from "path";
+import type { ClientConfig, Pool, PoolConfig } from "pg";
+import type { ConnectionOptions } from "pg-connection-string";
+import { env } from "process";
+import { DumpWritable, InsertWritable } from "../components/dump-structure.js";
 import { Environment } from "../services/environment.js";
 import { spinnerTask } from "../utils/spinner-task.js";
-import { appendMigrationData } from "./append-migration-data.js";
-import { databaseInConfig } from "./database-config.js";
-import { databaseSearchPath } from "./database-search-path.js";
-import { dumpStructure } from "./dump-structure.js";
-import { setPgDumpEnv } from "./set-pg-dump-env.js";
+import { pgQuery } from "./pg-query.js";
+import { pipeCommandStdoutToWritable } from "./pipe-command-stdout-to-writable.js";
 
 export function dumpDatabaseStructureTask() {
 	return spinnerTask("Dump database structure", () =>
@@ -23,4 +24,72 @@ export function dumpDatabaseStructureTask() {
 			return yield* _(Effect.succeed(true));
 		}),
 	);
+}
+
+function appendMigrationData(database: string, dumpPath: string) {
+	const migrationDumpArgs = [
+		"--no-privileges",
+		"--no-owner",
+		"--schema=public",
+		"--inserts",
+		"--table=kysely_migration_lock",
+		"--table=kysely_migration",
+		"-a",
+		"--no-comments",
+		`${database}`,
+	];
+
+	return pipeCommandStdoutToWritable(
+		"pg_dump",
+		migrationDumpArgs,
+		new InsertWritable(dumpPath),
+	);
+}
+
+function setPgDumpEnv(config: (ClientConfig & PoolConfig) | ConnectionOptions) {
+	env.PGHOST = `${config.host}`;
+	env.PGPORT = `${config.port}`;
+	env.PGUSER = `${config.user}`;
+	env.PGPASSWORD = `${config.password}`;
+	return Effect.succeed(true);
+}
+
+function dumpStructure(database: string, dumpPath: string) {
+	const args = [
+		"--schema-only",
+		"--no-privileges",
+		"--no-owner",
+		"--schema=public",
+		`${database}`,
+	];
+	return pipeCommandStdoutToWritable(
+		"pg_dump",
+		args,
+		new DumpWritable(dumpPath),
+	);
+}
+
+function databaseInConfig(
+	config: (ClientConfig & PoolConfig) | ConnectionOptions,
+) {
+	const database = config.database;
+	if (database === undefined || database === null) {
+		return Effect.fail(new Error("Database not defined in configuration."));
+	}
+	return Effect.succeed(database);
+}
+
+function databaseSearchPath(pool: Pool) {
+	return Effect.gen(function* (_) {
+		const result = yield* _(
+			pgQuery<{
+				search_path: string;
+			}>(pool, "SHOW search_path"),
+		);
+		if (result[0] === undefined) {
+			return yield* _(Effect.fail(new Error("Search path not found")));
+		} else {
+			return yield* _(Effect.succeed(result[0].search_path));
+		}
+	});
 }

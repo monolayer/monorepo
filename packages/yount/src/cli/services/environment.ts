@@ -1,11 +1,12 @@
 import * as p from "@clack/prompts";
 import { Context, Effect, Layer } from "effect";
 import path from "path";
+import pg from "pg";
+import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 import { cwd } from "process";
 import { importConfig, type Config } from "~/config.js";
 import { type PoolAndConfig } from "~/pg/pg-pool.js";
-import { poolAndConfig } from "../programs/pool-and-config.js";
 
 type MigrationFolder = {
 	migrationFolder: string;
@@ -44,4 +45,31 @@ export function environmentLayer(environment: string) {
 			};
 		}),
 	);
+}
+
+function poolAndConfig(
+	environmentConfig: pg.ClientConfig & pg.PoolConfig,
+): Effect.Effect<
+	{
+		pool: pg.Pool;
+		adminPool: pg.Pool;
+		config:
+			| (pg.ClientConfig & pg.PoolConfig)
+			| pgConnectionString.ConnectionOptions;
+	},
+	string,
+	never
+> {
+	const poolAndConfig = {
+		pool: new pg.Pool(environmentConfig),
+		adminPool: new pg.Pool({
+			...environmentConfig,
+			database: undefined,
+		}),
+		config:
+			environmentConfig.connectionString !== undefined
+				? pgConnectionString.parse(environmentConfig.connectionString)
+				: environmentConfig,
+	};
+	return Effect.succeed(poolAndConfig);
 }
