@@ -1,16 +1,13 @@
 import { Effect } from "effect";
-import type { Config } from "~/config.js";
-import type { PoolAndConfig } from "~/pg/pg-pool.js";
-import { pgQuery } from "../programs/pg-query.js";
+import { Environment } from "../services/environment.js";
 import { spinnerTask } from "../utils/spinner-task.js";
+import { pgQuery } from "./pg-query.js";
 
-export function dropTablesAndTypes(poolAndConfig: {
-	pg: PoolAndConfig;
-	config: Config;
-}) {
+export function dropTablesAndTypes() {
 	return spinnerTask("Drop tables and types", () =>
 		Effect.gen(function* (_) {
-			yield* _(pgQuery(poolAndConfig.pg.pool, dropAllTablesAndTypesQuery));
+			const environment = yield* _(Environment);
+			return yield* _(pgQuery(environment.pg.pool, dropAllTablesAndTypesQuery));
 		}),
 	);
 }

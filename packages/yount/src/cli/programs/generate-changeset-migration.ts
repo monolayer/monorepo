@@ -6,40 +6,35 @@ import {
 	localSchema,
 	type MigrationSchema,
 } from "~/introspection/introspection.js";
-import type { PoolAndConfig } from "~/pg/pg-pool.js";
 import type { AnyPgDatabase } from "~/schema/pg-database.js";
 import { generateMigrations } from "../components/generate-migrations.js";
+import { Environment } from "../services/environment.js";
+import { Db } from "../services/kysely.js";
 import { abortEarlyWithSuccess } from "../utils/cli-action.js";
 import { databaseSchema } from "./database-schema.js";
-import { kysely } from "./kysely.js";
 import { localDatabaseSchema } from "./local-schema.js";
 
-export function generateChangesetMigration(poolAndConfig: {
-	pg: PoolAndConfig;
-	config: Config;
-}) {
-	return kysely(poolAndConfig.pg.pool)
-		.pipe(
-			Effect.flatMap((kysely) =>
-				Effect.all([
-					databaseSchema(kysely),
-					localDatabaseSchema(poolAndConfig.config),
-					Effect.succeed(poolAndConfig.config),
-				]),
-			),
-		)
-		.pipe(
-			Effect.flatMap(([databaseSchema, localDatabaseSchema, config]) =>
-				computeChangeset(localDatabaseSchema, databaseSchema, config).pipe(
-					Effect.tap((changeset) =>
-						Effect.tryPromise(async () => {
-							await generateMigrations(changeset, config);
-							return Effect.succeed(true);
-						}),
+export function generateChangesetMigration() {
+	return Effect.all([Environment, Db]).pipe(
+		Effect.flatMap(([environment, db]) =>
+			Effect.all([
+				databaseSchema(db.kysely),
+				localDatabaseSchema(environment.config),
+				Effect.succeed(environment.config),
+			]).pipe(
+				Effect.flatMap(([databaseSchema, localDatabaseSchema, config]) =>
+					computeChangeset(localDatabaseSchema, databaseSchema, config).pipe(
+						Effect.tap((changeset) =>
+							Effect.tryPromise(async () => {
+								await generateMigrations(changeset, config);
+								return Effect.succeed(true);
+							}),
+						),
 					),
 				),
 			),
-		);
+		),
+	);
 }
 
 export function computeChangeset(
