@@ -14,7 +14,6 @@ import { cliAction } from "~/cli/utils/cli-action.js";
 import { migrateDown } from "../cli/actions/migrate-down.js";
 import { migrate } from "../cli/actions/migrate.js";
 import { pendingMigrations } from "../cli/actions/pending-migrations.js";
-import { structureDump } from "../cli/actions/structure-dump.js";
 import { structureLoad } from "../cli/actions/structure-load.js";
 import { isCommanderError } from "../cli/command.js";
 
@@ -113,7 +112,9 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await structureDump(opts.environment);
+			await cliAction("yount structure:dump", opts.environment, [
+				dumpDatabaseStructure(),
+			]);
 		});
 
 	program
