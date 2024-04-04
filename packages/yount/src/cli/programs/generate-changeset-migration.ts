@@ -8,6 +8,7 @@ import {
 	localSchema,
 	type MigrationSchema,
 } from "~/introspection/introspection.js";
+import { generateMigrationFiles } from "~/migrations/generate.js";
 import { dbExtensionInfo } from "~/schema/extension/introspection.js";
 import type { AnyPgDatabase } from "~/schema/pg-database.js";
 import { dbColumnInfo } from "~/schema/table/column/instrospection.js";
@@ -19,7 +20,6 @@ import { dbIndexInfo } from "~/schema/table/index/introspection.js";
 import { dbTableInfo } from "~/schema/table/introspection.js";
 import { dbTriggerInfo } from "~/schema/table/trigger/introspection.js";
 import { dbEnumInfo } from "~/schema/types/enum/introspection.js";
-import { generateMigrations } from "../components/generate-migrations.js";
 import { Environment } from "../services/environment.js";
 import { Db } from "../services/kysely.js";
 import { ExitWithSuccess, abortEarlyWithSuccess } from "../utils/cli-action.js";
@@ -34,12 +34,12 @@ export function generateChangesetMigration() {
 			]).pipe(
 				Effect.flatMap(([databaseSchema, localDatabaseSchema, config]) =>
 					computeChangeset(localDatabaseSchema, databaseSchema, config).pipe(
-						Effect.tap((changeset) =>
-							Effect.tryPromise(async () => {
-								await generateMigrations(changeset, config);
-								return Effect.succeed(true);
-							}),
-						),
+						Effect.tap((changeset) => {
+							generateMigrationFiles(changeset, config.folder);
+							const nextSteps = "To apply migrations, run 'npx yount migrate'";
+							p.note(nextSteps, "Next Steps");
+							return Effect.succeed(true);
+						}),
 					),
 				),
 			),
