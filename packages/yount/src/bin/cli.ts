@@ -4,10 +4,13 @@ import { Command } from "@commander-js/extra-typings";
 import { exit } from "process";
 import { migrationScaffold } from "~/cli/actions/migration-scaffold.js";
 import { seed } from "~/cli/actions/seed.js";
-import { dbClear } from "~/cli/commands/db-clear.js";
-import { dbCreate } from "~/cli/commands/db-create.js";
-import { dbDrop } from "~/cli/commands/db-drop.js";
-import { generate } from "~/cli/commands/generate.js";
+import { createDatabase } from "~/cli/programs/create-database.js";
+import { dropDatabase } from "~/cli/programs/drop-database.js";
+import { dropTablesAndTypes } from "~/cli/programs/drop-tables-and-types.js";
+import { dumpDatabaseStructureTask } from "~/cli/programs/dump-database-structure.js";
+import { generateChangesetMigration } from "~/cli/programs/generate-changeset-migration.js";
+import { handlePendingMigrations } from "~/cli/programs/pending-migrations.js";
+import { cliAction } from "~/cli/utils/cli-action.js";
 import { migrateDown } from "../cli/actions/migrate-down.js";
 import { migrate } from "../cli/actions/migrate.js";
 import { pendingMigrations } from "../cli/actions/pending-migrations.js";
@@ -28,7 +31,12 @@ async function main() {
 			"development",
 		)
 		.description("create the database")
-		.action(async (opts) => await dbCreate(opts.environment));
+		.action(
+			async (opts) =>
+				await cliAction("yount db:create", opts.environment, [
+					createDatabase(),
+				]),
+		);
 
 	program
 		.command("db:drop")
@@ -38,7 +46,10 @@ async function main() {
 			"development",
 		)
 		.description("drop the database")
-		.action(async (opts) => await dbDrop(opts.environment));
+		.action(
+			async (opts) =>
+				await cliAction("yount db:drop", opts.environment, [dropDatabase()]),
+		);
 
 	program
 		.command("db:clear")
@@ -48,7 +59,13 @@ async function main() {
 			"development",
 		)
 		.description("remove tables and types")
-		.action(async (opts) => await dbClear(opts.environment));
+		.action(
+			async (opts) =>
+				await cliAction("yount db:clear", opts.environment, [
+					dropTablesAndTypes(),
+					dumpDatabaseStructureTask(),
+				]),
+		);
 
 	program
 		.command("migrate")
@@ -120,7 +137,10 @@ async function main() {
 			false,
 		)
 		.action(async () => {
-			await generate("development");
+			await cliAction("yount generate", "development", [
+				handlePendingMigrations(),
+				generateChangesetMigration(),
+			]);
 		});
 
 	program
