@@ -2,7 +2,6 @@
 
 import { Command } from "@commander-js/extra-typings";
 import { exit } from "process";
-import { migrationScaffold } from "~/cli/actions/migration-scaffold.js";
 import { seed } from "~/cli/actions/seed.js";
 import { createDatabase } from "~/cli/programs/create-database.js";
 import { dropDatabase } from "~/cli/programs/drop-database.js";
@@ -10,6 +9,7 @@ import { dropTablesAndTypes } from "~/cli/programs/drop-tables-and-types.js";
 import { dumpDatabaseStructure } from "~/cli/programs/dump-database-structure.js";
 import { generateChangesetMigration } from "~/cli/programs/generate-changeset-migration.js";
 import { handlePendingMigrations } from "~/cli/programs/pending-migrations.js";
+import { scaffoldMigration } from "~/cli/programs/scaffold-migration.js";
 import { cliAction } from "~/cli/utils/cli-action.js";
 import { migrateDown } from "../cli/actions/migrate-down.js";
 import { migrate } from "../cli/actions/migrate.js";
@@ -160,7 +160,7 @@ async function main() {
 		.command("scaffold")
 		.description("create an empty migration file")
 		.action(async () => {
-			await migrationScaffold();
+			await cliAction("yount scaffold", "development", [scaffoldMigration()]);
 		});
 
 	program.exitOverride();
