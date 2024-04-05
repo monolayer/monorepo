@@ -115,6 +115,15 @@ class DumpWritable extends Writable {
 	) {
 		const lines = chunk.toString().split("\n");
 		for (const line of lines) {
+			if (line.startsWith("CREATE SCHEMA public")) {
+				this.#contents.push(
+					line.replace(
+						"CREATE SCHEMA public",
+						"CREATE SCHEMA IF NOT EXISTS public",
+					),
+				);
+				continue;
+			}
 			if (!line.startsWith("-- Dumped")) {
 				this.#contents.push(line);
 			}
