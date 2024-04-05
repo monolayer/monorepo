@@ -14,8 +14,8 @@ import { migrate } from "~/cli/programs/migrate.js";
 import { pendingMigrations } from "~/cli/programs/pending-migrations.js";
 import { scaffoldMigration } from "~/cli/programs/scaffold-migration.js";
 import { seed } from "~/cli/programs/seed.js";
+import { structureLoad } from "~/cli/programs/structure-load.js";
 import { cliAction } from "~/cli/utils/cli-action.js";
-import { structureLoad } from "../cli/actions/structure-load.js";
 import { isCommanderError } from "../cli/command.js";
 
 async function main() {
@@ -148,7 +148,9 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await structureLoad(opts.environment);
+			await cliAction("yount structure load", opts.environment, [
+				structureLoad(),
+			]);
 		});
 
 	program
