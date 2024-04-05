@@ -16,7 +16,12 @@ export function dumpDatabaseStructure() {
 			const environment = yield* _(Environment);
 			const searchPath = yield* _(databaseSearchPath(environment.pg.pool));
 			const database = yield* _(databaseInConfig(environment.pg.config));
-			const dumpPath = path.join(environment.config.folder, `${database}.sql`);
+			const dumpPath = path.join(
+				environment.config.folder,
+				environment.name === "development"
+					? "structure.sql"
+					: `structure_${environment.name}.sql`,
+			);
 			yield* _(setPgDumpEnv(environment.pg.config));
 			yield* _(dumpStructure(database, dumpPath));
 			appendFileSync(`${dumpPath}`, `SET search_path TO ${searchPath};\n\n`);
