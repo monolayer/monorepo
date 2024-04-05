@@ -22,5 +22,23 @@ export function spinnerTask(
 				spinner.stop(msg, 1);
 				return Effect.unit;
 			}),
-		);
+		)
+		.pipe(Effect.flatMap(() => Effect.succeed(true)));
+}
+
+export function check(
+	name: string,
+	callback: () => Effect.Effect<boolean, unknown, Environment | Db | Migrator>,
+) {
+	const spinner = p.spinner();
+	return Effect.gen(function* (_) {
+		spinner.start(name);
+		const result = yield* _(callback());
+		if (result) {
+			spinner.stop(`${name} ${color.green("✓")}`);
+		} else {
+			spinner.stop(`${name} ${color.red("x")}`);
+		}
+		return yield* _(Effect.succeed(result));
+	});
 }

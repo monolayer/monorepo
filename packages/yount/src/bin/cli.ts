@@ -3,7 +3,6 @@
 import { Command } from "@commander-js/extra-typings";
 import { Effect } from "effect";
 import { exit } from "process";
-import { seed } from "~/cli/actions/seed.js";
 import { createDatabase } from "~/cli/programs/create-database.js";
 import { dropDatabase } from "~/cli/programs/drop-database.js";
 import { dropTablesAndTypes } from "~/cli/programs/drop-tables-and-types.js";
@@ -14,6 +13,7 @@ import { migrateDown } from "~/cli/programs/migrate-down.js";
 import { migrate } from "~/cli/programs/migrate.js";
 import { pendingMigrations } from "~/cli/programs/pending-migrations.js";
 import { scaffoldMigration } from "~/cli/programs/scaffold-migration.js";
+import { seed } from "~/cli/programs/seed.js";
 import { cliAction } from "~/cli/utils/cli-action.js";
 import { structureLoad } from "../cli/actions/structure-load.js";
 import { isCommanderError } from "../cli/command.js";
@@ -115,11 +115,14 @@ async function main() {
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in yount.config.ts",
+			"development",
 		)
 		.option("-r, --replant", "Truncate tables before seeding")
 		.option("-d, --disable-warnings", "disable truncation warnings")
 		.action(async (opts) => {
-			await seed(opts);
+			await cliAction("yount seed", opts.environment, [
+				seed({ replant: opts.replant, disableWarnings: opts.disableWarnings }),
+			]);
 		});
 
 	program
