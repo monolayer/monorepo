@@ -8,7 +8,7 @@ import { Environment } from "../services/environment.js";
 export function scaffoldMigration() {
 	return timestamp().pipe(
 		Effect.flatMap(scaffoldMigrationPath),
-		Effect.flatMap(generate),
+		Effect.tap(generate),
 	);
 }
 

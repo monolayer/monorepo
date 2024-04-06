@@ -6,7 +6,7 @@ KYSELY_VERSION=${KYSELY_VERSION:-default}
 echo "Testing with Kysely version $KYSELY_VERSION"
 
 if [[ "$KYSELY_VERSION" == "default" ]]; then
-  vitest unit src --run --coverage
+  vitest unit src --run --coverage --pool=forks
 else
   KYSELY_VERSION=${KYSELY_VERSION//./}
 
@@ -16,6 +16,6 @@ else
   fi
 
   sed -i $sed_option "s/await import(.*)/await import('kysely-$KYSELY_VERSION')/g" ./tests/setup/kysely.ts
-  vitest unit src --run --coverage
+  vitest unit src --run --coverage --pool=forks
   sed -i $sed_option "s/await import(.*)/await import(\"kysely\")/g" ./tests/setup/kysely.ts
 fi

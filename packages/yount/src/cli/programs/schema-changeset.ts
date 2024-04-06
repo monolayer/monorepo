@@ -55,7 +55,7 @@ function computeChangeset(
 }
 
 function localDatabaseSchema(config: Config) {
-	return Effect.tryPromise(async () => await importSchema()).pipe(
+	return Effect.tryPromise(() => importSchema()).pipe(
 		Effect.flatMap((localSchemaFile) => {
 			if (localSchemaFile.database === undefined) {
 				p.log.warning(

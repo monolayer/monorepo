@@ -12,7 +12,7 @@ export function pendingMigrations() {
 				onFalse: logEmptyMigration(),
 			}),
 		),
-		Effect.flatMap(() => Effect.succeed(true)),
+		Effect.flatMap((pendingMigrations) => Effect.succeed(pendingMigrations)),
 	);
 }
 
@@ -24,6 +24,7 @@ function logEmptyMigration() {
 
 function logPendingMigration(migration: { name: string; path: string }) {
 	const relativePath = path.relative(process.cwd(), migration.path);
+	console.log(migration.name, migration.path);
 	p.log.warn(`${color.yellow("pending")} ${relativePath}`);
 	return Effect.unit;
 }
