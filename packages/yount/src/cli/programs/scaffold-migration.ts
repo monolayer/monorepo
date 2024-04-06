@@ -5,22 +5,40 @@ import { randomName } from "~/migrations/random-name.js";
 import { createFile } from "~/utils.js";
 import { Environment } from "../services/environment.js";
 
-const template = `import { Kysely } from "kysely";
+export function scaffoldMigration() {
+	return timestamp().pipe(
+		Effect.flatMap(scaffoldMigrationPath),
+		Effect.flatMap(generate),
+	);
+}
+
+function timestamp() {
+	return Effect.succeed(
+		new Date().toISOString().replace(/[-:]/g, "").split(".")[0],
+	);
+}
+
+function scaffoldMigrationPath(timestamp?: string) {
+	return Environment.pipe(
+		Effect.flatMap((environment) =>
+			Effect.succeed(
+				path.join(
+					environment.config.migrationFolder,
+					`${timestamp}-${randomName()}.ts`,
+				),
+			),
+		),
+	);
+}
+
+function generate(filePath: string) {
+	const template = `import { Kysely } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
 }`;
-
-export function scaffoldMigration() {
-	return Effect.gen(function* (_) {
-		const environment = yield* _(Environment);
-		const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
-		const migrationFilePath = path.join(
-			environment.config.migrationFolder,
-			`${dateStr}-${randomName()}.ts`,
-		);
-		createFile(migrationFilePath, nunjucks.compile(template).render(), true);
-	});
+	createFile(filePath, nunjucks.compile(template).render(), true);
+	return Effect.succeed(true);
 }

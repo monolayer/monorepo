@@ -23,10 +23,8 @@ import { Db } from "../services/kysely.js";
 import { ExitWithSuccess } from "../utils/cli-action.js";
 
 export function schemaChangeset() {
-	return Effect.gen(function* (_) {
-		const environment = yield* _(Environment);
-		const db = yield* _(Db);
-		return yield* _(
+	return Effect.all([Environment, Db]).pipe(
+		Effect.flatMap(([environment, db]) =>
 			Effect.all([
 				databaseSchema(db.kysely),
 				localDatabaseSchema(environment.config),
@@ -36,8 +34,8 @@ export function schemaChangeset() {
 					computeChangeset(localDatabaseSchema, databaseSchema, config),
 				),
 			),
-		);
-	});
+		),
+	);
 }
 
 function computeChangeset(

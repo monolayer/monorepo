@@ -4,11 +4,12 @@ import { spinnerTask } from "../utils/spinner-task.js";
 import { pgQuery } from "./pg-query.js";
 
 export function dropTablesAndTypes() {
-	return spinnerTask("Drop tables and types", () =>
-		Effect.gen(function* (_) {
-			const environment = yield* _(Environment);
-			return yield* _(pgQuery(environment.pg.pool, dropAllTablesAndTypesQuery));
-		}),
+	return Environment.pipe(
+		Effect.flatMap((environment) =>
+			spinnerTask("Drop tables and types", () =>
+				pgQuery(environment.pg.pool, dropAllTablesAndTypesQuery),
+			),
+		),
 	);
 }
 

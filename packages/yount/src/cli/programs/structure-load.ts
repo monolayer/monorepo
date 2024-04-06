@@ -9,17 +9,16 @@ import { dropDatabase } from "./drop-database.js";
 import { pgQuery } from "./pg-query.js";
 
 export function structureLoad() {
-	return Effect.succeed(true).pipe(
-		Effect.tap(() => checkStructureFile()),
-		Effect.tap(() => dropDatabase(true)),
-		Effect.tap(() => createDatabase()),
-		Effect.tap(() => restoreDatabaseFromStructureFile()),
+	return checkStructureFile().pipe(
+		Effect.tap(dropDatabase),
+		Effect.tap(createDatabase),
+		Effect.tap(restoreDatabaseFromStructureFile),
 	);
 }
 
 function checkStructureFile() {
-	return Effect.all([Environment]).pipe(
-		Effect.flatMap(([environment]) =>
+	return Environment.pipe(
+		Effect.flatMap((environment) =>
 			checkWithFail({
 				name: `Check structure.sql file`,
 				nextSteps: `Follow these steps to generate a structure file:
@@ -53,8 +52,8 @@ function checkStructureFile() {
 }
 
 function restoreDatabaseFromStructureFile() {
-	return Effect.all([Environment]).pipe(
-		Effect.flatMap(([environment]) =>
+	return Environment.pipe(
+		Effect.flatMap((environment) =>
 			spinnerTask(
 				`Restore ${environment.pg.config.database} from structure.sql`,
 				() =>

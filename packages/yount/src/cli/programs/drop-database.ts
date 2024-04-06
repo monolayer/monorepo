@@ -4,17 +4,14 @@ import { spinnerTask } from "../utils/spinner-task.js";
 import { pgQuery } from "./pg-query.js";
 
 export function dropDatabase(failSafe = false) {
-	return Effect.gen(function* (_) {
-		const environment = yield* _(Environment);
-		const database = environment.pg.config.database;
-		const pool = environment.pg.adminPool;
-		return yield* _(
-			spinnerTask(`Drop database ${database}`, () =>
+	return Environment.pipe(
+		Effect.flatMap((environment) =>
+			spinnerTask(`Drop database ${environment.pg.config.database}`, () =>
 				pgQuery(
-					pool,
-					`DROP DATABASE ${failSafe ? "IF EXISTS" : ""} ${database};`,
+					environment.pg.adminPool,
+					`DROP DATABASE ${failSafe ? "IF EXISTS" : ""} ${environment.pg.config.database};`,
 				),
 			),
-		);
-	});
+		),
+	);
 }

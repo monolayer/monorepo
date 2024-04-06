@@ -113,8 +113,8 @@ function replantWarning() {
 }
 
 function truncateAllTables() {
-	return Effect.all([Db]).pipe(
-		Effect.flatMap(([db]) =>
+	return Db.pipe(
+		Effect.flatMap((db) =>
 			Effect.tryPromise(() => dbTableInfo(db.kysely, "public")).pipe(
 				Effect.tap((result) =>
 					Effect.forEach(result, (table) =>
@@ -136,8 +136,8 @@ export class UndefinedSeedFunction extends TaggedClass(
 ) {}
 
 export function importSeedFunction() {
-	return Effect.all([Environment]).pipe(
-		Effect.flatMap(([environment]) =>
+	return Environment.pipe(
+		Effect.flatMap((environment) =>
 			Effect.tryPromise(async () => {
 				try {
 					const moduleImport: SeedImport = await import(

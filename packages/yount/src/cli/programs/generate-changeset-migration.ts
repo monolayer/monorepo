@@ -6,8 +6,8 @@ import { Environment } from "../services/environment.js";
 import { schemaChangeset } from "./schema-changeset.js";
 
 export function generateChangesetMigration() {
-	return Effect.all([Environment]).pipe(
-		Effect.flatMap(([environment]) =>
+	return Environment.pipe(
+		Effect.flatMap((environment) =>
 			schemaChangeset().pipe(
 				Effect.tap((changeset) =>
 					Effect.if(changeset.length > 0, {

@@ -30,15 +30,21 @@ export function check(
 	name: string,
 	callback: () => Effect.Effect<boolean, unknown, Environment | Db | Migrator>,
 ) {
-	const spinner = p.spinner();
-	return Effect.gen(function* (_) {
-		spinner.start(name);
-		const result = yield* _(callback());
-		if (result) {
-			spinner.stop(`${name} ${color.green("✓")}`);
-		} else {
-			spinner.stop(`${name} ${color.red("x")}`);
-		}
-		return yield* _(Effect.succeed(result));
-	});
+	return Effect.succeed(p.spinner()).pipe(
+		Effect.tap((spinner) => spinner.start()),
+		Effect.flatMap((spinner) =>
+			callback().pipe(
+				Effect.tap((result) =>
+					Effect.if(result, {
+						onTrue: Effect.succeed(true).pipe(
+							Effect.tap(() => spinner.stop(`${name} ${color.green("✓")}`)),
+						),
+						onFalse: Effect.succeed(false).pipe(
+							Effect.tap(() => spinner.stop(`${name} ${color.red("x")}`)),
+						),
+					}),
+				),
+			),
+		),
+	);
 }

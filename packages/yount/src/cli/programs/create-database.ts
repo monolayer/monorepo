@@ -4,14 +4,14 @@ import { spinnerTask } from "../utils/spinner-task.js";
 import { pgQuery } from "./pg-query.js";
 
 export function createDatabase() {
-	return Effect.gen(function* (_) {
-		const environment = yield* _(Environment);
-		const database = environment.pg.config.database;
-		const pool = environment.pg.adminPool;
-		return yield* _(
-			spinnerTask(`Create database ${database}`, () =>
-				pgQuery(pool, `CREATE DATABASE ${database};`),
+	return Environment.pipe(
+		Effect.flatMap((environment) =>
+			spinnerTask(`Create database ${environment.pg.config.database}`, () =>
+				pgQuery(
+					environment.pg.adminPool,
+					`CREATE DATABASE ${environment.pg.config.database};`,
+				),
 			),
-		);
-	});
+		),
+	);
 }

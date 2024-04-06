@@ -5,15 +5,25 @@ import color from "picocolors";
 import { localPendingMigrations } from "./local-pending-migrations.js";
 
 export function pendingMigrations() {
-	return Effect.gen(function* (_) {
-		const pendingMigrations = yield* _(localPendingMigrations());
-		if (pendingMigrations.length === 0) {
-			p.log.info(`${color.green("No pending migrations")}`);
-		} else {
-			for (const migration of pendingMigrations) {
-				const relativePath = path.relative(process.cwd(), migration.path);
-				p.log.warn(`${color.yellow("pending")} ${relativePath}`);
-			}
-		}
-	});
+	return localPendingMigrations().pipe(
+		Effect.tap((pendingMigrations) =>
+			Effect.if(pendingMigrations.length > 0, {
+				onTrue: Effect.forEach(pendingMigrations, logPendingMigration),
+				onFalse: logEmptyMigration(),
+			}),
+		),
+		Effect.flatMap(() => Effect.succeed(true)),
+	);
+}
+
+function logEmptyMigration() {
+	return Effect.unit.pipe(
+		Effect.tap(() => p.log.info(`${color.green("No pending migrations")}`)),
+	);
+}
+
+function logPendingMigration(migration: { name: string; path: string }) {
+	const relativePath = path.relative(process.cwd(), migration.path);
+	p.log.warn(`${color.yellow("pending")} ${relativePath}`);
+	return Effect.unit;
 }
