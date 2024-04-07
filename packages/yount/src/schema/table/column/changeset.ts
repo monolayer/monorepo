@@ -4,7 +4,10 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
-import { executeKyselySchemaStatement } from "../../../changeset/helpers.js";
+import {
+	executeKyselyDbStatement,
+	executeKyselySchemaStatement,
+} from "../../../changeset/helpers.js";
 import type {
 	DbTableInfo,
 	LocalTableInfo,
@@ -64,9 +67,11 @@ function createColumnMigration(diff: CreateColumnDiff) {
 	const defaultValueAndHash = toValueAndHash(String(columnDef.defaultValue));
 
 	if (columnDef.defaultValue !== null) {
-		up.push([
-			`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'\`.execute(db);`,
-		]);
+		up.push(
+			executeKyselyDbStatement(
+				`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
+			),
+		);
 	}
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnCreate,
@@ -111,9 +116,11 @@ function dropColumnMigration(diff: DropColumnDiff) {
 	];
 	if (columnDef.defaultValue !== null) {
 		const defaultValueAndHash = toValueAndHash(String(columnDef.defaultValue));
-		down.push([
-			`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'\`.execute(db);`,
-		]);
+		down.push(
+			executeKyselyDbStatement(
+				`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
+			),
+		);
 	}
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnDrop,

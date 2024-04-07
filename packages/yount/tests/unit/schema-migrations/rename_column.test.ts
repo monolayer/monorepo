@@ -757,12 +757,19 @@ describe("Rename column migrations", () => {
 					type: "dropIndex",
 					up: [
 						[
-							'await db.schema.dropIndex("users_pk1_book_id_kntc_idx").execute();',
+							"await db.schema",
+							'dropIndex("users_pk1_book_id_kntc_idx")',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							"await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree (book_id);COMMENT ON INDEX \"users_pk1_book_id_kntc_idx\" IS 'abcd'`.execute(db);",
+							"await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree (book_id)`",
+							"execute(db);",
+						],
+						[
+							"await sql`COMMENT ON INDEX \"users_pk1_book_id_kntc_idx\" IS 'abcd'`",
+							"execute(db);",
 						],
 					],
 				},
@@ -793,12 +800,19 @@ describe("Rename column migrations", () => {
 					type: "createIndex",
 					up: [
 						[
-							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce25\'`.execute(db);',
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId")`',
+							"execute(db);",
+						],
+						[
+							"await sql`COMMENT ON INDEX \"users_pk1_bookId_kntc_idx\" IS '760bce25'`",
+							"execute(db);",
 						],
 					],
 					down: [
 						[
-							'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+							"await db.schema",
+							'dropIndex("users_pk1_bookId_kntc_idx")',
+							"execute();",
 						],
 					],
 				},
@@ -861,12 +875,19 @@ describe("Rename column migrations", () => {
 					type: "createIndex",
 					up: [
 						[
-							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce25\'`.execute(db);',
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId")`',
+							"execute(db);",
+						],
+						[
+							"await sql`COMMENT ON INDEX \"users_pk1_bookId_kntc_idx\" IS '760bce25'`",
+							"execute(db);",
 						],
 					],
 					down: [
 						[
-							'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+							"await db.schema",
+							'dropIndex("users_pk1_bookId_kntc_idx")',
+							"execute();",
 						],
 					],
 				},
@@ -1172,12 +1193,19 @@ describe("Rename column migrations", () => {
 					type: "dropIndex",
 					up: [
 						[
-							'await db.schema.dropIndex("users_pk1_book_id_kntc_idx").execute();',
+							"await db.schema",
+							'dropIndex("users_pk1_book_id_kntc_idx")',
+							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree ("bookId");COMMENT ON INDEX "users_pk1_book_id_kntc_idx" IS \'abcd\'`.execute(db);',
+							'await sql`CREATE INDEX users_pk1_book_id_kntc_idx ON public.users_pk1 USING btree ("bookId")`',
+							"execute(db);",
+						],
+						[
+							"await sql`COMMENT ON INDEX \"users_pk1_book_id_kntc_idx\" IS 'abcd'`",
+							"execute(db);",
 						],
 					],
 				},
@@ -1187,12 +1215,19 @@ describe("Rename column migrations", () => {
 					type: "createIndex",
 					up: [
 						[
-							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce25\'`.execute(db);',
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId")`',
+							"execute(db);",
+						],
+						[
+							"await sql`COMMENT ON INDEX \"users_pk1_bookId_kntc_idx\" IS '760bce25'`",
+							"execute(db);",
 						],
 					],
 					down: [
 						[
-							'await db.schema.dropIndex("users_pk1_bookId_kntc_idx").execute();',
+							"await db.schema",
+							'dropIndex("users_pk1_bookId_kntc_idx")',
+							"execute();",
 						],
 					],
 				},

@@ -51,7 +51,9 @@ function extractMigrationOpChangesets(changesets: Changeset[]) {
 			(changeset) =>
 				changeset.up.length > 0 && (changeset.up[0] || []).length > 0,
 		)
-		.map((changeset) => changeset.up.map((u) => u.join("\n    .")).join("\n"));
+		.map((changeset) =>
+			changeset.up.map((u) => u.join("\n    .")).join("\n\n  "),
+		);
 	const down = changesets
 		.reverse()
 		.filter(
@@ -59,7 +61,7 @@ function extractMigrationOpChangesets(changesets: Changeset[]) {
 				changeset.down.length > 0 && (changeset.down[0] || []).length > 0,
 		)
 		.map((changeset) =>
-			changeset.down.map((d) => d.join("\n    .")).join("\n"),
+			changeset.down.map((d) => d.join("\n    .")).join("\n\n  "),
 		);
 	return { up, down };
 }

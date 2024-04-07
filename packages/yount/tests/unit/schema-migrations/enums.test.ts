@@ -50,8 +50,9 @@ describe("Database migrations", () => {
 						"await db.schema",
 						'createType("role")',
 						'asEnum(["admin", "user"])',
-						"execute();await sql`COMMENT ON TYPE \"role\" IS 'yount'`.execute(db)",
+						"execute();",
 					],
+					["await sql`COMMENT ON TYPE \"role\" IS 'yount'`", "execute(db);"],
 				],
 				down: [["await db.schema", 'dropType("role")', "execute();"]],
 			},
@@ -143,8 +144,9 @@ describe("Database migrations", () => {
 						"await db.schema",
 						'createType("role")',
 						'asEnum(["admin", "user"])',
-						"execute();await sql`COMMENT ON TYPE \"role\" IS 'yount'`.execute(db)",
+						"execute();",
 					],
+					["await sql`COMMENT ON TYPE \"role\" IS 'yount'`", "execute(db);"],
 				],
 			},
 		];
@@ -192,7 +194,8 @@ describe("Database migrations", () => {
 				type: "changeEnum",
 				up: [
 					[
-						"await sql`ALTER TYPE role ADD VALUE IF NOT EXISTS 'superuser';`.execute(db);",
+						"await sql`ALTER TYPE role ADD VALUE IF NOT EXISTS 'superuser';`",
+						"execute(db);",
 					],
 				],
 				down: [],

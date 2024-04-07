@@ -9,6 +9,7 @@ import type {
 	LocalTableInfo,
 } from "~/introspection/introspection.js";
 import {
+	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
 	sqlStatement,
 } from "../../../../changeset/helpers.js";
@@ -113,9 +114,9 @@ function columnDefaultAddMigrationOperation(diff: ColumnDefaultAddDifference) {
 					defaultValueAndHash.value ?? "",
 				)}))`,
 			),
-			[
-				`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'\`.execute(db);`,
-			],
+			executeKyselyDbStatement(
+				`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
+			),
 		],
 		down: [
 			executeKyselySchemaStatement(
@@ -135,6 +136,9 @@ function columnDefaultDropMigrationOperation(
 
 	const defaultValueAndHash = toValueAndHash(String(diff.oldValue));
 
+	executeKyselyDbStatement(
+		`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
+	);
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultDrop,
 		tableName: tableName,
@@ -152,9 +156,9 @@ function columnDefaultDropMigrationOperation(
 					defaultValueAndHash.value ?? "",
 				)}))`,
 			),
-			[
-				`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'\`.execute(db);`,
-			],
+			executeKyselyDbStatement(
+				`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
+			),
 		],
 	};
 	return changeset;
@@ -181,9 +185,12 @@ function columnDefaultChangeMigrationOperation(
 			)}))`,
 		),
 	];
-	up.push([
-		`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${newDefaultValueAndHash.hash}'\`.execute(db);`,
-	]);
+
+	up.push(
+		executeKyselyDbStatement(
+			`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${newDefaultValueAndHash.hash}'`,
+		),
+	);
 
 	const down = [
 		executeKyselySchemaStatement(
@@ -193,9 +200,12 @@ function columnDefaultChangeMigrationOperation(
 			)}))`,
 		),
 	];
-	down.push([
-		`await sql\`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${oldDefaultValueAndHash.hash}'\`.execute(db);`,
-	]);
+
+	down.push(
+		executeKyselyDbStatement(
+			`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${oldDefaultValueAndHash.hash}'`,
+		),
+	);
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultChange,

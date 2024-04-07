@@ -6,7 +6,7 @@ export function executeKyselySchemaStatement(...args: string[]) {
 }
 
 export function executeKyselyDbStatement(statement: string) {
-	return [`await ${sqlStatement(statement)}.execute(db);`];
+	return [`await ${sqlStatement(statement)}`, "execute(db);"];
 }
 
 export function sqlStatement(value: string) {

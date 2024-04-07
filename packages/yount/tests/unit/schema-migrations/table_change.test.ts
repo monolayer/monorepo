@@ -265,7 +265,8 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad9\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad9\'`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -276,7 +277,8 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e\'`',
+						"execute(db);",
 					],
 				],
 			},
@@ -319,7 +321,8 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad9\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad9\'`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -347,7 +350,7 @@ describe("Table change migrations", () => {
 			.addColumn("name", "text", (col) => col.defaultTo(sql`'foo'::text`))
 			.execute();
 
-		await sql`COMMENT ON COLUMN "users"."name" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
+		await sql`COMMENT ON COLUMN "users"."name" IS 'ae72411e'`.execute(
 			context.kysely,
 		);
 
@@ -382,7 +385,8 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e\'`',
+						"execute(db);",
 					],
 				],
 			},
@@ -517,7 +521,8 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e\'`',
+						"execute(db);",
 					],
 				],
 				priority: 3007,
@@ -531,7 +536,8 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'2bc67682\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'2bc67682\'`',
+						"execute(db);",
 					],
 				],
 			},
@@ -631,12 +637,18 @@ describe("Table change migrations", () => {
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b968';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
+						`execute(db);`,
+					],
+					[
+						`await sql\`COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b968'\``,
+						`execute(db);`,
 					],
 				],
 				down: [
 					[
-						"await sql`DROP TRIGGER foo_before_update_two_trg ON users`.execute(db);",
+						"await sql`DROP TRIGGER foo_before_update_two_trg ON users`",
+						"execute(db);",
 					],
 				],
 			},
@@ -715,12 +727,18 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				type: "dropTrigger",
 				up: [
 					[
-						"await sql`DROP TRIGGER foo_before_update_two_trg ON users`.execute(db);",
+						"await sql`DROP TRIGGER foo_before_update_two_trg ON users`",
+						"execute(db);",
 					],
 				],
 				down: [
 					[
-						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32';\`.execute(db);`,
+						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
+						`execute(db);`,
+					],
+					[
+						`await sql\`COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32'\``,
+						`execute(db);`,
 					],
 				],
 			},

@@ -64,7 +64,8 @@ describe("Database migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -123,7 +124,8 @@ describe("Database migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -147,7 +149,8 @@ describe("Database migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -225,10 +228,12 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "books" ADD CONSTRAINT "e37c55a5_yount_chk" CHECK ((id < 50000))`.execute(db);',
+						'await sql`ALTER TABLE "books" ADD CONSTRAINT "e37c55a5_yount_chk" CHECK ((id < 50000))`',
+						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`',
+						"execute(db);",
 					],
 				],
 			},
@@ -284,10 +289,12 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "books" ADD CONSTRAINT "918b4271_yount_chk" CHECK ((id < 50000))`.execute(db);',
+						'await sql`ALTER TABLE "books" ADD CONSTRAINT "918b4271_yount_chk" CHECK ((id < 50000))`',
+						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`',
+						"execute(db);",
 					],
 				],
 			},

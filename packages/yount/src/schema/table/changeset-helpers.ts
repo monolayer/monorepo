@@ -18,19 +18,6 @@ export function tableColumnsOps(columnsInfo: ColumnsInfoDiff) {
 	});
 }
 
-export function tableColumnsComments(columnsInfo: ColumnsInfoDiff) {
-	return Object.entries(columnsInfo).flatMap(([, column]) => {
-		if (column.defaultValue !== null) {
-			const valueAndHash = toValueAndHash(column.defaultValue);
-			return [
-				`await sql\`COMMENT ON COLUMN "${column.tableName}"."${column.columnName}" IS '${valueAndHash.hash}'\`.execute(db);`,
-			];
-		} else {
-			return [];
-		}
-	});
-}
-
 interface DefaultValueAndHash {
 	value?: string;
 	hash?: string;

@@ -121,7 +121,7 @@ describe("Table drop migrations", () => {
 			.addColumn("varChar255", sql`character varying(255)`)
 			.execute();
 
-		await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
+		await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS 'ae72411e'`.execute(
 			context.kysely,
 		);
 
@@ -158,7 +158,8 @@ describe("Table drop migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS \'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS \'ae72411e\'`',
+						"execute(db);",
 					],
 				],
 			},
@@ -500,10 +501,12 @@ describe("Table drop migrations", () => {
 				type: "dropConstraint",
 				down: [
 					[
-						'await sql`ALTER TABLE "books" ADD CONSTRAINT "971041d9_yount_chk" CHECK ((id > 50))`.execute(db);',
+						'await sql`ALTER TABLE "books" ADD CONSTRAINT "971041d9_yount_chk" CHECK ((id > 50))`',
+						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "971041d9_yount_chk" ON "books" IS \'971041d9_yount_chk\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "971041d9_yount_chk" ON "books" IS \'971041d9_yount_chk\'`',
+						"execute(db);",
 					],
 				],
 				up: [[]],
@@ -565,7 +568,12 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						"await sql`CREATE UNIQUE INDEX books_id_kntc_idx ON public.books USING btree (id);COMMENT ON INDEX \"books_id_kntc_idx\" IS '2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee'`.execute(db);",
+						"await sql`CREATE UNIQUE INDEX books_id_kntc_idx ON public.books USING btree (id)`",
+						"execute(db);",
+					],
+					[
+						"await sql`COMMENT ON INDEX \"books_id_kntc_idx\" IS '2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee'`",
+						"execute(db);",
 					],
 				],
 			},
@@ -576,7 +584,12 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						"await sql`CREATE INDEX users_name_kntc_idx ON public.users USING btree (name);COMMENT ON INDEX \"users_name_kntc_idx\" IS 'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45'`.execute(db);",
+						"await sql`CREATE INDEX users_name_kntc_idx ON public.users USING btree (name)`",
+						"execute(db);",
+					],
+					[
+						"await sql`COMMENT ON INDEX \"users_name_kntc_idx\" IS 'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45'`",
+						"execute(db);",
 					],
 				],
 			},
@@ -659,8 +672,9 @@ describe("Table drop migrations", () => {
 						"await db.schema",
 						'createType("role")',
 						'asEnum(["admin", "user"])',
-						"execute();await sql`COMMENT ON TYPE \"role\" IS 'yount'`.execute(db)",
+						"execute();",
 					],
+					["await sql`COMMENT ON TYPE \"role\" IS 'yount'`", "execute(db);"],
 				],
 			},
 		];
@@ -686,11 +700,11 @@ describe("Table drop migrations", () => {
 			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
 			.execute();
 
-		await sql`COMMENT ON COLUMN "users"."updatedAt" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS 'ae72411e'`.execute(
 			context.kysely,
 		);
 
-		await sql`COMMENT ON COLUMN "users"."createdAt" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
+		await sql`COMMENT ON COLUMN "users"."createdAt" IS 'ae72411e'`.execute(
 			context.kysely,
 		);
 
@@ -725,7 +739,12 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat');COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(db);",
+						"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
+						"execute(db);",
+					],
+					[
+						"await sql`COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67'`",
+						"execute(db);",
 					],
 				],
 			},
@@ -744,10 +763,12 @@ describe("Table drop migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."createdAt" IS \'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."createdAt" IS \'ae72411e\'`',
+						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'ae72411e\'`',
+						"execute(db);",
 					],
 				],
 			},

@@ -1,5 +1,9 @@
 import type { Difference } from "microdiff";
 import {
+	executeKyselyDbStatement,
+	executeKyselySchemaStatement,
+} from "~/changeset/helpers.js";
+import {
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -92,13 +96,14 @@ function createFirstIndexMigration(
 					tableName: tableName,
 					type: ChangeSetType.CreateIndex,
 					up: [
-						[
-							`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
-						],
+						executeKyselyDbStatement(`${index[1]}`),
+						executeKyselyDbStatement(
+							`COMMENT ON INDEX "${indexName}" IS '${index[0]}'`,
+						),
 					],
 					down: addedTables.includes(tableName)
 						? [[]]
-						: [[`await db.schema.dropIndex("${indexName}").execute();`]],
+						: [executeKyselySchemaStatement(`dropIndex("${indexName}")`)],
 				};
 				return changeSet;
 			}
@@ -124,11 +129,12 @@ function dropAllIndexesMigration(
 				type: ChangeSetType.DropIndex,
 				up: droppedTables.includes(tableName)
 					? [[]]
-					: [[`await db.schema.dropIndex("${indexName}").execute();`]],
+					: [executeKyselySchemaStatement(`dropIndex("${indexName}")`)],
 				down: [
-					[
-						`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
-					],
+					executeKyselyDbStatement(`${index[1]}`),
+					executeKyselyDbStatement(
+						`COMMENT ON INDEX "${indexName}" IS '${index[0]}'`,
+					),
 				],
 			};
 			return changeSet;
@@ -146,14 +152,18 @@ function changeIndexMigration(diff: ChangeIndexDiff) {
 		tableName: tableName,
 		type: ChangeSetType.ChangeIndex,
 		up: [
-			[
-				`await sql\`DROP INDEX "${indexName}";${newIndex[1]};COMMENT ON INDEX "${indexName}" IS '${newIndex[0]}'\`.execute(db);`,
-			],
+			executeKyselyDbStatement(`DROP INDEX "${indexName}"`),
+			executeKyselyDbStatement(`${newIndex[1]}`),
+			executeKyselyDbStatement(
+				`COMMENT ON INDEX "${indexName}" IS '${newIndex[0]}'`,
+			),
 		],
 		down: [
-			[
-				`await sql\`DROP INDEX "${indexName}";${oldIndex[1]};COMMENT ON INDEX "${indexName}" IS '${oldIndex[0]}'\`.execute(db);`,
-			],
+			executeKyselyDbStatement(`DROP INDEX "${indexName}"`),
+			executeKyselyDbStatement(`${oldIndex[1]}`),
+			executeKyselyDbStatement(
+				`COMMENT ON INDEX "${indexName}" IS '${oldIndex[0]}'`,
+			),
 		],
 	};
 	return changeset;
@@ -183,11 +193,12 @@ function createIndexMigration(diff: CreateIndex) {
 		tableName: tableName,
 		type: ChangeSetType.CreateIndex,
 		up: [
-			[
-				`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
-			],
+			executeKyselyDbStatement(`${index[1]}`),
+			executeKyselyDbStatement(
+				`COMMENT ON INDEX "${indexName}" IS '${index[0]}'`,
+			),
 		],
-		down: [[`await db.schema.dropIndex("${indexName}").execute();`]],
+		down: [executeKyselySchemaStatement(`dropIndex("${indexName}")`)],
 	};
 	return changeset;
 }
@@ -215,11 +226,12 @@ function dropIndexMigration(diff: DropIndex) {
 		priority: MigrationOpPriority.IndexDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropIndex,
-		up: [[`await db.schema.dropIndex("${indexName}").execute();`]],
+		up: [executeKyselySchemaStatement(`dropIndex("${indexName}")`)],
 		down: [
-			[
-				`await sql\`${index[1]};COMMENT ON INDEX "${indexName}" IS '${index[0]}'\`.execute(db);`,
-			],
+			executeKyselyDbStatement(`${index[1]}`),
+			executeKyselyDbStatement(
+				`COMMENT ON INDEX "${indexName}" IS '${index[0]}'`,
+			),
 		],
 	};
 	return changeset;

@@ -140,8 +140,9 @@ function createTriggerFirstMigration(
 			tableName: tableName,
 			type: ChangeSetType.CreateTrigger,
 			up: [
+				executeKyselyDbStatement(`${trigger[1]}`),
 				executeKyselyDbStatement(
-					`${trigger[1]};COMMENT ON TRIGGER ${key} ON ${tableName} IS '${trigger[0]}';`,
+					`COMMENT ON TRIGGER ${key} ON ${tableName} IS '${trigger[0]}';`,
 				),
 			],
 			down: addedTables.includes(tableName)
@@ -161,8 +162,9 @@ function createTriggerMigration(diff: TriggerCreateDiff) {
 		tableName: tableName,
 		type: ChangeSetType.CreateTrigger,
 		up: [
+			executeKyselyDbStatement(`${trigger[1]}`),
 			executeKyselyDbStatement(
-				`${trigger[1]};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}';`,
+				`COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}'`,
 			),
 		],
 		down: [
@@ -191,7 +193,10 @@ function dropTriggerFirstMigration(
 					`${trigger[1]?.replace(
 						"CREATE TRIGGER",
 						"CREATE OR REPLACE TRIGGER",
-					)};COMMENT ON TRIGGER ${key} ON ${tableName} IS '${trigger[0]}';`,
+					)}`,
+				),
+				executeKyselyDbStatement(
+					`COMMENT ON TRIGGER ${key} ON ${tableName} IS '${trigger[0]}'`,
 				),
 			],
 		};
@@ -213,10 +218,10 @@ function dropTriggerMigration(diff: TriggerDropDiff) {
 		],
 		down: [
 			executeKyselyDbStatement(
-				`${trigger[1]?.replace(
-					"CREATE TRIGGER",
-					"CREATE OR REPLACE TRIGGER",
-				)};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}';`,
+				`${trigger[1]?.replace("CREATE TRIGGER", "CREATE OR REPLACE TRIGGER")}`,
+			),
+			executeKyselyDbStatement(
+				`COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}'`,
 			),
 		],
 	};
@@ -236,8 +241,9 @@ function changeTriggerMigration(diff: TriggerChangeDiff) {
 		tableName: tableName,
 		type: ChangeSetType.UpdateTrigger,
 		up: [
+			executeKyselyDbStatement(`${newTrigger[1]}`),
 			executeKyselyDbStatement(
-				`${newTrigger[1]};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${newTrigger[0]}';`,
+				`COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${newTrigger[0]}'`,
 			),
 		],
 		down: [
@@ -245,9 +251,10 @@ function changeTriggerMigration(diff: TriggerChangeDiff) {
 				`${oldTrigger[1]?.replace(
 					"CREATE TRIGGER",
 					"CREATE OR REPLACE TRIGGER",
-				)};COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${
-					oldTrigger[0]
-				}';`,
+				)}`,
+			),
+			executeKyselyDbStatement(
+				`COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${oldTrigger[0]}'`,
 			),
 		],
 	};

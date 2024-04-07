@@ -1,5 +1,9 @@
 import type { Difference } from "microdiff";
 import {
+	executeKyselyDbStatement,
+	executeKyselySchemaStatement,
+} from "~/changeset/helpers.js";
+import {
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -42,14 +46,13 @@ function createEnumMigration(diff: CreateEnumDiff) {
 		tableName: "none",
 		type: ChangeSetType.CreateEnum,
 		up: [
-			[
-				"await db.schema",
+			executeKyselySchemaStatement(
 				`createType("${enumName}")`,
 				`asEnum([${enumValues}])`,
-				`execute();await sql\`COMMENT ON TYPE "${enumName}" IS 'yount'\`.execute(db)`,
-			],
+			),
+			executeKyselyDbStatement(`COMMENT ON TYPE "${enumName}" IS 'yount'`),
 		],
-		down: [["await db.schema", `dropType("${enumName}")`, "execute();"]],
+		down: [executeKyselySchemaStatement(`dropType("${enumName}")`)],
 	};
 	return changeSet;
 }
@@ -64,14 +67,13 @@ function dropEnumMigration(diff: DropEnumDiff) {
 		priority: MigrationOpPriority.DropEnum,
 		tableName: "none",
 		type: ChangeSetType.DropEnum,
-		up: [["await db.schema", `dropType("${enumName}")`, "execute();"]],
+		up: [executeKyselySchemaStatement(`dropType("${enumName}")`)],
 		down: [
-			[
-				"await db.schema",
+			executeKyselySchemaStatement(
 				`createType("${enumName}")`,
 				`asEnum([${enumValues}])`,
-				`execute();await sql\`COMMENT ON TYPE "${enumName}" IS 'yount'\`.execute(db)`,
-			],
+			),
+			executeKyselyDbStatement(`COMMENT ON TYPE "${enumName}" IS 'yount'`),
 		],
 	};
 	return changeSet;
@@ -96,7 +98,7 @@ function changeEnumMigration(diff: ChangeEnumDiff) {
 		priority: MigrationOpPriority.Database,
 		tableName: "none",
 		type: ChangeSetType.ChangeEnum,
-		up: [[`await sql\`${newValues.join(";")};\`.execute(db);`]],
+		up: [executeKyselyDbStatement(`${newValues.join(";")};`)],
 		down: [],
 	};
 

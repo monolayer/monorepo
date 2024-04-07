@@ -191,13 +191,16 @@ describe("Table create migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS \'2bc67682\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS \'2bc67682\'`',
+						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "books"."vectorWithDefault" IS \'1ffcfd22\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "books"."vectorWithDefault" IS \'1ffcfd22\'`',
+						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "books"."tsqueryWithDefault" IS \'6970b882\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "books"."tsqueryWithDefault" IS \'6970b882\'`',
+						"execute(db);",
 					],
 				],
 				down: [["await db.schema", 'dropTable("books")', "execute();"]],
@@ -237,16 +240,20 @@ describe("Table create migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."bitWithDefault" IS \'e7152e01\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."bitWithDefault" IS \'e7152e01\'`',
+						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."inetWithDefault" IS \'840df336\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."inetWithDefault" IS \'840df336\'`',
+						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."macaddrWithDefault" IS \'c14cc2c9\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."macaddrWithDefault" IS \'c14cc2c9\'`',
+						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."macaddr8WithDefault" IS \'d2247d08\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."macaddr8WithDefault" IS \'d2247d08\'`',
+						"execute(db);",
 					],
 				],
 				down: [["await db.schema", 'dropTable("users")', "execute();"]],
@@ -597,7 +604,8 @@ describe("Table create migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`',
+						"execute(db);",
 					],
 				],
 				down: [[]],
@@ -614,7 +622,8 @@ describe("Table create migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`',
+						"execute(db);",
 					],
 				],
 				down: [[]],
@@ -788,7 +797,12 @@ describe("Table create migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create index "users_name_kntc_idx" on "users" ("name");COMMENT ON INDEX "users_name_kntc_idx" IS \'f873e4a8\'`.execute(db);',
+						'await sql`create index "users_name_kntc_idx" on "users" ("name")`',
+						"execute(db);",
+					],
+					[
+						"await sql`COMMENT ON INDEX \"users_name_kntc_idx\" IS 'f873e4a8'`",
+						"execute(db);",
 					],
 				],
 			},
@@ -799,7 +813,12 @@ describe("Table create migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX "books_id_kntc_idx" IS \'22009828\'`.execute(db);',
+						'await sql`create unique index "books_id_kntc_idx" on "books" ("id")`',
+						"execute(db);",
+					],
+					[
+						"await sql`COMMENT ON INDEX \"books_id_kntc_idx\" IS '22009828'`",
+						"execute(db);",
 					],
 				],
 			},
@@ -838,8 +857,9 @@ describe("Table create migrations", () => {
 						"await db.schema",
 						'createType("role")',
 						'asEnum(["admin", "user"])',
-						"execute();await sql`COMMENT ON TYPE \"role\" IS 'yount'`.execute(db)",
+						"execute();",
 					],
+					["await sql`COMMENT ON TYPE \"role\" IS 'yount'`", "execute(db);"],
 				],
 				down: [["await db.schema", 'dropType("role")', "execute();"]],
 			},
@@ -903,11 +923,12 @@ describe("Table create migrations", () => {
 				type: "createExtension",
 				up: [
 					[
-						"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(db);",
+						"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`",
+						"execute(db);",
 					],
 				],
 				down: [
-					["await sql`DROP EXTENSION IF EXISTS moddatetime;`.execute(db);"],
+					["await sql`DROP EXTENSION IF EXISTS moddatetime;`", "execute(db);"],
 				],
 			},
 			{
@@ -924,10 +945,12 @@ describe("Table create migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0\'`',
+						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0\'`',
+						"execute(db);",
 					],
 				],
 				down: [["await db.schema", 'dropTable("users")', "execute();"]],
@@ -941,7 +964,12 @@ describe("Table create migrations", () => {
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c27';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAt')\``,
+						`execute(db);`,
+					],
+					[
+						`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c27';\``,
+						`execute(db);`,
 					],
 				],
 				down: [[]],
@@ -955,7 +983,12 @@ EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_t
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b968';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
+						`execute(db);`,
+					],
+					[
+						`await sql\`COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b968';\``,
+						`execute(db);`,
 					],
 				],
 				down: [[]],
@@ -1055,11 +1088,12 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				type: "createExtension",
 				up: [
 					[
-						"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`.execute(db);",
+						"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`",
+						"execute(db);",
 					],
 				],
 				down: [
-					["await sql`DROP EXTENSION IF EXISTS moddatetime;`.execute(db);"],
+					["await sql`DROP EXTENSION IF EXISTS moddatetime;`", "execute(db);"],
 				],
 			},
 			{
@@ -1071,8 +1105,9 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 						"await db.schema",
 						'createType("role")',
 						'asEnum(["admin", "user"])',
-						"execute();await sql`COMMENT ON TYPE \"role\" IS 'yount'`.execute(db)",
+						"execute();",
 					],
+					["await sql`COMMENT ON TYPE \"role\" IS 'yount'`", "execute(db);"],
 				],
 				down: [["await db.schema", 'dropType("role")', "execute();"]],
 			},
@@ -1089,7 +1124,8 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "trigger_table"."updated_at" IS \'28a4dae0\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "trigger_table"."updated_at" IS \'28a4dae0\'`',
+						"execute(db);",
 					],
 				],
 				down: [["await db.schema", 'dropTable("trigger_table")', "execute();"]],
@@ -1257,7 +1293,8 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "60bcaca1_yount_chk" ON "new_books" IS \'60bcaca1\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "60bcaca1_yount_chk" ON "new_books" IS \'60bcaca1\'`',
+						"execute(db);",
 					],
 				],
 				down: [[]],
@@ -1274,7 +1311,8 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "1c05ff9f_yount_chk" ON "new_books" IS \'1c05ff9f\'`.execute(db);',
+						'await sql`COMMENT ON CONSTRAINT "1c05ff9f_yount_chk" ON "new_books" IS \'1c05ff9f\'`',
+						"execute(db);",
 					],
 				],
 				down: [[]],
@@ -1286,7 +1324,12 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create index "users_full_name_kntc_idx" on "users" ("full_name");COMMENT ON INDEX "users_full_name_kntc_idx" IS \'0a2fa263\'`.execute(db);',
+						'await sql`create index "users_full_name_kntc_idx" on "users" ("full_name")`',
+						"execute(db);",
+					],
+					[
+						"await sql`COMMENT ON INDEX \"users_full_name_kntc_idx\" IS '0a2fa263'`",
+						"execute(db);",
 					],
 				],
 			},
@@ -1297,7 +1340,12 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX "books_id_kntc_idx" IS \'22009828\'`.execute(db);',
+						'await sql`create unique index "books_id_kntc_idx" on "books" ("id")`',
+						"execute(db);",
+					],
+					[
+						"await sql`COMMENT ON INDEX \"books_id_kntc_idx\" IS '22009828'`",
+						"execute(db);",
 					],
 				],
 			},
@@ -1308,7 +1356,12 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "new_books_id_kntc_idx" on "new_books" ("id");COMMENT ON INDEX "new_books_id_kntc_idx" IS \'920c4448\'`.execute(db);',
+						'await sql`create unique index "new_books_id_kntc_idx" on "new_books" ("id")`',
+						"execute(db);",
+					],
+					[
+						"await sql`COMMENT ON INDEX \"new_books_id_kntc_idx\" IS '920c4448'`",
+						"execute(db);",
 					],
 				],
 			},
@@ -1319,7 +1372,12 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "library_building_id_kntc_idx" on "library_building" ("id");COMMENT ON INDEX "library_building_id_kntc_idx" IS \'9c7a7348\'`.execute(db);',
+						'await sql`create unique index "library_building_id_kntc_idx" on "library_building" ("id")`',
+						"execute(db);",
+					],
+					[
+						"await sql`COMMENT ON INDEX \"library_building_id_kntc_idx\" IS '9c7a7348'`",
+						"execute(db);",
 					],
 				],
 			},
@@ -1332,7 +1390,12 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 BEFORE UPDATE ON trigger_table
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER foo_before_update_trg ON trigger_table IS '7666bcb7';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updated_at')\``,
+						`execute(db);`,
+					],
+					[
+						`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON trigger_table IS '7666bcb7';\``,
+						`execute(db);`,
 					],
 				],
 				down: [[]],
