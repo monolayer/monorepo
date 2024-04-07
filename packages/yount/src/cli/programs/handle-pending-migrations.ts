@@ -3,7 +3,7 @@ import { confirm } from "@clack/prompts";
 import { Effect } from "effect";
 import { unlinkSync } from "fs";
 import color from "picocolors";
-import { exit } from "process";
+import { cancelOperation } from "./cancel-operation.js";
 import { localPendingMigrations } from "./local-pending-migrations.js";
 
 export function handlePendingMigrations() {
@@ -73,12 +73,5 @@ function deletePendingMigrations(
 				),
 			),
 		),
-	);
-}
-
-function cancelOperation() {
-	return Effect.unit.pipe(
-		Effect.tap(() => p.cancel("Operation cancelled.")),
-		Effect.tap(() => Effect.fail(exit(1))),
 	);
 }

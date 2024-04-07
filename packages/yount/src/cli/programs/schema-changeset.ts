@@ -18,12 +18,12 @@ import { dbIndexInfo } from "~/schema/table/index/introspection.js";
 import { dbTableInfo } from "~/schema/table/introspection.js";
 import { dbTriggerInfo } from "~/schema/table/trigger/introspection.js";
 import { dbEnumInfo } from "~/schema/types/enum/introspection.js";
-import { Environment } from "../services/environment.js";
+import { DevEnvironment } from "../services/environment.js";
 import { Db } from "../services/kysely.js";
 import { ExitWithSuccess } from "../utils/cli-action.js";
 
 export function schemaChangeset() {
-	return Effect.all([Environment, Db]).pipe(
+	return Effect.all([DevEnvironment, Db]).pipe(
 		Effect.flatMap(([environment, db]) =>
 			Effect.all([
 				databaseSchema(db.kysely),

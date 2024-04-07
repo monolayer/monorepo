@@ -2,11 +2,11 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import color from "picocolors";
 import { generateMigrationFiles } from "~/migrations/generate.js";
-import { Environment } from "../services/environment.js";
+import { DevEnvironment } from "../services/environment.js";
 import { schemaChangeset } from "./schema-changeset.js";
 
 export function generateChangesetMigration() {
-	return Environment.pipe(
+	return DevEnvironment.pipe(
 		Effect.flatMap((environment) =>
 			schemaChangeset().pipe(
 				Effect.tap((changeset) =>

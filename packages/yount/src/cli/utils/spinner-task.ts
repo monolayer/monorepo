@@ -1,13 +1,17 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import color from "picocolors";
-import type { Environment } from "../services/environment.js";
+import type { DevEnvironment, Environment } from "../services/environment.js";
 import type { Db } from "../services/kysely.js";
 import type { Migrator } from "../services/migrator.js";
 
 export function spinnerTask(
 	name: string,
-	callback: () => Effect.Effect<unknown, unknown, Environment | Db | Migrator>,
+	callback: () => Effect.Effect<
+		unknown,
+		unknown,
+		Environment | DevEnvironment | Db | Migrator
+	>,
 ) {
 	const spinner = p.spinner();
 	return Effect.succeed(true)
@@ -28,7 +32,11 @@ export function spinnerTask(
 
 export function check(
 	name: string,
-	callback: () => Effect.Effect<boolean, unknown, Environment | Db | Migrator>,
+	callback: () => Effect.Effect<
+		boolean,
+		unknown,
+		Environment | DevEnvironment | Db | Migrator
+	>,
 ) {
 	return Effect.succeed(p.spinner()).pipe(
 		Effect.tap((spinner) => spinner.start()),

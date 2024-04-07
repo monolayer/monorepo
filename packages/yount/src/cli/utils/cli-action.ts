@@ -3,7 +3,12 @@ import { Effect, Layer } from "effect";
 import { TaggedClass } from "effect/Data";
 import color from "picocolors";
 import { exit } from "process";
-import { environmentLayer, type Environment } from "../services/environment.js";
+import {
+	devEnvironmentLayer,
+	environmentLayer,
+	type DevEnvironment,
+	type Environment,
+} from "../services/environment.js";
 import { kyselyLayer, type Db } from "../services/kysely.js";
 import { migratorLayer, type Migrator } from "../services/migrator.js";
 
@@ -14,11 +19,16 @@ export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 export async function cliAction(
 	name: string,
 	environment: string,
-	tasks: Effect.Effect<unknown, unknown, Environment | Db | Migrator>[],
+	tasks: Effect.Effect<
+		unknown,
+		unknown,
+		Environment | Db | DevEnvironment | Migrator
+	>[],
 ) {
 	const layers = migratorLayer().pipe(
 		Layer.provideMerge(kyselyLayer()),
 		Layer.provideMerge(environmentLayer(environment)),
+		Layer.provideMerge(devEnvironmentLayer()),
 	);
 
 	const action = Effect.succeed(true)
@@ -39,6 +49,18 @@ export async function cliAction(
 		)
 		.pipe(
 			Effect.tapErrorCause((cause) => {
+				if (cause._tag === "Fail") {
+					const error = cause.error;
+					if (error instanceof Error) {
+						if (error.name === "UnknownException") {
+							console.dir(error.name);
+							const match = error.message.match(
+								/database "\w+" does not exist/,
+							);
+							console.dir(match);
+						}
+					}
+				}
 				p.log.message(cause.toString());
 				return Effect.unit;
 			}),

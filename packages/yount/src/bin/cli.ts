@@ -8,6 +8,7 @@ import { dropDatabase } from "~/cli/programs/drop-database.js";
 import { dropTablesAndTypes } from "~/cli/programs/drop-tables-and-types.js";
 import { dumpDatabaseStructure } from "~/cli/programs/dump-database-structure.js";
 import { generateChangesetMigration } from "~/cli/programs/generate-changeset-migration.js";
+import { handleMissingDevDatabase } from "~/cli/programs/handle-missing-dev-database.js";
 import { handlePendingMigrations } from "~/cli/programs/handle-pending-migrations.js";
 import { migrateDown } from "~/cli/programs/migrate-down.js";
 import { migrate } from "~/cli/programs/migrate.js";
@@ -163,6 +164,7 @@ async function main() {
 		)
 		.action(async () => {
 			await cliAction("yount generate", "development", [
+				handleMissingDevDatabase(),
 				handlePendingMigrations(),
 				generateChangesetMigration(),
 			]);

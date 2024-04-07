@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
-import type { Environment } from "../services/environment.js";
+import type { DevEnvironment, Environment } from "../services/environment.js";
 import type { Db } from "../services/kysely.js";
 import type { Migrator } from "../services/migrator.js";
 import { check } from "../utils/spinner-task.js";
@@ -16,7 +16,11 @@ export function checkWithFail({
 	nextSteps: string;
 	errorMessage: string;
 	failMessage: string;
-	callback: () => Effect.Effect<boolean, unknown, Environment | Db | Migrator>;
+	callback: () => Effect.Effect<
+		boolean,
+		unknown,
+		Environment | Db | Migrator | DevEnvironment
+	>;
 }) {
 	return check(name, () =>
 		Effect.succeed(true).pipe(Effect.flatMap(callback)),

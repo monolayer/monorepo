@@ -21,6 +21,15 @@ export class Environment extends Context.Tag("Environment")<
 	}
 >() {}
 
+export class DevEnvironment extends Context.Tag("DevEnvironment")<
+	DevEnvironment,
+	{
+		readonly name: string;
+		readonly config: Config & MigrationFolder;
+		pg: PoolAndConfig;
+	}
+>() {}
+
 export function environmentLayer(environment: string) {
 	return Layer.effect(
 		Environment,
@@ -37,6 +46,32 @@ export function environmentLayer(environment: string) {
 			}
 			return {
 				name: environment,
+				config: {
+					...config,
+					migrationFolder: path.join(cwd(), config.folder, "migrations"),
+				},
+				pg: yield* _(poolAndConfig(environmentConfig)),
+			};
+		}),
+	);
+}
+
+export function devEnvironmentLayer() {
+	return Layer.effect(
+		DevEnvironment,
+		Effect.gen(function* (_) {
+			const config = yield* _(Effect.promise(async () => await importConfig()));
+			const environmentConfig = config.environments["development"];
+			if (environmentConfig === undefined) {
+				p.log.error(color.red("Error"));
+				return yield* _(
+					Effect.fail(
+						`No configuration found for environment: 'development'. Please check your yount.config.ts file.`,
+					),
+				);
+			}
+			return {
+				name: "development",
 				config: {
 					...config,
 					migrationFolder: path.join(cwd(), config.folder, "migrations"),
