@@ -9,7 +9,7 @@ export function dropDatabase(failSafe = false) {
 			spinnerTask(`Drop database ${environment.pg.config.database}`, () =>
 				pgQuery(
 					environment.pg.adminPool,
-					`DROP DATABASE ${failSafe ? "IF EXISTS" : ""} ${environment.pg.config.database};`,
+					`DROP DATABASE ${failSafe ? "IF EXISTS" : ""} "${environment.pg.config.database}";`,
 				),
 			),
 		),

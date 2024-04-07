@@ -27,8 +27,8 @@ export async function teardownContext(context: TaskContext & DbContext) {
 export async function setUpContext(context: TaskContext & DbContext) {
 	const pool = globalPool();
 	context.dbName = dbNameForTest(context);
-	await pool.query(`DROP DATABASE IF EXISTS ${context.dbName}`);
-	await pool.query(`CREATE DATABASE ${context.dbName}`);
+	await pool.query(`DROP DATABASE IF EXISTS "${context.dbName}"`);
+	await pool.query(`CREATE DATABASE "${context.dbName}"`);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	context.kysely = await kyselyWithCustomDB(context.dbName);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
@@ -50,9 +50,9 @@ export async function setupProgramContext(
 	mkdirSync(path.join(context.folder, "db", "migrations"), { recursive: true });
 	context.pool = globalPool();
 	context.dbName = dbNameForTest(context);
-	await context.pool.query(`DROP DATABASE IF EXISTS ${context.dbName}`);
+	await context.pool.query(`DROP DATABASE IF EXISTS "${context.dbName}"`);
 	if (createDb) {
-		await context.pool.query(`CREATE DATABASE ${context.dbName}`);
+		await context.pool.query(`CREATE DATABASE "${context.dbName}"`);
 	}
 	const dbMigrator = await dbAndMigrator(context);
 	context.kysely = dbMigrator.db;
