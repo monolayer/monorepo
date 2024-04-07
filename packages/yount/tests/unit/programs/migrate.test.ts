@@ -19,10 +19,11 @@ describe("migrate", () => {
 	});
 
 	test<ProgramContext>("applies all pending migrations", async (context) => {
-		await Effect.runPromise(
+		const migrateResult = await Effect.runPromise(
 			Effect.provide(programWithErrorCause(migrate()), layers),
 		);
 
+		expect(migrateResult).toBe(true);
 		const migrations = await context.kysely
 			.selectFrom("kysely_migration")
 			.select("name")
@@ -36,5 +37,11 @@ describe("migrate", () => {
 			{ name: "20240405T154913-mirfak-mustard" },
 		];
 		expect(migrations).toEqual(expected);
+
+		expect(
+			await Effect.runPromise(
+				Effect.provide(programWithErrorCause(migrate()), layers),
+			),
+		).toBe(false);
 	});
 });

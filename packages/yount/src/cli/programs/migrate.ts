@@ -25,10 +25,16 @@ export function migrate() {
 				onFalse: Effect.unit,
 			}),
 		),
-		Effect.flatMap(({ error }) =>
+		Effect.tap(({ error }) =>
 			Effect.if(error !== undefined, {
 				onTrue: Effect.fail(error),
 				onFalse: Effect.succeed(true),
+			}),
+		),
+		Effect.flatMap(({ results }) =>
+			Effect.if(results !== undefined && results.length > 0, {
+				onTrue: Effect.succeed(true),
+				onFalse: Effect.succeed(false),
 			}),
 		),
 	);
