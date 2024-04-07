@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
@@ -10,6 +9,7 @@ import {
 	isExternalIndex,
 	type PgIndex,
 } from "~/schema/table/index/index.js";
+import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../introspection/types.js";
 
 export async function dbIndexInfo(
@@ -147,10 +147,8 @@ export function indexToInfo(
 	}
 	const compiledQuery = kyselyBuilder.compile().sql;
 
-	const hash = createHash("sha256");
-	hash.update(compiledQuery);
 	return {
-		[indexName]: `${hash.digest("hex")}:${compiledQuery}`,
+		[indexName]: `${hashValue(compiledQuery)}:${compiledQuery}`,
 	};
 }
 

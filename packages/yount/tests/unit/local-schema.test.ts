@@ -60,8 +60,7 @@ describe("#schemaColumnInfo", () => {
 			tableName: "foo",
 			columnName: "bar",
 			dataType: "character varying(100)",
-			defaultValue:
-				"2bc6768278e7f14b6f18480c616c1687a575d330a2e8e471a48bede1a90d5720:'foo'::character varying",
+			defaultValue: "2bc67682:'foo'::character varying",
 			characterMaximumLength: 100,
 		});
 
@@ -74,8 +73,7 @@ describe("#schemaColumnInfo", () => {
 			tableName: "foo",
 			columnName: "bar",
 			dataType: "timestamp",
-			defaultValue:
-				"9ff7b5b715046baeffdb1af30ed68f6e43b40bf43d1f76734de5b26ecacb58e8:CURRENT_TIMESTAMP",
+			defaultValue: "9ff7b5b7:CURRENT_TIMESTAMP",
 		});
 
 		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
@@ -229,15 +227,15 @@ test("#schemaDBIndexInfoByTable", () => {
 	expect(localIndexInfoByTable(database)).toStrictEqual({
 		teams: {
 			teams_active_kntc_idx:
-				'c3c6080ff3d3e7bf8b6a6e729aff7aa2f79712f924cdc454cc615595f940a1e6:create index "teams_active_kntc_idx" on "teams" ("active")',
+				'c3c6080f:create index "teams_active_kntc_idx" on "teams" ("active")',
 			teams_id_kntc_idx:
-				'43e5590f52736483e6877c00bccaf65586bb6dd7fae45bdc8159a05d2521dd7c:create index "teams_id_kntc_idx" on "teams" ("id")',
+				'43e5590f:create index "teams_id_kntc_idx" on "teams" ("id")',
 		},
 		users: {
 			users_email_id_kntc_idx:
-				'92c9e11e110ccb2b5d3c2c3cf34ddc9747a900cc7d3ab700763b92c4c00bf689:create index "users_email_id_kntc_idx" on "users" ("email", "id")',
+				'92c9e11e:create index "users_email_id_kntc_idx" on "users" ("email", "id")',
 			users_name_kntc_idx:
-				'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45:create index "users_name_kntc_idx" on "users" ("name")',
+				'f873e4a8:create index "users_name_kntc_idx" on "users" ("name")',
 		},
 	});
 });
@@ -536,11 +534,11 @@ describe("schema", () => {
 			index: {
 				books: {
 					books_name_kntc_idx:
-						'77f3737b4f672295b1204a55da66fa8873cf81ba7ae3d785480c618455e3ac22:create index "books_name_kntc_idx" on "books" ("name")',
+						'77f3737b:create index "books_name_kntc_idx" on "books" ("name")',
 				},
 				teams: {
 					teams_name_kntc_idx:
-						'590d0c8227f1792fe07fe7f16202b6a6ea954932810010733646dbcd46d88618:create index "teams_name_kntc_idx" on "teams" ("name")',
+						'590d0c82:create index "teams_name_kntc_idx" on "teams" ("name")',
 				},
 			},
 			foreignKeyConstraints: {
@@ -580,11 +578,11 @@ describe("schema", () => {
 			triggers: {
 				teams: {
 					foo_before_insert_trg:
-						"05c8db6554999531138ecba0b32e1f47595be0f4210f28e8b955e98b1fa06f3a:CREATE OR REPLACE TRIGGER foo_before_insert_trg\nBEFORE INSERT ON teams\nFOR EACH ROW\nEXECUTE FUNCTION foo",
+						"05c8db65:CREATE OR REPLACE TRIGGER foo_before_insert_trg\nBEFORE INSERT ON teams\nFOR EACH ROW\nEXECUTE FUNCTION foo",
 				},
 				users: {
 					foo_before_update_trg:
-						"a2b86e379795876db3ca7ffb7ae373b26287a1be74a33c46eee8a4d789e2a9f6:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+						"a2b86e37:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
 				},
 			},
 			enums: {
@@ -865,15 +863,15 @@ describe("schema", () => {
 			index: {
 				books: {
 					books_name_kntc_idx:
-						'77f3737b4f672295b1204a55da66fa8873cf81ba7ae3d785480c618455e3ac22:create index "books_name_kntc_idx" on "books" ("name")',
+						'77f3737b:create index "books_name_kntc_idx" on "books" ("name")',
 				},
 				new_books: {
 					new_books_name_kntc_idx:
-						'd57da4dbeafbb0aa3a8de18a1a3a010c0880869f14afea3f222c5dbf349995c6:create index "new_books_name_kntc_idx" on "new_books" ("name")',
+						'd57da4db:create index "new_books_name_kntc_idx" on "new_books" ("name")',
 				},
 				users: {
 					users_full_name_kntc_idx:
-						'0a2fa263f5ca54fa5d8dbb61c10f9a31c5c124e2482191f4ff7d1e6e0c9771ce:create index "users_full_name_kntc_idx" on "users" ("full_name")',
+						'0a2fa263:create index "users_full_name_kntc_idx" on "users" ("full_name")',
 				},
 			},
 			foreignKeyConstraints: {
@@ -917,7 +915,7 @@ describe("schema", () => {
 			triggers: {
 				users: {
 					foo_before_update_trg:
-						"a2b86e379795876db3ca7ffb7ae373b26287a1be74a33c46eee8a4d789e2a9f6:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+						"a2b86e37:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
 				},
 			},
 			enums: {
@@ -976,7 +974,7 @@ test("trigger names are downcased", () => {
 		triggers: {
 			users: {
 				foo_before_update_trg:
-					"a2b86e379795876db3ca7ffb7ae373b26287a1be74a33c46eee8a4d789e2a9f6:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+					"a2b86e37:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
 			},
 		},
 		extensions: {},
@@ -1258,15 +1256,15 @@ test("#localSchemaCamelCase", () => {
 		index: {
 			books: {
 				books_name_kntc_idx:
-					'77f3737b4f672295b1204a55da66fa8873cf81ba7ae3d785480c618455e3ac22:create index "books_name_kntc_idx" on "books" ("name")',
+					'77f3737b:create index "books_name_kntc_idx" on "books" ("name")',
 			},
 			new_books: {
 				new_books_name_kntc_idx:
-					'd57da4dbeafbb0aa3a8de18a1a3a010c0880869f14afea3f222c5dbf349995c6:create index "new_books_name_kntc_idx" on "new_books" ("name")',
+					'd57da4db:create index "new_books_name_kntc_idx" on "new_books" ("name")',
 			},
 			users: {
 				users_full_name_kntc_idx:
-					'0a2fa263f5ca54fa5d8dbb61c10f9a31c5c124e2482191f4ff7d1e6e0c9771ce:create index "users_full_name_kntc_idx" on "users" ("full_name")',
+					'0a2fa263:create index "users_full_name_kntc_idx" on "users" ("full_name")',
 			},
 		},
 		foreignKeyConstraints: {
@@ -1304,7 +1302,7 @@ test("#localSchemaCamelCase", () => {
 		triggers: {
 			users: {
 				foo_before_update_trg:
-					"a2b86e379795876db3ca7ffb7ae373b26287a1be74a33c46eee8a4d789e2a9f6:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+					"a2b86e37:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
 			},
 		},
 		enums: {

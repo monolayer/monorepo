@@ -793,7 +793,7 @@ describe("Rename column migrations", () => {
 					type: "createIndex",
 					up: [
 						[
-							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce25\'`.execute(db);',
 						],
 					],
 					down: [
@@ -861,7 +861,7 @@ describe("Rename column migrations", () => {
 					type: "createIndex",
 					up: [
 						[
-							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce25\'`.execute(db);',
 						],
 					],
 					down: [
@@ -1187,7 +1187,7 @@ describe("Rename column migrations", () => {
 					type: "createIndex",
 					up: [
 						[
-							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb\'`.execute(db);',
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId");COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS \'760bce25\'`.execute(db);',
 						],
 					],
 					down: [
@@ -1224,7 +1224,7 @@ describe("Rename column migrations", () => {
 				.columns(["bookId"])
 				.execute();
 
-			await sql`COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS '760bce2553cad9e0e6cd7f0a18b3e369ac3ab110c7832c2b3f72d94b2e42d5fb'`.execute(
+			await sql`COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS '760bce25'`.execute(
 				context.kysely,
 			);
 

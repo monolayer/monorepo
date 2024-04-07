@@ -191,13 +191,13 @@ describe("Table create migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS \'2bc6768278e7f14b6f18480c616c1687a575d330a2e8e471a48bede1a90d5720\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS \'2bc67682\'`.execute(db);',
 					],
 					[
-						'await sql`COMMENT ON COLUMN "books"."vectorWithDefault" IS \'1ffcfd22d9ebae1ab0d7742243c8442e46bd7c2f11b83809006cdc01bfe59faa\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "books"."vectorWithDefault" IS \'1ffcfd22\'`.execute(db);',
 					],
 					[
-						'await sql`COMMENT ON COLUMN "books"."tsqueryWithDefault" IS \'6970b882cfbccfc9111995b7f88d6127ab99d0053645add6a73e38ebdbfc5e74\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "books"."tsqueryWithDefault" IS \'6970b882\'`.execute(db);',
 					],
 				],
 				down: [["await db.schema", 'dropTable("books")', "execute();"]],
@@ -237,16 +237,16 @@ describe("Table create migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."bitWithDefault" IS \'e7152e0146f926294bab63df630eed6658c5ce33ef4a38f1e030e0baaf3a3652\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."bitWithDefault" IS \'e7152e01\'`.execute(db);',
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."inetWithDefault" IS \'840df3363333e0d0a993db5bd423bcfc372afcc4d6c94dae75cfb78551c174a1\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."inetWithDefault" IS \'840df336\'`.execute(db);',
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."macaddrWithDefault" IS \'c14cc2c97ca666f962466c35fa1710dcd9182023915eda00a85f5c73e0f4a6ef\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."macaddrWithDefault" IS \'c14cc2c9\'`.execute(db);',
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."macaddr8WithDefault" IS \'d2247d08ab0a4e3182ee395a96f1bca39f4b3af439c8126df4707d69d68b7eb7\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."macaddr8WithDefault" IS \'d2247d08\'`.execute(db);',
 					],
 				],
 				down: [["await db.schema", 'dropTable("users")', "execute();"]],
@@ -788,7 +788,7 @@ describe("Table create migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create index "users_name_kntc_idx" on "users" ("name");COMMENT ON INDEX "users_name_kntc_idx" IS \'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45\'`.execute(db);',
+						'await sql`create index "users_name_kntc_idx" on "users" ("name");COMMENT ON INDEX "users_name_kntc_idx" IS \'f873e4a8\'`.execute(db);',
 					],
 				],
 			},
@@ -799,7 +799,7 @@ describe("Table create migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX "books_id_kntc_idx" IS \'2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee\'`.execute(db);',
+						'await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX "books_id_kntc_idx" IS \'22009828\'`.execute(db);',
 					],
 				],
 			},
@@ -924,10 +924,10 @@ describe("Table create migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0\'`.execute(db);',
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0\'`.execute(db);',
 					],
 				],
 				down: [["await db.schema", 'dropTable("users")', "execute();"]],
@@ -941,7 +941,7 @@ describe("Table create migrations", () => {
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c272b6a6d0fd27c4c8374d3fa195f2f807743dc05c6862407641426841a';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c27';\`.execute(db);`,
 					],
 				],
 				down: [[]],
@@ -955,7 +955,7 @@ EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_t
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b96840bff9ed3b7a45a66674d6934fd5507e7999c946416d53122eb5f3c8';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b968';\`.execute(db);`,
 					],
 				],
 				down: [[]],
@@ -1089,7 +1089,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "trigger_table"."updated_at" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "trigger_table"."updated_at" IS \'28a4dae0\'`.execute(db);',
 					],
 				],
 				down: [["await db.schema", 'dropTable("trigger_table")', "execute();"]],
@@ -1286,7 +1286,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create index "users_full_name_kntc_idx" on "users" ("full_name");COMMENT ON INDEX "users_full_name_kntc_idx" IS \'0a2fa263f5ca54fa5d8dbb61c10f9a31c5c124e2482191f4ff7d1e6e0c9771ce\'`.execute(db);',
+						'await sql`create index "users_full_name_kntc_idx" on "users" ("full_name");COMMENT ON INDEX "users_full_name_kntc_idx" IS \'0a2fa263\'`.execute(db);',
 					],
 				],
 			},
@@ -1297,7 +1297,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX "books_id_kntc_idx" IS \'2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee\'`.execute(db);',
+						'await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX "books_id_kntc_idx" IS \'22009828\'`.execute(db);',
 					],
 				],
 			},
@@ -1308,7 +1308,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "new_books_id_kntc_idx" on "new_books" ("id");COMMENT ON INDEX "new_books_id_kntc_idx" IS \'920c4448799d6236ce7977180a775763a1352666c3289c63055d9d3436c72033\'`.execute(db);',
+						'await sql`create unique index "new_books_id_kntc_idx" on "new_books" ("id");COMMENT ON INDEX "new_books_id_kntc_idx" IS \'920c4448\'`.execute(db);',
 					],
 				],
 			},
@@ -1319,7 +1319,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "library_building_id_kntc_idx" on "library_building" ("id");COMMENT ON INDEX "library_building_id_kntc_idx" IS \'9c7a73486d378aad269f62895f31d0b13e270b7df7cc83ff33e987fa4c837cd4\'`.execute(db);',
+						'await sql`create unique index "library_building_id_kntc_idx" on "library_building" ("id");COMMENT ON INDEX "library_building_id_kntc_idx" IS \'9c7a7348\'`.execute(db);',
 					],
 				],
 			},
@@ -1332,7 +1332,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 BEFORE UPDATE ON trigger_table
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER foo_before_update_trg ON trigger_table IS '7666bcb776b337bfab1e587a745579bd449dc6f961f5b51fad22cc2fb6166b6a';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updated_at');COMMENT ON TRIGGER foo_before_update_trg ON trigger_table IS '7666bcb7';\`.execute(db);`,
 					],
 				],
 				down: [[]],

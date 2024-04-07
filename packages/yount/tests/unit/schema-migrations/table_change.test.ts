@@ -238,7 +238,7 @@ describe("Table change migrations", () => {
 			.addColumn("name", "text", (col) => col.defaultTo(sql`'foo'::text`))
 			.execute();
 
-		await sql`COMMENT ON COLUMN "users"."name" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
+		await sql`COMMENT ON COLUMN "users"."name" IS 'ae72411e'`.execute(
 			context.kysely,
 		);
 
@@ -265,7 +265,7 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad971115c7afe985010204f7608c87986137124ed4732b058c685e67d0e\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad9\'`.execute(db);',
 					],
 				],
 				down: [
@@ -276,7 +276,7 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e\'`.execute(db);',
 					],
 				],
 			},
@@ -319,7 +319,7 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad971115c7afe985010204f7608c87986137124ed4732b058c685e67d0e\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad9\'`.execute(db);',
 					],
 				],
 				down: [
@@ -472,7 +472,7 @@ describe("Table change migrations", () => {
 			.addColumn("name", "text", (col) => col.defaultTo(sql`'foo'::text`))
 			.execute();
 
-		await sql`COMMENT ON COLUMN "users"."name" IS 'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c'`.execute(
+		await sql`COMMENT ON COLUMN "users"."name" IS 'ae72411e'`.execute(
 			context.kysely,
 		);
 
@@ -517,7 +517,7 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e1dc17562b8fb4a6b3c7d1624992dcd4b3fc77ed828606c24a286cf4c\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e\'`.execute(db);',
 					],
 				],
 				priority: 3007,
@@ -531,7 +531,7 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'2bc6768278e7f14b6f18480c616c1687a575d330a2e8e471a48bede1a90d5720\'`.execute(db);',
+						'await sql`COMMENT ON COLUMN "users"."name" IS \'2bc67682\'`.execute(db);',
 					],
 				],
 			},
@@ -576,11 +576,11 @@ describe("Table change migrations", () => {
 			)
 			.execute();
 
-		await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0\'`.execute(
 			context.kysely,
 		);
 
-		await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(
+		await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0\'`.execute(
 			context.kysely,
 		);
 
@@ -593,7 +593,7 @@ describe("Table change migrations", () => {
 		BEFORE UPDATE ON users
 		FOR EACH ROW
 		EXECUTE FUNCTION moddatetime(updatedAt);
-		COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c272b6a6d0fd27c4c8374d3fa195f2f807743dc05c6862407641426841a';
+		COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c27';
 		`.execute(context.kysely);
 
 		const database = pgDatabase({
@@ -631,7 +631,7 @@ describe("Table change migrations", () => {
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b96840bff9ed3b7a45a66674d6934fd5507e7999c946416d53122eb5f3c8';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b968';\`.execute(db);`,
 					],
 				],
 				down: [
@@ -660,11 +660,11 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 			)
 			.execute();
 
-		await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'28a4dae0\'`.execute(
 			context.kysely,
 		);
 
-		await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f\'`.execute(
+		await sql`COMMENT ON COLUMN "users"."updatedAtTwo" IS \'28a4dae0\'`.execute(
 			context.kysely,
 		);
 
@@ -677,7 +677,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 			BEFORE UPDATE ON users
 			FOR EACH ROW
 			EXECUTE FUNCTION moddatetime('updatedAt');
-			COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c272b6a6d0fd27c4c8374d3fa195f2f807743dc05c6862407641426841a';
+			COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c27';
 		`.execute(context.kysely);
 
 		await sql`
@@ -685,7 +685,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 			BEFORE UPDATE ON users
 			FOR EACH ROW
 			EXECUTE FUNCTION moddatetime('updatedAtTwo');
-			COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';
+			COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32';
 			`.execute(context.kysely);
 
 		const database = pgDatabase({
@@ -720,7 +720,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_updat
 				],
 				down: [
 					[
-						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32f824766d1976e3892c630ab15d2f0ee02332085fcffabd1a29ef3e65';\`.execute(db);`,
+						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedAtTwo');COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32';\`.execute(db);`,
 					],
 				],
 			},

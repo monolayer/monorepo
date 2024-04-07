@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
@@ -6,6 +5,7 @@ import type { CamelCaseOptions } from "~/config.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
 import { PgTrigger } from "~/schema/table/trigger/trigger.js";
+import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../introspection/types.js";
 
 export async function dbTriggerInfo(
@@ -127,7 +127,6 @@ export function localTriggersInfo(
 				if (PgTrigger.info(trigger[1]).isExternal) {
 					return acc;
 				}
-				const hash = createHash("sha256");
 				const compiledTrigger = triggerInfo(
 					trigger[1],
 					triggerName,
@@ -135,11 +134,10 @@ export function localTriggersInfo(
 					kysely,
 					camelCase,
 				);
-				hash.update(compiledTrigger);
 
 				acc[transformedTableName] = {
 					...acc[transformedTableName],
-					[triggerName]: `${hash.digest("hex")}:${compiledTrigger}`,
+					[triggerName]: `${hashValue(compiledTrigger)}:${compiledTrigger}`,
 				};
 			}
 			return acc;

@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { createHash } from "crypto";
 import { mkdirSync, readFileSync, readdirSync, rmdirSync } from "fs";
 import { Kysely } from "kysely";
 import pg from "pg";
@@ -7,6 +6,7 @@ import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { ChangeSetType, Changeset } from "~/changeset/types.js";
 import { generateMigrationFiles } from "~/migrations/generate.js";
+import { hashValue } from "~/utils.js";
 import { kyselyWithCustomDB } from "~tests/setup/kysely.js";
 
 type MigrationContext = {
@@ -24,10 +24,7 @@ describe("Migrator", () => {
 	describe("#generateMigrationFiles", () => {
 		beforeEach(async (context: MigrationContext) => {
 			context.kysely = await kyselyWithCustomDB("test_kysely_yount");
-			const digest = createHash("sha256")
-				.update(context.task.name)
-				.digest("hex");
-			context.folder = `${cwd()}/tmp/test/migrations/${digest}`;
+			context.folder = `${cwd()}/tmp/test/migrations/${hashValue(context.task.name)}`;
 			context.migrationsFolder = `${context.folder}/migrations`;
 			mkdirSync(context.migrationsFolder, {
 				recursive: true,

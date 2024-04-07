@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import { Kysely, sql } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/config.js";
@@ -12,6 +11,7 @@ import {
 	assertCheckWithInfo,
 	type PgCheck,
 } from "~/schema/table/constraints/check/check.js";
+import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 
 export async function dbCheckConstraintInfo(
@@ -80,9 +80,7 @@ export function localCheckConstraintInfo(
 						check.expression,
 						camelCase.enabled,
 					);
-					const hash = createHash("sha256");
-					hash.update(checkExpression);
-					const key = hash.digest("hex").substring(0, 8);
+					const key = hashValue(checkExpression);
 					const name = `${key}_yount_chk`;
 					const checkObject = {
 						[`${name}`]: `${key}:${checkExpression}`,

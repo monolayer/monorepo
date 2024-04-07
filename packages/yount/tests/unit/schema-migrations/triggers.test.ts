@@ -28,7 +28,7 @@ describe("Database migrations", () => {
 			)
 			.execute();
 
-		await sql`COMMENT ON COLUMN "users"."updatedAt" IS '9ff7b5b715046baeffdb1af30ed68f6e43b40bf43d1f76734de5b26ecacb58e8'`.execute(
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS '9ff7b5b7'`.execute(
 			context.kysely,
 		);
 
@@ -81,7 +81,7 @@ describe("Database migrations", () => {
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 BEFORE UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c272b6a6d0fd27c4c8374d3fa195f2f807743dc05c6862407641426841a';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c27';\`.execute(db);`,
 					],
 				],
 				down: [
@@ -99,7 +99,7 @@ EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_t
 						`await sql\`CREATE OR REPLACE TRIGGER foo_after_update_trg
 AFTER UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_after_update_trg ON users IS '05a71d7d9db4bee1c9ffe520a6df2fbcf1a755f44d6139dc700d875fe2f0bc69';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_after_update_trg ON users IS '05a71d7d';\`.execute(db);`,
 					],
 				],
 				down: [
@@ -125,7 +125,7 @@ EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_after_update_tr
 			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
 			.execute();
 
-		await sql`COMMENT ON COLUMN "users"."updatedAt" IS '28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f'`.execute(
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS '28a4dae0'`.execute(
 			context.kysely,
 		);
 
@@ -211,7 +211,7 @@ EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_after_update_tr
 			.addColumn("updatedAt", "timestamp", (col) => col.defaultTo(sql`now()`))
 			.execute();
 
-		await sql`COMMENT ON COLUMN "users"."updatedAt" IS '28a4dae0461e17af56e979c2095abfbe0bfc45fe9ca8abf3144338a518a1bb8f'`.execute(
+		await sql`COMMENT ON COLUMN "users"."updatedAt" IS '28a4dae0'`.execute(
 			context.kysely,
 		);
 
@@ -258,7 +258,7 @@ EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_after_update_tr
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 AFTER UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_trg ON users IS '84d15b30db78fd48793b7972cd85a0c602637ff2aa4b5429df8c9d0374be95ce';\`.execute(db);`,
+EXECUTE FUNCTION moddatetime('updatedAt');COMMENT ON TRIGGER foo_before_update_trg ON users IS '84d15b30';\`.execute(db);`,
 					],
 				],
 				down: [

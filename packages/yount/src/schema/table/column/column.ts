@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
-import { createHash } from "crypto";
 import { type ColumnType, type Expression } from "kysely";
 import { compileDefaultExpression } from "~/introspection/helpers.js";
+import { hashValue } from "~/utils.js";
 import {
 	type ColumnInfo,
 	type GeneratedAlwaysColumn,
@@ -182,9 +182,7 @@ function isObject(obj: unknown): obj is ShallowRecord<string, unknown> {
 }
 
 export function valueWithHash(value: string): `${string}:${string}` {
-	const hash = createHash("sha256");
-	hash.update(value);
-	return `${hash.digest("hex")}:${value}`;
+	return `${hashValue(value)}:${value}`;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
