@@ -6,10 +6,7 @@ import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
 
-export async function createDir(
-	path: string,
-	outputLog = false,
-): Promise<void> {
+export async function createDir(path: string, outputLog = false) {
 	try {
 		await fs.access(path);
 		if (outputLog) log.lineMessage(`${color.yellow("exists")} ${path}`);
@@ -23,7 +20,7 @@ export async function createFile(
 	path: string,
 	content: string,
 	outputLog = false,
-): Promise<void> {
+) {
 	try {
 		await fs.access(path);
 		if (outputLog) log.lineMessage(`${color.yellow("exists")} ${path}`);
