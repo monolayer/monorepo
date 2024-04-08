@@ -19,7 +19,7 @@ export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 
 export async function cliAction(
 	name: string,
-	options: { readonly environment: string },
+	options: { readonly environment: string; readonly connection?: string },
 	tasks: Effect.Effect<
 		unknown,
 		unknown,
@@ -30,8 +30,10 @@ export async function cliAction(
 		Layer.provideMerge(kyselyLayer()),
 		Layer.provideMerge(pgLayer()),
 		Layer.provideMerge(devPgLayer()),
-		Layer.provideMerge(environmentLayer(options.environment)),
-		Layer.provideMerge(devEnvironmentLayer()),
+		Layer.provideMerge(
+			environmentLayer(options.environment, options.connection ?? "default"),
+		),
+		Layer.provideMerge(devEnvironmentLayer(options.connection ?? "default")),
 	);
 
 	const action = Effect.succeed(true)

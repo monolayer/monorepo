@@ -27,7 +27,7 @@ describe("structureLoad", () => {
 				context.currentWorkingDirectory,
 				`tests/fixtures/structure.sql`,
 			),
-			path.join(context.folder, "db", "structure.sql"),
+			path.join(context.folder, "db", "structure.default.sql"),
 		);
 
 		await context.kysely.destroy();
@@ -40,4 +40,9 @@ describe("structureLoad", () => {
 			kysely.insertInto("regulus_mint").values({ name: "hello" }).execute(),
 		).resolves.not.toThrow();
 	});
+
+	test.todo<ProgramContext>(
+		"restores db from structure file on non default connections",
+		() => {},
+	);
 });

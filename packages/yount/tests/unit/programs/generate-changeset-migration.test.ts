@@ -10,6 +10,7 @@ import path from "path";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { generateChangesetMigration } from "~/cli/programs/generate-changeset-migration.js";
+import { defaultMigrationPath } from "~tests/helpers/default-migration-path.js";
 import { layers } from "~tests/helpers/layers.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";
 import {
@@ -28,11 +29,11 @@ describe("generateChangesetMigration", () => {
 	});
 
 	test<ProgramContext>("returns a changeset list", async (context) => {
-		rmSync(path.join(context.folder, "db", "migrations"), {
+		rmSync(defaultMigrationPath(context.folder), {
 			recursive: true,
 			force: true,
 		});
-		mkdirSync(path.join(context.folder, "db", "migrations"), {
+		mkdirSync(defaultMigrationPath(context.folder), {
 			recursive: true,
 		});
 
@@ -45,14 +46,18 @@ describe("generateChangesetMigration", () => {
 			),
 		);
 
-		const migrationFiles = readdirSync(
-			path.join(context.folder, "db", "migrations"),
-		);
+		const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
 
 		expect(migrationFiles.length).toBe(1);
 
 		const migration = readFileSync(
-			path.join(context.folder, "db", "migrations", migrationFiles[0]!),
+			path.join(
+				context.folder,
+				"db",
+				"migrations",
+				"default",
+				migrationFiles[0]!,
+			),
 		);
 		expect(migration.toString()).toBe(expectedMigration);
 	});

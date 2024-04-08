@@ -31,14 +31,14 @@ function checkStructureFile() {
 3) Apply migrations: \`npx yount migrate -e development\``,
 				errorMessage: `Structure file not found. Expected location: ${path.join(
 					environment.folder,
-					`structure.sql`,
+					`structure.${environment.connectionName}.sql`,
 				)}`,
 				failMessage: "Structure file does not exist",
 				callback: () =>
 					Effect.tryPromise(async () => {
 						const structurePath = path.join(
 							environment.folder,
-							`structure.sql`,
+							`structure.${environment.connectionName}.sql`,
 						);
 						try {
 							await fs.stat(structurePath);
@@ -55,17 +55,22 @@ function checkStructureFile() {
 function restoreDatabaseFromStructureFile() {
 	return Effect.all([Environment, Pg]).pipe(
 		Effect.flatMap(([environment, pg]) =>
-			spinnerTask(`Restore ${pg.config.database} from structure.sql`, () =>
-				Effect.tryPromise(async () => {
-					const structurePath = path.join(environment.folder, `structure.sql`);
-					return (await fs.readFile(structurePath)).toString();
-				}).pipe(
-					Effect.flatMap((structure) =>
-						pgQuery<{
-							datname: string;
-						}>(structure),
+			spinnerTask(
+				`Restore ${pg.config.database} from structure.${environment.connectionName}.sql`,
+				() =>
+					Effect.tryPromise(async () => {
+						const structurePath = path.join(
+							environment.folder,
+							`structure.${environment.connectionName}.sql`,
+						);
+						return (await fs.readFile(structurePath)).toString();
+					}).pipe(
+						Effect.flatMap((structure) =>
+							pgQuery<{
+								datname: string;
+							}>(structure),
+						),
 					),
-				),
 			),
 		),
 	);

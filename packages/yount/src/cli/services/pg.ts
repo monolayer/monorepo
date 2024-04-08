@@ -13,7 +13,7 @@ type PgProperties = {
 
 export class Pg extends Context.Tag("Pg")<Pg, PgProperties>() {}
 
-export class DevPg extends Context.Tag("Pg")<DevPg, PgProperties>() {}
+export class DevPg extends Context.Tag("DevPg")<DevPg, PgProperties>() {}
 
 export function pgLayer() {
 	return Layer.effect(
@@ -27,7 +27,7 @@ export function pgLayer() {
 
 export function devPgLayer() {
 	return Layer.effect(
-		Pg,
+		DevPg,
 		Effect.gen(function* (_) {
 			const environment = yield* _(DevEnvironment);
 			return poolAndConfig(environment.connectionConfig);

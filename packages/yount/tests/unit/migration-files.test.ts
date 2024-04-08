@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { mkdirSync, readFileSync, readdirSync, rmdirSync } from "fs";
 import { Kysely } from "kysely";
+import path from "path";
 import pg from "pg";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
@@ -279,8 +280,7 @@ describe("Migrator", () => {
 			];
 			generateMigrationFiles(
 				changeset,
-				context.folder,
-				"migrations",
+				path.join(context.folder, "migrations"),
 				undefined,
 				false,
 			);
@@ -322,8 +322,7 @@ describe("Migrator", () => {
 			];
 			generateMigrationFiles(
 				changeset,
-				context.folder,
-				"migrations",
+				path.join(context.folder, "migrations"),
 				undefined,
 				false,
 			);

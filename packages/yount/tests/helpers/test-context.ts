@@ -9,7 +9,7 @@ import {
 	connectionsTemplate,
 	yountConfigTemplate,
 } from "~tests/fixtures/program.js";
-import { globalPool } from "~tests/setup.js";
+import { globalPool, globalPoolTwo } from "~tests/setup.js";
 import {
 	kyselyMigrator,
 	kyselyWithCustomDB,
@@ -50,13 +50,29 @@ export async function setupProgramContext(
 	context.currentWorkingDirectory = cwd();
 	context.folder = path.join(cwd(), `tmp/programs/${programFolder(context)}`);
 	rmSync(context.folder, { recursive: true, force: true });
-	mkdirSync(path.join(context.folder, "db", "migrations"), { recursive: true });
+	mkdirSync(path.join(context.folder, "db", "migrations", "default"), {
+		recursive: true,
+	});
 	context.pool = globalPool();
+	context.poolTwo = globalPoolTwo();
 	context.dbName = dbNameForTest(context);
 	await context.pool.query(`DROP DATABASE IF EXISTS "${context.dbName}"`);
+	await context.poolTwo.query(
+		`DROP DATABASE IF EXISTS "${context.dbName}_test"`,
+	);
+	await context.pool.query(`DROP DATABASE IF EXISTS "${context.dbName}_stats"`);
+	await context.poolTwo.query(
+		`DROP DATABASE IF EXISTS "${context.dbName}_stats_test"`,
+	);
 	if (createDb) {
 		await context.pool.query(`CREATE DATABASE "${context.dbName}"`);
+		await context.poolTwo.query(`CREATE DATABASE "${context.dbName}_test"`);
+		await context.pool.query(`CREATE DATABASE "${context.dbName}_stats"`);
+		await context.poolTwo.query(
+			`CREATE DATABASE "${context.dbName}_stats_test"`,
+		);
 	}
+
 	const dbMigrator = await dbAndMigrator(context);
 	context.kysely = dbMigrator.db;
 	context.migrator = dbMigrator.migrator;
@@ -98,6 +114,7 @@ export async function teardownProgramContext(
 export type ProgramContext = {
 	folder: string;
 	pool: Pool;
+	poolTwo: Pool;
 	dbName: string;
 	currentWorkingDirectory: string;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -108,7 +125,13 @@ export type ProgramContext = {
 function copyMigration(migrationName: string, context: ProgramContext) {
 	copyFileSync(
 		`tests/fixtures/migrations/${migrationName}.ts`,
-		path.join(context.folder, "db", "migrations", `${migrationName}.ts`),
+		path.join(
+			context.folder,
+			"db",
+			"migrations",
+			"default",
+			`${migrationName}.ts`,
+		),
 	);
 }
 
@@ -126,7 +149,12 @@ export async function dbAndMigrator(context: ProgramContext) {
 			provider: new FileMigrationProvider({
 				fs,
 				path,
-				migrationFolder: path.join(context.folder, "db", "migrations"),
+				migrationFolder: path.join(
+					context.folder,
+					"db",
+					"migrations",
+					"default",
+				),
 			}),
 		}),
 	};

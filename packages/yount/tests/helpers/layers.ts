@@ -11,6 +11,6 @@ export const layers = migratorLayer().pipe(
 	Layer.provideMerge(kyselyLayer()),
 	Layer.provideMerge(pgLayer()),
 	Layer.provideMerge(devPgLayer()),
-	Layer.provideMerge(environmentLayer("development")),
-	Layer.provideMerge(devEnvironmentLayer()),
+	Layer.provideMerge(environmentLayer("development", "default")),
+	Layer.provideMerge(devEnvironmentLayer("default")),
 );

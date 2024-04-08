@@ -4,6 +4,7 @@ import path from "path";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { seed } from "~/cli/programs/seed.js";
+import { defaultMigrationPath } from "~tests/helpers/default-migration-path.js";
 import { layers } from "~tests/helpers/layers.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";
 import {
@@ -29,7 +30,7 @@ describe("seed", () => {
 			"20240405T154913-mirfak-mustard.ts",
 		];
 		for (const file of toDelete) {
-			rmSync(path.join(context.folder, "db", "migrations", `${file}`), {
+			rmSync(path.join(defaultMigrationPath(context.folder), `${file}`), {
 				force: true,
 			});
 		}
@@ -61,7 +62,7 @@ describe("seed", () => {
 			"20240405T154913-mirfak-mustard.ts",
 		];
 		for (const file of toDelete) {
-			rmSync(path.join(context.folder, "db", "migrations", `${file}`), {
+			rmSync(path.join(defaultMigrationPath(context.folder), `${file}`), {
 				force: true,
 			});
 		}
@@ -120,7 +121,7 @@ describe("seed", () => {
 			"20240405T154913-mirfak-mustard.ts",
 		];
 		for (const file of toDelete) {
-			rmSync(path.join(context.folder, "db", "migrations", `${file}`), {
+			rmSync(path.join(defaultMigrationPath(context.folder), `${file}`), {
 				force: true,
 			});
 		}

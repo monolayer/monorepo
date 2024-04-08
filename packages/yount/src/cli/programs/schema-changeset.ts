@@ -28,7 +28,7 @@ export function schemaChangeset() {
 			Effect.all([
 				databaseSchema(db.kyselyNoCamelCase),
 				localDatabaseSchema(environment.folder),
-				Effect.succeed(environment.camelCaseOptions),
+				Effect.succeed(environment.camelCasePlugin),
 			]).pipe(
 				Effect.flatMap(
 					([databaseSchema, localDatabaseSchema, camelCasePlugin]) =>

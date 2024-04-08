@@ -17,9 +17,21 @@ export function pgQuery<T extends QueryResultRow = Record<string, unknown>>(
 
 export function adminPgQuery<
 	T extends QueryResultRow = Record<string, unknown>,
->(query: string, dev = false) {
-	const base = dev ? DevPg : Pg;
-	return base.pipe(
+>(query: string) {
+	return Pg.pipe(
+		Effect.flatMap((pg) =>
+			Effect.promise(async () => {
+				const result = await pg.adminPool.query<T>(query);
+				return result.rows;
+			}),
+		),
+	);
+}
+
+export function adminDevPgQuery<
+	T extends QueryResultRow = Record<string, unknown>,
+>(query: string) {
+	return DevPg.pipe(
 		Effect.flatMap((pg) =>
 			Effect.promise(async () => {
 				const result = await pg.adminPool.query<T>(query);

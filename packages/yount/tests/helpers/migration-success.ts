@@ -1,4 +1,5 @@
 import type { MigrationResultSet, Migrator } from "kysely";
+import path from "path";
 import { expect } from "vitest";
 import type { Changeset } from "~/changeset/types.js";
 import type { CamelCaseOptions } from "~/config.js";
@@ -12,7 +13,12 @@ async function migrateUp(
 	migrator: Migrator,
 	changeset: Changeset[],
 ) {
-	generateMigrationFiles(changeset, folder, "migrations", undefined, false);
+	generateMigrationFiles(
+		changeset,
+		path.join(folder, "migrations"),
+		undefined,
+		false,
+	);
 	return await migrator.migrateToLatest();
 }
 

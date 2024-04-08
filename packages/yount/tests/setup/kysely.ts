@@ -22,7 +22,7 @@ export async function kyselyWithCustomDB(databaseName: string) {
 				user: env.POSTGRES_USER,
 				password: env.POSTGRES_PASSWORD,
 				host: env.POSTGRES_HOST,
-				port: Number(env.POSTGRES_PORT ?? 5432),
+				port: Number(env.POSTGRES_ONE_PORT),
 				database: databaseName,
 			}),
 		}),

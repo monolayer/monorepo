@@ -49,13 +49,13 @@ describe("pendingMigrations", () => {
 		expect(pendingNames).toStrictEqual(expected);
 
 		expect(output).toContain(
-			"\u001b[33mpending\u001b[39m db/migrations/20240405T120250-canopus-teal.ts",
+			"\u001b[33mpending\u001b[39m db/migrations/default/20240405T120250-canopus-teal.ts",
 		);
 		expect(output).toContain(
-			"\u001b[33mpending\u001b[39m db/migrations/20240405T153857-alphard-black.ts",
+			"\u001b[33mpending\u001b[39m db/migrations/default/20240405T153857-alphard-black.ts",
 		);
 		expect(output).toContain(
-			"\u001b[33mpending\u001b[39m db/migrations/20240405T154913-mirfak-mustard.ts",
+			"\u001b[33mpending\u001b[39m db/migrations/default/20240405T154913-mirfak-mustard.ts",
 		);
 	});
 });

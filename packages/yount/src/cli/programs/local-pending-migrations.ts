@@ -9,7 +9,14 @@ export function localPendingMigrations() {
 	return Environment.pipe(
 		Effect.flatMap((environment) =>
 			Effect.all([
-				Effect.tryPromise(() => readdir(environment.migrationFolder)),
+				Effect.tryPromise(async () => {
+					try {
+						const contents = await readdir(environment.migrationFolder);
+						return contents;
+					} catch (error) {
+						return [];
+					}
+				}),
 				allMigrations(),
 			]).pipe(
 				Effect.flatMap(([localMigrationFiles, migrations]) =>

@@ -27,7 +27,10 @@ describe("dumpDatabaseStructure", () => {
 			Effect.provide(programWithErrorCause(dumpDatabaseStructure()), layers),
 		);
 
-		const dump = readFileSync(`${context.folder}/db/structure.sql`, "utf-8");
+		const dump = readFileSync(
+			`${context.folder}/db/structure.default.sql`,
+			"utf-8",
+		);
 
 		const result = await context.kysely
 			.selectFrom("kysely_migration")
@@ -37,6 +40,11 @@ describe("dumpDatabaseStructure", () => {
 
 		expect(dump).toEqual(expectedDump.render({ timestamp: result!.timestamp }));
 	});
+
+	test.todo<ProgramContext>(
+		"dumps database structure on non default connecations",
+		async () => {},
+	);
 });
 
 const expectedDump = nunjucks.compile(`--

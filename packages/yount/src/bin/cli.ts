@@ -27,8 +27,13 @@ async function main() {
 	program
 		.command("db:create")
 		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in connections.ts",
+			"default",
+		)
+		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in yount.config.ts",
+			"connection environment name as defined in connections.ts",
 			"development",
 		)
 		.description("create the database")
@@ -39,6 +44,11 @@ async function main() {
 
 	program
 		.command("db:drop")
+		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in connections.ts",
+			"default",
+		)
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in yount.config.ts",
@@ -51,6 +61,11 @@ async function main() {
 
 	program
 		.command("db:clear")
+		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in connections.ts",
+			"default",
+		)
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in yount.config.ts",
@@ -68,6 +83,11 @@ async function main() {
 	program
 		.command("migrate")
 		.description("apply pending migrations")
+		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in connections.ts",
+			"default",
+		)
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in yount.config.ts",
@@ -90,6 +110,11 @@ async function main() {
 		.command("migrate:down")
 		.description("migrate one step down")
 		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in connections.ts",
+			"default",
+		)
+		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in yount.config.ts",
 			"development",
@@ -111,6 +136,11 @@ async function main() {
 		.command("seed")
 		.description("seed database")
 		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in connections.ts",
+			"default",
+		)
+		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in yount.config.ts",
 			"development",
@@ -127,6 +157,11 @@ async function main() {
 		.command("structure:dump")
 		.description("dump the database structure")
 		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in connections.ts",
+			"default",
+		)
+		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in yount.config.ts",
 			"development",
@@ -138,6 +173,11 @@ async function main() {
 	program
 		.command("structure:load")
 		.description("load the database structure")
+		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in connections.ts",
+			"default",
+		)
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in yount.config.ts",
@@ -151,21 +191,30 @@ async function main() {
 		.command("generate")
 		.description("generate migrations based on the current defined schema")
 		.option(
-			"-f, --force",
-			"generate migrations without warnings (destroys pending migration files)",
-			false,
+			"-c, --connection <connection-name>",
+			"connection name as defined in connections.ts",
+			"default",
 		)
-		.action(async () => {
-			await cliAction("yount generate", { environment: "development" }, [
-				handleMissingDevDatabase(),
-				handlePendingMigrations(),
-				generateChangesetMigration(),
-			]);
+		.action(async (opts) => {
+			await cliAction(
+				"yount generate",
+				{ environment: "development", connection: opts.connection },
+				[
+					handleMissingDevDatabase(),
+					handlePendingMigrations(),
+					generateChangesetMigration(),
+				],
+			);
 		});
 
 	program
 		.command("pending")
 		.description("list pending migrations")
+		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in connections.ts",
+			"default",
+		)
 		.option(
 			"-e, --environment <environment-name>",
 			"environment as specified in yount.config.ts",

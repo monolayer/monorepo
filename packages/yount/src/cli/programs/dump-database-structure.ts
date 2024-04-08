@@ -18,7 +18,11 @@ export function dumpDatabaseStructure() {
 				Effect.all([
 					databaseSearchPath(),
 					databaseInConfig(pg.config),
-					databaseDumpPath(environment.name, environment.folder),
+					databaseDumpPath(
+						environment.connectionName,
+						environment.name,
+						environment.folder,
+					),
 				]).pipe(
 					Effect.flatMap(([searchPath, database, dumpPath]) =>
 						Effect.succeed(true).pipe(
@@ -106,13 +110,17 @@ function databaseSearchPath() {
 	);
 }
 
-function databaseDumpPath(environment: string, folder: string) {
+function databaseDumpPath(
+	connectionName: string,
+	environment: string,
+	folder: string,
+) {
 	return Effect.succeed(
 		path.join(
 			folder,
 			environment === "development"
-				? "structure.sql"
-				: `structure_${environment}.sql`,
+				? `structure.${connectionName}.sql`
+				: `structure_${environment}.${connectionName}.sql`,
 		),
 	);
 }
