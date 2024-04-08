@@ -6,22 +6,23 @@ import type { ConnectionOptions } from "pg-connection-string";
 import { env } from "process";
 import { Writable, type WritableOptions } from "stream";
 import { Environment } from "../services/environment.js";
+import { Pg } from "../services/pg.js";
 import { spinnerTask } from "../utils/spinner-task.js";
 import { pgQuery } from "./pg-query.js";
 import { pipeCommandStdoutToWritable } from "./pipe-command-stdout-to-writable.js";
 
 export function dumpDatabaseStructure() {
 	return spinnerTask("Dump database structure", () =>
-		Environment.pipe(
-			Effect.flatMap((environment) =>
+		Effect.all([Environment, Pg]).pipe(
+			Effect.flatMap(([environment, pg]) =>
 				Effect.all([
-					databaseSearchPath(environment.pg.pool),
-					databaseInConfig(environment.pg.config),
+					databaseSearchPath(pg.pool),
+					databaseInConfig(pg.config),
 					databaseDumpPath(environment.name, environment.folder),
 				]).pipe(
 					Effect.flatMap(([searchPath, database, dumpPath]) =>
 						Effect.succeed(true).pipe(
-							Effect.tap(() => setPgDumpEnv(environment.pg.config)),
+							Effect.tap(() => setPgDumpEnv(pg.config)),
 							Effect.tap(() => dumpStructure(database, dumpPath)),
 							Effect.tap(() =>
 								appendFileSync(

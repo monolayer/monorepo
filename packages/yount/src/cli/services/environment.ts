@@ -1,16 +1,14 @@
 import * as p from "@clack/prompts";
 import { Context, Effect, Layer } from "effect";
 import path from "path";
-import pg from "pg";
-import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 import { cwd } from "process";
 import {
 	importConfig,
 	importConnections,
 	type CamelCaseOptions,
+	type EnvironmentConfig,
 } from "~/config.js";
-import { type PoolAndConfig } from "~/pg/pg-pool.js";
 
 export class Environment extends Context.Tag("Environment")<
 	Environment,
@@ -19,7 +17,7 @@ export class Environment extends Context.Tag("Environment")<
 		readonly folder: string;
 		readonly migrationFolder: string;
 		readonly camelCaseOptions?: CamelCaseOptions;
-		pg: PoolAndConfig;
+		readonly connectionConfig: EnvironmentConfig;
 	}
 >() {}
 
@@ -30,7 +28,7 @@ export class DevEnvironment extends Context.Tag("DevEnvironment")<
 		readonly folder: string;
 		readonly migrationFolder: string;
 		readonly camelCaseOptions?: CamelCaseOptions;
-		pg: PoolAndConfig;
+		readonly connectionConfig: EnvironmentConfig;
 	}
 >() {}
 
@@ -64,7 +62,7 @@ export function environmentLayer(environment: string) {
 				folder: config.folder,
 				migrationFolder: path.join(cwd(), config.folder, "migrations"),
 				camelCasePlugin: connections.connections?.default.camelCasePlugin,
-				pg: yield* _(poolAndConfig(environmentConfig)),
+				connectionConfig: environmentConfig,
 			};
 		}),
 	);
@@ -92,35 +90,8 @@ export function devEnvironmentLayer() {
 				folder: config.folder,
 				migrationFolder: path.join(cwd(), config.folder, "migrations"),
 				camelCasePlugin: connections.connections?.default.camelCasePlugin,
-				pg: yield* _(poolAndConfig(environmentConfig)),
+				connectionConfig: environmentConfig,
 			};
 		}),
 	);
-}
-
-function poolAndConfig(
-	environmentConfig: pg.ClientConfig & pg.PoolConfig,
-): Effect.Effect<
-	{
-		pool: pg.Pool;
-		adminPool: pg.Pool;
-		config:
-			| (pg.ClientConfig & pg.PoolConfig)
-			| pgConnectionString.ConnectionOptions;
-	},
-	string,
-	never
-> {
-	const poolAndConfig = {
-		pool: new pg.Pool(environmentConfig),
-		adminPool: new pg.Pool({
-			...environmentConfig,
-			database: undefined,
-		}),
-		config:
-			environmentConfig.connectionString !== undefined
-				? pgConnectionString.parse(environmentConfig.connectionString)
-				: environmentConfig,
-	};
-	return Effect.succeed(poolAndConfig);
 }

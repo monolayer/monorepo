@@ -4,13 +4,14 @@ import color from "picocolors";
 import type { DevEnvironment, Environment } from "../services/environment.js";
 import type { Db } from "../services/kysely.js";
 import type { Migrator } from "../services/migrator.js";
+import type { DevPg, Pg } from "../services/pg.js";
 
 export function spinnerTask(
 	name: string,
 	callback: () => Effect.Effect<
 		unknown,
 		unknown,
-		Environment | DevEnvironment | Db | Migrator
+		Environment | DevEnvironment | Db | Migrator | Pg | DevPg
 	>,
 ) {
 	const spinner = p.spinner();
@@ -35,7 +36,7 @@ export function check(
 	callback: () => Effect.Effect<
 		boolean,
 		unknown,
-		Environment | DevEnvironment | Db | Migrator
+		Environment | DevEnvironment | Db | Migrator | Pg | DevPg
 	>,
 ) {
 	return Effect.succeed(p.spinner()).pipe(

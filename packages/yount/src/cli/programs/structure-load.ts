@@ -2,6 +2,7 @@ import { Effect } from "effect";
 import fs from "fs/promises";
 import path from "path";
 import { Environment } from "../services/environment.js";
+import { Pg } from "../services/pg.js";
 import { checkWithFail } from "../utils/check-with-fail.js";
 import { spinnerTask } from "../utils/spinner-task.js";
 import { createDatabase } from "./create-database.js";
@@ -52,24 +53,19 @@ function checkStructureFile() {
 }
 
 function restoreDatabaseFromStructureFile() {
-	return Environment.pipe(
-		Effect.flatMap((environment) =>
-			spinnerTask(
-				`Restore ${environment.pg.config.database} from structure.sql`,
-				() =>
-					Effect.tryPromise(async () => {
-						const structurePath = path.join(
-							environment.folder,
-							`structure.sql`,
-						);
-						return (await fs.readFile(structurePath)).toString();
-					}).pipe(
-						Effect.flatMap((structure) =>
-							pgQuery<{
-								datname: string;
-							}>(environment.pg.pool, structure),
-						),
+	return Effect.all([Environment, Pg]).pipe(
+		Effect.flatMap(([environment, pg]) =>
+			spinnerTask(`Restore ${pg.config.database} from structure.sql`, () =>
+				Effect.tryPromise(async () => {
+					const structurePath = path.join(environment.folder, `structure.sql`);
+					return (await fs.readFile(structurePath)).toString();
+				}).pipe(
+					Effect.flatMap((structure) =>
+						pgQuery<{
+							datname: string;
+						}>(pg.pool, structure),
 					),
+				),
 			),
 		),
 	);

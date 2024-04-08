@@ -8,6 +8,7 @@ import { type SeedImport } from "~/config.js";
 import { dbTableInfo } from "~/schema/table/introspection.js";
 import { Environment } from "../services/environment.js";
 import { Db } from "../services/kysely.js";
+import { Pg } from "../services/pg.js";
 import { checkWithFail } from "../utils/check-with-fail.js";
 import { spinnerTask } from "../utils/spinner-task.js";
 import { localPendingMigrations } from "./local-pending-migrations.js";
@@ -161,9 +162,9 @@ export function importSeedFunction() {
 }
 
 function seedDatabase() {
-	return Effect.all([Environment, Db]).pipe(
-		Effect.flatMap(([environment, db]) =>
-			spinnerTask(`Seed ${environment.pg.config.database}`, () =>
+	return Effect.all([Pg, Db]).pipe(
+		Effect.flatMap(([pg, db]) =>
+			spinnerTask(`Seed ${pg.config.database}`, () =>
 				importSeedFunction().pipe(
 					Effect.flatMap((seedImport) =>
 						Effect.tryPromise(() => seedImport(db.kysely)),

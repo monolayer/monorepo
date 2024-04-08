@@ -3,6 +3,7 @@ import { Effect } from "effect";
 import type { DevEnvironment, Environment } from "../services/environment.js";
 import type { Db } from "../services/kysely.js";
 import type { Migrator } from "../services/migrator.js";
+import type { DevPg, Pg } from "../services/pg.js";
 import { check } from "../utils/spinner-task.js";
 
 export function checkWithFail({
@@ -19,7 +20,7 @@ export function checkWithFail({
 	callback: () => Effect.Effect<
 		boolean,
 		unknown,
-		Environment | Db | Migrator | DevEnvironment
+		Environment | DevEnvironment | Db | Migrator | Pg | DevPg
 	>;
 }) {
 	return check(name, () =>

@@ -1,13 +1,13 @@
 import { Effect } from "effect";
-import { Environment } from "../services/environment.js";
+import { Pg } from "../services/pg.js";
 import { spinnerTask } from "../utils/spinner-task.js";
 import { pgQuery } from "./pg-query.js";
 
 export function dropTablesAndTypes() {
-	return Environment.pipe(
-		Effect.flatMap((environment) =>
+	return Pg.pipe(
+		Effect.flatMap((pg) =>
 			spinnerTask("Drop tables and types", () =>
-				pgQuery(environment.pg.pool, dropAllTablesAndTypesQuery),
+				pgQuery(pg.pool, dropAllTablesAndTypesQuery),
 			),
 		),
 	);

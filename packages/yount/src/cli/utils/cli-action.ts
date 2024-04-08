@@ -11,6 +11,7 @@ import {
 } from "../services/environment.js";
 import { kyselyLayer, type Db } from "../services/kysely.js";
 import { migratorLayer, type Migrator } from "../services/migrator.js";
+import { pgLayer, type DevPg, type Pg } from "../services/pg.js";
 
 export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 	readonly cause: string;
@@ -22,11 +23,12 @@ export async function cliAction(
 	tasks: Effect.Effect<
 		unknown,
 		unknown,
-		Environment | Db | DevEnvironment | Migrator
+		Environment | DevEnvironment | Db | Migrator | Pg | DevPg
 	>[],
 ) {
 	const layers = migratorLayer().pipe(
 		Layer.provideMerge(kyselyLayer()),
+		Layer.provideMerge(pgLayer()),
 		Layer.provideMerge(environmentLayer(environment)),
 		Layer.provideMerge(devEnvironmentLayer()),
 	);
