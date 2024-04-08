@@ -88,14 +88,6 @@ export async function importConnections() {
 	return connections;
 }
 
-export async function importSeedFunction() {
-	const config = await importConfig();
-	const seedImport: SeedImport = await import(
-		path.join(process.cwd(), config.folder, "seed.ts")
-	);
-	return seedImport;
-}
-
 function isEsmImport(imported: ConfigImport): imported is { default: Config } {
 	return !isCjsImport(imported);
 }
