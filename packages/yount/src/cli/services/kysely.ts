@@ -1,6 +1,6 @@
 import { Context, Effect, Layer } from "effect";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
-import { readConnections } from "./environment.js";
+import { importConnections } from "~/config.js";
 import { Pg } from "./pg.js";
 
 export class Db extends Context.Tag("Db")<
@@ -18,7 +18,9 @@ export function kyselyLayer() {
 		Db,
 		Effect.gen(function* (_) {
 			const pg = yield* _(Pg);
-			const connections = yield* _(readConnections());
+			const connections = yield* _(
+				Effect.promise(async () => await importConnections()),
+			);
 
 			const useCamelCase =
 				connections.connections?.default.camelCasePlugin?.enabled ?? false;

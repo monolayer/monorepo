@@ -10,88 +10,55 @@ import {
 	type EnvironmentConfig,
 } from "~/config.js";
 
+type EnvironmentProperties = {
+	readonly name: string;
+	readonly folder: string;
+	readonly migrationFolder: string;
+	readonly camelCaseOptions?: CamelCaseOptions;
+	readonly connectionConfig: EnvironmentConfig;
+};
+
 export class Environment extends Context.Tag("Environment")<
 	Environment,
-	{
-		readonly name: string;
-		readonly folder: string;
-		readonly migrationFolder: string;
-		readonly camelCaseOptions?: CamelCaseOptions;
-		readonly connectionConfig: EnvironmentConfig;
-	}
+	EnvironmentProperties
 >() {}
 
 export class DevEnvironment extends Context.Tag("DevEnvironment")<
 	DevEnvironment,
-	{
-		readonly name: string;
-		readonly folder: string;
-		readonly migrationFolder: string;
-		readonly camelCaseOptions?: CamelCaseOptions;
-		readonly connectionConfig: EnvironmentConfig;
-	}
+	EnvironmentProperties
 >() {}
 
-function readConfig() {
-	return Effect.promise(async () => await importConfig());
-}
-
-export function readConnections() {
-	return Effect.promise(async () => await importConnections());
-}
-
 export function environmentLayer(environment: string) {
-	return Layer.effect(
-		Environment,
-		Effect.gen(function* (_) {
-			const config = yield* _(readConfig());
-			const connections = yield* _(readConnections());
-			const environmentConfig =
-				connections.connections?.default.environments[environment];
-
-			if (environmentConfig === undefined) {
-				p.log.error(color.red("Error"));
-				return yield* _(
-					Effect.fail(
-						`No connection configuration found for environment: '${environment}'. Check your connections.ts file.`,
-					),
-				);
-			}
-			return {
-				name: environment,
-				folder: config.folder,
-				migrationFolder: path.join(cwd(), config.folder, "migrations"),
-				camelCasePlugin: connections.connections?.default.camelCasePlugin,
-				connectionConfig: environmentConfig,
-			};
-		}),
-	);
+	return Layer.effect(Environment, environmentGenerator(environment));
 }
 
 export function devEnvironmentLayer() {
-	return Layer.effect(
-		DevEnvironment,
-		Effect.gen(function* (_) {
-			const config = yield* _(readConfig());
-			const connections = yield* _(readConnections());
+	return Layer.effect(DevEnvironment, environmentGenerator("development"));
+}
 
-			const environmentConfig =
-				connections.connections?.default.environments["development"];
-			if (environmentConfig === undefined) {
-				p.log.error(color.red("Error"));
-				return yield* _(
-					Effect.fail(
-						`No connection configuration found for environment: 'development'. Check your connections.ts file.`,
-					),
-				);
-			}
-			return {
-				name: "development",
-				folder: config.folder,
-				migrationFolder: path.join(cwd(), config.folder, "migrations"),
-				camelCasePlugin: connections.connections?.default.camelCasePlugin,
-				connectionConfig: environmentConfig,
-			};
-		}),
-	);
+function environmentGenerator(environment: string) {
+	return Effect.gen(function* (_) {
+		const config = yield* _(Effect.promise(async () => await importConfig()));
+		const connections = yield* _(
+			Effect.promise(async () => await importConnections()),
+		);
+		const environmentConfig =
+			connections.connections?.default.environments[environment];
+
+		if (environmentConfig === undefined) {
+			p.log.error(color.red("Error"));
+			return yield* _(
+				Effect.fail(
+					`No connection configuration found for environment: '${environment}'. Check your connections.ts file.`,
+				),
+			);
+		}
+		return {
+			name: environment,
+			folder: config.folder,
+			migrationFolder: path.join(cwd(), config.folder, "migrations"),
+			camelCasePlugin: connections.connections?.default.camelCasePlugin,
+			connectionConfig: environmentConfig,
+		};
+	});
 }

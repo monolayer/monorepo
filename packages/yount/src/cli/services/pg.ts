@@ -3,27 +3,17 @@ import pg from "pg";
 import pgConnectionString from "pg-connection-string";
 import { DevEnvironment, Environment } from "./environment.js";
 
-export class Pg extends Context.Tag("Pg")<
-	Pg,
-	{
-		readonly pool: pg.Pool;
-		readonly adminPool: pg.Pool;
-		readonly config:
-			| (pg.ClientConfig & pg.PoolConfig)
-			| pgConnectionString.ConnectionOptions;
-	}
->() {}
+type PgProperties = {
+	readonly pool: pg.Pool;
+	readonly adminPool: pg.Pool;
+	readonly config:
+		| (pg.ClientConfig & pg.PoolConfig)
+		| pgConnectionString.ConnectionOptions;
+};
 
-export class DevPg extends Context.Tag("Pg")<
-	DevPg,
-	{
-		readonly pool: pg.Pool;
-		readonly adminPool: pg.Pool;
-		readonly config:
-			| (pg.ClientConfig & pg.PoolConfig)
-			| pgConnectionString.ConnectionOptions;
-	}
->() {}
+export class Pg extends Context.Tag("Pg")<Pg, PgProperties>() {}
+
+export class DevPg extends Context.Tag("Pg")<DevPg, PgProperties>() {}
 
 export function pgLayer() {
 	return Layer.effect(
