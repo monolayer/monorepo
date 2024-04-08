@@ -4,13 +4,17 @@ dotenv.config();
 
 export const yountConfigTemplate = nunjucks.compile(`export default {
 	folder: "db",
-	environments: {
-		development: {
-			user: "${process.env.POSTGRES_USER}",
-			password: "${process.env.POSTGRES_PASSWORD}",
-			host: "${process.env.POSTGRES_HOST}",
-			port: ${process.env.POSTGRES_PORT ?? 5432},
-			database: "{{ dbName }}",
+	databaseConnections: {
+		default: {
+			environments: {
+				development: {
+					user: "${process.env.POSTGRES_USER}",
+					password: "${process.env.POSTGRES_PASSWORD}",
+					host: "${process.env.POSTGRES_HOST}",
+					port: ${process.env.POSTGRES_PORT ?? 5432},
+					database: "{{ dbName }}",
+				},
+			},
 		},
 	},
 };

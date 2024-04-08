@@ -35,7 +35,8 @@ export function environmentLayer(environment: string) {
 		Environment,
 		Effect.gen(function* (_) {
 			const config = yield* _(Effect.promise(async () => await importConfig()));
-			const environmentConfig = config.environments[environment];
+			const environmentConfig =
+				config.databaseConnections.default.environments[environment];
 			if (environmentConfig === undefined) {
 				p.log.error(color.red("Error"));
 				return yield* _(
@@ -61,7 +62,8 @@ export function devEnvironmentLayer() {
 		DevEnvironment,
 		Effect.gen(function* (_) {
 			const config = yield* _(Effect.promise(async () => await importConfig()));
-			const environmentConfig = config.environments["development"];
+			const environmentConfig =
+				config.databaseConnections.default.environments["development"];
 			if (environmentConfig === undefined) {
 				p.log.error(color.red("Error"));
 				return yield* _(

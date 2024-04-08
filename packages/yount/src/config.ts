@@ -7,8 +7,12 @@ export type EnvironmentConfig = ClientConfig & PoolConfig;
 
 export type Config = {
 	folder: string;
-	environments: {
-		[key: string]: EnvironmentConfig;
+	databaseConnections: {
+		default: {
+			environments: {
+				[key: string]: EnvironmentConfig;
+			};
+		};
 	};
 	camelCasePlugin?: CamelCaseOptions;
 };

@@ -17,7 +17,8 @@ export function pgPoolAndConfig(
 	config: Config,
 	environment: string,
 ): PoolAndConfig {
-	const environmentConfig = config.environments[environment];
+	const environmentConfig =
+		config.databaseConnections.default.environments[environment];
 	if (environmentConfig === undefined) {
 		log.lineMessage(
 			`${color.red(

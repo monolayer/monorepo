@@ -102,25 +102,29 @@ export const configTemplate =
 
 export default ({
   folder: "{{ folder }}",
-  environments: {
-    development: {
-      database: "#database_development",
-      user: "#user",
-      password: "#password",
-      host: "#host",
-      port: 5432
-    },
-    test: {
-      database: "#database_test",
-      user: "#user",
-      password: "#password",
-      host: "#host",
-      port: 5432
-    },
-    production: {
-      connectionString: process.env.DATABASE_URL,
-    }
-  }
+	databaseConnections: {
+		default: {
+			environments: {
+				development: {
+					database: "#database_development",
+					user: "#user",
+					password: "#password",
+					host: "#host",
+					port: 5432
+				},
+				test: {
+					database: "#database_test",
+					user: "#user",
+					password: "#password",
+					host: "#host",
+					port: 5432
+				},
+				production: {
+					connectionString: process.env.DATABASE_URL,
+				}
+			}
+		},
+	},
 } satisfies Config);`);
 
 export const schemaTemplate =
@@ -139,7 +143,7 @@ import type { DB } from "./schema";
 
 export const db = new Kysely<DB>({
 	dialect: new PostgresDialect({
-		pool: pgPool(yountConfig, process.env.KINETIC_ENV || "development"),
+		pool: pgPool(yountConfig.databaseConnections.default, process.env.KINETIC_ENV || "development"),
 	}),
 });
 `);
