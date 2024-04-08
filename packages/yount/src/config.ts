@@ -3,10 +3,12 @@ import path from "path";
 import type { ClientConfig, PoolConfig } from "pg";
 import type { AnyPgDatabase } from "./schema/pg-database.js";
 
+export type EnvironmentConfig = ClientConfig & PoolConfig;
+
 export type Config = {
 	folder: string;
 	environments: {
-		[key: string]: ClientConfig & PoolConfig;
+		[key: string]: EnvironmentConfig;
 	};
 	camelCasePlugin?: CamelCaseOptions;
 };
