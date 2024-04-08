@@ -1,5 +1,5 @@
 import { CamelCasePlugin } from "kysely";
-import type { CamelCaseOptions } from "~/config.js";
+import type { CamelCaseOptions } from "~/configuration.js";
 
 export function executeKyselySchemaStatement(...args: string[]) {
 	return ["await db.schema", ...args, "execute();"].filter((x) => x !== "");

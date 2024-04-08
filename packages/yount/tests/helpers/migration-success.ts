@@ -2,7 +2,7 @@ import type { MigrationResultSet, Migrator } from "kysely";
 import path from "path";
 import { expect } from "vitest";
 import type { Changeset } from "~/changeset/types.js";
-import type { CamelCaseOptions } from "~/config.js";
+import type { CamelCaseOptions } from "~/configuration.js";
 import { generateMigrationFiles } from "~/migrations/generate.js";
 import type { PgDatabase } from "~/schema/pg-database.js";
 import type { DbContext } from "~tests/setup/kysely.js";

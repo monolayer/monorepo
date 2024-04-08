@@ -1,33 +1,7 @@
-import type { CamelCasePluginOptions, Kysely } from "kysely";
+import type { Kysely } from "kysely";
 import path from "path";
-import type { ClientConfig, PoolConfig } from "pg";
+import { Connections, YountConfig } from "./configuration.js";
 import type { AnyPgDatabase } from "./schema/pg-database.js";
-
-export type EnvironmentConfig = ClientConfig & PoolConfig;
-
-export type Config = {
-	folder: string;
-};
-
-export type ConnectionDefinition = {
-	camelCasePlugin?: CamelCaseOptions;
-	environments: {
-		development: EnvironmentConfig;
-	} & Record<string, EnvironmentConfig>;
-};
-
-export type Connections =
-	| {
-			default: ConnectionDefinition;
-	  }
-	| {
-			[key: string]: ConnectionDefinition;
-	  };
-
-export type CamelCaseOptions = {
-	enabled: boolean;
-	options?: CamelCasePluginOptions;
-};
 
 type GlobalsWithDatabaseSchema = typeof globalThis & {
 	schema: unknown;
@@ -43,19 +17,21 @@ export function registerSchema(db: unknown) {
 
 type CjsConfig = {
 	default: {
-		default: Config;
+		default: YountConfig;
 	};
 };
 
 type EsmConfig = {
-	default: Config;
+	default: YountConfig;
 };
 
 type ConfigImport = EsmConfig | CjsConfig;
 
 export async function importConfig() {
 	const def = await import(path.join(process.cwd(), "yount.config.ts"));
-	const config: Config = isEsmImport(def) ? def.default : def.default.default;
+	const config: YountConfig = isEsmImport(def)
+		? def.default
+		: def.default.default;
 	return config;
 }
 
@@ -88,14 +64,17 @@ export async function importConnections() {
 	return connections;
 }
 
-function isEsmImport(imported: ConfigImport): imported is { default: Config } {
+function isEsmImport(
+	imported: ConfigImport,
+): imported is { default: YountConfig } {
 	return !isCjsImport(imported);
 }
 
 function isCjsImport(
 	imported: ConfigImport,
-): imported is { default: { default: Config } } {
+): imported is { default: { default: YountConfig } } {
 	return (
-		(imported as { default: { default: Config } }).default.default !== undefined
+		(imported as { default: { default: YountConfig } }).default.default !==
+		undefined
 	);
 }

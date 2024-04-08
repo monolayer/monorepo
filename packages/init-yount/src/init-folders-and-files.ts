@@ -82,17 +82,6 @@ export function initFolderAndFiles() {
 		await createFile(`${folder.path}/seed.ts`, seedTemplate.render(), true);
 		await createDir(`${folder.path}/migrations`, true);
 
-		await createFile(
-			path.join(`${folder.path}/db.ts`),
-			dbTemplate.render({
-				yountConfigPath: path.relative(
-					path.join(cwd(), folder.path),
-					path.join(cwd(), "yount.config"),
-				),
-			}),
-			true,
-		);
-
 		const nextSteps = `1) Edit the database connection details at \`yount.config.ts\`.
 2) Run \`npx yount db:create\` to create the database.
 3) Edit the schema file at \`${path.join(folder.path, "schema.ts")}\`.
@@ -103,17 +92,19 @@ export function initFolderAndFiles() {
 }
 
 export const configTemplate =
-	nunjucks.compile(`import type { Config } from "yount/config";
+	nunjucks.compile(`import type { YountConfig } from "yount/config";
 
 const config = {
 	folder: "{{ folder }}"
-} satisfies Config;
+} satisfies YountConfig;
 
 export default config;
 `);
 
 export const connectionsTemplate =
-	nunjucks.compile(`import type { Connections } from "yount/config";
+	nunjucks.compile(`import { Kysely } from "kysely";
+	import { kyselyConfig, type Connections } from "yount/config";
+	import type { DB } from "./schema";
 
 export const connections = {
 	default: {
@@ -141,6 +132,10 @@ export const connections = {
     },
 	},
 } satisfies Connections;
+
+export const defaultDb = new Kysely<DB>(
+	kyselyConfig(connections.default, process.env.APP_ENV || "development")
+);
 `);
 
 export const schemaTemplate =
@@ -149,19 +144,6 @@ export const schemaTemplate =
 export const database = pgDatabase({});
 
 export type DB = typeof database.infer;
-`);
-
-export const dbTemplate =
-	nunjucks.compile(`import { Kysely, PostgresDialect } from "kysely";
-import { pgPool } from "yount/pool";
-import { connections } from "./connections";
-import type { DB } from "./schema";
-
-export const db = new Kysely<DB>({
-	dialect: new PostgresDialect({
-		pool: pgPool(connections.default, process.env.APP_ENV || "development"),
-	}),
-});
 `);
 
 export const seedTemplate =

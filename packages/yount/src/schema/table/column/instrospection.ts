@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { Kysely, sql } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
-import type { CamelCaseOptions } from "~/config.js";
+import type { CamelCaseOptions } from "~/configuration.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { type MigrationSchema } from "~/introspection/introspection.js";
 import { findColumn, findPrimaryKey } from "~/migrations/migration-schema.js";

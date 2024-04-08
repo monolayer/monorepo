@@ -1,6 +1,6 @@
 import { sql, type Kysely } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
-import type { CamelCaseOptions } from "~/config.js";
+import type { CamelCaseOptions } from "~/configuration.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import {
 	primaryKeyColumns,

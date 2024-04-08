@@ -1,6 +1,6 @@
 import { Kysely, sql } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
-import type { CamelCaseOptions } from "~/config.js";
+import type { CamelCaseOptions } from "~/configuration.js";
 import {
 	compileDefaultExpression,
 	tableInfo,

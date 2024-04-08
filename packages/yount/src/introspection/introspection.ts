@@ -4,7 +4,7 @@ import {
 	type OperationAnyError,
 	type OperationSuccess,
 } from "~/cli/command.js";
-import type { CamelCaseOptions } from "~/config.js";
+import type { CamelCaseOptions } from "~/configuration.js";
 import type {
 	CheckInfo,
 	ForeignKeyInfo,

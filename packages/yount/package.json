@@ -18,14 +18,9 @@
 			"types": "./dist/esm/src/index.d.ts"
 		},
 		"./config": {
-			"import": "./dist/esm/src/config.js",
-			"require": "./dist/cjs/src/config.js",
-			"types": "./dist/esm/src/config.js"
-		},
-		"./pool": {
-			"import": "./dist/esm/src/pool.js",
-			"require": "./dist/cjs/src/pool.js",
-			"types": "./dist/esm/src/pool.js"
+			"import": "./dist/esm/src/configuration.js",
+			"require": "./dist/cjs/src/configuration.js",
+			"types": "./dist/esm/src/configuration.js"
 		},
 		"./zod": {
 			"import": "./dist/esm/src/zod.js",

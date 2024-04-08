@@ -3,13 +3,12 @@ import { Context, Effect, Layer } from "effect";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
+import { importConfig, importConnections } from "~/config.js";
 import {
-	importConfig,
-	importConnections,
 	type CamelCaseOptions,
 	type Connections,
 	type EnvironmentConfig,
-} from "~/config.js";
+} from "~/configuration.js";
 
 type EnvironmentProperties = {
 	readonly name: string;

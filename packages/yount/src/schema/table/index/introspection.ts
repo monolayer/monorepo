@@ -1,7 +1,7 @@
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
-import type { CamelCaseOptions } from "~/config.js";
+import type { CamelCaseOptions } from "~/configuration.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
 import {

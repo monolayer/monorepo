@@ -2,10 +2,10 @@ import { FileMigrationProvider, Kysely, Migrator } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
 import { cwd } from "process";
-import { Config } from "~/config.js";
+import { YountConfig } from "~/configuration.js";
 
 export async function fetchPendingMigrations(
-	config: Config,
+	config: YountConfig,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	db: Kysely<any>,
 	migrationsFolderName = "migrations",
@@ -35,7 +35,7 @@ export async function fetchPendingMigrations(
 }
 
 export async function migrations(
-	config: Config,
+	config: YountConfig,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	db: Kysely<any>,
 	migrationsFolderName = "migrations",

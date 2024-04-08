@@ -2,7 +2,8 @@ import * as p from "@clack/prompts";
 import { Effect, pipe } from "effect";
 import type { Kysely } from "kysely";
 import { changeset } from "~/changeset/changeset.js";
-import { importSchema, type CamelCaseOptions } from "~/config.js";
+import { importSchema } from "~/config.js";
+import { type CamelCaseOptions } from "~/configuration.js";
 import {
 	localSchema,
 	type MigrationSchema,
