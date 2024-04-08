@@ -11,7 +11,7 @@ import {
 } from "../services/environment.js";
 import { kyselyLayer, type Db } from "../services/kysely.js";
 import { migratorLayer, type Migrator } from "../services/migrator.js";
-import { pgLayer, type DevPg, type Pg } from "../services/pg.js";
+import { devPgLayer, pgLayer, type DevPg, type Pg } from "../services/pg.js";
 
 export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 	readonly cause: string;
@@ -29,6 +29,7 @@ export async function cliAction(
 	const layers = migratorLayer().pipe(
 		Layer.provideMerge(kyselyLayer()),
 		Layer.provideMerge(pgLayer()),
+		Layer.provideMerge(devPgLayer()),
 		Layer.provideMerge(environmentLayer(options.environment)),
 		Layer.provideMerge(devEnvironmentLayer()),
 	);
