@@ -34,9 +34,7 @@ async function main() {
 		.description("create the database")
 		.action(
 			async (opts) =>
-				await cliAction("yount db:create", opts.environment, [
-					createDatabase(),
-				]),
+				await cliAction("yount db:create", opts, [createDatabase()]),
 		);
 
 	program
@@ -48,8 +46,7 @@ async function main() {
 		)
 		.description("drop the database")
 		.action(
-			async (opts) =>
-				await cliAction("yount db:drop", opts.environment, [dropDatabase()]),
+			async (opts) => await cliAction("yount db:drop", opts, [dropDatabase()]),
 		);
 
 	program
@@ -62,7 +59,7 @@ async function main() {
 		.description("remove tables and types")
 		.action(
 			async (opts) =>
-				await cliAction("yount db:clear", opts.environment, [
+				await cliAction("yount db:clear", opts, [
 					dropTablesAndTypes(),
 					dumpDatabaseStructure(),
 				]),
@@ -77,7 +74,7 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("yount migrate", opts.environment, [
+			await cliAction("yount migrate", opts, [
 				migrate().pipe(
 					Effect.tap((result) =>
 						Effect.if(result, {
@@ -98,7 +95,7 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("yount migrate:down", opts.environment, [
+			await cliAction("yount migrate:down", opts, [
 				migrateDown().pipe(
 					Effect.tap((result) =>
 						Effect.if(result, {
@@ -121,7 +118,7 @@ async function main() {
 		.option("-r, --replant", "Truncate tables before seeding")
 		.option("-d, --disable-warnings", "disable truncation warnings")
 		.action(async (opts) => {
-			await cliAction("yount seed", opts.environment, [
+			await cliAction("yount seed", opts, [
 				seed({ replant: opts.replant, disableWarnings: opts.disableWarnings }),
 			]);
 		});
@@ -135,9 +132,7 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("yount structure:dump", opts.environment, [
-				dumpDatabaseStructure(),
-			]);
+			await cliAction("yount structure:dump", opts, [dumpDatabaseStructure()]);
 		});
 
 	program
@@ -149,9 +144,7 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("yount structure load", opts.environment, [
-				structureLoad(),
-			]);
+			await cliAction("yount structure load", opts, [structureLoad()]);
 		});
 
 	program
@@ -163,7 +156,7 @@ async function main() {
 			false,
 		)
 		.action(async () => {
-			await cliAction("yount generate", "development", [
+			await cliAction("yount generate", { environment: "development" }, [
 				handleMissingDevDatabase(),
 				handlePendingMigrations(),
 				generateChangesetMigration(),
@@ -179,14 +172,16 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("yount pending", opts.environment, [pendingMigrations()]);
+			await cliAction("yount pending", opts, [pendingMigrations()]);
 		});
 
 	program
 		.command("scaffold")
 		.description("create an empty migration file")
 		.action(async () => {
-			await cliAction("yount scaffold", "development", [scaffoldMigration()]);
+			await cliAction("yount scaffold", { environment: "development" }, [
+				scaffoldMigration(),
+			]);
 		});
 
 	program.exitOverride();
