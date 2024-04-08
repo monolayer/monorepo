@@ -1,15 +1,9 @@
-import { Effect } from "effect";
-import { Pg } from "../services/pg.js";
 import { spinnerTask } from "../utils/spinner-task.js";
 import { pgQuery } from "./pg-query.js";
 
 export function dropTablesAndTypes() {
-	return Pg.pipe(
-		Effect.flatMap((pg) =>
-			spinnerTask("Drop tables and types", () =>
-				pgQuery(pg.pool, dropAllTablesAndTypesQuery),
-			),
-		),
+	return spinnerTask("Drop tables and types", () =>
+		pgQuery(dropAllTablesAndTypesQuery),
 	);
 }
 

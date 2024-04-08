@@ -1,12 +1,30 @@
 import { Effect } from "effect";
-import type { Pool, QueryResultRow } from "pg";
+import type { QueryResultRow } from "pg";
+import { DevPg, Pg } from "../services/pg.js";
 
 export function pgQuery<T extends QueryResultRow = Record<string, unknown>>(
-	pool: Pool,
 	query: string,
 ) {
-	return Effect.promise(async () => {
-		const result = await pool.query<T>(query);
-		return result.rows;
-	});
+	return Pg.pipe(
+		Effect.flatMap((pg) =>
+			Effect.promise(async () => {
+				const result = await pg.pool.query<T>(query);
+				return result.rows;
+			}),
+		),
+	);
+}
+
+export function adminPgQuery<
+	T extends QueryResultRow = Record<string, unknown>,
+>(query: string, dev = false) {
+	const base = dev ? DevPg : Pg;
+	return base.pipe(
+		Effect.flatMap((pg) =>
+			Effect.promise(async () => {
+				const result = await pg.adminPool.query<T>(query);
+				return result.rows;
+			}),
+		),
+	);
 }

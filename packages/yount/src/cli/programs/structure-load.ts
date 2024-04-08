@@ -63,7 +63,7 @@ function restoreDatabaseFromStructureFile() {
 					Effect.flatMap((structure) =>
 						pgQuery<{
 							datname: string;
-						}>(pg.pool, structure),
+						}>(structure),
 					),
 				),
 			),

@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import { appendFileSync, writeFileSync } from "fs";
 import path from "path";
-import type { ClientConfig, Pool, PoolConfig } from "pg";
+import type { ClientConfig, PoolConfig } from "pg";
 import type { ConnectionOptions } from "pg-connection-string";
 import { env } from "process";
 import { Writable, type WritableOptions } from "stream";
@@ -16,7 +16,7 @@ export function dumpDatabaseStructure() {
 		Effect.all([Environment, Pg]).pipe(
 			Effect.flatMap(([environment, pg]) =>
 				Effect.all([
-					databaseSearchPath(pg.pool),
+					databaseSearchPath(),
 					databaseInConfig(pg.config),
 					databaseDumpPath(environment.name, environment.folder),
 				]).pipe(
@@ -93,10 +93,10 @@ function databaseInConfig(
 	return Effect.succeed(database);
 }
 
-function databaseSearchPath(pool: Pool) {
+function databaseSearchPath() {
 	return pgQuery<{
 		search_path: string;
-	}>(pool, "SHOW search_path").pipe(
+	}>("SHOW search_path").pipe(
 		Effect.flatMap((result) =>
 			Effect.if(result[0] === undefined, {
 				onTrue: Effect.fail(new Error("Search path not found")),

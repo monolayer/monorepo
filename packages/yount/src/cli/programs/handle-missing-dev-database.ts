@@ -12,7 +12,6 @@ export function handleMissingDevDatabase() {
 			pgQuery<{
 				databaseExists: boolean;
 			}>(
-				pg.adminPool,
 				`SELECT true as databaseExists FROM pg_database WHERE datname = '${pg.config.database}'`,
 			).pipe(
 				Effect.flatMap((result) =>
