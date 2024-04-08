@@ -26,7 +26,7 @@ export function schemaChangeset() {
 	return Effect.all([DevEnvironment, Db]).pipe(
 		Effect.flatMap(([environment, db]) =>
 			Effect.all([
-				databaseSchema(db.kysely),
+				databaseSchema(db.kyselyNoCamelCase),
 				localDatabaseSchema(environment.config),
 				Effect.succeed(environment.config),
 			]).pipe(

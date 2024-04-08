@@ -7,6 +7,8 @@ export class Db extends Context.Tag("Db")<
 	{
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		readonly kysely: Kysely<any>;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		readonly kyselyNoCamelCase: Kysely<any>;
 	}
 >() {}
 
@@ -23,6 +25,12 @@ export function kyselyLayer() {
 						pool: environment.pg.pool,
 					}),
 					plugins: useCamelCase ? [new CamelCasePlugin()] : [],
+				}),
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				kyselyNoCamelCase: new Kysely<any>({
+					dialect: new PostgresDialect({
+						pool: environment.pg.pool,
+					}),
 				}),
 			};
 		}),
