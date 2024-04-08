@@ -5,7 +5,10 @@ import path from "path";
 import type { Pool } from "pg";
 import { chdir, cwd } from "process";
 import { type TaskContext } from "vitest";
-import { yountConfigTemplate } from "~tests/fixtures/program.js";
+import {
+	connectionsTemplate,
+	yountConfigTemplate,
+} from "~tests/fixtures/program.js";
 import { globalPool } from "~tests/setup.js";
 import {
 	kyselyMigrator,
@@ -57,8 +60,17 @@ export async function setupProgramContext(
 	const dbMigrator = await dbAndMigrator(context);
 	context.kysely = dbMigrator.db;
 	context.migrator = dbMigrator.migrator;
-	const yountConfig = yountConfigTemplate.render({ dbName: context.dbName });
+	const yountConfig = yountConfigTemplate.render();
 	appendFileSync(path.join(context.folder, "yount.config.ts"), yountConfig);
+
+	const connectionsConfig = connectionsTemplate.render({
+		dbName: context.dbName,
+	});
+	appendFileSync(
+		path.join(context.folder, "db", "connections.ts"),
+		connectionsConfig,
+	);
+
 	copyMigrations(
 		[
 			"20240405T120024-regulus-mint",

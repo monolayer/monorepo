@@ -5,7 +5,7 @@ import pgConnectionString, {
 import color from "picocolors";
 import { exit } from "process";
 import { log } from "~/cli/utils/clack.js";
-import { Config } from "~/config.js";
+import { type ConnectionDefinition } from "~/config.js";
 
 export type PoolAndConfig = {
 	pool: pg.Pool;
@@ -14,11 +14,10 @@ export type PoolAndConfig = {
 };
 
 export function pgPoolAndConfig(
-	config: Config,
+	config: ConnectionDefinition,
 	environment: string,
 ): PoolAndConfig {
-	const environmentConfig =
-		config.databaseConnections.default.environments[environment];
+	const environmentConfig = config.environments[environment];
 	if (environmentConfig === undefined) {
 		log.lineMessage(
 			`${color.red(
@@ -41,6 +40,6 @@ export function pgPoolAndConfig(
 	};
 }
 
-export function pgPool(config: Config, environment: string) {
+export function pgPool(config: ConnectionDefinition, environment: string) {
 	return pgPoolAndConfig(config, environment).pool;
 }

@@ -24,7 +24,7 @@ export function migratorLayer() {
 					provider: new FileMigrationProvider({
 						fs,
 						path,
-						migrationFolder: environment.config.migrationFolder,
+						migrationFolder: environment.migrationFolder,
 					}),
 				}),
 			};

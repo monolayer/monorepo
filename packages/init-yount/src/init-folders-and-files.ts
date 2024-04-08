@@ -74,12 +74,17 @@ export function initFolderAndFiles() {
 		);
 		await createDir(folder.path, true);
 		await createFile(`${folder.path}/schema.ts`, schemaTemplate.render(), true);
+		await createFile(
+			`${folder.path}/connections.ts`,
+			connectionsTemplate.render(),
+			true,
+		);
 		await createFile(`${folder.path}/seed.ts`, seedTemplate.render(), true);
 		await createDir(`${folder.path}/migrations`, true);
 
 		await createFile(
 			path.join(`${folder.path}/db.ts`),
-			yountTemplate.render({
+			dbTemplate.render({
 				yountConfigPath: path.relative(
 					path.join(cwd(), folder.path),
 					path.join(cwd(), "yount.config"),
@@ -100,32 +105,43 @@ export function initFolderAndFiles() {
 export const configTemplate =
 	nunjucks.compile(`import type { Config } from "yount/config";
 
-export default ({
-  folder: "{{ folder }}",
-	databaseConnections: {
-		default: {
-			environments: {
-				development: {
-					database: "#database_development",
-					user: "#user",
-					password: "#password",
-					host: "#host",
-					port: 5432
-				},
-				test: {
-					database: "#database_test",
-					user: "#user",
-					password: "#password",
-					host: "#host",
-					port: 5432
-				},
-				production: {
-					connectionString: process.env.DATABASE_URL,
-				}
+const config = {
+	folder: "{{ folder }}"
+} satisfies Config;
+
+export default config;
+`);
+
+export const connectionsTemplate =
+	nunjucks.compile(`import type { Connections } from "yount/config";
+
+export const connections = {
+	default: {
+		environments: {
+			development: {
+				database: "#database_development",
+				user: "#user",
+				password: "#password",
+				host: "#host",
+				port: 5432
+			},
+			test: {
+				database: "#database_test",
+				user: "#user",
+				password: "#password",
+				host: "#host",
+				port: 5432
+			},
+			production: {
+				connectionString: process.env.DATABASE_URL,
 			}
 		},
+		camelCasePlugin: {
+      enabled: false,
+    },
 	},
-} satisfies Config);`);
+} satisfies Connections;
+`);
 
 export const schemaTemplate =
 	nunjucks.compile(`import { pgDatabase } from "yount";
@@ -135,15 +151,15 @@ export const database = pgDatabase({});
 export type DB = typeof database.infer;
 `);
 
-export const yountTemplate =
+export const dbTemplate =
 	nunjucks.compile(`import { Kysely, PostgresDialect } from "kysely";
 import { pgPool } from "yount/pool";
-import yountConfig from "{{ yountConfigPath }}";
+import { connections } from "./connections";
 import type { DB } from "./schema";
 
 export const db = new Kysely<DB>({
 	dialect: new PostgresDialect({
-		pool: pgPool(yountConfig.databaseConnections.default, process.env.KINETIC_ENV || "development"),
+		pool: pgPool(connections.default, process.env.APP_ENV || "development"),
 	}),
 });
 `);

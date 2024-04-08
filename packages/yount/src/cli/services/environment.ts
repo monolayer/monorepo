@@ -5,18 +5,20 @@ import pg from "pg";
 import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 import { cwd } from "process";
-import { importConfig, type Config } from "~/config.js";
+import {
+	importConfig,
+	importConnections,
+	type CamelCaseOptions,
+} from "~/config.js";
 import { type PoolAndConfig } from "~/pg/pg-pool.js";
-
-type MigrationFolder = {
-	migrationFolder: string;
-};
 
 export class Environment extends Context.Tag("Environment")<
 	Environment,
 	{
 		readonly name: string;
-		readonly config: Config & MigrationFolder;
+		readonly folder: string;
+		readonly migrationFolder: string;
+		readonly camelCaseOptions?: CamelCaseOptions;
 		pg: PoolAndConfig;
 	}
 >() {}
@@ -25,7 +27,9 @@ export class DevEnvironment extends Context.Tag("DevEnvironment")<
 	DevEnvironment,
 	{
 		readonly name: string;
-		readonly config: Config & MigrationFolder;
+		readonly folder: string;
+		readonly migrationFolder: string;
+		readonly camelCaseOptions?: CamelCaseOptions;
 		pg: PoolAndConfig;
 	}
 >() {}
@@ -34,27 +38,32 @@ function readConfig() {
 	return Effect.promise(async () => await importConfig());
 }
 
+export function readConnections() {
+	return Effect.promise(async () => await importConnections());
+}
+
 export function environmentLayer(environment: string) {
 	return Layer.effect(
 		Environment,
 		Effect.gen(function* (_) {
 			const config = yield* _(readConfig());
+			const connections = yield* _(readConnections());
 			const environmentConfig =
-				config.databaseConnections.default.environments[environment];
+				connections.connections?.default.environments[environment];
+
 			if (environmentConfig === undefined) {
 				p.log.error(color.red("Error"));
 				return yield* _(
 					Effect.fail(
-						`No configuration found for environment: '${environment}'. Please check your yount.config.ts file.`,
+						`No connection configuration found for environment: '${environment}'. Check your connections.ts file.`,
 					),
 				);
 			}
 			return {
 				name: environment,
-				config: {
-					...config,
-					migrationFolder: path.join(cwd(), config.folder, "migrations"),
-				},
+				folder: config.folder,
+				migrationFolder: path.join(cwd(), config.folder, "migrations"),
+				camelCasePlugin: connections.connections?.default.camelCasePlugin,
 				pg: yield* _(poolAndConfig(environmentConfig)),
 			};
 		}),
@@ -66,22 +75,23 @@ export function devEnvironmentLayer() {
 		DevEnvironment,
 		Effect.gen(function* (_) {
 			const config = yield* _(readConfig());
+			const connections = yield* _(readConnections());
+
 			const environmentConfig =
-				config.databaseConnections.default.environments["development"];
+				connections.connections?.default.environments["development"];
 			if (environmentConfig === undefined) {
 				p.log.error(color.red("Error"));
 				return yield* _(
 					Effect.fail(
-						`No configuration found for environment: 'development'. Please check your yount.config.ts file.`,
+						`No connection configuration found for environment: 'development'. Check your connections.ts file.`,
 					),
 				);
 			}
 			return {
 				name: "development",
-				config: {
-					...config,
-					migrationFolder: path.join(cwd(), config.folder, "migrations"),
-				},
+				folder: config.folder,
+				migrationFolder: path.join(cwd(), config.folder, "migrations"),
+				camelCasePlugin: connections.connections?.default.camelCasePlugin,
 				pg: yield* _(poolAndConfig(environmentConfig)),
 			};
 		}),

@@ -7,15 +7,22 @@ export type EnvironmentConfig = ClientConfig & PoolConfig;
 
 export type Config = {
 	folder: string;
-	databaseConnections: {
-		default: {
-			environments: {
-				[key: string]: EnvironmentConfig;
-			};
-		};
-	};
-	camelCasePlugin?: CamelCaseOptions;
 };
+
+export type ConnectionDefinition = {
+	camelCasePlugin?: CamelCaseOptions;
+	environments: {
+		development: EnvironmentConfig;
+	} & Record<string, EnvironmentConfig>;
+};
+
+export type Connections =
+	| {
+			default: ConnectionDefinition;
+	  }
+	| {
+			[key: string]: ConnectionDefinition;
+	  };
 
 export type CamelCaseOptions = {
 	enabled: boolean;
@@ -56,6 +63,10 @@ type SchemaImport = {
 	database?: AnyPgDatabase;
 };
 
+type ConnectionsImport = {
+	connections?: Connections;
+};
+
 export type SeedImport = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	seed?: (db: Kysely<any>) => Promise<void>;
@@ -67,6 +78,14 @@ export async function importSchema() {
 		path.join(process.cwd(), config.folder, "schema.ts")
 	);
 	return schema;
+}
+
+export async function importConnections() {
+	const config = await importConfig();
+	const connections: ConnectionsImport = await import(
+		path.join(process.cwd(), config.folder, "connections.ts")
+	);
+	return connections;
 }
 
 export async function importSeedFunction() {

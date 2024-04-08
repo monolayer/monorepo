@@ -141,7 +141,7 @@ export function importSeedFunction() {
 			Effect.tryPromise(async () => {
 				try {
 					const moduleImport: SeedImport = await import(
-						path.join(process.cwd(), environment.config.folder, "seed.ts")
+						path.join(process.cwd(), environment.folder, "seed.ts")
 					);
 					if (moduleImport.seed !== undefined) {
 						return moduleImport.seed;

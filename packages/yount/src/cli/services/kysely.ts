@@ -1,6 +1,6 @@
 import { Context, Effect, Layer } from "effect";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
-import { Environment } from "./environment.js";
+import { Environment, readConnections } from "./environment.js";
 
 export class Db extends Context.Tag("Db")<
 	Db,
@@ -17,7 +17,10 @@ export function kyselyLayer() {
 		Db,
 		Effect.gen(function* (_) {
 			const environment = yield* _(Environment);
-			const useCamelCase = environment.config.camelCasePlugin || false;
+			const connections = yield* _(readConnections());
+
+			const useCamelCase =
+				connections.connections?.default.camelCasePlugin?.enabled ?? false;
 			return {
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				kysely: new Kysely<any>({

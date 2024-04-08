@@ -29,14 +29,14 @@ function checkStructureFile() {
 
 3) Apply migrations: \`npx yount migrate -e development\``,
 				errorMessage: `Structure file not found. Expected location: ${path.join(
-					environment.config.folder,
+					environment.folder,
 					`structure.sql`,
 				)}`,
 				failMessage: "Structure file does not exist",
 				callback: () =>
 					Effect.tryPromise(async () => {
 						const structurePath = path.join(
-							environment.config.folder,
+							environment.folder,
 							`structure.sql`,
 						);
 						try {
@@ -59,7 +59,7 @@ function restoreDatabaseFromStructureFile() {
 				() =>
 					Effect.tryPromise(async () => {
 						const structurePath = path.join(
-							environment.config.folder,
+							environment.folder,
 							`structure.sql`,
 						);
 						return (await fs.readFile(structurePath)).toString();

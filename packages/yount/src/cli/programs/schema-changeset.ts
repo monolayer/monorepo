@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { Effect, pipe } from "effect";
 import type { Kysely } from "kysely";
 import { changeset } from "~/changeset/changeset.js";
-import { importSchema, type Config } from "~/config.js";
+import { importSchema, type CamelCaseOptions } from "~/config.js";
 import {
 	localSchema,
 	type MigrationSchema,
@@ -27,11 +27,16 @@ export function schemaChangeset() {
 		Effect.flatMap(([environment, db]) =>
 			Effect.all([
 				databaseSchema(db.kyselyNoCamelCase),
-				localDatabaseSchema(environment.config),
-				Effect.succeed(environment.config),
+				localDatabaseSchema(environment.folder),
+				Effect.succeed(environment.camelCaseOptions),
 			]).pipe(
-				Effect.flatMap(([databaseSchema, localDatabaseSchema, config]) =>
-					computeChangeset(localDatabaseSchema, databaseSchema, config),
+				Effect.flatMap(
+					([databaseSchema, localDatabaseSchema, camelCasePlugin]) =>
+						computeChangeset(
+							localDatabaseSchema,
+							databaseSchema,
+							camelCasePlugin,
+						),
 				),
 			),
 		),
@@ -41,25 +46,25 @@ export function schemaChangeset() {
 function computeChangeset(
 	localDatabaseSchema: AnyPgDatabase,
 	remoteSchema: MigrationSchema,
-	config: Config,
+	camelCasePlugin?: CamelCaseOptions,
 ) {
 	const cset = changeset(
 		localSchema(
 			localDatabaseSchema,
 			remoteSchema,
-			config.camelCasePlugin ?? { enabled: false },
+			camelCasePlugin ?? { enabled: false },
 		),
 		remoteSchema,
 	);
 	return Effect.succeed(cset);
 }
 
-function localDatabaseSchema(config: Config) {
+function localDatabaseSchema(folder: string) {
 	return Effect.tryPromise(() => importSchema()).pipe(
 		Effect.flatMap((localSchemaFile) => {
 			if (localSchemaFile.database === undefined) {
 				p.log.warning(
-					`Nothing to do. No database schema exported at ${config.folder}/schema.ts.`,
+					`Nothing to do. No database schema exported at ${folder}/schema.ts.`,
 				);
 				return Effect.fail(
 					new ExitWithSuccess({

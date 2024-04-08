@@ -13,7 +13,7 @@ export function generateChangesetMigration() {
 					Effect.if(changeset.length > 0, {
 						onTrue: Effect.succeed(changeset).pipe(
 							Effect.tap((cset) => {
-								generateMigrationFiles(cset, environment.config.folder);
+								generateMigrationFiles(cset, environment.folder);
 								p.note(
 									"To apply migrations, run 'npx yount migrate'",
 									"Next Steps",

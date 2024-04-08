@@ -9,14 +9,14 @@ export function localPendingMigrations() {
 	return Environment.pipe(
 		Effect.flatMap((environment) =>
 			Effect.all([
-				Effect.tryPromise(() => readdir(environment.config.migrationFolder)),
+				Effect.tryPromise(() => readdir(environment.migrationFolder)),
 				allMigrations(),
 			]).pipe(
 				Effect.flatMap(([localMigrationFiles, migrations]) =>
 					filterMigrations(
 						localMigrationFiles,
 						migrations,
-						environment.config.migrationFolder,
+						environment.migrationFolder,
 					),
 				),
 			),

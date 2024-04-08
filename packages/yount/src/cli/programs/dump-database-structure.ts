@@ -17,7 +17,7 @@ export function dumpDatabaseStructure() {
 				Effect.all([
 					databaseSearchPath(environment.pg.pool),
 					databaseInConfig(environment.pg.config),
-					databaseDumpPath(environment.name, environment.config.folder),
+					databaseDumpPath(environment.name, environment.folder),
 				]).pipe(
 					Effect.flatMap(([searchPath, database, dumpPath]) =>
 						Effect.succeed(true).pipe(
