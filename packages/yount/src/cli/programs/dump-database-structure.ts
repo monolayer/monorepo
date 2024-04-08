@@ -1,5 +1,5 @@
 import { Effect } from "effect";
-import { appendFileSync, writeFileSync } from "fs";
+import { appendFileSync, mkdirSync, writeFileSync } from "fs";
 import path from "path";
 import type { ClientConfig, PoolConfig } from "pg";
 import type { ConnectionOptions } from "pg-connection-string";
@@ -80,6 +80,11 @@ function dumpStructure(database: string, dumpPath: string) {
 		"--schema=public",
 		`${database}`,
 	];
+
+	mkdirSync(path.join(path.dirname(dumpPath)), {
+		recursive: true,
+	});
+
 	return pipeCommandStdoutToWritable(
 		"pg_dump",
 		args,
@@ -118,6 +123,7 @@ function databaseDumpPath(
 	return Effect.succeed(
 		path.join(
 			folder,
+			"dumps",
 			environment === "development"
 				? `structure.${connectionName}.sql`
 				: `structure_${environment}.${connectionName}.sql`,

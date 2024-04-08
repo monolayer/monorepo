@@ -53,6 +53,9 @@ export async function setupProgramContext(
 	mkdirSync(path.join(context.folder, "db", "migrations", "default"), {
 		recursive: true,
 	});
+	mkdirSync(path.join(context.folder, "db", "dumps"), {
+		recursive: true,
+	});
 	context.pool = globalPool();
 	context.poolTwo = globalPoolTwo();
 	context.dbName = dbNameForTest(context);

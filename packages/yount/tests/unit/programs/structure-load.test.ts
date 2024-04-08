@@ -27,7 +27,7 @@ describe("structureLoad", () => {
 				context.currentWorkingDirectory,
 				`tests/fixtures/structure.sql`,
 			),
-			path.join(context.folder, "db", "structure.default.sql"),
+			path.join(context.folder, "db", "dumps", "structure.default.sql"),
 		);
 
 		await context.kysely.destroy();

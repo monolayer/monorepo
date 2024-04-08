@@ -28,7 +28,7 @@ describe("dumpDatabaseStructure", () => {
 		);
 
 		const dump = readFileSync(
-			`${context.folder}/db/structure.default.sql`,
+			`${context.folder}/db/dumps/structure.default.sql`,
 			"utf-8",
 		);
 
