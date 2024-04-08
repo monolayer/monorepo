@@ -30,11 +30,15 @@ export class DevEnvironment extends Context.Tag("DevEnvironment")<
 	}
 >() {}
 
+function readConfig() {
+	return Effect.promise(async () => await importConfig());
+}
+
 export function environmentLayer(environment: string) {
 	return Layer.effect(
 		Environment,
 		Effect.gen(function* (_) {
-			const config = yield* _(Effect.promise(async () => await importConfig()));
+			const config = yield* _(readConfig());
 			const environmentConfig =
 				config.databaseConnections.default.environments[environment];
 			if (environmentConfig === undefined) {
@@ -61,7 +65,7 @@ export function devEnvironmentLayer() {
 	return Layer.effect(
 		DevEnvironment,
 		Effect.gen(function* (_) {
-			const config = yield* _(Effect.promise(async () => await importConfig()));
+			const config = yield* _(readConfig());
 			const environmentConfig =
 				config.databaseConnections.default.environments["development"];
 			if (environmentConfig === undefined) {
