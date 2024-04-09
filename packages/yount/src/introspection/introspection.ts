@@ -1,9 +1,4 @@
 import { Kysely } from "kysely";
-import {
-	ActionStatus,
-	type OperationAnyError,
-	type OperationSuccess,
-} from "~/cli/command.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import type {
 	CheckInfo,
@@ -78,44 +73,46 @@ export function localSchema(
 export async function remoteSchema(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
+	schemaName = "public",
 ) {
+	const remoteTableInfo = await dbTableInfo(kysely, schemaName);
 
 	const tables = remoteTableInfo.reduce<string[]>((acc, table) => {
 		if (table.name !== null) acc.push(table.name);
 		return acc;
 	}, []);
 
-	const remoteColumnInfo = await dbColumnInfo(kysely, "public", tables);
+	const remoteColumnInfo = await dbColumnInfo(kysely, schemaName, tables);
 
-	const remoteIndexInfo = await dbIndexInfo(kysely, "public", tables);
+	const remoteIndexInfo = await dbIndexInfo(kysely, schemaName, tables);
 
 	const remoteUniqueConstraintInfo = await dbUniqueConstraintInfo(
 		kysely,
-		"public",
+		schemaName,
 		tables,
 	);
 
 	const remoteForeignKeyConstraintInfo = await dbForeignKeyConstraintInfo(
 		kysely,
-		"public",
+		schemaName,
 		tables,
 	);
 
 	const primaryKeyConstraintInfo = await dbPrimaryKeyConstraintInfo(
 		kysely,
-		"public",
+		schemaName,
 		tables,
 	);
 
-	const extensionInfo = await dbExtensionInfo(kysely, "public");
+	const extensionInfo = await dbExtensionInfo(kysely, schemaName);
 
-	const triggerInfo = await dbTriggerInfo(kysely, "public", tables);
+	const triggerInfo = await dbTriggerInfo(kysely, schemaName, tables);
 
-	const enumInfo = await dbEnumInfo(kysely, "public");
+	const enumInfo = await dbEnumInfo(kysely, schemaName);
 
 	const remoteCheckConstraintInfo = await dbCheckConstraintInfo(
 		kysely,
-		"public",
+		schemaName,
 		tables,
 	);
 

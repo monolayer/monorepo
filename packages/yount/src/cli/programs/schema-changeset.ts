@@ -8,7 +8,7 @@ import {
 	type MigrationSchema,
 } from "~/introspection/introspection.js";
 import { dbExtensionInfo } from "~/schema/extension/introspection.js";
-import type { AnyPgDatabase } from "~/schema/pg-database.js";
+import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
 import { dbColumnInfo } from "~/schema/table/column/instrospection.js";
 import { dbCheckConstraintInfo } from "~/schema/table/constraints/check/introspection.js";
 import { dbForeignKeyConstraintInfo } from "~/schema/table/constraints/foreign-key/introspection.js";
@@ -24,18 +24,22 @@ import { Db } from "../services/kysely.js";
 export function schemaChangeset() {
 	return Effect.all([DevEnvironment, Db]).pipe(
 		Effect.flatMap(([environment, db]) =>
-			Effect.all([
-				databaseSchema(db.kyselyNoCamelCase),
-				localDatabaseSchema(environment.connectionName),
-				Effect.succeed(environment.camelCasePlugin),
-			]).pipe(
-				Effect.flatMap(
-					([databaseSchema, localDatabaseSchema, camelCasePlugin]) =>
-						computeChangeset(
-							localDatabaseSchema,
-							databaseSchema,
-							camelCasePlugin,
+			localDatabaseSchema(environment.connectionName).pipe(
+				Effect.flatMap((localDatabaseSchema) =>
+					Effect.all([
+						databaseSchema(db.kyselyNoCamelCase, localDatabaseSchema),
+						Effect.succeed(localDatabaseSchema),
+						Effect.succeed(environment.camelCasePlugin),
+					]).pipe(
+						Effect.flatMap(
+							([databaseSchema, localDatabaseSchema, camelCasePlugin]) =>
+								computeChangeset(
+									localDatabaseSchema,
+									databaseSchema,
+									camelCasePlugin,
+								),
 						),
+					),
 				),
 			),
 		),
@@ -79,17 +83,18 @@ function localDatabaseSchema(connectionName: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function databaseSchema(kysely: Kysely<any>) {
+function databaseSchema(kysely: Kysely<any>, localSchema: AnyPgDatabase) {
+	const schemaName = PgDatabase.info(localSchema).schema;
 	return pipe(
-		databaseTableInfo(kysely),
+		databaseTableInfo(kysely, schemaName),
 		Effect.flatMap(tableList),
-		Effect.flatMap((tables) => databaseInfo(kysely, "public", tables)),
+		Effect.flatMap((tables) => databaseInfo(kysely, schemaName, tables)),
 	);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function databaseTableInfo(kysely: Kysely<any>) {
-	return Effect.tryPromise(async () => await dbTableInfo(kysely, "public"));
+function databaseTableInfo(kysely: Kysely<any>, schemaName = "public") {
+	return Effect.tryPromise(async () => await dbTableInfo(kysely, schemaName));
 }
 
 function tableList(tables: Awaited<ReturnType<typeof dbTableInfo>>) {
