@@ -78,8 +78,7 @@ export function localSchema(
 export async function remoteSchema(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
-): Promise<OperationSuccess<MigrationSchema> | OperationAnyError> {
-	const remoteTableInfo = await dbTableInfo(kysely, "public");
+) {
 
 	const tables = remoteTableInfo.reduce<string[]>((acc, table) => {
 		if (table.name !== null) acc.push(table.name);
@@ -120,20 +119,18 @@ export async function remoteSchema(
 		tables,
 	);
 
-	return {
-		status: ActionStatus.Success,
-		result: {
-			extensions: extensionInfo,
-			table: remoteColumnInfo,
-			index: remoteIndexInfo,
-			foreignKeyConstraints: remoteForeignKeyConstraintInfo,
-			uniqueConstraints: remoteUniqueConstraintInfo,
-			checkConstraints: remoteCheckConstraintInfo,
-			primaryKey: primaryKeyConstraintInfo,
-			triggers: triggerInfo,
-			enums: enumInfo,
-		},
+	const migrationSchema: MigrationSchema = {
+		extensions: extensionInfo,
+		table: remoteColumnInfo,
+		index: remoteIndexInfo,
+		foreignKeyConstraints: remoteForeignKeyConstraintInfo,
+		uniqueConstraints: remoteUniqueConstraintInfo,
+		checkConstraints: remoteCheckConstraintInfo,
+		primaryKey: primaryKeyConstraintInfo,
+		triggers: triggerInfo,
+		enums: enumInfo,
 	};
+	return migrationSchema;
 }
 
 export type DbTableInfo = {
