@@ -3,6 +3,7 @@ import type { AnyPgTable } from "./table/table.js";
 import type { EnumType } from "./types/enum/enum.js";
 
 export type DatabaseSchema<T extends ColumnRecord> = {
+	schema?: string;
 	extensions?: Array<PgExtension>;
 	tables?: T;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,6 +19,7 @@ export class PgDatabase<T extends ColumnRecord> {
 			extensions: db.extensions ?? [],
 			tables: db.tables ?? {},
 			types: db.types || [],
+			schema: db.schema,
 		};
 	}
 
@@ -194,6 +196,11 @@ export class PgDatabase<T extends ColumnRecord> {
 	/**
 	 * @hidden
 	 */
+	protected schema: string;
+
+	/**
+	 * @hidden
+	 */
 	protected extensions?: Array<PgExtension>;
 
 	public tables: T;
@@ -211,6 +218,7 @@ export class PgDatabase<T extends ColumnRecord> {
 		this.tables = schema.tables || ({} as T);
 		this.extensions = schema.extensions;
 		this.types = schema.types;
+		this.schema = schema.schema || "public";
 	}
 }
 
