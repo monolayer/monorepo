@@ -15,7 +15,8 @@ describe("pgDatabase definition", () => {
 	test("without tables", () => {
 		const database = pgDatabase({ tables: {} });
 		// eslint-disable-next-line @typescript-eslint/ban-types
-		const expect: Expect<Equal<typeof database, PgDatabase<{}>>> = true;
+		const expect: Expect<Equal<typeof database, PgDatabase<{}, "public">>> =
+			true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
 
@@ -40,7 +41,7 @@ describe("pgDatabase definition", () => {
 		const expectation: Expect<
 			Equal<
 				typeof database,
-				PgDatabase<{ users: typeof users; teams: typeof teams }>
+				PgDatabase<{ users: typeof users; teams: typeof teams }, "public">
 			>
 		> = true;
 		expectTypeOf(expectation).toMatchTypeOf<boolean>();
@@ -77,7 +78,7 @@ test("with enumerated types", () => {
 	expect(tables.users).toBe(users);
 });
 
-test("types for Kysely", () => {
+test("types for Kysely with default public schema", () => {
 	const users = table({
 		columns: {
 			id: serial(),
@@ -105,8 +106,63 @@ test("types for Kysely", () => {
 		books: typeof books.infer;
 	};
 	type InferredDBTypes = typeof database.infer;
+
 	const dbExpect: Expect<Equal<InferredDBTypes, ExpectedType>> = true;
 	expectTypeOf(dbExpect).toMatchTypeOf<boolean>();
+
+	type ExpectedTypeWithSchema = {
+		"public.users": typeof users.infer;
+		"public.books": typeof books.infer;
+	};
+	type InferredDBTypesWithSchema = typeof database.inferWithSchemaNamespace;
+	const dbExpectWithSchema: Expect<
+		Equal<InferredDBTypesWithSchema, ExpectedTypeWithSchema>
+	> = true;
+	expectTypeOf(dbExpectWithSchema).toMatchTypeOf<boolean>();
+});
+
+test("types for Kysely with schema", () => {
+	const users = table({
+		columns: {
+			id: serial(),
+			name: varchar().notNull(),
+			email: text().notNull(),
+			address: text(),
+		},
+	});
+	const books = table({
+		columns: {
+			id: serial(),
+			title: varchar().notNull(),
+			borrowed: boolean().notNull(),
+		},
+	});
+	const database = pgDatabase({
+		schema: "demo",
+		tables: {
+			users,
+			books,
+		},
+	});
+
+	type ExpectedType = {
+		users: typeof users.infer;
+		books: typeof books.infer;
+	};
+	type InferredDBTypes = typeof database.infer;
+
+	const dbExpect: Expect<Equal<InferredDBTypes, ExpectedType>> = true;
+	expectTypeOf(dbExpect).toMatchTypeOf<boolean>();
+
+	type ExpectedTypeWithSchema = {
+		"demo.users": typeof users.infer;
+		"demo.books": typeof books.infer;
+	};
+	type InferredDBTypesWithSchema = typeof database.inferWithSchemaNamespace;
+	const dbExpectWithSchema: Expect<
+		Equal<InferredDBTypesWithSchema, ExpectedTypeWithSchema>
+	> = true;
+	expectTypeOf(dbExpectWithSchema).toMatchTypeOf<boolean>();
 });
 
 test("types for Kysely on database without tables", () => {

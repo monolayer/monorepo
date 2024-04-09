@@ -86,7 +86,7 @@ export function localIndexInfoByTable(
 					transformedTableName,
 					kysely,
 					camelCase,
-					dbInfo.schema,
+					dbInfo.schema || "public",
 				);
 				acc[transformedTableName] = {
 					...acc[transformedTableName],

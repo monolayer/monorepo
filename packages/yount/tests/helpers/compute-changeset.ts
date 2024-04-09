@@ -16,7 +16,7 @@ export async function computeChangeset(
 	db: AnyPgDatabase,
 	camelCase?: CamelCaseOptions,
 ) {
-	const schemaName = PgDatabase.info(db).schema;
+	const schemaName = PgDatabase.info(db).schema || "public";
 	const remote = await remoteSchema(kysely, schemaName);
 	const local = localSchema(db, remote, camelCase ?? { enabled: false });
 	const cset = changeset(local, remote, schemaName);

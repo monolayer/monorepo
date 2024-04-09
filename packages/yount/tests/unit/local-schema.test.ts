@@ -120,7 +120,7 @@ describe("#schemaColumnInfo", () => {
 });
 
 test("#schemaDBColumnInfoByTable on empty database", () => {
-	const database = pgDatabase({ tables: {} });
+	const database = pgDatabase({ schema: "public", tables: {} });
 	expect(localColumnInfoByTable(database, migrationSchemaFactory())).toEqual(
 		{},
 	);
@@ -143,6 +143,7 @@ test("#schemaDBColumnInfoByTable", () => {
 		},
 	});
 	const database = pgDatabase({
+		schema: "public",
 		tables: {
 			users,
 			teams,

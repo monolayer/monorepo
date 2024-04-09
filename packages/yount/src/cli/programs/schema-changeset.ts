@@ -58,7 +58,7 @@ function computeChangeset(
 			camelCasePlugin ?? { enabled: false },
 		),
 		remoteSchema,
-		PgDatabase.info(localDatabaseSchema).schema,
+		PgDatabase.info(localDatabaseSchema).schema || "public",
 	);
 	return Effect.succeed(cset);
 }
@@ -85,7 +85,7 @@ function localDatabaseSchema(connectionName: string) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function databaseSchema(kysely: Kysely<any>, localSchema: AnyPgDatabase) {
-	const schemaName = PgDatabase.info(localSchema).schema;
+	const schemaName = PgDatabase.info(localSchema).schema || "public";
 	return pipe(
 		databaseTableInfo(kysely, schemaName),
 		Effect.flatMap(tableList),
