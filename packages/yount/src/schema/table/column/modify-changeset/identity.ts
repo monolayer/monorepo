@@ -21,6 +21,8 @@ export function columnIdentityMigrationOpGenerator(
 	_local: LocalTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_schemaName: string,
 ) {
 	if (isColumnIdentityAdd(diff)) {
 		return columnIdentityAddMigrationOperation(diff);

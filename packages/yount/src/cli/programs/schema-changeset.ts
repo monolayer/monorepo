@@ -58,6 +58,7 @@ function computeChangeset(
 			camelCasePlugin ?? { enabled: false },
 		),
 		remoteSchema,
+		PgDatabase.info(localDatabaseSchema).schema,
 	);
 	return Effect.succeed(cset);
 }

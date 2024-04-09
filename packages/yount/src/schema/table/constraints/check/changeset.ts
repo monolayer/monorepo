@@ -21,6 +21,8 @@ export function CheckMigrationOpGenerator(
 	_local: LocalTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_schemaName: string,
 ) {
 	if (istCreateFirstCheck(diff)) {
 		return createFirstCheckMigration(diff, addedTables);

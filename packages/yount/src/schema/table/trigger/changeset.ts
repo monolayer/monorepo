@@ -18,6 +18,8 @@ export function triggerMigrationOpGenerator(
 	_local: LocalTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_schemaName: string,
 ) {
 	if (isTriggerCreateFirst(diff)) {
 		return createTriggerFirstMigration(diff, addedTables);

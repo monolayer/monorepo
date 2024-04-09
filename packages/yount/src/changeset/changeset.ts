@@ -21,12 +21,14 @@ interface Generator {
 		droppedTables: string[],
 		local: LocalTableInfo,
 		db: DbTableInfo,
+		schemaName: string,
 	): Changeset | Changeset[] | undefined;
 }
 
 export function changeset(
 	local: MigrationSchema,
 	remote: MigrationSchema,
+	schemaName = "public",
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
 	const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
@@ -42,6 +44,7 @@ export function changeset(
 					droppedTables,
 					local,
 					remote,
+					schemaName,
 				);
 				if (op !== undefined) return op;
 			}

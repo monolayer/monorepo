@@ -20,6 +20,8 @@ export function columnDataTypeMigrationOpGenerator(
 	_local: LocalTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_schemaName: string,
 ) {
 	if (isColumnDataType(diff)) {
 		return columnDatatypeMigrationOperation(diff);

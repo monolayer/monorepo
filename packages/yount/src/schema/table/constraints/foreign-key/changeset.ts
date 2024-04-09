@@ -4,12 +4,22 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import type {
+	DbTableInfo,
+	LocalTableInfo,
+} from "~/introspection/introspection.js";
 import { executeKyselySchemaStatement } from "../../../../changeset/helpers.js";
 
 export function foreignKeyMigrationOpGenerator(
 	diff: Difference,
 	addedTables: string[],
 	droppedTables: string[],
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_local: LocalTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_db: DbTableInfo,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_schemaName: string,
 ) {
 	if (isForeignKeyConstraintCreateFirst(diff)) {
 		return createforeignKeyFirstConstraintMigration(diff, addedTables);
