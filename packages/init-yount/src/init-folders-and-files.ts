@@ -104,10 +104,11 @@ export default config;
 export const connectionsTemplate =
 	nunjucks.compile(`import { Kysely } from "kysely";
 	import { kyselyConfig, type Connections } from "yount/config";
-	import type { DB } from "./schema";
+	import { database, type DB } from "./schema";
 
 export const connections = {
 	default: {
+		databaseSchema: database,
 		environments: {
 			development: {
 				database: "#database_development",

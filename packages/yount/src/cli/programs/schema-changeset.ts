@@ -1,8 +1,7 @@
-import * as p from "@clack/prompts";
 import { Effect, pipe } from "effect";
 import type { Kysely } from "kysely";
 import { changeset } from "~/changeset/changeset.js";
-import { importSchema } from "~/config.js";
+import { importConnections } from "~/config.js";
 import { type CamelCaseOptions } from "~/configuration.js";
 import {
 	localSchema,
@@ -21,14 +20,13 @@ import { dbTriggerInfo } from "~/schema/table/trigger/introspection.js";
 import { dbEnumInfo } from "~/schema/types/enum/introspection.js";
 import { DevEnvironment } from "../services/environment.js";
 import { Db } from "../services/kysely.js";
-import { ExitWithSuccess } from "../utils/cli-action.js";
 
 export function schemaChangeset() {
 	return Effect.all([DevEnvironment, Db]).pipe(
 		Effect.flatMap(([environment, db]) =>
 			Effect.all([
 				databaseSchema(db.kyselyNoCamelCase),
-				localDatabaseSchema(environment.folder),
+				localDatabaseSchema(environment.connectionName),
 				Effect.succeed(environment.camelCasePlugin),
 			]).pipe(
 				Effect.flatMap(
@@ -60,20 +58,21 @@ function computeChangeset(
 	return Effect.succeed(cset);
 }
 
-function localDatabaseSchema(folder: string) {
-	return Effect.tryPromise(() => importSchema()).pipe(
-		Effect.flatMap((localSchemaFile) => {
-			if (localSchemaFile.database === undefined) {
-				p.log.warning(
-					`Nothing to do. No database schema exported at ${folder}/schema.ts.`,
-				);
+function localDatabaseSchema(connectionName: string) {
+	return Effect.tryPromise(() => importConnections()).pipe(
+		Effect.flatMap((connectionImport) =>
+			Effect.succeed(connectionImport.connections || {}),
+		),
+		Effect.flatMap((allConnections) => {
+			const connection = Object.entries(allConnections).find(([key]) => {
+				return key === connectionName;
+			});
+			if (connection === undefined) {
 				return Effect.fail(
-					new ExitWithSuccess({
-						cause: "No database schema exported found",
-					}),
+					`Connection ${connectionName} not found. Check your connections.ts file.`,
 				);
 			} else {
-				return Effect.succeed(localSchemaFile.database);
+				return Effect.succeed(connection[1].databaseSchema);
 			}
 		}),
 	);

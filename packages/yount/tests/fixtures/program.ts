@@ -8,8 +8,11 @@ export const yountConfigTemplate = nunjucks.compile(`export default {
 `);
 
 export const connectionsTemplate =
-	nunjucks.compile(`export const connections = {
+	nunjucks.compile(`import { database } from "./schema";
+
+export const connections = {
 	default: {
+		databaseSchema: database,
 		environments: {
 			development: {
 				user: "${process.env.POSTGRES_USER}",

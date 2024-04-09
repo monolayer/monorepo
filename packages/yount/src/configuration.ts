@@ -4,26 +4,28 @@ import {
 	type CamelCasePluginOptions,
 } from "kysely";
 import pg, { type ClientConfig, type PoolConfig } from "pg";
+import type { AnyPgDatabase } from "./schema/pg-database.js";
 
-export type EnvironmentConfig = ClientConfig & PoolConfig;
+export type PgConfig = ClientConfig & PoolConfig;
 
 export type YountConfig = {
 	folder: string;
 };
 
-export type ConnectionDefinition = {
+export type Connector = {
+	databaseSchema: AnyPgDatabase;
 	camelCasePlugin?: CamelCaseOptions;
 	environments: {
-		development: EnvironmentConfig;
-	} & Record<string, EnvironmentConfig>;
+		development: PgConfig;
+	} & Record<string, PgConfig>;
 };
 
 export type Connections =
 	| {
-			default: ConnectionDefinition;
+			default: Connector;
 	  }
 	| {
-			[key: string]: ConnectionDefinition;
+			[key: string]: Connector;
 	  };
 
 export type CamelCaseOptions = {
@@ -31,17 +33,14 @@ export type CamelCaseOptions = {
 	options?: CamelCasePluginOptions;
 };
 
-export function kyselyConfig(
-	connectionDefinition: ConnectionDefinition,
-	environment: string,
-) {
-	const environmentConfig = connectionDefinition.environments[environment];
+export function kyselyConfig(connector: Connector, environment: string) {
+	const environmentConfig = connector.environments[environment];
 	return {
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(environmentConfig),
 		}),
-		plugins: connectionDefinition.camelCasePlugin?.enabled
-			? [new CamelCasePlugin(connectionDefinition.camelCasePlugin.options)]
+		plugins: connector.camelCasePlugin?.enabled
+			? [new CamelCasePlugin(connector.camelCasePlugin.options)]
 			: [],
 	};
 }

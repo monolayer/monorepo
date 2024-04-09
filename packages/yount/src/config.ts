@@ -1,7 +1,6 @@
 import type { Kysely } from "kysely";
 import path from "path";
 import { Connections, YountConfig } from "./configuration.js";
-import type { AnyPgDatabase } from "./schema/pg-database.js";
 
 type GlobalsWithDatabaseSchema = typeof globalThis & {
 	schema: unknown;
@@ -35,10 +34,6 @@ export async function importConfig() {
 	return config;
 }
 
-type SchemaImport = {
-	database?: AnyPgDatabase;
-};
-
 type ConnectionsImport = {
 	connections?: Connections;
 };
@@ -47,14 +42,6 @@ export type SeedImport = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	seed?: (db: Kysely<any>) => Promise<void>;
 };
-
-export async function importSchema() {
-	const config = await importConfig();
-	const schema: SchemaImport = await import(
-		path.join(process.cwd(), config.folder, "schema.ts")
-	);
-	return schema;
-}
 
 export async function importConnections() {
 	const config = await importConfig();

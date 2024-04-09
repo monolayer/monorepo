@@ -1,4 +1,10 @@
-import { appendFileSync, copyFileSync, mkdirSync, rmSync } from "fs";
+import {
+	appendFileSync,
+	copyFileSync,
+	mkdirSync,
+	rmSync,
+	writeFileSync,
+} from "fs";
 import { FileMigrationProvider, Migrator, type Kysely } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
@@ -90,6 +96,8 @@ export async function setupProgramContext(
 		connectionsConfig,
 	);
 
+	writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
+
 	copyMigrations(
 		[
 			"20240405T120024-regulus-mint",
@@ -162,3 +170,32 @@ export async function dbAndMigrator(context: ProgramContext) {
 		}),
 	};
 }
+
+const indexPath = path.join(cwd(), "src", "index.ts");
+const schemaFile = `import { pgDatabase, table, text } from "${indexPath}";
+
+export const database = pgDatabase({
+  tables: {
+    regulus_mint: table({
+			columns: {
+				name: text().notNull(),
+			},
+		}),
+    regulur_door: table({
+			columns: {
+				name: text().notNull(),
+			},
+		}),
+    alphard_black: table({
+			columns: {
+				name: text().notNull(),
+			},
+		}),
+    mirfak_mustart: table({
+			columns: {
+				name: text().notNull(),
+			},
+		}),
+  },
+});
+`;

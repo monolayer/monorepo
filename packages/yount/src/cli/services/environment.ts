@@ -7,7 +7,7 @@ import { importConfig, importConnections } from "~/config.js";
 import {
 	type CamelCaseOptions,
 	type Connections,
-	type EnvironmentConfig,
+	type PgConfig,
 } from "~/configuration.js";
 
 type EnvironmentProperties = {
@@ -16,7 +16,7 @@ type EnvironmentProperties = {
 	readonly migrationFolder: string;
 	readonly camelCasePlugin?: CamelCaseOptions;
 	readonly connectionName: string;
-	readonly connectionConfig: EnvironmentConfig;
+	readonly connectionConfig: PgConfig;
 };
 
 export class Environment extends Context.Tag("Environment")<
