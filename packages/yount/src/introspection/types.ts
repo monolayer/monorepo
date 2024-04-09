@@ -230,6 +230,12 @@ export type PgDescriptionTable = {
 	description: string;
 };
 
+export type Schemata = {
+	catalog_name: string;
+	schema_name: string;
+	schema_owner: string;
+};
+
 export type InformationSchemaDB = {
 	"information_schema.tables": InformationSchemaTables;
 	"information_schema.columns": InformationSchemaColumns;
@@ -237,6 +243,7 @@ export type InformationSchemaDB = {
 	"information_schema.constraint_column_usage": InformationSchemaConstraintColumnUsage;
 	"information_schema.table_constraints": InformationSchemaTableConstraints;
 	"information_schema.referential_constraints": InformationSchemaReferentialConstraints;
+	"information_schema.schemata": Schemata;
 	pg_index: PgIndexTable;
 	pg_namespace: PgNamespaceTable;
 	pg_class: PgClassTable;

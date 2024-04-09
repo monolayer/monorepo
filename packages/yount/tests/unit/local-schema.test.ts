@@ -227,15 +227,15 @@ test("#schemaDBIndexInfoByTable", () => {
 	expect(localIndexInfoByTable(database)).toStrictEqual({
 		teams: {
 			teams_active_kntc_idx:
-				'c3c6080f:create index "teams_active_kntc_idx" on "teams" ("active")',
+				'78977616:create index "teams_active_kntc_idx" on "public"."teams" ("active")',
 			teams_id_kntc_idx:
-				'43e5590f:create index "teams_id_kntc_idx" on "teams" ("id")',
+				'fb131185:create index "teams_id_kntc_idx" on "public"."teams" ("id")',
 		},
 		users: {
 			users_email_id_kntc_idx:
-				'92c9e11e:create index "users_email_id_kntc_idx" on "users" ("email", "id")',
+				'26467fdf:create index "users_email_id_kntc_idx" on "public"."users" ("email", "id")',
 			users_name_kntc_idx:
-				'f873e4a8:create index "users_name_kntc_idx" on "users" ("name")',
+				'30e5df04:create index "users_name_kntc_idx" on "public"."users" ("name")',
 		},
 	});
 });
@@ -534,11 +534,11 @@ describe("schema", () => {
 			index: {
 				books: {
 					books_name_kntc_idx:
-						'77f3737b:create index "books_name_kntc_idx" on "books" ("name")',
+						'159d1dc2:create index "books_name_kntc_idx" on "public"."books" ("name")',
 				},
 				teams: {
 					teams_name_kntc_idx:
-						'590d0c82:create index "teams_name_kntc_idx" on "teams" ("name")',
+						'17bc8f1f:create index "teams_name_kntc_idx" on "public"."teams" ("name")',
 				},
 			},
 			foreignKeyConstraints: {
@@ -578,11 +578,11 @@ describe("schema", () => {
 			triggers: {
 				teams: {
 					foo_before_insert_trg:
-						"05c8db65:CREATE OR REPLACE TRIGGER foo_before_insert_trg\nBEFORE INSERT ON teams\nFOR EACH ROW\nEXECUTE FUNCTION foo",
+						'4bec28eb:CREATE OR REPLACE TRIGGER foo_before_insert_trg\nBEFORE INSERT ON "public"."teams"\nFOR EACH ROW\nEXECUTE FUNCTION foo',
 				},
 				users: {
 					foo_before_update_trg:
-						"a2b86e37:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+						'a796cccb:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON "public"."users"\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo',
 				},
 			},
 			enums: {
@@ -863,15 +863,15 @@ describe("schema", () => {
 			index: {
 				books: {
 					books_name_kntc_idx:
-						'77f3737b:create index "books_name_kntc_idx" on "books" ("name")',
+						'159d1dc2:create index "books_name_kntc_idx" on "public"."books" ("name")',
 				},
 				new_books: {
 					new_books_name_kntc_idx:
-						'd57da4db:create index "new_books_name_kntc_idx" on "new_books" ("name")',
+						'e0f0e9d4:create index "new_books_name_kntc_idx" on "public"."new_books" ("name")',
 				},
 				users: {
 					users_full_name_kntc_idx:
-						'0a2fa263:create index "users_full_name_kntc_idx" on "users" ("full_name")',
+						'3119e1dd:create index "users_full_name_kntc_idx" on "public"."users" ("full_name")',
 				},
 			},
 			foreignKeyConstraints: {
@@ -915,7 +915,7 @@ describe("schema", () => {
 			triggers: {
 				users: {
 					foo_before_update_trg:
-						"a2b86e37:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+						'a796cccb:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON "public"."users"\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo',
 				},
 			},
 			enums: {
@@ -974,7 +974,7 @@ test("trigger names are downcased", () => {
 		triggers: {
 			users: {
 				foo_before_update_trg:
-					"a2b86e37:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+					'a796cccb:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON "public"."users"\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo',
 			},
 		},
 		extensions: {},
@@ -1256,15 +1256,15 @@ test("#localSchemaCamelCase", () => {
 		index: {
 			books: {
 				books_name_kntc_idx:
-					'77f3737b:create index "books_name_kntc_idx" on "books" ("name")',
+					'159d1dc2:create index "books_name_kntc_idx" on "public"."books" ("name")',
 			},
 			new_books: {
 				new_books_name_kntc_idx:
-					'd57da4db:create index "new_books_name_kntc_idx" on "new_books" ("name")',
+					'e0f0e9d4:create index "new_books_name_kntc_idx" on "public"."new_books" ("name")',
 			},
 			users: {
 				users_full_name_kntc_idx:
-					'0a2fa263:create index "users_full_name_kntc_idx" on "users" ("full_name")',
+					'3119e1dd:create index "users_full_name_kntc_idx" on "public"."users" ("full_name")',
 			},
 		},
 		foreignKeyConstraints: {
@@ -1302,7 +1302,7 @@ test("#localSchemaCamelCase", () => {
 		triggers: {
 			users: {
 				foo_before_update_trg:
-					"a2b86e37:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON users\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo",
+					'a796cccb:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON "public"."users"\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo',
 			},
 		},
 		enums: {

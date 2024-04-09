@@ -58,19 +58,19 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addCheckConstraint("e37c55a5_yount_chk", sql`"id" < 50000`)',
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "public"."books" IS \'e37c55a5\'`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("e37c55a5_yount_chk")',
 						"execute();",
@@ -118,19 +118,19 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addCheckConstraint("918b4271_yount_chk", sql`"id" > 50`)',
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`',
+						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "public"."books" IS \'918b4271\'`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("918b4271_yount_chk")',
 						"execute();",
@@ -143,19 +143,19 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addCheckConstraint("e37c55a5_yount_chk", sql`"id" < 50000`)',
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "public"."books" IS \'e37c55a5\'`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("e37c55a5_yount_chk")',
 						"execute();",
@@ -220,7 +220,7 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("e37c55a5_yount_chk")',
 						"execute();",
@@ -228,11 +228,11 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "books" ADD CONSTRAINT "e37c55a5_yount_chk" CHECK ((id < 50000))`',
+						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "e37c55a5_yount_chk" CHECK ((id < 50000))`',
 						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`',
+						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "public"."books" IS \'e37c55a5\'`',
 						"execute(db);",
 					],
 				],
@@ -281,7 +281,7 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("918b4271_yount_chk")',
 						"execute();",
@@ -289,11 +289,11 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "books" ADD CONSTRAINT "918b4271_yount_chk" CHECK ((id < 50000))`',
+						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "918b4271_yount_chk" CHECK ((id < 50000))`',
 						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`',
+						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "public"."books" IS \'918b4271\'`',
 						"execute(db);",
 					],
 				],

@@ -2,14 +2,14 @@
 import { Kysely } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
-  await db.schema
+  await db.withSchema('public').schema
     .createTable("books")
     .addColumn("name", "text")
     .execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema
+  await db.withSchema('public').schema
     .dropTable("books")
     .execute();
 }

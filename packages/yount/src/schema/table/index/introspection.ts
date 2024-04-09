@@ -69,7 +69,8 @@ export function localIndexInfoByTable(
 			pool: new pg.Pool({}),
 		}),
 	});
-	const tables = PgDatabase.info(schema).tables;
+	const dbInfo = PgDatabase.info(schema);
+	const tables = dbInfo.tables;
 	return Object.entries(tables || {}).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
@@ -85,6 +86,7 @@ export function localIndexInfoByTable(
 					transformedTableName,
 					kysely,
 					camelCase,
+					dbInfo.schema,
 				);
 				acc[transformedTableName] = {
 					...acc[transformedTableName],
@@ -104,6 +106,7 @@ export function indexToInfo(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
+	schemaName = "public",
 ) {
 	const indexCompileArgs = indexOptions(index);
 	const transformedTableName = toSnakeCase(tableName, camelCase);
@@ -113,8 +116,9 @@ export function indexToInfo(
 	const indexName = `${transformedTableName}_${transformedColumnNames.join(
 		"_",
 	)}_kntc_idx`;
-	let kyselyBuilder = kysely.schema
-		.createIndex(indexName)
+	let kyselyBuilder = kysely
+		.withSchema(schemaName)
+		.schema.createIndex(indexName)
 		.on(transformedTableName)
 		.columns(transformedColumnNames);
 

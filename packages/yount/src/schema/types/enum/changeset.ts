@@ -24,20 +24,20 @@ export function enumMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_schemaName: string,
+	schemaName: string,
 ) {
 	if (isCreateEnum(diff)) {
-		return createEnumMigration(diff);
+		return createEnumMigration(diff, schemaName);
 	}
 	if (isDropEnum(diff)) {
-		return dropEnumMigration(diff);
+		return dropEnumMigration(diff, schemaName);
 	}
 	if (isChangeEnum(diff)) {
-		return changeEnumMigration(diff);
+		return changeEnumMigration(diff, schemaName);
 	}
 }
 
-function createEnumMigration(diff: CreateEnumDiff) {
+function createEnumMigration(diff: CreateEnumDiff, schemaName: string) {
 	const enumName = diff.path[1];
 	const enumValues = diff.value
 		.split(", ")
@@ -49,17 +49,20 @@ function createEnumMigration(diff: CreateEnumDiff) {
 		type: ChangeSetType.CreateEnum,
 		up: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`createType("${enumName}")`,
 				`asEnum([${enumValues}])`,
 			),
-			executeKyselyDbStatement(`COMMENT ON TYPE "${enumName}" IS 'yount'`),
+			executeKyselyDbStatement(
+				`COMMENT ON TYPE "${schemaName}"."${enumName}" IS 'yount'`,
+			),
 		],
-		down: [executeKyselySchemaStatement(`dropType("${enumName}")`)],
+		down: [executeKyselySchemaStatement(schemaName, `dropType("${enumName}")`)],
 	};
 	return changeSet;
 }
 
-function dropEnumMigration(diff: DropEnumDiff) {
+function dropEnumMigration(diff: DropEnumDiff, schemaName: string) {
 	const enumName = diff.path[1];
 	const enumValues = diff.oldValue
 		.split(", ")
@@ -69,19 +72,22 @@ function dropEnumMigration(diff: DropEnumDiff) {
 		priority: MigrationOpPriority.DropEnum,
 		tableName: "none",
 		type: ChangeSetType.DropEnum,
-		up: [executeKyselySchemaStatement(`dropType("${enumName}")`)],
+		up: [executeKyselySchemaStatement(schemaName, `dropType("${enumName}")`)],
 		down: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`createType("${enumName}")`,
 				`asEnum([${enumValues}])`,
 			),
-			executeKyselyDbStatement(`COMMENT ON TYPE "${enumName}" IS 'yount'`),
+			executeKyselyDbStatement(
+				`COMMENT ON TYPE "${schemaName}"."${enumName}" IS 'yount'`,
+			),
 		],
 	};
 	return changeSet;
 }
 
-function changeEnumMigration(diff: ChangeEnumDiff) {
+function changeEnumMigration(diff: ChangeEnumDiff, schemaName: string) {
 	const enumName = diff.path[1];
 	const oldEnumValues = diff.oldValue.split(", ");
 	const newValues = diff.value
@@ -89,7 +95,8 @@ function changeEnumMigration(diff: ChangeEnumDiff) {
 		.filter((value) => value !== "")
 		.filter((value) => !oldEnumValues.includes(value))
 		.map(
-			(value) => `ALTER TYPE ${enumName} ADD VALUE IF NOT EXISTS '${value}'`,
+			(value) =>
+				`ALTER TYPE "${schemaName}"."${enumName}" ADD VALUE IF NOT EXISTS '${value}'`,
 		);
 
 	if (newValues.length === 0) {

@@ -2,53 +2,53 @@
 import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
-  await db.schema
+  await db.withSchema('public').schema
     .createTable("books")
     .addColumn("name", "text")
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .createTable("members")
     .addColumn("name", "varchar", (col) => col.defaultTo("hello"))
     .addColumn("email", "character varying(255)")
     .addColumn("city", "text", (col) => col.notNull())
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .dropTable("shops")
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .addColumn("country", "text")
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("name", (col) => col.setDataType("varchar"))
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("email", (col) => col.setDataType("varchar"))
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("name", (col) => col.setDefault("hello"))
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("name", (col) => col.setNotNull())
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("city", (col) => col.dropDefault())
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("city", (col) => col.setNotNull())
     .execute();
@@ -59,59 +59,59 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropIndex("addresses_city_kntc_idx").execute();
+  await db.withSchema('public').schema.dropIndex("addresses_city_kntc_idx").execute();
 
   await sql`create unique index "shops_city_kntc_idx" on "shops" using btree ("city")`.execute(db);
 
   await sql`create unique index "shops_mail_kntc_idx" on "shops" using btree ("email")`.execute(db);
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("city", (col) => col.dropNotNull())
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("city", (col) => col.setDefault("bcn"))
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("name", (col) => col.dropNotNull())
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("name", (col) => col.dropDefault())
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("email", (col) => col.setDataType("character varying(255)"))
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .alterColumn("name", (col) => col.setDataType("text"))
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .alterTable("addresses")
     .dropColumn("country")
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .createTable("shops")
     .addColumn("name", "varchar", (col) => col.defaultTo("hello"))
     .addColumn("email", "character varying(255)")
     .addColumn("city", "text", (col) => col.notNull())
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .dropTable("members")
     .execute();
 
-  await db.schema
+  await db.withSchema('public').schema
     .dropTable("books")
     .execute();
 }

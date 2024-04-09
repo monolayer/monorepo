@@ -21,10 +21,10 @@ export function columnNullableMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_schemaName: string,
+	schemaName: string,
 ) {
 	if (isColumnNullable(diff)) {
-		return columnNullableMigrationOperation(diff);
+		return columnNullableMigrationOperation(diff, schemaName);
 	}
 }
 
@@ -44,7 +44,10 @@ function isColumnNullable(test: Difference): test is ColumnNullableDifference {
 	);
 }
 
-function columnNullableMigrationOperation(diff: ColumnNullableDifference) {
+function columnNullableMigrationOperation(
+	diff: ColumnNullableDifference,
+	schemaName: string,
+) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const changeset: Changeset = {
@@ -54,12 +57,14 @@ function columnNullableMigrationOperation(diff: ColumnNullableDifference) {
 		up: diff.value
 			? [
 					executeKyselySchemaStatement(
+						schemaName,
 						`alterTable("${tableName}")`,
 						`alterColumn("${columnName}", (col) => col.dropNotNull())`,
 					),
 				]
 			: [
 					executeKyselySchemaStatement(
+						schemaName,
 						`alterTable("${tableName}")`,
 						`alterColumn("${columnName}", (col) => col.setNotNull())`,
 					),
@@ -67,12 +72,14 @@ function columnNullableMigrationOperation(diff: ColumnNullableDifference) {
 		down: diff.value
 			? [
 					executeKyselySchemaStatement(
+						schemaName,
 						`alterTable("${tableName}")`,
 						`alterColumn("${columnName}", (col) => col.setNotNull())`,
 					),
 				]
 			: [
 					executeKyselySchemaStatement(
+						schemaName,
 						`alterTable("${tableName}")`,
 						`alterColumn("${columnName}", (col) => col.dropNotNull())`,
 					),

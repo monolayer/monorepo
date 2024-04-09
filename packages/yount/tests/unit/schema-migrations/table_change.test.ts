@@ -57,7 +57,7 @@ describe("Table change migrations", () => {
 				type: "createColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("teams")',
 						'addColumn("location", "text")',
 						"execute();",
@@ -65,7 +65,7 @@ describe("Table change migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("teams")',
 						'dropColumn("location")',
 						"execute();",
@@ -78,7 +78,7 @@ describe("Table change migrations", () => {
 				type: "createColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addColumn("email", "text")',
 						"execute();",
@@ -86,7 +86,7 @@ describe("Table change migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropColumn("email")',
 						"execute();",
@@ -138,7 +138,7 @@ describe("Table change migrations", () => {
 				type: "dropColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("teams")',
 						'dropColumn("location")',
 						"execute();",
@@ -146,7 +146,7 @@ describe("Table change migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("teams")',
 						'addColumn("location", "text")',
 						"execute();",
@@ -159,7 +159,7 @@ describe("Table change migrations", () => {
 				type: "dropColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropColumn("email")',
 						"execute();",
@@ -167,7 +167,7 @@ describe("Table change migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addColumn("email", "text")',
 						"execute();",
@@ -207,7 +207,7 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.setDataType(sql`character varying`))',
 						"execute();",
@@ -215,7 +215,7 @@ describe("Table change migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.setDataType(sql`text`))',
 						"execute();",
@@ -259,25 +259,25 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						"alterColumn(\"name\", (col) => col.setDefault(sql`'bar'::text`))",
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad9\'`',
+						'await sql`COMMENT ON COLUMN "public"."users"."name" IS \'3aacbad9\'`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::text`))",
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e\'`',
+						'await sql`COMMENT ON COLUMN "public"."users"."name" IS \'ae72411e\'`',
 						"execute(db);",
 					],
 				],
@@ -315,19 +315,19 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						"alterColumn(\"name\", (col) => col.setDefault(sql`'bar'::text`))",
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'3aacbad9\'`',
+						'await sql`COMMENT ON COLUMN "public"."users"."name" IS \'3aacbad9\'`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropDefault())',
 						"execute();",
@@ -371,7 +371,7 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropDefault())',
 						"execute();",
@@ -379,13 +379,13 @@ describe("Table change migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::text`))",
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e\'`',
+						'await sql`COMMENT ON COLUMN "public"."users"."name" IS \'ae72411e\'`',
 						"execute(db);",
 					],
 				],
@@ -425,7 +425,7 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("email", (col) => col.setNotNull())',
 						"execute();",
@@ -433,7 +433,7 @@ describe("Table change migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("email", (col) => col.dropNotNull())',
 						"execute();",
@@ -446,7 +446,7 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -454,7 +454,7 @@ describe("Table change migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.setNotNull())',
 						"execute();",
@@ -494,7 +494,7 @@ describe("Table change migrations", () => {
 			{
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.setDataType(sql`text`))',
 						"execute();",
@@ -505,7 +505,7 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.setDataType(sql`character varying`))',
 						"execute();",
@@ -515,13 +515,13 @@ describe("Table change migrations", () => {
 			{
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::text`))",
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'ae72411e\'`',
+						'await sql`COMMENT ON COLUMN "public"."users"."name" IS \'ae72411e\'`',
 						"execute(db);",
 					],
 				],
@@ -530,13 +530,13 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						"alterColumn(\"name\", (col) => col.setDefault(sql`'foo'::character varying`))",
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."name" IS \'2bc67682\'`',
+						'await sql`COMMENT ON COLUMN "public"."users"."name" IS \'2bc67682\'`',
 						"execute(db);",
 					],
 				],
@@ -544,7 +544,7 @@ describe("Table change migrations", () => {
 			{
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -555,7 +555,7 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.setNotNull())',
 						"execute();",
@@ -599,7 +599,7 @@ describe("Table change migrations", () => {
 		BEFORE UPDATE ON users
 		FOR EACH ROW
 		EXECUTE FUNCTION moddatetime(updatedAt);
-		COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c27';
+		COMMENT ON TRIGGER foo_before_update_trg ON users IS 'b97b23ad';
 		`.execute(context.kysely);
 
 		const database = pgDatabase({
@@ -635,19 +635,19 @@ describe("Table change migrations", () => {
 				up: [
 					[
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
-BEFORE UPDATE ON users
+BEFORE UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 						`execute(db);`,
 					],
 					[
-						`await sql\`COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '4127b968'\``,
+						`await sql\`COMMENT ON TRIGGER foo_before_update_two_trg ON "public"."users" IS '20c3fd54'\``,
 						`execute(db);`,
 					],
 				],
 				down: [
 					[
-						"await sql`DROP TRIGGER foo_before_update_two_trg ON users`",
+						'await sql`DROP TRIGGER foo_before_update_two_trg ON "public"."users"`',
 						"execute(db);",
 					],
 				],
@@ -689,7 +689,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 			BEFORE UPDATE ON users
 			FOR EACH ROW
 			EXECUTE FUNCTION moddatetime('updatedAt');
-			COMMENT ON TRIGGER foo_before_update_trg ON users IS '10989c27';
+			COMMENT ON TRIGGER foo_before_update_trg ON users IS 'b97b23ad';
 		`.execute(context.kysely);
 
 		await sql`
@@ -727,7 +727,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				type: "dropTrigger",
 				up: [
 					[
-						"await sql`DROP TRIGGER foo_before_update_two_trg ON users`",
+						'await sql`DROP TRIGGER foo_before_update_two_trg ON "public"."users"`',
 						"execute(db);",
 					],
 				],
@@ -737,7 +737,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 						`execute(db);`,
 					],
 					[
-						`await sql\`COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32'\``,
+						`await sql\`COMMENT ON TRIGGER foo_before_update_two_trg ON "public"."users" IS '3893aa32'\``,
 						`execute(db);`,
 					],
 				],

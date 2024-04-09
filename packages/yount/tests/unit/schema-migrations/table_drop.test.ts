@@ -38,17 +38,39 @@ describe("Table drop migrations", () => {
 				tableName: "users",
 				type: "dropTable",
 				priority: 1006,
-				down: [["await db.schema", 'createTable("users")', "execute();"]],
-				up: [["await db.schema", 'dropTable("users")', "execute();"]],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("users")',
+						"execute();",
+					],
+				],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
 			},
 			{
 				tableName: "organizations",
 				type: "dropTable",
 				priority: 1006,
 				down: [
-					["await db.schema", 'createTable("organizations")', "execute();"],
+					[
+						'await db.withSchema("public").schema',
+						'createTable("organizations")',
+						"execute();",
+					],
 				],
-				up: [["await db.schema", 'dropTable("organizations")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("organizations")',
+						"execute();",
+					],
+				],
 			},
 		];
 
@@ -130,10 +152,16 @@ describe("Table drop migrations", () => {
 				tableName: "books",
 				type: "dropTable",
 				priority: 1006,
-				up: [["await db.schema", 'dropTable("books")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("books")',
 						'addColumn("json", "json")',
 						'addColumn("jsonB", "jsonb")',
@@ -158,7 +186,7 @@ describe("Table drop migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "books"."varCharWithDefault" IS \'ae72411e\'`',
+						'await sql`COMMENT ON COLUMN "public"."books"."varCharWithDefault" IS \'ae72411e\'`',
 						"execute(db);",
 					],
 				],
@@ -167,10 +195,16 @@ describe("Table drop migrations", () => {
 				tableName: "users",
 				type: "dropTable",
 				priority: 1006,
-				up: [["await db.schema", 'dropTable("users")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("bigInt", "bigint")',
 						'addColumn("bigInt2", "bigint", (col) => col.notNull())',
@@ -233,7 +267,7 @@ describe("Table drop migrations", () => {
 			{
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addPrimaryKeyConstraint("books_id_yount_pk", ["id"])',
 						"execute();",
@@ -247,7 +281,7 @@ describe("Table drop migrations", () => {
 			{
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addPrimaryKeyConstraint("users_id_yount_pk", ["id"])',
 						"execute();",
@@ -261,7 +295,7 @@ describe("Table drop migrations", () => {
 			{
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("books")',
 						'addColumn("id", "bigserial", (col) => col.notNull())',
 						"execute();",
@@ -270,12 +304,18 @@ describe("Table drop migrations", () => {
 				priority: 1006,
 				tableName: "books",
 				type: "dropTable",
-				up: [["await db.schema", 'dropTable("books")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
 			},
 			{
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("id", "serial", (col) => col.notNull())',
 						"execute();",
@@ -284,7 +324,13 @@ describe("Table drop migrations", () => {
 				priority: 1006,
 				tableName: "users",
 				type: "dropTable",
-				up: [["await db.schema", 'dropTable("users")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
 			},
 		];
 
@@ -343,7 +389,7 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"])',
 						"execute();",
@@ -354,10 +400,16 @@ describe("Table drop migrations", () => {
 				priority: 1006,
 				tableName: "users",
 				type: "dropTable",
-				up: [["await db.schema", 'dropTable("users")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("fullName", sql`character varying`)',
 						'addColumn("id", "serial", (col) => col.notNull())',
@@ -409,7 +461,7 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
 						'onDelete("set null")',
@@ -425,7 +477,7 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addPrimaryKeyConstraint("books_id_yount_pk", ["id"])',
 						"execute();",
@@ -436,10 +488,16 @@ describe("Table drop migrations", () => {
 				priority: 1006,
 				tableName: "users",
 				type: "dropTable",
-				up: [["await db.schema", 'dropTable("users")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("id", "serial", (col) => col.notNull())',
 						"execute();",
@@ -450,10 +508,16 @@ describe("Table drop migrations", () => {
 				priority: 1006,
 				tableName: "books",
 				type: "dropTable",
-				up: [["await db.schema", 'dropTable("books")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("books")',
 						'addColumn("id", "bigserial", (col) => col.notNull())',
 						"execute();",
@@ -501,11 +565,11 @@ describe("Table drop migrations", () => {
 				type: "dropConstraint",
 				down: [
 					[
-						'await sql`ALTER TABLE "books" ADD CONSTRAINT "971041d9_yount_chk" CHECK ((id > 50))`',
+						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "971041d9_yount_chk" CHECK ((id > 50))`',
 						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "971041d9_yount_chk" ON "books" IS \'971041d9_yount_chk\'`',
+						'await sql`COMMENT ON CONSTRAINT "971041d9_yount_chk" ON "public"."books" IS \'971041d9_yount_chk\'`',
 						"execute(db);",
 					],
 				],
@@ -515,10 +579,16 @@ describe("Table drop migrations", () => {
 				priority: 1006,
 				tableName: "books",
 				type: "dropTable",
-				up: [["await db.schema", 'dropTable("books")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("books")',
 						'addColumn("id", "integer", (col) => col.notNull())',
 						"execute();",
@@ -556,7 +626,7 @@ describe("Table drop migrations", () => {
 			.createTable("books")
 			.addColumn("id", "text")
 			.execute();
-		await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX books_id_kntc_idx IS \'2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee\'`.execute(
+		await sql`create unique index "books_id_kntc_idx" on "books" ("id");COMMENT ON INDEX books_id_kntc_idx IS \'22009828\'`.execute(
 			context.kysely,
 		);
 
@@ -572,7 +642,7 @@ describe("Table drop migrations", () => {
 						"execute(db);",
 					],
 					[
-						"await sql`COMMENT ON INDEX \"books_id_kntc_idx\" IS '2200982847e769a05e0298bc04c04ac1e2c56bdc770b421d2a71f1d89250ecee'`",
+						'await sql`COMMENT ON INDEX "public"."books_id_kntc_idx" IS \'22009828\'`',
 						"execute(db);",
 					],
 				],
@@ -588,7 +658,7 @@ describe("Table drop migrations", () => {
 						"execute(db);",
 					],
 					[
-						"await sql`COMMENT ON INDEX \"users_name_kntc_idx\" IS 'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45'`",
+						'await sql`COMMENT ON INDEX "public"."users_name_kntc_idx" IS \'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45\'`',
 						"execute(db);",
 					],
 				],
@@ -597,10 +667,16 @@ describe("Table drop migrations", () => {
 				priority: 1006,
 				tableName: "books",
 				type: "dropTable",
-				up: [["await db.schema", 'dropTable("books")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("books")',
 						'addColumn("id", "text")',
 						"execute();",
@@ -611,10 +687,16 @@ describe("Table drop migrations", () => {
 				priority: 1006,
 				tableName: "users",
 				type: "dropTable",
-				up: [["await db.schema", 'dropTable("users")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("name", "text")',
 						"execute();",
@@ -651,10 +733,16 @@ describe("Table drop migrations", () => {
 				priority: 1006,
 				tableName: "users",
 				type: "dropTable",
-				up: [["await db.schema", 'dropTable("users")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("name", "text")',
 						'addColumn("role", sql`role`)',
@@ -666,15 +754,24 @@ describe("Table drop migrations", () => {
 				priority: 3011,
 				tableName: "none",
 				type: "dropEnum",
-				up: [["await db.schema", 'dropType("role")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropType("role")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createType("role")',
 						'asEnum(["admin", "user"])',
 						"execute();",
 					],
-					["await sql`COMMENT ON TYPE \"role\" IS 'yount'`", "execute(db);"],
+					[
+						'await sql`COMMENT ON TYPE "public"."role" IS \'yount\'`',
+						"execute(db);",
+					],
 				],
 			},
 		];
@@ -743,7 +840,7 @@ describe("Table drop migrations", () => {
 						"execute(db);",
 					],
 					[
-						"await sql`COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67'`",
+						'await sql`COMMENT ON TRIGGER foo_before_update_trg ON "public"."users" IS \'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67\'`',
 						"execute(db);",
 					],
 				],
@@ -752,10 +849,16 @@ describe("Table drop migrations", () => {
 				priority: 1006,
 				tableName: "users",
 				type: "dropTable",
-				up: [["await db.schema", 'dropTable("users")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("createdAt", "timestamp", (col) => col.defaultTo(sql`now()`))',
 						'addColumn("id", "integer")',
@@ -763,12 +866,176 @@ describe("Table drop migrations", () => {
 						"execute();",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."createdAt" IS \'ae72411e\'`',
+						'await sql`COMMENT ON COLUMN "public"."users"."createdAt" IS \'ae72411e\'`',
 						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON COLUMN "users"."updatedAt" IS \'ae72411e\'`',
+						'await sql`COMMENT ON COLUMN "public"."users"."updatedAt" IS \'ae72411e\'`',
 						"execute(db);",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database,
+			expected,
+			down: "reverse",
+		});
+	});
+
+	test<DbContext>("drop table with in demo schema", async (context) => {
+		const database = pgDatabase({
+			schema: "demo",
+			tables: {
+				organizations: table({
+					columns: {},
+				}),
+			},
+		});
+
+		await sql`CREATE SCHEMA IF NOT EXISTS "demo"`.execute(context.kysely);
+
+		await context.kysely
+			.withSchema("demo")
+			.schema.createTable("organizations")
+			.execute();
+
+		await context.kysely
+			.withSchema("demo")
+			.schema.createTable("users")
+			.addColumn("bigInt", "bigint")
+			.addColumn("bigInt2", "bigint", (col) => col.notNull())
+			.addColumn("bigSerial", "bigserial", (col) => col.notNull())
+			.addColumn("boolean", "boolean")
+			.addColumn("bytea", "bytea")
+			.addColumn("char", "char(1)")
+			.addColumn("char10", "char(10)")
+			.addColumn("date", "date")
+			.addColumn("doublePrecision", "double precision")
+			.addColumn("float4", "float4")
+			.addColumn("float8", "float8")
+			.addColumn("smallint", "smallint")
+			.addColumn("int4", "int4")
+			.addColumn("int8", "int8")
+			.addColumn("integer", "integer")
+			.addColumn("integerAlwaysAsIdentity", "integer", (col) =>
+				col.generatedAlwaysAsIdentity(),
+			)
+			.addColumn("integerDefaultAsIdentity", "integer", (col) =>
+				col.generatedByDefaultAsIdentity(),
+			)
+			.execute();
+
+		await context.kysely
+			.withSchema("demo")
+			.schema.createTable("books")
+			.addColumn("json", "json")
+			.addColumn("jsonB", "jsonb")
+			.addColumn("numeric", "numeric")
+			.addColumn("numeric5", "numeric(5, 0)")
+			.addColumn("numeric52", "numeric(5, 2)")
+			.addColumn("real", "real")
+			.addColumn("serial", "serial", (col) => col.notNull())
+			.addColumn("text", "text")
+			.addColumn("time", "time")
+			.addColumn("time4", "time(4)")
+			.addColumn("timeTz", "timetz")
+			.addColumn("timeTz4", sql`timetz(4)`)
+			.addColumn("timestamp", "timestamp")
+			.addColumn("timestamp3", "timestamp(3)")
+			.addColumn("timestampTz", "timestamptz")
+			.addColumn("timestampTz3", "timestamptz(3)")
+			.addColumn("uuid", "uuid")
+			.addColumn("varChar", "varchar")
+			.addColumn("varCharWithDefault", "varchar", (col) =>
+				col.defaultTo(sql`\'foo\'::character varying`),
+			)
+			.addColumn("varChar255", sql`character varying(255)`)
+			.execute();
+
+		await sql`COMMENT ON COLUMN "demo"."books"."varCharWithDefault" IS 'ae72411e'`.execute(
+			context.kysely,
+		);
+
+		const expected = [
+			{
+				tableName: "books",
+				type: "dropTable",
+				priority: 1006,
+				up: [
+					[
+						'await db.withSchema("demo").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("demo").schema',
+						'createTable("books")',
+						'addColumn("json", "json")',
+						'addColumn("jsonB", "jsonb")',
+						'addColumn("numeric", "numeric")',
+						'addColumn("numeric5", "numeric(5, 0)")',
+						'addColumn("numeric52", "numeric(5, 2)")',
+						'addColumn("real", "real")',
+						'addColumn("serial", "serial", (col) => col.notNull())',
+						'addColumn("text", "text")',
+						'addColumn("time", "time")',
+						'addColumn("time4", "time(4)")',
+						'addColumn("timeTz", sql`time with time zone`)',
+						'addColumn("timeTz4", sql`time(4) with time zone`)',
+						'addColumn("timestamp", "timestamp")',
+						'addColumn("timestamp3", "timestamp(3)")',
+						'addColumn("timestampTz", sql`timestamp with time zone`)',
+						'addColumn("timestampTz3", sql`timestamp(3) with time zone`)',
+						'addColumn("uuid", "uuid")',
+						'addColumn("varChar", sql`character varying`)',
+						'addColumn("varChar255", sql`character varying(255)`)',
+						"addColumn(\"varCharWithDefault\", sql`character varying`, (col) => col.defaultTo(sql`'foo'::character varying`))",
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "demo"."books"."varCharWithDefault" IS \'ae72411e\'`',
+						"execute(db);",
+					],
+				],
+			},
+			{
+				tableName: "users",
+				type: "dropTable",
+				priority: 1006,
+				up: [
+					[
+						'await db.withSchema("demo").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("demo").schema',
+						'createTable("users")',
+						'addColumn("bigInt", "bigint")',
+						'addColumn("bigInt2", "bigint", (col) => col.notNull())',
+						'addColumn("bigSerial", "bigserial", (col) => col.notNull())',
+						'addColumn("boolean", "boolean")',
+						'addColumn("bytea", "bytea")',
+						'addColumn("char", sql`character(1)`)',
+						'addColumn("char10", sql`character(10)`)',
+						'addColumn("date", "date")',
+						'addColumn("doublePrecision", "double precision")',
+						'addColumn("float4", "real")',
+						'addColumn("float8", "double precision")',
+						'addColumn("int4", "integer")',
+						'addColumn("int8", "bigint")',
+						'addColumn("integer", "integer")',
+						'addColumn("integerAlwaysAsIdentity", "integer", (col) => col.notNull().generatedAlwaysAsIdentity())',
+						'addColumn("integerDefaultAsIdentity", "integer", (col) => col.notNull().generatedByDefaultAsIdentity())',
+						'addColumn("smallint", sql`smallint`)',
+						"execute();",
 					],
 				],
 			},

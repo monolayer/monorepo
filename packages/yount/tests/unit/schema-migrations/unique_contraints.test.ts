@@ -66,7 +66,7 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addUniqueConstraint("books_id_yount_key", ["id"], (col) => col.nullsNotDistinct())',
 						"execute();",
@@ -74,7 +74,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("books_id_yount_key")',
 						"execute();",
@@ -87,7 +87,7 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addUniqueConstraint("books_name_yount_key", ["name"])',
 						"execute();",
@@ -95,7 +95,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("books_name_yount_key")',
 						"execute();",
@@ -108,7 +108,7 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"])',
 						"execute();",
@@ -116,7 +116,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_fullName_id_yount_key")',
 						"execute();",
@@ -194,7 +194,7 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("books_id_yount_key")',
 						"execute();",
@@ -202,7 +202,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addUniqueConstraint("books_id_yount_key", ["id"], (col) => col.nullsNotDistinct())',
 						"execute();",
@@ -215,7 +215,7 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("books_name_yount_key")',
 						"execute();",
@@ -223,7 +223,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addUniqueConstraint("books_name_yount_key", ["name"])',
 						"execute();",
@@ -297,7 +297,7 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_fullName_id_yount_key")',
 						"execute();",
@@ -305,7 +305,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"])',
 						"execute();",
@@ -318,7 +318,7 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addUniqueConstraint("users_id_yount_key", ["id"])',
 						"execute();",
@@ -326,7 +326,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_id_yount_key")',
 						"execute();",
@@ -400,13 +400,13 @@ describe("Database migrations", () => {
 				type: "changeConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_fullName_id_yount_key")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"], (col) => col.nullsNotDistinct())',
 						"execute();",
@@ -414,13 +414,13 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_fullName_id_yount_key")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"])',
 						"execute();",

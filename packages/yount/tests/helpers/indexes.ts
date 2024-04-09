@@ -33,8 +33,15 @@ export async function compileTrigger(
 ) {
 	const kysely = await kyselyWithEmptyPool();
 
-	return triggerInfo(trigger, triggerName, tableName, kysely, {
-		enabled: camelCase,
-		options: {},
-	});
+	return triggerInfo(
+		trigger,
+		triggerName,
+		tableName,
+		kysely,
+		{
+			enabled: camelCase,
+			options: {},
+		},
+		"public",
+	);
 }

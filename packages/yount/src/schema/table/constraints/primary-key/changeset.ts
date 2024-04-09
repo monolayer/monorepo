@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { Difference } from "microdiff";
 import {
 	ChangeSetType,
@@ -22,19 +23,31 @@ export function primaryKeyMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_schemaName: string,
+	schemaName: string,
 ) {
 	if (isPrimaryKeyCreateFirst(diff)) {
-		return createPrimaryKeyMigration(diff, addedTables, local);
+		return createPrimaryKeyMigration(diff, addedTables, local, schemaName);
 	}
 	if (isPrimaryKeyDrop(diff)) {
-		return dropPrimaryKeyMigration(diff, droppedTables, local);
+		return dropPrimaryKeyMigration(diff, droppedTables, local, schemaName);
 	}
 	if (isPrimaryKeyUpdate(diff)) {
-		return updatePrimaryKeyMigration(diff, addedTables, droppedTables, local);
+		return updatePrimaryKeyMigration(
+			diff,
+			addedTables,
+			droppedTables,
+			local,
+			schemaName,
+		);
 	}
 	if (isPrimaryKeyReplace(diff)) {
-		return replacePrimaryKeyMigration(diff, addedTables, droppedTables, local);
+		return replacePrimaryKeyMigration(
+			diff,
+			addedTables,
+			droppedTables,
+			local,
+			schemaName,
+		);
 	}
 }
 
@@ -116,6 +129,7 @@ function createPrimaryKeyMigration(
 	diff: PrimaryKeyCreateFirstDiff,
 	addedTables: string[],
 	local: LocalTableInfo,
+	schemaName: string,
 ): Changeset {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(diff.value)[0] as keyof typeof diff.value;
@@ -127,7 +141,14 @@ function createPrimaryKeyMigration(
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreatePrimaryKey,
-		up: [addPrimaryKeyOp(tableName, primaryKeyName as string, primaryKeyValue)],
+		up: [
+			addPrimaryKeyOp(
+				tableName,
+				primaryKeyName as string,
+				primaryKeyValue,
+				schemaName,
+			),
+		],
 		down: addedTables.includes(tableName)
 			? [[]]
 			: dropPrimaryKeyOp(
@@ -135,6 +156,7 @@ function createPrimaryKeyMigration(
 					primaryKeyName as string,
 					primaryKeyValue,
 					local,
+					schemaName,
 				),
 	};
 	return changeset;
@@ -144,6 +166,7 @@ function dropPrimaryKeyMigration(
 	diff: PrimaryKeyDropDiff,
 	droppedTables: string[],
 	local: LocalTableInfo,
+	schemaName: string,
 ): Changeset {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(
@@ -164,9 +187,15 @@ function dropPrimaryKeyMigration(
 					primaryKeyName as string,
 					primaryKeyValue,
 					local,
+					schemaName,
 				),
 		down: [
-			addPrimaryKeyOp(tableName, primaryKeyName as string, primaryKeyValue),
+			addPrimaryKeyOp(
+				tableName,
+				primaryKeyName as string,
+				primaryKeyValue,
+				schemaName,
+			),
 		],
 	};
 	return changeset;
@@ -177,6 +206,7 @@ function updatePrimaryKeyMigration(
 	addedTables: string[],
 	droppedTables: string[],
 	local: LocalTableInfo,
+	schemaName: string,
 ): Changeset {
 	const tableName = diff.path[1];
 	const primaryKeyName = diff.path[2];
@@ -188,10 +218,23 @@ function updatePrimaryKeyMigration(
 		type: ChangeSetType.CreatePrimaryKey,
 		up: droppedTables.includes(tableName)
 			? [[]]
-			: [addPrimaryKeyOp(tableName, primaryKeyName, primaryKeyValue)],
+			: [
+					addPrimaryKeyOp(
+						tableName,
+						primaryKeyName,
+						primaryKeyValue,
+						schemaName,
+					),
+				],
 		down: addedTables.includes(tableName)
 			? [[]]
-			: dropPrimaryKeyOp(tableName, primaryKeyName, primaryKeyValue, local),
+			: dropPrimaryKeyOp(
+					tableName,
+					primaryKeyName,
+					primaryKeyValue,
+					local,
+					schemaName,
+				),
 	};
 	return changeset;
 }
@@ -201,6 +244,7 @@ function replacePrimaryKeyMigration(
 	addedTables: string[],
 	droppedTables: string[],
 	local: LocalTableInfo,
+	schemaName: string,
 ): Changeset {
 	const tableName = diff.path[1];
 	const primaryKeyName = diff.path[2];
@@ -212,10 +256,23 @@ function replacePrimaryKeyMigration(
 		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
 			? [[]]
-			: dropPrimaryKeyOp(tableName, primaryKeyName, primaryKeyValue, local),
+			: dropPrimaryKeyOp(
+					tableName,
+					primaryKeyName,
+					primaryKeyValue,
+					local,
+					schemaName,
+				),
 		down: addedTables.includes(tableName)
 			? [[]]
-			: [addPrimaryKeyOp(tableName, primaryKeyName, primaryKeyValue)],
+			: [
+					addPrimaryKeyOp(
+						tableName,
+						primaryKeyName,
+						primaryKeyValue,
+						schemaName,
+					),
+				],
 	};
 	return changeset;
 }
@@ -224,6 +281,7 @@ function dropNotNullStatements(
 	primaryKeyValue: string,
 	tableName: string,
 	local: LocalTableInfo,
+	schemaName: string,
 ) {
 	const primaryKeyColumns = extractColumnsFromPrimaryKey(primaryKeyValue);
 	const dropNotNullStatements = [];
@@ -238,6 +296,7 @@ function dropNotNullStatements(
 						if (tableColumn.isNullable) {
 							dropNotNullStatements.push(
 								executeKyselySchemaStatement(
+									schemaName,
 									`alterTable("${tableName}")`,
 									`alterColumn("${column}", (col) => col.dropNotNull())`,
 								),
@@ -247,6 +306,7 @@ function dropNotNullStatements(
 						if (tableColumn.originalIsNullable !== tableColumn.isNullable) {
 							dropNotNullStatements.push(
 								executeKyselySchemaStatement(
+									schemaName,
 									`alterTable("${tableName}")`,
 									`alterColumn("${column}", (col) => col.dropNotNull())`,
 								),
@@ -257,6 +317,7 @@ function dropNotNullStatements(
 			} else {
 				dropNotNullStatements.push(
 					executeKyselySchemaStatement(
+						schemaName,
 						`alterTable("${tableName}")`,
 						`alterColumn("${column}", (col) => col.dropNotNull())`,
 					),
@@ -271,8 +332,10 @@ function addPrimaryKeyOp(
 	tableName: string,
 	primaryKeyName: string,
 	primaryKeyValue: string,
+	schemaName: string,
 ): string[] {
 	return executeKyselySchemaStatement(
+		schemaName,
 		`alterTable("${tableName}")`,
 		`addPrimaryKeyConstraint("${primaryKeyName}", [${extractColumnsFromPrimaryKey(
 			primaryKeyValue,
@@ -287,12 +350,14 @@ function dropPrimaryKeyOp(
 	primaryKeyName: string,
 	primaryKeyValue: string,
 	local: LocalTableInfo,
+	schemaName: string,
 ): string[][] {
 	return [
 		executeKyselySchemaStatement(
+			schemaName,
 			`alterTable("${tableName}")`,
 			`dropConstraint("${primaryKeyName}")`,
 		),
-		...dropNotNullStatements(primaryKeyValue, tableName, local),
+		...dropNotNullStatements(primaryKeyValue, tableName, local, schemaName),
 	];
 }

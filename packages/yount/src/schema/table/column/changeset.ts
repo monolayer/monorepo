@@ -30,13 +30,13 @@ export function columnMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_schemaName: string,
+	schemaName: string,
 ) {
 	if (isCreateColumn(diff)) {
-		return createColumnMigration(diff);
+		return createColumnMigration(diff, schemaName);
 	}
 	if (isDropColumn(diff)) {
-		return dropColumnMigration(diff);
+		return dropColumnMigration(diff, schemaName);
 	}
 }
 
@@ -52,13 +52,14 @@ function isCreateColumn(test: Difference): test is CreateColumnDiff {
 	);
 }
 
-function createColumnMigration(diff: CreateColumnDiff) {
+function createColumnMigration(diff: CreateColumnDiff, schemaName: string) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const columnDef = diff.value;
 
 	const up = [
 		executeKyselySchemaStatement(
+			schemaName,
 			`alterTable("${tableName}")`,
 			`addColumn("${columnName}", ${compileDataType(
 				columnDef.dataType,
@@ -71,7 +72,7 @@ function createColumnMigration(diff: CreateColumnDiff) {
 	if (columnDef.defaultValue !== null) {
 		up.push(
 			executeKyselyDbStatement(
-				`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
+				`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
 			),
 		);
 	}
@@ -82,6 +83,7 @@ function createColumnMigration(diff: CreateColumnDiff) {
 		up: up,
 		down: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`alterTable("${tableName}")`,
 				`dropColumn("${columnName}")`,
 			),
@@ -102,13 +104,14 @@ function isDropColumn(test: Difference): test is DropColumnDiff {
 	);
 }
 
-function dropColumnMigration(diff: DropColumnDiff) {
+function dropColumnMigration(diff: DropColumnDiff, schemaName: string) {
 	const tableName = diff.path[1];
 	const columnDef = diff.oldValue;
 	const columnName = diff.path[2];
 
 	const down = [
 		executeKyselySchemaStatement(
+			schemaName,
 			`alterTable("${tableName}")`,
 			`addColumn("${columnName}", ${compileDataType(
 				columnDef.dataType,
@@ -120,7 +123,7 @@ function dropColumnMigration(diff: DropColumnDiff) {
 		const defaultValueAndHash = toValueAndHash(String(columnDef.defaultValue));
 		down.push(
 			executeKyselyDbStatement(
-				`COMMENT ON COLUMN "${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
+				`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
 			),
 		);
 	}
@@ -130,6 +133,7 @@ function dropColumnMigration(diff: DropColumnDiff) {
 		type: ChangeSetType.DropColumn,
 		up: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`alterTable("${tableName}")`,
 				`dropColumn("${columnName}")`,
 			),

@@ -13,7 +13,7 @@ describe("pg_trigger", () => {
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
-BEFORE UPDATE OR DELETE ON accounts
+BEFORE UPDATE OR DELETE ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
@@ -31,7 +31,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
-AFTER UPDATE OR DELETE ON accounts
+AFTER UPDATE OR DELETE ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
@@ -49,7 +49,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
-INSTEAD OF UPDATE OR DELETE ON accounts
+INSTEAD OF UPDATE OR DELETE ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
@@ -67,7 +67,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
-INSTEAD OF UPDATE ON accounts
+INSTEAD OF UPDATE ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
@@ -85,7 +85,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
-INSTEAD OF UPDATE OR INSERT ON accounts
+INSTEAD OF UPDATE OR INSERT ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
@@ -104,7 +104,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
-INSTEAD OF UPDATE OF balance, name ON accounts
+INSTEAD OF UPDATE OF balance, name ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
@@ -122,7 +122,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
-BEFORE UPDATE OR DELETE ON accounts
+BEFORE UPDATE OR DELETE ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
@@ -140,7 +140,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
-BEFORE UPDATE OR DELETE ON accounts
+BEFORE UPDATE OR DELETE ON "public"."accounts"
 FOR EACH ROW
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
 EXECUTE FUNCTION check_account_update`;
@@ -159,7 +159,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
-BEFORE DELETE ON accounts
+BEFORE DELETE ON "public"."accounts"
 REFERENCING NEW TABLE AS new_table OLD TABLE AS old_table
 FOR EACH STATEMENT
 EXECUTE FUNCTION check_account_update`;
@@ -177,7 +177,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
-BEFORE DELETE ON accounts
+BEFORE DELETE ON "public"."accounts"
 REFERENCING NEW TABLE AS new_table
 FOR EACH STATEMENT
 EXECUTE FUNCTION check_account_update`;
@@ -195,7 +195,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update");
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
-BEFORE DELETE ON accounts
+BEFORE DELETE ON "public"."accounts"
 REFERENCING OLD TABLE AS old_table
 FOR EACH STATEMENT
 EXECUTE FUNCTION check_account_update`;
@@ -213,7 +213,7 @@ EXECUTE FUNCTION check_account_update`;
 			.function("check_account_update", ["hello"]);
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
-BEFORE DELETE ON accounts
+BEFORE DELETE ON "public"."accounts"
 REFERENCING OLD TABLE AS old_table
 FOR EACH STATEMENT
 EXECUTE FUNCTION check_account_update('hello')`;
@@ -231,7 +231,7 @@ EXECUTE FUNCTION check_account_update('hello')`;
 			.function("check_account_update", [{ column: "updatedAt" }]);
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
-BEFORE DELETE ON accounts
+BEFORE DELETE ON "public"."accounts"
 REFERENCING OLD TABLE AS old_table
 FOR EACH STATEMENT
 EXECUTE FUNCTION check_account_update('updatedAt')`;
@@ -249,7 +249,7 @@ EXECUTE FUNCTION check_account_update('updatedAt')`;
 			.function("check_account_update", [{ column: "updatedAt" }]);
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
-BEFORE DELETE ON accounts
+BEFORE DELETE ON "public"."accounts"
 REFERENCING OLD TABLE AS old_table
 FOR EACH STATEMENT
 EXECUTE FUNCTION check_account_update('updated_at')`;

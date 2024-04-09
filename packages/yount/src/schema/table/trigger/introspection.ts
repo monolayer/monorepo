@@ -52,6 +52,7 @@ export function triggerInfo(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
+	schemaName: string,
 ) {
 	const compileArgs = PgTrigger.info(trigger);
 
@@ -81,7 +82,7 @@ export function triggerInfo(
 		`CREATE OR REPLACE TRIGGER ${triggerName}`,
 		`${compileArgs.firingTime?.toUpperCase()} ${events?.join(
 			" OR ",
-		)} ON ${tableName}`,
+		)} ON "${schemaName}"."${tableName}"`,
 		`${
 			compileArgs.referencingNewTableAs !== undefined &&
 			compileArgs.referencingOldTableAs !== undefined
@@ -114,7 +115,8 @@ export function localTriggersInfo(
 			pool: new pg.Pool({}),
 		}),
 	});
-	const tables = PgDatabase.info(schema).tables;
+	const dbInfo = PgDatabase.info(schema);
+	const tables = dbInfo.tables;
 	return Object.entries(tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
@@ -133,6 +135,7 @@ export function localTriggersInfo(
 					transformedTableName,
 					kysely,
 					camelCase,
+					dbInfo.schema,
 				);
 
 				acc[transformedTableName] = {

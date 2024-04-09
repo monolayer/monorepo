@@ -75,7 +75,7 @@ describe("Database migrations", () => {
 				type: "createColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addColumn("book_id", "integer")',
 						"execute();",
@@ -83,7 +83,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropColumn("book_id")',
 						"execute();",
@@ -96,7 +96,7 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
 						'onDelete("set null")',
@@ -106,7 +106,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_id_books_id_yount_fk")',
 						"execute();",
@@ -202,7 +202,7 @@ describe("Database migrations", () => {
 				type: "createColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addColumn("book_id", "integer")',
 						"execute();",
@@ -210,7 +210,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropColumn("book_id")',
 						"execute();",
@@ -223,7 +223,7 @@ describe("Database migrations", () => {
 				type: "createColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addColumn("second_book_id", "integer")',
 						"execute();",
@@ -231,7 +231,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropColumn("second_book_id")',
 						"execute();",
@@ -244,7 +244,7 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
 						'onDelete("set null")',
@@ -254,7 +254,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_id_books_id_yount_fk")',
 						"execute();",
@@ -267,7 +267,7 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_second_book_id_old_books_id_yount_fk", ["second_book_id"], "old_books", ["id"])',
 						'onDelete("set null")',
@@ -277,7 +277,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_second_book_id_old_books_id_yount_fk")',
 						"execute();",
@@ -353,7 +353,7 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_book_id_books_id_yount_fk")',
 						"execute();",
@@ -361,7 +361,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("set null")',
@@ -473,7 +473,7 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_book_id_books_id_yount_fk")',
 						"execute();",
@@ -481,7 +481,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("set null")',
@@ -496,7 +496,7 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_old_book_id_old_books_id_yount_fk")',
 						"execute();",
@@ -504,7 +504,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_old_book_id_old_books_id_yount_fk", ["old_book_id"], "old_books", ["id"])',
 						'onDelete("set null")',
@@ -589,7 +589,7 @@ describe("Database migrations", () => {
 				type: "dropConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_book_id_books_id_yount_fk")',
 						"execute();",
@@ -597,7 +597,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("set null")',
@@ -612,7 +612,7 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
 						'onDelete("set null")',
@@ -622,7 +622,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_id_books_id_yount_fk")',
 						"execute();",
@@ -705,13 +705,13 @@ describe("Database migrations", () => {
 				type: "changeConstraint",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_book_id_books_id_yount_fk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("set null")',
@@ -721,13 +721,13 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_book_id_books_id_yount_fk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
 						'onDelete("set null")',

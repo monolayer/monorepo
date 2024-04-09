@@ -19,22 +19,22 @@ export function triggerMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_schemaName: string,
+	schemaName: string,
 ) {
 	if (isTriggerCreateFirst(diff)) {
-		return createTriggerFirstMigration(diff, addedTables);
+		return createTriggerFirstMigration(diff, addedTables, schemaName);
 	}
 	if (isTriggerCreate(diff)) {
-		return createTriggerMigration(diff);
+		return createTriggerMigration(diff, schemaName);
 	}
 	if (isTriggerDropFirst(diff)) {
-		return dropTriggerFirstMigration(diff, droppedTables);
+		return dropTriggerFirstMigration(diff, droppedTables, schemaName);
 	}
 	if (isTriggerDrop(diff)) {
-		return dropTriggerMigration(diff);
+		return dropTriggerMigration(diff, schemaName);
 	}
 	if (isTriggerChange(diff)) {
-		return changeTriggerMigration(diff);
+		return changeTriggerMigration(diff, schemaName);
 	}
 }
 
@@ -133,6 +133,7 @@ function isTriggerChange(test: Difference): test is TriggerChangeDiff {
 function createTriggerFirstMigration(
 	diff: TriggerCreateFirstDiff,
 	addedTables: string[],
+	schemaName: string,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [key, value]) => {
@@ -144,18 +145,22 @@ function createTriggerFirstMigration(
 			up: [
 				executeKyselyDbStatement(`${trigger[1]}`),
 				executeKyselyDbStatement(
-					`COMMENT ON TRIGGER ${key} ON ${tableName} IS '${trigger[0]}';`,
+					`COMMENT ON TRIGGER ${key} ON "${schemaName}"."${tableName}" IS '${trigger[0]}';`,
 				),
 			],
 			down: addedTables.includes(tableName)
 				? [[]]
-				: [executeKyselyDbStatement(`DROP TRIGGER ${key} ON ${tableName}`)],
+				: [
+						executeKyselyDbStatement(
+							`DROP TRIGGER ${key} ON "${schemaName}"."${tableName}"`,
+						),
+					],
 		};
 		return acc.concat(changeset);
 	}, [] as Changeset[]);
 }
 
-function createTriggerMigration(diff: TriggerCreateDiff) {
+function createTriggerMigration(diff: TriggerCreateDiff, schemaName: string) {
 	const tableName = diff.path[1];
 	const triggerName = diff.path[2];
 	const trigger = diff.value.split(":");
@@ -166,11 +171,13 @@ function createTriggerMigration(diff: TriggerCreateDiff) {
 		up: [
 			executeKyselyDbStatement(`${trigger[1]}`),
 			executeKyselyDbStatement(
-				`COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}'`,
+				`COMMENT ON TRIGGER ${triggerName} ON "${schemaName}"."${tableName}" IS '${trigger[0]}'`,
 			),
 		],
 		down: [
-			executeKyselyDbStatement(`DROP TRIGGER ${triggerName} ON ${tableName}`),
+			executeKyselyDbStatement(
+				`DROP TRIGGER ${triggerName} ON "${schemaName}"."${tableName}"`,
+			),
 		],
 	};
 	return changeset;
@@ -179,6 +186,7 @@ function createTriggerMigration(diff: TriggerCreateDiff) {
 function dropTriggerFirstMigration(
 	diff: TriggerDropFirstDiff,
 	droppedTables: string[],
+	schemaName: string,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.oldValue).reduce((acc, [key, value]) => {
@@ -189,7 +197,11 @@ function dropTriggerFirstMigration(
 			type: ChangeSetType.DropTrigger,
 			up: droppedTables.includes(tableName)
 				? [[]]
-				: [executeKyselyDbStatement(`DROP TRIGGER ${key} ON ${tableName}`)],
+				: [
+						executeKyselyDbStatement(
+							`DROP TRIGGER ${key} ON "${schemaName}"."${tableName}"`,
+						),
+					],
 			down: [
 				executeKyselyDbStatement(
 					`${trigger[1]?.replace(
@@ -198,7 +210,7 @@ function dropTriggerFirstMigration(
 					)}`,
 				),
 				executeKyselyDbStatement(
-					`COMMENT ON TRIGGER ${key} ON ${tableName} IS '${trigger[0]}'`,
+					`COMMENT ON TRIGGER ${key} ON "${schemaName}"."${tableName}" IS '${trigger[0]}'`,
 				),
 			],
 		};
@@ -207,7 +219,7 @@ function dropTriggerFirstMigration(
 	}, [] as Changeset[]);
 }
 
-function dropTriggerMigration(diff: TriggerDropDiff) {
+function dropTriggerMigration(diff: TriggerDropDiff, schemaName: string) {
 	const tableName = diff.path[1];
 	const triggerName = diff.path[2];
 	const trigger = diff.oldValue.split(":");
@@ -216,21 +228,23 @@ function dropTriggerMigration(diff: TriggerDropDiff) {
 		tableName: tableName,
 		type: ChangeSetType.DropTrigger,
 		up: [
-			executeKyselyDbStatement(`DROP TRIGGER ${triggerName} ON ${tableName}`),
+			executeKyselyDbStatement(
+				`DROP TRIGGER ${triggerName} ON "${schemaName}"."${tableName}"`,
+			),
 		],
 		down: [
 			executeKyselyDbStatement(
 				`${trigger[1]?.replace("CREATE TRIGGER", "CREATE OR REPLACE TRIGGER")}`,
 			),
 			executeKyselyDbStatement(
-				`COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${trigger[0]}'`,
+				`COMMENT ON TRIGGER ${triggerName} ON "${schemaName}"."${tableName}" IS '${trigger[0]}'`,
 			),
 		],
 	};
 	return changeset;
 }
 
-function changeTriggerMigration(diff: TriggerChangeDiff) {
+function changeTriggerMigration(diff: TriggerChangeDiff, schemaName: string) {
 	const tableName = diff.path[1];
 	const triggerName = diff.path[2];
 	const newValue = diff.value;
@@ -245,7 +259,7 @@ function changeTriggerMigration(diff: TriggerChangeDiff) {
 		up: [
 			executeKyselyDbStatement(`${newTrigger[1]}`),
 			executeKyselyDbStatement(
-				`COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${newTrigger[0]}'`,
+				`COMMENT ON TRIGGER ${triggerName} ON "${schemaName}"."${tableName}" IS '${newTrigger[0]}'`,
 			),
 		],
 		down: [
@@ -256,7 +270,7 @@ function changeTriggerMigration(diff: TriggerChangeDiff) {
 				)}`,
 			),
 			executeKyselyDbStatement(
-				`COMMENT ON TRIGGER ${triggerName} ON ${tableName} IS '${oldTrigger[0]}'`,
+				`COMMENT ON TRIGGER ${triggerName} ON "${schemaName}"."${tableName}" IS '${oldTrigger[0]}'`,
 			),
 		],
 	};

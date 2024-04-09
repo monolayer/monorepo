@@ -21,10 +21,10 @@ export function columnDataTypeMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_schemaName: string,
+	schemaName: string,
 ) {
 	if (isColumnDataType(diff)) {
-		return columnDatatypeMigrationOperation(diff);
+		return columnDatatypeMigrationOperation(diff, schemaName);
 	}
 }
 
@@ -44,7 +44,10 @@ function isColumnDataType(test: Difference): test is ColumnDataTypeDifference {
 	);
 }
 
-function columnDatatypeMigrationOperation(diff: ColumnDataTypeDifference) {
+function columnDatatypeMigrationOperation(
+	diff: ColumnDataTypeDifference,
+	schemaName: string,
+) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const newDataType = `sql\`${diff.value}\``;
@@ -56,12 +59,14 @@ function columnDatatypeMigrationOperation(diff: ColumnDataTypeDifference) {
 		type: ChangeSetType.ChangeColumn,
 		up: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`alterTable("${tableName}")`,
 				`alterColumn("${columnName}", (col) => col.setDataType(${newDataType}))`,
 			),
 		],
 		down: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`alterTable("${tableName}")`,
 				`alterColumn("${columnName}", (col) => col.setDataType(${oldDataType}))`,
 			),

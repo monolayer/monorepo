@@ -21,10 +21,10 @@ export function ColumnNameMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_schemaName: string,
+	schemaName: string,
 ) {
 	if (isColumnName(diff)) {
-		return columnNameMigrationOperation(diff);
+		return columnNameMigrationOperation(diff, schemaName);
 	}
 }
 
@@ -46,7 +46,10 @@ function isColumnName(test: Difference): test is ColumnNameDifference {
 	);
 }
 
-function columnNameMigrationOperation(diff: ColumnNameDifference) {
+function columnNameMigrationOperation(
+	diff: ColumnNameDifference,
+	schemaName: string,
+) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[2];
 	const changeset: Changeset = {
@@ -55,12 +58,14 @@ function columnNameMigrationOperation(diff: ColumnNameDifference) {
 		type: ChangeSetType.ChangeColumnName,
 		up: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`alterTable("${tableName}")`,
 				`renameColumn("${columnName}", "${diff.value}")`,
 			),
 		],
 		down: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`alterTable("${tableName}")`,
 				`renameColumn("${diff.value}", "${columnName}")`,
 			),

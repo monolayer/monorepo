@@ -22,6 +22,7 @@ export enum ChangeSetType {
 	DropConstraint = "dropConstraint",
 	CreateConstraint = "createConstraint",
 	ChangeConstraint = "changeConstraint",
+	CreateSchema = "createSchema",
 }
 
 export type Changeset = {

@@ -47,14 +47,23 @@ describe("Database migrations", () => {
 				type: "createEnum",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createType("role")',
 						'asEnum(["admin", "user"])',
 						"execute();",
 					],
-					["await sql`COMMENT ON TYPE \"role\" IS 'yount'`", "execute(db);"],
+					[
+						'await sql`COMMENT ON TYPE "public"."role" IS \'yount\'`',
+						"execute(db);",
+					],
 				],
-				down: [["await db.schema", 'dropType("role")', "execute();"]],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropType("role")',
+						"execute();",
+					],
+				],
 			},
 			{
 				priority: 2002,
@@ -62,7 +71,7 @@ describe("Database migrations", () => {
 				type: "createColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addColumn("role", sql`role`)',
 						"execute();",
@@ -70,7 +79,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropColumn("role")',
 						"execute();",
@@ -119,7 +128,7 @@ describe("Database migrations", () => {
 				type: "dropColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropColumn("role")',
 						"execute();",
@@ -127,7 +136,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addColumn("role", sql`role`)',
 						"execute();",
@@ -138,15 +147,24 @@ describe("Database migrations", () => {
 				priority: 3011,
 				tableName: "none",
 				type: "dropEnum",
-				up: [["await db.schema", 'dropType("role")', "execute();"]],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropType("role")',
+						"execute();",
+					],
+				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'createType("role")',
 						'asEnum(["admin", "user"])',
 						"execute();",
 					],
-					["await sql`COMMENT ON TYPE \"role\" IS 'yount'`", "execute(db);"],
+					[
+						'await sql`COMMENT ON TYPE "public"."role" IS \'yount\'`',
+						"execute(db);",
+					],
 				],
 			},
 		];
@@ -194,7 +212,7 @@ describe("Database migrations", () => {
 				type: "changeEnum",
 				up: [
 					[
-						"await sql`ALTER TYPE role ADD VALUE IF NOT EXISTS 'superuser';`",
+						'await sql`ALTER TYPE "public"."role" ADD VALUE IF NOT EXISTS \'superuser\';`',
 						"execute(db);",
 					],
 				],

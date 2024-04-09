@@ -75,12 +75,12 @@ export async function fetchDbColumnInfo(
 			"information_schema.columns.datetime_precision",
 			sql<
 				string | null
-			>`(SELECT obj_description(('public.' || '"' || "information_schema"."columns"."table_name" || '"')::regclass, 'pg_class')::json->>'previousName')`.as(
+			>`(SELECT obj_description(('${sql.raw(databaseSchema)}.' || '"' || "information_schema"."columns"."table_name" || '"')::regclass, 'pg_class')::json->>'previousName')`.as(
 				"rename_from",
 			),
 			"information_schema.columns.identity_generation",
 			"information_schema.columns.is_identity",
-			sql`pg_get_serial_sequence('"' || information_schema.columns.table_name || '"', information_schema.columns.column_name)`.as(
+			sql`pg_get_serial_sequence('${sql.raw(databaseSchema)}.' || '"' || information_schema.columns.table_name || '"', information_schema.columns.column_name)`.as(
 				"sequence_name",
 			),
 			"pg_attribute.atttypmod",
@@ -93,16 +93,16 @@ export async function fetchDbColumnInfo(
 				.case()
 				.when(
 					sql`
-						pg_get_serial_sequence('"' || information_schema.columns.table_name || '"', information_schema.columns.column_name) IS NOT NULL
-						AND information_schema.columns.data_type = 'integer'
-						AND information_schema.columns.is_identity = 'NO'`,
+							pg_get_serial_sequence('${sql.raw(databaseSchema)}.' || '"' || information_schema.columns.table_name || '"', information_schema.columns.column_name) IS NOT NULL
+							AND information_schema.columns.data_type = 'integer'
+							AND information_schema.columns.is_identity = 'NO'`,
 				)
 				.then("serial")
 				.when(
 					sql`
-					pg_get_serial_sequence('"' || information_schema.columns.table_name || '"', information_schema.columns.column_name) IS NOT NULL
-					AND information_schema.columns.data_type = 'bigint'
-					AND information_schema.columns.is_identity = 'NO'`,
+						pg_get_serial_sequence('${sql.raw(databaseSchema)}.' || '"' || information_schema.columns.table_name || '"', information_schema.columns.column_name) IS NOT NULL
+						AND information_schema.columns.data_type = 'bigint'
+						AND information_schema.columns.is_identity = 'NO'`,
 				)
 				.then("bigserial")
 				.else(sql<string>`information_schema.columns.data_type`)
@@ -121,7 +121,7 @@ export async function fetchDbColumnInfo(
 				.case()
 				.when(
 					sql`
-						information_schema.columns.data_type = 'USER-DEFINED' AND pg_type.typtype = 'e'`,
+							information_schema.columns.data_type = 'USER-DEFINED' AND pg_type.typtype = 'e'`,
 				)
 				.then(sql<string>`pg_type.typname`)
 				.else(null)

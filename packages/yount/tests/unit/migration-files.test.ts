@@ -44,13 +44,19 @@ describe("Migrator", () => {
 					priority: 1,
 					up: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'createTable("books")',
 							'addColumn("name", "text")',
 							"execute();",
 						],
 					],
-					down: [["await db.schema", 'dropTable("books")', "execute();"]],
+					down: [
+						[
+							"await db.withSchema('public').schema",
+							'dropTable("books")',
+							"execute();",
+						],
+					],
 				},
 				{
 					tableName: "members",
@@ -58,7 +64,7 @@ describe("Migrator", () => {
 					type: ChangeSetType.CreateTable,
 					up: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'createTable("members")',
 							'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
 							'addColumn("email", "character varying(255)")',
@@ -66,16 +72,28 @@ describe("Migrator", () => {
 							"execute();",
 						],
 					],
-					down: [["await db.schema", 'dropTable("members")', "execute();"]],
+					down: [
+						[
+							"await db.withSchema('public').schema",
+							'dropTable("members")',
+							"execute();",
+						],
+					],
 				},
 				{
 					tableName: "shops",
 					priority: 1,
 					type: ChangeSetType.DropTable,
-					up: [["await db.schema", 'dropTable("shops")', "execute();"]],
+					up: [
+						[
+							"await db.withSchema('public').schema",
+							'dropTable("shops")',
+							"execute();",
+						],
+					],
 					down: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'createTable("shops")',
 							'addColumn("name", "varchar", (col) => col.defaultTo("hello"))',
 							'addColumn("email", "character varying(255)")',
@@ -90,7 +108,7 @@ describe("Migrator", () => {
 					priority: 2,
 					up: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'addColumn("country", "text")',
 							"execute();",
@@ -98,7 +116,7 @@ describe("Migrator", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'dropColumn("country")',
 							"execute();",
@@ -111,7 +129,7 @@ describe("Migrator", () => {
 					priority: 3001,
 					up: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("name", (col) => col.setDataType("varchar"))',
 							"execute();",
@@ -119,7 +137,7 @@ describe("Migrator", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("name", (col) => col.setDataType("text"))',
 							"execute();",
@@ -132,7 +150,7 @@ describe("Migrator", () => {
 					priority: 3001,
 					up: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("email", (col) => col.setDataType("varchar"))',
 							"execute();",
@@ -140,7 +158,7 @@ describe("Migrator", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("email", (col) => col.setDataType("character varying(255)"))',
 							"execute();",
@@ -153,7 +171,7 @@ describe("Migrator", () => {
 					priority: 3002,
 					up: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("name", (col) => col.setDefault("hello"))',
 							"execute();",
@@ -161,7 +179,7 @@ describe("Migrator", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("name", (col) => col.dropDefault())',
 							"execute();",
@@ -174,7 +192,7 @@ describe("Migrator", () => {
 					priority: 3002,
 					up: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("name", (col) => col.setNotNull())',
 							"execute();",
@@ -182,7 +200,7 @@ describe("Migrator", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("name", (col) => col.dropNotNull())',
 							"execute();",
@@ -195,7 +213,7 @@ describe("Migrator", () => {
 					priority: 3002,
 					up: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("city", (col) => col.dropDefault())',
 							"execute();",
@@ -203,7 +221,7 @@ describe("Migrator", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("city", (col) => col.setDefault("bcn"))',
 							"execute();",
@@ -216,7 +234,7 @@ describe("Migrator", () => {
 					priority: 3002,
 					up: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("city", (col) => col.setNotNull())',
 							"execute();",
@@ -224,7 +242,7 @@ describe("Migrator", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'alterTable("addresses")',
 							'alterColumn("city", (col) => col.dropNotNull())',
 							"execute();",
@@ -274,7 +292,9 @@ describe("Migrator", () => {
 						],
 					],
 					down: [
-						['await db.schema.dropIndex("addresses_city_kntc_idx").execute();'],
+						[
+							"await db.withSchema('public').schema.dropIndex(\"addresses_city_kntc_idx\").execute();",
+						],
 					],
 				},
 			];
@@ -311,13 +331,19 @@ describe("Migrator", () => {
 					priority: 1,
 					up: [
 						[
-							"await db.schema",
+							"await db.withSchema('public').schema",
 							'createTable("books")',
 							'addColumn("name", "text")',
 							"execute();",
 						],
 					],
-					down: [["await db.schema", 'dropTable("books")', "execute();"]],
+					down: [
+						[
+							"await db.withSchema('public').schema",
+							'dropTable("books")',
+							"execute();",
+						],
+					],
 				},
 			];
 			generateMigrationFiles(

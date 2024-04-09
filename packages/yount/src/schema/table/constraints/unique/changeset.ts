@@ -19,22 +19,22 @@ export function uniqueConstraintMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_schemaName: string,
+	schemaName: string,
 ) {
 	if (isUniqueConstraintCreateFirst(diff)) {
-		return createUniqueFirstConstraintMigration(diff, addedTables);
+		return createUniqueFirstConstraintMigration(diff, addedTables, schemaName);
 	}
 	if (isUniqueConstraintDropLast(diff)) {
-		return dropUniqueLastConstraintMigration(diff, droppedTables);
+		return dropUniqueLastConstraintMigration(diff, droppedTables, schemaName);
 	}
 	if (isUniqueConstraintChange(diff)) {
-		return changeUniqueConstraintMigration(diff);
+		return changeUniqueConstraintMigration(diff, schemaName);
 	}
 	if (isUniqueContraintCreateDiff(diff)) {
-		return createUniqueConstraintMigration(diff);
+		return createUniqueConstraintMigration(diff, schemaName);
 	}
 	if (isUniqueConstraintDropDiff(diff)) {
-		return dropUniqueConstraintMigration(diff);
+		return dropUniqueConstraintMigration(diff, schemaName);
 	}
 }
 
@@ -134,6 +134,7 @@ function isUniqueConstraintChange(test: Difference): test is UniqueChangeDiff {
 function createUniqueFirstConstraintMigration(
 	diff: UniqueCreateFirst,
 	addedTables: string[],
+	schemaName: string,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [, value]) => {
@@ -142,10 +143,10 @@ function createUniqueFirstConstraintMigration(
 			priority: MigrationOpPriority.ConstraintCreate,
 			tableName: tableName,
 			type: ChangeSetType.CreateConstraint,
-			up: [addUniqueConstraintOp(tableName, uniqueConstraint)],
+			up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 			down: addedTables.includes(tableName)
 				? [[]]
-				: [dropUniqueConstraintOp(tableName, uniqueConstraint)],
+				: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 		};
 		acc.push(changeset);
 		return acc;
@@ -155,6 +156,7 @@ function createUniqueFirstConstraintMigration(
 function dropUniqueLastConstraintMigration(
 	diff: UniqueDropLast,
 	droppedTables: string[],
+	schemaName: string,
 ) {
 	const tableName = diff.path[1];
 
@@ -167,15 +169,18 @@ function dropUniqueLastConstraintMigration(
 			type: ChangeSetType.DropConstraint,
 			up: droppedTables.includes(tableName)
 				? [[]]
-				: [dropUniqueConstraintOp(tableName, uniqueConstraint)],
-			down: [addUniqueConstraintOp(tableName, uniqueConstraint)],
+				: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
+			down: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 		};
 		acc.push(changeset);
 		return acc;
 	}, [] as Changeset[]);
 }
 
-function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
+function changeUniqueConstraintMigration(
+	diff: UniqueChangeDiff,
+	schemaName: string,
+) {
 	const tableName = diff.path[1];
 	const newUniqueConstraint = uniqueConstraintDefinition(diff.value);
 	const oldUniqueConstraint = uniqueConstraintDefinition(diff.oldValue);
@@ -185,18 +190,21 @@ function changeUniqueConstraintMigration(diff: UniqueChangeDiff) {
 		tableName: tableName,
 		type: ChangeSetType.ChangeConstraint,
 		up: [
-			dropUniqueConstraintOp(tableName, oldUniqueConstraint),
-			addUniqueConstraintOp(tableName, newUniqueConstraint),
+			dropUniqueConstraintOp(tableName, oldUniqueConstraint, schemaName),
+			addUniqueConstraintOp(tableName, newUniqueConstraint, schemaName),
 		],
 		down: [
-			dropUniqueConstraintOp(tableName, newUniqueConstraint),
-			addUniqueConstraintOp(tableName, oldUniqueConstraint),
+			dropUniqueConstraintOp(tableName, newUniqueConstraint, schemaName),
+			addUniqueConstraintOp(tableName, oldUniqueConstraint, schemaName),
 		],
 	};
 	return changeset;
 }
 
-function createUniqueConstraintMigration(diff: UniqueCreateDiff) {
+function createUniqueConstraintMigration(
+	diff: UniqueCreateDiff,
+	schemaName: string,
+) {
 	const tableName = diff.path[1];
 	const uniqueConstraint = uniqueConstraintDefinition(diff.value);
 
@@ -204,13 +212,16 @@ function createUniqueConstraintMigration(diff: UniqueCreateDiff) {
 		priority: MigrationOpPriority.ConstraintCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
-		up: [addUniqueConstraintOp(tableName, uniqueConstraint)],
-		down: [dropUniqueConstraintOp(tableName, uniqueConstraint)],
+		up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
+		down: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 	};
 	return changeset;
 }
 
-function dropUniqueConstraintMigration(diff: UuniqueDropDiff) {
+function dropUniqueConstraintMigration(
+	diff: UuniqueDropDiff,
+	schemaName: string,
+) {
 	const tableName = diff.path[1];
 	const uniqueConstraint = uniqueConstraintDefinition(diff.oldValue);
 
@@ -218,8 +229,8 @@ function dropUniqueConstraintMigration(diff: UuniqueDropDiff) {
 		priority: MigrationOpPriority.ConstraintDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropConstraint,
-		up: [dropUniqueConstraintOp(tableName, uniqueConstraint)],
-		down: [addUniqueConstraintOp(tableName, uniqueConstraint)],
+		up: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
+		down: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 	};
 	return changeset;
 }
@@ -244,8 +255,10 @@ function uniqueConstraintDefinition(unique: string) {
 function addUniqueConstraintOp(
 	tableName: string,
 	definition: ConstraintDefinition,
+	schemaName: string,
 ): string[] {
 	return executeKyselySchemaStatement(
+		schemaName,
 		`alterTable("${tableName}")`,
 		`addUniqueConstraint("${definition.name}", [${definition.columns
 			.map((col) => `"${col}"`)
@@ -258,8 +271,10 @@ function addUniqueConstraintOp(
 function dropUniqueConstraintOp(
 	tableName: string,
 	definition: ConstraintDefinition,
+	schemaName: string,
 ): string[] {
 	return executeKyselySchemaStatement(
+		schemaName,
 		`alterTable("${tableName}")`,
 		`dropConstraint("${definition.name}")`,
 	);

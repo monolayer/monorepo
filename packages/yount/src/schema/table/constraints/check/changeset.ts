@@ -22,19 +22,19 @@ export function CheckMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	_db: DbTableInfo,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_schemaName: string,
+	schemaName: string,
 ) {
 	if (istCreateFirstCheck(diff)) {
-		return createFirstCheckMigration(diff, addedTables);
+		return createFirstCheckMigration(diff, addedTables, schemaName);
 	}
 	if (isDropAllChecks(diff)) {
-		return dropAllChecksMigration(diff, droppedTables);
+		return dropAllChecksMigration(diff, droppedTables, schemaName);
 	}
 	if (isCreateCheck(diff)) {
-		return createCheckMigration(diff);
+		return createCheckMigration(diff, schemaName);
 	}
 	if (isDropCheck(diff)) {
-		return dropCheckMigration(diff);
+		return dropCheckMigration(diff, schemaName);
 	}
 }
 
@@ -69,6 +69,7 @@ function isDropAllChecks(test: Difference): test is DropAllChecksDiff {
 function createFirstCheckMigration(
 	diff: CreateFirstCheckDiff,
 	addedTables: string[],
+	schemaName: string,
 ) {
 	const tableName = diff.path[1];
 	const indexNames = Object.keys(diff.value) as Array<keyof typeof diff.value>;
@@ -82,17 +83,19 @@ function createFirstCheckMigration(
 					type: ChangeSetType.CreateConstraint,
 					up: [
 						executeKyselySchemaStatement(
+							schemaName,
 							`alterTable("${tableName}")`,
 							`addCheckConstraint("${checkName}", sql\`${check[1]}\`)`,
 						),
 						executeKyselyDbStatement(
-							`COMMENT ON CONSTRAINT "${checkName}" ON "${tableName}" IS '${check[0]}'`,
+							`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
 						),
 					],
 					down: addedTables.includes(tableName)
 						? [[]]
 						: [
 								executeKyselySchemaStatement(
+									schemaName,
 									`alterTable("${tableName}")`,
 									`dropConstraint("${checkName}")`,
 								),
@@ -107,6 +110,7 @@ function createFirstCheckMigration(
 function dropAllChecksMigration(
 	diff: DropAllChecksDiff,
 	droppedTables: string[],
+	schemaName: string,
 ) {
 	const tableName = diff.path[1];
 	const checkNames = Object.keys(diff.oldValue) as Array<
@@ -124,16 +128,17 @@ function dropAllChecksMigration(
 						? [[]]
 						: [
 								executeKyselySchemaStatement(
+									schemaName,
 									`alterTable("${tableName}")`,
 									`dropConstraint("${checkName}")`,
 								),
 							],
 					down: [
 						executeKyselyDbStatement(
-							`ALTER TABLE "${tableName}" ADD CONSTRAINT "${checkName}" ${check[1]}`,
+							`ALTER TABLE "${schemaName}"."${tableName}" ADD CONSTRAINT "${checkName}" ${check[1]}`,
 						),
 						executeKyselyDbStatement(
-							`COMMENT ON CONSTRAINT "${checkName}" ON "${tableName}" IS '${check[0]}'`,
+							`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
 						),
 					],
 				};
@@ -158,7 +163,7 @@ function isCreateCheck(test: Difference): test is CreateCheck {
 	);
 }
 
-function createCheckMigration(diff: CreateCheck) {
+function createCheckMigration(diff: CreateCheck, schemaName: string) {
 	const tableName = diff.path[1];
 	const checkName = diff.path[2];
 	const check = diff.value.split(":");
@@ -168,15 +173,17 @@ function createCheckMigration(diff: CreateCheck) {
 		type: ChangeSetType.CreateConstraint,
 		up: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`alterTable("${tableName}")`,
 				`addCheckConstraint("${checkName}", sql\`${check[1]}\`)`,
 			),
 			executeKyselyDbStatement(
-				`COMMENT ON CONSTRAINT "${checkName}" ON "${tableName}" IS '${check[0]}'`,
+				`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
 			),
 		],
 		down: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`alterTable("${tableName}")`,
 				`dropConstraint("${checkName}")`,
 			),
@@ -200,7 +207,7 @@ function isDropCheck(test: Difference): test is DropCheck {
 	);
 }
 
-function dropCheckMigration(diff: DropCheck) {
+function dropCheckMigration(diff: DropCheck, schemaName: string) {
 	const tableName = diff.path[1];
 	const checkName = diff.path[2];
 	const check = diff.oldValue.split(":");
@@ -210,16 +217,17 @@ function dropCheckMigration(diff: DropCheck) {
 		type: ChangeSetType.DropConstraint,
 		up: [
 			executeKyselySchemaStatement(
+				schemaName,
 				`alterTable("${tableName}")`,
 				`dropConstraint("${checkName}")`,
 			),
 		],
 		down: [
 			executeKyselyDbStatement(
-				`ALTER TABLE "${tableName}" ADD CONSTRAINT "${checkName}" ${check[1]}`,
+				`ALTER TABLE "${schemaName}"."${tableName}" ADD CONSTRAINT "${checkName}" ${check[1]}`,
 			),
 			executeKyselyDbStatement(
-				`COMMENT ON CONSTRAINT "${checkName}" ON "${tableName}" IS '${check[0]}'`,
+				`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
 			),
 		],
 	};

@@ -47,7 +47,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumnName",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'renameColumn("name", "fullName")',
 							"execute();",
@@ -55,7 +55,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'renameColumn("fullName", "name")',
 							"execute();",
@@ -95,7 +95,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumn",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'alterColumn("name", (col) => col.setDataType(sql`character varying(255)`))',
 							"execute();",
@@ -103,7 +103,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'alterColumn("name", (col) => col.setDataType(sql`text`))',
 							"execute();",
@@ -116,7 +116,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumnName",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'renameColumn("name", "fullName")',
 							"execute();",
@@ -124,7 +124,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'renameColumn("fullName", "name")',
 							"execute();",
@@ -170,7 +170,7 @@ describe("Rename column migrations", () => {
 					type: "dropConstraint",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_name_yount_key")',
 							"execute();",
@@ -178,7 +178,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'addUniqueConstraint("users_name_yount_key", ["name"])',
 							"execute();",
@@ -191,7 +191,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumnName",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'renameColumn("name", "fullName")',
 							"execute();",
@@ -199,7 +199,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'renameColumn("fullName", "name")',
 							"execute();",
@@ -212,7 +212,7 @@ describe("Rename column migrations", () => {
 					type: "createConstraint",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'addUniqueConstraint("users_fullName_yount_key", ["fullName"], (col) => col.nullsNotDistinct())',
 							"execute();",
@@ -220,7 +220,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_fullName_yount_key")',
 							"execute();",
@@ -265,7 +265,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumnName",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'renameColumn("name", "fullName")',
 							"execute();",
@@ -273,7 +273,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'renameColumn("fullName", "name")',
 							"execute();",
@@ -286,7 +286,7 @@ describe("Rename column migrations", () => {
 					type: "createConstraint",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'addUniqueConstraint("users_fullName_yount_key", ["fullName"])',
 							"execute();",
@@ -294,7 +294,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_fullName_yount_key")',
 							"execute();",
@@ -343,13 +343,13 @@ describe("Rename column migrations", () => {
 					type: "dropPrimaryKey",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'dropConstraint("users_pk1_name_yount_pk")',
 							"execute();",
 						],
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'alterColumn("name", (col) => col.dropNotNull())',
 							"execute();",
@@ -357,7 +357,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'addPrimaryKeyConstraint("users_pk1_name_yount_pk", ["name"])',
 							"execute();",
@@ -370,7 +370,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumnName",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("name", "fullName")',
 							"execute();",
@@ -378,7 +378,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("fullName", "name")',
 							"execute();",
@@ -391,7 +391,7 @@ describe("Rename column migrations", () => {
 					type: "createPrimaryKey",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'addPrimaryKeyConstraint("users_pk1_fullName_yount_pk", ["fullName"])',
 							"execute();",
@@ -399,13 +399,13 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'dropConstraint("users_pk1_fullName_yount_pk")',
 							"execute();",
 						],
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'alterColumn("fullName", (col) => col.dropNotNull())',
 							"execute();",
@@ -450,7 +450,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumnName",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("name", "fullName")',
 							"execute();",
@@ -458,7 +458,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("fullName", "name")',
 							"execute();",
@@ -471,7 +471,7 @@ describe("Rename column migrations", () => {
 					type: "createPrimaryKey",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'addPrimaryKeyConstraint("users_pk1_fullName_yount_pk", ["fullName"])',
 							"execute();",
@@ -479,13 +479,13 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'dropConstraint("users_pk1_fullName_yount_pk")',
 							"execute();",
 						],
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'alterColumn("fullName", (col) => col.dropNotNull())',
 							"execute();",
@@ -554,7 +554,7 @@ describe("Rename column migrations", () => {
 					type: "dropConstraint",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'dropConstraint("users_pk1_book_id_books_pk1_id_yount_fk")',
 							"execute();",
@@ -562,7 +562,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'addForeignKeyConstraint("users_pk1_book_id_books_pk1_id_yount_fk", ["book_id"], "books_pk1", ["id"])',
 							'onDelete("no action")',
@@ -577,7 +577,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumnName",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("book_id", "bookId")',
 							"execute();",
@@ -585,7 +585,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("bookId", "book_id")',
 							"execute();",
@@ -598,7 +598,7 @@ describe("Rename column migrations", () => {
 					type: "createConstraint",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_yount_fk", ["bookId"], "books_pk1", ["id"])',
 							'onDelete("no action")',
@@ -608,7 +608,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'dropConstraint("users_pk1_bookId_books_pk1_id_yount_fk")',
 							"execute();",
@@ -671,7 +671,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumnName",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("book_id", "bookId")',
 							"execute();",
@@ -679,7 +679,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("bookId", "book_id")',
 							"execute();",
@@ -692,7 +692,7 @@ describe("Rename column migrations", () => {
 					type: "createConstraint",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_yount_fk", ["bookId"], "books_pk1", ["id"])',
 							'onDelete("no action")',
@@ -702,7 +702,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'dropConstraint("users_pk1_bookId_books_pk1_id_yount_fk")',
 							"execute();",
@@ -757,7 +757,7 @@ describe("Rename column migrations", () => {
 					type: "dropIndex",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'dropIndex("users_pk1_book_id_kntc_idx")',
 							"execute();",
 						],
@@ -768,7 +768,7 @@ describe("Rename column migrations", () => {
 							"execute(db);",
 						],
 						[
-							"await sql`COMMENT ON INDEX \"users_pk1_book_id_kntc_idx\" IS 'abcd'`",
+							'await sql`COMMENT ON INDEX "public"."users_pk1_book_id_kntc_idx" IS \'abcd\'`',
 							"execute(db);",
 						],
 					],
@@ -779,7 +779,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumnName",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("book_id", "bookId")',
 							"execute();",
@@ -787,7 +787,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("bookId", "book_id")',
 							"execute();",
@@ -800,17 +800,17 @@ describe("Rename column migrations", () => {
 					type: "createIndex",
 					up: [
 						[
-							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId")`',
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "public"."users_pk1" ("bookId")`',
 							"execute(db);",
 						],
 						[
-							"await sql`COMMENT ON INDEX \"users_pk1_bookId_kntc_idx\" IS '760bce25'`",
+							'await sql`COMMENT ON INDEX "public"."users_pk1_bookId_kntc_idx" IS \'0745fefe\'`',
 							"execute(db);",
 						],
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'dropIndex("users_pk1_bookId_kntc_idx")',
 							"execute();",
 						],
@@ -854,7 +854,7 @@ describe("Rename column migrations", () => {
 					type: "changeColumnName",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("book_id", "bookId")',
 							"execute();",
@@ -862,7 +862,7 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("bookId", "book_id")',
 							"execute();",
@@ -875,17 +875,17 @@ describe("Rename column migrations", () => {
 					type: "createIndex",
 					up: [
 						[
-							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId")`',
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "public"."users_pk1" ("bookId")`',
 							"execute(db);",
 						],
 						[
-							"await sql`COMMENT ON INDEX \"users_pk1_bookId_kntc_idx\" IS '760bce25'`",
+							'await sql`COMMENT ON INDEX "public"."users_pk1_bookId_kntc_idx" IS \'0745fefe\'`',
 							"execute(db);",
 						],
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'dropIndex("users_pk1_bookId_kntc_idx")',
 							"execute();",
 						],
@@ -1193,7 +1193,7 @@ describe("Rename column migrations", () => {
 					type: "dropIndex",
 					up: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'dropIndex("users_pk1_book_id_kntc_idx")',
 							"execute();",
 						],
@@ -1204,7 +1204,7 @@ describe("Rename column migrations", () => {
 							"execute(db);",
 						],
 						[
-							"await sql`COMMENT ON INDEX \"users_pk1_book_id_kntc_idx\" IS 'abcd'`",
+							'await sql`COMMENT ON INDEX "public"."users_pk1_book_id_kntc_idx" IS \'abcd\'`',
 							"execute(db);",
 						],
 					],
@@ -1215,17 +1215,17 @@ describe("Rename column migrations", () => {
 					type: "createIndex",
 					up: [
 						[
-							'await sql`create index "users_pk1_bookId_kntc_idx" on "users_pk1" ("bookId")`',
+							'await sql`create index "users_pk1_bookId_kntc_idx" on "public"."users_pk1" ("bookId")`',
 							"execute(db);",
 						],
 						[
-							"await sql`COMMENT ON INDEX \"users_pk1_bookId_kntc_idx\" IS '760bce25'`",
+							'await sql`COMMENT ON INDEX "public"."users_pk1_bookId_kntc_idx" IS \'0745fefe\'`',
 							"execute(db);",
 						],
 					],
 					down: [
 						[
-							"await db.schema",
+							'await db.withSchema("public").schema',
 							'dropIndex("users_pk1_bookId_kntc_idx")',
 							"execute();",
 						],
@@ -1259,7 +1259,7 @@ describe("Rename column migrations", () => {
 				.columns(["bookId"])
 				.execute();
 
-			await sql`COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS '760bce25'`.execute(
+			await sql`COMMENT ON INDEX "users_pk1_bookId_kntc_idx" IS '0745fefe'`.execute(
 				context.kysely,
 			);
 

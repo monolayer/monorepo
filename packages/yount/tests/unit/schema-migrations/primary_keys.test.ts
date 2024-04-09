@@ -62,7 +62,7 @@ describe("Database migrations", () => {
 				type: "createPrimaryKey",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addPrimaryKeyConstraint("users_fullName_name_yount_pk", ["fullName", "name"])',
 						"execute();",
@@ -70,19 +70,19 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_fullName_name_yount_pk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("fullName", (col) => col.dropNotNull())',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -95,7 +95,7 @@ describe("Database migrations", () => {
 				type: "createPrimaryKey",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addPrimaryKeyConstraint("books_name_yount_pk", ["name"])',
 						"execute();",
@@ -103,13 +103,13 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("books_name_yount_pk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -178,13 +178,13 @@ describe("Database migrations", () => {
 				type: "dropPrimaryKey",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("books_name_yount_pk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -192,7 +192,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'addPrimaryKeyConstraint("books_name_yount_pk", ["name"])',
 						"execute();",
@@ -205,19 +205,19 @@ describe("Database migrations", () => {
 				type: "dropPrimaryKey",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_fullName_name_yount_pk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("fullName", (col) => col.dropNotNull())',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -225,7 +225,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addPrimaryKeyConstraint("users_fullName_name_yount_pk", ["fullName", "name"])',
 						"execute();",
@@ -280,19 +280,19 @@ describe("Database migrations", () => {
 				type: "dropPrimaryKey",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_fullName_name_yount_pk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("fullName", (col) => col.dropNotNull())',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -300,7 +300,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addPrimaryKeyConstraint("users_fullName_name_yount_pk", ["fullName", "name"])',
 						"execute();",
@@ -313,7 +313,7 @@ describe("Database migrations", () => {
 				type: "createPrimaryKey",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addPrimaryKeyConstraint("users_name_yount_pk", ["name"])',
 						"execute();",
@@ -321,13 +321,13 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_name_yount_pk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -382,13 +382,13 @@ describe("Database migrations", () => {
 				type: "dropPrimaryKey",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_fullName_name_yount_pk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -396,7 +396,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addPrimaryKeyConstraint("users_fullName_name_yount_pk", ["fullName", "name"])',
 						"execute();",
@@ -409,7 +409,7 @@ describe("Database migrations", () => {
 				type: "createPrimaryKey",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addPrimaryKeyConstraint("users_name_yount_pk", ["name"])',
 						"execute();",
@@ -417,13 +417,13 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_name_yount_pk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -475,13 +475,13 @@ describe("Database migrations", () => {
 				type: "dropPrimaryKey",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_name_yount_pk")',
 						"execute();",
 					],
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
@@ -489,7 +489,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addPrimaryKeyConstraint("users_name_yount_pk", ["name"])',
 						"execute();",
@@ -502,7 +502,7 @@ describe("Database migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("email", (col) => col.setNotNull())',
 						"execute();",
@@ -510,7 +510,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("email", (col) => col.dropNotNull())',
 						"execute();",
@@ -523,7 +523,7 @@ describe("Database migrations", () => {
 				type: "createPrimaryKey",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'addPrimaryKeyConstraint("users_email_yount_pk", ["email"])',
 						"execute();",
@@ -531,7 +531,7 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'dropConstraint("users_email_yount_pk")',
 						"execute();",

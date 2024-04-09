@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { pgDatabase } from "~/schema/pg-database.js";
@@ -29,7 +30,7 @@ describe("Database migrations", () => {
 			.on("users")
 			.column("fullName")
 			.execute();
-		await sql`COMMENT ON INDEX "users_fullName_kntc_idx" IS \'ad74f314\'`.execute(
+		await sql`COMMENT ON INDEX "users_fullName_kntc_idx" IS \'6212d2e0\'`.execute(
 			context.kysely,
 		);
 
@@ -54,16 +55,20 @@ describe("Database migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create index "users_name_kntc_idx" on "users" ("name")`',
+						'await sql`create index "users_name_kntc_idx" on "public"."users" ("name")`',
 						"execute(db);",
 					],
 					[
-						"await sql`COMMENT ON INDEX \"users_name_kntc_idx\" IS 'f873e4a8'`",
+						'await sql`COMMENT ON INDEX "public"."users_name_kntc_idx" IS \'30e5df04\'`',
 						"execute(db);",
 					],
 				],
 				down: [
-					["await db.schema", 'dropIndex("users_name_kntc_idx")', "execute();"],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("users_name_kntc_idx")',
+						"execute();",
+					],
 				],
 			},
 		];
@@ -97,7 +102,7 @@ describe("Database migrations", () => {
 			.on("users")
 			.column("name")
 			.execute();
-		await sql`COMMENT ON INDEX "users_name_kntc_idx" IS \'f873e4a8\'`.execute(
+		await sql`COMMENT ON INDEX "users_name_kntc_idx" IS \'30e5df04\'`.execute(
 			context.kysely,
 		);
 
@@ -122,7 +127,7 @@ describe("Database migrations", () => {
 				type: "dropIndex",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'dropIndex("users_fullName_kntc_idx")',
 						"execute();",
 					],
@@ -133,7 +138,7 @@ describe("Database migrations", () => {
 						"execute(db);",
 					],
 					[
-						"await sql`COMMENT ON INDEX \"users_fullName_kntc_idx\" IS 'ad74f314'`",
+						'await sql`COMMENT ON INDEX "public"."users_fullName_kntc_idx" IS \'ad74f314\'`',
 						"execute(db);",
 					],
 				],
@@ -169,7 +174,7 @@ describe("Database migrations", () => {
 			.on("users")
 			.column("name")
 			.execute();
-		await sql`COMMENT ON INDEX "users_name_kntc_idx" IS \'f873e4a8\'`.execute(
+		await sql`COMMENT ON INDEX "users_name_kntc_idx" IS \'30e5df04\'`.execute(
 			context.kysely,
 		);
 
@@ -194,7 +199,7 @@ describe("Database migrations", () => {
 				type: "dropIndex",
 				up: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'dropIndex("users_fullName_kntc_idx")',
 						"execute();",
 					],
@@ -205,7 +210,7 @@ describe("Database migrations", () => {
 						"execute(db);",
 					],
 					[
-						"await sql`COMMENT ON INDEX \"users_fullName_kntc_idx\" IS 'ad74f314'`",
+						'await sql`COMMENT ON INDEX "public"."users_fullName_kntc_idx" IS \'ad74f314\'`',
 						"execute(db);",
 					],
 				],
@@ -216,17 +221,17 @@ describe("Database migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create index "users_name_fullName_kntc_idx" on "users" ("name", "fullName")`',
+						'await sql`create index "users_name_fullName_kntc_idx" on "public"."users" ("name", "fullName")`',
 						"execute(db);",
 					],
 					[
-						"await sql`COMMENT ON INDEX \"users_name_fullName_kntc_idx\" IS '94f56c57'`",
+						'await sql`COMMENT ON INDEX "public"."users_name_fullName_kntc_idx" IS \'f851830d\'`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						"await db.schema",
+						'await db.withSchema("public").schema',
 						'dropIndex("users_name_fullName_kntc_idx")',
 						"execute();",
 					],
@@ -263,7 +268,7 @@ describe("Database migrations", () => {
 			.on("users")
 			.column("name")
 			.execute();
-		await sql`COMMENT ON INDEX "users_name_kntc_idx" IS \'f873e4a8\'`.execute(
+		await sql`COMMENT ON INDEX "users_name_kntc_idx" IS \'30e5df04\'`.execute(
 			context.kysely,
 		);
 
@@ -287,24 +292,32 @@ describe("Database migrations", () => {
 				tableName: "users",
 				type: "changeIndex",
 				up: [
-					['await sql`DROP INDEX "users_fullName_kntc_idx"`', "execute(db);"],
 					[
-						'await sql`create unique index "users_fullName_kntc_idx" on "users" ("fullName")`',
+						'await db.withSchema("public").schema',
+						'dropIndex("users_fullName_kntc_idx")',
+						"execute();",
+					],
+					[
+						'await sql`create unique index "users_fullName_kntc_idx" on "public"."users" ("fullName")`',
 						"execute(db);",
 					],
 					[
-						"await sql`COMMENT ON INDEX \"users_fullName_kntc_idx\" IS '713f9d14'`",
+						'await sql`COMMENT ON INDEX "public"."users_fullName_kntc_idx" IS \'42625218\'`',
 						"execute(db);",
 					],
 				],
 				down: [
-					['await sql`DROP INDEX "users_fullName_kntc_idx"`', "execute(db);"],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("users_fullName_kntc_idx")',
+						"execute();",
+					],
 					[
 						'await sql`CREATE INDEX "users_fullName_kntc_idx" ON public.users USING btree ("fullName")`',
 						"execute(db);",
 					],
 					[
-						"await sql`COMMENT ON INDEX \"users_fullName_kntc_idx\" IS 'ad74f314'`",
+						'await sql`COMMENT ON INDEX "public"."users_fullName_kntc_idx" IS \'ad74f314\'`',
 						"execute(db);",
 					],
 				],
