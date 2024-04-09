@@ -32,7 +32,7 @@ function checkStructureFile() {
 				errorMessage: `Structure file not found. Expected location: ${path.join(
 					environment.folder,
 					"dumps",
-					`structure.${environment.connectionName}.sql`,
+					`structure.${environment.connectorName}.sql`,
 				)}`,
 				failMessage: "Structure file does not exist",
 				callback: () =>
@@ -40,7 +40,7 @@ function checkStructureFile() {
 						const structurePath = path.join(
 							environment.folder,
 							"dumps",
-							`structure.${environment.connectionName}.sql`,
+							`structure.${environment.connectorName}.sql`,
 						);
 						try {
 							await fs.stat(structurePath);
@@ -58,13 +58,13 @@ function restoreDatabaseFromStructureFile() {
 	return Effect.all([Environment, Pg]).pipe(
 		Effect.flatMap(([environment, pg]) =>
 			spinnerTask(
-				`Restore ${pg.config.database} from structure.${environment.connectionName}.sql`,
+				`Restore ${pg.config.database} from structure.${environment.connectorName}.sql`,
 				() =>
 					Effect.tryPromise(async () => {
 						const structurePath = path.join(
 							environment.folder,
 							"dumps",
-							`structure.${environment.connectionName}.sql`,
+							`structure.${environment.connectorName}.sql`,
 						);
 						return (await fs.readFile(structurePath)).toString();
 					}).pipe(

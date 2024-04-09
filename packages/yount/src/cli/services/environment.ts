@@ -3,10 +3,10 @@ import { Context, Effect, Layer } from "effect";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
-import { importConfig, importConnections } from "~/config.js";
+import { importConfig, importConnector } from "~/config.js";
 import {
 	type CamelCaseOptions,
-	type Connections,
+	type Connectors,
 	type PgConfig,
 } from "~/configuration.js";
 
@@ -15,8 +15,8 @@ type EnvironmentProperties = {
 	readonly folder: string;
 	readonly migrationFolder: string;
 	readonly camelCasePlugin?: CamelCaseOptions;
-	readonly connectionName: string;
-	readonly connectionConfig: PgConfig;
+	readonly connectorName: string;
+	readonly connectorConfig: PgConfig;
 };
 
 export class Environment extends Context.Tag("Environment")<
@@ -29,73 +29,72 @@ export class DevEnvironment extends Context.Tag("DevEnvironment")<
 	EnvironmentProperties
 >() {}
 
-export function environmentLayer(environment: string, connectionName: string) {
+export function environmentLayer(environment: string, connectorName: string) {
 	return Layer.effect(
 		Environment,
-		environmentGenerator(environment, connectionName),
+		environmentGenerator(environment, connectorName),
 	);
 }
 
-export function devEnvironmentLayer(connectionName: string) {
+export function devEnvironmentLayer(connectorName: string) {
 	return Layer.effect(
 		DevEnvironment,
-		environmentGenerator("development", connectionName),
+		environmentGenerator("development", connectorName),
 	);
 }
 
-function environmentGenerator(environment: string, connectionName: string) {
+function environmentGenerator(environment: string, connectorName: string) {
 	return Effect.gen(function* (_) {
 		const config = yield* _(Effect.promise(async () => await importConfig()));
-		const connections = yield* _(
-			Effect.promise(async () => await importConnections()),
+		const connectors = yield* _(
+			Effect.promise(async () => await importConnector()),
 		);
-
-		const environmentConfigForConnection = connections.connections;
+		const environmentConfigForConnection = connectors.connectors;
 
 		if (environmentConfigForConnection === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* _(
 				Effect.fail(
-					`No connection configurations found. Check your connections.ts file.`,
+					`No connector configurations found. Check your connectors.ts file.`,
 				),
 			);
 		}
 
-		const connection =
-			environmentConfigForConnection[connectionName as keyof Connections];
+		const connector =
+			environmentConfigForConnection[connectorName as keyof Connectors];
 
-		if (connection === undefined) {
+		if (connector === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* _(
 				Effect.fail(
-					`Connection ${connectionName} not found. Check your connections.ts file.`,
+					`Connection ${connectorName} not found. Check your connectors.ts file.`,
 				),
 			);
 		}
 
-		connection.environments[environment];
-		const environmentConfig = connection.environments[environment];
+		connector.environments[environment];
+		const environmentConfig = connector.environments[environment];
 
 		if (environmentConfig === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* _(
 				Effect.fail(
-					`Environment: '${environment}' missing in connection ${connectionName}. Check your connections.ts file.`,
+					`Environment: '${environment}' missing in connector ${connectorName}. Check your connectors.ts file.`,
 				),
 			);
 		}
 		return {
 			name: environment,
-			connectionName: connectionName,
+			connectorName: connectorName,
 			folder: config.folder,
 			migrationFolder: path.join(
 				cwd(),
 				config.folder,
 				"migrations",
-				connectionName,
+				connectorName,
 			),
-			camelCasePlugin: connections.connections?.default.camelCasePlugin,
-			connectionConfig: environmentConfig,
+			camelCasePlugin: connectors.connectors?.default.camelCasePlugin,
+			connectorConfig: environmentConfig,
 		};
 	});
 }

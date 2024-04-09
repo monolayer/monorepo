@@ -30,7 +30,7 @@ describe("pgQuery", () => {
 		await teardownProgramContext(context);
 	});
 
-	test("connections", async () => {
+	test("connectors", async () => {
 		const layersWithDefaultConnection = migratorLayer().pipe(
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
@@ -53,9 +53,7 @@ describe("pgQuery", () => {
 				layersWithDefaultConnection,
 			),
 		);
-		expect(defaultDatabase).toStrictEqual([
-			{ current_database: "connections" },
-		]);
+		expect(defaultDatabase).toStrictEqual([{ current_database: "connectors" }]);
 
 		const statsDatabase = await Effect.runPromise(
 			Effect.provide(
@@ -64,7 +62,7 @@ describe("pgQuery", () => {
 			),
 		);
 		expect(statsDatabase).toStrictEqual([
-			{ current_database: "connections_stats" },
+			{ current_database: "connectors_stats" },
 		]);
 	});
 
@@ -116,7 +114,7 @@ describe("adminPgQuery", () => {
 		await teardownProgramContext(context);
 	});
 
-	test("admin connections connect to 'postgres'", async () => {
+	test("admin connectors connect to 'postgres'", async () => {
 		const layersWithDefaultConnection = migratorLayer().pipe(
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
@@ -194,7 +192,7 @@ describe("devAdminPgQuery", () => {
 		await teardownProgramContext(context);
 	});
 
-	test<ProgramContext>("default connections connect to dev host postgres", async (context) => {
+	test<ProgramContext>("default connectors connect to dev host postgres", async (context) => {
 		const layers = migratorLayer().pipe(
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
@@ -221,7 +219,7 @@ describe("devAdminPgQuery", () => {
 		expect(statsDatabase).toStrictEqual([{ current_database: "postgres" }]);
 	});
 
-	test<ProgramContext>("other connections connect to dev host postgres", async (context) => {
+	test<ProgramContext>("other connectors connect to dev host postgres", async (context) => {
 		const layers = migratorLayer().pipe(
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),

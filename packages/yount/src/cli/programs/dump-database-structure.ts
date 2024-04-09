@@ -19,7 +19,7 @@ export function dumpDatabaseStructure() {
 					databaseSearchPath(),
 					databaseInConfig(pg.config),
 					databaseDumpPath(
-						environment.connectionName,
+						environment.connectorName,
 						environment.name,
 						environment.folder,
 					),
@@ -146,12 +146,9 @@ class DumpWritable extends Writable {
 	) {
 		const lines = chunk.toString().split("\n");
 		for (const line of lines) {
-			if (line.startsWith("CREATE SCHEMA public")) {
+			if (line.startsWith("CREATE SCHEMA ")) {
 				this.#contents.push(
-					line.replace(
-						"CREATE SCHEMA public",
-						"CREATE SCHEMA IF NOT EXISTS public",
-					),
+					line.replace("CREATE SCHEMA ", "CREATE SCHEMA IF NOT EXISTS "),
 				);
 				continue;
 			}

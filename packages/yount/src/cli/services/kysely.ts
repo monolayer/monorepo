@@ -1,6 +1,6 @@
 import { Context, Effect, Layer } from "effect";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
-import { importConnections } from "~/config.js";
+import { importConnector } from "~/config.js";
 import { Pg } from "./pg.js";
 
 export class Db extends Context.Tag("Db")<
@@ -18,12 +18,12 @@ export function kyselyLayer() {
 		Db,
 		Effect.gen(function* (_) {
 			const pg = yield* _(Pg);
-			const connections = yield* _(
-				Effect.promise(async () => await importConnections()),
+			const connectors = yield* _(
+				Effect.promise(async () => await importConnector()),
 			);
 
 			const useCamelCase =
-				connections.connections?.default.camelCasePlugin?.enabled ?? false;
+				connectors.connectors?.default.camelCasePlugin?.enabled ?? false;
 			return {
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				kysely: new Kysely<any>({

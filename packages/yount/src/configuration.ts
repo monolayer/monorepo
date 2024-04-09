@@ -20,7 +20,7 @@ export type Connector = {
 	} & Record<string, PgConfig>;
 };
 
-export type Connections =
+export type Connectors =
 	| {
 			default: Connector;
 	  }

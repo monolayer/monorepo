@@ -20,7 +20,7 @@ export function pgLayer() {
 		Pg,
 		Effect.gen(function* (_) {
 			const environment = yield* _(Environment);
-			return poolAndConfig(environment.connectionConfig);
+			return poolAndConfig(environment.connectorConfig);
 		}),
 	);
 }
@@ -30,7 +30,7 @@ export function devPgLayer() {
 		DevPg,
 		Effect.gen(function* (_) {
 			const environment = yield* _(DevEnvironment);
-			return poolAndConfig(environment.connectionConfig);
+			return poolAndConfig(environment.connectorConfig);
 		}),
 	);
 }

@@ -1,7 +1,7 @@
 import { Effect, pipe } from "effect";
 import type { Kysely } from "kysely";
 import { changeset } from "~/changeset/changeset.js";
-import { importConnections } from "~/config.js";
+import { importConnector } from "~/config.js";
 import { type CamelCaseOptions } from "~/configuration.js";
 import {
 	localSchema,
@@ -24,7 +24,7 @@ import { Db } from "../services/kysely.js";
 export function schemaChangeset() {
 	return Effect.all([DevEnvironment, Db]).pipe(
 		Effect.flatMap(([environment, db]) =>
-			localDatabaseSchema(environment.connectionName).pipe(
+			localDatabaseSchema(environment.connectorName).pipe(
 				Effect.flatMap((localDatabaseSchema) =>
 					Effect.all([
 						databaseSchema(db.kyselyNoCamelCase, localDatabaseSchema),
@@ -64,17 +64,17 @@ function computeChangeset(
 }
 
 function localDatabaseSchema(connectionName: string) {
-	return Effect.tryPromise(() => importConnections()).pipe(
+	return Effect.tryPromise(() => importConnector()).pipe(
 		Effect.flatMap((connectionImport) =>
-			Effect.succeed(connectionImport.connections || {}),
+			Effect.succeed(connectionImport.connectors || {}),
 		),
-		Effect.flatMap((allConnections) => {
-			const connection = Object.entries(allConnections).find(([key]) => {
+		Effect.flatMap((allConnectors) => {
+			const connection = Object.entries(allConnectors).find(([key]) => {
 				return key === connectionName;
 			});
 			if (connection === undefined) {
 				return Effect.fail(
-					`Connection ${connectionName} not found. Check your connections.ts file.`,
+					`Connection ${connectionName} not found. Check your connectors.ts file.`,
 				);
 			} else {
 				return Effect.succeed(connection[1].databaseSchema);

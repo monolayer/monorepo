@@ -7,10 +7,10 @@ export const yountConfigTemplate = nunjucks.compile(`export default {
 };
 `);
 
-export const connectionsTemplate =
+export const connectorsTemplate =
 	nunjucks.compile(`import { database } from "./schema";
 
-export const connections = {
+export const connectors = {
 	default: {
 		databaseSchema: database,
 		environments: {
