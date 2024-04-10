@@ -167,7 +167,7 @@ export function importSeedFunction() {
 function seedDatabase() {
 	return DbClients.pipe(
 		Effect.flatMap((dbClient) =>
-			spinnerTask(`Seed ${dbClient.currentEnvironment.pgConfig.database}`, () =>
+			spinnerTask(`Seed ${dbClient.currentEnvironment.databaseName}`, () =>
 				importSeedFunction().pipe(
 					Effect.flatMap((seedImport) =>
 						Effect.tryPromise(() =>

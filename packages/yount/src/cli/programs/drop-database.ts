@@ -7,10 +7,10 @@ export function dropDatabase(failSafe = false) {
 	return DbClients.pipe(
 		Effect.flatMap((clients) =>
 			spinnerTask(
-				`Drop database ${clients.currentEnvironment.pgConfig.database}`,
+				`Drop database ${clients.currentEnvironment.databaseName}`,
 				() =>
 					adminPgQuery(
-						`DROP DATABASE ${failSafe ? "IF EXISTS" : ""} "${clients.currentEnvironment.pgConfig.database}";`,
+						`DROP DATABASE ${failSafe ? "IF EXISTS" : ""} "${clients.currentEnvironment.databaseName}";`,
 					),
 			),
 		),

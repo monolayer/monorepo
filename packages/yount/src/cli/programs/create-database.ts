@@ -7,10 +7,10 @@ export function createDatabase() {
 	return DbClients.pipe(
 		Effect.flatMap((clients) =>
 			spinnerTask(
-				`Create database ${clients.currentEnvironment.pgConfig.database}`,
+				`Create database ${clients.currentEnvironment.databaseName}`,
 				() =>
 					adminPgQuery(
-						`CREATE DATABASE "${clients.currentEnvironment.pgConfig.database}";`,
+						`CREATE DATABASE "${clients.currentEnvironment.databaseName}";`,
 					),
 			),
 		),
@@ -21,10 +21,10 @@ export function createDevDatabase() {
 	return DbClients.pipe(
 		Effect.flatMap((clients) =>
 			spinnerTask(
-				`Create database ${clients.developmentEnvironment.pgConfig.database}`,
+				`Create database ${clients.developmentEnvironment.databaseName}`,
 				() =>
 					adminPgQuery(
-						`CREATE DATABASE "${clients.developmentEnvironment.pgConfig.database}";`,
+						`CREATE DATABASE "${clients.developmentEnvironment.databaseName}";`,
 					),
 			),
 		),

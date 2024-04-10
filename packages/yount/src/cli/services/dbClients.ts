@@ -11,6 +11,7 @@ import {
 type DbClientEnvironmentProperties = {
 	readonly pgPool: pg.Pool;
 	readonly pgAdminPool: pg.Pool;
+	readonly databaseName: string;
 	readonly pgConfig:
 		| (pg.ClientConfig & pg.PoolConfig)
 		| pgConnectionString.ConnectionOptions;
@@ -33,8 +34,12 @@ export function dbClientsLayer() {
 		DbClients,
 		Effect.gen(function* (_) {
 			return {
-				currentEnvironment: dbClientEnvironmentProperties(yield* _(Environment)),
-				developmentEnvironment: dbClientEnvironmentProperties(yield* _(DevEnvironment)),
+				currentEnvironment: dbClientEnvironmentProperties(
+					yield* _(Environment),
+				),
+				developmentEnvironment: dbClientEnvironmentProperties(
+					yield* _(DevEnvironment),
+				),
 			};
 		}),
 	);
@@ -43,6 +48,7 @@ export function dbClientsLayer() {
 function dbClientEnvironmentProperties(environment: EnvironmentProperties) {
 	const pg = poolAndConfig(environment.connectorConfig);
 	return {
+		databaseName: pg.config.database ?? "",
 		pgPool: pg.pool,
 		pgAdminPool: pg.adminPool,
 		pgConfig: pg.config,

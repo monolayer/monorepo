@@ -17,7 +17,7 @@ export function dumpDatabaseStructure() {
 			Effect.flatMap(([environment, dbClients]) =>
 				Effect.all([
 					databaseSearchPath(),
-					databaseInConfig(dbClients.currentEnvironment.pgConfig),
+					databaseInConfig(dbClients.currentEnvironment.databaseName),
 					databaseDumpPath(
 						environment.connectorName,
 						environment.name,
@@ -94,11 +94,8 @@ function dumpStructure(database: string, dumpPath: string) {
 	);
 }
 
-function databaseInConfig(
-	config: (ClientConfig & PoolConfig) | ConnectionOptions,
-) {
-	const database = config.database;
-	if (database === undefined || database === null) {
+function databaseInConfig(database: string) {
+	if (database === "") {
 		return Effect.fail(new Error("Database not defined in configuration."));
 	}
 	return Effect.succeed(database);

@@ -12,7 +12,7 @@ export function handleMissingDevDatabase() {
 			adminDevPgQuery<{
 				databaseExists: boolean;
 			}>(
-				`SELECT true as databaseExists FROM pg_database WHERE datname = '${dbClients.currentEnvironment.pgConfig.database}'`,
+				`SELECT true as databaseExists FROM pg_database WHERE datname = '${dbClients.currentEnvironment.databaseName}'`,
 			).pipe(
 				Effect.flatMap((result) =>
 					Effect.if(result.length !== 0, {
