@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
-import type { Context } from "../context.js";
+import type { ProgramContext } from "../program-context.js";
 import { check } from "./spinner-task.js";
 
 export function checkWithFail({
@@ -14,7 +14,7 @@ export function checkWithFail({
 	nextSteps: string;
 	errorMessage: string;
 	failMessage: string;
-	callback: () => Effect.Effect<boolean, unknown, Context>;
+	callback: () => Effect.Effect<boolean, unknown, ProgramContext>;
 }) {
 	return check(name, () =>
 		Effect.succeed(true).pipe(Effect.flatMap(callback)),

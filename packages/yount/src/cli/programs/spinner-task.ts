@@ -1,11 +1,11 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import color from "picocolors";
-import type { Context } from "../context.js";
+import type { ProgramContext } from "../program-context.js";
 
 export function spinnerTask(
 	name: string,
-	callback: () => Effect.Effect<unknown, unknown, Context>,
+	callback: () => Effect.Effect<unknown, unknown, ProgramContext>,
 ) {
 	const spinner = p.spinner();
 	return Effect.succeed(true)
@@ -26,7 +26,7 @@ export function spinnerTask(
 
 export function check(
 	name: string,
-	callback: () => Effect.Effect<boolean, unknown, Context>,
+	callback: () => Effect.Effect<boolean, unknown, ProgramContext>,
 ) {
 	return Effect.succeed(p.spinner()).pipe(
 		Effect.tap((spinner) => spinner.start()),

@@ -3,7 +3,7 @@ import { Effect, Layer } from "effect";
 import { TaggedClass } from "effect/Data";
 import color from "picocolors";
 import { exit } from "process";
-import type { Context } from "../context.js";
+import type { ProgramContext } from "../program-context.js";
 import { dbClientsLayer } from "../services/dbClients.js";
 import {
 	devEnvironmentLayer,
@@ -18,7 +18,7 @@ export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 export async function cliAction(
 	name: string,
 	options: { readonly environment: string; readonly connection?: string },
-	tasks: Effect.Effect<unknown, unknown, Context>[],
+	tasks: Effect.Effect<unknown, unknown, ProgramContext>[],
 ) {
 	const layers = migratorLayer().pipe(
 		Layer.provideMerge(dbClientsLayer()),
