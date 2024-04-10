@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { schema } from "~/schema/schema.js";
@@ -225,6 +226,137 @@ describe("Database migrations", () => {
 			database: [dbSchema],
 			expected,
 			down: "empty",
+		});
+	});
+
+	test<DbContext>("add enums across schemas", async (context) => {
+		const role = enumType("role", ["admin", "user"]);
+		const users = table({
+			columns: {
+				role: enumerated(role),
+			},
+		});
+
+		const dbSchema = schema({
+			types: [role],
+			tables: {
+				users,
+			},
+		});
+
+		const anotherDbSchema = schema({
+			name: "users",
+			types: [role],
+			tables: {
+				users,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 0,
+				tableName: "none",
+				type: "createEnum",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createType("role")',
+						'asEnum(["admin", "user"])',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON TYPE "public"."role" IS \'yount\'`',
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropType("role")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 2001,
+				tableName: "users",
+				type: "createTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("users")',
+						'addColumn("role", sql`role`)',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 0,
+				tableName: "none",
+				type: "createSchema",
+				up: [
+					['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
+				],
+				down: [],
+			},
+			{
+				priority: 0,
+				tableName: "none",
+				type: "createEnum",
+				up: [
+					[
+						'await db.withSchema("users").schema',
+						'createType("role")',
+						'asEnum(["admin", "user"])',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON TYPE "users"."role" IS \'yount\'`',
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("users").schema',
+						'dropType("role")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 2001,
+				tableName: "users",
+				type: "createTable",
+				up: [
+					[
+						'await db.withSchema("users").schema',
+						'createTable("users")',
+						'addColumn("role", sql`role`)',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("users").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database: [dbSchema, anotherDbSchema],
+			expected,
+			down: "same",
 		});
 	});
 });
