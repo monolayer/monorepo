@@ -33,7 +33,7 @@ import { SerialColumn } from "../column.js";
  *
  * @example
  * ```ts
- * import { bigserial, schema, table } from "yount";
+ * import { bigserial, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

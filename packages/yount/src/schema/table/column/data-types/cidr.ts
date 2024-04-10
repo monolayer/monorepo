@@ -30,7 +30,7 @@ import { StringColumn } from "../column.js";
  * - String values must be a valid IPv4 or IPv6 network specification without bits set to the right of the mask.
  * @example
  * ```ts
- * import { cidr, schema, table } from "yount";
+ * import { cidr, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

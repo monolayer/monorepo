@@ -31,7 +31,7 @@ import { PgColumn, valueWithHash } from "../column.js";
  * *Note*: Since {@link https://nodejs.org/api/buffer.html | Buffer } is a Node.js API, the schema will not coerce the input to Buffer for browser compatibility.
  * @example
  * ```ts
- * import { schema, table, bytea } from "yount";
+ * import { schema, table, bytea } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

@@ -34,7 +34,7 @@ import { MaxLengthColumn } from "../column.js";
  * - Value cannot exceed `maximumLength`.
  * @example
  * ```ts
- * import { schema, table, varbit } from "yount";
+ * import { schema, table, varbit } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({
@@ -92,7 +92,7 @@ export function varbit(maximumLength?: number) {
  * - Value cannot exceed `maximumLength`.
  * @example
  * ```ts
- * import { schema, table, varbit } from "yount";
+ * import { schema, table, varbit } from "yount/pg";
  * const dbSchema = schema({
  *   tables: {
  *     example: table({

@@ -42,7 +42,7 @@ import { DateTimePrecision } from "../types.js";
  *   - Date must be 4713 BC or later.
  * @example
  * ```ts
- * import { schema, table, timestampWithTimeZone } from "yount";
+ * import { schema, table, timestampWithTimeZone } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({
@@ -108,7 +108,7 @@ export function timestampWithTimeZone(precision?: DateTimePrecision) {
  *   - Date must be 4713 BC or later.
  * @example
  * ```ts
- * import { schema, table, timestamptz } from "yount";
+ * import { schema, table, timestamptz } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

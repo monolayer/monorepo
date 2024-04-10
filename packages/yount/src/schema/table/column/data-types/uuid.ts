@@ -30,7 +30,7 @@ import { PgColumn, valueWithHash } from "../column.js";
  * - String values must be a valid UUID.
  * @example
  * ```ts
- * import { uuid, schema, sql, table } from "yount";
+ * import { uuid, schema, sql, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

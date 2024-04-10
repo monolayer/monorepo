@@ -32,7 +32,7 @@ import { PgColumn, valueWithHash } from "../column.js";
  * - Value must be `boolean` or `Boolish`.
  * @example
  * ```ts
- * import { boolean, schema, table } from "yount";
+ * import { boolean, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

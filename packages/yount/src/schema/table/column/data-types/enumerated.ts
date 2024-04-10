@@ -34,7 +34,7 @@ import { StringColumn } from "../column.js";
  * - Input values must be an enum value, or `null`.
  * @example
  * ```ts
- * import { enumerated, enumType, schema, table } from "yount";
+ * import { enumerated, enumType, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const role = enumType("role", ["admin", "user"]);

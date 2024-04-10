@@ -37,7 +37,7 @@ import { WithDefaultColumn } from "../types.js";
  *   - Less than 2147483647.
  * @example
  * ```ts
- * import { integer, schema, table } from "yount";
+ * import { integer, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

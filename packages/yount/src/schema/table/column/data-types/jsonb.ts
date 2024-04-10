@@ -41,7 +41,7 @@ import { JsonValue } from "../types.js";
  * - Record values must be convertible to a JSON string.
  * @example
  * ```ts
- * import { json, schema, table } from "yount";
+ * import { json, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

@@ -112,8 +112,8 @@ describe("generateChangesetMigration", () => {
 	});
 });
 
-const indexPath = path.join(cwd(), "src", "index.ts");
-const schemaFile = `import { schema, table, text } from "${indexPath}";
+const pgPath = path.join(cwd(), "src", "pg.ts");
+const schemaFile = `import { schema, table, text } from "${pgPath}";
 
 export const dbSchema = schema({
   tables: {
@@ -126,7 +126,7 @@ export const dbSchema = schema({
 });
 `;
 
-const anotherSchemaFile = `import { schema, table, text } from "${indexPath}";
+const anotherSchemaFile = `import { schema, table, text } from "${pgPath}";
 
 export const dbSchema = schema({
 	name: "accounts",

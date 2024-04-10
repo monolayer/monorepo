@@ -34,7 +34,7 @@ import { IdentifiableColumn } from "../column.js";
  *
  * @example
  * ```ts
- * import { bigint, schema, table } from "yount";
+ * import { bigint, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

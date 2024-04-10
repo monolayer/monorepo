@@ -33,7 +33,7 @@ import { MaxLengthColumn } from "../column.js";
  * - Value must match the `fixedLength` exactly.
  * @example
  * ```ts
- * import { bit, schema, table } from "yount";
+ * import { bit, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

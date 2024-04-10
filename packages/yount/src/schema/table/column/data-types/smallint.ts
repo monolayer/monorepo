@@ -34,7 +34,7 @@ import { IdentifiableColumn } from "../column.js";
  *   - Cannot be greater than 32767.
  * @example
  * ```ts
- * import { schema, smallint, table } from "yount";
+ * import { schema, smallint, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

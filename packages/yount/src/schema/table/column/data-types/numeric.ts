@@ -42,7 +42,7 @@ import { PgColumn } from "../column.js";
  * - Precision and scale are enforced when specified.
  * @example
  * ```ts
- * import { schema, numeric, table } from "yount";
+ * import { schema, numeric, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

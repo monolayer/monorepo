@@ -31,7 +31,7 @@ import { PgColumn } from "../column.js";
  * - Input value must be `string` or `null`.
  * @example
  * ```ts
- * import { schema, table, text } from "yount";
+ * import { schema, table, text } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

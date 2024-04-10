@@ -34,7 +34,7 @@ import { DateTimePrecision } from "../types.js";
  * - Non-values must be a valid string that matches a time format.
  * @example
  * ```ts
- * import { schema, table, time } from "yount";
+ * import { schema, table, time } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

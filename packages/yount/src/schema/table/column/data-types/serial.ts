@@ -32,7 +32,7 @@ import { SerialColumn } from "../column.js";
  * - Value cannot be greater than 2147483647.
  * @example
  * ```ts
- * import { schema, serial, table  } from "yount";
+ * import { schema, serial, table  } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

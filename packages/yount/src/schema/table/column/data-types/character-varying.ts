@@ -33,7 +33,7 @@ import { MaxLengthColumn } from "../column.js";
  * - Value cannot exceed `maximumLength` (when specified).
  * @example
  * ```ts
- * import { characteVarying, schema, table } from "yount";
+ * import { characteVarying, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({
@@ -91,7 +91,7 @@ export function characterVarying(maximumLength?: number) {
  * - Value cannot exceed `maximumLength` (when specified).
  * @example
  * ```ts
- * import { characteVarying, schema, table } from "yount";
+ * import { characteVarying, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

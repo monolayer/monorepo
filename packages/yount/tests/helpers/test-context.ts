@@ -171,8 +171,8 @@ export async function dbAndMigrator(context: ProgramContext) {
 	};
 }
 
-const indexPath = path.join(cwd(), "src", "index.ts");
-const schemaFile = `import { schema, table, text } from "${indexPath}";
+const pgPath = path.join(cwd(), "src", "pg.ts");
+const schemaFile = `import { schema, table, text } from "${pgPath}";
 
 export const dbSchema = schema({
   tables: {

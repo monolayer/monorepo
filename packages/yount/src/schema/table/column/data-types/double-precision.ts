@@ -45,7 +45,7 @@ import { PgColumn } from "../column.js";
  *   - Greater than 1e308.
  * @example
  * ```ts
- * import { doublePrecision, schema, table } from "yount";
+ * import { doublePrecision, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

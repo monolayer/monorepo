@@ -139,7 +139,8 @@ export const defaultDb = new Kysely<DB>(
 );
 `);
 
-export const schemaTemplate = nunjucks.compile(`import { schema } from "yount";
+export const schemaTemplate =
+	nunjucks.compile(`import { schema } from "yount/pg";
 
 export const dbSchema = schema({});
 

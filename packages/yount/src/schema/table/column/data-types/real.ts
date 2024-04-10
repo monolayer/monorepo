@@ -46,7 +46,7 @@ import { PgColumn } from "../column.js";
  *   - Cannot be greater than 1e37.
  * @example
  * ```ts
- * import { schema, real, table } from "yount";
+ * import { schema, real, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

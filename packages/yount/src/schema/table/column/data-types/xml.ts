@@ -29,7 +29,7 @@ import { StringColumn } from "../column.js";
  * - Input value must be `string`, or `null`.
  * @example
  * ```ts
- * import { schema, table, xml } from "yount";
+ * import { schema, table, xml } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

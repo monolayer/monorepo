@@ -22,6 +22,11 @@
 			"require": "./dist/cjs/src/configuration.js",
 			"types": "./dist/esm/src/configuration.js"
 		},
+		"./pg": {
+			"import": "./dist/esm/src/pg.js",
+			"require": "./dist/cjs/src/pg.js",
+			"types": "./dist/esm/src/pg.d.ts"
+		},
 		"./zod": {
 			"import": "./dist/esm/src/zod.js",
 			"require": "./dist/cjs/src/zod.js",

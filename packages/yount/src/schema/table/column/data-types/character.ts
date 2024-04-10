@@ -31,7 +31,7 @@ import { MaxLengthColumn } from "../column.js";
  * - String values cannot exceed `maximumLength`.
  * @example
  * ```ts
- * import { char, schema, table } from "yount";
+ * import { char, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({
@@ -88,7 +88,7 @@ export function character(maximumLength?: number) {
  * - String values cannot exceed `maximumLength`.
  * @example
  * ```ts
- * import { char, schema, table } from "yount";
+ * import { char, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

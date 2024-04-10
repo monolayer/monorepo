@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { describe, expect, test, type Mock } from "vitest";
-import { extension } from "~/index.js";
 import { localSchema } from "~/introspection/introspection.js";
+import { extension } from "~/schema/extension/extension.js";
 import { schema } from "~/schema/schema.js";
 import { bigserial } from "~/schema/table/column/data-types/bigserial.js";
 import { boolean } from "~/schema/table/column/data-types/boolean.js";

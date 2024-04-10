@@ -37,7 +37,7 @@ import { PgColumn, valueWithHash } from "../column.js";
  * - String values must be coercible to `Date`.
  * @example
  * ```ts
- * import { date, schema, table } from "yount";
+ * import { date, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

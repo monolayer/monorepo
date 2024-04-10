@@ -30,7 +30,7 @@ import { StringColumn } from "../column.js";
  * - String values must be a valid MAC address.
  * @example
  * ```ts
- * import { macaddr, schema, table } from "yount";
+ * import { macaddr, schema, table } from "yount/pg";
  * import { zodSchema } from "yount/zod";
  *
  * const dbSchema = schema({

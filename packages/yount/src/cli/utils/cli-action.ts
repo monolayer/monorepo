@@ -9,7 +9,12 @@ import {
 	type DevEnvironment,
 	type Environment,
 } from "../services/environment.js";
-import { devKyselyLayer, kyselyLayer, type Db, type DevDb } from "../services/kysely.js";
+import {
+	devKyselyLayer,
+	kyselyLayer,
+	type Db,
+	type DevDb,
+} from "../services/kysely.js";
 import { migratorLayer, type Migrator } from "../services/migrator.js";
 import { devPgLayer, pgLayer, type DevPg, type Pg } from "../services/pg.js";
 
