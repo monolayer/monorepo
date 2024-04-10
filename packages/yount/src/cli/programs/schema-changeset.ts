@@ -91,15 +91,15 @@ function localDatabaseSchema() {
 					Effect.succeed(connectionImport.connectors || {}),
 				),
 				Effect.flatMap((allConnectors) => {
-					const connection = Object.entries(allConnectors).find(([key]) => {
+					const connector = Object.entries(allConnectors).find(([key]) => {
 						return key === environment.connectorName;
 					});
-					if (connection === undefined) {
+					if (connector === undefined) {
 						return Effect.fail(
-							`Connection ${environment.connectorName} not found. Check your connectors.ts file.`,
+							`Connector ${environment.connectorName} not found. Check your connectors.ts file.`,
 						);
 					} else {
-						return Effect.succeed(connection[1].schemas);
+						return Effect.succeed(connector[1].schemas);
 					}
 				}),
 			),
