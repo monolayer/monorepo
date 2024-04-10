@@ -82,7 +82,7 @@ export function initFolderAndFiles() {
 		await createFile(`${folder.path}/seed.ts`, seedTemplate.render(), true);
 		await createDir(`${folder.path}/migrations`, true);
 
-		const nextSteps = `1) Edit the database connection details at \`yount.config.ts\`.
+		const nextSteps = `1) Edit the database connection details at \`${path.join(folder.path, "connectors.ts")}\`.
 2) Run \`npx yount db:create\` to create the database.
 3) Edit the schema file at \`${path.join(folder.path, "schema.ts")}\`.
 4) Run 'npx yount generate' to create migrations.
