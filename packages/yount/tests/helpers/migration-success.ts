@@ -1,91 +1,15 @@
-import type { MigrationResultSet, Migrator } from "kysely";
-import path from "path";
+import { Effect } from "effect";
 import { expect } from "vitest";
-import type { Changeset } from "~/changeset/types.js";
+import { generateChangesetMigration } from "~/cli/programs/generate-changeset-migration.js";
+import { migrateDown as migrateDownProgram } from "~/cli/programs/migrate-down.js";
+import { migrate } from "~/cli/programs/migrate.js";
+
+import { DbClients } from "~/cli/services/dbClients.js";
 import type { CamelCaseOptions } from "~/configuration.js";
-import { generateMigrationFiles } from "~/migrations/generate.js";
 import type { AnySchema } from "~/schema/schema.js";
 import type { DbContext } from "~tests/setup/kysely.js";
-import { computeChangeset } from "./compute-changeset.js";
-
-async function migrateUp(
-	folder: string,
-	migrator: Migrator,
-	changeset: Changeset[],
-) {
-	generateMigrationFiles(
-		changeset,
-		path.join(folder, "migrations"),
-		undefined,
-		false,
-	);
-	return await migrator.migrateToLatest();
-}
-
-async function migrateDown(migrator: Migrator) {
-	return await migrator.migrateDown();
-}
-
-function expectMigrationSuccess(resultSet: MigrationResultSet) {
-	if (resultSet.error) {
-		console.dir(resultSet.error);
-	}
-	expect(resultSet.error, resultSet.error as string).toBeUndefined();
-	if (resultSet.results === undefined) {
-		throw new Error("results is undefined");
-	}
-	for (const result of resultSet.results) {
-		expect(result.status).toBe("Success");
-	}
-}
-
-export async function testUpAndDownMigrations(
-	context: DbContext,
-	database: AnySchema,
-	cs: Changeset[],
-	down: "same" | "reverse" | "empty",
-	camelCase: CamelCaseOptions = { enabled: false },
-) {
-	expectMigrationSuccess(await migrateUp(context.folder, context.migrator, cs));
-
-	const afterUpCs = await computeChangeset(context.kysely, database, camelCase);
-	expect(afterUpCs).toEqual([]);
-
-	expectMigrationSuccess(await migrateDown(context.migrator));
-	switch (down) {
-		case "reverse": {
-			const afterDownCs = await computeChangeset(
-				context.kysely,
-				database,
-				camelCase,
-			);
-			expect(afterDownCs).toEqual(
-				cs.reverse().filter((changeset) => changeset.type !== "createSchema"),
-			);
-			break;
-		}
-		case "same": {
-			const afterDownCs = await computeChangeset(
-				context.kysely,
-				database,
-				camelCase,
-			);
-			expect(afterDownCs).toEqual(
-				cs.filter((changeset) => changeset.type !== "createSchema"),
-			);
-			break;
-		}
-		case "empty": {
-			const afterDownCs = await computeChangeset(
-				context.kysely,
-				database,
-				camelCase,
-			);
-			expect(afterDownCs).toEqual([]);
-			break;
-		}
-	}
-}
+import { newLayers } from "./layers.js";
+import { programWithErrorCause } from "./run-program.js";
 
 export async function testChangesetAndMigrations({
 	context,
@@ -101,9 +25,129 @@ export async function testChangesetAndMigrations({
 	down: "same" | "reverse" | "empty";
 	useCamelCase?: CamelCaseOptions;
 }) {
-	const camelCase = useCamelCase ?? false;
-	const cs = await computeChangeset(context.kysely, database, camelCase);
-	expect(cs).toEqual(expected);
+	const result = await runGenerateChangesetMigration(
+		context.dbName,
+		context.folder,
+		database,
+		useCamelCase,
+	);
 
-	await testUpAndDownMigrations(context, database, cs, down, camelCase);
+	expect(result).toEqual(expected);
+
+	const migrationResult = await runMigrate(
+		context.dbName,
+		context.folder,
+		database,
+		useCamelCase,
+	);
+	expect(migrationResult).toBe(true);
+
+	const afterUpCs = await runGenerateChangesetMigration(
+		context.dbName,
+		context.folder,
+		database,
+		useCamelCase,
+	);
+	expect(afterUpCs).toEqual([]);
+
+	const migrateDownResult = await runMigrateDown(
+		context.dbName,
+		context.folder,
+		database,
+		useCamelCase,
+	);
+	expect(migrateDownResult).toBe(true);
+
+	switch (down) {
+		case "reverse": {
+			const afterDownCs = await runGenerateChangesetMigration(
+				context.dbName,
+				context.folder,
+				database,
+				useCamelCase,
+			);
+			expect(afterDownCs).toEqual(
+				result
+					.reverse()
+					.filter((changeset) => changeset.type !== "createSchema"),
+			);
+			break;
+		}
+		case "same": {
+			const afterDownCs = await runGenerateChangesetMigration(
+				context.dbName,
+				context.folder,
+				database,
+				useCamelCase,
+			);
+			expect(afterDownCs).toEqual(
+				result.filter((changeset) => changeset.type !== "createSchema"),
+			);
+			break;
+		}
+		case "empty": {
+			const afterDownCs = await runGenerateChangesetMigration(
+				context.dbName,
+				context.folder,
+				database,
+				useCamelCase,
+			);
+			expect(afterDownCs).toEqual([]);
+			break;
+		}
+	}
+}
+
+async function runGenerateChangesetMigration(
+	dbName: string,
+	folder: string,
+	schema: AnySchema,
+	useCamelCase = { enabled: false },
+) {
+	return Effect.runPromise(
+		Effect.provide(
+			programWithErrorCause(generateChangesetMigration()).pipe(
+				Effect.tap(() => cleanup()),
+			),
+			newLayers(dbName, folder, [schema], useCamelCase),
+		),
+	);
+}
+
+function cleanup() {
+	return Effect.all([DbClients]).pipe(
+		Effect.tap(async ([clients]) => {
+			clients.currentEnvironment.pgPool.end();
+			clients.currentEnvironment.pgAdminPool.end();
+		}),
+	);
+}
+async function runMigrate(
+	dbName: string,
+	folder: string,
+	schema: AnySchema,
+	useCamelCase = { enabled: false },
+) {
+	return Effect.runPromise(
+		Effect.provide(
+			programWithErrorCause(migrate()).pipe(Effect.tap(() => cleanup())),
+			newLayers(dbName, folder, [schema], useCamelCase),
+		),
+	);
+}
+
+async function runMigrateDown(
+	dbName: string,
+	folder: string,
+	schema: AnySchema,
+	useCamelCase = { enabled: false },
+) {
+	return Effect.runPromise(
+		Effect.provide(
+			programWithErrorCause(migrateDownProgram()).pipe(
+				Effect.tap(() => cleanup()),
+			),
+			newLayers(dbName, folder, [schema], useCamelCase),
+		),
+	);
 }

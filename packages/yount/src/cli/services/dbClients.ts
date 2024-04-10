@@ -8,6 +8,11 @@ import {
 	type EnvironmentProperties,
 } from "./environment.js";
 
+export type DbClientProperties = {
+	readonly currentEnvironment: DbClientEnvironmentProperties;
+	readonly developmentEnvironment: DbClientEnvironmentProperties;
+};
+
 type DbClientEnvironmentProperties = {
 	readonly pgPool: pg.Pool;
 	readonly pgAdminPool: pg.Pool;
@@ -20,10 +25,7 @@ type DbClientEnvironmentProperties = {
 
 export class DbClients extends Context.Tag("DbClients")<
 	DbClients,
-	{
-		currentEnvironment: DbClientEnvironmentProperties;
-		developmentEnvironment: DbClientEnvironmentProperties;
-	}
+	DbClientProperties
 >() {}
 
 export function dbClientsLayer() {
