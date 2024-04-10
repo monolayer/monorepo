@@ -13,7 +13,9 @@ export async function dbEnumInfo(
 			join.onRef("pg_enum.enumtypid", "=", "pg_type.oid"),
 		)
 		.innerJoin("pg_namespace", (join) =>
-			join.onRef("pg_namespace.oid", "=", "pg_type.typnamespace"),
+			join
+				.onRef("pg_namespace.oid", "=", "pg_type.typnamespace")
+				.on("pg_namespace.nspname", "=", databaseSchema),
 		)
 		.leftJoin("pg_description", (join) =>
 			join
