@@ -30,7 +30,6 @@ export async function teardownContext(context: TaskContext & DbContext) {
 	} catch (e) {
 		/* empty */
 	}
-	await globalPool().query(`DROP DATABASE IF EXISTS ${context.dbName}`);
 }
 
 export async function setUpContext(context: TaskContext & DbContext) {
