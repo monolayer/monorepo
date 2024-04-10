@@ -9,6 +9,7 @@ export class Migrator extends Context.Tag("Migrator")<
 	Migrator,
 	{
 		readonly instance: KyselyMigrator;
+		readonly folder: string;
 	}
 >() {}
 
@@ -27,6 +28,7 @@ export function migratorLayer() {
 						migrationFolder: environment.migrationFolder,
 					}),
 				}),
+				folder: environment.migrationFolder,
 			};
 		}),
 	);
