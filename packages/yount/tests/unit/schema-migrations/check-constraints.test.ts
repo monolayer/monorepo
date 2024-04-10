@@ -3,6 +3,7 @@ import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { schema } from "~/schema/schema.js";
 import { integer } from "~/schema/table/column/data-types/integer.js";
+import { serial } from "~/schema/table/column/data-types/serial.js";
 import { check } from "~/schema/table/constraints/check/check.js";
 import { table } from "~/schema/table/table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
@@ -303,6 +304,125 @@ describe("Database migrations", () => {
 		await testChangesetAndMigrations({
 			context,
 			database: [dbSchema],
+			expected,
+			down: "same",
+		});
+	});
+
+	test<DbContext>("add check constraints across schemas", async (context) => {
+		const users = table({
+			columns: {
+				id: serial(),
+			},
+			constraints: {
+				checks: [check(sql`${sql.ref("id")} > 50`)],
+			},
+		});
+
+		const dbSchema = schema({
+			tables: {
+				users,
+			},
+		});
+
+		const usersSchema = schema({
+			name: "users",
+			tables: {
+				users,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 2001,
+				tableName: "users",
+				type: "createTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("users")',
+						'addColumn("id", "serial", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4002,
+				tableName: "users",
+				type: "createConstraint",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'addCheckConstraint("918b4271_yount_chk", sql`"id" > 50`)',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "public"."users" IS \'918b4271\'`',
+						"execute(db);",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 0,
+				tableName: "none",
+				type: "createSchema",
+				up: [
+					['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
+				],
+				down: [],
+			},
+			{
+				priority: 2001,
+				tableName: "users",
+				type: "createTable",
+				up: [
+					[
+						'await db.withSchema("users").schema',
+						'createTable("users")',
+						'addColumn("id", "serial", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("users").schema',
+						'dropTable("users")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4002,
+				tableName: "users",
+				type: "createConstraint",
+				up: [
+					[
+						'await db.withSchema("users").schema',
+						'alterTable("users")',
+						'addCheckConstraint("918b4271_yount_chk", sql`"id" > 50`)',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "users"."users" IS \'918b4271\'`',
+						"execute(db);",
+					],
+				],
+				down: [[]],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			database: [dbSchema, usersSchema],
 			expected,
 			down: "same",
 		});
