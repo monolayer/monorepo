@@ -31,10 +31,14 @@ export async function dbUniqueConstraintInfo(
 	const results = await kysely
 		.selectFrom("pg_constraint")
 		.fullJoin("pg_namespace", (join) =>
-			join.onRef("pg_namespace.oid", "=", "pg_constraint.connamespace"),
+			join
+				.onRef("pg_namespace.oid", "=", "pg_constraint.connamespace")
+				.on("pg_namespace.nspname", "=", databaseSchema),
 		)
 		.fullJoin("pg_class", (join) =>
-			join.onRef("pg_class.oid", "=", "pg_constraint.conrelid"),
+			join
+				.onRef("pg_class.oid", "=", "pg_constraint.conrelid")
+				.on("pg_namespace.nspname", "=", databaseSchema),
 		)
 		.fullJoin("pg_attribute", (join) =>
 			join
@@ -42,11 +46,22 @@ export async function dbUniqueConstraintInfo(
 				.on("pg_attribute.attnum", "=", sql`ANY(pg_constraint.conkey)`),
 		)
 		.fullJoin("information_schema.table_constraints", (join) =>
-			join.onRef(
-				"information_schema.table_constraints.constraint_name",
-				"=",
-				"pg_constraint.conname",
-			),
+			join
+				.onRef(
+					"information_schema.table_constraints.constraint_name",
+					"=",
+					"pg_constraint.conname",
+				)
+				.onRef(
+					"information_schema.table_constraints.table_schema",
+					"=",
+					"pg_namespace.nspname",
+				)
+				.onRef(
+					"information_schema.table_constraints.table_name",
+					"=",
+					"pg_class.relname",
+				),
 		)
 		.select([
 			sql<"UNIQUE">`'UNIQUE'`.as("constraintType"),
