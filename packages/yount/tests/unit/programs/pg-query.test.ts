@@ -10,7 +10,7 @@ import {
 	devEnvironmentLayer,
 	environmentLayer,
 } from "~/cli/services/environment.js";
-import { kyselyLayer } from "~/cli/services/kysely.js";
+import { devKyselyLayer, kyselyLayer } from "~/cli/services/kysely.js";
 import { migratorLayer } from "~/cli/services/migrator.js";
 import { devPgLayer, pgLayer } from "~/cli/services/pg.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";
@@ -33,6 +33,7 @@ describe("pgQuery", () => {
 	test("connectors", async () => {
 		const layersWithDefaultConnection = migratorLayer().pipe(
 			Layer.provideMerge(kyselyLayer()),
+			Layer.provideMerge(devKyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(environmentLayer("development", "default")),
@@ -41,6 +42,7 @@ describe("pgQuery", () => {
 
 		const layersWithStatsConnection = migratorLayer().pipe(
 			Layer.provideMerge(kyselyLayer()),
+			Layer.provideMerge(devKyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(environmentLayer("development", "stats")),

@@ -21,10 +21,10 @@ import { dbTableInfo } from "~/schema/table/introspection.js";
 import { dbTriggerInfo } from "~/schema/table/trigger/introspection.js";
 import { dbEnumInfo } from "~/schema/types/enum/introspection.js";
 import { DevEnvironment } from "../services/environment.js";
-import { Db } from "../services/kysely.js";
+import { DevDb } from "../services/kysely.js";
 
 export function schemaChangeset() {
-	return Effect.all([DevEnvironment, Db]).pipe(
+	return Effect.all([DevEnvironment, DevDb]).pipe(
 		Effect.flatMap(([environment, db]) =>
 			localDatabaseSchema(environment.connectorName).pipe(
 				Effect.flatMap((localDatabaseSchema) =>

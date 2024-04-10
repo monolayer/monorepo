@@ -9,7 +9,7 @@ import {
 	type DevEnvironment,
 	type Environment,
 } from "../services/environment.js";
-import { kyselyLayer, type Db } from "../services/kysely.js";
+import { devKyselyLayer, kyselyLayer, type Db, type DevDb } from "../services/kysely.js";
 import { migratorLayer, type Migrator } from "../services/migrator.js";
 import { devPgLayer, pgLayer, type DevPg, type Pg } from "../services/pg.js";
 
@@ -23,11 +23,12 @@ export async function cliAction(
 	tasks: Effect.Effect<
 		unknown,
 		unknown,
-		Environment | DevEnvironment | Db | Migrator | Pg | DevPg
+		Environment | DevEnvironment | Db | DevDb | Migrator | Pg | DevPg
 	>[],
 ) {
 	const layers = migratorLayer().pipe(
 		Layer.provideMerge(kyselyLayer()),
+		Layer.provideMerge(devKyselyLayer()),
 		Layer.provideMerge(pgLayer()),
 		Layer.provideMerge(devPgLayer()),
 		Layer.provideMerge(
