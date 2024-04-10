@@ -1,7 +1,6 @@
 import { Effect, pipe } from "effect";
 import type { Kysely } from "kysely";
 import { changeset } from "~/changeset/changeset.js";
-import { importConnector } from "~/config.js";
 import { type CamelCaseOptions } from "~/configuration.js";
 import {
 	localSchema,
@@ -24,9 +23,9 @@ import { DevEnvironment } from "../services/environment.js";
 import { DevDb } from "../services/kysely.js";
 
 export function schemaChangeset() {
-	return localDatabaseSchema().pipe(
-		Effect.flatMap((localDatabaseSchema) =>
-			Effect.all(localDatabaseSchema.flatMap(databaseChangeset)).pipe(
+	return connectorSchemas().pipe(
+		Effect.flatMap((schemas) =>
+			Effect.all(schemas.flatMap(databaseChangeset)).pipe(
 				Effect.flatMap((changesets) =>
 					Effect.succeed(changesets.flatMap((changeset) => changeset)),
 				),
@@ -83,26 +82,10 @@ function computeChangeset(
 	return Effect.succeed(cset);
 }
 
-function localDatabaseSchema() {
+function connectorSchemas() {
 	return DevEnvironment.pipe(
 		Effect.flatMap((environment) =>
-			Effect.tryPromise(() => importConnector()).pipe(
-				Effect.flatMap((connectionImport) =>
-					Effect.succeed(connectionImport.connectors || {}),
-				),
-				Effect.flatMap((allConnectors) => {
-					const connector = Object.entries(allConnectors).find(([key]) => {
-						return key === environment.connectorName;
-					});
-					if (connector === undefined) {
-						return Effect.fail(
-							`Connector ${environment.connectorName} not found. Check your connectors.ts file.`,
-						);
-					} else {
-						return Effect.succeed(connector[1].schemas);
-					}
-				}),
-			),
+			Effect.succeed(environment.connector.schemas),
 		),
 	);
 }

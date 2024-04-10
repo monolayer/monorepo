@@ -6,6 +6,7 @@ import { cwd } from "process";
 import { importConfig, importConnector } from "~/config.js";
 import {
 	type CamelCaseOptions,
+	type Connector,
 	type Connectors,
 	type PgConfig,
 } from "~/configuration.js";
@@ -17,6 +18,7 @@ type EnvironmentProperties = {
 	readonly camelCasePlugin?: CamelCaseOptions;
 	readonly connectorName: string;
 	readonly connectorConfig: PgConfig;
+	readonly connector: Connector;
 };
 
 export class Environment extends Context.Tag("Environment")<
@@ -95,6 +97,7 @@ function environmentGenerator(environment: string, connectorName: string) {
 			),
 			camelCasePlugin: connectors.connectors?.default.camelCasePlugin,
 			connectorConfig: environmentConfig,
+			connector: connector,
 		};
 	});
 }
