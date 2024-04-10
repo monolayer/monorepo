@@ -12,7 +12,52 @@ export const connectorsTemplate =
 
 export const connectors = {
 	default: {
-		databaseSchema: database,
+		databaseSchema: [database],
+		environments: {
+			development: {
+				user: "${process.env.POSTGRES_USER}",
+				password: "${process.env.POSTGRES_PASSWORD}",
+				host: "${process.env.POSTGRES_HOST}",
+				port: ${process.env.POSTGRES_ONE_PORT},
+				database: "{{ dbName }}",
+			},
+			test: {
+				user: "${process.env.POSTGRES_USER}",
+				password: "${process.env.POSTGRES_PASSWORD}",
+				host: "${process.env.POSTGRES_HOST}",
+				port: ${process.env.POSTGRES_TWO_PORT},
+				database: "{{ dbName }}_test",
+			},
+		},
+	},
+	stats: {
+		environments: {
+			development: {
+				user: "${process.env.POSTGRES_USER}",
+				password: "${process.env.POSTGRES_PASSWORD}",
+				host: "${process.env.POSTGRES_HOST}",
+				port: ${process.env.POSTGRES_ONE_PORT},
+				database: "{{ dbName }}_stats",
+			},
+			test: {
+				user: "${process.env.POSTGRES_USER}",
+				password: "${process.env.POSTGRES_PASSWORD}",
+				host: "${process.env.POSTGRES_HOST}",
+				port: ${process.env.POSTGRES_TWO_PORT},
+				database: "{{ dbName }}_stats_test",
+			},
+		},
+	},
+};
+`);
+
+export const connectorsTemplateTwoDatabaseSchemas =
+	nunjucks.compile(`import { database } from "./schema";
+
+import { database as anotherDatabase } from "./{{ secondSchemaFile }}";
+export const connectors = {
+	default: {
+		databaseSchema: [database, anotherDatabase],
 		environments: {
 			development: {
 				user: "${process.env.POSTGRES_USER}",

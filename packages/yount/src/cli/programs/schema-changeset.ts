@@ -7,6 +7,8 @@ import {
 	localSchema,
 	type MigrationSchema,
 } from "~/introspection/introspection.js";
+import { createSchemaChangeset } from "~/schema/database_schemas/changeset.js";
+import { schemaInDb } from "~/schema/database_schemas/introspection.js";
 import { dbExtensionInfo } from "~/schema/extension/introspection.js";
 import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
 import { dbColumnInfo } from "~/schema/table/column/instrospection.js";
@@ -26,22 +28,56 @@ export function schemaChangeset() {
 		Effect.flatMap(([environment, db]) =>
 			localDatabaseSchema(environment.connectorName).pipe(
 				Effect.flatMap((localDatabaseSchema) =>
-					Effect.all([
-						databaseSchema(db.kyselyNoCamelCase, localDatabaseSchema),
-						Effect.succeed(localDatabaseSchema),
-						Effect.succeed(environment.camelCasePlugin),
-					]).pipe(
-						Effect.flatMap(
-							([databaseSchema, localDatabaseSchema, camelCasePlugin]) =>
-								computeChangeset(
-									localDatabaseSchema,
-									databaseSchema,
-									camelCasePlugin,
-								),
+					Effect.all(
+						localDatabaseSchema.flatMap((database) =>
+							databaseChangeset(
+								db.kyselyNoCamelCase,
+								database,
+								environment.camelCasePlugin,
+							),
+						),
+					).pipe(
+						Effect.flatMap((changesets) =>
+							Effect.succeed(changesets.flatMap((changeset) => changeset)),
 						),
 					),
 				),
 			),
+		),
+	);
+}
+
+function databaseChangeset(
+	db: Kysely<unknown>,
+	database: AnyPgDatabase,
+	camelCasePlugin?: CamelCaseOptions,
+) {
+	const schemaName = PgDatabase.info(database).schema || "public";
+	return Effect.all([
+		databaseSchema(db, database),
+		Effect.succeed(database),
+		Effect.succeed(camelCasePlugin),
+	]).pipe(
+		Effect.flatMap(([databaseSchema, localDatabaseSchema, camelCasePlugin]) =>
+			computeChangeset(localDatabaseSchema, databaseSchema, camelCasePlugin),
+		),
+		Effect.tap((changeset) =>
+			schemaExists(db, schemaName).pipe(
+				Effect.tap((exists) => {
+					if (exists === false) {
+						changeset.unshift(createSchemaChangeset(schemaName));
+					}
+				}),
+			),
+		),
+	);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function schemaExists(kysely: Kysely<any>, schemaName: string) {
+	return Effect.tryPromise(() => schemaInDb(kysely, schemaName)).pipe(
+		Effect.flatMap((schemaInDatabase) =>
+			Effect.succeed(schemaInDatabase.length !== 0),
 		),
 	);
 }
