@@ -1,8 +1,8 @@
 import { Effect } from "effect";
 import { appendFileSync, mkdirSync, writeFileSync } from "fs";
 import path from "path";
-import type { ClientConfig, PoolConfig } from "pg";
-import type { ConnectionOptions } from "pg-connection-string";
+import pg from "pg";
+import pgConnectionString from "pg-connection-string";
 import { env } from "process";
 import { Writable, type WritableOptions } from "stream";
 import { DbClients } from "../services/dbClients.js";
@@ -26,9 +26,7 @@ export function dumpDatabaseStructure() {
 				]).pipe(
 					Effect.flatMap(([searchPath, database, dumpPath]) =>
 						Effect.succeed(true).pipe(
-							Effect.tap(() =>
-								setPgDumpEnv(dbClients.currentEnvironment.pgConfig),
-							),
+							Effect.tap(() => setPgDumpEnv(environment.connectorConfig)),
 							Effect.tap(() => dumpStructure(database, dumpPath)),
 							Effect.tap(() =>
 								appendFileSync(
@@ -66,11 +64,16 @@ function appendMigrationData(database: string, dumpPath: string) {
 	);
 }
 
-function setPgDumpEnv(config: (ClientConfig & PoolConfig) | ConnectionOptions) {
-	env.PGHOST = `${config.host}`;
-	env.PGPORT = `${config.port}`;
-	env.PGUSER = `${config.user}`;
-	env.PGPASSWORD = `${config.password}`;
+function setPgDumpEnv(environmentConfig: pg.ClientConfig & pg.PoolConfig) {
+	const parsedConfig =
+		environmentConfig.connectionString !== undefined
+			? pgConnectionString.parse(environmentConfig.connectionString)
+			: environmentConfig;
+
+	env.PGHOST = `${parsedConfig.host}`;
+	env.PGPORT = `${parsedConfig.port}`;
+	env.PGUSER = `${parsedConfig.user}`;
+	env.PGPASSWORD = `${parsedConfig.password}`;
 	return Effect.succeed(true);
 }
 

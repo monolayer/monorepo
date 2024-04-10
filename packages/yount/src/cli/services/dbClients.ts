@@ -12,9 +12,6 @@ type DbClientEnvironmentProperties = {
 	readonly pgPool: pg.Pool;
 	readonly pgAdminPool: pg.Pool;
 	readonly databaseName: string;
-	readonly pgConfig:
-		| (pg.ClientConfig & pg.PoolConfig)
-		| pgConnectionString.ConnectionOptions;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly kysely: Kysely<any>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,7 +48,6 @@ function dbClientEnvironmentProperties(environment: EnvironmentProperties) {
 		databaseName: pg.config.database ?? "",
 		pgPool: pg.pool,
 		pgAdminPool: pg.adminPool,
-		pgConfig: pg.config,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		kysely: new Kysely<any>({
 			dialect: new PostgresDialect({
