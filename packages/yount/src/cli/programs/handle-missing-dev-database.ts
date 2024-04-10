@@ -1,18 +1,18 @@
 import * as p from "@clack/prompts";
 import { confirm } from "@clack/prompts";
 import { Effect } from "effect";
-import { DevPg } from "../services/pg.js";
+import { DbClients } from "../services/dbClients.js";
 import { cancelOperation } from "./cancel-operation.js";
 import { createDevDatabase } from "./create-database.js";
 import { adminDevPgQuery } from "./pg-query.js";
 
 export function handleMissingDevDatabase() {
-	return DevPg.pipe(
-		Effect.flatMap((pg) =>
+	return DbClients.pipe(
+		Effect.flatMap((dbClients) =>
 			adminDevPgQuery<{
 				databaseExists: boolean;
 			}>(
-				`SELECT true as databaseExists FROM pg_database WHERE datname = '${pg.config.database}'`,
+				`SELECT true as databaseExists FROM pg_database WHERE datname = '${dbClients.currentEnvironment.pgConfig.database}'`,
 			).pipe(
 				Effect.flatMap((result) =>
 					Effect.if(result.length !== 0, {

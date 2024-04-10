@@ -1,23 +1,31 @@
 import { Effect } from "effect";
-import { DevPg, Pg } from "../services/pg.js";
+import { DbClients } from "../services/dbClients.js";
 import { spinnerTask } from "../utils/spinner-task.js";
-import { adminDevPgQuery, adminPgQuery } from "./pg-query.js";
+import { adminPgQuery } from "./pg-query.js";
 
 export function createDatabase() {
-	return Pg.pipe(
-		Effect.flatMap((pg) =>
-			spinnerTask(`Create database ${pg.config.database}`, () =>
-				adminPgQuery(`CREATE DATABASE "${pg.config.database}";`),
+	return DbClients.pipe(
+		Effect.flatMap((clients) =>
+			spinnerTask(
+				`Create database ${clients.currentEnvironment.pgConfig.database}`,
+				() =>
+					adminPgQuery(
+						`CREATE DATABASE "${clients.currentEnvironment.pgConfig.database}";`,
+					),
 			),
 		),
 	);
 }
 
 export function createDevDatabase() {
-	return DevPg.pipe(
-		Effect.flatMap((pg) =>
-			spinnerTask(`Create database ${pg.config.database}`, () =>
-				adminDevPgQuery(`CREATE DATABASE "${pg.config.database}";`),
+	return DbClients.pipe(
+		Effect.flatMap((clients) =>
+			spinnerTask(
+				`Create database ${clients.developmentEnvironment.pgConfig.database}`,
+				() =>
+					adminPgQuery(
+						`CREATE DATABASE "${clients.developmentEnvironment.pgConfig.database}";`,
+					),
 			),
 		),
 	);

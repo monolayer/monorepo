@@ -2,8 +2,8 @@ import { Context, Effect, Layer } from "effect";
 import { FileMigrationProvider, Migrator as KyselyMigrator } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
+import { DbClients } from "./dbClients.js";
 import { Environment } from "./environment.js";
-import { Db } from "./kysely.js";
 
 export class Migrator extends Context.Tag("Migrator")<
 	Migrator,
@@ -18,10 +18,10 @@ export function migratorLayer() {
 		Migrator,
 		Effect.gen(function* (_) {
 			const environment = yield* _(Environment);
-			const db = yield* _(Db);
+			const dbClients = yield* _(DbClients);
 			return {
 				instance: new KyselyMigrator({
-					db: db.kysely,
+					db: dbClients.currentEnvironment.kysely,
 					provider: new FileMigrationProvider({
 						fs,
 						path,

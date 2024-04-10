@@ -1,8 +1,8 @@
 import { Effect } from "effect";
 import fs from "fs/promises";
 import path from "path";
+import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
-import { Pg } from "../services/pg.js";
 import { checkWithFail } from "../utils/check-with-fail.js";
 import { spinnerTask } from "../utils/spinner-task.js";
 import { createDatabase } from "./create-database.js";
@@ -55,10 +55,10 @@ function checkStructureFile() {
 }
 
 function restoreDatabaseFromStructureFile() {
-	return Effect.all([Environment, Pg]).pipe(
-		Effect.flatMap(([environment, pg]) =>
+	return Effect.all([Environment, DbClients]).pipe(
+		Effect.flatMap(([environment, dbClients]) =>
 			spinnerTask(
-				`Restore ${pg.config.database} from structure.${environment.connectorName}.sql`,
+				`Restore ${dbClients.currentEnvironment.pgConfig.database} from structure.${environment.connectorName}.sql`,
 				() =>
 					Effect.tryPromise(async () => {
 						const structurePath = path.join(

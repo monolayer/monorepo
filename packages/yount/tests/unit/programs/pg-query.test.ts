@@ -11,9 +11,7 @@ import {
 	devEnvironmentLayer,
 	environmentLayer,
 } from "~/cli/services/environment.js";
-import { devKyselyLayer, kyselyLayer } from "~/cli/services/kysely.js";
 import { migratorLayer } from "~/cli/services/migrator.js";
-import { devPgLayer, pgLayer } from "~/cli/services/pg.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";
 import {
 	setupProgramContext,
@@ -33,20 +31,12 @@ describe("pgQuery", () => {
 
 	test("connectors", async () => {
 		const layersWithDefaultConnection = migratorLayer().pipe(
-			Layer.provideMerge(kyselyLayer()),
-			Layer.provideMerge(devKyselyLayer()),
-			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(environmentLayer("development", "default")),
 			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
 
 		const layersWithStatsConnection = migratorLayer().pipe(
-			Layer.provideMerge(kyselyLayer()),
-			Layer.provideMerge(devKyselyLayer()),
-			Layer.provideMerge(pgLayer()),
-			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("development", "stats")),
 			Layer.provideMerge(devEnvironmentLayer("stats")),
@@ -73,18 +63,12 @@ describe("pgQuery", () => {
 
 	test("connection environments", async () => {
 		const layersWithDefaultConnection = migratorLayer().pipe(
-			Layer.provideMerge(kyselyLayer()),
-			Layer.provideMerge(pgLayer()),
-			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "default")),
 			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
 
 		const layersWithStatsConnection = migratorLayer().pipe(
-			Layer.provideMerge(kyselyLayer()),
-			Layer.provideMerge(pgLayer()),
-			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "stats")),
 			Layer.provideMerge(devEnvironmentLayer("stats")),
@@ -123,18 +107,12 @@ describe("adminPgQuery", () => {
 
 	test("admin connectors connect to 'postgres'", async () => {
 		const layersWithDefaultConnection = migratorLayer().pipe(
-			Layer.provideMerge(kyselyLayer()),
-			Layer.provideMerge(pgLayer()),
-			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("development", "default")),
 			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
 
 		const layersWithStatsConnection = migratorLayer().pipe(
-			Layer.provideMerge(kyselyLayer()),
-			Layer.provideMerge(pgLayer()),
-			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("development", "stats")),
 			Layer.provideMerge(devEnvironmentLayer("stats")),
@@ -159,18 +137,12 @@ describe("adminPgQuery", () => {
 
 	test("admin environments connect to 'postgres'", async () => {
 		const layersWithDefaultConnection = migratorLayer().pipe(
-			Layer.provideMerge(kyselyLayer()),
-			Layer.provideMerge(pgLayer()),
-			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "default")),
 			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
 
 		const layersWithStatsConnection = migratorLayer().pipe(
-			Layer.provideMerge(kyselyLayer()),
-			Layer.provideMerge(pgLayer()),
-			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "stats")),
 			Layer.provideMerge(devEnvironmentLayer("stats")),
@@ -205,9 +177,6 @@ describe("devAdminPgQuery", () => {
 
 	test<ProgramContext>("default connectors connect to dev host postgres", async (context) => {
 		const layers = migratorLayer().pipe(
-			Layer.provideMerge(kyselyLayer()),
-			Layer.provideMerge(pgLayer()),
-			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "default")),
 			Layer.provideMerge(devEnvironmentLayer("default")),
@@ -233,9 +202,6 @@ describe("devAdminPgQuery", () => {
 
 	test<ProgramContext>("other connectors connect to dev host postgres", async (context) => {
 		const layers = migratorLayer().pipe(
-			Layer.provideMerge(kyselyLayer()),
-			Layer.provideMerge(pgLayer()),
-			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "stats")),
 			Layer.provideMerge(devEnvironmentLayer("stats")),

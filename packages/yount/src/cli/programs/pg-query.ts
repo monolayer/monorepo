@@ -1,14 +1,14 @@
 import { Effect } from "effect";
 import type { QueryResultRow } from "pg";
-import { DevPg, Pg } from "../services/pg.js";
+import { DbClients } from "../services/dbClients.js";
 
 export function pgQuery<T extends QueryResultRow = Record<string, unknown>>(
 	query: string,
 ) {
-	return Pg.pipe(
-		Effect.flatMap((pg) =>
+	return DbClients.pipe(
+		Effect.flatMap((clients) =>
 			Effect.promise(async () => {
-				const result = await pg.pool.query<T>(query);
+				const result = await clients.currentEnvironment.pgPool.query<T>(query);
 				return result.rows;
 			}),
 		),
@@ -18,10 +18,11 @@ export function pgQuery<T extends QueryResultRow = Record<string, unknown>>(
 export function adminPgQuery<
 	T extends QueryResultRow = Record<string, unknown>,
 >(query: string) {
-	return Pg.pipe(
-		Effect.flatMap((pg) =>
+	return DbClients.pipe(
+		Effect.flatMap((clients) =>
 			Effect.promise(async () => {
-				const result = await pg.adminPool.query<T>(query);
+				const result =
+					await clients.currentEnvironment.pgAdminPool.query<T>(query);
 				return result.rows;
 			}),
 		),
@@ -31,10 +32,11 @@ export function adminPgQuery<
 export function adminDevPgQuery<
 	T extends QueryResultRow = Record<string, unknown>,
 >(query: string) {
-	return DevPg.pipe(
-		Effect.flatMap((pg) =>
+	return DbClients.pipe(
+		Effect.flatMap((clients) =>
 			Effect.promise(async () => {
-				const result = await pg.adminPool.query<T>(query);
+				const result =
+					await clients.developmentEnvironment.pgAdminPool.query<T>(query);
 				return result.rows;
 			}),
 		),

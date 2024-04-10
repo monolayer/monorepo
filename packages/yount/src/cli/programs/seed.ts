@@ -6,9 +6,8 @@ import path from "path";
 import { exit } from "process";
 import { type SeedImport } from "~/config.js";
 import { dbTableInfo } from "~/schema/table/introspection.js";
+import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
-import { Db } from "../services/kysely.js";
-import { Pg } from "../services/pg.js";
 import { checkWithFail } from "../utils/check-with-fail.js";
 import { spinnerTask } from "../utils/spinner-task.js";
 import { localPendingMigrations } from "./local-pending-migrations.js";
@@ -114,15 +113,19 @@ function replantWarning() {
 }
 
 function truncateAllTables() {
-	return Db.pipe(
-		Effect.flatMap((db) =>
-			Effect.tryPromise(() => dbTableInfo(db.kysely, "public")).pipe(
+	return DbClients.pipe(
+		Effect.flatMap((dbClients) =>
+			Effect.tryPromise(() =>
+				dbTableInfo(dbClients.currentEnvironment.kysely, "public"),
+			).pipe(
 				Effect.tap((result) =>
 					Effect.forEach(result, (table) =>
 						Effect.tryPromise(async () => {
 							await sql`truncate table ${sql.table(
 								`${table.name}`,
-							)} RESTART IDENTITY CASCADE`.execute(db.kysely);
+							)} RESTART IDENTITY CASCADE`.execute(
+								dbClients.currentEnvironment.kysely,
+							);
 							p.log.info(`Truncated ${table.name}.`);
 						}),
 					),
@@ -162,12 +165,14 @@ export function importSeedFunction() {
 }
 
 function seedDatabase() {
-	return Effect.all([Pg, Db]).pipe(
-		Effect.flatMap(([pg, db]) =>
-			spinnerTask(`Seed ${pg.config.database}`, () =>
+	return DbClients.pipe(
+		Effect.flatMap((dbClient) =>
+			spinnerTask(`Seed ${dbClient.currentEnvironment.pgConfig.database}`, () =>
 				importSeedFunction().pipe(
 					Effect.flatMap((seedImport) =>
-						Effect.tryPromise(() => seedImport(db.kysely)),
+						Effect.tryPromise(() =>
+							seedImport(dbClient.currentEnvironment.kysely),
+						),
 					),
 				),
 			),

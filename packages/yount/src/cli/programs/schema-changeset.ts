@@ -19,8 +19,8 @@ import { dbIndexInfo } from "~/schema/table/index/introspection.js";
 import { dbTableInfo } from "~/schema/table/introspection.js";
 import { dbTriggerInfo } from "~/schema/table/trigger/introspection.js";
 import { dbEnumInfo } from "~/schema/types/enum/introspection.js";
+import { DbClients } from "../services/dbClients.js";
 import { DevEnvironment } from "../services/environment.js";
-import { DevDb } from "../services/kysely.js";
 
 export function schemaChangeset() {
 	return connectorSchemas().pipe(
@@ -35,10 +35,10 @@ export function schemaChangeset() {
 }
 
 function databaseChangeset(database: AnySchema) {
-	return Effect.all([DevEnvironment, DevDb]).pipe(
-		Effect.flatMap(([devEnvironment, devDb]) =>
+	return Effect.all([DevEnvironment, DbClients]).pipe(
+		Effect.flatMap(([devEnvironment, dbClients]) =>
 			Effect.all([
-				Effect.succeed(devDb.kyselyNoCamelCase),
+				Effect.succeed(dbClients.developmentEnvironment.kyselyNoCamelCase),
 				Effect.succeed(devEnvironment.camelCasePlugin),
 				Effect.succeed(Schema.info(database).name || "public"),
 			]),
