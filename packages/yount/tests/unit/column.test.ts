@@ -12548,9 +12548,10 @@ describe("enumerated", () => {
 
 		describe("as primary key", () => {
 			test("input type is enum values", () => {
+				const role = enumType("role", ["user", "admin", "superuser"]);
 				const tbl = table({
 					columns: {
-						id: enumerated(enumType("role", ["user", "admin", "superuser"])),
+						id: enumerated(role),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -12558,7 +12559,7 @@ describe("enumerated", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
-				type Expected = string;
+				type Expected = "user" | "admin" | "superuser";
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
 			});

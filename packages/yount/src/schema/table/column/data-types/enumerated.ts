@@ -58,7 +58,7 @@ import { StringColumn } from "../column.js";
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-enum.html#DATATYPE-ENUM | enumerated types }
  */
 export function enumerated<Value extends string>(enumerated: EnumType<Value>) {
-	return new PgEnum(enumerated.name, enumerated.values);
+	return new PgEnum(enumerated);
 }
 
 export class PgEnum<Value extends string> extends StringColumn<Value, Value> {
@@ -69,9 +69,9 @@ export class PgEnum<Value extends string> extends StringColumn<Value, Value> {
 	/**
 	 * @hidden
 	 */
-	constructor(name: string, values: Value[]) {
-		super(name);
+	constructor(enumerated: EnumType<Value>) {
+		super(enumerated.name);
 		this.info.enum = true;
-		this.values = values;
+		this.values = enumerated.values;
 	}
 }

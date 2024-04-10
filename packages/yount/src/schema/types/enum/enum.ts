@@ -6,6 +6,10 @@ export class EnumType<Value extends string> {
 	/**
 	 * @hidden
 	 */
+	protected declare infer: Value;
+	/**
+	 * @hidden
+	 */
 	protected isExternal: boolean;
 	/**
 	 * @hidden
