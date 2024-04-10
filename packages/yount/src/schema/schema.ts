@@ -1,9 +1,9 @@
-import type { PgExtension } from "./extension/extension.js";
+	import type { PgExtension } from "./extension/extension.js";
 import type { AnyPgTable } from "./table/table.js";
 import type { EnumType } from "./types/enum/enum.js";
 
 export type DatabaseSchema<T extends ColumnRecord, S extends string> = {
-	schema?: S;
+	name?: S;
 	extensions?: Array<PgExtension>;
 	tables?: T;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,7 +19,7 @@ export class Schema<T extends ColumnRecord, S extends string> {
 			extensions: db.extensions ?? [],
 			tables: db.tables ?? {},
 			types: db.types || [],
-			schema: db.schema,
+			name: db.name,
 		};
 	}
 
@@ -367,7 +367,7 @@ export class Schema<T extends ColumnRecord, S extends string> {
 	/**
 	 * @hidden
 	 */
-	protected schema?: S;
+	protected name?: S;
 
 	/**
 	 * @hidden
@@ -389,7 +389,7 @@ export class Schema<T extends ColumnRecord, S extends string> {
 		this.tables = schema.tables || ({} as T);
 		this.extensions = schema.extensions;
 		this.types = schema.types;
-		this.schema = schema.schema;
+		this.name = schema.name;
 	}
 }
 

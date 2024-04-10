@@ -129,7 +129,7 @@ export const dbSchema = schema({
 const anotherSchemaFile = `import { schema, table, text } from "${indexPath}";
 
 export const dbSchema = schema({
-	schema: "accounts",
+	name: "accounts",
   tables: {
     regulus_wolf: table({
 			columns: {

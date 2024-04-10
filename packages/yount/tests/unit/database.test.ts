@@ -137,7 +137,7 @@ test("types for Kysely with schema", () => {
 		},
 	});
 	const dbSchema = schema({
-		schema: "demo",
+		name: "demo",
 		tables: {
 			users,
 			books,

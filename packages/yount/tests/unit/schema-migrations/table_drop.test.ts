@@ -887,7 +887,7 @@ describe("Table drop migrations", () => {
 
 	test<DbContext>("drop table with in demo schema", async (context) => {
 		const dbSchema = schema({
-			schema: "demo",
+			name: "demo",
 			tables: {
 				organizations: table({
 					columns: {},

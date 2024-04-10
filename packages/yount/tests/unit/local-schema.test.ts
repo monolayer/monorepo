@@ -120,7 +120,7 @@ describe("#schemaColumnInfo", () => {
 });
 
 test("#schemaDBColumnInfoByTable on empty database", () => {
-	const dbSchema = schema({ schema: "public", tables: {} });
+	const dbSchema = schema({ name: "public", tables: {} });
 	expect(localColumnInfoByTable(dbSchema, migrationSchemaFactory())).toEqual(
 		{},
 	);
@@ -143,7 +143,7 @@ test("#schemaDBColumnInfoByTable", () => {
 		},
 	});
 	const dbSchema = schema({
-		schema: "public",
+		name: "public",
 		tables: {
 			users,
 			teams,

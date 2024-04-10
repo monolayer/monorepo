@@ -1573,7 +1573,7 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 
 	test<DbContext>("create table in demo schema", async (context) => {
 		const dbSchema = schema({
-			schema: "demo",
+			name: "demo",
 			tables: {
 				users: table({
 					columns: {

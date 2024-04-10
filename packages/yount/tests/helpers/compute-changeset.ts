@@ -16,7 +16,7 @@ export async function computeChangeset(
 	db: AnySchema,
 	camelCase?: CamelCaseOptions,
 ) {
-	const schemaName = Schema.info(db).schema || "public";
+	const schemaName = Schema.info(db).name || "public";
 	const remote = await remoteSchema(kysely, schemaName);
 	const local = localSchema(db, remote, camelCase ?? { enabled: false });
 	const cset = changeset(local, remote, schemaName);

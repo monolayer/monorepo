@@ -41,7 +41,7 @@ function databaseChangeset(database: AnySchema) {
 			Effect.all([
 				Effect.succeed(devDb.kyselyNoCamelCase),
 				Effect.succeed(devEnvironment.camelCasePlugin),
-				Effect.succeed(Schema.info(database).schema || "public"),
+				Effect.succeed(Schema.info(database).name || "public"),
 			]),
 		),
 		Effect.flatMap(([kyselyInstance, camelCasePlugin, schemaName]) =>
@@ -78,7 +78,7 @@ function computeChangeset(
 			camelCasePlugin ?? { enabled: false },
 		),
 		remoteSchema,
-		Schema.info(localDatabaseSchema).schema || "public",
+		Schema.info(localDatabaseSchema).name || "public",
 	);
 	return Effect.succeed(cset);
 }
@@ -109,7 +109,7 @@ function localDatabaseSchema() {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function databaseSchema(kysely: Kysely<any>, localSchema: AnySchema) {
-	const schemaName = Schema.info(localSchema).schema || "public";
+	const schemaName = Schema.info(localSchema).name || "public";
 	return pipe(
 		databaseTableInfo(kysely, schemaName),
 		Effect.flatMap(tableList),

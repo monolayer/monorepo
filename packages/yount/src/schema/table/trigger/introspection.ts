@@ -135,7 +135,7 @@ export function localTriggersInfo(
 					transformedTableName,
 					kysely,
 					camelCase,
-					dbInfo.schema || "public",
+					dbInfo.name || "public",
 				);
 
 				acc[transformedTableName] = {
