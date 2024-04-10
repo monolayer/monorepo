@@ -1,7 +1,7 @@
 import captureConsole from "capture-console";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { pendingMigrations } from "~/cli/programs/pending-migrations.js";
+import { pendingMigrations } from "~/programs/pending-migrations.js";
 import { layers } from "~tests/helpers/layers.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";
 import {

@@ -11,15 +11,15 @@ import fs from "node:fs/promises";
 import path from "path";
 import pg from "pg";
 import { env } from "process";
-import { DbClients, dbClientsLayer } from "~/cli/services/dbClients.js";
+import type { AnySchema } from "~/schema/schema.js";
+import { DbClients, dbClientsLayer } from "~/services/dbClients.js";
 import {
 	DevEnvironment,
 	Environment,
 	devEnvironmentLayer,
 	environmentLayer,
-} from "~/cli/services/environment.js";
-import { Migrator, migratorLayer } from "~/cli/services/migrator.js";
-import type { AnySchema } from "~/schema/schema.js";
+} from "~/services/environment.js";
+import { Migrator, migratorLayer } from "~/services/migrator.js";
 dotenv.config();
 
 function pgPool(database?: string) {

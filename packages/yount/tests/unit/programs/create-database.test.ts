@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {
 	createDatabase,
 	createDevDatabase,
-} from "~/cli/programs/create-database.js";
+} from "~/programs/create-database.js";
 import { connectorsTemplate } from "~tests/fixtures/program.js";
 import { layers } from "~tests/helpers/layers.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";

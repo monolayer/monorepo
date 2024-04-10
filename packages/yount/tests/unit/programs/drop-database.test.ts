@@ -1,6 +1,6 @@
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { dropDatabase } from "~/cli/programs/drop-database.js";
+import { dropDatabase } from "~/programs/drop-database.js";
 import { layers } from "~tests/helpers/layers.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";
 import {

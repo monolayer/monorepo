@@ -2,7 +2,7 @@ import { Effect } from "effect";
 import { readFileSync } from "fs";
 import nunjucks from "nunjucks";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { dumpDatabaseStructure } from "~/cli/programs/dump-database-structure.js";
+import { dumpDatabaseStructure } from "~/programs/dump-database-structure.js";
 import { layers } from "~tests/helpers/layers.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";
 import {

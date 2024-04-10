@@ -1,6 +1,6 @@
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { migrate } from "~/cli/programs/migrate.js";
+import { migrate } from "~/programs/migrate.js";
 import { layers } from "~tests/helpers/layers.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";
 import {

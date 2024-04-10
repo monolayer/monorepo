@@ -1,12 +1,12 @@
 import { Effect } from "effect";
 import { expect } from "vitest";
-import { generateChangesetMigration } from "~/cli/programs/generate-changeset-migration.js";
-import { migrateDown as migrateDownProgram } from "~/cli/programs/migrate-down.js";
-import { migrate } from "~/cli/programs/migrate.js";
+import { generateChangesetMigration } from "~/programs/generate-changeset-migration.js";
+import { migrateDown as migrateDownProgram } from "~/programs/migrate-down.js";
+import { migrate } from "~/programs/migrate.js";
 
-import { DbClients } from "~/cli/services/dbClients.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import type { AnySchema } from "~/schema/schema.js";
+import { DbClients } from "~/services/dbClients.js";
 import type { DbContext } from "~tests/setup/kysely.js";
 import { newLayers } from "./layers.js";
 import { programWithErrorCause } from "./run-program.js";

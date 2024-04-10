@@ -1,17 +1,13 @@
 import dotenv from "dotenv";
 import { Effect, Layer } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import {
-	adminDevPgQuery,
-	adminPgQuery,
-	pgQuery,
-} from "~/cli/programs/pg-query.js";
-import { dbClientsLayer } from "~/cli/services/dbClients.js";
+import { adminDevPgQuery, adminPgQuery, pgQuery } from "~/programs/pg-query.js";
+import { dbClientsLayer } from "~/services/dbClients.js";
 import {
 	devEnvironmentLayer,
 	environmentLayer,
-} from "~/cli/services/environment.js";
-import { migratorLayer } from "~/cli/services/migrator.js";
+} from "~/services/environment.js";
+import { migratorLayer } from "~/services/migrator.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";
 import {
 	setupProgramContext,

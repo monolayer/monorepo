@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import { readFileSync } from "fs";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { scaffoldMigration } from "~/cli/programs/scaffold-migration.js";
+import { scaffoldMigration } from "~/programs/scaffold-migration.js";
 import { layers } from "~tests/helpers/layers.js";
 import { programWithErrorCause } from "~tests/helpers/run-program.js";
 import {
