@@ -111,7 +111,7 @@ describe("Table create migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -300,7 +300,7 @@ describe("Table create migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -401,7 +401,7 @@ describe("Table create migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -504,7 +504,7 @@ describe("Table create migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -611,7 +611,7 @@ describe("Table create migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -712,7 +712,7 @@ describe("Table create migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -825,7 +825,7 @@ describe("Table create migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -930,7 +930,7 @@ describe("Table create migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -1001,7 +1001,7 @@ describe("Table create migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -1121,7 +1121,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -1566,7 +1566,7 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 			useCamelCase: { enabled: true, options: {} },
 		});
 	});
@@ -1766,7 +1766,7 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 });

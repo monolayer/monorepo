@@ -99,7 +99,7 @@ describe("Table change migrations", () => {
 			context,
 			database: dbSchema,
 			expected: expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -180,7 +180,7 @@ describe("Table change migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -228,7 +228,7 @@ describe("Table change migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -288,7 +288,7 @@ describe("Table change migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -340,7 +340,7 @@ describe("Table change migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -396,7 +396,7 @@ describe("Table change migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -466,7 +466,7 @@ describe("Table change migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -568,7 +568,7 @@ describe("Table change migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -658,7 +658,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 			context,
 			database: dbSchema,
 			expected: expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -748,7 +748,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 			context,
 			database: dbSchema,
 			expected: expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 });

@@ -70,7 +70,9 @@ export async function testUpAndDownMigrations(
 				database,
 				camelCase,
 			);
-			expect(afterDownCs).toEqual(cs);
+			expect(afterDownCs).toEqual(
+				cs.filter((changeset) => changeset.type !== "createSchema"),
+			);
 			break;
 		}
 		case "empty": {

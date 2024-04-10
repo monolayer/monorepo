@@ -79,7 +79,7 @@ describe("Identity columns", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -151,7 +151,7 @@ describe("Identity columns", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -256,7 +256,7 @@ describe("Identity columns", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -365,7 +365,7 @@ describe("Identity columns", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 });

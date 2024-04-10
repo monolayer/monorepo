@@ -119,7 +119,7 @@ describe("Database migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -290,7 +290,7 @@ describe("Database migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -376,7 +376,7 @@ describe("Database migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -519,7 +519,7 @@ describe("Database migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -635,7 +635,7 @@ describe("Database migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -742,7 +742,7 @@ describe("Database migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 });

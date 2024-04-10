@@ -127,7 +127,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -225,7 +225,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 			context,
 			database: dbSchema,
 			expected,
-			down: "same",
+			down: "reverse",
 		});
 	});
 
@@ -308,7 +308,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 });

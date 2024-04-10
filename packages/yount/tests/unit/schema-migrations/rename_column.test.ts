@@ -68,7 +68,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -137,7 +137,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -233,7 +233,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -307,7 +307,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -418,7 +418,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -498,7 +498,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -621,7 +621,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -715,7 +715,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -822,7 +822,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -897,7 +897,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 	});
@@ -934,7 +934,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected: [],
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -964,7 +964,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected: [],
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -1002,7 +1002,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected: [],
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -1035,7 +1035,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected: [],
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -1093,7 +1093,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected: [],
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -1146,7 +1146,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected: [],
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -1237,7 +1237,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected,
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -1281,7 +1281,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected: [],
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -1305,7 +1305,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected: [],
-				down: "reverse",
+				down: "same",
 			});
 		});
 
@@ -1329,7 +1329,7 @@ describe("Rename column migrations", () => {
 				context,
 				database: dbSchema,
 				expected: [],
-				down: "reverse",
+				down: "same",
 			});
 		});
 	});

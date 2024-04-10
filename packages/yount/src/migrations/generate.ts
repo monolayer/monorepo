@@ -26,7 +26,7 @@ export function generateMigrationFiles(
 	name?: string,
 	log = true,
 ) {
-	const { up, down } = extractMigrationOpChangesets(changesets);
+	const { up, down } = extractMigrationOpChangesets([...changesets]);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
 	const migrationFilePath = path.join(
 		folder,

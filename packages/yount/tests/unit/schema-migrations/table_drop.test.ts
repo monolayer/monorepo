@@ -78,7 +78,7 @@ describe("Table drop migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "same",
+			down: "reverse",
 		});
 	});
 
@@ -233,7 +233,7 @@ describe("Table drop migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -338,7 +338,7 @@ describe("Table drop migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -423,7 +423,7 @@ describe("Table drop migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -530,7 +530,7 @@ describe("Table drop migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -601,7 +601,7 @@ describe("Table drop migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -709,7 +709,7 @@ describe("Table drop migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -780,7 +780,7 @@ describe("Table drop migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -881,7 +881,7 @@ describe("Table drop migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -1045,7 +1045,7 @@ describe("Table drop migrations", () => {
 			context,
 			database: dbSchema,
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 });
