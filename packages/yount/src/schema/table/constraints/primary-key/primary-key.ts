@@ -1,10 +1,8 @@
-export function primaryKey<T extends string, PK extends string>(
-	columns: (PK | T)[],
-) {
-	return new PgPrimaryKey<T, PK>(columns);
+export function primaryKey<PK extends string>(columns: PK[]) {
+	return new PgPrimaryKey(columns);
 }
 
-export class PgPrimaryKey<T extends string, PK extends string> {
+export class PgPrimaryKey<PK> {
 	/**
 	 * @hidden
 	 */
@@ -23,7 +21,7 @@ export class PgPrimaryKey<T extends string, PK extends string> {
 	/**
 	 * @hidden
 	 */
-	constructor(protected columns: (PK | T)[]) {}
+	constructor(protected columns: PK[]) {}
 
 	/**
 	 * @hidden
@@ -35,4 +33,4 @@ export class PgPrimaryKey<T extends string, PK extends string> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyPgPrimaryKey = PgPrimaryKey<any, any>;
+export type AnyPgPrimaryKey = PgPrimaryKey<any>;
