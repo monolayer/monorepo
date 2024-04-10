@@ -11,7 +11,7 @@ import {
 	type PgConfig,
 } from "~/configuration.js";
 
-type EnvironmentProperties = {
+export type EnvironmentProperties = {
 	readonly name: string;
 	readonly folder: string;
 	readonly migrationFolder: string;

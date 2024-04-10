@@ -3,20 +3,15 @@ import { Effect, Layer } from "effect";
 import { TaggedClass } from "effect/Data";
 import color from "picocolors";
 import { exit } from "process";
+import type { Context } from "../context.js";
+import { dbClientsLayer } from "../services/dbClients.js";
 import {
 	devEnvironmentLayer,
 	environmentLayer,
-	type DevEnvironment,
-	type Environment,
 } from "../services/environment.js";
-import {
-	devKyselyLayer,
-	kyselyLayer,
-	type Db,
-	type DevDb,
-} from "../services/kysely.js";
-import { migratorLayer, type Migrator } from "../services/migrator.js";
-import { devPgLayer, pgLayer, type DevPg, type Pg } from "../services/pg.js";
+import { devKyselyLayer, kyselyLayer } from "../services/kysely.js";
+import { migratorLayer } from "../services/migrator.js";
+import { devPgLayer, pgLayer } from "../services/pg.js";
 
 export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 	readonly cause: string;
@@ -25,16 +20,13 @@ export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 export async function cliAction(
 	name: string,
 	options: { readonly environment: string; readonly connection?: string },
-	tasks: Effect.Effect<
-		unknown,
-		unknown,
-		Environment | DevEnvironment | Db | DevDb | Migrator | Pg | DevPg
-	>[],
+	tasks: Effect.Effect<unknown, unknown, Context>[],
 ) {
 	const layers = migratorLayer().pipe(
 		Layer.provideMerge(kyselyLayer()),
 		Layer.provideMerge(devKyselyLayer()),
 		Layer.provideMerge(pgLayer()),
+		Layer.provideMerge(dbClientsLayer()),
 		Layer.provideMerge(devPgLayer()),
 		Layer.provideMerge(
 			environmentLayer(options.environment, options.connection ?? "default"),

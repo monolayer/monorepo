@@ -6,6 +6,7 @@ import {
 	adminPgQuery,
 	pgQuery,
 } from "~/cli/programs/pg-query.js";
+import { dbClientsLayer } from "~/cli/services/dbClients.js";
 import {
 	devEnvironmentLayer,
 	environmentLayer,
@@ -35,6 +36,7 @@ describe("pgQuery", () => {
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(devKyselyLayer()),
 			Layer.provideMerge(pgLayer()),
+			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(devPgLayer()),
 			Layer.provideMerge(environmentLayer("development", "default")),
 			Layer.provideMerge(devEnvironmentLayer("default")),
@@ -45,6 +47,7 @@ describe("pgQuery", () => {
 			Layer.provideMerge(devKyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
+			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("development", "stats")),
 			Layer.provideMerge(devEnvironmentLayer("stats")),
 		);
@@ -73,6 +76,7 @@ describe("pgQuery", () => {
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
+			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "default")),
 			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
@@ -81,6 +85,7 @@ describe("pgQuery", () => {
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
+			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "stats")),
 			Layer.provideMerge(devEnvironmentLayer("stats")),
 		);
@@ -121,6 +126,7 @@ describe("adminPgQuery", () => {
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
+			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("development", "default")),
 			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
@@ -129,6 +135,7 @@ describe("adminPgQuery", () => {
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
+			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("development", "stats")),
 			Layer.provideMerge(devEnvironmentLayer("stats")),
 		);
@@ -155,6 +162,7 @@ describe("adminPgQuery", () => {
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
+			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "default")),
 			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
@@ -163,6 +171,7 @@ describe("adminPgQuery", () => {
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
+			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "stats")),
 			Layer.provideMerge(devEnvironmentLayer("stats")),
 		);
@@ -199,6 +208,7 @@ describe("devAdminPgQuery", () => {
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
+			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "default")),
 			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
@@ -226,6 +236,7 @@ describe("devAdminPgQuery", () => {
 			Layer.provideMerge(kyselyLayer()),
 			Layer.provideMerge(pgLayer()),
 			Layer.provideMerge(devPgLayer()),
+			Layer.provideMerge(dbClientsLayer()),
 			Layer.provideMerge(environmentLayer("test", "stats")),
 			Layer.provideMerge(devEnvironmentLayer("stats")),
 		);

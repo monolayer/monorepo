@@ -1,4 +1,5 @@
 import { Layer } from "effect";
+import { dbClientsLayer } from "~/cli/services/dbClients.js";
 import {
 	devEnvironmentLayer,
 	environmentLayer,
@@ -11,6 +12,7 @@ export const layers = migratorLayer().pipe(
 	Layer.provideMerge(kyselyLayer()),
 	Layer.provideMerge(devKyselyLayer()),
 	Layer.provideMerge(pgLayer()),
+	Layer.provideMerge(dbClientsLayer()),
 	Layer.provideMerge(devPgLayer()),
 	Layer.provideMerge(environmentLayer("development", "default")),
 	Layer.provideMerge(devEnvironmentLayer("default")),
