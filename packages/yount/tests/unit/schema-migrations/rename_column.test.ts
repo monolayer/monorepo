@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { varchar } from "~/schema/table/column/data-types/character-varying.js";
 import { integer } from "~/schema/table/column/data-types/integer.js";
 import { text } from "~/schema/table/column/data-types/text.js";
@@ -30,7 +30,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.execute();
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users: table({
 						columns: {
@@ -66,7 +66,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -78,7 +78,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.execute();
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users: table({
 						columns: {
@@ -135,7 +135,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -157,7 +157,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users: users,
 				},
@@ -231,7 +231,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -252,7 +252,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users: users,
 				},
@@ -305,7 +305,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -330,7 +330,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 				},
@@ -416,7 +416,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -437,7 +437,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 				},
@@ -496,7 +496,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -540,7 +540,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 					books_pk1: books,
@@ -619,7 +619,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -657,7 +657,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 					books_pk1: books,
@@ -713,7 +713,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -744,7 +744,7 @@ describe("Rename column migrations", () => {
 				indexes: [index(["bookId"])],
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 				},
@@ -820,7 +820,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -841,7 +841,7 @@ describe("Rename column migrations", () => {
 				indexes: [index(["bookId"])],
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 				},
@@ -895,7 +895,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -924,7 +924,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users: users,
 				},
@@ -932,7 +932,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected: [],
 				down: "reverse",
 			});
@@ -954,7 +954,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users6: users,
 				},
@@ -962,7 +962,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected: [],
 				down: "reverse",
 			});
@@ -992,7 +992,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 				},
@@ -1000,7 +1000,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected: [],
 				down: "reverse",
 			});
@@ -1025,7 +1025,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 				},
@@ -1033,7 +1033,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected: [],
 				down: "reverse",
 			});
@@ -1082,7 +1082,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 					books_pk1: books,
@@ -1091,7 +1091,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected: [],
 				down: "reverse",
 			});
@@ -1135,7 +1135,7 @@ describe("Rename column migrations", () => {
 				},
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 					books_pk1: books,
@@ -1144,7 +1144,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected: [],
 				down: "reverse",
 			});
@@ -1180,7 +1180,7 @@ describe("Rename column migrations", () => {
 				indexes: [index(["bookId"])],
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 				},
@@ -1235,7 +1235,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected,
 				down: "reverse",
 			});
@@ -1271,7 +1271,7 @@ describe("Rename column migrations", () => {
 				indexes: [index(["bookId"])],
 			});
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users_pk1: users,
 				},
@@ -1279,7 +1279,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected: [],
 				down: "reverse",
 			});
@@ -1291,7 +1291,7 @@ describe("Rename column migrations", () => {
 				.addColumn("fullName", "text")
 				.execute();
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users: table({
 						columns: {
@@ -1303,7 +1303,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected: [],
 				down: "reverse",
 			});
@@ -1315,7 +1315,7 @@ describe("Rename column migrations", () => {
 				.addColumn("fullName", "varchar")
 				.execute();
 
-			const database = pgDatabase({
+			const dbSchema = schema({
 				tables: {
 					users: table({
 						columns: {
@@ -1327,7 +1327,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database,
+				database: dbSchema,
 				expected: [],
 				down: "reverse",
 			});

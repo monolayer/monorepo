@@ -5,7 +5,7 @@ import type { CamelCaseOptions } from "~/configuration.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { type MigrationSchema } from "~/introspection/introspection.js";
 import { findColumn, findPrimaryKey } from "~/migrations/migration-schema.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { Schema, type AnySchema } from "~/schema/schema.js";
 import type { InformationSchemaDB } from "../../../introspection/types.js";
 import { type TableColumn } from "../table-column.js";
 import { ColumnInfo } from "./types.js";
@@ -306,11 +306,11 @@ export function mapColumnsToTables(columns: ColumnInfo[]) {
 }
 
 export function localColumnInfoByTable(
-	schema: AnyPgDatabase,
+	schema: AnySchema,
 	remoteSchema: MigrationSchema,
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
-	const tables = PgDatabase.info(schema).tables ?? {};
+	const tables = Schema.info(schema).tables ?? {};
 	return Object.entries(tables).reduce<Record<string, ColumnsInfo>>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);

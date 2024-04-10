@@ -34,10 +34,10 @@ import { MaxLengthColumn } from "../column.js";
  * - Value cannot exceed `maximumLength`.
  * @example
  * ```ts
- * import { pgDatabase, table, varbit } from "yount";
+ * import { schema, table, varbit } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -48,7 +48,7 @@ import { MaxLengthColumn } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```
@@ -92,8 +92,8 @@ export function varbit(maximumLength?: number) {
  * - Value cannot exceed `maximumLength`.
  * @example
  * ```ts
- * import { pgDatabase, table, varbit } from "yount";
- * const database = pgDatabase({
+ * import { schema, table, varbit } from "yount";
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {

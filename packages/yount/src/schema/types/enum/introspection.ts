@@ -1,5 +1,5 @@
 import { sql, type Kysely } from "kysely";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { Schema, type AnySchema } from "~/schema/schema.js";
 import type { InformationSchemaDB } from "../../../introspection/types.js";
 import { EnumType } from "./enum.js";
 
@@ -40,8 +40,8 @@ export async function dbEnumInfo(
 	return enumInfo;
 }
 
-export function localEnumInfo(schema: AnyPgDatabase) {
-	const types = PgDatabase.info(schema).types;
+export function localEnumInfo(schema: AnySchema) {
+	const types = Schema.info(schema).types;
 	return types.reduce<EnumInfo>((acc, type) => {
 		if (isExternalEnum(type)) {
 			return acc;

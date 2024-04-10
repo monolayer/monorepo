@@ -10,11 +10,11 @@ export type DatabaseSchema<T extends ColumnRecord, S extends string> = {
 	types?: Array<EnumType<any>>;
 };
 
-export class PgDatabase<T extends ColumnRecord, S extends string> {
+export class Schema<T extends ColumnRecord, S extends string> {
 	/**
 	 * @hidden
 	 */
-	static info(db: AnyPgDatabase) {
+	static info(db: AnySchema) {
 		return {
 			extensions: db.extensions ?? [],
 			tables: db.tables ?? {},
@@ -142,7 +142,7 @@ export class PgDatabase<T extends ColumnRecord, S extends string> {
 	 * @example
 	 * ```ts
 	 * const userRole = enumType("user_role", ["admin", "user"]);
-	 * const database = pgDatabase({
+	 * const dbSchema = schema({
 	 *   types: [userRole],
 	 *   tables: {
 	 *     users: table({
@@ -159,7 +159,7 @@ export class PgDatabase<T extends ColumnRecord, S extends string> {
 	 *   }
 	 * });
 	 *
-	 * type DB = typeof database.infer;
+	 * type DB = typeof dbSchema.infer;
 	 * ```
 	 *
 	 * The `DB` type will be:
@@ -312,7 +312,7 @@ export class PgDatabase<T extends ColumnRecord, S extends string> {
 	 * @example
 	 * ```ts
 	 * const userRole = enumType("user_role", ["admin", "user"]);
-	 * const database = pgDatabase({
+	 * const dbSchema = schema({
 	 *   schema: "accounts"
 	 *   types: [userRole],
 	 *   tables: {
@@ -330,7 +330,7 @@ export class PgDatabase<T extends ColumnRecord, S extends string> {
 	 *   }
 	 * });
 	 *
-	 * type DB = typeof database.infer;
+	 * type DB = typeof dbSchema.infer;
 	 * ```
 	 *
 	 * The `DB` type will be:
@@ -414,11 +414,11 @@ type TableInferWithSchema<
 				: never]: T[K]["infer"];
 		};
 
-export function pgDatabase<T extends ColumnRecord, S extends string = "public">(
+export function schema<T extends ColumnRecord, S extends string = "public">(
 	schema: DatabaseSchema<T, S>,
 ) {
-	return new PgDatabase<T, S>(schema);
+	return new Schema<T, S>(schema);
 }
 
 export type ColumnRecord = Record<string, AnyPgTable>;
-export type AnyPgDatabase = PgDatabase<Record<string, AnyPgTable>, string>;
+export type AnySchema = Schema<Record<string, AnyPgTable>, string>;

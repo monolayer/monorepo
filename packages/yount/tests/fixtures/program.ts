@@ -8,11 +8,11 @@ export const yountConfigTemplate = nunjucks.compile(`export default {
 `);
 
 export const connectorsTemplate =
-	nunjucks.compile(`import { database } from "./schema";
+	nunjucks.compile(`import { dbSchema } from "./schema";
 
 export const connectors = {
 	default: {
-		schemas: [database],
+		schemas: [dbSchema],
 		environments: {
 			development: {
 				user: "${process.env.POSTGRES_USER}",
@@ -52,12 +52,12 @@ export const connectors = {
 `);
 
 export const connectorsTemplateTwoDatabaseSchemas =
-	nunjucks.compile(`import { database } from "./schema";
+	nunjucks.compile(`import { dbSchema } from "./schema";
 
-import { database as anotherDatabase } from "./{{ secondSchemaFile }}";
+import { dbSchema as anotherDbSchema } from "./{{ secondSchemaFile }}";
 export const connectors = {
 	default: {
-		schemas: [database, anotherDatabase],
+		schemas: [dbSchema, anotherDbSchema],
 		environments: {
 			development: {
 				user: "${process.env.POSTGRES_USER}",

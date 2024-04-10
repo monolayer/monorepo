@@ -5,7 +5,7 @@ import { MigrationSchema } from "~/introspection/introspection.js";
 import { type ColumnRecord } from "~/schema/table/table-column.js";
 import type { AnyPgTable } from "~/schema/table/table.js";
 import { toSnakeCase } from "../changeset/helpers.js";
-import { PgDatabase, type AnyPgDatabase } from "../schema/pg-database.js";
+import { Schema, type AnySchema } from "../schema/schema.js";
 import type { ColumnsInfo } from "../schema/table/column/instrospection.js";
 
 type TableName = string;
@@ -109,10 +109,10 @@ export function findColumnByNameInTable(
 
 export function findTableInDatabaseSchema(
 	table: AnyPgTable,
-	schema: AnyPgDatabase,
+	schema: AnySchema,
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
-	const tables = PgDatabase.info(schema).tables;
+	const tables = Schema.info(schema).tables;
 	const tableInSchema = Object.entries(tables || {}).find(
 		([, value]) =>
 			tableInfo(value).schema.columns === tableInfo(table).schema.columns,
@@ -124,10 +124,10 @@ export function findTableInDatabaseSchema(
 
 export function findTableByNameInDatabaseSchema(
 	table: string,
-	schema: AnyPgDatabase,
+	schema: AnySchema,
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
-	const tables = PgDatabase.info(schema).tables;
+	const tables = Schema.info(schema).tables;
 	const tableInSchema = Object.entries(tables || {}).find(
 		([tableName]) => tableName === table,
 	);

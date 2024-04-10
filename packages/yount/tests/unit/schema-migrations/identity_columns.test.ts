@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { integer } from "~/schema/table/column/data-types/integer.js";
 import { table } from "~/schema/table/table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
@@ -19,7 +19,7 @@ describe("Identity columns", () => {
 	test<DbContext>("add", async (context) => {
 		await context.kysely.schema.createTable("users").execute();
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -77,7 +77,7 @@ describe("Identity columns", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -94,7 +94,7 @@ describe("Identity columns", () => {
 			)
 			.execute();
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {},
@@ -149,7 +149,7 @@ describe("Identity columns", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -162,7 +162,7 @@ describe("Identity columns", () => {
 			.addColumn("count", "integer")
 			.execute();
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -254,7 +254,7 @@ describe("Identity columns", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -271,7 +271,7 @@ describe("Identity columns", () => {
 			)
 			.execute();
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -363,7 +363,7 @@ describe("Identity columns", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});

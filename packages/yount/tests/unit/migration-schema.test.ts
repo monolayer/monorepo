@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { serial } from "~/schema/table/column/data-types/serial.js";
 import { table } from "~/schema/table/table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column-info-factory.js";
@@ -157,13 +157,13 @@ describe("findTableInDatabaseSchema", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 			},
 		});
 
-		expect(findTableInDatabaseSchema(users, database)).toStrictEqual("users");
+		expect(findTableInDatabaseSchema(users, dbSchema)).toStrictEqual("users");
 	});
 
 	test("returns the undefined if the table is not found", () => {
@@ -173,11 +173,11 @@ describe("findTableInDatabaseSchema", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {},
 		});
 
-		expect(findTableInDatabaseSchema(users, database)).toBeUndefined();
+		expect(findTableInDatabaseSchema(users, dbSchema)).toBeUndefined();
 	});
 
 	test("returns the name table of a table in the database schema with multiple tables with same definition", () => {
@@ -193,12 +193,12 @@ describe("findTableInDatabaseSchema", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 				desks,
 			},
 		});
-		expect(findTableInDatabaseSchema(desks, database)).toStrictEqual("desks");
+		expect(findTableInDatabaseSchema(desks, dbSchema)).toStrictEqual("desks");
 	});
 });

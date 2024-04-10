@@ -3,7 +3,7 @@ import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { Schema, type AnySchema } from "~/schema/schema.js";
 import {
 	indexOptions,
 	isExternalIndex,
@@ -60,7 +60,7 @@ export async function dbIndexInfo(
 }
 
 export function localIndexInfoByTable(
-	schema: AnyPgDatabase,
+	schema: AnySchema,
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,7 +69,7 @@ export function localIndexInfoByTable(
 			pool: new pg.Pool({}),
 		}),
 	});
-	const dbInfo = PgDatabase.info(schema);
+	const dbInfo = Schema.info(schema);
 	const tables = dbInfo.tables;
 	return Object.entries(tables || {}).reduce<IndexInfo>(
 		(acc, [tableName, tableDefinition]) => {

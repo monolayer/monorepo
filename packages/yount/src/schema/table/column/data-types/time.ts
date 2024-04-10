@@ -34,10 +34,10 @@ import { DateTimePrecision } from "../types.js";
  * - Non-values must be a valid string that matches a time format.
  * @example
  * ```ts
- * import { pgDatabase, table, time } from "yount";
+ * import { schema, table, time } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -48,7 +48,7 @@ import { DateTimePrecision } from "../types.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

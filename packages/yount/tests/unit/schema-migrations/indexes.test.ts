@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { text } from "~/schema/table/column/data-types/text.js";
 import { index } from "~/schema/table/index/index.js";
 import { table } from "~/schema/table/table.js";
@@ -42,7 +42,7 @@ describe("Database migrations", () => {
 			indexes: [index(["fullName"]), index(["name"])],
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 			},
@@ -75,7 +75,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -114,7 +114,7 @@ describe("Database migrations", () => {
 			indexes: [index(["name"])],
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 			},
@@ -147,7 +147,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -186,7 +186,7 @@ describe("Database migrations", () => {
 			indexes: [index(["name"]), index(["name", "fullName"])],
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 			},
@@ -241,7 +241,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -280,7 +280,7 @@ describe("Database migrations", () => {
 			indexes: [index(["name"]), index(["fullName"]).unique()],
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 			},
@@ -326,7 +326,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});

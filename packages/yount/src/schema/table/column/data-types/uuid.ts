@@ -30,10 +30,10 @@ import { PgColumn, valueWithHash } from "../column.js";
  * - String values must be a valid UUID.
  * @example
  * ```ts
- * import { uuid, pgDatabase, sql, table } from "yount";
+ * import { uuid, schema, sql, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -44,7 +44,7 @@ import { PgColumn, valueWithHash } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

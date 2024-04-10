@@ -113,9 +113,9 @@ describe("generateChangesetMigration", () => {
 });
 
 const indexPath = path.join(cwd(), "src", "index.ts");
-const schemaFile = `import { pgDatabase, table, text } from "${indexPath}";
+const schemaFile = `import { schema, table, text } from "${indexPath}";
 
-export const database = pgDatabase({
+export const dbSchema = schema({
   tables: {
     regulus_mint: table({
 			columns: {
@@ -126,9 +126,9 @@ export const database = pgDatabase({
 });
 `;
 
-const anotherSchemaFile = `import { pgDatabase, table, text } from "${indexPath}";
+const anotherSchemaFile = `import { schema, table, text } from "${indexPath}";
 
-export const database = pgDatabase({
+export const dbSchema = schema({
 	schema: "accounts",
   tables: {
     regulus_wolf: table({

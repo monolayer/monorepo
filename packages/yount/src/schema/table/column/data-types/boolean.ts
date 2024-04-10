@@ -32,10 +32,10 @@ import { PgColumn, valueWithHash } from "../column.js";
  * - Value must be `boolean` or `Boolish`.
  * @example
  * ```ts
- * import { boolean, pgDatabase, table } from "yount";
+ * import { boolean, schema, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -47,7 +47,7 @@ import { PgColumn, valueWithHash } from "../column.js";
  * ```
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * @see

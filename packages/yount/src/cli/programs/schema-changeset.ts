@@ -10,7 +10,7 @@ import {
 import { createSchemaChangeset } from "~/schema/database_schemas/changeset.js";
 import { schemaInDb } from "~/schema/database_schemas/introspection.js";
 import { dbExtensionInfo } from "~/schema/extension/introspection.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { Schema, type AnySchema } from "~/schema/schema.js";
 import { dbColumnInfo } from "~/schema/table/column/instrospection.js";
 import { dbCheckConstraintInfo } from "~/schema/table/constraints/check/introspection.js";
 import { dbForeignKeyConstraintInfo } from "~/schema/table/constraints/foreign-key/introspection.js";
@@ -35,13 +35,13 @@ export function schemaChangeset() {
 	);
 }
 
-function databaseChangeset(database: AnyPgDatabase) {
+function databaseChangeset(database: AnySchema) {
 	return Effect.all([DevEnvironment, DevDb]).pipe(
 		Effect.flatMap(([devEnvironment, devDb]) =>
 			Effect.all([
 				Effect.succeed(devDb.kyselyNoCamelCase),
 				Effect.succeed(devEnvironment.camelCasePlugin),
-				Effect.succeed(PgDatabase.info(database).schema || "public"),
+				Effect.succeed(Schema.info(database).schema || "public"),
 			]),
 		),
 		Effect.flatMap(([kyselyInstance, camelCasePlugin, schemaName]) =>
@@ -67,7 +67,7 @@ function databaseChangeset(database: AnyPgDatabase) {
 }
 
 function computeChangeset(
-	localDatabaseSchema: AnyPgDatabase,
+	localDatabaseSchema: AnySchema,
 	remoteSchema: MigrationSchema,
 	camelCasePlugin?: CamelCaseOptions,
 ) {
@@ -78,7 +78,7 @@ function computeChangeset(
 			camelCasePlugin ?? { enabled: false },
 		),
 		remoteSchema,
-		PgDatabase.info(localDatabaseSchema).schema || "public",
+		Schema.info(localDatabaseSchema).schema || "public",
 	);
 	return Effect.succeed(cset);
 }
@@ -108,8 +108,8 @@ function localDatabaseSchema() {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function databaseSchema(kysely: Kysely<any>, localSchema: AnyPgDatabase) {
-	const schemaName = PgDatabase.info(localSchema).schema || "public";
+function databaseSchema(kysely: Kysely<any>, localSchema: AnySchema) {
+	const schemaName = Schema.info(localSchema).schema || "public";
 	return pipe(
 		databaseTableInfo(kysely, schemaName),
 		Effect.flatMap(tableList),

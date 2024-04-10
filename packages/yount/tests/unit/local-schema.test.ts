@@ -3,7 +3,7 @@ import { sql } from "kysely";
 import { describe, expect, test, type Mock } from "vitest";
 import { extension } from "~/index.js";
 import { localSchema } from "~/introspection/introspection.js";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { bigserial } from "~/schema/table/column/data-types/bigserial.js";
 import { boolean } from "~/schema/table/column/data-types/boolean.js";
 import { varchar } from "~/schema/table/column/data-types/character-varying.js";
@@ -120,8 +120,8 @@ describe("#schemaColumnInfo", () => {
 });
 
 test("#schemaDBColumnInfoByTable on empty database", () => {
-	const database = pgDatabase({ schema: "public", tables: {} });
-	expect(localColumnInfoByTable(database, migrationSchemaFactory())).toEqual(
+	const dbSchema = schema({ schema: "public", tables: {} });
+	expect(localColumnInfoByTable(dbSchema, migrationSchemaFactory())).toEqual(
 		{},
 	);
 });
@@ -142,7 +142,7 @@ test("#schemaDBColumnInfoByTable", () => {
 			active: boolean(),
 		},
 	});
-	const database = pgDatabase({
+	const dbSchema = schema({
 		schema: "public",
 		tables: {
 			users,
@@ -197,7 +197,7 @@ test("#schemaDBColumnInfoByTable", () => {
 			}),
 		},
 	};
-	expect(localColumnInfoByTable(database, migrationSchemaFactory())).toEqual(
+	expect(localColumnInfoByTable(dbSchema, migrationSchemaFactory())).toEqual(
 		expectedDbColumnInfoByTable,
 	);
 });
@@ -219,13 +219,13 @@ test("#schemaDBIndexInfoByTable", () => {
 		},
 		indexes: [index(["id"]), index(["active"])],
 	});
-	const database = pgDatabase({
+	const dbSchema = schema({
 		tables: {
 			users,
 			teams,
 		},
 	});
-	expect(localIndexInfoByTable(database)).toStrictEqual({
+	expect(localIndexInfoByTable(dbSchema)).toStrictEqual({
 		teams: {
 			teams_active_kntc_idx:
 				'78977616:create index "teams_active_kntc_idx" on "public"."teams" ("active")',
@@ -264,12 +264,12 @@ test("#schemaDbEnumInfo", () => {
 		},
 	});
 
-	const database = pgDatabase({
+	const dbSchema = schema({
 		types: [bookStatus, userStatus],
 		tables: { users, books },
 	});
 
-	expect(localEnumInfo(database)).toStrictEqual({
+	expect(localEnumInfo(dbSchema)).toStrictEqual({
 		book_status: "available, checked_out, lost",
 		user_status: "active, inactive",
 	});
@@ -344,7 +344,7 @@ describe("schema", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("cube"), extension("btree_gin")],
 			types: [bookStatus, userStatus],
 			tables: {
@@ -591,7 +591,7 @@ describe("schema", () => {
 				user_status: "active, inactive",
 			},
 		};
-		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -646,7 +646,7 @@ describe("schema", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("cube"), extension("btree_gin")],
 			types: [bookStatus, userStatus],
 			tables: {
@@ -925,7 +925,7 @@ describe("schema", () => {
 			},
 		};
 		expect(
-			localSchema(database, migrationSchemaFactory(), {
+			localSchema(dbSchema, migrationSchemaFactory(), {
 				enabled: true,
 				options: {},
 			}),
@@ -947,7 +947,7 @@ test("trigger names are downcased", () => {
 		},
 	});
 
-	const database = pgDatabase({
+	const dbSchema = schema({
 		tables: {
 			users,
 		},
@@ -986,7 +986,7 @@ test("trigger names are downcased", () => {
 		checkConstraints: {},
 		enums: {},
 	};
-	expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+	expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
 		expectedLocalSchema,
 	);
 });
@@ -1039,7 +1039,7 @@ test("#localSchemaCamelCase", () => {
 		},
 	});
 
-	const database = pgDatabase({
+	const dbSchema = schema({
 		extensions: [extension("cube"), extension("btree_gin")],
 		types: [bookStatus, userStatus],
 		tables: {
@@ -1312,7 +1312,7 @@ test("#localSchemaCamelCase", () => {
 		},
 	};
 	expect(
-		localSchema(database, migrationSchemaFactory(), {
+		localSchema(dbSchema, migrationSchemaFactory(), {
 			enabled: true,
 			options: {},
 		}),
@@ -1339,7 +1339,7 @@ describe("#localSchema with external objects", () => {
 				foreignKeys: [foreignKey(["book_id"], books, ["id"]).external()],
 			},
 		});
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 				authors,
@@ -1405,7 +1405,7 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -1417,7 +1417,7 @@ describe("#localSchema with external objects", () => {
 			},
 			indexes: [index(["id"]).external()],
 		});
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 			},
@@ -1452,7 +1452,7 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -1466,7 +1466,7 @@ describe("#localSchema with external objects", () => {
 				unique: [unique(["name"]).external()],
 			},
 		});
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 			},
@@ -1501,7 +1501,7 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -1515,7 +1515,7 @@ describe("#localSchema with external objects", () => {
 				checks: [check(sql`${sql.ref("id")} > 50`).external()],
 			},
 		});
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 			},
@@ -1550,13 +1550,13 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
 
 	test("discard triggers", () => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {},
@@ -1586,7 +1586,7 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -1596,7 +1596,7 @@ describe("#localSchema with external objects", () => {
 			"active",
 			"inactive",
 		]).external();
-		const database = pgDatabase({
+		const dbSchema = schema({
 			types: [userStatus],
 			tables: {},
 		});
@@ -1613,7 +1613,7 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(database, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});

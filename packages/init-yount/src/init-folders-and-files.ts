@@ -139,12 +139,11 @@ export const defaultDb = new Kysely<DB>(
 );
 `);
 
-export const schemaTemplate =
-	nunjucks.compile(`import { pgDatabase } from "yount";
+export const schemaTemplate = nunjucks.compile(`import { schema } from "yount";
 
-export const database = pgDatabase({});
+export const dbSchema = schema({});
 
-export type DB = typeof database.infer;
+export type DB = typeof dbSchema.infer;
 `);
 
 export const seedTemplate =

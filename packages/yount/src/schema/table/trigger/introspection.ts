@@ -3,7 +3,7 @@ import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { Schema, type AnySchema } from "~/schema/schema.js";
 import { PgTrigger } from "~/schema/table/trigger/trigger.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../introspection/types.js";
@@ -106,7 +106,7 @@ export function triggerInfo(
 }
 
 export function localTriggersInfo(
-	schema: AnyPgDatabase,
+	schema: AnySchema,
 	camelCase: CamelCaseOptions,
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -115,7 +115,7 @@ export function localTriggersInfo(
 			pool: new pg.Pool({}),
 		}),
 	});
-	const dbInfo = PgDatabase.info(schema);
+	const dbInfo = Schema.info(schema);
 	const tables = dbInfo.tables;
 	return Object.entries(tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {

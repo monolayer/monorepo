@@ -2,7 +2,7 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { extension } from "~/schema/extension/extension.js";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { varchar } from "~/schema/table/column/data-types/character-varying.js";
 import { integer } from "~/schema/table/column/data-types/integer.js";
 import { text } from "~/schema/table/column/data-types/text.js";
@@ -33,7 +33,7 @@ describe("Table change migrations", () => {
 			.addColumn("id", "integer")
 			.execute();
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -97,7 +97,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected: expected,
 			down: "reverse",
 		});
@@ -116,7 +116,7 @@ describe("Table change migrations", () => {
 			.addColumn("location", "text")
 			.execute();
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -178,7 +178,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -190,7 +190,7 @@ describe("Table change migrations", () => {
 			.addColumn("name", "text")
 			.execute();
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -226,7 +226,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -242,7 +242,7 @@ describe("Table change migrations", () => {
 			context.kysely,
 		);
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -286,7 +286,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -298,7 +298,7 @@ describe("Table change migrations", () => {
 			.addColumn("name", "text")
 			.execute();
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -338,7 +338,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -354,7 +354,7 @@ describe("Table change migrations", () => {
 			context.kysely,
 		);
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -394,7 +394,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -407,7 +407,7 @@ describe("Table change migrations", () => {
 			.addColumn("email", "text")
 			.execute();
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -464,7 +464,7 @@ describe("Table change migrations", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -480,7 +480,7 @@ describe("Table change migrations", () => {
 			context.kysely,
 		);
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -566,7 +566,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -602,7 +602,7 @@ describe("Table change migrations", () => {
 		COMMENT ON TRIGGER foo_before_update_trg ON users IS 'b97b23ad';
 		`.execute(context.kysely);
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("moddatetime")],
 			tables: {
 				users: table({
@@ -656,7 +656,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected: expected,
 			down: "reverse",
 		});
@@ -700,7 +700,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 			COMMENT ON TRIGGER foo_before_update_two_trg ON users IS '3893aa32';
 			`.execute(context.kysely);
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("moddatetime")],
 			tables: {
 				users: table({
@@ -746,7 +746,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected: expected,
 			down: "reverse",
 		});

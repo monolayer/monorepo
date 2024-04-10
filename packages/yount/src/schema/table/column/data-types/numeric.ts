@@ -42,10 +42,10 @@ import { PgColumn } from "../column.js";
  * - Precision and scale are enforced when specified.
  * @example
  * ```ts
- * import { pgDatabase, numeric, table } from "yount";
+ * import { schema, numeric, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -56,7 +56,7 @@ import { PgColumn } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

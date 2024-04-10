@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { text } from "~/schema/table/column/data-types/text.js";
 import { primaryKey } from "~/schema/table/constraints/primary-key/primary-key.js";
 import { table } from "~/schema/table/table.js";
@@ -48,7 +48,7 @@ describe("Database migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 				books,
@@ -120,7 +120,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -164,7 +164,7 @@ describe("Database migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 				books,
@@ -236,7 +236,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -267,7 +267,7 @@ describe("Database migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 			},
@@ -338,7 +338,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -369,7 +369,7 @@ describe("Database migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 			},
@@ -434,7 +434,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -462,7 +462,7 @@ describe("Database migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 			},
@@ -542,7 +542,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});

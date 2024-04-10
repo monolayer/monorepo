@@ -34,10 +34,10 @@ import { DateTimePrecision } from "../types.js";
  * - Non-values must be a valid string that matches a time format.
  * @example
  * ```ts
- * import { pgDatabase, table, timeWithTimeZone } from "yount";
+ * import { schema, table, timeWithTimeZone } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -48,7 +48,7 @@ import { DateTimePrecision } from "../types.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```
@@ -92,10 +92,10 @@ export function timeWithTimeZone(precision?: DateTimePrecision) {
  * - Non-values must be a valid string that matches a time format.
  * @example
  * ```ts
- * import { pgDatabase, table, timetz } from "yount";
+ * import { schema, table, timetz } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -106,7 +106,7 @@ export function timeWithTimeZone(precision?: DateTimePrecision) {
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

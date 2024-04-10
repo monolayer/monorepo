@@ -2,7 +2,7 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { extension } from "~/schema/extension/extension.js";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { bigint } from "~/schema/table/column/data-types/bigint.js";
 import { bigserial } from "~/schema/table/column/data-types/bigserial.js";
 import { bitVarying } from "~/schema/table/column/data-types/bit-varying.js";
@@ -55,7 +55,7 @@ describe("Table create migrations", () => {
 	});
 
 	test<DbContext>("create empty table", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {},
@@ -109,14 +109,14 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
 	});
 
 	test<DbContext>("create table with columns", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -298,14 +298,14 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
 	});
 
 	test<DbContext>("create table with primary key", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -399,14 +399,14 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
 	});
 
 	test<DbContext>("create table with composite primary key", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users: table({
 					columns: {
@@ -502,7 +502,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -528,7 +528,7 @@ describe("Table create migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 				users,
@@ -609,7 +609,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -629,7 +629,7 @@ describe("Table create migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 			},
@@ -710,7 +710,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -740,7 +740,7 @@ describe("Table create migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 				users,
@@ -823,7 +823,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -844,7 +844,7 @@ describe("Table create migrations", () => {
 			indexes: [index(["id"]).unique()],
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				users,
 				books,
@@ -928,7 +928,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -943,7 +943,7 @@ describe("Table create migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			types: [role],
 			tables: {
 				users,
@@ -999,7 +999,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -1026,7 +1026,7 @@ describe("Table create migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("moddatetime")],
 			tables: {
 				users,
@@ -1119,7 +1119,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 		];
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -1192,7 +1192,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("moddatetime")],
 			types: [role],
 			tables: {
@@ -1564,7 +1564,7 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 			useCamelCase: { enabled: true, options: {} },
@@ -1572,7 +1572,7 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 	});
 
 	test<DbContext>("create table in demo schema", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			schema: "demo",
 			tables: {
 				users: table({
@@ -1764,7 +1764,7 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});

@@ -37,10 +37,10 @@ import { WithDefaultColumn } from "../types.js";
  *   - Less than 2147483647.
  * @example
  * ```ts
- * import { integer, pgDatabase, table } from "yount";
+ * import { integer, schema, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -51,7 +51,7 @@ import { WithDefaultColumn } from "../types.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

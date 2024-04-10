@@ -2,7 +2,7 @@
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
 import { PgExtension, extension } from "~/schema/extension/extension.js";
-import { PgDatabase, pgDatabase } from "~/schema/pg-database.js";
+import { Schema, schema } from "~/schema/schema.js";
 import { boolean } from "~/schema/table/column/data-types/boolean.js";
 import { varchar } from "~/schema/table/column/data-types/character-varying.js";
 import { enumerated } from "~/schema/table/column/data-types/enumerated.js";
@@ -11,12 +11,11 @@ import { text } from "~/schema/table/column/data-types/text.js";
 import { table } from "~/schema/table/table.js";
 import { enumType } from "~/schema/types/enum/enum.js";
 
-describe("pgDatabase definition", () => {
+describe("schema definition", () => {
 	test("without tables", () => {
-		const database = pgDatabase({ tables: {} });
+		const dbSchema = schema({ tables: {} });
 		// eslint-disable-next-line @typescript-eslint/ban-types
-		const expect: Expect<Equal<typeof database, PgDatabase<{}, "public">>> =
-			true;
+		const expect: Expect<Equal<typeof dbSchema, Schema<{}, "public">>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
 
@@ -31,17 +30,17 @@ describe("pgDatabase definition", () => {
 				name: varchar(),
 			},
 		});
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: { users, teams },
 		});
-		const tables = PgDatabase.info(database).tables;
+		const tables = Schema.info(dbSchema).tables;
 		expect(tables.users).toBe(users);
 		expect(tables.teams).toBe(teams);
 
 		const expectation: Expect<
 			Equal<
-				typeof database,
-				PgDatabase<{ users: typeof users; teams: typeof teams }, "public">
+				typeof dbSchema,
+				Schema<{ users: typeof users; teams: typeof teams }, "public">
 			>
 		> = true;
 		expectTypeOf(expectation).toMatchTypeOf<boolean>();
@@ -49,12 +48,12 @@ describe("pgDatabase definition", () => {
 });
 
 test("with extensions", () => {
-	const database = pgDatabase({
+	const dbSchema = schema({
 		extensions: [extension("pgcrypto"), extension("btree_gist")],
 		tables: {},
 	});
 
-	const extensions = PgDatabase.info(database).extensions.map(
+	const extensions = Schema.info(dbSchema).extensions.map(
 		(ext) => PgExtension.info(ext).name,
 	);
 	expect(extensions).toStrictEqual(["pgcrypto", "btree_gist"]);
@@ -68,13 +67,13 @@ test("with enumerated types", () => {
 			status: enumerated(status),
 		},
 	});
-	const database = pgDatabase({
+	const dbSchema = schema({
 		types: [status],
 		tables: {
 			users,
 		},
 	});
-	const tables = PgDatabase.info(database).tables;
+	const tables = Schema.info(dbSchema).tables;
 	expect(tables.users).toBe(users);
 });
 
@@ -94,7 +93,7 @@ test("types for Kysely with default public schema", () => {
 			borrowed: boolean().notNull(),
 		},
 	});
-	const database = pgDatabase({
+	const dbSchema = schema({
 		tables: {
 			users,
 			books,
@@ -105,7 +104,7 @@ test("types for Kysely with default public schema", () => {
 		users: typeof users.infer;
 		books: typeof books.infer;
 	};
-	type InferredDBTypes = typeof database.infer;
+	type InferredDBTypes = typeof dbSchema.infer;
 
 	const dbExpect: Expect<Equal<InferredDBTypes, ExpectedType>> = true;
 	expectTypeOf(dbExpect).toMatchTypeOf<boolean>();
@@ -114,7 +113,7 @@ test("types for Kysely with default public schema", () => {
 		"public.users": typeof users.infer;
 		"public.books": typeof books.infer;
 	};
-	type InferredDBTypesWithSchema = typeof database.inferWithSchemaNamespace;
+	type InferredDBTypesWithSchema = typeof dbSchema.inferWithSchemaNamespace;
 	const dbExpectWithSchema: Expect<
 		Equal<InferredDBTypesWithSchema, ExpectedTypeWithSchema>
 	> = true;
@@ -137,7 +136,7 @@ test("types for Kysely with schema", () => {
 			borrowed: boolean().notNull(),
 		},
 	});
-	const database = pgDatabase({
+	const dbSchema = schema({
 		schema: "demo",
 		tables: {
 			users,
@@ -149,7 +148,7 @@ test("types for Kysely with schema", () => {
 		users: typeof users.infer;
 		books: typeof books.infer;
 	};
-	type InferredDBTypes = typeof database.infer;
+	type InferredDBTypes = typeof dbSchema.infer;
 
 	const dbExpect: Expect<Equal<InferredDBTypes, ExpectedType>> = true;
 	expectTypeOf(dbExpect).toMatchTypeOf<boolean>();
@@ -158,7 +157,7 @@ test("types for Kysely with schema", () => {
 		"demo.users": typeof users.infer;
 		"demo.books": typeof books.infer;
 	};
-	type InferredDBTypesWithSchema = typeof database.inferWithSchemaNamespace;
+	type InferredDBTypesWithSchema = typeof dbSchema.inferWithSchemaNamespace;
 	const dbExpectWithSchema: Expect<
 		Equal<InferredDBTypesWithSchema, ExpectedTypeWithSchema>
 	> = true;
@@ -166,8 +165,8 @@ test("types for Kysely with schema", () => {
 });
 
 test("types for Kysely on database without tables", () => {
-	const database = pgDatabase({});
-	type InferredDBTypes = typeof database.infer;
+	const dbSchema = schema({});
+	type InferredDBTypes = typeof dbSchema.infer;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	type ExpectedType = any;
 

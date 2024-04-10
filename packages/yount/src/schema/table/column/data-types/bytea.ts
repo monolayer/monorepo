@@ -31,10 +31,10 @@ import { PgColumn, valueWithHash } from "../column.js";
  * *Note*: Since {@link https://nodejs.org/api/buffer.html | Buffer } is a Node.js API, the schema will not coerce the input to Buffer for browser compatibility.
  * @example
  * ```ts
- * import { pgDatabase, table, bytea } from "yount";
+ * import { schema, table, bytea } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -45,7 +45,7 @@ import { PgColumn, valueWithHash } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

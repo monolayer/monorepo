@@ -1,6 +1,6 @@
 export * from "./schema/extension/extension.js";
 export { PgExtension, extension } from "./schema/extension/extension.js";
-export { pgDatabase, type PgDatabase } from "./schema/pg-database.js";
+export { schema, type Schema } from "./schema/schema.js";
 export {
 	bigint,
 	type PgBigInt,

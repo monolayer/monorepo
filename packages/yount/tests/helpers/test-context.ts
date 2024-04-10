@@ -172,9 +172,9 @@ export async function dbAndMigrator(context: ProgramContext) {
 }
 
 const indexPath = path.join(cwd(), "src", "index.ts");
-const schemaFile = `import { pgDatabase, table, text } from "${indexPath}";
+const schemaFile = `import { schema, table, text } from "${indexPath}";
 
-export const database = pgDatabase({
+export const dbSchema = schema({
   tables: {
     regulus_mint: table({
 			columns: {

@@ -34,10 +34,10 @@ import { IdentifiableColumn } from "../column.js";
  *
  * @example
  * ```ts
- * import { bigint, pgDatabase, table } from "yount";
+ * import { bigint, schema, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -48,9 +48,9 @@ import { IdentifiableColumn } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
- * const schema = zodSchema(database.tables.example);
+ * const schema = zodSchema(dbSchema.tables.example);
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT | bigint}

@@ -30,10 +30,10 @@ import { StringColumn } from "../column.js";
  * - String values must be a valid IPv4 or IPv6 network specification without bits set to the right of the mask.
  * @example
  * ```ts
- * import { cidr, pgDatabase, table } from "yount";
+ * import { cidr, schema, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -44,7 +44,7 @@ import { StringColumn } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

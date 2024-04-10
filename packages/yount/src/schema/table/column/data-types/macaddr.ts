@@ -30,10 +30,10 @@ import { StringColumn } from "../column.js";
  * - String values must be a valid MAC address.
  * @example
  * ```ts
- * import { macaddr, pgDatabase, table } from "yount";
+ * import { macaddr, schema, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -44,7 +44,7 @@ import { StringColumn } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

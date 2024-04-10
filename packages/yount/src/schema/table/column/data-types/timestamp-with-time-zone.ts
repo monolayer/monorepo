@@ -42,10 +42,10 @@ import { DateTimePrecision } from "../types.js";
  *   - Date must be 4713 BC or later.
  * @example
  * ```ts
- * import { pgDatabase, table, timestampWithTimeZone } from "yount";
+ * import { schema, table, timestampWithTimeZone } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -56,7 +56,7 @@ import { DateTimePrecision } from "../types.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```
@@ -108,10 +108,10 @@ export function timestampWithTimeZone(precision?: DateTimePrecision) {
  *   - Date must be 4713 BC or later.
  * @example
  * ```ts
- * import { pgDatabase, table, timestamptz } from "yount";
+ * import { schema, table, timestamptz } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -122,7 +122,7 @@ export function timestampWithTimeZone(precision?: DateTimePrecision) {
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

@@ -29,10 +29,10 @@ import { StringColumn } from "../column.js";
  * - Input value must be `string` or `null`.
  * @example
  * ```ts
- * import { pgDatabase, table, tsvector } from "yount";
+ * import { schema, table, tsvector } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -43,7 +43,7 @@ import { StringColumn } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

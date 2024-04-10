@@ -6,7 +6,7 @@ import {
 	tableInfo,
 } from "~/introspection/helpers.js";
 import type { CheckInfo } from "~/migrations/migration-schema.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { Schema, type AnySchema } from "~/schema/schema.js";
 import {
 	assertCheckWithInfo,
 	type PgCheck,
@@ -60,10 +60,10 @@ export async function dbCheckConstraintInfo(
 }
 
 export function localCheckConstraintInfo(
-	schema: AnyPgDatabase,
+	schema: AnySchema,
 	camelCase: CamelCaseOptions,
 ) {
-	const tables = PgDatabase.info(schema).tables;
+	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce<CheckInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);

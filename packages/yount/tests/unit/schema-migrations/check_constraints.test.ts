@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { integer } from "~/schema/table/column/data-types/integer.js";
 import { check } from "~/schema/table/constraints/check/check.js";
 import { table } from "~/schema/table/table.js";
@@ -45,7 +45,7 @@ describe("Database migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 			},
@@ -81,7 +81,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -105,7 +105,7 @@ describe("Database migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 			},
@@ -166,7 +166,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -207,7 +207,7 @@ describe("Database migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 			},
@@ -241,7 +241,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -268,7 +268,7 @@ describe("Database migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 			},
@@ -302,7 +302,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});

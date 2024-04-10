@@ -34,10 +34,10 @@ import { IdentifiableColumn } from "../column.js";
  *   - Cannot be greater than 32767.
  * @example
  * ```ts
- * import { pgDatabase, smallint, table } from "yount";
+ * import { schema, smallint, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -48,7 +48,7 @@ import { IdentifiableColumn } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

@@ -32,10 +32,10 @@ import { SerialColumn } from "../column.js";
  * - Value cannot be greater than 2147483647.
  * @example
  * ```ts
- * import { pgDatabase, table, serial } from "yount";
+ * import { schema, serial, table  } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -46,7 +46,7 @@ import { SerialColumn } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

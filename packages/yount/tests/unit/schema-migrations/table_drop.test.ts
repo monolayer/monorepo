@@ -2,7 +2,7 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { extension } from "~/schema/extension/extension.js";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { integer } from "~/schema/table/column/data-types/integer.js";
 import { text } from "~/schema/table/column/data-types/text.js";
 import { unique } from "~/schema/table/constraints/unique/unique.js";
@@ -21,7 +21,7 @@ describe("Table drop migrations", () => {
 	});
 
 	test<DbContext>("drop empty tables", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books: table({
 					columns: {},
@@ -76,14 +76,14 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "same",
 		});
 	});
 
 	test<DbContext>("drop table with columns", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				organizations: table({
 					columns: {},
@@ -231,14 +231,14 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
 	});
 
 	test<DbContext>("drop table with primary key", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				organizations: table({
 					columns: {},
@@ -336,7 +336,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -375,7 +375,7 @@ describe("Table drop migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				books,
 			},
@@ -421,14 +421,14 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
 	});
 
 	test<DbContext>("drop table with foreign keys", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				organizations: table({
 					columns: {},
@@ -528,14 +528,14 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
 	});
 
 	test<DbContext>("drop table with check constraints", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				organizations: table({
 					columns: {},
@@ -599,14 +599,14 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
 	});
 
 	test<DbContext>("drop table with indexes", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			tables: {
 				organizations: table({
 					columns: {},
@@ -707,14 +707,14 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
 	});
 
 	test<DbContext>("drop table with enums", async (context) => {
-		const database = pgDatabase({});
+		const dbSchema = schema({});
 
 		await context.kysely.schema
 			.createType("role")
@@ -778,7 +778,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -817,7 +817,7 @@ describe("Table drop migrations", () => {
 			context.kysely,
 		);
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("moddatetime")],
 			tables: {
 				teams: table({
@@ -879,14 +879,14 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
 	});
 
 	test<DbContext>("drop table with in demo schema", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			schema: "demo",
 			tables: {
 				organizations: table({
@@ -1043,7 +1043,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});

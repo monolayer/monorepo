@@ -1,7 +1,7 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { extension } from "~/schema/extension/extension.js";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { type DbContext } from "~tests/setup/kysely.js";
 import { computeChangeset } from "../../helpers/compute-changeset.js";
@@ -17,13 +17,13 @@ describe("Database migrations", () => {
 	});
 
 	test<DbContext>("database without tables", async ({ kysely }) => {
-		const database = pgDatabase({});
-		const cs = await computeChangeset(kysely, database);
+		const dbSchema = schema({});
+		const cs = await computeChangeset(kysely, dbSchema);
 		expect(cs).toEqual([]);
 	});
 
 	test<DbContext>("add extensions", async (context) => {
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("btree_gist"), extension("cube")],
 		});
 		const expected = [
@@ -54,7 +54,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -69,7 +69,7 @@ describe("Database migrations", () => {
 			context.kysely,
 		);
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("btree_gin")],
 		});
 
@@ -101,7 +101,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "same",
 		});

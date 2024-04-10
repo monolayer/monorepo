@@ -6,17 +6,17 @@ import type { CamelCaseOptions } from "~/configuration.js";
 import { localSchema, remoteSchema } from "~/introspection/introspection.js";
 import { createSchemaChangeset } from "~/schema/database_schemas/changeset.js";
 import { schemaInDb } from "~/schema/database_schemas/introspection.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { Schema, type AnySchema } from "~/schema/schema.js";
 import { layers } from "./layers.js";
 import { programWithErrorCause } from "./run-program.js";
 
 export async function computeChangeset(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
-	db: AnyPgDatabase,
+	db: AnySchema,
 	camelCase?: CamelCaseOptions,
 ) {
-	const schemaName = PgDatabase.info(db).schema || "public";
+	const schemaName = Schema.info(db).schema || "public";
 	const remote = await remoteSchema(kysely, schemaName);
 	const local = localSchema(db, remote, camelCase ?? { enabled: false });
 	const cset = changeset(local, remote, schemaName);

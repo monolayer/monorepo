@@ -4,7 +4,7 @@ import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import type { UniqueInfo } from "~/migrations/migration-schema.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { Schema, type AnySchema } from "~/schema/schema.js";
 import {
 	isExternalUnique,
 	uniqueConstraintOptions,
@@ -88,7 +88,7 @@ export async function dbUniqueConstraintInfo(
 }
 
 export function localUniqueConstraintInfo(
-	schema: AnyPgDatabase,
+	schema: AnySchema,
 	camelCase: CamelCaseOptions,
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,7 +97,7 @@ export function localUniqueConstraintInfo(
 			pool: new pg.Pool({}),
 		}),
 	});
-	const tables = PgDatabase.info(schema).tables;
+	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce<UniqueInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const uniqueConstraints = tableInfo(tableDefinition).schema.constraints

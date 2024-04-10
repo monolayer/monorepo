@@ -41,10 +41,10 @@ import { JsonValue } from "../types.js";
  * - Record values must be convertible to a JSON string.
  * @example
  * ```ts
- * import { json, pgDatabase, table } from "yount";
+ * import { json, schema, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -55,7 +55,7 @@ import { JsonValue } from "../types.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

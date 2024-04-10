@@ -1,6 +1,6 @@
 import type { Kysely } from "kysely";
 import { PgExtension } from "~/schema/extension/extension.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { Schema, type AnySchema } from "~/schema/schema.js";
 import type { InformationSchemaDB } from "../../introspection/types.js";
 
 export async function dbExtensionInfo(
@@ -23,8 +23,8 @@ export async function dbExtensionInfo(
 	return extensionInfo;
 }
 
-export function localExtensionInfo(schema: AnyPgDatabase) {
-	return (PgDatabase.info(schema).extensions || []).reduce<ExtensionInfo>(
+export function localExtensionInfo(schema: AnySchema) {
+	return (Schema.info(schema).extensions || []).reduce<ExtensionInfo>(
 		(acc, curr) => {
 			const name = PgExtension.info(curr).name;
 			acc[name] = true;

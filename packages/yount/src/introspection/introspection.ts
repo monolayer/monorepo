@@ -7,7 +7,7 @@ import type {
 	TriggerInfo,
 	UniqueInfo,
 } from "~/migrations/migration-schema.js";
-import type { AnyPgDatabase } from "~/schema/pg-database.js";
+import type { AnySchema } from "~/schema/schema.js";
 import {
 	dbExtensionInfo,
 	localExtensionInfo,
@@ -51,7 +51,7 @@ import {
 } from "../schema/types/enum/introspection.js";
 
 export function localSchema(
-	schema: AnyPgDatabase,
+	schema: AnySchema,
 	remoteSchema: MigrationSchema,
 	camelCase: CamelCaseOptions = { enabled: false },
 ): MigrationSchema {

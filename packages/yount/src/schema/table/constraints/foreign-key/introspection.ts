@@ -6,7 +6,7 @@ import {
 	findTableByNameInDatabaseSchema,
 	type ForeignKeyInfo,
 } from "~/migrations/migration-schema.js";
-import { PgDatabase, type AnyPgDatabase } from "~/schema/pg-database.js";
+import { Schema, type AnySchema } from "~/schema/schema.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 
 export type ForeignKeyRule =
@@ -103,10 +103,10 @@ export async function dbForeignKeyConstraintInfo(
 }
 
 export function localForeignKeyConstraintInfo(
-	schema: AnyPgDatabase,
+	schema: AnySchema,
 	camelCase: CamelCaseOptions,
 ) {
-	const tables = PgDatabase.info(schema).tables;
+	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce<ForeignKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);

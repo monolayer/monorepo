@@ -33,10 +33,10 @@ import { MaxLengthColumn } from "../column.js";
  * - Value cannot exceed `maximumLength` (when specified).
  * @example
  * ```ts
- * import { characteVarying, pgDatabase, table } from "yount";
+ * import { characteVarying, schema, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -47,7 +47,7 @@ import { MaxLengthColumn } from "../column.js";
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```
@@ -91,10 +91,10 @@ export function characterVarying(maximumLength?: number) {
  * - Value cannot exceed `maximumLength` (when specified).
  * @example
  * ```ts
- * import { characteVarying, pgDatabase, table } from "yount";
+ * import { characteVarying, schema, table } from "yount";
  * import { zodSchema } from "yount/zod";
  *
- * const database = pgDatabase({
+ * const dbSchema = schema({
  *   tables: {
  *     example: table({
  *       columns: {
@@ -105,7 +105,7 @@ export function characterVarying(maximumLength?: number) {
  * });
  *
  * // Kysely database schema type
- * type DB = typeof database.infer;
+ * type DB = typeof dbSchema.infer;
  * // Zod Schema
  * const schema = zodSchema(database.tables.example);
  * ```

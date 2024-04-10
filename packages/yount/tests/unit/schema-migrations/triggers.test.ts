@@ -1,7 +1,7 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { extension } from "~/schema/extension/extension.js";
-import { pgDatabase } from "~/schema/pg-database.js";
+import { schema } from "~/schema/schema.js";
 import { integer } from "~/schema/table/column/data-types/integer.js";
 import { timestamp } from "~/schema/table/column/data-types/timestamp.js";
 import { table } from "~/schema/table/table.js";
@@ -51,7 +51,7 @@ describe("Database migrations", () => {
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("moddatetime")],
 			tables: {
 				users,
@@ -125,7 +125,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
@@ -169,7 +169,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("moddatetime")],
 			tables: {
 				users,
@@ -223,7 +223,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "same",
 		});
@@ -266,7 +266,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 			},
 		});
 
-		const database = pgDatabase({
+		const dbSchema = schema({
 			extensions: [extension("moddatetime")],
 			tables: {
 				users,
@@ -306,7 +306,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			database,
+			database: dbSchema,
 			expected,
 			down: "reverse",
 		});
