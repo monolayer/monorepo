@@ -13,7 +13,7 @@ export type YountConfig = {
 };
 
 export type Connector = {
-	databaseSchema: AnyPgDatabase[];
+	schemas: AnyPgDatabase[];
 	camelCasePlugin?: CamelCaseOptions;
 	environments: {
 		development: PgConfig;

@@ -108,7 +108,7 @@ export const connectionsTemplate =
 
 export const connections = {
 	default: {
-		databaseSchema: database,
+		schemas: [database],
 		environments: {
 			development: {
 				database: "#database_development",

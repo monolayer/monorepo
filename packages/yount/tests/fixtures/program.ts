@@ -12,7 +12,7 @@ export const connectorsTemplate =
 
 export const connectors = {
 	default: {
-		databaseSchema: [database],
+		schemas: [database],
 		environments: {
 			development: {
 				user: "${process.env.POSTGRES_USER}",
@@ -57,7 +57,7 @@ export const connectorsTemplateTwoDatabaseSchemas =
 import { database as anotherDatabase } from "./{{ secondSchemaFile }}";
 export const connectors = {
 	default: {
-		databaseSchema: [database, anotherDatabase],
+		schemas: [database, anotherDatabase],
 		environments: {
 			development: {
 				user: "${process.env.POSTGRES_USER}",

@@ -99,7 +99,7 @@ function localDatabaseSchema() {
 							`Connection ${environment.connectorName} not found. Check your connectors.ts file.`,
 						);
 					} else {
-						return Effect.succeed(connection[1].databaseSchema);
+						return Effect.succeed(connection[1].schemas);
 					}
 				}),
 			),
