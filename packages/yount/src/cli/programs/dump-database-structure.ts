@@ -5,6 +5,7 @@ import pg from "pg";
 import pgConnectionString from "pg-connection-string";
 import { env } from "process";
 import { Writable, type WritableOptions } from "stream";
+import { Schema } from "~/schema/schema.js";
 import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
 import { pgQuery } from "./pg-query.js";
@@ -27,7 +28,15 @@ export function dumpDatabaseStructure() {
 					Effect.flatMap(([searchPath, database, dumpPath]) =>
 						Effect.succeed(true).pipe(
 							Effect.tap(() => setPgDumpEnv(environment.connectorConfig)),
-							Effect.tap(() => dumpStructure(database, dumpPath)),
+							Effect.tap(() =>
+								dumpStructure(
+									database,
+									dumpPath,
+									environment.connector.schemas.map(
+										(schema) => Schema.info(schema).name || "public",
+									),
+								),
+							),
 							Effect.tap(() =>
 								appendFileSync(
 									dumpPath,
@@ -77,12 +86,17 @@ function setPgDumpEnv(environmentConfig: pg.ClientConfig & pg.PoolConfig) {
 	return Effect.succeed(true);
 }
 
-function dumpStructure(database: string, dumpPath: string) {
+function dumpStructure(
+	database: string,
+	dumpPath: string,
+	schemaNames: string[],
+) {
+	const schemaArgs = schemaNames.map((schema) => `--schema=${schema}`);
 	const args = [
 		"--schema-only",
 		"--no-privileges",
 		"--no-owner",
-		"--schema=public",
+		...schemaArgs,
 		`${database}`,
 	];
 
