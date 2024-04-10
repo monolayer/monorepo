@@ -109,7 +109,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -298,7 +298,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -399,7 +399,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -502,7 +502,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -609,7 +609,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -710,7 +710,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -823,7 +823,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -928,7 +928,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -999,7 +999,7 @@ describe("Table create migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -1119,7 +1119,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 		];
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -1564,7 +1564,7 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 			useCamelCase: { enabled: true, options: {} },
@@ -1764,7 +1764,7 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});

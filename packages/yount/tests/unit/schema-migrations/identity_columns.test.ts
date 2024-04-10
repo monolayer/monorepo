@@ -77,7 +77,7 @@ describe("Identity columns", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -149,7 +149,7 @@ describe("Identity columns", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -254,7 +254,7 @@ describe("Identity columns", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -363,7 +363,7 @@ describe("Identity columns", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});

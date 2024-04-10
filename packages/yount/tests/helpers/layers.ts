@@ -11,11 +11,7 @@ import fs from "node:fs/promises";
 import path from "path";
 import pg from "pg";
 import { env } from "process";
-import {
-	DbClients,
-	dbClientsLayer,
-	type DbClientProperties,
-} from "~/cli/services/dbClients.js";
+import { DbClients, dbClientsLayer } from "~/cli/services/dbClients.js";
 import {
 	DevEnvironment,
 	Environment,
@@ -25,45 +21,6 @@ import {
 import { Migrator, migratorLayer } from "~/cli/services/migrator.js";
 import type { AnySchema } from "~/schema/schema.js";
 dotenv.config();
-
-export class dbClientsMock implements DbClientProperties {
-	readonly currentEnvironment: DbClientProperties["currentEnvironment"];
-	readonly developmentEnvironment: DbClientProperties["developmentEnvironment"];
-	constructor(databaseName: string) {
-		const pool = new pg.Pool({
-			database: databaseName,
-			user: env.POSTGRES_USER,
-			password: env.POSTGRES_PASSWORD,
-			host: env.POSTGRES_HOST,
-			port: Number(env.POSTGRES_ONE_PORT ?? 5432),
-		});
-		const adminPool = new pg.Pool({
-			user: env.POSTGRES_USER,
-			password: env.POSTGRES_PASSWORD,
-			host: env.POSTGRES_HOST,
-			port: Number(env.POSTGRES_ONE_PORT ?? 5432),
-		});
-
-		this.currentEnvironment = {
-			databaseName: databaseName,
-			pgPool: pool,
-			pgAdminPool: adminPool,
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			kysely: new Kysely<any>({
-				dialect: new PostgresDialect({
-					pool: pool,
-				}),
-			}),
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			kyselyNoCamelCase: new Kysely<any>({
-				dialect: new PostgresDialect({
-					pool: pool,
-				}),
-			}),
-		};
-		this.developmentEnvironment = this.currentEnvironment;
-	}
-}
 
 function pgPool(database?: string) {
 	return new pg.Pool({

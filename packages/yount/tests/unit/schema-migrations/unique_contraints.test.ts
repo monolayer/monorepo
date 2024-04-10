@@ -4,6 +4,7 @@ import { schema } from "~/schema/schema.js";
 import { varchar } from "~/schema/table/column/data-types/character-varying.js";
 import { integer } from "~/schema/table/column/data-types/integer.js";
 import { serial } from "~/schema/table/column/data-types/serial.js";
+import { primaryKey } from "~/schema/table/constraints/primary-key/primary-key.js";
 import { unique } from "~/schema/table/constraints/unique/unique.js";
 import { table } from "~/schema/table/table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
@@ -127,7 +128,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -234,7 +235,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -337,7 +338,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -431,7 +432,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});

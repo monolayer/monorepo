@@ -19,7 +19,7 @@ export async function testChangesetAndMigrations({
 	useCamelCase = { enabled: false },
 }: {
 	context: DbContext;
-	database: AnySchema;
+	database: AnySchema[];
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expected: any[];
 	down: "same" | "reverse" | "empty";
@@ -101,7 +101,7 @@ export async function testChangesetAndMigrations({
 async function runGenerateChangesetMigration(
 	dbName: string,
 	folder: string,
-	schema: AnySchema,
+	schema: AnySchema[],
 	useCamelCase = { enabled: false },
 ) {
 	return Effect.runPromise(
@@ -109,7 +109,7 @@ async function runGenerateChangesetMigration(
 			programWithErrorCause(generateChangesetMigration()).pipe(
 				Effect.tap(() => cleanup()),
 			),
-			newLayers(dbName, folder, [schema], useCamelCase),
+			newLayers(dbName, folder, schema, useCamelCase),
 		),
 	);
 }
@@ -125,13 +125,13 @@ function cleanup() {
 async function runMigrate(
 	dbName: string,
 	folder: string,
-	schema: AnySchema,
+	schema: AnySchema[],
 	useCamelCase = { enabled: false },
 ) {
 	return Effect.runPromise(
 		Effect.provide(
 			programWithErrorCause(migrate()).pipe(Effect.tap(() => cleanup())),
-			newLayers(dbName, folder, [schema], useCamelCase),
+			newLayers(dbName, folder, schema, useCamelCase),
 		),
 	);
 }
@@ -139,7 +139,7 @@ async function runMigrate(
 async function runMigrateDown(
 	dbName: string,
 	folder: string,
-	schema: AnySchema,
+	schema: AnySchema[],
 	useCamelCase = { enabled: false },
 ) {
 	return Effect.runPromise(
@@ -147,7 +147,7 @@ async function runMigrateDown(
 			programWithErrorCause(migrateDownProgram()).pipe(
 				Effect.tap(() => cleanup()),
 			),
-			newLayers(dbName, folder, [schema], useCamelCase),
+			newLayers(dbName, folder, schema, useCamelCase),
 		),
 	);
 }

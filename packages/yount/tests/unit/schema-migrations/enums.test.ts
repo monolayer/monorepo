@@ -90,7 +90,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -171,7 +171,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "same",
 		});
@@ -222,7 +222,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			database: dbSchema,
+			database: [dbSchema],
 			expected,
 			down: "empty",
 		});
