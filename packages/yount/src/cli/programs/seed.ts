@@ -8,10 +8,10 @@ import { type SeedImport } from "~/config.js";
 import { dbTableInfo } from "~/schema/table/introspection.js";
 import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
-import { checkWithFail } from "../utils/check-with-fail.js";
-import { spinnerTask } from "../utils/spinner-task.js";
+import { checkWithFail } from "./check-with-fail.js";
 import { localPendingMigrations } from "./local-pending-migrations.js";
 import { schemaChangeset } from "./schema-changeset.js";
+import { spinnerTask } from "./spinner-task.js";
 
 export function seed(options: {
 	disableWarnings?: boolean;

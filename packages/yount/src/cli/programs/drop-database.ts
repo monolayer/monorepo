@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import { DbClients } from "../services/dbClients.js";
-import { spinnerTask } from "../utils/spinner-task.js";
 import { adminPgQuery } from "./pg-query.js";
+import { spinnerTask } from "./spinner-task.js";
 
 export function dropDatabase(failSafe = false) {
 	return DbClients.pipe(

@@ -7,9 +7,9 @@ import { env } from "process";
 import { Writable, type WritableOptions } from "stream";
 import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
-import { spinnerTask } from "../utils/spinner-task.js";
 import { pgQuery } from "./pg-query.js";
 import { pipeCommandStdoutToWritable } from "./pipe-command-stdout-to-writable.js";
+import { spinnerTask } from "./spinner-task.js";
 
 export function dumpDatabaseStructure() {
 	return spinnerTask("Dump database structure", () =>

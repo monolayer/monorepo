@@ -1,5 +1,5 @@
-import { spinnerTask } from "../utils/spinner-task.js";
 import { pgQuery } from "./pg-query.js";
+import { spinnerTask } from "./spinner-task.js";
 
 export function dropTablesAndTypes() {
 	return spinnerTask("Drop tables and types", () =>

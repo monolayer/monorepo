@@ -4,6 +4,7 @@ import { Command } from "@commander-js/extra-typings";
 import { CommanderError } from "commander";
 import { Effect } from "effect";
 import { exit } from "process";
+import { cliAction } from "~/cli/programs/cli-action.js";
 import { createDatabase } from "~/cli/programs/create-database.js";
 import { dropDatabase } from "~/cli/programs/drop-database.js";
 import { dropTablesAndTypes } from "~/cli/programs/drop-tables-and-types.js";
@@ -17,7 +18,6 @@ import { pendingMigrations } from "~/cli/programs/pending-migrations.js";
 import { scaffoldMigration } from "~/cli/programs/scaffold-migration.js";
 import { seed } from "~/cli/programs/seed.js";
 import { structureLoad } from "~/cli/programs/structure-load.js";
-import { cliAction } from "~/cli/utils/cli-action.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
