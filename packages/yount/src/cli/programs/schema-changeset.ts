@@ -24,60 +24,44 @@ import { DevEnvironment } from "../services/environment.js";
 import { DevDb } from "../services/kysely.js";
 
 export function schemaChangeset() {
-	return Effect.all([DevEnvironment, DevDb]).pipe(
-		Effect.flatMap(([environment, db]) =>
-			localDatabaseSchema(environment.connectorName).pipe(
-				Effect.flatMap((localDatabaseSchema) =>
-					Effect.all(
-						localDatabaseSchema.flatMap((database) =>
-							databaseChangeset(
-								db.kyselyNoCamelCase,
-								database,
-								environment.camelCasePlugin,
-							),
-						),
-					).pipe(
-						Effect.flatMap((changesets) =>
-							Effect.succeed(changesets.flatMap((changeset) => changeset)),
-						),
-					),
+	return localDatabaseSchema().pipe(
+		Effect.flatMap((localDatabaseSchema) =>
+			Effect.all(localDatabaseSchema.flatMap(databaseChangeset)).pipe(
+				Effect.flatMap((changesets) =>
+					Effect.succeed(changesets.flatMap((changeset) => changeset)),
 				),
 			),
 		),
 	);
 }
 
-function databaseChangeset(
-	db: Kysely<unknown>,
-	database: AnyPgDatabase,
-	camelCasePlugin?: CamelCaseOptions,
-) {
-	const schemaName = PgDatabase.info(database).schema || "public";
-	return Effect.all([
-		databaseSchema(db, database),
-		Effect.succeed(database),
-		Effect.succeed(camelCasePlugin),
-	]).pipe(
-		Effect.flatMap(([databaseSchema, localDatabaseSchema, camelCasePlugin]) =>
-			computeChangeset(localDatabaseSchema, databaseSchema, camelCasePlugin),
+function databaseChangeset(database: AnyPgDatabase) {
+	return Effect.all([DevEnvironment, DevDb]).pipe(
+		Effect.flatMap(([devEnvironment, devDb]) =>
+			Effect.all([
+				Effect.succeed(devDb.kyselyNoCamelCase),
+				Effect.succeed(devEnvironment.camelCasePlugin),
+				Effect.succeed(PgDatabase.info(database).schema || "public"),
+			]),
 		),
-		Effect.tap((changeset) =>
-			schemaExists(db, schemaName).pipe(
-				Effect.tap((exists) => {
-					if (exists === false) {
-						changeset.unshift(createSchemaChangeset(schemaName));
-					}
-				}),
+		Effect.flatMap(([kyselyInstance, camelCasePlugin, schemaName]) =>
+			databaseSchema(kyselyInstance, database).pipe(
+				Effect.flatMap((databaseSchema) =>
+					computeChangeset(database, databaseSchema, camelCasePlugin),
+				),
+				Effect.tap((changeset) =>
+					Effect.tryPromise(() => schemaInDb(kyselyInstance, schemaName)).pipe(
+						Effect.flatMap((schemaInDatabase) =>
+							Effect.succeed(schemaInDatabase.length !== 0),
+						),
+						Effect.tap((exists) => {
+							if (exists === false) {
+								changeset.unshift(createSchemaChangeset(schemaName));
+							}
+						}),
+					),
+				),
 			),
-		),
-	);
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function schemaExists(kysely: Kysely<any>, schemaName: string) {
-	return Effect.tryPromise(() => schemaInDb(kysely, schemaName)).pipe(
-		Effect.flatMap((schemaInDatabase) =>
-			Effect.succeed(schemaInDatabase.length !== 0),
 		),
 	);
 }
@@ -99,23 +83,27 @@ function computeChangeset(
 	return Effect.succeed(cset);
 }
 
-function localDatabaseSchema(connectionName: string) {
-	return Effect.tryPromise(() => importConnector()).pipe(
-		Effect.flatMap((connectionImport) =>
-			Effect.succeed(connectionImport.connectors || {}),
+function localDatabaseSchema() {
+	return DevEnvironment.pipe(
+		Effect.flatMap((environment) =>
+			Effect.tryPromise(() => importConnector()).pipe(
+				Effect.flatMap((connectionImport) =>
+					Effect.succeed(connectionImport.connectors || {}),
+				),
+				Effect.flatMap((allConnectors) => {
+					const connection = Object.entries(allConnectors).find(([key]) => {
+						return key === environment.connectorName;
+					});
+					if (connection === undefined) {
+						return Effect.fail(
+							`Connection ${environment.connectorName} not found. Check your connectors.ts file.`,
+						);
+					} else {
+						return Effect.succeed(connection[1].databaseSchema);
+					}
+				}),
+			),
 		),
-		Effect.flatMap((allConnectors) => {
-			const connection = Object.entries(allConnectors).find(([key]) => {
-				return key === connectionName;
-			});
-			if (connection === undefined) {
-				return Effect.fail(
-					`Connection ${connectionName} not found. Check your connectors.ts file.`,
-				);
-			} else {
-				return Effect.succeed(connection[1].databaseSchema);
-			}
-		}),
 	);
 }
 
