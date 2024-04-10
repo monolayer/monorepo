@@ -42,6 +42,6 @@ describe("migrate", () => {
 			await Effect.runPromise(
 				Effect.provide(programWithErrorCause(migrate()), layers),
 			),
-		).toBe(false);
+		).toBe(true);
 	});
 });

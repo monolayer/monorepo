@@ -31,8 +31,8 @@ export function migrate() {
 				onFalse: Effect.succeed(true),
 			}),
 		),
-		Effect.flatMap(({ results }) =>
-			Effect.if(results !== undefined && results.length > 0, {
+		Effect.flatMap(({ error, results }) =>
+			Effect.if(error === undefined && results !== undefined, {
 				onTrue: Effect.succeed(true),
 				onFalse: Effect.succeed(false),
 			}),
