@@ -1,9 +1,9 @@
 import {
 	type PgColumn,
 	type SerialColumn,
-} from "~/schema/table/column/column.js";
-import { PgTsquery } from "~/schema/table/column/data-types/tsquery.js";
-import { PgTsvector } from "~/schema/table/column/data-types/tsvector.js";
+} from "~/database/schema/table/column/column.js";
+import { PgTsquery } from "~/database/schema/table/column/data-types/tsquery.js";
+import { PgTsvector } from "~/database/schema/table/column/data-types/tsvector.js";
 import { finishSchema, stringSchema } from "../common.js";
 import { columnData } from "../helpers.js";
 

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { schema } from "~/schema/schema.js";
-import { serial } from "~/schema/table/column/data-types/serial.js";
-import { table } from "~/schema/table/table.js";
+import { schema } from "~/database/schema/schema.js";
+import { serial } from "~/database/schema/table/column/data-types/serial.js";
+import { table } from "~/database/schema/table/table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column-info-factory.js";
 import { schemaMigratonInfoFactory } from "~tests/helpers/factories/migration-schema.js";
 import {

@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { schema } from "~/schema/schema.js";
-import { integer } from "~/schema/table/column/data-types/integer.js";
-import { table } from "~/schema/table/table.js";
+import { schema } from "~/database/schema/schema.js";
+import { integer } from "~/database/schema/table/column/data-types/integer.js";
+import { table } from "~/database/schema/table/table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test-context.js";
 import { type DbContext } from "~tests/setup/kysely.js";

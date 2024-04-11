@@ -2,22 +2,22 @@ import { Effect, pipe } from "effect";
 import type { Kysely } from "kysely";
 import { schemaChangeset as changeset } from "~/changeset/schema-changeset.js";
 import { type CamelCaseOptions } from "~/configuration.js";
+import { createSchemaChangeset } from "~/database/database_schemas/changeset.js";
+import { schemaInDb } from "~/database/database_schemas/introspection.js";
+import { Schema, type AnySchema } from "~/database/schema/schema.js";
+import { dbColumnInfo } from "~/database/schema/table/column/instrospection.js";
+import { dbCheckConstraintInfo } from "~/database/schema/table/constraints/check/introspection.js";
+import { dbForeignKeyConstraintInfo } from "~/database/schema/table/constraints/foreign-key/introspection.js";
+import { dbPrimaryKeyConstraintInfo } from "~/database/schema/table/constraints/primary-key/introspection.js";
+import { dbUniqueConstraintInfo } from "~/database/schema/table/constraints/unique/introspection.js";
+import { dbIndexInfo } from "~/database/schema/table/index/introspection.js";
+import { dbTableInfo } from "~/database/schema/table/introspection.js";
+import { dbTriggerInfo } from "~/database/schema/table/trigger/introspection.js";
+import { dbEnumInfo } from "~/database/schema/types/enum/introspection.js";
 import {
 	localSchema,
 	type SchemaMigrationInfo,
 } from "~/introspection/introspection.js";
-import { createSchemaChangeset } from "~/schema/database_schemas/changeset.js";
-import { schemaInDb } from "~/schema/database_schemas/introspection.js";
-import { Schema, type AnySchema } from "~/schema/schema.js";
-import { dbColumnInfo } from "~/schema/table/column/instrospection.js";
-import { dbCheckConstraintInfo } from "~/schema/table/constraints/check/introspection.js";
-import { dbForeignKeyConstraintInfo } from "~/schema/table/constraints/foreign-key/introspection.js";
-import { dbPrimaryKeyConstraintInfo } from "~/schema/table/constraints/primary-key/introspection.js";
-import { dbUniqueConstraintInfo } from "~/schema/table/constraints/unique/introspection.js";
-import { dbIndexInfo } from "~/schema/table/index/introspection.js";
-import { dbTableInfo } from "~/schema/table/introspection.js";
-import { dbTriggerInfo } from "~/schema/table/trigger/introspection.js";
-import { dbEnumInfo } from "~/schema/types/enum/introspection.js";
 import { DbClients } from "../services/dbClients.js";
 import { DevEnvironment } from "../services/environment.js";
 

@@ -1,5 +1,7 @@
 import { Kysely } from "kysely";
 import type { CamelCaseOptions } from "~/configuration.js";
+import { dbExtensionInfo } from "~/database/extension/introspection.js";
+import type { AnySchema } from "~/database/schema/schema.js";
 import type {
 	CheckInfo,
 	ForeignKeyInfo,
@@ -7,44 +9,42 @@ import type {
 	TriggerInfo,
 	UniqueInfo,
 } from "~/migrations/migration-schema.js";
-import { dbExtensionInfo } from "~/schema/extension/introspection.js";
-import type { AnySchema } from "~/schema/schema.js";
 import {
 	dbColumnInfo,
 	localColumnInfoByTable,
 	type ColumnsInfo,
-} from "../schema/table/column/instrospection.js";
+} from "../database/schema/table/column/instrospection.js";
 import {
 	dbCheckConstraintInfo,
 	localCheckConstraintInfo,
-} from "../schema/table/constraints/check/introspection.js";
+} from "../database/schema/table/constraints/check/introspection.js";
 import {
 	dbForeignKeyConstraintInfo,
 	localForeignKeyConstraintInfo,
-} from "../schema/table/constraints/foreign-key/introspection.js";
+} from "../database/schema/table/constraints/foreign-key/introspection.js";
 import {
 	dbPrimaryKeyConstraintInfo,
 	localPrimaryKeyConstraintInfo,
-} from "../schema/table/constraints/primary-key/introspection.js";
+} from "../database/schema/table/constraints/primary-key/introspection.js";
 import {
 	dbUniqueConstraintInfo,
 	localUniqueConstraintInfo,
-} from "../schema/table/constraints/unique/introspection.js";
+} from "../database/schema/table/constraints/unique/introspection.js";
 import {
 	dbIndexInfo,
 	localIndexInfoByTable,
 	type IndexInfo,
-} from "../schema/table/index/introspection.js";
-import { dbTableInfo } from "../schema/table/introspection.js";
+} from "../database/schema/table/index/introspection.js";
+import { dbTableInfo } from "../database/schema/table/introspection.js";
 import {
 	dbTriggerInfo,
 	localTriggersInfo,
-} from "../schema/table/trigger/introspection.js";
+} from "../database/schema/table/trigger/introspection.js";
 import {
 	dbEnumInfo,
 	localEnumInfo,
 	type EnumInfo,
-} from "../schema/types/enum/introspection.js";
+} from "../database/schema/types/enum/introspection.js";
 
 export function localSchema(
 	schema: AnySchema,

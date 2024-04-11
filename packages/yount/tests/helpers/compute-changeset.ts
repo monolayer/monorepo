@@ -1,10 +1,10 @@
 import { Kysely } from "kysely";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import type { CamelCaseOptions } from "~/configuration.js";
+import { createSchemaChangeset } from "~/database/database_schemas/changeset.js";
+import { schemaInDb } from "~/database/database_schemas/introspection.js";
+import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { localSchema, remoteSchema } from "~/introspection/introspection.js";
-import { createSchemaChangeset } from "~/schema/database_schemas/changeset.js";
-import { schemaInDb } from "~/schema/database_schemas/introspection.js";
-import { Schema, type AnySchema } from "~/schema/schema.js";
 
 export async function computeChangeset(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,8 +1,8 @@
 import {
 	type PgColumnBase,
 	type SerialColumn,
-} from "~/schema/table/column/column.js";
-import { PgBytea } from "~/schema/table/column/data-types/bytea.js";
+} from "~/database/schema/table/column/column.js";
+import { PgBytea } from "~/database/schema/table/column/data-types/bytea.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { customIssue, nullableColumn } from "../helpers.js";
 

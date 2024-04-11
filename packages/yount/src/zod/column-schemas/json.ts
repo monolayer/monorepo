@@ -1,9 +1,9 @@
 import {
 	type PgColumn,
 	type SerialColumn,
-} from "~/schema/table/column/column.js";
-import { PgJson } from "~/schema/table/column/data-types/json.js";
-import { PgJsonB } from "~/schema/table/column/data-types/jsonb.js";
+} from "~/database/schema/table/column/column.js";
+import { PgJson } from "~/database/schema/table/column/data-types/json.js";
+import { PgJsonB } from "~/database/schema/table/column/data-types/jsonb.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { customIssue, nullableColumn } from "../helpers.js";
 

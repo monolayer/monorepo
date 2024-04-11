@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import {
 	PgCheck,
 	assertCheckWithInfo,
-} from "~/schema/table/constraints/check/check.js";
+} from "~/database/schema/table/constraints/check/check.js";
 
 describe("PgCheck", () => {
 	test("expression", () => {

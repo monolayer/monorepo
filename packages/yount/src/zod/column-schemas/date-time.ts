@@ -2,12 +2,12 @@ import { z } from "zod";
 import {
 	type PgColumn,
 	type SerialColumn,
-} from "~/schema/table/column/column.js";
-import { PgDate } from "~/schema/table/column/data-types/date.js";
-import { PgTimeWithTimeZone } from "~/schema/table/column/data-types/time-with-time-zone.js";
-import { PgTime } from "~/schema/table/column/data-types/time.js";
-import { PgTimestampWithTimeZone } from "~/schema/table/column/data-types/timestamp-with-time-zone.js";
-import { PgTimestamp } from "~/schema/table/column/data-types/timestamp.js";
+} from "~/database/schema/table/column/column.js";
+import { PgDate } from "~/database/schema/table/column/data-types/date.js";
+import { PgTimeWithTimeZone } from "~/database/schema/table/column/data-types/time-with-time-zone.js";
+import { PgTime } from "~/database/schema/table/column/data-types/time.js";
+import { PgTimestampWithTimeZone } from "~/database/schema/table/column/data-types/timestamp-with-time-zone.js";
+import { PgTimestamp } from "~/database/schema/table/column/data-types/timestamp.js";
 import { baseSchema, finishSchema, stringSchema } from "../common.js";
 import { columnData, customIssue, nullableColumn } from "../helpers.js";
 import { timeRegex } from "../regexes/regex.js";

@@ -1,7 +1,10 @@
 import { z } from "zod";
-import { PgColumn, SerialColumn } from "~/schema/table/column/column.js";
-import { PgBitVarying } from "~/schema/table/column/data-types/bit-varying.js";
-import { PgBit } from "~/schema/table/column/data-types/bit.js";
+import {
+	PgColumn,
+	SerialColumn,
+} from "~/database/schema/table/column/column.js";
+import { PgBitVarying } from "~/database/schema/table/column/data-types/bit-varying.js";
+import { PgBit } from "~/database/schema/table/column/data-types/bit.js";
 import { finishSchema } from "../common.js";
 import { columnData } from "../helpers.js";
 import { bitRegex } from "../regexes/regex.js";

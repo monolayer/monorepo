@@ -1,12 +1,12 @@
 import toposort from "toposort";
 import type { CamelCaseOptions } from "~/configuration.js";
+import { type ColumnRecord } from "~/database/schema/table/table-column.js";
+import type { AnyPgTable } from "~/database/schema/table/table.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { SchemaMigrationInfo } from "~/introspection/introspection.js";
-import { type ColumnRecord } from "~/schema/table/table-column.js";
-import type { AnyPgTable } from "~/schema/table/table.js";
 import { toSnakeCase } from "../changeset/helpers.js";
-import { Schema, type AnySchema } from "../schema/schema.js";
-import type { ColumnsInfo } from "../schema/table/column/instrospection.js";
+import { Schema, type AnySchema } from "../database/schema/schema.js";
+import type { ColumnsInfo } from "../database/schema/table/column/instrospection.js";
 
 type TableName = string;
 type Name = string;

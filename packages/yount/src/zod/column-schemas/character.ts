@@ -3,10 +3,10 @@ import {
 	type PgColumn,
 	type PgColumnBase,
 	type SerialColumn,
-} from "~/schema/table/column/column.js";
-import { PgCharacterVarying } from "~/schema/table/column/data-types/character-varying.js";
-import { PgCharacter } from "~/schema/table/column/data-types/character.js";
-import { PgText } from "~/schema/table/column/data-types/text.js";
+} from "~/database/schema/table/column/column.js";
+import { PgCharacterVarying } from "~/database/schema/table/column/data-types/character-varying.js";
+import { PgCharacter } from "~/database/schema/table/column/data-types/character.js";
+import { PgText } from "~/database/schema/table/column/data-types/text.js";
 import { finishSchema } from "../common.js";
 import { columnData, nullableColumn } from "../helpers.js";
 

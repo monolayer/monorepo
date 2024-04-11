@@ -1,14 +1,14 @@
 /* eslint-disable max-lines */
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { Schema, schema } from "~/schema/schema.js";
-import { boolean } from "~/schema/table/column/data-types/boolean.js";
-import { varchar } from "~/schema/table/column/data-types/character-varying.js";
-import { enumerated } from "~/schema/table/column/data-types/enumerated.js";
-import { serial } from "~/schema/table/column/data-types/serial.js";
-import { text } from "~/schema/table/column/data-types/text.js";
-import { table } from "~/schema/table/table.js";
-import { enumType } from "~/schema/types/enum/enum.js";
+import { Schema, schema } from "~/database/schema/schema.js";
+import { boolean } from "~/database/schema/table/column/data-types/boolean.js";
+import { varchar } from "~/database/schema/table/column/data-types/character-varying.js";
+import { enumerated } from "~/database/schema/table/column/data-types/enumerated.js";
+import { serial } from "~/database/schema/table/column/data-types/serial.js";
+import { text } from "~/database/schema/table/column/data-types/text.js";
+import { table } from "~/database/schema/table/table.js";
+import { enumType } from "~/database/schema/types/enum/enum.js";
 
 describe("schema definition", () => {
 	test("without tables", () => {

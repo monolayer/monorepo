@@ -5,7 +5,7 @@ import { sql } from "kysely";
 import path from "path";
 import { exit } from "process";
 import { type SeedImport } from "~/config.js";
-import { dbTableInfo } from "~/schema/table/introspection.js";
+import { dbTableInfo } from "~/database/schema/table/introspection.js";
 import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
 import { checkWithFail } from "./check-with-fail.js";

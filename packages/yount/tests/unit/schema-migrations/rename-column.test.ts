@@ -1,15 +1,15 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { schema } from "~/schema/schema.js";
-import { varchar } from "~/schema/table/column/data-types/character-varying.js";
-import { integer } from "~/schema/table/column/data-types/integer.js";
-import { text } from "~/schema/table/column/data-types/text.js";
-import { foreignKey } from "~/schema/table/constraints/foreign-key/foreign-key.js";
-import { primaryKey } from "~/schema/table/constraints/primary-key/primary-key.js";
-import { unique } from "~/schema/table/constraints/unique/unique.js";
-import { index } from "~/schema/table/index/index.js";
-import { table } from "~/schema/table/table.js";
+import { schema } from "~/database/schema/schema.js";
+import { varchar } from "~/database/schema/table/column/data-types/character-varying.js";
+import { integer } from "~/database/schema/table/column/data-types/integer.js";
+import { text } from "~/database/schema/table/column/data-types/text.js";
+import { foreignKey } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
+import { primaryKey } from "~/database/schema/table/constraints/primary-key/primary-key.js";
+import { unique } from "~/database/schema/table/constraints/unique/unique.js";
+import { index } from "~/database/schema/table/index/index.js";
+import { table } from "~/database/schema/table/table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { setUpContext, teardownContext } from "~tests/helpers/test-context.js";
 import { type DbContext } from "~tests/setup/kysely.js";

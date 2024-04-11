@@ -9,8 +9,12 @@ import pg from "pg";
 import {
 	TableIntrospection,
 	introspectTable,
-} from "~/schema/introspect-table.js";
-import type { AnyPgTable, PgTable, TableSchema } from "~/schema/table/table.js";
+} from "~/database/schema/introspect-table.js";
+import type {
+	AnyPgTable,
+	PgTable,
+	TableSchema,
+} from "~/database/schema/table/table.js";
 
 export function compileDefaultExpression(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

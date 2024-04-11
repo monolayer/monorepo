@@ -4,8 +4,8 @@ import {
 	type CamelCasePluginOptions,
 } from "kysely";
 import pg, { type ClientConfig, type PoolConfig } from "pg";
-import type { PgExtension } from "./schema/extension/extension.js";
-import type { AnySchema } from "./schema/schema.js";
+import type { PgExtension } from "./database/extension/extension.js";
+import type { AnySchema } from "./database/schema/schema.js";
 
 export type PgConfig = ClientConfig & PoolConfig;
 

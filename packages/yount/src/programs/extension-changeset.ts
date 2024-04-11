@@ -3,7 +3,7 @@ import { extensionChangeset } from "~/changeset/extension-changeset.js";
 import {
 	dbExtensionInfo,
 	localExtensionInfo,
-} from "~/schema/extension/introspection.js";
+} from "~/database/extension/introspection.js";
 import { DbClients } from "~/services/dbClients.js";
 import { DevEnvironment } from "~/services/environment.js";
 

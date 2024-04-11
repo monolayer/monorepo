@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { schema } from "~/schema/schema.js";
-import { text } from "~/schema/table/column/data-types/text.js";
-import { primaryKey } from "~/schema/table/constraints/primary-key/primary-key.js";
-import { table } from "~/schema/table/table.js";
+import { schema } from "~/database/schema/schema.js";
+import { text } from "~/database/schema/table/column/data-types/text.js";
+import { primaryKey } from "~/database/schema/table/constraints/primary-key/primary-key.js";
+import { table } from "~/database/schema/table/table.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { type DbContext } from "~tests/setup/kysely.js";
 import { setUpContext, teardownContext } from "../../helpers/test-context.js";

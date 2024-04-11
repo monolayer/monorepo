@@ -1,7 +1,7 @@
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { extension } from "~/schema/extension/extension.js";
-import { schema } from "~/schema/schema.js";
+import { extension } from "~/database/extension/extension.js";
+import { schema } from "~/database/schema/schema.js";
 import { testChangesetAndMigrations } from "~tests/helpers/migration-success.js";
 import { type DbContext } from "~tests/setup/kysely.js";
 import { computeChangeset } from "../../helpers/compute-changeset.js";

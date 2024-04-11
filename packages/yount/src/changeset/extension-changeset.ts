@@ -1,6 +1,6 @@
 import microdiff from "microdiff";
-import { extensionMigrationOpGenerator } from "~/schema/extension/changeset.js";
-import type { ExtensionInfo } from "~/schema/extension/introspection.js";
+import { extensionMigrationOpGenerator } from "~/database/extension/changeset.js";
+import type { ExtensionInfo } from "~/database/extension/introspection.js";
 
 export function extensionChangeset(
 	local: ExtensionInfo,

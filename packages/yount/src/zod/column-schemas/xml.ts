@@ -1,8 +1,8 @@
 import {
 	type PgColumn,
 	type SerialColumn,
-} from "~/schema/table/column/column.js";
-import { PgXML } from "~/schema/table/column/data-types/xml.js";
+} from "~/database/schema/table/column/column.js";
+import { PgXML } from "~/database/schema/table/column/data-types/xml.js";
 import { finishSchema, stringSchema } from "../common.js";
 import { columnData } from "../helpers.js";
 

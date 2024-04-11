@@ -4,15 +4,15 @@ import {
 	type PgColumn,
 	type PgColumnBase,
 	type SerialColumn,
-} from "~/schema/table/column/column.js";
-import { PgBigInt } from "~/schema/table/column/data-types/bigint.js";
-import { type PgBigSerial } from "~/schema/table/column/data-types/bigserial.js";
-import { PgDoublePrecision } from "~/schema/table/column/data-types/double-precision.js";
-import { PgInteger } from "~/schema/table/column/data-types/integer.js";
-import { PgNumeric } from "~/schema/table/column/data-types/numeric.js";
-import { PgReal } from "~/schema/table/column/data-types/real.js";
-import { type PgSerial } from "~/schema/table/column/data-types/serial.js";
-import { PgSmallint } from "~/schema/table/column/data-types/smallint.js";
+} from "~/database/schema/table/column/column.js";
+import { PgBigInt } from "~/database/schema/table/column/data-types/bigint.js";
+import { type PgBigSerial } from "~/database/schema/table/column/data-types/bigserial.js";
+import { PgDoublePrecision } from "~/database/schema/table/column/data-types/double-precision.js";
+import { PgInteger } from "~/database/schema/table/column/data-types/integer.js";
+import { PgNumeric } from "~/database/schema/table/column/data-types/numeric.js";
+import { PgReal } from "~/database/schema/table/column/data-types/real.js";
+import { type PgSerial } from "~/database/schema/table/column/data-types/serial.js";
+import { PgSmallint } from "~/database/schema/table/column/data-types/smallint.js";
 import { baseSchema, finishSchema } from "../common.js";
 import { columnData, customIssue, nullableColumn } from "../helpers.js";
 

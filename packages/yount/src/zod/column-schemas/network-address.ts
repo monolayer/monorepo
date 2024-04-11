@@ -4,11 +4,11 @@ import {
 	PgColumn,
 	SerialColumn,
 	type AnyPGColumn,
-} from "~/schema/table/column/column.js";
-import { PgCIDR } from "~/schema/table/column/data-types/cidr.js";
-import { PgInet } from "~/schema/table/column/data-types/inet.js";
-import { PgMacaddr } from "~/schema/table/column/data-types/macaddr.js";
-import { PgMacaddr8 } from "~/schema/table/column/data-types/macaddr8.js";
+} from "~/database/schema/table/column/column.js";
+import { PgCIDR } from "~/database/schema/table/column/data-types/cidr.js";
+import { PgInet } from "~/database/schema/table/column/data-types/inet.js";
+import { PgMacaddr } from "~/database/schema/table/column/data-types/macaddr.js";
+import { PgMacaddr8 } from "~/database/schema/table/column/data-types/macaddr8.js";
 import { finishSchema } from "../common.js";
 import { columnData, customIssue } from "../helpers.js";
 import {
