@@ -13,13 +13,13 @@ import { programWithErrorCause } from "./run-program.js";
 
 export async function testChangesetAndMigrations({
 	context,
-	database,
+	schemas,
 	expected,
 	down,
 	useCamelCase = { enabled: false },
 }: {
 	context: DbContext;
-	database: AnySchema[];
+	schemas: AnySchema[];
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expected: any[];
 	down: "same" | "reverse" | "empty";
@@ -28,7 +28,7 @@ export async function testChangesetAndMigrations({
 	const result = await runGenerateChangesetMigration(
 		context.dbName,
 		context.folder,
-		database,
+		schemas,
 		useCamelCase,
 	);
 
@@ -37,7 +37,7 @@ export async function testChangesetAndMigrations({
 	const migrationResult = await runMigrate(
 		context.dbName,
 		context.folder,
-		database,
+		schemas,
 		useCamelCase,
 	);
 	expect(migrationResult).toBe(true);
@@ -45,7 +45,7 @@ export async function testChangesetAndMigrations({
 	const afterUpCs = await runGenerateChangesetMigration(
 		context.dbName,
 		context.folder,
-		database,
+		schemas,
 		useCamelCase,
 	);
 	expect(afterUpCs).toEqual([]);
@@ -53,7 +53,7 @@ export async function testChangesetAndMigrations({
 	const migrateDownResult = await runMigrateDown(
 		context.dbName,
 		context.folder,
-		database,
+		schemas,
 		useCamelCase,
 	);
 	expect(migrateDownResult).toBe(true);
@@ -63,7 +63,7 @@ export async function testChangesetAndMigrations({
 			const afterDownCs = await runGenerateChangesetMigration(
 				context.dbName,
 				context.folder,
-				database,
+				schemas,
 				useCamelCase,
 			);
 			expect(afterDownCs).toEqual(
@@ -77,7 +77,7 @@ export async function testChangesetAndMigrations({
 			const afterDownCs = await runGenerateChangesetMigration(
 				context.dbName,
 				context.folder,
-				database,
+				schemas,
 				useCamelCase,
 			);
 			expect(afterDownCs).toEqual(
@@ -89,7 +89,7 @@ export async function testChangesetAndMigrations({
 			const afterDownCs = await runGenerateChangesetMigration(
 				context.dbName,
 				context.folder,
-				database,
+				schemas,
 				useCamelCase,
 			);
 			expect(afterDownCs).toEqual([]);
@@ -101,7 +101,7 @@ export async function testChangesetAndMigrations({
 async function runGenerateChangesetMigration(
 	dbName: string,
 	folder: string,
-	schema: AnySchema[],
+	schemas: AnySchema[],
 	useCamelCase = { enabled: false },
 ) {
 	return Effect.runPromise(
@@ -109,7 +109,7 @@ async function runGenerateChangesetMigration(
 			programWithErrorCause(generateChangesetMigration()).pipe(
 				Effect.tap(() => cleanup()),
 			),
-			newLayers(dbName, folder, schema, useCamelCase),
+			newLayers(dbName, folder, schemas, useCamelCase),
 		),
 	);
 }
@@ -125,13 +125,13 @@ function cleanup() {
 async function runMigrate(
 	dbName: string,
 	folder: string,
-	schema: AnySchema[],
+	schemas: AnySchema[],
 	useCamelCase = { enabled: false },
 ) {
 	return Effect.runPromise(
 		Effect.provide(
 			programWithErrorCause(migrate()).pipe(Effect.tap(() => cleanup())),
-			newLayers(dbName, folder, schema, useCamelCase),
+			newLayers(dbName, folder, schemas, useCamelCase),
 		),
 	);
 }
@@ -139,7 +139,7 @@ async function runMigrate(
 async function runMigrateDown(
 	dbName: string,
 	folder: string,
-	schema: AnySchema[],
+	schemas: AnySchema[],
 	useCamelCase = { enabled: false },
 ) {
 	return Effect.runPromise(
@@ -147,7 +147,7 @@ async function runMigrateDown(
 			programWithErrorCause(migrateDownProgram()).pipe(
 				Effect.tap(() => cleanup()),
 			),
-			newLayers(dbName, folder, schema, useCamelCase),
+			newLayers(dbName, folder, schemas, useCamelCase),
 		),
 	);
 }

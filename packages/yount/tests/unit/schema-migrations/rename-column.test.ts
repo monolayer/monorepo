@@ -66,7 +66,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -135,7 +135,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -231,7 +231,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -305,7 +305,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -416,7 +416,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -496,7 +496,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -619,7 +619,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -713,7 +713,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -820,7 +820,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -895,7 +895,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -932,7 +932,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected: [],
 				down: "same",
 			});
@@ -962,7 +962,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected: [],
 				down: "same",
 			});
@@ -1000,7 +1000,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected: [],
 				down: "same",
 			});
@@ -1033,7 +1033,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected: [],
 				down: "same",
 			});
@@ -1091,7 +1091,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected: [],
 				down: "same",
 			});
@@ -1144,7 +1144,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected: [],
 				down: "same",
 			});
@@ -1235,7 +1235,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected,
 				down: "same",
 			});
@@ -1279,7 +1279,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected: [],
 				down: "same",
 			});
@@ -1303,7 +1303,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected: [],
 				down: "same",
 			});
@@ -1327,7 +1327,7 @@ describe("Rename column migrations", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				database: [dbSchema],
+				schemas: [dbSchema],
 				expected: [],
 				down: "same",
 			});
