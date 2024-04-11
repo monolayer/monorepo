@@ -2,7 +2,6 @@
 import { sql } from "kysely";
 import { describe, expect, test, type Mock } from "vitest";
 import { localSchema } from "~/introspection/introspection.js";
-import { extension } from "~/schema/extension/extension.js";
 import { schema } from "~/schema/schema.js";
 import { bigserial } from "~/schema/table/column/data-types/bigserial.js";
 import { boolean } from "~/schema/table/column/data-types/boolean.js";
@@ -23,7 +22,7 @@ import { localIndexInfoByTable } from "~/schema/table/index/introspection.js";
 import { enumType } from "~/schema/types/enum/enum.js";
 import { localEnumInfo } from "~/schema/types/enum/introspection.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column-info-factory.js";
-import { migrationSchemaFactory } from "~tests/helpers/factories/migration-schema.js";
+import { schemaMigratonInfoFactory } from "~tests/helpers/factories/migration-schema.js";
 import { unique } from "../../src/schema/table/constraints/unique/unique.js";
 import { table } from "../../src/schema/table/table.js";
 import { trigger } from "../../src/schema/table/trigger/trigger.js";
@@ -121,7 +120,7 @@ describe("#schemaColumnInfo", () => {
 
 test("#schemaDBColumnInfoByTable on empty database", () => {
 	const dbSchema = schema({ name: "public", tables: {} });
-	expect(localColumnInfoByTable(dbSchema, migrationSchemaFactory())).toEqual(
+	expect(localColumnInfoByTable(dbSchema, schemaMigratonInfoFactory())).toEqual(
 		{},
 	);
 });
@@ -197,7 +196,7 @@ test("#schemaDBColumnInfoByTable", () => {
 			}),
 		},
 	};
-	expect(localColumnInfoByTable(dbSchema, migrationSchemaFactory())).toEqual(
+	expect(localColumnInfoByTable(dbSchema, schemaMigratonInfoFactory())).toEqual(
 		expectedDbColumnInfoByTable,
 	);
 });
@@ -345,7 +344,7 @@ describe("schema", () => {
 		});
 
 		const dbSchema = schema({
-			extensions: [extension("cube"), extension("btree_gin")],
+			// extensions: [extension("cube"), extension("btree_gin")],
 			types: [bookStatus, userStatus],
 			tables: {
 				users,
@@ -575,7 +574,7 @@ describe("schema", () => {
 					users_id_yount_pk: '"users_id_yount_pk" PRIMARY KEY ("id")',
 				},
 			},
-			extensions: { btree_gin: true, cube: true },
+			// extensions: { btree_gin: true, cube: true },
 			triggers: {
 				teams: {
 					foo_before_insert_trg:
@@ -591,7 +590,7 @@ describe("schema", () => {
 				user_status: "active, inactive",
 			},
 		};
-		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -647,7 +646,7 @@ describe("schema", () => {
 		});
 
 		const dbSchema = schema({
-			extensions: [extension("cube"), extension("btree_gin")],
+			// extensions: [extension("cube"), extension("btree_gin")],
 			types: [bookStatus, userStatus],
 			tables: {
 				users,
@@ -912,7 +911,7 @@ describe("schema", () => {
 						'"users_full_name_yount_pk" PRIMARY KEY ("full_name")',
 				},
 			},
-			extensions: { btree_gin: true, cube: true },
+			// extensions: { btree_gin: true, cube: true },
 			triggers: {
 				users: {
 					foo_before_update_trg:
@@ -925,7 +924,7 @@ describe("schema", () => {
 			},
 		};
 		expect(
-			localSchema(dbSchema, migrationSchemaFactory(), {
+			localSchema(dbSchema, schemaMigratonInfoFactory(), {
 				enabled: true,
 				options: {},
 			}),
@@ -978,7 +977,7 @@ test("trigger names are downcased", () => {
 					'a796cccb:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON "public"."users"\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo',
 			},
 		},
-		extensions: {},
+		// extensions: {},
 		foreignKeyConstraints: {},
 		index: {},
 		primaryKey: {},
@@ -986,7 +985,7 @@ test("trigger names are downcased", () => {
 		checkConstraints: {},
 		enums: {},
 	};
-	expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
+	expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
 		expectedLocalSchema,
 	);
 });
@@ -1040,7 +1039,7 @@ test("#localSchemaCamelCase", () => {
 	});
 
 	const dbSchema = schema({
-		extensions: [extension("cube"), extension("btree_gin")],
+		// extensions: [extension("cube"), extension("btree_gin")],
 		types: [bookStatus, userStatus],
 		tables: {
 			users,
@@ -1299,7 +1298,7 @@ test("#localSchemaCamelCase", () => {
 					'"users_full_name_yount_pk" PRIMARY KEY ("full_name")',
 			},
 		},
-		extensions: { btree_gin: true, cube: true },
+		// extensions: { btree_gin: true, cube: true },
 		triggers: {
 			users: {
 				foo_before_update_trg:
@@ -1312,7 +1311,7 @@ test("#localSchemaCamelCase", () => {
 		},
 	};
 	expect(
-		localSchema(dbSchema, migrationSchemaFactory(), {
+		localSchema(dbSchema, schemaMigratonInfoFactory(), {
 			enabled: true,
 			options: {},
 		}),
@@ -1400,12 +1399,12 @@ describe("#localSchema with external objects", () => {
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			extensions: {},
+			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -1447,12 +1446,12 @@ describe("#localSchema with external objects", () => {
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			extensions: {},
+			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -1496,12 +1495,12 @@ describe("#localSchema with external objects", () => {
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			extensions: {},
+			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -1545,12 +1544,12 @@ describe("#localSchema with external objects", () => {
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			extensions: {},
+			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -1581,12 +1580,12 @@ describe("#localSchema with external objects", () => {
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			extensions: {},
+			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});
@@ -1608,12 +1607,12 @@ describe("#localSchema with external objects", () => {
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			extensions: {},
+			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, migrationSchemaFactory())).toStrictEqual(
+		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
 			expectedLocalSchema,
 		);
 	});

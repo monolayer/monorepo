@@ -12,7 +12,6 @@ import path from "path";
 import pg from "pg";
 import { env } from "process";
 import type { Connector } from "~/configuration.js";
-import type { AnySchema } from "~/schema/schema.js";
 import { DbClients, dbClientsLayer } from "~/services/dbClients.js";
 import {
 	DevEnvironment,
@@ -102,8 +101,7 @@ function mockedMigratorLayer(
 
 function mockedEnvironmentLayer(
 	migrationFolder: string,
-	schemas: AnySchema[],
-	useCamelCase = { enabled: false },
+	connector: EnvironmentLessConnector,
 ) {
 	return Layer.effect(
 		Environment,
@@ -115,13 +113,14 @@ function mockedEnvironmentLayer(
 				folder: "migrations",
 				migrationFolder: migrationFolder,
 				connector: {
-					schemas: schemas,
+					schemas: connector.schemas,
+					extensions: connector.extensions,
 					environments: {
 						development: {},
 					},
 				},
 				connectorConfig: {},
-				camelCasePlugin: useCamelCase,
+				camelCasePlugin: connector.camelCasePlugin,
 			};
 		}),
 	);
@@ -129,8 +128,7 @@ function mockedEnvironmentLayer(
 
 function mockedDevEnvironmentLayer(
 	migrationFolder: string,
-	schemas: AnySchema[],
-	useCamelCase = { enabled: false },
+	connector: EnvironmentLessConnector,
 ) {
 	return Layer.effect(
 		DevEnvironment,
@@ -142,13 +140,14 @@ function mockedDevEnvironmentLayer(
 				folder: "migrations",
 				migrationFolder: migrationFolder,
 				connector: {
-					schemas: schemas,
+					schemas: connector.schemas,
+					extensions: connector.extensions,
 					environments: {
 						development: {},
 					},
 				},
 				connectorConfig: {},
-				camelCasePlugin: useCamelCase,
+				camelCasePlugin: connector.camelCasePlugin,
 			};
 		}),
 	);
@@ -169,20 +168,8 @@ export function newLayers(
 		Layer.provideMerge(
 			mockedDbClientsLayer(databaseName, connector.camelCasePlugin),
 		),
-		Layer.provideMerge(
-			mockedEnvironmentLayer(
-				migrationFolder,
-				connector.schemas,
-				connector.camelCasePlugin,
-			),
-		),
-		Layer.provideMerge(
-			mockedDevEnvironmentLayer(
-				migrationFolder,
-				connector.schemas,
-				connector.camelCasePlugin,
-			),
-		),
+		Layer.provideMerge(mockedEnvironmentLayer(migrationFolder, connector)),
+		Layer.provideMerge(mockedDevEnvironmentLayer(migrationFolder, connector)),
 	);
 }
 

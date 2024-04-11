@@ -4,6 +4,7 @@ import {
 	type CamelCasePluginOptions,
 } from "kysely";
 import pg, { type ClientConfig, type PoolConfig } from "pg";
+import type { PgExtension } from "./schema/extension/extension.js";
 import type { AnySchema } from "./schema/schema.js";
 
 export type PgConfig = ClientConfig & PoolConfig;
@@ -15,6 +16,7 @@ export type YountConfig = {
 export type Connector = {
 	schemas: AnySchema[];
 	camelCasePlugin?: CamelCaseOptions;
+	extensions?: PgExtension[];
 	environments: {
 		development: PgConfig;
 	} & Record<string, PgConfig>;

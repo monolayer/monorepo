@@ -3,7 +3,7 @@ import { Kysely, sql } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { type MigrationSchema } from "~/introspection/introspection.js";
+import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { findColumn, findPrimaryKey } from "~/migrations/migration-schema.js";
 import { Schema, type AnySchema } from "~/schema/schema.js";
 import type { InformationSchemaDB } from "../../../introspection/types.js";
@@ -307,7 +307,7 @@ export function mapColumnsToTables(columns: ColumnInfo[]) {
 
 export function localColumnInfoByTable(
 	schema: AnySchema,
-	remoteSchema: MigrationSchema,
+	remoteSchema: SchemaMigrationInfo,
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
 	const tables = Schema.info(schema).tables ?? {};

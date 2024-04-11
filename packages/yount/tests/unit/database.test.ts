@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { PgExtension, extension } from "~/schema/extension/extension.js";
 import { Schema, schema } from "~/schema/schema.js";
 import { boolean } from "~/schema/table/column/data-types/boolean.js";
 import { varchar } from "~/schema/table/column/data-types/character-varying.js";
@@ -47,17 +46,17 @@ describe("schema definition", () => {
 	});
 });
 
-test("with extensions", () => {
-	const dbSchema = schema({
-		extensions: [extension("pgcrypto"), extension("btree_gist")],
-		tables: {},
-	});
+// test("with extensions", () => {
+// 	const dbSchema = schema({
+// 		extensions: [extension("pgcrypto"), extension("btree_gist")],
+// 		tables: {},
+// 	});
 
-	const extensions = Schema.info(dbSchema).extensions.map(
-		(ext) => PgExtension.info(ext).name,
-	);
-	expect(extensions).toStrictEqual(["pgcrypto", "btree_gist"]);
-});
+// 	const extensions = Schema.info(dbSchema).extensions.map(
+// 		(ext) => PgExtension.info(ext).name,
+// 	);
+// 	expect(extensions).toStrictEqual(["pgcrypto", "btree_gist"]);
+// });
 
 test("with enumerated types", () => {
 	const status = enumType("status", ["online", "offline"]);

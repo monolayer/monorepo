@@ -1027,7 +1027,6 @@ describe("Table create migrations", () => {
 		});
 
 		const dbSchema = schema({
-			extensions: [extension("moddatetime")],
 			tables: {
 				users,
 			},
@@ -1119,7 +1118,10 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 		];
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			connector: {
+				schemas: [dbSchema],
+				extensions: [extension("moddatetime")],
+			},
 			expected,
 			down: "same",
 		});
@@ -1193,7 +1195,6 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 		});
 
 		const dbSchema = schema({
-			extensions: [extension("moddatetime")],
 			types: [role],
 			tables: {
 				users,
@@ -1566,6 +1567,7 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 			context,
 			connector: {
 				schemas: [dbSchema],
+				extensions: [extension("moddatetime")],
 				camelCasePlugin: { enabled: true, options: {} },
 			},
 			expected,

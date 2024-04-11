@@ -5,24 +5,8 @@ import {
 	type Changeset,
 } from "~/changeset/types.js";
 import { executeKyselyDbStatement } from "../../changeset/helpers.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "../../introspection/introspection.js";
 
-export function extensionMigrationOpGenerator(
-	diff: Difference,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_addedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_schemaName: string,
-) {
+export function extensionMigrationOpGenerator(diff: Difference) {
 	if (isCreateExtensionDiff(diff)) {
 		return createExtensionMigration(diff);
 	}

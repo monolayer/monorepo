@@ -128,10 +128,6 @@ describe("#remoteSchema", () => {
 		);
 
 		const expectedSchema = {
-			extensions: {
-				btree_gin: true,
-				moddatetime: true,
-			},
 			table: {
 				remote_schema_users: {
 					id: {
@@ -477,7 +473,6 @@ describe("#remoteSchema", () => {
 				},
 			},
 			enums: {},
-			extensions: {},
 			triggers: {},
 		};
 
@@ -538,7 +533,6 @@ describe("#remoteSchema", () => {
 			foreignKeyConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			extensions: {},
 			triggers: {},
 			enums: {},
 		};
@@ -746,7 +740,6 @@ describe("#remoteSchema", () => {
 			.execute();
 
 		const expectedSchema = {
-			extensions: {},
 			table: {
 				user_native_data_types_test: {
 					bigint: {

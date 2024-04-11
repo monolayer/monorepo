@@ -4,7 +4,6 @@ import type { EnumType } from "./types/enum/enum.js";
 
 export type DatabaseSchema<T extends ColumnRecord, S extends string> = {
 	name?: S;
-	extensions?: Array<PgExtension>;
 	tables?: T;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	types?: Array<EnumType<any>>;
@@ -16,7 +15,6 @@ export class Schema<T extends ColumnRecord, S extends string> {
 	 */
 	static info(db: AnySchema) {
 		return {
-			extensions: db.extensions ?? [],
 			tables: db.tables ?? {},
 			types: db.types || [],
 			name: db.name,
@@ -387,7 +385,6 @@ export class Schema<T extends ColumnRecord, S extends string> {
 	 */
 	constructor(schema: DatabaseSchema<T, S>) {
 		this.tables = schema.tables || ({} as T);
-		this.extensions = schema.extensions;
 		this.types = schema.types;
 		this.name = schema.name;
 	}

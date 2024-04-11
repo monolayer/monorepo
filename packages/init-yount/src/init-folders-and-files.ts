@@ -79,6 +79,11 @@ export function initFolderAndFiles() {
 			connectionsTemplate.render(),
 			true,
 		);
+		await createFile(
+			`${folder.path}/extensions.ts`,
+			extensionsTemplate.render(),
+			true,
+		);
 		await createFile(`${folder.path}/seed.ts`, seedTemplate.render(), true);
 		await createDir(`${folder.path}/migrations`, true);
 
@@ -152,4 +157,16 @@ export const seedTemplate =
 import type { DB } from "./schema";
 
 export async function seed(db: Kysely<DB>){}
+`);
+
+export const extensionsTemplate = nunjucks.compile(`
+// Add database extensions here
+// Example:
+// import { extension } from "yount/pg";
+//
+// export const dbExtensions = [
+//   extension("moddatetime"),
+// ]
+
+export const dbExtensions = [];
 `);

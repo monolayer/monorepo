@@ -1,14 +1,13 @@
 import { Effect, pipe } from "effect";
 import type { Kysely } from "kysely";
-import { changeset } from "~/changeset/changeset.js";
+import { schemaChangeset as changeset } from "~/changeset/schema-changeset.js";
 import { type CamelCaseOptions } from "~/configuration.js";
 import {
 	localSchema,
-	type MigrationSchema,
+	type SchemaMigrationInfo,
 } from "~/introspection/introspection.js";
 import { createSchemaChangeset } from "~/schema/database_schemas/changeset.js";
 import { schemaInDb } from "~/schema/database_schemas/introspection.js";
-import { dbExtensionInfo } from "~/schema/extension/introspection.js";
 import { Schema, type AnySchema } from "~/schema/schema.js";
 import { dbColumnInfo } from "~/schema/table/column/instrospection.js";
 import { dbCheckConstraintInfo } from "~/schema/table/constraints/check/introspection.js";
@@ -67,7 +66,7 @@ function databaseChangeset(database: AnySchema) {
 
 function computeChangeset(
 	localDatabaseSchema: AnySchema,
-	remoteSchema: MigrationSchema,
+	remoteSchema: SchemaMigrationInfo,
 	camelCasePlugin?: CamelCaseOptions,
 ) {
 	const cset = changeset(
@@ -131,7 +130,6 @@ function databaseInfo(
 		Effect.tryPromise(
 			async () => await dbPrimaryKeyConstraintInfo(kysely, schema, tables),
 		),
-		Effect.tryPromise(async () => await dbExtensionInfo(kysely, schema)),
 		Effect.tryPromise(async () => await dbTriggerInfo(kysely, schema, tables)),
 		Effect.tryPromise(async () => await dbEnumInfo(kysely, schema)),
 		Effect.tryPromise(
@@ -145,13 +143,11 @@ function databaseInfo(
 				uniqueConstraints,
 				foreignKeys,
 				primaryKeys,
-				extensions,
 				triggers,
 				enums,
 				checkConstraints,
 			]) =>
 				Effect.succeed({
-					extensions: extensions,
 					table: columns,
 					index: indexes,
 					foreignKeyConstraints: foreignKeys,

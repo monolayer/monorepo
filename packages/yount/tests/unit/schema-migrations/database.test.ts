@@ -23,9 +23,7 @@ describe("Database migrations", () => {
 	});
 
 	test<DbContext>("add extensions", async (context) => {
-		const dbSchema = schema({
-			extensions: [extension("btree_gist"), extension("cube")],
-		});
+		const dbSchema = schema({});
 		const expected = [
 			{
 				priority: 0,
@@ -54,7 +52,10 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			connector: {
+				schemas: [dbSchema],
+				extensions: [extension("btree_gist"), extension("cube")],
+			},
 			expected,
 			down: "same",
 		});
@@ -69,9 +70,7 @@ describe("Database migrations", () => {
 			context.kysely,
 		);
 
-		const dbSchema = schema({
-			extensions: [extension("btree_gin")],
-		});
+		const dbSchema = schema({});
 
 		const expected = [
 			{
@@ -101,7 +100,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			connector: { schemas: [dbSchema], extensions: [extension("btree_gin")] },
 			expected,
 			down: "reverse",
 		});

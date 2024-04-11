@@ -1,7 +1,7 @@
 import toposort from "toposort";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { MigrationSchema } from "~/introspection/introspection.js";
+import { SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { type ColumnRecord } from "~/schema/table/table-column.js";
 import type { AnyPgTable } from "~/schema/table/table.js";
 import { toSnakeCase } from "../changeset/helpers.js";
@@ -64,7 +64,7 @@ export function extractColumnsFromPrimaryKey(pkey: string) {
 }
 
 export function findForeignKeysTargetTables(
-	schema: MigrationSchema,
+	schema: SchemaMigrationInfo,
 	tableName: string,
 ) {
 	const foreignKeys = schema.foreignKeyConstraints[tableName];
@@ -85,7 +85,10 @@ export function findForeignKeysTargetTables(
 
 type NodeTuple = [string, string | undefined];
 
-export function buildNodes(droppedTables: string[], remote: MigrationSchema) {
+export function buildNodes(
+	droppedTables: string[],
+	remote: SchemaMigrationInfo,
+) {
 	const nodes = droppedTables.flatMap((droppedTable) => {
 		const deps = findForeignKeysTargetTables(remote, droppedTable);
 		if (deps.length === 0) {

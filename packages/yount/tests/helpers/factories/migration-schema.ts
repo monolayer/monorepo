@@ -1,10 +1,9 @@
-import type { MigrationSchema } from "~/introspection/introspection.js";
+import type { SchemaMigrationInfo } from "~/introspection/introspection.js";
 
-export function migrationSchemaFactory(
-	options?: Partial<MigrationSchema>,
-): MigrationSchema {
+export function schemaMigratonInfoFactory(
+	options?: Partial<SchemaMigrationInfo>,
+): SchemaMigrationInfo {
 	return {
-		extensions: options?.extensions ?? {},
 		table: options?.table ?? {},
 		index: options?.index ?? {},
 		foreignKeyConstraints: options?.foreignKeyConstraints ?? {},

@@ -52,7 +52,6 @@ describe("Database migrations", () => {
 		});
 
 		const dbSchema = schema({
-			extensions: [extension("moddatetime")],
 			tables: {
 				users,
 			},
@@ -125,7 +124,10 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			connector: {
+				schemas: [dbSchema],
+				extensions: [extension("moddatetime")],
+			},
 			expected,
 			down: "same",
 		});
@@ -170,7 +172,6 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 		});
 
 		const dbSchema = schema({
-			extensions: [extension("moddatetime")],
 			tables: {
 				users,
 			},
@@ -223,7 +224,10 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			connector: {
+				schemas: [dbSchema],
+				extensions: [extension("moddatetime")],
+			},
 			expected,
 			down: "reverse",
 		});
@@ -267,7 +271,6 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 		});
 
 		const dbSchema = schema({
-			extensions: [extension("moddatetime")],
 			tables: {
 				users,
 			},
@@ -306,7 +309,10 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			connector: {
+				schemas: [dbSchema],
+				extensions: [extension("moddatetime")],
+			},
 			expected,
 			down: "same",
 		});

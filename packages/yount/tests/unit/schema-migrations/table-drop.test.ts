@@ -818,7 +818,6 @@ describe("Table drop migrations", () => {
 		);
 
 		const dbSchema = schema({
-			extensions: [extension("moddatetime")],
 			tables: {
 				teams: table({
 					columns: {
@@ -879,7 +878,10 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			connector: {
+				schemas: [dbSchema],
+				extensions: [extension("moddatetime")],
+			},
 			expected,
 			down: "same",
 		});

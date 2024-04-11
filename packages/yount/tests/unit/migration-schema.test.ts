@@ -3,7 +3,7 @@ import { schema } from "~/schema/schema.js";
 import { serial } from "~/schema/table/column/data-types/serial.js";
 import { table } from "~/schema/table/table.js";
 import { columnInfoFactory } from "~tests/helpers/factories/column-info-factory.js";
-import { migrationSchemaFactory } from "~tests/helpers/factories/migration-schema.js";
+import { schemaMigratonInfoFactory } from "~tests/helpers/factories/migration-schema.js";
 import {
 	findColumn,
 	findForeignKeysTargetTables,
@@ -13,7 +13,7 @@ import {
 
 describe("findColumn", () => {
 	test("returns the column definition of a table", () => {
-		const schema = migrationSchemaFactory({
+		const schema = schemaMigratonInfoFactory({
 			table: {
 				books: {
 					id: columnInfoFactory({
@@ -34,7 +34,7 @@ describe("findColumn", () => {
 	});
 
 	test("returns undefined when the column definition of a table is not found", () => {
-		const schema = migrationSchemaFactory({
+		const schema = schemaMigratonInfoFactory({
 			table: {
 				books: {
 					id: columnInfoFactory({
@@ -51,7 +51,7 @@ describe("findColumn", () => {
 
 describe("findPrimaryKey", () => {
 	test("returns the primary key column of a table", () => {
-		const schema = migrationSchemaFactory({
+		const schema = schemaMigratonInfoFactory({
 			primaryKey: {
 				books: {
 					books_yount_pk: 'books_id_yount_pk PRIMARY KEY ("id")',
@@ -66,7 +66,7 @@ describe("findPrimaryKey", () => {
 	});
 
 	test("returns the primary key columns of a table", () => {
-		const schema = migrationSchemaFactory({
+		const schema = schemaMigratonInfoFactory({
 			primaryKey: {
 				books: {
 					books_yount_pk: 'books_id_yount_pk PRIMARY KEY ("id", "name")',
@@ -87,7 +87,7 @@ describe("findPrimaryKey", () => {
 	});
 
 	test("returns an empty array when the primary key of a table is not found", () => {
-		const schema = migrationSchemaFactory({
+		const schema = schemaMigratonInfoFactory({
 			primaryKey: {
 				books: {},
 			},
@@ -96,7 +96,7 @@ describe("findPrimaryKey", () => {
 	});
 
 	test("returns an empty array the table is not found", () => {
-		const schema = migrationSchemaFactory({
+		const schema = schemaMigratonInfoFactory({
 			primaryKey: {
 				books: {},
 			},
@@ -105,7 +105,7 @@ describe("findPrimaryKey", () => {
 	});
 
 	test("returns an empty array on malformed schema", () => {
-		const schema = migrationSchemaFactory({
+		const schema = schemaMigratonInfoFactory({
 			primaryKey: {
 				books: {
 					books_yount_pk: "this is not a definition",
@@ -118,7 +118,7 @@ describe("findPrimaryKey", () => {
 
 describe("findForeignKeysTargetTables", () => {
 	test("returns the target table of a foreign key", () => {
-		const schema = migrationSchemaFactory({
+		const schema = schemaMigratonInfoFactory({
 			foreignKeyConstraints: {
 				books: {
 					books_author_id_authors_id_yount_fk:
@@ -132,7 +132,7 @@ describe("findForeignKeysTargetTables", () => {
 	});
 
 	test("returns the target tables of a foreign keys", () => {
-		const schema = migrationSchemaFactory({
+		const schema = schemaMigratonInfoFactory({
 			foreignKeyConstraints: {
 				books: {
 					books_author_id_authors_id_yount_fk:

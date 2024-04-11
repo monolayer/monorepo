@@ -1,5 +1,5 @@
 import microdiff, { type Difference } from "microdiff";
-import { type MigrationSchema } from "~/introspection/introspection.js";
+import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
 import type {
 	DbTableInfo,
 	LocalTableInfo,
@@ -25,9 +25,9 @@ interface Generator {
 	): Changeset | Changeset[] | undefined;
 }
 
-export function changeset(
-	local: MigrationSchema,
-	remote: MigrationSchema,
+export function schemaChangeset(
+	local: SchemaMigrationInfo,
+	remote: SchemaMigrationInfo,
 	schemaName = "public",
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
@@ -69,7 +69,10 @@ export function changeset(
 		.sort((a, b) => (a.priority || 1) - (b.priority || 1));
 }
 
-export function changesetDiff(local: MigrationSchema, remote: MigrationSchema) {
+export function changesetDiff(
+	local: SchemaMigrationInfo,
+	remote: SchemaMigrationInfo,
+) {
 	const diff = microdiff(remote, local);
 	const tableName = (diff: CreateTableDiff | DropTableTableDiff) =>
 		diff.path[1];

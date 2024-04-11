@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function extension(name: ContribExtension | (string & {})) {
+export function extension(name: ContribExtension) {
 	return new PgExtension(name);
 }
 
@@ -9,22 +9,15 @@ export class PgExtension {
 	 */
 	static info(extension: PgExtension) {
 		return {
-			name: extension.#name,
+			name: extension.name,
 		};
 	}
 
 	/**
 	 * @hidden
 	 */
-	#name: string;
-
-	/**
-	 * @hidden
-	 */
 	// eslint-disable-next-line @typescript-eslint/ban-types
-	constructor(name: ContribExtension | (string & {})) {
-		this.#name = name;
-	}
+	constructor(protected name: ContribExtension) {}
 }
 
 type ContribExtension =

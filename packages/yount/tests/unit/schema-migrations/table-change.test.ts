@@ -603,7 +603,6 @@ describe("Table change migrations", () => {
 		`.execute(context.kysely);
 
 		const dbSchema = schema({
-			extensions: [extension("moddatetime")],
 			tables: {
 				users: table({
 					columns: {
@@ -656,7 +655,10 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			connector: {
+				schemas: [dbSchema],
+				extensions: [extension("moddatetime")],
+			},
 			expected: expected,
 			down: "same",
 		});
@@ -701,7 +703,6 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 			`.execute(context.kysely);
 
 		const dbSchema = schema({
-			extensions: [extension("moddatetime")],
 			tables: {
 				users: table({
 					columns: {
@@ -746,7 +747,10 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			connector: {
+				schemas: [dbSchema],
+				extensions: [extension("moddatetime")],
+			},
 			expected: expected,
 			down: "same",
 		});

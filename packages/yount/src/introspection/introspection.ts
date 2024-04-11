@@ -7,12 +7,8 @@ import type {
 	TriggerInfo,
 	UniqueInfo,
 } from "~/migrations/migration-schema.js";
+import { dbExtensionInfo } from "~/schema/extension/introspection.js";
 import type { AnySchema } from "~/schema/schema.js";
-import {
-	dbExtensionInfo,
-	localExtensionInfo,
-	type ExtensionInfo,
-} from "../schema/extension/introspection.js";
 import {
 	dbColumnInfo,
 	localColumnInfoByTable,
@@ -52,11 +48,10 @@ import {
 
 export function localSchema(
 	schema: AnySchema,
-	remoteSchema: MigrationSchema,
+	remoteSchema: SchemaMigrationInfo,
 	camelCase: CamelCaseOptions = { enabled: false },
-): MigrationSchema {
+): SchemaMigrationInfo {
 	return {
-		extensions: localExtensionInfo(schema),
 		table: localColumnInfoByTable(schema, remoteSchema, camelCase),
 		index: localIndexInfoByTable(schema, camelCase),
 		foreignKeyConstraints: localForeignKeyConstraintInfo(schema, camelCase),
@@ -104,8 +99,6 @@ export async function remoteSchema(
 		tables,
 	);
 
-	const extensionInfo = await dbExtensionInfo(kysely, schemaName);
-
 	const triggerInfo = await dbTriggerInfo(kysely, schemaName, tables);
 
 	const enumInfo = await dbEnumInfo(kysely, schemaName);
@@ -116,8 +109,7 @@ export async function remoteSchema(
 		tables,
 	);
 
-	const migrationSchema: MigrationSchema = {
-		extensions: extensionInfo,
+	const migrationSchema: SchemaMigrationInfo = {
 		table: remoteColumnInfo,
 		index: remoteIndexInfo,
 		foreignKeyConstraints: remoteForeignKeyConstraintInfo,
@@ -128,6 +120,16 @@ export async function remoteSchema(
 		enums: enumInfo,
 	};
 	return migrationSchema;
+}
+
+export async function remoteExtensions(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	kysely: Kysely<any>,
+) {
+	const extensions = await dbExtensionInfo(kysely);
+	return {
+		extensions,
+	};
 }
 
 export type DbTableInfo = {
@@ -141,8 +143,8 @@ export type LocalTableInfo = {
 	table: TableColumnInfo;
 	index?: IndexInfo;
 };
-export type MigrationSchema = {
-	extensions: ExtensionInfo;
+
+export type SchemaMigrationInfo = {
 	table: TableColumnInfo;
 	index: IndexInfo;
 	foreignKeyConstraints: ForeignKeyInfo;

@@ -1,5 +1,5 @@
 import { Kysely } from "kysely";
-import { changeset } from "~/changeset/changeset.js";
+import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { localSchema, remoteSchema } from "~/introspection/introspection.js";
 import { createSchemaChangeset } from "~/schema/database_schemas/changeset.js";
@@ -15,7 +15,7 @@ export async function computeChangeset(
 	const schemaName = Schema.info(db).name || "public";
 	const remote = await remoteSchema(kysely, schemaName);
 	const local = localSchema(db, remote, camelCase ?? { enabled: false });
-	const cset = changeset(local, remote, schemaName);
+	const cset = schemaChangeset(local, remote, schemaName);
 	const schemaInDatabase = await schemaInDb(kysely, schemaName);
 	if (schemaInDatabase.length === 0) {
 		cset.unshift(createSchemaChangeset(schemaName));

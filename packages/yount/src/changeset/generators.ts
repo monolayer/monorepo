@@ -1,4 +1,3 @@
-import { extensionMigrationOpGenerator } from "../schema/extension/changeset.js";
 import { tableMigrationOpGenerator } from "../schema/table/changeset.js";
 import { columnMigrationOpGenerator } from "../schema/table/column/changeset.js";
 import { columnDataTypeMigrationOpGenerator } from "../schema/table/column/modify-changeset/data-type.js";
@@ -15,7 +14,6 @@ import { triggerMigrationOpGenerator } from "../schema/table/trigger/changeset.j
 import { enumMigrationOpGenerator } from "../schema/types/enum/changeset.js";
 
 export const migrationOpGenerators = [
-	extensionMigrationOpGenerator,
 	tableMigrationOpGenerator,
 	columnMigrationOpGenerator,
 	columnDataTypeMigrationOpGenerator,
