@@ -3,33 +3,30 @@ import { expect } from "vitest";
 import { generateChangesetMigration } from "~/programs/generate-changeset-migration.js";
 import { migrateDown as migrateDownProgram } from "~/programs/migrate-down.js";
 import { migrate } from "~/programs/migrate.js";
-
-import type { CamelCaseOptions } from "~/configuration.js";
-import type { AnySchema } from "~/schema/schema.js";
 import { DbClients } from "~/services/dbClients.js";
 import type { DbContext } from "~tests/setup/kysely.js";
-import { newLayers } from "./layers.js";
+import { newLayers, type EnvironmentLessConnector } from "./layers.js";
 import { programWithErrorCause } from "./run-program.js";
 
 export async function testChangesetAndMigrations({
 	context,
-	schemas,
+	connector,
 	expected,
 	down,
-	useCamelCase = { enabled: false },
 }: {
 	context: DbContext;
-	schemas: AnySchema[];
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expected: any[];
 	down: "same" | "reverse" | "empty";
-	useCamelCase?: CamelCaseOptions;
+	connector: EnvironmentLessConnector;
 }) {
+	if (connector.camelCasePlugin === undefined) {
+		connector.camelCasePlugin = { enabled: false };
+	}
 	const result = await runGenerateChangesetMigration(
 		context.dbName,
 		context.folder,
-		schemas,
-		useCamelCase,
+		connector,
 	);
 
 	expect(result).toEqual(expected);
@@ -37,24 +34,21 @@ export async function testChangesetAndMigrations({
 	const migrationResult = await runMigrate(
 		context.dbName,
 		context.folder,
-		schemas,
-		useCamelCase,
+		connector,
 	);
 	expect(migrationResult).toBe(true);
 
 	const afterUpCs = await runGenerateChangesetMigration(
 		context.dbName,
 		context.folder,
-		schemas,
-		useCamelCase,
+		connector,
 	);
 	expect(afterUpCs).toEqual([]);
 
 	const migrateDownResult = await runMigrateDown(
 		context.dbName,
 		context.folder,
-		schemas,
-		useCamelCase,
+		connector,
 	);
 	expect(migrateDownResult).toBe(true);
 
@@ -63,8 +57,7 @@ export async function testChangesetAndMigrations({
 			const afterDownCs = await runGenerateChangesetMigration(
 				context.dbName,
 				context.folder,
-				schemas,
-				useCamelCase,
+				connector,
 			);
 			expect(afterDownCs).toEqual(
 				result
@@ -77,8 +70,7 @@ export async function testChangesetAndMigrations({
 			const afterDownCs = await runGenerateChangesetMigration(
 				context.dbName,
 				context.folder,
-				schemas,
-				useCamelCase,
+				connector,
 			);
 			expect(afterDownCs).toEqual(
 				result.filter((changeset) => changeset.type !== "createSchema"),
@@ -89,8 +81,7 @@ export async function testChangesetAndMigrations({
 			const afterDownCs = await runGenerateChangesetMigration(
 				context.dbName,
 				context.folder,
-				schemas,
-				useCamelCase,
+				connector,
 			);
 			expect(afterDownCs).toEqual([]);
 			break;
@@ -101,15 +92,14 @@ export async function testChangesetAndMigrations({
 async function runGenerateChangesetMigration(
 	dbName: string,
 	folder: string,
-	schemas: AnySchema[],
-	useCamelCase = { enabled: false },
+	connector: EnvironmentLessConnector,
 ) {
 	return Effect.runPromise(
 		Effect.provide(
 			programWithErrorCause(generateChangesetMigration()).pipe(
 				Effect.tap(() => cleanup()),
 			),
-			newLayers(dbName, folder, schemas, useCamelCase),
+			newLayers(dbName, folder, connector),
 		),
 	);
 }
@@ -125,13 +115,12 @@ function cleanup() {
 async function runMigrate(
 	dbName: string,
 	folder: string,
-	schemas: AnySchema[],
-	useCamelCase = { enabled: false },
+	connector: EnvironmentLessConnector,
 ) {
 	return Effect.runPromise(
 		Effect.provide(
 			programWithErrorCause(migrate()).pipe(Effect.tap(() => cleanup())),
-			newLayers(dbName, folder, schemas, useCamelCase),
+			newLayers(dbName, folder, connector),
 		),
 	);
 }
@@ -139,15 +128,14 @@ async function runMigrate(
 async function runMigrateDown(
 	dbName: string,
 	folder: string,
-	schemas: AnySchema[],
-	useCamelCase = { enabled: false },
+	connector: EnvironmentLessConnector,
 ) {
 	return Effect.runPromise(
 		Effect.provide(
 			programWithErrorCause(migrateDownProgram()).pipe(
 				Effect.tap(() => cleanup()),
 			),
-			newLayers(dbName, folder, schemas, useCamelCase),
+			newLayers(dbName, folder, connector),
 		),
 	);
 }

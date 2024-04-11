@@ -91,7 +91,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -172,7 +172,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -223,7 +223,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "empty",
 		});
@@ -354,7 +354,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema, anotherDbSchema],
+			connector: { schemas: [dbSchema, anotherDbSchema] },
 			expected,
 			down: "same",
 		});

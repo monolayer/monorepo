@@ -76,7 +76,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "reverse",
 		});
@@ -231,7 +231,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -336,7 +336,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -421,7 +421,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -528,7 +528,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -599,7 +599,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -707,7 +707,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -778,7 +778,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -879,7 +879,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -1043,7 +1043,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});

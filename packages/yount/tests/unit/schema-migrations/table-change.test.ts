@@ -97,7 +97,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 		});
@@ -178,7 +178,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -226,7 +226,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -286,7 +286,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -338,7 +338,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -394,7 +394,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -464,7 +464,7 @@ describe("Table change migrations", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -566,7 +566,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -656,7 +656,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 		});
@@ -746,7 +746,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 		});

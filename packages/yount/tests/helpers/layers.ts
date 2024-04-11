@@ -11,6 +11,7 @@ import fs from "node:fs/promises";
 import path from "path";
 import pg from "pg";
 import { env } from "process";
+import type { Connector } from "~/configuration.js";
 import type { AnySchema } from "~/schema/schema.js";
 import { DbClients, dbClientsLayer } from "~/services/dbClients.js";
 import {
@@ -153,19 +154,34 @@ function mockedDevEnvironmentLayer(
 	);
 }
 
+export type EnvironmentLessConnector = Omit<Connector, "environments">;
+
 export function newLayers(
 	databaseName: string,
 	migrationFolder: string,
-	schemas: AnySchema[],
-	useCamelCase = { enabled: false },
+	connector: EnvironmentLessConnector,
 ) {
-	return mockedMigratorLayer(databaseName, migrationFolder, useCamelCase).pipe(
-		Layer.provideMerge(mockedDbClientsLayer(databaseName, useCamelCase)),
+	return mockedMigratorLayer(
+		databaseName,
+		migrationFolder,
+		connector.camelCasePlugin,
+	).pipe(
 		Layer.provideMerge(
-			mockedEnvironmentLayer(migrationFolder, schemas, useCamelCase),
+			mockedDbClientsLayer(databaseName, connector.camelCasePlugin),
 		),
 		Layer.provideMerge(
-			mockedDevEnvironmentLayer(migrationFolder, schemas, useCamelCase),
+			mockedEnvironmentLayer(
+				migrationFolder,
+				connector.schemas,
+				connector.camelCasePlugin,
+			),
+		),
+		Layer.provideMerge(
+			mockedDevEnvironmentLayer(
+				migrationFolder,
+				connector.schemas,
+				connector.camelCasePlugin,
+			),
 		),
 	);
 }

@@ -125,7 +125,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -223,7 +223,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "reverse",
 		});
@@ -306,7 +306,7 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 
 		await testChangesetAndMigrations({
 			context,
-			schemas: [dbSchema],
+			connector: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
