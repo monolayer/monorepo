@@ -5,6 +5,7 @@ import pg from "pg";
 import pgConnectionString from "pg-connection-string";
 import { env } from "process";
 import { Writable, type WritableOptions } from "stream";
+import { dbExtensionInfo } from "~/schema/extension/introspection.js";
 import { Schema } from "~/schema/schema.js";
 import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
@@ -24,27 +25,30 @@ export function dumpDatabaseStructure() {
 						environment.name,
 						environment.folder,
 					),
+					installedExtensions(),
 				]).pipe(
-					Effect.flatMap(([searchPath, database, dumpPath]) =>
-						Effect.succeed(true).pipe(
-							Effect.tap(() => setPgDumpEnv(environment.connectorConfig)),
-							Effect.tap(() =>
-								dumpStructure(
-									database,
-									dumpPath,
-									environment.connector.schemas.map(
-										(schema) => Schema.info(schema).name || "public",
+					Effect.flatMap(
+						([searchPath, database, dumpPath, installedExtensions]) =>
+							Effect.succeed(true).pipe(
+								Effect.tap(() => setPgDumpEnv(environment.connectorConfig)),
+								Effect.tap(() =>
+									dumpStructure(
+										database,
+										dumpPath,
+										environment.connector.schemas.map(
+											(schema) => Schema.info(schema).name || "public",
+										),
+										installedExtensions,
 									),
 								),
-							),
-							Effect.tap(() =>
-								appendFileSync(
-									dumpPath,
-									`SET search_path TO ${searchPath};\n\n`,
+								Effect.tap(() =>
+									appendFileSync(
+										dumpPath,
+										`SET search_path TO ${searchPath};\n\n`,
+									),
 								),
+								Effect.tap(() => appendMigrationData(database, dumpPath)),
 							),
-							Effect.tap(() => appendMigrationData(database, dumpPath)),
-						),
 					),
 					Effect.flatMap(() => Effect.succeed(true)),
 				),
@@ -73,6 +77,17 @@ function appendMigrationData(database: string, dumpPath: string) {
 	);
 }
 
+function installedExtensions() {
+	return DbClients.pipe(
+		Effect.flatMap((dbClients) =>
+			Effect.tryPromise(() =>
+				dbExtensionInfo(dbClients.developmentEnvironment.kyselyNoCamelCase),
+			),
+		),
+		Effect.flatMap((extensions) => Effect.succeed(Object.keys(extensions))),
+	);
+}
+
 function setPgDumpEnv(environmentConfig: pg.ClientConfig & pg.PoolConfig) {
 	const parsedConfig =
 		environmentConfig.connectionString !== undefined
@@ -90,13 +105,19 @@ function dumpStructure(
 	database: string,
 	dumpPath: string,
 	schemaNames: string[],
+	installedExtensions: string[],
 ) {
 	const schemaArgs = schemaNames.map((schema) => `--schema=${schema}`);
+	const extensionArgs = installedExtensions.map(
+		(extension) => `--extension=${extension}`,
+	);
+
 	const args = [
 		"--schema-only",
 		"--no-privileges",
 		"--no-owner",
 		...schemaArgs,
+		...extensionArgs,
 		`${database}`,
 	];
 
