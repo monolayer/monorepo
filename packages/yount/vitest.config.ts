@@ -9,7 +9,7 @@ export default defineConfig({
 			reporter: ["html", "json"],
 			exclude: ["**/tmp/**", "**/tests/**", "**/docs/**"],
 		},
-		setupFiles: ["tests/setup.ts"],
+		setupFiles: ["tests/__setup__/setup.ts"],
 		reporters: ["verbose"],
 	},
 	server: {

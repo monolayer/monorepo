@@ -126,8 +126,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
         working-directory: ./packages/yount
-      - name: Run test:unit
-        run: npm run test:unit
+      - name: Run tests
+        run: npm run test
         working-directory: ./packages/yount
         env:
           POSTGRES_HOST: localhost
@@ -177,8 +177,8 @@ jobs:
       - name: Install zod
         run: npm install --save-exact zod@${{ matrix.zod_version }}
         working-directory: ./packages/yount
-      - name: Run test:unit
-        run: npm run test:unit
+      - name: Run Tests
+        run: npm run test
         working-directory: ./packages/yount
         env:
           POSTGRES_HOST: localhost
