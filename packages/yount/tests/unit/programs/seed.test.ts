@@ -41,6 +41,42 @@ describe("seed", () => {
 		expect(result).toStrictEqual(expected);
 	});
 
+	test<ProgramContext>("seeds database with seed file", async (context) => {
+		await context.migrator.migrateToLatest();
+
+		writeFileSync(
+			path.join(context.folder, "db", "anotherSeed.ts"),
+			anotherSeedFile,
+		);
+
+		await Effect.runPromise(
+			Effect.provide(
+				programWithErrorCause(seed({ seedFile: "anotherSeed.ts" })),
+				layers,
+			),
+		);
+
+		await Effect.runPromise(
+			Effect.provide(
+				programWithErrorCause(seed({ seedFile: "anotherSeed.ts" })),
+				layers,
+			),
+		);
+
+		const result = await context.kysely
+			.selectFrom("regulus_mint")
+			.select("name")
+			.execute();
+
+		const expected = [
+			{ name: "test1" },
+			{ name: "test2" },
+			{ name: "test1" },
+			{ name: "test2" },
+		];
+		expect(result).toStrictEqual(expected);
+	});
+
 	test<ProgramContext>("seeds database with replant", async (context) => {
 		await context.migrator.migrateToLatest();
 
@@ -110,6 +146,17 @@ export async function seed(db: Kysely<any>) {
 	await db
 		.insertInto("regulus_mint")
 		.values([{ name: "test1" }])
+		.execute();
+}
+`;
+
+const anotherSeedFile = `import type { Kysely } from "kysely";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function seed(db: Kysely<any>) {
+	await db
+		.insertInto("regulus_mint")
+		.values([{ name: "test1" }, { name: "test2" }])
 		.execute();
 }
 `;

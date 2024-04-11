@@ -13,22 +13,29 @@ import { localPendingMigrations } from "./local-pending-migrations.js";
 import { schemaChangeset } from "./schema-changeset.js";
 import { spinnerTask } from "./spinner-task.js";
 
-export function seed(options: {
+type SeedOptions = {
 	disableWarnings?: boolean;
 	replant?: boolean;
-}) {
+	seedFile?: string;
+};
+
+export function seed({
+	disableWarnings,
+	replant,
+	seedFile = "seed.ts",
+}: SeedOptions) {
 	return Effect.succeed(true)
 		.pipe(
 			Effect.map(() => {
 				p.log.message(
-					`${options.replant ? "Truncate tables and seed database" : "Seed Database"}`,
+					`${replant ? "Truncate tables and seed database" : "Seed Database"}`,
 				);
 			}),
 			Effect.tap(() => checkPendingMigrations()),
 			Effect.tap(() => checkPendingSchemaChanges()),
-			Effect.tap(() => checkSeederFunction()),
+			Effect.tap(() => checkSeederFunction(seedFile)),
 			Effect.tap(() =>
-				Effect.if(!!options.replant && !options.disableWarnings, {
+				Effect.if(!!replant && !disableWarnings, {
 					onTrue: replantWarning(),
 					onFalse: Effect.unit,
 				}),
@@ -36,12 +43,12 @@ export function seed(options: {
 		)
 		.pipe(
 			Effect.tap(() =>
-				Effect.if(!!options.replant, {
+				Effect.if(!!replant, {
 					onTrue: truncateAllTables(),
 					onFalse: Effect.unit,
 				}),
 			),
-			Effect.tap(() => seedDatabase()),
+			Effect.tap(() => seedDatabase(seedFile)),
 		);
 }
 
@@ -78,7 +85,7 @@ function checkPendingSchemaChanges() {
 	});
 }
 
-function checkSeederFunction() {
+function checkSeederFunction(seedFile: string) {
 	return checkWithFail({
 		name: "Check seeder function",
 		nextSteps: `1) Check that a seeder function is exported in your seeder.ts file.
@@ -88,7 +95,7 @@ function checkSeederFunction() {
 		callback: () =>
 			Effect.succeed(true).pipe(
 				Effect.flatMap(() =>
-					importSeedFunction().pipe(
+					importSeedFunction(seedFile).pipe(
 						Effect.catchTags({
 							UndefinedSeedFunction: () => Effect.succeed(undefined),
 						}),
@@ -139,13 +146,13 @@ export class UndefinedSeedFunction extends TaggedClass(
 	"UndefinedSeedFunction",
 ) {}
 
-export function importSeedFunction() {
+export function importSeedFunction(seedFile: string) {
 	return Environment.pipe(
 		Effect.flatMap((environment) =>
 			Effect.tryPromise(async () => {
 				try {
 					const moduleImport: SeedImport = await import(
-						path.join(process.cwd(), environment.folder, "seed.ts")
+						path.join(process.cwd(), environment.folder, seedFile)
 					);
 					if (moduleImport.seed !== undefined) {
 						return moduleImport.seed;
@@ -164,11 +171,11 @@ export function importSeedFunction() {
 	);
 }
 
-function seedDatabase() {
+function seedDatabase(seedFile: string) {
 	return DbClients.pipe(
 		Effect.flatMap((dbClient) =>
 			spinnerTask(`Seed ${dbClient.currentEnvironment.databaseName}`, () =>
-				importSeedFunction().pipe(
+				importSeedFunction(seedFile).pipe(
 					Effect.flatMap((seedImport) =>
 						Effect.tryPromise(() =>
 							seedImport(dbClient.currentEnvironment.kysely),

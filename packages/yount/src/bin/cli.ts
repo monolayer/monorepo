@@ -151,9 +151,14 @@ async function main() {
 		)
 		.option("-r, --replant", "Truncate tables before seeding")
 		.option("-d, --disable-warnings", "disable truncation warnings")
+		.option("-f, --file <seed-file-name>", "seed file", "seed.ts")
 		.action(async (opts) => {
 			await cliAction("yount seed", opts, [
-				seed({ replant: opts.replant, disableWarnings: opts.disableWarnings }),
+				seed({
+					replant: opts.replant,
+					disableWarnings: opts.disableWarnings,
+					seedFile: opts.file,
+				}),
 			]);
 		});
 
