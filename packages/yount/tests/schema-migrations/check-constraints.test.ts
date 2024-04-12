@@ -62,13 +62,21 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("books")',
-						'addCheckConstraint("e37c55a5_yount_chk", sql`"id" < 50000`)',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("books")
+    .addCheckConstraint("e37c55a5_yount_chk", sql\`"id" < 50000\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
 					],
 					[
 						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "public"."books" IS \'e37c55a5\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "e37c55a5_yount_chk"`',
 						"execute(db);",
 					],
 				],
@@ -122,13 +130,21 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("books")',
-						'addCheckConstraint("918b4271_yount_chk", sql`"id" > 50`)',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("books")
+    .addCheckConstraint("918b4271_yount_chk", sql\`"id" > 50\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
 					],
 					[
 						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "public"."books" IS \'918b4271\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "918b4271_yount_chk"`',
 						"execute(db);",
 					],
 				],
@@ -147,13 +163,21 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("books")',
-						'addCheckConstraint("e37c55a5_yount_chk", sql`"id" < 50000`)',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("books")
+    .addCheckConstraint("e37c55a5_yount_chk", sql\`"id" < 50000\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
 					],
 					[
 						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "public"."books" IS \'e37c55a5\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "e37c55a5_yount_chk"`',
 						"execute(db);",
 					],
 				],
@@ -232,11 +256,15 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "e37c55a5_yount_chk" CHECK ((id < 50000))`',
+						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "e37c55a5_yount_chk" CHECK ((id < 50000)) NOT VALID`',
 						"execute(db);",
 					],
 					[
 						'await sql`COMMENT ON CONSTRAINT "e37c55a5_yount_chk" ON "public"."books" IS \'e37c55a5\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "e37c55a5_yount_chk"`',
 						"execute(db);",
 					],
 				],
@@ -293,11 +321,15 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "918b4271_yount_chk" CHECK ((id < 50000))`',
+						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "918b4271_yount_chk" CHECK ((id < 50000)) NOT VALID`',
 						"execute(db);",
 					],
 					[
 						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "public"."books" IS \'918b4271\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "918b4271_yount_chk"`',
 						"execute(db);",
 					],
 				],
@@ -362,13 +394,21 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addCheckConstraint("918b4271_yount_chk", sql`"id" > 50`)',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addCheckConstraint("918b4271_yount_chk", sql\`"id" > 50\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
 					],
 					[
 						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "public"."users" IS \'918b4271\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "918b4271_yount_chk"`',
 						"execute(db);",
 					],
 				],
@@ -409,13 +449,21 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("users").schema',
-						'alterTable("users")',
-						'addCheckConstraint("918b4271_yount_chk", sql`"id" > 50`)',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("users")
+    .schema.alterTable("users")
+    .addCheckConstraint("918b4271_yount_chk", sql\`"id" > 50\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
 					],
 					[
 						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "users"."users" IS \'918b4271\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "users"."users" VALIDATE CONSTRAINT "918b4271_yount_chk"`',
 						"execute(db);",
 					],
 				],

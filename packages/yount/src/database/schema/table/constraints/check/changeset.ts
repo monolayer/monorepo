@@ -81,23 +81,19 @@ function createFirstCheckMigration(
 					priority: MigrationOpPriority.ConstraintCreate,
 					tableName: tableName,
 					type: ChangeSetType.CreateConstraint,
-					up: [
-						executeKyselySchemaStatement(
-							schemaName,
-							`alterTable("${tableName}")`,
-							`addCheckConstraint("${checkName}", sql\`${check[1]}\`)`,
-						),
-						executeKyselyDbStatement(
-							`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
-						),
-					],
+					up: addCheckWithSchemaStatements(
+						schemaName,
+						tableName,
+						checkName,
+						check,
+					),
 					down: addedTables.includes(tableName)
 						? [[]]
 						: [
-								executeKyselySchemaStatement(
+								dropCheckKyselySchemaStatement(
 									schemaName,
-									`alterTable("${tableName}")`,
-									`dropConstraint("${checkName}")`,
+									tableName,
+									checkName,
 								),
 							],
 				};
@@ -127,20 +123,18 @@ function dropAllChecksMigration(
 					up: droppedTables.includes(tableName)
 						? [[]]
 						: [
-								executeKyselySchemaStatement(
+								dropCheckKyselySchemaStatement(
 									schemaName,
-									`alterTable("${tableName}")`,
-									`dropConstraint("${checkName}")`,
+									tableName,
+									checkName,
 								),
 							],
-					down: [
-						executeKyselyDbStatement(
-							`ALTER TABLE "${schemaName}"."${tableName}" ADD CONSTRAINT "${checkName}" ${check[1]}`,
-						),
-						executeKyselyDbStatement(
-							`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
-						),
-					],
+					down: addCheckWithDbStatements(
+						schemaName,
+						tableName,
+						checkName,
+						check,
+					),
 				};
 				return changeSet;
 			}
@@ -167,27 +161,13 @@ function createCheckMigration(diff: CreateCheck, schemaName: string) {
 	const tableName = diff.path[1];
 	const checkName = diff.path[2];
 	const check = diff.value.split(":");
+
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.ConstraintCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
-		up: [
-			executeKyselySchemaStatement(
-				schemaName,
-				`alterTable("${tableName}")`,
-				`addCheckConstraint("${checkName}", sql\`${check[1]}\`)`,
-			),
-			executeKyselyDbStatement(
-				`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
-			),
-		],
-		down: [
-			executeKyselySchemaStatement(
-				schemaName,
-				`alterTable("${tableName}")`,
-				`dropConstraint("${checkName}")`,
-			),
-		],
+		up: addCheckWithSchemaStatements(schemaName, tableName, checkName, check),
+		down: [dropCheckKyselySchemaStatement(schemaName, tableName, checkName)],
 	};
 	return changeSet;
 }
@@ -215,21 +195,67 @@ function dropCheckMigration(diff: DropCheck, schemaName: string) {
 		priority: MigrationOpPriority.ConstraintDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropConstraint,
-		up: [
-			executeKyselySchemaStatement(
-				schemaName,
-				`alterTable("${tableName}")`,
-				`dropConstraint("${checkName}")`,
-			),
-		],
-		down: [
-			executeKyselyDbStatement(
-				`ALTER TABLE "${schemaName}"."${tableName}" ADD CONSTRAINT "${checkName}" ${check[1]}`,
-			),
-			executeKyselyDbStatement(
-				`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
-			),
-		],
+		up: [dropCheckKyselySchemaStatement(schemaName, tableName, checkName)],
+		down: addCheckWithDbStatements(schemaName, tableName, checkName, check),
 	};
 	return changeSet;
+}
+
+function dropCheckKyselySchemaStatement(
+	schemaName: string,
+	tableName: string,
+	checkName: string,
+) {
+	return executeKyselySchemaStatement(
+		schemaName,
+		`alterTable("${tableName}")`,
+		`dropConstraint("${checkName}")`,
+	);
+}
+
+function addCheckWithDbStatements(
+	schemaName: string,
+	tableName: string,
+	checkName: string,
+	check: string[],
+) {
+	return [
+		executeKyselyDbStatement(
+			`ALTER TABLE "${schemaName}"."${tableName}" ADD CONSTRAINT "${checkName}" ${check[1]} NOT VALID`,
+		),
+		executeKyselyDbStatement(
+			`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
+		),
+		executeKyselyDbStatement(
+			`ALTER TABLE "${schemaName}"."${tableName}" VALIDATE CONSTRAINT "${checkName}"`,
+		),
+	];
+}
+
+function addCheckWithSchemaStatements(
+	schemaName: string,
+	tableName: string,
+	checkName: string,
+	check: string[],
+) {
+	return [
+		[
+			[
+				`await sql\`\${sql.raw(`,
+				`  db`,
+				`    .withSchema("${schemaName}")`,
+				`    .schema.alterTable("${tableName}")`,
+				`    .addCheckConstraint("${checkName}", sql\`${check[1]}\`)`,
+				`    .compile()`,
+				`    .sql.concat(" not valid")`,
+				`)}\`.execute(db);`,
+			].join("\n"),
+		],
+		executeKyselyDbStatement(
+			`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
+		),
+		executeKyselyDbStatement(
+			`ALTER TABLE "${schemaName}"."${tableName}" VALIDATE CONSTRAINT "${checkName}"`,
+		),
+	];
 }
