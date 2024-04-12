@@ -46,18 +46,6 @@ describe("schema definition", () => {
 	});
 });
 
-// test("with extensions", () => {
-// 	const dbSchema = schema({
-// 		extensions: [extension("pgcrypto"), extension("btree_gist")],
-// 		tables: {},
-// 	});
-
-// 	const extensions = Schema.info(dbSchema).extensions.map(
-// 		(ext) => PgExtension.info(ext).name,
-// 	);
-// 	expect(extensions).toStrictEqual(["pgcrypto", "btree_gist"]);
-// });
-
 test("with enumerated types", () => {
 	const status = enumType("status", ["online", "offline"]);
 	const users = table({
