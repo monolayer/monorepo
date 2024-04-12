@@ -90,6 +90,10 @@ export {
 	type PgUuid,
 } from "./database/schema/table/column/data-types/uuid.js";
 export {
+	check,
+	type PgCheck,
+} from "./database/schema/table/constraints/check/check.js";
+export {
 	foreignKey,
 	type PgForeignKey,
 } from "./database/schema/table/constraints/foreign-key/foreign-key.js";
