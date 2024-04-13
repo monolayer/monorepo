@@ -232,16 +232,16 @@ test("#schemaDBIndexInfoByTable", () => {
 	});
 	expect(localIndexInfoByTable(dbSchema)).toStrictEqual({
 		teams: {
-			teams_active_kntc_idx:
-				'78977616:create index "teams_active_kntc_idx" on "public"."teams" ("active")',
-			teams_id_kntc_idx:
-				'fb131185:create index "teams_id_kntc_idx" on "public"."teams" ("id")',
+			f252fc40_yount_idx:
+				'f252fc40:create index "f252fc40_yount_idx" on "public"."teams" ("active")',
+			"6e20f1ec_yount_idx":
+				'6e20f1ec:create index "6e20f1ec_yount_idx" on "public"."teams" ("id")',
 		},
 		users: {
-			users_email_id_kntc_idx:
-				'26467fdf:create index "users_email_id_kntc_idx" on "public"."users" ("email", "id")',
-			users_name_kntc_idx:
-				'30e5df04:create index "users_name_kntc_idx" on "public"."users" ("name")',
+			"1e44c535_yount_idx":
+				'1e44c535:create index "1e44c535_yount_idx" on "public"."users" ("email", "id")',
+			"83f9e13d_yount_idx":
+				'83f9e13d:create index "83f9e13d_yount_idx" on "public"."users" ("name")',
 		},
 	});
 });
@@ -548,12 +548,12 @@ describe("schema", () => {
 			},
 			index: {
 				books: {
-					books_name_kntc_idx:
-						'159d1dc2:create index "books_name_kntc_idx" on "public"."books" ("name")',
+					e9c0a68b_yount_idx:
+						'e9c0a68b:create index "e9c0a68b_yount_idx" on "public"."books" ("name")',
 				},
 				teams: {
-					teams_name_kntc_idx:
-						'17bc8f1f:create index "teams_name_kntc_idx" on "public"."teams" ("name")',
+					b7aa6cce_yount_idx:
+						'b7aa6cce:create index "b7aa6cce_yount_idx" on "public"."teams" ("name")',
 				},
 			},
 			foreignKeyConstraints: {
@@ -885,16 +885,16 @@ describe("schema", () => {
 			},
 			index: {
 				books: {
-					books_name_kntc_idx:
-						'159d1dc2:create index "books_name_kntc_idx" on "public"."books" ("name")',
+					e9c0a68b_yount_idx:
+						'e9c0a68b:create index "e9c0a68b_yount_idx" on "public"."books" ("name")',
 				},
 				new_books: {
-					new_books_name_kntc_idx:
-						'e0f0e9d4:create index "new_books_name_kntc_idx" on "public"."new_books" ("name")',
+					"80adf878_yount_idx":
+						'80adf878:create index "80adf878_yount_idx" on "public"."new_books" ("name")',
 				},
 				users: {
-					users_full_name_kntc_idx:
-						'3119e1dd:create index "users_full_name_kntc_idx" on "public"."users" ("full_name")',
+					"1ff7c491_yount_idx":
+						'1ff7c491:create index "1ff7c491_yount_idx" on "public"."users" ("full_name")',
 				},
 			},
 			foreignKeyConstraints: {
@@ -934,7 +934,6 @@ describe("schema", () => {
 						'"users_full_name_yount_pk" PRIMARY KEY ("full_name")',
 				},
 			},
-			// extensions: { btree_gin: true, cube: true },
 			triggers: {
 				users: {
 					foo_before_update_trg:
@@ -1290,16 +1289,16 @@ test("#localSchemaCamelCase", () => {
 		},
 		index: {
 			books: {
-				books_name_kntc_idx:
-					'159d1dc2:create index "books_name_kntc_idx" on "public"."books" ("name")',
+				e9c0a68b_yount_idx:
+					'e9c0a68b:create index "e9c0a68b_yount_idx" on "public"."books" ("name")',
 			},
 			new_books: {
-				new_books_name_kntc_idx:
-					'e0f0e9d4:create index "new_books_name_kntc_idx" on "public"."new_books" ("name")',
+				"80adf878_yount_idx":
+					'80adf878:create index "80adf878_yount_idx" on "public"."new_books" ("name")',
 			},
 			users: {
-				users_full_name_kntc_idx:
-					'3119e1dd:create index "users_full_name_kntc_idx" on "public"."users" ("full_name")',
+				"1ff7c491_yount_idx":
+					'1ff7c491:create index "1ff7c491_yount_idx" on "public"."users" ("full_name")',
 			},
 		},
 		foreignKeyConstraints: {

@@ -6,6 +6,7 @@ import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import {
 	indexOptions,
 	isExternalIndex,
+	type IndexOptions,
 	type PgIndex,
 } from "~/database/schema/table/index/index.js";
 import { tableInfo } from "~/introspection/helpers.js";
@@ -41,7 +42,7 @@ export async function dbIndexInfo(
 		.distinct()
 		.where("pg_class_2.relkind", "in", ["i", "I"])
 		.where("pg_index.indisprimary", "=", false)
-		.where("pg_class_2.relname", "~", "idx$")
+		.where("pg_class_2.relname", "~", "yount_idx$")
 		.where("pg_class.relname", "in", tableNames)
 		.where("pg_namespace.nspname", "=", databaseSchema)
 		.orderBy("pg_class_2.relname")
@@ -113,9 +114,48 @@ export function indexToInfo(
 	const transformedColumnNames = indexCompileArgs.columns.map((column) =>
 		toSnakeCase(column, camelCase),
 	);
-	const indexName = `${transformedTableName}_${transformedColumnNames.join(
-		"_",
-	)}_kntc_idx`;
+
+	const hash = hashValue(
+		buildIndex(
+			indexCompileArgs,
+			transformedTableName,
+			transformedColumnNames,
+			kysely,
+			schemaName,
+			"sample",
+		).compile().sql,
+	);
+
+	const indexName = `${hash}_yount_idx`;
+
+	const kyselyBuilder = buildIndex(
+		indexCompileArgs,
+		transformedTableName,
+		transformedColumnNames,
+		kysely,
+		schemaName,
+		indexName,
+	);
+	const compiledQuery = kyselyBuilder.compile().sql;
+
+	return {
+		[indexName]: `${hash}:${compiledQuery}`,
+	};
+}
+
+function buildIndex(
+	indexCompileArgs: IndexOptions,
+	transformedTableName: string,
+	transformedColumnNames: string[],
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	kysely: Kysely<any>,
+	schemaName = "public",
+	indexName?: string,
+) {
+	if (indexName === undefined) {
+		indexName = `${transformedColumnNames.join("_")}_yount_idx`;
+	}
+
 	let kyselyBuilder = kysely
 		.withSchema(schemaName)
 		.schema.createIndex(indexName)
@@ -149,11 +189,6 @@ export function indexToInfo(
 			);
 		}
 	}
-	const compiledQuery = kyselyBuilder.compile().sql;
-
-	return {
-		[indexName]: `${hashValue(compiledQuery)}:${compiledQuery}`,
-	};
+	return kyselyBuilder;
 }
-
 export type IndexInfo = Record<string, Record<string, string>>;

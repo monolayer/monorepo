@@ -24,14 +24,12 @@ export function indexMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	schemaName: string,
 ) {
+	console.dir(diff, { depth: null });
 	if (isCreateFirstIndex(diff)) {
 		return createFirstIndexMigration(diff, addedTables, schemaName);
 	}
 	if (isDropAllIndexes(diff)) {
 		return dropAllIndexesMigration(diff, droppedTables, schemaName);
-	}
-	if (isChangeIndex(diff)) {
-		return changeIndexMigration(diff, schemaName);
 	}
 	if (isCreateIndex(diff)) {
 		return createIndexMigration(diff, schemaName);
@@ -50,24 +48,6 @@ type CreateFirstIndexDiff = {
 function isCreateFirstIndex(test: Difference): test is CreateFirstIndexDiff {
 	return (
 		test.type === "CREATE" && test.path[0] === "index" && test.path.length === 2
-	);
-}
-
-type ChangeIndexDiff = {
-	type: "CHANGE";
-	path: ["index", string, string];
-	value: string;
-	oldValue: string;
-};
-
-function isChangeIndex(differece: Difference): differece is ChangeIndexDiff {
-	return (
-		differece.type === "CHANGE" &&
-		differece.path[0] === "index" &&
-		differece.path.length === 3 &&
-		typeof differece.value === "string" &&
-		typeof differece.oldValue === "string" &&
-		differece.value.split(":")[0] !== differece.oldValue.split(":")[0]
 	);
 }
 
@@ -154,34 +134,6 @@ function dropAllIndexesMigration(
 			return changeSet;
 		})
 		.filter((x): x is Changeset => x !== undefined);
-}
-
-function changeIndexMigration(diff: ChangeIndexDiff, schemaName: string) {
-	const tableName = diff.path[1];
-	const indexName = diff.path[2];
-	const oldIndex = diff.oldValue.split(":");
-	const newIndex = diff.value.split(":");
-	executeKyselySchemaStatement(schemaName, `dropIndex("${indexName}")`);
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.ChangeIndex,
-		tableName: tableName,
-		type: ChangeSetType.ChangeIndex,
-		up: [
-			executeKyselySchemaStatement(schemaName, `dropIndex("${indexName}")`),
-			executeKyselyDbStatement(`${newIndex[1]}`),
-			executeKyselyDbStatement(
-				`COMMENT ON INDEX "${schemaName}"."${indexName}" IS '${newIndex[0]}'`,
-			),
-		],
-		down: [
-			executeKyselySchemaStatement(schemaName, `dropIndex("${indexName}")`),
-			executeKyselyDbStatement(`${oldIndex[1]}`),
-			executeKyselyDbStatement(
-				`COMMENT ON INDEX "${schemaName}"."${indexName}" IS '${oldIndex[0]}'`,
-			),
-		],
-	};
-	return changeset;
 }
 
 type CreateIndex = {

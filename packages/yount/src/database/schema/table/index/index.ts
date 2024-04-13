@@ -6,7 +6,7 @@ import {
 	type SqlBool,
 } from "kysely";
 
-type IndexOptions = {
+export type IndexOptions = {
 	ifNotExists: boolean;
 	unique: boolean;
 	nullsNotDistinct: boolean;
