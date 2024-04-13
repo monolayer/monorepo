@@ -30,7 +30,7 @@ export function ColumnNameMigrationOpGenerator(
 
 type ColumnNameDifference = {
 	type: "CHANGE";
-	path: ["table", string, string, "columnName"];
+	path: ["table", string, "columns", string, "columnName"];
 	value: string;
 	oldValue: string;
 };
@@ -39,8 +39,9 @@ function isColumnName(test: Difference): test is ColumnNameDifference {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
-		test.path.length === 4 &&
-		test.path[3] === "columnName" &&
+		test.path.length === 5 &&
+		test.path[2] === "columns" &&
+		test.path[4] === "columnName" &&
 		typeof test.value === "string" &&
 		typeof test.oldValue === "string"
 	);
@@ -51,7 +52,7 @@ function columnNameMigrationOperation(
 	schemaName: string,
 ) {
 	const tableName = diff.path[1];
-	const columnName = diff.path[2];
+	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnName,
 		tableName: tableName,

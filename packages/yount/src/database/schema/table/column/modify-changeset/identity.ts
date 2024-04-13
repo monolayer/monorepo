@@ -34,14 +34,14 @@ export function columnIdentityMigrationOpGenerator(
 
 type IdentityAddDifference = {
 	type: "CHANGE";
-	path: ["table", string, string, "identity"];
+	path: ["table", string, "columns", string, "identity"];
 	value: NonNullable<ColumnInfo["identity"]>;
 	oldValue: null;
 };
 
 type IdentityDropDifference = {
 	type: "CHANGE";
-	path: ["table", string, string, "identity"];
+	path: ["table", string, "columns", string, "identity"];
 	value: null;
 	oldValue: NonNullable<ColumnInfo["identity"]>;
 };
@@ -50,8 +50,9 @@ function isColumnIdentityAdd(test: Difference): test is IdentityAddDifference {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
-		test.path.length === 4 &&
-		test.path[3] === "identity" &&
+		test.path.length === 5 &&
+		test.path[2] === "columns" &&
+		test.path[4] === "identity" &&
 		test.value !== null &&
 		test.oldValue === null
 	);
@@ -63,8 +64,9 @@ function isColumnIdentityDrop(
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
-		test.path.length === 4 &&
-		test.path[3] === "identity" &&
+		test.path.length === 5 &&
+		test.path[2] === "columns" &&
+		test.path[4] === "identity" &&
 		test.value === null &&
 		test.oldValue !== null
 	);
@@ -75,7 +77,7 @@ function columnIdentityAddMigrationOperation(
 	schemaName: string,
 ) {
 	const tableName = diff.path[1];
-	const columnName = diff.path[2];
+	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnIdentityAdd,
 		tableName: tableName,
@@ -106,7 +108,7 @@ function columnIdentityDropMigrationOperation(
 	schemaName: string,
 ) {
 	const tableName = diff.path[1];
-	const columnName = diff.path[2];
+	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnIdentityDrop,
 		tableName: tableName,

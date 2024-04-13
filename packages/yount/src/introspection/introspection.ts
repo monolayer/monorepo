@@ -12,7 +12,7 @@ import type {
 import {
 	dbColumnInfo,
 	localColumnInfoByTable,
-	type ColumnsInfo,
+	type TableInfo,
 } from "../database/schema/table/column/instrospection.js";
 import {
 	dbCheckConstraintInfo,
@@ -137,7 +137,7 @@ export type DbTableInfo = {
 	index?: IndexInfo;
 };
 
-export type TableColumnInfo = Record<string, ColumnsInfo>;
+export type TableColumnInfo = Record<string, TableInfo>;
 
 export type LocalTableInfo = {
 	table: TableColumnInfo;

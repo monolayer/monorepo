@@ -20,7 +20,7 @@ export async function dbColumnInfo(
 	const mapped = mapColumnsToTables(transformed);
 	for (const table of tableNames) {
 		if (mapped[table] === undefined) {
-			mapped[table] = {};
+			mapped[table] = { columns: {} };
 		}
 	}
 	return mapped;
@@ -284,20 +284,21 @@ export function transformDbColumnInfo(
 }
 
 export function mapColumnsToTables(columns: ColumnInfo[]) {
-	return columns.reduce<Record<string, ColumnsInfo>>((acc, curr) => {
+	return columns.reduce<Record<string, TableInfo>>((acc, curr) => {
 		if (curr.tableName !== null && curr.columnName !== null) {
 			const currentTable = acc[curr.tableName];
 			if (currentTable === undefined) {
 				acc[curr.tableName] = {
-					[curr.columnName as string]: curr,
+					columns: {
+						[curr.columnName as string]: curr,
+					},
 				};
 			} else {
-				const columnInfo = {
-					[curr.columnName as string]: curr,
-				};
 				acc[curr.tableName] = {
-					...currentTable,
-					...columnInfo,
+					columns: {
+						...currentTable.columns,
+						[curr.columnName as string]: curr,
+					},
 				};
 			}
 		}
@@ -311,11 +312,11 @@ export function localColumnInfoByTable(
 	camelCase: CamelCaseOptions = { enabled: false },
 ) {
 	const tables = Schema.info(schema).tables ?? {};
-	return Object.entries(tables).reduce<Record<string, ColumnsInfo>>(
+	return Object.entries(tables).reduce<Record<string, TableInfo>>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const columns = Object.entries(tableInfo(tableDefinition).schema.columns);
-			acc[transformedTableName] = columns.reduce<ColumnsInfo>(
+			acc[transformedTableName] = columns.reduce<TableInfo>(
 				(columnAcc, [columnName, column]) => {
 					const columnInfo = schemaColumnInfo(
 						transformedTableName,
@@ -356,10 +357,10 @@ export function localColumnInfoByTable(
 							columnInfo.isNullable = false;
 						}
 					}
-					columnAcc[columnKey] = columnInfo;
+					columnAcc.columns[columnKey] = columnInfo;
 					return columnAcc;
 				},
-				{},
+				{ columns: {} },
 			);
 			return acc;
 		},
@@ -391,4 +392,6 @@ export function schemaColumnInfo(
 		enum: meta.enum,
 	};
 }
-export type ColumnsInfo = Record<string, ColumnInfo>;
+export type TableInfo = {
+	columns: Record<string, ColumnInfo>;
+};

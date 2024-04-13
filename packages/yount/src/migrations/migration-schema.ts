@@ -6,7 +6,7 @@ import { tableInfo } from "~/introspection/helpers.js";
 import { SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { toSnakeCase } from "../changeset/helpers.js";
 import { Schema, type AnySchema } from "../database/schema/schema.js";
-import type { ColumnsInfo } from "../database/schema/table/column/instrospection.js";
+import type { TableInfo } from "../database/schema/table/column/instrospection.js";
 
 type TableName = string;
 type Name = string;
@@ -17,10 +17,10 @@ export type UniqueInfo = Record<TableName, Record<Name, Definition>>;
 export type TriggerInfo = Record<TableName, Record<Name, Definition>>;
 export type CheckInfo = Record<TableName, Record<Name, Definition>>;
 
-export function findColumn(columName: string, schemaTable?: ColumnsInfo) {
+export function findColumn(columName: string, schemaTable?: TableInfo) {
 	const table = schemaTable;
-	if (table !== undefined && table[columName] !== undefined) {
-		return table[columName];
+	if (table !== undefined && table.columns[columName] !== undefined) {
+		return table.columns[columName];
 	}
 }
 
@@ -99,11 +99,8 @@ export function buildNodes(
 	return toposort(nodes).filter((node) => node !== undefined);
 }
 
-export function findColumnByNameInTable(
-	table: ColumnsInfo,
-	columnName: string,
-) {
-	const entries = Object.entries(table);
+export function findColumnByNameInTable(table: TableInfo, columnName: string) {
+	const entries = Object.entries(table.columns);
 	const column = entries.find(([, value]) => value.columnName === columnName);
 	if (column !== undefined) {
 		return column[1];

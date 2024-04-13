@@ -30,7 +30,7 @@ export function columnDataTypeMigrationOpGenerator(
 
 type ColumnDataTypeDifference = {
 	type: "CHANGE";
-	path: ["table", string, string, "dataType"];
+	path: ["table", string, "columns", string, "dataType"];
 	value: string | null;
 	oldValue: string | null;
 };
@@ -39,8 +39,9 @@ function isColumnDataType(test: Difference): test is ColumnDataTypeDifference {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
-		test.path.length === 4 &&
-		test.path[3] === "dataType"
+		test.path.length === 5 &&
+		test.path[2] === "columns" &&
+		test.path[4] === "dataType"
 	);
 }
 
@@ -49,7 +50,7 @@ function columnDatatypeMigrationOperation(
 	schemaName: string,
 ) {
 	const tableName = diff.path[1];
-	const columnName = diff.path[2];
+	const columnName = diff.path[3];
 	const newDataType = `sql\`${diff.value}\``;
 	const oldDataType = `sql\`${diff.oldValue}\``;
 

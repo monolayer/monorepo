@@ -16,11 +16,13 @@ describe("findColumn", () => {
 		const schema = schemaMigratonInfoFactory({
 			table: {
 				books: {
-					id: columnInfoFactory({
-						tableName: "books",
-						columnName: "id",
-						dataType: "serial",
-					}),
+					columns: {
+						id: columnInfoFactory({
+							tableName: "books",
+							columnName: "id",
+							dataType: "serial",
+						}),
+					},
 				},
 			},
 		});
@@ -37,11 +39,13 @@ describe("findColumn", () => {
 		const schema = schemaMigratonInfoFactory({
 			table: {
 				books: {
-					id: columnInfoFactory({
-						tableName: "books",
-						columnName: "id",
-						dataType: "serial",
-					}),
+					columns: {
+						id: columnInfoFactory({
+							tableName: "books",
+							columnName: "id",
+							dataType: "serial",
+						}),
+					},
 				},
 			},
 		});

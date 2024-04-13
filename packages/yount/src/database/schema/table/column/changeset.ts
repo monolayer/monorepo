@@ -42,19 +42,22 @@ export function columnMigrationOpGenerator(
 
 type CreateColumnDiff = {
 	type: "CREATE";
-	path: ["table", string, string];
+	path: ["table", string, "column", string];
 	value: ColumnInfoDiff;
 };
 
 function isCreateColumn(test: Difference): test is CreateColumnDiff {
 	return (
-		test.type === "CREATE" && test.path.length === 3 && test.path[0] === "table"
+		test.type === "CREATE" &&
+		test.path.length === 4 &&
+		test.path[0] === "table" &&
+		test.path[2] === "columns"
 	);
 }
 
 function createColumnMigration(diff: CreateColumnDiff, schemaName: string) {
 	const tableName = diff.path[1];
-	const columnName = diff.path[2];
+	const columnName = diff.path[3];
 	const columnDef = diff.value;
 
 	const up = [
@@ -94,20 +97,23 @@ function createColumnMigration(diff: CreateColumnDiff, schemaName: string) {
 
 type DropColumnDiff = {
 	type: "REMOVE";
-	path: ["table", string, string];
+	path: ["table", string, "columns", string];
 	oldValue: ColumnInfoDiff;
 };
 
 function isDropColumn(test: Difference): test is DropColumnDiff {
 	return (
-		test.type === "REMOVE" && test.path.length === 3 && test.path[0] === "table"
+		test.type === "REMOVE" &&
+		test.path.length === 4 &&
+		test.path[0] === "table" &&
+		test.path[2] === "columns"
 	);
 }
 
 function dropColumnMigration(diff: DropColumnDiff, schemaName: string) {
 	const tableName = diff.path[1];
 	const columnDef = diff.oldValue;
-	const columnName = diff.path[2];
+	const columnName = diff.path[3];
 
 	const down = [
 		executeKyselySchemaStatement(

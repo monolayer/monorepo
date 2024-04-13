@@ -41,21 +41,21 @@ export function columnDefaultMigrationOpGenerator(
 
 type ColumnDefaultAddDifference = {
 	type: "CHANGE";
-	path: ["table", string, string, "defaultValue"];
+	path: ["table", string, "columns", string, "defaultValue"];
 	value: string;
 	oldValue: null;
 };
 
 type ColumnDefaultDropDifference = {
 	type: "CHANGE";
-	path: ["table", string, string, "defaultValue"];
+	path: ["table", string, "columns", string, "defaultValue"];
 	value: null;
 	oldValue: string;
 };
 
 type ColumnDefaultChangeDifference = {
 	type: "CHANGE";
-	path: ["table", string, string, "defaultValue"];
+	path: ["table", string, "columns", string, "defaultValue"];
 	value: string;
 	oldValue: string;
 };
@@ -66,8 +66,9 @@ function isColumnDefaultAddValue(
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
-		test.path.length === 4 &&
-		test.path[3] === "defaultValue" &&
+		test.path.length === 5 &&
+		test.path[2] === "columns" &&
+		test.path[4] === "defaultValue" &&
 		test.value !== null &&
 		test.oldValue === null
 	);
@@ -79,8 +80,9 @@ function isColumnDefaultDropValue(
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
-		test.path.length === 4 &&
-		test.path[3] === "defaultValue" &&
+		test.path.length === 5 &&
+		test.path[2] === "columns" &&
+		test.path[4] === "defaultValue" &&
 		test.value === null &&
 		test.oldValue !== null
 	);
@@ -92,8 +94,9 @@ function isColumnDefaultChangeValue(
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "table" &&
-		test.path.length === 4 &&
-		test.path[3] === "defaultValue" &&
+		test.path.length === 5 &&
+		test.path[2] === "columns" &&
+		test.path[4] === "defaultValue" &&
 		test.value !== null &&
 		test.oldValue !== null
 	);
@@ -104,7 +107,7 @@ function columnDefaultAddMigrationOperation(
 	schemaName: string,
 ) {
 	const tableName = diff.path[1];
-	const columnName = diff.path[2];
+	const columnName = diff.path[3];
 
 	const defaultValueAndHash = toValueAndHash(String(diff.value));
 
@@ -140,7 +143,7 @@ function columnDefaultDropMigrationOperation(
 	schemaName: string,
 ) {
 	const tableName = diff.path[1];
-	const columnName = diff.path[2];
+	const columnName = diff.path[3];
 
 	const defaultValueAndHash = toValueAndHash(String(diff.oldValue));
 
@@ -179,7 +182,7 @@ function columnDefaultChangeMigrationOperation(
 	schemaName: string,
 ) {
 	const tableName = diff.path[1];
-	const columnName = diff.path[2];
+	const columnName = diff.path[3];
 
 	const newDefaultValueAndHash = toValueAndHash(String(diff.value));
 	const oldDefaultValueAndHash = toValueAndHash(String(diff.oldValue));

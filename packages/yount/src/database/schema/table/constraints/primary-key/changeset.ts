@@ -290,7 +290,7 @@ function dropNotNullStatements(
 			const table = local.table[tableName];
 			if (table !== undefined) {
 				const tableColumn =
-					table[column] || findColumnByNameInTable(table, column);
+					table.columns[column] || findColumnByNameInTable(table, column);
 				if (tableColumn !== undefined) {
 					if (tableColumn.originalIsNullable === undefined) {
 						if (tableColumn.isNullable) {

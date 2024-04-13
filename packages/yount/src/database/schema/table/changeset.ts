@@ -42,7 +42,7 @@ export function tableMigrationOpGenerator(
 export type CreateTableDiff = {
 	type: "CREATE";
 	path: ["table", string];
-	value: ColumnsInfoDiff;
+	value: { columns: ColumnsInfoDiff };
 };
 
 export function isCreateTable(test: Difference): test is CreateTableDiff {
@@ -57,11 +57,11 @@ function createTableMigration(diff: CreateTableDiff, schemaName: string) {
 		executeKyselySchemaStatement(
 			schemaName,
 			`createTable("${tableName}")`,
-			...tableColumnsOps(diff.value),
+			...tableColumnsOps(diff.value.columns),
 		),
 	];
 
-	Object.entries(diff.value).flatMap(([, column]) => {
+	Object.entries(diff.value.columns).flatMap(([, column]) => {
 		if (column.defaultValue !== null) {
 			const valueAndHash = toValueAndHash(column.defaultValue);
 			up.push(
@@ -87,7 +87,7 @@ function createTableMigration(diff: CreateTableDiff, schemaName: string) {
 export type DropTableTableDiff = {
 	type: "REMOVE";
 	path: ["table", string];
-	oldValue: ColumnsInfoDiff;
+	oldValue: { columns: ColumnsInfoDiff };
 };
 
 export function isDropTable(test: Difference): test is DropTableTableDiff {
@@ -102,11 +102,11 @@ function dropTableMigration(diff: DropTableTableDiff, schemaName: string) {
 		executeKyselySchemaStatement(
 			schemaName,
 			`createTable("${tableName}")`,
-			...tableColumnsOps(diff.oldValue),
+			...tableColumnsOps(diff.oldValue.columns),
 		),
 	];
 
-	Object.entries(diff.oldValue).flatMap(([, column]) => {
+	Object.entries(diff.oldValue.columns).flatMap(([, column]) => {
 		if (column.defaultValue !== null) {
 			const valueAndHash = toValueAndHash(column.defaultValue);
 			down.push(
