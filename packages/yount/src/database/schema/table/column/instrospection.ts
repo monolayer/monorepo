@@ -323,9 +323,9 @@ export function localColumnInfoByTable(
 						column as TableColumn,
 					);
 					let columnKey = columnName;
-					const transformedColumnNname = toSnakeCase(columnName, camelCase);
-					columnInfo.columnName = transformedColumnNname;
-					columnKey = transformedColumnNname;
+					const transformedColumnName = toSnakeCase(columnName, camelCase);
+					columnInfo.columnName = transformedColumnName;
+					columnKey = transformedColumnName;
 					const pKey = findPrimaryKey(
 						transformedTableName,
 						remoteSchema.primaryKey,
