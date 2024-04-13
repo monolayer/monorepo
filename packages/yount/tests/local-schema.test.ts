@@ -1332,7 +1332,6 @@ test("#localSchemaCamelCase", () => {
 					'"users_full_name_yount_pk" PRIMARY KEY ("full_name")',
 			},
 		},
-		// extensions: { btree_gin: true, cube: true },
 		triggers: {
 			users: {
 				foo_before_update_trg:
