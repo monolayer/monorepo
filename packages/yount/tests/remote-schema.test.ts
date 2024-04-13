@@ -133,6 +133,7 @@ describe("#remoteSchema", () => {
 		const expectedSchema = {
 			table: {
 				remote_schema_users: {
+					name: "remote_schema_users",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -209,6 +210,7 @@ describe("#remoteSchema", () => {
 					},
 				},
 				remote_schema_books: {
+					name: "remote_schema_books",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -366,6 +368,7 @@ describe("#remoteSchema", () => {
 		const expectedSchema = {
 			table: {
 				remoteSchemaUsers: {
+					name: "remoteSchemaUsers",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -426,6 +429,7 @@ describe("#remoteSchema", () => {
 					},
 				},
 				remoteSchemaBooks: {
+					name: "remoteSchemaBooks",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -507,8 +511,12 @@ describe("#remoteSchema", () => {
 
 		const expectedSchema = {
 			table: {
-				schema_with_empty_tables_users: { columns: {} },
+				schema_with_empty_tables_users: {
+					name: "schema_with_empty_tables_users",
+					columns: {},
+				},
 				schema_with_empty_tables_books: {
+					name: "schema_with_empty_tables_books",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -755,6 +763,7 @@ describe("#remoteSchema", () => {
 		const expectedSchema = {
 			table: {
 				user_native_data_types_test: {
+					name: "user_native_data_types_test",
 					columns: {
 						bigint: {
 							characterMaximumLength: null,

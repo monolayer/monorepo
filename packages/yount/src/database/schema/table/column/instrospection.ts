@@ -20,7 +20,7 @@ export async function dbColumnInfo(
 	const mapped = mapColumnsToTables(transformed);
 	for (const table of tableNames) {
 		if (mapped[table] === undefined) {
-			mapped[table] = { columns: {} };
+			mapped[table] = { columns: {}, name: table };
 		}
 	}
 	return mapped;
@@ -289,12 +289,14 @@ export function mapColumnsToTables(columns: ColumnInfo[]) {
 			const currentTable = acc[curr.tableName];
 			if (currentTable === undefined) {
 				acc[curr.tableName] = {
+					name: curr.tableName,
 					columns: {
 						[curr.columnName as string]: curr,
 					},
 				};
 			} else {
 				acc[curr.tableName] = {
+					name: curr.tableName,
 					columns: {
 						...currentTable.columns,
 						[curr.columnName as string]: curr,
@@ -360,7 +362,7 @@ export function localColumnInfoByTable(
 					columnAcc.columns[columnKey] = columnInfo;
 					return columnAcc;
 				},
-				{ columns: {} },
+				{ columns: {}, name: transformedTableName },
 			);
 			return acc;
 		},
@@ -393,5 +395,7 @@ export function schemaColumnInfo(
 	};
 }
 export type TableInfo = {
+	name: string;
+	newName?: string;
 	columns: Record<string, ColumnInfo>;
 };

@@ -16,6 +16,7 @@ describe("findColumn", () => {
 		const schema = schemaMigratonInfoFactory({
 			table: {
 				books: {
+					name: "books",
 					columns: {
 						id: columnInfoFactory({
 							tableName: "books",
@@ -39,6 +40,7 @@ describe("findColumn", () => {
 		const schema = schemaMigratonInfoFactory({
 			table: {
 				books: {
+					name: "books",
 					columns: {
 						id: columnInfoFactory({
 							tableName: "books",

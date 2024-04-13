@@ -150,6 +150,7 @@ test("#schemaDBColumnInfoByTable", () => {
 	});
 	const expectedDbColumnInfoByTable = {
 		users: {
+			name: "users",
 			columns: {
 				id: columnInfoFactory({
 					tableName: "users",
@@ -178,6 +179,7 @@ test("#schemaDBColumnInfoByTable", () => {
 			},
 		},
 		teams: {
+			name: "teams",
 			columns: {
 				id: columnInfoFactory({
 					tableName: "teams",
@@ -360,6 +362,7 @@ describe("schema", () => {
 		const expectedLocalSchema = {
 			table: {
 				books: {
+					name: "books",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -420,6 +423,7 @@ describe("schema", () => {
 					},
 				},
 				teams: {
+					name: "teams",
 					columns: {
 						active: {
 							characterMaximumLength: null,
@@ -467,6 +471,7 @@ describe("schema", () => {
 					},
 				},
 				users: {
+					name: "users",
 					columns: {
 						book_id: {
 							characterMaximumLength: null,
@@ -667,6 +672,7 @@ describe("schema", () => {
 		const expectedLocalSchema = {
 			table: {
 				books: {
+					name: "books",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -727,6 +733,7 @@ describe("schema", () => {
 					},
 				},
 				new_books: {
+					name: "new_books",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -787,6 +794,7 @@ describe("schema", () => {
 					},
 				},
 				users: {
+					name: "users",
 					columns: {
 						book_id: {
 							characterMaximumLength: null,
@@ -970,6 +978,7 @@ test("trigger names are downcased", () => {
 	const expectedLocalSchema = {
 		table: {
 			users: {
+				name: "users",
 				columns: {
 					id: {
 						characterMaximumLength: null,
@@ -1068,6 +1077,7 @@ test("#localSchemaCamelCase", () => {
 	const expectedLocalSchema = {
 		table: {
 			books: {
+				name: "books",
 				columns: {
 					id: {
 						characterMaximumLength: null,
@@ -1128,6 +1138,7 @@ test("#localSchemaCamelCase", () => {
 				},
 			},
 			new_books: {
+				name: "new_books",
 				columns: {
 					id: {
 						characterMaximumLength: null,
@@ -1188,6 +1199,7 @@ test("#localSchemaCamelCase", () => {
 				},
 			},
 			users: {
+				name: "users",
 				columns: {
 					book_id: {
 						characterMaximumLength: null,
@@ -1371,6 +1383,7 @@ describe("#localSchema with external objects", () => {
 		const expectedLocalSchema = {
 			table: {
 				books: {
+					name: "books",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -1389,6 +1402,7 @@ describe("#localSchema with external objects", () => {
 					},
 				},
 				authors: {
+					name: "authors",
 					columns: {
 						book_id: {
 							characterMaximumLength: null,
@@ -1452,6 +1466,7 @@ describe("#localSchema with external objects", () => {
 		const expectedLocalSchema = {
 			table: {
 				books: {
+					name: "books",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -1503,6 +1518,7 @@ describe("#localSchema with external objects", () => {
 		const expectedLocalSchema = {
 			table: {
 				books: {
+					name: "books",
 					columns: {
 						name: {
 							characterMaximumLength: null,
@@ -1554,6 +1570,7 @@ describe("#localSchema with external objects", () => {
 		const expectedLocalSchema = {
 			table: {
 				books: {
+					name: "books",
 					columns: {
 						id: {
 							characterMaximumLength: null,
@@ -1606,7 +1623,7 @@ describe("#localSchema with external objects", () => {
 
 		const expectedLocalSchema = {
 			table: {
-				users: { columns: {} },
+				users: { name: "users", columns: {} },
 			},
 			index: {},
 			foreignKeyConstraints: {},
