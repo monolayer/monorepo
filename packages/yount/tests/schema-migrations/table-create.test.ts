@@ -829,12 +829,20 @@ describe("Table create migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("set null")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 			},
@@ -1419,12 +1427,20 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
-						'onDelete("no action")',
-						'onUpdate("no action")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_book_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 				down: [[]],
@@ -1435,12 +1451,20 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("new_books")',
-						'addForeignKeyConstraint("new_books_old_book_id_books_id_yount_fk", ["old_book_id"], "books", ["id"])',
-						'onDelete("no action")',
-						'onUpdate("no action")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("new_books")
+    .addForeignKeyConstraint("new_books_old_book_id_books_id_yount_fk", ["old_book_id"], "books", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_old_book_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 				down: [[]],
@@ -1451,12 +1475,20 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("new_books")',
-						'addForeignKeyConstraint("new_books_library_building_id_library_building_id_yount_fk", ["library_building_id"], "library_building", ["id"])',
-						'onDelete("no action")',
-						'onUpdate("no action")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("new_books")
+    .addForeignKeyConstraint("new_books_library_building_id_library_building_id_yount_fk", ["library_building_id"], "library_building", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_library_building_id_library_building_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 				down: [[]],

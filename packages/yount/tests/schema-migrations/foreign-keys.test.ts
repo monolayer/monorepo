@@ -99,12 +99,20 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("set null")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -247,12 +255,20 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("set null")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -270,12 +286,20 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_second_book_id_old_books_id_yount_fk", ["second_book_id"], "old_books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("set null")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_second_book_id_old_books_id_yount_fk", ["second_book_id"], "old_books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_second_book_id_old_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -364,12 +388,20 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("set null")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_book_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 			},
@@ -484,12 +516,20 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("set null")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_book_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 			},
@@ -507,12 +547,20 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_old_book_id_old_books_id_yount_fk", ["old_book_id"], "old_books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("set null")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_old_book_id_old_books_id_yount_fk", ["old_book_id"], "old_books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_old_book_id_old_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 			},
@@ -600,12 +648,20 @@ describe("Database migrations", () => {
 				],
 				down: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("set null")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_book_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 			},
@@ -615,12 +671,20 @@ describe("Database migrations", () => {
 				type: "createConstraint",
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("cascade")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])
+    .onDelete("set null")
+    .onUpdate("cascade")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -714,12 +778,20 @@ describe("Database migrations", () => {
 						"execute();",
 					],
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("cascade")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])
+    .onDelete("set null")
+    .onUpdate("cascade")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_book_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -730,12 +802,20 @@ describe("Database migrations", () => {
 						"execute();",
 					],
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("set null")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_book_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 			},

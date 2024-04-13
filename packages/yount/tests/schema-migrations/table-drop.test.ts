@@ -464,12 +464,20 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])',
-						'onDelete("set null")',
-						'onUpdate("set null")',
-						"execute();",
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_id_books_id_yount_fk"`',
+						"execute(db);",
 					],
 				],
 			},

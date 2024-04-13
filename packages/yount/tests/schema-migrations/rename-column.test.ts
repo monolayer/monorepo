@@ -565,12 +565,20 @@ describe("Rename column migrations", () => {
 					],
 					down: [
 						[
-							'await db.withSchema("public").schema',
-							'alterTable("users_pk1")',
-							'addForeignKeyConstraint("users_pk1_book_id_books_pk1_id_yount_fk", ["book_id"], "books_pk1", ["id"])',
-							'onDelete("no action")',
-							'onUpdate("no action")',
-							"execute();",
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users_pk1")
+    .addForeignKeyConstraint("users_pk1_book_id_books_pk1_id_yount_fk", ["book_id"], "books_pk1", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users_pk1" VALIDATE CONSTRAINT "users_pk1_book_id_books_pk1_id_yount_fk"`',
+							"execute(db);",
 						],
 					],
 				},
@@ -601,12 +609,20 @@ describe("Rename column migrations", () => {
 					type: "createConstraint",
 					up: [
 						[
-							'await db.withSchema("public").schema',
-							'alterTable("users_pk1")',
-							'addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_yount_fk", ["bookId"], "books_pk1", ["id"])',
-							'onDelete("no action")',
-							'onUpdate("no action")',
-							"execute();",
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users_pk1")
+    .addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_yount_fk", ["bookId"], "books_pk1", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users_pk1" VALIDATE CONSTRAINT "users_pk1_bookId_books_pk1_id_yount_fk"`',
+							"execute(db);",
 						],
 					],
 					down: [
@@ -695,12 +711,20 @@ describe("Rename column migrations", () => {
 					type: "createConstraint",
 					up: [
 						[
-							'await db.withSchema("public").schema',
-							'alterTable("users_pk1")',
-							'addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_yount_fk", ["bookId"], "books_pk1", ["id"])',
-							'onDelete("no action")',
-							'onUpdate("no action")',
-							"execute();",
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users_pk1")
+    .addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_yount_fk", ["bookId"], "books_pk1", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users_pk1" VALIDATE CONSTRAINT "users_pk1_bookId_books_pk1_id_yount_fk"`',
+							"execute(db);",
 						],
 					],
 					down: [

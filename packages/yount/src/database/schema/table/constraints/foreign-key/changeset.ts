@@ -9,7 +9,10 @@ import type {
 	DbTableInfo,
 	LocalTableInfo,
 } from "~/introspection/introspection.js";
-import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
+import {
+	executeKyselyDbStatement,
+	executeKyselySchemaStatement,
+} from "../../../../../changeset/helpers.js";
 
 export function foreignKeyMigrationOpGenerator(
 	diff: Difference,
@@ -158,13 +161,11 @@ function createforeignKeyFirstConstraintMigration(
 			priority: MigrationOpPriority.ConstraintCreate,
 			tableName: tableName,
 			type: ChangeSetType.CreateConstraint,
-			up: [
-				addForeigKeyOp(
-					tableName,
-					foreignKeyDefinition(constraintValue),
-					schemaName,
-				),
-			],
+			up: addForeigKeyOps(
+				tableName,
+				foreignKeyDefinition(constraintValue),
+				schemaName,
+			),
 			down: addedTables.includes(tableName)
 				? [[]]
 				: [
@@ -191,13 +192,11 @@ function createForeignKeyConstraintMigration(
 		priority: MigrationOpPriority.ConstraintCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
-		up: [
-			addForeigKeyOp(
-				tableName,
-				foreignKeyDefinition(constraintValue),
-				schemaName,
-			),
-		],
+		up: addForeigKeyOps(
+			tableName,
+			foreignKeyDefinition(constraintValue),
+			schemaName,
+		),
 		down: [
 			dropForeignKeyOp(
 				tableName,
@@ -230,13 +229,11 @@ function dropforeignKeyLastConstraintMigration(
 							schemaName,
 						),
 					],
-			down: [
-				addForeigKeyOp(
-					tableName,
-					foreignKeyDefinition(constraintValue),
-					schemaName,
-				),
-			],
+			down: addForeigKeyOps(
+				tableName,
+				foreignKeyDefinition(constraintValue),
+				schemaName,
+			),
 		};
 		acc.push(changeset);
 		return acc;
@@ -261,13 +258,11 @@ function dropForeignKeyConstraintMigration(
 				schemaName,
 			),
 		],
-		down: [
-			addForeigKeyOp(
-				tableName,
-				foreignKeyDefinition(constraintValue),
-				schemaName,
-			),
-		],
+		down: addForeigKeyOps(
+			tableName,
+			foreignKeyDefinition(constraintValue),
+			schemaName,
+		),
 	};
 	return changeset;
 }
@@ -286,11 +281,11 @@ function changeforeignKeyConstraintMigration(
 		type: ChangeSetType.ChangeConstraint,
 		up: [
 			dropForeignKeyOp(tableName, oldForeignKey, schemaName),
-			addForeigKeyOp(tableName, newForeignKey, schemaName),
+			...addForeigKeyOps(tableName, newForeignKey, schemaName),
 		],
 		down: [
 			dropForeignKeyOp(tableName, newForeignKey, schemaName),
-			addForeigKeyOp(tableName, oldForeignKey, schemaName),
+			...addForeigKeyOps(tableName, oldForeignKey, schemaName),
 		],
 	};
 	return changeset;
@@ -335,22 +330,36 @@ function foreignKeyDefinition(foreignKey: string) {
 	return definition;
 }
 
-function addForeigKeyOp(
+function addForeigKeyOps(
 	tableName: string,
 	definition: ForeignKeyDefinition,
 	schemaName: string,
-): string[] {
+) {
 	const columns = definition.columns.map((col) => `"${col}"`).join(", ");
 	const targetColumns = definition.targetColumns
 		.map((col) => `"${col}"`)
 		.join(", ");
-	return executeKyselySchemaStatement(
-		schemaName,
-		`alterTable("${tableName}")`,
-		`addForeignKeyConstraint("${definition.name}", [${columns}], "${definition.targetTable}", [${targetColumns}])`,
-		`onDelete("${definition.onDelete}")`,
-		`onUpdate("${definition.onUpdate}")`,
-	);
+
+	const ops = [
+		[
+			[
+				`await sql\`\${sql.raw(`,
+				`  db`,
+				`    .withSchema("${schemaName}")`,
+				`    .schema.alterTable("${tableName}")`,
+				`    .addForeignKeyConstraint("${definition.name}", [${columns}], "${definition.targetTable}", [${targetColumns}])`,
+				`    .onDelete("${definition.onDelete}")`,
+				`    .onUpdate("${definition.onUpdate}")`,
+				`    .compile()`,
+				`    .sql.concat(" not valid")`,
+				`)}\`.execute(db);`,
+			].join("\n"),
+		],
+		executeKyselyDbStatement(
+			`ALTER TABLE "${schemaName}"."${tableName}" VALIDATE CONSTRAINT "${definition.name}"`,
+		),
+	];
+	return ops;
 }
 
 function dropForeignKeyOp(
