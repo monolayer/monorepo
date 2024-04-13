@@ -833,7 +833,7 @@ describe("Table create migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_id_books_id_yount_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("61a55869_yount_fk", ["id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -841,7 +841,7 @@ describe("Table create migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_id_books_id_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "61a55869_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -1431,7 +1431,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_book_id_books_id_yount_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("c28cc6e8_yount_fk", ["book_id"], "books", ["id"])
     .onDelete("no action")
     .onUpdate("no action")
     .compile()
@@ -1439,7 +1439,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_book_id_books_id_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "c28cc6e8_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -1455,7 +1455,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
   db
     .withSchema("public")
     .schema.alterTable("new_books")
-    .addForeignKeyConstraint("new_books_old_book_id_books_id_yount_fk", ["old_book_id"], "books", ["id"])
+    .addForeignKeyConstraint("82748801_yount_fk", ["old_book_id"], "books", ["id"])
     .onDelete("no action")
     .onUpdate("no action")
     .compile()
@@ -1463,7 +1463,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_old_book_id_books_id_yount_fk"`',
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "82748801_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -1479,7 +1479,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
   db
     .withSchema("public")
     .schema.alterTable("new_books")
-    .addForeignKeyConstraint("new_books_library_building_id_library_building_id_yount_fk", ["library_building_id"], "library_building", ["id"])
+    .addForeignKeyConstraint("f222319c_yount_fk", ["library_building_id"], "library_building", ["id"])
     .onDelete("no action")
     .onUpdate("no action")
     .compile()
@@ -1487,7 +1487,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_library_building_id_library_building_id_yount_fk"`',
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "f222319c_yount_fk"`',
 						"execute(db);",
 					],
 				],

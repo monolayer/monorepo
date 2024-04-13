@@ -24,7 +24,6 @@ export function indexMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	schemaName: string,
 ) {
-	console.dir(diff, { depth: null });
 	if (isCreateFirstIndex(diff)) {
 		return createFirstIndexMigration(diff, addedTables, schemaName);
 	}

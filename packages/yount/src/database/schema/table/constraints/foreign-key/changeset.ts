@@ -39,9 +39,6 @@ export function foreignKeyMigrationOpGenerator(
 			schemaName,
 		);
 	}
-	if (isForeignKeyConstraintChange(diff)) {
-		return changeforeignKeyConstraintMigration(diff, schemaName);
-	}
 	if (isForeignKeyConstraintCreate(diff)) {
 		return createForeignKeyConstraintMigration(diff, schemaName);
 	}
@@ -75,13 +72,6 @@ type ForeignKeyDropLastDiff = {
 type ForeignKeyDropDiff = {
 	type: "REMOVE";
 	path: ["foreignKeyConstraints", string, string];
-	oldValue: string;
-};
-
-type ForeignKeyChangeDiff = {
-	type: "CHANGE";
-	path: ["foreignKeyConstraints", string, string];
-	value: string;
 	oldValue: string;
 };
 
@@ -131,20 +121,6 @@ function isForeignKeyConstraintDrop(
 		test.path[0] === "foreignKeyConstraints" &&
 		typeof test.path[1] === "string" &&
 		typeof test.path[2] === "string" &&
-		typeof test.oldValue === "string"
-	);
-}
-
-function isForeignKeyConstraintChange(
-	test: Difference,
-): test is ForeignKeyChangeDiff {
-	return (
-		test.type === "CHANGE" &&
-		test.path.length === 3 &&
-		test.path[0] === "foreignKeyConstraints" &&
-		typeof test.path[1] === "string" &&
-		typeof test.path[2] === "string" &&
-		typeof test.value === "string" &&
 		typeof test.oldValue === "string"
 	);
 }
@@ -263,30 +239,6 @@ function dropForeignKeyConstraintMigration(
 			foreignKeyDefinition(constraintValue),
 			schemaName,
 		),
-	};
-	return changeset;
-}
-
-function changeforeignKeyConstraintMigration(
-	diff: ForeignKeyChangeDiff,
-	schemaName: string,
-) {
-	const tableName = diff.path[1];
-	const newForeignKey = foreignKeyDefinition(diff.value);
-	const oldForeignKey = foreignKeyDefinition(diff.oldValue);
-
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.ConstraintChange,
-		tableName: tableName,
-		type: ChangeSetType.ChangeConstraint,
-		up: [
-			dropForeignKeyOp(tableName, oldForeignKey, schemaName),
-			...addForeigKeyOps(tableName, newForeignKey, schemaName),
-		],
-		down: [
-			dropForeignKeyOp(tableName, newForeignKey, schemaName),
-			...addForeigKeyOps(tableName, oldForeignKey, schemaName),
-		],
 	};
 	return changeset;
 }

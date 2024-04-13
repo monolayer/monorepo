@@ -7,6 +7,7 @@ import {
 	findTableByNameInDatabaseSchema,
 	type ForeignKeyInfo,
 } from "~/migrations/migration-schema.js";
+import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 
 export type ForeignKeyRule =
@@ -84,17 +85,12 @@ export async function dbForeignKeyConstraintInfo(
 		])
 		.execute();
 	const transformedResults = results.reduce<ForeignKeyInfo>((acc, result) => {
-		const key = `${result.table}_${result.column.join("_")}_${
-			result.targetTable
-		}_${result.targetColumns.join("_")}_yount_fk`;
-		const constraintInfo = {
-			[key]: foreignKeyConstraintInfoToQuery(result),
-		};
+		const query = foreignKeyConstraintInfoToNameAndQuery(result);
 		const table = result.table;
 		if (table !== null) {
 			acc[table] = {
 				...acc[table],
-				...constraintInfo,
+				...query,
 			};
 		}
 		return acc;
@@ -127,22 +123,18 @@ export function localForeignKeyConstraintInfo(
 						(column) => toSnakeCase(column, camelCase),
 					);
 					if (targetTableName !== undefined) {
-						const keyName = `${transformedTableName}_${transformedColumNames.join(
-							"_",
-						)}_${targetTableName}_${transformedtargetColumnNames.join(
-							"_",
-						)}_yount_fk`;
+						const query = foreignKeyConstraintInfoToNameAndQuery({
+							constraintType: "FOREIGN KEY",
+							table: transformedTableName,
+							column: transformedColumNames,
+							targetTable: targetTableName,
+							targetColumns: transformedtargetColumnNames,
+							deleteRule: foreignKey.deleteRule ?? null,
+							updateRule: foreignKey.updateRule ?? null,
+						});
 						acc[transformedTableName] = {
 							...acc[transformedTableName],
-							[keyName]: foreignKeyConstraintInfoToQuery({
-								constraintType: "FOREIGN KEY",
-								table: transformedTableName,
-								column: transformedColumNames,
-								targetTable: targetTableName,
-								targetColumns: transformedtargetColumnNames,
-								deleteRule: foreignKey.deleteRule ?? null,
-								updateRule: foreignKey.updateRule ?? null,
-							}),
+							...query,
 						};
 					}
 				}
@@ -153,11 +145,10 @@ export function localForeignKeyConstraintInfo(
 	);
 }
 
-export function foreignKeyConstraintInfoToQuery(
+export function foreignKeyConstraintInfoToNameAndQuery(
 	info: ForeignKeyConstraintInfo,
 ) {
-	return [
-		`"${info.table}_${info.column.join("_")}_${info.targetTable}_${info.targetColumns.join("_")}_yount_fk"`,
+	const parts = [
 		"FOREIGN KEY",
 		`(${info.column.map((col) => `"${col}"`).join(", ")})`,
 		"REFERENCES",
@@ -165,7 +156,10 @@ export function foreignKeyConstraintInfoToQuery(
 		`(${info.targetColumns.map((col) => `"${col}"`).join(", ")})`,
 		`ON DELETE ${info.deleteRule}`,
 		`ON UPDATE ${info.updateRule}`,
-	].join(" ");
+	];
+	const name = `${hashValue(parts.join(" "))}_yount_fk`;
+	parts.unshift(`"${name}"`);
+	return { [`${name}`]: parts.join(" ") };
 }
 
 export type ForeIgnKeyConstraintInfo = {

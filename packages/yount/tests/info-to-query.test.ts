@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { foreignKeyConstraintInfoToQuery } from "~/database/schema/table/constraints/foreign-key/introspection.js";
+import { foreignKeyConstraintInfoToNameAndQuery } from "~/database/schema/table/constraints/foreign-key/introspection.js";
 import { primaryKeyConstraintInfoToQuery } from "~/database/schema/table/constraints/primary-key/introspection.js";
 import { uniqueConstraintInfoToQuery } from "~/database/schema/table/constraints/unique/introspection.js";
 import type { ForeignKeyConstraintInfo } from "../src/database/schema/table/constraints/foreign-key/introspection.js";
@@ -27,9 +27,11 @@ test("#foreigKeyInfoToQuery", () => {
 		updateRule: "CASCADE",
 		deleteRule: "NO ACTION",
 	};
-	const expected =
-		'"test_users_book_id_location_id_test_books_fk_id_location_yount_fk" FOREIGN KEY ("book_id", "location_id") REFERENCES test_books_fk ("id", "location") ON DELETE NO ACTION ON UPDATE CASCADE';
-	expect(foreignKeyConstraintInfoToQuery(info)).toBe(expected);
+	const expected = {
+		b786ed83_yount_fk:
+			'"b786ed83_yount_fk" FOREIGN KEY ("book_id", "location_id") REFERENCES test_books_fk ("id", "location") ON DELETE NO ACTION ON UPDATE CASCADE',
+	};
+	expect(foreignKeyConstraintInfoToNameAndQuery(info)).toStrictEqual(expected);
 });
 
 test("#uniqueConstraintInfoToQuery", () => {

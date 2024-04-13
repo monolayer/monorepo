@@ -517,7 +517,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
 				.addForeignKeyConstraint(
-					"users_pk1_book_id_books_pk1_id_yount_fk",
+					"66a7ed92_yount_fk",
 					["book_id"],
 					"books_pk1",
 					["id"],
@@ -559,7 +559,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_book_id_books_pk1_id_yount_fk")',
+							'dropConstraint("66a7ed92_yount_fk")',
 							"execute();",
 						],
 					],
@@ -569,7 +569,7 @@ describe("Rename column migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users_pk1")
-    .addForeignKeyConstraint("users_pk1_book_id_books_pk1_id_yount_fk", ["book_id"], "books_pk1", ["id"])
+    .addForeignKeyConstraint("66a7ed92_yount_fk", ["book_id"], "books_pk1", ["id"])
     .onDelete("no action")
     .onUpdate("no action")
     .compile()
@@ -577,7 +577,7 @@ describe("Rename column migrations", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users_pk1" VALIDATE CONSTRAINT "users_pk1_book_id_books_pk1_id_yount_fk"`',
+							'await sql`ALTER TABLE "public"."users_pk1" VALIDATE CONSTRAINT "66a7ed92_yount_fk"`',
 							"execute(db);",
 						],
 					],
@@ -613,7 +613,7 @@ describe("Rename column migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users_pk1")
-    .addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_yount_fk", ["bookId"], "books_pk1", ["id"])
+    .addForeignKeyConstraint("5f89e0aa_yount_fk", ["bookId"], "books_pk1", ["id"])
     .onDelete("no action")
     .onUpdate("no action")
     .compile()
@@ -621,7 +621,7 @@ describe("Rename column migrations", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users_pk1" VALIDATE CONSTRAINT "users_pk1_bookId_books_pk1_id_yount_fk"`',
+							'await sql`ALTER TABLE "public"."users_pk1" VALIDATE CONSTRAINT "5f89e0aa_yount_fk"`',
 							"execute(db);",
 						],
 					],
@@ -629,7 +629,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_bookId_books_pk1_id_yount_fk")',
+							'dropConstraint("5f89e0aa_yount_fk")',
 							"execute();",
 						],
 					],
@@ -715,7 +715,7 @@ describe("Rename column migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users_pk1")
-    .addForeignKeyConstraint("users_pk1_bookId_books_pk1_id_yount_fk", ["bookId"], "books_pk1", ["id"])
+    .addForeignKeyConstraint("5f89e0aa_yount_fk", ["bookId"], "books_pk1", ["id"])
     .onDelete("no action")
     .onUpdate("no action")
     .compile()
@@ -723,7 +723,7 @@ describe("Rename column migrations", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users_pk1" VALIDATE CONSTRAINT "users_pk1_bookId_books_pk1_id_yount_fk"`',
+							'await sql`ALTER TABLE "public"."users_pk1" VALIDATE CONSTRAINT "5f89e0aa_yount_fk"`',
 							"execute(db);",
 						],
 					],
@@ -731,7 +731,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_bookId_books_pk1_id_yount_fk")',
+							'dropConstraint("5f89e0aa_yount_fk")',
 							"execute();",
 						],
 					],

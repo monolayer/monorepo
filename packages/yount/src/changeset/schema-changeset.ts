@@ -74,7 +74,6 @@ export function changesetDiff(
 	remote: SchemaMigrationInfo,
 ) {
 	const diff = microdiff(remote, local);
-	console.dir(diff, { depth: null });
 	const tableName = (diff: CreateTableDiff | DropTableTableDiff) =>
 		diff.path[1];
 	const addedTables = diff.filter(isCreateTable).map(tableName);
