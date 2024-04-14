@@ -1,40 +1,30 @@
 import type { Difference } from "microdiff";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "../../../../../introspection/introspection.js";
 
 export function uniqueConstraintMigrationOpGenerator(
 	diff: Difference,
-	addedTables: string[],
-	droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (isUniqueConstraintCreateFirst(diff)) {
-		return createUniqueFirstConstraintMigration(diff, addedTables, schemaName);
+		return createUniqueFirstConstraintMigration(diff, context);
 	}
 	if (isUniqueConstraintDropLast(diff)) {
-		return dropUniqueLastConstraintMigration(diff, droppedTables, schemaName);
+		return dropUniqueLastConstraintMigration(diff, context);
 	}
 	if (isUniqueConstraintChange(diff)) {
-		return changeUniqueConstraintMigration(diff, schemaName);
+		return changeUniqueConstraintMigration(diff, context);
 	}
 	if (isUniqueContraintCreateDiff(diff)) {
-		return createUniqueConstraintMigration(diff, schemaName);
+		return createUniqueConstraintMigration(diff, context);
 	}
 	if (isUniqueConstraintDropDiff(diff)) {
-		return dropUniqueConstraintMigration(diff, schemaName);
+		return dropUniqueConstraintMigration(diff, context);
 	}
 }
 
@@ -133,8 +123,7 @@ function isUniqueConstraintChange(test: Difference): test is UniqueChangeDiff {
 
 function createUniqueFirstConstraintMigration(
 	diff: UniqueCreateFirst,
-	addedTables: string[],
-	schemaName: string,
+	{ schemaName, addedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [, value]) => {
@@ -155,8 +144,7 @@ function createUniqueFirstConstraintMigration(
 
 function dropUniqueLastConstraintMigration(
 	diff: UniqueDropLast,
-	droppedTables: string[],
-	schemaName: string,
+	{ schemaName, droppedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 
@@ -179,7 +167,7 @@ function dropUniqueLastConstraintMigration(
 
 function changeUniqueConstraintMigration(
 	diff: UniqueChangeDiff,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const newUniqueConstraint = uniqueConstraintDefinition(diff.value);
@@ -203,7 +191,7 @@ function changeUniqueConstraintMigration(
 
 function createUniqueConstraintMigration(
 	diff: UniqueCreateDiff,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const uniqueConstraint = uniqueConstraintDefinition(diff.value);
@@ -220,7 +208,7 @@ function createUniqueConstraintMigration(
 
 function dropUniqueConstraintMigration(
 	diff: UuniqueDropDiff,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const uniqueConstraint = uniqueConstraintDefinition(diff.oldValue);

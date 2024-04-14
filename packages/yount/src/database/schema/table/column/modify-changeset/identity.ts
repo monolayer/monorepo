@@ -1,34 +1,22 @@
 import { Difference } from "microdiff";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "~/introspection/introspection.js";
 import { executeKyselyDbStatement } from "../../../../../changeset/helpers.js";
 import type { ColumnInfo } from "../types.js";
 
 export function columnIdentityMigrationOpGenerator(
 	diff: Difference,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_addedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (isColumnIdentityAdd(diff)) {
-		return columnIdentityAddMigrationOperation(diff, schemaName);
+		return columnIdentityAddMigrationOperation(diff, context);
 	}
 	if (isColumnIdentityDrop(diff)) {
-		return columnIdentityDropMigrationOperation(diff, schemaName);
+		return columnIdentityDropMigrationOperation(diff, context);
 	}
 }
 
@@ -74,7 +62,7 @@ function isColumnIdentityDrop(
 
 function columnIdentityAddMigrationOperation(
 	diff: IdentityAddDifference,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -105,7 +93,7 @@ function columnIdentityAddMigrationOperation(
 
 function columnIdentityDropMigrationOperation(
 	diff: IdentityDropDifference,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];

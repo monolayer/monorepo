@@ -1,14 +1,11 @@
 /* eslint-disable max-lines */
 import type { Difference } from "microdiff";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "~/introspection/introspection.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
@@ -16,34 +13,19 @@ import {
 
 export function foreignKeyMigrationOpGenerator(
 	diff: Difference,
-	addedTables: string[],
-	droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (isForeignKeyConstraintCreateFirst(diff)) {
-		return createforeignKeyFirstConstraintMigration(
-			diff,
-			addedTables,
-			schemaName,
-		);
+		return createforeignKeyFirstConstraintMigration(diff, context);
 	}
 	if (isForeignKeyConstraintDropLast(diff)) {
-		return dropforeignKeyLastConstraintMigration(
-			diff,
-			droppedTables,
-			schemaName,
-		);
+		return dropforeignKeyLastConstraintMigration(diff, context);
 	}
 	if (isForeignKeyConstraintCreate(diff)) {
-		return createForeignKeyConstraintMigration(diff, schemaName);
+		return createForeignKeyConstraintMigration(diff, context);
 	}
 	if (isForeignKeyConstraintDrop(diff)) {
-		return dropForeignKeyConstraintMigration(diff, schemaName);
+		return dropForeignKeyConstraintMigration(diff, context);
 	}
 }
 
@@ -127,8 +109,7 @@ function isForeignKeyConstraintDrop(
 
 function createforeignKeyFirstConstraintMigration(
 	diff: ForeignKeyCreateFirstDiff,
-	addedTables: string[],
-	schemaName: string,
+	{ schemaName, addedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [, value]) => {
@@ -159,7 +140,7 @@ function createforeignKeyFirstConstraintMigration(
 
 function createForeignKeyConstraintMigration(
 	diff: ForeignKeyCreateDiff,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const constraintValue = diff.value;
@@ -186,8 +167,7 @@ function createForeignKeyConstraintMigration(
 
 function dropforeignKeyLastConstraintMigration(
 	diff: ForeignKeyDropLastDiff,
-	droppedTables: string[],
-	schemaName: string,
+	{ schemaName, droppedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.oldValue).reduce((acc, [, value]) => {
@@ -218,7 +198,7 @@ function dropforeignKeyLastConstraintMigration(
 
 function dropForeignKeyConstraintMigration(
 	diff: ForeignKeyDropDiff,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const constraintValue = diff.oldValue;

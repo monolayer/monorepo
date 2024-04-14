@@ -3,38 +3,28 @@ import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
 } from "~/changeset/helpers.js";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "../../../../introspection/introspection.js";
 
 export function indexMigrationOpGenerator(
 	diff: Difference,
-	addedTables: string[],
-	droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (isCreateFirstIndex(diff)) {
-		return createFirstIndexMigration(diff, addedTables, schemaName);
+		return createFirstIndexMigration(diff, context);
 	}
 	if (isDropAllIndexes(diff)) {
-		return dropAllIndexesMigration(diff, droppedTables, schemaName);
+		return dropAllIndexesMigration(diff, context);
 	}
 	if (isCreateIndex(diff)) {
-		return createIndexMigration(diff, schemaName);
+		return createIndexMigration(diff, context);
 	}
 	if (isDropIndex(diff)) {
-		return dropIndexMigration(diff, schemaName);
+		return dropIndexMigration(diff, context);
 	}
 }
 
@@ -64,8 +54,7 @@ function isDropAllIndexes(test: Difference): test is DropAllIndexesDiff {
 
 function createFirstIndexMigration(
 	diff: CreateFirstIndexDiff,
-	addedTables: string[],
-	schemaName: string,
+	{ schemaName, addedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const indexNames = Object.keys(diff.value) as Array<keyof typeof diff.value>;
@@ -100,8 +89,7 @@ function createFirstIndexMigration(
 
 function dropAllIndexesMigration(
 	diff: DropAllIndexesDiff,
-	droppedTables: string[],
-	schemaName: string,
+	{ schemaName, droppedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const indexNames = Object.keys(diff.oldValue) as Array<
@@ -150,7 +138,10 @@ function isCreateIndex(test: Difference): test is CreateIndex {
 	);
 }
 
-function createIndexMigration(diff: CreateIndex, schemaName: string) {
+function createIndexMigration(
+	diff: CreateIndex,
+	{ schemaName }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const indexName = diff.path[2];
 	const index = diff.value.split(":");
@@ -186,7 +177,7 @@ function isDropIndex(test: Difference): test is DropIndex {
 	);
 }
 
-function dropIndexMigration(diff: DropIndex, schemaName: string) {
+function dropIndexMigration(diff: DropIndex, { schemaName }: GeneratorContext) {
 	const tableName = diff.path[1];
 	const indexName = diff.path[2];
 	const index = diff.oldValue.split(":");

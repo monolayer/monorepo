@@ -1,13 +1,10 @@
 import { Difference } from "microdiff";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "~/introspection/introspection.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
@@ -17,25 +14,16 @@ import { toValueAndHash } from "../../changeset-helpers.js";
 
 export function columnDefaultMigrationOpGenerator(
 	diff: Difference,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_addedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (isColumnDefaultAddValue(diff)) {
-		return columnDefaultAddMigrationOperation(diff, schemaName);
+		return columnDefaultAddMigrationOperation(diff, context);
 	}
 	if (isColumnDefaultDropValue(diff)) {
-		return columnDefaultDropMigrationOperation(diff, schemaName);
+		return columnDefaultDropMigrationOperation(diff, context);
 	}
 	if (isColumnDefaultChangeValue(diff)) {
-		return columnDefaultChangeMigrationOperation(diff, schemaName);
+		return columnDefaultChangeMigrationOperation(diff, context);
 	}
 }
 
@@ -104,7 +92,7 @@ function isColumnDefaultChangeValue(
 
 function columnDefaultAddMigrationOperation(
 	diff: ColumnDefaultAddDifference,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -140,7 +128,7 @@ function columnDefaultAddMigrationOperation(
 
 function columnDefaultDropMigrationOperation(
 	diff: ColumnDefaultDropDifference,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -179,7 +167,7 @@ function columnDefaultDropMigrationOperation(
 
 function columnDefaultChangeMigrationOperation(
 	diff: ColumnDefaultChangeDifference,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];

@@ -17,12 +17,16 @@ import { Changeset } from "./types.js";
 interface Generator {
 	(
 		diff: Difference,
-		addedTables: string[],
-		droppedTables: string[],
-		local: LocalTableInfo,
-		db: DbTableInfo,
-		schemaName: string,
+		context: GeneratorContext,
 	): Changeset | Changeset[] | undefined;
+}
+
+export interface GeneratorContext {
+	local: LocalTableInfo;
+	db: DbTableInfo;
+	addedTables: string[];
+	droppedTables: string[];
+	schemaName: string;
 }
 
 export function schemaChangeset(
@@ -35,17 +39,18 @@ export function schemaChangeset(
 	const droppedTablesSortOrder = buildNodes(droppedTables, remote);
 	const addedTablesSortOrder = buildNodes(addedTables, local);
 
+	const context: GeneratorContext = {
+		local: local,
+		db: remote,
+		addedTables: addedTables,
+		droppedTables: droppedTables,
+		schemaName: schemaName,
+	};
+
 	return diff
 		.flatMap((difference) => {
 			for (const generator of generators) {
-				const op = generator(
-					difference,
-					addedTables,
-					droppedTables,
-					local,
-					remote,
-					schemaName,
-				);
+				const op = generator(difference, context);
 				if (op !== undefined) return op;
 			}
 			return [];

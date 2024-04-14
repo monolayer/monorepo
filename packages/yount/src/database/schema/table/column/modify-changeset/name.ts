@@ -1,30 +1,18 @@
 import type { Difference } from "microdiff";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "~/introspection/introspection.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
 
 export function ColumnNameMigrationOpGenerator(
 	diff: Difference,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_addedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (isColumnName(diff)) {
-		return columnNameMigrationOperation(diff, schemaName);
+		return columnNameMigrationOperation(diff, context);
 	}
 }
 
@@ -49,7 +37,7 @@ function isColumnName(test: Difference): test is ColumnNameDifference {
 
 function columnNameMigrationOperation(
 	diff: ColumnNameDifference,
-	schemaName: string,
+	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];

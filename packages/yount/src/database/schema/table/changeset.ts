@@ -1,4 +1,5 @@
 import { Difference } from "microdiff";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	MigrationOpPriority,
@@ -9,10 +10,6 @@ import {
 	executeKyselySchemaStatement,
 } from "../../../changeset/helpers.js";
 import {
-	type DbTableInfo,
-	type LocalTableInfo,
-} from "../../../introspection/introspection.js";
-import {
 	tableColumnsOps,
 	toValueAndHash,
 	type ColumnsInfoDiff,
@@ -20,22 +17,13 @@ import {
 
 export function tableMigrationOpGenerator(
 	diff: Difference,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_addedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (isCreateTable(diff)) {
-		return createTableMigration(diff, schemaName);
+		return createTableMigration(diff, context);
 	}
 	if (isDropTable(diff)) {
-		return dropTableMigration(diff, schemaName);
+		return dropTableMigration(diff, context);
 	}
 }
 
@@ -51,7 +39,10 @@ export function isCreateTable(test: Difference): test is CreateTableDiff {
 	);
 }
 
-function createTableMigration(diff: CreateTableDiff, schemaName: string) {
+function createTableMigration(
+	diff: CreateTableDiff,
+	{ schemaName }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const up = [
 		executeKyselySchemaStatement(
@@ -96,7 +87,10 @@ export function isDropTable(test: Difference): test is DropTableTableDiff {
 	);
 }
 
-function dropTableMigration(diff: DropTableTableDiff, schemaName: string) {
+function dropTableMigration(
+	diff: DropTableTableDiff,
+	{ schemaName }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const down = [
 		executeKyselySchemaStatement(

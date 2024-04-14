@@ -3,41 +3,32 @@ import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
 } from "~/changeset/helpers.js";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "../../../../introspection/introspection.js";
 
 export function enumMigrationOpGenerator(
 	diff: Difference,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_addedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (isCreateEnum(diff)) {
-		return createEnumMigration(diff, schemaName);
+		return createEnumMigration(diff, context);
 	}
 	if (isDropEnum(diff)) {
-		return dropEnumMigration(diff, schemaName);
+		return dropEnumMigration(diff, context);
 	}
 	if (isChangeEnum(diff)) {
-		return changeEnumMigration(diff, schemaName);
+		return changeEnumMigration(diff, context);
 	}
 }
 
-function createEnumMigration(diff: CreateEnumDiff, schemaName: string) {
+function createEnumMigration(
+	diff: CreateEnumDiff,
+	{ schemaName }: GeneratorContext,
+) {
 	const enumName = diff.path[1];
 	const enumValues = diff.value
 		.split(", ")
@@ -62,7 +53,10 @@ function createEnumMigration(diff: CreateEnumDiff, schemaName: string) {
 	return changeSet;
 }
 
-function dropEnumMigration(diff: DropEnumDiff, schemaName: string) {
+function dropEnumMigration(
+	diff: DropEnumDiff,
+	{ schemaName }: GeneratorContext,
+) {
 	const enumName = diff.path[1];
 	const enumValues = diff.oldValue
 		.split(", ")
@@ -87,7 +81,10 @@ function dropEnumMigration(diff: DropEnumDiff, schemaName: string) {
 	return changeSet;
 }
 
-function changeEnumMigration(diff: ChangeEnumDiff, schemaName: string) {
+function changeEnumMigration(
+	diff: ChangeEnumDiff,
+	{ schemaName }: GeneratorContext,
+) {
 	const enumName = diff.path[1];
 	const oldEnumValues = diff.oldValue.split(", ");
 	const newValues = diff.value

@@ -1,40 +1,30 @@
 import type { Difference } from "microdiff";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
 import { executeKyselyDbStatement } from "../../../../changeset/helpers.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "../../../../introspection/introspection.js";
 
 export function triggerMigrationOpGenerator(
 	diff: Difference,
-	addedTables: string[],
-	droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (isTriggerCreateFirst(diff)) {
-		return createTriggerFirstMigration(diff, addedTables, schemaName);
+		return createTriggerFirstMigration(diff, context);
 	}
 	if (isTriggerCreate(diff)) {
-		return createTriggerMigration(diff, schemaName);
+		return createTriggerMigration(diff, context);
 	}
 	if (isTriggerDropFirst(diff)) {
-		return dropTriggerFirstMigration(diff, droppedTables, schemaName);
+		return dropTriggerFirstMigration(diff, context);
 	}
 	if (isTriggerDrop(diff)) {
-		return dropTriggerMigration(diff, schemaName);
+		return dropTriggerMigration(diff, context);
 	}
 	if (isTriggerChange(diff)) {
-		return changeTriggerMigration(diff, schemaName);
+		return changeTriggerMigration(diff, context);
 	}
 }
 
@@ -132,8 +122,7 @@ function isTriggerChange(test: Difference): test is TriggerChangeDiff {
 
 function createTriggerFirstMigration(
 	diff: TriggerCreateFirstDiff,
-	addedTables: string[],
-	schemaName: string,
+	{ schemaName, addedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [key, value]) => {
@@ -160,7 +149,10 @@ function createTriggerFirstMigration(
 	}, [] as Changeset[]);
 }
 
-function createTriggerMigration(diff: TriggerCreateDiff, schemaName: string) {
+function createTriggerMigration(
+	diff: TriggerCreateDiff,
+	{ schemaName }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const triggerName = diff.path[2];
 	const trigger = diff.value.split(":");
@@ -185,8 +177,7 @@ function createTriggerMigration(diff: TriggerCreateDiff, schemaName: string) {
 
 function dropTriggerFirstMigration(
 	diff: TriggerDropFirstDiff,
-	droppedTables: string[],
-	schemaName: string,
+	{ schemaName, droppedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.oldValue).reduce((acc, [key, value]) => {
@@ -219,7 +210,10 @@ function dropTriggerFirstMigration(
 	}, [] as Changeset[]);
 }
 
-function dropTriggerMigration(diff: TriggerDropDiff, schemaName: string) {
+function dropTriggerMigration(
+	diff: TriggerDropDiff,
+	{ schemaName }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const triggerName = diff.path[2];
 	const trigger = diff.oldValue.split(":");
@@ -244,7 +238,10 @@ function dropTriggerMigration(diff: TriggerDropDiff, schemaName: string) {
 	return changeset;
 }
 
-function changeTriggerMigration(diff: TriggerChangeDiff, schemaName: string) {
+function changeTriggerMigration(
+	diff: TriggerChangeDiff,
+	{ schemaName }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const triggerName = diff.path[2];
 	const newValue = diff.value;

@@ -1,15 +1,13 @@
 /* eslint-disable max-lines */
 import type { Difference } from "microdiff";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "../../../../../introspection/introspection.js";
+import type { LocalTableInfo } from "../../../../../introspection/introspection.js";
 import {
 	columnNameKey,
 	extractColumnsFromPrimaryKey,
@@ -18,22 +16,16 @@ import {
 
 export function primaryKeyMigrationOpGenerator(
 	diff: Difference,
-	addedTables: string[],
-	droppedTables: string[],
-	local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (isPrimaryKeyCreate(diff)) {
-		return createPrimaryKeyMigration(diff, addedTables, local, schemaName);
+		return createPrimaryKeyMigration(diff, context);
 	}
 	if (isPrimaryKeyDrop(diff)) {
-		return dropPrimaryKeyMigration(diff, droppedTables, local, schemaName);
+		return dropPrimaryKeyMigration(diff, context);
 	}
-	if (isPrimaryKeyChange(diff, local)) {
-		return changePrimaryKeyMigration(diff, local, schemaName);
+	if (isPrimaryKeyChange(diff, context.local)) {
+		return changePrimaryKeyMigration(diff, context);
 	}
 }
 
@@ -123,9 +115,7 @@ export function primaryKeyColumnsChange(
 
 function createPrimaryKeyMigration(
 	diff: PrimaryKeyCreate,
-	addedTables: string[],
-	local: LocalTableInfo,
-	schemaName: string,
+	{ schemaName, addedTables, local }: GeneratorContext,
 ): Changeset {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(diff.value)[0] as keyof typeof diff.value;
@@ -160,9 +150,7 @@ function createPrimaryKeyMigration(
 
 function dropPrimaryKeyMigration(
 	diff: PrimaryKeyDropDiff,
-	droppedTables: string[],
-	local: LocalTableInfo,
-	schemaName: string,
+	{ schemaName, droppedTables, local }: GeneratorContext,
 ): Changeset {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(
@@ -199,8 +187,7 @@ function dropPrimaryKeyMigration(
 
 function changePrimaryKeyMigration(
 	diff: PrimaryKeyChangeDiff,
-	local: LocalTableInfo,
-	schemaName: string,
+	{ schemaName, local }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const primaryKeyName = diff.path[2];

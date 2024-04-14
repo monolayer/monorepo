@@ -1,4 +1,5 @@
 import type { Difference } from "microdiff";
+import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	MigrationOpPriority,
@@ -8,33 +9,22 @@ import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
 } from "../../../../../changeset/helpers.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "../../../../../introspection/introspection.js";
 
 export function CheckMigrationOpGenerator(
 	diff: Difference,
-	addedTables: string[],
-	droppedTables: string[],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_local: LocalTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_db: DbTableInfo,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	schemaName: string,
+	context: GeneratorContext,
 ) {
 	if (istCreateFirstCheck(diff)) {
-		return createFirstCheckMigration(diff, addedTables, schemaName);
+		return createFirstCheckMigration(diff, context);
 	}
 	if (isDropAllChecks(diff)) {
-		return dropAllChecksMigration(diff, droppedTables, schemaName);
+		return dropAllChecksMigration(diff, context);
 	}
 	if (isCreateCheck(diff)) {
-		return createCheckMigration(diff, schemaName);
+		return createCheckMigration(diff, context);
 	}
 	if (isDropCheck(diff)) {
-		return dropCheckMigration(diff, schemaName);
+		return dropCheckMigration(diff, context);
 	}
 }
 
@@ -68,8 +58,7 @@ function isDropAllChecks(test: Difference): test is DropAllChecksDiff {
 
 function createFirstCheckMigration(
 	diff: CreateFirstCheckDiff,
-	addedTables: string[],
-	schemaName: string,
+	{ addedTables, schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const indexNames = Object.keys(diff.value) as Array<keyof typeof diff.value>;
@@ -105,8 +94,7 @@ function createFirstCheckMigration(
 
 function dropAllChecksMigration(
 	diff: DropAllChecksDiff,
-	droppedTables: string[],
-	schemaName: string,
+	{ droppedTables, schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const checkNames = Object.keys(diff.oldValue) as Array<
@@ -157,7 +145,10 @@ function isCreateCheck(test: Difference): test is CreateCheck {
 	);
 }
 
-function createCheckMigration(diff: CreateCheck, schemaName: string) {
+function createCheckMigration(
+	diff: CreateCheck,
+	{ schemaName }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const checkName = diff.path[2];
 	const check = diff.value.split(":");
@@ -187,7 +178,7 @@ function isDropCheck(test: Difference): test is DropCheck {
 	);
 }
 
-function dropCheckMigration(diff: DropCheck, schemaName: string) {
+function dropCheckMigration(diff: DropCheck, { schemaName }: GeneratorContext) {
 	const tableName = diff.path[1];
 	const checkName = diff.path[2];
 	const check = diff.oldValue.split(":");
