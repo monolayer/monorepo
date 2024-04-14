@@ -576,8 +576,8 @@ describe("schema", () => {
 			},
 			checkConstraints: {
 				books: {
-					"918b4271_yount_chk": '918b4271:"id" > 50',
-					e37c55a5_yount_chk: 'e37c55a5:"id" < 50000',
+					books_918b4271_yount_chk: '918b4271:"id" > 50',
+					books_e37c55a5_yount_chk: 'e37c55a5:"id" < 50000',
 				},
 			},
 
@@ -923,8 +923,8 @@ describe("schema", () => {
 			},
 			checkConstraints: {
 				users: {
-					f685097b_yount_chk: 'f685097b:"book_id" < 50000',
-					fa9b3b3f_yount_chk: 'fa9b3b3f:"book_id" > 50',
+					users_f685097b_yount_chk: 'f685097b:"book_id" < 50000',
+					users_fa9b3b3f_yount_chk: 'fa9b3b3f:"book_id" > 50',
 				},
 			},
 

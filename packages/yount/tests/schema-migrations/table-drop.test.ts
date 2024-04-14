@@ -562,10 +562,10 @@ describe("Table drop migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addCheckConstraint("971041d9_yount_chk", sql`"id" > 50`)
+			.addCheckConstraint("books_971041d9_yount_chk", sql`"id" > 50`)
 			.execute();
 
-		await sql`COMMENT ON CONSTRAINT "971041d9_yount_chk" ON "books" IS \'971041d9_yount_chk\'`.execute(
+		await sql`COMMENT ON CONSTRAINT "books_971041d9_yount_chk" ON "books" IS \'971041d9_yount_chk\'`.execute(
 			context.kysely,
 		);
 
@@ -576,15 +576,15 @@ describe("Table drop migrations", () => {
 				type: "dropConstraint",
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "971041d9_yount_chk" CHECK ((id > 50)) NOT VALID`',
+						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "books_971041d9_yount_chk" CHECK ((id > 50)) NOT VALID`',
 						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "971041d9_yount_chk" ON "public"."books" IS \'971041d9_yount_chk\'`',
+						'await sql`COMMENT ON CONSTRAINT "books_971041d9_yount_chk" ON "public"."books" IS \'971041d9_yount_chk\'`',
 						"execute(db);",
 					],
 					[
-						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "971041d9_yount_chk"`',
+						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "books_971041d9_yount_chk"`',
 						"execute(db);",
 					],
 				],

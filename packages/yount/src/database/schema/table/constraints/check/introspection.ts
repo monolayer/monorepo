@@ -81,7 +81,7 @@ export function localCheckConstraintInfo(
 						camelCase.enabled,
 					);
 					const key = hashValue(checkExpression);
-					const name = `${key}_yount_chk`;
+					const name = `${transformedTableName}_${key}_yount_chk`;
 					const checkObject = {
 						[`${name}`]: `${key}:${checkExpression}`,
 					};
