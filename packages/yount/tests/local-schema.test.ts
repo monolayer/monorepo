@@ -1436,7 +1436,6 @@ describe("#localSchema with external objects", () => {
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
