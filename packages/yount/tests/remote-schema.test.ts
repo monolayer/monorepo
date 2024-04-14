@@ -82,7 +82,7 @@ describe("#remoteSchema", () => {
 				["id"],
 			)
 			.addUniqueConstraint(
-				"remote_schema_users_email_yount_key",
+				"remote_schema_users_ab123df2_yount_key",
 				["email"],
 				(builder) => builder.nullsNotDistinct(),
 			)
@@ -277,8 +277,7 @@ describe("#remoteSchema", () => {
 			},
 			uniqueConstraints: {
 				remote_schema_users: {
-					remote_schema_users_email_yount_key:
-						'"remote_schema_users_email_yount_key" UNIQUE NULLS NOT DISTINCT ("email")',
+					ab123df2: 'UNIQUE NULLS NOT DISTINCT ("email")',
 				},
 			},
 			foreignKeyConstraints: {
@@ -345,7 +344,7 @@ describe("#remoteSchema", () => {
 				["id"],
 			)
 			.addUniqueConstraint(
-				"remoteSchemaUsers_name_yount_key",
+				"remoteSchemaUsers_ab123df2_yount_key",
 				["name"],
 				(builder) => builder.nullsNotDistinct(),
 			)
@@ -466,8 +465,7 @@ describe("#remoteSchema", () => {
 			},
 			uniqueConstraints: {
 				remoteSchemaUsers: {
-					remoteSchemaUsers_name_yount_key:
-						'"remoteSchemaUsers_name_yount_key" UNIQUE NULLS NOT DISTINCT ("name")',
+					ab123df2: 'UNIQUE NULLS NOT DISTINCT ("name")',
 				},
 			},
 			checkConstraints: {},

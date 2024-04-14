@@ -11,6 +11,7 @@ import {
 } from "~/database/schema/table/constraints/unique/unique.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import type { UniqueInfo } from "~/migrations/migration-schema.js";
+import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 
 export type UniqueConstraintInfo = {
@@ -66,6 +67,7 @@ export async function dbUniqueConstraintInfo(
 		.select([
 			sql<"UNIQUE">`'UNIQUE'`.as("constraintType"),
 			"pg_class.relname as table",
+			sql<string>`pg_constraint.conname`.as("name"),
 			sql<string[]>`json_agg(pg_attribute.attname)`.as("columns"),
 		])
 		.select((eb) => [
@@ -81,14 +83,16 @@ export async function dbUniqueConstraintInfo(
 		.where("pg_constraint.conname", "~", "yount_key$")
 		.where("pg_namespace.nspname", "=", databaseSchema)
 		.where("pg_class.relname", "in", tableNames)
-		.groupBy(["table", "information_schema.table_constraints.nulls_distinct"])
+		.groupBy([
+			"table",
+			"information_schema.table_constraints.nulls_distinct",
+			"pg_constraint.conname",
+		])
 		.execute();
 	const transformedResults = results.reduce<UniqueInfo>((acc, result) => {
-		const keyName = `${result.table}_${result.columns
-			.sort()
-			.join("_")}_yount_key`;
+		const constraintHash = result.name.match(/^\w+_(\w+)_yount_key$/)![1];
 		const constraintInfo = {
-			[keyName]: uniqueConstraintInfoToQuery(result),
+			[`${constraintHash}`]: uniqueConstraintInfoToQuery(result),
 		};
 		const table = result.table;
 		if (table !== null) {
@@ -153,11 +157,10 @@ export function uniqueToInfo(
 	const columns = args.columns
 		.sort()
 		.map((column) => toSnakeCase(column, camelCase));
-	const keyName = `${newTableName}_${columns.join("_")}_yount_key`;
-
+	const hash = hashValue(`${args.nullsDistinct}_${columns.sort().join("_")}`);
 	const kyselyBuilder = kysely.schema
 		.alterTable(newTableName)
-		.addUniqueConstraint(keyName, columns, (uc) => {
+		.addUniqueConstraint(hash, columns, (uc) => {
 			if (args.nullsDistinct === false) {
 				return uc.nullsNotDistinct();
 			}
@@ -166,10 +169,10 @@ export function uniqueToInfo(
 
 	let compiledQuery = kyselyBuilder.compile().sql;
 
-	compiledQuery = compiledQuery.replace(
-		/alter table "\w+" add constraint /,
-		"",
-	);
+	compiledQuery = compiledQuery
+		.replace(/alter table "\w+" add constraint /, "")
+		.replace(`"${hash}" `, "");
+
 	if (args.nullsDistinct) {
 		compiledQuery = compiledQuery.replace("unique", "UNIQUE NULLS DISTINCT");
 	} else {
@@ -180,13 +183,12 @@ export function uniqueToInfo(
 	}
 
 	return {
-		[keyName]: compiledQuery,
+		[hash]: compiledQuery,
 	};
 }
 
 export function uniqueConstraintInfoToQuery(info: UniqueConstraintInfo) {
 	return [
-		`"${info.table}_${info.columns.sort().join("_")}_yount_key"`,
 		"UNIQUE",
 		info.nullsDistinct ? "NULLS DISTINCT" : "NULLS NOT DISTINCT",
 		`(${info.columns

@@ -353,7 +353,7 @@ describe("Table drop migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addUniqueConstraint("books_id_yount_key", ["id"], (uc) =>
+			.addUniqueConstraint("books_a91945e0_yount_key", ["id"], (uc) =>
 				uc.nullsNotDistinct(),
 			)
 			.execute();
@@ -366,7 +366,7 @@ describe("Table drop migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addUniqueConstraint("users_id_fullName_yount_key", ["id", "fullName"])
+			.addUniqueConstraint("users_plwe342w_yount_key", ["id", "fullName"])
 			.execute();
 
 		const books = table({
@@ -394,7 +394,7 @@ describe("Table drop migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addUniqueConstraint("users_fullName_id_yount_key", ["fullName", "id"])',
+						'addUniqueConstraint("users_plwe342w_yount_key", ["fullName", "id"])',
 						"execute();",
 					],
 				],

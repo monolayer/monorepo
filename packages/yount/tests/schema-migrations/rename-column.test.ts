@@ -148,7 +148,7 @@ describe("Rename column migrations", () => {
 			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
-				.addUniqueConstraint("users_name_yount_key", ["name"])
+				.addUniqueConstraint("users_qw3e4r321_yount_key", ["name"])
 				.execute();
 
 			const users = table({
@@ -175,7 +175,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_name_yount_key")',
+							'dropConstraint("users_qw3e4r321_yount_key")',
 							"execute();",
 						],
 					],
@@ -183,7 +183,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addUniqueConstraint("users_name_yount_key", ["name"])',
+							'addUniqueConstraint("users_qw3e4r321_yount_key", ["name"])',
 							"execute();",
 						],
 					],
@@ -217,7 +217,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addUniqueConstraint("users_fullName_yount_key", ["fullName"], (col) => col.nullsNotDistinct())',
+							'addUniqueConstraint("users_d7208c3d_yount_key", ["fullName"], (col) => col.nullsNotDistinct())',
 							"execute();",
 						],
 					],
@@ -225,7 +225,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_fullName_yount_key")',
+							'dropConstraint("users_d7208c3d_yount_key")',
 							"execute();",
 						],
 					],
@@ -291,7 +291,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addUniqueConstraint("users_fullName_yount_key", ["fullName"])',
+							'addUniqueConstraint("users_fdbf03f9_yount_key", ["fullName"])',
 							"execute();",
 						],
 					],
@@ -299,7 +299,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_fullName_yount_key")',
+							'dropConstraint("users_fdbf03f9_yount_key")',
 							"execute();",
 						],
 					],
@@ -880,7 +880,7 @@ describe("Rename column migrations", () => {
 			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
-				.addUniqueConstraint("users_name_yount_key", ["name"])
+				.addUniqueConstraint("users_fdbf03f9_yount_key", ["name"])
 				.execute();
 
 			await context.kysely.schema
@@ -915,7 +915,7 @@ describe("Rename column migrations", () => {
 			await context.kysely.schema
 				.createTable("users6")
 				.addColumn("fullName", "text")
-				.addUniqueConstraint("usersh_fullName_yount_key", ["fullName"])
+				.addUniqueConstraint("users6_fdbf03f9_yount_key", ["fullName"])
 				.execute();
 
 			const users = table({

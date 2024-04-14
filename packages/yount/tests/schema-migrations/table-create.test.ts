@@ -588,7 +588,7 @@ describe("Table create migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'addUniqueConstraint("books_id_yount_key", ["id"], (col) => col.nullsNotDistinct())',
+						'addUniqueConstraint("books_a91945e0_yount_key", ["id"], (col) => col.nullsNotDistinct())',
 						"execute();",
 					],
 				],
@@ -602,7 +602,7 @@ describe("Table create migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addUniqueConstraint("users_id_yount_key", ["id"])',
+						'addUniqueConstraint("users_acdd8fa3_yount_key", ["id"])',
 						"execute();",
 					],
 				],
@@ -667,7 +667,7 @@ describe("Table create migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'addUniqueConstraint("books_id_yount_key", ["id"], (col) => col.nullsNotDistinct())',
+						'addUniqueConstraint("books_a91945e0_yount_key", ["id"], (col) => col.nullsNotDistinct())',
 						"execute();",
 					],
 				],

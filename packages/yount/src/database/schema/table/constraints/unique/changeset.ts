@@ -17,9 +17,6 @@ export function uniqueConstraintMigrationOpGenerator(
 	if (isUniqueConstraintDropLast(diff)) {
 		return dropUniqueLastConstraintMigration(diff, context);
 	}
-	if (isUniqueConstraintChange(diff)) {
-		return changeUniqueConstraintMigration(diff, context);
-	}
 	if (isUniqueContraintCreateDiff(diff)) {
 		return createUniqueConstraintMigration(diff, context);
 	}
@@ -53,13 +50,6 @@ type UniqueDropLast = {
 type UuniqueDropDiff = {
 	type: "REMOVE";
 	path: ["uniqueConstraints", string, string];
-	oldValue: string;
-};
-
-type UniqueChangeDiff = {
-	type: "CHANGE";
-	path: ["uniqueConstraints", string, string];
-	value: string;
 	oldValue: string;
 };
 
@@ -109,25 +99,17 @@ function isUniqueConstraintDropDiff(test: Difference): test is UuniqueDropDiff {
 	);
 }
 
-function isUniqueConstraintChange(test: Difference): test is UniqueChangeDiff {
-	return (
-		test.type === "CHANGE" &&
-		test.path.length === 3 &&
-		test.path[0] === "uniqueConstraints" &&
-		typeof test.path[1] === "string" &&
-		typeof test.path[2] === "string" &&
-		typeof test.value === "string" &&
-		typeof test.oldValue === "string"
-	);
-}
-
 function createUniqueFirstConstraintMigration(
 	diff: UniqueCreateFirst,
 	{ schemaName, addedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	return Object.entries(diff.value).reduce((acc, [, value]) => {
-		const uniqueConstraint = uniqueConstraintDefinition(value);
+	return Object.entries(diff.value).reduce((acc, [hashValue, value]) => {
+		const uniqueConstraint = uniqueConstraintDefinition(
+			value,
+			tableName,
+			hashValue,
+		);
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.ConstraintCreate,
 			tableName: tableName,
@@ -148,45 +130,27 @@ function dropUniqueLastConstraintMigration(
 ) {
 	const tableName = diff.path[1];
 
-	return Object.entries(diff.oldValue).reduce((acc, [, value]) => {
-		const constraintValue = value;
-		const uniqueConstraint = uniqueConstraintDefinition(constraintValue);
-		const changeset: Changeset = {
-			priority: MigrationOpPriority.ConstraintDrop,
-			tableName: tableName,
-			type: ChangeSetType.DropConstraint,
-			up: droppedTables.includes(tableName)
-				? [[]]
-				: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
-			down: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
-		};
-		acc.push(changeset);
-		return acc;
-	}, [] as Changeset[]);
-}
-
-function changeUniqueConstraintMigration(
-	diff: UniqueChangeDiff,
-	{ schemaName }: GeneratorContext,
-) {
-	const tableName = diff.path[1];
-	const newUniqueConstraint = uniqueConstraintDefinition(diff.value);
-	const oldUniqueConstraint = uniqueConstraintDefinition(diff.oldValue);
-
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.ConstraintChange,
-		tableName: tableName,
-		type: ChangeSetType.ChangeConstraint,
-		up: [
-			dropUniqueConstraintOp(tableName, oldUniqueConstraint, schemaName),
-			addUniqueConstraintOp(tableName, newUniqueConstraint, schemaName),
-		],
-		down: [
-			dropUniqueConstraintOp(tableName, newUniqueConstraint, schemaName),
-			addUniqueConstraintOp(tableName, oldUniqueConstraint, schemaName),
-		],
-	};
-	return changeset;
+	return Object.entries(diff.oldValue).reduce(
+		(acc, [hashValue, constraintValue]) => {
+			const uniqueConstraint = uniqueConstraintDefinition(
+				constraintValue,
+				tableName,
+				hashValue,
+			);
+			const changeset: Changeset = {
+				priority: MigrationOpPriority.ConstraintDrop,
+				tableName: tableName,
+				type: ChangeSetType.DropConstraint,
+				up: droppedTables.includes(tableName)
+					? [[]]
+					: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
+				down: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
+			};
+			acc.push(changeset);
+			return acc;
+		},
+		[] as Changeset[],
+	);
 }
 
 function createUniqueConstraintMigration(
@@ -194,7 +158,12 @@ function createUniqueConstraintMigration(
 	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	const uniqueConstraint = uniqueConstraintDefinition(diff.value);
+	const hashValue = diff.path[2];
+	const uniqueConstraint = uniqueConstraintDefinition(
+		diff.value,
+		tableName,
+		hashValue,
+	);
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintCreate,
@@ -211,7 +180,12 @@ function dropUniqueConstraintMigration(
 	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	const uniqueConstraint = uniqueConstraintDefinition(diff.oldValue);
+	const hashValue = diff.path[2];
+	const uniqueConstraint = uniqueConstraintDefinition(
+		diff.oldValue,
+		tableName,
+		hashValue,
+	);
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintDrop,
@@ -229,11 +203,15 @@ type ConstraintDefinition = {
 	columns: string[];
 };
 
-function uniqueConstraintDefinition(unique: string) {
+function uniqueConstraintDefinition(
+	unique: string,
+	tableName: string,
+	hashValue: string,
+) {
 	const [, columns] = unique.split("DISTINCT (");
 
 	const definition: ConstraintDefinition = {
-		name: unique.match(/"(\w+)"/)?.[1] || "",
+		name: `${tableName}_${hashValue}_yount_key`,
 		distinct: unique.includes("UNIQUE NULLS DISTINCT"),
 		columns: columns?.replace(/"/g, "").split(")")[0]?.split(", ") || [],
 	};

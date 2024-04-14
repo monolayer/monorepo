@@ -564,14 +564,11 @@ describe("schema", () => {
 			},
 			uniqueConstraints: {
 				users: {
-					users_email_yount_key:
-						'"users_email_yount_key" UNIQUE NULLS NOT DISTINCT ("email")',
-					users_name_yount_key:
-						'"users_name_yount_key" UNIQUE NULLS DISTINCT ("name")',
+					"5e2b6cf1": 'UNIQUE NULLS NOT DISTINCT ("email")',
+					adbefd84: 'UNIQUE NULLS DISTINCT ("name")',
 				},
 				books: {
-					books_location_name_yount_key:
-						'"books_location_name_yount_key" UNIQUE NULLS DISTINCT ("location", "name")',
+					b4f171de: 'UNIQUE NULLS DISTINCT ("location", "name")',
 				},
 			},
 			checkConstraints: {
@@ -905,20 +902,15 @@ describe("schema", () => {
 			},
 			uniqueConstraints: {
 				users: {
-					users_email_yount_key:
-						'"users_email_yount_key" UNIQUE NULLS NOT DISTINCT ("email")',
-					users_name_yount_key:
-						'"users_name_yount_key" UNIQUE NULLS DISTINCT ("name")',
-					users_full_name_yount_key:
-						'"users_full_name_yount_key" UNIQUE NULLS DISTINCT ("full_name")',
+					"5e2b6cf1": 'UNIQUE NULLS NOT DISTINCT ("email")',
+					adbefd84: 'UNIQUE NULLS DISTINCT ("name")',
+					"37cff225": 'UNIQUE NULLS DISTINCT ("full_name")',
 				},
 				books: {
-					books_location_name_yount_key:
-						'"books_location_name_yount_key" UNIQUE NULLS DISTINCT ("location", "name")',
+					b4f171de: 'UNIQUE NULLS DISTINCT ("location", "name")',
 				},
 				new_books: {
-					new_books_location_name_yount_key:
-						'"new_books_location_name_yount_key" UNIQUE NULLS DISTINCT ("location", "name")',
+					b4f171de: 'UNIQUE NULLS DISTINCT ("location", "name")',
 				},
 			},
 			checkConstraints: {
@@ -1308,20 +1300,15 @@ test("#localSchemaCamelCase", () => {
 		},
 		uniqueConstraints: {
 			users: {
-				users_email_yount_key:
-					'"users_email_yount_key" UNIQUE NULLS NOT DISTINCT ("email")',
-				users_name_yount_key:
-					'"users_name_yount_key" UNIQUE NULLS DISTINCT ("name")',
-				users_full_name_yount_key:
-					'"users_full_name_yount_key" UNIQUE NULLS DISTINCT ("full_name")',
+				"5e2b6cf1": 'UNIQUE NULLS NOT DISTINCT ("email")',
+				adbefd84: 'UNIQUE NULLS DISTINCT ("name")',
+				"37cff225": 'UNIQUE NULLS DISTINCT ("full_name")',
 			},
 			books: {
-				books_location_name_yount_key:
-					'"books_location_name_yount_key" UNIQUE NULLS DISTINCT ("location", "name")',
+				b4f171de: 'UNIQUE NULLS DISTINCT ("location", "name")',
 			},
 			new_books: {
-				new_books_location_name_yount_key:
-					'"new_books_location_name_yount_key" UNIQUE NULLS DISTINCT ("location", "name")',
+				b4f171de: 'UNIQUE NULLS DISTINCT ("location", "name")',
 			},
 		},
 		checkConstraints: {},
