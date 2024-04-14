@@ -93,12 +93,12 @@ describe("#remoteSchema", () => {
 		);
 
 		await kysely.schema
-			.createIndex("remote_schema_users_name_email_yount_idx")
+			.createIndex("remote_schema_users_asdc234e_yount_idx")
 			.on("remote_schema_users")
 			.columns(["name", "email"])
 			.execute();
 
-		await sql`COMMENT ON INDEX remote_schema_users_name_email_yount_idx IS 'abcd'`.execute(
+		await sql`COMMENT ON INDEX remote_schema_users_asdc234e_yount_idx IS 'abcd'`.execute(
 			kysely,
 		);
 
@@ -271,8 +271,8 @@ describe("#remoteSchema", () => {
 			},
 			index: {
 				remote_schema_users: {
-					remote_schema_users_name_email_yount_idx:
-						"abcd:CREATE INDEX remote_schema_users_name_email_yount_idx ON public.remote_schema_users USING btree (name, email)",
+					asdc234e:
+						"CREATE INDEX remote_schema_users_asdc234e_yount_idx ON public.remote_schema_users USING btree (name, email)",
 				},
 			},
 			uniqueConstraints: {
@@ -351,12 +351,12 @@ describe("#remoteSchema", () => {
 			.execute();
 
 		await kysely.schema
-			.createIndex("remoteSchemaUsers_name_email_yount_idx")
+			.createIndex("remoteSchemaUsers_rt56zewq_yount_idx")
 			.on("remoteSchemaUsers")
 			.columns(["name", "email"])
 			.execute();
 
-		await sql`COMMENT ON INDEX "remoteSchemaUsers_name_email_yount_idx" IS 'abcd'`.execute(
+		await sql`COMMENT ON INDEX "remoteSchemaUsers_rt56zewq_yount_idx" IS 'abcd'`.execute(
 			kysely,
 		);
 
@@ -459,8 +459,8 @@ describe("#remoteSchema", () => {
 			},
 			index: {
 				remoteSchemaUsers: {
-					remoteSchemaUsers_name_email_yount_idx:
-						'abcd:CREATE INDEX "remoteSchemaUsers_name_email_yount_idx" ON public."remoteSchemaUsers" USING btree (name, email)',
+					rt56zewq:
+						'CREATE INDEX "remoteSchemaUsers_rt56zewq_yount_idx" ON public."remoteSchemaUsers" USING btree (name, email)',
 				},
 			},
 			uniqueConstraints: {

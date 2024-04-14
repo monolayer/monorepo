@@ -921,10 +921,6 @@ describe("Table create migrations", () => {
 						'await sql`create index "users_83f9e13d_yount_idx" on "public"."users" ("name")`',
 						"execute(db);",
 					],
-					[
-						'await sql`COMMENT ON INDEX "public"."users_83f9e13d_yount_idx" IS \'83f9e13d\'`',
-						"execute(db);",
-					],
 				],
 			},
 			{
@@ -935,10 +931,6 @@ describe("Table create migrations", () => {
 				up: [
 					[
 						'await sql`create unique index "books_e3f7ebdd_yount_idx" on "public"."books" ("id")`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON INDEX "public"."books_e3f7ebdd_yount_idx" IS \'e3f7ebdd\'`',
 						"execute(db);",
 					],
 				],
@@ -1539,10 +1531,6 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 						'await sql`create index "users_1ff7c491_yount_idx" on "public"."users" ("full_name")`',
 						"execute(db);",
 					],
-					[
-						'await sql`COMMENT ON INDEX "public"."users_1ff7c491_yount_idx" IS \'1ff7c491\'`',
-						"execute(db);",
-					],
 				],
 			},
 			{
@@ -1553,10 +1541,6 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				up: [
 					[
 						'await sql`create unique index "books_e3f7ebdd_yount_idx" on "public"."books" ("id")`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON INDEX "public"."books_e3f7ebdd_yount_idx" IS \'e3f7ebdd\'`',
 						"execute(db);",
 					],
 				],
@@ -1571,10 +1555,6 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 						'await sql`create unique index "new_books_3282a057_yount_idx" on "public"."new_books" ("id")`',
 						"execute(db);",
 					],
-					[
-						'await sql`COMMENT ON INDEX "public"."new_books_3282a057_yount_idx" IS \'3282a057\'`',
-						"execute(db);",
-					],
 				],
 			},
 			{
@@ -1585,10 +1565,6 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				up: [
 					[
 						'await sql`create unique index "library_building_88b61d72_yount_idx" on "public"."library_building" ("id")`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON INDEX "public"."library_building_88b61d72_yount_idx" IS \'88b61d72\'`',
 						"execute(db);",
 					],
 				],

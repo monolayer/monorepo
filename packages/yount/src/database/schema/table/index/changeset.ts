@@ -57,21 +57,17 @@ function createFirstIndexMigration(
 	{ schemaName, addedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	const indexNames = Object.keys(diff.value) as Array<keyof typeof diff.value>;
-	return indexNames
-		.flatMap((indexName) => {
-			const index = diff.value[indexName]?.split(":");
+	const indexHashes = Object.keys(diff.value) as Array<keyof typeof diff.value>;
+	return indexHashes
+		.flatMap((indexHash) => {
+			const index = diff.value[indexHash]?.split(":");
+			const indexName = `${tableName}_${indexHash}_yount_idx`;
 			if (index !== undefined) {
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.IndexCreate,
 					tableName: tableName,
 					type: ChangeSetType.CreateIndex,
-					up: [
-						executeKyselyDbStatement(`${index[1]}`),
-						executeKyselyDbStatement(
-							`COMMENT ON INDEX "${schemaName}"."${indexName}" IS '${index[0]}'`,
-						),
-					],
+					up: [executeKyselyDbStatement(`${index[0]}`)],
 					down: addedTables.includes(tableName)
 						? [[]]
 						: [
@@ -92,12 +88,12 @@ function dropAllIndexesMigration(
 	{ schemaName, droppedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	const indexNames = Object.keys(diff.oldValue) as Array<
+	const indexHashes = Object.keys(diff.oldValue) as Array<
 		keyof typeof diff.oldValue
 	>;
-	return indexNames
-		.flatMap((indexName) => {
-			const index = diff.oldValue[indexName]?.split(":");
+	return indexHashes
+		.flatMap((indexHash) => {
+			const index = diff.oldValue[indexHash]?.split(":");
 			if (index === undefined) return;
 			const changeSet: Changeset = {
 				priority: MigrationOpPriority.IndexDrop,
@@ -108,15 +104,10 @@ function dropAllIndexesMigration(
 					: [
 							executeKyselySchemaStatement(
 								schemaName,
-								`dropIndex("${indexName}")`,
+								`dropIndex("${indexHash}")`,
 							),
 						],
-				down: [
-					executeKyselyDbStatement(`${index[1]}`),
-					executeKyselyDbStatement(
-						`COMMENT ON INDEX "public"."${indexName}" IS '${index[0]}'`,
-					),
-				],
+				down: [executeKyselyDbStatement(`${index[0]}`)],
 			};
 			return changeSet;
 		})
@@ -143,18 +134,14 @@ function createIndexMigration(
 	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	const indexName = diff.path[2];
-	const index = diff.value.split(":");
+	const hash = diff.path[2];
+	const indexName = `${tableName}_${hash}_yount_idx`;
+	const index = diff.value;
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.IndexCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateIndex,
-		up: [
-			executeKyselyDbStatement(`${index[1]}`),
-			executeKyselyDbStatement(
-				`COMMENT ON INDEX "${schemaName}"."${indexName}" IS '${index[0]}'`,
-			),
-		],
+		up: [executeKyselyDbStatement(`${index}`)],
 		down: [
 			executeKyselySchemaStatement(schemaName, `dropIndex("${indexName}")`),
 		],
@@ -179,19 +166,15 @@ function isDropIndex(test: Difference): test is DropIndex {
 
 function dropIndexMigration(diff: DropIndex, { schemaName }: GeneratorContext) {
 	const tableName = diff.path[1];
-	const indexName = diff.path[2];
-	const index = diff.oldValue.split(":");
+	const hash = diff.path[2];
+	const indexName = `${tableName}_${hash}_yount_idx`;
+	const index = diff.oldValue;
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.IndexDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropIndex,
 		up: [executeKyselySchemaStatement(schemaName, `dropIndex("${indexName}")`)],
-		down: [
-			executeKyselyDbStatement(`${index[1]}`),
-			executeKyselyDbStatement(
-				`COMMENT ON INDEX "${schemaName}"."${indexName}" IS '${index[0]}'`,
-			),
-		],
+		down: [executeKyselyDbStatement(`${index}`)],
 	};
 	return changeset;
 }

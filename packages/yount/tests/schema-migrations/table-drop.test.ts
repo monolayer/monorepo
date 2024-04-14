@@ -630,14 +630,14 @@ describe("Table drop migrations", () => {
 			.createTable("users")
 			.addColumn("name", "text")
 			.execute();
-		await sql`create index "users_name_yount_idx" on "users" ("name");COMMENT ON INDEX users_name_yount_idx IS \'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45\'`.execute(
+		await sql`create index "users_qa1qaw23_yount_idx" on "users" ("name");`.execute(
 			context.kysely,
 		);
 		await context.kysely.schema
 			.createTable("books")
 			.addColumn("id", "text")
 			.execute();
-		await sql`create unique index "books_id_yount_idx" on "books" ("id");COMMENT ON INDEX books_id_yount_idx IS \'22009828\'`.execute(
+		await sql`create unique index "books_mk3e4r3e_yount_idx" on "books" ("id");`.execute(
 			context.kysely,
 		);
 
@@ -649,11 +649,7 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						"await sql`CREATE UNIQUE INDEX books_id_yount_idx ON public.books USING btree (id)`",
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON INDEX "public"."books_id_yount_idx" IS \'22009828\'`',
+						"await sql`CREATE UNIQUE INDEX books_mk3e4r3e_yount_idx ON public.books USING btree (id)`",
 						"execute(db);",
 					],
 				],
@@ -665,11 +661,7 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						"await sql`CREATE INDEX users_name_yount_idx ON public.users USING btree (name)`",
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON INDEX "public"."users_name_yount_idx" IS \'f873e4a8464da05b0b0978fff8711714af80a8c32d067955877ae60792414d45\'`',
+						"await sql`CREATE INDEX users_qa1qaw23_yount_idx ON public.users USING btree (name)`",
 						"execute(db);",
 					],
 				],

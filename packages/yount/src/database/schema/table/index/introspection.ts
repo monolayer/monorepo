@@ -49,10 +49,11 @@ export async function dbIndexInfo(
 		.execute();
 
 	const indexInfo = results.reduce<IndexInfo>((acc, curr) => {
+		const constraintHash = curr.name.match(/^\w+_(\w+)_yount_idx$/)![1];
 		acc[curr.table] = {
 			...acc[curr.table],
 			...{
-				[curr.name]: `${curr.comment}:${curr.definition}`,
+				[`${constraintHash}`]: curr.definition,
 			},
 		};
 		return acc;
@@ -139,7 +140,7 @@ export function indexToInfo(
 	const compiledQuery = kyselyBuilder.compile().sql;
 
 	return {
-		[indexName]: `${hash}:${compiledQuery}`,
+		[hash]: compiledQuery,
 	};
 }
 

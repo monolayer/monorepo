@@ -700,14 +700,10 @@ describe("Rename column migrations", () => {
 				.execute();
 
 			await context.kysely.schema
-				.createIndex("users_pk1_book_id_yount_idx")
+				.createIndex("users_pk1_pwe34rew_yount_idx")
 				.on("users_pk1")
 				.columns(["book_id"])
 				.execute();
-
-			await sql`COMMENT ON INDEX users_pk1_book_id_yount_idx IS 'abcd'`.execute(
-				context.kysely,
-			);
 
 			const users = table({
 				columns: {
@@ -731,17 +727,13 @@ describe("Rename column migrations", () => {
 					up: [
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_pk1_book_id_yount_idx")',
+							'dropIndex("users_pk1_pwe34rew_yount_idx")',
 							"execute();",
 						],
 					],
 					down: [
 						[
-							"await sql`CREATE INDEX users_pk1_book_id_yount_idx ON public.users_pk1 USING btree (book_id)`",
-							"execute(db);",
-						],
-						[
-							'await sql`COMMENT ON INDEX "public"."users_pk1_book_id_yount_idx" IS \'abcd\'`',
+							"await sql`CREATE INDEX users_pk1_pwe34rew_yount_idx ON public.users_pk1 USING btree (book_id)`",
 							"execute(db);",
 						],
 					],
@@ -774,10 +766,6 @@ describe("Rename column migrations", () => {
 					up: [
 						[
 							'await sql`create index "users_pk1_05a56827_yount_idx" on "public"."users_pk1" ("bookId")`',
-							"execute(db);",
-						],
-						[
-							'await sql`COMMENT ON INDEX "public"."users_pk1_05a56827_yount_idx" IS \'05a56827\'`',
 							"execute(db);",
 						],
 					],
@@ -849,10 +837,6 @@ describe("Rename column migrations", () => {
 					up: [
 						[
 							'await sql`create index "users_pk1_05a56827_yount_idx" on "public"."users_pk1" ("bookId")`',
-							"execute(db);",
-						],
-						[
-							'await sql`COMMENT ON INDEX "public"."users_pk1_05a56827_yount_idx" IS \'05a56827\'`',
 							"execute(db);",
 						],
 					],
@@ -1131,14 +1115,10 @@ describe("Rename column migrations", () => {
 				.execute();
 
 			await context.kysely.schema
-				.createIndex("users_pk1_book_id_yount_idx")
+				.createIndex("users_pk1_plo345re_yount_idx")
 				.on("users_pk1")
 				.columns(["book_id"])
 				.execute();
-
-			await sql`COMMENT ON INDEX users_pk1_book_id_yount_idx IS 'abcd'`.execute(
-				context.kysely,
-			);
 
 			await context.kysely.schema
 				.alterTable("users_pk1")
@@ -1167,17 +1147,13 @@ describe("Rename column migrations", () => {
 					up: [
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_pk1_book_id_yount_idx")',
+							'dropIndex("users_pk1_plo345re_yount_idx")',
 							"execute();",
 						],
 					],
 					down: [
 						[
-							'await sql`CREATE INDEX users_pk1_book_id_yount_idx ON public.users_pk1 USING btree ("bookId")`',
-							"execute(db);",
-						],
-						[
-							'await sql`COMMENT ON INDEX "public"."users_pk1_book_id_yount_idx" IS \'abcd\'`',
+							'await sql`CREATE INDEX users_pk1_plo345re_yount_idx ON public.users_pk1 USING btree ("bookId")`',
 							"execute(db);",
 						],
 					],
@@ -1189,10 +1165,6 @@ describe("Rename column migrations", () => {
 					up: [
 						[
 							'await sql`create index "users_pk1_05a56827_yount_idx" on "public"."users_pk1" ("bookId")`',
-							"execute(db);",
-						],
-						[
-							'await sql`COMMENT ON INDEX "public"."users_pk1_05a56827_yount_idx" IS \'05a56827\'`',
 							"execute(db);",
 						],
 					],
@@ -1231,10 +1203,6 @@ describe("Rename column migrations", () => {
 				.on("users_pk1")
 				.columns(["bookId"])
 				.execute();
-
-			await sql`COMMENT ON INDEX "users_pk1_05a56827_yount_idx" IS '05a56827'`.execute(
-				context.kysely,
-			);
 
 			const users = table({
 				columns: {

@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { schema } from "~/database/schema/schema.js";
 import { text } from "~/database/schema/table/column/data-types/text.js";
@@ -33,9 +31,6 @@ describe("Database migrations", () => {
 			.on("users")
 			.column("fullName")
 			.execute();
-		await sql`COMMENT ON INDEX "users_81f0b9e5_yount_idx" IS \'81f0b9e5\'`.execute(
-			context.kysely,
-		);
 
 		const users = table({
 			columns: {
@@ -59,10 +54,6 @@ describe("Database migrations", () => {
 				up: [
 					[
 						'await sql`create index "users_83f9e13d_yount_idx" on "public"."users" ("name")`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON INDEX "public"."users_83f9e13d_yount_idx" IS \'83f9e13d\'`',
 						"execute(db);",
 					],
 				],
@@ -92,22 +83,16 @@ describe("Database migrations", () => {
 			.execute();
 
 		await context.kysely.schema
-			.createIndex("users_fullName_yount_idx")
+			.createIndex("users_f3f9e13d_yount_idx")
 			.on("users")
 			.column("fullName")
 			.execute();
-		await sql`COMMENT ON INDEX "users_fullName_yount_idx" IS \'ad74f314\'`.execute(
-			context.kysely,
-		);
 
 		await context.kysely.schema
 			.createIndex("users_83f9e13d_yount_idx")
 			.on("users")
 			.column("name")
 			.execute();
-		await sql`COMMENT ON INDEX "users_83f9e13d_yount_idx" IS \'83f9e13d\'`.execute(
-			context.kysely,
-		);
 
 		const users = table({
 			columns: {
@@ -131,17 +116,13 @@ describe("Database migrations", () => {
 				up: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("users_fullName_yount_idx")',
+						'dropIndex("users_f3f9e13d_yount_idx")',
 						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`CREATE INDEX "users_fullName_yount_idx" ON public.users USING btree ("fullName")`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON INDEX "public"."users_fullName_yount_idx" IS \'ad74f314\'`',
+						'await sql`CREATE INDEX users_f3f9e13d_yount_idx ON public.users USING btree ("fullName")`',
 						"execute(db);",
 					],
 				],
@@ -168,18 +149,12 @@ describe("Database migrations", () => {
 			.on("users")
 			.column("fullName")
 			.execute();
-		await sql`COMMENT ON INDEX "users_81f0b9e5_yount_idx" IS \'81f0b9e5\'`.execute(
-			context.kysely,
-		);
 
 		await context.kysely.schema
 			.createIndex("users_83f9e13d_yount_idx")
 			.on("users")
 			.column("name")
 			.execute();
-		await sql`COMMENT ON INDEX "users_83f9e13d_yount_idx" IS \'83f9e13d\'`.execute(
-			context.kysely,
-		);
 
 		const users = table({
 			columns: {
@@ -212,10 +187,6 @@ describe("Database migrations", () => {
 						'await sql`CREATE INDEX users_81f0b9e5_yount_idx ON public.users USING btree ("fullName")`',
 						"execute(db);",
 					],
-					[
-						'await sql`COMMENT ON INDEX "public"."users_81f0b9e5_yount_idx" IS \'81f0b9e5\'`',
-						"execute(db);",
-					],
 				],
 			},
 			{
@@ -225,10 +196,6 @@ describe("Database migrations", () => {
 				up: [
 					[
 						'await sql`create index "users_c7bd604d_yount_idx" on "public"."users" ("name", "fullName")`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON INDEX "public"."users_c7bd604d_yount_idx" IS \'c7bd604d\'`',
 						"execute(db);",
 					],
 				],
@@ -262,18 +229,12 @@ describe("Database migrations", () => {
 			.on("users")
 			.column("fullName")
 			.execute();
-		await sql`COMMENT ON INDEX "users_81f0b9e5_yount_idx" IS \'81f0b9e5\'`.execute(
-			context.kysely,
-		);
 
 		await context.kysely.schema
 			.createIndex("users_83f9e13d_yount_idx")
 			.on("users")
 			.column("name")
 			.execute();
-		await sql`COMMENT ON INDEX "users_83f9e13d_yount_idx" IS \'83f9e13d\'`.execute(
-			context.kysely,
-		);
 
 		const users = table({
 			columns: {
@@ -306,10 +267,6 @@ describe("Database migrations", () => {
 						'await sql`CREATE INDEX users_81f0b9e5_yount_idx ON public.users USING btree ("fullName")`',
 						"execute(db);",
 					],
-					[
-						'await sql`COMMENT ON INDEX "public"."users_81f0b9e5_yount_idx" IS \'81f0b9e5\'`',
-						"execute(db);",
-					],
 				],
 			},
 			{
@@ -319,10 +276,6 @@ describe("Database migrations", () => {
 				up: [
 					[
 						'await sql`create unique index "users_1790ab15_yount_idx" on "public"."users" ("fullName")`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON INDEX "public"."users_1790ab15_yount_idx" IS \'1790ab15\'`',
 						"execute(db);",
 					],
 				],
