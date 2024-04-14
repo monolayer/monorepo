@@ -583,10 +583,10 @@ describe("schema", () => {
 
 			primaryKey: {
 				teams: {
-					teams_id_yount_pk: '"teams_id_yount_pk" PRIMARY KEY ("id")',
+					teams_yount_pk: '"teams_yount_pk" PRIMARY KEY ("id")',
 				},
 				users: {
-					users_id_yount_pk: '"users_id_yount_pk" PRIMARY KEY ("id")',
+					users_yount_pk: '"users_yount_pk" PRIMARY KEY ("id")',
 				},
 			},
 			triggers: {
@@ -930,8 +930,7 @@ describe("schema", () => {
 
 			primaryKey: {
 				users: {
-					users_full_name_yount_pk:
-						'"users_full_name_yount_pk" PRIMARY KEY ("full_name")',
+					users_yount_pk: '"users_yount_pk" PRIMARY KEY ("full_name")',
 				},
 			},
 			triggers: {
@@ -1328,8 +1327,7 @@ test("#localSchemaCamelCase", () => {
 		checkConstraints: {},
 		primaryKey: {
 			users: {
-				users_full_name_yount_pk:
-					'"users_full_name_yount_pk" PRIMARY KEY ("full_name")',
+				users_yount_pk: '"users_yount_pk" PRIMARY KEY ("full_name")',
 			},
 		},
 		triggers: {

@@ -496,7 +496,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_id_yount_pk", ["id"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -554,7 +554,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("users").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_id_yount_pk", ["id"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["id"])',
 						"execute();",
 					],
 				],

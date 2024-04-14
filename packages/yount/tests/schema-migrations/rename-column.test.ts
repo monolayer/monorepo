@@ -320,7 +320,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.execute();
 
-			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_name_yount_pk PRIMARY KEY (\"name\")`.execute(
+			await sql`ALTER TABLE users_pk1 ADD CONSTRAINT users_pk1_yount_pk PRIMARY KEY (\"name\")`.execute(
 				context.kysely,
 			);
 
@@ -341,33 +341,6 @@ describe("Rename column migrations", () => {
 
 			const expected = [
 				{
-					priority: 1004,
-					tableName: "users_pk1",
-					type: "dropPrimaryKey",
-					up: [
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_name_yount_pk")',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users_pk1")',
-							'alterColumn("name", (col) => col.dropNotNull())',
-							"execute();",
-						],
-					],
-					down: [
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users_pk1")',
-							'addPrimaryKeyConstraint("users_pk1_name_yount_pk", ["name"])',
-							"execute();",
-						],
-					],
-				},
-				{
 					priority: 3010,
 					tableName: "users_pk1",
 					type: "changeColumnName",
@@ -384,33 +357,6 @@ describe("Rename column migrations", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
 							'renameColumn("fullName", "name")',
-							"execute();",
-						],
-					],
-				},
-				{
-					priority: 4001,
-					tableName: "users_pk1",
-					type: "createPrimaryKey",
-					up: [
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users_pk1")',
-							'addPrimaryKeyConstraint("users_pk1_fullName_yount_pk", ["fullName"])',
-							"execute();",
-						],
-					],
-					down: [
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_fullName_yount_pk")',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users_pk1")',
-							'alterColumn("fullName", (col) => col.dropNotNull())',
 							"execute();",
 						],
 					],
@@ -476,7 +422,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
-							'addPrimaryKeyConstraint("users_pk1_fullName_yount_pk", ["fullName"])',
+							'addPrimaryKeyConstraint("users_pk1_yount_pk", ["fullName"])',
 							"execute();",
 						],
 					],
@@ -484,7 +430,7 @@ describe("Rename column migrations", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users_pk1")',
-							'dropConstraint("users_pk1_fullName_yount_pk")',
+							'dropConstraint("users_pk1_yount_pk")',
 							"execute();",
 						],
 						[

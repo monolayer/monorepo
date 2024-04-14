@@ -13,7 +13,7 @@ test("#PrimaryKeyInfoToQuery", () => {
 		columns: ["book_id", "location_id"],
 	};
 	const expected =
-		'"test_users_book_id_location_id_yount_pk" PRIMARY KEY ("book_id", "location_id")';
+		'"test_users_yount_pk" PRIMARY KEY ("book_id", "location_id")';
 	expect(primaryKeyConstraintInfoToQuery(info)).toBe(expected);
 });
 

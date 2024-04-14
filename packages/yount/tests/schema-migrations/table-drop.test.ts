@@ -254,7 +254,7 @@ describe("Table drop migrations", () => {
 			.createTable("users")
 			.addColumn("id", "serial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE users ADD CONSTRAINT users_id_yount_pk PRIMARY KEY ("id")`.execute(
+		await sql`ALTER TABLE users ADD CONSTRAINT users_yount_pk PRIMARY KEY ("id")`.execute(
 			context.kysely,
 		);
 
@@ -262,7 +262,7 @@ describe("Table drop migrations", () => {
 			.createTable("books")
 			.addColumn("id", "bigserial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE books ADD CONSTRAINT books_id_yount_pk PRIMARY KEY ("id")`.execute(
+		await sql`ALTER TABLE books ADD CONSTRAINT books_yount_pk PRIMARY KEY ("id")`.execute(
 			context.kysely,
 		);
 
@@ -272,7 +272,7 @@ describe("Table drop migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_id_yount_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -286,7 +286,7 @@ describe("Table drop migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_id_yount_pk", ["id"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["id"])',
 						"execute();",
 					],
 				],
@@ -444,7 +444,7 @@ describe("Table drop migrations", () => {
 			.createTable("books")
 			.addColumn("id", "bigserial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE books ADD CONSTRAINT books_id_yount_pk PRIMARY KEY ("id")`.execute(
+		await sql`ALTER TABLE books ADD CONSTRAINT books_yount_pk PRIMARY KEY ("id")`.execute(
 			context.kysely,
 		);
 
@@ -490,7 +490,7 @@ describe("Table drop migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_id_yount_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_yount_pk", ["id"])',
 						"execute();",
 					],
 				],

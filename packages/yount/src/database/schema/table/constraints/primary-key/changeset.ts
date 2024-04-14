@@ -11,6 +11,7 @@ import type {
 	LocalTableInfo,
 } from "../../../../../introspection/introspection.js";
 import {
+	columnNameKey,
 	extractColumnsFromPrimaryKey,
 	findColumnByNameInTable,
 } from "../../../../../migrations/migration-schema.js";
@@ -25,44 +26,23 @@ export function primaryKeyMigrationOpGenerator(
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	schemaName: string,
 ) {
-	if (isPrimaryKeyCreateFirst(diff)) {
+	if (isPrimaryKeyCreate(diff)) {
 		return createPrimaryKeyMigration(diff, addedTables, local, schemaName);
 	}
 	if (isPrimaryKeyDrop(diff)) {
 		return dropPrimaryKeyMigration(diff, droppedTables, local, schemaName);
 	}
-	if (isPrimaryKeyUpdate(diff)) {
-		return updatePrimaryKeyMigration(
-			diff,
-			addedTables,
-			droppedTables,
-			local,
-			schemaName,
-		);
-	}
-	if (isPrimaryKeyReplace(diff)) {
-		return replacePrimaryKeyMigration(
-			diff,
-			addedTables,
-			droppedTables,
-			local,
-			schemaName,
-		);
+	if (isPrimaryKeyChange(diff, local)) {
+		return changePrimaryKeyMigration(diff, local, schemaName);
 	}
 }
 
-type PrimaryKeyCreateFirstDiff = {
+type PrimaryKeyCreate = {
 	type: "CREATE";
 	path: ["primaryKey", string];
 	value: {
 		[key: string]: string;
 	};
-};
-
-type PrimaryKeyUpdateDiff = {
-	type: "CREATE";
-	path: ["primaryKey", string, string];
-	value: string;
 };
 
 type PrimaryKeyDropDiff = {
@@ -73,15 +53,14 @@ type PrimaryKeyDropDiff = {
 	};
 };
 
-type PrimaryKeyReplaceDiff = {
-	type: "REMOVE";
+type PrimaryKeyChangeDiff = {
+	type: "CHANGE";
 	path: ["primaryKey", string, string];
+	value: string;
 	oldValue: string;
 };
 
-function isPrimaryKeyCreateFirst(
-	test: Difference,
-): test is PrimaryKeyCreateFirstDiff {
+function isPrimaryKeyCreate(test: Difference): test is PrimaryKeyCreate {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 2 &&
@@ -89,17 +68,6 @@ function isPrimaryKeyCreateFirst(
 		typeof test.path[1] === "string" &&
 		typeof test.value === "object" &&
 		Object.keys(test.value).length === 1
-	);
-}
-
-function isPrimaryKeyUpdate(test: Difference): test is PrimaryKeyUpdateDiff {
-	return (
-		test.type === "CREATE" &&
-		test.path.length === 3 &&
-		test.path[0] === "primaryKey" &&
-		typeof test.path[1] === "string" &&
-		typeof test.path[2] === "string" &&
-		typeof test.value === "string"
 	);
 }
 
@@ -114,19 +82,47 @@ function isPrimaryKeyDrop(test: Difference): test is PrimaryKeyDropDiff {
 	);
 }
 
-function isPrimaryKeyReplace(test: Difference): test is PrimaryKeyReplaceDiff {
-	return (
-		test.type === "REMOVE" &&
+function isPrimaryKeyChange(
+	test: Difference,
+	local: LocalTableInfo,
+): test is PrimaryKeyChangeDiff {
+	if (
+		test.type === "CHANGE" &&
 		test.path.length === 3 &&
 		test.path[0] === "primaryKey" &&
 		typeof test.path[1] === "string" &&
 		typeof test.path[2] === "string" &&
+		typeof test.value === "string" &&
 		typeof test.oldValue === "string"
-	);
+	) {
+		return (
+			true &&
+			primaryKeyColumnsChange(local, test.path[1], test.value, test.oldValue)
+		);
+	}
+
+	return false;
+}
+
+export function primaryKeyColumnsChange(
+	local: LocalTableInfo,
+	tableName: string,
+	value: string,
+	oldValue: string,
+) {
+	const tb = local.table[tableName]!;
+	const oldColumns = extractColumnsFromPrimaryKey(oldValue).toSorted();
+	return extractColumnsFromPrimaryKey(value)
+		.map((val) => columnNameKey(tb, val))
+		.filter((x) => x !== undefined)
+		.sort()
+		.some((col, i) => {
+			return col !== oldColumns[i];
+		});
 }
 
 function createPrimaryKeyMigration(
-	diff: PrimaryKeyCreateFirstDiff,
+	diff: PrimaryKeyCreate,
 	addedTables: string[],
 	local: LocalTableInfo,
 	schemaName: string,
@@ -201,80 +197,51 @@ function dropPrimaryKeyMigration(
 	return changeset;
 }
 
-function updatePrimaryKeyMigration(
-	diff: PrimaryKeyUpdateDiff,
-	addedTables: string[],
-	droppedTables: string[],
+function changePrimaryKeyMigration(
+	diff: PrimaryKeyChangeDiff,
 	local: LocalTableInfo,
 	schemaName: string,
-): Changeset {
+) {
 	const tableName = diff.path[1];
 	const primaryKeyName = diff.path[2];
-	const primaryKeyValue = diff.value;
 
-	const changeset: Changeset = {
+	const createChangeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreatePrimaryKey,
-		up: droppedTables.includes(tableName)
-			? [[]]
-			: [
-					addPrimaryKeyOp(
-						tableName,
-						primaryKeyName,
-						primaryKeyValue,
-						schemaName,
-					),
-				],
-		down: addedTables.includes(tableName)
-			? [[]]
-			: dropPrimaryKeyOp(
-					tableName,
-					primaryKeyName,
-					primaryKeyValue,
-					local,
-					schemaName,
-				),
+		up: [
+			addPrimaryKeyOp(
+				tableName,
+				primaryKeyName as string,
+				diff.value,
+				schemaName,
+			),
+		],
+		down: dropPrimaryKeyOp(
+			tableName,
+			primaryKeyName as string,
+			diff.value,
+			local,
+			schemaName,
+		),
 	};
-	return changeset;
-}
 
-function replacePrimaryKeyMigration(
-	diff: PrimaryKeyReplaceDiff,
-	addedTables: string[],
-	droppedTables: string[],
-	local: LocalTableInfo,
-	schemaName: string,
-): Changeset {
-	const tableName = diff.path[1];
-	const primaryKeyName = diff.path[2];
-	const primaryKeyValue = diff.oldValue;
-
-	const changeset: Changeset = {
+	const dropChangeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropPrimaryKey,
-		up: droppedTables.includes(tableName)
-			? [[]]
-			: dropPrimaryKeyOp(
-					tableName,
-					primaryKeyName,
-					primaryKeyValue,
-					local,
-					schemaName,
-				),
-		down: addedTables.includes(tableName)
-			? [[]]
-			: [
-					addPrimaryKeyOp(
-						tableName,
-						primaryKeyName,
-						primaryKeyValue,
-						schemaName,
-					),
-				],
+		up: dropPrimaryKeyOp(
+			tableName,
+			primaryKeyName,
+			diff.oldValue,
+			local,
+			schemaName,
+		),
+		down: [
+			addPrimaryKeyOp(tableName, primaryKeyName, diff.oldValue, schemaName),
+		],
 	};
-	return changeset;
+	return [createChangeset, dropChangeset];
 }
 
 function dropNotNullStatements(

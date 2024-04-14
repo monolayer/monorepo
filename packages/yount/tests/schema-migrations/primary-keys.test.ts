@@ -67,7 +67,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_fullName_name_yount_pk", ["fullName", "name"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["fullName", "name"])',
 						"execute();",
 					],
 				],
@@ -75,7 +75,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("users_fullName_name_yount_pk")',
+						'dropConstraint("users_yount_pk")',
 						"execute();",
 					],
 					[
@@ -100,7 +100,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_name_yount_pk", ["name"])',
+						'addPrimaryKeyConstraint("books_yount_pk", ["name"])',
 						"execute();",
 					],
 				],
@@ -108,7 +108,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'dropConstraint("books_name_yount_pk")',
+						'dropConstraint("books_yount_pk")',
 						"execute();",
 					],
 					[
@@ -138,10 +138,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addPrimaryKeyConstraint("users_fullName_name_yount_pk", [
-				"name",
-				"fullName",
-			])
+			.addPrimaryKeyConstraint("users_yount_pk", ["name", "fullName"])
 			.execute();
 
 		await context.kysely.schema
@@ -151,7 +148,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_name_yount_pk", ["name"])
+			.addPrimaryKeyConstraint("books_yount_pk", ["name"])
 			.execute();
 
 		const users = table({
@@ -183,7 +180,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'dropConstraint("books_name_yount_pk")',
+						'dropConstraint("books_yount_pk")',
 						"execute();",
 					],
 					[
@@ -197,7 +194,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_name_yount_pk", ["name"])',
+						'addPrimaryKeyConstraint("books_yount_pk", ["name"])',
 						"execute();",
 					],
 				],
@@ -210,7 +207,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("users_fullName_name_yount_pk")',
+						'dropConstraint("users_yount_pk")',
 						"execute();",
 					],
 					[
@@ -230,7 +227,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_fullName_name_yount_pk", ["fullName", "name"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["fullName", "name"])',
 						"execute();",
 					],
 				],
@@ -254,10 +251,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addPrimaryKeyConstraint("users_fullName_name_yount_pk", [
-				"name",
-				"fullName",
-			])
+			.addPrimaryKeyConstraint("users_yount_pk", ["name", "fullName"])
 			.execute();
 
 		const users = table({
@@ -285,7 +279,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("users_fullName_name_yount_pk")',
+						'dropConstraint("users_yount_pk")',
 						"execute();",
 					],
 					[
@@ -305,7 +299,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_fullName_name_yount_pk", ["fullName", "name"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["fullName", "name"])',
 						"execute();",
 					],
 				],
@@ -318,7 +312,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_name_yount_pk", ["name"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["name"])',
 						"execute();",
 					],
 				],
@@ -326,7 +320,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("users_name_yount_pk")',
+						'dropConstraint("users_yount_pk")',
 						"execute();",
 					],
 					[
@@ -356,10 +350,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addPrimaryKeyConstraint("users_fullName_name_yount_pk", [
-				"name",
-				"fullName",
-			])
+			.addPrimaryKeyConstraint("users_yount_pk", ["name", "fullName"])
 			.execute();
 
 		const users = table({
@@ -387,7 +378,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("users_fullName_name_yount_pk")',
+						'dropConstraint("users_yount_pk")',
 						"execute();",
 					],
 					[
@@ -401,7 +392,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_fullName_name_yount_pk", ["fullName", "name"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["fullName", "name"])',
 						"execute();",
 					],
 				],
@@ -414,7 +405,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_name_yount_pk", ["name"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["name"])',
 						"execute();",
 					],
 				],
@@ -422,7 +413,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("users_name_yount_pk")',
+						'dropConstraint("users_yount_pk")',
 						"execute();",
 					],
 					[
@@ -452,7 +443,7 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addPrimaryKeyConstraint("users_name_yount_pk", ["name"])
+			.addPrimaryKeyConstraint("users_yount_pk", ["name"])
 			.execute();
 
 		const users = table({
@@ -480,7 +471,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("users_name_yount_pk")',
+						'dropConstraint("users_yount_pk")',
 						"execute();",
 					],
 					[
@@ -494,7 +485,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_name_yount_pk", ["name"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["name"])',
 						"execute();",
 					],
 				],
@@ -528,7 +519,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_email_yount_pk", ["email"])',
+						'addPrimaryKeyConstraint("users_yount_pk", ["email"])',
 						"execute();",
 					],
 				],
@@ -536,7 +527,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("users_email_yount_pk")',
+						'dropConstraint("users_yount_pk")',
 						"execute();",
 					],
 				],

@@ -107,6 +107,14 @@ export function findColumnByNameInTable(table: TableInfo, columnName: string) {
 	}
 }
 
+export function columnNameKey(table: TableInfo, columnName: string) {
+	const entries = Object.entries(table.columns);
+	const column = entries.find(([, value]) => value.columnName === columnName);
+	if (column !== undefined) {
+		return column[0];
+	}
+}
+
 export function findTableInDatabaseSchema(
 	table: AnyPgTable,
 	schema: AnySchema,
