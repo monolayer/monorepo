@@ -580,10 +580,6 @@ describe("Table drop migrations", () => {
 						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "books_971041d9_yount_chk" ON "public"."books" IS \'971041d9_yount_chk\'`',
-						"execute(db);",
-					],
-					[
 						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "books_971041d9_yount_chk"`',
 						"execute(db);",
 					],

@@ -61,11 +61,12 @@ function createFirstCheckMigration(
 	{ addedTables, schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	const indexNames = Object.keys(diff.value) as Array<keyof typeof diff.value>;
-	return indexNames
-		.flatMap((checkName) => {
-			const check = diff.value[checkName]?.split(":");
-			if (check !== undefined) {
+	const checkHashes = Object.keys(diff.value) as Array<keyof typeof diff.value>;
+	return checkHashes
+		.flatMap((checkHash) => {
+			const checkDefinition = diff.value[checkHash];
+			const checkName = `${tableName}_${checkHash}_yount_chk`;
+			if (checkDefinition !== undefined) {
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.ConstraintCreate,
 					tableName: tableName,
@@ -74,7 +75,8 @@ function createFirstCheckMigration(
 						schemaName,
 						tableName,
 						checkName,
-						check,
+						checkHash,
+						checkDefinition,
 					),
 					down: addedTables.includes(tableName)
 						? [[]]
@@ -97,13 +99,14 @@ function dropAllChecksMigration(
 	{ droppedTables, schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	const checkNames = Object.keys(diff.oldValue) as Array<
+	const checkHashes = Object.keys(diff.oldValue) as Array<
 		keyof typeof diff.oldValue
 	>;
-	return checkNames
-		.flatMap((checkName) => {
-			const check = diff.oldValue[checkName]?.split(":");
-			if (check !== undefined) {
+	return checkHashes
+		.flatMap((checkHash) => {
+			const checkDefinition = diff.oldValue[checkHash];
+			if (checkDefinition !== undefined) {
+				const checkName = `${tableName}_${checkHash}_yount_chk`;
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.ConstraintDrop,
 					tableName: tableName,
@@ -121,7 +124,8 @@ function dropAllChecksMigration(
 						schemaName,
 						tableName,
 						checkName,
-						check,
+						checkHash,
+						checkDefinition,
 					),
 				};
 				return changeSet;
@@ -150,14 +154,21 @@ function createCheckMigration(
 	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	const checkName = diff.path[2];
-	const check = diff.value.split(":");
+	const checkHash = diff.path[2];
+	const checkDefinition = diff.value;
+	const checkName = `${tableName}_${checkHash}_yount_chk`;
 
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.ConstraintCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
-		up: addCheckWithSchemaStatements(schemaName, tableName, checkName, check),
+		up: addCheckWithSchemaStatements(
+			schemaName,
+			tableName,
+			checkName,
+			checkHash,
+			checkDefinition,
+		),
 		down: [dropCheckKyselySchemaStatement(schemaName, tableName, checkName)],
 	};
 	return changeSet;
@@ -180,14 +191,22 @@ function isDropCheck(test: Difference): test is DropCheck {
 
 function dropCheckMigration(diff: DropCheck, { schemaName }: GeneratorContext) {
 	const tableName = diff.path[1];
-	const checkName = diff.path[2];
-	const check = diff.oldValue.split(":");
+	const checkHash = diff.path[2];
+	const checkDefinition = diff.oldValue;
+	const checkName = `${tableName}_${checkHash}_yount_chk`;
+
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.ConstraintDrop,
 		tableName: tableName,
 		type: ChangeSetType.DropConstraint,
 		up: [dropCheckKyselySchemaStatement(schemaName, tableName, checkName)],
-		down: addCheckWithDbStatements(schemaName, tableName, checkName, check),
+		down: addCheckWithDbStatements(
+			schemaName,
+			tableName,
+			checkName,
+			checkHash,
+			checkDefinition,
+		),
 	};
 	return changeSet;
 }
@@ -208,14 +227,12 @@ function addCheckWithDbStatements(
 	schemaName: string,
 	tableName: string,
 	checkName: string,
-	check: string[],
+	checkHash: string,
+	checkDefinition: string,
 ) {
 	return [
 		executeKyselyDbStatement(
-			`ALTER TABLE "${schemaName}"."${tableName}" ADD CONSTRAINT "${checkName}" ${check[1]} NOT VALID`,
-		),
-		executeKyselyDbStatement(
-			`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
+			`ALTER TABLE "${schemaName}"."${tableName}" ADD CONSTRAINT "${checkName}" ${checkDefinition} NOT VALID`,
 		),
 		executeKyselyDbStatement(
 			`ALTER TABLE "${schemaName}"."${tableName}" VALIDATE CONSTRAINT "${checkName}"`,
@@ -227,7 +244,8 @@ function addCheckWithSchemaStatements(
 	schemaName: string,
 	tableName: string,
 	checkName: string,
-	check: string[],
+	checkHash: string,
+	checkDefinition: string,
 ) {
 	return [
 		[
@@ -236,15 +254,12 @@ function addCheckWithSchemaStatements(
 				`  db`,
 				`    .withSchema("${schemaName}")`,
 				`    .schema.alterTable("${tableName}")`,
-				`    .addCheckConstraint("${checkName}", sql\`${check[1]}\`)`,
+				`    .addCheckConstraint("${checkName}", sql\`${checkDefinition}\`)`,
 				`    .compile()`,
 				`    .sql.concat(" not valid")`,
 				`)}\`.execute(db);`,
 			].join("\n"),
 		],
-		executeKyselyDbStatement(
-			`COMMENT ON CONSTRAINT "${checkName}" ON "${schemaName}"."${tableName}" IS '${check[0]}'`,
-		),
 		executeKyselyDbStatement(
 			`ALTER TABLE "${schemaName}"."${tableName}" VALIDATE CONSTRAINT "${checkName}"`,
 		),

@@ -689,10 +689,6 @@ describe("Table create migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "books_918b4271_yount_chk" ON "public"."books" IS \'918b4271\'`',
-						"execute(db);",
-					],
-					[
 						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "books_918b4271_yount_chk"`',
 						"execute(db);",
 					],
@@ -713,10 +709,6 @@ describe("Table create migrations", () => {
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
-					],
-					[
-						'await sql`COMMENT ON CONSTRAINT "books_e37c55a5_yount_chk" ON "public"."books" IS \'e37c55a5\'`',
-						"execute(db);",
 					],
 					[
 						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "books_e37c55a5_yount_chk"`',
@@ -1509,10 +1501,6 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "new_books_60bcaca1_yount_chk" ON "public"."new_books" IS \'60bcaca1\'`',
-						"execute(db);",
-					],
-					[
 						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_60bcaca1_yount_chk"`',
 						"execute(db);",
 					],
@@ -1533,10 +1521,6 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
-					],
-					[
-						'await sql`COMMENT ON CONSTRAINT "new_books_1c05ff9f_yount_chk" ON "public"."new_books" IS \'1c05ff9f\'`',
-						"execute(db);",
 					],
 					[
 						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_1c05ff9f_yount_chk"`',

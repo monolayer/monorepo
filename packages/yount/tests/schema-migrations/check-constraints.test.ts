@@ -36,10 +36,6 @@ describe("Database migrations", () => {
 			.addCheckConstraint("books_918b4271_yount_chk", sql`"id" > 50`)
 			.execute();
 
-		await sql`COMMENT ON CONSTRAINT "books_918b4271_yount_chk" ON "books" IS \'918b4271\'`.execute(
-			context.kysely,
-		);
-
 		const books = table({
 			columns: {
 				id: integer(),
@@ -70,10 +66,6 @@ describe("Database migrations", () => {
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
-					],
-					[
-						'await sql`COMMENT ON CONSTRAINT "books_e37c55a5_yount_chk" ON "public"."books" IS \'e37c55a5\'`',
-						"execute(db);",
 					],
 					[
 						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "books_e37c55a5_yount_chk"`',
@@ -140,10 +132,6 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "books_918b4271_yount_chk" ON "public"."books" IS \'918b4271\'`',
-						"execute(db);",
-					],
-					[
 						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "books_918b4271_yount_chk"`',
 						"execute(db);",
 					],
@@ -171,10 +159,6 @@ describe("Database migrations", () => {
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
-					],
-					[
-						'await sql`COMMENT ON CONSTRAINT "books_e37c55a5_yount_chk" ON "public"."books" IS \'e37c55a5\'`',
-						"execute(db);",
 					],
 					[
 						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "books_e37c55a5_yount_chk"`',
@@ -213,18 +197,10 @@ describe("Database migrations", () => {
 			.addCheckConstraint("books_2f1f415e_yount_chk", sql`"id" > 5`)
 			.execute();
 
-		await sql`COMMENT ON CONSTRAINT "books_2f1f415e_yount_chk" ON "books" IS \'2f1f415e\'`.execute(
-			context.kysely,
-		);
-
 		await context.kysely.schema
 			.alterTable("books")
 			.addCheckConstraint("books_e37c55a5_yount_chk", sql`"id" < 50000`)
 			.execute();
-
-		await sql`COMMENT ON CONSTRAINT "books_e37c55a5_yount_chk" ON "books" IS \'e37c55a5\'`.execute(
-			context.kysely,
-		);
 
 		const books = table({
 			columns: {
@@ -260,10 +236,6 @@ describe("Database migrations", () => {
 						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "books_e37c55a5_yount_chk" ON "public"."books" IS \'e37c55a5\'`',
-						"execute(db);",
-					],
-					[
 						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "books_e37c55a5_yount_chk"`',
 						"execute(db);",
 					],
@@ -287,12 +259,9 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addCheckConstraint("918b4271_yount_chk", sql`"id" < 50000`)
+			.addCheckConstraint("books_918b4271_yount_chk", sql`"id" < 50000`)
 			.execute();
 
-		await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "books" IS \'918b4271\'`.execute(
-			context.kysely,
-		);
 
 		const books = table({
 			columns: {
@@ -315,21 +284,17 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'dropConstraint("918b4271_yount_chk")',
+						'dropConstraint("books_918b4271_yount_chk")',
 						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "918b4271_yount_chk" CHECK ((id < 50000)) NOT VALID`',
+						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "books_918b4271_yount_chk" CHECK ((id < 50000)) NOT VALID`',
 						"execute(db);",
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "918b4271_yount_chk" ON "public"."books" IS \'918b4271\'`',
-						"execute(db);",
-					],
-					[
-						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "918b4271_yount_chk"`',
+						'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "books_918b4271_yount_chk"`',
 						"execute(db);",
 					],
 				],
@@ -404,10 +369,6 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`COMMENT ON CONSTRAINT "users_918b4271_yount_chk" ON "public"."users" IS \'918b4271\'`',
-						"execute(db);",
-					],
-					[
 						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_918b4271_yount_chk"`',
 						"execute(db);",
 					],
@@ -457,10 +418,6 @@ describe("Database migrations", () => {
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
-					],
-					[
-						'await sql`COMMENT ON CONSTRAINT "users_918b4271_yount_chk" ON "users"."users" IS \'918b4271\'`',
-						"execute(db);",
 					],
 					[
 						'await sql`ALTER TABLE "users"."users" VALIDATE CONSTRAINT "users_918b4271_yount_chk"`',

@@ -123,12 +123,8 @@ describe("#remoteSchema", () => {
 
 		await kysely.schema
 			.alterTable("remote_schema_users")
-			.addCheckConstraint("book_id_yount_chk", sql`book_id > 5`)
+			.addCheckConstraint("book_abcd_yount_chk", sql`book_id > 5`)
 			.execute();
-
-		await sql`COMMENT ON CONSTRAINT "book_id_yount_chk" ON "remote_schema_users" IS 'abcd'`.execute(
-			kysely,
-		);
 
 		const expectedSchema = {
 			table: {
@@ -293,7 +289,7 @@ describe("#remoteSchema", () => {
 			},
 			checkConstraints: {
 				remote_schema_users: {
-					book_id_yount_chk: "abcd:CHECK ((book_id > 5))",
+					abcd: "CHECK ((book_id > 5))",
 				},
 			},
 

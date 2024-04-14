@@ -34,9 +34,6 @@ export async function dbCheckConstraintInfo(
 			"pg_constraint.conname as constraint_name",
 			"pg_class.relname as table",
 			sql<string>`pg_get_constraintdef(pg_constraint.oid)`.as("definition"),
-			sql<string>`obj_description(pg_constraint.oid, 'pg_constraint')`.as(
-				"comment",
-			),
 		])
 		.where("pg_constraint.contype", "=", "c")
 		.where("pg_namespace.nspname", "=", databaseSchema)
@@ -44,8 +41,11 @@ export async function dbCheckConstraintInfo(
 		.where("pg_class.relname", "in", tableNames)
 		.execute();
 	const transformedResults = results.reduce<CheckInfo>((acc, result) => {
+		const constraintHash = result.constraint_name?.match(
+			/^\w+_(\w+)_yount_chk$/,
+		)![1];
 		const constraintInfo = {
-			[`${result.constraint_name}`]: `${result.comment}:${result.definition}`,
+			[`${constraintHash}`]: `${result.definition}`,
 		};
 		const table = result.table;
 		if (table !== null) {
@@ -81,9 +81,8 @@ export function localCheckConstraintInfo(
 						camelCase.enabled,
 					);
 					const key = hashValue(checkExpression);
-					const name = `${transformedTableName}_${key}_yount_chk`;
 					const checkObject = {
-						[`${name}`]: `${key}:${checkExpression}`,
+						[`${key}`]: `${checkExpression}`,
 					};
 					acc[transformedTableName] = {
 						...acc[transformedTableName],
