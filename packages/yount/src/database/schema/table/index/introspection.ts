@@ -126,7 +126,7 @@ export function indexToInfo(
 		).compile().sql,
 	);
 
-	const indexName = `${hash}_yount_idx`;
+	const indexName = `${tableName}_${hash}_yount_idx`;
 
 	const kyselyBuilder = buildIndex(
 		indexCompileArgs,
