@@ -157,10 +157,7 @@ export function foreignKeyConstraintInfoToNameAndQuery(
 		`ON DELETE ${info.deleteRule}`,
 		`ON UPDATE ${info.updateRule}`,
 	];
-	const name = `${info.table}_${hashValue(parts.join(" "))}_yount_fk`;
-
-	parts.unshift(`"${name}"`);
-	return { [`${name}`]: parts.join(" ") };
+	return { [`${hashValue(parts.join(" "))}`]: parts.join(" ") };
 }
 
 export type ForeIgnKeyConstraintInfo = {

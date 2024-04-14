@@ -112,30 +112,32 @@ function createforeignKeyFirstConstraintMigration(
 	{ schemaName, addedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	return Object.entries(diff.value).reduce((acc, [, value]) => {
-		const constraintValue = value;
-		const changeset: Changeset = {
-			priority: MigrationOpPriority.ConstraintCreate,
-			tableName: tableName,
-			type: ChangeSetType.CreateConstraint,
-			up: addForeigKeyOps(
-				tableName,
-				foreignKeyDefinition(constraintValue),
-				schemaName,
-			),
-			down: addedTables.includes(tableName)
-				? [[]]
-				: [
-						dropForeignKeyOp(
-							tableName,
-							foreignKeyDefinition(constraintValue),
-							schemaName,
-						),
-					],
-		};
-		acc.push(changeset);
-		return acc;
-	}, [] as Changeset[]);
+	return Object.entries(diff.value).reduce(
+		(acc, [hashValue, constraintValue]) => {
+			const changeset: Changeset = {
+				priority: MigrationOpPriority.ConstraintCreate,
+				tableName: tableName,
+				type: ChangeSetType.CreateConstraint,
+				up: addForeigKeyOps(
+					tableName,
+					foreignKeyDefinition(constraintValue, tableName, hashValue),
+					schemaName,
+				),
+				down: addedTables.includes(tableName)
+					? [[]]
+					: [
+							dropForeignKeyOp(
+								tableName,
+								foreignKeyDefinition(constraintValue, tableName, hashValue),
+								schemaName,
+							),
+						],
+			};
+			acc.push(changeset);
+			return acc;
+		},
+		[] as Changeset[],
+	);
 }
 
 function createForeignKeyConstraintMigration(
@@ -143,6 +145,7 @@ function createForeignKeyConstraintMigration(
 	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
+	const hashValue = diff.path[2];
 	const constraintValue = diff.value;
 
 	const changeset: Changeset = {
@@ -151,13 +154,13 @@ function createForeignKeyConstraintMigration(
 		type: ChangeSetType.CreateConstraint,
 		up: addForeigKeyOps(
 			tableName,
-			foreignKeyDefinition(constraintValue),
+			foreignKeyDefinition(constraintValue, tableName, hashValue),
 			schemaName,
 		),
 		down: [
 			dropForeignKeyOp(
 				tableName,
-				foreignKeyDefinition(constraintValue),
+				foreignKeyDefinition(constraintValue, tableName, hashValue),
 				schemaName,
 			),
 		],
@@ -170,30 +173,32 @@ function dropforeignKeyLastConstraintMigration(
 	{ schemaName, droppedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	return Object.entries(diff.oldValue).reduce((acc, [, value]) => {
-		const constraintValue = value;
-		const changeset: Changeset = {
-			priority: MigrationOpPriority.ConstraintDrop,
-			tableName: tableName,
-			type: ChangeSetType.DropConstraint,
-			up: droppedTables.includes(tableName)
-				? [[]]
-				: [
-						dropForeignKeyOp(
-							tableName,
-							foreignKeyDefinition(constraintValue),
-							schemaName,
-						),
-					],
-			down: addForeigKeyOps(
-				tableName,
-				foreignKeyDefinition(constraintValue),
-				schemaName,
-			),
-		};
-		acc.push(changeset);
-		return acc;
-	}, [] as Changeset[]);
+	return Object.entries(diff.oldValue).reduce(
+		(acc, [hashValue, constraintValue]) => {
+			const changeset: Changeset = {
+				priority: MigrationOpPriority.ConstraintDrop,
+				tableName: tableName,
+				type: ChangeSetType.DropConstraint,
+				up: droppedTables.includes(tableName)
+					? [[]]
+					: [
+							dropForeignKeyOp(
+								tableName,
+								foreignKeyDefinition(constraintValue, tableName, hashValue),
+								schemaName,
+							),
+						],
+				down: addForeigKeyOps(
+					tableName,
+					foreignKeyDefinition(constraintValue, tableName, hashValue),
+					schemaName,
+				),
+			};
+			acc.push(changeset);
+			return acc;
+		},
+		[] as Changeset[],
+	);
 }
 
 function dropForeignKeyConstraintMigration(
@@ -201,6 +206,7 @@ function dropForeignKeyConstraintMigration(
 	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
+	const hashValue = diff.path[2];
 	const constraintValue = diff.oldValue;
 
 	const changeset: Changeset = {
@@ -210,13 +216,13 @@ function dropForeignKeyConstraintMigration(
 		up: [
 			dropForeignKeyOp(
 				tableName,
-				foreignKeyDefinition(constraintValue),
+				foreignKeyDefinition(constraintValue, tableName, hashValue),
 				schemaName,
 			),
 		],
 		down: addForeigKeyOps(
 			tableName,
-			foreignKeyDefinition(constraintValue),
+			foreignKeyDefinition(constraintValue, tableName, hashValue),
 			schemaName,
 		),
 	};
@@ -232,9 +238,13 @@ type ForeignKeyDefinition = {
 	onUpdate: string;
 };
 
-function foreignKeyDefinition(foreignKey: string) {
+function foreignKeyDefinition(
+	foreignKey: string,
+	tableName: string,
+	hashValue: string,
+) {
 	const definition: ForeignKeyDefinition = {
-		name: foreignKey.match(/"(\w+)"/)?.[1] || "",
+		name: `${tableName}_${hashValue}_yount_fk`,
 		columns: (foreignKey.match(/FOREIGN KEY \(((\w|,|\s|")+)\)/)?.[1] || "")
 			.replace(/ /g, "")
 			.replace(/"/g, "")

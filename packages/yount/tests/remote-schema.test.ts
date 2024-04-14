@@ -283,8 +283,8 @@ describe("#remoteSchema", () => {
 			},
 			foreignKeyConstraints: {
 				remote_schema_users: {
-					remote_schema_users_d0466f3b_yount_fk:
-						'"remote_schema_users_d0466f3b_yount_fk" FOREIGN KEY ("book_id") REFERENCES remote_schema_books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+					d0466f3b:
+						'FOREIGN KEY ("book_id") REFERENCES remote_schema_books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 				},
 			},
 			checkConstraints: {
@@ -473,8 +473,8 @@ describe("#remoteSchema", () => {
 			checkConstraints: {},
 			foreignKeyConstraints: {
 				remoteSchemaUsers: {
-					remoteSchemaUsers_5aa711d0_yount_fk:
-						'"remoteSchemaUsers_5aa711d0_yount_fk" FOREIGN KEY ("book_id") REFERENCES remoteSchemaBooks ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+					"5aa711d0":
+						'FOREIGN KEY ("book_id") REFERENCES remoteSchemaBooks ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 				},
 			},
 			primaryKey: {
