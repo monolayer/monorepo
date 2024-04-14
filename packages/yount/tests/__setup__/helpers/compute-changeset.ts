@@ -15,7 +15,12 @@ export async function computeChangeset(
 	const schemaName = Schema.info(db).name || "public";
 	const remote = await remoteSchema(kysely, schemaName);
 	const local = localSchema(db, remote, camelCase ?? { enabled: false });
-	const cset = schemaChangeset(local, remote, schemaName);
+	const cset = schemaChangeset(
+		local,
+		remote,
+		schemaName,
+		camelCase ?? { enabled: false },
+	);
 	const schemaInDatabase = await schemaInDb(kysely, schemaName);
 	if (schemaInDatabase.length === 0) {
 		cset.unshift(createSchemaChangeset(schemaName));

@@ -77,6 +77,7 @@ function computeChangeset(
 		),
 		remoteSchema,
 		Schema.info(localDatabaseSchema).name || "public",
+		camelCasePlugin ?? { enabled: false },
 	);
 	return Effect.succeed(cset);
 }
