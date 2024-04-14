@@ -103,7 +103,7 @@ describe("Database migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("61a55869_yount_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("users_61a55869_yount_fk", ["id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -111,7 +111,7 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "61a55869_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_61a55869_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -119,7 +119,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("61a55869_yount_fk")',
+						'dropConstraint("users_61a55869_yount_fk")',
 						"execute();",
 					],
 				],
@@ -259,7 +259,7 @@ describe("Database migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("61a55869_yount_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("users_61a55869_yount_fk", ["id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -267,7 +267,7 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "61a55869_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_61a55869_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -275,7 +275,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("61a55869_yount_fk")',
+						'dropConstraint("users_61a55869_yount_fk")',
 						"execute();",
 					],
 				],
@@ -290,7 +290,7 @@ describe("Database migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("2e371f6e_yount_fk", ["second_book_id"], "old_books", ["id"])
+    .addForeignKeyConstraint("users_2e371f6e_yount_fk", ["second_book_id"], "old_books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -298,7 +298,7 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "2e371f6e_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_2e371f6e_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -306,7 +306,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("2e371f6e_yount_fk")',
+						'dropConstraint("users_2e371f6e_yount_fk")',
 						"execute();",
 					],
 				],
@@ -340,9 +340,12 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addForeignKeyConstraint("c02e3d7d_yount_fk", ["book_id"], "books", [
-				"id",
-			])
+			.addForeignKeyConstraint(
+				"users_c02e3d7d_yount_fk",
+				["book_id"],
+				"books",
+				["id"],
+			)
 			.onDelete("set null")
 			.onUpdate("set null")
 			.execute();
@@ -379,7 +382,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("c02e3d7d_yount_fk")',
+						'dropConstraint("users_c02e3d7d_yount_fk")',
 						"execute();",
 					],
 				],
@@ -389,7 +392,7 @@ describe("Database migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("c02e3d7d_yount_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_c02e3d7d_yount_fk", ["book_id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -397,7 +400,7 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "c02e3d7d_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_c02e3d7d_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -442,9 +445,12 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addForeignKeyConstraint("c02e3d7d_yount_fk", ["book_id"], "books", [
-				"id",
-			])
+			.addForeignKeyConstraint(
+				"users_c02e3d7d_yount_fk",
+				["book_id"],
+				"books",
+				["id"],
+			)
 			.onDelete("set null")
 			.onUpdate("set null")
 			.execute();
@@ -452,7 +458,7 @@ describe("Database migrations", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"6e0ceffc_yount_fk",
+				"users_6e0ceffc_yount_fk",
 				["old_book_id"],
 				"old_books",
 				["id"],
@@ -504,7 +510,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("c02e3d7d_yount_fk")',
+						'dropConstraint("users_c02e3d7d_yount_fk")',
 						"execute();",
 					],
 				],
@@ -514,7 +520,7 @@ describe("Database migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("c02e3d7d_yount_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_c02e3d7d_yount_fk", ["book_id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -522,7 +528,7 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "c02e3d7d_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_c02e3d7d_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -535,7 +541,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("6e0ceffc_yount_fk")',
+						'dropConstraint("users_6e0ceffc_yount_fk")',
 						"execute();",
 					],
 				],
@@ -545,7 +551,7 @@ describe("Database migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("6e0ceffc_yount_fk", ["old_book_id"], "old_books", ["id"])
+    .addForeignKeyConstraint("users_6e0ceffc_yount_fk", ["old_book_id"], "old_books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -553,7 +559,7 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "6e0ceffc_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_6e0ceffc_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -587,9 +593,12 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addForeignKeyConstraint("c02e3d7d_yount_fk", ["book_id"], "books", [
-				"id",
-			])
+			.addForeignKeyConstraint(
+				"users_c02e3d7d_yount_fk",
+				["book_id"],
+				"books",
+				["id"],
+			)
 			.onDelete("set null")
 			.onUpdate("set null")
 			.execute();
@@ -633,7 +642,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("c02e3d7d_yount_fk")',
+						'dropConstraint("users_c02e3d7d_yount_fk")',
 						"execute();",
 					],
 				],
@@ -643,7 +652,7 @@ describe("Database migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("c02e3d7d_yount_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_c02e3d7d_yount_fk", ["book_id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -651,7 +660,7 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "c02e3d7d_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_c02e3d7d_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -666,7 +675,7 @@ describe("Database migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("01f2f16d_yount_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("users_01f2f16d_yount_fk", ["id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("cascade")
     .compile()
@@ -674,7 +683,7 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "01f2f16d_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_01f2f16d_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -682,7 +691,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("01f2f16d_yount_fk")',
+						'dropConstraint("users_01f2f16d_yount_fk")',
 						"execute();",
 					],
 				],
@@ -716,9 +725,12 @@ describe("Database migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addForeignKeyConstraint("c02e3d7d_yount_fk", ["book_id"], "books", [
-				"id",
-			])
+			.addForeignKeyConstraint(
+				"users_c02e3d7d_yount_fk",
+				["book_id"],
+				"books",
+				["id"],
+			)
 			.onDelete("set null")
 			.onUpdate("set null")
 			.execute();
@@ -762,7 +774,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("c02e3d7d_yount_fk")',
+						'dropConstraint("users_c02e3d7d_yount_fk")',
 						"execute();",
 					],
 				],
@@ -772,7 +784,7 @@ describe("Database migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("c02e3d7d_yount_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_c02e3d7d_yount_fk", ["book_id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -780,7 +792,7 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "c02e3d7d_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_c02e3d7d_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -795,7 +807,7 @@ describe("Database migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("5c1a35cf_yount_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_5c1a35cf_yount_fk", ["book_id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("cascade")
     .compile()
@@ -803,7 +815,7 @@ describe("Database migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "5c1a35cf_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_5c1a35cf_yount_fk"`',
 						"execute(db);",
 					],
 				],
@@ -811,7 +823,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("5c1a35cf_yount_fk")',
+						'dropConstraint("users_5c1a35cf_yount_fk")',
 						"execute();",
 					],
 				],

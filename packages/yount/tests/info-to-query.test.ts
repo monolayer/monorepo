@@ -28,8 +28,8 @@ test("#foreigKeyInfoToQuery", () => {
 		deleteRule: "NO ACTION",
 	};
 	const expected = {
-		b786ed83_yount_fk:
-			'"b786ed83_yount_fk" FOREIGN KEY ("book_id", "location_id") REFERENCES test_books_fk ("id", "location") ON DELETE NO ACTION ON UPDATE CASCADE',
+		test_users_b786ed83_yount_fk:
+			'"test_users_b786ed83_yount_fk" FOREIGN KEY ("book_id", "location_id") REFERENCES test_books_fk ("id", "location") ON DELETE NO ACTION ON UPDATE CASCADE',
 	};
 	expect(foreignKeyConstraintInfoToNameAndQuery(info)).toStrictEqual(expected);
 });

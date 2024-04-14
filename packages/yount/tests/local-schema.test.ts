@@ -558,8 +558,8 @@ describe("schema", () => {
 			},
 			foreignKeyConstraints: {
 				users: {
-					c28cc6e8_yount_fk:
-						'"c28cc6e8_yount_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+					users_c28cc6e8_yount_fk:
+						'"users_c28cc6e8_yount_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 				},
 			},
 			uniqueConstraints: {
@@ -899,8 +899,8 @@ describe("schema", () => {
 			},
 			foreignKeyConstraints: {
 				users: {
-					c28cc6e8_yount_fk:
-						'"c28cc6e8_yount_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+					users_c28cc6e8_yount_fk:
+						'"users_c28cc6e8_yount_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 				},
 			},
 			uniqueConstraints: {
@@ -1302,8 +1302,8 @@ test("#localSchemaCamelCase", () => {
 		},
 		foreignKeyConstraints: {
 			users: {
-				c28cc6e8_yount_fk:
-					'"c28cc6e8_yount_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
+				users_c28cc6e8_yount_fk:
+					'"users_c28cc6e8_yount_fk" FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 			},
 		},
 		uniqueConstraints: {

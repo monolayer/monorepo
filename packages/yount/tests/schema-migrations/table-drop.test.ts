@@ -452,7 +452,7 @@ describe("Table drop migrations", () => {
 			.createTable("users")
 			.addColumn("id", "serial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE users ADD CONSTRAINT "61a55869_yount_fk" FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(
+		await sql`ALTER TABLE users ADD CONSTRAINT "users_61a55869_yount_fk" FOREIGN KEY ("id") REFERENCES books ("id") ON DELETE SET NULL ON UPDATE SET NULL`.execute(
 			context.kysely,
 		);
 
@@ -468,7 +468,7 @@ describe("Table drop migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("61a55869_yount_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("users_61a55869_yount_fk", ["id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -476,7 +476,7 @@ describe("Table drop migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "61a55869_yount_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_61a55869_yount_fk"`',
 						"execute(db);",
 					],
 				],
