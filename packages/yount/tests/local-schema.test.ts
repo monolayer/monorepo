@@ -20,7 +20,7 @@ import { index } from "~/database/schema/table/index/index.js";
 import { localIndexInfoByTable } from "~/database/schema/table/index/introspection.js";
 import { enumType } from "~/database/schema/types/enum/enum.js";
 import { localEnumInfo } from "~/database/schema/types/enum/introspection.js";
-import { localSchema } from "~/introspection/introspection.js";
+import { introspectLocalSchema } from "~/introspection/introspection.js";
 import { columnInfoFactory } from "~tests/__setup__/helpers/factories/column-info-factory.js";
 import { schemaMigratonInfoFactory } from "~tests/__setup__/helpers/factories/migration-schema.js";
 import { unique } from "../src/database/schema/table/constraints/unique/unique.js";
@@ -601,9 +601,9 @@ describe("schema", () => {
 				user_status: "active, inactive",
 			},
 		};
-		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
-			expectedLocalSchema,
-		);
+		expect(
+			introspectLocalSchema(dbSchema, schemaMigratonInfoFactory()),
+		).toStrictEqual(expectedLocalSchema);
 	});
 
 	test<ContextWithRandomHash>("#localSchemaCamelCase", () => {
@@ -937,7 +937,7 @@ describe("schema", () => {
 			},
 		};
 		expect(
-			localSchema(dbSchema, schemaMigratonInfoFactory(), {
+			introspectLocalSchema(dbSchema, schemaMigratonInfoFactory(), {
 				enabled: true,
 				options: {},
 			}),
@@ -1001,9 +1001,9 @@ test("trigger names are downcased", () => {
 		checkConstraints: {},
 		enums: {},
 	};
-	expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
-		expectedLocalSchema,
-	);
+	expect(
+		introspectLocalSchema(dbSchema, schemaMigratonInfoFactory()),
+	).toStrictEqual(expectedLocalSchema);
 });
 
 test("#localSchemaCamelCase", () => {
@@ -1329,7 +1329,7 @@ test("#localSchemaCamelCase", () => {
 		},
 	};
 	expect(
-		localSchema(dbSchema, schemaMigratonInfoFactory(), {
+		introspectLocalSchema(dbSchema, schemaMigratonInfoFactory(), {
 			enabled: true,
 			options: {},
 		}),
@@ -1427,9 +1427,9 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
-			expectedLocalSchema,
-		);
+		expect(
+			introspectLocalSchema(dbSchema, schemaMigratonInfoFactory()),
+		).toStrictEqual(expectedLocalSchema);
 	});
 
 	test("discard indexes", () => {
@@ -1477,9 +1477,9 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
-			expectedLocalSchema,
-		);
+		expect(
+			introspectLocalSchema(dbSchema, schemaMigratonInfoFactory()),
+		).toStrictEqual(expectedLocalSchema);
 	});
 
 	test("discard unique constraints", () => {
@@ -1529,9 +1529,9 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
-			expectedLocalSchema,
-		);
+		expect(
+			introspectLocalSchema(dbSchema, schemaMigratonInfoFactory()),
+		).toStrictEqual(expectedLocalSchema);
 	});
 
 	test("discard check constraints", () => {
@@ -1581,9 +1581,9 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
-			expectedLocalSchema,
-		);
+		expect(
+			introspectLocalSchema(dbSchema, schemaMigratonInfoFactory()),
+		).toStrictEqual(expectedLocalSchema);
 	});
 
 	test("discard triggers", () => {
@@ -1617,9 +1617,9 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
-			expectedLocalSchema,
-		);
+		expect(
+			introspectLocalSchema(dbSchema, schemaMigratonInfoFactory()),
+		).toStrictEqual(expectedLocalSchema);
 	});
 
 	test("discard enums", () => {
@@ -1644,8 +1644,8 @@ describe("#localSchema with external objects", () => {
 			enums: {},
 		};
 
-		expect(localSchema(dbSchema, schemaMigratonInfoFactory())).toStrictEqual(
-			expectedLocalSchema,
-		);
+		expect(
+			introspectLocalSchema(dbSchema, schemaMigratonInfoFactory()),
+		).toStrictEqual(expectedLocalSchema);
 	});
 });

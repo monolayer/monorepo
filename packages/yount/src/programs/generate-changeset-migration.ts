@@ -3,13 +3,13 @@ import { Effect } from "effect";
 import color from "picocolors";
 import { generateMigrationFiles } from "~/migrations/generate.js";
 import { DevEnvironment } from "../services/environment.js";
+import { changeset } from "./changeset.js";
 import { computeExtensionChangeset } from "./extension-changeset.js";
-import { schemaChangeset } from "./schema-changeset.js";
 
 export function generateChangesetMigration() {
 	return DevEnvironment.pipe(
 		Effect.flatMap((environment) =>
-			Effect.all([schemaChangeset(), computeExtensionChangeset()])
+			Effect.all([changeset(), computeExtensionChangeset()])
 				.pipe(
 					Effect.flatMap(([schema, extensions]) =>
 						Effect.succeed(extensions.concat(schema)),

@@ -46,7 +46,7 @@ import {
 	type EnumInfo,
 } from "../database/schema/types/enum/introspection.js";
 
-export function localSchema(
+export function introspectLocalSchema(
 	schema: AnySchema,
 	remoteSchema: SchemaMigrationInfo,
 	camelCase: CamelCaseOptions = { enabled: false },
@@ -65,7 +65,7 @@ export function localSchema(
 	};
 }
 
-export async function remoteSchema(
+export async function introspectRemoteSchema(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 	schemaName = "public",

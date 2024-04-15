@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { remoteSchema } from "~/introspection/introspection.js";
+import { introspectRemoteSchema } from "~/introspection/introspection.js";
 import { dropTables } from "~tests/__setup__/helpers/drop-tables.js";
 import {
 	kyselyWithCustomDB,
@@ -314,7 +314,7 @@ describe("#remoteSchema", () => {
 			},
 		};
 
-		expect(await remoteSchema(kysely)).toStrictEqual(expectedSchema);
+		expect(await introspectRemoteSchema(kysely)).toStrictEqual(expectedSchema);
 	});
 
 	test<DbContext>("returns schema from database with camel-cased tables", async ({
@@ -485,7 +485,7 @@ describe("#remoteSchema", () => {
 			triggers: {},
 		};
 
-		expect(await remoteSchema(kysely)).toStrictEqual(expectedSchema);
+		expect(await introspectRemoteSchema(kysely)).toStrictEqual(expectedSchema);
 	});
 
 	test<DbContext>("returns schema with empty tables", async ({
@@ -552,7 +552,7 @@ describe("#remoteSchema", () => {
 			enums: {},
 		};
 
-		expect(await remoteSchema(kysely)).toStrictEqual(expectedSchema);
+		expect(await introspectRemoteSchema(kysely)).toStrictEqual(expectedSchema);
 	});
 
 	test<DbContext>("column default value casts", async ({
@@ -693,7 +693,7 @@ describe("#remoteSchema", () => {
 			kysely,
 		);
 
-		const schema = await remoteSchema(kysely);
+		const schema = await introspectRemoteSchema(kysely);
 		const columns = schema.table.test_column_default_value!.columns;
 		const columDefaults = Object.entries(columns || {}).reduce(
 			(acc, [key, value]) => {
@@ -939,6 +939,6 @@ describe("#remoteSchema", () => {
 			enums: {},
 		};
 
-		expect(await remoteSchema(kysely)).toStrictEqual(expectedSchema);
+		expect(await introspectRemoteSchema(kysely)).toStrictEqual(expectedSchema);
 	});
 });

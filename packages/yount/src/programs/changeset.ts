@@ -1,7 +1,6 @@
 import { Effect, pipe } from "effect";
 import type { Kysely } from "kysely";
-import { schemaChangeset as changeset } from "~/changeset/schema-changeset.js";
-import { type CamelCaseOptions } from "~/configuration.js";
+import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import { createSchemaChangeset } from "~/database/database_schemas/changeset.js";
 import { schemaInDb } from "~/database/database_schemas/introspection.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
@@ -14,17 +13,14 @@ import { dbIndexInfo } from "~/database/schema/table/index/introspection.js";
 import { dbTableInfo } from "~/database/schema/table/introspection.js";
 import { dbTriggerInfo } from "~/database/schema/table/trigger/introspection.js";
 import { dbEnumInfo } from "~/database/schema/types/enum/introspection.js";
-import {
-	localSchema,
-	type SchemaMigrationInfo,
-} from "~/introspection/introspection.js";
+import { introspectLocalSchema } from "~/introspection/introspection.js";
 import { DbClients } from "../services/dbClients.js";
 import { DevEnvironment } from "../services/environment.js";
 
-export function schemaChangeset() {
+export function changeset() {
 	return connectorSchemas().pipe(
-		Effect.flatMap((schemas) =>
-			Effect.all(schemas.flatMap(databaseChangeset)).pipe(
+		Effect.flatMap((connectorSchema) =>
+			Effect.all(connectorSchema.flatMap(changesetForLocalSchema)).pipe(
 				Effect.flatMap((changesets) =>
 					Effect.succeed(changesets.flatMap((changeset) => changeset)),
 				),
@@ -33,19 +29,30 @@ export function schemaChangeset() {
 	);
 }
 
-function databaseChangeset(database: AnySchema) {
+function changesetForLocalSchema(localSchema: AnySchema) {
 	return Effect.all([DevEnvironment, DbClients]).pipe(
 		Effect.flatMap(([devEnvironment, dbClients]) =>
 			Effect.all([
 				Effect.succeed(dbClients.developmentEnvironment.kyselyNoCamelCase),
 				Effect.succeed(devEnvironment.camelCasePlugin),
-				Effect.succeed(Schema.info(database).name || "public"),
+				Effect.succeed(Schema.info(localSchema).name || "public"),
 			]),
 		),
 		Effect.flatMap(([kyselyInstance, camelCasePlugin, schemaName]) =>
-			databaseSchema(kyselyInstance, database).pipe(
+			databaseSchema(kyselyInstance, localSchema).pipe(
 				Effect.flatMap((databaseSchema) =>
-					computeChangeset(database, databaseSchema, camelCasePlugin),
+					Effect.succeed(
+						schemaChangeset(
+							introspectLocalSchema(
+								localSchema,
+								databaseSchema,
+								camelCasePlugin ?? { enabled: false },
+							),
+							databaseSchema,
+							Schema.info(localSchema).name || "public",
+							camelCasePlugin ?? { enabled: false },
+						),
+					),
 				),
 				Effect.tap((changeset) =>
 					Effect.tryPromise(() => schemaInDb(kyselyInstance, schemaName)).pipe(
@@ -62,24 +69,6 @@ function databaseChangeset(database: AnySchema) {
 			),
 		),
 	);
-}
-
-function computeChangeset(
-	localDatabaseSchema: AnySchema,
-	remoteSchema: SchemaMigrationInfo,
-	camelCasePlugin?: CamelCaseOptions,
-) {
-	const cset = changeset(
-		localSchema(
-			localDatabaseSchema,
-			remoteSchema,
-			camelCasePlugin ?? { enabled: false },
-		),
-		remoteSchema,
-		Schema.info(localDatabaseSchema).name || "public",
-		camelCasePlugin ?? { enabled: false },
-	);
-	return Effect.succeed(cset);
 }
 
 function connectorSchemas() {

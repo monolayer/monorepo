@@ -8,9 +8,9 @@ import { type SeedImport } from "~/config.js";
 import { dbTableInfo } from "~/database/schema/table/introspection.js";
 import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
+import { changeset } from "./changeset.js";
 import { checkWithFail } from "./check-with-fail.js";
 import { localPendingMigrations } from "./local-pending-migrations.js";
-import { schemaChangeset } from "./schema-changeset.js";
 import { spinnerTask } from "./spinner-task.js";
 
 type SeedOptions = {
@@ -79,7 +79,7 @@ function checkPendingSchemaChanges() {
 		failMessage: "Pending Schema Changes",
 		callback: () =>
 			Effect.succeed(true).pipe(
-				Effect.flatMap(schemaChangeset),
+				Effect.flatMap(changeset),
 				Effect.flatMap((result) => Effect.succeed(result.length === 0)),
 			),
 	});
