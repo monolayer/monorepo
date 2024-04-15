@@ -141,7 +141,7 @@ export async function fetchDbColumnInfo(
 export function transformDbColumnInfo(
 	info: Awaited<ReturnType<typeof fetchDbColumnInfo>>,
 ) {
-	const transformed: ColumnInfo[] = [];
+	const transformed: (ColumnInfo & { tableName: string })[] = [];
 	for (const row of info) {
 		let dataTypeFullName: string;
 		switch (row.data_type) {
@@ -255,7 +255,7 @@ export function transformDbColumnInfo(
 		}
 
 		transformed.push({
-			tableName: row.table_name,
+			tableName: row.table_name!,
 			columnName: row.column_name,
 			dataType:
 				row.user_defined_type_name !== null
@@ -283,7 +283,9 @@ export function transformDbColumnInfo(
 	return transformed;
 }
 
-export function mapColumnsToTables(columns: ColumnInfo[]) {
+export function mapColumnsToTables(
+	columns: (ColumnInfo & { tableName: string })[],
+) {
 	return columns.reduce<Record<string, TableInfo>>((acc, curr) => {
 		if (curr.tableName !== null && curr.columnName !== null) {
 			const currentTable = acc[curr.tableName];
@@ -321,7 +323,6 @@ export function localColumnInfoByTable(
 			acc[transformedTableName] = columns.reduce<TableInfo>(
 				(columnAcc, [columnName, column]) => {
 					const columnInfo = schemaColumnInfo(
-						transformedTableName,
 						columnName,
 						column as TableColumn,
 					);
@@ -371,7 +372,6 @@ export function localColumnInfoByTable(
 }
 
 export function schemaColumnInfo(
-	tableName: string,
 	columnName: string,
 	column: TableColumn,
 ): ColumnInfo {
@@ -380,7 +380,6 @@ export function schemaColumnInfo(
 	).info;
 	const meta = columnInfo;
 	return {
-		tableName: tableName,
 		columnName: columnName,
 		dataType: meta.dataType,
 		characterMaximumLength: meta.characterMaximumLength,

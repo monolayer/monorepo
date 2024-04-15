@@ -31,90 +31,83 @@ describe("#schemaColumnInfo", () => {
 	test("default column", () => {
 		const column = varchar(100);
 		const expectedInfo = columnInfoFactory({
-			tableName: "foo",
 			columnName: "bar",
 			dataType: "character varying(100)",
 			characterMaximumLength: 100,
 		});
 
-		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+		expect(schemaColumnInfo("bar", column)).toEqual(expectedInfo);
 	});
 
 	test("not null column", () => {
 		const column = varchar(100).notNull();
 		const expectedInfo = columnInfoFactory({
-			tableName: "foo",
 			columnName: "bar",
 			dataType: "character varying(100)",
 			isNullable: false,
 			characterMaximumLength: 100,
 		});
 
-		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+		expect(schemaColumnInfo("bar", column)).toEqual(expectedInfo);
 	});
 
 	test("column with default default data type", () => {
 		const column = varchar(100).default("foo");
 		const expectedInfo = columnInfoFactory({
-			tableName: "foo",
 			columnName: "bar",
 			dataType: "character varying(100)",
 			defaultValue: "2bc67682:'foo'::character varying",
 			characterMaximumLength: 100,
 		});
 
-		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+		expect(schemaColumnInfo("bar", column)).toEqual(expectedInfo);
 	});
 
 	test("column with default with expression", () => {
 		const column = timestamp().default(sql`CURRENT_TIMESTAMP`);
 		const expectedInfo = columnInfoFactory({
-			tableName: "foo",
 			columnName: "bar",
 			dataType: "timestamp",
 			defaultValue: "9ff7b5b7:CURRENT_TIMESTAMP",
 		});
 
-		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+		expect(schemaColumnInfo("bar", column)).toEqual(expectedInfo);
 	});
 
 	test("column with renameFrom", () => {
 		const column = varchar(100).renameFrom("old_column_name");
 		const expectedInfo = columnInfoFactory({
-			tableName: "foo",
 			columnName: "bar",
 			dataType: "character varying(100)",
 			characterMaximumLength: 100,
 			renameFrom: "old_column_name",
 		});
 
-		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+		expect(schemaColumnInfo("bar", column)).toEqual(expectedInfo);
 	});
 
 	test("column with always as identity", () => {
 		const column = integer().generatedAlwaysAsIdentity();
 		const expectedInfo = columnInfoFactory({
-			tableName: "foo",
 			columnName: "bar",
 			dataType: "integer",
 			identity: "ALWAYS",
 			isNullable: false,
 		});
 
-		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+		expect(schemaColumnInfo("bar", column)).toEqual(expectedInfo);
 	});
 
 	test("column with by default as identity", () => {
 		const column = integer().generatedByDefaultAsIdentity();
 		const expectedInfo = columnInfoFactory({
-			tableName: "foo",
 			columnName: "bar",
 			dataType: "integer",
 			identity: "BY DEFAULT",
 			isNullable: false,
 		});
 
-		expect(schemaColumnInfo("foo", "bar", column)).toEqual(expectedInfo);
+		expect(schemaColumnInfo("bar", column)).toEqual(expectedInfo);
 	});
 });
 
@@ -153,25 +146,21 @@ test("#schemaDBColumnInfoByTable", () => {
 			name: "users",
 			columns: {
 				id: columnInfoFactory({
-					tableName: "users",
 					columnName: "id",
 					dataType: "serial",
 					isNullable: false,
 				}),
 				name: columnInfoFactory({
-					tableName: "users",
 					columnName: "name",
 					dataType: "character varying",
 					isNullable: false,
 				}),
 				email: columnInfoFactory({
-					tableName: "users",
 					columnName: "email",
 					dataType: "character varying",
 					isNullable: false,
 				}),
 				role: columnInfoFactory({
-					tableName: "users",
 					columnName: "role",
 					dataType: "role",
 					enum: true,
@@ -182,19 +171,16 @@ test("#schemaDBColumnInfoByTable", () => {
 			name: "teams",
 			columns: {
 				id: columnInfoFactory({
-					tableName: "teams",
 					columnName: "id",
 					dataType: "bigserial",
 					isNullable: false,
 				}),
 				name: columnInfoFactory({
-					tableName: "teams",
 					columnName: "name",
 					dataType: "character varying",
 					isNullable: false,
 				}),
 				active: columnInfoFactory({
-					tableName: "teams",
 					columnName: "active",
 					dataType: "boolean",
 					isNullable: true,
@@ -375,7 +361,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: false,
 						},
 						location: {
@@ -389,7 +374,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: false,
 						},
 						status: {
@@ -403,7 +387,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: true,
 						},
 						name: {
@@ -417,7 +400,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: false,
 						},
 					},
@@ -436,7 +418,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "teams",
 							enum: false,
 						},
 						id: {
@@ -450,7 +431,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "teams",
 							enum: false,
 						},
 						name: {
@@ -465,7 +445,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "teams",
 							enum: false,
 						},
 					},
@@ -484,7 +463,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: false,
 						},
 						email: {
@@ -498,7 +476,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: false,
 						},
 						id: {
@@ -512,7 +489,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: false,
 						},
 						name: {
@@ -526,7 +502,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: false,
 						},
 						status: {
@@ -540,7 +515,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: true,
 						},
 					},
@@ -682,7 +656,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: false,
 						},
 						location: {
@@ -696,7 +669,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: false,
 						},
 						status: {
@@ -710,7 +682,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: true,
 						},
 						name: {
@@ -724,7 +695,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: false,
 						},
 					},
@@ -743,7 +713,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "new_books",
 							enum: false,
 						},
 						location: {
@@ -757,7 +726,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "new_books",
 							enum: false,
 						},
 						status: {
@@ -771,7 +739,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "new_books",
 							enum: true,
 						},
 						name: {
@@ -785,7 +752,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "new_books",
 							enum: false,
 						},
 					},
@@ -804,7 +770,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: false,
 						},
 						email: {
@@ -818,7 +783,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: false,
 						},
 						id: {
@@ -832,7 +796,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: false,
 						},
 						name: {
@@ -846,7 +809,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: false,
 						},
 						full_name: {
@@ -860,7 +822,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: false,
 						},
 						status: {
@@ -874,7 +835,6 @@ describe("schema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "users",
 							enum: true,
 						},
 					},
@@ -981,7 +941,6 @@ test("trigger names are downcased", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "users",
 						enum: false,
 					},
 				},
@@ -1080,7 +1039,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "books",
 						enum: false,
 					},
 					location: {
@@ -1094,7 +1052,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "books",
 						enum: false,
 					},
 					status: {
@@ -1108,7 +1065,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "books",
 						enum: true,
 					},
 					name: {
@@ -1122,7 +1078,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "books",
 						enum: false,
 					},
 				},
@@ -1141,7 +1096,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "new_books",
 						enum: false,
 					},
 					location: {
@@ -1155,7 +1109,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "new_books",
 						enum: false,
 					},
 					status: {
@@ -1169,7 +1122,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "new_books",
 						enum: true,
 					},
 					name: {
@@ -1183,7 +1135,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "new_books",
 						enum: false,
 					},
 				},
@@ -1202,7 +1153,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "users",
 						enum: false,
 					},
 					email: {
@@ -1216,7 +1166,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "users",
 						enum: false,
 					},
 					id: {
@@ -1230,7 +1179,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "users",
 						enum: false,
 					},
 					name: {
@@ -1244,7 +1192,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "users",
 						enum: false,
 					},
 					full_name: {
@@ -1258,7 +1205,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "users",
 						enum: false,
 					},
 					status: {
@@ -1272,7 +1218,6 @@ test("#localSchemaCamelCase", () => {
 						numericPrecision: null,
 						numericScale: null,
 						renameFrom: null,
-						tableName: "users",
 						enum: true,
 					},
 				},
@@ -1379,7 +1324,6 @@ describe("#localSchema with external objects", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: false,
 						},
 					},
@@ -1399,7 +1343,6 @@ describe("#localSchema with external objects", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "authors",
 						},
 						name: {
 							characterMaximumLength: null,
@@ -1413,7 +1356,6 @@ describe("#localSchema with external objects", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "authors",
 						},
 					},
 				},
@@ -1461,7 +1403,6 @@ describe("#localSchema with external objects", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: false,
 						},
 					},
@@ -1513,7 +1454,6 @@ describe("#localSchema with external objects", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: false,
 						},
 					},
@@ -1565,7 +1505,6 @@ describe("#localSchema with external objects", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "books",
 							enum: false,
 						},
 					},

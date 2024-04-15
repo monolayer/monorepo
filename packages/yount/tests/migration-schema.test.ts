@@ -19,7 +19,6 @@ describe("findColumn", () => {
 					name: "books",
 					columns: {
 						id: columnInfoFactory({
-							tableName: "books",
 							columnName: "id",
 							dataType: "serial",
 						}),
@@ -29,7 +28,6 @@ describe("findColumn", () => {
 		});
 		expect(findColumn("id", schema.table["books"])).toStrictEqual(
 			columnInfoFactory({
-				tableName: "books",
 				columnName: "id",
 				dataType: "serial",
 			}),
@@ -43,7 +41,6 @@ describe("findColumn", () => {
 					name: "books",
 					columns: {
 						id: columnInfoFactory({
-							tableName: "books",
 							columnName: "id",
 							dataType: "serial",
 						}),

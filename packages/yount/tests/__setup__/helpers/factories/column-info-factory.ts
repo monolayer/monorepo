@@ -1,16 +1,13 @@
 import { SetNonNullable } from "type-fest";
 import type { ColumnInfo } from "~/database/schema/table/column/types.js";
 
-type required = SetNonNullable<
-	Pick<ColumnInfo, "tableName" | "dataType" | "columnName">
->;
+type required = SetNonNullable<Pick<ColumnInfo, "dataType" | "columnName">>;
 type optional = Partial<
 	SetNonNullable<Omit<ColumnInfo, "tableName" | "dataType" | "columnName">>
 >;
 
 export function columnInfoFactory(options: required & optional) {
 	return {
-		tableName: options.tableName,
 		columnName: options.columnName,
 		dataType: options.dataType,
 		defaultValue:

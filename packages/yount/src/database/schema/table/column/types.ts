@@ -42,7 +42,6 @@ export type GeneratedAlwaysColumn = {
 
 export type ColumnInfo = {
 	columnName: string | null;
-	tableName: string | null;
 	dataType: string;
 	defaultValue: string | null;
 	isNullable: boolean;

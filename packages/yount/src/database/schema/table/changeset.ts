@@ -57,7 +57,7 @@ function createTableMigration(
 			const valueAndHash = toValueAndHash(column.defaultValue);
 			up.push(
 				executeKyselyDbStatement(
-					`COMMENT ON COLUMN "${schemaName}"."${column.tableName}"."${column.columnName}" IS '${valueAndHash.hash}'`,
+					`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${column.columnName}" IS '${valueAndHash.hash}'`,
 				),
 			);
 		}
@@ -105,7 +105,7 @@ function dropTableMigration(
 			const valueAndHash = toValueAndHash(column.defaultValue);
 			down.push(
 				executeKyselyDbStatement(
-					`COMMENT ON COLUMN "${schemaName}"."${column.tableName}"."${column.columnName}" IS '${valueAndHash.hash}'`,
+					`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${column.columnName}" IS '${valueAndHash.hash}'`,
 				),
 			);
 		}
