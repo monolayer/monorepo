@@ -1,5 +1,7 @@
 import { Effect } from "effect";
+import type { Kysely } from "kysely";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
+import type { CamelCaseOptions } from "~/configuration.js";
 import { createSchemaChangeset } from "~/database/database_schemas/changeset.js";
 import { schemaInDb } from "~/database/database_schemas/introspection.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
@@ -22,30 +24,53 @@ export function changeset() {
 	);
 }
 
-function changesetForLocalSchema(localSchema: AnySchema) {
-	return context(localSchema).pipe(
-		Effect.flatMap(([kyselyInstance, camelCasePlugin, schemaName]) =>
+function introspectSchemas(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	kyselyInstance: Kysely<any>,
+	localSchema: AnySchema,
+	schemaName: string,
+	camelCasePlugin: CamelCaseOptions,
+) {
+	return Effect.unit.pipe(
+		Effect.flatMap(() =>
 			Effect.tryPromise(() =>
 				introspectRemoteSchema(kyselyInstance, schemaName),
-			).pipe(
-				Effect.flatMap((introspectedDatabaseSchema) =>
+			),
+		),
+		Effect.flatMap((introspectedRemote) =>
+			Effect.unit.pipe(
+				Effect.flatMap(() =>
 					Effect.succeed(
 						introspectLocalSchema(
 							localSchema,
-							introspectedDatabaseSchema,
+							introspectedRemote,
 							camelCasePlugin,
 						),
-					).pipe(
-						Effect.flatMap((introspectedLocalSchema) =>
-							Effect.succeed(
-								schemaChangeset(
-									introspectedLocalSchema,
-									introspectedDatabaseSchema,
-									schemaName,
-									camelCasePlugin,
-								),
-							),
-						),
+					),
+				),
+				Effect.flatMap((introspectedLocalSchema) =>
+					Effect.succeed({
+						local: introspectedLocalSchema,
+						remote: introspectedRemote,
+					}),
+				),
+			),
+		),
+	);
+}
+
+function changesetForLocalSchema(localSchema: AnySchema) {
+	return context(localSchema).pipe(
+		Effect.flatMap(([kyselyInstance, camelCasePlugin, schemaName]) =>
+			introspectSchemas(
+				kyselyInstance,
+				localSchema,
+				schemaName,
+				camelCasePlugin,
+			).pipe(
+				Effect.flatMap(({ local, remote }) =>
+					Effect.succeed(
+						schemaChangeset(local, remote, schemaName, camelCasePlugin),
 					),
 				),
 				Effect.tap((changeset) =>
