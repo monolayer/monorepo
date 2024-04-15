@@ -918,7 +918,7 @@ describe("Table create migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create index "users_83f9e13d_yount_idx" on "public"."users" ("name")`',
+						'await sql`create index "users_e42f0227_yount_idx" on "public"."users" ("name")`',
 						"execute(db);",
 					],
 				],
@@ -930,7 +930,7 @@ describe("Table create migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "books_e3f7ebdd_yount_idx" on "public"."books" ("id")`',
+						'await sql`create unique index "books_e8f5ecda_yount_idx" on "public"."books" ("id")`',
 						"execute(db);",
 					],
 				],
@@ -1528,7 +1528,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create index "users_1ff7c491_yount_idx" on "public"."users" ("full_name")`',
+						'await sql`create index "users_82175e31_yount_idx" on "public"."users" ("full_name")`',
 						"execute(db);",
 					],
 				],
@@ -1540,7 +1540,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "books_e3f7ebdd_yount_idx" on "public"."books" ("id")`',
+						'await sql`create unique index "books_e8f5ecda_yount_idx" on "public"."books" ("id")`',
 						"execute(db);",
 					],
 				],
@@ -1552,7 +1552,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "new_books_3282a057_yount_idx" on "public"."new_books" ("id")`',
+						'await sql`create unique index "new_books_e8f5ecda_yount_idx" on "public"."new_books" ("id")`',
 						"execute(db);",
 					],
 				],
@@ -1564,7 +1564,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "library_building_88b61d72_yount_idx" on "public"."library_building" ("id")`',
+						'await sql`create unique index "library_building_e8f5ecda_yount_idx" on "public"."library_building" ("id")`',
 						"execute(db);",
 					],
 				],

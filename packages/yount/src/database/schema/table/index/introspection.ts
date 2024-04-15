@@ -119,7 +119,7 @@ export function indexToInfo(
 	const hash = hashValue(
 		buildIndex(
 			indexCompileArgs,
-			transformedTableName,
+			"sample",
 			transformedColumnNames,
 			kysely,
 			schemaName,

@@ -27,7 +27,7 @@ describe("Database migrations", () => {
 			.execute();
 
 		await context.kysely.schema
-			.createIndex("users_81f0b9e5_yount_idx")
+			.createIndex("users_3cf2733f_yount_idx")
 			.on("users")
 			.column("fullName")
 			.execute();
@@ -53,14 +53,14 @@ describe("Database migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create index "users_83f9e13d_yount_idx" on "public"."users" ("name")`',
+						'await sql`create index "users_e42f0227_yount_idx" on "public"."users" ("name")`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("users_83f9e13d_yount_idx")',
+						'dropIndex("users_e42f0227_yount_idx")',
 						"execute();",
 					],
 				],
@@ -83,13 +83,13 @@ describe("Database migrations", () => {
 			.execute();
 
 		await context.kysely.schema
-			.createIndex("users_f3f9e13d_yount_idx")
+			.createIndex("users_3cf2733f_yount_idx")
 			.on("users")
 			.column("fullName")
 			.execute();
 
 		await context.kysely.schema
-			.createIndex("users_83f9e13d_yount_idx")
+			.createIndex("users_e42f0227_yount_idx")
 			.on("users")
 			.column("name")
 			.execute();
@@ -116,13 +116,13 @@ describe("Database migrations", () => {
 				up: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("users_f3f9e13d_yount_idx")',
+						'dropIndex("users_3cf2733f_yount_idx")',
 						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`CREATE INDEX users_f3f9e13d_yount_idx ON public.users USING btree ("fullName")`',
+						'await sql`CREATE INDEX users_3cf2733f_yount_idx ON public.users USING btree ("fullName")`',
 						"execute(db);",
 					],
 				],
@@ -145,13 +145,13 @@ describe("Database migrations", () => {
 			.execute();
 
 		await context.kysely.schema
-			.createIndex("users_81f0b9e5_yount_idx")
+			.createIndex("users_3cf2733f_yount_idx")
 			.on("users")
 			.column("fullName")
 			.execute();
 
 		await context.kysely.schema
-			.createIndex("users_83f9e13d_yount_idx")
+			.createIndex("users_e42f0227_yount_idx")
 			.on("users")
 			.column("name")
 			.execute();
@@ -178,13 +178,13 @@ describe("Database migrations", () => {
 				up: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("users_81f0b9e5_yount_idx")',
+						'dropIndex("users_3cf2733f_yount_idx")',
 						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`CREATE INDEX users_81f0b9e5_yount_idx ON public.users USING btree ("fullName")`',
+						'await sql`CREATE INDEX users_3cf2733f_yount_idx ON public.users USING btree ("fullName")`',
 						"execute(db);",
 					],
 				],
@@ -195,14 +195,14 @@ describe("Database migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create index "users_c7bd604d_yount_idx" on "public"."users" ("name", "fullName")`',
+						'await sql`create index "users_2d87ba04_yount_idx" on "public"."users" ("name", "fullName")`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("users_c7bd604d_yount_idx")',
+						'dropIndex("users_2d87ba04_yount_idx")',
 						"execute();",
 					],
 				],
@@ -225,13 +225,13 @@ describe("Database migrations", () => {
 			.execute();
 
 		await context.kysely.schema
-			.createIndex("users_81f0b9e5_yount_idx")
+			.createIndex("users_3cf2733f_yount_idx")
 			.on("users")
 			.column("fullName")
 			.execute();
 
 		await context.kysely.schema
-			.createIndex("users_83f9e13d_yount_idx")
+			.createIndex("users_e42f0227_yount_idx")
 			.on("users")
 			.column("name")
 			.execute();
@@ -258,13 +258,13 @@ describe("Database migrations", () => {
 				up: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("users_81f0b9e5_yount_idx")',
+						'dropIndex("users_3cf2733f_yount_idx")',
 						"execute();",
 					],
 				],
 				down: [
 					[
-						'await sql`CREATE INDEX users_81f0b9e5_yount_idx ON public.users USING btree ("fullName")`',
+						'await sql`CREATE INDEX users_3cf2733f_yount_idx ON public.users USING btree ("fullName")`',
 						"execute(db);",
 					],
 				],
@@ -275,14 +275,14 @@ describe("Database migrations", () => {
 				type: "createIndex",
 				up: [
 					[
-						'await sql`create unique index "users_1790ab15_yount_idx" on "public"."users" ("fullName")`',
+						'await sql`create unique index "users_861127a4_yount_idx" on "public"."users" ("fullName")`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("users_1790ab15_yount_idx")',
+						'dropIndex("users_861127a4_yount_idx")',
 						"execute();",
 					],
 				],

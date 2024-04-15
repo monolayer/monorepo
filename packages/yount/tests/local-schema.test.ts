@@ -218,16 +218,16 @@ test("#schemaDBIndexInfoByTable", () => {
 	});
 	expect(localIndexInfoByTable(dbSchema)).toStrictEqual({
 		teams: {
-			f252fc40:
-				'create index "teams_f252fc40_yount_idx" on "public"."teams" ("active")',
-			"6e20f1ec":
-				'create index "teams_6e20f1ec_yount_idx" on "public"."teams" ("id")',
+			"11adaa14":
+				'create index "teams_11adaa14_yount_idx" on "public"."teams" ("active")',
+			"0c84fd75":
+				'create index "teams_0c84fd75_yount_idx" on "public"."teams" ("id")',
 		},
 		users: {
-			"1e44c535":
-				'create index "users_1e44c535_yount_idx" on "public"."users" ("email", "id")',
-			"83f9e13d":
-				'create index "users_83f9e13d_yount_idx" on "public"."users" ("name")',
+			"251ebc21":
+				'create index "users_251ebc21_yount_idx" on "public"."users" ("email", "id")',
+			e42f0227:
+				'create index "users_e42f0227_yount_idx" on "public"."users" ("name")',
 		},
 	});
 });
@@ -522,12 +522,12 @@ describe("schema", () => {
 			},
 			index: {
 				books: {
-					e9c0a68b:
-						'create index "books_e9c0a68b_yount_idx" on "public"."books" ("name")',
+					e42f0227:
+						'create index "books_e42f0227_yount_idx" on "public"."books" ("name")',
 				},
 				teams: {
-					b7aa6cce:
-						'create index "teams_b7aa6cce_yount_idx" on "public"."teams" ("name")',
+					e42f0227:
+						'create index "teams_e42f0227_yount_idx" on "public"."teams" ("name")',
 				},
 			},
 			foreignKeyConstraints: {
@@ -842,16 +842,16 @@ describe("schema", () => {
 			},
 			index: {
 				books: {
-					e9c0a68b:
-						'create index "books_e9c0a68b_yount_idx" on "public"."books" ("name")',
+					e42f0227:
+						'create index "books_e42f0227_yount_idx" on "public"."books" ("name")',
 				},
 				new_books: {
-					"80adf878":
-						'create index "new_books_80adf878_yount_idx" on "public"."new_books" ("name")',
+					e42f0227:
+						'create index "new_books_e42f0227_yount_idx" on "public"."new_books" ("name")',
 				},
 				users: {
-					"1ff7c491":
-						'create index "users_1ff7c491_yount_idx" on "public"."users" ("full_name")',
+					"82175e31":
+						'create index "users_82175e31_yount_idx" on "public"."users" ("full_name")',
 				},
 			},
 			foreignKeyConstraints: {
@@ -1225,16 +1225,16 @@ test("#localSchemaCamelCase", () => {
 		},
 		index: {
 			books: {
-				e9c0a68b:
-					'create index "books_e9c0a68b_yount_idx" on "public"."books" ("name")',
+				e42f0227:
+					'create index "books_e42f0227_yount_idx" on "public"."books" ("name")',
 			},
 			new_books: {
-				"80adf878":
-					'create index "new_books_80adf878_yount_idx" on "public"."new_books" ("name")',
+				e42f0227:
+					'create index "new_books_e42f0227_yount_idx" on "public"."new_books" ("name")',
 			},
 			users: {
-				"1ff7c491":
-					'create index "users_1ff7c491_yount_idx" on "public"."users" ("full_name")',
+				"82175e31":
+					'create index "users_82175e31_yount_idx" on "public"."users" ("full_name")',
 			},
 		},
 		foreignKeyConstraints: {

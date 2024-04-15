@@ -9,8 +9,8 @@ describe("pgIndex", () => {
 		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
-			ef4c02ae:
-				'create index if not exists "test_table_ef4c02ae_yount_idx" on "public"."test_table" ("id")',
+			"84f7fd21":
+				'create index if not exists "test_table_84f7fd21_yount_idx" on "public"."test_table" ("id")',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
@@ -20,8 +20,8 @@ describe("pgIndex", () => {
 		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
-			"1eeaa842":
-				'create index if not exists "test_table_1eeaa842_yount_idx" on "public"."test_table" ("id", "name")',
+			f1a23764:
+				'create index if not exists "test_table_f1a23764_yount_idx" on "public"."test_table" ("id", "name")',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
@@ -31,8 +31,8 @@ describe("pgIndex", () => {
 		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
-			ef4c02ae:
-				'create index if not exists "test_table_ef4c02ae_yount_idx" on "public"."test_table" ("id")',
+			"84f7fd21":
+				'create index if not exists "test_table_84f7fd21_yount_idx" on "public"."test_table" ("id")',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
@@ -42,8 +42,8 @@ describe("pgIndex", () => {
 		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
-			d0237b83:
-				'create unique index "test_table_d0237b83_yount_idx" on "public"."test_table" ("id")',
+			e8f5ecda:
+				'create unique index "test_table_e8f5ecda_yount_idx" on "public"."test_table" ("id")',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
@@ -53,8 +53,8 @@ describe("pgIndex", () => {
 		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
-			"9d79085d":
-				'create index "test_table_9d79085d_yount_idx" on "public"."test_table" ("id") nulls not distinct',
+			"53ec1d71":
+				'create index "test_table_53ec1d71_yount_idx" on "public"."test_table" ("id") nulls not distinct',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
@@ -66,8 +66,8 @@ describe("pgIndex", () => {
 		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
-			"15244adc":
-				'create index "test_table_15244adc_yount_idx" on "public"."test_table" ("first_name", first_name COLLATE "fi_FI")',
+			"4ac64663":
+				'create index "test_table_4ac64663_yount_idx" on "public"."test_table" ("first_name", first_name COLLATE "fi_FI")',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
@@ -77,8 +77,8 @@ describe("pgIndex", () => {
 		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
-			"47d3b854":
-				'create index "test_table_47d3b854_yount_idx" on "public"."test_table" using btree ("id")',
+			"83683299":
+				'create index "test_table_83683299_yount_idx" on "public"."test_table" using btree ("id")',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
@@ -88,8 +88,8 @@ describe("pgIndex", () => {
 		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
-			b472eaea:
-				'create index "test_table_b472eaea_yount_idx" on "public"."test_table" ("order_nr") where "billed" is not true',
+			"8b9db888":
+				'create index "test_table_8b9db888_yount_idx" on "public"."test_table" ("order_nr") where "billed" is not true',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
@@ -102,8 +102,8 @@ describe("pgIndex", () => {
 		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
-			d4ca0368:
-				'create index "test_table_d4ca0368_yount_idx" on "public"."test_table" ("id") where ("first_name" = \'Igal\' and "age" >= 18)',
+			"607d70fb":
+				'create index "test_table_607d70fb_yount_idx" on "public"."test_table" ("id") where ("first_name" = \'Igal\' and "age" >= 18)',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
@@ -113,8 +113,8 @@ describe("pgIndex", () => {
 		const compiledIndex = await compileIndex(idx, "test_table");
 
 		const expected = {
-			"7c8d9dca":
-				'create index "test_table_7c8d9dca_yount_idx" on "public"."test_table" ("id") where SELECT 1',
+			be8fd558:
+				'create index "test_table_be8fd558_yount_idx" on "public"."test_table" ("id") where SELECT 1',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
