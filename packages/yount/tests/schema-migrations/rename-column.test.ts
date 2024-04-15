@@ -1008,7 +1008,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.addColumn("book_id", "integer")
 				.addForeignKeyConstraint(
-					"users_pk1_book_id_books_pk1_id_yount_fk",
+					"users_pk1_5f89e0aa_yount_fk",
 					["book_id"],
 					"books_pk1",
 					["id"],
@@ -1066,7 +1066,7 @@ describe("Rename column migrations", () => {
 				.addColumn("name", "text")
 				.addColumn("bookId", "integer")
 				.addForeignKeyConstraint(
-					"users_pk1_book_id_books_pk1_id_yount_fk",
+					"users_pk1_5f89e0aa_yount_fk",
 					["bookId"],
 					"books_pk1",
 					["id"],

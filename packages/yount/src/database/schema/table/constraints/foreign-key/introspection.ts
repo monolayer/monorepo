@@ -64,6 +64,7 @@ export async function dbForeignKeyConstraintInfo(
 			join.onRef("cu.constraint_name", "=", "con.conname"),
 		)
 		.select([
+			"con.conname",
 			sql<"FOREIGN KEY">`'FOREIGN KEY'`.as("constraintType"),
 			"tbl.relname as table",
 			sql<string[]>`JSON_AGG(DISTINCT col.attname)`.as("column"),
@@ -82,10 +83,15 @@ export async function dbForeignKeyConstraintInfo(
 			"rc.delete_rule",
 			"rc.update_rule",
 			"con.confrelid",
+			"con.conname",
 		])
 		.execute();
 	const transformedResults = results.reduce<ForeignKeyInfo>((acc, result) => {
-		const query = foreignKeyConstraintInfoToNameAndQuery(result);
+		const constraintHash = result.conname!.match(/^\w+_(\w+)_yount_fk$/)![1];
+		const query = foreignKeyConstraintInfoToNameAndQuery(
+			result,
+			constraintHash,
+		);
 		const table = result.table;
 		if (table !== null) {
 			acc[table] = {
@@ -147,6 +153,7 @@ export function localForeignKeyConstraintInfo(
 
 export function foreignKeyConstraintInfoToNameAndQuery(
 	info: ForeignKeyConstraintInfo,
+	hash?: string,
 ) {
 	const parts = [
 		"FOREIGN KEY",
@@ -157,7 +164,10 @@ export function foreignKeyConstraintInfoToNameAndQuery(
 		`ON DELETE ${info.deleteRule}`,
 		`ON UPDATE ${info.updateRule}`,
 	];
-	return { [`${hashValue(parts.join(" "))}`]: parts.join(" ") };
+	return {
+		[`${hash !== undefined ? hash : hashValue(parts.join(" "))}`]:
+			parts.join(" "),
+	};
 }
 
 export type ForeIgnKeyConstraintInfo = {

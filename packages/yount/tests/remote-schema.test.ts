@@ -76,7 +76,7 @@ describe("#remoteSchema", () => {
 			)
 			.addPrimaryKeyConstraint("remote_schema_users_id_yount_pk", ["id"])
 			.addForeignKeyConstraint(
-				"remote_schema_users_book_id_remote_schema_books_id_yount_fk",
+				"remote_schema_users_book_id_remote_schema_d0466f3b_yount_fk",
 				["book_id"],
 				"remote_schema_books",
 				["id"],
@@ -338,7 +338,7 @@ describe("#remoteSchema", () => {
 			.addColumn("book_id", "integer")
 			.addPrimaryKeyConstraint("remoteSchemaUsers_id_yount_pk", ["id"])
 			.addForeignKeyConstraint(
-				"remoteSchemaUsers_book_id_remoteSchemaBooks_id_yount_fk",
+				"remoteSchemaUsers_book_id_remoteSchemaBooks_5aa711d0_yount_fk",
 				["book_id"],
 				"remoteSchemaBooks",
 				["id"],
