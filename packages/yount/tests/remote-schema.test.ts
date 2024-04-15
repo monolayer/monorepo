@@ -294,8 +294,7 @@ describe("#remoteSchema", () => {
 
 			primaryKey: {
 				remote_schema_users: {
-					remote_schema_users_yount_pk:
-						'"remote_schema_users_yount_pk" PRIMARY KEY ("id")',
+					remote_schema_users_yount_pk: '("id")',
 				},
 			},
 			triggers: {
@@ -477,8 +476,7 @@ describe("#remoteSchema", () => {
 			},
 			primaryKey: {
 				remoteSchemaUsers: {
-					remoteSchemaUsers_yount_pk:
-						'"remoteSchemaUsers_yount_pk" PRIMARY KEY ("id")',
+					remoteSchemaUsers_yount_pk: '("id")',
 				},
 			},
 			enums: {},

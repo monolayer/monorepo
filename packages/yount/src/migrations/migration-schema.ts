@@ -59,7 +59,7 @@ export function findPrimaryKey(
 }
 
 export function extractColumnsFromPrimaryKey(pkey: string) {
-	const [, columns] = pkey.split("PRIMARY KEY (");
+	const [, columns] = pkey.split("(");
 	return columns?.replace(/"/g, "").split(")")[0]?.split(", ") || [];
 }
 

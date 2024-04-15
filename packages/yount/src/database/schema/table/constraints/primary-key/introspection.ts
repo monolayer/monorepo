@@ -109,9 +109,5 @@ export function primaryKeyConstraintInfoToQuery(
 	info: PrimaryKeyConstraintInfo,
 ) {
 	const columns = info.columns.sort();
-	return [
-		`"${info.table}_yount_pk"`,
-		"PRIMARY KEY",
-		`(${columns.map((col) => `"${col}"`).join(", ")})`,
-	].join(" ");
+	return [`(${columns.map((col) => `"${col}"`).join(", ")})`].join(" ");
 }
