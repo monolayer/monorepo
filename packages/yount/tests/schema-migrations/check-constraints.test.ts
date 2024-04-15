@@ -262,7 +262,6 @@ describe("Database migrations", () => {
 			.addCheckConstraint("books_918b4271_yount_chk", sql`"id" < 50000`)
 			.execute();
 
-
 		const books = table({
 			columns: {
 				id: integer(),
