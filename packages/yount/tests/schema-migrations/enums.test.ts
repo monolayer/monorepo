@@ -70,7 +70,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 2002,
+				priority: 2003,
 				tableName: "users",
 				type: "createColumn",
 				up: [

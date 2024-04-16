@@ -1,28 +1,23 @@
 import { Effect } from "effect";
-import type { Kysely } from "kysely";
-import type { CamelCaseOptions } from "~/configuration.js";
-import { type AnySchema } from "~/database/schema/schema.js";
 import {
+	SchemaMigrationInfo,
 	introspectLocalSchema,
 	introspectRemoteSchema,
+	renameTables,
 } from "~/introspection/introspection.js";
+import type { SchemaContext } from "./schema-context.js";
 
 export function introspectSchemas({
 	kyselyInstance,
 	localSchema,
 	schemaName,
 	camelCasePlugin,
-}: {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	kyselyInstance: Kysely<any>;
-	localSchema: AnySchema;
-	schemaName: string;
-	camelCasePlugin: CamelCaseOptions;
-}) {
+	tablesToRename,
+}: SchemaContext) {
 	return Effect.unit.pipe(
 		Effect.flatMap(() =>
 			Effect.tryPromise(() =>
-				introspectRemoteSchema(kyselyInstance, schemaName),
+				introspectRemoteSchema(kyselyInstance, schemaName, tablesToRename),
 			),
 		),
 		Effect.flatMap((introspectedRemote) =>
@@ -33,6 +28,7 @@ export function introspectSchemas({
 							localSchema,
 							introspectedRemote,
 							camelCasePlugin,
+							tablesToRename,
 						),
 					),
 				),
@@ -40,9 +36,29 @@ export function introspectSchemas({
 					Effect.succeed({
 						local: introspectedLocalSchema,
 						remote: introspectedRemote,
+						tablesToRename: tablesToRename,
 					}),
 				),
 			),
 		),
 	);
+}
+
+export function renameTablesInIntrospectedSchemas({
+	localSchema,
+	camelCasePlugin,
+	tablesToRename,
+	remote,
+}: SchemaContext & { remote: SchemaMigrationInfo }) {
+	const renamedRemote = renameTables(remote, tablesToRename);
+	return Effect.succeed({
+		local: introspectLocalSchema(
+			localSchema,
+			renamedRemote,
+			camelCasePlugin,
+			tablesToRename,
+		),
+		remote: renamedRemote,
+		tablesToRename,
+	});
 }

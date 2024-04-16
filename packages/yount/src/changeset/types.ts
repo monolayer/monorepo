@@ -34,6 +34,8 @@ export type Changeset = {
 export enum MigrationOpPriority {
 	Database = 0,
 
+	ChangeTableName = 900,
+
 	TriggerDrop = 1001,
 	IndexDrop = 1002,
 	ConstraintDrop = 1003,
@@ -43,7 +45,7 @@ export enum MigrationOpPriority {
 	DropEnum = 3011,
 
 	TableCreate = 2001,
-	ColumnCreate = 2002,
+	ColumnCreate = 2003,
 
 	ChangeColumnDatatype = 3001,
 	ChangeColumnBase = 3002,
@@ -55,7 +57,6 @@ export enum MigrationOpPriority {
 	ChangeColumnNullable = 3008,
 
 	ChangeColumnName = 3010,
-
 	PrimaryKeyCreate = 4001,
 	ConstraintCreate = 4002,
 	IndexCreate = 4003,

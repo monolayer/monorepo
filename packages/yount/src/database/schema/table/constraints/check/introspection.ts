@@ -10,7 +10,9 @@ import {
 	compileDefaultExpression,
 	tableInfo,
 } from "~/introspection/helpers.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import type { CheckInfo } from "~/migrations/migration-schema.js";
+import type { TablesToRename } from "~/programs/table-diff-prompt.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 
@@ -18,6 +20,7 @@ export async function dbCheckConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
+	tablesToRename: TablesToRename = [],
 ) {
 	if (tableNames.length === 0) {
 		return {};
@@ -32,7 +35,7 @@ export async function dbCheckConstraintInfo(
 		)
 		.select([
 			"pg_constraint.conname as constraint_name",
-			"pg_class.relname as table",
+			sql<string>`pg_class.relname`.as("table"),
 			sql<string>`pg_get_constraintdef(pg_constraint.oid)`.as("definition"),
 		])
 		.where("pg_constraint.contype", "=", "c")
@@ -48,12 +51,12 @@ export async function dbCheckConstraintInfo(
 			[`${constraintHash}`]: `${result.definition}`,
 		};
 		const table = result.table;
-		if (table !== null) {
-			acc[table] = {
-				...acc[table],
-				...constraintInfo,
-			};
-		}
+		const currentName = currentTableName(table, tablesToRename);
+
+		acc[currentName] = {
+			...acc[currentName],
+			...constraintInfo,
+		};
 		return acc;
 	}, {});
 	return transformedResults;

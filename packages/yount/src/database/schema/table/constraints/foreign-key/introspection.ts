@@ -3,10 +3,12 @@ import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { tableInfo } from "~/introspection/helpers.js";
+import { previousTableName } from "~/introspection/table-name.js";
 import {
 	findTableByNameInDatabaseSchema,
 	type ForeignKeyInfo,
 } from "~/migrations/migration-schema.js";
+import type { TablesToRename } from "~/programs/table-diff-prompt.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 
@@ -107,6 +109,7 @@ export async function dbForeignKeyConstraintInfo(
 export function localForeignKeyConstraintInfo(
 	schema: AnySchema,
 	camelCase: CamelCaseOptions,
+	tablesToRename: TablesToRename = [],
 ) {
 	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce<ForeignKeyInfo>(
@@ -133,7 +136,7 @@ export function localForeignKeyConstraintInfo(
 							constraintType: "FOREIGN KEY",
 							table: transformedTableName,
 							column: transformedColumNames,
-							targetTable: targetTableName,
+							targetTable: previousTableName(targetTableName, tablesToRename),
 							targetColumns: transformedtargetColumnNames,
 							deleteRule: foreignKey.deleteRule ?? null,
 							updateRule: foreignKey.updateRule ?? null,

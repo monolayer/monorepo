@@ -6,6 +6,8 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { currentTableName } from "~/introspection/table-name.js";
+import type { TablesToRename } from "~/programs/table-diff-prompt.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
@@ -109,9 +111,9 @@ function isForeignKeyConstraintDrop(
 
 function createforeignKeyFirstConstraintMigration(
 	diff: ForeignKeyCreateFirstDiff,
-	{ schemaName, addedTables }: GeneratorContext,
+	{ schemaName, addedTables, tablesToRename }: GeneratorContext,
 ) {
-	const tableName = diff.path[1];
+	const tableName = currentTableName(diff.path[1], tablesToRename);
 	return Object.entries(diff.value).reduce(
 		(acc, [hashValue, constraintValue]) => {
 			const changeset: Changeset = {
@@ -120,7 +122,12 @@ function createforeignKeyFirstConstraintMigration(
 				type: ChangeSetType.CreateConstraint,
 				up: addForeigKeyOps(
 					tableName,
-					foreignKeyDefinition(constraintValue, tableName, hashValue),
+					foreignKeyDefinition(
+						constraintValue,
+						tableName,
+						hashValue,
+						tablesToRename,
+					),
 					schemaName,
 				),
 				down: addedTables.includes(tableName)
@@ -128,7 +135,12 @@ function createforeignKeyFirstConstraintMigration(
 					: [
 							dropForeignKeyOp(
 								tableName,
-								foreignKeyDefinition(constraintValue, tableName, hashValue),
+								foreignKeyDefinition(
+									constraintValue,
+									tableName,
+									hashValue,
+									tablesToRename,
+								),
 								schemaName,
 							),
 						],
@@ -142,9 +154,9 @@ function createforeignKeyFirstConstraintMigration(
 
 function createForeignKeyConstraintMigration(
 	diff: ForeignKeyCreateDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
-	const tableName = diff.path[1];
+	const tableName = currentTableName(diff.path[1], tablesToRename);
 	const hashValue = diff.path[2];
 	const constraintValue = diff.value;
 
@@ -154,13 +166,23 @@ function createForeignKeyConstraintMigration(
 		type: ChangeSetType.CreateConstraint,
 		up: addForeigKeyOps(
 			tableName,
-			foreignKeyDefinition(constraintValue, tableName, hashValue),
+			foreignKeyDefinition(
+				constraintValue,
+				tableName,
+				hashValue,
+				tablesToRename,
+			),
 			schemaName,
 		),
 		down: [
 			dropForeignKeyOp(
 				tableName,
-				foreignKeyDefinition(constraintValue, tableName, hashValue),
+				foreignKeyDefinition(
+					constraintValue,
+					tableName,
+					hashValue,
+					tablesToRename,
+				),
 				schemaName,
 			),
 		],
@@ -170,7 +192,7 @@ function createForeignKeyConstraintMigration(
 
 function dropforeignKeyLastConstraintMigration(
 	diff: ForeignKeyDropLastDiff,
-	{ schemaName, droppedTables }: GeneratorContext,
+	{ schemaName, droppedTables, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.oldValue).reduce(
@@ -184,13 +206,23 @@ function dropforeignKeyLastConstraintMigration(
 					: [
 							dropForeignKeyOp(
 								tableName,
-								foreignKeyDefinition(constraintValue, tableName, hashValue),
+								foreignKeyDefinition(
+									constraintValue,
+									tableName,
+									hashValue,
+									tablesToRename,
+								),
 								schemaName,
 							),
 						],
 				down: addForeigKeyOps(
 					tableName,
-					foreignKeyDefinition(constraintValue, tableName, hashValue),
+					foreignKeyDefinition(
+						constraintValue,
+						tableName,
+						hashValue,
+						tablesToRename,
+					),
 					schemaName,
 				),
 			};
@@ -203,7 +235,7 @@ function dropforeignKeyLastConstraintMigration(
 
 function dropForeignKeyConstraintMigration(
 	diff: ForeignKeyDropDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const hashValue = diff.path[2];
@@ -216,13 +248,23 @@ function dropForeignKeyConstraintMigration(
 		up: [
 			dropForeignKeyOp(
 				tableName,
-				foreignKeyDefinition(constraintValue, tableName, hashValue),
+				foreignKeyDefinition(
+					constraintValue,
+					tableName,
+					hashValue,
+					tablesToRename,
+				),
 				schemaName,
 			),
 		],
 		down: addForeigKeyOps(
 			tableName,
-			foreignKeyDefinition(constraintValue, tableName, hashValue),
+			foreignKeyDefinition(
+				constraintValue,
+				tableName,
+				hashValue,
+				tablesToRename,
+			),
 			schemaName,
 		),
 	};
@@ -242,14 +284,16 @@ function foreignKeyDefinition(
 	foreignKey: string,
 	tableName: string,
 	hashValue: string,
+	tablesToRename: TablesToRename,
 ) {
+	const target = foreignKey.match(/REFERENCES (\w+)/)?.[1] || "";
 	const definition: ForeignKeyDefinition = {
 		name: `${tableName}_${hashValue}_yount_fk`,
 		columns: (foreignKey.match(/FOREIGN KEY \(((\w|,|\s|")+)\)/)?.[1] || "")
 			.replace(/ /g, "")
 			.replace(/"/g, "")
 			.split(","),
-		targetTable: foreignKey.match(/REFERENCES (\w+)/)?.[1] || "",
+		targetTable: currentTableName(target, tablesToRename),
 		targetColumns: (
 			foreignKey.match(/REFERENCES \w+ \(((\w|,|\s|")+)\)/)?.[1] || ""
 		)

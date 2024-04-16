@@ -5,6 +5,7 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { previousTableName } from "~/introspection/table-name.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
 
 export function uniqueConstraintMigrationOpGenerator(
@@ -126,7 +127,7 @@ function createUniqueFirstConstraintMigration(
 
 function dropUniqueLastConstraintMigration(
 	diff: UniqueDropLast,
-	{ schemaName, droppedTables }: GeneratorContext,
+	{ schemaName, droppedTables, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 
@@ -134,7 +135,7 @@ function dropUniqueLastConstraintMigration(
 		(acc, [hashValue, constraintValue]) => {
 			const uniqueConstraint = uniqueConstraintDefinition(
 				constraintValue,
-				tableName,
+				previousTableName(tableName, tablesToRename),
 				hashValue,
 			);
 			const changeset: Changeset = {
@@ -177,13 +178,13 @@ function createUniqueConstraintMigration(
 
 function dropUniqueConstraintMigration(
 	diff: UuniqueDropDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const hashValue = diff.path[2];
 	const uniqueConstraint = uniqueConstraintDefinition(
 		diff.oldValue,
-		tableName,
+		previousTableName(tableName, tablesToRename),
 		hashValue,
 	);
 

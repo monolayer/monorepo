@@ -25,6 +25,9 @@ export function tableMigrationOpGenerator(
 	if (isDropTable(diff)) {
 		return dropTableMigration(diff, context);
 	}
+	if (isTableNameChange(diff)) {
+		return changeTableNameMigration(diff, context);
+	}
 }
 
 export type CreateTableDiff = {
@@ -117,6 +120,52 @@ function dropTableMigration(
 		type: ChangeSetType.DropTable,
 		up: [executeKyselySchemaStatement(schemaName, `dropTable("${tableName}")`)],
 		down: down,
+	};
+	return changeset;
+}
+
+export type ChangeTableNameDiff = {
+	type: "CHANGE";
+	path: ["table", string, "name"];
+	value: string;
+	oldValue: string;
+};
+
+export function isTableNameChange(
+	test: Difference,
+): test is ChangeTableNameDiff {
+	return (
+		test.type === "CHANGE" &&
+		test.path.length === 3 &&
+		test.path[0] === "table" &&
+		test.path[2] === "name" &&
+		typeof test.value === "string" &&
+		typeof test.oldValue === "string"
+	);
+}
+
+function changeTableNameMigration(
+	diff: ChangeTableNameDiff,
+	{ schemaName }: GeneratorContext,
+) {
+	const changeset: Changeset = {
+		priority: MigrationOpPriority.ChangeTableName,
+		tableName: diff.oldValue,
+		type: ChangeSetType.ChangeTable,
+		up: [
+			executeKyselySchemaStatement(
+				schemaName,
+				`alterTable("${diff.oldValue}")`,
+				`renameTo("${diff.value}")`,
+			),
+		],
+		down: [
+			executeKyselySchemaStatement(
+				schemaName,
+				`alterTable("${diff.value}")`,
+				`renameTo("${diff.oldValue}")`,
+			),
+		],
 	};
 	return changeset;
 }

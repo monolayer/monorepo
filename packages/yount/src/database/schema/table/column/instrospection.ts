@@ -5,7 +5,9 @@ import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import { findColumn, findPrimaryKey } from "~/migrations/migration-schema.js";
+import type { TablesToRename } from "~/programs/table-diff-prompt.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 import { type TableColumn } from "../table-column.js";
 import { ColumnInfo } from "./types.js";
@@ -14,13 +16,18 @@ export async function dbColumnInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
+	tablesToRename: TablesToRename = [],
 ) {
 	const results = await fetchDbColumnInfo(kysely, databaseSchema, tableNames);
 	const transformed = transformDbColumnInfo(results);
-	const mapped = mapColumnsToTables(transformed);
+	const mapped = mapColumnsToTables(transformed, tablesToRename);
 	for (const table of tableNames) {
-		if (mapped[table] === undefined) {
-			mapped[table] = { columns: {}, name: table };
+		const currentName = currentTableName(table, tablesToRename);
+		if (mapped[currentName] === undefined) {
+			mapped[currentName] = {
+				columns: {},
+				name: table,
+			};
 		}
 	}
 	return mapped;
@@ -285,19 +292,21 @@ export function transformDbColumnInfo(
 
 export function mapColumnsToTables(
 	columns: (ColumnInfo & { tableName: string })[],
+	tablesToRename: TablesToRename = [],
 ) {
 	return columns.reduce<Record<string, TableInfo>>((acc, curr) => {
 		if (curr.tableName !== null && curr.columnName !== null) {
-			const currentTable = acc[curr.tableName];
+			const currentName = currentTableName(curr.tableName, tablesToRename);
+			const currentTable = acc[currentName];
 			if (currentTable === undefined) {
-				acc[curr.tableName] = {
+				acc[currentName] = {
 					name: curr.tableName,
 					columns: {
 						[curr.columnName as string]: curr,
 					},
 				};
 			} else {
-				acc[curr.tableName] = {
+				acc[currentName] = {
 					name: curr.tableName,
 					columns: {
 						...currentTable.columns,
@@ -395,6 +404,5 @@ export function schemaColumnInfo(
 }
 export type TableInfo = {
 	name: string;
-	newName?: string;
 	columns: Record<string, ColumnInfo>;
 };

@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import { env } from "node:process";
 import pg from "pg";
 import type { GlobalThis } from "type-fest";
+import { vi } from "vitest";
 dotenv.config();
 
 export type GlobalThisInTests = GlobalThis & {
@@ -36,3 +37,13 @@ export function globalPoolTwo() {
 	}
 	return globalTestThis.poolTwo;
 }
+
+vi.mock("~/programs/table-diff-prompt.js", async (importOriginal) => {
+	await importOriginal();
+	return {
+		tableDiffPrompt: vi.fn(
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			async (_tableDiff: { added: string[]; deleted: string[] }) => [],
+		),
+	};
+});

@@ -57,9 +57,6 @@
 		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
 		"pack": "npm pack --pack-destination ./build",
 		"test": "./tests/__setup__/bin/run-tests",
-		"pretest": "tsx ./tests/__setup__/helpers/create-test-db.ts",
-		"posttest": "tsx ./tests/__setup__/helpers/drop-test-db.ts",
-		"pretest:watch": "tsx ./tests/__setup__/helpers/create-test-db.ts",
 		"test:watch": "vitest tests --pool=forks --watch --ui --open --coverage"
 	},
 	"repository": {

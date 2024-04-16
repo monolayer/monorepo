@@ -10,7 +10,9 @@ import {
 	type PgUnique,
 } from "~/database/schema/table/constraints/unique/unique.js";
 import { tableInfo } from "~/introspection/helpers.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import type { UniqueInfo } from "~/migrations/migration-schema.js";
+import type { TablesToRename } from "~/programs/table-diff-prompt.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 
@@ -25,6 +27,7 @@ export async function dbUniqueConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
+	tablesToRename: TablesToRename = [],
 ) {
 	if (tableNames.length === 0) {
 		return {};
@@ -66,7 +69,7 @@ export async function dbUniqueConstraintInfo(
 		)
 		.select([
 			sql<"UNIQUE">`'UNIQUE'`.as("constraintType"),
-			"pg_class.relname as table",
+			sql<string>`pg_class.relname`.as("table"),
 			sql<string>`pg_constraint.conname`.as("name"),
 			sql<string[]>`json_agg(pg_attribute.attname)`.as("columns"),
 		])
@@ -95,12 +98,11 @@ export async function dbUniqueConstraintInfo(
 			[`${constraintHash}`]: uniqueConstraintInfoToQuery(result),
 		};
 		const table = result.table;
-		if (table !== null) {
-			acc[table] = {
-				...acc[table],
-				...constraintInfo,
-			};
-		}
+		const currentName = currentTableName(table, tablesToRename);
+		acc[currentName] = {
+			...acc[currentName],
+			...constraintInfo,
+		};
 		return acc;
 	}, {});
 	return transformedResults;

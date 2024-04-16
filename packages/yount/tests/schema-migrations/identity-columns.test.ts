@@ -35,7 +35,7 @@ describe("Identity columns", () => {
 
 		const expected = [
 			{
-				priority: 2002,
+				priority: 2003,
 				tableName: "users",
 				type: "createColumn",
 				up: [
@@ -56,7 +56,7 @@ describe("Identity columns", () => {
 				],
 			},
 			{
-				priority: 2002,
+				priority: 2003,
 				tableName: "users",
 				type: "createColumn",
 				up: [

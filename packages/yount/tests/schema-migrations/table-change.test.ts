@@ -55,7 +55,7 @@ describe("Table change migrations", () => {
 
 		const expected = [
 			{
-				priority: 2002,
+				priority: 2003,
 				tableName: "teams",
 				type: "createColumn",
 				up: [
@@ -76,7 +76,7 @@ describe("Table change migrations", () => {
 				],
 			},
 			{
-				priority: 2002,
+				priority: 2003,
 				tableName: "users",
 				type: "createColumn",
 				up: [

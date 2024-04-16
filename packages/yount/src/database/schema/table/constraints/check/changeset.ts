@@ -5,6 +5,7 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { previousTableName } from "~/introspection/table-name.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
@@ -75,7 +76,6 @@ function createFirstCheckMigration(
 						schemaName,
 						tableName,
 						checkName,
-						checkHash,
 						checkDefinition,
 					),
 					down: addedTables.includes(tableName)
@@ -96,7 +96,7 @@ function createFirstCheckMigration(
 
 function dropAllChecksMigration(
 	diff: DropAllChecksDiff,
-	{ droppedTables, schemaName }: GeneratorContext,
+	{ droppedTables, schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const checkHashes = Object.keys(diff.oldValue) as Array<
@@ -106,7 +106,7 @@ function dropAllChecksMigration(
 		.flatMap((checkHash) => {
 			const checkDefinition = diff.oldValue[checkHash];
 			if (checkDefinition !== undefined) {
-				const checkName = `${tableName}_${checkHash}_yount_chk`;
+				const checkName = `${previousTableName(tableName, tablesToRename)}_${checkHash}_yount_chk`;
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.ConstraintDrop,
 					tableName: tableName,
@@ -166,7 +166,6 @@ function createCheckMigration(
 			schemaName,
 			tableName,
 			checkName,
-			checkHash,
 			checkDefinition,
 		),
 		down: [dropCheckKyselySchemaStatement(schemaName, tableName, checkName)],
@@ -189,11 +188,14 @@ function isDropCheck(test: Difference): test is DropCheck {
 	);
 }
 
-function dropCheckMigration(diff: DropCheck, { schemaName }: GeneratorContext) {
+function dropCheckMigration(
+	diff: DropCheck,
+	{ schemaName, tablesToRename }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const checkHash = diff.path[2];
 	const checkDefinition = diff.oldValue;
-	const checkName = `${tableName}_${checkHash}_yount_chk`;
+	const checkName = `${previousTableName(tableName, tablesToRename)}_${checkHash}_yount_chk`;
 
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.ConstraintDrop,
@@ -244,7 +246,6 @@ function addCheckWithSchemaStatements(
 	schemaName: string,
 	tableName: string,
 	checkName: string,
-	checkHash: string,
 	checkDefinition: string,
 ) {
 	return [

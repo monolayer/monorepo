@@ -73,7 +73,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 2002,
+				priority: 2003,
 				tableName: "users",
 				type: "createColumn",
 				up: [
@@ -208,7 +208,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 2002,
+				priority: 2003,
 				tableName: "users",
 				type: "createColumn",
 				up: [
@@ -229,7 +229,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 2002,
+				priority: 2003,
 				tableName: "users",
 				type: "createColumn",
 				up: [

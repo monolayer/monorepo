@@ -7,10 +7,12 @@ import {
 	type AnyPgPrimaryKey,
 } from "~/database/schema/table/constraints/primary-key/primary-key.js";
 import { tableInfo } from "~/introspection/helpers.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import {
 	primaryKeyColumns,
 	type PrimaryKeyInfo,
 } from "~/migrations/migration-schema.js";
+import type { TablesToRename } from "~/programs/table-diff-prompt.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 import { type ColumnRecord } from "../../table-column.js";
 import type { AnyPgTable } from "../../table.js";
@@ -25,6 +27,7 @@ export async function dbPrimaryKeyConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
+	tablesToRename: TablesToRename = [],
 ) {
 	if (tableNames.length === 0) {
 		return {};
@@ -44,7 +47,7 @@ export async function dbPrimaryKeyConstraintInfo(
 		)
 		.select([
 			sql<"PRIMARY KEY">`'PRIMARY KEY'`.as("constraintType"),
-			"tbl.relname as table",
+			sql<string>`tbl.relname`.as("table"),
 			sql<string[]>`json_agg(att.attname ORDER BY att.attnum)`.as("columns"),
 		])
 		.where("con.contype", "=", "p")
@@ -60,9 +63,10 @@ export async function dbPrimaryKeyConstraintInfo(
 			[key]: primaryKeyConstraintInfoToQuery(result),
 		};
 		const table = result.table;
+		const currentName = currentTableName(table, tablesToRename);
 		if (table !== null) {
-			acc[table] = {
-				...acc[table],
+			acc[currentName] = {
+				...acc[currentName],
 				...constraintInfo,
 			};
 		}
