@@ -77,7 +77,7 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
 
 	where(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		lhs: any | Expression<any>,
+		lhs: T | Expression<any>,
 		op: ComparisonOperatorExpression,
 		rhs: unknown,
 	): this;
