@@ -21,12 +21,16 @@ export async function computeChangeset(
 		db,
 		remote,
 		camelCase ?? { enabled: false },
+		[],
+		{},
 	);
 	const cset = schemaChangeset(
 		local,
 		remote,
 		schemaName,
 		camelCase ?? { enabled: false },
+		[],
+		{},
 	);
 	const schemaInDatabase = await schemaInDb(kysely, schemaName);
 	if (schemaInDatabase.length === 0) {

@@ -7,12 +7,11 @@ import {
 	type AnyPgPrimaryKey,
 } from "~/database/schema/table/constraints/primary-key/primary-key.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { currentTableName } from "~/introspection/table-name.js";
 import {
 	primaryKeyColumns,
 	type PrimaryKeyInfo,
 } from "~/migrations/migration-schema.js";
-import type { TablesToRename } from "~/programs/table-diff-prompt.js";
+import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 import { type ColumnRecord } from "../../table-column.js";
 import type { AnyPgTable } from "../../table.js";
@@ -27,7 +26,6 @@ export async function dbPrimaryKeyConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
-	tablesToRename: TablesToRename = [],
 ) {
 	if (tableNames.length === 0) {
 		return {};
@@ -63,13 +61,10 @@ export async function dbPrimaryKeyConstraintInfo(
 			[key]: primaryKeyConstraintInfoToQuery(result),
 		};
 		const table = result.table;
-		const currentName = currentTableName(table, tablesToRename);
-		if (table !== null) {
-			acc[currentName] = {
-				...acc[currentName],
-				...constraintInfo,
-			};
-		}
+		acc[table] = {
+			...acc[table],
+			...constraintInfo,
+		};
 		return acc;
 	}, {});
 	return transformedResults;
@@ -78,13 +73,19 @@ export async function dbPrimaryKeyConstraintInfo(
 export function localPrimaryKeyConstraintInfo(
 	schema: AnySchema,
 	camelCase: CamelCaseOptions,
+	columnsToRename: ColumnsToRename,
 ) {
 	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const columns = tableInfo(tableDefinition).schema.columns as ColumnRecord;
-			const primaryKeys = primaryKeyColumns(columns, camelCase);
+			const primaryKeys = primaryKeyColumns(
+				columns,
+				camelCase,
+				tableName,
+				columnsToRename,
+			);
 			if (primaryKeys.length !== 0 && !isExternalPrimaryKey(tableDefinition)) {
 				const keyName = `${transformedTableName}_yount_pk`;
 				acc[transformedTableName] = {

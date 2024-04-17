@@ -4,6 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	test: {
+		pool: "forks",
 		coverage: {
 			provider: "istanbul",
 			reporter: ["html", "json"],

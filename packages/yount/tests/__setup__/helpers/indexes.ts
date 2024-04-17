@@ -19,10 +19,16 @@ export async function compileIndex(index: PgIndex<any>, tableName: string) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function compileUnique(unique: PgUnique<any>, tableName: string) {
 	const kysely = await kyselyWithEmptyPool();
-	return uniqueToInfo(unique, tableName, kysely, {
-		enabled: false,
-		options: {},
-	});
+	return uniqueToInfo(
+		unique,
+		tableName,
+		kysely,
+		{
+			enabled: false,
+			options: {},
+		},
+		{},
+	);
 }
 
 export async function compileTrigger(

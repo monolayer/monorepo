@@ -5,6 +5,7 @@ import { schemaInDb } from "~/database/database_schemas/introspection.js";
 import { type AnySchema } from "~/database/schema/schema.js";
 import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { DevEnvironment } from "../services/environment.js";
+import { columnDiffPrompt } from "./column-diff-prompt.js";
 import {
 	introspectSchemas,
 	renameTablesInIntrospectedSchemas,
@@ -40,9 +41,24 @@ function changesetForLocalSchema(localSchema: AnySchema) {
 								remote,
 							}),
 						),
+						Effect.flatMap(({ local, remote, tablesToRename }) =>
+							columnDiff(local, remote).pipe(
+								Effect.flatMap((columnDiff) =>
+									Effect.tryPromise(() => columnDiffPrompt(columnDiff)),
+								),
+								Effect.flatMap((columnsToRename) =>
+									renameTablesInIntrospectedSchemas({
+										...context,
+										tablesToRename,
+										columnsToRename,
+										remote,
+									}),
+								),
+							),
+						),
 					),
 				),
-				Effect.flatMap(({ local, remote, tablesToRename }) =>
+				Effect.flatMap(({ local, remote, tablesToRename, columnsToRename }) =>
 					Effect.succeed(
 						schemaChangeset(
 							local,
@@ -50,6 +66,7 @@ function changesetForLocalSchema(localSchema: AnySchema) {
 							context.schemaName,
 							context.camelCasePlugin,
 							tablesToRename,
+							columnsToRename,
 						),
 					),
 				),
@@ -87,4 +104,28 @@ function tableDiff(local: SchemaMigrationInfo, remote: SchemaMigrationInfo) {
 		added: localTables.filter((table) => !remoteTables.includes(table)),
 		deleted: remoteTables.filter((table) => !localTables.includes(table)),
 	});
+}
+
+function columnDiff(local: SchemaMigrationInfo, remote: SchemaMigrationInfo) {
+	const localEntries = Object.entries(local.table);
+	const diff = localEntries.reduce(
+		(acc, [tableName, table]) => {
+			const remoteTable = remote.table[tableName];
+			if (remoteTable === undefined) {
+				return acc;
+			}
+			const localColumns = Object.keys(table.columns);
+			const remoteColumns = Object.keys(remoteTable.columns);
+			const added = localColumns.filter(
+				(column) => !remoteColumns.includes(column),
+			);
+			const deleted = remoteColumns.filter(
+				(column) => !localColumns.includes(column),
+			);
+			acc[tableName] = { added, deleted };
+			return acc;
+		},
+		{} as Record<string, { added: string[]; deleted: string[] }>,
+	);
+	return Effect.succeed(diff);
 }

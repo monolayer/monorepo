@@ -9,6 +9,7 @@ import { ChangeSetType, Changeset } from "~/changeset/types.js";
 import { generateMigrationFiles } from "~/migrations/generate.js";
 import { hashValue } from "~/utils.js";
 import { kyselyWithCustomDB } from "~tests/__setup__/helpers/kysely.js";
+import { globalPool } from "./__setup__/setup.js";
 
 type MigrationContext = {
 	folder: string;
@@ -24,6 +25,9 @@ type MigrationContext = {
 describe("Migrator", () => {
 	describe("#generateMigrationFiles", () => {
 		beforeEach(async (context: MigrationContext) => {
+			const pool = globalPool();
+			await pool.query("DROP DATABASE IF EXISTS test_kysely_yount");
+			await pool.query("CREATE DATABASE test_kysely_yount");
 			context.kysely = await kyselyWithCustomDB("test_kysely_yount");
 			context.folder = `${cwd()}/tmp/test/migrations/${hashValue(context.task.name)}`;
 			context.migrationsFolder = `${context.folder}/migrations`;

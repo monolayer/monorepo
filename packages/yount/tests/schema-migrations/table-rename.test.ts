@@ -12,6 +12,7 @@ import {
 	serial,
 	unique,
 } from "~/pg.js";
+import { columnDiffPrompt } from "~/programs/column-diff-prompt.js";
 import { tableDiffPrompt } from "~/programs/table-diff-prompt.js";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
@@ -657,6 +658,15 @@ describe(
 				},
 			]);
 
+			vi.mocked(columnDiffPrompt).mockResolvedValue({
+				new_books: [
+					{
+						from: "id",
+						to: "demo",
+					},
+				],
+			});
+
 			await context.kysely.schema
 				.createTable("books")
 				.addColumn("id", "integer")
@@ -680,7 +690,7 @@ describe(
 
 			const new_books = table({
 				columns: {
-					demo: integer().renameFrom("id"),
+					demo: integer(),
 				},
 				constraints: {
 					primaryKey: primaryKey(["demo"]),
@@ -732,7 +742,7 @@ describe(
 					],
 				},
 				{
-					priority: 3010,
+					priority: 3000,
 					tableName: "new_books",
 					type: "changeColumnName",
 					up: [
@@ -799,6 +809,15 @@ describe(
 					to: "new_books",
 				},
 			]);
+
+			vi.mocked(columnDiffPrompt).mockResolvedValue({
+				new_books: [
+					{
+						from: "id",
+						to: "demo",
+					},
+				],
+			});
 
 			await context.kysely.schema
 				.createTable("books")
@@ -921,7 +940,7 @@ describe(
 							"execute();",
 						],
 					],
-					priority: 3010,
+					priority: 3000,
 					tableName: "new_books",
 					type: "changeColumnName",
 					up: [
@@ -1130,6 +1149,15 @@ describe(
 				},
 			]);
 
+			vi.mocked(columnDiffPrompt).mockResolvedValue({
+				new_books: [
+					{
+						from: "name",
+						to: "description",
+					},
+				],
+			});
+
 			await context.kysely.schema
 				.createTable("books")
 				.addColumn("id", "integer")
@@ -1181,7 +1209,7 @@ describe(
 					],
 				},
 				{
-					priority: 3010,
+					priority: 3000,
 					tableName: "new_books",
 					type: "changeColumnName",
 					up: [

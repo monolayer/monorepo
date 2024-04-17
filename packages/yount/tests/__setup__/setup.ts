@@ -3,6 +3,7 @@ import { env } from "node:process";
 import pg from "pg";
 import type { GlobalThis } from "type-fest";
 import { vi } from "vitest";
+import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 dotenv.config();
 
 export type GlobalThisInTests = GlobalThis & {
@@ -44,6 +45,27 @@ vi.mock("~/programs/table-diff-prompt.js", async (importOriginal) => {
 		tableDiffPrompt: vi.fn(
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			async (_tableDiff: { added: string[]; deleted: string[] }) => [],
+		),
+	};
+});
+
+vi.mock("~/programs/column-diff-prompt.js", async (importOriginal) => {
+	await importOriginal();
+	return {
+		columnDiffPrompt: vi.fn(
+			async (
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				_columnDiff: Record<
+					string,
+					{
+						added: string[];
+						deleted: string[];
+					}
+				>,
+			) => {
+				const columnsToRename: ColumnsToRename = {};
+				return columnsToRename;
+			},
 		),
 	};
 });

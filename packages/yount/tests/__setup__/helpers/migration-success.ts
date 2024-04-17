@@ -13,12 +13,14 @@ export async function testChangesetAndMigrations({
 	connector,
 	expected,
 	down,
+	beforeSecondRegenerate = () => true,
 }: {
 	context: DbContext;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expected: any[];
 	down: "same" | "reverse" | "empty";
 	connector: EnvironmentLessConnector;
+	beforeSecondRegenerate?: () => void;
 }) {
 	if (connector.camelCasePlugin === undefined) {
 		connector.camelCasePlugin = { enabled: false };
@@ -51,6 +53,8 @@ export async function testChangesetAndMigrations({
 		connector,
 	);
 	expect(migrateDownResult).toBe(true);
+
+	beforeSecondRegenerate();
 
 	switch (down) {
 		case "reverse": {

@@ -6,6 +6,7 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { previousColumnName } from "~/introspection/column-name.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
 import type { LocalTableInfo } from "../../../../../introspection/introspection.js";
 import {
@@ -24,7 +25,7 @@ export function primaryKeyMigrationOpGenerator(
 	if (isPrimaryKeyDrop(diff)) {
 		return dropPrimaryKeyMigration(diff, context);
 	}
-	if (isPrimaryKeyChange(diff, context.local)) {
+	if (isPrimaryKeyChange(diff, context)) {
 		return changePrimaryKeyMigration(diff, context);
 	}
 }
@@ -76,7 +77,7 @@ function isPrimaryKeyDrop(test: Difference): test is PrimaryKeyDropDiff {
 
 function isPrimaryKeyChange(
 	test: Difference,
-	local: LocalTableInfo,
+	context: GeneratorContext,
 ): test is PrimaryKeyChangeDiff {
 	if (
 		test.type === "CHANGE" &&
@@ -89,7 +90,7 @@ function isPrimaryKeyChange(
 	) {
 		return (
 			true &&
-			primaryKeyColumnsChange(local, test.path[1], test.value, test.oldValue)
+			primaryKeyColumnsChange(context, test.path[1], test.value, test.oldValue)
 		);
 	}
 
@@ -97,14 +98,17 @@ function isPrimaryKeyChange(
 }
 
 export function primaryKeyColumnsChange(
-	local: LocalTableInfo,
+	{ local, columnsToRename }: GeneratorContext,
 	tableName: string,
 	value: string,
 	oldValue: string,
 ) {
 	const tb = local.table[tableName]!;
-	const oldColumns = extractColumnsFromPrimaryKey(oldValue).toSorted();
+	const oldColumns = extractColumnsFromPrimaryKey(oldValue)
+		.toSorted()
+		.map((val) => previousColumnName(tableName, val, columnsToRename));
 	return extractColumnsFromPrimaryKey(value)
+		.map((val) => previousColumnName(tableName, val, columnsToRename))
 		.map((val) => columnNameKey(tb, val))
 		.filter((x) => x !== undefined)
 		.sort()

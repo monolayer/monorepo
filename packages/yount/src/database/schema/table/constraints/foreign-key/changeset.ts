@@ -6,7 +6,9 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { currentColumName } from "~/introspection/column-name.js";
 import { currentTableName } from "~/introspection/table-name.js";
+import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 import type { TablesToRename } from "~/programs/table-diff-prompt.js";
 import {
 	executeKyselyDbStatement,
@@ -111,7 +113,12 @@ function isForeignKeyConstraintDrop(
 
 function createforeignKeyFirstConstraintMigration(
 	diff: ForeignKeyCreateFirstDiff,
-	{ schemaName, addedTables, tablesToRename }: GeneratorContext,
+	{
+		schemaName,
+		addedTables,
+		tablesToRename,
+		columnsToRename,
+	}: GeneratorContext,
 ) {
 	const tableName = currentTableName(diff.path[1], tablesToRename);
 	return Object.entries(diff.value).reduce(
@@ -127,6 +134,7 @@ function createforeignKeyFirstConstraintMigration(
 						tableName,
 						hashValue,
 						tablesToRename,
+						columnsToRename,
 					),
 					schemaName,
 				),
@@ -285,6 +293,7 @@ function foreignKeyDefinition(
 	tableName: string,
 	hashValue: string,
 	tablesToRename: TablesToRename,
+	columnsToRename: ColumnsToRename = {},
 ) {
 	const target = foreignKey.match(/REFERENCES (\w+)/)?.[1] || "";
 	const definition: ForeignKeyDefinition = {
@@ -292,7 +301,8 @@ function foreignKeyDefinition(
 		columns: (foreignKey.match(/FOREIGN KEY \(((\w|,|\s|")+)\)/)?.[1] || "")
 			.replace(/ /g, "")
 			.replace(/"/g, "")
-			.split(","),
+			.split(",")
+			.map((col) => currentColumName(tableName, col, columnsToRename)),
 		targetTable: currentTableName(target, tablesToRename),
 		targetColumns: (
 			foreignKey.match(/REFERENCES \w+ \(((\w|,|\s|")+)\)/)?.[1] || ""

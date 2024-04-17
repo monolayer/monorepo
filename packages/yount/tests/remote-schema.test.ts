@@ -143,7 +143,6 @@ describe("#remoteSchema", () => {
 							numericScale: null,
 
 							renameFrom: null,
-							tableName: "remote_schema_users",
 							enum: false,
 						},
 						name: {
@@ -157,7 +156,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remote_schema_users",
 							enum: false,
 						},
 						book_id: {
@@ -171,7 +169,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remote_schema_users",
 							enum: false,
 						},
 						email: {
@@ -185,7 +182,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remote_schema_users",
 							enum: false,
 						},
 						updated_at: {
@@ -200,7 +196,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remote_schema_users",
 							enum: false,
 						},
 					},
@@ -220,7 +215,6 @@ describe("#remoteSchema", () => {
 							numericScale: null,
 
 							renameFrom: null,
-							tableName: "remote_schema_books",
 							enum: false,
 						},
 						name: {
@@ -234,7 +228,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remote_schema_books",
 							enum: false,
 						},
 						updated_at: {
@@ -249,7 +242,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remote_schema_books",
 							enum: false,
 						},
 						status: {
@@ -263,7 +255,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remote_schema_books",
 							enum: true,
 						},
 					},
@@ -375,7 +366,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remoteSchemaUsers",
 							enum: false,
 						},
 						name: {
@@ -389,7 +379,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remoteSchemaUsers",
 							enum: false,
 						},
 						book_id: {
@@ -403,7 +392,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remoteSchemaUsers",
 							enum: false,
 						},
 						email: {
@@ -417,7 +405,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remoteSchemaUsers",
 							enum: false,
 						},
 					},
@@ -436,7 +423,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remoteSchemaBooks",
 							enum: false,
 						},
 						name: {
@@ -450,7 +436,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "remoteSchemaBooks",
 							enum: false,
 						},
 					},
@@ -521,7 +506,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "schema_with_empty_tables_books",
 							enum: false,
 						},
 						name: {
@@ -535,7 +519,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "schema_with_empty_tables_books",
 							enum: false,
 						},
 					},
@@ -768,7 +751,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						doublePrecision: {
@@ -782,7 +764,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						integer: {
@@ -796,7 +777,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						float4: {
@@ -810,7 +790,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						float8: {
@@ -824,7 +803,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						smallint: {
@@ -838,7 +816,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						int4: {
@@ -852,7 +829,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						int8: {
@@ -866,7 +842,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						varchar: {
@@ -880,7 +855,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						char: {
@@ -894,7 +868,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						timetz: {
@@ -908,7 +881,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 						timestamptz: {
@@ -922,7 +894,6 @@ describe("#remoteSchema", () => {
 							numericPrecision: null,
 							numericScale: null,
 							renameFrom: null,
-							tableName: "user_native_data_types_test",
 							enum: false,
 						},
 					},

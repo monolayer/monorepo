@@ -40,7 +40,6 @@ function columnNameMigrationOperation(
 	{ schemaName }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnName,
 		tableName: tableName,
@@ -49,14 +48,14 @@ function columnNameMigrationOperation(
 			executeKyselySchemaStatement(
 				schemaName,
 				`alterTable("${tableName}")`,
-				`renameColumn("${columnName}", "${diff.value}")`,
+				`renameColumn("${diff.oldValue}", "${diff.value}")`,
 			),
 		],
 		down: [
 			executeKyselySchemaStatement(
 				schemaName,
 				`alterTable("${tableName}")`,
-				`renameColumn("${diff.value}", "${columnName}")`,
+				`renameColumn("${diff.value}", "${diff.oldValue}")`,
 			),
 		],
 	};

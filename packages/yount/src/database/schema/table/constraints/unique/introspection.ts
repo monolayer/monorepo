@@ -9,10 +9,10 @@ import {
 	type AnyPgUnique,
 	type PgUnique,
 } from "~/database/schema/table/constraints/unique/unique.js";
+import { previousColumnName } from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { currentTableName } from "~/introspection/table-name.js";
 import type { UniqueInfo } from "~/migrations/migration-schema.js";
-import type { TablesToRename } from "~/programs/table-diff-prompt.js";
+import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 
@@ -27,7 +27,6 @@ export async function dbUniqueConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
-	tablesToRename: TablesToRename = [],
 ) {
 	if (tableNames.length === 0) {
 		return {};
@@ -98,9 +97,8 @@ export async function dbUniqueConstraintInfo(
 			[`${constraintHash}`]: uniqueConstraintInfoToQuery(result),
 		};
 		const table = result.table;
-		const currentName = currentTableName(table, tablesToRename);
-		acc[currentName] = {
-			...acc[currentName],
+		acc[table] = {
+			...acc[table],
 			...constraintInfo,
 		};
 		return acc;
@@ -111,6 +109,7 @@ export async function dbUniqueConstraintInfo(
 export function localUniqueConstraintInfo(
 	schema: AnySchema,
 	camelCase: CamelCaseOptions,
+	columnsToRename: ColumnsToRename,
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
@@ -133,6 +132,7 @@ export function localUniqueConstraintInfo(
 						tableName,
 						kysely,
 						camelCase,
+						columnsToRename,
 					);
 					acc[tableName] = {
 						...acc[tableName],
@@ -153,13 +153,24 @@ export function uniqueToInfo(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
+	columnsToRename: ColumnsToRename,
 ) {
 	const args = uniqueConstraintOptions(unique);
 	const newTableName = toSnakeCase(tableName, camelCase);
+	const hashColumns = args.columns
+		.sort()
+		.map((column) =>
+			toSnakeCase(
+				previousColumnName(tableName, column, columnsToRename),
+				camelCase,
+			),
+		);
 	const columns = args.columns
 		.sort()
 		.map((column) => toSnakeCase(column, camelCase));
-	const hash = hashValue(`${args.nullsDistinct}_${columns.sort().join("_")}`);
+	const hash = hashValue(
+		`${args.nullsDistinct}_${hashColumns.sort().join("_")}`,
+	);
 	const kyselyBuilder = kysely.schema
 		.alterTable(newTableName)
 		.addUniqueConstraint(hash, columns, (uc) => {

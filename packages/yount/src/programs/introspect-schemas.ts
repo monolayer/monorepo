@@ -3,6 +3,7 @@ import {
 	SchemaMigrationInfo,
 	introspectLocalSchema,
 	introspectRemoteSchema,
+	renameRemoteColums,
 	renameTables,
 } from "~/introspection/introspection.js";
 import type { SchemaContext } from "./schema-context.js";
@@ -17,7 +18,7 @@ export function introspectSchemas({
 	return Effect.unit.pipe(
 		Effect.flatMap(() =>
 			Effect.tryPromise(() =>
-				introspectRemoteSchema(kyselyInstance, schemaName, tablesToRename),
+				introspectRemoteSchema(kyselyInstance, schemaName),
 			),
 		),
 		Effect.flatMap((introspectedRemote) =>
@@ -49,16 +50,26 @@ export function renameTablesInIntrospectedSchemas({
 	camelCasePlugin,
 	tablesToRename,
 	remote,
+	columnsToRename,
 }: SchemaContext & { remote: SchemaMigrationInfo }) {
-	const renamedRemote = renameTables(remote, tablesToRename);
+	const renamedRemote = renameTables(remote, tablesToRename, columnsToRename);
+	const renamedColums = renameRemoteColums(renamedRemote, columnsToRename);
+
+	const remoteSchemaMigrationInfo: SchemaMigrationInfo = {
+		...renamedRemote,
+		table: renamedColums,
+	};
+
 	return Effect.succeed({
 		local: introspectLocalSchema(
 			localSchema,
-			renamedRemote,
+			remoteSchemaMigrationInfo,
 			camelCasePlugin,
 			tablesToRename,
+			columnsToRename,
 		),
-		remote: renamedRemote,
+		remote: remoteSchemaMigrationInfo,
 		tablesToRename,
+		columnsToRename,
 	});
 }

@@ -47,6 +47,7 @@ export enum MigrationOpPriority {
 	TableCreate = 2001,
 	ColumnCreate = 2003,
 
+	ChangeColumnName = 3000,
 	ChangeColumnDatatype = 3001,
 	ChangeColumnBase = 3002,
 	ChangeColumnIdentityAdd = 3009,
@@ -56,7 +57,6 @@ export enum MigrationOpPriority {
 	ChangeColumnDefaultChange = 3007,
 	ChangeColumnNullable = 3008,
 
-	ChangeColumnName = 3010,
 	PrimaryKeyCreate = 4001,
 	ConstraintCreate = 4002,
 	IndexCreate = 4003,

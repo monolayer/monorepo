@@ -2,12 +2,14 @@ import { sql, type Kysely, type OnModifyForeignAction } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
+import { previousColumnName } from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { previousTableName } from "~/introspection/table-name.js";
 import {
 	findTableByNameInDatabaseSchema,
 	type ForeignKeyInfo,
 } from "~/migrations/migration-schema.js";
+import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 import type { TablesToRename } from "~/programs/table-diff-prompt.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
@@ -90,10 +92,10 @@ export async function dbForeignKeyConstraintInfo(
 		.execute();
 	const transformedResults = results.reduce<ForeignKeyInfo>((acc, result) => {
 		const constraintHash = result.conname!.match(/^\w+_(\w+)_yount_fk$/)![1];
-		const query = foreignKeyConstraintInfoToNameAndQuery(
-			result,
-			constraintHash,
-		);
+		const recomputedHash = foreignKeyConstraintHash(result);
+		const hashKey =
+			constraintHash === recomputedHash ? constraintHash : recomputedHash;
+		const query = foreignKeyConstraintInfoToNameAndQuery(result, hashKey);
 		const table = result.table;
 		if (table !== null) {
 			acc[table] = {
@@ -110,6 +112,7 @@ export function localForeignKeyConstraintInfo(
 	schema: AnySchema,
 	camelCase: CamelCaseOptions,
 	tablesToRename: TablesToRename = [],
+	columnsToRename: ColumnsToRename = {},
 ) {
 	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce<ForeignKeyInfo>(
@@ -125,7 +128,11 @@ export function localForeignKeyConstraintInfo(
 						camelCase,
 					);
 					const transformedColumNames = foreignKey.columns.map((column) =>
-						toSnakeCase(column, camelCase),
+						previousColumnName(
+							tableName,
+							toSnakeCase(column, camelCase),
+							columnsToRename,
+						),
 					);
 
 					const transformedtargetColumnNames = foreignKey.targetColumns.map(
@@ -171,6 +178,19 @@ export function foreignKeyConstraintInfoToNameAndQuery(
 		[`${hash !== undefined ? hash : hashValue(parts.join(" "))}`]:
 			parts.join(" "),
 	};
+}
+
+export function foreignKeyConstraintHash(info: ForeignKeyConstraintInfo) {
+	const parts = [
+		"FOREIGN KEY",
+		`(${info.column.map((col) => `"${col}"`).join(", ")})`,
+		"REFERENCES",
+		info.targetTable,
+		`(${info.targetColumns.map((col) => `"${col}"`).join(", ")})`,
+		`ON DELETE ${info.deleteRule}`,
+		`ON UPDATE ${info.updateRule}`,
+	];
+	return hashValue(parts.join(" "));
 }
 
 export type ForeIgnKeyConstraintInfo = {

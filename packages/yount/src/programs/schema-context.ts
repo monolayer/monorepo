@@ -4,6 +4,7 @@ import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { DbClients } from "../services/dbClients.js";
 import { DevEnvironment } from "../services/environment.js";
+import type { ColumnsToRename } from "./column-diff-prompt.js";
 import type { TablesToRename } from "./table-diff-prompt.js";
 
 export type SchemaContext = {
@@ -13,6 +14,7 @@ export type SchemaContext = {
 	schemaName: string;
 	localSchema: AnySchema;
 	tablesToRename: TablesToRename;
+	columnsToRename: ColumnsToRename;
 };
 
 export function schemaContext(localSchema: AnySchema) {
@@ -24,6 +26,7 @@ export function schemaContext(localSchema: AnySchema) {
 				schemaName: Schema.info(localSchema).name || "public",
 				localSchema: localSchema,
 				tablesToRename: [],
+				columnsToRename: {},
 			};
 			return Effect.succeed(context);
 		}),

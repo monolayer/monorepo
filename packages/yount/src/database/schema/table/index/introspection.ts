@@ -9,7 +9,9 @@ import {
 	type IndexOptions,
 	type PgIndex,
 } from "~/database/schema/table/index/index.js";
+import { previousColumnName } from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/helpers.js";
+import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 
@@ -64,6 +66,7 @@ export async function dbIndexInfo(
 export function localIndexInfoByTable(
 	schema: AnySchema,
 	camelCase: CamelCaseOptions = { enabled: false },
+	columnsToRename: ColumnsToRename = {},
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
@@ -89,6 +92,7 @@ export function localIndexInfoByTable(
 					kysely,
 					camelCase,
 					dbInfo.name || "public",
+					columnsToRename,
 				);
 				acc[transformedTableName] = {
 					...acc[transformedTableName],
@@ -109,6 +113,7 @@ export function indexToInfo(
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
 	schemaName = "public",
+	columnsToRename: ColumnsToRename = {},
 ) {
 	const indexCompileArgs = indexOptions(index);
 	const transformedTableName = toSnakeCase(tableName, camelCase);
@@ -120,7 +125,12 @@ export function indexToInfo(
 		buildIndex(
 			indexCompileArgs,
 			"sample",
-			transformedColumnNames,
+			indexCompileArgs.columns.map((column) =>
+				toSnakeCase(
+					previousColumnName(tableName, column, columnsToRename),
+					camelCase,
+				),
+			),
 			kysely,
 			schemaName,
 			"sample",

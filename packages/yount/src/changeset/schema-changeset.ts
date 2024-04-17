@@ -1,6 +1,7 @@
 import microdiff, { type Difference } from "microdiff";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
+import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 import type { TablesToRename } from "~/programs/table-diff-prompt.js";
 import {
 	isCreateTable,
@@ -8,10 +9,6 @@ import {
 	type CreateTableDiff,
 	type DropTableTableDiff,
 } from "../database/schema/table/changeset.js";
-import type {
-	DbTableInfo,
-	LocalTableInfo,
-} from "../introspection/introspection.js";
 import { buildNodes } from "../migrations/migration-schema.js";
 import { migrationOpGenerators } from "./generators.js";
 import { Changeset } from "./types.js";
@@ -24,13 +21,14 @@ interface Generator {
 }
 
 export interface GeneratorContext {
-	local: LocalTableInfo;
-	db: DbTableInfo;
+	local: SchemaMigrationInfo;
+	db: SchemaMigrationInfo;
 	addedTables: string[];
 	droppedTables: string[];
 	schemaName: string;
 	camelCaseOptions: CamelCaseOptions;
 	tablesToRename: TablesToRename;
+	columnsToRename: ColumnsToRename;
 }
 
 export function schemaChangeset(
@@ -38,7 +36,8 @@ export function schemaChangeset(
 	remote: SchemaMigrationInfo,
 	schemaName = "public",
 	camelCaseOptions: CamelCaseOptions,
-	tablesToRename: TablesToRename = [],
+	tablesToRename: TablesToRename,
+	columnsToRename: ColumnsToRename,
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
 	const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
@@ -53,6 +52,7 @@ export function schemaChangeset(
 		schemaName: schemaName,
 		camelCaseOptions,
 		tablesToRename,
+		columnsToRename,
 	};
 
 	return diff

@@ -5,9 +5,7 @@ import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
-import { currentTableName } from "~/introspection/table-name.js";
-import { findColumn, findPrimaryKey } from "~/migrations/migration-schema.js";
-import type { TablesToRename } from "~/programs/table-diff-prompt.js";
+import { findPrimaryKey } from "~/migrations/migration-schema.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 import { type TableColumn } from "../table-column.js";
 import { ColumnInfo } from "./types.js";
@@ -16,15 +14,13 @@ export async function dbColumnInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
-	tablesToRename: TablesToRename = [],
 ) {
 	const results = await fetchDbColumnInfo(kysely, databaseSchema, tableNames);
 	const transformed = transformDbColumnInfo(results);
-	const mapped = mapColumnsToTables(transformed, tablesToRename);
+	const mapped = mapColumnsToTables(transformed);
 	for (const table of tableNames) {
-		const currentName = currentTableName(table, tablesToRename);
-		if (mapped[currentName] === undefined) {
-			mapped[currentName] = {
+		if (mapped[table] === undefined) {
+			mapped[table] = {
 				columns: {},
 				name: table,
 			};
@@ -292,25 +288,38 @@ export function transformDbColumnInfo(
 
 export function mapColumnsToTables(
 	columns: (ColumnInfo & { tableName: string })[],
-	tablesToRename: TablesToRename = [],
 ) {
 	return columns.reduce<Record<string, TableInfo>>((acc, curr) => {
 		if (curr.tableName !== null && curr.columnName !== null) {
-			const currentName = currentTableName(curr.tableName, tablesToRename);
-			const currentTable = acc[currentName];
+			const currentTable = acc[curr.tableName];
+			const tableName = curr.tableName;
+
+			const columnWithoutName = {
+				columnName: curr.columnName,
+				dataType: curr.dataType,
+				defaultValue: curr.defaultValue,
+				isNullable: curr.isNullable,
+				numericPrecision: curr.numericPrecision,
+				numericScale: curr.numericScale,
+				characterMaximumLength: curr.characterMaximumLength,
+				datetimePrecision: curr.datetimePrecision,
+				identity: curr.identity,
+				renameFrom: null,
+				enum: curr.enum,
+			};
 			if (currentTable === undefined) {
-				acc[currentName] = {
-					name: curr.tableName,
+				acc[curr.tableName] = {
+					name: tableName,
 					columns: {
-						[curr.columnName as string]: curr,
+						[curr.columnName as string]: columnWithoutName,
 					},
 				};
 			} else {
-				acc[currentName] = {
+				acc[curr.tableName] = {
 					name: curr.tableName,
 					columns: {
 						...currentTable.columns,
-						[curr.columnName as string]: curr,
+						[curr.columnName as string]: columnWithoutName,
 					},
 				};
 			}
@@ -343,28 +352,26 @@ export function localColumnInfoByTable(
 						transformedTableName,
 						remoteSchema.primaryKey,
 					);
-					if (columnInfo.renameFrom !== null) {
-						const schemaTable = remoteSchema.table[transformedTableName];
-						const appliedInRemote =
-							findColumn(columnName, schemaTable) !== undefined;
-						const toApplyInRemote =
-							findColumn(columnInfo.renameFrom, schemaTable) !== undefined;
-						if (appliedInRemote && pKey?.includes(columnName)) {
-							columnInfo.originalIsNullable = columnInfo.isNullable;
+					const remoteColumn =
+						remoteSchema.table[transformedTableName]?.columns[
+							transformedColumnName
+						];
+					const remoteColumnName =
+						remoteSchema.table[transformedTableName]?.columns[
+							transformedColumnName
+						]?.columnName;
+					const isRenamedColumn =
+						remoteColumnName !== undefined &&
+						remoteColumnName !== null &&
+						columnInfo.columnName !== remoteColumnName;
+					if (isRenamedColumn) {
+						if (pKey?.includes(remoteColumnName)) {
+							columnInfo.originalIsNullable = remoteColumn?.isNullable;
 							columnInfo.isNullable = false;
-						}
-						if (appliedInRemote || toApplyInRemote) {
-							if (toApplyInRemote) {
-								columnKey = columnInfo.renameFrom;
-								if (pKey?.includes(columnInfo.renameFrom)) {
-									columnInfo.originalIsNullable = columnInfo.isNullable;
-									columnInfo.isNullable = false;
-								}
-							}
 						}
 						columnInfo.renameFrom = null;
 					} else {
-						if (pKey?.includes(columnName)) {
+						if (pKey?.includes(transformedColumnName)) {
 							columnInfo.originalIsNullable = columnInfo.isNullable;
 							columnInfo.isNullable = false;
 						}
