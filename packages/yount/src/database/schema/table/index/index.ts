@@ -14,7 +14,7 @@ export type IndexOptions = {
 	expression: Expression<any> | undefined;
 	using: IndexType | string | undefined;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	where: any[] | undefined;
+	where: any[];
 	columns: string[];
 };
 
@@ -45,7 +45,7 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
 			nullsNotDistinct: false,
 			expression: undefined,
 			using: undefined,
-			where: undefined,
+			where: [],
 			columns: this.columns,
 		};
 	}
@@ -93,7 +93,7 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
 	where(expression: Expression<SqlBool>): this;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	where(...args: unknown[]) {
-		this.options.where = args;
+		this.options.where.push(args);
 		return this;
 	}
 

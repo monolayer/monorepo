@@ -118,4 +118,20 @@ describe("pgIndex", () => {
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
+
+	test("multiple where", async () => {
+		const idx = index(["id"])
+			.where(sql<boolean>`SELECT 1`)
+			.where("id", ">", "100")
+			.where((eb) =>
+				eb.and([eb("first_name", "=", "Igal"), eb(sql.ref("age"), ">=", 18)]),
+			);
+		const compiledIndex = await compileIndex(idx, "test_table");
+
+		const expected = {
+			"6fa4d840":
+				'create index "test_table_6fa4d840_yount_idx" on "public"."test_table" ("id") where SELECT 1 and "id" > \'100\' and ("first_name" = \'Igal\' and "age" >= 18)',
+		};
+		expect(compiledIndex).toEqual(expected);
+	});
 });
