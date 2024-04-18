@@ -110,7 +110,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 1002,
+				priority: 800,
 				tableName: "users",
 				type: "dropIndex",
 				up: [
@@ -172,7 +172,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 1002,
+				priority: 800,
 				tableName: "users",
 				type: "dropIndex",
 				up: [
@@ -252,7 +252,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 1002,
+				priority: 800,
 				tableName: "users",
 				type: "dropIndex",
 				up: [

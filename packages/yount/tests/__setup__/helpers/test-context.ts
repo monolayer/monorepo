@@ -10,7 +10,7 @@ import fs from "node:fs/promises";
 import path from "path";
 import type { Pool } from "pg";
 import { chdir, cwd } from "process";
-import { type TaskContext } from "vitest";
+import { vi, type TaskContext } from "vitest";
 import {
 	connectorsTemplate,
 	yountConfigTemplate,
@@ -27,6 +27,7 @@ export async function teardownContext(context: TaskContext & DbContext) {
 	try {
 		await context.kysely.destroy();
 		rmSync(context.folder, { recursive: true, force: true });
+		vi.restoreAllMocks();
 	} catch (e) {
 		/* empty */
 	}

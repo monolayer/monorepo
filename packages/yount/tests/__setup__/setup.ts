@@ -3,7 +3,14 @@ import { env } from "node:process";
 import pg from "pg";
 import type { GlobalThis } from "type-fest";
 import { vi } from "vitest";
-import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
+import {
+	columnDiffPrompt,
+	type ColumnsToRename,
+} from "~/programs/column-diff-prompt.js";
+import {
+	tableDiffPrompt,
+	type TablesToRename,
+} from "~/programs/table-diff-prompt.js";
 dotenv.config();
 
 export type GlobalThisInTests = GlobalThis & {
@@ -69,3 +76,17 @@ vi.mock("~/programs/column-diff-prompt.js", async (importOriginal) => {
 		),
 	};
 });
+
+vi.mocked(tableDiffPrompt).mockResolvedValue([]);
+
+export function tableDiffMock() {
+	return vi.mocked(tableDiffPrompt);
+}
+
+export function mockTableDiffOnce(value: TablesToRename) {
+	vi.mocked(tableDiffPrompt).mockResolvedValueOnce(value);
+}
+
+export function mockColumnDiffOnce(value: ColumnsToRename) {
+	vi.mocked(columnDiffPrompt).mockResolvedValueOnce(value);
+}

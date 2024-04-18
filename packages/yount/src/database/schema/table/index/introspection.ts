@@ -1,4 +1,4 @@
-import { Kysely, PostgresDialect, sql } from "kysely";
+import { CamelCasePlugin, Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
@@ -9,7 +9,10 @@ import {
 	type IndexOptions,
 	type PgIndex,
 } from "~/database/schema/table/index/index.js";
-import { previousColumnName } from "~/introspection/column-name.js";
+import {
+	changedColumnNames,
+	previousColumnName,
+} from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 import { hashValue } from "~/utils.js";
@@ -121,21 +124,27 @@ export function indexToInfo(
 		toSnakeCase(column, camelCase),
 	);
 
-	const hash = hashValue(
-		buildIndex(
-			indexCompileArgs,
-			"sample",
-			indexCompileArgs.columns.map((column) =>
-				toSnakeCase(
-					previousColumnName(tableName, column, columnsToRename),
-					camelCase,
-				),
+	let idx = buildIndex(
+		indexCompileArgs,
+		"sample",
+		indexCompileArgs.columns.map((column) =>
+			previousColumnName(
+				tableName,
+				toSnakeCase(column, camelCase),
+				columnsToRename,
 			),
-			kysely,
-			schemaName,
-			"sample",
-		).compile().sql,
-	);
+		),
+		kysely,
+		camelCase,
+		schemaName,
+		"sample",
+	).compile().sql;
+
+	for (const changedColumn of changedColumnNames(tableName, columnsToRename)) {
+		idx = idx.replace(`"${changedColumn.to}"`, `"${changedColumn.from}"`);
+	}
+
+	const hash = hashValue(idx);
 
 	const indexName = `${tableName}_${hash}_yount_idx`;
 
@@ -144,6 +153,7 @@ export function indexToInfo(
 		transformedTableName,
 		transformedColumnNames,
 		kysely,
+		camelCase,
 		schemaName,
 		indexName,
 	);
@@ -160,6 +170,7 @@ function buildIndex(
 	transformedColumnNames: string[],
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
+	camelCase: CamelCaseOptions,
 	schemaName = "public",
 	indexName?: string,
 ) {
@@ -167,7 +178,12 @@ function buildIndex(
 		indexName = `${transformedColumnNames.join("_")}_yount_idx`;
 	}
 
-	let kyselyBuilder = kysely
+	camelCase.enabled;
+	let kyselyBuilder = (
+		camelCase.enabled
+			? kysely.withPlugin(new CamelCasePlugin(camelCase.options))
+			: kysely
+	)
 		.withSchema(schemaName)
 		.schema.createIndex(indexName)
 		.on(transformedTableName)
@@ -188,18 +204,47 @@ function buildIndex(
 	if (indexCompileArgs.using !== undefined) {
 		kyselyBuilder = kyselyBuilder.using(indexCompileArgs.using);
 	}
-	if (indexCompileArgs.where !== undefined) {
-		if (indexCompileArgs.where.length === 1) {
-			kyselyBuilder = kyselyBuilder.where(indexCompileArgs.where[0]);
+	for (const where of indexCompileArgs.where) {
+		if (where.length === 1) {
+			kyselyBuilder = kyselyBuilder.where(where[0]);
 		}
-		if (indexCompileArgs.where.length === 3) {
-			kyselyBuilder = kyselyBuilder.where(
-				indexCompileArgs.where[0],
-				indexCompileArgs.where[1],
-				indexCompileArgs.where[2],
-			);
+		if (where.length === 3) {
+			kyselyBuilder = kyselyBuilder.where(where[0], where[1], where[2]);
 		}
 	}
 	return kyselyBuilder;
 }
+
 export type IndexInfo = Record<string, Record<string, string>>;
+
+export function indexNameFromDefinition(value: string) {
+	const match = value.match(/(\w+_yount_idx)/);
+	if (match) {
+		return match[1];
+	}
+	return "";
+}
+
+export function rehashIndex(
+	tableName: string,
+	indexDefinition: string,
+	oldHash: string,
+) {
+	const hash = hashValue(
+		indexDefinition
+			.replace(
+				`."${indexDefinition.match(/on "\w+"\."(\w+)"/)![1]}"`,
+				'."sample"',
+			)
+			.replace(indexNameFromDefinition(indexDefinition)!, "sample"),
+	);
+	const name = `${tableName}_${hash}_yount_idx`;
+	const definition = indexDefinition.replace(
+		`${tableName}_${oldHash}_yount_idx`,
+		name,
+	);
+	return {
+		name,
+		definition,
+	};
+}

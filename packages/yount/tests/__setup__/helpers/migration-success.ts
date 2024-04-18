@@ -13,18 +13,22 @@ export async function testChangesetAndMigrations({
 	connector,
 	expected,
 	down,
-	beforeSecondRegenerate = () => true,
+	mock = () => true,
 }: {
 	context: DbContext;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expected: any[];
 	down: "same" | "reverse" | "empty";
 	connector: EnvironmentLessConnector;
-	beforeSecondRegenerate?: () => void;
+	mock?: () => void;
 }) {
 	if (connector.camelCasePlugin === undefined) {
 		connector.camelCasePlugin = { enabled: false };
 	}
+
+	mock();
+
+	console.log("FIRST");
 	const result = await runGenerateChangesetMigration(
 		context.dbName,
 		context.folder,
@@ -40,6 +44,7 @@ export async function testChangesetAndMigrations({
 	);
 	expect(migrationResult).toBe(true);
 
+	console.log("SECOND");
 	const afterUpCs = await runGenerateChangesetMigration(
 		context.dbName,
 		context.folder,
@@ -54,7 +59,9 @@ export async function testChangesetAndMigrations({
 	);
 	expect(migrateDownResult).toBe(true);
 
-	beforeSecondRegenerate();
+	mock();
+
+	console.log("THIRD");
 
 	switch (down) {
 		case "reverse": {

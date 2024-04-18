@@ -6,6 +6,7 @@ export enum ChangeSetType {
 	ChangeColumn = "changeColumn",
 	ChangeTable = "changeTable",
 	CreateIndex = "createIndex",
+	ChangeIndex = "changeIndex",
 	DropIndex = "dropIndex",
 	CreatePrimaryKey = "createPrimaryKey",
 	DropPrimaryKey = "dropPrimaryKey",
@@ -34,10 +35,11 @@ export type Changeset = {
 export enum MigrationOpPriority {
 	Database = 0,
 
+	IndexDrop = 800,
+
 	ChangeTableName = 900,
 
 	TriggerDrop = 1001,
-	IndexDrop = 1002,
 	ConstraintDrop = 1003,
 	PrimaryKeyDrop = 1004,
 	ColumnDrop = 1005,

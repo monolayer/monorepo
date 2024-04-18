@@ -1,16 +1,19 @@
 import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 
+export function changedColumnNames(
+	table: string,
+	columnsToRename: ColumnsToRename,
+) {
+	return columnsToRename[table] ?? [];
+}
+
 export function previousColumnName(
 	tableName: string,
 	changedColumName: string,
 	columnsToRename: ColumnsToRename,
 ) {
-	const renamedTableColums = columnsToRename[tableName];
-	if (renamedTableColums === undefined) {
-		return changedColumName;
-	}
 	return (
-		renamedTableColums.find((column) => {
+		changedColumnNames(tableName, columnsToRename).find((column) => {
 			return column.to === changedColumName;
 		})?.from || changedColumName
 	);
@@ -21,12 +24,8 @@ export function currentColumName(
 	previousColumName: string,
 	columnsToRename: ColumnsToRename,
 ) {
-	const renamedTableColums = columnsToRename[tableName];
-	if (renamedTableColums === undefined) {
-		return previousColumName;
-	}
 	return (
-		renamedTableColums.find((column) => {
+		changedColumnNames(tableName, columnsToRename).find((column) => {
 			return column.from === previousColumName;
 		})?.to || previousColumName
 	);
