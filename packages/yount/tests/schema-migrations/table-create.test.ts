@@ -581,7 +581,7 @@ describe("Table create migrations", () => {
 				],
 			},
 			{
-				priority: 4002,
+				priority: 4010,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -595,7 +595,7 @@ describe("Table create migrations", () => {
 				down: [[]],
 			},
 			{
-				priority: 4002,
+				priority: 4010,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -660,7 +660,7 @@ describe("Table create migrations", () => {
 				],
 			},
 			{
-				priority: 4002,
+				priority: 4010,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -674,7 +674,7 @@ describe("Table create migrations", () => {
 				down: [[]],
 			},
 			{
-				priority: 4002,
+				priority: 4012,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -696,7 +696,7 @@ describe("Table create migrations", () => {
 				down: [[]],
 			},
 			{
-				priority: 4002,
+				priority: 4012,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -816,7 +816,7 @@ describe("Table create migrations", () => {
 			},
 			{
 				down: [[]],
-				priority: 4002,
+				priority: 4011,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -1406,122 +1406,6 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				],
 			},
 			{
-				priority: 4002,
-				tableName: "users",
-				type: "createConstraint",
-				up: [
-					[
-						`await sql\`\${sql.raw(
-  db
-    .withSchema("public")
-    .schema.alterTable("users")
-    .addForeignKeyConstraint("users_c28cc6e8_yount_fk", ["book_id"], "books", ["id"])
-    .onDelete("no action")
-    .onUpdate("no action")
-    .compile()
-    .sql.concat(" not valid")
-)}\`.execute(db);`,
-					],
-					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_c28cc6e8_yount_fk"`',
-						"execute(db);",
-					],
-				],
-				down: [[]],
-			},
-			{
-				priority: 4002,
-				tableName: "new_books",
-				type: "createConstraint",
-				up: [
-					[
-						`await sql\`\${sql.raw(
-  db
-    .withSchema("public")
-    .schema.alterTable("new_books")
-    .addForeignKeyConstraint("new_books_82748801_yount_fk", ["old_book_id"], "books", ["id"])
-    .onDelete("no action")
-    .onUpdate("no action")
-    .compile()
-    .sql.concat(" not valid")
-)}\`.execute(db);`,
-					],
-					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_82748801_yount_fk"`',
-						"execute(db);",
-					],
-				],
-				down: [[]],
-			},
-			{
-				priority: 4002,
-				tableName: "new_books",
-				type: "createConstraint",
-				up: [
-					[
-						`await sql\`\${sql.raw(
-  db
-    .withSchema("public")
-    .schema.alterTable("new_books")
-    .addForeignKeyConstraint("new_books_f222319c_yount_fk", ["library_building_id"], "library_building", ["id"])
-    .onDelete("no action")
-    .onUpdate("no action")
-    .compile()
-    .sql.concat(" not valid")
-)}\`.execute(db);`,
-					],
-					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_f222319c_yount_fk"`',
-						"execute(db);",
-					],
-				],
-				down: [[]],
-			},
-			{
-				priority: 4002,
-				tableName: "new_books",
-				type: "createConstraint",
-				up: [
-					[
-						`await sql\`\${sql.raw(
-  db
-    .withSchema("public")
-    .schema.alterTable("new_books")
-    .addCheckConstraint("new_books_60bcaca1_yount_chk", sql\`"old_book_id" > 50\`)
-    .compile()
-    .sql.concat(" not valid")
-)}\`.execute(db);`,
-					],
-					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_60bcaca1_yount_chk"`',
-						"execute(db);",
-					],
-				],
-				down: [[]],
-			},
-			{
-				priority: 4002,
-				tableName: "new_books",
-				type: "createConstraint",
-				up: [
-					[
-						`await sql\`\${sql.raw(
-  db
-    .withSchema("public")
-    .schema.alterTable("new_books")
-    .addCheckConstraint("new_books_1c05ff9f_yount_chk", sql\`"old_book_id" < 50000\`)
-    .compile()
-    .sql.concat(" not valid")
-)}\`.execute(db);`,
-					],
-					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_1c05ff9f_yount_chk"`',
-						"execute(db);",
-					],
-				],
-				down: [[]],
-			},
-			{
 				down: [[]],
 				priority: 4003,
 				tableName: "users",
@@ -1584,6 +1468,122 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 					[
 						`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON "public"."trigger_table" IS '5e2a2f5b';\``,
 						`execute(db);`,
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4011,
+				tableName: "users",
+				type: "createConstraint",
+				up: [
+					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_c28cc6e8_yount_fk", ["book_id"], "books", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_c28cc6e8_yount_fk"`',
+						"execute(db);",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4011,
+				tableName: "new_books",
+				type: "createConstraint",
+				up: [
+					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("new_books")
+    .addForeignKeyConstraint("new_books_82748801_yount_fk", ["old_book_id"], "books", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_82748801_yount_fk"`',
+						"execute(db);",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4011,
+				tableName: "new_books",
+				type: "createConstraint",
+				up: [
+					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("new_books")
+    .addForeignKeyConstraint("new_books_f222319c_yount_fk", ["library_building_id"], "library_building", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_f222319c_yount_fk"`',
+						"execute(db);",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4012,
+				tableName: "new_books",
+				type: "createConstraint",
+				up: [
+					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("new_books")
+    .addCheckConstraint("new_books_60bcaca1_yount_chk", sql\`"old_book_id" > 50\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_60bcaca1_yount_chk"`',
+						"execute(db);",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4012,
+				tableName: "new_books",
+				type: "createConstraint",
+				up: [
+					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("new_books")
+    .addCheckConstraint("new_books_1c05ff9f_yount_chk", sql\`"old_book_id" < 50000\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_1c05ff9f_yount_chk"`',
+						"execute(db);",
 					],
 				],
 				down: [[]],

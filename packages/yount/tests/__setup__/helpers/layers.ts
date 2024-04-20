@@ -20,6 +20,7 @@ import {
 	environmentLayer,
 } from "~/services/environment.js";
 import { Migrator, migratorLayer } from "~/services/migrator.js";
+import { globalPool } from "../setup.js";
 dotenv.config();
 
 function pgPool(database?: string) {
@@ -36,12 +37,12 @@ export function mockedDbClientsLayer(
 	databaseName: string,
 	useCamelCase = { enabled: false },
 ) {
+	const pool = pgPool(databaseName);
 	return Layer.effect(
 		DbClients,
 		// eslint-disable-next-line require-yield
 		Effect.gen(function* () {
-			const pool = pgPool(databaseName);
-			const adminPool = pgPool(undefined);
+			const adminPool = globalPool();
 			const currentEnvironment = {
 				databaseName: databaseName,
 				pgPool: pool,
@@ -73,11 +74,11 @@ function mockedMigratorLayer(
 	folder: string,
 	useCamelCase = { enabled: false },
 ) {
+	const pool = pgPool(databaseName);
 	return Layer.effect(
 		Migrator,
 		// eslint-disable-next-line require-yield
 		Effect.gen(function* () {
-			const pool = pgPool(databaseName);
 			return {
 				instance: new KyselyMigrator({
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any

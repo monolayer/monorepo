@@ -9,7 +9,6 @@ import {
 	isExternalForeignKey,
 	type PgForeignKey,
 } from "./table/constraints/foreign-key/foreign-key.js";
-import type { ForeignKeyRule } from "./table/constraints/foreign-key/introspection.js";
 import {
 	uniqueConstraintOptions,
 	type PgUnique,
@@ -38,7 +37,14 @@ interface ColumnInstrospection {
 	primaryKey: boolean;
 }
 
-interface ForeignKeyIntrospection {
+export type ForeignKeyRule =
+	| "CASCADE"
+	| "SET NULL"
+	| "SET DEFAULT"
+	| "RESTRICT"
+	| "NO ACTION";
+
+export interface ForeignKeyIntrospection {
 	columns: string[];
 	targetTable: string;
 	targetColumns: string[];

@@ -65,7 +65,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 4002,
+				priority: 4010,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -86,7 +86,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 4002,
+				priority: 4010,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -107,7 +107,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 4002,
+				priority: 4010,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -193,7 +193,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 1003,
+				priority: 810,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -214,7 +214,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 1003,
+				priority: 810,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -296,7 +296,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 1003,
+				priority: 810,
 				tableName: "users",
 				type: "dropConstraint",
 				up: [
@@ -317,7 +317,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 4002,
+				priority: 4010,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -399,7 +399,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 1003,
+				priority: 810,
 				tableName: "users",
 				type: "dropConstraint",
 				up: [
@@ -420,7 +420,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 4002,
+				priority: 4010,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -511,7 +511,7 @@ describe("Database migrations", () => {
 				down: [[]],
 			},
 			{
-				priority: 4002,
+				priority: 4010,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -569,7 +569,7 @@ describe("Database migrations", () => {
 				down: [[]],
 			},
 			{
-				priority: 4002,
+				priority: 4010,
 				tableName: "users",
 				type: "createConstraint",
 				up: [

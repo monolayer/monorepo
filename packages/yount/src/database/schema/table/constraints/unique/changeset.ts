@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
@@ -5,8 +6,15 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { currentColumName } from "~/introspection/column-name.js";
 import { previousTableName } from "~/introspection/table-name.js";
-import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
+import { extractColumnsFromPrimaryKey } from "~/migrations/migration-schema.js";
+import { hashValue } from "~/utils.js";
+import {
+	executeKyselyDbStatement,
+	executeKyselySchemaStatement,
+	toSnakeCase,
+} from "../../../../../changeset/helpers.js";
 
 export function uniqueConstraintMigrationOpGenerator(
 	diff: Difference,
@@ -23,6 +31,9 @@ export function uniqueConstraintMigrationOpGenerator(
 	}
 	if (isUniqueConstraintDropDiff(diff)) {
 		return dropUniqueConstraintMigration(diff, context);
+	}
+	if (isUniqueChangeNameDiff(diff)) {
+		return changeUniqueConstraintNameMigration(diff, context);
 	}
 }
 
@@ -53,6 +64,27 @@ type UuniqueDropDiff = {
 	path: ["uniqueConstraints", string, string];
 	oldValue: string;
 };
+
+type UniqueChangeNameDiff = {
+	type: "CHANGE";
+	path: ["uniqueConstraints", string, string];
+	value: string;
+	oldValue: string;
+};
+
+function isUniqueChangeNameDiff(
+	test: Difference,
+): test is UniqueChangeNameDiff {
+	return (
+		test.type === "CHANGE" &&
+		test.path.length === 3 &&
+		test.path[0] === "uniqueConstraints" &&
+		typeof test.path[1] === "string" &&
+		typeof test.path[2] === "string" &&
+		typeof test.value === "string" &&
+		typeof test.oldValue === "string"
+	);
+}
 
 function isUniqueConstraintCreateFirst(
 	test: Difference,
@@ -102,17 +134,21 @@ function isUniqueConstraintDropDiff(test: Difference): test is UuniqueDropDiff {
 
 function createUniqueFirstConstraintMigration(
 	diff: UniqueCreateFirst,
-	{ schemaName, addedTables }: GeneratorContext,
+	{ schemaName, addedTables, columnsToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	return Object.entries(diff.value).reduce((acc, [hashValue, value]) => {
-		const uniqueConstraint = uniqueConstraintDefinition(
-			value,
-			tableName,
-			hashValue,
+	return Object.entries(diff.value).reduce((acc, [hash, value]) => {
+		const uniqueConstraint = uniqueConstraintDefinition(value, tableName, hash);
+		uniqueConstraint.columns = uniqueConstraint.columns.map((col) =>
+			currentColumName(tableName, col, columnsToRename),
 		);
+		const newHash = hashValue(
+			`${uniqueConstraint.distinct}_${uniqueConstraint.columns.sort().join("_")}`,
+		);
+		uniqueConstraint.name = `${tableName}_${newHash}_yount_key`;
+
 		const changeset: Changeset = {
-			priority: MigrationOpPriority.ConstraintCreate,
+			priority: MigrationOpPriority.UniqueCreate,
 			tableName: tableName,
 			type: ChangeSetType.CreateConstraint,
 			up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
@@ -140,12 +176,24 @@ function dropUniqueLastConstraintMigration(
 			);
 			const changeset: Changeset = {
 				priority: MigrationOpPriority.ConstraintDrop,
-				tableName: tableName,
+				tableName: previousTableName(tableName, tablesToRename),
 				type: ChangeSetType.DropConstraint,
 				up: droppedTables.includes(tableName)
 					? [[]]
-					: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
-				down: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
+					: [
+							dropUniqueConstraintOp(
+								previousTableName(tableName, tablesToRename),
+								uniqueConstraint,
+								schemaName,
+							),
+						],
+				down: [
+					addUniqueConstraintOp(
+						previousTableName(tableName, tablesToRename),
+						uniqueConstraint,
+						schemaName,
+					),
+				],
 			};
 			acc.push(changeset);
 			return acc;
@@ -167,7 +215,7 @@ function createUniqueConstraintMigration(
 	);
 
 	const changeset: Changeset = {
-		priority: MigrationOpPriority.ConstraintCreate,
+		priority: MigrationOpPriority.UniqueCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
 		up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
@@ -190,10 +238,50 @@ function dropUniqueConstraintMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintDrop,
-		tableName: tableName,
+		tableName: previousTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropConstraint,
-		up: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
-		down: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
+		up: [
+			dropUniqueConstraintOp(
+				previousTableName(tableName, tablesToRename),
+				uniqueConstraint,
+				schemaName,
+			),
+		],
+		down: [
+			addUniqueConstraintOp(
+				previousTableName(tableName, tablesToRename),
+				uniqueConstraint,
+				schemaName,
+			),
+		],
+	};
+	return changeset;
+}
+
+function changeUniqueConstraintNameMigration(
+	diff: UniqueChangeNameDiff,
+	{ schemaName, tablesToRename, camelCaseOptions }: GeneratorContext,
+) {
+	const tableName = diff.path[1];
+	const oldName = `${previousTableName(toSnakeCase(tableName, camelCaseOptions), tablesToRename)}_${diff.path[2]}_yount_key`;
+	const newName = `${tableName}_${hashValue(
+		`${diff.value.includes("UNIQUE NULLS DISTINCT") ? true : false}_${extractColumnsFromPrimaryKey(diff.value).sort().join("_")}`,
+	)}_yount_key`;
+
+	const changeset: Changeset = {
+		priority: MigrationOpPriority.ConstraintChange,
+		tableName: tableName,
+		type: ChangeSetType.ChangeConstraint,
+		up: [
+			executeKyselyDbStatement(
+				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${oldName} TO ${newName}`,
+			),
+		],
+		down: [
+			executeKyselyDbStatement(
+				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${newName} TO ${oldName}`,
+			),
+		],
 	};
 	return changeset;
 }

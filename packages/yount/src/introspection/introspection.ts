@@ -1,8 +1,10 @@
+/* eslint-disable max-lines */
 import { Kysely } from "kysely";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { dbExtensionInfo } from "~/database/extension/introspection.js";
 import type { AnySchema } from "~/database/schema/schema.js";
 import type { ColumnInfo } from "~/database/schema/table/column/types.js";
+import { ForeignKeyBuilder } from "~/database/schema/table/constraints/foreign-key/builder.js";
 import { currentTableName } from "~/introspection/table-name.js";
 import {
 	extractColumnsFromPrimaryKey,
@@ -14,6 +16,7 @@ import {
 } from "~/migrations/migration-schema.js";
 import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 import type { TablesToRename } from "~/programs/table-diff-prompt.js";
+import { hashValue } from "~/utils.js";
 import {
 	dbColumnInfo,
 	localColumnInfoByTable,
@@ -25,6 +28,8 @@ import {
 } from "../database/schema/table/constraints/check/introspection.js";
 import {
 	dbForeignKeyConstraintInfo,
+	fetchForeignConstraintInfo,
+	localForeignKeyConstraintHashes,
 	localForeignKeyConstraintInfo,
 } from "../database/schema/table/constraints/foreign-key/introspection.js";
 import {
@@ -60,21 +65,32 @@ export function introspectLocalSchema(
 	tablesToRename: TablesToRename = [],
 	columnsToRename: ColumnsToRename = {},
 ): SchemaMigrationInfo {
+	const foreignKeyInfo = localForeignKeyConstraintInfo(
+		schema,
+		camelCase,
+		tablesToRename,
+		columnsToRename,
+	);
+	const foreignKeyHashes = localForeignKeyConstraintHashes(
+		schema,
+		camelCase,
+		tablesToRename,
+		columnsToRename,
+	);
 	return {
 		table: localColumnInfoByTable(schema, remoteSchema, camelCase),
 		index: localIndexInfoByTable(schema, camelCase, columnsToRename),
-		foreignKeyConstraints: localForeignKeyConstraintInfo(
-			schema,
-			camelCase,
-			tablesToRename,
-			columnsToRename,
-		),
+		foreignKeyConstraints: foreignKeyInfo,
 		uniqueConstraints: localUniqueConstraintInfo(
 			schema,
 			camelCase,
 			columnsToRename,
 		),
-		checkConstraints: localCheckConstraintInfo(schema, camelCase),
+		checkConstraints: localCheckConstraintInfo(
+			schema,
+			camelCase,
+			columnsToRename,
+		),
 		primaryKey: localPrimaryKeyConstraintInfo(
 			schema,
 			camelCase,
@@ -84,6 +100,7 @@ export function introspectLocalSchema(
 			...localTriggersInfo(schema, camelCase),
 		},
 		enums: localEnumInfo(schema),
+		foreignKeyNames: foreignKeyHashes,
 	};
 }
 
@@ -109,10 +126,35 @@ export async function introspectRemoteSchema(
 		tables,
 	);
 
-	const remoteForeignKeyConstraintInfo = await dbForeignKeyConstraintInfo(
+	const remoteForeignKeyConstraints = await fetchForeignConstraintInfo(
 		kysely,
 		schemaName,
 		tables,
+	);
+
+	const remoteConstraintHashes = remoteForeignKeyConstraints.reduce(
+		(acc, result) => {
+			const dbHash = result.conname!.match(/^\w+_(\w+)_yount_fk$/)![1];
+			const recomputedHash = hashValue(
+				ForeignKeyBuilder.toStatement({
+					...result,
+					isExternal: false,
+				}),
+			);
+			const table = result.table;
+			if (table !== null) {
+				acc[table] = {
+					...acc[table],
+					...{ [`${recomputedHash}`]: `${table}:${dbHash}` },
+				};
+			}
+			return acc;
+		},
+		{} as Record<string, Record<string, string>>,
+	);
+
+	const remoteForeignKeyConstraintInfo = await dbForeignKeyConstraintInfo(
+		remoteForeignKeyConstraints,
 	);
 
 	const primaryKeyConstraintInfo = await dbPrimaryKeyConstraintInfo(
@@ -140,6 +182,7 @@ export async function introspectRemoteSchema(
 		primaryKey: primaryKeyConstraintInfo,
 		triggers: triggerInfo,
 		enums: enumInfo,
+		foreignKeyNames: remoteConstraintHashes,
 	};
 	return migrationSchema;
 }
@@ -175,6 +218,7 @@ export type SchemaMigrationInfo = {
 	primaryKey: PrimaryKeyInfo;
 	triggers: TriggerInfo;
 	enums: EnumInfo;
+	foreignKeyNames?: Record<string, Record<string, string>>;
 };
 
 export function renameTables(
@@ -190,11 +234,10 @@ export function renameTables(
 				(schemaAcc, [column, info]) => {
 					schemaAcc[column] = {
 						...info,
-						tableName: table,
 					};
 					return schemaAcc;
 				},
-				{} as Record<string, ColumnInfo & { tableName: string }>,
+				{} as Record<string, ColumnInfo>,
 			);
 			acc[current] = {
 				name: schema.name,
@@ -280,6 +323,7 @@ export function renameTables(
 		primaryKey: renamedPrimaryKeys,
 		triggers: renamedTriggers,
 		enums: remote.enums,
+		foreignKeyNames: remote.foreignKeyNames,
 	};
 	return renamedSchema;
 }

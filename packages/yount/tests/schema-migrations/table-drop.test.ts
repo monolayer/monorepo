@@ -386,7 +386,7 @@ describe("Table drop migrations", () => {
 
 		const expected = [
 			{
-				priority: 1003,
+				priority: 810,
 				tableName: "users",
 				type: "dropConstraint",
 				up: [[]],
@@ -458,7 +458,7 @@ describe("Table drop migrations", () => {
 
 		const expected = [
 			{
-				priority: 1003,
+				priority: 810,
 				tableName: "users",
 				type: "dropConstraint",
 				up: [[]],
@@ -571,7 +571,7 @@ describe("Table drop migrations", () => {
 
 		const expected = [
 			{
-				priority: 1003,
+				priority: 810,
 				tableName: "books",
 				type: "dropConstraint",
 				down: [

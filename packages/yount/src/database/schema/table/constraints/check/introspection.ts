@@ -7,10 +7,15 @@ import {
 	type PgCheck,
 } from "~/database/schema/table/constraints/check/check.js";
 import {
+	currentColumName,
+	previousColumnName,
+} from "~/introspection/column-name.js";
+import {
 	compileDefaultExpression,
 	tableInfo,
 } from "~/introspection/helpers.js";
 import type { CheckInfo } from "~/migrations/migration-schema.js";
+import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 
@@ -39,6 +44,7 @@ export async function dbCheckConstraintInfo(
 		.where("pg_namespace.nspname", "=", databaseSchema)
 		.where("pg_constraint.conname", "~", "yount_chk$")
 		.where("pg_class.relname", "in", tableNames)
+		.orderBy("constraint_name asc")
 		.execute();
 	const transformedResults = results.reduce<CheckInfo>((acc, result) => {
 		const constraintHash = result.constraint_name?.match(
@@ -60,6 +66,7 @@ export async function dbCheckConstraintInfo(
 export function localCheckConstraintInfo(
 	schema: AnySchema,
 	camelCase: CamelCaseOptions,
+	columnsToRename: ColumnsToRename = {},
 ) {
 	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce<CheckInfo>(
@@ -74,13 +81,14 @@ export function localCheckConstraintInfo(
 					if (check.isExternal) {
 						return acc;
 					}
-					const checkExpression = compileDefaultExpression(
-						check.expression,
-						camelCase.enabled,
+					const checkWithRenamedColumns = redefineCheck(
+						compileDefaultExpression(check.expression, camelCase.enabled),
+						"previous",
+						transformedTableName,
+						columnsToRename,
 					);
-					const key = hashValue(checkExpression);
 					const checkObject = {
-						[`${key}`]: `${checkExpression}`,
+						[`${checkWithRenamedColumns.hash}`]: `${checkWithRenamedColumns.definition}`,
 					};
 					acc[transformedTableName] = {
 						...acc[transformedTableName],
@@ -92,4 +100,31 @@ export function localCheckConstraintInfo(
 		},
 		{},
 	);
+}
+
+export function redefineCheck(
+	definition: string,
+	columnNames: "current" | "previous",
+	tableName: string,
+	columnsToRename: ColumnsToRename,
+) {
+	const nameFunction =
+		columnNames === "current" ? currentColumName : previousColumnName;
+
+	const newDefinition = definition.replaceAll(
+		/"(\w+)"/g,
+		(columName) =>
+			`"${nameFunction(
+				tableName,
+				columName.replaceAll(/"/g, ""),
+				columnsToRename,
+			)}"`,
+	);
+	const hash = hashValue(newDefinition);
+
+	return {
+		name: `${tableName}_${hash}_yount_chk`,
+		hash,
+		definition: newDefinition,
+	};
 }

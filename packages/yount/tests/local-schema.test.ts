@@ -536,6 +536,11 @@ describe("schema", () => {
 						'FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 				},
 			},
+			foreignKeyNames: {
+				users: {
+					c28cc6e8: "users:c28cc6e8",
+				},
+			},
 			uniqueConstraints: {
 				users: {
 					"5e2b6cf1": 'UNIQUE NULLS NOT DISTINCT ("email")',
@@ -551,7 +556,6 @@ describe("schema", () => {
 					e37c55a5: '"id" < 50000',
 				},
 			},
-
 			primaryKey: {
 				teams: {
 					teams_yount_pk: '("id")',
@@ -860,6 +864,11 @@ describe("schema", () => {
 						'FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 				},
 			},
+			foreignKeyNames: {
+				users: {
+					c28cc6e8: "users:c28cc6e8",
+				},
+			},
 			uniqueConstraints: {
 				users: {
 					"5e2b6cf1": 'UNIQUE NULLS NOT DISTINCT ("email")',
@@ -952,8 +961,8 @@ test("trigger names are downcased", () => {
 					'a796cccb:CREATE OR REPLACE TRIGGER foo_before_update_trg\nBEFORE UPDATE ON "public"."users"\nFOR EACH STATEMENT\nEXECUTE FUNCTION foo',
 			},
 		},
-		// extensions: {},
 		foreignKeyConstraints: {},
+		foreignKeyNames: {},
 		index: {},
 		primaryKey: {},
 		uniqueConstraints: {},
@@ -1243,6 +1252,11 @@ test("#localSchemaCamelCase", () => {
 					'FOREIGN KEY ("book_id") REFERENCES books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 			},
 		},
+		foreignKeyNames: {
+			users: {
+				c28cc6e8: "users:c28cc6e8",
+			},
+		},
 		uniqueConstraints: {
 			users: {
 				"5e2b6cf1": 'UNIQUE NULLS NOT DISTINCT ("email")',
@@ -1362,6 +1376,7 @@ describe("#localSchema with external objects", () => {
 			},
 			index: {},
 			foreignKeyConstraints: {},
+			foreignKeyNames: {},
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
@@ -1410,10 +1425,10 @@ describe("#localSchema with external objects", () => {
 			},
 			index: {},
 			foreignKeyConstraints: {},
+			foreignKeyNames: {},
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
@@ -1461,10 +1476,10 @@ describe("#localSchema with external objects", () => {
 			},
 			index: {},
 			foreignKeyConstraints: {},
+			foreignKeyNames: {},
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
@@ -1512,10 +1527,10 @@ describe("#localSchema with external objects", () => {
 			},
 			index: {},
 			foreignKeyConstraints: {},
+			foreignKeyNames: {},
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
@@ -1548,10 +1563,10 @@ describe("#localSchema with external objects", () => {
 			},
 			index: {},
 			foreignKeyConstraints: {},
+			foreignKeyNames: {},
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			// extensions: {},
 			triggers: {},
 			enums: {},
 		};
@@ -1575,10 +1590,10 @@ describe("#localSchema with external objects", () => {
 			table: {},
 			index: {},
 			foreignKeyConstraints: {},
+			foreignKeyNames: {},
 			uniqueConstraints: {},
 			checkConstraints: {},
 			primaryKey: {},
-			// extensions: {},
 			triggers: {},
 			enums: {},
 		};

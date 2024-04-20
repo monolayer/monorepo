@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
@@ -5,11 +6,13 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { changedColumnNames } from "~/introspection/column-name.js";
 import { previousTableName } from "~/introspection/table-name.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
 } from "../../../../../changeset/helpers.js";
+import { redefineCheck } from "./introspection.js";
 
 export function CheckMigrationOpGenerator(
 	diff: Difference,
@@ -26,6 +29,9 @@ export function CheckMigrationOpGenerator(
 	}
 	if (isDropCheck(diff)) {
 		return dropCheckMigration(diff, context);
+	}
+	if (isRehashCheck(diff, context)) {
+		return rehashIndexMigration(diff, context);
 	}
 }
 
@@ -57,25 +63,48 @@ function isDropAllChecks(test: Difference): test is DropAllChecksDiff {
 	);
 }
 
+type RehashCheckDiff = {
+	type: "CHANGE";
+	path: ["checkConstraints", string, string];
+	value: string;
+	oldValue: string;
+};
+
+export function isRehashCheck(
+	test: Difference,
+	{ columnsToRename }: GeneratorContext,
+): test is RehashCheckDiff {
+	return (
+		test.type === "CHANGE" &&
+		test.path[0] === "checkConstraints" &&
+		test.path.length === 3 &&
+		typeof test.path[1] === "string" &&
+		changedColumnNames(test.path[1], columnsToRename).length > 0
+	);
+}
+
 function createFirstCheckMigration(
 	diff: CreateFirstCheckDiff,
-	{ addedTables, schemaName }: GeneratorContext,
+	{ addedTables, schemaName, columnsToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const checkHashes = Object.keys(diff.value) as Array<keyof typeof diff.value>;
 	return checkHashes
 		.flatMap((checkHash) => {
-			const checkDefinition = diff.value[checkHash];
-			const checkName = `${tableName}_${checkHash}_yount_chk`;
+			const checkDefinition = redefineCheck(
+				diff.value[checkHash]!,
+				"current",
+				tableName,
+				columnsToRename,
+			);
 			if (checkDefinition !== undefined) {
 				const changeSet: Changeset = {
-					priority: MigrationOpPriority.ConstraintCreate,
+					priority: MigrationOpPriority.CheckCreate,
 					tableName: tableName,
 					type: ChangeSetType.CreateConstraint,
 					up: addCheckWithSchemaStatements(
 						schemaName,
 						tableName,
-						checkName,
 						checkDefinition,
 					),
 					down: addedTables.includes(tableName)
@@ -84,7 +113,7 @@ function createFirstCheckMigration(
 								dropCheckKyselySchemaStatement(
 									schemaName,
 									tableName,
-									checkName,
+									checkDefinition.name,
 								),
 							],
 				};
@@ -109,23 +138,21 @@ function dropAllChecksMigration(
 				const checkName = `${previousTableName(tableName, tablesToRename)}_${checkHash}_yount_chk`;
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.ConstraintDrop,
-					tableName: tableName,
+					tableName: previousTableName(tableName, tablesToRename),
 					type: ChangeSetType.DropConstraint,
 					up: droppedTables.includes(tableName)
 						? [[]]
 						: [
 								dropCheckKyselySchemaStatement(
 									schemaName,
-									tableName,
+									previousTableName(tableName, tablesToRename),
 									checkName,
 								),
 							],
 					down: addCheckWithDbStatements(
 						schemaName,
-						tableName,
-						checkName,
-						checkHash,
-						checkDefinition,
+						previousTableName(tableName, tablesToRename),
+						{ name: checkName, definition: checkDefinition },
 					),
 				};
 				return changeSet;
@@ -151,24 +178,27 @@ function isCreateCheck(test: Difference): test is CreateCheck {
 
 function createCheckMigration(
 	diff: CreateCheck,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, columnsToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
-	const checkHash = diff.path[2];
-	const checkDefinition = diff.value;
-	const checkName = `${tableName}_${checkHash}_yount_chk`;
-
+	const checkDefinition = redefineCheck(
+		diff.value,
+		"current",
+		tableName,
+		columnsToRename,
+	);
 	const changeSet: Changeset = {
-		priority: MigrationOpPriority.ConstraintCreate,
+		priority: MigrationOpPriority.CheckCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateConstraint,
-		up: addCheckWithSchemaStatements(
-			schemaName,
-			tableName,
-			checkName,
-			checkDefinition,
-		),
-		down: [dropCheckKyselySchemaStatement(schemaName, tableName, checkName)],
+		up: addCheckWithSchemaStatements(schemaName, tableName, checkDefinition),
+		down: [
+			dropCheckKyselySchemaStatement(
+				schemaName,
+				tableName,
+				checkDefinition.name,
+			),
+		],
 	};
 	return changeSet;
 }
@@ -199,18 +229,50 @@ function dropCheckMigration(
 
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.ConstraintDrop,
-		tableName: tableName,
+		tableName: previousTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropConstraint,
-		up: [dropCheckKyselySchemaStatement(schemaName, tableName, checkName)],
+		up: [
+			dropCheckKyselySchemaStatement(
+				schemaName,
+				previousTableName(tableName, tablesToRename),
+				checkName,
+			),
+		],
 		down: addCheckWithDbStatements(
 			schemaName,
-			tableName,
-			checkName,
-			checkHash,
-			checkDefinition,
+			previousTableName(tableName, tablesToRename),
+			{ name: checkName, definition: checkDefinition },
 		),
 	};
 	return changeSet;
+}
+
+function rehashIndexMigration(
+	diff: RehashCheckDiff,
+	{ schemaName, tablesToRename, columnsToRename }: GeneratorContext,
+) {
+	const tableName = diff.path[1];
+	const previousCheckName = `${previousTableName(tableName, tablesToRename)}_${diff.path[2]}_yount_chk`;
+	const newCheckName = `${tableName}_${
+		redefineCheck(diff.value, "current", tableName, columnsToRename).hash
+	}_yount_chk`;
+
+	const changeset: Changeset = {
+		priority: MigrationOpPriority.ConstraintChange,
+		tableName: tableName,
+		type: ChangeSetType.ChangeConstraint,
+		up: [
+			executeKyselyDbStatement(
+				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${previousCheckName} TO ${newCheckName}`,
+			),
+		],
+		down: [
+			executeKyselyDbStatement(
+				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${newCheckName} TO ${previousCheckName}`,
+			),
+		],
+	};
+	return changeset;
 }
 
 function dropCheckKyselySchemaStatement(
@@ -228,16 +290,17 @@ function dropCheckKyselySchemaStatement(
 function addCheckWithDbStatements(
 	schemaName: string,
 	tableName: string,
-	checkName: string,
-	checkHash: string,
-	checkDefinition: string,
+	check: {
+		name: string;
+		definition: string;
+	},
 ) {
 	return [
 		executeKyselyDbStatement(
-			`ALTER TABLE "${schemaName}"."${tableName}" ADD CONSTRAINT "${checkName}" ${checkDefinition} NOT VALID`,
+			`ALTER TABLE "${schemaName}"."${tableName}" ADD CONSTRAINT "${check.name}" ${check.definition} NOT VALID`,
 		),
 		executeKyselyDbStatement(
-			`ALTER TABLE "${schemaName}"."${tableName}" VALIDATE CONSTRAINT "${checkName}"`,
+			`ALTER TABLE "${schemaName}"."${tableName}" VALIDATE CONSTRAINT "${check.name}"`,
 		),
 	];
 }
@@ -245,8 +308,10 @@ function addCheckWithDbStatements(
 function addCheckWithSchemaStatements(
 	schemaName: string,
 	tableName: string,
-	checkName: string,
-	checkDefinition: string,
+	check: {
+		name: string;
+		definition: string;
+	},
 ) {
 	return [
 		[
@@ -255,14 +320,14 @@ function addCheckWithSchemaStatements(
 				`  db`,
 				`    .withSchema("${schemaName}")`,
 				`    .schema.alterTable("${tableName}")`,
-				`    .addCheckConstraint("${checkName}", sql\`${checkDefinition}\`)`,
+				`    .addCheckConstraint("${check.name}", sql\`${check.definition}\`)`,
 				`    .compile()`,
 				`    .sql.concat(" not valid")`,
 				`)}\`.execute(db);`,
 			].join("\n"),
 		],
 		executeKyselyDbStatement(
-			`ALTER TABLE "${schemaName}"."${tableName}" VALIDATE CONSTRAINT "${checkName}"`,
+			`ALTER TABLE "${schemaName}"."${tableName}" VALIDATE CONSTRAINT "${check.name}"`,
 		),
 	];
 }

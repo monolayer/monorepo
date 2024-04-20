@@ -31,12 +31,14 @@ export function compileDefaultExpression(
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const compiled = (expression as RawBuilder<any>).compile(kysely);
+
 	return substituteSQLParameters({
 		sql: compiled.sql,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		parameters: compiled.parameters as any[],
 	});
 }
+
 function substituteSQLParameters(queryObject: {
 	sql: string;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,6 +57,7 @@ function substituteSQLParameters(queryObject: {
 
 	return sql;
 }
+
 type InferTableSchema<T extends AnyPgTable> =
 	T extends PgTable<infer C, infer PK> ? TableSchema<C, PK> : never;
 

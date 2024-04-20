@@ -53,7 +53,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 4002,
+				priority: 4012,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -117,7 +117,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 4002,
+				priority: 4012,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -146,7 +146,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 4002,
+				priority: 4012,
 				tableName: "books",
 				type: "createConstraint",
 				up: [
@@ -219,7 +219,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 1003,
+				priority: 810,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -276,7 +276,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 1003,
+				priority: 810,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -353,7 +353,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 4002,
+				priority: 4012,
 				tableName: "users",
 				type: "createConstraint",
 				up: [
@@ -404,7 +404,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 4002,
+				priority: 4012,
 				tableName: "users",
 				type: "createConstraint",
 				up: [

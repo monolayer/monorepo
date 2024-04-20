@@ -36,11 +36,11 @@ export enum MigrationOpPriority {
 	Database = 0,
 
 	IndexDrop = 800,
+	ConstraintDrop = 810,
 
 	ChangeTableName = 900,
 
 	TriggerDrop = 1001,
-	ConstraintDrop = 1003,
 	PrimaryKeyDrop = 1004,
 	ColumnDrop = 1005,
 	TableDrop = 1006,
@@ -63,6 +63,10 @@ export enum MigrationOpPriority {
 	ConstraintCreate = 4002,
 	IndexCreate = 4003,
 	TriggerCreate = 4004,
+
+	UniqueCreate = 4010,
+	ForeignKeyCreate = 4011,
+	CheckCreate = 4012,
 
 	ChangeIndex = 5001,
 	ConstraintChange = 5002,

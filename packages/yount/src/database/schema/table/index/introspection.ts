@@ -157,6 +157,7 @@ export function indexToInfo(
 		schemaName,
 		indexName,
 	);
+
 	const compiledQuery = kyselyBuilder.compile().sql;
 
 	return {
@@ -244,6 +245,7 @@ export function rehashIndex(
 		name,
 	);
 	return {
+		hash,
 		name,
 		definition,
 	};

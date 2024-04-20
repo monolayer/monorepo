@@ -120,6 +120,7 @@ export function localUniqueConstraintInfo(
 	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce<UniqueInfo>(
 		(acc, [tableName, tableDefinition]) => {
+			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const uniqueConstraints = tableInfo(tableDefinition).schema.constraints
 				?.unique as AnyPgUnique[];
 			if (uniqueConstraints !== undefined) {
@@ -129,13 +130,13 @@ export function localUniqueConstraintInfo(
 					}
 					const unique = uniqueToInfo(
 						uniqueConstraint,
-						tableName,
+						transformedTableName,
 						kysely,
 						camelCase,
 						columnsToRename,
 					);
-					acc[tableName] = {
-						...acc[tableName],
+					acc[transformedTableName] = {
+						...acc[transformedTableName],
 						...unique,
 					};
 				}
@@ -161,7 +162,11 @@ export function uniqueToInfo(
 		.sort()
 		.map((column) =>
 			toSnakeCase(
-				previousColumnName(tableName, column, columnsToRename),
+				previousColumnName(
+					tableName,
+					toSnakeCase(column, camelCase),
+					columnsToRename,
+				),
 				camelCase,
 			),
 		);

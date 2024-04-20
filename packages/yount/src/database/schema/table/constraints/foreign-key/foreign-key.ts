@@ -1,5 +1,5 @@
+import type { ForeignKeyRule } from "~/database/schema/introspect-table.js";
 import type { AnyPgTable, PgTable } from "../../table.js";
-import type { ForeignKeyRule } from "./introspection.js";
 
 export function foreignKey<T extends string, C extends AnyPgTable>(
 	columns: T[],

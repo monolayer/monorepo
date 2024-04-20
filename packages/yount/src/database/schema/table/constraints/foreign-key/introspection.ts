@@ -1,46 +1,55 @@
-import { sql, type Kysely, type OnModifyForeignAction } from "kysely";
+/* eslint-disable max-lines */
+import { sql, type Kysely } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
+import { ForeignKeyRule } from "~/database/schema/introspect-table.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
-import { previousColumnName } from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { previousTableName } from "~/introspection/table-name.js";
-import {
-	findTableByNameInDatabaseSchema,
-	type ForeignKeyInfo,
-} from "~/migrations/migration-schema.js";
+import { type ForeignKeyInfo } from "~/migrations/migration-schema.js";
 import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
 import type { TablesToRename } from "~/programs/table-diff-prompt.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
-
-export type ForeignKeyRule =
-	| "CASCADE"
-	| "SET NULL"
-	| "SET DEFAULT"
-	| "RESTRICT"
-	| "NO ACTION";
-
-export type ForeignKeyConstraintInfo = {
-	constraintType: "FOREIGN KEY";
-	table: string | null;
-	column: string[];
-	targetTable: string | null;
-	targetColumns: string[];
-	deleteRule: ForeignKeyRule | null;
-	updateRule: ForeignKeyRule | null;
-};
+import { ForeignKeyBuilder } from "./builder.js";
 
 export async function dbForeignKeyConstraintInfo(
+	fetchInfo: Awaited<ReturnType<typeof fetchForeignConstraintInfo>>,
+) {
+	const transformedResults = fetchInfo.reduce<ForeignKeyInfo>((acc, result) => {
+		const constraintHash = result.conname!.match(/^\w+_(\w+)_yount_fk$/)![1];
+		const statement = ForeignKeyBuilder.toStatement({
+			...result,
+			isExternal: false,
+		});
+		const recomputedHash = hashValue(statement);
+		const hashKey =
+			constraintHash === recomputedHash ? constraintHash : recomputedHash;
+
+		const table = result.table;
+		if (table !== null) {
+			acc[table] = {
+				...acc[table],
+				...{
+					[`${hashKey}`]: statement,
+				},
+			};
+		}
+		return acc;
+	}, {});
+	return transformedResults;
+}
+
+export async function fetchForeignConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
 ) {
 	if (tableNames.length === 0) {
-		return {};
+		return [];
 	}
 
-	const results = await kysely
+	return await kysely
 		.selectFrom("pg_constraint as con")
 		.fullJoin("pg_class as tbl", (join) =>
 			join.onRef("tbl.oid", "=", "con.conrelid"),
@@ -70,12 +79,12 @@ export async function dbForeignKeyConstraintInfo(
 		.select([
 			"con.conname",
 			sql<"FOREIGN KEY">`'FOREIGN KEY'`.as("constraintType"),
-			"tbl.relname as table",
-			sql<string[]>`JSON_AGG(DISTINCT col.attname)`.as("column"),
-			"ref_tbl.relname as targetTable",
+			sql<string>`tbl.relname`.as("table"),
+			sql<string[]>`JSON_AGG(DISTINCT col.attname)`.as("columns"),
+			sql<string>`ref_tbl.relname`.as("targetTable"),
 			sql<string[]>`JSON_AGG(DISTINCT cu.column_name)`.as("targetColumns"),
-			"rc.delete_rule as deleteRule",
-			"rc.update_rule as updateRule",
+			sql<ForeignKeyRule>`rc.delete_rule`.as("deleteRule"),
+			sql<ForeignKeyRule>`rc.update_rule`.as("updateRule"),
 		])
 		.where("con.contype", "=", "f")
 		.where("ns.nspname", "=", databaseSchema)
@@ -90,22 +99,6 @@ export async function dbForeignKeyConstraintInfo(
 			"con.conname",
 		])
 		.execute();
-	const transformedResults = results.reduce<ForeignKeyInfo>((acc, result) => {
-		const constraintHash = result.conname!.match(/^\w+_(\w+)_yount_fk$/)![1];
-		const recomputedHash = foreignKeyConstraintHash(result);
-		const hashKey =
-			constraintHash === recomputedHash ? constraintHash : recomputedHash;
-		const query = foreignKeyConstraintInfoToNameAndQuery(result, hashKey);
-		const table = result.table;
-		if (table !== null) {
-			acc[table] = {
-				...acc[table],
-				...query,
-			};
-		}
-		return acc;
-	}, {});
-	return transformedResults;
 }
 
 export function localForeignKeyConstraintInfo(
@@ -122,37 +115,18 @@ export function localForeignKeyConstraintInfo(
 			const foreignKeys = introspect.foreignKeys;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {
-					const targetTableName = findTableByNameInDatabaseSchema(
-						foreignKey.targetTable,
-						schema,
-						camelCase,
-					);
-					const transformedColumNames = foreignKey.columns.map((column) =>
-						previousColumnName(
-							tableName,
-							toSnakeCase(column, camelCase),
-							columnsToRename,
-						),
+					const builder = new ForeignKeyBuilder(
+						transformedTableName,
+						foreignKey,
+						{ camelCase, tablesToRename, columnsToRename },
 					);
 
-					const transformedtargetColumnNames = foreignKey.targetColumns.map(
-						(column) => toSnakeCase(column, camelCase),
-					);
-					if (targetTableName !== undefined) {
-						const query = foreignKeyConstraintInfoToNameAndQuery({
-							constraintType: "FOREIGN KEY",
-							table: transformedTableName,
-							column: transformedColumNames,
-							targetTable: previousTableName(targetTableName, tablesToRename),
-							targetColumns: transformedtargetColumnNames,
-							deleteRule: foreignKey.deleteRule ?? null,
-							updateRule: foreignKey.updateRule ?? null,
-						});
-						acc[transformedTableName] = {
-							...acc[transformedTableName],
-							...query,
-						};
-					}
+					acc[transformedTableName] = {
+						...acc[transformedTableName],
+						...{
+							[`${builder.key("previous")}`]: `${builder.query("previous")}`,
+						},
+					};
 				}
 			}
 			return acc;
@@ -161,40 +135,39 @@ export function localForeignKeyConstraintInfo(
 	);
 }
 
-export function foreignKeyConstraintInfoToNameAndQuery(
-	info: ForeignKeyConstraintInfo,
-	hash?: string,
+export function localForeignKeyConstraintHashes(
+	schema: AnySchema,
+	camelCase: CamelCaseOptions,
+	tablesToRename: TablesToRename,
+	columnsToRename: ColumnsToRename,
 ) {
-	const parts = [
-		"FOREIGN KEY",
-		`(${info.column.map((col) => `"${col}"`).join(", ")})`,
-		"REFERENCES",
-		info.targetTable,
-		`(${info.targetColumns.map((col) => `"${col}"`).join(", ")})`,
-		`ON DELETE ${info.deleteRule}`,
-		`ON UPDATE ${info.updateRule}`,
-	];
-	return {
-		[`${hash !== undefined ? hash : hashValue(parts.join(" "))}`]:
-			parts.join(" "),
-	};
+	const tables = Schema.info(schema).tables;
+	return Object.entries(tables || {}).reduce(
+		(acc, [tableName, tableDefinition]) => {
+			const tableNameInDatabase = toSnakeCase(tableName, camelCase);
+			const introspect = tableInfo(tableDefinition).introspect(tables);
+			const foreignKeys = introspect.foreignKeys;
+			if (foreignKeys !== undefined) {
+				for (const foreignKey of foreignKeys) {
+					const tableKey = previousTableName(
+						tableNameInDatabase,
+						tablesToRename,
+					);
+					const builder = new ForeignKeyBuilder(
+						tableNameInDatabase,
+						foreignKey,
+						{ camelCase, tablesToRename, columnsToRename },
+					);
+					acc[tableKey] = {
+						...acc[tableKey],
+						...{
+							[`${builder.key("previous")}`]: `${tableNameInDatabase}:${builder.key("current")}`,
+						},
+					};
+				}
+			}
+			return acc;
+		},
+		{} as Record<string, Record<string, string>>,
+	);
 }
-
-export function foreignKeyConstraintHash(info: ForeignKeyConstraintInfo) {
-	const parts = [
-		"FOREIGN KEY",
-		`(${info.column.map((col) => `"${col}"`).join(", ")})`,
-		"REFERENCES",
-		info.targetTable,
-		`(${info.targetColumns.map((col) => `"${col}"`).join(", ")})`,
-		`ON DELETE ${info.deleteRule}`,
-		`ON UPDATE ${info.updateRule}`,
-	];
-	return hashValue(parts.join(" "));
-}
-
-export type ForeIgnKeyConstraintInfo = {
-	table: string;
-	column: string;
-	options: `${OnModifyForeignAction};${OnModifyForeignAction}`;
-};

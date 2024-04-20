@@ -1,9 +1,12 @@
 import { Effect } from "effect";
+import type { Layer } from "effect/Layer";
 import { expect } from "vitest";
 import { generateChangesetMigration } from "~/programs/generate-changeset-migration.js";
 import { migrateDown as migrateDownProgram } from "~/programs/migrate-down.js";
 import { migrate } from "~/programs/migrate.js";
 import { DbClients } from "~/services/dbClients.js";
+import type { DevEnvironment, Environment } from "~/services/environment.js";
+import type { Migrator } from "~/services/migrator.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { newLayers, type EnvironmentLessConnector } from "./layers.js";
 import { programWithErrorCause } from "./run-program.js";
@@ -26,50 +29,28 @@ export async function testChangesetAndMigrations({
 		connector.camelCasePlugin = { enabled: false };
 	}
 
+	const layers = newLayers(context.dbName, context.folder, connector);
+
 	mock();
 
-	console.log("FIRST");
-	const result = await runGenerateChangesetMigration(
-		context.dbName,
-		context.folder,
-		connector,
-	);
+	const result = await runGenerateChangesetMigration(layers);
 
 	expect(result).toEqual(expected);
 
-	const migrationResult = await runMigrate(
-		context.dbName,
-		context.folder,
-		connector,
-	);
+	const migrationResult = await runMigrate(layers);
 	expect(migrationResult).toBe(true);
 
-	console.log("SECOND");
-	const afterUpCs = await runGenerateChangesetMigration(
-		context.dbName,
-		context.folder,
-		connector,
-	);
+	const afterUpCs = await runGenerateChangesetMigration(layers);
 	expect(afterUpCs).toEqual([]);
 
-	const migrateDownResult = await runMigrateDown(
-		context.dbName,
-		context.folder,
-		connector,
-	);
+	const migrateDownResult = await runMigrateDown(layers);
 	expect(migrateDownResult).toBe(true);
 
 	mock();
 
-	console.log("THIRD");
-
 	switch (down) {
 		case "reverse": {
-			const afterDownCs = await runGenerateChangesetMigration(
-				context.dbName,
-				context.folder,
-				connector,
-			);
+			const afterDownCs = await runGenerateChangesetMigration(layers);
 			expect(afterDownCs).toEqual(
 				result
 					.reverse()
@@ -78,75 +59,63 @@ export async function testChangesetAndMigrations({
 			break;
 		}
 		case "same": {
-			const afterDownCs = await runGenerateChangesetMigration(
-				context.dbName,
-				context.folder,
-				connector,
-			);
+			const afterDownCs = await runGenerateChangesetMigration(layers);
 			expect(afterDownCs).toEqual(
 				result.filter((changeset) => changeset.type !== "createSchema"),
 			);
 			break;
 		}
 		case "empty": {
-			const afterDownCs = await runGenerateChangesetMigration(
-				context.dbName,
-				context.folder,
-				connector,
-			);
+			const afterDownCs = await runGenerateChangesetMigration(layers);
 			expect(afterDownCs).toEqual([]);
 			break;
 		}
 	}
+	Effect.runPromise(Effect.provide(programWithErrorCause(cleanup()), layers));
 }
 
 async function runGenerateChangesetMigration(
-	dbName: string,
-	folder: string,
-	connector: EnvironmentLessConnector,
+	layers: Layer<
+		Migrator | DbClients | Environment | DevEnvironment,
+		never,
+		never
+	>,
 ) {
 	return Effect.runPromise(
-		Effect.provide(
-			programWithErrorCause(generateChangesetMigration()).pipe(
-				Effect.tap(() => cleanup()),
-			),
-			newLayers(dbName, folder, connector),
-		),
+		Effect.provide(programWithErrorCause(generateChangesetMigration()), layers),
 	);
 }
 
 function cleanup() {
-	return Effect.all([DbClients]).pipe(
-		Effect.tap(async ([clients]) => {
-			clients.currentEnvironment.pgPool.end();
-			clients.currentEnvironment.pgAdminPool.end();
-		}),
-	);
-}
-async function runMigrate(
-	dbName: string,
-	folder: string,
-	connector: EnvironmentLessConnector,
-) {
-	return Effect.runPromise(
-		Effect.provide(
-			programWithErrorCause(migrate()).pipe(Effect.tap(() => cleanup())),
-			newLayers(dbName, folder, connector),
+	return DbClients.pipe(
+		Effect.flatMap((clients) =>
+			Effect.tryPromise(async () => {
+				await clients.currentEnvironment.pgPool.end();
+			}),
 		),
 	);
 }
 
-async function runMigrateDown(
-	dbName: string,
-	folder: string,
-	connector: EnvironmentLessConnector,
+async function runMigrate(
+	layers: Layer<
+		Migrator | DbClients | Environment | DevEnvironment,
+		never,
+		never
+	>,
 ) {
 	return Effect.runPromise(
-		Effect.provide(
-			programWithErrorCause(migrateDownProgram()).pipe(
-				Effect.tap(() => cleanup()),
-			),
-			newLayers(dbName, folder, connector),
-		),
+		Effect.provide(programWithErrorCause(migrate()), layers),
+	);
+}
+
+async function runMigrateDown(
+	layers: Layer<
+		Migrator | DbClients | Environment | DevEnvironment,
+		never,
+		never
+	>,
+) {
+	return Effect.runPromise(
+		Effect.provide(programWithErrorCause(migrateDownProgram()), layers),
 	);
 }

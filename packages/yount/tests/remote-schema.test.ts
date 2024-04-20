@@ -277,6 +277,11 @@ describe("#remoteSchema", () => {
 						'FOREIGN KEY ("book_id") REFERENCES remote_schema_books ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 				},
 			},
+			foreignKeyNames: {
+				remote_schema_users: {
+					d0466f3b: "remote_schema_users:d0466f3b",
+				},
+			},
 			checkConstraints: {
 				remote_schema_users: {
 					abcd: "CHECK ((book_id > 5))",
@@ -459,6 +464,11 @@ describe("#remoteSchema", () => {
 						'FOREIGN KEY ("book_id") REFERENCES remoteSchemaBooks ("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
 				},
 			},
+			foreignKeyNames: {
+				remoteSchemaUsers: {
+					"5aa711d0": "remoteSchemaUsers:5aa711d0",
+				},
+			},
 			primaryKey: {
 				remoteSchemaUsers: {
 					remoteSchemaUsers_yount_pk: '("id")',
@@ -527,6 +537,7 @@ describe("#remoteSchema", () => {
 			index: {},
 			uniqueConstraints: {},
 			foreignKeyConstraints: {},
+			foreignKeyNames: {},
 			checkConstraints: {},
 			primaryKey: {},
 			triggers: {},
@@ -902,6 +913,7 @@ describe("#remoteSchema", () => {
 			index: {},
 			uniqueConstraints: {},
 			foreignKeyConstraints: {},
+			foreignKeyNames: {},
 			checkConstraints: {},
 			primaryKey: {},
 			triggers: {},
