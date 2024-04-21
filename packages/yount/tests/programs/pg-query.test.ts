@@ -44,7 +44,7 @@ describe("pgQuery", () => {
 				layersWithDefaultConnection,
 			),
 		);
-		expect(defaultDatabase).toStrictEqual([{ current_database: "d4b60a3f" }]);
+		expect(defaultDatabase).toStrictEqual([{ current_database: "16e787e1" }]);
 
 		const statsDatabase = await Effect.runPromise(
 			Effect.provide(
@@ -53,7 +53,7 @@ describe("pgQuery", () => {
 			),
 		);
 		expect(statsDatabase).toStrictEqual([
-			{ current_database: "d4b60a3f_stats" },
+			{ current_database: "16e787e1_stats" },
 		]);
 	});
 
@@ -77,7 +77,7 @@ describe("pgQuery", () => {
 			),
 		);
 		expect(defaultDatabase).toStrictEqual([
-			{ current_database: "ef609a88_test" },
+			{ current_database: "ee49654c_test" },
 		]);
 
 		const statsDatabase = await Effect.runPromise(
@@ -87,7 +87,7 @@ describe("pgQuery", () => {
 			),
 		);
 		expect(statsDatabase).toStrictEqual([
-			{ current_database: "ef609a88_stats_test" },
+			{ current_database: "ee49654c_stats_test" },
 		]);
 	});
 });

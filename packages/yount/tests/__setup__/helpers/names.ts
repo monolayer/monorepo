@@ -1,10 +1,16 @@
-import { type TaskContext } from "vitest";
+import { type Suite, type TaskContext } from "vitest";
 import { hashValue } from "~/utils.js";
 
 export function dbNameForTest(context: TaskContext) {
-	const suite = context.task.suite.name.replace(/ /g, "_").toLowerCase();
+	const parts = [];
+	let suite: Suite | undefined;
+	suite = context.task.suite;
+	while (suite !== undefined) {
+		parts.push(suite.name.replace(/ /g, "_").toLowerCase());
+		suite = suite.suite;
+	}
 	const task = context.task.name.replace(/ /g, "_").toLowerCase();
-	return hashValue(`${suite}_${task}`);
+	return hashValue(`${parts.join("_")}_${task}`);
 }
 
 export function programFolder(context: TaskContext) {

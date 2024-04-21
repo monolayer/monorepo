@@ -48,7 +48,7 @@ import {
 	teardownContext,
 } from "~tests/__setup__/helpers/test-context.js";
 
-describe("Table create migrations", () => {
+describe("Create table", () => {
 	beforeEach<DbContext>(async (context) => {
 		await setUpContext(context);
 	});
@@ -57,7 +57,7 @@ describe("Table create migrations", () => {
 		await teardownContext(context);
 	});
 
-	test<DbContext>("create empty table", async (context) => {
+	test<DbContext>("empty table", async (context) => {
 		const dbSchema = schema({
 			tables: {
 				users: table({
@@ -118,7 +118,7 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test<DbContext>("create table with columns", async (context) => {
+	test<DbContext>("with columns", async (context) => {
 		const dbSchema = schema({
 			tables: {
 				users: table({
@@ -307,7 +307,7 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test<DbContext>("create table with primary key", async (context) => {
+	test<DbContext>("with primary key", async (context) => {
 		const dbSchema = schema({
 			tables: {
 				users: table({
@@ -408,7 +408,7 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test<DbContext>("create table with composite primary key", async (context) => {
+	test<DbContext>("with composite primary key", async (context) => {
 		const dbSchema = schema({
 			tables: {
 				users: table({
@@ -511,7 +511,7 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test<DbContext>("create table with unique constraints", async (context) => {
+	test<DbContext>("with unique constraints", async (context) => {
 		const books = table({
 			columns: {
 				id: integer(),
@@ -618,7 +618,7 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test<DbContext>("create table with check constraints", async (context) => {
+	test<DbContext>("with check constraints", async (context) => {
 		const firstCheck = check(sql`${sql.ref("id")} > 50`);
 		const secondCheck = check(sql`${sql.ref("id")} < 50000`);
 
@@ -727,7 +727,7 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test<DbContext>("create table with foreign keys", async (context) => {
+	test<DbContext>("with foreign keys", async (context) => {
 		const books = table({
 			columns: {
 				id: bigserial(),
@@ -848,7 +848,7 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test<DbContext>("create table with indexes", async (context) => {
+	test<DbContext>("with indexes", async (context) => {
 		const users = table({
 			columns: {
 				name: text(),
@@ -945,7 +945,7 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test<DbContext>("create table with enums", async (context) => {
+	test<DbContext>("with enums", async (context) => {
 		const role = enumType("role", ["admin", "user"]);
 		const users = table({
 			columns: {
@@ -1016,7 +1016,7 @@ describe("Table create migrations", () => {
 		});
 	});
 
-	test<DbContext>("create table with triggers", async (context) => {
+	test<DbContext>("with triggers", async (context) => {
 		const users = table({
 			columns: {
 				id: integer(),

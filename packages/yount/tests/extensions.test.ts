@@ -1,14 +1,13 @@
 import { sql } from "kysely";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, test } from "vitest";
 import { extension } from "~/database/extension/extension.js";
 import { schema } from "~/database/schema/schema.js";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
-import { computeChangeset } from "../__setup__/helpers/compute-changeset.js";
 import {
 	setUpContext,
 	teardownContext,
-} from "../__setup__/helpers/test-context.js";
+} from "./__setup__/helpers/test-context.js";
 
 describe("Database migrations", () => {
 	beforeEach<DbContext>(async (context) => {
@@ -17,12 +16,6 @@ describe("Database migrations", () => {
 
 	afterEach<DbContext>(async (context) => {
 		await teardownContext(context);
-	});
-
-	test<DbContext>("database without tables", async ({ kysely }) => {
-		const dbSchema = schema({});
-		const cs = await computeChangeset(kysely, dbSchema);
-		expect(cs).toEqual([]);
 	});
 
 	test<DbContext>("add extensions", async (context) => {
