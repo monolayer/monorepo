@@ -1024,16 +1024,24 @@ describe("Create table", () => {
 				updatedAtTwo: timestamp().default(sql`now()`),
 			},
 			triggers: {
-				foo_before_update: trigger()
-					.fireWhen("before")
-					.events(["update"])
-					.forEach("row")
-					.function("moddatetime", [{ column: "updatedAt" }]),
-				foo_before_update_two: trigger()
-					.fireWhen("before")
-					.events(["update"])
-					.forEach("row")
-					.function("moddatetime", [{ column: "updatedAtTwo" }]),
+				foo_before_update: trigger({
+					fireWhen: "before",
+					events: ["update"],
+					forEach: "row",
+					function: {
+						name: "moddatetime",
+						args: [{ column: "updatedAt" }],
+					},
+				}),
+				foo_before_update_two: trigger({
+					fireWhen: "before",
+					events: ["update"],
+					forEach: "row",
+					function: {
+						name: "moddatetime",
+						args: [{ column: "updatedAtTwo" }],
+					},
+				}),
 			},
 		});
 
@@ -1197,11 +1205,15 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				role: enumerated(role),
 			},
 			triggers: {
-				foo_before_update: trigger()
-					.fireWhen("before")
-					.events(["update"])
-					.forEach("row")
-					.function("moddatetime", [{ column: "updatedAt" }]),
+				foo_before_update: trigger({
+					fireWhen: "before",
+					events: ["update"],
+					forEach: "row",
+					function: {
+						name: "moddatetime",
+						args: [{ column: "updatedAt" }],
+					},
+				}),
 			},
 		});
 

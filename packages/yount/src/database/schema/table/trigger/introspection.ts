@@ -46,7 +46,8 @@ export async function dbTriggerInfo(
 }
 
 export function triggerInfo(
-	trigger: PgTrigger,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	trigger: PgTrigger<any>,
 	triggerName: string,
 	tableName: string,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

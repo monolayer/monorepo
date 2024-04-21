@@ -5,12 +5,15 @@ import { trigger } from "../src/database/schema/table/trigger/trigger.js";
 
 describe("pg_trigger", () => {
 	test("trigger before", async () => {
-		const trg = trigger()
-			.fireWhen("before")
-			.events(["update", "delete"])
-			.forEach("statement")
-			.condition(sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`)
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "before",
+			events: ["update", "delete"],
+			forEach: "statement",
+			condition: sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`,
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
 BEFORE UPDATE OR DELETE ON "public"."accounts"
@@ -23,12 +26,15 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger after", async () => {
-		const trg = trigger()
-			.fireWhen("after")
-			.events(["update", "delete"])
-			.forEach("statement")
-			.condition(sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`)
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "after",
+			events: ["update", "delete"],
+			forEach: "statement",
+			condition: sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`,
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
 AFTER UPDATE OR DELETE ON "public"."accounts"
@@ -41,12 +47,15 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger instead of", async () => {
-		const trg = trigger()
-			.fireWhen("instead of")
-			.events(["update", "delete"])
-			.forEach("statement")
-			.condition(sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`)
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "instead of",
+			events: ["update", "delete"],
+			forEach: "statement",
+			condition: sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`,
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
 INSTEAD OF UPDATE OR DELETE ON "public"."accounts"
@@ -59,12 +68,15 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger on single event", async () => {
-		const trg = trigger()
-			.fireWhen("instead of")
-			.events(["update"])
-			.forEach("statement")
-			.condition(sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`)
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "instead of",
+			events: ["update"],
+			forEach: "statement",
+			condition: sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`,
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
 INSTEAD OF UPDATE ON "public"."accounts"
@@ -77,12 +89,15 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger on multiple events", async () => {
-		const trg = trigger()
-			.fireWhen("instead of")
-			.events(["update", "insert"])
-			.forEach("statement")
-			.condition(sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`)
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "instead of",
+			events: ["update", "insert"],
+			forEach: "statement",
+			condition: sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`,
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
 INSTEAD OF UPDATE OR INSERT ON "public"."accounts"
@@ -95,13 +110,16 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger on update of", async () => {
-		const trg = trigger()
-			.fireWhen("instead of")
-			.events(["update of"])
-			.columns(["balance", "name"])
-			.forEach("statement")
-			.condition(sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`)
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "instead of",
+			events: ["update of"],
+			columns: ["balance", "name"],
+			forEach: "statement",
+			condition: sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`,
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
 INSTEAD OF UPDATE OF balance, name ON "public"."accounts"
@@ -114,12 +132,15 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with default fire when", async () => {
-		const trg = trigger()
-			.fireWhen("before")
-			.events(["update", "delete"])
-			.forEach("statement")
-			.condition(sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`)
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "before",
+			events: ["update", "delete"],
+			forEach: "statement",
+			condition: sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`,
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
 BEFORE UPDATE OR DELETE ON "public"."accounts"
@@ -132,12 +153,15 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with for each row", async () => {
-		const trg = trigger()
-			.fireWhen("before")
-			.events(["update", "delete"])
-			.forEach("row")
-			.condition(sql`OLD.balance IS DISTINCT FROM NEW.balance`)
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "before",
+			events: ["update", "delete"],
+			forEach: "row",
+			condition: sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`,
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger
 BEFORE UPDATE OR DELETE ON "public"."accounts"
@@ -150,13 +174,16 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with referencing", async () => {
-		const trg = trigger()
-			.fireWhen("before")
-			.events(["delete"])
-			.forEach("statement")
-			.referencingNewTableAs("new_table")
-			.referencingOldTableAs("old_table")
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "before",
+			events: ["delete"],
+			forEach: "statement",
+			referencingNewTableAs: "new_table",
+			referencingOldTableAs: "old_table",
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
 BEFORE DELETE ON "public"."accounts"
@@ -169,12 +196,15 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with referencing new table", async () => {
-		const trg = trigger()
-			.fireWhen("before")
-			.events(["delete"])
-			.forEach("statement")
-			.referencingNewTableAs("new_table")
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "before",
+			events: ["delete"],
+			forEach: "statement",
+			referencingNewTableAs: "new_table",
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
 BEFORE DELETE ON "public"."accounts"
@@ -187,12 +217,15 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with referencing old table", async () => {
-		const trg = trigger()
-			.fireWhen("before")
-			.events(["delete"])
-			.forEach("statement")
-			.referencingOldTableAs("old_table")
-			.function("check_account_update");
+		const trg = trigger({
+			fireWhen: "before",
+			events: ["delete"],
+			forEach: "statement",
+			referencingOldTableAs: "old_table",
+			function: {
+				name: "check_account_update",
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
 BEFORE DELETE ON "public"."accounts"
@@ -205,12 +238,16 @@ EXECUTE FUNCTION check_account_update`;
 	});
 
 	test("trigger with function arguments", async () => {
-		const trg = trigger()
-			.fireWhen("before")
-			.events(["delete"])
-			.forEach("statement")
-			.referencingOldTableAs("old_table")
-			.function("check_account_update", ["hello"]);
+		const trg = trigger({
+			fireWhen: "before",
+			events: ["delete"],
+			forEach: "statement",
+			referencingOldTableAs: "old_table",
+			function: {
+				name: "check_account_update",
+				args: ["hello"],
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
 BEFORE DELETE ON "public"."accounts"
@@ -223,12 +260,16 @@ EXECUTE FUNCTION check_account_update('hello')`;
 	});
 
 	test("trigger with function arguments as columns without camelCase", async () => {
-		const trg = trigger()
-			.fireWhen("before")
-			.events(["delete"])
-			.forEach("statement")
-			.referencingOldTableAs("old_table")
-			.function("check_account_update", [{ column: "updatedAt" }]);
+		const trg = trigger({
+			fireWhen: "before",
+			events: ["delete"],
+			forEach: "statement",
+			referencingOldTableAs: "old_table",
+			function: {
+				name: "check_account_update",
+				args: [{ column: "updatedAt" }],
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
 BEFORE DELETE ON "public"."accounts"
@@ -241,12 +282,16 @@ EXECUTE FUNCTION check_account_update('updatedAt')`;
 	});
 
 	test("trigger with function arguments as columns with camelCase", async () => {
-		const trg = trigger()
-			.fireWhen("before")
-			.events(["delete"])
-			.forEach("statement")
-			.referencingOldTableAs("old_table")
-			.function("check_account_update", [{ column: "updatedAt" }]);
+		const trg = trigger({
+			fireWhen: "before",
+			events: ["delete"],
+			forEach: "statement",
+			referencingOldTableAs: "old_table",
+			function: {
+				name: "check_account_update",
+				args: [{ column: "updatedAt" }],
+			},
+		});
 
 		const expected = `CREATE OR REPLACE TRIGGER my_trigger_2
 BEFORE DELETE ON "public"."accounts"

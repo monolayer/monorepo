@@ -86,7 +86,8 @@ function findTableInSchema(
 	}
 }
 
-function triggerInfo(triggers?: Record<string, PgTrigger>) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function triggerInfo(triggers?: Record<string, PgTrigger<any>>) {
 	return Object.entries(triggers || {}).reduce((acc, [key, value]) => {
 		const trigger = PgTrigger.info(value);
 		const tr = Object.entries(trigger).reduce(

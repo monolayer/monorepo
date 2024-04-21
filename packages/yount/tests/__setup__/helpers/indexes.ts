@@ -32,7 +32,8 @@ export async function compileUnique(unique: PgUnique<any>, tableName: string) {
 }
 
 export async function compileTrigger(
-	trigger: PgTrigger,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	trigger: PgTrigger<any>,
 	triggerName: string,
 	tableName: string,
 	camelCase = false,

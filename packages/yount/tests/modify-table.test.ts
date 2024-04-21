@@ -2658,16 +2658,24 @@ describe("Modify table", () => {
 					updatedAt: timestamp().default(sql`CURRENT_TIMESTAMP`),
 				},
 				triggers: {
-					foo_before_update: trigger()
-						.fireWhen("before")
-						.events(["update"])
-						.forEach("row")
-						.function("moddatetime", [{ column: "updatedAt" }]),
-					foo_after_update: trigger()
-						.fireWhen("after")
-						.events(["update"])
-						.forEach("row")
-						.function("moddatetime", [{ column: "updatedAt" }]),
+					foo_before_update: trigger({
+						fireWhen: "before",
+						events: ["update"],
+						forEach: "row",
+						function: {
+							name: "moddatetime",
+							args: [{ column: "updatedAt" }],
+						},
+					}),
+					foo_after_update: trigger({
+						fireWhen: "after",
+						events: ["update"],
+						forEach: "row",
+						function: {
+							name: "moddatetime",
+							args: [{ column: "updatedAt" }],
+						},
+					}),
 				},
 			});
 
@@ -2885,11 +2893,15 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 					updatedAt: timestamp().default(sql`now()`),
 				},
 				triggers: {
-					foo_before_update: trigger()
-						.fireWhen("after")
-						.events(["update"])
-						.forEach("row")
-						.function("moddatetime", [{ column: "updatedAt" }]),
+					foo_before_update: trigger({
+						fireWhen: "after",
+						events: ["update"],
+						forEach: "row",
+						function: {
+							name: "moddatetime",
+							args: [{ column: "updatedAt" }],
+						},
+					}),
 				},
 			});
 

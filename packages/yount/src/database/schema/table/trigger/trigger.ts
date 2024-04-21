@@ -9,124 +9,49 @@ export type TriggerEvent =
 	| "truncate"
 	| "update of";
 
-export class PgTrigger {
+type TriggerOptions<T> = {
+	fireWhen: "before" | "after" | "instead of";
+	events?: ("insert" | "update" | "delete" | "truncate" | "update of")[];
+	columns?: T[];
+	referencingNewTableAs?: string;
+	referencingOldTableAs?: string;
+	condition?: RawBuilder<string>;
+	forEach: "row" | "statement";
+	function: {
+		name: string;
+		args?: (string | { column: T })[];
+	};
+};
+
+export function trigger<T extends string>(triggerOtions: TriggerOptions<T>) {
+	return new PgTrigger<T>(triggerOtions);
+}
+
+export class PgTrigger<T extends string> {
+	/**
+	 * @hidden
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	static info(trigger: PgTrigger<any>) {
+		return {
+			firingTime: trigger.options.fireWhen,
+			events: trigger.options.events,
+			columns: trigger.options.columns,
+			referencingNewTableAs: trigger.options.referencingNewTableAs,
+			referencingOldTableAs: trigger.options.referencingOldTableAs,
+			condition: trigger.options.condition,
+			forEach: trigger.options.forEach,
+			functionName: trigger.options.function.name,
+			functionArgs: trigger.options.function.args,
+			isExternal: trigger.isExternal,
+		};
+	}
 	/**
 	 * @hidden
 	 */
 	protected isExternal: boolean;
 
-	/**
-	 * @hidden
-	 */
-	static info(trigger: PgTrigger) {
-		return {
-			firingTime: trigger.#firingTime,
-			events: trigger.#events,
-			columns: trigger.#columns,
-			referencingNewTableAs: trigger.#referencingNewTableAs,
-			referencingOldTableAs: trigger.#referencingOldTableAs,
-			condition: trigger.#condition,
-			forEach: trigger.#forEach,
-			functionName: trigger.#functionName,
-			functionArgs: trigger.#functionArgs,
-			isExternal: trigger.isExternal,
-		};
-	}
-
-	/**
-	 * @hidden
-	 */
-	#firingTime = "";
-	/**
-	 * @hidden
-	 */
-	#events?: string[];
-	/**
-	 * @hidden
-	 */
-	#columns?: string[];
-	/**
-	 * @hidden
-	 */
-	#referencingNewTableAs?: string;
-	/**
-	 * @hidden
-	 */
-	#referencingOldTableAs?: string;
-	/**
-	 * @hidden
-	 */
-	#condition?: RawBuilder<string>;
-	/**
-	 * @hidden
-	 */
-	#forEach = "statement";
-	/**
-	 * @hidden
-	 */
-	#functionName = "";
-	/**
-	 * @hidden
-	 */
-	#functionArgs?: (string | { column: string })[] = [];
-
-	/**
-	 * @hidden
-	 */
-	constructor() {
+	constructor(protected options: TriggerOptions<T>) {
 		this.isExternal = false;
 	}
-
-	events(events: TriggerEvent[]) {
-		this.#events = events;
-		return this;
-	}
-
-	fireWhen(fireWhen: TriggerFiringTime) {
-		this.#firingTime = fireWhen;
-		return this;
-	}
-
-	referencingNewTableAs(newTable: string) {
-		this.#referencingNewTableAs = newTable;
-		return this;
-	}
-
-	referencingOldTableAs(oldTable: string) {
-		this.#referencingOldTableAs = oldTable;
-		return this;
-	}
-
-	columns(columns: string[]) {
-		this.#columns = columns;
-		return this;
-	}
-
-	condition(condition: RawBuilder<string>) {
-		this.#condition = condition;
-		return this;
-	}
-
-	forEach(forEach: "row" | "statement") {
-		this.#forEach = forEach;
-		return this;
-	}
-
-	function(
-		functionName: string,
-		functionArgs?: (string | { column: string })[],
-	) {
-		this.#functionName = functionName;
-		this.#functionArgs = functionArgs;
-		return this;
-	}
-
-	external() {
-		this.isExternal = true;
-		return this;
-	}
-}
-
-export function trigger() {
-	return new PgTrigger();
 }
