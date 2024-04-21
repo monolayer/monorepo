@@ -3,7 +3,10 @@ import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
-import { PgTrigger } from "~/database/schema/table/trigger/trigger.js";
+import {
+	PgTrigger,
+	type AnyTrigger,
+} from "~/database/schema/table/trigger/trigger.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
@@ -33,10 +36,12 @@ export async function dbTriggerInfo(
 		.execute();
 
 	const triggerInfo = results.reduce<TriggerInfo>((acc, curr) => {
+		const constraintHash = curr.trigger_name?.match(/^\w+_(\w+)_trg$/)![1];
+
 		acc[curr.table_name] = {
 			...acc[curr.table_name],
 			...{
-				[curr.trigger_name]: `${curr.comment}:${curr.definition}`,
+				[curr.trigger_name]: `${constraintHash}:${curr.definition}`,
 			},
 		};
 		return acc;
@@ -46,8 +51,7 @@ export async function dbTriggerInfo(
 }
 
 export function triggerInfo(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	trigger: PgTrigger<any>,
+	trigger: AnyTrigger,
 	triggerName: string,
 	tableName: string,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -125,13 +129,25 @@ export function localTriggersInfo(
 			if (triggers === undefined) {
 				return acc;
 			}
-			for (const trigger of Object.entries(triggers || {})) {
-				const triggerName = `${trigger[0]}_trg`.toLowerCase();
-				if (PgTrigger.info(trigger[1]).isExternal) {
+			for (const trigger of triggers) {
+				if (PgTrigger.info(trigger).isExternal) {
 					return acc;
 				}
+				const sampleTrigger = triggerInfo(
+					trigger,
+					"sample",
+					transformedTableName,
+					kysely,
+					camelCase,
+					dbInfo.name || "public",
+				);
+
+				const triggerKey = hashValue(sampleTrigger);
+				const triggerName =
+					`${transformedTableName}_${triggerKey}_trg`.toLowerCase();
+
 				const compiledTrigger = triggerInfo(
-					trigger[1],
+					trigger,
 					triggerName,
 					transformedTableName,
 					kysely,
@@ -141,7 +157,7 @@ export function localTriggersInfo(
 
 				acc[transformedTableName] = {
 					...acc[transformedTableName],
-					[triggerName]: `${hashValue(compiledTrigger)}:${compiledTrigger}`,
+					[triggerName]: `${triggerKey}:${compiledTrigger}`,
 				};
 			}
 			return acc;

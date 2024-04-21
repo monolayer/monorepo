@@ -3,7 +3,7 @@ import type { PgUnique } from "~/database/schema/table/constraints/unique/unique
 import type { PgIndex } from "~/database/schema/table/index/index.js";
 import { indexToInfo } from "~/database/schema/table/index/introspection.js";
 import { triggerInfo } from "~/database/schema/table/trigger/introspection.js";
-import type { PgTrigger } from "~/database/schema/table/trigger/trigger.js";
+import type { AnyTrigger } from "~/database/schema/table/trigger/trigger.js";
 import { kyselyWithEmptyPool } from "~tests/__setup__/helpers/kysely.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,8 +32,7 @@ export async function compileUnique(unique: PgUnique<any>, tableName: string) {
 }
 
 export async function compileTrigger(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	trigger: PgTrigger<any>,
+	trigger: AnyTrigger,
 	triggerName: string,
 	tableName: string,
 	camelCase = false,

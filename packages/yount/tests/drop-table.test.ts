@@ -430,7 +430,7 @@ describe("Table drop migrations", () => {
 		});
 	});
 
-	test.only<DbContext>("drop table with foreign keys", async (context) => {
+	test<DbContext>("drop table with foreign keys", async (context) => {
 		const dbSchema = schema({
 			tables: {
 				organizations: table({
@@ -839,10 +839,6 @@ describe("Table drop migrations", () => {
 				down: [
 					[
 						"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON TRIGGER foo_before_update_trg ON "public"."users" IS \'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67\'`',
 						"execute(db);",
 					],
 				],

@@ -11,10 +11,7 @@ import type { PgTrigger } from "./trigger/trigger.js";
 export type TableSchema<T, PK extends string> = {
 	columns: T extends ColumnRecord ? T : never;
 	indexes?: keyof T extends string ? PgIndex<keyof T>[] : never;
-	triggers?: Record<
-		string,
-		PgTrigger<keyof T extends string ? keyof T : never>
-	>;
+	triggers?: PgTrigger<keyof T extends string ? keyof T : never>[];
 	constraints?: {
 		primaryKey?: keyof T extends string
 			? PK[] extends Array<keyof T>

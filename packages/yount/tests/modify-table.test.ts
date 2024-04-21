@@ -2657,8 +2657,8 @@ describe("Modify table", () => {
 					id: integer(),
 					updatedAt: timestamp().default(sql`CURRENT_TIMESTAMP`),
 				},
-				triggers: {
-					foo_before_update: trigger({
+				triggers: [
+					trigger({
 						fireWhen: "before",
 						events: ["update"],
 						forEach: "row",
@@ -2667,7 +2667,7 @@ describe("Modify table", () => {
 							args: [sql.ref("updatedAt")],
 						},
 					}),
-					foo_after_update: trigger({
+					trigger({
 						fireWhen: "after",
 						events: ["update"],
 						forEach: "row",
@@ -2676,7 +2676,7 @@ describe("Modify table", () => {
 							args: [sql.ref("updatedAt")],
 						},
 					}),
-				},
+				],
 			});
 
 			const dbSchema = schema({
@@ -2709,20 +2709,16 @@ describe("Modify table", () => {
 					type: "createTrigger",
 					up: [
 						[
-							`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
+							`await sql\`CREATE OR REPLACE TRIGGER users_8659ae36_trg
 BEFORE UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updatedAt")\``,
 							`execute(db);`,
 						],
-						[
-							`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON "public"."users" IS 'a5d19760';\``,
-							`execute(db);`,
-						],
 					],
 					down: [
 						[
-							'await sql`DROP TRIGGER foo_before_update_trg ON "public"."users"`',
+							'await sql`DROP TRIGGER users_8659ae36_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],
@@ -2733,20 +2729,16 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					type: "createTrigger",
 					up: [
 						[
-							`await sql\`CREATE OR REPLACE TRIGGER foo_after_update_trg
+							`await sql\`CREATE OR REPLACE TRIGGER users_cd708de3_trg
 AFTER UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updatedAt")\``,
 							`execute(db);`,
 						],
-						[
-							`await sql\`COMMENT ON TRIGGER foo_after_update_trg ON "public"."users" IS 'eed6a2a0';\``,
-							`execute(db);`,
-						],
 					],
 					down: [
 						[
-							'await sql`DROP TRIGGER foo_after_update_trg ON "public"."users"`',
+							'await sql`DROP TRIGGER users_cd708de3_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],
@@ -2779,21 +2771,15 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				context.kysely,
 			);
 
-			await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg
+			await sql`CREATE OR REPLACE TRIGGER users_c2304485_trg
 									BEFORE UPDATE ON users
 									FOR EACH ROW
-									EXECUTE FUNCTION moddatetime(updatedAt);
-									COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(
-				context.kysely,
-			);
+									EXECUTE FUNCTION moddatetime(updatedAt);`.execute(context.kysely);
 
-			await sql`CREATE OR REPLACE TRIGGER foo_after_update_trg
+			await sql`CREATE OR REPLACE TRIGGER users_9463c7cd_trg
 									AFTER UPDATE ON users
 									FOR EACH ROW
-									EXECUTE FUNCTION moddatetime(updatedAt);
-									COMMENT ON TRIGGER foo_after_update_trg ON users IS '9463c7cd1a3fb577535fade640246675d0ac4097b6ed86ae9452363b82e43b0f';`.execute(
-				context.kysely,
-			);
+									EXECUTE FUNCTION moddatetime(updatedAt);`.execute(context.kysely);
 
 			const users = table({
 				columns: {
@@ -2815,17 +2801,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					type: "dropTrigger",
 					up: [
 						[
-							'await sql`DROP TRIGGER foo_before_update_trg ON "public"."users"`',
+							'await sql`DROP TRIGGER users_c2304485_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],
 					down: [
 						[
-							"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
-							"execute(db);",
-						],
-						[
-							'await sql`COMMENT ON TRIGGER foo_before_update_trg ON "public"."users" IS \'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67\'`',
+							"await sql`CREATE OR REPLACE TRIGGER users_c2304485_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
 							"execute(db);",
 						],
 					],
@@ -2836,17 +2818,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					type: "dropTrigger",
 					up: [
 						[
-							'await sql`DROP TRIGGER foo_after_update_trg ON "public"."users"`',
+							'await sql`DROP TRIGGER users_9463c7cd_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],
 					down: [
 						[
-							"await sql`CREATE OR REPLACE TRIGGER foo_after_update_trg AFTER UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
-							"execute(db);",
-						],
-						[
-							'await sql`COMMENT ON TRIGGER foo_after_update_trg ON "public"."users" IS \'9463c7cd1a3fb577535fade640246675d0ac4097b6ed86ae9452363b82e43b0f\'`',
+							"await sql`CREATE OR REPLACE TRIGGER users_9463c7cd_trg AFTER UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
 							"execute(db);",
 						],
 					],
@@ -2864,7 +2842,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 			});
 		});
 
-		test<DbContext>("change trigger", async (context) => {
+		test.only<DbContext>("change trigger", async (context) => {
 			await context.kysely.schema
 				.createTable("users")
 				.addColumn("id", "integer")
@@ -2879,21 +2857,18 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				context.kysely,
 			);
 
-			await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg
+			await sql`CREATE OR REPLACE TRIGGER users_c2304485_trg
 									BEFORE UPDATE ON users
 									FOR EACH ROW
-									EXECUTE FUNCTION moddatetime(updatedAt);
-									COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(
-				context.kysely,
-			);
+									EXECUTE FUNCTION moddatetime(updatedAt);`.execute(context.kysely);
 
 			const users = table({
 				columns: {
 					id: integer(),
 					updatedAt: timestamp().default(sql`now()`),
 				},
-				triggers: {
-					foo_before_update: trigger({
+				triggers: [
+					trigger({
 						fireWhen: "after",
 						events: ["update"],
 						forEach: "row",
@@ -2902,7 +2877,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 							args: [sql.ref("updatedAt")],
 						},
 					}),
-				},
+				],
 			});
 
 			const dbSchema = schema({
@@ -2913,29 +2888,38 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 
 			const expected = [
 				{
-					priority: 5003,
+					down: [
+						[
+							"await sql`CREATE OR REPLACE TRIGGER users_c2304485_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
+							"execute(db);",
+						],
+					],
+					priority: 1001,
 					tableName: "users",
-					type: "updateTrigger",
+					type: "dropTrigger",
 					up: [
 						[
-							`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
+							'await sql`DROP TRIGGER users_c2304485_trg ON "public"."users"`',
+							"execute(db);",
+						],
+					],
+				},
+				{
+					priority: 4004,
+					tableName: "users",
+					type: "createTrigger",
+					up: [
+						[
+							`await sql\`CREATE OR REPLACE TRIGGER users_cd708de3_trg
 AFTER UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updatedAt")\``,
 							`execute(db);`,
 						],
-						[
-							`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON "public"."users" IS '333bb38f'\``,
-							`execute(db);`,
-						],
 					],
 					down: [
 						[
-							"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
-							"execute(db);",
-						],
-						[
-							'await sql`COMMENT ON TRIGGER foo_before_update_trg ON "public"."users" IS \'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67\'`',
+							'await sql`DROP TRIGGER users_cd708de3_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],

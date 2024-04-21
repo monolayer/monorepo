@@ -32,7 +32,7 @@ export class PgTrigger<T extends string> {
 	 * @hidden
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static info(trigger: PgTrigger<any>) {
+	static info(trigger: AnyTrigger) {
 		return {
 			firingTime: trigger.options.fireWhen,
 			events: trigger.options.events,
@@ -55,3 +55,6 @@ export class PgTrigger<T extends string> {
 		this.isExternal = false;
 	}
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyTrigger = PgTrigger<any>;

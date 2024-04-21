@@ -74,5 +74,10 @@ function reverseChangeset(changesets: Changeset[]) {
 			changeset.type !== "createTable" && changeset.type !== "dropTable",
 	);
 
-	return [...itemsToMaintain, ...itemsToReverse.reverse()];
+	return [...itemsToMaintain, ...itemsToReverse.reverse()].sort((a, b) => {
+		if (a.priority !== 0 && a.tableName === "none" && b.tableName !== "none") {
+			return -1;
+		}
+		return 1 - 1;
+	});
 }

@@ -19,6 +19,7 @@ import {
 	PgTrigger,
 	TriggerEvent,
 	TriggerFiringTime,
+	type AnyTrigger,
 } from "./table/trigger/trigger.js";
 
 export interface TableIntrospection {
@@ -86,8 +87,7 @@ function findTableInSchema(
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function triggerInfo(triggers?: Record<string, PgTrigger<any>>) {
+function triggerInfo(triggers?: AnyTrigger[]) {
 	return Object.entries(triggers || {}).reduce((acc, [key, value]) => {
 		const trigger = PgTrigger.info(value);
 		const tr = Object.entries(trigger).reduce(

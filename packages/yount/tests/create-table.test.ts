@@ -1023,8 +1023,8 @@ describe("Create table", () => {
 				updatedAt: timestamp().default(sql`now()`),
 				updatedAtTwo: timestamp().default(sql`now()`),
 			},
-			triggers: {
-				foo_before_update: trigger({
+			triggers: [
+				trigger({
 					fireWhen: "before",
 					events: ["update"],
 					forEach: "row",
@@ -1033,7 +1033,7 @@ describe("Create table", () => {
 						args: [sql.ref("updatedAt")],
 					},
 				}),
-				foo_before_update_two: trigger({
+				trigger({
 					fireWhen: "before",
 					events: ["update"],
 					forEach: "row",
@@ -1042,7 +1042,7 @@ describe("Create table", () => {
 						args: [sql.ref("updatedAtTwo")],
 					},
 				}),
-			},
+			],
 		});
 
 		const dbSchema = schema({
@@ -1102,14 +1102,10 @@ describe("Create table", () => {
 				type: "createTrigger",
 				up: [
 					[
-						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
+						`await sql\`CREATE OR REPLACE TRIGGER users_8659ae36_trg
 BEFORE UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updatedAt")\``,
-						`execute(db);`,
-					],
-					[
-						`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON "public"."users" IS 'a5d19760';\``,
 						`execute(db);`,
 					],
 				],
@@ -1121,14 +1117,10 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				type: "createTrigger",
 				up: [
 					[
-						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
+						`await sql\`CREATE OR REPLACE TRIGGER users_7d730e02_trg
 BEFORE UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
-						`execute(db);`,
-					],
-					[
-						`await sql\`COMMENT ON TRIGGER foo_before_update_two_trg ON "public"."users" IS '60fed0ff';\``,
 						`execute(db);`,
 					],
 				],
@@ -1204,8 +1196,8 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				updatedAt: timestamp().default(sql`now()`),
 				role: enumerated(role),
 			},
-			triggers: {
-				foo_before_update: trigger({
+			triggers: [
+				trigger({
 					fireWhen: "before",
 					events: ["update"],
 					forEach: "row",
@@ -1214,7 +1206,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 						args: [sql.ref("updatedAt")],
 					},
 				}),
-			},
+			],
 		});
 
 		const dbSchema = schema({
@@ -1471,14 +1463,10 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				type: "createTrigger",
 				up: [
 					[
-						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
+						`await sql\`CREATE OR REPLACE TRIGGER trigger_table_dd1e7d9a_trg
 BEFORE UPDATE ON "public"."trigger_table"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updated_at")\``,
-						`execute(db);`,
-					],
-					[
-						`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON "public"."trigger_table" IS '68d1ea76';\``,
 						`execute(db);`,
 					],
 				],

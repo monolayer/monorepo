@@ -24,7 +24,7 @@ export function triggerMigrationOpGenerator(
 		return dropTriggerMigration(diff, context);
 	}
 	if (isTriggerChange(diff)) {
-		return changeTriggerMigration(diff, context);
+		return changeTriggerMigration(diff);
 	}
 }
 
@@ -131,12 +131,7 @@ function createTriggerFirstMigration(
 			priority: MigrationOpPriority.TriggerCreate,
 			tableName: tableName,
 			type: ChangeSetType.CreateTrigger,
-			up: [
-				executeKyselyDbStatement(`${trigger[1]}`),
-				executeKyselyDbStatement(
-					`COMMENT ON TRIGGER ${key} ON "${schemaName}"."${tableName}" IS '${trigger[0]}';`,
-				),
-			],
+			up: [executeKyselyDbStatement(`${trigger[1]}`)],
 			down: addedTables.includes(tableName)
 				? [[]]
 				: [
@@ -160,12 +155,7 @@ function createTriggerMigration(
 		priority: MigrationOpPriority.TriggerCreate,
 		tableName: tableName,
 		type: ChangeSetType.CreateTrigger,
-		up: [
-			executeKyselyDbStatement(`${trigger[1]}`),
-			executeKyselyDbStatement(
-				`COMMENT ON TRIGGER ${triggerName} ON "${schemaName}"."${tableName}" IS '${trigger[0]}'`,
-			),
-		],
+		up: [executeKyselyDbStatement(`${trigger[1]}`)],
 		down: [
 			executeKyselyDbStatement(
 				`DROP TRIGGER ${triggerName} ON "${schemaName}"."${tableName}"`,
@@ -200,9 +190,6 @@ function dropTriggerFirstMigration(
 						"CREATE OR REPLACE TRIGGER",
 					)}`,
 				),
-				executeKyselyDbStatement(
-					`COMMENT ON TRIGGER ${key} ON "${schemaName}"."${tableName}" IS '${trigger[0]}'`,
-				),
 			],
 		};
 		acc.push(changeset);
@@ -230,20 +217,13 @@ function dropTriggerMigration(
 			executeKyselyDbStatement(
 				`${trigger[1]?.replace("CREATE TRIGGER", "CREATE OR REPLACE TRIGGER")}`,
 			),
-			executeKyselyDbStatement(
-				`COMMENT ON TRIGGER ${triggerName} ON "${schemaName}"."${tableName}" IS '${trigger[0]}'`,
-			),
 		],
 	};
 	return changeset;
 }
 
-function changeTriggerMigration(
-	diff: TriggerChangeDiff,
-	{ schemaName }: GeneratorContext,
-) {
+function changeTriggerMigration(diff: TriggerChangeDiff) {
 	const tableName = diff.path[1];
-	const triggerName = diff.path[2];
 	const newValue = diff.value;
 	const newTrigger = newValue.split(":");
 	const oldValue = diff.oldValue;
@@ -253,21 +233,13 @@ function changeTriggerMigration(
 		priority: MigrationOpPriority.TriggerUpdate,
 		tableName: tableName,
 		type: ChangeSetType.UpdateTrigger,
-		up: [
-			executeKyselyDbStatement(`${newTrigger[1]}`),
-			executeKyselyDbStatement(
-				`COMMENT ON TRIGGER ${triggerName} ON "${schemaName}"."${tableName}" IS '${newTrigger[0]}'`,
-			),
-		],
+		up: [executeKyselyDbStatement(`${newTrigger[1]}`)],
 		down: [
 			executeKyselyDbStatement(
 				`${oldTrigger[1]?.replace(
 					"CREATE TRIGGER",
 					"CREATE OR REPLACE TRIGGER",
 				)}`,
-			),
-			executeKyselyDbStatement(
-				`COMMENT ON TRIGGER ${triggerName} ON "${schemaName}"."${tableName}" IS '${oldTrigger[0]}'`,
 			),
 		],
 	};
