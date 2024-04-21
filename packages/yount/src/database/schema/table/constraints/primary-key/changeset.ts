@@ -6,7 +6,7 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
-import { previousColumnName } from "~/introspection/column-name.js";
+import { currentColumName } from "~/introspection/column-name.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
 import type { LocalTableInfo } from "../../../../../introspection/introspection.js";
 import {
@@ -105,16 +105,19 @@ export function primaryKeyColumnsChange(
 ) {
 	const tb = local.table[tableName]!;
 	const oldColumns = extractColumnsFromPrimaryKey(oldValue)
-		.toSorted()
-		.map((val) => previousColumnName(tableName, val, columnsToRename));
-	return extractColumnsFromPrimaryKey(value)
-		.map((val) => previousColumnName(tableName, val, columnsToRename))
+		.map((val) => currentColumName(tableName, val, columnsToRename))
+		.sort();
+
+	const newColumns = extractColumnsFromPrimaryKey(value)
+		.map((val) => currentColumName(tableName, val, columnsToRename))
 		.map((val) => columnNameKey(tb, val))
 		.filter((x) => x !== undefined)
-		.sort()
-		.some((col, i) => {
-			return col !== oldColumns[i];
-		});
+		.sort();
+
+	return (
+		newColumns.length !== oldColumns.length ||
+		!newColumns.every((col, i) => col === oldColumns[i])
+	);
 }
 
 function createPrimaryKeyMigration(

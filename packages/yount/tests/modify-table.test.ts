@@ -266,6 +266,35 @@ describe("Modify table", () => {
 				.addPrimaryKeyConstraint("users_yount_pk", ["name", "fullName"])
 				.execute();
 
+			await context.kysely.schema
+				.createTable("books")
+				.addColumn("id", "integer")
+				.addColumn("description", sql`character varying(255)`, (col) =>
+					col.notNull(),
+				)
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("books")
+				.addPrimaryKeyConstraint("books_yount_pk", ["description", "id"])
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("books")
+				.addUniqueConstraint("books_acdd8fa3_yount_key", ["id"])
+				.execute();
+
+			const books = table({
+				columns: {
+					id: integer(),
+					description: varchar(255).notNull(),
+				},
+				constraints: {
+					primaryKey: primaryKey(["description"]),
+					unique: [unique(["id"])],
+				},
+			});
+
 			const users = table({
 				columns: {
 					fullName: text(),
@@ -279,10 +308,38 @@ describe("Modify table", () => {
 			const dbSchema = schema({
 				tables: {
 					users,
+					books,
 				},
 			});
 
 			const expected = [
+				{
+					priority: 1004,
+					tableName: "books",
+					type: "dropPrimaryKey",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropConstraint("books_yount_pk")',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'alterColumn("id", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'addPrimaryKeyConstraint("books_yount_pk", ["description", "id"])',
+							"execute();",
+						],
+					],
+				},
 				{
 					priority: 1004,
 					tableName: "users",
@@ -312,6 +369,27 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'addPrimaryKeyConstraint("users_yount_pk", ["fullName", "name"])',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4001,
+					tableName: "books",
+					type: "createPrimaryKey",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'addPrimaryKeyConstraint("books_yount_pk", ["description"])',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropConstraint("books_yount_pk")',
 							"execute();",
 						],
 					],
@@ -348,6 +426,183 @@ describe("Modify table", () => {
 			await testChangesetAndMigrations({
 				context,
 				connector: { schemas: [dbSchema] },
+				expected,
+				down: "same",
+			});
+		});
+
+		test<DbContext>("change camel case", async (context) => {
+			await context.kysely.schema
+				.createTable("users")
+				.addColumn("name", "text")
+				.addColumn("full_name", "text")
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("users")
+				.addPrimaryKeyConstraint("users_yount_pk", ["name", "full_name"])
+				.execute();
+
+			await context.kysely.schema
+				.createTable("books")
+				.addColumn("id", "integer")
+				.addColumn("location_id", sql`character varying(255)`, (col) =>
+					col.notNull(),
+				)
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("books")
+				.addPrimaryKeyConstraint("books_yount_pk", ["location_id", "id"])
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("books")
+				.addUniqueConstraint("books_acdd8fa3_yount_key", ["id"])
+				.execute();
+
+			const books = table({
+				columns: {
+					id: integer(),
+					locationId: varchar(255).notNull(),
+				},
+				constraints: {
+					primaryKey: primaryKey(["locationId"]),
+					unique: [unique(["id"])],
+				},
+			});
+
+			const users = table({
+				columns: {
+					fullName: text(),
+					name: text(),
+				},
+				constraints: {
+					primaryKey: primaryKey(["name"]),
+				},
+			});
+
+			const dbSchema = schema({
+				tables: {
+					users,
+					books,
+				},
+			});
+
+			const expected = [
+				{
+					priority: 1004,
+					tableName: "books",
+					type: "dropPrimaryKey",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropConstraint("books_yount_pk")',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'alterColumn("id", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'addPrimaryKeyConstraint("books_yount_pk", ["id", "location_id"])',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 1004,
+					tableName: "users",
+					type: "dropPrimaryKey",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("users_yount_pk")',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("full_name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'addPrimaryKeyConstraint("users_yount_pk", ["full_name", "name"])',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4001,
+					tableName: "books",
+					type: "createPrimaryKey",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'addPrimaryKeyConstraint("books_yount_pk", ["location_id"])',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropConstraint("books_yount_pk")',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4001,
+					tableName: "users",
+					type: "createPrimaryKey",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'addPrimaryKeyConstraint("users_yount_pk", ["name"])',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("users_yount_pk")',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+				},
+			];
+
+			await testChangesetAndMigrations({
+				context,
+				connector: { schemas: [dbSchema], camelCasePlugin: { enabled: true } },
 				expected,
 				down: "same",
 			});
@@ -2842,7 +3097,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 			});
 		});
 
-		test.only<DbContext>("change trigger", async (context) => {
+		test<DbContext>("change trigger", async (context) => {
 			await context.kysely.schema
 				.createTable("users")
 				.addColumn("id", "integer")
