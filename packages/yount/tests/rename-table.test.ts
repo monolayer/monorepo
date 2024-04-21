@@ -17,7 +17,6 @@ import {
 } from "~tests/__setup__/setup.js";
 
 describe("Rename table without camel case plugin", () => {
-	// { concurrent: false, sequential: true },
 	beforeEach<DbContext>(async (context) => {
 		await setUpContext(context);
 	});
@@ -2771,7 +2770,6 @@ describe("Rename table without camel case plugin", () => {
 });
 
 describe("Rename table with camel case plugin", () => {
-	// { concurrent: false, sequential: true },
 	beforeEach<DbContext>(async (context) => {
 		await setUpContext(context);
 	});

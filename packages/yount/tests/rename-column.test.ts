@@ -1066,7 +1066,6 @@ describe("without camel case plugin", () => {
 });
 
 describe("Rename column with camel case plugin", () => {
-	// { concurrent: false, sequential: true },
 	beforeEach<DbContext>(async (context) => {
 		await setUpContext(context);
 	});
