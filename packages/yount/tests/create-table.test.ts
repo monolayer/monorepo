@@ -1030,7 +1030,7 @@ describe("Create table", () => {
 					forEach: "row",
 					function: {
 						name: "moddatetime",
-						args: [{ column: "updatedAt" }],
+						args: [sql.ref("updatedAt")],
 					},
 				}),
 				foo_before_update_two: trigger({
@@ -1039,7 +1039,7 @@ describe("Create table", () => {
 					forEach: "row",
 					function: {
 						name: "moddatetime",
-						args: [{ column: "updatedAtTwo" }],
+						args: [sql.ref("updatedAtTwo")],
 					},
 				}),
 			},
@@ -1105,11 +1105,11 @@ describe("Create table", () => {
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 BEFORE UPDATE ON "public"."users"
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAt')\``,
+EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						`execute(db);`,
 					],
 					[
-						`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON "public"."users" IS 'b97b23ad';\``,
+						`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON "public"."users" IS 'a5d19760';\``,
 						`execute(db);`,
 					],
 				],
@@ -1124,11 +1124,11 @@ EXECUTE FUNCTION moddatetime('updatedAt')\``,
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_two_trg
 BEFORE UPDATE ON "public"."users"
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
+EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 						`execute(db);`,
 					],
 					[
-						`await sql\`COMMENT ON TRIGGER foo_before_update_two_trg ON "public"."users" IS '20c3fd54';\``,
+						`await sql\`COMMENT ON TRIGGER foo_before_update_two_trg ON "public"."users" IS '60fed0ff';\``,
 						`execute(db);`,
 					],
 				],
@@ -1211,7 +1211,7 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 					forEach: "row",
 					function: {
 						name: "moddatetime",
-						args: [{ column: "updatedAt" }],
+						args: [sql.ref("updatedAt")],
 					},
 				}),
 			},
@@ -1474,11 +1474,11 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 						`await sql\`CREATE OR REPLACE TRIGGER foo_before_update_trg
 BEFORE UPDATE ON "public"."trigger_table"
 FOR EACH ROW
-EXECUTE FUNCTION moddatetime('updated_at')\``,
+EXECUTE FUNCTION moddatetime("updated_at")\``,
 						`execute(db);`,
 					],
 					[
-						`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON "public"."trigger_table" IS '5e2a2f5b';\``,
+						`await sql\`COMMENT ON TRIGGER foo_before_update_trg ON "public"."trigger_table" IS '68d1ea76';\``,
 						`execute(db);`,
 					],
 				],

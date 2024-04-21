@@ -74,7 +74,7 @@ export function triggerInfo(
 						if (typeof arg === "string") {
 							return `'${arg}'`;
 						}
-						return `'${toSnakeCase(arg.column, camelCase)}'`;
+						return `${toSnakeCase(arg.compile(kysely).sql, camelCase)}`;
 					})
 					.join(", ")})`
 			: `${compileArgs.functionName}`;

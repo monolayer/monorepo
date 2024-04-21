@@ -267,7 +267,7 @@ EXECUTE FUNCTION check_account_update('hello')`;
 			referencingOldTableAs: "old_table",
 			function: {
 				name: "check_account_update",
-				args: [{ column: "updatedAt" }],
+				args: [sql.ref("updatedAt")],
 			},
 		});
 
@@ -275,7 +275,7 @@ EXECUTE FUNCTION check_account_update('hello')`;
 BEFORE DELETE ON "public"."accounts"
 REFERENCING OLD TABLE AS old_table
 FOR EACH STATEMENT
-EXECUTE FUNCTION check_account_update('updatedAt')`;
+EXECUTE FUNCTION check_account_update("updatedAt")`;
 
 		const compiled = await compileTrigger(trg, "my_trigger_2", "accounts");
 		expect(compiled).toBe(expected);
@@ -289,7 +289,7 @@ EXECUTE FUNCTION check_account_update('updatedAt')`;
 			referencingOldTableAs: "old_table",
 			function: {
 				name: "check_account_update",
-				args: [{ column: "updatedAt" }],
+				args: [sql.ref("updatedAt")],
 			},
 		});
 
@@ -297,7 +297,7 @@ EXECUTE FUNCTION check_account_update('updatedAt')`;
 BEFORE DELETE ON "public"."accounts"
 REFERENCING OLD TABLE AS old_table
 FOR EACH STATEMENT
-EXECUTE FUNCTION check_account_update('updated_at')`;
+EXECUTE FUNCTION check_account_update("updated_at")`;
 
 		const compiled = await compileTrigger(
 			trg,

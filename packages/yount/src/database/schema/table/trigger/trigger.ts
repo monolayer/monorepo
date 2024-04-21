@@ -19,7 +19,7 @@ type TriggerOptions<T> = {
 	forEach: "row" | "statement";
 	function: {
 		name: string;
-		args?: (string | { column: T })[];
+		args?: (string | RawBuilder<unknown>)[];
 	};
 };
 
