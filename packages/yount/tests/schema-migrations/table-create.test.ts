@@ -71,25 +71,6 @@ describe("Table create migrations", () => {
 
 		const expected = [
 			{
-				tableName: "books",
-				type: "createTable",
-				priority: 2001,
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'createTable("books")',
-						"execute();",
-					],
-				],
-				down: [
-					[
-						'await db.withSchema("public").schema',
-						'dropTable("books")',
-						"execute();",
-					],
-				],
-			},
-			{
 				tableName: "users",
 				type: "createTable",
 				priority: 2001,
@@ -104,6 +85,25 @@ describe("Table create migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'dropTable("users")',
+						"execute();",
+					],
+				],
+			},
+			{
+				tableName: "books",
+				type: "createTable",
+				priority: 2001,
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("books")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
 						"execute();",
 					],
 				],
@@ -183,62 +183,6 @@ describe("Table create migrations", () => {
 
 		const expected = [
 			{
-				tableName: "books",
-				type: "createTable",
-				priority: 2001,
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'createTable("books")',
-						'addColumn("json", "json")',
-						'addColumn("jsonB", "jsonb")',
-						'addColumn("numeric", "numeric")',
-						'addColumn("numeric_5", "numeric(5, 0)")',
-						'addColumn("numeric_5_2", "numeric(5, 2)")',
-						'addColumn("real", "real")',
-						'addColumn("serial", "serial", (col) => col.notNull())',
-						'addColumn("text", "text")',
-						'addColumn("time", "time")',
-						'addColumn("time_4", "time(4)")',
-						'addColumn("timeTz", sql`time with time zone`)',
-						'addColumn("timeTz_4", sql`time(4) with time zone`)',
-						'addColumn("timestamp", "timestamp")',
-						'addColumn("timestamp_3", "timestamp(3)")',
-						'addColumn("timestampTz", sql`timestamp with time zone`)',
-						'addColumn("timestampTz_3", sql`timestamp(3) with time zone`)',
-						'addColumn("uuid", "uuid")',
-						'addColumn("varChar", sql`character varying`)',
-						"addColumn(\"varCharWithDefault\", sql`character varying`, (col) => col.defaultTo(sql`'foo'::character varying`))",
-						'addColumn("varChar_255", sql`character varying(255)`)',
-						'addColumn("vector", sql`tsvector`)',
-						"addColumn(\"vectorWithDefault\", sql`tsvector`, (col) => col.defaultTo(sql`to_tsvector('a b')`))",
-						'addColumn("tsquery", sql`tsquery`)',
-						"addColumn(\"tsqueryWithDefault\", sql`tsquery`, (col) => col.defaultTo(sql`to_tsquery('a b')`))",
-						'addColumn("xml", sql`xml`)',
-						"execute();",
-					],
-					[
-						'await sql`COMMENT ON COLUMN "public"."books"."varCharWithDefault" IS \'2bc67682\'`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON COLUMN "public"."books"."vectorWithDefault" IS \'1ffcfd22\'`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON COLUMN "public"."books"."tsqueryWithDefault" IS \'6970b882\'`',
-						"execute(db);",
-					],
-				],
-				down: [
-					[
-						'await db.withSchema("public").schema',
-						'dropTable("books")',
-						"execute();",
-					],
-				],
-			},
-			{
 				tableName: "users",
 				type: "createTable",
 				priority: 2001,
@@ -297,6 +241,62 @@ describe("Table create migrations", () => {
 					],
 				],
 			},
+			{
+				tableName: "books",
+				type: "createTable",
+				priority: 2001,
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("books")',
+						'addColumn("json", "json")',
+						'addColumn("jsonB", "jsonb")',
+						'addColumn("numeric", "numeric")',
+						'addColumn("numeric_5", "numeric(5, 0)")',
+						'addColumn("numeric_5_2", "numeric(5, 2)")',
+						'addColumn("real", "real")',
+						'addColumn("serial", "serial", (col) => col.notNull())',
+						'addColumn("text", "text")',
+						'addColumn("time", "time")',
+						'addColumn("time_4", "time(4)")',
+						'addColumn("timeTz", sql`time with time zone`)',
+						'addColumn("timeTz_4", sql`time(4) with time zone`)',
+						'addColumn("timestamp", "timestamp")',
+						'addColumn("timestamp_3", "timestamp(3)")',
+						'addColumn("timestampTz", sql`timestamp with time zone`)',
+						'addColumn("timestampTz_3", sql`timestamp(3) with time zone`)',
+						'addColumn("uuid", "uuid")',
+						'addColumn("varChar", sql`character varying`)',
+						"addColumn(\"varCharWithDefault\", sql`character varying`, (col) => col.defaultTo(sql`'foo'::character varying`))",
+						'addColumn("varChar_255", sql`character varying(255)`)',
+						'addColumn("vector", sql`tsvector`)',
+						"addColumn(\"vectorWithDefault\", sql`tsvector`, (col) => col.defaultTo(sql`to_tsvector('a b')`))",
+						'addColumn("tsquery", sql`tsquery`)',
+						"addColumn(\"tsqueryWithDefault\", sql`tsquery`, (col) => col.defaultTo(sql`to_tsquery('a b')`))",
+						'addColumn("xml", sql`xml`)',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "public"."books"."varCharWithDefault" IS \'2bc67682\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "public"."books"."vectorWithDefault" IS \'1ffcfd22\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "public"."books"."tsqueryWithDefault" IS \'6970b882\'`',
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
+			},
 		];
 
 		await testChangesetAndMigrations({
@@ -331,26 +331,6 @@ describe("Table create migrations", () => {
 
 		const expected = [
 			{
-				tableName: "books",
-				type: "createTable",
-				priority: 2001,
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'createTable("books")',
-						'addColumn("id", "bigserial", (col) => col.notNull())',
-						"execute();",
-					],
-				],
-				down: [
-					[
-						'await db.withSchema("public").schema',
-						'dropTable("books")',
-						"execute();",
-					],
-				],
-			},
-			{
 				tableName: "users",
 				type: "createTable",
 				priority: 2001,
@@ -366,6 +346,26 @@ describe("Table create migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'dropTable("users")',
+						"execute();",
+					],
+				],
+			},
+			{
+				tableName: "books",
+				type: "createTable",
+				priority: 2001,
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("books")',
+						'addColumn("id", "bigserial", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
 						"execute();",
 					],
 				],
@@ -433,26 +433,6 @@ describe("Table create migrations", () => {
 
 		const expected = [
 			{
-				tableName: "books",
-				type: "createTable",
-				priority: 2001,
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'createTable("books")',
-						'addColumn("id", "bigserial", (col) => col.notNull())',
-						"execute();",
-					],
-				],
-				down: [
-					[
-						'await db.withSchema("public").schema',
-						'dropTable("books")',
-						"execute();",
-					],
-				],
-			},
-			{
 				tableName: "users",
 				type: "createTable",
 				priority: 2001,
@@ -469,6 +449,26 @@ describe("Table create migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'dropTable("users")',
+						"execute();",
+					],
+				],
+			},
+			{
+				tableName: "books",
+				type: "createTable",
+				priority: 2001,
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("books")',
+						'addColumn("id", "bigserial", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
 						"execute();",
 					],
 				],
@@ -541,6 +541,26 @@ describe("Table create migrations", () => {
 		const expected = [
 			{
 				priority: 2001,
+				tableName: "books",
+				type: "createTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("books")',
+						'addColumn("id", "integer")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 2001,
 				tableName: "users",
 				type: "createTable",
 				up: [
@@ -556,26 +576,6 @@ describe("Table create migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'dropTable("users")',
-						"execute();",
-					],
-				],
-			},
-			{
-				priority: 2001,
-				tableName: "books",
-				type: "createTable",
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'createTable("books")',
-						'addColumn("id", "integer")',
-						"execute();",
-					],
-				],
-				down: [
-					[
-						'await db.withSchema("public").schema',
-						'dropTable("books")',
 						"execute();",
 					],
 				],
@@ -763,26 +763,6 @@ describe("Table create migrations", () => {
 				down: [
 					[
 						'await db.withSchema("public").schema',
-						'dropTable("books")',
-						"execute();",
-					],
-				],
-				priority: 2001,
-				tableName: "books",
-				type: "createTable",
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'createTable("books")',
-						'addColumn("id", "bigserial", (col) => col.notNull())',
-						"execute();",
-					],
-				],
-			},
-			{
-				down: [
-					[
-						'await db.withSchema("public").schema',
 						'dropTable("users")',
 						"execute();",
 					],
@@ -796,6 +776,26 @@ describe("Table create migrations", () => {
 						'createTable("users")',
 						'addColumn("id", "serial", (col) => col.notNull())',
 						'addColumn("name", sql`character varying`)',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
+				priority: 2001,
+				tableName: "books",
+				type: "createTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("books")',
+						'addColumn("id", "bigserial", (col) => col.notNull())',
 						"execute();",
 					],
 				],
@@ -875,26 +875,6 @@ describe("Table create migrations", () => {
 				down: [
 					[
 						'await db.withSchema("public").schema',
-						'dropTable("books")',
-						"execute();",
-					],
-				],
-				priority: 2001,
-				tableName: "books",
-				type: "createTable",
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'createTable("books")',
-						'addColumn("id", "text")',
-						"execute();",
-					],
-				],
-			},
-			{
-				down: [
-					[
-						'await db.withSchema("public").schema',
 						'dropTable("users")',
 						"execute();",
 					],
@@ -907,6 +887,26 @@ describe("Table create migrations", () => {
 						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("name", "text")',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
+				priority: 2001,
+				tableName: "books",
+				type: "createTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("books")',
+						'addColumn("id", "text")',
 						"execute();",
 					],
 				],
@@ -1256,6 +1256,28 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				],
 			},
 			{
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("new_books")',
+						"execute();",
+					],
+				],
+				priority: 2001,
+				tableName: "new_books",
+				type: "createTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("new_books")',
+						'addColumn("id", "bigserial", (col) => col.notNull())',
+						'addColumn("old_book_id", "bigint")',
+						'addColumn("library_building_id", "bigint")',
+						"execute();",
+					],
+				],
+			},
+			{
 				priority: 2001,
 				tableName: "trigger_table",
 				type: "createTable",
@@ -1301,48 +1323,6 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 				],
 			},
 			{
-				down: [
-					[
-						'await db.withSchema("public").schema',
-						'dropTable("books")',
-						"execute();",
-					],
-				],
-				priority: 2001,
-				tableName: "books",
-				type: "createTable",
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'createTable("books")',
-						'addColumn("id", "bigserial", (col) => col.notNull())',
-						"execute();",
-					],
-				],
-			},
-			{
-				down: [
-					[
-						'await db.withSchema("public").schema',
-						'dropTable("new_books")',
-						"execute();",
-					],
-				],
-				priority: 2001,
-				tableName: "new_books",
-				type: "createTable",
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'createTable("new_books")',
-						'addColumn("id", "bigserial", (col) => col.notNull())',
-						'addColumn("old_book_id", "bigint")',
-						'addColumn("library_building_id", "bigint")',
-						"execute();",
-					],
-				],
-			},
-			{
 				priority: 2001,
 				tableName: "users",
 				type: "createTable",
@@ -1359,6 +1339,26 @@ EXECUTE FUNCTION moddatetime('updatedAtTwo')\``,
 					[
 						'await db.withSchema("public").schema',
 						'dropTable("users")',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("books")',
+						"execute();",
+					],
+				],
+				priority: 2001,
+				tableName: "books",
+				type: "createTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("books")',
+						'addColumn("id", "bigserial", (col) => col.notNull())',
 						"execute();",
 					],
 				],
@@ -1677,62 +1677,6 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 				],
 			},
 			{
-				tableName: "books",
-				type: "createTable",
-				priority: 2001,
-				up: [
-					[
-						'await db.withSchema("demo").schema',
-						'createTable("books")',
-						'addColumn("json", "json")',
-						'addColumn("jsonB", "jsonb")',
-						'addColumn("numeric", "numeric")',
-						'addColumn("numeric_5", "numeric(5, 0)")',
-						'addColumn("numeric_5_2", "numeric(5, 2)")',
-						'addColumn("real", "real")',
-						'addColumn("serial", "serial", (col) => col.notNull())',
-						'addColumn("text", "text")',
-						'addColumn("time", "time")',
-						'addColumn("time_4", "time(4)")',
-						'addColumn("timeTz", sql`time with time zone`)',
-						'addColumn("timeTz_4", sql`time(4) with time zone`)',
-						'addColumn("timestamp", "timestamp")',
-						'addColumn("timestamp_3", "timestamp(3)")',
-						'addColumn("timestampTz", sql`timestamp with time zone`)',
-						'addColumn("timestampTz_3", sql`timestamp(3) with time zone`)',
-						'addColumn("uuid", "uuid")',
-						'addColumn("varChar", sql`character varying`)',
-						"addColumn(\"varCharWithDefault\", sql`character varying`, (col) => col.defaultTo(sql`'foo'::character varying`))",
-						'addColumn("varChar_255", sql`character varying(255)`)',
-						'addColumn("vector", sql`tsvector`)',
-						"addColumn(\"vectorWithDefault\", sql`tsvector`, (col) => col.defaultTo(sql`to_tsvector('a b')`))",
-						'addColumn("tsquery", sql`tsquery`)',
-						"addColumn(\"tsqueryWithDefault\", sql`tsquery`, (col) => col.defaultTo(sql`to_tsquery('a b')`))",
-						'addColumn("xml", sql`xml`)',
-						"execute();",
-					],
-					[
-						'await sql`COMMENT ON COLUMN "demo"."books"."varCharWithDefault" IS \'2bc67682\'`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON COLUMN "demo"."books"."vectorWithDefault" IS \'1ffcfd22\'`',
-						"execute(db);",
-					],
-					[
-						'await sql`COMMENT ON COLUMN "demo"."books"."tsqueryWithDefault" IS \'6970b882\'`',
-						"execute(db);",
-					],
-				],
-				down: [
-					[
-						'await db.withSchema("demo").schema',
-						'dropTable("books")',
-						"execute();",
-					],
-				],
-			},
-			{
 				tableName: "users",
 				type: "createTable",
 				priority: 2001,
@@ -1787,6 +1731,62 @@ EXECUTE FUNCTION moddatetime('updated_at')\``,
 					[
 						'await db.withSchema("demo").schema',
 						'dropTable("users")',
+						"execute();",
+					],
+				],
+			},
+			{
+				tableName: "books",
+				type: "createTable",
+				priority: 2001,
+				up: [
+					[
+						'await db.withSchema("demo").schema',
+						'createTable("books")',
+						'addColumn("json", "json")',
+						'addColumn("jsonB", "jsonb")',
+						'addColumn("numeric", "numeric")',
+						'addColumn("numeric_5", "numeric(5, 0)")',
+						'addColumn("numeric_5_2", "numeric(5, 2)")',
+						'addColumn("real", "real")',
+						'addColumn("serial", "serial", (col) => col.notNull())',
+						'addColumn("text", "text")',
+						'addColumn("time", "time")',
+						'addColumn("time_4", "time(4)")',
+						'addColumn("timeTz", sql`time with time zone`)',
+						'addColumn("timeTz_4", sql`time(4) with time zone`)',
+						'addColumn("timestamp", "timestamp")',
+						'addColumn("timestamp_3", "timestamp(3)")',
+						'addColumn("timestampTz", sql`timestamp with time zone`)',
+						'addColumn("timestampTz_3", sql`timestamp(3) with time zone`)',
+						'addColumn("uuid", "uuid")',
+						'addColumn("varChar", sql`character varying`)',
+						"addColumn(\"varCharWithDefault\", sql`character varying`, (col) => col.defaultTo(sql`'foo'::character varying`))",
+						'addColumn("varChar_255", sql`character varying(255)`)',
+						'addColumn("vector", sql`tsvector`)',
+						"addColumn(\"vectorWithDefault\", sql`tsvector`, (col) => col.defaultTo(sql`to_tsvector('a b')`))",
+						'addColumn("tsquery", sql`tsquery`)',
+						"addColumn(\"tsqueryWithDefault\", sql`tsquery`, (col) => col.defaultTo(sql`to_tsquery('a b')`))",
+						'addColumn("xml", sql`xml`)',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "demo"."books"."varCharWithDefault" IS \'2bc67682\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "demo"."books"."vectorWithDefault" IS \'1ffcfd22\'`',
+						"execute(db);",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "demo"."books"."tsqueryWithDefault" IS \'6970b882\'`',
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("demo").schema',
+						'dropTable("books")',
 						"execute();",
 					],
 				],

@@ -578,6 +578,7 @@ describe("schema", () => {
 				book_status: "available, checked_out, lost",
 				user_status: "active, inactive",
 			},
+			tablePriorities: ["users", "books"],
 		};
 		expect(
 			introspectLocalSchema(dbSchema, schemaMigratonInfoFactory()),
@@ -904,6 +905,7 @@ describe("schema", () => {
 				book_status: "available, checked_out, lost",
 				user_status: "active, inactive",
 			},
+			tablePriorities: ["users", "books"],
 		};
 		expect(
 			introspectLocalSchema(dbSchema, schemaMigratonInfoFactory(), {
@@ -968,6 +970,7 @@ test("trigger names are downcased", () => {
 		uniqueConstraints: {},
 		checkConstraints: {},
 		enums: {},
+		tablePriorities: [],
 	};
 	expect(
 		introspectLocalSchema(dbSchema, schemaMigratonInfoFactory()),
@@ -1286,6 +1289,7 @@ test("#localSchemaCamelCase", () => {
 			book_status: "available, checked_out, lost",
 			user_status: "active, inactive",
 		},
+		tablePriorities: ["users", "books"],
 	};
 	expect(
 		introspectLocalSchema(dbSchema, schemaMigratonInfoFactory(), {
@@ -1382,6 +1386,7 @@ describe("#localSchema with external objects", () => {
 			primaryKey: {},
 			triggers: {},
 			enums: {},
+			tablePriorities: [],
 		};
 
 		expect(
@@ -1431,6 +1436,7 @@ describe("#localSchema with external objects", () => {
 			primaryKey: {},
 			triggers: {},
 			enums: {},
+			tablePriorities: [],
 		};
 
 		expect(
@@ -1482,6 +1488,7 @@ describe("#localSchema with external objects", () => {
 			primaryKey: {},
 			triggers: {},
 			enums: {},
+			tablePriorities: [],
 		};
 
 		expect(
@@ -1533,6 +1540,7 @@ describe("#localSchema with external objects", () => {
 			primaryKey: {},
 			triggers: {},
 			enums: {},
+			tablePriorities: [],
 		};
 
 		expect(
@@ -1569,6 +1577,7 @@ describe("#localSchema with external objects", () => {
 			primaryKey: {},
 			triggers: {},
 			enums: {},
+			tablePriorities: [],
 		};
 
 		expect(
@@ -1596,6 +1605,7 @@ describe("#localSchema with external objects", () => {
 			primaryKey: {},
 			triggers: {},
 			enums: {},
+			tablePriorities: [],
 		};
 
 		expect(

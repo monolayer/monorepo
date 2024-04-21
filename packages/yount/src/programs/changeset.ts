@@ -4,6 +4,7 @@ import { createSchemaChangeset } from "~/database/database_schemas/changeset.js"
 import { schemaInDb } from "~/database/database_schemas/introspection.js";
 import { type AnySchema } from "~/database/schema/schema.js";
 import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
+import { sortTableDependencies } from "~/introspection/table-dependencies.js";
 import { DevEnvironment } from "../services/environment.js";
 import { columnDiffPrompt } from "./column-diff-prompt.js";
 import {
@@ -54,23 +55,45 @@ function changesetForLocalSchema(localSchema: AnySchema) {
 										remote,
 									}),
 								),
+								Effect.flatMap(
+									({ local, remote, tablesToRename, columnsToRename }) =>
+										Effect.succeed({
+											local,
+											remote,
+											tablesToRename,
+											columnsToRename,
+											tableDepedencies: sortTableDependencies(
+												remote.tablePriorities,
+												local.tablePriorities,
+												tablesToRename,
+											),
+										}),
+								),
 							),
 						),
 					),
 				),
-				Effect.flatMap(({ local, remote, tablesToRename, columnsToRename }) =>
-					Effect.succeed(
-						schemaChangeset(
-							local,
-							remote,
-							context.schemaName,
-							context.camelCasePlugin,
-							tablesToRename,
-							columnsToRename,
+				Effect.flatMap(
+					({
+						local,
+						remote,
+						tablesToRename,
+						columnsToRename,
+						tableDepedencies,
+					}) =>
+						Effect.succeed(
+							schemaChangeset(
+								local,
+								remote,
+								context.schemaName,
+								context.camelCasePlugin,
+								tablesToRename,
+								columnsToRename,
+								tableDepedencies,
+							),
 						),
-					),
 				),
-				Effect.tap((changeset) =>
+				Effect.tap((changesets) =>
 					Effect.tryPromise(() =>
 						schemaInDb(context.kyselyInstance, context.schemaName),
 					).pipe(
@@ -79,7 +102,7 @@ function changesetForLocalSchema(localSchema: AnySchema) {
 						),
 						Effect.tap((exists) => {
 							if (exists === false) {
-								changeset.unshift(createSchemaChangeset(context.schemaName));
+								changesets.unshift(createSchemaChangeset(context.schemaName));
 							}
 						}),
 					),

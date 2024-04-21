@@ -52,8 +52,7 @@ function extractMigrationOpChangesets(changesets: Changeset[]) {
 		.map((changeset) =>
 			changeset.up.map((u) => u.join("\n    .")).join("\n\n  "),
 		);
-	const down = changesets
-		.reverse()
+	const down = reverseChangeset(changesets)
 		.filter(
 			(changeset) =>
 				changeset.down.length > 0 && (changeset.down[0] || []).length > 0,
@@ -62,4 +61,18 @@ function extractMigrationOpChangesets(changesets: Changeset[]) {
 			changeset.down.map((d) => d.join("\n    .")).join("\n\n  "),
 		);
 	return { up, down };
+}
+
+function reverseChangeset(changesets: Changeset[]) {
+	const itemsToMaintain = changesets.filter(
+		(changeset) =>
+			changeset.type === "createTable" || changeset.type === "dropTable",
+	);
+
+	const itemsToReverse = changesets.filter(
+		(changeset) =>
+			changeset.type !== "createTable" && changeset.type !== "dropTable",
+	);
+
+	return [...itemsToMaintain, ...itemsToReverse.reverse()];
 }

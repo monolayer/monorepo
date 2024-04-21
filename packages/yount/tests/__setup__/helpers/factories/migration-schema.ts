@@ -12,5 +12,6 @@ export function schemaMigratonInfoFactory(
 		primaryKey: options?.primaryKey ?? {},
 		triggers: options?.triggers ?? {},
 		enums: options?.enums ?? {},
+		tablePriorities: options?.tablePriorities ?? [],
 	};
 }

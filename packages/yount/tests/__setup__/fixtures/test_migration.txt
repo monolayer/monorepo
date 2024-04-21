@@ -59,6 +59,21 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
+  await db.withSchema('public').schema
+    .dropTable("books")
+    .execute();
+
+  await db.withSchema('public').schema
+    .dropTable("members")
+    .execute();
+
+  await db.withSchema('public').schema
+    .createTable("shops")
+    .addColumn("name", "varchar", (col) => col.defaultTo("hello"))
+    .addColumn("email", "character varying(255)")
+    .addColumn("city", "text", (col) => col.notNull())
+    .execute();
+
   await db.withSchema('public').schema.dropIndex("addresses_city_yount_idx").execute();
 
   await sql`create unique index "shops_city_yount_idx" on "shops" using btree ("city")`.execute(db);
@@ -98,20 +113,5 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.withSchema('public').schema
     .alterTable("addresses")
     .dropColumn("country")
-    .execute();
-
-  await db.withSchema('public').schema
-    .createTable("shops")
-    .addColumn("name", "varchar", (col) => col.defaultTo("hello"))
-    .addColumn("email", "character varying(255)")
-    .addColumn("city", "text", (col) => col.notNull())
-    .execute();
-
-  await db.withSchema('public').schema
-    .dropTable("members")
-    .execute();
-
-  await db.withSchema('public').schema
-    .dropTable("books")
     .execute();
 }

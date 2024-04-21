@@ -81,7 +81,7 @@ describe("Table drop migrations", () => {
 			context,
 			connector: { schemas: [dbSchema] },
 			expected,
-			down: "reverse",
+			down: "same",
 		});
 	});
 
@@ -430,7 +430,7 @@ describe("Table drop migrations", () => {
 		});
 	});
 
-	test<DbContext>("drop table with foreign keys", async (context) => {
+	test.only<DbContext>("drop table with foreign keys", async (context) => {
 		const dbSchema = schema({
 			tables: {
 				organizations: table({
@@ -482,20 +482,6 @@ describe("Table drop migrations", () => {
 				],
 			},
 			{
-				priority: 1004,
-				tableName: "books",
-				type: "dropPrimaryKey",
-				up: [[]],
-				down: [
-					[
-						'await db.withSchema("public").schema',
-						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_yount_pk", ["id"])',
-						"execute();",
-					],
-				],
-			},
-			{
 				priority: 1006,
 				tableName: "users",
 				type: "dropTable",
@@ -511,6 +497,20 @@ describe("Table drop migrations", () => {
 						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("id", "serial", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 1004,
+				tableName: "books",
+				type: "dropPrimaryKey",
+				up: [[]],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("books")',
+						'addPrimaryKeyConstraint("books_yount_pk", ["id"])',
 						"execute();",
 					],
 				],

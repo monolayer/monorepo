@@ -176,12 +176,12 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.withSchema("accounts").schema
-    .dropTable("regulus_wolf")
-    .execute();
-
   await db.withSchema("public").schema
     .dropTable("regulus_mint")
+    .execute();
+
+  await db.withSchema("accounts").schema
+    .dropTable("regulus_wolf")
     .execute();
 }
 `;

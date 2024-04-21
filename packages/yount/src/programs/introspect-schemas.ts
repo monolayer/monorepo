@@ -38,6 +38,7 @@ export function introspectSchemas({
 						local: introspectedLocalSchema,
 						remote: introspectedRemote,
 						tablesToRename: tablesToRename,
+						tablePriorities: introspectedRemote.tablePriorities,
 					}),
 				),
 			),

@@ -31,6 +31,7 @@ export async function computeChangeset(
 		camelCase ?? { enabled: false },
 		[],
 		{},
+		[],
 	);
 	const schemaInDatabase = await schemaInDb(kysely, schemaName);
 	if (schemaInDatabase.length === 0) {

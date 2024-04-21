@@ -9,7 +9,6 @@ import {
 	type CreateTableDiff,
 	type DropTableTableDiff,
 } from "../database/schema/table/changeset.js";
-import { buildNodes } from "../migrations/migration-schema.js";
 import { migrationOpGenerators } from "./generators.js";
 import { Changeset } from "./types.js";
 
@@ -38,11 +37,10 @@ export function schemaChangeset(
 	camelCaseOptions: CamelCaseOptions,
 	tablesToRename: TablesToRename,
 	columnsToRename: ColumnsToRename,
+	tablePriorities: string[],
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
 	const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
-	const droppedTablesSortOrder = buildNodes(droppedTables, remote);
-	const addedTablesSortOrder = buildNodes(addedTables, local);
 
 	const context: GeneratorContext = {
 		local: local,
@@ -55,6 +53,15 @@ export function schemaChangeset(
 		columnsToRename,
 	};
 
+	const tableOrderIndex = tablePriorities.reduce(
+		(acc, name, index) => {
+			acc[name] = index;
+			return acc;
+		},
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		{} as Record<string, any>,
+	);
+
 	return diff
 		.flatMap((difference) => {
 			for (const generator of generators) {
@@ -63,23 +70,19 @@ export function schemaChangeset(
 			}
 			return [];
 		})
+		.sort((a, b) => (a.priority || 1) - (b.priority || 1))
 		.sort((a, b) => {
-			if (a.type === "dropTable") {
-				const aIndex = droppedTablesSortOrder.indexOf(a.tableName);
-				const bIndex = droppedTablesSortOrder.indexOf(b.tableName);
-				return aIndex - bIndex;
+			if (a.type === "createTable" || a.type === "dropTable") {
+				const indexA = tablePriorities.includes(a.tableName)
+					? tableOrderIndex[a.tableName]
+					: -diff.length;
+				const indexB = tablePriorities.includes(b.tableName)
+					? tableOrderIndex[b.tableName]
+					: -diff.length;
+				return indexA - indexB;
 			}
 			return 1 - 1;
-		})
-		.sort((a, b) => {
-			if (a.type === "createTable") {
-				const aIndex = addedTablesSortOrder.indexOf(a.tableName);
-				const bIndex = addedTablesSortOrder.indexOf(b.tableName);
-				return bIndex - aIndex;
-			}
-			return 1 - 1;
-		})
-		.sort((a, b) => (a.priority || 1) - (b.priority || 1));
+		});
 }
 
 export function changesetDiff(

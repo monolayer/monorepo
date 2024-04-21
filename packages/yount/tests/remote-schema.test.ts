@@ -307,6 +307,7 @@ describe("#remoteSchema", () => {
 				role: "admin, superuser, user",
 				status: "failed, success",
 			},
+			tablePriorities: ["remote_schema_users", "remote_schema_books"],
 		};
 
 		expect(await introspectRemoteSchema(kysely)).toStrictEqual(expectedSchema);
@@ -476,6 +477,7 @@ describe("#remoteSchema", () => {
 			},
 			enums: {},
 			triggers: {},
+			tablePriorities: ["remoteSchemaUsers", "remoteSchemaBooks"],
 		};
 
 		expect(await introspectRemoteSchema(kysely)).toStrictEqual(expectedSchema);
@@ -542,6 +544,7 @@ describe("#remoteSchema", () => {
 			primaryKey: {},
 			triggers: {},
 			enums: {},
+			tablePriorities: [],
 		};
 
 		expect(await introspectRemoteSchema(kysely)).toStrictEqual(expectedSchema);
@@ -918,6 +921,7 @@ describe("#remoteSchema", () => {
 			primaryKey: {},
 			triggers: {},
 			enums: {},
+			tablePriorities: [],
 		};
 
 		expect(await introspectRemoteSchema(kysely)).toStrictEqual(expectedSchema);

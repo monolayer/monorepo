@@ -57,6 +57,10 @@ import {
 	type EnumInfo,
 } from "../database/schema/types/enum/introspection.js";
 import { currentColumName } from "./column-name.js";
+import {
+	databaseTableDependencies,
+	localSchemaTableDependencies,
+} from "./table-dependencies.js";
 
 export function introspectLocalSchema(
 	schema: AnySchema,
@@ -101,6 +105,7 @@ export function introspectLocalSchema(
 		},
 		enums: localEnumInfo(schema),
 		foreignKeyNames: foreignKeyHashes,
+		tablePriorities: localSchemaTableDependencies(schema),
 	};
 }
 
@@ -115,6 +120,12 @@ export async function introspectRemoteSchema(
 		if (table.name !== null) acc.push(table.name);
 		return acc;
 	}, []);
+
+	const tablePriorities = await databaseTableDependencies(
+		kysely,
+		schemaName,
+		tables,
+	);
 
 	const remoteColumnInfo = await dbColumnInfo(kysely, schemaName, tables);
 
@@ -183,6 +194,7 @@ export async function introspectRemoteSchema(
 		triggers: triggerInfo,
 		enums: enumInfo,
 		foreignKeyNames: remoteConstraintHashes,
+		tablePriorities,
 	};
 	return migrationSchema;
 }
@@ -219,6 +231,7 @@ export type SchemaMigrationInfo = {
 	triggers: TriggerInfo;
 	enums: EnumInfo;
 	foreignKeyNames?: Record<string, Record<string, string>>;
+	tablePriorities: string[];
 };
 
 export function renameTables(
@@ -324,6 +337,7 @@ export function renameTables(
 		triggers: renamedTriggers,
 		enums: remote.enums,
 		foreignKeyNames: remote.foreignKeyNames,
+		tablePriorities: remote.tablePriorities,
 	};
 	return renamedSchema;
 }
