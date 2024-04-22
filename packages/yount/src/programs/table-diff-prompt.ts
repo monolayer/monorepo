@@ -1,4 +1,5 @@
 import { select } from "@clack/prompts";
+import color from "picocolors";
 
 export async function tableDiffPrompt(tableDiff: {
 	added: string[];
@@ -22,13 +23,16 @@ export async function tableDiffPrompt(tableDiff: {
 			}[],
 			string
 		>({
-			message: `Is ${table} table created or renamed from another table`,
+			message: `Do you want to create the table '${table}' or rename an existing table?`,
 			options: [
-				{ value: `create:${table}`, label: `created table ${table}` },
+				{
+					value: `create:${table}`,
+					label: `${color.green("create")} '${table}'`,
+				},
 				...tableDiff.deleted.map((deletedTable) => {
 					return {
 						value: `rename:${deletedTable}:${table}`,
-						label: `renamed from ${deletedTable}`,
+						label: `${color.yellow("rename")} '${deletedTable}': ${deletedTable} ${color.yellow("~>")} ${table}`,
 					};
 				}),
 			],

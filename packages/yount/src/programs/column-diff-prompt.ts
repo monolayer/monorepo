@@ -1,4 +1,5 @@
 import { select } from "@clack/prompts";
+import color from "picocolors";
 
 export async function columnDiffPrompt(
 	columnDiff: Record<
@@ -26,16 +27,16 @@ export async function columnDiffPrompt(
 					}[],
 					string
 				>({
-					message: `Is ${addedColumn} colum of ${tableName} table created or renamed from column`,
+					message: `Do you want to create a '${addedColumn}' column in '${tableName}' or rename an existing column?`,
 					options: [
 						{
 							value: `create:${addedColumn}`,
-							label: `created column ${addedColumn}`,
+							label: `${color.green("create")} '${addedColumn}'`,
 						},
 						...deleted.map((deletedColumn) => {
 							return {
 								value: `rename:${deletedColumn}:${addedColumn}`,
-								label: `renamed from ${deletedColumn}`,
+								label: `${color.yellow("rename")} '${deletedColumn}': ${deletedColumn} ${color.yellow("~>")} ${addedColumn}`,
 							};
 						}),
 					],
