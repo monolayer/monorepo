@@ -60,7 +60,7 @@ export enum MigrationOpPriority {
 	ChangeColumnNullable = 3008,
 
 	PrimaryKeyCreate = 4001,
-	ConstraintCreate = 4002,
+
 	IndexCreate = 4003,
 	TriggerCreate = 4004,
 
