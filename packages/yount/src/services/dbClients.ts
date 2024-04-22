@@ -13,7 +13,7 @@ export type DbClientProperties = {
 	readonly developmentEnvironment: DbClientEnvironmentProperties;
 };
 
-type DbClientEnvironmentProperties = {
+export type DbClientEnvironmentProperties = {
 	readonly pgPool: pg.Pool;
 	readonly pgAdminPool: pg.Pool;
 	readonly databaseName: string;

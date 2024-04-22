@@ -71,8 +71,3 @@ export type ColumnsToRename = Record<
 		to: string;
 	}[]
 >;
-
-// {
-//   users: { added: [], deleted: [] },
-//   books: { added: [ 'description' ], deleted: [ 'title' ] }
-// }
