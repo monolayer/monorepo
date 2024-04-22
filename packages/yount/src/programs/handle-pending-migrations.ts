@@ -73,7 +73,7 @@ function deletePendingMigrations(
 					Effect.map(() => {
 						unlinkSync(pendingMigration.path);
 						p.log.info(
-							`${color.green("removed")} ${path.relative(cwd(), pendingMigration.path)}`,
+							`${color.red("removed")} ${path.relative(cwd(), pendingMigration.path)}`,
 						);
 					}),
 				),
