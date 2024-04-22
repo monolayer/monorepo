@@ -22,7 +22,7 @@ export function generateChangesetMigration() {
 								Effect.tap((cset) => {
 									generateMigrationFiles(cset, environment.migrationFolder);
 									p.note(
-										"To apply migrations, run 'npx yount migrate'",
+										"Apply migrations with 'npx yount migrate'",
 										"Next Steps",
 									);
 								}),
