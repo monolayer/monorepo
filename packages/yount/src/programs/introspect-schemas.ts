@@ -6,7 +6,7 @@ import {
 	renameRemoteColums,
 	renameTables,
 } from "~/introspection/introspection.js";
-import type { SchemaContext } from "./schema-context.js";
+import type { ChangesetContext } from "./changeset-context.js";
 
 export function introspectSchemas({
 	kyselyInstance,
@@ -14,7 +14,7 @@ export function introspectSchemas({
 	schemaName,
 	camelCasePlugin,
 	tablesToRename,
-}: SchemaContext) {
+}: ChangesetContext) {
 	return Effect.unit.pipe(
 		Effect.flatMap(() =>
 			Effect.tryPromise(() =>
@@ -52,7 +52,7 @@ export function renameTablesInIntrospectedSchemas({
 	tablesToRename,
 	remote,
 	columnsToRename,
-}: SchemaContext & { remote: SchemaMigrationInfo }) {
+}: ChangesetContext & { remote: SchemaMigrationInfo }) {
 	const renamedRemote = renameTables(remote, tablesToRename, columnsToRename);
 	const renamedColums = renameRemoteColums(renamedRemote, columnsToRename);
 

@@ -6,12 +6,12 @@ import { type AnySchema } from "~/database/schema/schema.js";
 import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { sortTableDependencies } from "~/introspection/table-dependencies.js";
 import { DevEnvironment } from "../services/environment.js";
+import { changesetContext } from "./changeset-context.js";
 import { columnDiffPrompt } from "./column-diff-prompt.js";
 import {
 	introspectSchemas,
 	renameTablesInIntrospectedSchemas,
 } from "./introspect-schemas.js";
-import { schemaContext } from "./schema-context.js";
 import { tableDiffPrompt } from "./table-diff-prompt.js";
 
 export function changeset() {
@@ -27,7 +27,7 @@ export function changeset() {
 }
 
 function changesetForLocalSchema(localSchema: AnySchema) {
-	return schemaContext(localSchema).pipe(
+	return changesetContext(localSchema).pipe(
 		Effect.flatMap((context) =>
 			introspectSchemas(context).pipe(
 				Effect.flatMap(({ local, remote }) =>

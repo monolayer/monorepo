@@ -7,7 +7,7 @@ import { DevEnvironment } from "../services/environment.js";
 import type { ColumnsToRename } from "./column-diff-prompt.js";
 import type { TablesToRename } from "./table-diff-prompt.js";
 
-export type SchemaContext = {
+export type ChangesetContext = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kyselyInstance: Kysely<any>;
 	camelCasePlugin: CamelCaseOptions;
@@ -17,14 +17,14 @@ export type SchemaContext = {
 	columnsToRename: ColumnsToRename;
 };
 
-export function schemaContext(localSchema: AnySchema) {
+export function changesetContext(schema: AnySchema) {
 	return Effect.all([DevEnvironment, DbClients]).pipe(
 		Effect.flatMap(([devEnvironment, dbClients]) => {
-			const context: SchemaContext = {
+			const context: ChangesetContext = {
 				kyselyInstance: dbClients.developmentEnvironment.kyselyNoCamelCase,
 				camelCasePlugin: devEnvironment.camelCasePlugin || { enabled: false },
-				schemaName: Schema.info(localSchema).name || "public",
-				localSchema: localSchema,
+				schemaName: Schema.info(schema).name || "public",
+				localSchema: schema,
 				tablesToRename: [],
 				columnsToRename: {},
 			};
