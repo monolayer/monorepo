@@ -549,7 +549,7 @@ describe("Rename table and column without camel case plugin", () => {
 
 		const expected = [
 			{
-				priority: 810,
+				priority: 812,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -688,7 +688,7 @@ describe("Rename table and column without camel case plugin", () => {
 
 		const expected = [
 			{
-				priority: 810,
+				priority: 812,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -711,7 +711,7 @@ describe("Rename table and column without camel case plugin", () => {
 				],
 			},
 			{
-				priority: 810,
+				priority: 812,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -4913,7 +4913,7 @@ describe("Rename table and column without camel case plugin", () => {
 
 		const expected = [
 			{
-				priority: 810,
+				priority: 811,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -5035,7 +5035,7 @@ describe("Rename table and column without camel case plugin", () => {
 
 		const expected = [
 			{
-				priority: 810,
+				priority: 811,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -5196,7 +5196,7 @@ describe("Rename table and column without camel case plugin", () => {
 
 		const expected = [
 			{
-				priority: 810,
+				priority: 811,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -5217,7 +5217,7 @@ describe("Rename table and column without camel case plugin", () => {
 				],
 			},
 			{
-				priority: 810,
+				priority: 811,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -6100,7 +6100,7 @@ describe("Rename table and column with camel case plugin", () => {
 
 		const expected = [
 			{
-				priority: 810,
+				priority: 812,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -6242,7 +6242,7 @@ describe("Rename table and column with camel case plugin", () => {
 
 		const expected = [
 			{
-				priority: 810,
+				priority: 812,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -6265,7 +6265,7 @@ describe("Rename table and column with camel case plugin", () => {
 				],
 			},
 			{
-				priority: 810,
+				priority: 812,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -10477,7 +10477,7 @@ describe("Rename table and column with camel case plugin", () => {
 
 		const expected = [
 			{
-				priority: 810,
+				priority: 811,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -10602,7 +10602,7 @@ describe("Rename table and column with camel case plugin", () => {
 
 		const expected = [
 			{
-				priority: 810,
+				priority: 811,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -10767,7 +10767,7 @@ describe("Rename table and column with camel case plugin", () => {
 
 		const expected = [
 			{
-				priority: 810,
+				priority: 811,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [
@@ -10788,7 +10788,7 @@ describe("Rename table and column with camel case plugin", () => {
 				],
 			},
 			{
-				priority: 810,
+				priority: 811,
 				tableName: "books",
 				type: "dropConstraint",
 				up: [

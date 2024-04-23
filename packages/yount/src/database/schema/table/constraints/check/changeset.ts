@@ -137,7 +137,7 @@ function dropAllChecksMigration(
 			if (checkDefinition !== undefined) {
 				const checkName = `${previousTableName(tableName, tablesToRename)}_${checkHash}_yount_chk`;
 				const changeSet: Changeset = {
-					priority: MigrationOpPriority.ConstraintDrop,
+					priority: MigrationOpPriority.CheckConstraintDrop,
 					tableName: previousTableName(tableName, tablesToRename),
 					type: ChangeSetType.DropConstraint,
 					up: droppedTables.includes(tableName)
@@ -228,7 +228,7 @@ function dropCheckMigration(
 	const checkName = `${previousTableName(tableName, tablesToRename)}_${checkHash}_yount_chk`;
 
 	const changeSet: Changeset = {
-		priority: MigrationOpPriority.ConstraintDrop,
+		priority: MigrationOpPriority.CheckConstraintDrop,
 		tableName: previousTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropConstraint,
 		up: [

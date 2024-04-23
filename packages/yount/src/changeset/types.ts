@@ -36,7 +36,10 @@ export enum MigrationOpPriority {
 	Database = 0,
 
 	IndexDrop = 800,
-	ConstraintDrop = 810,
+
+	ForeignKeyDrop = 810,
+	UniqueConstraintDrop = 811,
+	CheckConstraintDrop = 812,
 
 	ChangeTableName = 900,
 

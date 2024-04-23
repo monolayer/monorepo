@@ -175,7 +175,7 @@ function dropUniqueLastConstraintMigration(
 				hashValue,
 			);
 			const changeset: Changeset = {
-				priority: MigrationOpPriority.ConstraintDrop,
+				priority: MigrationOpPriority.UniqueConstraintDrop,
 				tableName: previousTableName(tableName, tablesToRename),
 				type: ChangeSetType.DropConstraint,
 				up: droppedTables.includes(tableName)
@@ -237,7 +237,7 @@ function dropUniqueConstraintMigration(
 	);
 
 	const changeset: Changeset = {
-		priority: MigrationOpPriority.ConstraintDrop,
+		priority: MigrationOpPriority.UniqueConstraintDrop,
 		tableName: previousTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropConstraint,
 		up: [

@@ -1825,7 +1825,7 @@ describe("Modify table", () => {
 
 			const expected = [
 				{
-					priority: 810,
+					priority: 812,
 					tableName: "books",
 					type: "dropConstraint",
 					up: [
@@ -1882,7 +1882,7 @@ describe("Modify table", () => {
 
 			const expected = [
 				{
-					priority: 810,
+					priority: 812,
 					tableName: "books",
 					type: "dropConstraint",
 					up: [
@@ -2213,7 +2213,7 @@ describe("Modify table", () => {
 
 			const expected = [
 				{
-					priority: 810,
+					priority: 811,
 					tableName: "books",
 					type: "dropConstraint",
 					up: [
@@ -2234,7 +2234,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 810,
+					priority: 811,
 					tableName: "books",
 					type: "dropConstraint",
 					up: [
@@ -2316,7 +2316,7 @@ describe("Modify table", () => {
 
 			const expected = [
 				{
-					priority: 810,
+					priority: 811,
 					tableName: "users",
 					type: "dropConstraint",
 					up: [
@@ -2419,7 +2419,7 @@ describe("Modify table", () => {
 
 			const expected = [
 				{
-					priority: 810,
+					priority: 811,
 					tableName: "users",
 					type: "dropConstraint",
 					up: [

@@ -240,7 +240,7 @@ function dropforeignKeyLastConstraintMigration(
 	return Object.entries(diff.oldValue).reduce(
 		(acc, [hashValue, constraintValue]) => {
 			const changeset: Changeset = {
-				priority: MigrationOpPriority.ConstraintDrop,
+				priority: MigrationOpPriority.ForeignKeyDrop,
 				tableName: tableName,
 				type: ChangeSetType.DropConstraint,
 				up: droppedTables.includes(tableName)
@@ -288,7 +288,7 @@ function dropForeignKeyConstraintMigration(
 	const constraintValue = diff.oldValue;
 
 	const changeset: Changeset = {
-		priority: MigrationOpPriority.ConstraintDrop,
+		priority: MigrationOpPriority.ForeignKeyDrop,
 		tableName: previousTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropConstraint,
 		up: [
