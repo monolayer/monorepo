@@ -45,7 +45,7 @@ export function dbClientsLayer() {
 }
 
 function dbClientEnvironmentProperties(environment: EnvironmentProperties) {
-	const pg = poolAndConfig(environment.connectorConfig);
+	const pg = poolAndConfig(environment.configurationConfig);
 	return {
 		databaseName: pg.config.database ?? "",
 		pgPool: pg.pool,
@@ -56,7 +56,7 @@ function dbClientEnvironmentProperties(environment: EnvironmentProperties) {
 				pool: pg.pool,
 			}),
 			plugins:
-				environment.connector.camelCasePlugin?.enabled === true
+				environment.configuration.camelCasePlugin?.enabled === true
 					? [new CamelCasePlugin()]
 					: [],
 		}),

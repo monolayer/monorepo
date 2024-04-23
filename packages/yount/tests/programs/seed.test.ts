@@ -111,10 +111,10 @@ describe("seed", () => {
 		).rejects.toThrowError("Pending Migrations");
 	});
 
-	test<ProgramContext>("fails with missing connectors.ts", async (context) => {
+	test<ProgramContext>("fails with missing configuration.ts", async (context) => {
 		await context.migrator.migrateToLatest();
 
-		unlinkSync(path.join(context.folder, "db", "connectors.ts"));
+		unlinkSync(path.join(context.folder, "db", "configuration.ts"));
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
 		expect(

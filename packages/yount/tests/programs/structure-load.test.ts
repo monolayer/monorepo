@@ -42,7 +42,7 @@ describe("structureLoad", () => {
 	});
 
 	test.todo<ProgramContext>(
-		"restores db from structure file on non default connectors",
+		"restores db from structure file on non default configurations",
 		() => {},
 	);
 });

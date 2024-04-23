@@ -32,12 +32,12 @@ async function main() {
 		.command("db:create")
 		.option(
 			"-c, --connection <connection-name>",
-			"connection name as defined in connectors.ts",
+			"connection name as defined in configuration.ts",
 			"default",
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"connection environment name as defined in connectors.ts",
+			"connection environment name as defined in configuration.ts",
 			"development",
 		)
 		.description("create the database")
@@ -50,7 +50,7 @@ async function main() {
 		.command("db:drop")
 		.option(
 			"-c, --connection <connection-name>",
-			"connection name as defined in connectors.ts",
+			"connection name as defined in configuration.ts",
 			"default",
 		)
 		.option(
@@ -67,7 +67,7 @@ async function main() {
 		.command("db:clear")
 		.option(
 			"-c, --connection <connection-name>",
-			"connection name as defined in connectors.ts",
+			"connection name as defined in configuration.ts",
 			"default",
 		)
 		.option(
@@ -89,7 +89,7 @@ async function main() {
 		.description("apply pending migrations")
 		.option(
 			"-c, --connection <connection-name>",
-			"connection name as defined in connectors.ts",
+			"connection name as defined in configuration.ts",
 			"default",
 		)
 		.option(
@@ -115,7 +115,7 @@ async function main() {
 		.description("migrate one step down")
 		.option(
 			"-c, --connection <connection-name>",
-			"connection name as defined in connectors.ts",
+			"connection name as defined in configuration.ts",
 			"default",
 		)
 		.option(
@@ -141,7 +141,7 @@ async function main() {
 		.description("seed database")
 		.option(
 			"-c, --connection <connection-name>",
-			"connection name as defined in connectors.ts",
+			"connection name as defined in configuration.ts",
 			"default",
 		)
 		.option(
@@ -167,7 +167,7 @@ async function main() {
 		.description("dump the database structure")
 		.option(
 			"-c, --connection <connection-name>",
-			"connection name as defined in connectors.ts",
+			"connection name as defined in configuration.ts",
 			"default",
 		)
 		.option(
@@ -184,7 +184,7 @@ async function main() {
 		.description("load the database structure")
 		.option(
 			"-c, --connection <connection-name>",
-			"connection name as defined in connectors.ts",
+			"connection name as defined in configuration.ts",
 			"default",
 		)
 		.option(
@@ -201,7 +201,7 @@ async function main() {
 		.description("generate migrations based on the current defined schema")
 		.option(
 			"-c, --connection <connection-name>",
-			"connection name as defined in connectors.ts",
+			"connection name as defined in configuration.ts",
 			"default",
 		)
 		.action(async (opts) => {
@@ -221,7 +221,7 @@ async function main() {
 		.description("list pending migrations")
 		.option(
 			"-c, --connection <connection-name>",
-			"connection name as defined in connectors.ts",
+			"connection name as defined in configuration.ts",
 			"default",
 		)
 		.option(

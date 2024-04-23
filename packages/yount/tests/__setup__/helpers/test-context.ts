@@ -12,7 +12,7 @@ import type { Pool } from "pg";
 import { chdir, cwd } from "process";
 import { vi, type TaskContext } from "vitest";
 import {
-	connectorsTemplate,
+	configurationsTemplate,
 	yountConfigTemplate,
 } from "~tests/__setup__/fixtures/program.js";
 import {
@@ -88,12 +88,12 @@ export async function setupProgramContext(
 	const yountConfig = yountConfigTemplate.render();
 	appendFileSync(path.join(context.folder, "yount.config.ts"), yountConfig);
 
-	const connectorsConfig = connectorsTemplate.render({
+	const configurations = configurationsTemplate.render({
 		dbName: context.dbName,
 	});
 	writeFileSync(
-		path.join(context.folder, "db", "connectors.ts"),
-		connectorsConfig,
+		path.join(context.folder, "db", "configuration.ts"),
+		configurations,
 	);
 
 	writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);

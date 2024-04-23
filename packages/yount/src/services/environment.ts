@@ -3,11 +3,10 @@ import { Context, Effect, Layer } from "effect";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
-import { importConfig, importConnector } from "~/config.js";
+import { importConfig, importConfigurations } from "~/config.js";
 import {
 	type CamelCaseOptions,
-	type Connector,
-	type Connectors,
+	type Configuration,
 	type PgConfig,
 } from "~/configuration.js";
 
@@ -16,9 +15,9 @@ export type EnvironmentProperties = {
 	readonly folder: string;
 	readonly migrationFolder: string;
 	readonly camelCasePlugin?: CamelCaseOptions;
-	readonly connectorName: string;
-	readonly connectorConfig: PgConfig;
-	readonly connector: Connector;
+	readonly configurationName: string;
+	readonly configurationConfig: PgConfig;
+	readonly configuration: Configuration;
 };
 
 export class Environment extends Context.Tag("Environment")<
@@ -31,73 +30,74 @@ export class DevEnvironment extends Context.Tag("DevEnvironment")<
 	EnvironmentProperties
 >() {}
 
-export function environmentLayer(environment: string, connectorName: string) {
+export function environmentLayer(
+	environment: string,
+	configurationName: string,
+) {
 	return Layer.effect(
 		Environment,
-		environmentGenerator(environment, connectorName),
+		environmentGenerator(environment, configurationName),
 	);
 }
 
-export function devEnvironmentLayer(connectorName: string) {
+export function devEnvironmentLayer(configurationName: string) {
 	return Layer.effect(
 		DevEnvironment,
-		environmentGenerator("development", connectorName),
+		environmentGenerator("development", configurationName),
 	);
 }
 
-function environmentGenerator(environment: string, connectorName: string) {
+function environmentGenerator(environment: string, configurationName: string) {
 	return Effect.gen(function* (_) {
-		const config = yield* _(Effect.promise(async () => await importConfig()));
-		const connectors = yield* _(
-			Effect.promise(async () => await importConnector()),
+		const yountConfig = yield* _(
+			Effect.promise(async () => await importConfig()),
 		);
-		const environmentConfigForConnection = connectors.connectors;
+		const configurations = yield* _(
+			Effect.promise(async () => await importConfigurations()),
+		);
+		const environmentConfigForConnection = configurations;
 
 		if (environmentConfigForConnection === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* _(
 				Effect.fail(
-					`No connector configurations found. Check your connectors.ts file.`,
+					`No configurations found. Check your configuration.ts file.`,
 				),
 			);
 		}
 
-		const connector =
-			environmentConfigForConnection[connectorName as keyof Connectors];
+		const configuration = environmentConfigForConnection[configurationName];
 
-		if (connector === undefined) {
+		if (configuration === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* _(
 				Effect.fail(
-					`Connection ${connectorName} not found. Check your connectors.ts file.`,
+					`Configuration ${configurationName} not found. Check your configuration.ts file.`,
 				),
 			);
 		}
-
-		connector.environments[environment];
-		const environmentConfig = connector.environments[environment];
-
+		const environmentConfig = configuration.environments[environment];
 		if (environmentConfig === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* _(
 				Effect.fail(
-					`Environment: '${environment}' missing in connector ${connectorName}. Check your connectors.ts file.`,
+					`Environment: '${environment}' missing in connector ${configurationName}. Check your configuration.ts file.`,
 				),
 			);
 		}
 		return {
 			name: environment,
-			connectorName: connectorName,
-			folder: config.folder,
+			configurationName: configurationName,
+			folder: yountConfig.folder,
 			migrationFolder: path.join(
 				cwd(),
-				config.folder,
+				yountConfig.folder,
 				"migrations",
-				connectorName,
+				configurationName,
 			),
-			camelCasePlugin: connectors.connectors?.default.camelCasePlugin,
-			connectorConfig: environmentConfig,
-			connector: connector,
+			camelCasePlugin: configuration.camelCasePlugin,
+			configurationConfig: environmentConfig,
+			configuration: configuration,
 		};
 	});
 }

@@ -1,9 +1,9 @@
 import { Effect } from "effect";
 import { DevEnvironment } from "~/services/environment.js";
 
-export function connectorSchemas() {
+export function configurationSchemas() {
 	return Effect.gen(function* (_) {
 		const environment = yield* _(DevEnvironment);
-		return environment.connector.schemas;
+		return environment.configuration.schemas;
 	});
 }

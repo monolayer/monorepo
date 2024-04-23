@@ -6,7 +6,7 @@ import {
 	createDatabase,
 	createDevDatabase,
 } from "~/programs/create-database.js";
-import { connectorsTemplate } from "~tests/__setup__/fixtures/program.js";
+import { configurationsTemplate } from "~tests/__setup__/fixtures/program.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -53,10 +53,10 @@ describe("createDevDatabase", () => {
 	});
 
 	test<ProgramContext>("creates the development database", async (context) => {
-		const connectorsConfig = connectorsTemplate.render({ dbName: "devDb" });
+		const configurations = configurationsTemplate.render({ dbName: "devDb" });
 		writeFileSync(
-			path.join(context.folder, "db", "connectors.ts"),
-			connectorsConfig,
+			path.join(context.folder, "db", "configuration.ts"),
+			configurations,
 		);
 
 		await context.pool.query(`DROP DATABASE IF EXISTS "devDb"`);

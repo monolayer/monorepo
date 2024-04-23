@@ -143,7 +143,7 @@ function initSchemaStats(
 			tables: {},
 		};
 	}
-	return schemas[schemaName];
+	return schemas[schemaName]!;
 }
 
 function addEnumStats(changeset: Changeset, stats: ChangesetStats) {
@@ -179,11 +179,11 @@ function addTableAlteration(
 	const schemaName = changeset.schemaName!;
 	const tableName = changeset.tableName;
 	tableAlterations[schemaName] = tableAlterations[schemaName] || {};
-	tableAlterations[schemaName][tableName] =
-		tableAlterations[schemaName][tableName] || false;
-	if (tableAlterations[schemaName][tableName] === false) {
+	const schemaAlterations = tableAlterations[schemaName]!;
+	schemaAlterations[tableName] = schemaAlterations[tableName] || false;
+	if (schemaAlterations[tableName] === false) {
 		stats.altered++;
-		tableAlterations[schemaName][tableName] = true;
+		schemaAlterations[tableName] = true;
 	}
 }
 
@@ -232,7 +232,7 @@ function initTableStats(tables: Record<string, TableStats>, tableName: string) {
 			triggers: { added: 0, dropped: 0, altered: 0 },
 		};
 	}
-	return tables[tableName];
+	return tables[tableName]!;
 }
 
 export function processTableStats(

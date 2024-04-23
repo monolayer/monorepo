@@ -13,7 +13,7 @@ export type YountConfig = {
 	folder: string;
 };
 
-export type Connector = {
+export type Configuration = {
 	schemas: AnySchema[];
 	camelCasePlugin?: CamelCaseOptions;
 	extensions?: PgExtension[];
@@ -22,27 +22,22 @@ export type Connector = {
 	} & Record<string, PgConfig>;
 };
 
-export type Connectors =
-	| {
-			default: Connector;
-	  }
-	| {
-			[key: string]: Connector;
-	  };
-
 export type CamelCaseOptions = {
 	enabled: boolean;
 	options?: CamelCasePluginOptions;
 };
 
-export function kyselyConfig(connector: Connector, environment: string) {
-	const environmentConfig = connector.environments[environment];
+export function kyselyConfig(
+	configuration: Configuration,
+	environment: string,
+) {
+	const environmentConfig = configuration.environments[environment];
 	return {
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(environmentConfig),
 		}),
-		plugins: connector.camelCasePlugin?.enabled
-			? [new CamelCasePlugin(connector.camelCasePlugin.options)]
+		plugins: configuration.camelCasePlugin?.enabled
+			? [new CamelCasePlugin(configuration.camelCasePlugin.options)]
 			: [],
 	};
 }

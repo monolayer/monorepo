@@ -8,7 +8,7 @@ import {
 	changesetContext,
 	type ChangesetContext,
 } from "./changeset-context.js";
-import { connectorSchemas } from "./connector-schemas.js";
+import { configurationSchemas } from "./configuration-schemas.js";
 import {
 	introspectSchemas,
 	renameMigrationInfo,
@@ -19,9 +19,9 @@ import {
 } from "./introspect-schemas.js";
 
 export function changeset() {
-	return connectorSchemas().pipe(
-		Effect.flatMap((connectorSchema) =>
-			Effect.all(connectorSchema.flatMap(changesetForLocalSchema)).pipe(
+	return configurationSchemas().pipe(
+		Effect.flatMap((configurationSchema) =>
+			Effect.all(configurationSchema.flatMap(changesetForLocalSchema)).pipe(
 				Effect.flatMap((changesets) =>
 					Effect.succeed(changesets.flatMap((changeset) => changeset)),
 				),

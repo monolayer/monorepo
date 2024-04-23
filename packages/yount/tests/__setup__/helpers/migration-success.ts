@@ -13,7 +13,7 @@ import { programWithErrorCause } from "./run-program.js";
 
 export async function testChangesetAndMigrations({
 	context,
-	connector,
+	configuration,
 	expected,
 	down,
 	mock = () => true,
@@ -22,14 +22,14 @@ export async function testChangesetAndMigrations({
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expected: any[];
 	down: "same" | "reverse" | "empty";
-	connector: EnvironmentLessConnector;
+	configuration: EnvironmentLessConnector;
 	mock?: () => void;
 }) {
-	if (connector.camelCasePlugin === undefined) {
-		connector.camelCasePlugin = { enabled: false };
+	if (configuration.camelCasePlugin === undefined) {
+		configuration.camelCasePlugin = { enabled: false };
 	}
 
-	const layers = newLayers(context.dbName, context.folder, connector);
+	const layers = newLayers(context.dbName, context.folder, configuration);
 
 	mock();
 

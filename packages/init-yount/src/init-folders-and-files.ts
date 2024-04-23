@@ -73,10 +73,11 @@ export function initFolderAndFiles() {
 			true,
 		);
 		await createDir(folder.path, true);
+		await createFile(`${folder.path}/db.ts`, dbTemplate.render(), true);
 		await createFile(`${folder.path}/schema.ts`, schemaTemplate.render(), true);
 		await createFile(
-			`${folder.path}/connections.ts`,
-			connectionsTemplate.render(),
+			`${folder.path}/configuration.ts`,
+			configurationTemplate.render(),
 			true,
 		);
 		await createFile(
@@ -87,7 +88,7 @@ export function initFolderAndFiles() {
 		await createFile(`${folder.path}/seed.ts`, seedTemplate.render(), true);
 		await createDir(`${folder.path}/migrations`, true);
 
-		const nextSteps = `1) Edit the database connection details at \`${path.join(folder.path, "connectors.ts")}\`.
+		const nextSteps = `1) Edit the default configuration in \`${path.join(folder.path, "configuration.ts")}\`.
 2) Run \`npx yount db:create\` to create the database.
 3) Edit the schema file at \`${path.join(folder.path, "schema.ts")}\`.
 4) Run 'npx yount generate' to create migrations.
@@ -106,41 +107,44 @@ const config = {
 export default config;
 `);
 
-export const connectionsTemplate =
-	nunjucks.compile(`import { Kysely } from "kysely";
-	import { kyselyConfig, type Connections } from "yount/config";
-	import { database, type DB } from "./schema";
+export const configurationTemplate =
+	nunjucks.compile(`import { type Configuration } from "yount/config";
+import { dbSchema } from "./schema";
 
-export const connections = {
-	default: {
-		schemas: [database],
-		environments: {
-			development: {
-				database: "#database_development",
-				user: "#user",
-				password: "#password",
-				host: "#host",
-				port: 5432
-			},
-			test: {
-				database: "#database_test",
-				user: "#user",
-				password: "#password",
-				host: "#host",
-				port: 5432
-			},
-			production: {
-				connectionString: process.env.DATABASE_URL,
-			}
+export default {
+	schemas: [dbSchema],
+	environments: {
+		development: {
+			database: "#database_development",
+			user: "#user",
+			password: "#password",
+			host: "#host",
+			port: 5432
 		},
-		camelCasePlugin: {
-      enabled: false,
-    },
+		test: {
+			database: "#database_test",
+			user: "#user",
+			password: "#password",
+			host: "#host",
+			port: 5432
+		},
+		production: {
+			connectionString: process.env.DATABASE_URL,
+		}
 	},
-} satisfies Connections;
+	camelCasePlugin: {
+		enabled: false,
+	},
+} satisfies Configuration;
+`);
+
+export const dbTemplate = nunjucks.compile(`import { Kysely } from "kysely";
+import { kyselyConfig } from "yount/config";
+import configuration from "./configuration";
+import { type DB } from "./schema";
 
 export const defaultDb = new Kysely<DB>(
-	kyselyConfig(connections.default, process.env.APP_ENV || "development")
+	kyselyConfig(configuration, process.env.APP_ENV || "development")
 );
 `);
 
@@ -159,8 +163,8 @@ import type { DB } from "./schema";
 export async function seed(db: Kysely<DB>){}
 `);
 
-export const extensionsTemplate = nunjucks.compile(`
-// Add database extensions here
+export const extensionsTemplate =
+	nunjucks.compile(`// Add database extensions here
 // Example:
 // import { extension } from "yount/pg";
 //

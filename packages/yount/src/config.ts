@@ -1,6 +1,6 @@
 import type { Kysely } from "kysely";
 import path from "path";
-import { Connectors, YountConfig } from "./configuration.js";
+import { YountConfig, type Configuration } from "./configuration.js";
 
 type GlobalsWithDatabaseSchema = typeof globalThis & {
 	schema: unknown;
@@ -34,21 +34,19 @@ export async function importConfig() {
 	return config;
 }
 
-type ConnectorImport = {
-	connectors?: Connectors;
-};
+type ConfigurationImport = Record<string, Configuration>;
 
 export type SeedImport = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	seed?: (db: Kysely<any>) => Promise<void>;
 };
 
-export async function importConnector() {
+export async function importConfigurations() {
 	const config = await importConfig();
-	const connectors: ConnectorImport = await import(
-		path.join(process.cwd(), config.folder, "connectors.ts")
+	const configurations: ConfigurationImport = await import(
+		path.join(process.cwd(), config.folder, "configuration.ts")
 	);
-	return connectors;
+	return configurations;
 }
 
 function isEsmImport(

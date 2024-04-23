@@ -10,7 +10,7 @@ import path from "path";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { generateChangesetMigration } from "~/programs/generate-changeset-migration.js";
-import { connectorsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
+import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import { defaultMigrationPath } from "~tests/__setup__/helpers/default-migration-path.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
@@ -78,14 +78,14 @@ describe("generateChangesetMigration", () => {
 			anotherSchemaFile,
 		);
 
-		const connectorsConfig = connectorsTemplateTwoDatabaseSchemas.render({
+		const configurations = configurationsTemplateTwoDatabaseSchemas.render({
 			dbName: context.dbName,
 			secondSchemaFile: "anotherSchema",
 		});
 
 		writeFileSync(
-			path.join(context.folder, "db", "connectors.ts"),
-			connectorsConfig,
+			path.join(context.folder, "db", "configuration.ts"),
+			configurations,
 		);
 
 		await Effect.runPromise(

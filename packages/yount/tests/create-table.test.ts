@@ -114,7 +114,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -305,7 +305,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -410,7 +410,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -517,7 +517,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -628,7 +628,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -741,7 +741,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -866,7 +866,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -967,7 +967,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -1040,7 +1040,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -1163,7 +1163,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 		];
 		await testChangesetAndMigrations({
 			context,
-			connector: {
+			configuration: {
 				schemas: [dbSchema],
 				extensions: [extension("moddatetime")],
 			},
@@ -1646,7 +1646,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 
 		await testChangesetAndMigrations({
 			context,
-			connector: {
+			configuration: {
 				schemas: [dbSchema],
 				extensions: [extension("moddatetime")],
 				camelCasePlugin: { enabled: true, options: {} },
@@ -1852,7 +1852,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});

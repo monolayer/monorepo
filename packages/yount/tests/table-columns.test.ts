@@ -99,7 +99,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 		});
@@ -182,7 +182,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -231,7 +231,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -292,7 +292,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -345,7 +345,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -402,7 +402,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -474,7 +474,7 @@ describe("Table change migrations", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -579,7 +579,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});

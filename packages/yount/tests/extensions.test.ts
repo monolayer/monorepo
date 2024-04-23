@@ -50,7 +50,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: {
+			configuration: {
 				schemas: [dbSchema],
 				extensions: [extension("btree_gist"), extension("cube")],
 			},
@@ -100,7 +100,10 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema], extensions: [extension("btree_gin")] },
+			configuration: {
+				schemas: [dbSchema],
+				extensions: [extension("btree_gin")],
+			},
 			expected,
 			down: "reverse",
 		});

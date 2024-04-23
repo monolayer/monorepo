@@ -9,7 +9,7 @@ import { DevEnvironment } from "~/services/environment.js";
 
 export function computeExtensionChangeset() {
 	return Effect.all([
-		connectorExtensions().pipe(
+		configurationExtensions().pipe(
 			Effect.flatMap((extensions) =>
 				Effect.succeed(localExtensionInfo(extensions)),
 			),
@@ -28,10 +28,10 @@ export function computeExtensionChangeset() {
 	);
 }
 
-function connectorExtensions() {
+function configurationExtensions() {
 	return DevEnvironment.pipe(
 		Effect.flatMap((environment) =>
-			Effect.succeed(environment.connector.extensions),
+			Effect.succeed(environment.configuration.extensions),
 		),
 	);
 }

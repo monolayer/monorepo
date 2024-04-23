@@ -21,7 +21,7 @@ export function dumpDatabaseStructure() {
 					databaseSearchPath(),
 					databaseInConfig(dbClients.currentEnvironment.databaseName),
 					databaseDumpPath(
-						environment.connectorName,
+						environment.configurationName,
 						environment.name,
 						environment.folder,
 					),
@@ -30,12 +30,12 @@ export function dumpDatabaseStructure() {
 					Effect.flatMap(
 						([searchPath, database, dumpPath, installedExtensions]) =>
 							Effect.succeed(true).pipe(
-								Effect.tap(() => setPgDumpEnv(environment.connectorConfig)),
+								Effect.tap(() => setPgDumpEnv(environment.configurationConfig)),
 								Effect.tap(() =>
 									dumpStructure(
 										database,
 										dumpPath,
-										environment.connector.schemas.map(
+										environment.configuration.schemas.map(
 											(schema) => Schema.info(schema).name || "public",
 										),
 										installedExtensions,

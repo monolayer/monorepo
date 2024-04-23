@@ -81,7 +81,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -238,7 +238,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -347,7 +347,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -434,7 +434,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -553,7 +553,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -626,7 +626,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -730,7 +730,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -803,7 +803,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -901,7 +901,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: {
+			configuration: {
 				schemas: [dbSchema],
 				extensions: [extension("moddatetime")],
 			},
@@ -1070,7 +1070,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			connector: { schemas: [dbSchema] },
+			configuration: { schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});

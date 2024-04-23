@@ -11,7 +11,7 @@ import fs from "node:fs/promises";
 import path from "path";
 import pg from "pg";
 import { env } from "process";
-import type { Connector } from "~/configuration.js";
+import type { Configuration } from "~/configuration.js";
 import { DbClients, dbClientsLayer } from "~/services/dbClients.js";
 import {
 	DevEnvironment,
@@ -110,17 +110,17 @@ function mockedEnvironmentLayer(
 		Effect.gen(function* () {
 			return {
 				name: "development",
-				connectorName: "default",
+				configurationName: "default",
 				folder: "migrations",
 				migrationFolder: migrationFolder,
-				connector: {
+				configuration: {
 					schemas: connector.schemas,
 					extensions: connector.extensions,
 					environments: {
 						development: {},
 					},
 				},
-				connectorConfig: {},
+				configurationConfig: {},
 				camelCasePlugin: connector.camelCasePlugin,
 			};
 		}),
@@ -137,24 +137,24 @@ function mockedDevEnvironmentLayer(
 		Effect.gen(function* () {
 			return {
 				name: "development",
-				connectorName: "default",
+				configurationName: "default",
 				folder: "migrations",
 				migrationFolder: migrationFolder,
-				connector: {
+				configuration: {
 					schemas: connector.schemas,
 					extensions: connector.extensions,
 					environments: {
 						development: {},
 					},
 				},
-				connectorConfig: {},
+				configurationConfig: {},
 				camelCasePlugin: connector.camelCasePlugin,
 			};
 		}),
 	);
 }
 
-export type EnvironmentLessConnector = Omit<Connector, "environments">;
+export type EnvironmentLessConnector = Omit<Configuration, "environments">;
 
 export function newLayers(
 	databaseName: string,
