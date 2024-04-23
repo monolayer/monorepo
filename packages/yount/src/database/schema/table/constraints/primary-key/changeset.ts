@@ -123,7 +123,7 @@ export function primaryKeyColumnsChange(
 function createPrimaryKeyMigration(
 	diff: PrimaryKeyCreate,
 	{ schemaName, addedTables, local }: GeneratorContext,
-): Changeset {
+) {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(diff.value)[0] as keyof typeof diff.value;
 	const primaryKeyValue = diff.value[
@@ -145,21 +145,26 @@ function createPrimaryKeyMigration(
 		],
 		down: addedTables.includes(tableName)
 			? [[]]
-			: dropPrimaryKeyOp(
-					tableName,
-					primaryKeyName as string,
-					primaryKeyValue,
-					local,
-					schemaName,
-				),
+			: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
 	};
-	return changeset;
+
+	const dropNotNull = addedTables.includes(tableName)
+		? []
+		: dropNotNullChangesets(
+				primaryKeyValue,
+				tableName,
+				local,
+				schemaName,
+				"down",
+			);
+
+	return [changeset, ...dropNotNull];
 }
 
 function dropPrimaryKeyMigration(
 	diff: PrimaryKeyDropDiff,
 	{ schemaName, droppedTables, local }: GeneratorContext,
-): Changeset {
+) {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(
 		diff.oldValue,
@@ -175,13 +180,7 @@ function dropPrimaryKeyMigration(
 		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
 			? [[]]
-			: dropPrimaryKeyOp(
-					tableName,
-					primaryKeyName as string,
-					primaryKeyValue,
-					local,
-					schemaName,
-				),
+			: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
 		down: [
 			addPrimaryKeyOp(
 				tableName,
@@ -191,7 +190,18 @@ function dropPrimaryKeyMigration(
 			),
 		],
 	};
-	return changeset;
+
+	const dropNotNull = droppedTables.includes(tableName)
+		? []
+		: dropNotNullChangesets(
+				primaryKeyValue,
+				tableName,
+				local,
+				schemaName,
+				"up",
+			);
+
+	return [changeset, ...dropNotNull];
 }
 
 function changePrimaryKeyMigration(
@@ -214,83 +224,42 @@ function changePrimaryKeyMigration(
 				schemaName,
 			),
 		],
-		down: dropPrimaryKeyOp(
-			tableName,
-			primaryKeyName as string,
-			diff.value,
-			local,
-			schemaName,
-		),
+		down: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
 	};
+
+	const createPrimaryKeyNotNull = dropNotNullChangesets(
+		diff.value,
+		tableName,
+		local,
+		schemaName,
+		"down",
+	);
 
 	const dropChangeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
 		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.DropPrimaryKey,
-		up: dropPrimaryKeyOp(
-			tableName,
-			primaryKeyName,
-			diff.oldValue,
-			local,
-			schemaName,
-		),
+		up: [dropPrimaryKeyOp(tableName, primaryKeyName, schemaName)],
 		down: [
 			addPrimaryKeyOp(tableName, primaryKeyName, diff.oldValue, schemaName),
 		],
 	};
-	return [createChangeset, dropChangeset];
-}
 
-function dropNotNullStatements(
-	primaryKeyValue: string,
-	tableName: string,
-	local: LocalTableInfo,
-	schemaName: string,
-) {
-	const primaryKeyColumns = extractColumnsFromPrimaryKey(primaryKeyValue);
-	const dropNotNullStatements = [];
-	if (primaryKeyColumns !== null && primaryKeyColumns !== undefined) {
-		for (const column of primaryKeyColumns) {
-			const table = local.table[tableName];
-			if (table !== undefined) {
-				const tableColumn =
-					table.columns[column] || findColumnByNameInTable(table, column);
-				if (tableColumn !== undefined) {
-					if (tableColumn.originalIsNullable === undefined) {
-						if (tableColumn.isNullable) {
-							dropNotNullStatements.push(
-								executeKyselySchemaStatement(
-									schemaName,
-									`alterTable("${tableName}")`,
-									`alterColumn("${column}", (col) => col.dropNotNull())`,
-								),
-							);
-						}
-					} else {
-						if (tableColumn.originalIsNullable !== tableColumn.isNullable) {
-							dropNotNullStatements.push(
-								executeKyselySchemaStatement(
-									schemaName,
-									`alterTable("${tableName}")`,
-									`alterColumn("${column}", (col) => col.dropNotNull())`,
-								),
-							);
-						}
-					}
-				}
-			} else {
-				dropNotNullStatements.push(
-					executeKyselySchemaStatement(
-						schemaName,
-						`alterTable("${tableName}")`,
-						`alterColumn("${column}", (col) => col.dropNotNull())`,
-					),
-				);
-			}
-		}
-	}
-	return dropNotNullStatements;
+	const dropPrimaryKeyNotNull = dropNotNullChangesets(
+		diff.oldValue,
+		tableName,
+		local,
+		schemaName,
+		"up",
+	);
+
+	return [
+		createChangeset,
+		...createPrimaryKeyNotNull,
+		dropChangeset,
+		...dropPrimaryKeyNotNull,
+	];
 }
 
 function addPrimaryKeyOp(
@@ -313,16 +282,97 @@ function addPrimaryKeyOp(
 function dropPrimaryKeyOp(
 	tableName: string,
 	primaryKeyName: string,
+	schemaName: string,
+) {
+	return executeKyselySchemaStatement(
+		schemaName,
+		`alterTable("${tableName}")`,
+		`dropConstraint("${primaryKeyName}")`,
+	);
+}
+
+function dropNotNullOp(
+	tableName: string,
+	columnName: string,
+	schemaName: string,
+) {
+	return executeKyselySchemaStatement(
+		schemaName,
+		`alterTable("${tableName}")`,
+		`alterColumn("${columnName}", (col) => col.dropNotNull())`,
+	);
+}
+
+function dropNotNullChangesets(
 	primaryKeyValue: string,
+	tableName: string,
 	local: LocalTableInfo,
 	schemaName: string,
-): string[][] {
-	return [
-		executeKyselySchemaStatement(
-			schemaName,
-			`alterTable("${tableName}")`,
-			`dropConstraint("${primaryKeyName}")`,
-		),
-		...dropNotNullStatements(primaryKeyValue, tableName, local, schemaName),
-	];
+	direction: "up" | "down",
+) {
+	const primaryKeyColumns = extractColumnsFromPrimaryKey(primaryKeyValue);
+	const changesets: Changeset[] = [];
+
+	if (primaryKeyColumns !== null && primaryKeyColumns !== undefined) {
+		for (const column of primaryKeyColumns) {
+			const table = local.table[tableName];
+			if (table !== undefined) {
+				const tableColumn =
+					table.columns[column] || findColumnByNameInTable(table, column);
+				if (tableColumn !== undefined) {
+					if (tableColumn.originalIsNullable === undefined) {
+						if (tableColumn.isNullable) {
+							changesets.push({
+								priority: MigrationOpPriority.ChangeColumnNullable,
+								schemaName,
+								tableName: tableName,
+								type: ChangeSetType.ChangeColumn,
+								up:
+									direction === "up"
+										? [dropNotNullOp(tableName, column, schemaName)]
+										: [],
+								down:
+									direction === "down"
+										? [dropNotNullOp(tableName, column, schemaName)]
+										: [],
+							});
+						}
+					} else {
+						if (tableColumn.originalIsNullable !== tableColumn.isNullable) {
+							changesets.push({
+								priority: MigrationOpPriority.ChangeColumnNullable,
+								schemaName,
+								tableName: tableName,
+								type: ChangeSetType.ChangeColumn,
+								up:
+									direction === "up"
+										? [dropNotNullOp(tableName, column, schemaName)]
+										: [],
+								down:
+									direction === "down"
+										? [dropNotNullOp(tableName, column, schemaName)]
+										: [],
+							});
+						}
+					}
+				}
+			} else {
+				changesets.push({
+					priority: MigrationOpPriority.ChangeColumnNullable,
+					schemaName,
+					tableName: tableName,
+					type: ChangeSetType.ChangeColumn,
+					up:
+						direction === "up"
+							? [dropNotNullOp(tableName, column, schemaName)]
+							: [],
+					down:
+						direction === "down"
+							? [dropNotNullOp(tableName, column, schemaName)]
+							: [],
+				});
+			}
+		}
+	}
+	return changesets;
 }

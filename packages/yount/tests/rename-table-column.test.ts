@@ -984,6 +984,21 @@ describe("Rename table and column without camel case plugin", () => {
 				],
 			},
 			{
+				priority: 3008,
+				schemaName: "public",
+				tableName: "publications",
+				type: "changeColumn",
+				up: [],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("publications")',
+						'alterColumn("identifier", (col) => col.dropNotNull())',
+						"execute();",
+					],
+				],
+			},
+			{
 				priority: 4001,
 				tableName: "publications",
 				schemaName: "public",
@@ -1001,12 +1016,6 @@ describe("Rename table and column without camel case plugin", () => {
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
 						'dropConstraint("publications_yount_pk")',
-						"execute();",
-					],
-					[
-						'await db.withSchema("public").schema',
-						'alterTable("publications")',
-						'alterColumn("identifier", (col) => col.dropNotNull())',
 						"execute();",
 					],
 				],
@@ -6683,6 +6692,21 @@ describe("Rename table and column with camel case plugin", () => {
 				],
 			},
 			{
+				priority: 3008,
+				schemaName: "public",
+				tableName: "new_books",
+				type: "changeColumn",
+				up: [],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("new_books")',
+						'alterColumn("book_id", (col) => col.dropNotNull())',
+						"execute();",
+					],
+				],
+			},
+			{
 				priority: 4001,
 				tableName: "new_books",
 				schemaName: "public",
@@ -6700,12 +6724,6 @@ describe("Rename table and column with camel case plugin", () => {
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
 						'dropConstraint("new_books_yount_pk")',
-						"execute();",
-					],
-					[
-						'await db.withSchema("public").schema',
-						'alterTable("new_books")',
-						'alterColumn("book_id", (col) => col.dropNotNull())',
 						"execute();",
 					],
 				],

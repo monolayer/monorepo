@@ -72,6 +72,51 @@ describe("Modify table", () => {
 
 			const expected = [
 				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("fullName", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "books",
+					type: "changeColumn",
+					up: [],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+				},
+				{
 					priority: 4001,
 					tableName: "users",
 					schemaName: "public",
@@ -89,18 +134,6 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_yount_pk")',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("fullName", (col) => col.dropNotNull())',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("name", (col) => col.dropNotNull())',
 							"execute();",
 						],
 					],
@@ -123,12 +156,6 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
 							'dropConstraint("books_yount_pk")',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("books")',
-							'alterColumn("name", (col) => col.dropNotNull())',
 							"execute();",
 						],
 					],
@@ -198,12 +225,6 @@ describe("Modify table", () => {
 							'dropConstraint("books_yount_pk")',
 							"execute();",
 						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("books")',
-							'alterColumn("name", (col) => col.dropNotNull())',
-							"execute();",
-						],
 					],
 					down: [
 						[
@@ -226,18 +247,6 @@ describe("Modify table", () => {
 							'dropConstraint("users_yount_pk")',
 							"execute();",
 						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("fullName", (col) => col.dropNotNull())',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("name", (col) => col.dropNotNull())',
-							"execute();",
-						],
 					],
 					down: [
 						[
@@ -247,6 +256,51 @@ describe("Modify table", () => {
 							"execute();",
 						],
 					],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "books",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("fullName", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
 				},
 			];
 
@@ -329,12 +383,6 @@ describe("Modify table", () => {
 							'dropConstraint("books_yount_pk")',
 							"execute();",
 						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("books")',
-							'alterColumn("id", (col) => col.dropNotNull())',
-							"execute();",
-						],
 					],
 					down: [
 						[
@@ -357,18 +405,6 @@ describe("Modify table", () => {
 							'dropConstraint("users_yount_pk")',
 							"execute();",
 						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("fullName", (col) => col.dropNotNull())',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("name", (col) => col.dropNotNull())',
-							"execute();",
-						],
 					],
 					down: [
 						[
@@ -378,6 +414,66 @@ describe("Modify table", () => {
 							"execute();",
 						],
 					],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "books",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'alterColumn("id", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("fullName", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
 				},
 				{
 					priority: 4001,
@@ -419,12 +515,6 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_yount_pk")',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("name", (col) => col.dropNotNull())',
 							"execute();",
 						],
 					],
@@ -510,12 +600,6 @@ describe("Modify table", () => {
 							'dropConstraint("books_yount_pk")',
 							"execute();",
 						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("books")',
-							'alterColumn("id", (col) => col.dropNotNull())',
-							"execute();",
-						],
 					],
 					down: [
 						[
@@ -538,18 +622,6 @@ describe("Modify table", () => {
 							'dropConstraint("users_yount_pk")',
 							"execute();",
 						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("full_name", (col) => col.dropNotNull())',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("name", (col) => col.dropNotNull())',
-							"execute();",
-						],
 					],
 					down: [
 						[
@@ -559,6 +631,66 @@ describe("Modify table", () => {
 							"execute();",
 						],
 					],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "books",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'alterColumn("id", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("full_name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
 				},
 				{
 					priority: 4001,
@@ -600,12 +732,6 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_yount_pk")',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("name", (col) => col.dropNotNull())',
 							"execute();",
 						],
 					],
@@ -661,12 +787,6 @@ describe("Modify table", () => {
 							'dropConstraint("users_yount_pk")',
 							"execute();",
 						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("name", (col) => col.dropNotNull())',
-							"execute();",
-						],
 					],
 					down: [
 						[
@@ -676,6 +796,36 @@ describe("Modify table", () => {
 							"execute();",
 						],
 					],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
 				},
 				{
 					priority: 4001,
@@ -695,12 +845,6 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_yount_pk")',
-							"execute();",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("name", (col) => col.dropNotNull())',
 							"execute();",
 						],
 					],
@@ -756,12 +900,6 @@ describe("Modify table", () => {
 							'dropConstraint("users_yount_pk")',
 							"execute();",
 						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'alterColumn("name", (col) => col.dropNotNull())',
-							"execute();",
-						],
 					],
 					down: [
 						[
@@ -774,8 +912,8 @@ describe("Modify table", () => {
 				},
 				{
 					priority: 3008,
-					tableName: "users",
 					schemaName: "public",
+					tableName: "users",
 					type: "changeColumn",
 					up: [
 						[
@@ -793,6 +931,21 @@ describe("Modify table", () => {
 							"execute();",
 						],
 					],
+				},
+				{
+					priority: 3008,
+					schemaName: "public",
+					tableName: "users",
+					type: "changeColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
 				},
 				{
 					priority: 4001,
