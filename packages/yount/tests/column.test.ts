@@ -221,7 +221,6 @@ describe("PgIdentifiableColumn", () => {
 
 function testBase(expectedDataType = "integer") {
 	testColumnDefaults(expectedDataType);
-	testColumnMethods();
 }
 
 describe("boolean", () => {
@@ -12330,7 +12329,6 @@ describe("enumerated", () => {
 			isNullable: true,
 			numericPrecision: null,
 			numericScale: null,
-			renameFrom: null,
 			enum: true,
 		});
 	});
@@ -12367,15 +12365,6 @@ describe("enumerated", () => {
 			Object.entries(testEnum),
 		).info;
 		expect(columnInfo.defaultValue).toBe("611b3196:'one'::myEnum");
-	});
-
-	test("renameFrom()", () => {
-		const role = enumType("myEnum", ["one", "two", "three"]);
-		const testEnum = enumerated(role).renameFrom("old_name");
-		const columnInfo: ColumnInfo = Object.fromEntries(
-			Object.entries(testEnum),
-		).info;
-		expect(columnInfo.renameFrom).toBe("old_name");
 	});
 
 	describe("zod", () => {
@@ -17737,19 +17726,8 @@ function testColumnDefaults(expectedDataType: string) {
 			expect(context.columnInfo.datetimePrecision).toBe(null);
 		});
 
-		test("renameFrom is null", (context: ColumnContext) => {
-			expect(context.columnInfo.renameFrom).toBe(null);
-		});
-
 		test("identity is null", (context: ColumnContext) => {
 			expect(context.columnInfo.identity).toBe(null);
 		});
-	});
-}
-
-function testColumnMethods() {
-	test("renameFrom() sets renameFrom", (context: ColumnContext) => {
-		context.column.renameFrom("old_name");
-		expect(context.columnInfo.renameFrom).toBe("old_name");
 	});
 }

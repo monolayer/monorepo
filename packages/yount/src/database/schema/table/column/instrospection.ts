@@ -275,7 +275,6 @@ export function transformDbColumnInfo(
 			numericScale: row.numeric_scale,
 			characterMaximumLength: row.character_maximum_length,
 			datetimePrecision: row.datetime_precision,
-			renameFrom: row.rename_from,
 			identity:
 				row.is_identity === "YES" && row.identity_generation !== null
 					? row.identity_generation
@@ -304,7 +303,6 @@ export function mapColumnsToTables(
 				characterMaximumLength: curr.characterMaximumLength,
 				datetimePrecision: curr.datetimePrecision,
 				identity: curr.identity,
-				renameFrom: null,
 				enum: curr.enum,
 			};
 			if (currentTable === undefined) {
@@ -369,7 +367,6 @@ export function localColumnInfoByTable(
 							columnInfo.originalIsNullable = remoteColumn?.isNullable;
 							columnInfo.isNullable = false;
 						}
-						columnInfo.renameFrom = null;
 					} else {
 						if (pKey?.includes(transformedColumnName)) {
 							columnInfo.originalIsNullable = columnInfo.isNullable;
@@ -403,7 +400,6 @@ export function schemaColumnInfo(
 		isNullable: meta.isNullable,
 		numericPrecision: meta.numericPrecision,
 		numericScale: meta.numericScale,
-		renameFrom: meta.renameFrom,
 		defaultValue: meta.defaultValue !== null ? meta.defaultValue : null,
 		identity: meta.identity,
 		enum: meta.enum,

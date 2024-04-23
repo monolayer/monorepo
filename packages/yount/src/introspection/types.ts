@@ -73,7 +73,6 @@ export type InformationSchemaColumns = {
 	interval_type: string | null;
 	character_set_catalog: string | null;
 	nullable: boolean | null;
-	renameFrom: string | null;
 };
 
 export type InformationSchemaKeyColumnUsage = {

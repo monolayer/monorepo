@@ -17,7 +17,6 @@ export function columnInfoFactory(options: required & optional) {
 		numericScale: options.numericScale ?? null,
 		datetimePrecision: options.datetimePrecision ?? null,
 		characterMaximumLength: options.characterMaximumLength ?? null,
-		renameFrom: options.renameFrom ?? null,
 		identity: options.identity ?? null,
 		enum: options.enum ?? false,
 	};

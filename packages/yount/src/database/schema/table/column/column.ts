@@ -42,15 +42,9 @@ export abstract class PgColumnBase<Select, Insert, Update> {
 			numericPrecision: null,
 			numericScale: null,
 			datetimePrecision: null,
-			renameFrom: null,
 			identity: null,
 			enum: false,
 		};
-	}
-
-	renameFrom(name: string) {
-		this.info.renameFrom = name;
-		return this;
 	}
 }
 

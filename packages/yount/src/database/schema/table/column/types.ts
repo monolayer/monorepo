@@ -50,7 +50,6 @@ export type ColumnInfo = {
 	numericScale: number | null;
 	characterMaximumLength: number | null;
 	datetimePrecision: number | null;
-	renameFrom: string | null;
 	identity: "ALWAYS" | "BY DEFAULT" | null;
 	enum: boolean;
 };
