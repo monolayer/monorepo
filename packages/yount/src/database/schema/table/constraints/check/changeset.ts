@@ -100,6 +100,7 @@ function createFirstCheckMigration(
 			if (checkDefinition !== undefined) {
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.CheckCreate,
+					schemaName,
 					tableName: tableName,
 					type: ChangeSetType.CreateCheck,
 					up: addCheckWithSchemaStatements(
@@ -139,6 +140,7 @@ function dropAllChecksMigration(
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.CheckConstraintDrop,
 					tableName: previousTableName(tableName, tablesToRename),
+					schemaName,
 					type: ChangeSetType.DropCheck,
 					up: droppedTables.includes(tableName)
 						? [[]]
@@ -189,6 +191,7 @@ function createCheckMigration(
 	);
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.CheckCreate,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.CreateCheck,
 		up: addCheckWithSchemaStatements(schemaName, tableName, checkDefinition),
@@ -229,6 +232,7 @@ function dropCheckMigration(
 
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.CheckConstraintDrop,
+		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropCheck,
 		up: [
@@ -259,6 +263,7 @@ function rehashIndexMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.ChangeCheck,
 		up: [

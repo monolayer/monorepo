@@ -63,6 +63,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -84,6 +85,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeCheckConstraint",
 				up: [
 					[
@@ -101,6 +103,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeCheckConstraint",
 				up: [
 					[
@@ -197,6 +200,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -218,6 +222,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -239,6 +244,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -309,6 +315,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -371,6 +378,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "users_pk1",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -392,6 +400,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "users_pk1",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -461,6 +470,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -482,6 +492,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "books",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -546,6 +557,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -567,6 +579,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 5001,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeIndex",
 				up: [
 					[
@@ -644,6 +657,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -665,6 +679,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -686,6 +701,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 5001,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeIndex",
 				up: [
 					[
@@ -751,6 +767,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -769,6 +786,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -842,6 +860,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -860,6 +879,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -881,6 +901,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -965,6 +986,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -983,6 +1005,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -1001,6 +1024,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1022,6 +1046,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1116,6 +1141,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1137,6 +1163,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeCheckConstraint",
 				up: [
 					[
@@ -1154,6 +1181,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeCheckConstraint",
 				up: [
 					[
@@ -1250,6 +1278,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1271,6 +1300,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1292,6 +1322,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -1365,6 +1396,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1434,6 +1466,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1455,6 +1488,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 5001,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeIndex",
 				up: [
 					[
@@ -1535,6 +1569,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1556,6 +1591,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1577,6 +1613,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 5001,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeIndex",
 				up: [
 					[
@@ -1642,6 +1679,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "users_pk1",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1663,6 +1701,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "users_pk1",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -1735,6 +1774,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1756,6 +1796,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "books",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -1822,6 +1863,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -1840,6 +1882,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1917,6 +1960,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -1935,6 +1979,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -1956,6 +2001,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -2042,6 +2088,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -2060,6 +2107,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -2078,6 +2126,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[
@@ -2099,6 +2148,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 3000,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeColumnName",
 				up: [
 					[

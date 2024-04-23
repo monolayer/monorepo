@@ -9,6 +9,7 @@ export function createSchemaChangeset(schemaName: string) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.Database,
 		tableName: "none",
+		schemaName: null,
 		type: ChangeSetType.CreateSchema,
 		up: [
 			executeKyselyDbStatement(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`),

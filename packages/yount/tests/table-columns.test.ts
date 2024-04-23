@@ -54,6 +54,7 @@ describe("Table change migrations", () => {
 			{
 				priority: 2003,
 				tableName: "teams",
+				schemaName: "public",
 				type: "createColumn",
 				up: [
 					[
@@ -75,6 +76,7 @@ describe("Table change migrations", () => {
 			{
 				priority: 2003,
 				tableName: "users",
+				schemaName: "public",
 				type: "createColumn",
 				up: [
 					[
@@ -135,6 +137,7 @@ describe("Table change migrations", () => {
 			{
 				priority: 1005,
 				tableName: "teams",
+				schemaName: "public",
 				type: "dropColumn",
 				up: [
 					[
@@ -156,6 +159,7 @@ describe("Table change migrations", () => {
 			{
 				priority: 1005,
 				tableName: "users",
+				schemaName: "public",
 				type: "dropColumn",
 				up: [
 					[
@@ -204,6 +208,7 @@ describe("Table change migrations", () => {
 			{
 				priority: 3001,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
@@ -256,6 +261,7 @@ describe("Table change migrations", () => {
 			{
 				priority: 3007,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
@@ -312,6 +318,7 @@ describe("Table change migrations", () => {
 			{
 				priority: 3005,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
@@ -368,6 +375,7 @@ describe("Table change migrations", () => {
 			{
 				priority: 3006,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
@@ -422,6 +430,7 @@ describe("Table change migrations", () => {
 			{
 				priority: 3008,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
@@ -443,6 +452,7 @@ describe("Table change migrations", () => {
 			{
 				priority: 3008,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
@@ -502,6 +512,7 @@ describe("Table change migrations", () => {
 				],
 				priority: 3001,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
@@ -527,6 +538,7 @@ describe("Table change migrations", () => {
 				],
 				priority: 3007,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
@@ -552,6 +564,7 @@ describe("Table change migrations", () => {
 				],
 				priority: 3008,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[

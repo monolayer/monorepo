@@ -60,6 +60,7 @@ function columnDatatypeMigrationOperation(
 				`alterColumn("${columnName}", (col) => col.setDataType(${oldDataType}))`,
 			),
 		],
+		schemaName,
 	};
 	return changeset;
 }

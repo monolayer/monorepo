@@ -149,6 +149,7 @@ function createUniqueFirstConstraintMigration(
 
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.UniqueCreate,
+			schemaName,
 			tableName: tableName,
 			type: ChangeSetType.CreateUnique,
 			up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
@@ -176,6 +177,7 @@ function dropUniqueLastConstraintMigration(
 			);
 			const changeset: Changeset = {
 				priority: MigrationOpPriority.UniqueConstraintDrop,
+				schemaName,
 				tableName: previousTableName(tableName, tablesToRename),
 				type: ChangeSetType.DropUnique,
 				up: droppedTables.includes(tableName)
@@ -216,6 +218,7 @@ function createUniqueConstraintMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.UniqueCreate,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.CreateUnique,
 		up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
@@ -238,6 +241,7 @@ function dropUniqueConstraintMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.UniqueConstraintDrop,
+		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropUnique,
 		up: [
@@ -270,6 +274,7 @@ function changeUniqueConstraintNameMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.ChangeUnique,
 		up: [

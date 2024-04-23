@@ -74,6 +74,7 @@ function createTableMigration(
 		down: [
 			executeKyselySchemaStatement(schemaName, `dropTable("${tableName}")`),
 		],
+		schemaName,
 	};
 	return changeset;
 }
@@ -120,6 +121,7 @@ function dropTableMigration(
 		type: ChangeSetType.DropTable,
 		up: [executeKyselySchemaStatement(schemaName, `dropTable("${tableName}")`)],
 		down: down,
+		schemaName,
 	};
 	return changeset;
 }
@@ -166,6 +168,7 @@ function changeTableNameMigration(
 				`renameTo("${diff.oldValue}")`,
 			),
 		],
+		schemaName,
 	};
 	return changeset;
 }

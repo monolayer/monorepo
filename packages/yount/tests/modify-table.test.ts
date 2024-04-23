@@ -74,6 +74,7 @@ describe("Modify table", () => {
 				{
 					priority: 4001,
 					tableName: "users",
+					schemaName: "public",
 					type: "createPrimaryKey",
 					up: [
 						[
@@ -107,6 +108,7 @@ describe("Modify table", () => {
 				{
 					priority: 4001,
 					tableName: "books",
+					schemaName: "public",
 					type: "createPrimaryKey",
 					up: [
 						[
@@ -187,6 +189,7 @@ describe("Modify table", () => {
 				{
 					priority: 1004,
 					tableName: "books",
+					schemaName: "public",
 					type: "dropPrimaryKey",
 					up: [
 						[
@@ -214,6 +217,7 @@ describe("Modify table", () => {
 				{
 					priority: 1004,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropPrimaryKey",
 					up: [
 						[
@@ -316,6 +320,7 @@ describe("Modify table", () => {
 				{
 					priority: 1004,
 					tableName: "books",
+					schemaName: "public",
 					type: "dropPrimaryKey",
 					up: [
 						[
@@ -343,6 +348,7 @@ describe("Modify table", () => {
 				{
 					priority: 1004,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropPrimaryKey",
 					up: [
 						[
@@ -376,6 +382,7 @@ describe("Modify table", () => {
 				{
 					priority: 4001,
 					tableName: "books",
+					schemaName: "public",
 					type: "createPrimaryKey",
 					up: [
 						[
@@ -397,6 +404,7 @@ describe("Modify table", () => {
 				{
 					priority: 4001,
 					tableName: "users",
+					schemaName: "public",
 					type: "createPrimaryKey",
 					up: [
 						[
@@ -493,6 +501,7 @@ describe("Modify table", () => {
 				{
 					priority: 1004,
 					tableName: "books",
+					schemaName: "public",
 					type: "dropPrimaryKey",
 					up: [
 						[
@@ -520,6 +529,7 @@ describe("Modify table", () => {
 				{
 					priority: 1004,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropPrimaryKey",
 					up: [
 						[
@@ -553,6 +563,7 @@ describe("Modify table", () => {
 				{
 					priority: 4001,
 					tableName: "books",
+					schemaName: "public",
 					type: "createPrimaryKey",
 					up: [
 						[
@@ -574,6 +585,7 @@ describe("Modify table", () => {
 				{
 					priority: 4001,
 					tableName: "users",
+					schemaName: "public",
 					type: "createPrimaryKey",
 					up: [
 						[
@@ -640,6 +652,7 @@ describe("Modify table", () => {
 				{
 					priority: 1004,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropPrimaryKey",
 					up: [
 						[
@@ -667,6 +680,7 @@ describe("Modify table", () => {
 				{
 					priority: 4001,
 					tableName: "users",
+					schemaName: "public",
 					type: "createPrimaryKey",
 					up: [
 						[
@@ -733,6 +747,7 @@ describe("Modify table", () => {
 				{
 					priority: 1004,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropPrimaryKey",
 					up: [
 						[
@@ -760,6 +775,7 @@ describe("Modify table", () => {
 				{
 					priority: 3008,
 					tableName: "users",
+					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[
@@ -781,6 +797,7 @@ describe("Modify table", () => {
 				{
 					priority: 4001,
 					tableName: "users",
+					schemaName: "public",
 					type: "createPrimaryKey",
 					up: [
 						[
@@ -863,6 +880,7 @@ describe("Modify table", () => {
 				{
 					priority: 2003,
 					tableName: "users",
+					schemaName: "public",
 					type: "createColumn",
 					up: [
 						[
@@ -884,6 +902,7 @@ describe("Modify table", () => {
 				{
 					priority: 4011,
 					tableName: "users",
+					schemaName: "public",
 					type: "createForeignKey",
 					up: [
 						[
@@ -998,6 +1017,7 @@ describe("Modify table", () => {
 				{
 					priority: 2003,
 					tableName: "users",
+					schemaName: "public",
 					type: "createColumn",
 					up: [
 						[
@@ -1019,6 +1039,7 @@ describe("Modify table", () => {
 				{
 					priority: 2003,
 					tableName: "users",
+					schemaName: "public",
 					type: "createColumn",
 					up: [
 						[
@@ -1040,6 +1061,7 @@ describe("Modify table", () => {
 				{
 					priority: 4011,
 					tableName: "users",
+					schemaName: "public",
 					type: "createForeignKey",
 					up: [
 						[
@@ -1071,6 +1093,7 @@ describe("Modify table", () => {
 				{
 					priority: 4011,
 					tableName: "users",
+					schemaName: "public",
 					type: "createForeignKey",
 					up: [
 						[
@@ -1165,6 +1188,7 @@ describe("Modify table", () => {
 				{
 					priority: 810,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropForeignKey",
 					up: [
 						[
@@ -1293,6 +1317,7 @@ describe("Modify table", () => {
 				{
 					priority: 810,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropForeignKey",
 					up: [
 						[
@@ -1324,6 +1349,7 @@ describe("Modify table", () => {
 				{
 					priority: 810,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropForeignKey",
 					up: [
 						[
@@ -1425,6 +1451,7 @@ describe("Modify table", () => {
 				{
 					priority: 810,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropForeignKey",
 					up: [
 						[
@@ -1456,6 +1483,7 @@ describe("Modify table", () => {
 				{
 					priority: 4011,
 					tableName: "users",
+					schemaName: "public",
 					type: "createForeignKey",
 					up: [
 						[
@@ -1557,6 +1585,7 @@ describe("Modify table", () => {
 				{
 					priority: 810,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropForeignKey",
 					up: [
 						[
@@ -1588,6 +1617,7 @@ describe("Modify table", () => {
 				{
 					priority: 4011,
 					tableName: "users",
+					schemaName: "public",
 					type: "createForeignKey",
 					up: [
 						[
@@ -1661,6 +1691,7 @@ describe("Modify table", () => {
 				{
 					priority: 4012,
 					tableName: "books",
+					schemaName: "public",
 					type: "createCheckConstraint",
 					up: [
 						[
@@ -1725,6 +1756,7 @@ describe("Modify table", () => {
 				{
 					priority: 4012,
 					tableName: "books",
+					schemaName: "public",
 					type: "createCheckConstraint",
 					up: [
 						[
@@ -1754,6 +1786,7 @@ describe("Modify table", () => {
 				{
 					priority: 4012,
 					tableName: "books",
+					schemaName: "public",
 					type: "createCheckConstraint",
 					up: [
 						[
@@ -1827,6 +1860,7 @@ describe("Modify table", () => {
 				{
 					priority: 812,
 					tableName: "books",
+					schemaName: "public",
 					type: "dropCheckConstraint",
 					up: [
 						[
@@ -1884,6 +1918,7 @@ describe("Modify table", () => {
 				{
 					priority: 812,
 					tableName: "books",
+					schemaName: "public",
 					type: "dropCheckConstraint",
 					up: [
 						[
@@ -1941,6 +1976,7 @@ describe("Modify table", () => {
 				{
 					priority: 2001,
 					tableName: "users",
+					schemaName: "public",
 					type: "createTable",
 					up: [
 						[
@@ -1961,6 +1997,7 @@ describe("Modify table", () => {
 				{
 					priority: 4012,
 					tableName: "users",
+					schemaName: "public",
 					type: "createCheckConstraint",
 					up: [
 						[
@@ -1983,6 +2020,7 @@ describe("Modify table", () => {
 				{
 					priority: 0,
 					tableName: "none",
+					schemaName: null,
 					type: "createSchema",
 					up: [
 						['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
@@ -1992,6 +2030,7 @@ describe("Modify table", () => {
 				{
 					priority: 2001,
 					tableName: "users",
+					schemaName: "users",
 					type: "createTable",
 					up: [
 						[
@@ -2012,6 +2051,7 @@ describe("Modify table", () => {
 				{
 					priority: 4012,
 					tableName: "users",
+					schemaName: "users",
 					type: "createCheckConstraint",
 					up: [
 						[
@@ -2087,6 +2127,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "books",
+					schemaName: "public",
 					type: "createUniqueConstraint",
 					up: [
 						[
@@ -2108,6 +2149,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "books",
+					schemaName: "public",
 					type: "createUniqueConstraint",
 					up: [
 						[
@@ -2129,6 +2171,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "users",
+					schemaName: "public",
 					type: "createUniqueConstraint",
 					up: [
 						[
@@ -2215,6 +2258,7 @@ describe("Modify table", () => {
 				{
 					priority: 811,
 					tableName: "books",
+					schemaName: "public",
 					type: "dropUniqueConstraint",
 					up: [
 						[
@@ -2236,6 +2280,7 @@ describe("Modify table", () => {
 				{
 					priority: 811,
 					tableName: "books",
+					schemaName: "public",
 					type: "dropUniqueConstraint",
 					up: [
 						[
@@ -2318,6 +2363,7 @@ describe("Modify table", () => {
 				{
 					priority: 811,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropUniqueConstraint",
 					up: [
 						[
@@ -2339,6 +2385,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "users",
+					schemaName: "public",
 					type: "createUniqueConstraint",
 					up: [
 						[
@@ -2421,6 +2468,7 @@ describe("Modify table", () => {
 				{
 					priority: 811,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropUniqueConstraint",
 					up: [
 						[
@@ -2442,6 +2490,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "users",
+					schemaName: "public",
 					type: "createUniqueConstraint",
 					up: [
 						[
@@ -2498,6 +2547,7 @@ describe("Modify table", () => {
 				{
 					priority: 2001,
 					tableName: "users",
+					schemaName: "public",
 					type: "createTable",
 					up: [
 						[
@@ -2519,6 +2569,7 @@ describe("Modify table", () => {
 				{
 					priority: 4001,
 					tableName: "users",
+					schemaName: "public",
 					type: "createPrimaryKey",
 					up: [
 						[
@@ -2533,6 +2584,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "users",
+					schemaName: "public",
 					type: "createUniqueConstraint",
 					up: [
 						[
@@ -2547,6 +2599,7 @@ describe("Modify table", () => {
 				{
 					priority: 0,
 					tableName: "none",
+					schemaName: null,
 					type: "createSchema",
 					up: [
 						['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
@@ -2556,6 +2609,7 @@ describe("Modify table", () => {
 				{
 					priority: 2001,
 					tableName: "users",
+					schemaName: "users",
 					type: "createTable",
 					up: [
 						[
@@ -2577,6 +2631,7 @@ describe("Modify table", () => {
 				{
 					priority: 4001,
 					tableName: "users",
+					schemaName: "users",
 					type: "createPrimaryKey",
 					up: [
 						[
@@ -2591,6 +2646,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "users",
+					schemaName: "users",
 					type: "createUniqueConstraint",
 					up: [
 						[
@@ -2645,6 +2701,7 @@ describe("Modify table", () => {
 				{
 					priority: 4003,
 					tableName: "users",
+					schemaName: "public",
 					type: "createIndex",
 					up: [
 						[
@@ -2707,6 +2764,7 @@ describe("Modify table", () => {
 				{
 					priority: 800,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropIndex",
 					up: [
 						[
@@ -2769,6 +2827,7 @@ describe("Modify table", () => {
 				{
 					priority: 800,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropIndex",
 					up: [
 						[
@@ -2787,6 +2846,7 @@ describe("Modify table", () => {
 				{
 					priority: 4003,
 					tableName: "users",
+					schemaName: "public",
 					type: "createIndex",
 					up: [
 						[
@@ -2849,6 +2909,7 @@ describe("Modify table", () => {
 				{
 					priority: 800,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropIndex",
 					up: [
 						[
@@ -2867,6 +2928,7 @@ describe("Modify table", () => {
 				{
 					priority: 4003,
 					tableName: "users",
+					schemaName: "public",
 					type: "createIndex",
 					up: [
 						[
@@ -2944,6 +3006,7 @@ describe("Modify table", () => {
 				{
 					priority: 0,
 					tableName: "none",
+					schemaName: null,
 					type: "createExtension",
 					up: [
 						[
@@ -2961,6 +3024,7 @@ describe("Modify table", () => {
 				{
 					priority: 4004,
 					tableName: "users",
+					schemaName: "public",
 					type: "createTrigger",
 					up: [
 						[
@@ -2981,6 +3045,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 4004,
 					tableName: "users",
+					schemaName: "public",
 					type: "createTrigger",
 					up: [
 						[
@@ -3053,6 +3118,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 1001,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropTrigger",
 					up: [
 						[
@@ -3070,6 +3136,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 1001,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropTrigger",
 					up: [
 						[
@@ -3151,6 +3218,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					],
 					priority: 1001,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropTrigger",
 					up: [
 						[
@@ -3162,6 +3230,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 4004,
 					tableName: "users",
+					schemaName: "public",
 					type: "createTrigger",
 					up: [
 						[
@@ -3212,6 +3281,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 2003,
 					tableName: "users",
+					schemaName: "public",
 					type: "createColumn",
 					up: [
 						[
@@ -3233,6 +3303,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 2003,
 					tableName: "users",
+					schemaName: "public",
 					type: "createColumn",
 					up: [
 						[
@@ -3284,6 +3355,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 1005,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropColumn",
 					up: [
 						[
@@ -3305,6 +3377,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 1005,
 					tableName: "users",
+					schemaName: "public",
 					type: "dropColumn",
 					up: [
 						[
@@ -3355,6 +3428,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 3008,
 					tableName: "users",
+					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[
@@ -3376,6 +3450,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 3008,
 					tableName: "users",
+					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[
@@ -3397,6 +3472,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 3009,
 					tableName: "users",
+					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[
@@ -3414,6 +3490,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 3009,
 					tableName: "users",
+					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[
@@ -3464,6 +3541,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 3004,
 					tableName: "users",
+					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[
@@ -3481,6 +3559,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 3004,
 					tableName: "users",
+					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[
@@ -3498,6 +3577,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 3008,
 					tableName: "users",
+					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[
@@ -3519,6 +3599,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					priority: 3008,
 					tableName: "users",
+					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[

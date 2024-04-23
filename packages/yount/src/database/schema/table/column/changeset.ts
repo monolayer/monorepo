@@ -82,6 +82,7 @@ function createColumnMigration(
 				`dropColumn("${columnName}")`,
 			),
 		],
+		schemaName,
 	};
 	return changeset;
 }
@@ -139,6 +140,7 @@ function dropColumnMigration(
 			),
 		],
 		down: down,
+		schemaName,
 	};
 	return changeset;
 }

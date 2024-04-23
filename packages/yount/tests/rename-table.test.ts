@@ -41,6 +41,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -99,6 +100,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -175,6 +177,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -238,6 +241,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -259,6 +263,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4012,
 				tableName: "publications",
+				schemaName: "public",
 				type: "createCheckConstraint",
 				up: [
 					[
@@ -288,6 +293,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4012,
 				tableName: "publications",
+				schemaName: "public",
 				type: "createCheckConstraint",
 				up: [
 					[
@@ -369,6 +375,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropCheckConstraint",
 				up: [
 					[
@@ -392,6 +399,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -462,6 +470,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropCheckConstraint",
 				up: [
 					[
@@ -485,6 +494,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropCheckConstraint",
 				up: [
 					[
@@ -508,6 +518,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -573,6 +584,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -633,6 +645,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -654,6 +667,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4001,
 				tableName: "publications",
+				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
 					[
@@ -721,6 +735,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -742,6 +757,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 3008,
 				tableName: "publications",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
@@ -763,6 +779,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4001,
 				tableName: "publications",
+				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
 					[
@@ -826,6 +843,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -847,6 +865,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 1004,
 				tableName: "publications",
+				schemaName: "public",
 				type: "dropPrimaryKey",
 				up: [
 					[
@@ -916,6 +935,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -937,6 +957,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 1004,
 				tableName: "publications",
+				schemaName: "public",
 				type: "dropPrimaryKey",
 				up: [
 					[
@@ -1036,6 +1057,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1057,6 +1079,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "persons",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -1152,6 +1175,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1173,6 +1197,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -1268,6 +1293,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1289,6 +1315,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1310,6 +1337,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "persons",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -1409,6 +1437,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1430,6 +1459,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "persons",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -1525,6 +1555,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1546,6 +1577,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -1641,6 +1673,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1662,6 +1695,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1683,6 +1717,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "persons",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -1749,6 +1784,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1809,6 +1845,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1830,6 +1867,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4010,
 				tableName: "publications",
+				schemaName: "public",
 				type: "createUniqueConstraint",
 				up: [
 					[
@@ -1892,6 +1930,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropUniqueConstraint",
 				up: [
 					[
@@ -1913,6 +1952,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -1985,6 +2025,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropUniqueConstraint",
 				up: [
 					[
@@ -2006,6 +2047,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2075,6 +2117,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropUniqueConstraint",
 				up: [
 					[
@@ -2096,6 +2139,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropUniqueConstraint",
 				up: [
 					[
@@ -2117,6 +2161,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2181,6 +2226,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2202,6 +2248,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5001,
 				tableName: "publications",
+				schemaName: "public",
 				type: "changeIndex",
 				up: [
 					[
@@ -2277,6 +2324,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "publications",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2304,6 +2352,7 @@ describe("Rename table without camel case plugin", () => {
 				],
 				priority: 5001,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeIndex",
 				up: [
 					[
@@ -2352,6 +2401,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2373,6 +2423,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "publications",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -2439,6 +2490,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2460,6 +2512,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "publications",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -2527,6 +2580,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2548,6 +2602,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "publications",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -2566,6 +2621,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "publications",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -2626,6 +2682,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -2644,6 +2701,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2715,6 +2773,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "publications",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -2733,6 +2792,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "publications",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2800,6 +2860,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2861,6 +2922,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -2940,6 +3002,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3006,6 +3069,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3027,6 +3091,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4012,
 				tableName: "books_and_documents",
+				schemaName: "public",
 				type: "createCheckConstraint",
 				up: [
 					[
@@ -3056,6 +3121,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4012,
 				tableName: "books_and_documents",
+				schemaName: "public",
 				type: "createCheckConstraint",
 				up: [
 					[
@@ -3140,6 +3206,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropCheckConstraint",
 				up: [
 					[
@@ -3163,6 +3230,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3236,6 +3304,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropCheckConstraint",
 				up: [
 					[
@@ -3259,6 +3328,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropCheckConstraint",
 				up: [
 					[
@@ -3282,6 +3352,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3339,6 +3410,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3402,6 +3474,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3423,6 +3496,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4001,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
 					[
@@ -3493,6 +3567,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3514,6 +3589,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 3008,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
@@ -3535,6 +3611,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4001,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
 					[
@@ -3601,6 +3678,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3622,6 +3700,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 1004,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "dropPrimaryKey",
 				up: [
 					[
@@ -3694,6 +3773,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3715,6 +3795,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 1004,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "dropPrimaryKey",
 				up: [
 					[
@@ -3817,6 +3898,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3838,6 +3920,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "user_books",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -3936,6 +4019,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -3957,6 +4041,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -4055,6 +4140,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -4076,6 +4162,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -4097,6 +4184,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "user_books",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -4203,6 +4291,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -4224,6 +4313,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "book_users",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -4329,6 +4419,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -4350,6 +4441,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -4455,6 +4547,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -4476,6 +4569,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "users",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -4497,6 +4591,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "user_books",
+				schemaName: "public",
 				type: "changeForeignKey",
 				up: [
 					[
@@ -4566,6 +4661,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -4629,6 +4725,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -4650,6 +4747,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4010,
 				tableName: "books_and_documents",
+				schemaName: "public",
 				type: "createUniqueConstraint",
 				up: [
 					[
@@ -4715,6 +4813,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropUniqueConstraint",
 				up: [
 					[
@@ -4736,6 +4835,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -4811,6 +4911,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropUniqueConstraint",
 				up: [
 					[
@@ -4832,6 +4933,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -4904,6 +5006,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropUniqueConstraint",
 				up: [
 					[
@@ -4925,6 +5028,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropUniqueConstraint",
 				up: [
 					[
@@ -4946,6 +5050,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -5013,6 +5118,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -5034,6 +5140,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5001,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "changeIndex",
 				up: [
 					[
@@ -5112,6 +5219,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -5133,6 +5241,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5001,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "changeIndex",
 				up: [
 					[
@@ -5190,6 +5299,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -5211,6 +5321,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -5288,6 +5399,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -5309,6 +5421,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -5379,6 +5492,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -5400,6 +5514,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -5418,6 +5533,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4003,
 				tableName: "new_books",
+				schemaName: "public",
 				type: "createIndex",
 				up: [
 					[
@@ -5481,6 +5597,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -5499,6 +5616,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[
@@ -5573,6 +5691,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				schemaName: "public",
 				type: "dropIndex",
 				up: [
 					[
@@ -5591,6 +5710,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 900,
 				tableName: "books",
+				schemaName: "public",
 				type: "changeTable",
 				up: [
 					[

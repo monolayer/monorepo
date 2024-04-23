@@ -24,6 +24,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				schemaName: null,
 				type: "createExtension",
 				up: [
 					[
@@ -38,6 +39,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				schemaName: null,
 				type: "createExtension",
 				up: [
 					["await sql`CREATE EXTENSION IF NOT EXISTS cube;`", "execute(db);"],
@@ -72,6 +74,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				schemaName: null,
 				type: "dropExtension",
 				up: [["await sql`DROP EXTENSION IF EXISTS cube;`", "execute(db);"]],
 				down: [
@@ -81,6 +84,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				schemaName: null,
 				type: "dropExtension",
 				up: [
 					["await sql`DROP EXTENSION IF EXISTS btree_gist;`", "execute(db);"],

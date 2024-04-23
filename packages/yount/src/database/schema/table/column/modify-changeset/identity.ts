@@ -68,6 +68,7 @@ function columnIdentityAddMigrationOperation(
 	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnIdentityAdd,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
 		up:
@@ -99,6 +100,7 @@ function columnIdentityDropMigrationOperation(
 	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnIdentityDrop,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
 		up: [

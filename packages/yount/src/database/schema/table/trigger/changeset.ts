@@ -24,7 +24,7 @@ export function triggerMigrationOpGenerator(
 		return dropTriggerMigration(diff, context);
 	}
 	if (isTriggerChange(diff)) {
-		return changeTriggerMigration(diff);
+		return changeTriggerMigration(diff, context.schemaName);
 	}
 }
 
@@ -129,6 +129,7 @@ function createTriggerFirstMigration(
 		const trigger = value.split(":");
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.TriggerCreate,
+			schemaName,
 			tableName: tableName,
 			type: ChangeSetType.CreateTrigger,
 			up: [executeKyselyDbStatement(`${trigger[1]}`)],
@@ -153,6 +154,7 @@ function createTriggerMigration(
 	const trigger = diff.value.split(":");
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TriggerCreate,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.CreateTrigger,
 		up: [executeKyselyDbStatement(`${trigger[1]}`)],
@@ -174,6 +176,7 @@ function dropTriggerFirstMigration(
 		const trigger = value.split(":");
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.TriggerDrop,
+			schemaName,
 			tableName: tableName,
 			type: ChangeSetType.DropTrigger,
 			up: droppedTables.includes(tableName)
@@ -206,6 +209,7 @@ function dropTriggerMigration(
 	const trigger = diff.oldValue.split(":");
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TriggerDrop,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.DropTrigger,
 		up: [
@@ -222,7 +226,7 @@ function dropTriggerMigration(
 	return changeset;
 }
 
-function changeTriggerMigration(diff: TriggerChangeDiff) {
+function changeTriggerMigration(diff: TriggerChangeDiff, schemaName: string) {
 	const tableName = diff.path[1];
 	const newValue = diff.value;
 	const newTrigger = newValue.split(":");
@@ -231,6 +235,7 @@ function changeTriggerMigration(diff: TriggerChangeDiff) {
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TriggerUpdate,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.UpdateTrigger,
 		up: [executeKyselyDbStatement(`${newTrigger[1]}`)],

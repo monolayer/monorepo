@@ -37,7 +37,9 @@ export type Changeset = {
 	up: string[][];
 	down: string[][];
 	priority: number;
+	schemaName: string | null;
 };
+
 export enum MigrationOpPriority {
 	Database = 0,
 

@@ -42,6 +42,7 @@ function columnNameMigrationOperation(
 	const tableName = diff.path[1];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnName,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumnName,
 		up: [

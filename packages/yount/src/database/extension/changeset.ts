@@ -59,6 +59,7 @@ function createExtensionMigration(diff: CreateExtensionDiff) {
 		down: [
 			executeKyselyDbStatement(`DROP EXTENSION IF EXISTS ${extensionName};`),
 		],
+		schemaName: null,
 	};
 	return changeset;
 }
@@ -77,6 +78,7 @@ function dropExtensionMigration(diff: DropExtensionDiff) {
 				`CREATE EXTENSION IF NOT EXISTS ${extensionName};`,
 			),
 		],
+		schemaName: null,
 	};
 	return changeset;
 }

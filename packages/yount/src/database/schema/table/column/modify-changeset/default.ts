@@ -122,6 +122,7 @@ function columnDefaultAddMigrationOperation(
 				`alterColumn("${columnName}", (col) => col.dropDefault())`,
 			),
 		],
+		schemaName,
 	};
 	return changeset;
 }
@@ -140,6 +141,7 @@ function columnDefaultDropMigrationOperation(
 	);
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultDrop,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.ChangeColumn,
 		up: [
@@ -217,6 +219,7 @@ function columnDefaultChangeMigrationOperation(
 		type: ChangeSetType.ChangeColumn,
 		up: up,
 		down: down,
+		schemaName,
 	};
 	return changeset;
 }

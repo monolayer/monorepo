@@ -156,6 +156,7 @@ function createforeignKeyFirstConstraintMigration(
 		(acc, [hashValue, constraintValue]) => {
 			const changeset: Changeset = {
 				priority: MigrationOpPriority.ForeignKeyCreate,
+				schemaName,
 				tableName: tableName,
 				type: ChangeSetType.CreateForeignKey,
 				up: addForeigKeyOps(
@@ -213,6 +214,7 @@ function createForeignKeyConstraintMigration(
 	const foreignKeyDefinition = builder.build("current").definition;
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ForeignKeyCreate,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.CreateForeignKey,
 		up: addForeigKeyOps(tableName, foreignKeyDefinition, schemaName),
@@ -241,6 +243,7 @@ function dropforeignKeyLastConstraintMigration(
 		(acc, [hashValue, constraintValue]) => {
 			const changeset: Changeset = {
 				priority: MigrationOpPriority.ForeignKeyDrop,
+				schemaName,
 				tableName: tableName,
 				type: ChangeSetType.DropForeignKey,
 				up: droppedTables.includes(tableName)
@@ -290,6 +293,7 @@ function dropForeignKeyConstraintMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ForeignKeyDrop,
 		tableName: previousTableName(tableName, tablesToRename),
+		schemaName,
 		type: ChangeSetType.DropForeignKey,
 		up: [
 			dropForeignKeyOp(
@@ -334,6 +338,7 @@ function changeForeignKeyNameMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.ChangeForeignKey,
 		up: [

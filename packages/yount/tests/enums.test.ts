@@ -48,6 +48,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				schemaName: "public",
 				type: "createEnum",
 				up: [
 					[
@@ -72,6 +73,7 @@ describe("Database migrations", () => {
 			{
 				priority: 2003,
 				tableName: "users",
+				schemaName: "public",
 				type: "createColumn",
 				up: [
 					[
@@ -129,6 +131,7 @@ describe("Database migrations", () => {
 			{
 				priority: 1005,
 				tableName: "users",
+				schemaName: "public",
 				type: "dropColumn",
 				up: [
 					[
@@ -150,6 +153,7 @@ describe("Database migrations", () => {
 			{
 				priority: 3011,
 				tableName: "none",
+				schemaName: "public",
 				type: "dropEnum",
 				up: [
 					[
@@ -213,6 +217,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				schemaName: "public",
 				type: "changeEnum",
 				up: [
 					[
@@ -259,6 +264,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				schemaName: "public",
 				type: "createEnum",
 				up: [
 					[
@@ -283,6 +289,7 @@ describe("Database migrations", () => {
 			{
 				priority: 2001,
 				tableName: "users",
+				schemaName: "public",
 				type: "createTable",
 				up: [
 					[
@@ -303,6 +310,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				schemaName: null,
 				type: "createSchema",
 				up: [
 					['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
@@ -312,6 +320,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				schemaName: "users",
 				type: "createEnum",
 				up: [
 					[
@@ -336,6 +345,7 @@ describe("Database migrations", () => {
 			{
 				priority: 2001,
 				tableName: "users",
+				schemaName: "users",
 				type: "createTable",
 				up: [
 					[

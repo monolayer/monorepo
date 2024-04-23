@@ -132,6 +132,7 @@ function createPrimaryKeyMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyCreate,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.CreatePrimaryKey,
 		up: [
@@ -169,6 +170,7 @@ function dropPrimaryKeyMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
@@ -201,6 +203,7 @@ function changePrimaryKeyMigration(
 
 	const createChangeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyCreate,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.CreatePrimaryKey,
 		up: [
@@ -222,6 +225,7 @@ function changePrimaryKeyMigration(
 
 	const dropChangeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
+		schemaName,
 		tableName: tableName,
 		type: ChangeSetType.DropPrimaryKey,
 		up: dropPrimaryKeyOp(
