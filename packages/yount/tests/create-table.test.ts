@@ -583,7 +583,7 @@ describe("Create table", () => {
 			{
 				priority: 4010,
 				tableName: "books",
-				type: "createConstraint",
+				type: "createUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -597,7 +597,7 @@ describe("Create table", () => {
 			{
 				priority: 4010,
 				tableName: "users",
-				type: "createConstraint",
+				type: "createUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -662,7 +662,7 @@ describe("Create table", () => {
 			{
 				priority: 4010,
 				tableName: "books",
-				type: "createConstraint",
+				type: "createUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -676,7 +676,7 @@ describe("Create table", () => {
 			{
 				priority: 4012,
 				tableName: "books",
-				type: "createConstraint",
+				type: "createCheckConstraint",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -698,7 +698,7 @@ describe("Create table", () => {
 			{
 				priority: 4012,
 				tableName: "books",
-				type: "createConstraint",
+				type: "createCheckConstraint",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -818,7 +818,7 @@ describe("Create table", () => {
 				down: [[]],
 				priority: 4011,
 				tableName: "users",
-				type: "createConstraint",
+				type: "createForeignKey",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1475,7 +1475,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			{
 				priority: 4011,
 				tableName: "users",
-				type: "createConstraint",
+				type: "createForeignKey",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1499,7 +1499,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			{
 				priority: 4011,
 				tableName: "new_books",
-				type: "createConstraint",
+				type: "createForeignKey",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1523,7 +1523,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			{
 				priority: 4011,
 				tableName: "new_books",
-				type: "createConstraint",
+				type: "createForeignKey",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1547,7 +1547,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			{
 				priority: 4012,
 				tableName: "new_books",
-				type: "createConstraint",
+				type: "createCheckConstraint",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1569,7 +1569,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			{
 				priority: 4012,
 				tableName: "new_books",
-				type: "createConstraint",
+				type: "createCheckConstraint",
 				up: [
 					[
 						`await sql\`\${sql.raw(

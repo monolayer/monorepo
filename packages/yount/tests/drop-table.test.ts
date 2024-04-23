@@ -388,7 +388,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 811,
 				tableName: "users",
-				type: "dropConstraint",
+				type: "dropUniqueConstraint",
 				up: [[]],
 				down: [
 					[
@@ -460,7 +460,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 810,
 				tableName: "users",
-				type: "dropConstraint",
+				type: "dropForeignKey",
 				up: [[]],
 				down: [
 					[
@@ -573,7 +573,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 812,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropCheckConstraint",
 				down: [
 					[
 						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "books_971041d9_yount_chk" CHECK ((id > 50)) NOT VALID`',

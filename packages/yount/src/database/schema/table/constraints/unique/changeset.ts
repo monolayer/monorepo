@@ -150,7 +150,7 @@ function createUniqueFirstConstraintMigration(
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.UniqueCreate,
 			tableName: tableName,
-			type: ChangeSetType.CreateConstraint,
+			type: ChangeSetType.CreateUnique,
 			up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 			down: addedTables.includes(tableName)
 				? [[]]
@@ -177,7 +177,7 @@ function dropUniqueLastConstraintMigration(
 			const changeset: Changeset = {
 				priority: MigrationOpPriority.UniqueConstraintDrop,
 				tableName: previousTableName(tableName, tablesToRename),
-				type: ChangeSetType.DropConstraint,
+				type: ChangeSetType.DropUnique,
 				up: droppedTables.includes(tableName)
 					? [[]]
 					: [
@@ -217,7 +217,7 @@ function createUniqueConstraintMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.UniqueCreate,
 		tableName: tableName,
-		type: ChangeSetType.CreateConstraint,
+		type: ChangeSetType.CreateUnique,
 		up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 		down: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 	};
@@ -239,7 +239,7 @@ function dropUniqueConstraintMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.UniqueConstraintDrop,
 		tableName: previousTableName(tableName, tablesToRename),
-		type: ChangeSetType.DropConstraint,
+		type: ChangeSetType.DropUnique,
 		up: [
 			dropUniqueConstraintOp(
 				previousTableName(tableName, tablesToRename),
@@ -271,7 +271,7 @@ function changeUniqueConstraintNameMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
 		tableName: tableName,
-		type: ChangeSetType.ChangeConstraint,
+		type: ChangeSetType.ChangeUnique,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${oldName} TO ${newName}`,

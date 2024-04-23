@@ -101,7 +101,7 @@ function createFirstCheckMigration(
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.CheckCreate,
 					tableName: tableName,
-					type: ChangeSetType.CreateConstraint,
+					type: ChangeSetType.CreateCheck,
 					up: addCheckWithSchemaStatements(
 						schemaName,
 						tableName,
@@ -139,7 +139,7 @@ function dropAllChecksMigration(
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.CheckConstraintDrop,
 					tableName: previousTableName(tableName, tablesToRename),
-					type: ChangeSetType.DropConstraint,
+					type: ChangeSetType.DropCheck,
 					up: droppedTables.includes(tableName)
 						? [[]]
 						: [
@@ -190,7 +190,7 @@ function createCheckMigration(
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.CheckCreate,
 		tableName: tableName,
-		type: ChangeSetType.CreateConstraint,
+		type: ChangeSetType.CreateCheck,
 		up: addCheckWithSchemaStatements(schemaName, tableName, checkDefinition),
 		down: [
 			dropCheckKyselySchemaStatement(
@@ -230,7 +230,7 @@ function dropCheckMigration(
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.CheckConstraintDrop,
 		tableName: previousTableName(tableName, tablesToRename),
-		type: ChangeSetType.DropConstraint,
+		type: ChangeSetType.DropCheck,
 		up: [
 			dropCheckKyselySchemaStatement(
 				schemaName,
@@ -260,7 +260,7 @@ function rehashIndexMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
 		tableName: tableName,
-		type: ChangeSetType.ChangeConstraint,
+		type: ChangeSetType.ChangeCheck,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${previousCheckName} TO ${newCheckName}`,

@@ -259,7 +259,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4012,
 				tableName: "publications",
-				type: "createConstraint",
+				type: "createCheckConstraint",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -288,7 +288,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4012,
 				tableName: "publications",
-				type: "createConstraint",
+				type: "createCheckConstraint",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -369,7 +369,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropCheckConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -462,7 +462,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropCheckConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -485,7 +485,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropCheckConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1057,7 +1057,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "persons",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO persons_c02e3d7d_yount_fk`',
@@ -1173,7 +1173,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO users_7e0fa77c_yount_fk`',
@@ -1310,7 +1310,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "persons",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO persons_7e0fa77c_yount_fk`',
@@ -1430,7 +1430,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "persons",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO persons_c02e3d7d_yount_fk`',
@@ -1546,7 +1546,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO users_7e0fa77c_yount_fk`',
@@ -1683,7 +1683,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "persons",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO persons_7e0fa77c_yount_fk`',
@@ -1830,7 +1830,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 4010,
 				tableName: "publications",
-				type: "createConstraint",
+				type: "createUniqueConstraint",
 				up: [
 					[
 						`await db.withSchema("public").schema`,
@@ -1892,7 +1892,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1985,7 +1985,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2075,7 +2075,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2096,7 +2096,7 @@ describe("Rename table without camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3027,7 +3027,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4012,
 				tableName: "books_and_documents",
-				type: "createConstraint",
+				type: "createCheckConstraint",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -3056,7 +3056,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4012,
 				tableName: "books_and_documents",
-				type: "createConstraint",
+				type: "createCheckConstraint",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -3140,7 +3140,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropCheckConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3236,7 +3236,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropCheckConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3259,7 +3259,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 812,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropCheckConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3838,7 +3838,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "user_books",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO user_books_c02e3d7d_yount_fk`',
@@ -3957,7 +3957,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO users_0ea2ca34_yount_fk`',
@@ -4097,7 +4097,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "user_books",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO user_books_0ea2ca34_yount_fk`',
@@ -4224,7 +4224,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "book_users",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."book_users" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO book_users_6de35d86_yount_fk`',
@@ -4350,7 +4350,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO users_462ff70f_yount_fk`',
@@ -4497,7 +4497,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "user_books",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO user_books_462ff70f_yount_fk`',
@@ -4650,7 +4650,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 4010,
 				tableName: "books_and_documents",
-				type: "createConstraint",
+				type: "createUniqueConstraint",
 				up: [
 					[
 						`await db.withSchema("public").schema`,
@@ -4715,7 +4715,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4811,7 +4811,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4904,7 +4904,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4925,7 +4925,7 @@ describe("Rename table with camel case plugin", () => {
 			{
 				priority: 811,
 				tableName: "books",
-				type: "dropConstraint",
+				type: "dropUniqueConstraint",
 				up: [
 					[
 						'await db.withSchema("public").schema',

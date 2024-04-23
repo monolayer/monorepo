@@ -884,7 +884,7 @@ describe("Modify table", () => {
 				{
 					priority: 4011,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createForeignKey",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1040,7 +1040,7 @@ describe("Modify table", () => {
 				{
 					priority: 4011,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createForeignKey",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1071,7 +1071,7 @@ describe("Modify table", () => {
 				{
 					priority: 4011,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createForeignKey",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1165,7 +1165,7 @@ describe("Modify table", () => {
 				{
 					priority: 810,
 					tableName: "users",
-					type: "dropConstraint",
+					type: "dropForeignKey",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1293,7 +1293,7 @@ describe("Modify table", () => {
 				{
 					priority: 810,
 					tableName: "users",
-					type: "dropConstraint",
+					type: "dropForeignKey",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1324,7 +1324,7 @@ describe("Modify table", () => {
 				{
 					priority: 810,
 					tableName: "users",
-					type: "dropConstraint",
+					type: "dropForeignKey",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1425,7 +1425,7 @@ describe("Modify table", () => {
 				{
 					priority: 810,
 					tableName: "users",
-					type: "dropConstraint",
+					type: "dropForeignKey",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1456,7 +1456,7 @@ describe("Modify table", () => {
 				{
 					priority: 4011,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createForeignKey",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1557,7 +1557,7 @@ describe("Modify table", () => {
 				{
 					priority: 810,
 					tableName: "users",
-					type: "dropConstraint",
+					type: "dropForeignKey",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1588,7 +1588,7 @@ describe("Modify table", () => {
 				{
 					priority: 4011,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createForeignKey",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1661,7 +1661,7 @@ describe("Modify table", () => {
 				{
 					priority: 4012,
 					tableName: "books",
-					type: "createConstraint",
+					type: "createCheckConstraint",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1725,7 +1725,7 @@ describe("Modify table", () => {
 				{
 					priority: 4012,
 					tableName: "books",
-					type: "createConstraint",
+					type: "createCheckConstraint",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1754,7 +1754,7 @@ describe("Modify table", () => {
 				{
 					priority: 4012,
 					tableName: "books",
-					type: "createConstraint",
+					type: "createCheckConstraint",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1827,7 +1827,7 @@ describe("Modify table", () => {
 				{
 					priority: 812,
 					tableName: "books",
-					type: "dropConstraint",
+					type: "dropCheckConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1884,7 +1884,7 @@ describe("Modify table", () => {
 				{
 					priority: 812,
 					tableName: "books",
-					type: "dropConstraint",
+					type: "dropCheckConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1961,7 +1961,7 @@ describe("Modify table", () => {
 				{
 					priority: 4012,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createCheckConstraint",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2012,7 +2012,7 @@ describe("Modify table", () => {
 				{
 					priority: 4012,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createCheckConstraint",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2087,7 +2087,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "books",
-					type: "createConstraint",
+					type: "createUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2108,7 +2108,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "books",
-					type: "createConstraint",
+					type: "createUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2129,7 +2129,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2215,7 +2215,7 @@ describe("Modify table", () => {
 				{
 					priority: 811,
 					tableName: "books",
-					type: "dropConstraint",
+					type: "dropUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2236,7 +2236,7 @@ describe("Modify table", () => {
 				{
 					priority: 811,
 					tableName: "books",
-					type: "dropConstraint",
+					type: "dropUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2318,7 +2318,7 @@ describe("Modify table", () => {
 				{
 					priority: 811,
 					tableName: "users",
-					type: "dropConstraint",
+					type: "dropUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2339,7 +2339,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2421,7 +2421,7 @@ describe("Modify table", () => {
 				{
 					priority: 811,
 					tableName: "users",
-					type: "dropConstraint",
+					type: "dropUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2442,7 +2442,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2533,7 +2533,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2591,7 +2591,7 @@ describe("Modify table", () => {
 				{
 					priority: 4010,
 					tableName: "users",
-					type: "createConstraint",
+					type: "createUniqueConstraint",
 					up: [
 						[
 							'await db.withSchema("users").schema',

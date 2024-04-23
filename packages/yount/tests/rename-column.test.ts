@@ -84,7 +84,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "books",
-				type: "changeConstraint",
+				type: "changeCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_2f1f415e_yount_chk TO books_dc912898_yount_chk`',
@@ -101,7 +101,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "books",
-				type: "changeConstraint",
+				type: "changeCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_e37c55a5_yount_chk TO books_f685097b_yount_chk`',
@@ -239,7 +239,7 @@ describe("without camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO users_273ade4f_yount_fk`',
@@ -1137,7 +1137,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "books",
-				type: "changeConstraint",
+				type: "changeCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_2f1f415e_yount_chk TO books_dc912898_yount_chk`',
@@ -1154,7 +1154,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "books",
-				type: "changeConstraint",
+				type: "changeCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_e37c55a5_yount_chk TO books_f685097b_yount_chk`',
@@ -1292,7 +1292,7 @@ describe("Rename column with camel case plugin", () => {
 			{
 				priority: 5002,
 				tableName: "users",
-				type: "changeConstraint",
+				type: "changeForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO users_273ade4f_yount_fk`',

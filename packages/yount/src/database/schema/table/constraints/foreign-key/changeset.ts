@@ -157,7 +157,7 @@ function createforeignKeyFirstConstraintMigration(
 			const changeset: Changeset = {
 				priority: MigrationOpPriority.ForeignKeyCreate,
 				tableName: tableName,
-				type: ChangeSetType.CreateConstraint,
+				type: ChangeSetType.CreateForeignKey,
 				up: addForeigKeyOps(
 					tableName,
 					foreignKeyDefinition(
@@ -214,7 +214,7 @@ function createForeignKeyConstraintMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ForeignKeyCreate,
 		tableName: tableName,
-		type: ChangeSetType.CreateConstraint,
+		type: ChangeSetType.CreateForeignKey,
 		up: addForeigKeyOps(tableName, foreignKeyDefinition, schemaName),
 		down: [
 			dropForeignKeyOp(
@@ -242,7 +242,7 @@ function dropforeignKeyLastConstraintMigration(
 			const changeset: Changeset = {
 				priority: MigrationOpPriority.ForeignKeyDrop,
 				tableName: tableName,
-				type: ChangeSetType.DropConstraint,
+				type: ChangeSetType.DropForeignKey,
 				up: droppedTables.includes(tableName)
 					? [[]]
 					: [
@@ -290,7 +290,7 @@ function dropForeignKeyConstraintMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ForeignKeyDrop,
 		tableName: previousTableName(tableName, tablesToRename),
-		type: ChangeSetType.DropConstraint,
+		type: ChangeSetType.DropForeignKey,
 		up: [
 			dropForeignKeyOp(
 				previousTableName(tableName, tablesToRename),
@@ -335,7 +335,7 @@ function changeForeignKeyNameMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
 		tableName: tableName,
-		type: ChangeSetType.ChangeConstraint,
+		type: ChangeSetType.ChangeForeignKey,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${previousForeignKeyName} TO ${newForeignKeyName}`,

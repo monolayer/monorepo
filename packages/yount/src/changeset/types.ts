@@ -19,9 +19,15 @@ export enum ChangeSetType {
 	DropEnum = "dropEnum",
 	ChangeEnum = "changeEnum",
 	ChangeColumnName = "changeColumnName",
-	DropConstraint = "dropConstraint",
-	CreateConstraint = "createConstraint",
-	ChangeConstraint = "changeConstraint",
+	CreateForeignKey = "createForeignKey",
+	DropForeignKey = "dropForeignKey",
+	ChangeForeignKey = "changeForeignKey",
+	CreateUnique = "createUniqueConstraint",
+	DropUnique = "dropUniqueConstraint",
+	ChangeUnique = "changeUniqueConstraint",
+	CreateCheck = "createCheckConstraint",
+	ChangeCheck = "changeCheckConstraint",
+	DropCheck = "dropCheckConstraint",
 	CreateSchema = "createSchema",
 }
 
