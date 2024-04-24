@@ -1,15 +1,18 @@
 /* eslint-disable max-lines */
 import { ChangeSetType, type Changeset } from "./types.js";
 
-type SummaryStats = { added: number; dropped: number; altered: number };
+export type SummaryStats = { added: number; dropped: number; altered: number };
 
 type SchemaStats = {
 	tableSummary: SummaryStats;
 	tables: Record<string, TableStats>;
+	tableNameChanges: Record<string, string>;
+	addedTables: string[];
+	droppedTables: string[];
 	enumTypes: SummaryStats;
 };
 
-type TableStats = {
+export type TableStats = {
 	columns: SummaryStats;
 	primaryKeys: SummaryStats;
 	foreignKeys: SummaryStats;
@@ -19,17 +22,16 @@ type TableStats = {
 	triggers: SummaryStats;
 };
 
-type ChangesetStats = {
+export type ChangesetStats = {
 	database: DbStats;
 	databaseSchemas: Record<string, SchemaStats>;
 };
 
+export type AddDropStats = { added: number; dropped: number };
+
 type DbStats = {
-	extensions: {
-		added: number;
-		dropped: number;
-	};
-	schemaSummary: { added: number; dropped: number };
+	extensions: AddDropStats;
+	schemaSummary: AddDropStats;
 };
 
 const dbStatsFn: Record<
@@ -141,6 +143,9 @@ function initSchemaStats(
 			enumTypes: { added: 0, dropped: 0, altered: 0 },
 			tableSummary: { added: 0, dropped: 0, altered: 0 },
 			tables: {},
+			tableNameChanges: {},
+			addedTables: [],
+			droppedTables: [],
 		};
 	}
 	return schemas[schemaName]!;
@@ -177,7 +182,7 @@ function addTableAlteration(
 	tableAlterations: TableAlterations,
 ) {
 	const schemaName = changeset.schemaName!;
-	const tableName = changeset.tableName;
+	const tableName = changeset.currentTableName;
 	tableAlterations[schemaName] = tableAlterations[schemaName] || {};
 	const schemaAlterations = tableAlterations[schemaName]!;
 	schemaAlterations[tableName] = schemaAlterations[tableName] || false;
@@ -199,14 +204,25 @@ function addTableStats(
 			stats.databaseSchemas,
 			changeset.schemaName,
 		);
+		const tableStats = initTableStats(
+			schemaStats.tables,
+			changeset.currentTableName,
+		);
 		switch (changeset.type) {
 			case ChangeSetType.CreateTable:
 				schemaStats.tableSummary.added++;
+				tableStats.columns.added = (
+					changeset.up.toString().match(/addColumn/g) ?? []
+				).length;
+				schemaStats.addedTables.push(changeset.currentTableName);
 				break;
 			case ChangeSetType.DropTable:
 				schemaStats.tableSummary.dropped++;
+				schemaStats.droppedTables.push(changeset.currentTableName);
 				break;
 			case ChangeSetType.ChangeTable:
+				schemaStats.tableNameChanges[changeset.currentTableName] =
+					changeset.tableName;
 				addTableAlteration(
 					changeset,
 					schemaStats.tableSummary,
@@ -243,10 +259,10 @@ export function processTableStats(
 	op: "add" | "drop" | "alter",
 	tableAlterations: TableAlterations,
 ) {
-	if (changeset.tableName === "none") {
+	if (changeset.currentTableName === "none") {
 		return false;
 	}
-	const tableName = changeset.tableName;
+	const tableName = changeset.currentTableName;
 	if (changeset.schemaName === null) {
 		return false;
 	} else {

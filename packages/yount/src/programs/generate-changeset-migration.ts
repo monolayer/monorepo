@@ -1,6 +1,7 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { generateMigrationFiles } from "~/migrations/generate.js";
+import { printChangesetSummary } from "../changeset/print-changeset-summary.js";
 import { DevEnvironment } from "../services/environment.js";
 import { changeset } from "./changeset.js";
 import { computeExtensionChangeset } from "./extension-changeset.js";
@@ -20,6 +21,7 @@ export function generateChangesetMigration() {
 							onTrue: Effect.succeed(changeset).pipe(
 								Effect.tap((cset) => {
 									generateMigrationFiles(cset, environment.migrationFolder);
+									printChangesetSummary(cset);
 									p.note(
 										"Apply migrations with 'npx yount migrate'",
 										"Next Steps",
