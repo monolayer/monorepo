@@ -1,6 +1,5 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
-import color from "picocolors";
 import { generateMigrationFiles } from "~/migrations/generate.js";
 import { DevEnvironment } from "../services/environment.js";
 import { changeset } from "./changeset.js";
@@ -29,9 +28,7 @@ export function generateChangesetMigration() {
 							),
 							onFalse: Effect.succeed(true).pipe(
 								Effect.tap(() => {
-									p.log.info(
-										`${color.green("Nothing to do")}. No schema changes found.`,
-									);
+									p.log.info(`Nothing to do. No changes detected.`);
 								}),
 							),
 						}),
