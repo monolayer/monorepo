@@ -39,6 +39,7 @@ describe("Table drop migrations", () => {
 		const expected = [
 			{
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
 				priority: 1006,
@@ -59,6 +60,7 @@ describe("Table drop migrations", () => {
 			},
 			{
 				tableName: "organizations",
+				currentTableName: "organizations",
 				schemaName: "public",
 				type: "dropTable",
 				priority: 1006,
@@ -155,6 +157,7 @@ describe("Table drop migrations", () => {
 		const expected = [
 			{
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
 				priority: 1006,
@@ -199,6 +202,7 @@ describe("Table drop migrations", () => {
 			},
 			{
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
 				priority: 1006,
@@ -282,6 +286,7 @@ describe("Table drop migrations", () => {
 				],
 				priority: 1004,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "dropPrimaryKey",
 				up: [[]],
@@ -297,6 +302,7 @@ describe("Table drop migrations", () => {
 				],
 				priority: 1004,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropPrimaryKey",
 				up: [[]],
@@ -312,6 +318,7 @@ describe("Table drop migrations", () => {
 				],
 				priority: 1006,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
 				up: [
@@ -333,6 +340,7 @@ describe("Table drop migrations", () => {
 				],
 				priority: 1006,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
 				up: [
@@ -396,6 +404,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 811,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropUniqueConstraint",
 				up: [[]],
@@ -411,6 +420,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 1006,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
 				up: [
@@ -470,6 +480,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 810,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropForeignKey",
 				up: [[]],
@@ -495,6 +506,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 1006,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
 				up: [
@@ -516,6 +528,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 1004,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "dropPrimaryKey",
 				up: [[]],
@@ -531,6 +544,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 1006,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
 				up: [
@@ -587,6 +601,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 812,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "dropCheckConstraint",
 				down: [
@@ -604,6 +619,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 1006,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
 				up: [
@@ -661,6 +677,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 800,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "dropIndex",
 				up: [[]],
@@ -674,6 +691,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 800,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropIndex",
 				up: [[]],
@@ -687,6 +705,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 1006,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
 				up: [
@@ -708,6 +727,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 1006,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
 				up: [
@@ -755,6 +775,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 1006,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
 				up: [
@@ -777,6 +798,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 3011,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: "public",
 				type: "dropEnum",
 				up: [
@@ -856,6 +878,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 1001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTrigger",
 				up: [[]],
@@ -869,6 +892,7 @@ describe("Table drop migrations", () => {
 			{
 				priority: 1006,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
 				up: [
@@ -987,6 +1011,7 @@ describe("Table drop migrations", () => {
 		const expected = [
 			{
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "demo",
 				type: "dropTable",
 				priority: 1006,
@@ -1031,6 +1056,7 @@ describe("Table drop migrations", () => {
 			},
 			{
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "demo",
 				type: "dropTable",
 				priority: 1006,

@@ -5,6 +5,7 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
@@ -44,7 +45,7 @@ export function isCreateTable(test: Difference): test is CreateTableDiff {
 
 function createTableMigration(
 	diff: CreateTableDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const up = [
@@ -69,6 +70,7 @@ function createTableMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TableCreate,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.CreateTable,
 		up: up,
 		down: [
@@ -93,7 +95,7 @@ export function isDropTable(test: Difference): test is DropTableTableDiff {
 
 function dropTableMigration(
 	diff: DropTableTableDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const down = [
@@ -118,6 +120,7 @@ function dropTableMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TableDrop,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropTable,
 		up: [executeKyselySchemaStatement(schemaName, `dropTable("${tableName}")`)],
 		down: down,
@@ -148,11 +151,12 @@ export function isTableNameChange(
 
 function changeTableNameMigration(
 	diff: ChangeTableNameDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeTableName,
 		tableName: diff.oldValue,
+		currentTableName: currentTableName(diff.oldValue, tablesToRename),
 		type: ChangeSetType.ChangeTable,
 		up: [
 			executeKyselySchemaStatement(

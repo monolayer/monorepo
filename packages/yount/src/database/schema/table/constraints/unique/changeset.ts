@@ -7,7 +7,10 @@ import {
 	type Changeset,
 } from "~/changeset/types.js";
 import { currentColumName } from "~/introspection/column-name.js";
-import { previousTableName } from "~/introspection/table-name.js";
+import {
+	currentTableName,
+	previousTableName,
+} from "~/introspection/table-name.js";
 import { extractColumnsFromPrimaryKey } from "~/migrations/migration-schema.js";
 import { hashValue } from "~/utils.js";
 import {
@@ -134,7 +137,12 @@ function isUniqueConstraintDropDiff(test: Difference): test is UuniqueDropDiff {
 
 function createUniqueFirstConstraintMigration(
 	diff: UniqueCreateFirst,
-	{ schemaName, addedTables, columnsToRename }: GeneratorContext,
+	{
+		schemaName,
+		addedTables,
+		columnsToRename,
+		tablesToRename,
+	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [hash, value]) => {
@@ -151,6 +159,7 @@ function createUniqueFirstConstraintMigration(
 			priority: MigrationOpPriority.UniqueCreate,
 			schemaName,
 			tableName: tableName,
+			currentTableName: currentTableName(tableName, tablesToRename),
 			type: ChangeSetType.CreateUnique,
 			up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 			down: addedTables.includes(tableName)
@@ -179,6 +188,7 @@ function dropUniqueLastConstraintMigration(
 				priority: MigrationOpPriority.UniqueConstraintDrop,
 				schemaName,
 				tableName: previousTableName(tableName, tablesToRename),
+				currentTableName: currentTableName(tableName, tablesToRename),
 				type: ChangeSetType.DropUnique,
 				up: droppedTables.includes(tableName)
 					? [[]]
@@ -206,7 +216,7 @@ function dropUniqueLastConstraintMigration(
 
 function createUniqueConstraintMigration(
 	diff: UniqueCreateDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const hashValue = diff.path[2];
@@ -220,6 +230,7 @@ function createUniqueConstraintMigration(
 		priority: MigrationOpPriority.UniqueCreate,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.CreateUnique,
 		up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 		down: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
@@ -243,6 +254,7 @@ function dropUniqueConstraintMigration(
 		priority: MigrationOpPriority.UniqueConstraintDrop,
 		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropUnique,
 		up: [
 			dropUniqueConstraintOp(
@@ -276,6 +288,7 @@ function changeUniqueConstraintNameMigration(
 		priority: MigrationOpPriority.ConstraintChange,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeUnique,
 		up: [
 			executeKyselyDbStatement(

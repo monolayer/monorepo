@@ -5,6 +5,7 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
@@ -92,7 +93,7 @@ function isColumnDefaultChangeValue(
 
 function columnDefaultAddMigrationOperation(
 	diff: ColumnDefaultAddDifference,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -102,6 +103,7 @@ function columnDefaultAddMigrationOperation(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultAdd,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeColumn,
 		up: [
 			executeKyselySchemaStatement(
@@ -129,7 +131,7 @@ function columnDefaultAddMigrationOperation(
 
 function columnDefaultDropMigrationOperation(
 	diff: ColumnDefaultDropDifference,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -143,6 +145,7 @@ function columnDefaultDropMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnDefaultDrop,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeColumn,
 		up: [
 			executeKyselySchemaStatement(
@@ -169,7 +172,7 @@ function columnDefaultDropMigrationOperation(
 
 function columnDefaultChangeMigrationOperation(
 	diff: ColumnDefaultChangeDifference,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -216,6 +219,7 @@ function columnDefaultChangeMigrationOperation(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultChange,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeColumn,
 		up: up,
 		down: down,

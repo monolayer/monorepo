@@ -5,6 +5,7 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import { executeKyselyDbStatement } from "../../../../../changeset/helpers.js";
 import type { ColumnInfo } from "../types.js";
 
@@ -62,7 +63,7 @@ function isColumnIdentityDrop(
 
 function columnIdentityAddMigrationOperation(
 	diff: IdentityAddDifference,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -70,6 +71,7 @@ function columnIdentityAddMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnIdentityAdd,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeColumn,
 		up:
 			diff.value === "ALWAYS"
@@ -94,7 +96,7 @@ function columnIdentityAddMigrationOperation(
 
 function columnIdentityDropMigrationOperation(
 	diff: IdentityDropDifference,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -102,6 +104,7 @@ function columnIdentityDropMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnIdentityDrop,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeColumn,
 		up: [
 			executeKyselyDbStatement(

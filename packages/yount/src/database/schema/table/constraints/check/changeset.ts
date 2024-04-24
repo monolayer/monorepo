@@ -7,7 +7,10 @@ import {
 	type Changeset,
 } from "~/changeset/types.js";
 import { changedColumnNames } from "~/introspection/column-name.js";
-import { previousTableName } from "~/introspection/table-name.js";
+import {
+	currentTableName,
+	previousTableName,
+} from "~/introspection/table-name.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
@@ -85,7 +88,12 @@ export function isRehashCheck(
 
 function createFirstCheckMigration(
 	diff: CreateFirstCheckDiff,
-	{ addedTables, schemaName, columnsToRename }: GeneratorContext,
+	{
+		addedTables,
+		schemaName,
+		columnsToRename,
+		tablesToRename,
+	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const checkHashes = Object.keys(diff.value) as Array<keyof typeof diff.value>;
@@ -102,6 +110,7 @@ function createFirstCheckMigration(
 					priority: MigrationOpPriority.CheckCreate,
 					schemaName,
 					tableName: tableName,
+					currentTableName: currentTableName(tableName, tablesToRename),
 					type: ChangeSetType.CreateCheck,
 					up: addCheckWithSchemaStatements(
 						schemaName,
@@ -140,6 +149,7 @@ function dropAllChecksMigration(
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.CheckConstraintDrop,
 					tableName: previousTableName(tableName, tablesToRename),
+					currentTableName: currentTableName(tableName, tablesToRename),
 					schemaName,
 					type: ChangeSetType.DropCheck,
 					up: droppedTables.includes(tableName)
@@ -180,7 +190,7 @@ function isCreateCheck(test: Difference): test is CreateCheck {
 
 function createCheckMigration(
 	diff: CreateCheck,
-	{ schemaName, columnsToRename }: GeneratorContext,
+	{ schemaName, columnsToRename, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const checkDefinition = redefineCheck(
@@ -193,6 +203,7 @@ function createCheckMigration(
 		priority: MigrationOpPriority.CheckCreate,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.CreateCheck,
 		up: addCheckWithSchemaStatements(schemaName, tableName, checkDefinition),
 		down: [
@@ -234,6 +245,7 @@ function dropCheckMigration(
 		priority: MigrationOpPriority.CheckConstraintDrop,
 		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropCheck,
 		up: [
 			dropCheckKyselySchemaStatement(
@@ -265,6 +277,7 @@ function rehashIndexMigration(
 		priority: MigrationOpPriority.ConstraintChange,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeCheck,
 		up: [
 			executeKyselyDbStatement(

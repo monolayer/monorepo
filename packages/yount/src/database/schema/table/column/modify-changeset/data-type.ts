@@ -5,6 +5,7 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
 
 export function columnDataTypeMigrationOpGenerator(
@@ -35,7 +36,7 @@ function isColumnDataType(test: Difference): test is ColumnDataTypeDifference {
 
 function columnDatatypeMigrationOperation(
 	diff: ColumnDataTypeDifference,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -45,6 +46,7 @@ function columnDatatypeMigrationOperation(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDatatype,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeColumn,
 		up: [
 			executeKyselySchemaStatement(

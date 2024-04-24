@@ -5,6 +5,7 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import { executeKyselyDbStatement } from "../../../../changeset/helpers.js";
 
 export function triggerMigrationOpGenerator(
@@ -24,7 +25,7 @@ export function triggerMigrationOpGenerator(
 		return dropTriggerMigration(diff, context);
 	}
 	if (isTriggerChange(diff)) {
-		return changeTriggerMigration(diff, context.schemaName);
+		return changeTriggerMigration(diff, context);
 	}
 }
 
@@ -122,7 +123,7 @@ function isTriggerChange(test: Difference): test is TriggerChangeDiff {
 
 function createTriggerFirstMigration(
 	diff: TriggerCreateFirstDiff,
-	{ schemaName, addedTables }: GeneratorContext,
+	{ schemaName, addedTables, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [key, value]) => {
@@ -131,6 +132,7 @@ function createTriggerFirstMigration(
 			priority: MigrationOpPriority.TriggerCreate,
 			schemaName,
 			tableName: tableName,
+			currentTableName: currentTableName(tableName, tablesToRename),
 			type: ChangeSetType.CreateTrigger,
 			up: [executeKyselyDbStatement(`${trigger[1]}`)],
 			down: addedTables.includes(tableName)
@@ -147,7 +149,7 @@ function createTriggerFirstMigration(
 
 function createTriggerMigration(
 	diff: TriggerCreateDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const triggerName = diff.path[2];
@@ -156,6 +158,7 @@ function createTriggerMigration(
 		priority: MigrationOpPriority.TriggerCreate,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.CreateTrigger,
 		up: [executeKyselyDbStatement(`${trigger[1]}`)],
 		down: [
@@ -169,7 +172,7 @@ function createTriggerMigration(
 
 function dropTriggerFirstMigration(
 	diff: TriggerDropFirstDiff,
-	{ schemaName, droppedTables }: GeneratorContext,
+	{ schemaName, droppedTables, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.oldValue).reduce((acc, [key, value]) => {
@@ -178,6 +181,7 @@ function dropTriggerFirstMigration(
 			priority: MigrationOpPriority.TriggerDrop,
 			schemaName,
 			tableName: tableName,
+			currentTableName: currentTableName(tableName, tablesToRename),
 			type: ChangeSetType.DropTrigger,
 			up: droppedTables.includes(tableName)
 				? [[]]
@@ -202,7 +206,7 @@ function dropTriggerFirstMigration(
 
 function dropTriggerMigration(
 	diff: TriggerDropDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const triggerName = diff.path[2];
@@ -211,6 +215,7 @@ function dropTriggerMigration(
 		priority: MigrationOpPriority.TriggerDrop,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropTrigger,
 		up: [
 			executeKyselyDbStatement(
@@ -226,7 +231,10 @@ function dropTriggerMigration(
 	return changeset;
 }
 
-function changeTriggerMigration(diff: TriggerChangeDiff, schemaName: string) {
+function changeTriggerMigration(
+	diff: TriggerChangeDiff,
+	{ schemaName, tablesToRename }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const newValue = diff.value;
 	const newTrigger = newValue.split(":");
@@ -237,6 +245,7 @@ function changeTriggerMigration(diff: TriggerChangeDiff, schemaName: string) {
 		priority: MigrationOpPriority.TriggerUpdate,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.UpdateTrigger,
 		up: [executeKyselyDbStatement(`${newTrigger[1]}`)],
 		down: [

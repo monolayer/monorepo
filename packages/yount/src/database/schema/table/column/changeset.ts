@@ -5,6 +5,7 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
@@ -45,7 +46,7 @@ function isCreateColumn(test: Difference): test is CreateColumnDiff {
 
 function createColumnMigration(
 	diff: CreateColumnDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -73,6 +74,7 @@ function createColumnMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnCreate,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.CreateColumn,
 		up: up,
 		down: [
@@ -104,7 +106,7 @@ function isDropColumn(test: Difference): test is DropColumnDiff {
 
 function dropColumnMigration(
 	diff: DropColumnDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnDef = diff.oldValue;
@@ -131,6 +133,7 @@ function dropColumnMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnDrop,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropColumn,
 		up: [
 			executeKyselySchemaStatement(

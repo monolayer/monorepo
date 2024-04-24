@@ -5,6 +5,7 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
 
 export function columnNullableMigrationOpGenerator(
@@ -35,7 +36,7 @@ function isColumnNullable(test: Difference): test is ColumnNullableDifference {
 
 function columnNullableMigrationOperation(
 	diff: ColumnNullableDifference,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -43,6 +44,7 @@ function columnNullableMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnNullable,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeColumn,
 		up: diff.value
 			? [

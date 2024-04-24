@@ -10,7 +10,11 @@ import {
 	type Changeset,
 } from "~/changeset/types.js";
 import { changedColumnNames } from "~/introspection/column-name.js";
-import { previousTableName } from "~/introspection/table-name.js";
+import {
+	currentTableName,
+	previousTableName,
+} from "~/introspection/table-name.js";
+import type { TablesToRename } from "~/programs/introspect-schemas.js";
 import { indexNameFromDefinition, rehashIndex } from "./introspection.js";
 
 export function indexMigrationOpGenerator(
@@ -30,10 +34,10 @@ export function indexMigrationOpGenerator(
 		return dropIndexMigration(diff, context);
 	}
 	if (isChangeIndexName(diff)) {
-		return changeIndexNameMigration(diff, context.schemaName);
+		return changeIndexNameMigration(diff, context);
 	}
 	if (isRehashIndex(diff, context)) {
-		return rehashIndexMigration(diff, context.schemaName);
+		return rehashIndexMigration(diff, context);
 	}
 }
 
@@ -63,7 +67,7 @@ function isDropAllIndexes(test: Difference): test is DropAllIndexesDiff {
 
 function createFirstIndexMigration(
 	diff: CreateFirstIndexDiff,
-	{ schemaName, addedTables }: GeneratorContext,
+	{ schemaName, addedTables, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [indexHash, index]) => {
@@ -72,6 +76,7 @@ function createFirstIndexMigration(
 			priority: MigrationOpPriority.IndexCreate,
 			schemaName,
 			tableName: tableName,
+			currentTableName: currentTableName(tableName, tablesToRename),
 			type: ChangeSetType.CreateIndex,
 			up: [executeKyselyDbStatement(`${redefinedIndex.definition}`)],
 			down: addedTables.includes(tableName)
@@ -104,6 +109,7 @@ function dropAllIndexesMigration(
 				priority: MigrationOpPriority.IndexDrop,
 				schemaName,
 				tableName: indexTableName,
+				currentTableName: currentTableName(tableName, tablesToRename),
 				type: ChangeSetType.DropIndex,
 				up: droppedTables.includes(tableName)
 					? [[]]
@@ -137,7 +143,7 @@ function isCreateIndex(test: Difference): test is CreateIndex {
 
 function createIndexMigration(
 	diff: CreateIndex,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const hash = diff.path[2];
@@ -147,6 +153,7 @@ function createIndexMigration(
 		priority: MigrationOpPriority.IndexCreate,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.CreateIndex,
 		up: [executeKyselyDbStatement(`${index}`)],
 		down: [
@@ -171,7 +178,10 @@ function isDropIndex(test: Difference): test is DropIndex {
 	);
 }
 
-function dropIndexMigration(diff: DropIndex, { schemaName }: GeneratorContext) {
+function dropIndexMigration(
+	diff: DropIndex,
+	{ schemaName, tablesToRename }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const hash = diff.path[2];
 	const indexName = `${tableName}_${hash}_yount_idx`;
@@ -180,6 +190,7 @@ function dropIndexMigration(diff: DropIndex, { schemaName }: GeneratorContext) {
 		priority: MigrationOpPriority.IndexDrop,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropIndex,
 		up: [executeKyselySchemaStatement(schemaName, `dropIndex("${indexName}")`)],
 		down: [executeKyselyDbStatement(`${index}`)],
@@ -208,7 +219,7 @@ function isChangeIndexName(test: Difference): test is ChangeIndexNameDiff {
 
 function changeIndexNameMigration(
 	diff: ChangeIndexNameDiff,
-	schemaName: string,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const oldIndexName = indexNameFromDefinition(diff.oldValue);
@@ -218,6 +229,7 @@ function changeIndexNameMigration(
 		newIndexName,
 		oldIndexName!,
 		schemaName,
+		tablesToRename,
 	);
 }
 
@@ -245,7 +257,10 @@ function isRehashIndex(
 	);
 }
 
-function rehashIndexMigration(diff: RehashIndexDiff, schemaName: string) {
+function rehashIndexMigration(
+	diff: RehashIndexDiff,
+	{ schemaName, tablesToRename }: GeneratorContext,
+) {
 	const tableName = diff.path[1];
 	const oldIndexName = indexNameFromDefinition(diff.oldValue);
 	const newIndexName = rehashIndex(tableName, diff.value, diff.path[2]).name;
@@ -254,6 +269,7 @@ function rehashIndexMigration(diff: RehashIndexDiff, schemaName: string) {
 		newIndexName,
 		oldIndexName!,
 		schemaName,
+		tablesToRename,
 	);
 }
 
@@ -262,11 +278,13 @@ function changeIndexNameChangeset(
 	newIndexName: string,
 	oldIndexName: string,
 	schemaName: string,
+	tablesToRename: TablesToRename,
 ) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeIndex,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeIndex,
 		up: [
 			executeKyselyDbStatement(

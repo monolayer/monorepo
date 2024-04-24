@@ -9,6 +9,7 @@ export function createSchemaChangeset(schemaName: string) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.Database,
 		tableName: "none",
+		currentTableName: "none",
 		schemaName: null,
 		type: ChangeSetType.CreateSchema,
 		up: [

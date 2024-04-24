@@ -50,6 +50,7 @@ function createExtensionMigration(diff: CreateExtensionDiff) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.Database,
 		tableName: "none",
+		currentTableName: "none",
 		type: ChangeSetType.CreateExtension,
 		up: [
 			executeKyselyDbStatement(
@@ -69,6 +70,7 @@ function dropExtensionMigration(diff: DropExtensionDiff) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.Database,
 		tableName: "none",
+		currentTableName: "none",
 		type: ChangeSetType.DropExtension,
 		up: [
 			executeKyselyDbStatement(`DROP EXTENSION IF EXISTS ${extensionName};`),

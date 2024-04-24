@@ -38,6 +38,7 @@ function createEnumMigration(
 		priority: MigrationOpPriority.Database,
 		schemaName,
 		tableName: "none",
+		currentTableName: "none",
 		type: ChangeSetType.CreateEnum,
 		up: [
 			executeKyselySchemaStatement(
@@ -67,6 +68,7 @@ function dropEnumMigration(
 		priority: MigrationOpPriority.DropEnum,
 		schemaName,
 		tableName: "none",
+		currentTableName: "none",
 		type: ChangeSetType.DropEnum,
 		up: [executeKyselySchemaStatement(schemaName, `dropType("${enumName}")`)],
 		down: [
@@ -106,6 +108,7 @@ function changeEnumMigration(
 		priority: MigrationOpPriority.Database,
 		schemaName,
 		tableName: "none",
+		currentTableName: "none",
 		type: ChangeSetType.ChangeEnum,
 		up: [executeKyselyDbStatement(`${newValues.join(";")};`)],
 		down: [],

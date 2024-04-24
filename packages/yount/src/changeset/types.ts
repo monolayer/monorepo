@@ -33,6 +33,7 @@ export enum ChangeSetType {
 
 export type Changeset = {
 	tableName: string;
+	currentTableName: string;
 	type: ChangeSetType;
 	up: string[][];
 	down: string[][];

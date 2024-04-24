@@ -7,6 +7,8 @@ import {
 	type Changeset,
 } from "~/changeset/types.js";
 import { currentColumName } from "~/introspection/column-name.js";
+import { currentTableName } from "~/introspection/table-name.js";
+import type { TablesToRename } from "~/programs/introspect-schemas.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
 import type { LocalTableInfo } from "../../../../../introspection/introspection.js";
 import {
@@ -122,7 +124,7 @@ export function primaryKeyColumnsChange(
 
 function createPrimaryKeyMigration(
 	diff: PrimaryKeyCreate,
-	{ schemaName, addedTables, local }: GeneratorContext,
+	{ schemaName, addedTables, local, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(diff.value)[0] as keyof typeof diff.value;
@@ -134,6 +136,7 @@ function createPrimaryKeyMigration(
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.CreatePrimaryKey,
 		up: [
 			addPrimaryKeyOp(
@@ -155,6 +158,7 @@ function createPrimaryKeyMigration(
 				tableName,
 				local,
 				schemaName,
+				tablesToRename,
 				"down",
 			);
 
@@ -163,7 +167,7 @@ function createPrimaryKeyMigration(
 
 function dropPrimaryKeyMigration(
 	diff: PrimaryKeyDropDiff,
-	{ schemaName, droppedTables, local }: GeneratorContext,
+	{ schemaName, droppedTables, local, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(
@@ -177,6 +181,7 @@ function dropPrimaryKeyMigration(
 		priority: MigrationOpPriority.PrimaryKeyDrop,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
 			? [[]]
@@ -198,6 +203,7 @@ function dropPrimaryKeyMigration(
 				tableName,
 				local,
 				schemaName,
+				tablesToRename,
 				"up",
 			);
 
@@ -206,7 +212,7 @@ function dropPrimaryKeyMigration(
 
 function changePrimaryKeyMigration(
 	diff: PrimaryKeyChangeDiff,
-	{ schemaName, local }: GeneratorContext,
+	{ schemaName, local, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const primaryKeyName = diff.path[2];
@@ -215,6 +221,7 @@ function changePrimaryKeyMigration(
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.CreatePrimaryKey,
 		up: [
 			addPrimaryKeyOp(
@@ -232,6 +239,7 @@ function changePrimaryKeyMigration(
 		tableName,
 		local,
 		schemaName,
+		tablesToRename,
 		"down",
 	);
 
@@ -239,6 +247,7 @@ function changePrimaryKeyMigration(
 		priority: MigrationOpPriority.PrimaryKeyDrop,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.DropPrimaryKey,
 		up: [dropPrimaryKeyOp(tableName, primaryKeyName, schemaName)],
 		down: [
@@ -251,6 +260,7 @@ function changePrimaryKeyMigration(
 		tableName,
 		local,
 		schemaName,
+		tablesToRename,
 		"up",
 	);
 
@@ -308,6 +318,7 @@ function dropNotNullChangesets(
 	tableName: string,
 	local: LocalTableInfo,
 	schemaName: string,
+	tablesToRename: TablesToRename,
 	direction: "up" | "down",
 ) {
 	const primaryKeyColumns = extractColumnsFromPrimaryKey(primaryKeyValue);
@@ -326,6 +337,7 @@ function dropNotNullChangesets(
 								priority: MigrationOpPriority.ChangeColumnNullable,
 								schemaName,
 								tableName: tableName,
+								currentTableName: currentTableName(tableName, tablesToRename),
 								type: ChangeSetType.ChangeColumn,
 								up:
 									direction === "up"
@@ -343,6 +355,7 @@ function dropNotNullChangesets(
 								priority: MigrationOpPriority.ChangeColumnNullable,
 								schemaName,
 								tableName: tableName,
+								currentTableName: currentTableName(tableName, tablesToRename),
 								type: ChangeSetType.ChangeColumn,
 								up:
 									direction === "up"
@@ -361,6 +374,7 @@ function dropNotNullChangesets(
 					priority: MigrationOpPriority.ChangeColumnNullable,
 					schemaName,
 					tableName: tableName,
+					currentTableName: currentTableName(tableName, tablesToRename),
 					type: ChangeSetType.ChangeColumn,
 					up:
 						direction === "up"

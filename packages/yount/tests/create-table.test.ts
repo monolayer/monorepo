@@ -72,6 +72,7 @@ describe("Create table", () => {
 		const expected = [
 			{
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				priority: 2001,
@@ -92,6 +93,7 @@ describe("Create table", () => {
 			},
 			{
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
 				priority: 2001,
@@ -186,6 +188,7 @@ describe("Create table", () => {
 		const expected = [
 			{
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				priority: 2001,
@@ -246,6 +249,7 @@ describe("Create table", () => {
 			},
 			{
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
 				priority: 2001,
@@ -336,6 +340,7 @@ describe("Create table", () => {
 		const expected = [
 			{
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				priority: 2001,
@@ -357,6 +362,7 @@ describe("Create table", () => {
 			},
 			{
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
 				priority: 2001,
@@ -380,6 +386,7 @@ describe("Create table", () => {
 				down: [[]],
 				priority: 4001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
@@ -395,6 +402,7 @@ describe("Create table", () => {
 				down: [[]],
 				priority: 4001,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
@@ -442,6 +450,7 @@ describe("Create table", () => {
 		const expected = [
 			{
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				priority: 2001,
@@ -464,6 +473,7 @@ describe("Create table", () => {
 			},
 			{
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
 				priority: 2001,
@@ -487,6 +497,7 @@ describe("Create table", () => {
 				down: [[]],
 				priority: 4001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
@@ -502,6 +513,7 @@ describe("Create table", () => {
 				down: [[]],
 				priority: 4001,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
@@ -554,6 +566,7 @@ describe("Create table", () => {
 			{
 				priority: 2001,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -575,6 +588,7 @@ describe("Create table", () => {
 			{
 				priority: 2001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -597,6 +611,7 @@ describe("Create table", () => {
 			{
 				priority: 4010,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createUniqueConstraint",
 				up: [
@@ -612,6 +627,7 @@ describe("Create table", () => {
 			{
 				priority: 4010,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createUniqueConstraint",
 				up: [
@@ -658,6 +674,7 @@ describe("Create table", () => {
 			{
 				priority: 2001,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -679,6 +696,7 @@ describe("Create table", () => {
 			{
 				priority: 4010,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createUniqueConstraint",
 				up: [
@@ -694,6 +712,7 @@ describe("Create table", () => {
 			{
 				priority: 4012,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createCheckConstraint",
 				up: [
@@ -717,6 +736,7 @@ describe("Create table", () => {
 			{
 				priority: 4012,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createCheckConstraint",
 				up: [
@@ -789,6 +809,7 @@ describe("Create table", () => {
 				],
 				priority: 2001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -811,6 +832,7 @@ describe("Create table", () => {
 				],
 				priority: 2001,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -826,6 +848,7 @@ describe("Create table", () => {
 				down: [[]],
 				priority: 4001,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
@@ -841,6 +864,7 @@ describe("Create table", () => {
 				down: [[]],
 				priority: 4011,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createForeignKey",
 				up: [
@@ -905,6 +929,7 @@ describe("Create table", () => {
 				],
 				priority: 2001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -926,6 +951,7 @@ describe("Create table", () => {
 				],
 				priority: 2001,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -941,6 +967,7 @@ describe("Create table", () => {
 				down: [[]],
 				priority: 4003,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createIndex",
 				up: [
@@ -954,6 +981,7 @@ describe("Create table", () => {
 				down: [[]],
 				priority: 4003,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createIndex",
 				up: [
@@ -992,6 +1020,7 @@ describe("Create table", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: "public",
 				type: "createEnum",
 				up: [
@@ -1017,6 +1046,7 @@ describe("Create table", () => {
 			{
 				priority: 2001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -1085,6 +1115,7 @@ describe("Create table", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: null,
 				type: "createExtension",
 				up: [
@@ -1100,6 +1131,7 @@ describe("Create table", () => {
 			{
 				priority: 2001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -1131,6 +1163,7 @@ describe("Create table", () => {
 			{
 				priority: 4004,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTrigger",
 				up: [
@@ -1147,6 +1180,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 			{
 				priority: 4004,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTrigger",
 				up: [
@@ -1258,6 +1292,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 			{
 				priority: 0,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: null,
 				type: "createExtension",
 				up: [
@@ -1273,6 +1308,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 			{
 				priority: 0,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: "public",
 				type: "createEnum",
 				up: [
@@ -1305,6 +1341,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				],
 				priority: 2001,
 				tableName: "new_books",
+				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -1321,6 +1358,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 			{
 				priority: 2001,
 				tableName: "trigger_table",
+				currentTableName: "trigger_table",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -1354,6 +1392,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				],
 				priority: 2001,
 				tableName: "library_building",
+				currentTableName: "library_building",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -1368,6 +1407,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 			{
 				priority: 2001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -1397,6 +1437,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				],
 				priority: 2001,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -1412,6 +1453,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				down: [[]],
 				priority: 4001,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
@@ -1427,6 +1469,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				down: [[]],
 				priority: 4001,
 				tableName: "new_books",
+				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
@@ -1442,6 +1485,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				down: [[]],
 				priority: 4001,
 				tableName: "library_building",
+				currentTableName: "library_building",
 				schemaName: "public",
 				type: "createPrimaryKey",
 				up: [
@@ -1457,6 +1501,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				down: [[]],
 				priority: 4003,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createIndex",
 				up: [
@@ -1470,6 +1515,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				down: [[]],
 				priority: 4003,
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "public",
 				type: "createIndex",
 				up: [
@@ -1483,6 +1529,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				down: [[]],
 				priority: 4003,
 				tableName: "new_books",
+				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createIndex",
 				up: [
@@ -1496,6 +1543,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				down: [[]],
 				priority: 4003,
 				tableName: "library_building",
+				currentTableName: "library_building",
 				schemaName: "public",
 				type: "createIndex",
 				up: [
@@ -1508,6 +1556,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 			{
 				priority: 4004,
 				tableName: "trigger_table",
+				currentTableName: "trigger_table",
 				schemaName: "public",
 				type: "createTrigger",
 				up: [
@@ -1524,6 +1573,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			{
 				priority: 4011,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createForeignKey",
 				up: [
@@ -1549,6 +1599,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			{
 				priority: 4011,
 				tableName: "new_books",
+				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createForeignKey",
 				up: [
@@ -1574,6 +1625,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			{
 				priority: 4011,
 				tableName: "new_books",
+				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createForeignKey",
 				up: [
@@ -1599,6 +1651,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			{
 				priority: 4012,
 				tableName: "new_books",
+				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createCheckConstraint",
 				up: [
@@ -1622,6 +1675,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			{
 				priority: 4012,
 				tableName: "new_books",
+				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createCheckConstraint",
 				up: [
@@ -1725,6 +1779,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 				down: [],
 				priority: 0,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: null,
 				type: "createSchema",
 				up: [
@@ -1733,6 +1788,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			},
 			{
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "demo",
 				type: "createTable",
 				priority: 2001,
@@ -1793,6 +1849,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			},
 			{
 				tableName: "books",
+				currentTableName: "books",
 				schemaName: "demo",
 				type: "createTable",
 				priority: 2001,

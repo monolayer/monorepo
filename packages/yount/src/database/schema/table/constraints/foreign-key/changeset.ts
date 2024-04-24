@@ -160,6 +160,7 @@ function createforeignKeyFirstConstraintMigration(
 				priority: MigrationOpPriority.ForeignKeyCreate,
 				schemaName,
 				tableName: tableName,
+				currentTableName: currentTableName(tableName, tablesToRename),
 				type: ChangeSetType.CreateForeignKey,
 				up: addForeigKeyOps(
 					tableName,
@@ -218,6 +219,7 @@ function createForeignKeyConstraintMigration(
 		priority: MigrationOpPriority.ForeignKeyCreate,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.CreateForeignKey,
 		up: addForeigKeyOps(tableName, foreignKeyDefinition, schemaName),
 		down: [
@@ -247,6 +249,7 @@ function dropforeignKeyLastConstraintMigration(
 				priority: MigrationOpPriority.ForeignKeyDrop,
 				schemaName,
 				tableName: tableName,
+				currentTableName: currentTableName(tableName, tablesToRename),
 				type: ChangeSetType.DropForeignKey,
 				up: droppedTables.includes(tableName)
 					? [[]]
@@ -295,6 +298,7 @@ function dropForeignKeyConstraintMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ForeignKeyDrop,
 		tableName: previousTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename),
 		schemaName,
 		type: ChangeSetType.DropForeignKey,
 		up: [
@@ -329,7 +333,7 @@ function dropForeignKeyConstraintMigration(
 
 function changeForeignKeyNameMigration(
 	diff: ForeignKeyNameChangeDiff,
-	{ schemaName }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const newTableAndHash = diff.value.split(":");
 	const newForeignKeyName = `${newTableAndHash[0]}_${newTableAndHash[1]}_yount_fk`;
@@ -342,6 +346,7 @@ function changeForeignKeyNameMigration(
 		priority: MigrationOpPriority.ConstraintChange,
 		schemaName,
 		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename),
 		type: ChangeSetType.ChangeForeignKey,
 		up: [
 			executeKyselyDbStatement(

@@ -48,6 +48,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: "public",
 				type: "createEnum",
 				up: [
@@ -73,6 +74,7 @@ describe("Database migrations", () => {
 			{
 				priority: 2003,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createColumn",
 				up: [
@@ -131,6 +133,7 @@ describe("Database migrations", () => {
 			{
 				priority: 1005,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "dropColumn",
 				up: [
@@ -153,6 +156,7 @@ describe("Database migrations", () => {
 			{
 				priority: 3011,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: "public",
 				type: "dropEnum",
 				up: [
@@ -217,6 +221,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: "public",
 				type: "changeEnum",
 				up: [
@@ -264,6 +269,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: "public",
 				type: "createEnum",
 				up: [
@@ -289,6 +295,7 @@ describe("Database migrations", () => {
 			{
 				priority: 2001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
 				up: [
@@ -310,6 +317,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: null,
 				type: "createSchema",
 				up: [
@@ -320,6 +328,7 @@ describe("Database migrations", () => {
 			{
 				priority: 0,
 				tableName: "none",
+				currentTableName: "none",
 				schemaName: "users",
 				type: "createEnum",
 				up: [
@@ -345,6 +354,7 @@ describe("Database migrations", () => {
 			{
 				priority: 2001,
 				tableName: "users",
+				currentTableName: "users",
 				schemaName: "users",
 				type: "createTable",
 				up: [
