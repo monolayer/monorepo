@@ -12,8 +12,10 @@ import {
 	currentTableName,
 	previousTableName,
 } from "~/introspection/table-name.js";
-import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
-import type { TablesToRename } from "~/programs/table-diff-prompt.js";
+import type {
+	ColumnsToRename,
+	TablesToRename,
+} from "~/programs/introspect-schemas.js";
 import { hashValue } from "~/utils.js";
 
 interface BuilderContext {

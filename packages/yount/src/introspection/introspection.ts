@@ -14,8 +14,10 @@ import {
 	type TriggerInfo,
 	type UniqueInfo,
 } from "~/migrations/migration-schema.js";
-import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
-import type { TablesToRename } from "~/programs/table-diff-prompt.js";
+import type {
+	ColumnsToRename,
+	TablesToRename,
+} from "~/programs/introspect-schemas.js";
 import { hashValue } from "~/utils.js";
 import {
 	dbColumnInfo,

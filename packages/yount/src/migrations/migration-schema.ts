@@ -5,7 +5,7 @@ import type { AnyPgTable } from "~/database/schema/table/table.js";
 import { currentColumName } from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { SchemaMigrationInfo } from "~/introspection/introspection.js";
-import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
+import type { ColumnsToRename } from "~/programs/introspect-schemas.js";
 import { toSnakeCase } from "../changeset/helpers.js";
 import { Schema, type AnySchema } from "../database/schema/schema.js";
 import type { TableInfo } from "../database/schema/table/column/instrospection.js";

@@ -14,7 +14,7 @@ import {
 	previousColumnName,
 } from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
+import type { ColumnsToRename } from "~/programs/introspect-schemas.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 

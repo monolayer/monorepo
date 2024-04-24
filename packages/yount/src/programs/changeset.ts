@@ -12,11 +12,11 @@ import { configurationSchemas } from "./configuration-schemas.js";
 import {
 	introspectSchemas,
 	renameMigrationInfo,
-	selectColumnDiffChoicesInteractive,
-	selectTableDiffChoicesInteractive,
 	sortTablePriorities,
 	type IntrospectionContext,
 } from "./introspect-schemas.js";
+import { selectColumnDiffChoicesInteractive } from "./select-column-diff-choices.js";
+import { selectTableDiffChoicesInteractive } from "./select-table-diff-choices.js";
 
 export function changeset() {
 	return configurationSchemas().pipe(

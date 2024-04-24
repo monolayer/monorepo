@@ -13,7 +13,6 @@ import {
 import {
 	mockColumnDiffOnce,
 	mockTableDiffOnce,
-	tableDiffMock,
 } from "~tests/__setup__/setup.js";
 
 describe("Rename table without camel case plugin", () => {
@@ -68,7 +67,7 @@ describe("Rename table without camel case plugin", () => {
 			expected: expected,
 			down: "same",
 			mock: () => {
-				tableDiffMock().mockResolvedValueOnce([
+				mockTableDiffOnce([
 					{
 						from: "users",
 						to: "teams",
@@ -2858,12 +2857,6 @@ describe("Rename table with camel case plugin", () => {
 	});
 
 	test<DbContext>("rename empty table camel case", async (context) => {
-		tableDiffMock().mockResolvedValueOnce([
-			{
-				from: "users",
-				to: "new_users",
-			},
-		]);
 		await context.kysely.schema.createTable("users").execute();
 
 		const dbSchema = schema({

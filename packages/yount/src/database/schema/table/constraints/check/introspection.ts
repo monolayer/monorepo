@@ -15,7 +15,7 @@ import {
 	tableInfo,
 } from "~/introspection/helpers.js";
 import type { CheckInfo } from "~/migrations/migration-schema.js";
-import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
+import type { ColumnsToRename } from "~/programs/introspect-schemas.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 

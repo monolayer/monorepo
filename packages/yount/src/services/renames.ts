@@ -1,6 +1,8 @@
 import { Context, Effect, Layer } from "effect";
-import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
-import type { TablesToRename } from "~/programs/table-diff-prompt.js";
+import type {
+	ColumnsToRename,
+	TablesToRename,
+} from "~/programs/introspect-schemas.js";
 
 interface RenameProperties {
 	readonly tables: TablesToRename;

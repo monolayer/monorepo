@@ -4,8 +4,7 @@ import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { DbClients } from "../services/dbClients.js";
 import { DevEnvironment } from "../services/environment.js";
-import type { ColumnsToRename } from "./column-diff-prompt.js";
-import type { TablesToRename } from "./table-diff-prompt.js";
+import type { ColumnsToRename, TablesToRename } from "./introspect-schemas.js";
 
 export type ChangesetContext = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

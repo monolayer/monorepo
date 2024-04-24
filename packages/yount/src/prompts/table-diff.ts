@@ -1,22 +1,14 @@
 import { select } from "@clack/prompts";
 import color from "picocolors";
+import { TablesToRename } from "../programs/introspect-schemas.js";
 
 export async function tableDiffPrompt(tableDiff: {
 	added: string[];
 	deleted: string[];
 }) {
 	const renameTableOps: TablesToRename = [];
-
-	if (tableDiff.deleted.length === 0) {
-		return renameTableOps;
-	}
-
-	if (tableDiff.added.length === 0) {
-		return renameTableOps;
-	}
-
 	for (const table of tableDiff.added) {
-		const projectType = await select<
+		const tableOp = await select<
 			{
 				value: string;
 				label: string;
@@ -37,17 +29,15 @@ export async function tableDiffPrompt(tableDiff: {
 				}),
 			],
 		});
-		if (typeof projectType === "string") {
-			const renameMatch = projectType.match(/^rename:(\w+):(\w+)/);
+		if (typeof tableOp === "string") {
+			const renameMatch = tableOp.match(/^rename:(\w+):(\w+)/);
 			if (renameMatch !== null) {
 				renameTableOps.push({ from: renameMatch[1]!, to: renameMatch[2]! });
 				tableDiff.deleted.splice(tableDiff.deleted.indexOf(renameMatch[1]!), 1);
 			}
+		} else {
+			return tableOp;
 		}
 	}
 	return renameTableOps;
 }
-export type TablesToRename = {
-	from: string;
-	to: string;
-}[];

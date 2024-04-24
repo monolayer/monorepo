@@ -9,13 +9,8 @@ import {
 	renameTables,
 } from "~/introspection/introspection.js";
 import { sortTableDependencies } from "~/introspection/table-dependencies.js";
-import {
-	columnDiffPrompt,
-	type ColumnsToRename,
-} from "./column-diff-prompt.js";
 import { devEnvirinmentDbClient } from "./db-clients.js";
 import { camelCaseOptions } from "./dev-environment.js";
-import { tableDiffPrompt, type TablesToRename } from "./table-diff-prompt.js";
 
 export function introspectRemote(schemaName?: string) {
 	return Effect.gen(function* (_) {
@@ -148,50 +143,15 @@ export function sortTablePriorities(context: IntrospectionContext) {
 	);
 	return Effect.succeed(context);
 }
-export function selectColumnDiffChoicesInteractive(
-	context: IntrospectionContext,
-) {
-	return columnDiff(context.local, context.remote).pipe(
-		Effect.flatMap((columnDiff) =>
-			Effect.tryPromise(() => columnDiffPrompt(columnDiff)),
-		),
-		Effect.tap((columnsToRename) => {
-			context.columnsToRename = columnsToRename;
-		}),
-	);
-}
 
-export function columnDiff(
-	local: SchemaMigrationInfo,
-	remote: SchemaMigrationInfo,
-) {
-	const localEntries = Object.entries(local.table);
-	const diff = localEntries.reduce(
-		(acc, [tableName, table]) => {
-			const remoteTable = remote.table[tableName];
-			if (remoteTable === undefined) {
-				return acc;
-			}
-			const localColumns = Object.keys(table.columns);
-			const remoteColumns = Object.keys(remoteTable.columns);
-			const added = localColumns.filter(
-				(column) => !remoteColumns.includes(column),
-			);
-			const deleted = remoteColumns.filter(
-				(column) => !localColumns.includes(column),
-			);
-			acc[tableName] = { added, deleted };
-			return acc;
-		},
-		{} as Record<string, { added: string[]; deleted: string[] }>,
-	);
-	return Effect.succeed(diff);
-}
-
-export function selectTableDiffChoicesInteractive(
-	context: IntrospectionContext,
-) {
-	return Effect.tryPromise(() => tableDiffPrompt(context.tableDiff)).pipe(
-		Effect.tap((tablesToRename) => (context.tablesToRename = tablesToRename)),
-	);
-}
+export type TablesToRename = {
+	from: string;
+	to: string;
+}[];
+export type ColumnsToRename = Record<
+	string,
+	{
+		from: string;
+		to: string;
+	}[]
+>;

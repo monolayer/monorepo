@@ -10,10 +10,15 @@ import {
 	environmentLayer,
 } from "../services/environment.js";
 import { migratorLayer } from "../services/migrator.js";
+import { cancelOperation } from "./cancel-operation.js";
 
 export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 	readonly cause: string;
 }> {}
+
+export class PromptCancelError {
+	readonly _tag = "PromptCancelError";
+}
 
 export async function cliAction(
 	name: string,
@@ -40,6 +45,7 @@ export async function cliAction(
 				Effect.provide(Effect.all(tasks), layers).pipe(
 					Effect.catchTags({
 						ExitWithSuccess: () => Effect.succeed(1),
+						PromptCancelError: () => cancelOperation(),
 					}),
 				),
 			),

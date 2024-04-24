@@ -11,7 +11,7 @@ import {
 	primaryKeyColumns,
 	type PrimaryKeyInfo,
 } from "~/migrations/migration-schema.js";
-import type { ColumnsToRename } from "~/programs/column-diff-prompt.js";
+import type { ColumnsToRename } from "~/programs/introspect-schemas.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 import { type ColumnRecord } from "../../table-column.js";
 import type { AnyPgTable } from "../../table.js";

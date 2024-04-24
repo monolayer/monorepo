@@ -4,13 +4,11 @@ import pg from "pg";
 import type { GlobalThis } from "type-fest";
 import { vi } from "vitest";
 import {
-	columnDiffPrompt,
 	type ColumnsToRename,
-} from "~/programs/column-diff-prompt.js";
-import {
-	tableDiffPrompt,
 	type TablesToRename,
-} from "~/programs/table-diff-prompt.js";
+} from "~/programs/introspect-schemas.js";
+import { columnDiffPrompt } from "~/prompts/column-diff.js";
+import { tableDiffPrompt } from "~/prompts/table-diff.js";
 dotenv.config();
 
 export type GlobalThisInTests = GlobalThis & {
@@ -46,7 +44,7 @@ export function globalPoolTwo() {
 	return globalTestThis.poolTwo;
 }
 
-vi.mock("~/programs/table-diff-prompt.js", async (importOriginal) => {
+vi.mock("~/prompts/table-diff.js", async (importOriginal) => {
 	await importOriginal();
 	return {
 		tableDiffPrompt: vi.fn(
@@ -56,7 +54,7 @@ vi.mock("~/programs/table-diff-prompt.js", async (importOriginal) => {
 	};
 });
 
-vi.mock("~/programs/column-diff-prompt.js", async (importOriginal) => {
+vi.mock("~/prompts/column-diff.js", async (importOriginal) => {
 	await importOriginal();
 	return {
 		columnDiffPrompt: vi.fn(
@@ -78,10 +76,6 @@ vi.mock("~/programs/column-diff-prompt.js", async (importOriginal) => {
 });
 
 vi.mocked(tableDiffPrompt).mockResolvedValue([]);
-
-export function tableDiffMock() {
-	return vi.mocked(tableDiffPrompt);
-}
 
 export function mockTableDiffOnce(value: TablesToRename) {
 	vi.mocked(tableDiffPrompt).mockResolvedValueOnce(value);

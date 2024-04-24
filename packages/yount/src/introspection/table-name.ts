@@ -1,4 +1,4 @@
-import type { TablesToRename } from "~/programs/table-diff-prompt.js";
+import type { TablesToRename } from "~/programs/introspect-schemas.js";
 
 export function previousTableName(
 	changedTableName: string,
