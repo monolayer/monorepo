@@ -13,11 +13,11 @@ export class Schema<T extends ColumnRecord, S extends string> {
 	/**
 	 * @hidden
 	 */
-	static info(db: AnySchema) {
+	static info(schema: AnySchema) {
 		return {
-			tables: db.tables ?? {},
-			types: db.types || [],
-			name: db.name,
+			tables: schema.tables ?? {},
+			types: schema.types || [],
+			name: schema.name,
 		};
 	}
 
