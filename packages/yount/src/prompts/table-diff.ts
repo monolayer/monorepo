@@ -35,6 +35,9 @@ export async function tableDiffPrompt(tableDiff: {
 				renameTableOps.push({ from: renameMatch[1]!, to: renameMatch[2]! });
 				tableDiff.deleted.splice(tableDiff.deleted.indexOf(renameMatch[1]!), 1);
 			}
+			if (tableDiff.deleted.length === 0) {
+				return renameTableOps;
+			}
 		} else {
 			return tableOp;
 		}
