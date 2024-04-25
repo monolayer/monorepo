@@ -23,7 +23,7 @@ function scaffoldMigrationPath(timestamp?: string) {
 		Effect.flatMap((environment) =>
 			Effect.succeed(
 				path.join(
-					environment.migrationFolder,
+					environment.schemaRevisionsFolder,
 					`${timestamp}-${randomName()}.ts`,
 				),
 			),

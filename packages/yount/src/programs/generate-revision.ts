@@ -25,7 +25,7 @@ export function generateRevision() {
 										Effect.tap((revisionName) => {
 											createSchemaRevision(
 												cset,
-												environment.migrationFolder,
+												environment.schemaRevisionsFolder,
 												revisionName,
 											);
 											printChangesetSummary(cset);

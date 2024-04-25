@@ -13,7 +13,7 @@ import {
 export type EnvironmentProperties = {
 	readonly name: string;
 	readonly folder: string;
-	readonly migrationFolder: string;
+	readonly schemaRevisionsFolder: string;
 	readonly camelCasePlugin?: CamelCaseOptions;
 	readonly configurationName: string;
 	readonly configurationConfig: PgConfig;
@@ -89,7 +89,7 @@ function environmentGenerator(environment: string, configurationName: string) {
 			name: environment,
 			configurationName: configurationName,
 			folder: yountConfig.folder,
-			migrationFolder: path.join(
+			schemaRevisionsFolder: path.join(
 				cwd(),
 				yountConfig.folder,
 				"revisions",

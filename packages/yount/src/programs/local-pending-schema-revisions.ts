@@ -5,13 +5,13 @@ import path from "path";
 import { Environment } from "../services/environment.js";
 import { allMigrations } from "./all-migrations.js";
 
-export function localPendingMigrations() {
+export function localPendingSchemaRevisions() {
 	return Environment.pipe(
 		Effect.flatMap((environment) =>
 			Effect.all([
 				Effect.tryPromise(async () => {
 					try {
-						const contents = await readdir(environment.migrationFolder);
+						const contents = await readdir(environment.schemaRevisionsFolder);
 						return contents;
 					} catch (error) {
 						return [];
@@ -23,7 +23,7 @@ export function localPendingMigrations() {
 					filterMigrations(
 						localMigrationFiles,
 						migrations,
-						environment.migrationFolder,
+						environment.schemaRevisionsFolder,
 					),
 				),
 			),

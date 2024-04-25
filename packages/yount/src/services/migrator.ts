@@ -25,10 +25,10 @@ export function migratorLayer() {
 					provider: new FileMigrationProvider({
 						fs,
 						path,
-						migrationFolder: environment.migrationFolder,
+						migrationFolder: environment.schemaRevisionsFolder,
 					}),
 				}),
-				folder: environment.migrationFolder,
+				folder: environment.schemaRevisionsFolder,
 			};
 		}),
 	);

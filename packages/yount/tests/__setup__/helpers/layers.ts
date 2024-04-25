@@ -101,7 +101,7 @@ function mockedMigratorLayer(
 }
 
 function mockedEnvironmentLayer(
-	migrationFolder: string,
+	schemaRevisionsFolder: string,
 	connector: EnvironmentLessConnector,
 ) {
 	return Layer.effect(
@@ -112,7 +112,7 @@ function mockedEnvironmentLayer(
 				name: "development",
 				configurationName: "default",
 				folder: "revisions",
-				migrationFolder: migrationFolder,
+				schemaRevisionsFolder: schemaRevisionsFolder,
 				configuration: {
 					schemas: connector.schemas,
 					extensions: connector.extensions,
@@ -128,7 +128,7 @@ function mockedEnvironmentLayer(
 }
 
 function mockedDevEnvironmentLayer(
-	migrationFolder: string,
+	schemaRevisionsFolder: string,
 	connector: EnvironmentLessConnector,
 ) {
 	return Layer.effect(
@@ -139,7 +139,7 @@ function mockedDevEnvironmentLayer(
 				name: "development",
 				configurationName: "default",
 				folder: "revisions",
-				migrationFolder: migrationFolder,
+				schemaRevisionsFolder: schemaRevisionsFolder,
 				configuration: {
 					schemas: connector.schemas,
 					extensions: connector.extensions,

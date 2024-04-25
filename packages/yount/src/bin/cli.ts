@@ -11,7 +11,7 @@ import { dropTablesAndTypes } from "~/programs/drop-tables-and-types.js";
 import { dumpDatabaseStructure } from "~/programs/dump-database-structure.js";
 import { generateRevision } from "~/programs/generate-revision.js";
 import { handleMissingDevDatabase } from "~/programs/handle-missing-dev-database.js";
-import { handlePendingMigrations } from "~/programs/handle-pending-migrations.js";
+import { handlePendingSchemaRevisions } from "~/programs/handle-pending-schema-revisions.js";
 import { migrateDown } from "~/programs/migrate-down.js";
 import { migrate } from "~/programs/migrate.js";
 import { pendingMigrations } from "~/programs/pending-migrations.js";
@@ -210,7 +210,7 @@ async function main() {
 				{ environment: "development", connection: opts.connection },
 				[
 					handleMissingDevDatabase(),
-					handlePendingMigrations(),
+					handlePendingSchemaRevisions(),
 					generateRevision(),
 				],
 			);

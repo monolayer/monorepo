@@ -2,10 +2,10 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import path from "path";
 import color from "picocolors";
-import { localPendingMigrations } from "./local-pending-migrations.js";
+import { localPendingSchemaRevisions } from "./local-pending-schema-revisions.js";
 
 export function pendingMigrations() {
-	return localPendingMigrations().pipe(
+	return localPendingSchemaRevisions().pipe(
 		Effect.tap((pendingMigrations) =>
 			Effect.if(pendingMigrations.length > 0, {
 				onTrue: Effect.forEach(pendingMigrations, logPendingMigration),

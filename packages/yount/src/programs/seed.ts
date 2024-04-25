@@ -10,7 +10,7 @@ import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
 import { changeset } from "./changeset.js";
 import { checkWithFail } from "./check-with-fail.js";
-import { localPendingMigrations } from "./local-pending-migrations.js";
+import { localPendingSchemaRevisions } from "./local-pending-schema-revisions.js";
 import { spinnerTask } from "./spinner-task.js";
 
 type SeedOptions = {
@@ -62,7 +62,7 @@ function checkPendingMigrations() {
 		failMessage: "Pending schema revisions",
 		callback: () =>
 			Effect.succeed(true).pipe(
-				Effect.flatMap(localPendingMigrations),
+				Effect.flatMap(localPendingSchemaRevisions),
 				Effect.flatMap((result) => Effect.succeed(result.length === 0)),
 			),
 	});

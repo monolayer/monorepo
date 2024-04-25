@@ -6,18 +6,18 @@ import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
 import { cancelOperation } from "./cancel-operation.js";
-import { localPendingMigrations } from "./local-pending-migrations.js";
+import { localPendingSchemaRevisions } from "./local-pending-schema-revisions.js";
 
-export function handlePendingMigrations() {
-	return localPendingMigrations().pipe(
-		Effect.flatMap((pendingMigrations) =>
-			Effect.if(pendingMigrations.length > 0, {
-				onTrue: logPendingMigrations(pendingMigrations).pipe(
+export function handlePendingSchemaRevisions() {
+	return localPendingSchemaRevisions().pipe(
+		Effect.flatMap((pendingRevisions) =>
+			Effect.if(pendingRevisions.length > 0, {
+				onTrue: logPendingRevisions(pendingRevisions).pipe(
 					Effect.flatMap(() =>
 						askConfirmationDelete().pipe(
 							Effect.flatMap((shouldContinue) =>
 								Effect.if(shouldContinue === true, {
-									onTrue: deletePendingMigrations(pendingMigrations),
+									onTrue: deletePendingRevisions(pendingRevisions),
 									onFalse: cancelOperation(),
 								}),
 							),
@@ -30,7 +30,7 @@ export function handlePendingMigrations() {
 	);
 }
 
-function logPendingMigrations(
+function logPendingRevisions(
 	pending: {
 		name: string;
 		path: string;
@@ -60,7 +60,7 @@ function askConfirmationDelete() {
 	);
 }
 
-function deletePendingMigrations(
+function deletePendingRevisions(
 	pending: {
 		name: string;
 		path: string;
@@ -68,12 +68,12 @@ function deletePendingMigrations(
 ) {
 	return Effect.succeed(true).pipe(
 		Effect.flatMap(() =>
-			Effect.forEach(pending, (pendingMigration) =>
+			Effect.forEach(pending, (pendingRevision) =>
 				Effect.succeed(true).pipe(
 					Effect.map(() => {
-						unlinkSync(pendingMigration.path);
+						unlinkSync(pendingRevision.path);
 						p.log.info(
-							`${color.red("removed")} ${path.relative(cwd(), pendingMigration.path)}`,
+							`${color.red("removed")} ${path.relative(cwd(), pendingRevision.path)}`,
 						);
 					}),
 				),
