@@ -4,20 +4,14 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import color from "picocolors";
 import { exit } from "process";
-import { checkPackageInstallation } from "~/check-package-installation.js";
 import { initFolderAndFiles } from "~/init-folders-and-files.js";
-import { installDevPackage, installPackage } from "~/install-package.js";
+import { installPackage } from "~/install-package.js";
 
-const program = Effect.succeed(true).pipe(
-	Effect.flatMap(() =>
-		checkPackageInstallation("@types/pg").pipe(Effect.tap(installDevPackage)),
-	),
-	Effect.flatMap(() =>
-		checkPackageInstallation("yount").pipe(Effect.tap(installPackage)),
-	),
-	Effect.flatMap(initFolderAndFiles),
-	Effect.tapErrorCause(Effect.logError),
-);
+const program = Effect.all([
+	installPackage("@types/pg", { development: true }),
+	installPackage("yount", { development: false }),
+	initFolderAndFiles(),
+]).pipe(Effect.tapErrorCause(Effect.logError));
 
 p.intro("Init Yount");
 
