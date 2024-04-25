@@ -55,7 +55,7 @@ describe("generateChangesetMigration", () => {
 			path.join(
 				context.folder,
 				"db",
-				"migrations",
+				"revisions",
 				"default",
 				migrationFiles[0]!,
 			),
@@ -103,7 +103,7 @@ describe("generateChangesetMigration", () => {
 			path.join(
 				context.folder,
 				"db",
-				"migrations",
+				"revisions",
 				"default",
 				migrationFiles[0]!,
 			),

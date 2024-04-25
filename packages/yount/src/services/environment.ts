@@ -92,7 +92,7 @@ function environmentGenerator(environment: string, configurationName: string) {
 			migrationFolder: path.join(
 				cwd(),
 				yountConfig.folder,
-				"migrations",
+				"revisions",
 				configurationName,
 			),
 			camelCasePlugin: configuration.camelCasePlugin,

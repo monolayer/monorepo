@@ -45,7 +45,7 @@ export async function setUpContext(context: TaskContext & DbContext) {
 		cwd(),
 		`tmp/schema_migrations/${dateStr}-${context.dbName}`,
 	);
-	mkdirSync(path.join(context.folder, "migrations"), { recursive: true });
+	mkdirSync(path.join(context.folder, "revisions"), { recursive: true });
 	context.migrator = await kyselyMigrator(context.kysely, context.folder);
 }
 
@@ -56,7 +56,7 @@ export async function setupProgramContext(
 	context.currentWorkingDirectory = cwd();
 	context.folder = path.join(cwd(), `tmp/programs/${programFolder(context)}`);
 	rmSync(context.folder, { recursive: true, force: true });
-	mkdirSync(path.join(context.folder, "db", "migrations", "default"), {
+	mkdirSync(path.join(context.folder, "db", "revisions", "default"), {
 		recursive: true,
 	});
 	mkdirSync(path.join(context.folder, "db", "dumps"), {
@@ -135,11 +135,11 @@ export type ProgramContext = {
 
 function copyMigration(migrationName: string, context: ProgramContext) {
 	copyFileSync(
-		`tests/__setup__/fixtures/migrations/${migrationName}.ts`,
+		`tests/__setup__/fixtures/revisions/${migrationName}.ts`,
 		path.join(
 			context.folder,
 			"db",
-			"migrations",
+			"revisions",
 			"default",
 			`${migrationName}.ts`,
 		),
@@ -163,7 +163,7 @@ export async function dbAndMigrator(context: ProgramContext) {
 				migrationFolder: path.join(
 					context.folder,
 					"db",
-					"migrations",
+					"revisions",
 					"default",
 				),
 			}),

@@ -111,7 +111,7 @@ function mockedEnvironmentLayer(
 			return {
 				name: "development",
 				configurationName: "default",
-				folder: "migrations",
+				folder: "revisions",
 				migrationFolder: migrationFolder,
 				configuration: {
 					schemas: connector.schemas,
@@ -138,7 +138,7 @@ function mockedDevEnvironmentLayer(
 			return {
 				name: "development",
 				configurationName: "default",
-				folder: "migrations",
+				folder: "revisions",
 				migrationFolder: migrationFolder,
 				configuration: {
 					schemas: connector.schemas,

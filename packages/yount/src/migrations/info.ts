@@ -8,7 +8,7 @@ export async function fetchPendingMigrations(
 	config: YountConfig,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	db: Kysely<any>,
-	migrationsFolderName = "migrations",
+	migrationsFolderName = "revisions",
 ) {
 	const migrationsFolder = path.join(
 		cwd(),
@@ -38,7 +38,7 @@ export async function migrations(
 	config: YountConfig,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	db: Kysely<any>,
-	migrationsFolderName = "migrations",
+	migrationsFolderName = "revisions",
 ) {
 	const migrator = new Migrator({
 		db,

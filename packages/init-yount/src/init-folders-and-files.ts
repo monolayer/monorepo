@@ -86,7 +86,7 @@ export function initFolderAndFiles() {
 			true,
 		);
 		await createFile(`${folder.path}/seed.ts`, seedTemplate.render(), true);
-		await createDir(`${folder.path}/migrations`, true);
+		await createDir(`${folder.path}/revisions`, true);
 
 		const nextSteps = `1) Edit the default configuration in \`${path.join(folder.path, "configuration.ts")}\`.
 2) Run \`npx yount db:create\` to create the database.
@@ -152,7 +152,7 @@ export const schemaTemplate =
 	nunjucks.compile(`import { schema } from "yount/pg";
 
 export const dbSchema = schema({});
-
+x
 export type DB = typeof dbSchema.infer;
 `);
 
