@@ -14,8 +14,8 @@ import {
 	compileDefaultExpression,
 	tableInfo,
 } from "~/introspection/helpers.js";
-import type { CheckInfo } from "~/migrations/migration-schema.js";
 import type { ColumnsToRename } from "~/programs/introspect-schemas.js";
+import type { CheckInfo } from "~/revisions/schema.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 

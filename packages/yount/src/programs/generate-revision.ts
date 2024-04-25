@@ -1,12 +1,13 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
-import { generateMigrationFiles } from "~/migrations/generate.js";
+import { createSchemaRevision } from "~/revisions/create-schema-revision.js";
 import { printChangesetSummary } from "../changeset/print-changeset-summary.js";
 import { DevEnvironment } from "../services/environment.js";
 import { changeset } from "./changeset.js";
 import { computeExtensionChangeset } from "./extension-changeset.js";
+import { revisionName } from "./revision-name.js";
 
-export function generateChangesetMigration() {
+export function generateRevision() {
 	return DevEnvironment.pipe(
 		Effect.flatMap((environment) =>
 			Effect.all([changeset(), computeExtensionChangeset()])
@@ -19,14 +20,22 @@ export function generateChangesetMigration() {
 					Effect.tap((changeset) =>
 						Effect.if(changeset.length > 0, {
 							onTrue: Effect.succeed(changeset).pipe(
-								Effect.tap((cset) => {
-									generateMigrationFiles(cset, environment.migrationFolder);
-									printChangesetSummary(cset);
-									p.note(
-										"Apply migrations with 'npx yount migrate'",
-										"Next Steps",
-									);
-								}),
+								Effect.tap((cset) =>
+									revisionName().pipe(
+										Effect.tap((revisionName) => {
+											createSchemaRevision(
+												cset,
+												environment.migrationFolder,
+												revisionName,
+											);
+											printChangesetSummary(cset);
+											p.note(
+												"Apply migrations with 'npx yount migrate'",
+												"Next Steps",
+											);
+										}),
+									),
+								),
 							),
 							onFalse: Effect.succeed(true).pipe(
 								Effect.tap(() => {

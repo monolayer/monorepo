@@ -2,7 +2,6 @@ import path from "node:path";
 import nunjucks from "nunjucks";
 import { Changeset } from "~/changeset/types.js";
 import { createFile } from "~/utils.js";
-import { randomName } from "./random-name.js";
 
 const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
@@ -20,18 +19,15 @@ export async function down(db: Kysely<any>): Promise<void> {
 }
 `;
 
-export function generateMigrationFiles(
+export function createSchemaRevision(
 	changesets: Changeset[],
 	folder: string,
-	name?: string,
+	name: string,
 	log = true,
 ) {
-	const { up, down } = extractMigrationOpChangesets([...changesets]);
+	const { up, down } = extractRevisionOps([...changesets]);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
-	const migrationFilePath = path.join(
-		folder,
-		name !== undefined ? name : `${dateStr}-${randomName()}.ts`,
-	);
+	const migrationFilePath = path.join(folder, `${dateStr}-${name}.ts`);
 	const rendered = nunjucks.compile(template).render({
 		up: up,
 		down: down,
@@ -43,7 +39,7 @@ export function generateMigrationFiles(
 	);
 }
 
-function extractMigrationOpChangesets(changesets: Changeset[]) {
+function extractRevisionOps(changesets: Changeset[]) {
 	const up = changesets
 		.filter(
 			(changeset) =>

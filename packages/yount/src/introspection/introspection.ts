@@ -6,6 +6,10 @@ import type { AnySchema } from "~/database/schema/schema.js";
 import type { ColumnInfo } from "~/database/schema/table/column/types.js";
 import { ForeignKeyBuilder } from "~/database/schema/table/constraints/foreign-key/builder.js";
 import { currentTableName } from "~/introspection/table-name.js";
+import type {
+	ColumnsToRename,
+	TablesToRename,
+} from "~/programs/introspect-schemas.js";
 import {
 	extractColumnsFromPrimaryKey,
 	type CheckInfo,
@@ -13,11 +17,7 @@ import {
 	type PrimaryKeyInfo,
 	type TriggerInfo,
 	type UniqueInfo,
-} from "~/migrations/migration-schema.js";
-import type {
-	ColumnsToRename,
-	TablesToRename,
-} from "~/programs/introspect-schemas.js";
+} from "~/revisions/schema.js";
 import { hashValue } from "~/utils.js";
 import {
 	dbColumnInfo,

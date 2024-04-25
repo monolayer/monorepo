@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import type { Layer } from "effect/Layer";
 import { expect } from "vitest";
-import { generateChangesetMigration } from "~/programs/generate-changeset-migration.js";
+import { generateRevision } from "~/programs/generate-revision.js";
 import { migrateDown as migrateDownProgram } from "~/programs/migrate-down.js";
 import { migrate } from "~/programs/migrate.js";
 import { DbClients } from "~/services/dbClients.js";
@@ -82,7 +82,7 @@ async function runGenerateChangesetMigration(
 	>,
 ) {
 	return Effect.runPromise(
-		Effect.provide(programWithErrorCause(generateChangesetMigration()), layers),
+		Effect.provide(programWithErrorCause(generateRevision()), layers),
 	);
 }
 

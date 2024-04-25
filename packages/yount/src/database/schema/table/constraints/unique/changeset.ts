@@ -11,7 +11,7 @@ import {
 	currentTableName,
 	previousTableName,
 } from "~/introspection/table-name.js";
-import { extractColumnsFromPrimaryKey } from "~/migrations/migration-schema.js";
+import { extractColumnsFromPrimaryKey } from "~/revisions/schema.js";
 import { hashValue } from "~/utils.js";
 import {
 	executeKyselyDbStatement,

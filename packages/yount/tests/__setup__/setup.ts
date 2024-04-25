@@ -8,6 +8,7 @@ import {
 	type TablesToRename,
 } from "~/programs/introspect-schemas.js";
 import { columnDiffPrompt } from "~/prompts/column-diff.js";
+import { revisionNamePrompt } from "~/prompts/revision-name.js";
 import { tableDiffPrompt } from "~/prompts/table-diff.js";
 dotenv.config();
 
@@ -75,7 +76,16 @@ vi.mock("~/prompts/column-diff.js", async (importOriginal) => {
 	};
 });
 
+vi.mock("~/prompts/revision-name.js", async (importOriginal) => {
+	await importOriginal();
+	return {
+		revisionNamePrompt: vi.fn(async () => "default"),
+	};
+});
+
 vi.mocked(tableDiffPrompt).mockResolvedValue([]);
+
+vi.mocked(revisionNamePrompt).mockResolvedValue("default");
 
 export function mockTableDiffOnce(value: TablesToRename) {
 	vi.mocked(tableDiffPrompt).mockResolvedValueOnce(value);

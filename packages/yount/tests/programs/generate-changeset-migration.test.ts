@@ -9,7 +9,7 @@ import {
 import path from "path";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { generateChangesetMigration } from "~/programs/generate-changeset-migration.js";
+import { generateRevision } from "~/programs/generate-revision.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import { defaultMigrationPath } from "~tests/__setup__/helpers/default-migration-path.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
@@ -41,10 +41,7 @@ describe("generateChangesetMigration", () => {
 		writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
 		await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(generateChangesetMigration()),
-				layers,
-			),
+			Effect.provide(programWithErrorCause(generateRevision()), layers),
 		);
 
 		const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
@@ -89,10 +86,7 @@ describe("generateChangesetMigration", () => {
 		);
 
 		await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(generateChangesetMigration()),
-				layers,
-			),
+			Effect.provide(programWithErrorCause(generateRevision()), layers),
 		);
 
 		const migrationFiles = readdirSync(defaultMigrationPath(context.folder));

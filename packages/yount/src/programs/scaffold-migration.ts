@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import nunjucks from "nunjucks";
 import path from "path";
-import { randomName } from "~/migrations/random-name.js";
+import { randomName } from "~/revisions/random-name.js";
 import { createFile } from "~/utils.js";
 import { Environment } from "../services/environment.js";
 

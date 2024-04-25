@@ -6,11 +6,11 @@ import { ForeignKeyRule } from "~/database/schema/introspect-table.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { previousTableName } from "~/introspection/table-name.js";
-import { type ForeignKeyInfo } from "~/migrations/migration-schema.js";
 import type {
 	ColumnsToRename,
 	TablesToRename,
 } from "~/programs/introspect-schemas.js";
+import { type ForeignKeyInfo } from "~/revisions/schema.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 import { ForeignKeyBuilder } from "./builder.js";

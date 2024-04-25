@@ -9,7 +9,7 @@ import { createDatabase } from "~/programs/create-database.js";
 import { dropDatabase } from "~/programs/drop-database.js";
 import { dropTablesAndTypes } from "~/programs/drop-tables-and-types.js";
 import { dumpDatabaseStructure } from "~/programs/dump-database-structure.js";
-import { generateChangesetMigration } from "~/programs/generate-changeset-migration.js";
+import { generateRevision } from "~/programs/generate-revision.js";
 import { handleMissingDevDatabase } from "~/programs/handle-missing-dev-database.js";
 import { handlePendingMigrations } from "~/programs/handle-pending-migrations.js";
 import { migrateDown } from "~/programs/migrate-down.js";
@@ -211,7 +211,7 @@ async function main() {
 				[
 					handleMissingDevDatabase(),
 					handlePendingMigrations(),
-					generateChangesetMigration(),
+					generateRevision(),
 				],
 			);
 		});

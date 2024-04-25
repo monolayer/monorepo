@@ -5,7 +5,7 @@ import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
-import { findPrimaryKey } from "~/migrations/migration-schema.js";
+import { findPrimaryKey } from "~/revisions/schema.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 import { type TableColumn } from "../table-column.js";
 import { ColumnInfo } from "./types.js";
