@@ -58,8 +58,8 @@ function checkPendingMigrations() {
 		nextSteps: `1) Run 'npx yount migrate' to migrate the database.
 2) Run again \`npx yount seed\`.`,
 		errorMessage:
-			"You have pending migrations. Cannot seed until they are run.",
-		failMessage: "Pending Migrations",
+			"You have pending schema revisions. Cannot seed until they are run.",
+		failMessage: "Pending schema revisions",
 		callback: () =>
 			Effect.succeed(true).pipe(
 				Effect.flatMap(localPendingMigrations),

@@ -53,7 +53,7 @@ function askConfirmationDelete() {
 	return Effect.tryPromise(() =>
 		confirm({
 			initialValue: false,
-			message: `You have pending migrations and ${color.bold(
+			message: `You have pending schema revisions to apply and ${color.bold(
 				"we need to delete them to continue",
 			)}. Do you want to proceed?`,
 		}),
