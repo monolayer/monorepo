@@ -27,6 +27,11 @@
 			"require": "./dist/cjs/src/pg.js",
 			"types": "./dist/esm/src/pg.d.ts"
 		},
+		"./revision": {
+			"import": "./dist/esm/src/revision.js",
+			"require": "./dist/cjs/src/revision.js",
+			"types": "./dist/esm/src/revision.d.ts"
+		},
 		"./zod": {
 			"import": "./dist/esm/src/zod.js",
 			"require": "./dist/cjs/src/zod.js",

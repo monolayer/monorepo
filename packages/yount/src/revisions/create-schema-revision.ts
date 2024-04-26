@@ -1,10 +1,15 @@
 import path from "node:path";
 import nunjucks from "nunjucks";
 import { Changeset } from "~/changeset/types.js";
-import { createFile } from "~/utils.js";
+import { createFile } from "~/create-file.js";
 
 const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
+{%- if dependsOn === "NO_DEPENDENCY" %}
+import { NO_DEPENDENCY } from "yount/revision";
+{%- endif %}
+
+export const dependsOn = {{ dependsOn if dependsOn === "NO_DEPENDENCY" else ['"', dependsOn, '"'] | join("") | safe }};
 
 export async function up(db: Kysely<any>): Promise<void> {
 {%- for u in up %}
@@ -23,6 +28,7 @@ export function createSchemaRevision(
 	changesets: Changeset[],
 	folder: string,
 	name: string,
+	dependsOn: string,
 ) {
 	const { up, down } = extractRevisionOps([...changesets]);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
@@ -30,6 +36,7 @@ export function createSchemaRevision(
 	const rendered = nunjucks.compile(template).render({
 		up: up,
 		down: down,
+		dependsOn,
 	});
 	createFile(
 		migrationFilePath,

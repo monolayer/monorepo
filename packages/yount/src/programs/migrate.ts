@@ -2,9 +2,11 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { Migrator } from "../services/migrator.js";
 import { logMigrationResultStatus } from "./log-migration-result-status.js";
+import { validateRevisionDependencies } from "./revision-dependencies.js";
 
 export function migrate() {
 	return Migrator.pipe(
+		Effect.tap(() => validateRevisionDependencies()),
 		Effect.flatMap((migrator) =>
 			Effect.tryPromise(() => migrator.instance.migrateToLatest()),
 		),

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely } from "kysely";
 
+export const dependsOn = "20240405T120024-regulus-mint";
+
 export async function up(db: Kysely<any>): Promise<void> {
 	await db
 		.withSchema("public")

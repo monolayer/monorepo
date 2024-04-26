@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely } from "kysely";
 
+export const dependsOn = {
+	__noDependencies__: true,
+};
+
 export async function up(db: Kysely<any>): Promise<void> {
 	await db
 		.withSchema("public")

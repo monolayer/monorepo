@@ -8,7 +8,7 @@ import {
 } from "fs";
 import path from "path";
 import { cwd } from "process";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { generateRevision } from "~/programs/generate-revision.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import { defaultMigrationPath } from "~tests/__setup__/helpers/default-migration-path.js";
@@ -23,6 +23,7 @@ import {
 describe("generateChangesetMigration", () => {
 	beforeEach<ProgramContext>(async (context) => {
 		await setupProgramContext(context);
+		vi.unmock("~/create-file.ts");
 	});
 
 	afterEach<ProgramContext>(async (context) => {
@@ -104,6 +105,70 @@ describe("generateChangesetMigration", () => {
 		);
 		expect(migration.toString()).toBe(expectedMigrationWithSchemas);
 	});
+
+	describe("with dependencies", () => {
+		test<ProgramContext>("returns a changeset list", async (context) => {
+			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
+
+			await Effect.runPromise(
+				Effect.provide(programWithErrorCause(generateRevision()), layers),
+			);
+
+			const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
+
+			expect(migrationFiles.length).toBe(5);
+
+			const migration = readFileSync(
+				path.join(
+					context.folder,
+					"db",
+					"revisions",
+					"default",
+					migrationFiles.slice(-1)[0]!,
+				),
+			);
+			expect(migration.toString()).toBe(expectedMigrationWithDependency);
+		});
+
+		test<ProgramContext>("returns a changeset list for multiple database definitions", async (context) => {
+			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
+			writeFileSync(
+				path.join(context.folder, "db", "anotherSchema.ts"),
+				anotherSchemaFile,
+			);
+
+			const configurations = configurationsTemplateTwoDatabaseSchemas.render({
+				dbName: context.dbName,
+				secondSchemaFile: "anotherSchema",
+			});
+
+			writeFileSync(
+				path.join(context.folder, "db", "configuration.ts"),
+				configurations,
+			);
+
+			await Effect.runPromise(
+				Effect.provide(programWithErrorCause(generateRevision()), layers),
+			);
+
+			const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
+
+			expect(migrationFiles.length).toBe(5);
+
+			const migration = readFileSync(
+				path.join(
+					context.folder,
+					"db",
+					"revisions",
+					"default",
+					migrationFiles.slice(-1)[0]!,
+				),
+			);
+			expect(migration.toString()).toBe(
+				expectedMigrationWithSchemasAndDependency,
+			);
+		});
+	});
 });
 
 const pgPath = path.join(cwd(), "src", "pg.ts");
@@ -136,6 +201,9 @@ export const dbSchema = schema({
 
 const expectedMigration = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely } from "kysely";
+import { NO_DEPENDENCY } from "yount/revision";
+
+export const dependsOn = NO_DEPENDENCY;
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.withSchema("public").schema
@@ -153,6 +221,59 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 const expectedMigrationWithSchemas = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
+import { NO_DEPENDENCY } from "yount/revision";
+
+export const dependsOn = NO_DEPENDENCY;
+
+export async function up(db: Kysely<any>): Promise<void> {
+  await db.withSchema("public").schema
+    .createTable("regulus_mint")
+    .addColumn("name", "text", (col) => col.notNull())
+    .execute();
+
+  await sql\`CREATE SCHEMA IF NOT EXISTS "accounts";\`
+    .execute(db);
+
+  await db.withSchema("accounts").schema
+    .createTable("regulus_wolf")
+    .addColumn("name", "text", (col) => col.notNull())
+    .execute();
+}
+
+export async function down(db: Kysely<any>): Promise<void> {
+  await db.withSchema("public").schema
+    .dropTable("regulus_mint")
+    .execute();
+
+  await db.withSchema("accounts").schema
+    .dropTable("regulus_wolf")
+    .execute();
+}
+`;
+
+const expectedMigrationWithDependency = `/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Kysely } from "kysely";
+
+export const dependsOn = "20240405T154913-mirfak-mustard";
+
+export async function up(db: Kysely<any>): Promise<void> {
+  await db.withSchema("public").schema
+    .createTable("regulus_mint")
+    .addColumn("name", "text", (col) => col.notNull())
+    .execute();
+}
+
+export async function down(db: Kysely<any>): Promise<void> {
+  await db.withSchema("public").schema
+    .dropTable("regulus_mint")
+    .execute();
+}
+`;
+
+const expectedMigrationWithSchemasAndDependency = `/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Kysely, sql } from "kysely";
+
+export const dependsOn = "20240405T154913-mirfak-mustard";
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.withSchema("public").schema

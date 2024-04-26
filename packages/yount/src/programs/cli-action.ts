@@ -52,19 +52,12 @@ export async function cliAction(
 		)
 		.pipe(
 			Effect.tapErrorCause((cause) => {
+				p.log.error(color.red("Error"));
 				if (cause._tag === "Fail") {
-					const error = cause.error;
-					if (error instanceof Error) {
-						if (error.name === "UnknownException") {
-							console.dir(error.name);
-							const match = error.message.match(
-								/database "\w+" does not exist/,
-							);
-							console.dir(match);
-						}
-					}
+					p.log.message(JSON.stringify(cause.error, null, 2));
+				} else {
+					p.log.message(JSON.stringify(cause, null, 2));
 				}
-				p.log.message(cause.toString());
 				return Effect.unit;
 			}),
 		);

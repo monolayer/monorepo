@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
-import { env } from "node:process";
+import path from "node:path";
+import { cwd, env } from "node:process";
 import pg from "pg";
 import type { GlobalThis } from "type-fest";
 import { vi } from "vitest";
@@ -80,6 +81,33 @@ vi.mock("~/prompts/revision-name.js", async (importOriginal) => {
 	await importOriginal();
 	return {
 		revisionNamePrompt: vi.fn(async () => "default"),
+	};
+});
+
+const revisionPath = path.join(cwd(), "src", "revisions/revision.ts");
+
+export function mockedCreateFile(
+	originalImport: typeof import("~/create-file.ts"),
+) {
+	return vi.fn((path: string, content: string, log = true) => {
+		originalImport.createFile(
+			path,
+			content.replace("yount/revision", revisionPath),
+			log,
+		);
+	});
+}
+
+vi.mock("~/create-file.ts", async (importOriginal) => {
+	const original = await importOriginal<typeof import("~/create-file.ts")>();
+	return {
+		createFile: vi.fn((path: string, content: string, log = true) => {
+			original.createFile(
+				path,
+				content.replace("yount/revision", revisionPath),
+				log,
+			);
+		}),
 	};
 });
 
