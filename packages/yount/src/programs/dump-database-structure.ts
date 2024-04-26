@@ -14,47 +14,48 @@ import { pipeCommandStdoutToWritable } from "./pipe-command-stdout-to-writable.j
 import { spinnerTask } from "./spinner-task.js";
 
 export function dumpDatabaseStructure() {
-	return spinnerTask("Dump database structure", () =>
-		Effect.all([Environment, DbClients]).pipe(
-			Effect.flatMap(([environment, dbClients]) =>
-				Effect.all([
-					databaseSearchPath(),
-					databaseInConfig(dbClients.currentEnvironment.databaseName),
-					databaseDumpPath(
-						environment.configurationName,
-						environment.name,
-						environment.folder,
-					),
-					installedExtensions(),
-				]).pipe(
-					Effect.flatMap(
-						([searchPath, database, dumpPath, installedExtensions]) =>
-							Effect.succeed(true).pipe(
-								Effect.tap(() => setPgDumpEnv(environment.configurationConfig)),
-								Effect.tap(() =>
-									dumpStructure(
-										database,
-										dumpPath,
-										environment.configuration.schemas.map(
-											(schema) => Schema.info(schema).name || "public",
-										),
-										installedExtensions,
-									),
-								),
-								Effect.tap(() =>
-									appendFileSync(
-										dumpPath,
-										`SET search_path TO ${searchPath};\n\n`,
-									),
-								),
-								Effect.tap(() => appendMigrationData(database, dumpPath)),
-							),
-					),
-					Effect.flatMap(() => Effect.succeed(true)),
+	return Effect.all([Environment, DbClients]).pipe(
+		Effect.flatMap(([environment, dbClients]) =>
+			Effect.all([
+				databaseSearchPath(),
+				databaseInConfig(dbClients.currentEnvironment.databaseName),
+				databaseDumpPath(
+					environment.configurationName,
+					environment.name,
+					environment.folder,
 				),
+				installedExtensions(),
+			]).pipe(
+				Effect.flatMap(
+					([searchPath, database, dumpPath, installedExtensions]) =>
+						Effect.succeed(true).pipe(
+							Effect.tap(() => setPgDumpEnv(environment.configurationConfig)),
+							Effect.tap(() =>
+								dumpStructure(
+									database,
+									dumpPath,
+									environment.configuration.schemas.map(
+										(schema) => Schema.info(schema).name || "public",
+									),
+									installedExtensions,
+								),
+							),
+							Effect.tap(() =>
+								appendFileSync(
+									dumpPath,
+									`SET search_path TO ${searchPath};\n\n`,
+								),
+							),
+							Effect.tap(() => appendMigrationData(database, dumpPath)),
+						),
+				),
+				Effect.flatMap(() => Effect.succeed(true)),
 			),
 		),
 	);
+}
+export function dumpDatabaseStructureTask() {
+	return spinnerTask("Dump database structure", () => dumpDatabaseStructure());
 }
 
 function appendMigrationData(database: string, dumpPath: string) {

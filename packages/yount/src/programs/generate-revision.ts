@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
+import { printChangesetSummary } from "~/changeset/print-changeset-summary.js";
 import { createSchemaRevision } from "~/revisions/create-schema-revision.js";
-import { printChangesetSummary } from "../changeset/print-changeset-summary.js";
 import { DevEnvironment } from "../services/environment.js";
 import { changeset } from "./changeset.js";
 import { computeExtensionChangeset } from "./extension-changeset.js";
@@ -19,6 +19,14 @@ export function generateRevision() {
 				.pipe(
 					Effect.tap((changeset) =>
 						Effect.if(changeset.length > 0, {
+							onTrue: Effect.succeed(true).pipe(
+								Effect.tap(() => printChangesetSummary(changeset)),
+							),
+							onFalse: Effect.succeed(true),
+						}),
+					),
+					Effect.tap((changeset) =>
+						Effect.if(changeset.length > 0, {
 							onTrue: Effect.succeed(changeset).pipe(
 								Effect.tap((cset) =>
 									revisionName().pipe(
@@ -28,18 +36,13 @@ export function generateRevision() {
 												environment.schemaRevisionsFolder,
 												revisionName,
 											);
-											printChangesetSummary(cset);
-											p.note(
-												"Apply migrations with 'npx yount migrate'",
-												"Next Steps",
-											);
 										}),
 									),
 								),
 							),
 							onFalse: Effect.succeed(true).pipe(
 								Effect.tap(() => {
-									p.log.info(`Nothing to do. No changes detected.`);
+									p.log.message(`Nothing to do. No changes detected.`);
 								}),
 							),
 						}),

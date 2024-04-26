@@ -6,7 +6,7 @@ import { cancelOperation } from "./cancel-operation.js";
 import { createDevDatabase } from "./create-database.js";
 import { adminDevPgQuery } from "./pg-query.js";
 
-export function handleMissingDevDatabase() {
+export function handleMissingDatabase() {
 	return DbClients.pipe(
 		Effect.flatMap((dbClients) =>
 			adminDevPgQuery<{

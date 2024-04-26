@@ -865,8 +865,7 @@ const stripAnsiCodes = (str: string) =>
 	// eslint-disable-next-line no-control-regex
 	str.replace(/\x1B[[(?);]{0,2}(;?\d)*./g, "");
 
-const expectedSummary = `Change Summary:
-Extensions: added (1), dropped (1)
+const expectedSummary = `Extensions: added (1), dropped (1)
 Schemas: added (1)
 
 'public' schema:

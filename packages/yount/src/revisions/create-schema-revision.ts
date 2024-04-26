@@ -23,7 +23,6 @@ export function createSchemaRevision(
 	changesets: Changeset[],
 	folder: string,
 	name: string,
-	log = true,
 ) {
 	const { up, down } = extractRevisionOps([...changesets]);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
@@ -35,7 +34,7 @@ export function createSchemaRevision(
 	createFile(
 		migrationFilePath,
 		rendered.includes("sql`") ? rendered : rendered.replace(", sql", ""),
-		log,
+		false,
 	);
 }
 

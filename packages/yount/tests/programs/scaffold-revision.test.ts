@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import { readFileSync } from "fs";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { scaffoldMigration } from "~/programs/scaffold-migration.js";
+import { scaffoldRevision } from "~/programs/scaffold-revision.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -21,7 +21,7 @@ describe("scaffoldMigration", () => {
 
 	test<ProgramContext>("creates an empty migration file", async () => {
 		const result = await Effect.runPromise(
-			Effect.provide(programWithErrorCause(scaffoldMigration()), layers),
+			Effect.provide(programWithErrorCause(scaffoldRevision()), layers),
 		);
 
 		const expected = `import { Kysely } from "kysely";

@@ -3,7 +3,7 @@ import { readFileSync } from "fs";
 import { sql } from "kysely";
 import nunjucks from "nunjucks";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { dumpDatabaseStructure } from "~/programs/dump-database-structure.js";
+import { dumpDatabaseStructureTask } from "~/programs/dump-database-structure.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -25,7 +25,10 @@ describe("dumpDatabaseStructure", () => {
 		await context.migrator.migrateUp();
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(dumpDatabaseStructure()), layers),
+			Effect.provide(
+				programWithErrorCause(dumpDatabaseStructureTask()),
+				layers,
+			),
 		);
 
 		const dump = readFileSync(
@@ -49,7 +52,10 @@ describe("dumpDatabaseStructure", () => {
 		await sql`CREATE EXTENSION btree_gin`.execute(context.kysely);
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(dumpDatabaseStructure()), layers),
+			Effect.provide(
+				programWithErrorCause(dumpDatabaseStructureTask()),
+				layers,
+			),
 		);
 
 		const dump = readFileSync(

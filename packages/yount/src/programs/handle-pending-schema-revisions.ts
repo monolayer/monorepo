@@ -1,11 +1,11 @@
 import * as p from "@clack/prompts";
 import { confirm } from "@clack/prompts";
 import { Effect } from "effect";
-import { unlinkSync } from "fs";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
 import { cancelOperation } from "./cancel-operation.js";
+import { deletePendingRevisions } from "./delete-pending-revisions.js";
 import { localPendingSchemaRevisions } from "./local-pending-schema-revisions.js";
 
 export function handlePendingSchemaRevisions() {
@@ -57,27 +57,5 @@ function askConfirmationDelete() {
 				"we need to delete them to continue",
 			)}. Do you want to proceed?`,
 		}),
-	);
-}
-
-function deletePendingRevisions(
-	pending: {
-		name: string;
-		path: string;
-	}[],
-) {
-	return Effect.succeed(true).pipe(
-		Effect.flatMap(() =>
-			Effect.forEach(pending, (pendingRevision) =>
-				Effect.succeed(true).pipe(
-					Effect.map(() => {
-						unlinkSync(pendingRevision.path);
-						p.log.info(
-							`${color.red("removed")} ${path.relative(cwd(), pendingRevision.path)}`,
-						);
-					}),
-				),
-			),
-		),
 	);
 }

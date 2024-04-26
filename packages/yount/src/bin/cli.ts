@@ -4,19 +4,18 @@ import { Command } from "@commander-js/extra-typings";
 import { CommanderError } from "commander";
 import { Effect } from "effect";
 import { exit } from "process";
+import { applyRevisions } from "~/programs/apply-revisions.js";
 import { cliAction } from "~/programs/cli-action.js";
 import { createDatabase } from "~/programs/create-database.js";
 import { dropDatabase } from "~/programs/drop-database.js";
-import { dropTablesAndTypes } from "~/programs/drop-tables-and-types.js";
-import { dumpDatabaseStructure } from "~/programs/dump-database-structure.js";
 import { generateRevision } from "~/programs/generate-revision.js";
-import { handleMissingDevDatabase } from "~/programs/handle-missing-dev-database.js";
+import { handleMissingDatabase } from "~/programs/handle-missing-dev-database.js";
 import { handlePendingSchemaRevisions } from "~/programs/handle-pending-schema-revisions.js";
-import { migrateDown } from "~/programs/migrate-down.js";
 import { migrate } from "~/programs/migrate.js";
 import { pendingMigrations } from "~/programs/pending-migrations.js";
-import { scaffoldMigration } from "~/programs/scaffold-migration.js";
+import { scaffoldRevision } from "~/programs/scaffold-revision.js";
 import { seed } from "~/programs/seed.js";
+import { squash } from "~/programs/squash.js";
 import { structureLoad } from "~/programs/structure-load.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
@@ -40,7 +39,7 @@ async function main() {
 			"connection environment name as defined in configuration.ts",
 			"development",
 		)
-		.description("create the database")
+		.description("creates a database")
 		.action(
 			async (opts) =>
 				await cliAction("yount db:create", opts, [createDatabase()]),
@@ -58,35 +57,14 @@ async function main() {
 			"environment as specified in yount.config.ts",
 			"development",
 		)
-		.description("drop the database")
+		.description("drops a database")
 		.action(
 			async (opts) => await cliAction("yount db:drop", opts, [dropDatabase()]),
 		);
 
 	program
-		.command("db:clear")
-		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
-			"default",
-		)
-		.option(
-			"-e, --environment <environment-name>",
-			"environment as specified in yount.config.ts",
-			"development",
-		)
-		.description("remove tables and types")
-		.action(
-			async (opts) =>
-				await cliAction("yount db:clear", opts, [
-					dropTablesAndTypes(),
-					dumpDatabaseStructure(),
-				]),
-		);
-
-	program
-		.command("migrate")
-		.description("apply pending migrations")
+		.command("generate")
+		.description("generate schema revisions")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -98,21 +76,16 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("yount migrate", opts, [
-				migrate().pipe(
-					Effect.tap((result) =>
-						Effect.if(result, {
-							onTrue: dumpDatabaseStructure(),
-							onFalse: Effect.succeed(true),
-						}),
-					),
-				),
+			await cliAction("yount generate", opts, [
+				handleMissingDatabase(),
+				handlePendingSchemaRevisions(),
+				generateRevision(),
 			]);
 		});
 
 	program
-		.command("migrate:down")
-		.description("migrate one step down")
+		.command("pending")
+		.description("list pending schema revisions")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -124,21 +97,38 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("yount migrate:down", opts, [
-				migrateDown().pipe(
-					Effect.tap((result) =>
-						Effect.if(result, {
-							onTrue: dumpDatabaseStructure(),
-							onFalse: Effect.succeed(true),
-						}),
-					),
-				),
+			await cliAction("yount pending", opts, [pendingMigrations()]);
+		});
+
+	program
+		.command("push")
+		.description("push pending schema revisions")
+		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in configuration.ts",
+			"default",
+		)
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in yount.config.ts",
+			"development",
+		)
+		.action(async (opts) => {
+			await cliAction("yount push", opts, [migrate()]);
+		});
+
+	program
+		.command("scaffold")
+		.description("creates an empty schema revision file")
+		.action(async () => {
+			await cliAction("yount scaffold", { environment: "development" }, [
+				scaffoldRevision(),
 			]);
 		});
 
 	program
 		.command("seed")
-		.description("seed database")
+		.description("seeds a database")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -163,8 +153,8 @@ async function main() {
 		});
 
 	program
-		.command("structure:dump")
-		.description("dump the database structure")
+		.command("squash")
+		.description("combine schema revisions into a single revision")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -176,12 +166,12 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("yount structure:dump", opts, [dumpDatabaseStructure()]);
+			await cliAction("yount squash", opts, [squash()]);
 		});
 
 	program
 		.command("structure:load")
-		.description("load the database structure")
+		.description("loads a database structure")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -197,28 +187,8 @@ async function main() {
 		});
 
 	program
-		.command("generate")
-		.description("generate migrations based on the current defined schema")
-		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
-			"default",
-		)
-		.action(async (opts) => {
-			await cliAction(
-				"yount generate",
-				{ environment: "development", connection: opts.connection },
-				[
-					handleMissingDevDatabase(),
-					handlePendingSchemaRevisions(),
-					generateRevision(),
-				],
-			);
-		});
-
-	program
-		.command("pending")
-		.description("list pending migrations")
+		.command("sync")
+		.description("generates schema revisions and pushes them")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -230,15 +200,10 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("yount pending", opts, [pendingMigrations()]);
-		});
-
-	program
-		.command("scaffold")
-		.description("create an empty migration file")
-		.action(async () => {
-			await cliAction("yount scaffold", { environment: "development" }, [
-				scaffoldMigration(),
+			await cliAction("yount sync", opts, [
+				handleMissingDatabase(),
+				handlePendingSchemaRevisions(),
+				generateRevision().pipe(Effect.tap(applyRevisions)),
 			]);
 		});
 

@@ -1,8 +1,7 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
-import type { MigrationResult } from "kysely";
-import color from "picocolors";
 import { Migrator } from "../services/migrator.js";
+import { logMigrationResultStatus } from "./log-migration-result-status.js";
 
 export function migrate() {
 	return Migrator.pipe(
@@ -12,7 +11,7 @@ export function migrate() {
 		Effect.tap(({ error, results }) =>
 			Effect.if(results !== undefined && results.length > 0, {
 				onTrue: Effect.forEach(results!, (result) =>
-					logResultStatus(result, error),
+					logMigrationResultStatus(result, error, "up"),
 				),
 				onFalse: Effect.unit,
 			}),
@@ -20,7 +19,7 @@ export function migrate() {
 		Effect.tap(({ results }) =>
 			Effect.if(results !== undefined && results.length === 0, {
 				onTrue: Effect.succeed(true).pipe(
-					Effect.map(() => p.log.info("No migrations to apply.")),
+					Effect.map(() => p.log.info("No revisions to apply.")),
 				),
 				onFalse: Effect.unit,
 			}),
@@ -38,25 +37,4 @@ export function migrate() {
 			}),
 		),
 	);
-}
-
-function logResultStatus(result: MigrationResult, error: unknown) {
-	switch (result.status) {
-		case "Success":
-			if (error !== undefined) {
-				p.log.info(
-					`${color.green("Applied")} ${result.migrationName} (ROLLBACK)`,
-				);
-			} else {
-				p.log.info(`${color.green("Applied")} ${result.migrationName}`);
-			}
-			break;
-		case "Error":
-			p.log.error(`${color.red("Error")} ${result.migrationName} (ROLLBACK)`);
-			break;
-		case "NotExecuted":
-			p.log.warn(`${color.yellow("Not executed")} ${result.migrationName}`);
-			break;
-	}
-	return Effect.succeed(true);
 }

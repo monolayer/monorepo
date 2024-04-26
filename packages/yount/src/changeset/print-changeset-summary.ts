@@ -76,12 +76,12 @@ export function renderChangesetSummary(changeset: Changeset[]) {
 
 export function printChangesetSummary(changeset: Changeset[]) {
 	const render = renderChangesetSummary(changeset);
-	p.log.success(render);
+	p.log.step(color.underline("Change Summary:"));
+	p.log.message(render);
 }
 
-export const summaryTemplate = nunjucks.compile(`Change Summary:
-
-{%- if extensionsSummary !== '' %}
+export const summaryTemplate = nunjucks.compile(`
+{%- if extensionsSummary !== '' -%}
 Extensions: {{ extensionsSummary }}
 {%- endif %}
 {%- if schemasSummary !== '' %}
