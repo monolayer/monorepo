@@ -24,7 +24,7 @@ export enum ChangeSetType {
 	RenameForeignKey = "renameForeignKey",
 	CreateUnique = "createUniqueConstraint",
 	DropUnique = "dropUniqueConstraint",
-	ChangeUnique = "changeUniqueConstraint",
+	RenameUnique = "renameUniqueConstraint",
 	CreateCheck = "createCheckConstraint",
 	ChangeCheck = "changeCheckConstraint",
 	DropCheck = "dropCheckConstraint",

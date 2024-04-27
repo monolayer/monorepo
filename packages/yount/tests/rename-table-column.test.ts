@@ -4982,7 +4982,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeUniqueConstraint",
+				type: "renameUniqueConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."publications" RENAME CONSTRAINT books_acdd8fa3_yount_key TO publications_1c0982e8_yount_key`',
@@ -5387,7 +5387,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeUniqueConstraint",
+				type: "renameUniqueConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."publications" RENAME CONSTRAINT books_d0c857aa_yount_key TO publications_f2bf9399_yount_key`',
@@ -10830,7 +10830,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeUniqueConstraint",
+				type: "renameUniqueConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books_and_documents" RENAME CONSTRAINT books_acdd8fa3_yount_key TO books_and_documents_b663df16_yount_key`',
@@ -11244,7 +11244,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeUniqueConstraint",
+				type: "renameUniqueConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books_and_documents" RENAME CONSTRAINT books_d0c857aa_yount_key TO books_and_documents_f2bf9399_yount_key`',

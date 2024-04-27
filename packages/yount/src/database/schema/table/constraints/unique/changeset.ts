@@ -289,7 +289,7 @@ function changeUniqueConstraintNameMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename),
-		type: ChangeSetType.ChangeUnique,
+		type: ChangeSetType.RenameUnique,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${oldName} TO ${newName}`,
