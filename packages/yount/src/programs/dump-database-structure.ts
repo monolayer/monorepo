@@ -146,8 +146,8 @@ function databaseSearchPath() {
 	}>("SHOW search_path").pipe(
 		Effect.flatMap((result) =>
 			Effect.if(result[0] === undefined, {
-				onTrue: Effect.fail(new Error("Search path not found")),
-				onFalse: Effect.succeed(result[0]!.search_path),
+				onTrue: () => Effect.fail(new Error("Search path not found")),
+				onFalse: () => Effect.succeed(result[0]!.search_path),
 			}),
 		),
 	);

@@ -8,8 +8,8 @@ export function pendingMigrations() {
 	return localPendingSchemaRevisions().pipe(
 		Effect.tap((pendingMigrations) =>
 			Effect.if(pendingMigrations.length > 0, {
-				onTrue: Effect.forEach(pendingMigrations, logPendingMigration),
-				onFalse: logEmptyMigration(),
+				onTrue: () => Effect.forEach(pendingMigrations, logPendingMigration),
+				onFalse: () => logEmptyMigration(),
 			}),
 		),
 		Effect.flatMap((pendingMigrations) => Effect.succeed(pendingMigrations)),
@@ -17,7 +17,7 @@ export function pendingMigrations() {
 }
 
 function logEmptyMigration() {
-	return Effect.unit.pipe(
+	return Effect.void.pipe(
 		Effect.tap(() => p.log.info(`${color.green("No pending migrations")}`)),
 	);
 }
@@ -25,5 +25,5 @@ function logEmptyMigration() {
 function logPendingMigration(migration: { name: string; path: string }) {
 	const relativePath = path.relative(process.cwd(), migration.path);
 	p.log.warn(`${color.yellow("pending")} ${relativePath}`);
-	return Effect.unit;
+	return Effect.void;
 }

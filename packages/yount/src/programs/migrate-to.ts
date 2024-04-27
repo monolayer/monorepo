@@ -10,10 +10,11 @@ export function migrateTo(downTo: string | typeof NO_MIGRATIONS) {
 		),
 		Effect.tap(({ error, results }) =>
 			Effect.if(!(results !== undefined && results.length > 0), {
-				onTrue: Effect.forEach(results!, (result) =>
-					logMigrationResultStatus(result, error, "down"),
-				),
-				onFalse: Effect.unit,
+				onTrue: () =>
+					Effect.forEach(results!, (result) =>
+						logMigrationResultStatus(result, error, "down"),
+					),
+				onFalse: () => Effect.void,
 			}),
 		),
 		Effect.flatMap(({ results }) =>

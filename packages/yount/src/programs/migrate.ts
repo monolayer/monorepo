@@ -12,30 +12,32 @@ export function migrate() {
 		),
 		Effect.tap(({ error, results }) =>
 			Effect.if(results !== undefined && results.length > 0, {
-				onTrue: Effect.forEach(results!, (result) =>
-					logMigrationResultStatus(result, error, "up"),
-				),
-				onFalse: Effect.unit,
+				onTrue: () =>
+					Effect.forEach(results!, (result) =>
+						logMigrationResultStatus(result, error, "up"),
+					),
+				onFalse: () => Effect.void,
 			}),
 		),
 		Effect.tap(({ results }) =>
 			Effect.if(results !== undefined && results.length === 0, {
-				onTrue: Effect.succeed(true).pipe(
-					Effect.map(() => p.log.info("No revisions to apply.")),
-				),
-				onFalse: Effect.unit,
+				onTrue: () =>
+					Effect.succeed(true).pipe(
+						Effect.map(() => p.log.info("No revisions to apply.")),
+					),
+				onFalse: () => Effect.void,
 			}),
 		),
 		Effect.tap(({ error }) =>
 			Effect.if(error !== undefined, {
-				onTrue: Effect.fail(error),
-				onFalse: Effect.succeed(true),
+				onTrue: () => Effect.fail(error),
+				onFalse: () => Effect.succeed(true),
 			}),
 		),
 		Effect.flatMap(({ error, results }) =>
 			Effect.if(error === undefined && results !== undefined, {
-				onTrue: Effect.succeed(true),
-				onFalse: Effect.succeed(false),
+				onTrue: () => Effect.succeed(true),
+				onFalse: () => Effect.succeed(false),
 			}),
 		),
 	);

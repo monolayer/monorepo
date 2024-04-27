@@ -16,8 +16,8 @@ export function handleMissingDatabase() {
 			).pipe(
 				Effect.flatMap((result) =>
 					Effect.if(result.length !== 0, {
-						onTrue: Effect.succeed(true),
-						onFalse: Effect.succeed(false),
+						onTrue: () => Effect.succeed(true),
+						onFalse: () => Effect.succeed(false),
 					}),
 				),
 			),
@@ -25,23 +25,24 @@ export function handleMissingDatabase() {
 	).pipe(
 		Effect.flatMap((result) =>
 			Effect.if(typeof result === "boolean" && result, {
-				onTrue: Effect.succeed(true),
-				onFalse: Effect.tryPromise(async () => {
-					p.log.warn(
-						"Development database does not exist. Cannot generate migrations without a development database.",
-					);
-					return await confirm({
-						initialValue: false,
-						message: `Do you want to create the development database?`,
-					});
-				}).pipe(
-					Effect.flatMap((shouldContinue) =>
-						Effect.if(shouldContinue === true, {
-							onTrue: createDevDatabase(),
-							onFalse: cancelOperation(),
-						}),
+				onTrue: () => Effect.succeed(true),
+				onFalse: () =>
+					Effect.tryPromise(async () => {
+						p.log.warn(
+							"Development database does not exist. Cannot generate migrations without a development database.",
+						);
+						return await confirm({
+							initialValue: false,
+							message: `Do you want to create the development database?`,
+						});
+					}).pipe(
+						Effect.flatMap((shouldContinue) =>
+							Effect.if(shouldContinue === true, {
+								onTrue: () => createDevDatabase(),
+								onFalse: () => cancelOperation(),
+							}),
+						),
 					),
-				),
 			}),
 		),
 	);

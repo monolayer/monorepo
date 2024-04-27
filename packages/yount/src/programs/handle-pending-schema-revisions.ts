@@ -12,19 +12,20 @@ export function handlePendingSchemaRevisions() {
 	return localPendingSchemaRevisions().pipe(
 		Effect.flatMap((pendingRevisions) =>
 			Effect.if(pendingRevisions.length > 0, {
-				onTrue: logPendingRevisions(pendingRevisions).pipe(
-					Effect.flatMap(() =>
-						askConfirmationDelete().pipe(
-							Effect.flatMap((shouldContinue) =>
-								Effect.if(shouldContinue === true, {
-									onTrue: deletePendingRevisions(pendingRevisions),
-									onFalse: cancelOperation(),
-								}),
+				onTrue: () =>
+					logPendingRevisions(pendingRevisions).pipe(
+						Effect.flatMap(() =>
+							askConfirmationDelete().pipe(
+								Effect.flatMap((shouldContinue) =>
+									Effect.if(shouldContinue === true, {
+										onTrue: () => deletePendingRevisions(pendingRevisions),
+										onFalse: () => cancelOperation(),
+									}),
+								),
 							),
 						),
 					),
-				),
-				onFalse: Effect.succeed(true),
+				onFalse: () => Effect.succeed(true),
 			}),
 		),
 	);

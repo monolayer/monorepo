@@ -84,5 +84,5 @@ function printCause(cause: Cause<unknown>) {
 		p.log.error(color.red("Error"));
 		p.log.message(JSON.stringify(cause, null, 2));
 	}
-	return Effect.unit;
+	return Effect.void;
 }

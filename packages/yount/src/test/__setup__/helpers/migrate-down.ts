@@ -11,14 +11,14 @@ export function migrateDown() {
 		),
 		Effect.tap(({ results }) =>
 			Effect.if(results !== undefined, {
-				onTrue: Effect.forEach(results!, logResultStatus),
-				onFalse: Effect.unit,
+				onTrue: () => Effect.forEach(results!, logResultStatus),
+				onFalse: () => Effect.void,
 			}),
 		),
 		Effect.flatMap(({ error }) =>
 			Effect.if(error !== undefined, {
-				onTrue: Effect.fail(error),
-				onFalse: Effect.succeed(true),
+				onTrue: () => Effect.fail(error),
+				onFalse: () => Effect.succeed(true),
 			}),
 		),
 	);

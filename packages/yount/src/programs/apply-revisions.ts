@@ -5,14 +5,15 @@ import { migrate } from "./migrate.js";
 
 export function applyRevisions(changeset: Changeset[]) {
 	return Effect.if(changeset.length > 0, {
-		onTrue: migrate().pipe(
-			Effect.tap((result) =>
-				Effect.if(result, {
-					onTrue: dumpDatabaseStructure(),
-					onFalse: Effect.succeed(true),
-				}),
+		onTrue: () =>
+			migrate().pipe(
+				Effect.tap((result) =>
+					Effect.if(result, {
+						onTrue: () => dumpDatabaseStructure(),
+						onFalse: () => Effect.succeed(true),
+					}),
+				),
 			),
-		),
-		onFalse: Effect.succeed(true),
+		onFalse: () => Effect.succeed(true),
 	});
 }

@@ -18,7 +18,7 @@ export function spinnerTask(
 			Effect.tapErrorCause(() => {
 				const msg = `${name} ${color.red("x")}`;
 				spinner.stop(msg, 1);
-				return Effect.unit;
+				return Effect.void;
 			}),
 		)
 		.pipe(Effect.flatMap(() => Effect.succeed(true)));
@@ -34,12 +34,14 @@ export function check(
 			callback().pipe(
 				Effect.tap((result) =>
 					Effect.if(result, {
-						onTrue: Effect.succeed(true).pipe(
-							Effect.tap(() => spinner.stop(`${name} ${color.green("✓")}`)),
-						),
-						onFalse: Effect.succeed(false).pipe(
-							Effect.tap(() => spinner.stop(`${name} ${color.red("x")}`)),
-						),
+						onTrue: () =>
+							Effect.succeed(true).pipe(
+								Effect.tap(() => spinner.stop(`${name} ${color.green("✓")}`)),
+							),
+						onFalse: () =>
+							Effect.succeed(false).pipe(
+								Effect.tap(() => spinner.stop(`${name} ${color.red("x")}`)),
+							),
 					}),
 				),
 			),

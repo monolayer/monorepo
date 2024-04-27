@@ -36,16 +36,16 @@ export function seed({
 			Effect.tap(() => checkSeederFunction(seedFile)),
 			Effect.tap(() =>
 				Effect.if(!!replant && !disableWarnings, {
-					onTrue: replantWarning(),
-					onFalse: Effect.unit,
+					onTrue: () => replantWarning(),
+					onFalse: () => Effect.void,
 				}),
 			),
 		)
 		.pipe(
 			Effect.tap(() =>
 				Effect.if(!!replant, {
-					onTrue: truncateAllTables(),
-					onFalse: Effect.unit,
+					onTrue: () => truncateAllTables(),
+					onFalse: () => Effect.void,
 				}),
 			),
 			Effect.tap(() => seedDatabase(seedFile)),
@@ -164,8 +164,8 @@ export function importSeedFunction(seedFile: string) {
 		),
 		Effect.flatMap((seedFn) =>
 			Effect.if(seedFn !== undefined, {
-				onTrue: Effect.succeed(seedFn!),
-				onFalse: Effect.fail(new UndefinedSeedFunction()),
+				onTrue: () => Effect.succeed(seedFn!),
+				onFalse: () => Effect.fail(new UndefinedSeedFunction()),
 			}),
 		),
 	);

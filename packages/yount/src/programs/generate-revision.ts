@@ -20,40 +20,43 @@ export function generateRevision(name?: string) {
 				.pipe(
 					Effect.tap((changeset) =>
 						Effect.if(changeset.length > 0, {
-							onTrue: Effect.succeed(true).pipe(
-								Effect.tap(() => printChangesetSummary(changeset)),
-							),
-							onFalse: Effect.succeed(true),
+							onTrue: () =>
+								Effect.succeed(true).pipe(
+									Effect.tap(() => printChangesetSummary(changeset)),
+								),
+							onFalse: () => Effect.succeed(true),
 						}),
 					),
 					Effect.tap((changeset) =>
 						Effect.if(changeset.length > 0, {
-							onTrue: Effect.succeed(changeset).pipe(
-								Effect.tap((cset) =>
-									Effect.if(name !== undefined, {
-										onTrue: Effect.succeed(name!),
-										onFalse: revisionName(),
-									}).pipe(
-										Effect.tap((revisionName) =>
-											revisionDependency().pipe(
-												Effect.tap((dependency) => {
-													createSchemaRevision(
-														cset,
-														environment.schemaRevisionsFolder,
-														revisionName,
-														dependency,
-													);
-												}),
+							onTrue: () =>
+								Effect.succeed(changeset).pipe(
+									Effect.tap((cset) =>
+										Effect.if(name !== undefined, {
+											onTrue: () => Effect.succeed(name!),
+											onFalse: () => revisionName(),
+										}).pipe(
+											Effect.tap((revisionName) =>
+												revisionDependency().pipe(
+													Effect.tap((dependency) => {
+														createSchemaRevision(
+															cset,
+															environment.schemaRevisionsFolder,
+															revisionName,
+															dependency,
+														);
+													}),
+												),
 											),
 										),
 									),
 								),
-							),
-							onFalse: Effect.succeed(true).pipe(
-								Effect.tap(() => {
-									p.log.info(`Nothing to do. No changes detected.`);
-								}),
-							),
+							onFalse: () =>
+								Effect.succeed(true).pipe(
+									Effect.tap(() => {
+										p.log.info(`Nothing to do. No changes detected.`);
+									}),
+								),
 						}),
 					),
 				),

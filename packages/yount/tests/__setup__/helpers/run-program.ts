@@ -6,7 +6,7 @@ export function programWithErrorCause<
 	return program.pipe(
 		Effect.tapErrorCause((cause) => {
 			console.log(cause);
-			return Effect.unit;
+			return Effect.void;
 		}),
 	) as T extends Effect.Effect<infer A, infer E, infer C>
 		? Effect.Effect<A, E, C>
