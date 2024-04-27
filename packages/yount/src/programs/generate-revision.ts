@@ -13,8 +13,8 @@ export function generateRevision() {
 		Effect.flatMap((environment) =>
 			Effect.all([changeset(), computeExtensionChangeset()])
 				.pipe(
-					Effect.flatMap(([schema, extensions]) =>
-						Effect.succeed(extensions.concat(schema)),
+					Effect.flatMap(([schemaChangeset, extensionChangeset]) =>
+						Effect.succeed(extensionChangeset.concat(schemaChangeset)),
 					),
 				)
 				.pipe(
