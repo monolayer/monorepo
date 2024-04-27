@@ -8,7 +8,7 @@ import { computeExtensionChangeset } from "./extension-changeset.js";
 import { revisionDependency } from "./revision-dependency.js";
 import { revisionName } from "./revision-name.js";
 
-export function generateRevision() {
+export function generateRevision(name?: string) {
 	return DevEnvironment.pipe(
 		Effect.flatMap((environment) =>
 			Effect.all([changeset(), computeExtensionChangeset()])
@@ -30,7 +30,10 @@ export function generateRevision() {
 						Effect.if(changeset.length > 0, {
 							onTrue: Effect.succeed(changeset).pipe(
 								Effect.tap((cset) =>
-									revisionName().pipe(
+									Effect.if(name !== undefined, {
+										onTrue: Effect.succeed(name!),
+										onFalse: revisionName(),
+									}).pipe(
 										Effect.tap((revisionName) =>
 											revisionDependency().pipe(
 												Effect.tap((dependency) => {

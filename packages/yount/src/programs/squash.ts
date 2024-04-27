@@ -21,6 +21,7 @@ import { deletePendingRevisions } from "./delete-pending-revisions.js";
 import { generateRevision } from "./generate-revision.js";
 import { localPendingSchemaRevisions } from "./local-pending-schema-revisions.js";
 import { migrateTo } from "./migrate-to.js";
+import { revisionName } from "./revision-name.js";
 
 export function squash() {
 	return Effect.gen(function* (_) {
@@ -31,6 +32,8 @@ export function squash() {
 		const promptResult = yield* _(promptSquash(executedRevisions, 10));
 
 		yield* _(confirmSquash(promptResult.revisionNames));
+
+		const name = yield* _(revisionName());
 
 		yield* _(
 			confirmSquashWithScafoldedRevisions(
@@ -45,7 +48,7 @@ export function squash() {
 
 		yield* _(deletePendingRevisions(promptResult.revisionToRemove));
 
-		const changeset = yield* _(generateRevision());
+		const changeset = yield* _(generateRevision(name));
 
 		if (changeset.length > 0) {
 			const pushChanges = yield* _(
