@@ -2315,7 +2315,7 @@ describe("Rename table without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeIndex",
+				type: "renameIndex",
 				up: [
 					[
 						"await sql`ALTER INDEX books_0c84fd75_yount_idx RENAME TO publications_0c84fd75_yount_idx`",
@@ -2421,7 +2421,7 @@ describe("Rename table without camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeIndex",
+				type: "renameIndex",
 				up: [
 					[
 						"await sql`ALTER INDEX publications_6b9be986_yount_idx RENAME TO books_6b9be986_yount_idx`",
@@ -5281,7 +5281,7 @@ describe("Rename table with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeIndex",
+				type: "renameIndex",
 				up: [
 					[
 						"await sql`ALTER INDEX books_0c84fd75_yount_idx RENAME TO new_books_0c84fd75_yount_idx`",
@@ -5384,7 +5384,7 @@ describe("Rename table with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeIndex",
+				type: "renameIndex",
 				up: [
 					[
 						"await sql`ALTER INDEX books_07ceb5ca_yount_idx RENAME TO new_books_07ceb5ca_yount_idx`",

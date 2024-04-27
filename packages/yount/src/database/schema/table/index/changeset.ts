@@ -285,7 +285,7 @@ function changeIndexNameChangeset(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename),
-		type: ChangeSetType.ChangeIndex,
+		type: ChangeSetType.RenameIndex,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER INDEX ${oldIndexName} RENAME TO ${newIndexName}`,

@@ -62,7 +62,7 @@ const tableStatsFn: Record<
 	[`${ChangeSetType.DropColumn}`]: { key: "columns", op: "drop" },
 	[`${ChangeSetType.ChangeColumn}`]: { key: "columns", op: "alter" },
 	[`${ChangeSetType.CreateIndex}`]: { key: "indexes", op: "add" },
-	[`${ChangeSetType.ChangeIndex}`]: { key: "indexes", op: "alter" },
+	[`${ChangeSetType.RenameIndex}`]: { key: "indexes", op: "alter" },
 	[`${ChangeSetType.DropIndex}`]: { key: "indexes", op: "drop" },
 	[`${ChangeSetType.CreateTrigger}`]: { key: "triggers", op: "add" },
 	[`${ChangeSetType.DropTrigger}`]: { key: "triggers", op: "drop" },
