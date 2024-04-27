@@ -48,7 +48,7 @@ export function generateRevision() {
 							),
 							onFalse: Effect.succeed(true).pipe(
 								Effect.tap(() => {
-									p.log.message(`Nothing to do. No changes detected.`);
+									p.log.info(`Nothing to do. No changes detected.`);
 								}),
 							),
 						}),
