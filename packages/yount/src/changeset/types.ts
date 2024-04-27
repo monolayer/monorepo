@@ -18,7 +18,7 @@ export enum ChangeSetType {
 	CreateEnum = "createEnum",
 	DropEnum = "dropEnum",
 	ChangeEnum = "changeEnum",
-	ChangeColumnName = "changeColumnName",
+	RenameColumn = "renameColumn",
 	CreateForeignKey = "createForeignKey",
 	DropForeignKey = "dropForeignKey",
 	RenameForeignKey = "renameForeignKey",

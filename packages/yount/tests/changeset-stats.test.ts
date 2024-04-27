@@ -321,7 +321,7 @@ describe("changeset-summary", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [],
 			},
 			{
@@ -330,7 +330,7 @@ describe("changeset-summary", () => {
 				tableName: "library_building",
 				currentTableName: "library_building",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [],
 			},
 			{
@@ -339,7 +339,7 @@ describe("changeset-summary", () => {
 				tableName: "library_building",
 				currentTableName: "library_building",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [],
 			},
 			{

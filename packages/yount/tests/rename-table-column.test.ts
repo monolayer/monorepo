@@ -77,7 +77,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -167,7 +167,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -299,7 +299,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -434,7 +434,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -627,7 +627,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -799,7 +799,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -897,7 +897,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -990,7 +990,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1123,7 +1123,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1301,7 +1301,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1452,7 +1452,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1603,7 +1603,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1754,7 +1754,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1928,7 +1928,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2106,7 +2106,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2261,7 +2261,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2284,7 +2284,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2464,7 +2464,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2642,7 +2642,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2665,7 +2665,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2833,7 +2833,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2856,7 +2856,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3018,7 +3018,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3041,7 +3041,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3203,7 +3203,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3226,7 +3226,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3388,7 +3388,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3411,7 +3411,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3551,7 +3551,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3574,7 +3574,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3597,7 +3597,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3620,7 +3620,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3809,7 +3809,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3832,7 +3832,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4021,7 +4021,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4044,7 +4044,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4210,7 +4210,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4233,7 +4233,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4256,7 +4256,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4279,7 +4279,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4474,7 +4474,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4497,7 +4497,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4717,7 +4717,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4740,7 +4740,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4763,7 +4763,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4786,7 +4786,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4959,7 +4959,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5072,7 +5072,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5213,7 +5213,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5341,7 +5341,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5364,7 +5364,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5535,7 +5535,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5558,7 +5558,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5659,7 +5659,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5790,7 +5790,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5911,7 +5911,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6004,7 +6004,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6139,7 +6139,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6276,7 +6276,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6472,7 +6472,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6647,7 +6647,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6748,7 +6748,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6844,7 +6844,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6980,7 +6980,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -7161,7 +7161,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -7315,7 +7315,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -7469,7 +7469,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -7623,7 +7623,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -7800,7 +7800,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -7981,7 +7981,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8139,7 +8139,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8162,7 +8162,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8345,7 +8345,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8526,7 +8526,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8549,7 +8549,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8720,7 +8720,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8743,7 +8743,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8908,7 +8908,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8931,7 +8931,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9096,7 +9096,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9119,7 +9119,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9284,7 +9284,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9307,7 +9307,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9449,7 +9449,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9472,7 +9472,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9495,7 +9495,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9518,7 +9518,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9710,7 +9710,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9733,7 +9733,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9925,7 +9925,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -9948,7 +9948,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10117,7 +10117,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10140,7 +10140,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10163,7 +10163,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10186,7 +10186,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10384,7 +10384,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10407,7 +10407,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10599,7 +10599,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10622,7 +10622,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10645,7 +10645,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10668,7 +10668,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "user_books",
 				currentTableName: "user_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10807,7 +10807,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -10923,7 +10923,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -11067,7 +11067,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -11198,7 +11198,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -11221,7 +11221,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -11397,7 +11397,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -11420,7 +11420,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -11525,7 +11525,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -11659,7 +11659,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -11682,7 +11682,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumnName",
+				type: "renameColumn",
 				up: [
 					[
 						'await db.withSchema("public").schema',

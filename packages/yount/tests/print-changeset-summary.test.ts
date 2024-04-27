@@ -320,7 +320,7 @@ test("print summary", () => {
 			tableName: "new_books",
 			currentTableName: "new_books",
 			schemaName: "public",
-			type: "changeColumnName",
+			type: "renameColumn",
 			up: [],
 		},
 		{
@@ -329,7 +329,7 @@ test("print summary", () => {
 			tableName: "library_building",
 			currentTableName: "library_building",
 			schemaName: "public",
-			type: "changeColumnName",
+			type: "renameColumn",
 			up: [],
 		},
 		{
@@ -338,7 +338,7 @@ test("print summary", () => {
 			tableName: "library_building",
 			currentTableName: "library_building",
 			schemaName: "public",
-			type: "changeColumnName",
+			type: "renameColumn",
 			up: [],
 		},
 		{

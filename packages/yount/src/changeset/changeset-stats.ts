@@ -67,7 +67,7 @@ const tableStatsFn: Record<
 	[`${ChangeSetType.CreateTrigger}`]: { key: "triggers", op: "add" },
 	[`${ChangeSetType.DropTrigger}`]: { key: "triggers", op: "drop" },
 	[`${ChangeSetType.UpdateTrigger}`]: { key: "triggers", op: "alter" },
-	[`${ChangeSetType.ChangeColumnName}`]: { key: "columns", op: "alter" },
+	[`${ChangeSetType.RenameColumn}`]: { key: "columns", op: "alter" },
 	[`${ChangeSetType.CreateUnique}`]: { key: "uniqueConstraints", op: "add" },
 	[`${ChangeSetType.DropUnique}`]: { key: "uniqueConstraints", op: "drop" },
 	[`${ChangeSetType.ChangeUnique}`]: { key: "uniqueConstraints", op: "alter" },
