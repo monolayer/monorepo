@@ -91,3 +91,5 @@ export class PgForeignKey<T extends string, C extends AnyPgTable> {
 		return this;
 	}
 }
+
+export type AnyPgForeignKey = PgForeignKey<string, AnyPgTable>;

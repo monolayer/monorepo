@@ -17,6 +17,7 @@ import {
 } from "./introspect-schemas.js";
 import { selectColumnDiffChoicesInteractive } from "./select-column-diff-choices.js";
 import { selectTableDiffChoicesInteractive } from "./select-table-diff-choices.js";
+import { validateForeignKeyReferences } from "./validate-foreign-key-references.js";
 
 export function changeset() {
 	return configurationSchemas().pipe(
@@ -32,6 +33,7 @@ export function changeset() {
 
 function changesetForLocalSchema(localSchema: AnySchema) {
 	return changesetContext(localSchema).pipe(
+		Effect.tap(() => validateForeignKeyReferences(localSchema)),
 		Effect.flatMap((context) =>
 			introspectSchemas(localSchema).pipe(
 				Effect.tap(selectTableDiffChoicesInteractive),
