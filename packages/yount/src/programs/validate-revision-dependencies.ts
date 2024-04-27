@@ -86,7 +86,7 @@ function validateRevisions(revisions: Revision[]) {
 		return true;
 	});
 }
-new Error();
+
 interface DependencyErrors {
 	multipleRevisionsNoDependency: string[];
 	revisionsWithMoreThanOneDependant: Record<string, string[]>;
