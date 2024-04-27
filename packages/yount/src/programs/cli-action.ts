@@ -1,5 +1,6 @@
 import * as p from "@clack/prompts";
 import { Effect, Layer } from "effect";
+import type { Cause } from "effect/Cause";
 import { TaggedClass } from "effect/Data";
 import color from "picocolors";
 import { exit } from "process";
@@ -50,17 +51,7 @@ export async function cliAction(
 				),
 			),
 		)
-		.pipe(
-			Effect.tapErrorCause((cause) => {
-				p.log.error(color.red("Error"));
-				if (cause._tag === "Fail") {
-					p.log.message(JSON.stringify(cause.error, null, 2));
-				} else {
-					p.log.message(JSON.stringify(cause, null, 2));
-				}
-				return Effect.unit;
-			}),
-		);
+		.pipe(Effect.tapErrorCause(printCause));
 
 	await Effect.runPromise(Effect.scoped(action)).then(
 		() => {
@@ -72,4 +63,26 @@ export async function cliAction(
 			exit(1);
 		},
 	);
+}
+
+function printCause(cause: Cause<unknown>) {
+	const error =
+		cause._tag === "Die" && cause.defect instanceof Error
+			? cause.defect
+			: cause._tag === "Fail" && cause.error instanceof Error
+				? cause.error
+				: undefined;
+
+	if (error !== undefined) {
+		p.log.error(`${color.red(error.name)} ${error.message}`);
+		const errorStr = JSON.stringify(error, null, 2);
+		if (errorStr !== "{}") {
+			p.log.message(errorStr);
+		}
+		p.log.message(error.stack);
+	} else {
+		p.log.error(color.red("Error"));
+		p.log.message(JSON.stringify(cause, null, 2));
+	}
+	return Effect.unit;
 }

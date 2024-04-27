@@ -41,12 +41,9 @@ function migrationInfoToRevisions(migrationInfo: readonly MigrationInfo[]) {
 	});
 }
 
-class MissingDependenciesError {
-	readonly _tag = "MissingDependenciesError";
-	readonly _revision: string;
-
+class MissingDependenciesError extends TypeError {
 	constructor(revision: string) {
-		this._revision = revision;
+		super(`revision ${revision} is missing dependsOn export`);
 	}
 }
 
@@ -57,18 +54,49 @@ function validateDependsOn(
 		const migrationWithDependecies =
 			migration.migration as MigrationWithDependencies;
 		if (migrationWithDependecies.dependsOn === undefined) {
-			return Effect.fail(new MissingDependenciesError(migration.name));
+			return Effect.die(new MissingDependenciesError(migration.name));
 		}
 	}
 	return Effect.succeed(true);
 }
 
-class RevisionDependencyError {
-	readonly _tag = "RevisionDependencyError";
-	readonly _reason: DependencyErrors;
+class MultipleRevisionsWithNoDependencyError extends TypeError {
+	constructor(revisions: string[]) {
+		super(`multiple revisions with no dependency`, {
+			cause: { revisionsWithNoDependency: revisions },
+		});
+	}
+}
 
+class RevisionWithMoreThanOneDependantError extends TypeError {
+	constructor(revision: string, dependants: string[]) {
+		super(`revision ${revision} has more than one dependant`, {
+			cause: { revision, dependants },
+		});
+	}
+}
+
+class RevisionDependencyError extends AggregateError {
 	constructor(reason: DependencyErrors) {
-		this._reason = reason;
+		const errors = [];
+		if (reason.multipleRevisionsNoDependency.length > 0) {
+			errors.push(
+				new MultipleRevisionsWithNoDependencyError(
+					reason.multipleRevisionsNoDependency,
+				),
+			);
+		}
+		if (Object.keys(reason.revisionsWithMoreThanOneDependant).length > 0) {
+			for (const [revision, dependants] of Object.entries(
+				reason.revisionsWithMoreThanOneDependant,
+			)) {
+				errors.push(
+					new RevisionWithMoreThanOneDependantError(revision, dependants),
+				);
+			}
+		}
+		super(errors, errors.map((error) => error.message).join(", "));
+		this.cause = errors.map((error) => error.cause);
 	}
 }
 
@@ -80,7 +108,7 @@ function validateRevisions(revisions: Revision[]) {
 			Object.keys(dependencyErrors.revisionsWithMoreThanOneDependant).length > 0
 		) {
 			return yield* _(
-				Effect.fail(new RevisionDependencyError(dependencyErrors)),
+				Effect.die(new RevisionDependencyError(dependencyErrors)),
 			);
 		}
 		return true;
