@@ -88,7 +88,7 @@ describe("without camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeCheckConstraint",
+				type: "renameCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_2f1f415e_yount_chk TO books_dc912898_yount_chk`',
@@ -107,7 +107,7 @@ describe("without camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeCheckConstraint",
+				type: "renameCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_e37c55a5_yount_chk TO books_f685097b_yount_chk`',
@@ -1194,7 +1194,7 @@ describe("Rename column with camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeCheckConstraint",
+				type: "renameCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_2f1f415e_yount_chk TO books_dc912898_yount_chk`',
@@ -1213,7 +1213,7 @@ describe("Rename column with camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
-				type: "changeCheckConstraint",
+				type: "renameCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_e37c55a5_yount_chk TO books_f685097b_yount_chk`',

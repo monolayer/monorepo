@@ -72,7 +72,7 @@ const tableStatsFn: Record<
 	[`${ChangeSetType.DropUnique}`]: { key: "uniqueConstraints", op: "drop" },
 	[`${ChangeSetType.RenameUnique}`]: { key: "uniqueConstraints", op: "alter" },
 	[`${ChangeSetType.CreateCheck}`]: { key: "checkConstraints", op: "add" },
-	[`${ChangeSetType.ChangeCheck}`]: { key: "checkConstraints", op: "alter" },
+	[`${ChangeSetType.RenameCheck}`]: { key: "checkConstraints", op: "alter" },
 	[`${ChangeSetType.DropCheck}`]: { key: "checkConstraints", op: "drop" },
 };
 

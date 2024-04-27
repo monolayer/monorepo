@@ -278,7 +278,7 @@ function rehashIndexMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename),
-		type: ChangeSetType.ChangeCheck,
+		type: ChangeSetType.RenameCheck,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${previousCheckName} TO ${newCheckName}`,

@@ -328,7 +328,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeCheckConstraint",
+				type: "renameCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."publications" RENAME CONSTRAINT books_2f1f415e_yount_chk TO publications_a80ce83d_yount_chk`',
@@ -347,7 +347,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeCheckConstraint",
+				type: "renameCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."publications" RENAME CONSTRAINT books_e37c55a5_yount_chk TO publications_b3606c7d_yount_chk`',
@@ -650,7 +650,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeCheckConstraint",
+				type: "renameCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."publications" RENAME CONSTRAINT books_e37c55a5_yount_chk TO publications_b3606c7d_yount_chk`',
@@ -6162,7 +6162,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeCheckConstraint",
+				type: "renameCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books_and_documents" RENAME CONSTRAINT books_2f1f415e_yount_chk TO books_and_documents_dc912898_yount_chk`',
@@ -6181,7 +6181,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeCheckConstraint",
+				type: "renameCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books_and_documents" RENAME CONSTRAINT books_e37c55a5_yount_chk TO books_and_documents_f685097b_yount_chk`',
@@ -6495,7 +6495,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
-				type: "changeCheckConstraint",
+				type: "renameCheckConstraint",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books_and_documents" RENAME CONSTRAINT books_e37c55a5_yount_chk TO books_and_documents_f685097b_yount_chk`',

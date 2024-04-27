@@ -26,7 +26,7 @@ export enum ChangeSetType {
 	DropUnique = "dropUniqueConstraint",
 	RenameUnique = "renameUniqueConstraint",
 	CreateCheck = "createCheckConstraint",
-	ChangeCheck = "changeCheckConstraint",
+	RenameCheck = "renameCheckConstraint",
 	DropCheck = "dropCheckConstraint",
 	CreateSchema = "createSchema",
 }
