@@ -66,8 +66,14 @@ const config = {
     [
       'docusaurus-plugin-typedoc',
       {
-        entryPoints: ['../packages/yount/src/index.ts'],
-        tsconfig: '../tsconfig.json',
+        entryPoints: [
+					'../packages/yount/src/index.ts',
+					'../packages/yount/src/configuration.ts',
+					'../packages/yount/src/pg.ts',
+					'../packages/yount/src/revision.ts',
+					'../packages/yount/src/zod.ts'
+				],
+        tsconfig: '../packages/yount/tsconfig.json',
 				groupOrder: ["Database", "Tables", "Columns", "Indexes", "Constraints", "Triggers", "*"],
 				parametersFormat: "table",
       },
