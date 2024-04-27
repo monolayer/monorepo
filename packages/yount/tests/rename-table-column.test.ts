@@ -5721,6 +5721,149 @@ describe("Rename table and column without camel case plugin", () => {
 		});
 	});
 
+	test<DbContext>("keep index multiple present", async (context) => {
+		await context.kysely.schema
+			.createTable("books")
+			.addColumn("id", "integer")
+			.addColumn("count", "integer")
+			.execute();
+
+		await context.kysely.schema
+			.createIndex("books_0c84fd75_yount_idx")
+			.on("books")
+			.columns(["id"])
+			.execute();
+
+		await context.kysely.schema
+			.createIndex("books_457992e0_yount_idx")
+			.on("books")
+			.columns(["count"])
+			.execute();
+
+		const publications = table({
+			columns: {
+				id: integer(),
+				book_count: integer(),
+			},
+			indexes: [index(["id"]), index(["book_count"])],
+		});
+
+		const dbSchema = schema({
+			tables: {
+				publications,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 900,
+				tableName: "books",
+				currentTableName: "publications",
+				schemaName: "public",
+				type: "renameTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("books")',
+						'renameTo("publications")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("publications")',
+						'renameTo("books")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 3000,
+				tableName: "publications",
+				currentTableName: "publications",
+				schemaName: "public",
+				type: "renameColumn",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("publications")',
+						'renameColumn("count", "book_count")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("publications")',
+						'renameColumn("book_count", "count")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 5001,
+				tableName: "publications",
+				currentTableName: "publications",
+				schemaName: "public",
+				type: "renameIndex",
+				up: [
+					[
+						"await sql`ALTER INDEX books_0c84fd75_yount_idx RENAME TO publications_0c84fd75_yount_idx`",
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						"await sql`ALTER INDEX publications_0c84fd75_yount_idx RENAME TO books_0c84fd75_yount_idx`",
+						"execute(db);",
+					],
+				],
+			},
+			{
+				priority: 5001,
+				tableName: "publications",
+				currentTableName: "publications",
+				schemaName: "public",
+				type: "renameIndex",
+				up: [
+					[
+						"await sql`ALTER INDEX books_457992e0_yount_idx RENAME TO publications_2b1ab334_yount_idx`",
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						"await sql`ALTER INDEX publications_2b1ab334_yount_idx RENAME TO books_457992e0_yount_idx`",
+						"execute(db);",
+					],
+				],
+			},
+		];
+		await testChangesetAndMigrations({
+			context,
+			configuration: { schemas: [dbSchema] },
+			expected: expected,
+			down: "same",
+			mock: () => {
+				mockTableDiffOnce([
+					{
+						from: "books",
+						to: "publications",
+					},
+				]);
+				mockColumnDiffOnce({
+					publications: [
+						{
+							from: "count",
+							to: "book_count",
+						},
+					],
+				});
+			},
+		});
+	});
+
 	test<DbContext>("keep complex index", async (context) => {
 		await context.kysely.schema
 			.createTable("publications")
@@ -11583,6 +11726,152 @@ describe("Rename table and column with camel case plugin", () => {
 						{
 							from: "id",
 							to: "book_id",
+						},
+					],
+				});
+			},
+		});
+	});
+
+	test<DbContext>("keep index multiple present", async (context) => {
+		await context.kysely.schema
+			.createTable("books")
+			.addColumn("id", "integer")
+			.addColumn("count", "integer")
+			.execute();
+
+		await context.kysely.schema
+			.createIndex("books_0c84fd75_yount_idx")
+			.on("books")
+			.columns(["id"])
+			.execute();
+
+		await context.kysely.schema
+			.createIndex("books_457992e0_yount_idx")
+			.on("books")
+			.columns(["count"])
+			.execute();
+
+		const publications = table({
+			columns: {
+				id: integer(),
+				bookCount: integer(),
+			},
+			indexes: [index(["id"]), index(["bookCount"])],
+		});
+
+		const dbSchema = schema({
+			tables: {
+				publications,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 900,
+				tableName: "books",
+				currentTableName: "publications",
+				schemaName: "public",
+				type: "renameTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("books")',
+						'renameTo("publications")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("publications")',
+						'renameTo("books")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 3000,
+				tableName: "publications",
+				currentTableName: "publications",
+				schemaName: "public",
+				type: "renameColumn",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("publications")',
+						'renameColumn("count", "book_count")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("publications")',
+						'renameColumn("book_count", "count")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 5001,
+				tableName: "publications",
+				currentTableName: "publications",
+				schemaName: "public",
+				type: "renameIndex",
+				up: [
+					[
+						"await sql`ALTER INDEX books_0c84fd75_yount_idx RENAME TO publications_0c84fd75_yount_idx`",
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						"await sql`ALTER INDEX publications_0c84fd75_yount_idx RENAME TO books_0c84fd75_yount_idx`",
+						"execute(db);",
+					],
+				],
+			},
+			{
+				priority: 5001,
+				tableName: "publications",
+				currentTableName: "publications",
+				schemaName: "public",
+				type: "renameIndex",
+				up: [
+					[
+						"await sql`ALTER INDEX books_457992e0_yount_idx RENAME TO publications_2b1ab334_yount_idx`",
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						"await sql`ALTER INDEX publications_2b1ab334_yount_idx RENAME TO books_457992e0_yount_idx`",
+						"execute(db);",
+					],
+				],
+			},
+		];
+		await testChangesetAndMigrations({
+			context,
+			configuration: {
+				schemas: [dbSchema],
+				camelCasePlugin: { enabled: true },
+			},
+			expected: expected,
+			down: "same",
+			mock: () => {
+				mockTableDiffOnce([
+					{
+						from: "books",
+						to: "publications",
+					},
+				]);
+				mockColumnDiffOnce({
+					publications: [
+						{
+							from: "count",
+							to: "book_count",
 						},
 					],
 				});

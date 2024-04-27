@@ -9,7 +9,6 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
-import { changedColumnNames } from "~/introspection/column-name.js";
 import {
 	currentTableName,
 	previousTableName,
@@ -36,7 +35,7 @@ export function indexMigrationOpGenerator(
 	if (isChangeIndexName(diff)) {
 		return changeIndexNameMigration(diff, context);
 	}
-	if (isRehashIndex(diff, context)) {
+	if (isRehashIndex(diff)) {
 		return rehashIndexMigration(diff, context);
 	}
 }
@@ -240,20 +239,17 @@ export type RehashIndexDiff = {
 	oldValue: string;
 };
 
-function isRehashIndex(
-	test: Difference,
-	context: GeneratorContext,
-): test is RehashIndexDiff {
+function isRehashIndex(test: Difference): test is RehashIndexDiff {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "index" &&
 		test.path.length === 3 &&
 		typeof test.path[1] === "string" &&
+		typeof test.path[2] === "string" &&
 		typeof test.value === "string" &&
 		typeof test.oldValue === "string" &&
-		indexNameFromDefinition(test.value) ===
-			indexNameFromDefinition(test.oldValue) &&
-		changedColumnNames(test.path[1], context.columnsToRename).length > 0
+		indexNameFromDefinition(test.value) !==
+			rehashIndex(test.path[1], test.value, test.path[2]).name
 	);
 }
 
