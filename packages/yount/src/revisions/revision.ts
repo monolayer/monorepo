@@ -7,3 +7,21 @@ export interface NoDependencies {
 }
 
 export type RevisionDependency = NoDependencies | string;
+
+export type Revision = {
+	/**
+	 * The name of the revision.
+	 * @internal
+	 */
+	name?: string;
+	/**
+	 * Dependency of the revision.
+	 * @internal
+	 */
+	dependsOn: RevisionDependency;
+	/**
+	 * Whether the revision was scaffolded.
+	 * @internal
+	 */
+	scaffold: boolean;
+};

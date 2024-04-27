@@ -201,9 +201,12 @@ export const dbSchema = schema({
 
 const expectedMigration = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely } from "kysely";
-import { NO_DEPENDENCY } from "yount/revision";
+import { NO_DEPENDENCY, Revision } from "yount/revision";
 
-export const dependsOn = NO_DEPENDENCY;
+export const revision: Revision = {
+	scaffold: false,
+	dependsOn: NO_DEPENDENCY,
+};
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.withSchema("public").schema
@@ -221,9 +224,12 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 const expectedMigrationWithSchemas = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
-import { NO_DEPENDENCY } from "yount/revision";
+import { NO_DEPENDENCY, Revision } from "yount/revision";
 
-export const dependsOn = NO_DEPENDENCY;
+export const revision: Revision = {
+	scaffold: false,
+	dependsOn: NO_DEPENDENCY,
+};
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.withSchema("public").schema
@@ -253,8 +259,12 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 const expectedMigrationWithDependency = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely } from "kysely";
+import { Revision } from "yount/revision";
 
-export const dependsOn = "20240405T154913-mirfak-mustard";
+export const revision: Revision = {
+	scaffold: false,
+	dependsOn: "20240405T154913-mirfak-mustard",
+};
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.withSchema("public").schema
@@ -272,8 +282,12 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 const expectedMigrationWithSchemasAndDependency = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
+import { Revision } from "yount/revision";
 
-export const dependsOn = "20240405T154913-mirfak-mustard";
+export const revision: Revision = {
+	scaffold: false,
+	dependsOn: "20240405T154913-mirfak-mustard",
+};
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.withSchema("public").schema

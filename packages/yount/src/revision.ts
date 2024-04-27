@@ -1,1 +1,2 @@
-export { NO_DEPENDENCY } from "./revisions/revision.js";
+export { NO_DEPENDENCY, Revision } from "./revisions/revision.js";
+  

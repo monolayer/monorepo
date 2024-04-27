@@ -6,10 +6,15 @@ import { createFile } from "~/create-file.js";
 const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
 {%- if dependsOn === "NO_DEPENDENCY" %}
-import { NO_DEPENDENCY } from "yount/revision";
+import { NO_DEPENDENCY, Revision } from "yount/revision";
+{%- else %}
+import { Revision } from "yount/revision";
 {%- endif %}
 
-export const dependsOn = {{ dependsOn if dependsOn === "NO_DEPENDENCY" else ['"', dependsOn, '"'] | join("") | safe }};
+export const revision: Revision = {
+	scaffold: false,
+	dependsOn: {{ dependsOn if dependsOn === "NO_DEPENDENCY" else ['"', dependsOn, '"'] | join("") | safe }},
+};
 
 export async function up(db: Kysely<any>): Promise<void> {
 {%- for u in up %}

@@ -31,9 +31,12 @@ describe("scaffoldMigration", () => {
 		);
 
 		const expected = `import { Kysely } from "kysely";
-import { NO_DEPENDENCY } from "yount/revision";
+import { NO_DEPENDENCY, Revision } from "yount/revision";
 
-export const dependsOn = NO_DEPENDENCY;
+export const revision: Revision = {
+	scaffold: true,
+	dependsOn: NO_DEPENDENCY,
+};
 
 export async function up(db: Kysely<any>): Promise<void> {
 }
@@ -49,9 +52,12 @@ export async function down(db: Kysely<any>): Promise<void> {
 		);
 
 		const expected = `import { Kysely } from "kysely";
-import { NO_DEPENDENCY } from "yount/revision";
+import { Revision } from "yount/revision";
 
-export const dependsOn = "20240405T154913-mirfak-mustard";
+export const revision: Revision = {
+	scaffold: true,
+	dependsOn: "20240405T154913-mirfak-mustard",
+};
 
 export async function up(db: Kysely<any>): Promise<void> {
 }

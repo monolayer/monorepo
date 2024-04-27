@@ -29,9 +29,16 @@ export function scaffoldRevision() {
 }
 
 const revisionTemplate = `import { Kysely } from "kysely";
-import { NO_DEPENDENCY } from "yount/revision";
+{%- if dependsOn === "NO_DEPENDENCY" %}
+import { NO_DEPENDENCY, Revision } from "yount/revision";
+{%- else %}
+import { Revision } from "yount/revision";
+{%- endif %}
 
-export const dependsOn = {{ dependsOn if dependsOn === "NO_DEPENDENCY" else ['"', dependsOn, '"'] | join("") | safe }};
+export const revision: Revision = {
+	scaffold: true,
+	dependsOn: {{ dependsOn if dependsOn === "NO_DEPENDENCY" else ['"', dependsOn, '"'] | join("") | safe }},
+};
 
 export async function up(db: Kysely<any>): Promise<void> {
 }
