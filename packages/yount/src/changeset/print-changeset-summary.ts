@@ -117,7 +117,10 @@ Schemas: {{ schemasSummary }}
 {%- endfor -%}
 `);
 
-function statCount(label: "added" | "dropped" | "changed", count: number) {
+function statCount(
+	label: "added" | "dropped" | "changed" | "renamed",
+	count: number,
+) {
 	const colorfn =
 		label === "added"
 			? color.green
@@ -139,6 +142,7 @@ function addDropAlterSummary(stats: SummaryStats, name: string = "none") {
 	if (stats.added > 0) summary.push(statCount("added", stats.added));
 	if (stats.dropped > 0) summary.push(statCount("dropped", stats.dropped));
 	if (stats.altered > 0) summary.push(statCount("changed", stats.altered));
+	if (stats.renamed > 0) summary.push(statCount("renamed", stats.renamed));
 	if (summary.length === 0) return "";
 	return [name !== "none" ? `${name}: ` : "", summary.join(", ")].join("");
 }

@@ -880,33 +880,33 @@ Schemas: added (1)
     indexes: added (1), dropped (2)
 
   'new_books' table
-    columns: added (2), dropped (2), changed (4)
+    columns: added (2), dropped (2), changed (3), renamed (1)
     primary keys: added (1)
     foreign keys: added (2)
-    unique constraints: added (1), changed (1)
+    unique constraints: added (1), renamed (1)
     check constraints: added (2)
     indexes: added (1), dropped (1)
 
   'library_building' table
-    columns: changed (6)
+    columns: changed (4), renamed (2)
     primary keys: added (1)
     foreign keys: dropped (1)
     unique constraints: dropped (1)
-    check constraints: changed (2)
+    check constraints: renamed (2)
     indexes: added (2)
 
   'users' table
     columns: changed (6)
     foreign keys: added (1)
-    unique constraints: dropped (2), changed (2)
-    check constraints: changed (1)
-    indexes: added (1), changed (1)
+    unique constraints: dropped (2), renamed (2)
+    check constraints: renamed (1)
+    indexes: added (1), renamed (1)
 
   'triggers' table (renamed from 'trigger_table')
     columns: changed (6)
-    foreign keys: changed (2)
+    foreign keys: renamed (2)
     check constraints: added (1), dropped (1)
-    indexes: changed (2)
+    indexes: renamed (2)
 
   'devices' table (dropped)
 
