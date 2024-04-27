@@ -5,8 +5,13 @@ import path from "path";
 import { confirmPushRevision } from "~/prompts/confirm-push-revision.js";
 import {
 	confirmSquashPrompt,
+	confirmSquashWithScaffoldedRevisionsPrompt,
 	squashRevisionsPrompt,
 } from "~/prompts/squash-revisions.js";
+import {
+	migrationInfoToRevisions,
+	type Revision,
+} from "~/revisions/revision.js";
 import { DevEnvironment } from "~/services/environment.js";
 import { allMigrations } from "./all-migrations.js";
 import { applyRevisions } from "./apply-revisions.js";
@@ -26,6 +31,12 @@ export function squash() {
 		const promptResult = yield* _(promptSquash(executedRevisions, 10));
 
 		yield* _(confirmSquash(promptResult.revisionNames));
+
+		yield* _(
+			confirmSquashWithScafoldedRevisions(
+				migrationInfoToRevisions(executedRevisions),
+			),
+		);
 
 		const migration = yield* _(migrateTo(promptResult.downTo));
 		if (!migration) {
@@ -132,6 +143,29 @@ function promptSquash(revisions: readonly MigrationInfo[], limit: number) {
 				downTo,
 				revisionToRemove,
 			}),
+		);
+	});
+}
+
+function confirmSquashWithScafoldedRevisions(revisions: Required<Revision>[]) {
+	return Effect.gen(function* (_) {
+		if (revisions.every((r) => !r.scaffold)) {
+			return;
+		}
+		const scaffoldedRevisions = revisions
+			.filter((r) => r.scaffold)
+			.map((r) => r.name!);
+		return yield* _(
+			Effect.tryPromise(() =>
+				confirmSquashWithScaffoldedRevisionsPrompt(scaffoldedRevisions),
+			).pipe(
+				Effect.flatMap((proceedWithSquash) => {
+					if (typeof proceedWithSquash === "symbol" || !proceedWithSquash) {
+						return cancelOperation();
+					}
+					return Effect.succeed(true);
+				}),
+			),
 		);
 	});
 }

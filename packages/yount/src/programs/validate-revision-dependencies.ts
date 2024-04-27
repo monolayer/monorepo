@@ -1,11 +1,12 @@
 import { Effect } from "effect";
-import type { Migration, MigrationInfo } from "kysely";
-import type { Revision } from "~/revisions/revision.js";
+import type { MigrationInfo } from "kysely";
+import {
+	RevisionError,
+	migrationInfoToRevisions,
+	type Revision,
+	type RevisionMigration,
+} from "~/revisions/revision.js";
 import { Migrator } from "~/services/migrator.js";
-
-interface MigrationWithDependencies extends Migration {
-	revision: Revision;
-}
 
 export function validateRevisionDependencies() {
 	return Effect.gen(function* (_) {
@@ -23,25 +24,9 @@ function getMigrationInfo() {
 	});
 }
 
-function migrationInfoToRevisions(migrationInfo: readonly MigrationInfo[]) {
-	return migrationInfo.map((info) => {
-		const revision = info.migration as MigrationWithDependencies;
-		return {
-			...revision.revision,
-			name: info.name,
-		} satisfies Revision;
-	});
-}
-
 class MissingDependenciesError extends TypeError {
 	constructor(revision: string) {
 		super(`revision ${revision} is missing dependsOn export`);
-	}
-}
-
-class RevisionError extends TypeError {
-	constructor(revision: string) {
-		super(`undefined revision in ${revision}`);
 	}
 }
 
@@ -49,8 +34,7 @@ function validateDependsOn(
 	migrationInfo: readonly MigrationInfo[],
 ): Effect.Effect<boolean, MissingDependenciesError, never> {
 	for (const migration of migrationInfo) {
-		const migrationWithDependecies =
-			migration.migration as MigrationWithDependencies;
+		const migrationWithDependecies = migration.migration as RevisionMigration;
 		if (migrationWithDependecies.revision === undefined) {
 			return Effect.die(new RevisionError(migration.name));
 		}

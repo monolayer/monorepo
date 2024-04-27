@@ -26,3 +26,18 @@ ${revisions.map((revision) => `- ${revision}`).join("\n")}`);
 		message: `Do you want to continue?`,
 	});
 }
+
+export async function confirmSquashWithScaffoldedRevisionsPrompt(
+	revisions: string[],
+) {
+	p.log.warning(`Some of the revisions to be squashed are scaffolded`);
+	p.log.message(
+		"Their changes will not be added to the new revision and the resulting revision may fail.",
+	);
+	p.log.message(`Scaffolded revisions:
+${revisions.map((revision) => `- ${revision}`).join("\n")}`);
+	return await p.confirm({
+		initialValue: false,
+		message: `Do you want to continue?`,
+	});
+}
