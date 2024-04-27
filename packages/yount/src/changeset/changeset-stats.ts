@@ -57,7 +57,7 @@ const tableStatsFn: Record<
 	[`${ChangeSetType.DropPrimaryKey}`]: { key: "primaryKeys", op: "drop" },
 	[`${ChangeSetType.CreateForeignKey}`]: { key: "foreignKeys", op: "add" },
 	[`${ChangeSetType.DropForeignKey}`]: { key: "foreignKeys", op: "drop" },
-	[`${ChangeSetType.ChangeForeignKey}`]: { key: "foreignKeys", op: "alter" },
+	[`${ChangeSetType.RenameForeignKey}`]: { key: "foreignKeys", op: "alter" },
 	[`${ChangeSetType.CreateColumn}`]: { key: "columns", op: "add" },
 	[`${ChangeSetType.DropColumn}`]: { key: "columns", op: "drop" },
 	[`${ChangeSetType.ChangeColumn}`]: { key: "columns", op: "alter" },

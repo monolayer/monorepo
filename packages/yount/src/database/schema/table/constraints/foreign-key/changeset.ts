@@ -347,7 +347,7 @@ function changeForeignKeyNameMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename),
-		type: ChangeSetType.ChangeForeignKey,
+		type: ChangeSetType.RenameForeignKey,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${previousForeignKeyName} TO ${newForeignKeyName}`,

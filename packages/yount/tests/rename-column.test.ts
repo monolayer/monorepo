@@ -254,7 +254,7 @@ describe("without camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeForeignKey",
+				type: "renameForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO users_273ade4f_yount_fk`',
@@ -1360,7 +1360,7 @@ describe("Rename column with camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeForeignKey",
+				type: "renameForeignKey",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_c02e3d7d_yount_fk TO users_273ade4f_yount_fk`',

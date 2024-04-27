@@ -21,7 +21,7 @@ export enum ChangeSetType {
 	ChangeColumnName = "changeColumnName",
 	CreateForeignKey = "createForeignKey",
 	DropForeignKey = "dropForeignKey",
-	ChangeForeignKey = "changeForeignKey",
+	RenameForeignKey = "renameForeignKey",
 	CreateUnique = "createUniqueConstraint",
 	DropUnique = "dropUniqueConstraint",
 	ChangeUnique = "changeUniqueConstraint",
