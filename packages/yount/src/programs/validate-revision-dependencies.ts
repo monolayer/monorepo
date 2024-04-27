@@ -9,20 +9,17 @@ interface MigrationWithDependencies extends Migration {
 
 export function validateRevisionDependencies() {
 	return Effect.gen(function* (_) {
-		const migrationInfo = yield* _(getPendingMigrationInfo());
+		const migrationInfo = yield* _(getMigrationInfo());
 		yield* _(validateDependsOn(migrationInfo));
 		const revisions = migrationInfoToRevisions(migrationInfo);
 		return yield* _(validateRevisions(revisions));
 	});
 }
 
-function getPendingMigrationInfo() {
+function getMigrationInfo() {
 	return Effect.gen(function* (_) {
 		const migrator = yield* _(Migrator);
-		const migrations = yield* _(
-			Effect.tryPromise(() => migrator.instance.getMigrations()),
-		);
-		return migrations.filter((info) => info.executedAt === undefined);
+		return yield* _(Effect.tryPromise(() => migrator.instance.getMigrations()));
 	});
 }
 
