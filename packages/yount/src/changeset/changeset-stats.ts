@@ -220,7 +220,7 @@ function addTableStats(
 				schemaStats.tableSummary.dropped++;
 				schemaStats.droppedTables.push(changeset.currentTableName);
 				break;
-			case ChangeSetType.ChangeTable:
+			case ChangeSetType.RenameTable:
 				schemaStats.tableNameChanges[changeset.currentTableName] =
 					changeset.tableName;
 				addTableAlteration(

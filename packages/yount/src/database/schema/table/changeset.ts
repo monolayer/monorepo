@@ -157,7 +157,7 @@ function changeTableNameMigration(
 		priority: MigrationOpPriority.ChangeTableName,
 		tableName: diff.oldValue,
 		currentTableName: currentTableName(diff.oldValue, tablesToRename),
-		type: ChangeSetType.ChangeTable,
+		type: ChangeSetType.RenameTable,
 		up: [
 			executeKyselySchemaStatement(
 				schemaName,

@@ -4,7 +4,7 @@ export enum ChangeSetType {
 	CreateColumn = "createColumn",
 	DropColumn = "dropColumn",
 	ChangeColumn = "changeColumn",
-	ChangeTable = "changeTable",
+	RenameTable = "renameTable",
 	CreateIndex = "createIndex",
 	RenameIndex = "renameIndex",
 	DropIndex = "dropIndex",
