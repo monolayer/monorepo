@@ -1,8 +1,6 @@
 import { Kysely } from "kysely";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import type { CamelCaseOptions } from "~/configuration.js";
-import { createSchemaChangeset } from "~/database/database_schemas/changeset.js";
-import { schemaInDb } from "~/database/database_schemas/introspection.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import {
 	introspectLocalSchema,
@@ -23,6 +21,7 @@ export async function computeChangeset(
 		camelCase ?? { enabled: false },
 		[],
 		{},
+		schemaName,
 	);
 	const cset = schemaChangeset(
 		local,
@@ -33,9 +32,5 @@ export async function computeChangeset(
 		{},
 		[],
 	);
-	const schemaInDatabase = await schemaInDb(kysely, schemaName);
-	if (schemaInDatabase.length === 0) {
-		cset.unshift(createSchemaChangeset(schemaName));
-	}
 	return cset;
 }

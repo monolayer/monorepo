@@ -5,12 +5,14 @@ import path from "path";
 import { DbClients } from "./dbClients.js";
 import { Environment } from "./environment.js";
 
+export type MigratorAttributes = {
+	readonly instance: KyselyMigrator;
+	readonly folder: string;
+};
+
 export class Migrator extends Context.Tag("Migrator")<
 	Migrator,
-	{
-		readonly instance: KyselyMigrator;
-		readonly folder: string;
-	}
+	MigratorAttributes
 >() {}
 
 export function migratorLayer() {

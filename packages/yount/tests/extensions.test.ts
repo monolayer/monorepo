@@ -22,7 +22,7 @@ describe("Database migrations", () => {
 		const dbSchema = schema({});
 		const expected = [
 			{
-				priority: 0,
+				priority: 1,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: null,
@@ -38,7 +38,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 0,
+				priority: 1,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: null,
@@ -74,7 +74,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 0,
+				priority: 6004,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: null,
@@ -85,7 +85,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 0,
+				priority: 6004,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: null,

@@ -13,5 +13,6 @@ export function schemaMigratonInfoFactory(
 		triggers: options?.triggers ?? {},
 		enums: options?.enums ?? {},
 		tablePriorities: options?.tablePriorities ?? [],
+		schemaInfo: options?.schemaInfo ?? {},
 	};
 }

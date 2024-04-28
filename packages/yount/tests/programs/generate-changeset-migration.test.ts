@@ -240,6 +240,9 @@ export async function up(db: Kysely<any>): Promise<void> {
   await sql\`CREATE SCHEMA IF NOT EXISTS "accounts";\`
     .execute(db);
 
+  await sql\`COMMENT ON SCHEMA "accounts" IS 'yount'\`
+    .execute(db);
+
   await db.withSchema("accounts").schema
     .createTable("regulus_wolf")
     .addColumn("name", "text", (col) => col.notNull())
@@ -254,6 +257,9 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.withSchema("accounts").schema
     .dropTable("regulus_wolf")
     .execute();
+
+  await sql\`DROP SCHEMA IF EXISTS "accounts";\`
+    .execute(db);
 }
 `;
 
@@ -298,6 +304,9 @@ export async function up(db: Kysely<any>): Promise<void> {
   await sql\`CREATE SCHEMA IF NOT EXISTS "accounts";\`
     .execute(db);
 
+  await sql\`COMMENT ON SCHEMA "accounts" IS 'yount'\`
+    .execute(db);
+
   await db.withSchema("accounts").schema
     .createTable("regulus_wolf")
     .addColumn("name", "text", (col) => col.notNull())
@@ -312,5 +321,8 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.withSchema("accounts").schema
     .dropTable("regulus_wolf")
     .execute();
+
+  await sql\`DROP SCHEMA IF EXISTS "accounts";\`
+    .execute(db);
 }
 `;

@@ -26,7 +26,7 @@ import { dbNameForTest, programFolder } from "./names.js";
 export async function teardownContext(context: TaskContext & DbContext) {
 	try {
 		await context.kysely.destroy();
-		rmSync(context.folder, { recursive: true, force: true });
+		// rmSync(context.folder, { recursive: true, force: true });
 		vi.restoreAllMocks();
 	} catch (e) {
 		/* empty */

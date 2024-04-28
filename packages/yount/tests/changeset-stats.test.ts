@@ -10,16 +10,16 @@ describe("changeset-summary", () => {
 				priority: 0,
 				tableName: "none",
 				currentTableName: "none",
-				schemaName: null,
+				schemaName: "stats",
 				type: "createSchema",
 				up: [],
 				down: [],
 			},
 			{
-				priority: 0,
+				priority: 1,
 				tableName: "none",
 				currentTableName: "none",
-				schemaName: null,
+				schemaName: "demo",
 				type: "createExtension",
 				up: [],
 				down: [
@@ -36,7 +36,7 @@ describe("changeset-summary", () => {
 				down: [],
 			},
 			{
-				priority: 0,
+				priority: 2,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: "public",
@@ -855,12 +855,21 @@ describe("changeset-summary", () => {
 				up: [],
 				down: [],
 			},
+			{
+				priority: 6005,
+				tableName: "none",
+				currentTableName: "none",
+				schemaName: "demo",
+				type: "dropSchema",
+				up: [],
+				down: [],
+			},
 		] as Changeset[];
 
 		const expected = {
 			database: {
 				extensions: { added: 1, dropped: 1 },
-				schemaSummary: { added: 1, dropped: 0 },
+				schemaSummary: { added: 1, dropped: 1 },
 			},
 			databaseSchemas: {
 				public: {

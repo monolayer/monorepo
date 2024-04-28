@@ -29,7 +29,8 @@ export function introspectLocal(
 ) {
 	return Effect.gen(function* (_) {
 		const camelCase = yield* _(camelCaseOptions());
-		return introspectLocalSchema(schema, remote, camelCase);
+		const schemaName = Schema.info(schema).name || "public";
+		return introspectLocalSchema(schema, remote, camelCase, [], {}, schemaName);
 	});
 }
 
@@ -105,6 +106,7 @@ export function renameTablesInIntrospectedSchemas({
 			camelCasePlugin,
 			tablesToRename,
 			columnsToRename,
+			Schema.info(localSchema).name || "public",
 		),
 		remote: remoteSchemaMigrationInfo,
 		tablesToRename,
@@ -130,6 +132,7 @@ export function renameMigrationInfo(context: IntrospectionContext) {
 			camelCase,
 			context.tablesToRename,
 			context.columnsToRename,
+			Schema.info(context.schema).name || "public",
 		);
 		return context;
 	});

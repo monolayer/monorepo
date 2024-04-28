@@ -46,7 +46,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 0,
+				priority: 2,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: "public",
@@ -154,7 +154,7 @@ describe("Database migrations", () => {
 				],
 			},
 			{
-				priority: 3011,
+				priority: 6003,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: "public",
@@ -219,7 +219,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 0,
+				priority: 3,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: "public",
@@ -267,7 +267,7 @@ describe("Database migrations", () => {
 
 		const expected = [
 			{
-				priority: 0,
+				priority: 2,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: "public",
@@ -318,15 +318,16 @@ describe("Database migrations", () => {
 				priority: 0,
 				tableName: "none",
 				currentTableName: "none",
-				schemaName: null,
+				schemaName: "users",
 				type: "createSchema",
 				up: [
 					['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
+					["await sql`COMMENT ON SCHEMA \"users\" IS 'yount'`", "execute(db);"],
 				],
-				down: [],
+				down: [['await sql`DROP SCHEMA IF EXISTS "users";`', "execute(db);"]],
 			},
 			{
-				priority: 0,
+				priority: 2,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: "users",

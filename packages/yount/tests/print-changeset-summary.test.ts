@@ -15,7 +15,7 @@ test("print summary", () => {
 			down: [],
 		},
 		{
-			priority: 0,
+			priority: 1,
 			tableName: "none",
 			currentTableName: "none",
 			schemaName: null,
@@ -35,7 +35,7 @@ test("print summary", () => {
 			down: [],
 		},
 		{
-			priority: 0,
+			priority: 2,
 			tableName: "none",
 			currentTableName: "none",
 			schemaName: "public",

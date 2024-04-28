@@ -48,7 +48,7 @@ function isDropExtensionDiff(test: Difference): test is DropExtensionDiff {
 function createExtensionMigration(diff: CreateExtensionDiff) {
 	const extensionName = diff.path[1];
 	const changeset: Changeset = {
-		priority: MigrationOpPriority.Database,
+		priority: MigrationOpPriority.CreateExtension,
 		tableName: "none",
 		currentTableName: "none",
 		type: ChangeSetType.CreateExtension,
@@ -68,7 +68,7 @@ function createExtensionMigration(diff: CreateExtensionDiff) {
 function dropExtensionMigration(diff: DropExtensionDiff) {
 	const extensionName = diff.path[1];
 	const changeset: Changeset = {
-		priority: MigrationOpPriority.Database,
+		priority: MigrationOpPriority.DropExtension,
 		tableName: "none",
 		currentTableName: "none",
 		type: ChangeSetType.DropExtension,

@@ -1,3 +1,4 @@
+import { schemaMigrationOpGenerator } from "~/database/database_schemas/changeset.js";
 import { tableMigrationOpGenerator } from "../database/schema/table/changeset.js";
 import { columnMigrationOpGenerator } from "../database/schema/table/column/changeset.js";
 import { columnDataTypeMigrationOpGenerator } from "../database/schema/table/column/modify-changeset/data-type.js";
@@ -28,4 +29,5 @@ export const migrationOpGenerators = [
 	enumMigrationOpGenerator,
 	ColumnNameMigrationOpGenerator,
 	CheckMigrationOpGenerator,
+	schemaMigrationOpGenerator,
 ];

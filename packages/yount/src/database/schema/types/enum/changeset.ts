@@ -35,7 +35,7 @@ function createEnumMigration(
 		.map((value) => `"${value}"`)
 		.join(", ");
 	const changeSet: Changeset = {
-		priority: MigrationOpPriority.Database,
+		priority: MigrationOpPriority.CreateEnum,
 		schemaName,
 		tableName: "none",
 		currentTableName: "none",
@@ -105,7 +105,7 @@ function changeEnumMigration(
 	}
 
 	const changeSet: Changeset = {
-		priority: MigrationOpPriority.Database,
+		priority: MigrationOpPriority.ChangeEnum,
 		schemaName,
 		tableName: "none",
 		currentTableName: "none",

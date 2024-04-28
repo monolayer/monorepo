@@ -60,9 +60,7 @@ export async function testChangesetAndMigrations({
 		}
 		case "same": {
 			const afterDownCs = await runGenerateChangesetMigration(layers);
-			expect(afterDownCs).toEqual(
-				result.filter((changeset) => changeset.type !== "createSchema"),
-			);
+			expect(afterDownCs).toEqual(result);
 			break;
 		}
 		case "empty": {

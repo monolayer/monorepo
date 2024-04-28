@@ -796,7 +796,7 @@ describe("Table drop migrations", () => {
 				],
 			},
 			{
-				priority: 3011,
+				priority: 6003,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: "public",
@@ -945,6 +945,7 @@ describe("Table drop migrations", () => {
 		});
 
 		await sql`CREATE SCHEMA IF NOT EXISTS "demo"`.execute(context.kysely);
+		await sql`COMMENT ON SCHEMA "demo" is 'yount'`.execute(context.kysely);
 
 		await context.kysely
 			.withSchema("demo")

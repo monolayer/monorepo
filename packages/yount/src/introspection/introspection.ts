@@ -1,8 +1,9 @@
 /* eslint-disable max-lines */
 import { Kysely } from "kysely";
 import type { CamelCaseOptions } from "~/configuration.js";
+import { schemaInDb } from "~/database/database_schemas/introspection.js";
 import { dbExtensionInfo } from "~/database/extension/introspection.js";
-import type { AnySchema } from "~/database/schema/schema.js";
+import { type AnySchema } from "~/database/schema/schema.js";
 import type { ColumnInfo } from "~/database/schema/table/column/types.js";
 import { ForeignKeyBuilder } from "~/database/schema/table/constraints/foreign-key/builder.js";
 import { currentTableName } from "~/introspection/table-name.js";
@@ -70,6 +71,7 @@ export function introspectLocalSchema(
 	camelCase: CamelCaseOptions = { enabled: false },
 	tablesToRename: TablesToRename = [],
 	columnsToRename: ColumnsToRename = {},
+	schemaName: string,
 ): SchemaMigrationInfo {
 	const foreignKeyInfo = localForeignKeyConstraintInfo(
 		schema,
@@ -108,6 +110,7 @@ export function introspectLocalSchema(
 		enums: localEnumInfo(schema),
 		foreignKeyNames: foreignKeyHashes,
 		tablePriorities: localSchemaTableDependencies(schema),
+		schemaInfo: schemaName === "public" ? {} : { [schemaName]: true },
 	};
 }
 
@@ -186,6 +189,14 @@ export async function introspectRemoteSchema(
 		tables,
 	);
 
+	const schemaInfo = (await schemaInDb(kysely, schemaName)).reduce(
+		(acc, schema) => {
+			acc[schema.name] = true;
+			return acc;
+		},
+		{} as SchemaInfo,
+	);
+
 	const migrationSchema: SchemaMigrationInfo = {
 		table: remoteColumnInfo,
 		index: remoteIndexInfo,
@@ -197,6 +208,7 @@ export async function introspectRemoteSchema(
 		enums: enumInfo,
 		foreignKeyNames: remoteConstraintHashes,
 		tablePriorities,
+		schemaInfo,
 	};
 	return migrationSchema;
 }
@@ -223,6 +235,8 @@ export type LocalTableInfo = {
 	index?: IndexInfo;
 };
 
+export type SchemaInfo = Record<string, boolean>;
+
 export type SchemaMigrationInfo = {
 	table: TableColumnInfo;
 	index: IndexInfo;
@@ -234,6 +248,7 @@ export type SchemaMigrationInfo = {
 	enums: EnumInfo;
 	foreignKeyNames?: Record<string, Record<string, string>>;
 	tablePriorities: string[];
+	schemaInfo: SchemaInfo;
 };
 
 export function renameTables(
@@ -340,6 +355,7 @@ export function renameTables(
 		enums: remote.enums,
 		foreignKeyNames: remote.foreignKeyNames,
 		tablePriorities: remote.tablePriorities,
+		schemaInfo: remote.schemaInfo,
 	};
 	return renamedSchema;
 }

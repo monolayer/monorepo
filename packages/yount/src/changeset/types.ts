@@ -29,6 +29,7 @@ export enum ChangeSetType {
 	RenameCheck = "renameCheckConstraint",
 	DropCheck = "dropCheckConstraint",
 	CreateSchema = "createSchema",
+	DropSchema = "dropSchema",
 }
 
 export type Changeset = {
@@ -42,8 +43,10 @@ export type Changeset = {
 };
 
 export enum MigrationOpPriority {
-	Database = 0,
-
+	CreateSchema = 0,
+	CreateExtension = 1,
+	CreateEnum = 2,
+	ChangeEnum = 3,
 	IndexDrop = 800,
 
 	ForeignKeyDrop = 810,
@@ -56,7 +59,6 @@ export enum MigrationOpPriority {
 	PrimaryKeyDrop = 1004,
 	ColumnDrop = 1005,
 	TableDrop = 1006,
-	DropEnum = 3011,
 
 	TableCreate = 2001,
 	ColumnCreate = 2003,
@@ -83,4 +85,7 @@ export enum MigrationOpPriority {
 	ChangeIndex = 5001,
 	ConstraintChange = 5002,
 	TriggerUpdate = 5003,
+	DropEnum = 6003,
+	DropExtension = 6004,
+	DropSchema = 6005,
 }

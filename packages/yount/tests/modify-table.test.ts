@@ -2231,12 +2231,16 @@ describe("Modify table", () => {
 					priority: 0,
 					tableName: "none",
 					currentTableName: "none",
-					schemaName: null,
+					schemaName: "users",
 					type: "createSchema",
 					up: [
 						['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
+						[
+							"await sql`COMMENT ON SCHEMA \"users\" IS 'yount'`",
+							"execute(db);",
+						],
 					],
-					down: [],
+					down: [['await sql`DROP SCHEMA IF EXISTS "users";`', "execute(db);"]],
 				},
 				{
 					priority: 2001,
@@ -2825,12 +2829,16 @@ describe("Modify table", () => {
 					priority: 0,
 					tableName: "none",
 					currentTableName: "none",
-					schemaName: null,
+					schemaName: "users",
 					type: "createSchema",
 					up: [
 						['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
+						[
+							"await sql`COMMENT ON SCHEMA \"users\" IS 'yount'`",
+							"execute(db);",
+						],
 					],
-					down: [],
+					down: [['await sql`DROP SCHEMA IF EXISTS "users";`', "execute(db);"]],
 				},
 				{
 					priority: 2001,
@@ -3239,7 +3247,7 @@ describe("Modify table", () => {
 
 			const expected = [
 				{
-					priority: 0,
+					priority: 1,
 					tableName: "none",
 					currentTableName: "none",
 					schemaName: null,

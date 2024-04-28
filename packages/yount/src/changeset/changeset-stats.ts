@@ -49,6 +49,7 @@ const dbStatsFn: Record<
 	}
 > = {
 	[`${ChangeSetType.CreateSchema}`]: { key: "schemaSummary", op: "add" },
+	[`${ChangeSetType.DropSchema}`]: { key: "schemaSummary", op: "drop" },
 	[`${ChangeSetType.CreateExtension}`]: { key: "extensions", op: "add" },
 	[`${ChangeSetType.DropExtension}`]: { key: "extensions", op: "drop" },
 };

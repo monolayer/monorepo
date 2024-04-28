@@ -1,13 +1,7 @@
 import { Effect } from "effect";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
-import type { Changeset } from "~/changeset/types.js";
-import { createSchemaChangeset } from "~/database/database_schemas/changeset.js";
-import { schemaInDb } from "~/database/database_schemas/introspection.js";
 import { type AnySchema } from "~/database/schema/schema.js";
-import {
-	changesetContext,
-	type ChangesetContext,
-} from "./changeset-context.js";
+import { changesetContext } from "./changeset-context.js";
 import { configurationSchemas } from "./configuration-schemas.js";
 import {
 	introspectSchemas,
@@ -34,7 +28,7 @@ export function changeset() {
 function changesetForLocalSchema(localSchema: AnySchema) {
 	return changesetContext(localSchema).pipe(
 		Effect.tap(() => validateForeignKeyReferences(localSchema)),
-		Effect.flatMap((context) =>
+		Effect.flatMap(() =>
 			introspectSchemas(localSchema).pipe(
 				Effect.tap(selectTableDiffChoicesInteractive),
 				Effect.flatMap(renameMigrationInfo),
@@ -42,9 +36,6 @@ function changesetForLocalSchema(localSchema: AnySchema) {
 				Effect.flatMap(renameMigrationInfo),
 				Effect.flatMap(sortTablePriorities),
 				Effect.flatMap(computeChangeset),
-				Effect.tap((changesets) =>
-					addCreateSchemaChangset(changesets, context),
-				),
 			),
 		),
 	);
@@ -65,23 +56,5 @@ function computeChangeset(introspectionContext: IntrospectionContext) {
 				),
 			),
 		),
-	);
-}
-
-function addCreateSchemaChangset(
-	changesets: Changeset[],
-	context: ChangesetContext,
-) {
-	return Effect.tryPromise(() =>
-		schemaInDb(context.kyselyInstance, context.schemaName),
-	).pipe(
-		Effect.flatMap((schemaInDatabase) =>
-			Effect.succeed(schemaInDatabase.length !== 0),
-		),
-		Effect.tap((exists) => {
-			if (exists === false) {
-				changesets.unshift(createSchemaChangeset(context.schemaName));
-			}
-		}),
 	);
 }

@@ -1,6 +1,6 @@
 import path from "node:path";
 import nunjucks from "nunjucks";
-import { Changeset } from "~/changeset/types.js";
+import { Changeset, MigrationOpPriority } from "~/changeset/types.js";
 import { createFile } from "~/create-file.js";
 
 const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
@@ -81,10 +81,24 @@ function reverseChangeset(changesets: Changeset[]) {
 			changeset.type !== "createTable" && changeset.type !== "dropTable",
 	);
 
+	const databasePriorities = [
+		MigrationOpPriority.CreateSchema,
+		MigrationOpPriority.CreateExtension,
+		MigrationOpPriority.CreateEnum,
+	];
+
 	return [...itemsToMaintain, ...itemsToReverse.reverse()].sort((a, b) => {
-		if (a.priority !== 0 && a.tableName === "none" && b.tableName !== "none") {
+		if (
+			!databasePriorities.includes(a.priority) &&
+			a.tableName === "none" &&
+			b.tableName !== "none"
+		) {
 			return -1;
 		}
 		return 1 - 1;
 	});
 }
+
+// CreateExtension
+// CreateEnum
+// ChangeEnum

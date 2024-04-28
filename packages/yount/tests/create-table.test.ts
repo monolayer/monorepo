@@ -1018,7 +1018,7 @@ describe("Create table", () => {
 		});
 		const expected = [
 			{
-				priority: 0,
+				priority: 2,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: "public",
@@ -1113,7 +1113,7 @@ describe("Create table", () => {
 
 		const expected = [
 			{
-				priority: 0,
+				priority: 1,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: null,
@@ -1290,7 +1290,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 
 		const expected = [
 			{
-				priority: 0,
+				priority: 1,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: null,
@@ -1306,7 +1306,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				],
 			},
 			{
-				priority: 0,
+				priority: 2,
 				tableName: "none",
 				currentTableName: "none",
 				schemaName: "public",
@@ -1776,15 +1776,16 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 
 		const expected = [
 			{
-				down: [],
 				priority: 0,
 				tableName: "none",
 				currentTableName: "none",
-				schemaName: null,
+				schemaName: "demo",
 				type: "createSchema",
 				up: [
 					['await sql`CREATE SCHEMA IF NOT EXISTS "demo";`', "execute(db);"],
+					["await sql`COMMENT ON SCHEMA \"demo\" IS 'yount'`", "execute(db);"],
 				],
+				down: [['await sql`DROP SCHEMA IF EXISTS "demo";`', "execute(db);"]],
 			},
 			{
 				tableName: "users",
