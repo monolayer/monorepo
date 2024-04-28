@@ -48,14 +48,8 @@ describe("pendingMigrations", () => {
 		const pendingNames = pending.map((m) => ({ name: m.name }));
 		expect(pendingNames).toStrictEqual(expected);
 
-		expect(output).toContain(
-			"db/revisions/default/20240405T120250-canopus-teal.ts",
-		);
-		expect(output).toContain(
-			"db/revisions/default/20240405T153857-alphard-black.ts",
-		);
-		expect(output).toContain(
-			"db/revisions/default/20240405T154913-mirfak-mustard.ts",
-		);
+		expect(output).toContain("20240405T120250-canopus-teal");
+		expect(output).toContain("20240405T153857-alphard-black");
+		expect(output).toContain("20240405T154913-mirfak-mustard");
 	});
 });

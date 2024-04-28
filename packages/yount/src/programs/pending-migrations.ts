@@ -18,12 +18,13 @@ export function pendingMigrations() {
 
 function logEmptyMigration() {
 	return Effect.void.pipe(
-		Effect.tap(() => p.log.info(`${color.green("No pending migrations")}`)),
+		Effect.tap(() => p.log.message("No pending migrations.")),
 	);
 }
 
 function logPendingMigration(migration: { name: string; path: string }) {
-	const relativePath = path.relative(process.cwd(), migration.path);
-	p.log.warn(`${color.yellow("pending")} ${relativePath}`);
+	p.log.message(
+		`${color.yellow("pending")} ${path.basename(migration.path, ".ts")}`,
+	);
 	return Effect.void;
 }

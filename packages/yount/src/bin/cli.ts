@@ -13,9 +13,9 @@ import { handleMissingDatabase } from "~/programs/handle-missing-dev-database.js
 import { handlePendingSchemaRevisions } from "~/programs/handle-pending-schema-revisions.js";
 import { migrate } from "~/programs/migrate.js";
 import { pendingMigrations } from "~/programs/pending-migrations.js";
+import { rollback } from "~/programs/rollback.js";
 import { scaffoldRevision } from "~/programs/scaffold-revision.js";
 import { seed } from "~/programs/seed.js";
-import { squash } from "~/programs/squash.js";
 import { structureLoad } from "~/programs/structure-load.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
@@ -118,6 +118,23 @@ async function main() {
 		});
 
 	program
+		.command("rollback")
+		.description("rollback to a previous schema revision")
+		.option(
+			"-c, --connection <connection-name>",
+			"connection name as defined in configuration.ts",
+			"default",
+		)
+		.option(
+			"-e, --environment <environment-name>",
+			"environment as specified in yount.config.ts",
+			"development",
+		)
+		.action(async (opts) => {
+			await cliAction("yount rollback", opts, [rollback()]);
+		});
+
+	program
 		.command("scaffold")
 		.description("creates an empty schema revision file")
 		.action(async () => {
@@ -150,23 +167,6 @@ async function main() {
 					seedFile: opts.file,
 				}),
 			]);
-		});
-
-	program
-		.command("squash")
-		.description("combine schema revisions into a single revision")
-		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
-			"default",
-		)
-		.option(
-			"-e, --environment <environment-name>",
-			"environment as specified in yount.config.ts",
-			"development",
-		)
-		.action(async (opts) => {
-			await cliAction("yount squash", opts, [squash()]);
 		});
 
 	program
