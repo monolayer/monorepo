@@ -1,56 +1,26 @@
 import { Effect } from "effect";
-import { readdir } from "fs/promises";
 import type { MigrationInfo } from "kysely";
 import path from "path";
-import { Environment } from "../services/environment.js";
-import { allMigrations } from "./all-migrations.js";
+import { allMigrations as allRevisions } from "./all-migrations.js";
+import { schemaRevisionsFolder } from "./environment.js";
 
 export function localPendingSchemaRevisions() {
-	return Environment.pipe(
-		Effect.flatMap((environment) =>
-			Effect.all([
-				Effect.tryPromise(async () => {
-					try {
-						const contents = await readdir(environment.schemaRevisionsFolder);
-						return contents;
-					} catch (error) {
-						return [];
-					}
-				}),
-				allMigrations(),
-			]).pipe(
-				Effect.flatMap(([localMigrationFiles, migrations]) =>
-					filterMigrations(
-						localMigrationFiles,
-						migrations,
-						environment.schemaRevisionsFolder,
-					),
-				),
-			),
-		),
-	);
+	return Effect.gen(function* (_) {
+		const folder = yield* _(schemaRevisionsFolder());
+
+		return (yield* _(allRevisions()))
+			.filter(byNotExecuted)
+			.map((m) => revisionNameAndPath(m, folder));
+	});
 }
 
-function filterMigrations(
-	localMigrationFiles: string[],
-	migrations: readonly MigrationInfo[],
-	migrationFolder: string,
-) {
-	return Effect.succeed(
-		migrations
-			.filter((m) => m.executedAt === undefined)
-			.map((m) => {
-				const migrationFile = localMigrationFiles.find((f) =>
-					f.startsWith(m.name),
-				);
-				const migrationPath =
-					migrationFile !== undefined
-						? path.join(migrationFolder, migrationFile)
-						: "PATH NOT FOUND";
-				return {
-					name: m.name,
-					path: migrationPath,
-				};
-			}),
-	);
+function byNotExecuted(info: MigrationInfo) {
+	return info.executedAt === undefined;
+}
+
+function revisionNameAndPath(info: MigrationInfo, folder: string) {
+	return {
+		name: info.name,
+		path: path.join(folder, `${info.name}.ts`),
+	};
 }
