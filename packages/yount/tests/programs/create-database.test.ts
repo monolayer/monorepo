@@ -2,10 +2,7 @@ import { Effect } from "effect";
 import { writeFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import {
-	createDatabase,
-	createDevDatabase,
-} from "~/database/create-database.js";
+import { createDatabase, createDevDatabase } from "~/database/create.js";
 import { configurationsTemplate } from "~tests/__setup__/fixtures/program.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";

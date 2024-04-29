@@ -1,8 +1,8 @@
 import { Effect } from "effect";
 import fs from "fs/promises";
 import path from "path";
-import { createDatabase } from "../database/create-database.js";
-import { dropDatabase } from "../database/drop-database.js";
+import { createDatabase } from "../database/create.js";
+import { dropDatabase } from "../database/drop.js";
 import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
 import { checkWithFail } from "./check-with-fail.js";

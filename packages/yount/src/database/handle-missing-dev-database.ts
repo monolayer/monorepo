@@ -4,7 +4,7 @@ import { Effect } from "effect";
 import { cancelOperation } from "../programs/cancel-operation.js";
 import { adminDevPgQuery } from "../programs/pg-query.js";
 import { DbClients } from "../services/dbClients.js";
-import { createDevDatabase } from "./create-database.js";
+import { createDevDatabase } from "./create.js";
 
 export function handleMissingDatabase() {
 	return DbClients.pipe(

@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { NO_MIGRATIONS } from "kysely";
-import { dumpDatabase } from "../database/dump-database.js";
+import { dumpDatabase } from "../database/dump.js";
 import { logMigrationResultStatus } from "../programs/log-migration-result-status.js";
 import { Migrator } from "../services/migrator.js";
 import { validateRevisionDependencies } from "./validate.js";
