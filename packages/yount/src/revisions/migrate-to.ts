@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import { NO_MIGRATIONS } from "kysely";
 import { Migrator } from "~/services/migrator.js";
-import { logMigrationResultStatus } from "./log-migration-result-status.js";
+import { logMigrationResultStatus } from "../programs/log-migration-result-status.js";
 
 export function migrateTo(downTo: string | typeof NO_MIGRATIONS) {
 	return Migrator.pipe(

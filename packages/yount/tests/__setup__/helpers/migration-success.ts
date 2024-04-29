@@ -1,8 +1,8 @@
 import { Effect } from "effect";
 import type { Layer } from "effect/Layer";
 import { expect } from "vitest";
-import { migrate } from "~/programs/migrate.js";
 import { generateRevision } from "~/revisions/generate-revision.js";
+import { migrate } from "~/revisions/migrate.js";
 import { DbClients } from "~/services/dbClients.js";
 import type { DevEnvironment, Environment } from "~/services/environment.js";
 import type { Migrator } from "~/services/migrator.js";

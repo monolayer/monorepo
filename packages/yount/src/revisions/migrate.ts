@@ -1,8 +1,8 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
+import { logMigrationResultStatus } from "../programs/log-migration-result-status.js";
 import { Migrator } from "../services/migrator.js";
-import { logMigrationResultStatus } from "./log-migration-result-status.js";
-import { validateRevisionDependencies } from "../revisions/validate-revision-dependencies.js";
+import { validateRevisionDependencies } from "./validate-revision-dependencies.js";
 
 export function migrate() {
 	return Migrator.pipe(
