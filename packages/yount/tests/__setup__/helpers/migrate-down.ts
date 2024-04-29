@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import type { MigrationResult } from "kysely";
 import color from "picocolors";
-import { Migrator } from "../../../services/migrator.js";
+import { Migrator } from "../../../src/services/migrator.js";
 
 export function migrateDown() {
 	return Migrator.pipe(

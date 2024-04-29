@@ -6,8 +6,8 @@ import { generateRevision } from "~/revisions/generate.js";
 import { DbClients } from "~/services/db-clients.js";
 import type { DevEnvironment, Environment } from "~/services/environment.js";
 import type { Migrator } from "~/services/migrator.js";
-import { migrateDown as migrateDownProgram } from "~/test/__setup__/helpers/migrate-down.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
+import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";
 import { newLayers, type EnvironmentLessConnector } from "./layers.js";
 import { programWithErrorCause } from "./run-program.js";
 
