@@ -89,7 +89,7 @@ function checkSeederFunction(seedFile: string) {
 	return checkWithFail({
 		name: "Check seeder function",
 		nextSteps: `1) Check that a seeder function is exported in your seeder.ts file.
-2) Run 'npx init-monolayer' and choose your current database folder to regenerate the seeder file.`,
+2) Run 'npx create-monolayer' and choose your current database folder to regenerate the seeder file.`,
 		errorMessage: "No seeder function found. Cannot continue.",
 		failMessage: "Seeder function missing",
 		callback: () =>

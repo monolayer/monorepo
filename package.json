@@ -3,7 +3,7 @@
   "private": true,
   "license": "MIT",
   "workspaces": [
-    "packages/init-monolayer",
+    "packages/create-monolayer",
     "packages/monolayer",
     "docs"
   ],

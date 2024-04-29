@@ -33,7 +33,7 @@ const program = Effect.provide(
 	),
 );
 
-p.intro("Init monolayer");
+p.intro("Create monolayer");
 
 const result = await Effect.runPromise(Effect.scoped(program)).then(
 	() => true,
