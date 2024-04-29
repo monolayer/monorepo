@@ -2,12 +2,12 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { printChangesetSummary } from "~/changeset/print-changeset-summary.js";
 import { computeExtensionChangeset } from "~/database/extension/changeset.js";
-import { renderToFile } from "~/revisions/render.js";
+import { renderToFile } from "~/migrations/render.js";
 import { changeset } from "../changeset/changeset.js";
 import { DevEnvironment } from "../services/environment.js";
-import { revisionDependency, revisionName } from "./revision.js";
+import { migrationDependency, migrationName } from "./migration.js";
 
-export function generateRevision(name?: string) {
+export function generateMigration(name?: string) {
 	return DevEnvironment.pipe(
 		Effect.flatMap((environment) =>
 			Effect.all([changeset(), computeExtensionChangeset()])
@@ -30,15 +30,15 @@ export function generateRevision(name?: string) {
 									Effect.tap((cset) =>
 										Effect.if(name !== undefined, {
 											onTrue: () => Effect.succeed(name!),
-											onFalse: () => revisionName(),
+											onFalse: () => migrationName(),
 										}).pipe(
-											Effect.tap((revisionName) =>
-												revisionDependency().pipe(
+											Effect.tap((migrationName) =>
+												migrationDependency().pipe(
 													Effect.tap((dependency) => {
 														renderToFile(
 															cset,
-															environment.schemaRevisionsFolder,
-															revisionName,
+															environment.schemaMigrationsFolder,
+															migrationName,
 															dependency,
 														);
 													}),

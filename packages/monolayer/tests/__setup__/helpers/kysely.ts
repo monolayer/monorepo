@@ -49,7 +49,7 @@ export async function kyselyMigrator(
 		provider: new FileMigrationProvider({
 			fs,
 			path,
-			migrationFolder: path.join(folder, "revisions"),
+			migrationFolder: path.join(folder, "migrations"),
 		}),
 	});
 }

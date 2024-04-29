@@ -6,7 +6,7 @@ import path from "path";
 import { exit } from "process";
 import { type SeedImport } from "~/config.js";
 import { dbTableInfo } from "~/database/schema/table/introspection.js";
-import { localPendingSchemaRevisions } from "~/revisions/pending.js";
+import { localPendingSchemaMigrations } from "~/migrations/pending.js";
 import { changeset } from "../changeset/changeset.js";
 import { checkWithFail } from "../cli/check-with-fail.js";
 import { spinnerTask } from "../cli/spinner-task.js";
@@ -58,11 +58,11 @@ function checkPendingMigrations() {
 		nextSteps: `1) Run 'npx monolayer migrate' to migrate the database.
 2) Run again \`npx monolayer seed\`.`,
 		errorMessage:
-			"You have pending schema revisions. Cannot seed until they are run.",
-		failMessage: "Pending schema revisions",
+			"You have pending schema migrations. Cannot seed until they are run.",
+		failMessage: "Pending schema migrations",
 		callback: () =>
 			Effect.succeed(true).pipe(
-				Effect.flatMap(localPendingSchemaRevisions),
+				Effect.flatMap(localPendingSchemaMigrations),
 				Effect.flatMap((result) => Effect.succeed(result.length === 0)),
 			),
 	});

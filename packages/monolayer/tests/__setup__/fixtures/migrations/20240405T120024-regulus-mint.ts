@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely } from "kysely";
 
-export const revision = {
+export const migration = {
 	scaffold: false,
 	dependsOn: {
 		__noDependencies__: true,

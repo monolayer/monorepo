@@ -9,7 +9,7 @@ import {
 import path from "path";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { generateRevision } from "~/revisions/generate.js";
+import { generateMigration } from "~/migrations/generate.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import { defaultMigrationPath } from "~tests/__setup__/helpers/default-migration-path.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
@@ -42,7 +42,7 @@ describe("generateChangesetMigration", () => {
 		writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(generateRevision()), layers),
+			Effect.provide(programWithErrorCause(generateMigration()), layers),
 		);
 
 		const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
@@ -53,7 +53,7 @@ describe("generateChangesetMigration", () => {
 			path.join(
 				context.folder,
 				"db",
-				"revisions",
+				"migrations",
 				"default",
 				migrationFiles[0]!,
 			),
@@ -87,7 +87,7 @@ describe("generateChangesetMigration", () => {
 		);
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(generateRevision()), layers),
+			Effect.provide(programWithErrorCause(generateMigration()), layers),
 		);
 
 		const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
@@ -98,7 +98,7 @@ describe("generateChangesetMigration", () => {
 			path.join(
 				context.folder,
 				"db",
-				"revisions",
+				"migrations",
 				"default",
 				migrationFiles[0]!,
 			),
@@ -111,7 +111,7 @@ describe("generateChangesetMigration", () => {
 			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
 			await Effect.runPromise(
-				Effect.provide(programWithErrorCause(generateRevision()), layers),
+				Effect.provide(programWithErrorCause(generateMigration()), layers),
 			);
 
 			const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
@@ -122,7 +122,7 @@ describe("generateChangesetMigration", () => {
 				path.join(
 					context.folder,
 					"db",
-					"revisions",
+					"migrations",
 					"default",
 					migrationFiles.slice(-1)[0]!,
 				),
@@ -148,7 +148,7 @@ describe("generateChangesetMigration", () => {
 			);
 
 			await Effect.runPromise(
-				Effect.provide(programWithErrorCause(generateRevision()), layers),
+				Effect.provide(programWithErrorCause(generateMigration()), layers),
 			);
 
 			const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
@@ -159,7 +159,7 @@ describe("generateChangesetMigration", () => {
 				path.join(
 					context.folder,
 					"db",
-					"revisions",
+					"migrations",
 					"default",
 					migrationFiles.slice(-1)[0]!,
 				),
@@ -201,9 +201,9 @@ export const dbSchema = schema({
 
 const expectedMigration = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely } from "kysely";
-import { NO_DEPENDENCY, Revision } from "monolayer/revision";
+import { NO_DEPENDENCY, Migration } from "monolayer/migration";
 
-export const revision: Revision = {
+export const migration: Migration = {
 	scaffold: false,
 	dependsOn: NO_DEPENDENCY,
 };
@@ -224,9 +224,9 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 const expectedMigrationWithSchemas = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
-import { NO_DEPENDENCY, Revision } from "monolayer/revision";
+import { NO_DEPENDENCY, Migration } from "monolayer/migration";
 
-export const revision: Revision = {
+export const migration: Migration = {
 	scaffold: false,
 	dependsOn: NO_DEPENDENCY,
 };
@@ -265,9 +265,9 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 const expectedMigrationWithDependency = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely } from "kysely";
-import { Revision } from "monolayer/revision";
+import { Migration } from "monolayer/migration";
 
-export const revision: Revision = {
+export const migration: Migration = {
 	scaffold: false,
 	dependsOn: "20240405T154913-mirfak-mustard",
 };
@@ -288,9 +288,9 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 const expectedMigrationWithSchemasAndDependency = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
-import { Revision } from "monolayer/revision";
+import { Migration } from "monolayer/migration";
 
-export const revision: Revision = {
+export const migration: Migration = {
 	scaffold: false,
 	dependsOn: "20240405T154913-mirfak-mustard",
 };

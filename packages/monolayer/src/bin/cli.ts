@@ -10,14 +10,14 @@ import { dropDatabase } from "~/database/drop.js";
 import { handleMissingDatabase } from "~/database/handle-missing.js";
 import { seed } from "~/database/seed.js";
 import { structureLoad } from "~/database/structure-load.js";
-import { applyRevisions, migrate } from "~/revisions/apply.js";
-import { generateRevision } from "~/revisions/generate.js";
+import { applyMigrations, migrate } from "~/migrations/apply.js";
+import { generateMigration } from "~/migrations/generate.js";
 import {
-	handlePendingSchemaRevisions,
-	pendingRevisions,
-} from "~/revisions/pending.js";
-import { rollback } from "~/revisions/rollback.js";
-import { scaffoldRevision } from "~/revisions/scaffold.js";
+	handlePendingSchemaMigrations,
+	pendingMigrations,
+} from "~/migrations/pending.js";
+import { rollback } from "~/migrations/rollback.js";
+import { scaffoldMigration } from "~/migrations/scaffold.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
@@ -66,7 +66,7 @@ async function main() {
 
 	program
 		.command("generate")
-		.description("generate schema revisions")
+		.description("generate a schema migration")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -80,14 +80,14 @@ async function main() {
 		.action(async (opts) => {
 			await cliAction("monolayer generate", opts, [
 				handleMissingDatabase(),
-				handlePendingSchemaRevisions(),
-				generateRevision(),
+				handlePendingSchemaMigrations(),
+				generateMigration(),
 			]);
 		});
 
 	program
 		.command("pending")
-		.description("list pending schema revisions")
+		.description("list pending schema migrations")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -99,12 +99,12 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("monolayer pending", opts, [pendingRevisions()]);
+			await cliAction("monolayer pending", opts, [pendingMigrations()]);
 		});
 
 	program
-		.command("push")
-		.description("push pending schema revisions")
+		.command("migrate")
+		.description("migrate pending schema migrations")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -116,12 +116,12 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("monolayer push", opts, [migrate()]);
+			await cliAction("monolayer migrate", opts, [migrate()]);
 		});
 
 	program
 		.command("rollback")
-		.description("rollback to a previous schema revision")
+		.description("rollback to a previous schema migration")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -138,10 +138,10 @@ async function main() {
 
 	program
 		.command("scaffold")
-		.description("creates an empty schema revision file")
+		.description("creates an empty schema migration file")
 		.action(async () => {
 			await cliAction("monolayer scaffold", { environment: "development" }, [
-				scaffoldRevision(),
+				scaffoldMigration(),
 			]);
 		});
 
@@ -190,7 +190,7 @@ async function main() {
 
 	program
 		.command("sync")
-		.description("generates schema revisions and pushes them")
+		.description("generate a schema migration and migrate")
 		.option(
 			"-c, --connection <connection-name>",
 			"connection name as defined in configuration.ts",
@@ -204,11 +204,11 @@ async function main() {
 		.action(async (opts) => {
 			await cliAction("monolayer sync", opts, [
 				handleMissingDatabase(),
-				handlePendingSchemaRevisions(),
-				generateRevision().pipe(
+				handlePendingSchemaMigrations(),
+				generateMigration().pipe(
 					Effect.tap((result) =>
 						Effect.if(result.length !== 0, {
-							onTrue: () => applyRevisions(),
+							onTrue: () => applyMigrations(),
 							onFalse: () => Effect.succeed(true),
 						}),
 					),

@@ -9,7 +9,7 @@ import {
 	type TablesToRename,
 } from "~/introspection/introspect-schemas.js";
 import { columnDiffPrompt } from "~/prompts/column-diff.js";
-import { revisionNamePrompt } from "~/prompts/revision-name.js";
+import { migrationNamePrompt } from "~/prompts/migration-name.js";
 import { tableDiffPrompt } from "~/prompts/table-diff.js";
 dotenv.config();
 
@@ -77,14 +77,14 @@ vi.mock("~/prompts/column-diff.js", async (importOriginal) => {
 	};
 });
 
-vi.mock("~/prompts/revision-name.js", async (importOriginal) => {
+vi.mock("~/prompts/migration-name.js", async (importOriginal) => {
 	await importOriginal();
 	return {
-		revisionNamePrompt: vi.fn(async () => "default"),
+		migrationNamePrompt: vi.fn(async () => "default"),
 	};
 });
 
-const revisionPath = path.join(cwd(), "src", "revisions/revision.ts");
+const migrationPath = path.join(cwd(), "src", "migrations/migration.ts");
 
 export function mockedCreateFile(
 	originalImport: typeof import("~/create-file.ts"),
@@ -92,7 +92,7 @@ export function mockedCreateFile(
 	return vi.fn((path: string, content: string, log = true) => {
 		originalImport.createFile(
 			path,
-			content.replace("monolayer/revision", revisionPath),
+			content.replace("monolayer/migration", migrationPath),
 			log,
 		);
 	});
@@ -104,7 +104,7 @@ vi.mock("~/create-file.ts", async (importOriginal) => {
 		createFile: vi.fn((path: string, content: string, log = true) => {
 			original.createFile(
 				path,
-				content.replace("monolayer/revision", revisionPath),
+				content.replace("monolayer/migration", migrationPath),
 				log,
 			);
 		}),
@@ -113,7 +113,7 @@ vi.mock("~/create-file.ts", async (importOriginal) => {
 
 vi.mocked(tableDiffPrompt).mockResolvedValue([]);
 
-vi.mocked(revisionNamePrompt).mockResolvedValue("default");
+vi.mocked(migrationNamePrompt).mockResolvedValue("default");
 
 export function mockTableDiffOnce(value: TablesToRename) {
 	vi.mocked(tableDiffPrompt).mockResolvedValueOnce(value);

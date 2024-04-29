@@ -2,7 +2,7 @@ import { Effect } from "effect";
 import { readFileSync, rmSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { scaffoldRevision } from "~/revisions/scaffold.js";
+import { scaffoldMigration } from "~/migrations/scaffold.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -22,18 +22,18 @@ describe("scaffoldMigration", () => {
 	});
 
 	test<ProgramContext>("creates an empty migration file with no dependecies", async (context) => {
-		rmSync(path.join(context.folder, "db", "revisions", "default"), {
+		rmSync(path.join(context.folder, "db", "migrations", "default"), {
 			recursive: true,
 			force: true,
 		});
 		const result = await Effect.runPromise(
-			Effect.provide(programWithErrorCause(scaffoldRevision()), layers),
+			Effect.provide(programWithErrorCause(scaffoldMigration()), layers),
 		);
 
 		const expected = `import { Kysely } from "kysely";
-import { NO_DEPENDENCY, Revision } from "monolayer/revision";
+import { NO_DEPENDENCY, Migration } from "monolayer/migration";
 
-export const revision: Revision = {
+export const migration: Migration = {
 	scaffold: true,
 	dependsOn: NO_DEPENDENCY,
 };
@@ -48,13 +48,13 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 	test<ProgramContext>("creates an empty migration file with dependecies", async () => {
 		const result = await Effect.runPromise(
-			Effect.provide(programWithErrorCause(scaffoldRevision()), layers),
+			Effect.provide(programWithErrorCause(scaffoldMigration()), layers),
 		);
 
 		const expected = `import { Kysely } from "kysely";
-import { Revision } from "monolayer/revision";
+import { Migration } from "monolayer/migration";
 
-export const revision: Revision = {
+export const migration: Migration = {
 	scaffold: true,
 	dependsOn: "20240405T154913-mirfak-mustard",
 };

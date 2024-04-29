@@ -67,7 +67,7 @@ const config = {
         entryPoints: [
 					'../packages/monolayer/src/configuration.ts',
 					'../packages/monolayer/src/pg.ts',
-					'../packages/monolayer/src/revision.ts',
+					'../packages/monolayer/src/migration.ts',
 					'../packages/monolayer/src/zod.ts'
 				],
         tsconfig: '../packages/monolayer/tsconfig.json',

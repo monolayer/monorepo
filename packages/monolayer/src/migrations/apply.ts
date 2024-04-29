@@ -5,9 +5,9 @@ import { NO_MIGRATIONS } from "kysely";
 import color from "picocolors";
 import { dumpDatabase } from "../database/dump.js";
 import { Migrator } from "../services/migrator.js";
-import { validateRevisionDependencies } from "./validate.js";
+import { validateMigrationDependencies } from "./validate.js";
 
-export function applyRevisions() {
+export function applyMigrations() {
 	return Effect.gen(function* (_) {
 		const result = yield* _(migrate());
 		if (result) {
@@ -19,7 +19,7 @@ export function applyRevisions() {
 
 export function migrate() {
 	return Migrator.pipe(
-		Effect.tap(() => validateRevisionDependencies()),
+		Effect.tap(() => validateMigrationDependencies()),
 		Effect.flatMap((migrator) =>
 			Effect.tryPromise(() => migrator.instance.migrateToLatest()),
 		),
@@ -36,7 +36,7 @@ export function migrate() {
 			Effect.if(results !== undefined && results.length === 0, {
 				onTrue: () =>
 					Effect.succeed(true).pipe(
-						Effect.map(() => p.log.info("No revisions to apply.")),
+						Effect.map(() => p.log.info("No migrations to apply.")),
 					),
 				onFalse: () => Effect.void,
 			}),
@@ -85,12 +85,12 @@ function logMigrationResultStatus(
 	switch (result.status) {
 		case "Success":
 			p.log.success(
-				`${color.green(`${action} revision`)} ${result.migrationName}${error !== undefined ? "(ROLLBACK)" : ""}`.trimEnd(),
+				`${color.green(`${action} migration`)} ${result.migrationName}${error !== undefined ? "(ROLLBACK)" : ""}`.trimEnd(),
 			);
 			break;
 		case "Error":
 			p.log.error(
-				`${color.red("error in revision")} ${result.migrationName} (ROLLBACK)`.trimEnd(),
+				`${color.red("error in migration")} ${result.migrationName} (ROLLBACK)`.trimEnd(),
 			);
 			break;
 		case "NotExecuted":

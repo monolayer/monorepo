@@ -1,8 +1,8 @@
 import { kebabCase } from "case-anything";
 import { Effect } from "effect";
 import { mkdirSync } from "fs";
-import type { Migration, MigrationInfo } from "kysely";
-import { revisionNamePrompt } from "~/prompts/revision-name.js";
+import type { Migration as KyselyMigration, MigrationInfo } from "kysely";
+import { migrationNamePrompt } from "~/prompts/migration-name.js";
 import { PromptCancelError } from "../cli/cli-action.js";
 import { Migrator, type MigratorAttributes } from "../services/migrator.js";
 
@@ -14,66 +14,66 @@ export interface NoDependencies {
 	readonly __noDependencies__: true;
 }
 
-export type RevisionDependency = NoDependencies | string;
+export type MigrationDependency = NoDependencies | string;
 
-export type Revision = {
+export type Migration = {
 	/**
-	 * The name of the revision.
+	 * The name of the migration.
 	 * @internal
 	 */
 	name?: string;
 	/**
-	 * Dependency of the revision.
+	 * Dependency of the migration.
 	 * @internal
 	 */
-	dependsOn: RevisionDependency;
+	dependsOn: MigrationDependency;
 	/**
-	 * Whether the revision was scaffolded.
+	 * Whether the migration was scaffolded.
 	 * @internal
 	 */
 	scaffold: boolean;
 };
 
-export interface RevisionMigration extends Migration {
-	revision: Revision;
+export interface ExtendedMigration extends KyselyMigration {
+	migration: Migration;
 }
 
-export function migrationInfoToRevisions(
+export function migrationInfoToMigration(
 	migrationInfo: readonly MigrationInfo[],
 ) {
 	return migrationInfo.map((info) => {
 		return {
-			...(info.migration as RevisionMigration).revision,
+			...(info.migration as ExtendedMigration).migration,
 			name: info.name,
-		} satisfies Revision;
+		} satisfies Migration;
 	});
 }
 
-export class RevisionError extends TypeError {
-	constructor(revision: string) {
-		super(`undefined revision in ${revision}`);
+export class MigrationError extends TypeError {
+	constructor(migration: string) {
+		super(`undefined migration in ${migration}`);
 	}
 }
 
-export function revisionName() {
+export function migrationName() {
 	return Effect.gen(function* (_) {
-		const revisionName = yield* _(
-			Effect.tryPromise(() => revisionNamePrompt()),
+		const migrationName = yield* _(
+			Effect.tryPromise(() => migrationNamePrompt()),
 		);
-		if (typeof revisionName !== "string") {
+		if (typeof migrationName !== "string") {
 			return yield* _(Effect.fail(new PromptCancelError()));
 		}
-		return kebabCase(revisionName);
+		return kebabCase(migrationName);
 	});
 }
-export function revisionDependency() {
+export function migrationDependency() {
 	return Effect.gen(function* (_) {
-		const revisions = yield* _(allRevisions());
-		return revisions.map((m) => m.name).slice(-1)[0] ?? "NO_DEPENDENCY";
+		const migrations = yield* _(allMigrations());
+		return migrations.map((m) => m.name).slice(-1)[0] ?? "NO_DEPENDENCY";
 	});
 }
 
-export function allRevisions() {
+export function allMigrations() {
 	return Migrator.pipe(
 		Effect.tap(createMigrationFolder),
 		Effect.flatMap(getMigrations),

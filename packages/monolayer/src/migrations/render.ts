@@ -6,12 +6,12 @@ import { createFile } from "~/create-file.js";
 const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
 {%- if dependsOn === "NO_DEPENDENCY" %}
-import { NO_DEPENDENCY, Revision } from "monolayer/revision";
+import { NO_DEPENDENCY, Migration } from "monolayer/migration";
 {%- else %}
-import { Revision } from "monolayer/revision";
+import { Migration } from "monolayer/migration";
 {%- endif %}
 
-export const revision: Revision = {
+export const migration: Migration = {
 	scaffold: false,
 	dependsOn: {{ dependsOn if dependsOn === "NO_DEPENDENCY" else ['"', dependsOn, '"'] | join("") | safe }},
 };
@@ -35,7 +35,7 @@ export function renderToFile(
 	name: string,
 	dependsOn: string,
 ) {
-	const { up, down } = extractRevisionOps([...changesets]);
+	const { up, down } = extractMigrationOps([...changesets]);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
 	const migrationFilePath = path.join(folder, `${dateStr}-${name}.ts`);
 	const rendered = nunjucks.compile(template).render({
@@ -50,7 +50,7 @@ export function renderToFile(
 	);
 }
 
-function extractRevisionOps(changesets: Changeset[]) {
+function extractMigrationOps(changesets: Changeset[]) {
 	const up = changesets
 		.filter(
 			(changeset) =>
@@ -98,7 +98,3 @@ function reverseChangeset(changesets: Changeset[]) {
 		return 1 - 1;
 	});
 }
-
-// CreateExtension
-// CreateEnum
-// ChangeEnum

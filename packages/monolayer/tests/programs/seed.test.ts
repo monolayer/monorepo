@@ -102,13 +102,13 @@ describe("seed", () => {
 		expect(result).toEqual(expected);
 	});
 
-	test<ProgramContext>("fails with pending schema revisions", async () => {
+	test<ProgramContext>("fails with pending schema migrations", async () => {
 		expect(
 			async () =>
 				await Effect.runPromise(
 					Effect.provide(programWithErrorCause(seed({})), layers),
 				),
-		).rejects.toThrowError("Pending schema revisions");
+		).rejects.toThrowError("Pending schema migrations");
 	});
 
 	test<ProgramContext>("fails with missing configuration.ts", async (context) => {

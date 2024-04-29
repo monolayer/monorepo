@@ -6,46 +6,46 @@ import type { MigrationInfo } from "kysely";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
-import { schemaRevisionsFolder } from "~/services/environment.js";
+import { schemaMigrationsFolder } from "~/services/environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
-import { allRevisions } from "./revision.js";
+import { allMigrations } from "./migration.js";
 
-export function pendingRevisions() {
-	return localPendingSchemaRevisions().pipe(
+export function pendingMigrations() {
+	return localPendingSchemaMigrations().pipe(
 		Effect.tap((pendingMigrations) =>
 			Effect.if(pendingMigrations.length > 0, {
 				onTrue: () =>
-					Effect.forEach(pendingMigrations, logPendingRevisionsNames),
-				onFalse: () => logNoPendingRevisions(),
+					Effect.forEach(pendingMigrations, logPendingMigrationNames),
+				onFalse: () => logNoPendingMigrations(),
 			}),
 		),
 	);
 }
 
-function logNoPendingRevisions() {
+function logNoPendingMigrations() {
 	return Effect.void.pipe(
-		Effect.tap(() => p.log.message("No pending revisions.")),
+		Effect.tap(() => p.log.message("No pending migrations.")),
 	);
 }
 
-function logPendingRevisionsNames(migration: { name: string; path: string }) {
+function logPendingMigrationNames(migration: { name: string; path: string }) {
 	p.log.message(
 		`${color.yellow("pending")} ${path.basename(migration.path, ".ts")}`,
 	);
 	return Effect.void;
 }
 
-export function handlePendingSchemaRevisions() {
-	return localPendingSchemaRevisions().pipe(
-		Effect.flatMap((pendingRevisions) =>
-			Effect.if(pendingRevisions.length > 0, {
+export function handlePendingSchemaMigrations() {
+	return localPendingSchemaMigrations().pipe(
+		Effect.flatMap((pendingMigrations) =>
+			Effect.if(pendingMigrations.length > 0, {
 				onTrue: () =>
-					logPendingRevisions(pendingRevisions).pipe(
+					logPendingMigrations(pendingMigrations).pipe(
 						Effect.flatMap(() =>
 							askConfirmationDelete().pipe(
 								Effect.flatMap((shouldContinue) =>
 									Effect.if(shouldContinue === true, {
-										onTrue: () => deletePendingRevisions(pendingRevisions),
+										onTrue: () => deletePendingMigrations(pendingMigrations),
 										onFalse: () => cancelOperation(),
 									}),
 								),
@@ -58,7 +58,7 @@ export function handlePendingSchemaRevisions() {
 	);
 }
 
-function logPendingRevisions(
+function logPendingMigrations(
 	pending: {
 		name: string;
 		path: string;
@@ -81,35 +81,35 @@ function askConfirmationDelete() {
 	return Effect.tryPromise(() =>
 		confirm({
 			initialValue: false,
-			message: `You have pending schema revisions to apply and ${color.bold(
+			message: `You have pending schema migrations to apply and ${color.bold(
 				"we need to delete them to continue",
 			)}. Do you want to proceed?`,
 		}),
 	);
 }
 
-interface PendingRevision {
+interface PendingMigration {
 	name: string;
 	path: string;
 }
 
-export function deletePendingRevisions(pendingRevisions: PendingRevision[]) {
-	return Effect.forEach(pendingRevisions, deletePendingRevision).pipe(
+export function deletePendingMigrations(pendingMigrations: PendingMigration[]) {
+	return Effect.forEach(pendingMigrations, deletePendingMigration).pipe(
 		Effect.map(() => true),
 	);
 }
 
-function deletePendingRevision(revision: PendingRevision) {
-	return Effect.succeed(unlinkSync(revision.path));
+function deletePendingMigration(migration: PendingMigration) {
+	return Effect.succeed(unlinkSync(migration.path));
 }
 
-export function localPendingSchemaRevisions() {
+export function localPendingSchemaMigrations() {
 	return Effect.gen(function* (_) {
-		const folder = yield* _(schemaRevisionsFolder());
+		const folder = yield* _(schemaMigrationsFolder());
 
-		return (yield* _(allRevisions()))
+		return (yield* _(allMigrations()))
 			.filter(byNotExecuted)
-			.map((m) => revisionNameAndPath(m, folder));
+			.map((m) => migrationNameAndPath(m, folder));
 	});
 }
 
@@ -117,7 +117,7 @@ function byNotExecuted(info: MigrationInfo) {
 	return info.executedAt === undefined;
 }
 
-function revisionNameAndPath(info: MigrationInfo, folder: string) {
+function migrationNameAndPath(info: MigrationInfo, folder: string) {
 	return {
 		name: info.name,
 		path: path.join(folder, `${info.name}.ts`),

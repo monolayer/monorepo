@@ -27,10 +27,10 @@
 			"require": "./dist/cjs/src/pg.js",
 			"types": "./dist/esm/src/pg.d.ts"
 		},
-		"./revision": {
-			"import": "./dist/esm/src/revision.js",
-			"require": "./dist/cjs/src/revision.js",
-			"types": "./dist/esm/src/revision.d.ts"
+		"./migration": {
+			"import": "./dist/esm/src/migration.js",
+			"require": "./dist/cjs/src/migration.js",
+			"types": "./dist/esm/src/migration.d.ts"
 		},
 		"./zod": {
 			"import": "./dist/esm/src/zod.js",

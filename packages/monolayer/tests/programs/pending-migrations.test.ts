@@ -1,7 +1,7 @@
 import captureConsole from "capture-console";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { pendingRevisions } from "~/revisions/pending.js";
+import { pendingMigrations } from "~/migrations/pending.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -28,7 +28,7 @@ describe("pendingMigrations", () => {
 		});
 
 		const pending = await Effect.runPromise(
-			Effect.provide(programWithErrorCause(pendingRevisions()), layers),
+			Effect.provide(programWithErrorCause(pendingMigrations()), layers),
 		);
 
 		captureConsole.stopCapture(process.stdout);

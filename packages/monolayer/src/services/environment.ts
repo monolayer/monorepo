@@ -13,7 +13,7 @@ import {
 export type EnvironmentProperties = {
 	readonly name: string;
 	readonly folder: string;
-	readonly schemaRevisionsFolder: string;
+	readonly schemaMigrationsFolder: string;
 	readonly camelCasePlugin?: CamelCaseOptions;
 	readonly configurationName: string;
 	readonly configurationConfig: PgConfig;
@@ -89,10 +89,10 @@ function environmentGenerator(environment: string, configurationName: string) {
 			name: environment,
 			configurationName: configurationName,
 			folder: monolayer.folder,
-			schemaRevisionsFolder: path.join(
+			schemaMigrationsFolder: path.join(
 				cwd(),
 				monolayer.folder,
-				"revisions",
+				"migrations",
 				configurationName,
 			),
 			camelCasePlugin: configuration.camelCasePlugin,
@@ -102,10 +102,10 @@ function environmentGenerator(environment: string, configurationName: string) {
 	});
 }
 
-export function schemaRevisionsFolder() {
+export function schemaMigrationsFolder() {
 	return Effect.gen(function* (_) {
 		const environment = yield* _(Environment);
-		return environment.schemaRevisionsFolder;
+		return environment.schemaMigrationsFolder;
 	});
 }
 

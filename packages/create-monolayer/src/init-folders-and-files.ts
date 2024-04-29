@@ -86,7 +86,7 @@ export function initFolderAndFiles() {
 			true,
 		);
 		await createFile(`${folder.path}/seed.ts`, seedTemplate.render(), true);
-		await createDir(`${folder.path}/revisions`, true);
+		await createDir(`${folder.path}/migrations`, true);
 
 		const nextSteps = `1) Edit the default configuration in \`${path.join(folder.path, "configuration.ts")}\`.
 2) Run \`npx monolayer db:create\` to create the database.
