@@ -15,10 +15,10 @@ import {
 import { Environment } from "~/services/environment.js";
 import { allRevisions } from "../revisions/all-revisions.js";
 import { deletePendingRevisions } from "../revisions/delete-pending-revisions.js";
+import { pendingRevisions } from "../revisions/pending-revisions.js";
 import { cancelOperation } from "./cancel-operation.js";
 import { ExitWithSuccess } from "./cli-action.js";
 import { migrateTo } from "./migrate-to.js";
-import { pendingMigrations } from "./pending-migrations.js";
 
 export function rollback() {
 	return Effect.gen(function* (_) {
@@ -47,7 +47,7 @@ export function rollback() {
 
 		p.log.info("Pending revisions after rollback:");
 
-		yield* _(pendingMigrations());
+		yield* _(pendingRevisions());
 
 		if (yield* _(confirmDelete())) {
 			yield* _(

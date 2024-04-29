@@ -11,12 +11,12 @@ import { cliAction } from "~/programs/cli-action.js";
 import { generateRevision } from "~/programs/generate-revision.js";
 import { handlePendingSchemaRevisions } from "~/programs/handle-pending-schema-revisions.js";
 import { migrate } from "~/programs/migrate.js";
-import { pendingMigrations } from "~/programs/pending-migrations.js";
 import { rollback } from "~/programs/rollback.js";
 import { scaffoldRevision } from "~/programs/scaffold-revision.js";
 import { seed } from "~/programs/seed.js";
 import { structureLoad } from "~/programs/structure-load.js";
 import { applyRevisions } from "~/revisions/apply-revisions.js";
+import { pendingRevisions } from "~/revisions/pending-revisions.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
@@ -97,7 +97,7 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("yount pending", opts, [pendingMigrations()]);
+			await cliAction("yount pending", opts, [pendingRevisions()]);
 		});
 
 	program
