@@ -97,7 +97,7 @@ const config = {
 			// Replace with your project's social card
 			image: "img/docusaurus-social-card.jpg",
 			navbar: {
-				title: "My Site",
+				title: "monolayer",
 				logo: {
 					alt: "My Site Logo",
 					src: "img/logo.svg",
@@ -115,7 +115,6 @@ const config = {
 						position: "left",
 						label: "API",
 					},
-					{ to: "/blog", label: "Blog", position: "left" },
 					{
 						href: "https://github.com/facebook/docusaurus",
 						label: "GitHub",
