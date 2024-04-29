@@ -85,6 +85,7 @@ const config = {
 				],
         tsconfig: '../packages/monolayer/tsconfig.json',
 				parametersFormat: "table",
+				watch: process.env.TYPEDOC_WATCH,
       },
     ],
 	],
