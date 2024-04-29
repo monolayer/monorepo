@@ -20,10 +20,7 @@ export function generateRevision(name?: string) {
 				.pipe(
 					Effect.tap((changeset) =>
 						Effect.if(changeset.length > 0, {
-							onTrue: () =>
-								Effect.succeed(true).pipe(
-									Effect.tap(() => printChangesetSummary(changeset)),
-								),
+							onTrue: () => Effect.succeed(printChangesetSummary(changeset)),
 							onFalse: () => Effect.succeed(true),
 						}),
 					),
