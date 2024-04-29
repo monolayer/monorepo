@@ -55,7 +55,7 @@ async function main() {
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in monolayer.config.ts",
+			"connection environment name as defined in configuration.ts",
 			"development",
 		)
 		.description("drops a database")
@@ -74,7 +74,7 @@ async function main() {
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in monolayer.config.ts",
+			"connection environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -95,7 +95,7 @@ async function main() {
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in monolayer.config.ts",
+			"connection environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -112,7 +112,7 @@ async function main() {
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in monolayer.config.ts",
+			"connection environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -129,7 +129,7 @@ async function main() {
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in monolayer.config.ts",
+			"connection environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -155,7 +155,7 @@ async function main() {
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in monolayer.config.ts",
+			"connection environment name as defined in configuration.ts",
 			"development",
 		)
 		.option("-r, --replant", "Truncate tables before seeding")
@@ -181,7 +181,7 @@ async function main() {
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in monolayer.config.ts",
+			"connection environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -198,7 +198,7 @@ async function main() {
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"environment as specified in monolayer.config.ts",
+			"connection environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
