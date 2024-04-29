@@ -4,8 +4,8 @@ import { Effect } from "effect";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
+import { deletePendingRevisions } from "../revisions/delete-pending-revisions.js";
 import { cancelOperation } from "./cancel-operation.js";
-import { deletePendingRevisions } from "./delete-pending-revisions.js";
 import { localPendingSchemaRevisions } from "./local-pending-schema-revisions.js";
 
 export function handlePendingSchemaRevisions() {

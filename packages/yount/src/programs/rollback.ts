@@ -14,9 +14,9 @@ import {
 } from "~/revisions/revision.js";
 import { Environment } from "~/services/environment.js";
 import { allRevisions } from "../revisions/all-revisions.js";
+import { deletePendingRevisions } from "../revisions/delete-pending-revisions.js";
 import { cancelOperation } from "./cancel-operation.js";
 import { ExitWithSuccess } from "./cli-action.js";
-import { deletePendingRevisions } from "./delete-pending-revisions.js";
 import { migrateTo } from "./migrate-to.js";
 import { pendingMigrations } from "./pending-migrations.js";
 
