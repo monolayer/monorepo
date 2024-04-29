@@ -15,10 +15,10 @@ import {
 import { Environment } from "~/services/environment.js";
 import { cancelOperation } from "../programs/cancel-operation.js";
 import { ExitWithSuccess } from "../programs/cli-action.js";
-import { allRevisions } from "./all-revisions.js";
-import { deletePendingRevisions } from "./delete-pending-revisions.js";
+import { allRevisions } from "./all.js";
+import { deletePendingRevisions } from "./delete-pending.js";
 import { migrateTo } from "./migrate-to.js";
-import { pendingRevisions } from "./pending-revisions.js";
+import { pendingRevisions } from "./pending.js";
 
 export function rollback() {
 	return Effect.gen(function* (_) {

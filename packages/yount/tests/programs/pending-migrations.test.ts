@@ -1,7 +1,7 @@
 import captureConsole from "capture-console";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { pendingRevisions } from "~/revisions/pending-revisions.js";
+import { pendingRevisions } from "~/revisions/pending.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {

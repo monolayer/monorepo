@@ -2,7 +2,7 @@ import { Effect } from "effect";
 import { type MigrationInfo } from "kysely";
 import type { Equal, Expect } from "type-testing";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { allRevisions } from "~/revisions/all-revisions.js";
+import { allRevisions } from "~/revisions/all.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {

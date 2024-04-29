@@ -7,7 +7,7 @@ import { exit } from "process";
 import { type SeedImport } from "~/config.js";
 import { dbTableInfo } from "~/database/schema/table/introspection.js";
 import { changeset } from "../changeset/changeset.js";
-import { localPendingSchemaRevisions } from "../revisions/local-pending-schema-revisions.js";
+import { localPendingSchemaRevisions } from "../revisions/local-pending.js";
 import { DbClients } from "../services/dbClients.js";
 import { Environment } from "../services/environment.js";
 import { checkWithFail } from "./check-with-fail.js";

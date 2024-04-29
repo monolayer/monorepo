@@ -5,8 +5,8 @@ import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
 import { cancelOperation } from "../programs/cancel-operation.js";
-import { deletePendingRevisions } from "./delete-pending-revisions.js";
-import { localPendingSchemaRevisions } from "./local-pending-schema-revisions.js";
+import { deletePendingRevisions } from "./delete-pending.js";
+import { localPendingSchemaRevisions } from "./local-pending.js";
 
 export function handlePendingSchemaRevisions() {
 	return localPendingSchemaRevisions().pipe(

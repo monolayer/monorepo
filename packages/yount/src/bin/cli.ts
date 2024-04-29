@@ -10,13 +10,13 @@ import { handleMissingDatabase } from "~/database/handle-missing-dev-database.js
 import { cliAction } from "~/programs/cli-action.js";
 import { seed } from "~/programs/seed.js";
 import { structureLoad } from "~/programs/structure-load.js";
-import { applyRevisions } from "~/revisions/apply-revisions.js";
-import { generateRevision } from "~/revisions/generate-revision.js";
-import { handlePendingSchemaRevisions } from "~/revisions/handle-pending-schema-revisions.js";
+import { applyRevisions } from "~/revisions/apply.js";
+import { generateRevision } from "~/revisions/generate.js";
+import { handlePendingSchemaRevisions } from "~/revisions/handle-pending.js";
 import { migrate } from "~/revisions/migrate.js";
-import { pendingRevisions } from "~/revisions/pending-revisions.js";
+import { pendingRevisions } from "~/revisions/pending.js";
 import { rollback } from "~/revisions/rollback.js";
-import { scaffoldRevision } from "~/revisions/scaffold-revision.js";
+import { scaffoldRevision } from "~/revisions/scaffold.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;

@@ -1,5 +1,5 @@
 import { Effect } from "effect";
-import { allRevisions } from "~/revisions/all-revisions.js";
+import { allRevisions } from "~/revisions/all.js";
 
 export function revisionDependency() {
 	return Effect.gen(function* (_) {
