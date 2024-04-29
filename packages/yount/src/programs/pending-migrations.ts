@@ -12,7 +12,6 @@ export function pendingMigrations() {
 				onFalse: () => logEmptyMigration(),
 			}),
 		),
-		Effect.flatMap((pendingMigrations) => Effect.succeed(pendingMigrations)),
 	);
 }
 
