@@ -9,12 +9,11 @@ import {
 import { Migrator } from "~/services/migrator.js";
 
 export function validateRevisionDependencies() {
-	return Effect.gen(function* (_) {
-		const migrationInfo = yield* _(getMigrationInfo());
-		yield* _(validateDependsOn(migrationInfo));
-		const revisions = migrationInfoToRevisions(migrationInfo);
-		return yield* _(validateRevisions(revisions));
-	});
+	getMigrationInfo().pipe(
+		Effect.tap(validateMigrationInfoAsRevision),
+		Effect.flatMap(revisionsFromMigrationInfo),
+		Effect.flatMap(validateRevisions),
+	);
 }
 
 function getMigrationInfo() {
@@ -24,13 +23,17 @@ function getMigrationInfo() {
 	});
 }
 
+function revisionsFromMigrationInfo(migrationInfo: readonly MigrationInfo[]) {
+	return Effect.succeed(migrationInfoToRevisions(migrationInfo));
+}
+
 class MissingDependenciesError extends TypeError {
 	constructor(revision: string) {
 		super(`revision ${revision} is missing dependsOn export`);
 	}
 }
 
-function validateDependsOn(
+function validateMigrationInfoAsRevision(
 	migrationInfo: readonly MigrationInfo[],
 ): Effect.Effect<boolean, MissingDependenciesError, never> {
 	for (const migration of migrationInfo) {
