@@ -9,11 +9,11 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 import {
 	currentTableName,
 	previousTableName,
 } from "~/introspection/table-name.js";
-import type { TablesToRename } from "~/programs/introspect-schemas.js";
 import { indexNameFromDefinition, rehashIndex } from "./introspection.js";
 
 export function indexMigrationOpGenerator(

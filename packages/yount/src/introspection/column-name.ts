@@ -1,4 +1,4 @@
-import type { ColumnsToRename } from "~/programs/introspect-schemas.js";
+import type { ColumnsToRename } from "~/introspection/introspect-schemas.js";
 
 export function changedColumnNames(
 	table: string,

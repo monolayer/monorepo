@@ -1,13 +1,13 @@
 import { Effect } from "effect";
 import fs from "fs/promises";
 import path from "path";
-import { createDatabase } from "../database/create.js";
-import { dropDatabase } from "../database/drop.js";
-import { DbClients } from "../services/dbClients.js";
+import { pgQuery } from "~/services/db-clients.js";
+import { checkWithFail } from "../cli/check-with-fail.js";
+import { spinnerTask } from "../cli/spinner-task.js";
+import { DbClients } from "../services/db-clients.js";
 import { Environment } from "../services/environment.js";
-import { checkWithFail } from "./check-with-fail.js";
-import { pgQuery } from "./pg-query.js";
-import { spinnerTask } from "./spinner-task.js";
+import { createDatabase } from "./create.js";
+import { dropDatabase } from "./drop.js";
 
 export function structureLoad() {
 	return checkStructureFile().pipe(

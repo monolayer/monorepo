@@ -6,10 +6,10 @@ import { env } from "process";
 import { Writable, type WritableOptions } from "stream";
 import { dbExtensionInfo } from "~/database/extension/introspection.js";
 import { Schema } from "~/database/schema/schema.js";
-import { pgQuery } from "../programs/pg-query.js";
-import { pipeCommandStdoutToWritable } from "../programs/pipe-command-stdout-to-writable.js";
-import { spinnerTask } from "../programs/spinner-task.js";
-import { DbClients } from "../services/dbClients.js";
+import { pgQuery } from "~/services/db-clients.js";
+import { pipeCommandStdoutToWritable } from "../cli/pipe-command-stdout-to-writable.js";
+import { spinnerTask } from "../cli/spinner-task.js";
+import { DbClients } from "../services/db-clients.js";
 import { Environment } from "../services/environment.js";
 
 export function dumpDatabase() {

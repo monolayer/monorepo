@@ -1,6 +1,6 @@
 import { select } from "@clack/prompts";
 import color from "picocolors";
-import type { ColumnsToRename } from "~/programs/introspect-schemas.js";
+import type { ColumnsToRename } from "~/introspection/introspect-schemas.js";
 
 export async function columnDiffPrompt(
 	columnDiff: Record<

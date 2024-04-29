@@ -101,3 +101,25 @@ function environmentGenerator(environment: string, configurationName: string) {
 		};
 	});
 }
+
+export function schemaRevisionsFolder() {
+	return Effect.gen(function* (_) {
+		const environment = yield* _(Environment);
+		return environment.schemaRevisionsFolder;
+	});
+}
+
+export function camelCaseOptions() {
+	return DevEnvironment.pipe(
+		Effect.flatMap((devEnvironment) =>
+			Effect.succeed(devEnvironment.camelCasePlugin),
+		),
+	);
+}
+
+export function configurationSchemas() {
+	return Effect.gen(function* (_) {
+		const environment = yield* _(DevEnvironment);
+		return environment.configuration.schemas;
+	});
+}

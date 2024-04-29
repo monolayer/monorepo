@@ -1,6 +1,6 @@
 import { select } from "@clack/prompts";
 import color from "picocolors";
-import { TablesToRename } from "../programs/introspect-schemas.js";
+import { TablesToRename } from "../introspection/introspect-schemas.js";
 
 export async function tableDiffPrompt(tableDiff: {
 	added: string[];

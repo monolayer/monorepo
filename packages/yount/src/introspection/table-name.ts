@@ -1,4 +1,4 @@
-import type { TablesToRename } from "~/programs/introspect-schemas.js";
+import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 
 export function previousTableName(
 	changedTableName: string,

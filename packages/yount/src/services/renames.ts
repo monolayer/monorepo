@@ -2,7 +2,7 @@ import { Context, Effect, Layer } from "effect";
 import type {
 	ColumnsToRename,
 	TablesToRename,
-} from "~/programs/introspect-schemas.js";
+} from "~/introspection/introspect-schemas.js";
 
 interface RenameProperties {
 	readonly tables: TablesToRename;

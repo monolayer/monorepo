@@ -1,6 +1,6 @@
 import { Effect } from "effect";
+import { PromptCancelError } from "../cli/cli-action.js";
 import { tableDiffPrompt } from "../prompts/table-diff.js";
-import { PromptCancelError } from "./cli-action.js";
 import { IntrospectionContext, TablesToRename } from "./introspect-schemas.js";
 
 export function selectTableDiffChoicesInteractive(

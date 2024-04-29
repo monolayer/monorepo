@@ -2,7 +2,7 @@ import { Effect } from "effect";
 import { copyFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { structureLoad } from "~/programs/structure-load.js";
+import { structureLoad } from "~/database/structure-load.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {

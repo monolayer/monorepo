@@ -2,7 +2,7 @@ import { Context, Effect, Layer } from "effect";
 import { FileMigrationProvider, Migrator as KyselyMigrator } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
-import { DbClients } from "./dbClients.js";
+import { DbClients } from "./db-clients.js";
 import { Environment } from "./environment.js";
 
 export type MigratorAttributes = {

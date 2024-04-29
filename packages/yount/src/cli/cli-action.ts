@@ -5,7 +5,7 @@ import { TaggedClass } from "effect/Data";
 import color from "picocolors";
 import { exit } from "process";
 import type { ProgramContext } from "../program-context.js";
-import { dbClientsLayer } from "../services/dbClients.js";
+import { dbClientsLayer } from "../services/db-clients.js";
 import {
 	devEnvironmentLayer,
 	environmentLayer,

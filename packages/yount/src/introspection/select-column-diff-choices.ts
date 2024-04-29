@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import { SchemaMigrationInfo } from "~/introspection/introspection.js";
+import { PromptCancelError } from "../cli/cli-action.js";
 import { columnDiffPrompt } from "../prompts/column-diff.js";
-import { PromptCancelError } from "./cli-action.js";
 import { IntrospectionContext } from "./introspect-schemas.js";
 
 export function selectColumnDiffChoicesInteractive(

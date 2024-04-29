@@ -2,7 +2,7 @@ import { Effect } from "effect";
 import { unlinkSync, writeFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { seed } from "~/programs/seed.js";
+import { seed } from "~/database/seed.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {

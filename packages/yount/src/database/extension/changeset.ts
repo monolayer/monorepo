@@ -11,7 +11,7 @@ import {
 	localExtensionInfo,
 	type ExtensionInfo,
 } from "~/database/extension/introspection.js";
-import { DbClients } from "~/services/dbClients.js";
+import { DbClients } from "~/services/db-clients.js";
 import { DevEnvironment } from "~/services/environment.js";
 import { executeKyselyDbStatement } from "../../changeset/helpers.js";
 

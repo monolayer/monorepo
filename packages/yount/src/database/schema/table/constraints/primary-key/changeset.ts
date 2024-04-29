@@ -7,8 +7,8 @@ import {
 	type Changeset,
 } from "~/changeset/types.js";
 import { currentColumName } from "~/introspection/column-name.js";
+import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 import { currentTableName } from "~/introspection/table-name.js";
-import type { TablesToRename } from "~/programs/introspect-schemas.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
 import type { LocalTableInfo } from "../../../../../introspection/introspection.js";
 import {

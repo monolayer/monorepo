@@ -13,8 +13,8 @@ import {
 	type Revision,
 } from "~/revisions/revision.js";
 import { Environment } from "~/services/environment.js";
-import { cancelOperation } from "../programs/cancel-operation.js";
-import { ExitWithSuccess } from "../programs/cli-action.js";
+import { cancelOperation } from "../cli/cancel-operation.js";
+import { ExitWithSuccess } from "../cli/cli-action.js";
 import { migrateTo } from "./apply.js";
 import { deletePendingRevisions, pendingRevisions } from "./pending.js";
 import { allRevisions } from "./revision.js";

@@ -1,7 +1,7 @@
 import { Kysely, sql } from "kysely";
 import toposort from "toposort";
 import type { AnySchema } from "~/database/schema/schema.js";
-import type { TablesToRename } from "~/programs/introspect-schemas.js";
+import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 import { tableInfo } from "./helpers.js";
 import { currentTableName } from "./table-name.js";
 import type { InformationSchemaDB } from "./types.js";

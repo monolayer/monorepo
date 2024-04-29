@@ -1,14 +1,14 @@
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import {
+	ForeignKeyReferencedTableMissing,
+	validateForeignKeyReferences,
+} from "~/changeset/validate-foreign-key-references.js";
 import { schema } from "~/database/schema/schema.js";
 import { integer } from "~/database/schema/table/column/data-types/integer.js";
 import { text } from "~/database/schema/table/column/data-types/text.js";
 import { foreignKey } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
 import { table } from "~/database/schema/table/table.js";
-import {
-	ForeignKeyReferencedTableMissing,
-	validateForeignKeyReferences,
-} from "~/programs/validate-foreign-key-references.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,

@@ -1,9 +1,9 @@
 import * as p from "@clack/prompts";
 import { confirm } from "@clack/prompts";
 import { Effect } from "effect";
-import { cancelOperation } from "../programs/cancel-operation.js";
-import { adminDevPgQuery } from "../programs/pg-query.js";
-import { DbClients } from "../services/dbClients.js";
+import { adminDevPgQuery } from "~/services/db-clients.js";
+import { cancelOperation } from "../cli/cancel-operation.js";
+import { DbClients } from "../services/db-clients.js";
 import { createDevDatabase } from "./create.js";
 
 export function handleMissingDatabase() {

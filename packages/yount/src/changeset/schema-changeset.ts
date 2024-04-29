@@ -1,10 +1,10 @@
 import microdiff, { type Difference } from "microdiff";
 import type { CamelCaseOptions } from "~/configuration.js";
-import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
 import type {
 	ColumnsToRename,
 	TablesToRename,
-} from "~/programs/introspect-schemas.js";
+} from "~/introspection/introspect-schemas.js";
+import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
 import {
 	isCreateTable,
 	isDropTable,

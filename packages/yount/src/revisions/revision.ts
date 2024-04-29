@@ -3,7 +3,7 @@ import { Effect } from "effect";
 import { mkdirSync } from "fs";
 import type { Migration, MigrationInfo } from "kysely";
 import { revisionNamePrompt } from "~/prompts/revision-name.js";
-import { PromptCancelError } from "../programs/cli-action.js";
+import { PromptCancelError } from "../cli/cli-action.js";
 import { Migrator, type MigratorAttributes } from "../services/migrator.js";
 
 export const NO_DEPENDENCY: NoDependencies = Object.freeze({

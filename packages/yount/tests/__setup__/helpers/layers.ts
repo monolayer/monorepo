@@ -12,7 +12,7 @@ import path from "path";
 import pg from "pg";
 import { env } from "process";
 import type { Configuration } from "~/configuration.js";
-import { DbClients, dbClientsLayer } from "~/services/dbClients.js";
+import { DbClients, dbClientsLayer } from "~/services/db-clients.js";
 import {
 	DevEnvironment,
 	Environment,

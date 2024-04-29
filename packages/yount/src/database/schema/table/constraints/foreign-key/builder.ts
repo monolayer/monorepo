@@ -8,14 +8,14 @@ import {
 	currentColumName,
 	previousColumnName,
 } from "~/introspection/column-name.js";
+import type {
+	ColumnsToRename,
+	TablesToRename,
+} from "~/introspection/introspect-schemas.js";
 import {
 	currentTableName,
 	previousTableName,
 } from "~/introspection/table-name.js";
-import type {
-	ColumnsToRename,
-	TablesToRename,
-} from "~/programs/introspect-schemas.js";
 import { hashValue } from "~/utils.js";
 
 interface BuilderContext {

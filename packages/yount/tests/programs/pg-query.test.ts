@@ -1,8 +1,12 @@
 import dotenv from "dotenv";
 import { Effect, Layer } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { adminDevPgQuery, adminPgQuery, pgQuery } from "~/programs/pg-query.js";
-import { dbClientsLayer } from "~/services/dbClients.js";
+import {
+	adminDevPgQuery,
+	adminPgQuery,
+	dbClientsLayer,
+	pgQuery,
+} from "~/services/db-clients.js";
 import {
 	devEnvironmentLayer,
 	environmentLayer,

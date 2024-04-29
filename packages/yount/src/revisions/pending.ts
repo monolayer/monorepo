@@ -6,8 +6,8 @@ import type { MigrationInfo } from "kysely";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
-import { cancelOperation } from "../programs/cancel-operation.js";
-import { schemaRevisionsFolder } from "../programs/environment.js";
+import { schemaRevisionsFolder } from "~/services/environment.js";
+import { cancelOperation } from "../cli/cancel-operation.js";
 import { allRevisions } from "./revision.js";
 
 export function pendingRevisions() {

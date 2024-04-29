@@ -9,8 +9,8 @@ import {
 	renameTables,
 } from "~/introspection/introspection.js";
 import { sortTableDependencies } from "~/introspection/table-dependencies.js";
-import { devEnvirinmentDbClient } from "./db-clients.js";
-import { camelCaseOptions } from "./dev-environment.js";
+import { devEnvirinmentDbClient } from "~/services/db-clients.js";
+import { camelCaseOptions } from "~/services/environment.js";
 
 export function introspectRemote(schemaName?: string) {
 	return Effect.gen(function* (_) {

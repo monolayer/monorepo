@@ -1,17 +1,17 @@
 import { Effect } from "effect";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import { type AnySchema } from "~/database/schema/schema.js";
-import { configurationSchemas } from "../programs/configuration-schemas.js";
+import { configurationSchemas } from "~/services/environment.js";
 import {
 	introspectSchemas,
 	renameMigrationInfo,
 	sortTablePriorities,
 	type IntrospectionContext,
-} from "../programs/introspect-schemas.js";
-import { selectColumnDiffChoicesInteractive } from "../programs/select-column-diff-choices.js";
-import { selectTableDiffChoicesInteractive } from "../programs/select-table-diff-choices.js";
-import { validateForeignKeyReferences } from "../programs/validate-foreign-key-references.js";
+} from "../introspection/introspect-schemas.js";
+import { selectColumnDiffChoicesInteractive } from "../introspection/select-column-diff-choices.js";
+import { selectTableDiffChoicesInteractive } from "../introspection/select-table-diff-choices.js";
 import { context } from "./context.js";
+import { validateForeignKeyReferences } from "./validate-foreign-key-references.js";
 
 export function changeset() {
 	return configurationSchemas().pipe(

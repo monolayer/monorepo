@@ -7,7 +7,7 @@ import { vi } from "vitest";
 import {
 	type ColumnsToRename,
 	type TablesToRename,
-} from "~/programs/introspect-schemas.js";
+} from "~/introspection/introspect-schemas.js";
 import { columnDiffPrompt } from "~/prompts/column-diff.js";
 import { revisionNamePrompt } from "~/prompts/revision-name.js";
 import { tableDiffPrompt } from "~/prompts/table-diff.js";

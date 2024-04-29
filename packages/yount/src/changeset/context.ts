@@ -5,8 +5,8 @@ import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import type {
 	ColumnsToRename,
 	TablesToRename,
-} from "../programs/introspect-schemas.js";
-import { DbClients } from "../services/dbClients.js";
+} from "../introspection/introspect-schemas.js";
+import { DbClients } from "../services/db-clients.js";
 import { DevEnvironment } from "../services/environment.js";
 
 export type ChangesetContext = {
