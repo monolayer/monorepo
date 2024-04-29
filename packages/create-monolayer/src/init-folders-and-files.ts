@@ -115,18 +115,14 @@ export default {
 	schemas: [dbSchema],
 	environments: {
 		development: {
+			// With credentials
 			database: "#database_development",
 			user: "#user",
 			password: "#password",
 			host: "#host",
-			port: 5432
-		},
-		test: {
-			database: "#database_test",
-			user: "#user",
-			password: "#password",
-			host: "#host",
-			port: 5432
+			port: "#port",
+			// With connection string
+			// connectionString: "#connection_string",
 		},
 		production: {
 			connectionString: process.env.DATABASE_URL,
