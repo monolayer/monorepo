@@ -2,11 +2,10 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { printChangesetSummary } from "~/changeset/print-changeset-summary.js";
 import { computeExtensionChangeset } from "~/database/extension/changeset.js";
-import { createRevisionFile } from "~/revisions/create-revision-file.js";
+import { renderToFile } from "~/revisions/render.js";
 import { changeset } from "../changeset/changeset.js";
 import { DevEnvironment } from "../services/environment.js";
-import { revisionDependency } from "./revision-dependency.js";
-import { revisionName } from "./revision-name.js";
+import { revisionDependency, revisionName } from "./revision.js";
 
 export function generateRevision(name?: string) {
 	return DevEnvironment.pipe(
@@ -36,7 +35,7 @@ export function generateRevision(name?: string) {
 											Effect.tap((revisionName) =>
 												revisionDependency().pipe(
 													Effect.tap((dependency) => {
-														createRevisionFile(
+														renderToFile(
 															cset,
 															environment.schemaRevisionsFolder,
 															revisionName,

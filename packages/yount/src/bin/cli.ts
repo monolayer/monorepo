@@ -10,11 +10,12 @@ import { handleMissingDatabase } from "~/database/handle-missing-dev-database.js
 import { cliAction } from "~/programs/cli-action.js";
 import { seed } from "~/programs/seed.js";
 import { structureLoad } from "~/programs/structure-load.js";
-import { applyRevisions } from "~/revisions/apply.js";
+import { applyRevisions, migrate } from "~/revisions/apply.js";
 import { generateRevision } from "~/revisions/generate.js";
-import { handlePendingSchemaRevisions } from "~/revisions/handle-pending.js";
-import { migrate } from "~/revisions/migrate.js";
-import { pendingRevisions } from "~/revisions/pending.js";
+import {
+	handlePendingSchemaRevisions,
+	pendingRevisions,
+} from "~/revisions/pending.js";
 import { rollback } from "~/revisions/rollback.js";
 import { scaffoldRevision } from "~/revisions/scaffold.js";
 

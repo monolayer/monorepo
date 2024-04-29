@@ -15,10 +15,9 @@ import {
 import { Environment } from "~/services/environment.js";
 import { cancelOperation } from "../programs/cancel-operation.js";
 import { ExitWithSuccess } from "../programs/cli-action.js";
-import { allRevisions } from "./all.js";
-import { deletePendingRevisions } from "./delete-pending.js";
-import { migrateTo } from "./migrate-to.js";
-import { pendingRevisions } from "./pending.js";
+import { migrateTo } from "./apply.js";
+import { deletePendingRevisions, pendingRevisions } from "./pending.js";
+import { allRevisions } from "./revision.js";
 
 export function rollback() {
 	return Effect.gen(function* (_) {

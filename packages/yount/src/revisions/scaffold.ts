@@ -3,8 +3,7 @@ import nunjucks from "nunjucks";
 import path from "path";
 import { createFile } from "~/create-file.js";
 import { Environment } from "../services/environment.js";
-import { revisionDependency } from "./revision-dependency.js";
-import { revisionName } from "./revision-name.js";
+import { revisionDependency, revisionName } from "./revision.js";
 
 export function scaffoldRevision() {
 	return Effect.gen(function* (_) {

@@ -29,7 +29,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 }
 `;
 
-export function createRevisionFile(
+export function renderToFile(
 	changesets: Changeset[],
 	folder: string,
 	name: string,
