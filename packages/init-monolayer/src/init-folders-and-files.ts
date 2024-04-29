@@ -68,7 +68,7 @@ export function initFolderAndFiles() {
 		log.lineMessage("");
 
 		await createFile(
-			path.join(cwd(), "monolayer.config.ts"),
+			path.join(cwd(), "monolayer.ts"),
 			configTemplate.render({ folder: folder.path }),
 			true,
 		);
@@ -98,13 +98,13 @@ export function initFolderAndFiles() {
 }
 
 export const configTemplate =
-	nunjucks.compile(`import type { MonolayerConfig } from "monolayer/config";
+	nunjucks.compile(`import type { Monolayer } from "monolayer/config";
 
-const config = {
+const monolayer = {
 	folder: "{{ folder }}"
-} satisfies MonolayerConfig;
+} satisfies Monolayer;
 
-export default config;
+export default monolayer;
 `);
 
 export const configurationTemplate =

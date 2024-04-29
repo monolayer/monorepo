@@ -49,7 +49,7 @@ export function devEnvironmentLayer(configurationName: string) {
 
 function environmentGenerator(environment: string, configurationName: string) {
 	return Effect.gen(function* (_) {
-		const MonolayerConfig = yield* _(
+		const monolayer = yield* _(
 			Effect.promise(async () => await importConfig()),
 		);
 		const configurations = yield* _(
@@ -88,10 +88,10 @@ function environmentGenerator(environment: string, configurationName: string) {
 		return {
 			name: environment,
 			configurationName: configurationName,
-			folder: MonolayerConfig.folder,
+			folder: monolayer.folder,
 			schemaRevisionsFolder: path.join(
 				cwd(),
-				MonolayerConfig.folder,
+				monolayer.folder,
 				"revisions",
 				configurationName,
 			),

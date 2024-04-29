@@ -9,7 +9,7 @@ import type { AnySchema } from "./database/schema/schema.js";
 
 export type PgConfig = ClientConfig & PoolConfig;
 
-export type MonolayerConfig = {
+export type Monolayer = {
 	folder: string;
 };
 

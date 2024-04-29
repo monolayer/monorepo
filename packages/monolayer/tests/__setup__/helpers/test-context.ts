@@ -12,8 +12,8 @@ import type { Pool } from "pg";
 import { chdir, cwd } from "process";
 import { vi, type TaskContext } from "vitest";
 import {
-	MonolayerConfigTemplate,
 	configurationsTemplate,
+	monolayerTemplate,
 } from "~tests/__setup__/fixtures/program.js";
 import {
 	kyselyMigrator,
@@ -85,11 +85,8 @@ export async function setupProgramContext(
 	const dbMigrator = await dbAndMigrator(context);
 	context.kysely = dbMigrator.db;
 	context.migrator = dbMigrator.migrator;
-	const MonolayerConfig = MonolayerConfigTemplate.render();
-	appendFileSync(
-		path.join(context.folder, "monolayer.config.ts"),
-		MonolayerConfig,
-	);
+	const monolayerConfig = monolayerTemplate.render();
+	appendFileSync(path.join(context.folder, "monolayer.ts"), monolayerConfig);
 
 	const configurations = configurationsTemplate.render({
 		dbName: context.dbName,

@@ -1,6 +1,6 @@
 import type { Kysely } from "kysely";
 import path from "path";
-import { MonolayerConfig, type Configuration } from "./configuration.js";
+import { Monolayer, type Configuration } from "./configuration.js";
 
 type GlobalsWithDatabaseSchema = typeof globalThis & {
 	schema: unknown;
@@ -16,19 +16,19 @@ export function registerSchema(db: unknown) {
 
 type CjsConfig = {
 	default: {
-		default: MonolayerConfig;
+		default: Monolayer;
 	};
 };
 
 type EsmConfig = {
-	default: MonolayerConfig;
+	default: Monolayer;
 };
 
 type ConfigImport = EsmConfig | CjsConfig;
 
 export async function importConfig() {
-	const def = await import(path.join(process.cwd(), "monolayer.config.ts"));
-	const config: MonolayerConfig = isEsmImport(def)
+	const def = await import(path.join(process.cwd(), "monolayer.ts"));
+	const config: Monolayer = isEsmImport(def)
 		? def.default
 		: def.default.default;
 	return config;
@@ -51,15 +51,15 @@ export async function importConfigurations() {
 
 function isEsmImport(
 	imported: ConfigImport,
-): imported is { default: MonolayerConfig } {
+): imported is { default: Monolayer } {
 	return !isCjsImport(imported);
 }
 
 function isCjsImport(
 	imported: ConfigImport,
-): imported is { default: { default: MonolayerConfig } } {
+): imported is { default: { default: Monolayer } } {
 	return (
-		(imported as { default: { default: MonolayerConfig } }).default.default !==
+		(imported as { default: { default: Monolayer } }).default.default !==
 		undefined
 	);
 }

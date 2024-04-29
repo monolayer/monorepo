@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import nunjucks from "nunjucks";
 dotenv.config();
 
-export const MonolayerConfigTemplate = nunjucks.compile(`export default {
+export const monolayerTemplate = nunjucks.compile(`export default {
 	folder: "db"
 };
 `);
