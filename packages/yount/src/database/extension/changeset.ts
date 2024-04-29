@@ -1,9 +1,18 @@
+import { Effect } from "effect";
 import type { Difference } from "microdiff";
+import { extensionChangeset } from "~/changeset/extension-changeset.js";
 import {
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import {
+	dbExtensionInfo,
+	localExtensionInfo,
+	type ExtensionInfo,
+} from "~/database/extension/introspection.js";
+import { DbClients } from "~/services/dbClients.js";
+import { DevEnvironment } from "~/services/environment.js";
 import { executeKyselyDbStatement } from "../../changeset/helpers.js";
 
 export function extensionMigrationOpGenerator(diff: Difference) {
@@ -13,6 +22,12 @@ export function extensionMigrationOpGenerator(diff: Difference) {
 	if (isDropExtensionDiff(diff)) {
 		return dropExtensionMigration(diff);
 	}
+}
+
+export function computeExtensionChangeset() {
+	return Effect.all([localExtensions(), remoteExtensions()]).pipe(
+		Effect.flatMap(computeChangeset),
+	);
 }
 
 type CreateExtensionDiff = {
@@ -83,4 +98,25 @@ function dropExtensionMigration(diff: DropExtensionDiff) {
 		schemaName: null,
 	};
 	return changeset;
+}
+
+function computeChangeset(info: [ExtensionInfo, ExtensionInfo]) {
+	return Effect.succeed(extensionChangeset(info[0], info[1]));
+}
+
+function localExtensions() {
+	return DevEnvironment.pipe(
+		Effect.flatMap((environment) =>
+			Effect.succeed(localExtensionInfo(environment.configuration.extensions)),
+		),
+	);
+}
+function remoteExtensions() {
+	return DbClients.pipe(
+		Effect.flatMap((dbClients) =>
+			Effect.tryPromise(() =>
+				dbExtensionInfo(dbClients.developmentEnvironment.kyselyNoCamelCase),
+			),
+		),
+	);
 }
