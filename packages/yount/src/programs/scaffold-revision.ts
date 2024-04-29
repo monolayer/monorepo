@@ -24,7 +24,7 @@ export function scaffoldRevision() {
 			.render({ dependsOn: yield* _(revisionDependency()) });
 		createFile(filePath, content, true);
 
-		return yield* _(Effect.succeed(filePath));
+		return filePath;
 	});
 }
 

@@ -21,7 +21,7 @@ export function selectColumnDiffChoicesInteractive(
 			),
 		);
 		context.columnsToRename = columnsToRename;
-		return yield* _(Effect.succeed(columnsToRename));
+		return columnsToRename;
 	});
 }
 

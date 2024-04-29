@@ -11,6 +11,6 @@ export function revisionName() {
 		if (typeof revisionName !== "string") {
 			return yield* _(Effect.fail(new PromptCancelError()));
 		}
-		return yield* _(Effect.succeed(kebabCase(revisionName)));
+		return kebabCase(revisionName);
 	});
 }

@@ -11,8 +11,9 @@ export function selectTableDiffChoicesInteractive(
 			context.tableDiff.deleted.length === 0 ||
 			context.tableDiff.added.length === 0
 		) {
-			return yield* _(Effect.succeed([] as TablesToRename));
+			return [] as TablesToRename;
 		}
+
 		const tablesToRename = yield* _(
 			Effect.tryPromise(() => tableDiffPrompt(context.tableDiff)).pipe(
 				Effect.flatMap((tableDiffResult) => {
@@ -25,6 +26,6 @@ export function selectTableDiffChoicesInteractive(
 			),
 		);
 		context.tablesToRename = tablesToRename;
-		return yield* _(Effect.succeed(tablesToRename));
+		return tablesToRename;
 	});
 }

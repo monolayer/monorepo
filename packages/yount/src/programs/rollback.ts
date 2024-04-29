@@ -135,15 +135,13 @@ function promptRollback(revisions: readonly MigrationInfo[], limit: number) {
 		const revisionNames = revisions
 			.slice(findRevisionIndex == -1 ? 0 : findRevisionIndex + 1)
 			.map((m) => m.name);
-		return yield* _(
-			Effect.succeed({
-				revisionNames,
-				downTo:
-					findRevisionIndex === -1
-						? NO_MIGRATIONS
-						: revisions[findRevisionIndex]!.name,
-			}),
-		);
+		return {
+			revisionNames,
+			downTo:
+				findRevisionIndex === -1
+					? NO_MIGRATIONS
+					: revisions[findRevisionIndex]!.name,
+		};
 	});
 }
 
