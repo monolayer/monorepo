@@ -1,10 +1,10 @@
 {
-  "name": "yount-monorepo",
+  "name": "monolayer-monorepo",
   "private": true,
   "license": "MIT",
   "workspaces": [
-    "packages/init-yount",
-    "packages/yount",
+    "packages/init-monolayer",
+    "packages/monolayer",
     "docs"
   ],
   "engines": {

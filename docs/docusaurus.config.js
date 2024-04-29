@@ -17,11 +17,11 @@ const config = {
 	// Set the /<baseUrl>/ pathname under which your site is served
 	// For GitHub pages deployment, it is often '/<projectName>/'
 	// baseUrl: "/",
-	baseUrl: "/Users/marcessindi/Development/yount/docs/build/",
+	baseUrl: "/",
 	// GitHub pages deployment config.
 	// If you aren't using GitHub pages, you don't need these.
 	organizationName: "dunkelbraun", // Usually your GitHub org/user name.
-	projectName: "Yount", // Usually your repo name.
+	projectName: "monolayer", // Usually your repo name.
 
 	onBrokenLinks: "throw",
 	onBrokenMarkdownLinks: "warn",
@@ -54,7 +54,7 @@ const config = {
 						if (docPath.match(/^api/)) {
 							return;
 						} else {
-							return `https://github.com/dunkelbraun/yount/tree/main/docs/${versionDocsDirPath}/${docPath}`;
+							return `https://github.com/dunkelbraun/monolayer/tree/main/docs/${versionDocsDirPath}/${docPath}`;
 						}
 					},
 				},
@@ -78,12 +78,12 @@ const config = {
       'docusaurus-plugin-typedoc',
       {
         entryPoints: [
-					'../packages/yount/src/configuration.ts',
-					'../packages/yount/src/pg.ts',
-					'../packages/yount/src/revision.ts',
-					'../packages/yount/src/zod.ts'
+					'../packages/monolayer/src/configuration.ts',
+					'../packages/monolayer/src/pg.ts',
+					'../packages/monolayer/src/revision.ts',
+					'../packages/monolayer/src/zod.ts'
 				],
-        tsconfig: '../packages/yount/tsconfig.json',
+        tsconfig: '../packages/monolayer/tsconfig.json',
 				parametersFormat: "table",
       },
     ],

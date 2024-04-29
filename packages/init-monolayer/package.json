@@ -1,0 +1,48 @@
+{
+	"name": "init-monolayer",
+	"version": "1.0.0-beta.1",
+	"description": "",
+	"author": "Marcos Essindi <marcessindi@me.com>",
+	"license": "MIT",
+	"homepage": "https://github.com/dunkelbraun/monolayer/packages/init-monolayer",
+	"type": "module",
+	"module": "dist/src/bin/cli.js",
+	"bin": {
+		"init-monolayer": "dist/src/bin/cli.js"
+	},
+	"scripts": {
+		"prebuild": "rm -rf dist",
+		"build": "tsc -p tsconfig.build.json --outDir dist",
+		"postbuild": "npm run postbuild:makeexec && npm run postbuild:package && npm run postbuild:transform-paths",
+		"postbuild:transform-paths": "tsc-alias -p tsconfig.json --outDir dist",
+		"postbuild:makeexec": "chmod +x dist/src/bin/cli.js",
+		"postbuild:package": "echo '{\n  \"type\": \"module\"\n}' > dist/src/package.json",
+		"check": "npm run check:type && npm run check:prettier && npm run check:lint && npm run check:skott",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src",
+		"check:type": "tsc --noEmit",
+		"format": "prettier --write .",
+		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
+		"pack": "npm pack --pack-destination ./build"
+	},
+	"dependencies": {
+		"@clack/prompts": "^0.7.0",
+		"@commander-js/extra-typings": "^12.0.1",
+		"commander": "^12.0.0",
+		"effect": "^2.4.15",
+		"execa": "^8.0.1",
+		"nunjucks": "^3.2.4",
+		"picocolors": "^1.0.0",
+		"tsx": "^4.7.1"
+	},
+	"devDependencies": {
+		"@types/node": "^20.12.2",
+		"@types/nunjucks": "^3.2.6",
+		"eslint": "^8.57.0",
+		"eslint-config-prettier": "^9.1.0",
+		"prettier": "^3.2.5",
+		"prettier-plugin-organize-imports": "^3.2.4",
+		"tsc-alias": "^1.8.8"
+	}
+}
