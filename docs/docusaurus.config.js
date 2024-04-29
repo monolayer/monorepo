@@ -41,14 +41,9 @@ const config = {
 				docs: {
 					breadcrumbs: true,
 					sidebarPath: "./sidebars.js",
-					// Please change this to your repo.
-					// Remove this to remove the "edit this page" links.
 					editUrl: ({
-						version,
 						versionDocsDirPath,
 						docPath,
-						permalink,
-						locale,
 					}) => {
 						if (docPath.match(/^api/)) {
 							return;
