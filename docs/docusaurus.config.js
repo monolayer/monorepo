@@ -116,7 +116,7 @@ const config = {
 						label: "API",
 					},
 					{
-						href: "https://github.com/facebook/docusaurus",
+						href: "https://github.com/dunkelbraun/monolayer",
 						label: "GitHub",
 						position: "right",
 					},
