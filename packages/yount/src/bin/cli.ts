@@ -4,7 +4,6 @@ import { Command } from "@commander-js/extra-typings";
 import { CommanderError } from "commander";
 import { Effect } from "effect";
 import { exit } from "process";
-import { applyRevisions } from "~/programs/apply-revisions.js";
 import { cliAction } from "~/programs/cli-action.js";
 import { createDatabase } from "~/programs/create-database.js";
 import { dropDatabase } from "~/programs/drop-database.js";
@@ -17,6 +16,7 @@ import { rollback } from "~/programs/rollback.js";
 import { scaffoldRevision } from "~/programs/scaffold-revision.js";
 import { seed } from "~/programs/seed.js";
 import { structureLoad } from "~/programs/structure-load.js";
+import { applyRevisions } from "~/revisions/apply-revisions.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
@@ -203,7 +203,14 @@ async function main() {
 			await cliAction("yount sync", opts, [
 				handleMissingDatabase(),
 				handlePendingSchemaRevisions(),
-				generateRevision().pipe(Effect.tap(applyRevisions)),
+				generateRevision().pipe(
+					Effect.tap((result) =>
+						Effect.if(result.length !== 0, {
+							onTrue: () => applyRevisions(),
+							onFalse: () => Effect.succeed(true),
+						}),
+					),
+				),
 			]);
 		});
 
