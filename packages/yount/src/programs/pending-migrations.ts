@@ -17,7 +17,7 @@ export function pendingMigrations() {
 
 function logEmptyMigration() {
 	return Effect.void.pipe(
-		Effect.tap(() => p.log.message("No pending migrations.")),
+		Effect.tap(() => p.log.message("No pending revisions.")),
 	);
 }
 
