@@ -8,3 +8,4 @@ coverage
 !.vscode/extensions.json
 build
 playground.ts
+tsconfig.tsbuildinfo
