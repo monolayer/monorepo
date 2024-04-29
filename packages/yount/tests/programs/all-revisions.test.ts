@@ -2,7 +2,7 @@ import { Effect } from "effect";
 import { type MigrationInfo } from "kysely";
 import type { Equal, Expect } from "type-testing";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { allMigrations } from "~/programs/all-migrations.js";
+import { allRevisions } from "~/revisions/all-revisions.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -25,7 +25,7 @@ describe("allMigrations", () => {
 		await context.migrator.migrateUp();
 		await context.kysely.destroy();
 
-		const program = programWithErrorCause(allMigrations());
+		const program = programWithErrorCause(allRevisions());
 		const result = await Effect.runPromise(Effect.provide(program, layers));
 
 		type resultType = typeof result;

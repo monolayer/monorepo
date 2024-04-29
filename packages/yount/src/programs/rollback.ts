@@ -13,7 +13,7 @@ import {
 	type Revision,
 } from "~/revisions/revision.js";
 import { Environment } from "~/services/environment.js";
-import { allMigrations } from "./all-migrations.js";
+import { allRevisions } from "../revisions/all-revisions.js";
 import { cancelOperation } from "./cancel-operation.js";
 import { ExitWithSuccess } from "./cli-action.js";
 import { deletePendingRevisions } from "./delete-pending-revisions.js";
@@ -63,7 +63,7 @@ export function rollback() {
 }
 
 function executedRevisionsWithCheck() {
-	return allMigrations().pipe(
+	return allRevisions().pipe(
 		Effect.flatMap((migrations) => {
 			if (migrations.length === 0) {
 				p.log.warn("Nothing to squash. There are no revisions.");

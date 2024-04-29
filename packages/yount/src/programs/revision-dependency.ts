@@ -1,10 +1,9 @@
 import { Effect } from "effect";
-import { allMigrations } from "./all-migrations.js";
+import { allRevisions } from "~/revisions/all-revisions.js";
 
 export function revisionDependency() {
 	return Effect.gen(function* (_) {
-		const allRevisions = yield* _(allMigrations());
-		const migrationsNames = allRevisions.map((m) => m.name);
-		return migrationsNames.slice(-1)[0] ?? "NO_DEPENDENCY";
+		const revisions = yield* _(allRevisions());
+		return revisions.map((m) => m.name).slice(-1)[0] ?? "NO_DEPENDENCY";
 	});
 }

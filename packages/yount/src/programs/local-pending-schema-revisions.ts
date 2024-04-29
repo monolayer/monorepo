@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import type { MigrationInfo } from "kysely";
 import path from "path";
-import { allMigrations as allRevisions } from "./all-migrations.js";
+import { allRevisions } from "../revisions/all-revisions.js";
 import { schemaRevisionsFolder } from "./environment.js";
 
 export function localPendingSchemaRevisions() {
