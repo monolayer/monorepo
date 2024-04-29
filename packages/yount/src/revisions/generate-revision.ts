@@ -4,9 +4,9 @@ import { printChangesetSummary } from "~/changeset/print-changeset-summary.js";
 import { computeExtensionChangeset } from "~/database/extension/changeset.js";
 import { createSchemaRevision } from "~/revisions/create-schema-revision.js";
 import { changeset } from "../changeset/changeset.js";
+import { revisionDependency } from "../programs/revision-dependency.js";
+import { revisionName } from "../programs/revision-name.js";
 import { DevEnvironment } from "../services/environment.js";
-import { revisionDependency } from "./revision-dependency.js";
-import { revisionName } from "./revision-name.js";
 
 export function generateRevision(name?: string) {
 	return DevEnvironment.pipe(

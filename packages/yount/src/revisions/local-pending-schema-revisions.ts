@@ -1,8 +1,8 @@
 import { Effect } from "effect";
 import type { MigrationInfo } from "kysely";
 import path from "path";
-import { allRevisions } from "../revisions/all-revisions.js";
-import { schemaRevisionsFolder } from "./environment.js";
+import { schemaRevisionsFolder } from "../programs/environment.js";
+import { allRevisions } from "./all-revisions.js";
 
 export function localPendingSchemaRevisions() {
 	return Effect.gen(function* (_) {

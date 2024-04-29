@@ -9,7 +9,7 @@ import {
 import path from "path";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { generateRevision } from "~/programs/generate-revision.js";
+import { generateRevision } from "~/revisions/generate-revision.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import { defaultMigrationPath } from "~tests/__setup__/helpers/default-migration-path.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";

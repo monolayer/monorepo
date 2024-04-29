@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import path from "path";
 import color from "picocolors";
-import { localPendingSchemaRevisions } from "../programs/local-pending-schema-revisions.js";
+import { localPendingSchemaRevisions } from "./local-pending-schema-revisions.js";
 
 export function pendingRevisions() {
 	return localPendingSchemaRevisions().pipe(

@@ -8,15 +8,15 @@ import { createDatabase } from "~/database/create-database.js";
 import { dropDatabase } from "~/database/drop-database.js";
 import { handleMissingDatabase } from "~/database/handle-missing-dev-database.js";
 import { cliAction } from "~/programs/cli-action.js";
-import { generateRevision } from "~/programs/generate-revision.js";
-import { handlePendingSchemaRevisions } from "~/programs/handle-pending-schema-revisions.js";
 import { migrate } from "~/programs/migrate.js";
 import { rollback } from "~/programs/rollback.js";
-import { scaffoldRevision } from "~/programs/scaffold-revision.js";
 import { seed } from "~/programs/seed.js";
 import { structureLoad } from "~/programs/structure-load.js";
 import { applyRevisions } from "~/revisions/apply-revisions.js";
+import { generateRevision } from "~/revisions/generate-revision.js";
+import { handlePendingSchemaRevisions } from "~/revisions/handle-pending-schema-revisions.js";
 import { pendingRevisions } from "~/revisions/pending-revisions.js";
+import { scaffoldRevision } from "~/revisions/scaffold-revision.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;

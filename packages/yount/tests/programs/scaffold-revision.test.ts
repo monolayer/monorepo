@@ -2,7 +2,7 @@ import { Effect } from "effect";
 import { readFileSync, rmSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { scaffoldRevision } from "~/programs/scaffold-revision.js";
+import { scaffoldRevision } from "~/revisions/scaffold-revision.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
