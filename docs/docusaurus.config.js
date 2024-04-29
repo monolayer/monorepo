@@ -67,14 +67,12 @@ const config = {
       'docusaurus-plugin-typedoc',
       {
         entryPoints: [
-					'../packages/yount/src/index.ts',
 					'../packages/yount/src/configuration.ts',
 					'../packages/yount/src/pg.ts',
 					'../packages/yount/src/revision.ts',
 					'../packages/yount/src/zod.ts'
 				],
         tsconfig: '../packages/yount/tsconfig.json',
-				groupOrder: ["Database", "Tables", "Columns", "Indexes", "Constraints", "Triggers", "*"],
 				parametersFormat: "table",
       },
     ],
@@ -102,7 +100,7 @@ const config = {
 						type: "docSidebar",
 						sidebarId: "typedocSidebar",
 						position: "left",
-						label: "Schema API",
+						label: "API",
 					},
 					{ to: "/blog", label: "Blog", position: "left" },
 					{
@@ -119,8 +117,8 @@ const config = {
 						title: "Docs",
 						items: [
 							{
-								label: "Tutorial",
-								to: "/docs/intro",
+								label: "Quick Start",
+								to: "/docs/quick-start",
 							},
 						],
 					},
