@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { dropTablesAndTypes } from "~/programs/drop-tables-and-types.js";
+import { dropTablesAndTypes } from "~/database/drop-tables-and-types.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {

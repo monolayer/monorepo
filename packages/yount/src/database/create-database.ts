@@ -1,7 +1,7 @@
 import { Effect } from "effect";
+import { adminPgQuery } from "../programs/pg-query.js";
+import { spinnerTask } from "../programs/spinner-task.js";
 import { DbClients } from "../services/dbClients.js";
-import { adminPgQuery } from "./pg-query.js";
-import { spinnerTask } from "./spinner-task.js";
 
 export function createDatabase() {
 	return DbClients.pipe(
