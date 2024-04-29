@@ -2,9 +2,12 @@ import { Effect } from "effect";
 import type { Kysely } from "kysely";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
+import type {
+	ColumnsToRename,
+	TablesToRename,
+} from "../programs/introspect-schemas.js";
 import { DbClients } from "../services/dbClients.js";
 import { DevEnvironment } from "../services/environment.js";
-import type { ColumnsToRename, TablesToRename } from "./introspect-schemas.js";
 
 export type ChangesetContext = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,7 +19,7 @@ export type ChangesetContext = {
 	columnsToRename: ColumnsToRename;
 };
 
-export function changesetContext(schema: AnySchema) {
+export function context(schema: AnySchema) {
 	return Effect.all([DevEnvironment, DbClients]).pipe(
 		Effect.flatMap(([devEnvironment, dbClients]) => {
 			const context: ChangesetContext = {

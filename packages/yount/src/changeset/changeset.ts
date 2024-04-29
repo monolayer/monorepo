@@ -1,17 +1,17 @@
 import { Effect } from "effect";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import { type AnySchema } from "~/database/schema/schema.js";
-import { changesetContext } from "./changeset-context.js";
-import { configurationSchemas } from "./configuration-schemas.js";
+import { configurationSchemas } from "../programs/configuration-schemas.js";
 import {
 	introspectSchemas,
 	renameMigrationInfo,
 	sortTablePriorities,
 	type IntrospectionContext,
-} from "./introspect-schemas.js";
-import { selectColumnDiffChoicesInteractive } from "./select-column-diff-choices.js";
-import { selectTableDiffChoicesInteractive } from "./select-table-diff-choices.js";
-import { validateForeignKeyReferences } from "./validate-foreign-key-references.js";
+} from "../programs/introspect-schemas.js";
+import { selectColumnDiffChoicesInteractive } from "../programs/select-column-diff-choices.js";
+import { selectTableDiffChoicesInteractive } from "../programs/select-table-diff-choices.js";
+import { validateForeignKeyReferences } from "../programs/validate-foreign-key-references.js";
+import { context } from "./context.js";
 
 export function changeset() {
 	return configurationSchemas().pipe(
@@ -26,7 +26,7 @@ export function changeset() {
 }
 
 function changesetForLocalSchema(localSchema: AnySchema) {
-	return changesetContext(localSchema).pipe(
+	return context(localSchema).pipe(
 		Effect.tap(() => validateForeignKeyReferences(localSchema)),
 		Effect.flatMap(() =>
 			introspectSchemas(localSchema).pipe(
@@ -42,7 +42,7 @@ function changesetForLocalSchema(localSchema: AnySchema) {
 }
 
 function computeChangeset(introspectionContext: IntrospectionContext) {
-	return changesetContext(introspectionContext.schema).pipe(
+	return context(introspectionContext.schema).pipe(
 		Effect.flatMap((context) =>
 			Effect.succeed(
 				schemaChangeset(
