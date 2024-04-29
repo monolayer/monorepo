@@ -6,7 +6,7 @@ import { Effect } from "effect";
 import { exit } from "process";
 import { createDatabase } from "~/database/create.js";
 import { dropDatabase } from "~/database/drop.js";
-import { handleMissingDatabase } from "~/database/handle-missing-dev-database.js";
+import { handleMissingDatabase } from "~/database/handle-missing.js";
 import { cliAction } from "~/programs/cli-action.js";
 import { seed } from "~/programs/seed.js";
 import { structureLoad } from "~/programs/structure-load.js";
