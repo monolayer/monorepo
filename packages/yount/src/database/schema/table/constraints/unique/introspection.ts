@@ -11,8 +11,8 @@ import {
 } from "~/database/schema/table/constraints/unique/unique.js";
 import { previousColumnName } from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/helpers.js";
+import type { UniqueInfo } from "~/introspection/schema.js";
 import type { ColumnsToRename } from "~/programs/introspect-schemas.js";
-import type { UniqueInfo } from "~/revisions/schema.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 

@@ -7,8 +7,11 @@ import {
 	type AnyPgPrimaryKey,
 } from "~/database/schema/table/constraints/primary-key/primary-key.js";
 import { tableInfo } from "~/introspection/helpers.js";
+import {
+	primaryKeyColumns,
+	type PrimaryKeyInfo,
+} from "~/introspection/schema.js";
 import type { ColumnsToRename } from "~/programs/introspect-schemas.js";
-import { primaryKeyColumns, type PrimaryKeyInfo } from "~/revisions/schema.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 import { type ColumnRecord } from "../../table-column.js";
 import type { AnyPgTable } from "../../table.js";

@@ -6,11 +6,6 @@ import { dbExtensionInfo } from "~/database/extension/introspection.js";
 import { type AnySchema } from "~/database/schema/schema.js";
 import type { ColumnInfo } from "~/database/schema/table/column/types.js";
 import { ForeignKeyBuilder } from "~/database/schema/table/constraints/foreign-key/builder.js";
-import { currentTableName } from "~/introspection/table-name.js";
-import type {
-	ColumnsToRename,
-	TablesToRename,
-} from "~/programs/introspect-schemas.js";
 import {
 	extractColumnsFromPrimaryKey,
 	type CheckInfo,
@@ -18,7 +13,12 @@ import {
 	type PrimaryKeyInfo,
 	type TriggerInfo,
 	type UniqueInfo,
-} from "~/revisions/schema.js";
+} from "~/introspection/schema.js";
+import { currentTableName } from "~/introspection/table-name.js";
+import type {
+	ColumnsToRename,
+	TablesToRename,
+} from "~/programs/introspect-schemas.js";
 import { hashValue } from "~/utils.js";
 import {
 	dbColumnInfo,

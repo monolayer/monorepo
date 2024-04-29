@@ -15,7 +15,7 @@ import {
 	columnNameKey,
 	extractColumnsFromPrimaryKey,
 	findColumnByNameInTable,
-} from "../../../../../revisions/schema.js";
+} from "../../../../../introspection/schema.js";
 
 export function primaryKeyMigrationOpGenerator(
 	diff: Difference,

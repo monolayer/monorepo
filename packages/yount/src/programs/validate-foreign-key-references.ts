@@ -6,7 +6,7 @@ import {
 } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
 import type { AnyPgTable } from "~/database/schema/table/table.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { findTable } from "~/revisions/schema.js";
+import { findTable } from "~/introspection/schema.js";
 
 export function validateForeignKeyReferences(schema: AnySchema) {
 	return Effect.gen(function* (_) {

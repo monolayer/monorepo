@@ -7,11 +7,11 @@ import {
 	type Changeset,
 } from "~/changeset/types.js";
 import { currentColumName } from "~/introspection/column-name.js";
+import { extractColumnsFromPrimaryKey } from "~/introspection/schema.js";
 import {
 	currentTableName,
 	previousTableName,
 } from "~/introspection/table-name.js";
-import { extractColumnsFromPrimaryKey } from "~/revisions/schema.js";
 import { hashValue } from "~/utils.js";
 import {
 	executeKyselyDbStatement,
