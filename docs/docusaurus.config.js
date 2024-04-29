@@ -44,8 +44,19 @@ const config = {
 					sidebarPath: "./sidebars.js",
 					// Please change this to your repo.
 					// Remove this to remove the "edit this page" links.
-					editUrl:
-						"https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+					editUrl: ({
+						version,
+						versionDocsDirPath,
+						docPath,
+						permalink,
+						locale,
+					}) => {
+						if (docPath.match(/^api/)) {
+							return;
+						} else {
+							return `https://github.com/dunkelbraun/yount/tree/main/docs/${versionDocsDirPath}/${docPath}`;
+						}
+					},
 				},
 				blog: {
 					showReadingTime: true,
