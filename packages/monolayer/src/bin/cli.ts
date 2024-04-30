@@ -31,13 +31,13 @@ async function main() {
 	program
 		.command("db:create")
 		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"connection environment name as defined in configuration.ts",
+			"configuration environment name as defined in configuration.ts",
 			"development",
 		)
 		.description("creates a database")
@@ -49,13 +49,13 @@ async function main() {
 	program
 		.command("db:drop")
 		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"connection environment name as defined in configuration.ts",
+			"configuration environment name as defined in configuration.ts",
 			"development",
 		)
 		.description("drops a database")
@@ -68,13 +68,13 @@ async function main() {
 		.command("generate")
 		.description("generate a schema migration")
 		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"connection environment name as defined in configuration.ts",
+			"configuration environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -89,13 +89,13 @@ async function main() {
 		.command("pending")
 		.description("list pending schema migrations")
 		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"connection environment name as defined in configuration.ts",
+			"configuration environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -106,13 +106,13 @@ async function main() {
 		.command("migrate")
 		.description("migrate pending schema migrations")
 		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"connection environment name as defined in configuration.ts",
+			"configuration environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -123,13 +123,13 @@ async function main() {
 		.command("rollback")
 		.description("rollback to a previous schema migration")
 		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"connection environment name as defined in configuration.ts",
+			"configuration environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -149,13 +149,13 @@ async function main() {
 		.command("seed")
 		.description("seeds a database")
 		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"connection environment name as defined in configuration.ts",
+			"configuration environment name as defined in configuration.ts",
 			"development",
 		)
 		.option("-r, --replant", "Truncate tables before seeding")
@@ -175,13 +175,13 @@ async function main() {
 		.command("structure:load")
 		.description("loads a database structure")
 		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"connection environment name as defined in configuration.ts",
+			"configuration environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -192,13 +192,13 @@ async function main() {
 		.command("sync")
 		.description("generate a schema migration and migrate")
 		.option(
-			"-c, --connection <connection-name>",
-			"connection name as defined in configuration.ts",
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
 			"-e, --environment <environment-name>",
-			"connection environment name as defined in configuration.ts",
+			"configuration environment name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
