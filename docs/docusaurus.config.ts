@@ -67,9 +67,15 @@ const config: Config = {
 					'../packages/monolayer/src/zod.ts'
 				],
         tsconfig: '../packages/monolayer/tsconfig.json',
-				parametersFormat: "table",
 				watch: process.env.TYPEDOC_WATCH,
+        // TypeDoc options
+        enumMembersFormat: "table",
 				groupOrder: ["Functions", "Classes", "Type Aliases", "*"],
+        indexFormat: "list",
+        outputFileStrategy: "members",
+				parametersFormat: "table",
+        propertiesFormat: "table",
+        typeDeclarationFormat: "list",
       },
     ],
 	],
