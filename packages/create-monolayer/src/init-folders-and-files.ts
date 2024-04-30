@@ -162,13 +162,5 @@ export async function seed(db: Kysely<DB>){}
 `);
 
 export const extensionsTemplate =
-	nunjucks.compile(`// Add database extensions here
-// Example:
-// import { extension } from "monolayer/pg";
-//
-// export const dbExtensions = [
-//   extension("moddatetime"),
-// ]
-
-export const dbExtensions = [];
+	nunjucks.compile(`export const dbExtensions = [];
 `);
