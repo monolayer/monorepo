@@ -10,9 +10,9 @@ From time to time, you may need to:
 
 For those cases, you can write custom migrations.
 
-**Steps**
+### 1. Scaffold a new migration
 
-1. Scaffold a new migration with the following command:
+Scaffol a new migration with:
 
 ```bash
 npx monolayer scaffold
@@ -36,7 +36,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 };
 ```
 
-2. Modify the `up` and `down` functions to perform the desired operations.
+### 2. Implement the `up` and `down` functions.
 
 Example:
 ```ts title="migrations/${configurationName}/${timestamp}-${migrationName}.ts" {10-14,18}}
@@ -64,12 +64,14 @@ export async function down(db: Kysely<any>): Promise<void> {
 :::warning
 The `down` function is used to revert the operations performed in the `up` function.
 
-When performing database schema changes, you should implement it to ensure you can safely go back to a previous state with the [rollback](../cli/rollback.md) CLI command.
+When performing database schema changes, you should implement it to ensure you can safely
+go back to a previous state with the [rollback](../cli/rollback.md) command.
 
 :::
 
-3. Apply the migration with:
+### 3. Apply the migration:
 
+You can now apply the migration with:
 ```bash
 npx monolayer migrate
 ```
