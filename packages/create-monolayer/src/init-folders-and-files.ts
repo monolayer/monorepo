@@ -110,9 +110,11 @@ export default monolayer;
 export const configurationTemplate =
 	nunjucks.compile(`import { type Configuration } from "monolayer/config";
 import { dbSchema } from "./schema";
+import { dbExtensions } from "./extensions";
 
 export default {
 	schemas: [dbSchema],
+	extensions: dbExtensions,
 	environments: {
 		development: {
 			// With credentials
