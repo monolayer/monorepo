@@ -13,7 +13,7 @@ import {
 import type {
 	AnyPgTable,
 	PgTable,
-	TableSchema,
+	TableDefinition,
 } from "~/database/schema/table/table.js";
 
 export function compileDefaultExpression(
@@ -58,12 +58,12 @@ function substituteSQLParameters(queryObject: {
 	return sql;
 }
 
-type InferTableSchema<T extends AnyPgTable> =
-	T extends PgTable<infer C, infer PK> ? TableSchema<C, PK> : never;
+type InferTableDefinition<T extends AnyPgTable> =
+	T extends PgTable<infer C, infer PK> ? TableDefinition<C, PK> : never;
 
 export function tableInfo<T extends AnyPgTable>(table: T) {
 	const info = Object.fromEntries(Object.entries(table)) as unknown as {
-		schema: InferTableSchema<T>;
+		definition: InferTableDefinition<T>;
 		introspect(dbTables?: Record<string, AnyPgTable>): TableIntrospection;
 	};
 	info.introspect = (dbTables?: Record<string, AnyPgTable>) => {

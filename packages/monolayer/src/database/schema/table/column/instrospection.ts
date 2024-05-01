@@ -335,7 +335,9 @@ export function localColumnInfoByTable(
 	return Object.entries(tables).reduce<Record<string, TableInfo>>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const columns = Object.entries(tableInfo(tableDefinition).schema.columns);
+			const columns = Object.entries(
+				tableInfo(tableDefinition).definition.columns,
+			);
 			acc[transformedTableName] = columns.reduce<TableInfo>(
 				(columnAcc, [columnName, column]) => {
 					const columnInfo = schemaColumnInfo(

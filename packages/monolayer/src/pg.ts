@@ -109,7 +109,7 @@ export { index, type PgIndex } from "./database/schema/table/index/index.js";
 export {
 	table,
 	type PgTable,
-	type TableSchema,
+	type TableDefinition as TableSchema,
 } from "./database/schema/table/table.js";
 export {
 	trigger,

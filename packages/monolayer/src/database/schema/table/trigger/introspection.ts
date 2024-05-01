@@ -125,7 +125,7 @@ export function localTriggersInfo(
 	return Object.entries(tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const triggers = tableInfo(tableDefinition).schema.triggers;
+			const triggers = tableInfo(tableDefinition).definition.triggers;
 			if (triggers === undefined) {
 				return acc;
 			}

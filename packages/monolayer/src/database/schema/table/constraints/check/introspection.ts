@@ -72,7 +72,7 @@ export function localCheckConstraintInfo(
 	return Object.entries(tables || {}).reduce<CheckInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const checkConstraints = tableInfo(tableDefinition).schema.constraints
+			const checkConstraints = tableInfo(tableDefinition).definition.constraints
 				?.checks as PgCheck[];
 			if (checkConstraints !== undefined) {
 				for (const checkConstraint of checkConstraints) {

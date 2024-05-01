@@ -8,7 +8,7 @@ import type { PgIndex } from "./index/index.js";
 import type { ColumnRecord } from "./table-column.js";
 import type { PgTrigger } from "./trigger/trigger.js";
 
-export type TableSchema<T, PK extends string> = {
+export type TableDefinition<T, PK extends string> = {
 	columns: T extends ColumnRecord ? T : never;
 	indexes?: keyof T extends string ? PgIndex<keyof T>[] : never;
 	triggers?: PgTrigger<keyof T extends string ? keyof T : never>[];
@@ -26,9 +26,9 @@ export type TableSchema<T, PK extends string> = {
 };
 
 export function table<T extends ColumnRecord, PK extends string>(
-	tableSchema: TableSchema<T, PK>,
+	definition: TableDefinition<T, PK>,
 ) {
-	return new PgTable<T, PK>(tableSchema);
+	return new PgTable<T, PK>(definition);
 }
 
 export class PgTable<T extends ColumnRecord, PK extends string> {
@@ -40,10 +40,10 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 		/**
 		 * @hidden
 		 */
-		protected schema: TableSchema<T, PK>,
+		protected definition: TableDefinition<T, PK>,
 	) {
-		const columns = this.schema.columns;
-		const primaryKey = this.schema.constraints?.primaryKey;
+		const columns = this.definition.columns;
+		const primaryKey = this.definition.constraints?.primaryKey;
 		if (primaryKey !== undefined) {
 			const primaryKeyDef = Object.fromEntries(Object.entries(primaryKey)) as {
 				columns: string[];

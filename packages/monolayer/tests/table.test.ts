@@ -34,7 +34,7 @@ describe("pgTable definition", () => {
 		const tbl = table({
 			columns: columns,
 		});
-		expect(tableInfo(tbl).schema.columns).toBe(columns);
+		expect(tableInfo(tbl).definition.columns).toBe(columns);
 	});
 
 	test("columns with pgEnum", () => {
@@ -47,7 +47,7 @@ describe("pgTable definition", () => {
 		const tbl = table({
 			columns: columns,
 		});
-		expect(tableInfo(tbl).schema.columns).toBe(columns);
+		expect(tableInfo(tbl).definition.columns).toBe(columns);
 	});
 
 	test("indexes can be added", () => {
@@ -62,7 +62,7 @@ describe("pgTable definition", () => {
 				index(["subscribed"]).unique().using("btree"),
 			],
 		});
-		expect(tableInfo(tbl).schema.indexes?.length).toBe(2);
+		expect(tableInfo(tbl).definition.indexes?.length).toBe(2);
 	});
 
 	describe("constraints", () => {
@@ -89,7 +89,9 @@ describe("pgTable definition", () => {
 					foreignKeys: [foreignKey(["book_id"], books, ["name"])],
 				},
 			});
-			expect(tableInfo(users).schema.constraints?.foreignKeys?.length).toBe(1);
+			expect(tableInfo(users).definition.constraints?.foreignKeys?.length).toBe(
+				1,
+			);
 		});
 
 		test("unique constraints can be added", () => {
@@ -105,7 +107,7 @@ describe("pgTable definition", () => {
 					unique: [unique(["name"]), unique(["subscribed"])],
 				},
 			});
-			expect(tableInfo(tbl).schema.constraints?.unique?.length).toBe(2);
+			expect(tableInfo(tbl).definition.constraints?.unique?.length).toBe(2);
 		});
 	});
 

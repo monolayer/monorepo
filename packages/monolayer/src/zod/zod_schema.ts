@@ -192,7 +192,7 @@ import { isXMLColumn, xmlSchema } from "./column-schemas/xml.js";
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function zodSchema<T extends PgTable<any, any>>(table: T) {
-	const cols = tableInfo(table).schema.columns as ColumnRecord;
+	const cols = tableInfo(table).definition.columns as ColumnRecord;
 	const columnSchema = Object.entries(cols).reduce((acc, [key, value]) => {
 		return acc.extend({
 			[key]: pgColumnSchema<typeof value, false>(value),

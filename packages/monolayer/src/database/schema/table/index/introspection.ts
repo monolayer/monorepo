@@ -84,7 +84,7 @@ export function localIndexInfoByTable(
 			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const indexes =
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				tableInfo(tableDefinition).schema.indexes || ([] as PgIndex<any>[]);
+				tableInfo(tableDefinition).definition.indexes || ([] as PgIndex<any>[]);
 			for (const index of indexes) {
 				if (isExternalIndex(index)) {
 					return acc;

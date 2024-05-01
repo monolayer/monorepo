@@ -79,7 +79,8 @@ export function localPrimaryKeyConstraintInfo(
 	return Object.entries(tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const columns = tableInfo(tableDefinition).schema.columns as ColumnRecord;
+			const columns = tableInfo(tableDefinition).definition
+				.columns as ColumnRecord;
 			const primaryKeys = primaryKeyColumns(
 				columns,
 				camelCase,
@@ -103,7 +104,7 @@ export function localPrimaryKeyConstraintInfo(
 }
 
 function isExternalPrimaryKey(table: AnyPgTable) {
-	const pgPrimaryKey = tableInfo(table).schema?.constraints
+	const pgPrimaryKey = tableInfo(table).definition?.constraints
 		?.primaryKey as unknown as AnyPgPrimaryKey | undefined;
 	return (
 		pgPrimaryKey !== undefined && PgPrimaryKey.info(pgPrimaryKey).isExternal

@@ -121,8 +121,8 @@ export function localUniqueConstraintInfo(
 	return Object.entries(tables || {}).reduce<UniqueInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const uniqueConstraints = tableInfo(tableDefinition).schema.constraints
-				?.unique as AnyPgUnique[];
+			const uniqueConstraints = tableInfo(tableDefinition).definition
+				.constraints?.unique as AnyPgUnique[];
 			if (uniqueConstraints !== undefined) {
 				for (const uniqueConstraint of uniqueConstraints) {
 					if (isExternalUnique(uniqueConstraint)) {

@@ -80,7 +80,10 @@ function findTableInSchema(
 	tables?: Record<string, AnyPgTable>,
 ) {
 	const tableInSchema = Object.entries(tables || {}).find(([, value]) => {
-		return tableInfo(value).schema.columns === tableInfo(table).schema.columns;
+		return (
+			tableInfo(value).definition.columns ===
+			tableInfo(table).definition.columns
+		);
 	});
 	if (tableInSchema !== undefined) {
 		return tableInSchema[0];
@@ -190,16 +193,16 @@ export function introspectTable(
 	dbTables?: Record<string, AnyPgTable>,
 ) {
 	const info = tableInfo(table);
-	const schema = info.schema;
+	const defininition = info.definition;
 	const introspectedTable: TableIntrospection = {
-		primaryKey: primaryKey(schema.columns),
-		columns: columnInfo(schema.columns),
+		primaryKey: primaryKey(defininition.columns),
+		columns: columnInfo(defininition.columns),
 		foreignKeys: foreignKeyInfo(
-			schema.constraints?.foreignKeys,
+			defininition.constraints?.foreignKeys,
 			dbTables || {},
 		).filter((fk) => fk.isExternal === false),
-		uniqueConstraints: uniqueConstraintInfo(schema.constraints?.unique),
-		triggers: triggerInfo(schema.triggers),
+		uniqueConstraints: uniqueConstraintInfo(defininition.constraints?.unique),
+		triggers: triggerInfo(defininition.triggers),
 	};
 	return introspectedTable;
 }

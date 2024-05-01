@@ -138,7 +138,8 @@ export function findTable(table: AnyPgTable, schema: AnySchema) {
 	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).find(
 		([, value]) =>
-			tableInfo(value).schema.columns === tableInfo(table).schema.columns,
+			tableInfo(value).definition.columns ===
+			tableInfo(table).definition.columns,
 	);
 }
 

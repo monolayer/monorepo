@@ -11,7 +11,7 @@ import { findTable } from "~/introspection/schema.js";
 export function validateForeignKeyReferences(schema: AnySchema) {
 	return Effect.gen(function* (_) {
 		for (const [tableName, table] of Object.entries(schema.tables)) {
-			const foreignKeys = tableInfo(table).schema.constraints?.foreignKeys;
+			const foreignKeys = tableInfo(table).definition.constraints?.foreignKeys;
 			if (foreignKeys === undefined) {
 				continue;
 			}
