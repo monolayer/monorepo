@@ -33,6 +33,12 @@ export function table<T extends ColumnRecord, PK extends string>(
 
 export class PgTable<T extends ColumnRecord, PK extends string> {
 	declare infer: Simplify<InferColumnTypes<T, PK>>;
+
+	/**
+	 * @hidden
+	 */
+	protected schemaName?: string;
+
 	/**
 	 * @hidden
 	 */

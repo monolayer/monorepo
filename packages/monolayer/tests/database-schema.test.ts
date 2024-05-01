@@ -9,6 +9,7 @@ import { serial } from "~/database/schema/table/column/data-types/serial.js";
 import { text } from "~/database/schema/table/column/data-types/text.js";
 import { table } from "~/database/schema/table/table.js";
 import { enumType } from "~/database/schema/types/enum/enum.js";
+import { tableInfo } from "~/introspection/helpers.js";
 
 describe("schema definition", () => {
 	test("without tables", () => {
@@ -43,6 +44,37 @@ describe("schema definition", () => {
 			>
 		> = true;
 		expectTypeOf(expectation).toMatchTypeOf<boolean>();
+	});
+
+	test("set schema name on tables", () => {
+		const users = table({
+			columns: {
+				name: varchar(),
+			},
+		});
+
+		const teams = table({
+			columns: {
+				name: varchar(),
+			},
+		});
+
+		const dbSchema = schema({
+			tables: { users, teams },
+		});
+
+		const statsSchema = schema({
+			name: "stats",
+			tables: { users, teams },
+		});
+
+		const statsTables = Schema.info(statsSchema).tables;
+		expect(tableInfo(statsTables.users!).schemaName).toBe("stats");
+		expect(tableInfo(statsTables.teams!).schemaName).toBe("stats");
+
+		const tables = Schema.info(dbSchema).tables;
+		expect(tableInfo(tables.users!).schemaName).toBe("public");
+		expect(tableInfo(tables.teams!).schemaName).toBe("public");
 	});
 });
 

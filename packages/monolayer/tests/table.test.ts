@@ -1881,4 +1881,19 @@ describe("pgTable definition", () => {
 			}
 		});
 	});
+
+	test("schema name", () => {
+		const tbl = table({
+			columns: {
+				id: integer().notNull(),
+				name: text().notNull(),
+			},
+		});
+		const info = tableInfo(tbl);
+		expect(info.schemaName).toBeUndefined();
+		Object.defineProperty(tbl, "schemaName", {
+			value: "public",
+		});
+		expect(tableInfo(tbl).schemaName).toBe("public");
+	});
 });

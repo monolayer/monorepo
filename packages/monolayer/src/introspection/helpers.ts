@@ -64,6 +64,7 @@ type InferTableDefinition<T extends AnyPgTable> =
 export function tableInfo<T extends AnyPgTable>(table: T) {
 	const info = Object.fromEntries(Object.entries(table)) as unknown as {
 		definition: InferTableDefinition<T>;
+		schemaName?: string;
 		introspect(dbTables?: Record<string, AnyPgTable>): TableIntrospection;
 	};
 	info.introspect = (dbTables?: Record<string, AnyPgTable>) => {

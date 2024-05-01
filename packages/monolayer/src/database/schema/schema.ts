@@ -372,7 +372,7 @@ export class Schema<T extends ColumnRecord, S extends string> {
 	 */
 	protected extensions?: Array<PgExtension>;
 
-	public tables: T;
+	protected _tables: T;
 
 	/**
 	 * @hidden
@@ -384,9 +384,20 @@ export class Schema<T extends ColumnRecord, S extends string> {
 	 * @hidden
 	 */
 	constructor(schema: DatabaseSchema<T, S>) {
-		this.tables = schema.tables || ({} as T);
+		this._tables = schema.tables || ({} as T);
 		this.types = schema.types;
 		this.name = schema.name;
+	}
+
+	get tables(): T {
+		for (const tableName in this._tables) {
+			const table = this._tables[tableName] as AnyPgTable;
+			Object.defineProperty(table, "schemaName", {
+				value: this.name ?? "public",
+				writable: false,
+			});
+		}
+		return this._tables;
 	}
 }
 
