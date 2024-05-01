@@ -34,7 +34,7 @@ export function CheckMigrationOpGenerator(
 		return dropCheckMigration(diff, context);
 	}
 	if (isRehashCheck(diff, context)) {
-		return rehashIndexMigration(diff, context);
+		return reshashCheckMigration(diff, context);
 	}
 }
 
@@ -263,7 +263,7 @@ function dropCheckMigration(
 	return changeSet;
 }
 
-function rehashIndexMigration(
+function reshashCheckMigration(
 	diff: RehashCheckDiff,
 	{ schemaName, tablesToRename, columnsToRename }: GeneratorContext,
 ) {
