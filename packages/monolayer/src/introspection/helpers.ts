@@ -10,6 +10,7 @@ import {
 	TableIntrospection,
 	introspectTable,
 } from "~/database/schema/introspect-table.js";
+import type { AnySchema } from "~/database/schema/schema.js";
 import type {
 	AnyPgTable,
 	PgTable,
@@ -65,10 +66,10 @@ export function tableInfo<T extends AnyPgTable>(table: T) {
 	const info = Object.fromEntries(Object.entries(table)) as unknown as {
 		definition: InferTableDefinition<T>;
 		schemaName?: string;
-		introspect(dbTables?: Record<string, AnyPgTable>): TableIntrospection;
+		introspect(allSchemas: AnySchema[]): TableIntrospection;
 	};
-	info.introspect = (dbTables?: Record<string, AnyPgTable>) => {
-		return introspectTable(table, dbTables);
+	info.introspect = (allSchemas: AnySchema[]) => {
+		return introspectTable(table, allSchemas);
 	};
 	return info;
 }

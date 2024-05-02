@@ -2,6 +2,7 @@ import {
 	compileDefaultExpression,
 	tableInfo,
 } from "~/introspection/helpers.js";
+import { Schema, type AnySchema } from "./schema.js";
 import { isExpression } from "./table/column/column.js";
 import { type ColumnInfo } from "./table/column/types.js";
 import {
@@ -75,11 +76,11 @@ interface TriggerInstrospection {
 	};
 }
 
-function findTableInSchema(
-	table: AnyPgTable,
-	tables?: Record<string, AnyPgTable>,
-) {
-	const tableInSchema = Object.entries(tables || {}).find(([, value]) => {
+function findTableInSchema(table: AnyPgTable, allSchemas: AnySchema[]) {
+	const schemaTables = allSchemas.find(
+		(schema) => Schema.info(schema).name === tableInfo(table).schemaName,
+	)?.tables;
+	const tableInSchema = Object.entries(schemaTables || {}).find(([, value]) => {
 		return (
 			tableInfo(value).definition.columns ===
 			tableInfo(table).definition.columns
@@ -122,16 +123,16 @@ function uniqueConstraintInfo(uniqueConstraints?: PgUnique<any>[]) {
 	});
 }
 function foreignKeyInfo(
+	allSchemas: AnySchema[],
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	foreignKeys?: PgForeignKey<any, any>[],
-	tables?: Record<string, AnyPgTable>,
 ) {
 	return (foreignKeys || []).map<ForeignKeyIntrospection>((fk) => {
 		const options = foreignKeyOptions(fk);
 		const isExternal = isExternalForeignKey(fk);
 		return {
 			columns: options.columns as string[],
-			targetTable: findTableInSchema(options.targetTable, tables) || "",
+			targetTable: findTableInSchema(options.targetTable, allSchemas) || "",
 			targetColumns: options.targetColumns,
 			deleteRule: options.deleteRule,
 			updateRule: options.updateRule,
@@ -188,18 +189,15 @@ function primaryKey(columns?: ColumnRecord) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function introspectTable(
-	table: AnyPgTable,
-	dbTables?: Record<string, AnyPgTable>,
-) {
+export function introspectTable(table: AnyPgTable, allSchemas: AnySchema[]) {
 	const info = tableInfo(table);
 	const defininition = info.definition;
 	const introspectedTable: TableIntrospection = {
 		primaryKey: primaryKey(defininition.columns),
 		columns: columnInfo(defininition.columns),
 		foreignKeys: foreignKeyInfo(
+			allSchemas,
 			defininition.constraints?.foreignKeys,
-			dbTables || {},
 		).filter((fk) => fk.isExternal === false),
 		uniqueConstraints: uniqueConstraintInfo(defininition.constraints?.unique),
 		triggers: triggerInfo(defininition.triggers),

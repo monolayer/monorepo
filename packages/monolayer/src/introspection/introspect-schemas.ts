@@ -11,13 +11,11 @@ import { sortTableDependencies } from "~/introspection/table-dependencies.js";
 import { devEnvirinmentDbClient } from "~/services/db-clients.js";
 import { camelCaseOptions } from "~/services/environment.js";
 
-export function introspectRemote(schemaName?: string) {
+export function introspectRemote(schemaName: string) {
 	return Effect.gen(function* (_) {
 		const kysely = yield* _(devEnvirinmentDbClient("kyselyNoCamelCase"));
 		return yield* _(
-			Effect.tryPromise(() =>
-				introspectRemoteSchema(kysely, schemaName ?? "public"),
-			),
+			Effect.tryPromise(() => introspectRemoteSchema(kysely, schemaName)),
 		);
 	});
 }
@@ -25,16 +23,26 @@ export function introspectRemote(schemaName?: string) {
 export function introspectLocal(
 	schema: AnySchema,
 	remote: SchemaMigrationInfo,
+	allSchemas: AnySchema[],
 ) {
 	return Effect.gen(function* (_) {
 		const camelCase = yield* _(camelCaseOptions());
 		const schemaName = Schema.info(schema).name || "public";
-		return introspectLocalSchema(schema, remote, camelCase, [], {}, schemaName);
+		return introspectLocalSchema(
+			schema,
+			remote,
+			camelCase,
+			[],
+			{},
+			schemaName,
+			allSchemas,
+		);
 	});
 }
 
 export type IntrospectionContext = {
 	schema: AnySchema;
+	allSchemas: AnySchema[];
 	schemaName: string;
 	local: SchemaMigrationInfo;
 	remote: SchemaMigrationInfo;
@@ -47,13 +55,13 @@ export type IntrospectionContext = {
 	columnsToRename: ColumnsToRename;
 };
 
-export function introspectSchemas(schema: AnySchema) {
+export function introspectSchemas(schema: AnySchema, allSchemas: AnySchema[]) {
 	return Effect.gen(function* (_) {
 		const introspectedRemote = yield* _(
-			introspectRemote(Schema.info(schema).name),
+			introspectRemote(Schema.info(schema).name ?? "public"),
 		);
 		const introspectedLocalSchema = yield* _(
-			introspectLocal(schema, introspectedRemote),
+			introspectLocal(schema, introspectedRemote, allSchemas),
 		);
 
 		const localTables = Object.keys(introspectedLocalSchema.table);
@@ -72,6 +80,7 @@ export function introspectSchemas(schema: AnySchema) {
 			tablesToRename: [],
 			tablePriorities: introspectedRemote.tablePriorities,
 			columnsToRename: {},
+			allSchemas,
 		};
 		return introspectionContext;
 	});
@@ -96,6 +105,7 @@ export function renameMigrationInfo(context: IntrospectionContext) {
 			context.tablesToRename,
 			context.columnsToRename,
 			Schema.info(context.schema).name || "public",
+			context.allSchemas,
 		);
 		return context;
 	});

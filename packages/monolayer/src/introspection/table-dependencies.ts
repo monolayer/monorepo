@@ -99,11 +99,14 @@ export async function databaseTableDependencies(
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function localSchemaTableDependencies(local: AnySchema) {
+export function localSchemaTableDependencies(
+	local: AnySchema,
+	allSchemas: AnySchema[],
+) {
 	const tables = local.tables;
 	const entries = Object.entries(tables).reduce(
 		(acc, [tableName, table]) => {
-			const introspect = tableInfo(table).introspect(tables);
+			const introspect = tableInfo(table).introspect(allSchemas);
 			for (const foreignKey of introspect.foreignKeys) {
 				acc.push([tableName, foreignKey.targetTable]);
 			}

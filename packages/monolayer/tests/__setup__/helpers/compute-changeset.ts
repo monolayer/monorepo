@@ -22,6 +22,7 @@ export async function computeChangeset(
 		[],
 		{},
 		schemaName,
+		[db],
 	);
 	const cset = schemaChangeset(
 		local,

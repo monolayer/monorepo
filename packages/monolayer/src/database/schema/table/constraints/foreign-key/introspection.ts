@@ -139,12 +139,13 @@ export function localForeignKeyConstraintInfoWithPreviousHash(
 	camelCase: CamelCaseOptions,
 	tablesToRename: TablesToRename,
 	columnsToRename: ColumnsToRename,
+	allSchemas: AnySchema[],
 ) {
 	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce(
 		(acc, [tableName, tableDefinition]) => {
 			const tableNameInDatabase = toSnakeCase(tableName, camelCase);
-			const introspect = tableInfo(tableDefinition).introspect(tables);
+			const introspect = tableInfo(tableDefinition).introspect(allSchemas);
 			const foreignKeys = introspect.foreignKeys;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {
@@ -177,12 +178,13 @@ export function localForeignKeys(
 	camelCase: CamelCaseOptions,
 	tablesToRename: TablesToRename,
 	columnsToRename: ColumnsToRename,
+	allSchemas: AnySchema[],
 ) {
 	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce(
 		(acc, [tableName, tableDefinition]) => {
 			const tableNameInDatabase = toSnakeCase(tableName, camelCase);
-			const introspect = tableInfo(tableDefinition).introspect(tables);
+			const introspect = tableInfo(tableDefinition).introspect(allSchemas);
 			const foreignKeys = introspect.foreignKeys;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {
@@ -209,11 +211,11 @@ export function localForeignKeys(
 	);
 }
 
-export function remoteForeignKeys(schema: AnySchema) {
+export function remoteForeignKeys(schema: AnySchema, allSchemas: AnySchema[]) {
 	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).reduce(
 		(acc, [tableName, tableDefinition]) => {
-			const introspect = tableInfo(tableDefinition).introspect(tables);
+			const introspect = tableInfo(tableDefinition).introspect(allSchemas);
 			const foreignKeys = introspect.foreignKeys;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {

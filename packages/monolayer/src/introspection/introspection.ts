@@ -71,18 +71,21 @@ export function introspectLocalSchema(
 	tablesToRename: TablesToRename = [],
 	columnsToRename: ColumnsToRename = {},
 	schemaName: string,
+	allSchemas: AnySchema[],
 ): SchemaMigrationInfo {
 	const foreignKeyInfo = localForeignKeyConstraintInfoWithPreviousHash(
 		schema,
 		camelCase,
 		tablesToRename,
 		columnsToRename,
+		allSchemas,
 	);
 	const foreignKeyDefinitions = localForeignKeys(
 		schema,
 		camelCase,
 		tablesToRename,
 		columnsToRename,
+		allSchemas,
 	);
 	return {
 		table: localColumnInfoByTable(schema, remoteSchema, camelCase),
@@ -107,7 +110,7 @@ export function introspectLocalSchema(
 			...localTriggersInfo(schema, camelCase),
 		},
 		enums: localEnumInfo(schema),
-		tablePriorities: localSchemaTableDependencies(schema),
+		tablePriorities: localSchemaTableDependencies(schema, allSchemas),
 		schemaInfo: schemaName === "public" ? {} : { [schemaName]: true },
 		foreignKeyDefinitions,
 	};

@@ -16,7 +16,11 @@ import { validateForeignKeyReferences } from "./validate-foreign-key-references.
 export function changeset() {
 	return configurationSchemas().pipe(
 		Effect.flatMap((configurationSchema) =>
-			Effect.all(configurationSchema.flatMap(changesetForLocalSchema)).pipe(
+			Effect.all(
+				configurationSchema.flatMap((schema) =>
+					changesetForLocalSchema(schema, configurationSchema),
+				),
+			).pipe(
 				Effect.flatMap((changesets) =>
 					Effect.succeed(changesets.flatMap((changeset) => changeset)),
 				),
@@ -25,11 +29,14 @@ export function changeset() {
 	);
 }
 
-function changesetForLocalSchema(localSchema: AnySchema) {
+function changesetForLocalSchema(
+	localSchema: AnySchema,
+	allSchemas: AnySchema[],
+) {
 	return context(localSchema).pipe(
 		Effect.tap(() => validateForeignKeyReferences(localSchema)),
 		Effect.flatMap(() =>
-			introspectSchemas(localSchema).pipe(
+			introspectSchemas(localSchema, allSchemas).pipe(
 				Effect.tap(selectTableDiffChoicesInteractive),
 				Effect.flatMap(renameMigrationInfo),
 				Effect.tap(selectColumnDiffChoicesInteractive),

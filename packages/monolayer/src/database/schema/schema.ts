@@ -17,7 +17,7 @@ export class Schema<T extends ColumnRecord, S extends string> {
 		return {
 			tables: schema.tables ?? {},
 			types: schema.types || [],
-			name: schema.name,
+			name: schema.name ?? "public",
 		};
 	}
 
