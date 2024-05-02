@@ -1,9 +1,8 @@
+import { Kysely, PostgresDialect, type OnModifyForeignAction } from "kysely";
+import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
-import type {
-	ForeignKeyIntrospection,
-	ForeignKeyRule,
-} from "~/database/schema/introspect-table.js";
+import type { ForeignKeyIntrospection } from "~/database/schema/introspect-table.js";
 import {
 	currentColumName,
 	previousColumnName,
@@ -24,48 +23,9 @@ interface BuilderContext {
 	columnsToRename: ColumnsToRename;
 }
 
-type BuildMode = "current" | "previous";
+type BuildMode = "current" | "previous" | "preserve";
 
 export class ForeignKeyBuilder {
-	static fromStatement(
-		tableName: string,
-		statement: string,
-		context: BuilderContext,
-	) {
-		const targetTable = currentTableName(
-			statement.match(/REFERENCES (\w+)/)?.[1] || "",
-			context.tablesToRename,
-		);
-
-		const deleteRule =
-			statement.match(
-				/ON DELETE (NO ACTION|RESTRICT|CASCADE|SET NULL|SET DEFAULT)/,
-			)?.[1] || "";
-
-		const updateRule =
-			statement.match(
-				/ON UPDATE (NO ACTION|RESTRICT|CASCADE|SET NULL|SET DEFAULT)/,
-			)?.[1] || "";
-
-		const foreignKey: ForeignKeyIntrospection = {
-			targetTable,
-			columns: (statement.match(/FOREIGN KEY \(((\w|,|\s|")+)\)/)?.[1] || "")
-				.replace(/ /g, "")
-				.replace(/"/g, "")
-				.split(","),
-			targetColumns: (
-				statement.match(/REFERENCES \w+ \(((\w|,|\s|")+)\)/)?.[1] || ""
-			)
-				.replace(/ /g, "")
-				.replace(/"/g, "")
-				.split(","),
-			deleteRule: deleteRule as ForeignKeyRule,
-			updateRule: updateRule as ForeignKeyRule,
-			isExternal: false,
-		};
-		return new ForeignKeyBuilder(tableName, foreignKey, context);
-	}
-
 	constructor(
 		private table: string,
 		private foreignKey: ForeignKeyIntrospection,
@@ -76,111 +36,121 @@ export class ForeignKeyBuilder {
 		) as ForeignKeyIntrospection;
 	}
 
-	static statementToForeignKey(
-		tableName: string,
-		statement: string,
-		tablesToRename: TablesToRename,
-		columnsToRename: ColumnsToRename,
-		mode: BuildMode,
-	) {
-		const renameTableFn =
-			mode === "current" ? currentTableName : previousTableName;
-		const renameColumnFn =
-			mode === "current" ? currentColumName : previousColumnName;
+	hash(mode: BuildMode) {
+		const key = [
+			this.#tableName(mode),
+			this.#columns(mode).join(","),
+			this.#targetTableName(mode),
+			this.#targetColumns(mode).join(","),
+			this.#onDelete(),
+			this.#onUpdate(),
+		].join("-");
+		return hashValue(key);
+	}
 
-		const targetTable = renameTableFn(
-			statement.match(/REFERENCES (\w+)/)?.[1] || "",
-			tablesToRename,
-		);
+	definition(mode: BuildMode, name?: string) {
+		const foreignKeyTable = this.#tableName(mode);
 		return {
-			table: tableName,
-			targetTable,
-			columns: (statement.match(/FOREIGN KEY \(((\w|,|\s|")+)\)/)?.[1] || "")
-				.replace(/ /g, "")
-				.replace(/"/g, "")
-				.split(",")
-				.map((col) => renameColumnFn(tableName, col, columnsToRename)),
-			targetColumns: (
-				statement.match(/REFERENCES \w+ \(((\w|,|\s|")+)\)/)?.[1] || ""
+			name: name ?? `${foreignKeyTable}_${this.hash(mode)}_monolayer_fk`,
+			columns: this.#columns(mode),
+			targetTable: this.#targetTableName(mode),
+			targetColumns: this.#targetColumns(mode),
+			onDelete: this.#onDelete(),
+			onUpdate: this.#onUpdate(),
+		} as ForeignKeyDefinition;
+	}
+
+	build(mode: BuildMode, name?: string) {
+		const definition = this.definition(mode, name);
+		return this.#db()
+			.schema.alterTable(this.#tableName(mode))
+			.addForeignKeyConstraint(
+				definition.name,
+				definition.columns,
+				definition.targetTable,
+				definition.targetColumns,
 			)
-				.replace(/ /g, "")
-				.replace(/"/g, "")
-				.split(",")
-				.map((col) => renameColumnFn(targetTable, col, columnsToRename)),
-			deleteRule:
-				statement.match(
-					/ON DELETE (NO ACTION|RESTRICT|CASCADE|SET NULL|SET DEFAULT)/,
-				)?.[1] || "",
-			updateRule:
-				statement.match(
-					/ON UPDATE (NO ACTION|RESTRICT|CASCADE|SET NULL|SET DEFAULT)/,
-				)?.[1] || "",
-		};
+			.onDelete(definition.onDelete as OnModifyForeignAction)
+			.onUpdate(definition.onUpdate as OnModifyForeignAction)
+			.compile().sql;
 	}
 
-	static toStatement(foreignKey: ForeignKeyIntrospection) {
-		return [
-			"FOREIGN KEY",
-			`(${foreignKey.columns.map((col) => `"${col}"`).join(", ")})`,
-			"REFERENCES",
-			foreignKey.targetTable,
-			`(${foreignKey.targetColumns.map((col) => `"${col}"`).join(", ")})`,
-			`ON DELETE ${foreignKey.deleteRule ?? null}`,
-			`ON UPDATE ${foreignKey.updateRule ?? null}`,
-		].join(" ");
-	}
-
-	build(mode: BuildMode) {
-		const key = this.key(mode);
-		const intro = this.introspect(mode);
-		return {
-			key,
-			query: this.query(mode),
-			definition: {
-				name: `${this.table}_${key}_monolayer_fk`,
-				columns: intro.columns,
-				targetTable: intro.targetTable,
-				targetColumns: intro.targetColumns,
-				onDelete: intro.deleteRule!.toLowerCase() as ForeignKeyRule,
-				onUpdate: intro.updateRule!.toLowerCase() as ForeignKeyRule,
-			},
-		};
-	}
-
-	introspect(mode: BuildMode) {
-		const renameTableFn =
-			mode === "current" ? currentTableName : previousTableName;
-		const renameColumnFn =
-			mode === "current" ? currentColumName : previousColumnName;
-		return {
-			...this.foreignKey,
-			targetTable: renameTableFn(
-				toSnakeCase(this.foreignKey.targetTable, this.context.camelCase),
-				this.context.tablesToRename,
-			),
-			columns: this.foreignKey.columns.map((col) => {
-				return renameColumnFn(
-					this.table!,
-					toSnakeCase(col, this.context.camelCase),
-					this.context.columnsToRename,
-				);
+	#db() {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const db = new Kysely<any>({
+			dialect: new PostgresDialect({
+				pool: new pg.Pool({}),
 			}),
-			targetColumns: this.foreignKey.targetColumns.map((col) => {
-				return renameColumnFn(
-					toSnakeCase(this.foreignKey.targetTable!, this.context.camelCase),
-					toSnakeCase(col, this.context.camelCase),
-					this.context.columnsToRename,
+		});
+		return db;
+	}
+
+	#renameTableFn(mode: Extract<BuildMode, "current" | "previous">) {
+		return mode === "current" ? currentTableName : previousTableName;
+	}
+
+	#renameColumnFn(mode: Extract<BuildMode, "current" | "previous">) {
+		return mode === "current" ? currentColumName : previousColumnName;
+	}
+
+	#tableName(mode: BuildMode) {
+		return mode === "preserve"
+			? this.table
+			: this.#renameTableFn(mode)(
+					toSnakeCase(this.table, this.context.camelCase),
+					this.context.tablesToRename,
 				);
-			}),
-		};
 	}
 
-	query(mode: BuildMode) {
-		return ForeignKeyBuilder.toStatement(this.introspect(mode));
+	#targetTableName(mode: BuildMode) {
+		return mode === "preserve"
+			? this.foreignKey.targetTable
+			: this.#renameTableFn(mode)(
+					toSnakeCase(this.foreignKey.targetTable, this.context.camelCase),
+					this.context.tablesToRename,
+				);
 	}
 
-	key(mode: BuildMode) {
-		const query = this.query(mode);
-		return hashValue(query);
+	#columns(mode: BuildMode) {
+		return this.foreignKey.columns.toSorted().map((col) => {
+			return mode === "preserve"
+				? col
+				: this.#renameColumnFn(mode)(
+						this.#tableName(mode),
+						toSnakeCase(col, this.context.camelCase),
+						this.context.columnsToRename,
+					);
+		});
+	}
+
+	#targetColumns(mode: BuildMode) {
+		return this.foreignKey.targetColumns.toSorted().map((col) => {
+			return mode === "preserve"
+				? col
+				: this.#renameColumnFn(mode)(
+						this.#targetTableName(mode),
+						toSnakeCase(col, this.context.camelCase),
+						this.context.columnsToRename,
+					);
+		});
+	}
+
+	#onDelete() {
+		const rule = this.foreignKey.deleteRule?.toLowerCase() ?? "no action";
+		return rule as OnModifyForeignAction;
+	}
+
+	#onUpdate() {
+		const rule = this.foreignKey.updateRule?.toLowerCase() ?? "no action";
+		return rule as OnModifyForeignAction;
 	}
 }
+
+export type ForeignKeyDefinition = {
+	name: string;
+	columns: string[];
+	targetTable: string;
+	targetColumns: string[];
+	onDelete: string;
+	onUpdate: string;
+};

@@ -42,7 +42,18 @@ export function schemaChangeset(
 	tablePriorities: string[],
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
-	const { diff, addedTables, droppedTables } = changesetDiff(local, remote);
+	const localValues = {
+		...local,
+		tablePriorities: [],
+	};
+	const remoteValues = {
+		...remote,
+		tablePriorities: [],
+	};
+	const { diff, addedTables, droppedTables } = changesetDiff(
+		localValues,
+		remoteValues,
+	);
 	const context: GeneratorContext = {
 		local: local,
 		db: remote,

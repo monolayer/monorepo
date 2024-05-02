@@ -873,7 +873,7 @@ describe("Create table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_61a55869_monolayer_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("users_262b6933_monolayer_fk", ["id"], "books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -881,7 +881,7 @@ describe("Create table", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_61a55869_monolayer_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_262b6933_monolayer_fk"`',
 						"execute(db);",
 					],
 				],
@@ -1582,7 +1582,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_c28cc6e8_monolayer_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_495b7545_monolayer_fk", ["book_id"], "books", ["id"])
     .onDelete("no action")
     .onUpdate("no action")
     .compile()
@@ -1590,7 +1590,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_c28cc6e8_monolayer_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_495b7545_monolayer_fk"`',
 						"execute(db);",
 					],
 				],
@@ -1608,7 +1608,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
   db
     .withSchema("public")
     .schema.alterTable("new_books")
-    .addForeignKeyConstraint("new_books_82748801_monolayer_fk", ["old_book_id"], "books", ["id"])
+    .addForeignKeyConstraint("new_books_7ae55cc7_monolayer_fk", ["old_book_id"], "books", ["id"])
     .onDelete("no action")
     .onUpdate("no action")
     .compile()
@@ -1616,7 +1616,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_82748801_monolayer_fk"`',
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_7ae55cc7_monolayer_fk"`',
 						"execute(db);",
 					],
 				],
@@ -1634,7 +1634,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
   db
     .withSchema("public")
     .schema.alterTable("new_books")
-    .addForeignKeyConstraint("new_books_f222319c_monolayer_fk", ["library_building_id"], "library_building", ["id"])
+    .addForeignKeyConstraint("new_books_84305d95_monolayer_fk", ["library_building_id"], "library_building", ["id"])
     .onDelete("no action")
     .onUpdate("no action")
     .compile()
@@ -1642,7 +1642,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_f222319c_monolayer_fk"`',
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_84305d95_monolayer_fk"`',
 						"execute(db);",
 					],
 				],

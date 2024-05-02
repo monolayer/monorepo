@@ -2,7 +2,10 @@
 import { sql, type Kysely } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
-import { ForeignKeyRule } from "~/database/schema/introspect-table.js";
+import {
+	ForeignKeyRule,
+	type ForeignKeyIntrospection,
+} from "~/database/schema/introspect-table.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import type {
@@ -10,37 +13,63 @@ import type {
 	TablesToRename,
 } from "~/introspection/introspect-schemas.js";
 import { type ForeignKeyInfo } from "~/introspection/schema.js";
-import { previousTableName } from "~/introspection/table-name.js";
-import { hashValue } from "~/utils.js";
+import { currentTableName } from "~/introspection/table-name.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 import { ForeignKeyBuilder } from "./builder.js";
 
-export async function dbForeignKeyConstraintInfo(
+export async function dbForeignKeyConstraints(
 	fetchInfo: Awaited<ReturnType<typeof fetchForeignConstraintInfo>>,
 ) {
-	const transformedResults = fetchInfo.reduce<ForeignKeyInfo>((acc, result) => {
-		const constraintHash = result.conname!.match(
-			/^\w+_(\w+)_monolayer_fk$/,
-		)![1];
-		const statement = ForeignKeyBuilder.toStatement({
-			...result,
-			isExternal: false,
-		});
-		const recomputedHash = hashValue(statement);
-		const hashKey =
-			constraintHash === recomputedHash ? constraintHash : recomputedHash;
+	const transformedResults = fetchInfo.reduce<{
+		info: ForeignKeyInfo;
+		definitions: Record<string, Record<string, ForeignKeyIntrospection>>;
+	}>(
+		(acc, result) => {
+			const constraintHash = result.conname!.match(
+				/^\w+_(\w+)_monolayer_fk$/,
+			)![1];
 
-		const table = result.table;
-		if (table !== null) {
-			acc[table] = {
-				...acc[table],
-				...{
-					[`${hashKey}`]: statement,
-				},
+			const builderContext = {
+				camelCase: { enabled: false },
+				tablesToRename: [],
+				columnsToRename: {},
 			};
-		}
-		return acc;
-	}, {});
+			const foreignKey = {
+				...result,
+				isExternal: true,
+			};
+			const builder = new ForeignKeyBuilder(
+				result.table,
+				foreignKey,
+				builderContext,
+			);
+			const table = result.table;
+			if (table !== null) {
+				acc.info[table] = {
+					...acc.info[table],
+					...{
+						[`${constraintHash}`]: builder.build("preserve", result.conname!),
+					},
+				};
+				const definition = builder.definition("preserve");
+				acc.definitions[table] = {
+					...acc.definitions[table],
+					...{
+						[`${constraintHash}`]: {
+							columns: definition.columns,
+							targetColumns: definition.targetColumns,
+							targetTable: definition.targetTable,
+							deleteRule: definition.onDelete as ForeignKeyRule,
+							updateRule: definition.onUpdate as ForeignKeyRule,
+							isExternal: false,
+						},
+					},
+				};
+			}
+			return acc;
+		},
+		{ info: {}, definitions: {} },
+	);
 	return transformedResults;
 }
 
@@ -105,41 +134,7 @@ export async function fetchForeignConstraintInfo(
 		.execute();
 }
 
-export function localForeignKeyConstraintInfo(
-	schema: AnySchema,
-	camelCase: CamelCaseOptions,
-	tablesToRename: TablesToRename = [],
-	columnsToRename: ColumnsToRename = {},
-) {
-	const tables = Schema.info(schema).tables;
-	return Object.entries(tables || {}).reduce<ForeignKeyInfo>(
-		(acc, [tableName, tableDefinition]) => {
-			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const introspect = tableInfo(tableDefinition).introspect(tables);
-			const foreignKeys = introspect.foreignKeys;
-			if (foreignKeys !== undefined) {
-				for (const foreignKey of foreignKeys) {
-					const builder = new ForeignKeyBuilder(
-						transformedTableName,
-						foreignKey,
-						{ camelCase, tablesToRename, columnsToRename },
-					);
-
-					acc[transformedTableName] = {
-						...acc[transformedTableName],
-						...{
-							[`${builder.key("previous")}`]: `${builder.query("previous")}`,
-						},
-					};
-				}
-			}
-			return acc;
-		},
-		{},
-	);
-}
-
-export function localForeignKeyConstraintHashes(
+export function localForeignKeyConstraintInfoWithPreviousHash(
 	schema: AnySchema,
 	camelCase: CamelCaseOptions,
 	tablesToRename: TablesToRename,
@@ -153,7 +148,45 @@ export function localForeignKeyConstraintHashes(
 			const foreignKeys = introspect.foreignKeys;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {
-					const tableKey = previousTableName(
+					const tableKey = currentTableName(
+						tableNameInDatabase,
+						tablesToRename,
+					);
+					const builder = new ForeignKeyBuilder(
+						tableNameInDatabase,
+						foreignKey,
+						{ camelCase, tablesToRename, columnsToRename },
+					);
+					const hash = builder.hash("previous");
+					acc[tableKey] = {
+						...acc[tableKey],
+						...{
+							[`${hash}`]: builder.build("current"),
+						},
+					};
+				}
+			}
+			return acc;
+		},
+		{} as Record<string, Record<string, string>>,
+	);
+}
+
+export function localForeignKeys(
+	schema: AnySchema,
+	camelCase: CamelCaseOptions,
+	tablesToRename: TablesToRename,
+	columnsToRename: ColumnsToRename,
+) {
+	const tables = Schema.info(schema).tables;
+	return Object.entries(tables || {}).reduce(
+		(acc, [tableName, tableDefinition]) => {
+			const tableNameInDatabase = toSnakeCase(tableName, camelCase);
+			const introspect = tableInfo(tableDefinition).introspect(tables);
+			const foreignKeys = introspect.foreignKeys;
+			if (foreignKeys !== undefined) {
+				for (const foreignKey of foreignKeys) {
+					const tableKey = currentTableName(
 						tableNameInDatabase,
 						tablesToRename,
 					);
@@ -165,13 +198,40 @@ export function localForeignKeyConstraintHashes(
 					acc[tableKey] = {
 						...acc[tableKey],
 						...{
-							[`${builder.key("previous")}`]: `${tableNameInDatabase}:${builder.key("current")}`,
+							[`${builder.hash("previous")}`]: foreignKey,
 						},
 					};
 				}
 			}
 			return acc;
 		},
-		{} as Record<string, Record<string, string>>,
+		{} as Record<string, Record<string, ForeignKeyIntrospection>>,
+	);
+}
+
+export function remoteForeignKeys(schema: AnySchema) {
+	const tables = Schema.info(schema).tables;
+	return Object.entries(tables || {}).reduce(
+		(acc, [tableName, tableDefinition]) => {
+			const introspect = tableInfo(tableDefinition).introspect(tables);
+			const foreignKeys = introspect.foreignKeys;
+			if (foreignKeys !== undefined) {
+				for (const foreignKey of foreignKeys) {
+					const builder = new ForeignKeyBuilder(tableName, foreignKey, {
+						camelCase: { enabled: false },
+						tablesToRename: [],
+						columnsToRename: {},
+					});
+					acc[tableName] = {
+						...acc[tableName],
+						...{
+							[`${builder.hash("previous")}`]: foreignKey,
+						},
+					};
+				}
+			}
+			return acc;
+		},
+		{} as Record<string, Record<string, ForeignKeyIntrospection>>,
 	);
 }

@@ -3,9 +3,9 @@ import { Kysely } from "kysely";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { schemaInDb } from "~/database/database_schemas/introspection.js";
 import { dbExtensionInfo } from "~/database/extension/introspection.js";
+import type { ForeignKeyIntrospection } from "~/database/schema/introspect-table.js";
 import { type AnySchema } from "~/database/schema/schema.js";
 import type { ColumnInfo } from "~/database/schema/table/column/types.js";
-import { ForeignKeyBuilder } from "~/database/schema/table/constraints/foreign-key/builder.js";
 import type {
 	ColumnsToRename,
 	TablesToRename,
@@ -19,7 +19,6 @@ import {
 	type UniqueInfo,
 } from "~/introspection/schema.js";
 import { currentTableName } from "~/introspection/table-name.js";
-import { hashValue } from "~/utils.js";
 import {
 	dbColumnInfo,
 	localColumnInfoByTable,
@@ -30,10 +29,10 @@ import {
 	localCheckConstraintInfo,
 } from "../database/schema/table/constraints/check/introspection.js";
 import {
-	dbForeignKeyConstraintInfo,
+	dbForeignKeyConstraints,
 	fetchForeignConstraintInfo,
-	localForeignKeyConstraintHashes,
-	localForeignKeyConstraintInfo,
+	localForeignKeyConstraintInfoWithPreviousHash,
+	localForeignKeys,
 } from "../database/schema/table/constraints/foreign-key/introspection.js";
 import {
 	dbPrimaryKeyConstraintInfo,
@@ -73,13 +72,13 @@ export function introspectLocalSchema(
 	columnsToRename: ColumnsToRename = {},
 	schemaName: string,
 ): SchemaMigrationInfo {
-	const foreignKeyInfo = localForeignKeyConstraintInfo(
+	const foreignKeyInfo = localForeignKeyConstraintInfoWithPreviousHash(
 		schema,
 		camelCase,
 		tablesToRename,
 		columnsToRename,
 	);
-	const foreignKeyHashes = localForeignKeyConstraintHashes(
+	const foreignKeyDefinitions = localForeignKeys(
 		schema,
 		camelCase,
 		tablesToRename,
@@ -108,9 +107,9 @@ export function introspectLocalSchema(
 			...localTriggersInfo(schema, camelCase),
 		},
 		enums: localEnumInfo(schema),
-		foreignKeyNames: foreignKeyHashes,
 		tablePriorities: localSchemaTableDependencies(schema),
 		schemaInfo: schemaName === "public" ? {} : { [schemaName]: true },
+		foreignKeyDefinitions,
 	};
 }
 
@@ -148,28 +147,7 @@ export async function introspectRemoteSchema(
 		tables,
 	);
 
-	const remoteConstraintHashes = remoteForeignKeyConstraints.reduce(
-		(acc, result) => {
-			const dbHash = result.conname!.match(/^\w+_(\w+)_monolayer_fk$/)![1];
-			const recomputedHash = hashValue(
-				ForeignKeyBuilder.toStatement({
-					...result,
-					isExternal: false,
-				}),
-			);
-			const table = result.table;
-			if (table !== null) {
-				acc[table] = {
-					...acc[table],
-					...{ [`${recomputedHash}`]: `${table}:${dbHash}` },
-				};
-			}
-			return acc;
-		},
-		{} as Record<string, Record<string, string>>,
-	);
-
-	const remoteForeignKeyConstraintInfo = await dbForeignKeyConstraintInfo(
+	const remoteForeignKeyConstraintInfo = await dbForeignKeyConstraints(
 		remoteForeignKeyConstraints,
 	);
 
@@ -200,15 +178,15 @@ export async function introspectRemoteSchema(
 	const migrationSchema: SchemaMigrationInfo = {
 		table: remoteColumnInfo,
 		index: remoteIndexInfo,
-		foreignKeyConstraints: remoteForeignKeyConstraintInfo,
+		foreignKeyConstraints: remoteForeignKeyConstraintInfo.info,
 		uniqueConstraints: remoteUniqueConstraintInfo,
 		checkConstraints: remoteCheckConstraintInfo,
 		primaryKey: primaryKeyConstraintInfo,
 		triggers: triggerInfo,
 		enums: enumInfo,
-		foreignKeyNames: remoteConstraintHashes,
 		tablePriorities,
 		schemaInfo,
+		foreignKeyDefinitions: remoteForeignKeyConstraintInfo.definitions,
 	};
 	return migrationSchema;
 }
@@ -246,7 +224,10 @@ export type SchemaMigrationInfo = {
 	primaryKey: PrimaryKeyInfo;
 	triggers: TriggerInfo;
 	enums: EnumInfo;
-	foreignKeyNames?: Record<string, Record<string, string>>;
+	foreignKeyDefinitions?: Record<
+		string,
+		Record<string, ForeignKeyIntrospection>
+	>;
 	tablePriorities: string[];
 	schemaInfo: SchemaInfo;
 };
@@ -294,6 +275,17 @@ export function renameTables(
 		acc[current] = foreignKeys;
 		return acc;
 	}, {} as ForeignKeyInfo);
+
+	const renamedForeignKeysDefinitions = Object.entries(
+		remote.foreignKeyDefinitions || {},
+	).reduce(
+		(acc, [table, foreignKeys]) => {
+			const current = currentTableName(table, tablesToRename);
+			acc[current] = foreignKeys;
+			return acc;
+		},
+		{} as Record<string, Record<string, ForeignKeyIntrospection>>,
+	);
 
 	const renamedUniqueConstraints = Object.entries(
 		remote.uniqueConstraints,
@@ -353,9 +345,9 @@ export function renameTables(
 		primaryKey: renamedPrimaryKeys,
 		triggers: renamedTriggers,
 		enums: remote.enums,
-		foreignKeyNames: remote.foreignKeyNames,
 		tablePriorities: remote.tablePriorities,
 		schemaInfo: remote.schemaInfo,
+		foreignKeyDefinitions: renamedForeignKeysDefinitions,
 	};
 	return renamedSchema;
 }
