@@ -1,5 +1,4 @@
 import { Effect } from "effect";
-import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import {
 	SchemaMigrationInfo,
@@ -75,42 +74,6 @@ export function introspectSchemas(schema: AnySchema) {
 			columnsToRename: {},
 		};
 		return introspectionContext;
-	});
-}
-
-export function renameTablesInIntrospectedSchemas({
-	localSchema,
-	camelCasePlugin,
-	tablesToRename = [],
-	remote,
-	columnsToRename = {},
-}: {
-	localSchema: AnySchema;
-	camelCasePlugin: CamelCaseOptions;
-	tablesToRename: TablesToRename;
-	columnsToRename: ColumnsToRename;
-	remote: SchemaMigrationInfo;
-}) {
-	const renamedRemote = renameTables(remote, tablesToRename, columnsToRename);
-	const renamedColums = renameRemoteColums(renamedRemote, columnsToRename);
-
-	const remoteSchemaMigrationInfo: SchemaMigrationInfo = {
-		...renamedRemote,
-		table: renamedColums,
-	};
-
-	return Effect.succeed({
-		local: introspectLocalSchema(
-			localSchema,
-			remoteSchemaMigrationInfo,
-			camelCasePlugin,
-			tablesToRename,
-			columnsToRename,
-			Schema.info(localSchema).name || "public",
-		),
-		remote: remoteSchemaMigrationInfo,
-		tablesToRename,
-		columnsToRename,
 	});
 }
 
