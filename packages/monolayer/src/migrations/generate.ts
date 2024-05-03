@@ -1,7 +1,9 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { printChangesetSummary } from "~/changeset/print-changeset-summary.js";
+import { MigrationOpPriority, type Changeset } from "~/changeset/types.js";
 import { computeExtensionChangeset } from "~/database/extension/changeset.js";
+import { schemaDependencies } from "~/introspection/dependencies.js";
 import { renderToFile } from "~/migrations/render.js";
 import { changeset } from "../changeset/changeset.js";
 import { DevEnvironment } from "../services/environment.js";
@@ -23,6 +25,9 @@ export function generateMigration(name?: string) {
 							onFalse: () => Effect.succeed(true),
 						}),
 					),
+					Effect.flatMap((changeset) =>
+						sortChangesetsBySchemaPriority(changeset),
+					),
 					Effect.tap((changeset) =>
 						Effect.if(changeset.length > 0, {
 							onTrue: () =>
@@ -34,14 +39,18 @@ export function generateMigration(name?: string) {
 										}).pipe(
 											Effect.tap((migrationName) =>
 												migrationDependency().pipe(
-													Effect.tap((dependency) => {
-														renderToFile(
-															cset,
-															environment.schemaMigrationsFolder,
-															migrationName,
-															dependency,
-														);
-													}),
+													Effect.tap((dependency) =>
+														extractMigrationOps(cset).pipe(
+															Effect.tap((upDown) => {
+																renderToFile(
+																	upDown,
+																	environment.schemaMigrationsFolder,
+																	migrationName,
+																	dependency,
+																);
+															}),
+														),
+													),
 												),
 											),
 										),
@@ -58,4 +67,93 @@ export function generateMigration(name?: string) {
 				),
 		),
 	);
+}
+
+function sortChangesetsBySchemaPriority(
+	changeset: Changeset[],
+	mode: "up" | "down" = "up",
+) {
+	return Effect.gen(function* (_) {
+		const schemaPriorities = yield* _(schemaDependencies());
+		const schemaOrderIndex = schemaPriorities.reduce(
+			(acc, name, index) => {
+				acc[name] = index;
+				return acc;
+			},
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			{} as Record<string, any>,
+		);
+		return changeset.toSorted((a, b) => {
+			const indexA =
+				schemaOrderIndex[a.schemaName ?? "public"] ?? -changeset.length;
+			const indexB =
+				schemaOrderIndex[b.schemaName ?? "public"] ?? -changeset.length;
+			switch (mode) {
+				case "up":
+					return indexA - indexB;
+				case "down":
+					return indexB - indexA;
+			}
+		});
+	});
+}
+
+function extractMigrationOps(changesets: Changeset[]) {
+	return Effect.gen(function* (_) {
+		const sortForUp = yield* _(
+			sortChangesetsBySchemaPriority(changesets, "up"),
+		);
+
+		const up = sortForUp
+			.filter(
+				(changeset) =>
+					changeset.up.length > 0 && (changeset.up[0] || []).length > 0,
+			)
+			.map((changeset) =>
+				changeset.up.map((u) => u.join("\n    .")).join("\n\n  "),
+			);
+
+		const sortForDown = yield* _(
+			sortChangesetsBySchemaPriority(reverseChangeset(sortForUp), "down"),
+		);
+
+		const down = sortForDown
+			.filter(
+				(changeset) =>
+					changeset.down.length > 0 && (changeset.down[0] || []).length > 0,
+			)
+			.map((changeset) =>
+				changeset.down.map((d) => d.join("\n    .")).join("\n\n  "),
+			);
+		return { up, down };
+	});
+}
+
+function reverseChangeset(changesets: Changeset[]) {
+	const itemsToMaintain = changesets.filter(
+		(changeset) =>
+			changeset.type === "createTable" || changeset.type === "dropTable",
+	);
+
+	const itemsToReverse = changesets.filter(
+		(changeset) =>
+			changeset.type !== "createTable" && changeset.type !== "dropTable",
+	);
+
+	const databasePriorities = [
+		MigrationOpPriority.CreateSchema,
+		MigrationOpPriority.CreateExtension,
+		MigrationOpPriority.CreateEnum,
+	];
+
+	return [...itemsToMaintain, ...itemsToReverse.reverse()].sort((a, b) => {
+		if (
+			!databasePriorities.includes(a.priority) &&
+			a.tableName === "none" &&
+			b.tableName !== "none"
+		) {
+			return -1;
+		}
+		return 1 - 1;
+	});
 }

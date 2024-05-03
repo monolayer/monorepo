@@ -490,7 +490,7 @@ describe("Table drop migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_262b6933_monolayer_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("users_8abc8e0b_monolayer_fk", ["id"], "public.books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -498,7 +498,7 @@ describe("Table drop migrations", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_262b6933_monolayer_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_8abc8e0b_monolayer_fk"`',
 						"execute(db);",
 					],
 				],

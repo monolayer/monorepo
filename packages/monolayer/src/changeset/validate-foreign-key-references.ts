@@ -1,14 +1,16 @@
 import { Effect } from "effect";
+import { findTableInSchema } from "~/database/schema/introspect-table.js";
 import type { AnySchema } from "~/database/schema/schema.js";
 import {
 	foreignKeyOptions,
 	type AnyPgForeignKey,
 } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
-import type { AnyPgTable } from "~/database/schema/table/table.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { findTable } from "~/introspection/schema.js";
 
-export function validateForeignKeyReferences(schema: AnySchema) {
+export function validateForeignKeyReferences(
+	schema: AnySchema,
+	allSchemas: AnySchema[],
+) {
 	return Effect.gen(function* (_) {
 		for (const [tableName, table] of Object.entries(schema.tables)) {
 			const foreignKeys = tableInfo(table).definition.constraints?.foreignKeys;
@@ -16,8 +18,10 @@ export function validateForeignKeyReferences(schema: AnySchema) {
 				continue;
 			}
 			for (const foreignKey of foreignKeys as AnyPgForeignKey[]) {
-				const targetTable = foreignKeyOptions(foreignKey).targetTable;
-				if (findTable(targetTable as AnyPgTable, schema) === undefined) {
+				const foreignKeyTargetTable = foreignKeyOptions(foreignKey).targetTable;
+				if (
+					findTableInSchema(foreignKeyTargetTable, allSchemas) === undefined
+				) {
 					return yield* _(
 						Effect.fail(new ForeignKeyReferencedTableMissing(tableName)),
 					);

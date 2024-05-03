@@ -1102,7 +1102,7 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_262b6933_monolayer_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("users_8abc8e0b_monolayer_fk", ["id"], "public.books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -1110,7 +1110,7 @@ describe("Modify table", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_262b6933_monolayer_fk"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_8abc8e0b_monolayer_fk"`',
 							"execute(db);",
 						],
 					],
@@ -1118,7 +1118,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_262b6933_monolayer_fk")',
+							'dropConstraint("users_8abc8e0b_monolayer_fk")',
 							"execute();",
 						],
 					],
@@ -1264,7 +1264,7 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_262b6933_monolayer_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("users_8abc8e0b_monolayer_fk", ["id"], "public.books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -1272,7 +1272,7 @@ describe("Modify table", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_262b6933_monolayer_fk"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_8abc8e0b_monolayer_fk"`',
 							"execute(db);",
 						],
 					],
@@ -1280,7 +1280,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_262b6933_monolayer_fk")',
+							'dropConstraint("users_8abc8e0b_monolayer_fk")',
 							"execute();",
 						],
 					],
@@ -1297,7 +1297,7 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_a39b5466_monolayer_fk", ["second_book_id"], "old_books", ["id"])
+    .addForeignKeyConstraint("users_ea23dc14_monolayer_fk", ["second_book_id"], "public.old_books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -1305,7 +1305,7 @@ describe("Modify table", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_a39b5466_monolayer_fk"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_ea23dc14_monolayer_fk"`',
 							"execute(db);",
 						],
 					],
@@ -1313,7 +1313,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_a39b5466_monolayer_fk")',
+							'dropConstraint("users_ea23dc14_monolayer_fk")',
 							"execute();",
 						],
 					],
@@ -1348,7 +1348,7 @@ describe("Modify table", () => {
 			await context.kysely.schema
 				.alterTable("users")
 				.addForeignKeyConstraint(
-					"users_8bb6f1d1_monolayer_fk",
+					"users_58e6ca22_monolayer_fk",
 					["book_id"],
 					"books",
 					["id"],
@@ -1391,7 +1391,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_8bb6f1d1_monolayer_fk")',
+							'dropConstraint("users_58e6ca22_monolayer_fk")',
 							"execute();",
 						],
 					],
@@ -1401,7 +1401,7 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_8bb6f1d1_monolayer_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_58e6ca22_monolayer_fk", ["book_id"], "public.books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -1409,7 +1409,7 @@ describe("Modify table", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_8bb6f1d1_monolayer_fk"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_58e6ca22_monolayer_fk"`',
 							"execute(db);",
 						],
 					],
@@ -1455,7 +1455,7 @@ describe("Modify table", () => {
 			await context.kysely.schema
 				.alterTable("users")
 				.addForeignKeyConstraint(
-					"users_8bb6f1d1_monolayer_fk",
+					"users_58e6ca22_monolayer_fk",
 					["book_id"],
 					"books",
 					["id"],
@@ -1467,7 +1467,7 @@ describe("Modify table", () => {
 			await context.kysely.schema
 				.alterTable("users")
 				.addForeignKeyConstraint(
-					"users_5362adba_monolayer_fk",
+					"users_8875a5c8_monolayer_fk",
 					["old_book_id"],
 					"old_books",
 					["id"],
@@ -1521,7 +1521,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_8bb6f1d1_monolayer_fk")',
+							'dropConstraint("users_58e6ca22_monolayer_fk")',
 							"execute();",
 						],
 					],
@@ -1531,7 +1531,7 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_8bb6f1d1_monolayer_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_58e6ca22_monolayer_fk", ["book_id"], "public.books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -1539,7 +1539,7 @@ describe("Modify table", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_8bb6f1d1_monolayer_fk"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_58e6ca22_monolayer_fk"`',
 							"execute(db);",
 						],
 					],
@@ -1554,7 +1554,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_5362adba_monolayer_fk")',
+							'dropConstraint("users_8875a5c8_monolayer_fk")',
 							"execute();",
 						],
 					],
@@ -1564,7 +1564,7 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_5362adba_monolayer_fk", ["old_book_id"], "old_books", ["id"])
+    .addForeignKeyConstraint("users_8875a5c8_monolayer_fk", ["old_book_id"], "public.old_books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -1572,7 +1572,7 @@ describe("Modify table", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_5362adba_monolayer_fk"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_8875a5c8_monolayer_fk"`',
 							"execute(db);",
 						],
 					],
@@ -1607,7 +1607,7 @@ describe("Modify table", () => {
 			await context.kysely.schema
 				.alterTable("users")
 				.addForeignKeyConstraint(
-					"users_8bb6f1d1_monolayer_fk",
+					"users_58e6ca22_monolayer_fk",
 					["book_id"],
 					"books",
 					["id"],
@@ -1657,7 +1657,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_8bb6f1d1_monolayer_fk")',
+							'dropConstraint("users_58e6ca22_monolayer_fk")',
 							"execute();",
 						],
 					],
@@ -1667,7 +1667,7 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_8bb6f1d1_monolayer_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_58e6ca22_monolayer_fk", ["book_id"], "public.books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -1675,7 +1675,7 @@ describe("Modify table", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_8bb6f1d1_monolayer_fk"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_58e6ca22_monolayer_fk"`',
 							"execute(db);",
 						],
 					],
@@ -1692,7 +1692,7 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_56f8ef9f_monolayer_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("users_35cf8008_monolayer_fk", ["id"], "public.books", ["id"])
     .onDelete("set null")
     .onUpdate("cascade")
     .compile()
@@ -1700,7 +1700,7 @@ describe("Modify table", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_56f8ef9f_monolayer_fk"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_35cf8008_monolayer_fk"`',
 							"execute(db);",
 						],
 					],
@@ -1708,7 +1708,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_56f8ef9f_monolayer_fk")',
+							'dropConstraint("users_35cf8008_monolayer_fk")',
 							"execute();",
 						],
 					],
@@ -1743,7 +1743,7 @@ describe("Modify table", () => {
 			await context.kysely.schema
 				.alterTable("users")
 				.addForeignKeyConstraint(
-					"users_8bb6f1d1_monolayer_fk",
+					"users_58e6ca22_monolayer_fk",
 					["book_id"],
 					"books",
 					["id"],
@@ -1793,7 +1793,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_8bb6f1d1_monolayer_fk")',
+							'dropConstraint("users_58e6ca22_monolayer_fk")',
 							"execute();",
 						],
 					],
@@ -1803,7 +1803,7 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_8bb6f1d1_monolayer_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_58e6ca22_monolayer_fk", ["book_id"], "public.books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -1811,7 +1811,7 @@ describe("Modify table", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_8bb6f1d1_monolayer_fk"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_58e6ca22_monolayer_fk"`',
 							"execute(db);",
 						],
 					],
@@ -1828,7 +1828,7 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_c07448e1_monolayer_fk", ["book_id"], "books", ["id"])
+    .addForeignKeyConstraint("users_9fe2ea61_monolayer_fk", ["book_id"], "public.books", ["id"])
     .onDelete("set null")
     .onUpdate("cascade")
     .compile()
@@ -1836,7 +1836,7 @@ describe("Modify table", () => {
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_c07448e1_monolayer_fk"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_9fe2ea61_monolayer_fk"`',
 							"execute(db);",
 						],
 					],
@@ -1844,7 +1844,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_c07448e1_monolayer_fk")',
+							'dropConstraint("users_9fe2ea61_monolayer_fk")',
 							"execute();",
 						],
 					],

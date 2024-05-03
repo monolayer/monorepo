@@ -1,5 +1,6 @@
 import { Effect } from "effect";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
+import { sortTableDependencies } from "~/introspection/dependencies.js";
 import {
 	SchemaMigrationInfo,
 	introspectLocalSchema,
@@ -7,7 +8,6 @@ import {
 	renameRemoteColums,
 	renameTables,
 } from "~/introspection/introspection.js";
-import { sortTableDependencies } from "~/introspection/table-dependencies.js";
 import { devEnvirinmentDbClient } from "~/services/db-clients.js";
 import { camelCaseOptions } from "~/services/environment.js";
 

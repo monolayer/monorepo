@@ -1,7 +1,11 @@
+import { Effect } from "effect";
 import { Kysely, sql } from "kysely";
 import toposort from "toposort";
-import type { AnySchema } from "~/database/schema/schema.js";
+import { Schema, type AnySchema } from "~/database/schema/schema.js";
+import { foreignKeyOptions } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
 import type { TablesToRename } from "~/introspection/introspect-schemas.js";
+import { DbClients } from "~/services/db-clients.js";
+import { configurationSchemas } from "~/services/environment.js";
 import { tableInfo } from "./helpers.js";
 import { currentTableName } from "./table-name.js";
 import type { InformationSchemaDB } from "./types.js";
@@ -116,4 +120,64 @@ export function localSchemaTableDependencies(
 		[] as [string, string | undefined][],
 	);
 	return toposort(entries);
+}
+
+export function schemaDependencies() {
+	return Effect.gen(function* (_) {
+		const schemas = yield* _(configurationSchemas());
+		const dbClients = yield* _(DbClients);
+		const remoteSchemaDeps = yield* _(
+			Effect.tryPromise(() =>
+				databaseSchemaDependencies(dbClients.currentEnvironment.kysely),
+			),
+		);
+		const localSchemaDeps = localSchemaDependencies(schemas);
+		return [...new Set([...remoteSchemaDeps, ...localSchemaDeps])].reverse();
+	});
+}
+
+async function databaseSchemaDependencies(kysely: Kysely<InformationSchemaDB>) {
+	const results = await kysely
+		.selectFrom("pg_constraint")
+		.innerJoin("pg_namespace", (join) =>
+			join.onRef("pg_namespace.oid", "=", "pg_constraint.connamespace"),
+		)
+		.innerJoin("pg_class as source_table", (join) =>
+			join.onRef("source_table.oid", "=", "pg_constraint.conrelid"),
+		)
+		.innerJoin("pg_class as target_table", (join) =>
+			join.onRef("target_table.oid", "=", "pg_constraint.confrelid"),
+		)
+		.innerJoin("pg_namespace as dependency_ns", (join) =>
+			join.onRef("dependency_ns.oid", "=", "target_table.relnamespace"),
+		)
+		.where("pg_constraint.contype", "=", "f")
+		.whereRef("pg_namespace.nspname", "<>", "dependency_ns.nspname")
+		.select([
+			sql<string>`pg_namespace.nspname`.as("schema"),
+			sql<string>`dependency_ns.nspname`.as("depends_on"),
+		])
+		.groupBy(["pg_namespace.nspname", "dependency_ns.nspname"])
+		.execute();
+	return toposort(results.map((row) => [row.schema, row.depends_on]));
+}
+
+function localSchemaDependencies(allSchemas: AnySchema[]) {
+	const dependencies: [string, string][] = [];
+	for (const schema of allSchemas) {
+		const schemaInfo = Schema.info(schema);
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		for (const [_, table] of Object.entries(schemaInfo.tables)) {
+			const info = tableInfo(table);
+			const foreignKeys = info.definition.constraints?.foreignKeys ?? [];
+			for (const foreignKey of foreignKeys) {
+				const options = foreignKeyOptions(foreignKey);
+				const targetTableInfo = tableInfo(options.targetTable);
+				if (targetTableInfo.schemaName != info.schemaName) {
+					dependencies.push([info.schemaName, targetTableInfo.schemaName]);
+				}
+			}
+		}
+	}
+	return toposort(dependencies);
 }

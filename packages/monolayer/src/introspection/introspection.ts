@@ -62,7 +62,7 @@ import { currentColumName } from "./column-name.js";
 import {
 	databaseTableDependencies,
 	localSchemaTableDependencies,
-} from "./table-dependencies.js";
+} from "./dependencies.js";
 
 export function introspectLocalSchema(
 	schema: AnySchema,

@@ -8,7 +8,7 @@ import {
 	databaseTableDependencies,
 	localSchemaTableDependencies,
 	sortTableDependencies,
-} from "~/introspection/table-dependencies.js";
+} from "~/introspection/dependencies.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import {
 	setUpContext,

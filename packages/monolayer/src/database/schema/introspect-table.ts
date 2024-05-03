@@ -76,7 +76,7 @@ interface TriggerInstrospection {
 	};
 }
 
-function findTableInSchema(table: AnyPgTable, allSchemas: AnySchema[]) {
+export function findTableInSchema(table: AnyPgTable, allSchemas: AnySchema[]) {
 	const schemaTables = allSchemas.find(
 		(schema) => Schema.info(schema).name === tableInfo(table).schemaName,
 	)?.tables;

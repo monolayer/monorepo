@@ -1,6 +1,5 @@
 import path from "node:path";
 import nunjucks from "nunjucks";
-import { Changeset, MigrationOpPriority } from "~/changeset/types.js";
 import { createFile } from "~/create-file.js";
 
 const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
@@ -30,12 +29,15 @@ export async function down(db: Kysely<any>): Promise<void> {
 `;
 
 export function renderToFile(
-	changesets: Changeset[],
+	upDown: {
+		up: string[];
+		down: string[];
+	},
 	folder: string,
 	name: string,
 	dependsOn: string,
 ) {
-	const { up, down } = extractMigrationOps([...changesets]);
+	const { up, down } = upDown;
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
 	const migrationFilePath = path.join(folder, `${dateStr}-${name}.ts`);
 	const rendered = nunjucks.compile(template).render({
@@ -48,53 +50,4 @@ export function renderToFile(
 		rendered.includes("sql`") ? rendered : rendered.replace(", sql", ""),
 		false,
 	);
-}
-
-function extractMigrationOps(changesets: Changeset[]) {
-	const up = changesets
-		.filter(
-			(changeset) =>
-				changeset.up.length > 0 && (changeset.up[0] || []).length > 0,
-		)
-		.map((changeset) =>
-			changeset.up.map((u) => u.join("\n    .")).join("\n\n  "),
-		);
-	const down = reverseChangeset(changesets)
-		.filter(
-			(changeset) =>
-				changeset.down.length > 0 && (changeset.down[0] || []).length > 0,
-		)
-		.map((changeset) =>
-			changeset.down.map((d) => d.join("\n    .")).join("\n\n  "),
-		);
-	return { up, down };
-}
-
-function reverseChangeset(changesets: Changeset[]) {
-	const itemsToMaintain = changesets.filter(
-		(changeset) =>
-			changeset.type === "createTable" || changeset.type === "dropTable",
-	);
-
-	const itemsToReverse = changesets.filter(
-		(changeset) =>
-			changeset.type !== "createTable" && changeset.type !== "dropTable",
-	);
-
-	const databasePriorities = [
-		MigrationOpPriority.CreateSchema,
-		MigrationOpPriority.CreateExtension,
-		MigrationOpPriority.CreateEnum,
-	];
-
-	return [...itemsToMaintain, ...itemsToReverse.reverse()].sort((a, b) => {
-		if (
-			!databasePriorities.includes(a.priority) &&
-			a.tableName === "none" &&
-			b.tableName !== "none"
-		) {
-			return -1;
-		}
-		return 1 - 1;
-	});
 }

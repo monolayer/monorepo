@@ -105,13 +105,18 @@ export class ForeignKeyBuilder {
 	}
 
 	#targetTableName(mode: BuildMode) {
-		return mode === "preserve"
-			? this.foreignKey.targetTable
-			: this.#renameTableFn(mode)(
-					toSnakeCase(this.foreignKey.targetTable, this.context.camelCase),
-					this.context.tablesToRename,
-					this.context.schemaName,
-				);
+		if (mode === "preserve") {
+			return this.foreignKey.targetTable;
+		}
+		const renamedTable = this.#renameTableFn(mode)(
+			toSnakeCase(
+				this.foreignKey.targetTable.split(".")[1]!,
+				this.context.camelCase,
+			),
+			this.context.tablesToRename,
+			this.foreignKey.targetTable.split(".")[0]!,
+		);
+		return `${this.foreignKey.targetTable.split(".")[0]}.${renamedTable}`;
 	}
 
 	#columns(mode: BuildMode) {

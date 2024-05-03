@@ -321,6 +321,9 @@ function changeForeignKeyChangeMigration(
 		"current",
 		{ columnsToRename, tablesToRename, camelCaseOptions, schemaName },
 	);
+	if (previousLocalDef.name === currentLocalDef.name) {
+		return [];
+	}
 	return renameForeignKeyOp(
 		tableName,
 		previousLocalDef.name,

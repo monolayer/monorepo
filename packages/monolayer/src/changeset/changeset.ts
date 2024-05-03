@@ -66,7 +66,7 @@ function changesetForLocalSchema(
 	renames: Renames,
 ) {
 	return context(localSchema).pipe(
-		Effect.tap(() => validateForeignKeyReferences(localSchema)),
+		Effect.tap(() => validateForeignKeyReferences(localSchema, allSchemas)),
 		Effect.flatMap(() =>
 			introspectSchemas(localSchema, allSchemas).pipe(
 				Effect.tap((introspectionContext) => {

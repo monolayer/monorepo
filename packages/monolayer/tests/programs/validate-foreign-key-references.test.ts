@@ -50,7 +50,9 @@ describe("validateLocalSchema", () => {
 			},
 		});
 
-		const result = Effect.runSync(validateForeignKeyReferences(dbSchema));
+		const result = Effect.runSync(
+			validateForeignKeyReferences(dbSchema, [dbSchema]),
+		);
 		expect(result).toBe(true);
 	});
 
@@ -80,7 +82,7 @@ describe("validateLocalSchema", () => {
 		});
 
 		const result = Effect.runSync(
-			validateForeignKeyReferences(dbSchema).pipe(
+			validateForeignKeyReferences(dbSchema, [dbSchema]).pipe(
 				Effect.catchAll((error) => {
 					return Effect.succeed(error);
 				}),
