@@ -108,7 +108,11 @@ function dropAllIndexesMigration(
 				priority: MigrationOpPriority.IndexDrop,
 				schemaName,
 				tableName: indexTableName,
-				currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+				currentTableName: currentTableName(
+					tableName,
+					tablesToRename,
+					schemaName,
+				),
 				type: ChangeSetType.DropIndex,
 				up: droppedTables.includes(tableName)
 					? [[]]

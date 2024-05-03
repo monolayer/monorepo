@@ -15,7 +15,9 @@ export function selectTableDiffChoicesInteractive(
 		}
 
 		const tablesToRename = yield* _(
-			Effect.tryPromise(() => tableDiffPrompt(context.tableDiff)).pipe(
+			Effect.tryPromise(() =>
+				tableDiffPrompt(context.tableDiff, context.schemaName),
+			).pipe(
 				Effect.flatMap((tableDiffResult) => {
 					if (typeof tableDiffResult === "symbol") {
 						return Effect.fail(new PromptCancelError());

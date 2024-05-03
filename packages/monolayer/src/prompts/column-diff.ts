@@ -10,6 +10,7 @@ export async function columnDiffPrompt(
 			deleted: string[];
 		}
 	>,
+	schemaName: string,
 ) {
 	const columnsToRename: ColumnsToRename = {};
 	for (const tableName in columnDiff) {
@@ -29,7 +30,7 @@ export async function columnDiffPrompt(
 				}[],
 				string
 			>({
-				message: `Do you want to create a '${addedColumn}' column in '${tableName}' or rename an existing column?`,
+				message: `Do you want to create a '${addedColumn}' column in '${schemaName}'.'${tableName}' or rename an existing column?`,
 				options: [
 					{
 						value: `create:${addedColumn}`,

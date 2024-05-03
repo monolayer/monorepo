@@ -2,10 +2,13 @@ import { select } from "@clack/prompts";
 import color from "picocolors";
 import { TablesToRename } from "../introspection/introspect-schemas.js";
 
-export async function tableDiffPrompt(tableDiff: {
-	added: string[];
-	deleted: string[];
-}) {
+export async function tableDiffPrompt(
+	tableDiff: {
+		added: string[];
+		deleted: string[];
+	},
+	schemaName: string,
+) {
 	const renameTableOps: TablesToRename = [];
 	for (const table of tableDiff.added) {
 		const tableOp = await select<
@@ -15,7 +18,7 @@ export async function tableDiffPrompt(tableDiff: {
 			}[],
 			string
 		>({
-			message: `Do you want to create the table '${table}' or rename an existing table?`,
+			message: `Do you want to create the table '${table}' in the '${schemaName}' schema or rename an existing table?`,
 			options: [
 				{
 					value: `create:${table}`,

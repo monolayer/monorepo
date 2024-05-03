@@ -188,7 +188,11 @@ function dropUniqueLastConstraintMigration(
 				priority: MigrationOpPriority.UniqueConstraintDrop,
 				schemaName,
 				tableName: previousTableName(tableName, tablesToRename),
-				currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+				currentTableName: currentTableName(
+					tableName,
+					tablesToRename,
+					schemaName,
+				),
 				type: ChangeSetType.DropUnique,
 				up: droppedTables.includes(tableName)
 					? [[]]

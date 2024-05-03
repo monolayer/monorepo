@@ -13,7 +13,7 @@ export function selectColumnDiffChoicesInteractive(
 	return Effect.gen(function* (_) {
 		const diff = yield* _(columnDiff(context.local, context.remote));
 		const columnsToRename = yield* _(
-			Effect.tryPromise(() => columnDiffPrompt(diff)).pipe(
+			Effect.tryPromise(() => columnDiffPrompt(diff, context.schemaName)).pipe(
 				Effect.flatMap((columnDiffResult) => {
 					if (typeof columnDiffResult === "symbol") {
 						return Effect.fail(new PromptCancelError());

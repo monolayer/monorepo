@@ -156,7 +156,11 @@ function changeTableNameMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeTableName,
 		tableName: diff.oldValue,
-		currentTableName: currentTableName(diff.oldValue, tablesToRename, schemaName),
+		currentTableName: currentTableName(
+			diff.oldValue,
+			tablesToRename,
+			schemaName,
+		),
 		type: ChangeSetType.RenameTable,
 		up: [
 			executeKyselySchemaStatement(
