@@ -99,6 +99,9 @@ export async function fetchForeignConstraintInfo(
 		.fullJoin("pg_class as ref_tbl", (join) =>
 			join.onRef("con.confrelid", "=", "ref_tbl.oid"),
 		)
+		.fullJoin("pg_namespace as ref_tbl_ns", (join) =>
+			join.onRef("ref_tbl_ns.oid", "=", "ref_tbl.relnamespace"),
+		)
 		.fullJoin("pg_attribute as relcol", (join) =>
 			join
 				.onRef("relcol.attrelid", "=", "ref_tbl.oid")
@@ -115,7 +118,9 @@ export async function fetchForeignConstraintInfo(
 			sql<"FOREIGN KEY">`'FOREIGN KEY'`.as("constraintType"),
 			sql<string>`tbl.relname`.as("table"),
 			sql<string[]>`JSON_AGG(DISTINCT col.attname)`.as("columns"),
-			sql<string>`ref_tbl.relname`.as("targetTable"),
+			sql<string>`CONCAT(ref_tbl_ns.nspname, '.', ref_tbl.relname)`.as(
+				"targetTable",
+			),
 			sql<string[]>`JSON_AGG(DISTINCT cu.column_name)`.as("targetColumns"),
 			sql<ForeignKeyRule>`rc.delete_rule`.as("deleteRule"),
 			sql<ForeignKeyRule>`rc.update_rule`.as("updateRule"),
@@ -128,6 +133,7 @@ export async function fetchForeignConstraintInfo(
 		.groupBy([
 			"tbl.relname",
 			"ref_tbl.relname",
+			"ref_tbl_ns.nspname",
 			"rc.delete_rule",
 			"rc.update_rule",
 			"con.confrelid",

@@ -130,9 +130,12 @@ function foreignKeyInfo(
 	return (foreignKeys || []).map<ForeignKeyIntrospection>((fk) => {
 		const options = foreignKeyOptions(fk);
 		const isExternal = isExternalForeignKey(fk);
+		const targetTable =
+			findTableInSchema(options.targetTable, allSchemas) || "";
+		const targetTableSchema = tableInfo(options.targetTable).schemaName;
 		return {
 			columns: options.columns as string[],
-			targetTable: findTableInSchema(options.targetTable, allSchemas) || "",
+			targetTable: `${targetTableSchema}.${targetTable}`,
 			targetColumns: options.targetColumns,
 			deleteRule: options.deleteRule,
 			updateRule: options.updateRule,
@@ -140,6 +143,7 @@ function foreignKeyInfo(
 		};
 	});
 }
+
 function columnInfo(columns?: ColumnRecord) {
 	return Object.entries(columns || {}).reduce(
 		(acc, [key, value]) => {

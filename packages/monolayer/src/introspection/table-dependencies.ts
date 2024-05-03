@@ -109,7 +109,7 @@ export function localSchemaTableDependencies(
 		(acc, [tableName, table]) => {
 			const introspect = tableInfo(table).introspect(allSchemas);
 			for (const foreignKey of introspect.foreignKeys) {
-				acc.push([tableName, foreignKey.targetTable]);
+				acc.push([tableName, foreignKey.targetTable.split(".")[1]]);
 			}
 			return acc;
 		},

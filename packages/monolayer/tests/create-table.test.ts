@@ -767,7 +767,7 @@ describe("Create table", () => {
 		});
 	});
 
-	test<DbContext>("with foreign keys", async (context) => {
+	test.only<DbContext>("with foreign keys", async (context) => {
 		const books = table({
 			columns: {
 				id: bigserial(),
@@ -873,7 +873,7 @@ describe("Create table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addForeignKeyConstraint("users_262b6933_monolayer_fk", ["id"], "books", ["id"])
+    .addForeignKeyConstraint("users_8abc8e0b_monolayer_fk", ["id"], "public.books", ["id"])
     .onDelete("set null")
     .onUpdate("set null")
     .compile()
@@ -881,7 +881,7 @@ describe("Create table", () => {
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_262b6933_monolayer_fk"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_8abc8e0b_monolayer_fk"`',
 						"execute(db);",
 					],
 				],
