@@ -21,6 +21,7 @@ interface BuilderContext {
 	camelCase: CamelCaseOptions;
 	tablesToRename: TablesToRename;
 	columnsToRename: ColumnsToRename;
+	schemaName: string;
 }
 
 type BuildMode = "current" | "previous" | "preserve";
@@ -99,6 +100,7 @@ export class ForeignKeyBuilder {
 			: this.#renameTableFn(mode)(
 					toSnakeCase(this.table, this.context.camelCase),
 					this.context.tablesToRename,
+					this.context.schemaName,
 				);
 	}
 
@@ -108,6 +110,7 @@ export class ForeignKeyBuilder {
 			: this.#renameTableFn(mode)(
 					toSnakeCase(this.foreignKey.targetTable, this.context.camelCase),
 					this.context.tablesToRename,
+					this.context.schemaName,
 				);
 	}
 

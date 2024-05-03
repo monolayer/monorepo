@@ -240,10 +240,11 @@ export function renameTables(
 	tablesToRename: TablesToRename,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	columnsToRename: ColumnsToRename,
+	schemaName: string,
 ) {
 	const renamedTables = Object.entries(remote.table).reduce(
 		(acc, [table, schema]) => {
-			const current = currentTableName(table, tablesToRename);
+			const current = currentTableName(table, tablesToRename, schemaName);
 			const renamedColumns = Object.entries(schema.columns).reduce(
 				(schemaAcc, [column, info]) => {
 					schemaAcc[column] = {
@@ -264,7 +265,7 @@ export function renameTables(
 
 	const renamedIndexes = Object.entries(remote.index).reduce(
 		(acc, [table, indexes]) => {
-			const current = currentTableName(table, tablesToRename);
+			const current = currentTableName(table, tablesToRename, schemaName);
 			acc[current] = indexes;
 			return acc;
 		},
@@ -274,7 +275,7 @@ export function renameTables(
 	const renamedForeignKeys = Object.entries(
 		remote.foreignKeyConstraints,
 	).reduce((acc, [table, foreignKeys]) => {
-		const current = currentTableName(table, tablesToRename);
+		const current = currentTableName(table, tablesToRename, schemaName);
 		acc[current] = foreignKeys;
 		return acc;
 	}, {} as ForeignKeyInfo);
@@ -283,7 +284,7 @@ export function renameTables(
 		remote.foreignKeyDefinitions || {},
 	).reduce(
 		(acc, [table, foreignKeys]) => {
-			const current = currentTableName(table, tablesToRename);
+			const current = currentTableName(table, tablesToRename, schemaName);
 			acc[current] = foreignKeys;
 			return acc;
 		},
@@ -293,7 +294,7 @@ export function renameTables(
 	const renamedUniqueConstraints = Object.entries(
 		remote.uniqueConstraints,
 	).reduce((acc, [table, uniqueConstraints]) => {
-		const current = currentTableName(table, tablesToRename);
+		const current = currentTableName(table, tablesToRename, schemaName);
 		acc[current] = uniqueConstraints;
 		return acc;
 	}, {} as UniqueInfo);
@@ -301,14 +302,14 @@ export function renameTables(
 	const renamedCheckConstraints = Object.entries(
 		remote.checkConstraints,
 	).reduce((acc, [table, checkConstraints]) => {
-		const current = currentTableName(table, tablesToRename);
+		const current = currentTableName(table, tablesToRename, schemaName);
 		acc[current] = checkConstraints;
 		return acc;
 	}, {} as CheckInfo);
 
 	const renamedPrimaryKeys = Object.entries(remote.primaryKey).reduce(
 		(acc, [table, primaryKey]) => {
-			const current = currentTableName(table, tablesToRename);
+			const current = currentTableName(table, tablesToRename, schemaName);
 			Object.entries(primaryKey).reduce(
 				(acc, [primaryKey, info]) => {
 					const extractedColumns = extractColumnsFromPrimaryKey(info).map(
@@ -333,7 +334,7 @@ export function renameTables(
 
 	const renamedTriggers = Object.entries(remote.triggers).reduce(
 		(acc, [table, triggers]) => {
-			const current = currentTableName(table, tablesToRename);
+			const current = currentTableName(table, tablesToRename, schemaName);
 			acc[current] = triggers;
 			return acc;
 		},

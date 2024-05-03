@@ -103,7 +103,7 @@ function columnDefaultAddMigrationOperation(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultAdd,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumn,
 		up: [
 			executeKyselySchemaStatement(
@@ -145,7 +145,7 @@ function columnDefaultDropMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnDefaultDrop,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumn,
 		up: [
 			executeKyselySchemaStatement(
@@ -219,7 +219,7 @@ function columnDefaultChangeMigrationOperation(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultChange,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumn,
 		up: up,
 		down: down,

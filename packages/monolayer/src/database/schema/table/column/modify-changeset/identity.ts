@@ -71,7 +71,7 @@ function columnIdentityAddMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnIdentityAdd,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumn,
 		up:
 			diff.value === "ALWAYS"
@@ -104,7 +104,7 @@ function columnIdentityDropMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnIdentityDrop,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumn,
 		up: [
 			executeKyselyDbStatement(

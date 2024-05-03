@@ -46,7 +46,7 @@ function columnDatatypeMigrationOperation(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDatatype,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumn,
 		up: [
 			executeKyselySchemaStatement(

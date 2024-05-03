@@ -136,7 +136,7 @@ function createPrimaryKeyMigration(
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreatePrimaryKey,
 		up: [
 			addPrimaryKeyOp(
@@ -181,7 +181,7 @@ function dropPrimaryKeyMigration(
 		priority: MigrationOpPriority.PrimaryKeyDrop,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
 			? [[]]
@@ -221,7 +221,7 @@ function changePrimaryKeyMigration(
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreatePrimaryKey,
 		up: [
 			addPrimaryKeyOp(
@@ -247,7 +247,7 @@ function changePrimaryKeyMigration(
 		priority: MigrationOpPriority.PrimaryKeyDrop,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropPrimaryKey,
 		up: [dropPrimaryKeyOp(tableName, primaryKeyName, schemaName)],
 		down: [
@@ -337,7 +337,7 @@ function dropNotNullChangesets(
 								priority: MigrationOpPriority.ChangeColumnNullable,
 								schemaName,
 								tableName: tableName,
-								currentTableName: currentTableName(tableName, tablesToRename),
+								currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 								type: ChangeSetType.ChangeColumn,
 								up:
 									direction === "up"
@@ -355,7 +355,7 @@ function dropNotNullChangesets(
 								priority: MigrationOpPriority.ChangeColumnNullable,
 								schemaName,
 								tableName: tableName,
-								currentTableName: currentTableName(tableName, tablesToRename),
+								currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 								type: ChangeSetType.ChangeColumn,
 								up:
 									direction === "up"
@@ -374,7 +374,7 @@ function dropNotNullChangesets(
 					priority: MigrationOpPriority.ChangeColumnNullable,
 					schemaName,
 					tableName: tableName,
-					currentTableName: currentTableName(tableName, tablesToRename),
+					currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 					type: ChangeSetType.ChangeColumn,
 					up:
 						direction === "up"

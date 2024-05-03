@@ -33,6 +33,7 @@ export async function dbForeignKeyConstraints(
 				camelCase: { enabled: false },
 				tablesToRename: [],
 				columnsToRename: {},
+				schemaName: result.schemaName,
 			};
 			const foreignKey = {
 				...result,
@@ -118,6 +119,7 @@ export async function fetchForeignConstraintInfo(
 			sql<string[]>`JSON_AGG(DISTINCT cu.column_name)`.as("targetColumns"),
 			sql<ForeignKeyRule>`rc.delete_rule`.as("deleteRule"),
 			sql<ForeignKeyRule>`rc.update_rule`.as("updateRule"),
+			sql<string>`ns.nspname`.as("schemaName"),
 		])
 		.where("con.contype", "=", "f")
 		.where("ns.nspname", "=", databaseSchema)
@@ -130,6 +132,7 @@ export async function fetchForeignConstraintInfo(
 			"rc.update_rule",
 			"con.confrelid",
 			"con.conname",
+			"ns.nspname",
 		])
 		.execute();
 }
@@ -147,16 +150,18 @@ export function localForeignKeyConstraintInfoWithPreviousHash(
 			const tableNameInDatabase = toSnakeCase(tableName, camelCase);
 			const introspect = tableInfo(tableDefinition).introspect(allSchemas);
 			const foreignKeys = introspect.foreignKeys;
+			const schemaName = Schema.info(schema).name;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {
 					const tableKey = currentTableName(
 						tableNameInDatabase,
 						tablesToRename,
+						schemaName,
 					);
 					const builder = new ForeignKeyBuilder(
 						tableNameInDatabase,
 						foreignKey,
-						{ camelCase, tablesToRename, columnsToRename },
+						{ camelCase, tablesToRename, columnsToRename, schemaName },
 					);
 					const hash = builder.hash("previous");
 					acc[tableKey] = {
@@ -186,16 +191,18 @@ export function localForeignKeys(
 			const tableNameInDatabase = toSnakeCase(tableName, camelCase);
 			const introspect = tableInfo(tableDefinition).introspect(allSchemas);
 			const foreignKeys = introspect.foreignKeys;
+			const schemaName = Schema.info(schema).name;
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {
 					const tableKey = currentTableName(
 						tableNameInDatabase,
 						tablesToRename,
+						schemaName,
 					);
 					const builder = new ForeignKeyBuilder(
 						tableNameInDatabase,
 						foreignKey,
-						{ camelCase, tablesToRename, columnsToRename },
+						{ camelCase, tablesToRename, columnsToRename, schemaName },
 					);
 					acc[tableKey] = {
 						...acc[tableKey],
@@ -212,7 +219,8 @@ export function localForeignKeys(
 }
 
 export function remoteForeignKeys(schema: AnySchema, allSchemas: AnySchema[]) {
-	const tables = Schema.info(schema).tables;
+	const schemaInfo = Schema.info(schema);
+	const tables = schemaInfo.tables;
 	return Object.entries(tables || {}).reduce(
 		(acc, [tableName, tableDefinition]) => {
 			const introspect = tableInfo(tableDefinition).introspect(allSchemas);
@@ -223,6 +231,7 @@ export function remoteForeignKeys(schema: AnySchema, allSchemas: AnySchema[]) {
 						camelCase: { enabled: false },
 						tablesToRename: [],
 						columnsToRename: {},
+						schemaName: schemaInfo.name,
 					});
 					acc[tableName] = {
 						...acc[tableName],

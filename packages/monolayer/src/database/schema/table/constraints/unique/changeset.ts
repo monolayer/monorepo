@@ -159,7 +159,7 @@ function createUniqueFirstConstraintMigration(
 			priority: MigrationOpPriority.UniqueCreate,
 			schemaName,
 			tableName: tableName,
-			currentTableName: currentTableName(tableName, tablesToRename),
+			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 			type: ChangeSetType.CreateUnique,
 			up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 			down: addedTables.includes(tableName)
@@ -188,7 +188,7 @@ function dropUniqueLastConstraintMigration(
 				priority: MigrationOpPriority.UniqueConstraintDrop,
 				schemaName,
 				tableName: previousTableName(tableName, tablesToRename),
-				currentTableName: currentTableName(tableName, tablesToRename),
+				currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 				type: ChangeSetType.DropUnique,
 				up: droppedTables.includes(tableName)
 					? [[]]
@@ -230,7 +230,7 @@ function createUniqueConstraintMigration(
 		priority: MigrationOpPriority.UniqueCreate,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreateUnique,
 		up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 		down: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
@@ -254,7 +254,7 @@ function dropUniqueConstraintMigration(
 		priority: MigrationOpPriority.UniqueConstraintDrop,
 		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropUnique,
 		up: [
 			dropUniqueConstraintOp(
@@ -288,7 +288,7 @@ function changeUniqueConstraintNameMigration(
 		priority: MigrationOpPriority.ConstraintChange,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.RenameUnique,
 		up: [
 			executeKyselyDbStatement(

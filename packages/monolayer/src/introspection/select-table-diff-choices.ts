@@ -25,7 +25,12 @@ export function selectTableDiffChoicesInteractive(
 				}),
 			),
 		);
-		context.tablesToRename = tablesToRename;
-		return tablesToRename;
+		context.tablesToRename = tablesToRename.map((tableToRename) => {
+			return {
+				from: `${context.schemaName}.${tableToRename.from}`,
+				to: `${context.schemaName}.${tableToRename.to}`,
+			};
+		});
+		return context.tablesToRename;
 	});
 }

@@ -70,7 +70,7 @@ function createTableMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TableCreate,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreateTable,
 		up: up,
 		down: [
@@ -120,7 +120,7 @@ function dropTableMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TableDrop,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropTable,
 		up: [executeKyselySchemaStatement(schemaName, `dropTable("${tableName}")`)],
 		down: down,
@@ -156,7 +156,7 @@ function changeTableNameMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeTableName,
 		tableName: diff.oldValue,
-		currentTableName: currentTableName(diff.oldValue, tablesToRename),
+		currentTableName: currentTableName(diff.oldValue, tablesToRename, schemaName),
 		type: ChangeSetType.RenameTable,
 		up: [
 			executeKyselySchemaStatement(

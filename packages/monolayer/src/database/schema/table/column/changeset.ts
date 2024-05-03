@@ -74,7 +74,7 @@ function createColumnMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnCreate,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreateColumn,
 		up: up,
 		down: [
@@ -133,7 +133,7 @@ function dropColumnMigration(
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnDrop,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropColumn,
 		up: [
 			executeKyselySchemaStatement(

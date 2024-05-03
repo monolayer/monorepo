@@ -93,6 +93,7 @@ export function renameMigrationInfo(context: IntrospectionContext) {
 			context.remote,
 			context.tablesToRename,
 			context.columnsToRename,
+			context.schemaName,
 		);
 		context.remote.table = renameRemoteColums(
 			context.remote,
@@ -116,6 +117,7 @@ export function sortTablePriorities(context: IntrospectionContext) {
 		context.remote.tablePriorities,
 		context.local.tablePriorities,
 		context.tablesToRename,
+		context.schemaName,
 	);
 	return Effect.succeed(context);
 }
@@ -124,6 +126,7 @@ export type TablesToRename = {
 	from: string;
 	to: string;
 }[];
+
 export type ColumnsToRename = Record<
 	string,
 	{

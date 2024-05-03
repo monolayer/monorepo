@@ -132,7 +132,7 @@ function createTriggerFirstMigration(
 			priority: MigrationOpPriority.TriggerCreate,
 			schemaName,
 			tableName: tableName,
-			currentTableName: currentTableName(tableName, tablesToRename),
+			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 			type: ChangeSetType.CreateTrigger,
 			up: [executeKyselyDbStatement(`${trigger[1]}`)],
 			down: addedTables.includes(tableName)
@@ -158,7 +158,7 @@ function createTriggerMigration(
 		priority: MigrationOpPriority.TriggerCreate,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreateTrigger,
 		up: [executeKyselyDbStatement(`${trigger[1]}`)],
 		down: [
@@ -181,7 +181,7 @@ function dropTriggerFirstMigration(
 			priority: MigrationOpPriority.TriggerDrop,
 			schemaName,
 			tableName: tableName,
-			currentTableName: currentTableName(tableName, tablesToRename),
+			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 			type: ChangeSetType.DropTrigger,
 			up: droppedTables.includes(tableName)
 				? [[]]
@@ -215,7 +215,7 @@ function dropTriggerMigration(
 		priority: MigrationOpPriority.TriggerDrop,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropTrigger,
 		up: [
 			executeKyselyDbStatement(
@@ -245,7 +245,7 @@ function changeTriggerMigration(
 		priority: MigrationOpPriority.TriggerUpdate,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.UpdateTrigger,
 		up: [executeKyselyDbStatement(`${newTrigger[1]}`)],
 		down: [

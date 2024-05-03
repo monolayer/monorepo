@@ -75,7 +75,7 @@ function createFirstIndexMigration(
 			priority: MigrationOpPriority.IndexCreate,
 			schemaName,
 			tableName: tableName,
-			currentTableName: currentTableName(tableName, tablesToRename),
+			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 			type: ChangeSetType.CreateIndex,
 			up: [executeKyselyDbStatement(`${redefinedIndex.definition}`)],
 			down: addedTables.includes(tableName)
@@ -108,7 +108,7 @@ function dropAllIndexesMigration(
 				priority: MigrationOpPriority.IndexDrop,
 				schemaName,
 				tableName: indexTableName,
-				currentTableName: currentTableName(tableName, tablesToRename),
+				currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 				type: ChangeSetType.DropIndex,
 				up: droppedTables.includes(tableName)
 					? [[]]
@@ -152,7 +152,7 @@ function createIndexMigration(
 		priority: MigrationOpPriority.IndexCreate,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreateIndex,
 		up: [executeKyselyDbStatement(`${index}`)],
 		down: [
@@ -189,7 +189,7 @@ function dropIndexMigration(
 		priority: MigrationOpPriority.IndexDrop,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropIndex,
 		up: [executeKyselySchemaStatement(schemaName, `dropIndex("${indexName}")`)],
 		down: [executeKyselyDbStatement(`${index}`)],
@@ -280,7 +280,7 @@ function changeIndexNameChangeset(
 		priority: MigrationOpPriority.ChangeIndex,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.RenameIndex,
 		up: [
 			executeKyselyDbStatement(

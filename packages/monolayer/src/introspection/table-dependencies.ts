@@ -15,12 +15,13 @@ export function sortTableDependencies(
 	databaseTableDependencies: string[],
 	localTableDependencies: string[],
 	tablesToRename: TablesToRename,
+	schemaName: string,
 ) {
 	const dependencies = [
 		...new Set([...databaseTableDependencies, ...localTableDependencies]),
 	];
 	return dependencies.reduce((acc, node) => {
-		const tableName = currentTableName(node, tablesToRename);
+		const tableName = currentTableName(node, tablesToRename, schemaName);
 		acc.push(node);
 		if (tableName !== node) {
 			acc.push(tableName);

@@ -199,9 +199,9 @@ describe("Table create migrations", () => {
 
 	test<DbContext>("sort dependencies", () => {
 		const tablesToRename = [
-			{ from: "users", to: "new_users" },
-			{ from: "posters", to: "new_posters" },
-			{ from: "books", to: "new_books" },
+			{ from: "public.users", to: "public.new_users" },
+			{ from: "public.posters", to: "public.new_posters" },
+			{ from: "public.books", to: "public.new_books" },
 		];
 
 		const dbDependencies = ["users", "videos", "posters", "books"];
@@ -226,7 +226,12 @@ describe("Table create migrations", () => {
 		];
 
 		expect(
-			sortTableDependencies(dbDependencies, localDependencies, tablesToRename),
+			sortTableDependencies(
+				dbDependencies,
+				localDependencies,
+				tablesToRename,
+				"public",
+			),
 		).toEqual(expected);
 	});
 });

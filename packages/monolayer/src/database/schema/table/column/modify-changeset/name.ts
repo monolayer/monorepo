@@ -45,7 +45,7 @@ function columnNameMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnName,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.RenameColumn,
 		up: [
 			executeKyselySchemaStatement(

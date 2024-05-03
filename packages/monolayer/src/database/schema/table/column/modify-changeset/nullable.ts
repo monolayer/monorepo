@@ -44,7 +44,7 @@ function columnNullableMigrationOperation(
 		priority: MigrationOpPriority.ChangeColumnNullable,
 		schemaName,
 		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename),
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumn,
 		up: diff.value
 			? [
