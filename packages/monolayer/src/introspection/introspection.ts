@@ -314,7 +314,12 @@ export function renameTables(
 				(acc, [primaryKey, info]) => {
 					const extractedColumns = extractColumnsFromPrimaryKey(info).map(
 						(column) => {
-							return currentColumName(current, column, columnsToRename);
+							return currentColumName(
+								current,
+								schemaName,
+								column,
+								columnsToRename,
+							);
 						},
 					);
 					acc[primaryKey] = primaryKeyConstraintInfoToQuery({
@@ -359,15 +364,17 @@ export function renameTables(
 export function renameRemoteColums(
 	remote: SchemaMigrationInfo,
 	columnsToRename: ColumnsToRename,
+	schemaName: string,
 ) {
 	return Object.entries(remote.table).reduce(
 		(acc, [tableName, tableInfo]) => {
 			const tableColumns = Object.entries(tableInfo.columns);
 			const renamedColumns = tableColumns.reduce(
 				(tcAcc, [columnName, columnInfo]) => {
-					currentColumName(tableName, columnName, columnsToRename);
-					tcAcc[currentColumName(tableName, columnName, columnsToRename)] =
-						columnInfo;
+					currentColumName(tableName, schemaName, columnName, columnsToRename);
+					tcAcc[
+						currentColumName(tableName, schemaName, columnName, columnsToRename)
+					] = columnInfo;
 					return tcAcc;
 				},
 				{} as Record<string, ColumnInfo>,

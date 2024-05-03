@@ -148,7 +148,7 @@ function createUniqueFirstConstraintMigration(
 	return Object.entries(diff.value).reduce((acc, [hash, value]) => {
 		const uniqueConstraint = uniqueConstraintDefinition(value, tableName, hash);
 		uniqueConstraint.columns = uniqueConstraint.columns.map((col) =>
-			currentColumName(tableName, col, columnsToRename),
+			currentColumName(tableName, schemaName, col, columnsToRename),
 		);
 		const newHash = hashValue(
 			`${uniqueConstraint.distinct}_${uniqueConstraint.columns.sort().join("_")}`,

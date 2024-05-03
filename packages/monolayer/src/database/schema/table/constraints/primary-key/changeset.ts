@@ -100,18 +100,18 @@ function isPrimaryKeyChange(
 }
 
 export function primaryKeyColumnsChange(
-	{ local, columnsToRename }: GeneratorContext,
+	{ local, columnsToRename, schemaName }: GeneratorContext,
 	tableName: string,
 	value: string,
 	oldValue: string,
 ) {
 	const tb = local.table[tableName]!;
 	const oldColumns = extractColumnsFromPrimaryKey(oldValue)
-		.map((val) => currentColumName(tableName, val, columnsToRename))
+		.map((val) => currentColumName(tableName, schemaName, val, columnsToRename))
 		.sort();
 
 	const newColumns = extractColumnsFromPrimaryKey(value)
-		.map((val) => currentColumName(tableName, val, columnsToRename))
+		.map((val) => currentColumName(tableName, schemaName, val, columnsToRename))
 		.map((val) => columnNameKey(tb, val))
 		.filter((x) => x !== undefined)
 		.sort();
@@ -337,7 +337,11 @@ function dropNotNullChangesets(
 								priority: MigrationOpPriority.ChangeColumnNullable,
 								schemaName,
 								tableName: tableName,
-								currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+								currentTableName: currentTableName(
+									tableName,
+									tablesToRename,
+									schemaName,
+								),
 								type: ChangeSetType.ChangeColumn,
 								up:
 									direction === "up"
@@ -355,7 +359,11 @@ function dropNotNullChangesets(
 								priority: MigrationOpPriority.ChangeColumnNullable,
 								schemaName,
 								tableName: tableName,
-								currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+								currentTableName: currentTableName(
+									tableName,
+									tablesToRename,
+									schemaName,
+								),
 								type: ChangeSetType.ChangeColumn,
 								up:
 									direction === "up"
@@ -374,7 +382,11 @@ function dropNotNullChangesets(
 					priority: MigrationOpPriority.ChangeColumnNullable,
 					schemaName,
 					tableName: tableName,
-					currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+					currentTableName: currentTableName(
+						tableName,
+						tablesToRename,
+						schemaName,
+					),
 					type: ChangeSetType.ChangeColumn,
 					up:
 						direction === "up"

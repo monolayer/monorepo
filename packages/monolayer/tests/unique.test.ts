@@ -5,7 +5,7 @@ import { unique } from "../src/database/schema/table/constraints/unique/unique.j
 describe("PgUniqueConstraint", () => {
 	test("one column", async () => {
 		const constraint = unique(["id"]);
-		const compiled = await compileUnique(constraint, "test_table");
+		const compiled = await compileUnique(constraint, "test_table", "public");
 
 		const expected = {
 			acdd8fa3: 'UNIQUE NULLS DISTINCT ("id")',
@@ -15,7 +15,7 @@ describe("PgUniqueConstraint", () => {
 
 	test("multiple columns", async () => {
 		const constraint = unique(["price", "name"]);
-		const compiled = await compileUnique(constraint, "test_table");
+		const compiled = await compileUnique(constraint, "test_table", "public");
 
 		const expected = {
 			"1a28c8d3": 'UNIQUE NULLS DISTINCT ("name", "price")',
@@ -25,7 +25,7 @@ describe("PgUniqueConstraint", () => {
 
 	test("null not distinct", async () => {
 		const constraint = unique(["id"]).nullsNotDistinct();
-		const compiled = await compileUnique(constraint, "test_table");
+		const compiled = await compileUnique(constraint, "test_table", "public");
 
 		const expected = {
 			a91945e0: 'UNIQUE NULLS NOT DISTINCT ("id")',

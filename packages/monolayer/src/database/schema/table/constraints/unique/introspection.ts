@@ -117,7 +117,8 @@ export function localUniqueConstraintInfo(
 			pool: new pg.Pool({}),
 		}),
 	});
-	const tables = Schema.info(schema).tables;
+	const schemaInfo = Schema.info(schema);
+	const tables = schemaInfo.tables;
 	return Object.entries(tables || {}).reduce<UniqueInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
@@ -134,6 +135,7 @@ export function localUniqueConstraintInfo(
 						kysely,
 						camelCase,
 						columnsToRename,
+						schemaInfo.name,
 					);
 					acc[transformedTableName] = {
 						...acc[transformedTableName],
@@ -155,6 +157,7 @@ export function uniqueToInfo(
 	kysely: Kysely<any>,
 	camelCase: CamelCaseOptions,
 	columnsToRename: ColumnsToRename,
+	schemaName: string,
 ) {
 	const args = uniqueConstraintOptions(unique);
 	const newTableName = toSnakeCase(tableName, camelCase);
@@ -164,6 +167,7 @@ export function uniqueToInfo(
 			toSnakeCase(
 				previousColumnName(
 					tableName,
+					schemaName,
 					toSnakeCase(column, camelCase),
 					columnsToRename,
 				),

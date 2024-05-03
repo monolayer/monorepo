@@ -75,14 +75,14 @@ type RehashCheckDiff = {
 
 export function isRehashCheck(
 	test: Difference,
-	{ columnsToRename }: GeneratorContext,
+	{ columnsToRename, schemaName }: GeneratorContext,
 ): test is RehashCheckDiff {
 	return (
 		test.type === "CHANGE" &&
 		test.path[0] === "checkConstraints" &&
 		test.path.length === 3 &&
 		typeof test.path[1] === "string" &&
-		changedColumnNames(test.path[1], columnsToRename).length > 0
+		changedColumnNames(test.path[1], schemaName, columnsToRename).length > 0
 	);
 }
 
@@ -104,13 +104,18 @@ function createFirstCheckMigration(
 				"current",
 				tableName,
 				columnsToRename,
+				schemaName,
 			);
 			if (checkDefinition !== undefined) {
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.CheckCreate,
 					schemaName,
 					tableName: tableName,
-					currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+					currentTableName: currentTableName(
+						tableName,
+						tablesToRename,
+						schemaName,
+					),
 					type: ChangeSetType.CreateCheck,
 					up: addCheckWithSchemaStatements(
 						schemaName,
@@ -149,7 +154,11 @@ function dropAllChecksMigration(
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.CheckConstraintDrop,
 					tableName: previousTableName(tableName, tablesToRename),
-					currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+					currentTableName: currentTableName(
+						tableName,
+						tablesToRename,
+						schemaName,
+					),
 					schemaName,
 					type: ChangeSetType.DropCheck,
 					up: droppedTables.includes(tableName)
@@ -198,6 +207,7 @@ function createCheckMigration(
 		"current",
 		tableName,
 		columnsToRename,
+		schemaName,
 	);
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.CheckCreate,
@@ -270,7 +280,8 @@ function reshashCheckMigration(
 	const tableName = diff.path[1];
 	const previousCheckName = `${previousTableName(tableName, tablesToRename)}_${diff.path[2]}_monolayer_chk`;
 	const newCheckName = `${tableName}_${
-		redefineCheck(diff.value, "current", tableName, columnsToRename).hash
+		redefineCheck(diff.value, "current", tableName, columnsToRename, schemaName)
+			.hash
 	}_monolayer_chk`;
 
 	const changeset: Changeset = {

@@ -98,6 +98,7 @@ export function renameMigrationInfo(context: IntrospectionContext) {
 		context.remote.table = renameRemoteColums(
 			context.remote,
 			context.columnsToRename,
+			context.schemaName,
 		);
 		context.local = introspectLocalSchema(
 			context.schema,

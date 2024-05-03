@@ -68,7 +68,8 @@ export function localCheckConstraintInfo(
 	camelCase: CamelCaseOptions,
 	columnsToRename: ColumnsToRename = {},
 ) {
-	const tables = Schema.info(schema).tables;
+	const schemaInfo = Schema.info(schema);
+	const tables = schemaInfo.tables;
 	return Object.entries(tables || {}).reduce<CheckInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
@@ -86,6 +87,7 @@ export function localCheckConstraintInfo(
 						"previous",
 						transformedTableName,
 						columnsToRename,
+						schemaInfo.name,
 					);
 					const checkObject = {
 						[`${checkWithRenamedColumns.hash}`]: `${checkWithRenamedColumns.definition}`,
@@ -107,6 +109,7 @@ export function redefineCheck(
 	columnNames: "current" | "previous",
 	tableName: string,
 	columnsToRename: ColumnsToRename,
+	schemaName: string,
 ) {
 	const nameFunction =
 		columnNames === "current" ? currentColumName : previousColumnName;
@@ -116,6 +119,7 @@ export function redefineCheck(
 		(columName) =>
 			`"${nameFunction(
 				tableName,
+				schemaName,
 				columName.replaceAll(/"/g, ""),
 				columnsToRename,
 			)}"`,

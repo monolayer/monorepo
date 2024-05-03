@@ -75,7 +75,8 @@ export function localPrimaryKeyConstraintInfo(
 	camelCase: CamelCaseOptions,
 	columnsToRename: ColumnsToRename,
 ) {
-	const tables = Schema.info(schema).tables;
+	const schemaInfo = Schema.info(schema);
+	const tables = schemaInfo.tables;
 	return Object.entries(tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
@@ -86,6 +87,7 @@ export function localPrimaryKeyConstraintInfo(
 				camelCase,
 				tableName,
 				columnsToRename,
+				schemaInfo.name,
 			);
 			if (primaryKeys.length !== 0 && !isExternalPrimaryKey(tableDefinition)) {
 				const keyName = `${transformedTableName}_monolayer_pk`;

@@ -2,7 +2,10 @@ import { Effect } from "effect";
 import { SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { PromptCancelError } from "../cli/cli-action.js";
 import { columnDiffPrompt } from "../prompts/column-diff.js";
-import { IntrospectionContext } from "./introspect-schemas.js";
+import {
+	IntrospectionContext,
+	type ColumnsToRename,
+} from "./introspect-schemas.js";
 
 export function selectColumnDiffChoicesInteractive(
 	context: IntrospectionContext,
@@ -20,8 +23,15 @@ export function selectColumnDiffChoicesInteractive(
 				}),
 			),
 		);
-		context.columnsToRename = columnsToRename;
-		return columnsToRename;
+
+		context.columnsToRename = Object.entries(columnsToRename).reduce(
+			(acc, [tableName, columns]) => {
+				acc[`${context.schemaName}.${tableName}`] = columns;
+				return acc;
+			},
+			{} as ColumnsToRename,
+		);
+		return context.columnsToRename;
 	});
 }
 

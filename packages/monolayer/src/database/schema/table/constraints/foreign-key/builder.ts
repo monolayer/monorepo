@@ -120,6 +120,7 @@ export class ForeignKeyBuilder {
 				? col
 				: this.#renameColumnFn(mode)(
 						this.#tableName(mode),
+						this.context.schemaName,
 						toSnakeCase(col, this.context.camelCase),
 						this.context.columnsToRename,
 					);
@@ -132,6 +133,7 @@ export class ForeignKeyBuilder {
 				? col
 				: this.#renameColumnFn(mode)(
 						this.#targetTableName(mode),
+						"public",
 						toSnakeCase(col, this.context.camelCase),
 						this.context.columnsToRename,
 					);

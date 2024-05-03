@@ -130,6 +130,7 @@ export function indexToInfo(
 		indexCompileArgs.columns.map((column) =>
 			previousColumnName(
 				tableName,
+				schemaName,
 				toSnakeCase(column, camelCase),
 				columnsToRename,
 			),
@@ -140,7 +141,11 @@ export function indexToInfo(
 		"sample",
 	).compile().sql;
 
-	for (const changedColumn of changedColumnNames(tableName, columnsToRename)) {
+	for (const changedColumn of changedColumnNames(
+		tableName,
+		schemaName,
+		columnsToRename,
+	)) {
 		idx = idx.replace(`"${changedColumn.to}"`, `"${changedColumn.from}"`);
 	}
 

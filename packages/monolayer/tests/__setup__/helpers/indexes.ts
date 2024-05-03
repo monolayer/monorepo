@@ -16,8 +16,12 @@ export async function compileIndex(index: PgIndex<any>, tableName: string) {
 	return indexToInfo(index, tableName, kysely, opts);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function compileUnique(unique: PgUnique<any>, tableName: string) {
+export async function compileUnique(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	unique: PgUnique<any>,
+	tableName: string,
+	schemaName: string,
+) {
 	const kysely = await kyselyWithEmptyPool();
 	return uniqueToInfo(
 		unique,
@@ -28,6 +32,7 @@ export async function compileUnique(unique: PgUnique<any>, tableName: string) {
 			options: {},
 		},
 		{},
+		schemaName,
 	);
 }
 

@@ -31,11 +31,13 @@ export function primaryKeyColumns(
 	camelCase: CamelCaseOptions,
 	tableName: string,
 	columnsToRename: ColumnsToRename,
+	schemaName: string,
 ) {
 	return Object.entries(columns).reduce<string[]>(
 		(acc, [columnName, column]) => {
 			const transformedColumnName = currentColumName(
 				tableName,
+				schemaName,
 				toSnakeCase(columnName, camelCase),
 				columnsToRename,
 			);
