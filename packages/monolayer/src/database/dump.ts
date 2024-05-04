@@ -26,9 +26,9 @@ export function dumpDatabaseStructureTask() {
 }
 
 function appendMigrationDataToDump() {
-	return Effect.gen(function* (_) {
-		const database = yield* _(databaseInConfig());
-		const dumpPath = yield* _(databaseDumpPath());
+	return Effect.gen(function* () {
+		const database = yield* databaseInConfig();
+		const dumpPath = yield* databaseDumpPath();
 		const migrationDumpArgs = [
 			"--no-privileges",
 			"--no-owner",
@@ -40,12 +40,10 @@ function appendMigrationDataToDump() {
 			"--no-comments",
 			`${database}`,
 		];
-		yield* _(
-			pipeCommandStdoutToWritable(
-				"pg_dump",
-				migrationDumpArgs,
-				new InsertWritable(dumpPath),
-			),
+		yield* pipeCommandStdoutToWritable(
+			"pg_dump",
+			migrationDumpArgs,
+			new InsertWritable(dumpPath),
 		);
 	});
 }
@@ -62,8 +60,8 @@ function installedExtensions() {
 }
 
 function setPgDumpEnv() {
-	return Effect.gen(function* (_) {
-		const environment = yield* _(Environment);
+	return Effect.gen(function* () {
+		const environment = yield* Environment;
 		const config = environment.configurationConfig;
 		const parsedConfig =
 			config.connectionString !== undefined
@@ -78,11 +76,11 @@ function setPgDumpEnv() {
 }
 
 function dumpStructure() {
-	return Effect.gen(function* (_) {
-		const schemaArgs = (yield* _(Environment)).configuration.schemas
+	return Effect.gen(function* () {
+		const schemaArgs = (yield* Environment).configuration.schemas
 			.map((schema) => Schema.info(schema).name || "public")
 			.map((schema) => `--schema=${schema}`);
-		const extensionArgs = (yield* _(installedExtensions())).map(
+		const extensionArgs = (yield* installedExtensions()).map(
 			(extension) => `--extension=${extension}`,
 		);
 		const args = [
@@ -91,27 +89,29 @@ function dumpStructure() {
 			"--no-owner",
 			...schemaArgs,
 			...extensionArgs,
-			`${yield* _(databaseInConfig())}`,
+			`${yield* databaseInConfig()}`,
 		];
 
-		const dumpPath = yield* _(databaseDumpPath());
+		const dumpPath = yield* databaseDumpPath();
 
 		mkdirSync(path.join(path.dirname(dumpPath)), {
 			recursive: true,
 		});
 
-		yield* _(
-			pipeCommandStdoutToWritable("pg_dump", args, new DumpWritable(dumpPath)),
+		yield* pipeCommandStdoutToWritable(
+			"pg_dump",
+			args,
+			new DumpWritable(dumpPath),
 		);
 	});
 }
 
 function databaseInConfig() {
-	return Effect.gen(function* (_) {
-		const db = yield* _(DbClients);
+	return Effect.gen(function* () {
+		const db = yield* DbClients;
 		if (db.currentEnvironment.databaseName === "") {
-			return yield* _(
-				Effect.fail(new Error("Database not defined in configuration.")),
+			return yield* Effect.fail(
+				new Error("Database not defined in configuration."),
 			);
 		}
 		return db.currentEnvironment.databaseName;
@@ -132,8 +132,8 @@ function databaseSearchPath() {
 }
 
 function databaseDumpPath() {
-	return Effect.gen(function* (_) {
-		const environment = yield* _(Environment);
+	return Effect.gen(function* () {
+		const environment = yield* Environment;
 		return path.join(
 			environment.folder,
 			"dumps",

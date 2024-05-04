@@ -20,44 +20,40 @@ import { allMigrations } from "./migration.js";
 import { deletePendingMigrations, pendingMigrations } from "./pending.js";
 
 export function rollback() {
-	return Effect.gen(function* (_) {
-		const executedMigrations = yield* _(executedMigrationsWithCheck());
+	return Effect.gen(function* () {
+		const executedMigrations = yield* executedMigrationsWithCheck();
 
 		if (executedMigrations.length === 0) {
 			p.log.info("Nothing to rollback.");
-			return yield* _(Effect.succeed(true));
+			return yield* Effect.succeed(true);
 		}
 
 		p.log.info(`You have ${executedMigrations.length} migrations applied.`);
-		const promptResult = yield* _(promptRollback(executedMigrations, 10));
+		const promptResult = yield* promptRollback(executedMigrations, 10);
 
-		yield* _(confirmRollback(promptResult.migrationNames));
+		yield* confirmRollback(promptResult.migrationNames);
 
-		yield* _(
-			confirmRollbackWithScafoldedMigrations(
-				migrationInfoToMigration(executedMigrations),
-			),
+		yield* confirmRollbackWithScafoldedMigrations(
+			migrationInfoToMigration(executedMigrations),
 		);
 
-		const migration = yield* _(migrateTo(promptResult.downTo));
+		const migration = yield* migrateTo(promptResult.downTo);
 		if (!migration) {
-			return yield* _(Effect.succeed(false));
+			return yield* Effect.succeed(false);
 		}
 
 		p.log.info("Pending migrations after rollback:");
 
-		yield* _(pendingMigrations());
+		yield* pendingMigrations();
 
-		if (yield* _(confirmDelete())) {
-			yield* _(
-				nameAndPath(
-					executedMigrations.filter((r) =>
-						promptResult.migrationNames.includes(r.name),
-					),
-				).pipe(Effect.tap(deletePendingMigrations)),
-			);
+		if (yield* confirmDelete()) {
+			yield* nameAndPath(
+				executedMigrations.filter((r) =>
+					promptResult.migrationNames.includes(r.name),
+				),
+			).pipe(Effect.tap(deletePendingMigrations));
 		}
-		yield* _(Effect.succeed(true));
+		yield* Effect.succeed(true);
 	});
 }
 
@@ -88,12 +84,12 @@ function confirmRollback(migrations: string[]) {
 }
 
 function confirmDelete() {
-	return Effect.gen(function* (_) {
-		const confirm = yield* _(
-			Effect.tryPromise(() => confirmDeletePendingMigrationsPrompt()),
+	return Effect.gen(function* () {
+		const confirm = yield* Effect.tryPromise(() =>
+			confirmDeletePendingMigrationsPrompt(),
 		);
 		if (typeof confirm === "symbol") {
-			yield* _(cancelOperation());
+			yield* cancelOperation();
 		}
 		assertBoolean(confirm);
 		return confirm;
@@ -121,14 +117,12 @@ function migrationsForPrompt(
 }
 
 function promptRollback(migrations: readonly MigrationInfo[], limit: number) {
-	return Effect.gen(function* (_) {
-		const migration = yield* _(
-			Effect.tryPromise(() =>
-				rollbackMigrationPrompt(migrationsForPrompt(migrations, limit)),
-			),
+	return Effect.gen(function* () {
+		const migration = yield* Effect.tryPromise(() =>
+			rollbackMigrationPrompt(migrationsForPrompt(migrations, limit)),
 		);
 		if (typeof migration === "symbol") {
-			yield* _(cancelOperation());
+			yield* cancelOperation();
 		}
 		const findMigrationIndex = migrations.findIndex(
 			(m) => m.name === migration,
@@ -149,31 +143,29 @@ function promptRollback(migrations: readonly MigrationInfo[], limit: number) {
 function confirmRollbackWithScafoldedMigrations(
 	migrations: Required<Migration>[],
 ) {
-	return Effect.gen(function* (_) {
+	return Effect.gen(function* () {
 		if (migrations.every((r) => !r.scaffold)) {
 			return;
 		}
 		const scaffoldedMigrations = migrations
 			.filter((r) => r.scaffold)
 			.map((r) => r.name!);
-		return yield* _(
-			Effect.tryPromise(() =>
-				confirmRollbackWithScaffoldedMigrationsPrompt(scaffoldedMigrations),
-			).pipe(
-				Effect.flatMap((proceedWithSquash) => {
-					if (typeof proceedWithSquash === "symbol" || !proceedWithSquash) {
-						return cancelOperation();
-					}
-					return Effect.succeed(true);
-				}),
-			),
+		return yield* Effect.tryPromise(() =>
+			confirmRollbackWithScaffoldedMigrationsPrompt(scaffoldedMigrations),
+		).pipe(
+			Effect.flatMap((proceedWithSquash) => {
+				if (typeof proceedWithSquash === "symbol" || !proceedWithSquash) {
+					return cancelOperation();
+				}
+				return Effect.succeed(true);
+			}),
 		);
 	});
 }
 
 function nameAndPath(migrations: MigrationInfo[]) {
-	return Effect.gen(function* (_) {
-		const env = yield* _(Environment);
+	return Effect.gen(function* () {
+		const env = yield* Environment;
 		return migrations.map((rev) => ({
 			name: rev.name,
 			path: path.join(env.schemaMigrationsFolder, `${rev.name}.ts`),

@@ -73,8 +73,8 @@ function sortChangesetsBySchemaPriority(
 	changeset: Changeset[],
 	mode: "up" | "down" = "up",
 ) {
-	return Effect.gen(function* (_) {
-		const schemaPriorities = yield* _(schemaDependencies());
+	return Effect.gen(function* () {
+		const schemaPriorities = yield* schemaDependencies();
 		const schemaOrderIndex = schemaPriorities.reduce(
 			(acc, name, index) => {
 				acc[name] = index;
@@ -99,10 +99,8 @@ function sortChangesetsBySchemaPriority(
 }
 
 function extractMigrationOps(changesets: Changeset[]) {
-	return Effect.gen(function* (_) {
-		const sortForUp = yield* _(
-			sortChangesetsBySchemaPriority(changesets, "up"),
-		);
+	return Effect.gen(function* () {
+		const sortForUp = yield* sortChangesetsBySchemaPriority(changesets, "up");
 
 		const up = sortForUp
 			.filter(
@@ -113,8 +111,9 @@ function extractMigrationOps(changesets: Changeset[]) {
 				changeset.up.map((u) => u.join("\n    .")).join("\n\n  "),
 			);
 
-		const sortForDown = yield* _(
-			sortChangesetsBySchemaPriority(reverseChangeset(sortForUp), "down"),
+		const sortForDown = yield* sortChangesetsBySchemaPriority(
+			reverseChangeset(sortForUp),
+			"down",
 		);
 
 		const down = sortForDown

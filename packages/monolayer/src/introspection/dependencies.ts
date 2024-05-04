@@ -123,13 +123,11 @@ export function localSchemaTableDependencies(
 }
 
 export function schemaDependencies() {
-	return Effect.gen(function* (_) {
-		const schemas = yield* _(configurationSchemas());
-		const dbClients = yield* _(DbClients);
-		const remoteSchemaDeps = yield* _(
-			Effect.tryPromise(() =>
-				databaseSchemaDependencies(dbClients.currentEnvironment.kysely),
-			),
+	return Effect.gen(function* () {
+		const schemas = yield* configurationSchemas();
+		const dbClients = yield* DbClients;
+		const remoteSchemaDeps = yield* Effect.tryPromise(() =>
+			databaseSchemaDependencies(dbClients.currentEnvironment.kysely),
 		);
 		const localSchemaDeps = localSchemaDependencies(schemas);
 		return [...new Set([...remoteSchemaDeps, ...localSchemaDeps])].reverse();

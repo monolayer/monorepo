@@ -32,13 +32,11 @@ export class DbClients extends Context.Tag("DbClients")<
 export function dbClientsLayer() {
 	return Layer.effect(
 		DbClients,
-		Effect.gen(function* (_) {
+		Effect.gen(function* () {
 			return {
-				currentEnvironment: dbClientEnvironmentProperties(
-					yield* _(Environment),
-				),
+				currentEnvironment: dbClientEnvironmentProperties(yield* Environment),
 				developmentEnvironment: dbClientEnvironmentProperties(
-					yield* _(DevEnvironment),
+					yield* DevEnvironment,
 				),
 			};
 		}),

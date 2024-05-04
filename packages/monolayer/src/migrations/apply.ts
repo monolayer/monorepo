@@ -8,10 +8,10 @@ import { Migrator } from "../services/migrator.js";
 import { validateMigrationDependencies } from "./validate.js";
 
 export function applyMigrations() {
-	return Effect.gen(function* (_) {
-		const result = yield* _(migrate());
+	return Effect.gen(function* () {
+		const result = yield* migrate();
 		if (result) {
-			yield* _(dumpDatabase());
+			yield* dumpDatabase();
 		}
 		return result;
 	});

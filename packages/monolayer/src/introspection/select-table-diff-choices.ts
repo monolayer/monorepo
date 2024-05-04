@@ -6,7 +6,7 @@ import { IntrospectionContext, TablesToRename } from "./introspect-schemas.js";
 export function selectTableDiffChoicesInteractive(
 	context: IntrospectionContext,
 ) {
-	return Effect.gen(function* (_) {
+	return Effect.gen(function* () {
 		if (
 			context.tableDiff.deleted.length === 0 ||
 			context.tableDiff.added.length === 0
@@ -14,18 +14,16 @@ export function selectTableDiffChoicesInteractive(
 			return [] as TablesToRename;
 		}
 
-		const tablesToRename = yield* _(
-			Effect.tryPromise(() =>
-				tableDiffPrompt(context.tableDiff, context.schemaName),
-			).pipe(
-				Effect.flatMap((tableDiffResult) => {
-					if (typeof tableDiffResult === "symbol") {
-						return Effect.fail(new PromptCancelError());
-					} else {
-						return Effect.succeed(tableDiffResult);
-					}
-				}),
-			),
+		const tablesToRename = yield* Effect.tryPromise(() =>
+			tableDiffPrompt(context.tableDiff, context.schemaName),
+		).pipe(
+			Effect.flatMap((tableDiffResult) => {
+				if (typeof tableDiffResult === "symbol") {
+					return Effect.fail(new PromptCancelError());
+				} else {
+					return Effect.succeed(tableDiffResult);
+				}
+			}),
 		);
 		context.tablesToRename = tablesToRename.map((tableToRename) => {
 			return {

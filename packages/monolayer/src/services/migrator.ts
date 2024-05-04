@@ -18,9 +18,9 @@ export class Migrator extends Context.Tag("Migrator")<
 export function migratorLayer() {
 	return Layer.effect(
 		Migrator,
-		Effect.gen(function* (_) {
-			const environment = yield* _(Environment);
-			const dbClients = yield* _(DbClients);
+		Effect.gen(function* () {
+			const environment = yield* Environment;
+			const dbClients = yield* DbClients;
 			return {
 				instance: new KyselyMigrator({
 					db: dbClients.currentEnvironment.kysely,

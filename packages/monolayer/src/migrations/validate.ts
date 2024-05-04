@@ -17,9 +17,9 @@ export function validateMigrationDependencies() {
 }
 
 function getMigrationInfo() {
-	return Effect.gen(function* (_) {
-		const migrator = yield* _(Migrator);
-		return yield* _(Effect.tryPromise(() => migrator.instance.getMigrations()));
+	return Effect.gen(function* () {
+		const migrator = yield* Migrator;
+		return yield* Effect.tryPromise(() => migrator.instance.getMigrations());
 	});
 }
 
@@ -89,16 +89,14 @@ class MigrationDependencyError extends AggregateError {
 }
 
 function validateMigrations(migrations: Required<Migration>[]) {
-	return Effect.gen(function* (_) {
+	return Effect.gen(function* () {
 		const dependencyErrors = mapMigrationDependencies(migrations);
 		if (
 			dependencyErrors.multipleMigrationsNoDependency.length > 0 ||
 			Object.keys(dependencyErrors.migrationsWithMoreThanOneDependant).length >
 				0
 		) {
-			return yield* _(
-				Effect.die(new MigrationDependencyError(dependencyErrors)),
-			);
+			return yield* Effect.die(new MigrationDependencyError(dependencyErrors));
 		}
 		return true;
 	});

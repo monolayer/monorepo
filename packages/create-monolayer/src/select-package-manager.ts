@@ -54,9 +54,9 @@ type PackageManagerSelectOptions = {
 
 export function selectPackageManager() {
 	return Effect.gen(function* (_) {
-		const packageEnv = yield* _(PackageInstallEnvironment);
-		const packageManager = yield* _(
-			Effect.tryPromise(() => askUserPackageManager()),
+		const packageEnv = yield* PackageInstallEnvironment;
+		const packageManager = yield* Effect.tryPromise(() =>
+			askUserPackageManager(),
 		);
 		if (typeof packageManager === "string") {
 			switch (packageManager) {
@@ -74,9 +74,9 @@ export function selectPackageManager() {
 					break;
 			}
 		} else {
-			return yield* _(Effect.fail(new PromptCancelError()));
+			return yield* Effect.fail(new PromptCancelError());
 		}
-		return yield* _(Effect.succeed(true));
+		return yield* Effect.succeed(true);
 	});
 }
 

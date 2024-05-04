@@ -15,8 +15,8 @@ export function installPackage(
 		Effect.flatMap(checkPackageInstallation),
 		Effect.tap((result) =>
 			Effect.if(result.installed, {
-				onTrue: Effect.succeed(true),
-				onFalse: install({ ...result, dev: options.development }),
+				onTrue: () => Effect.succeed(true),
+				onFalse: () => install({ ...result, dev: options.development }),
 			}),
 		),
 	);

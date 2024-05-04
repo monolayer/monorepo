@@ -13,13 +13,11 @@ import { devEnvirinmentDbClient } from "~/services/db-clients.js";
 import { camelCaseOptions } from "~/services/environment.js";
 
 export function introspectRemote(schemaName: string) {
-	return Effect.gen(function* (_) {
-		const kysely = yield* _(devEnvirinmentDbClient("kyselyNoCamelCase"));
-		const camelCase = (yield* _(camelCaseOptions())) ?? { enabled: false };
-		return yield* _(
-			Effect.tryPromise(() =>
-				introspectRemoteSchema(kysely, toSnakeCase(schemaName, camelCase)),
-			),
+	return Effect.gen(function* () {
+		const kysely = yield* devEnvirinmentDbClient("kyselyNoCamelCase");
+		const camelCase = (yield* camelCaseOptions()) ?? { enabled: false };
+		return yield* Effect.tryPromise(() =>
+			introspectRemoteSchema(kysely, toSnakeCase(schemaName, camelCase)),
 		);
 	});
 }
@@ -29,8 +27,8 @@ export function introspectLocal(
 	remote: SchemaMigrationInfo,
 	allSchemas: AnySchema[],
 ) {
-	return Effect.gen(function* (_) {
-		const camelCase = yield* _(camelCaseOptions());
+	return Effect.gen(function* () {
+		const camelCase = yield* camelCaseOptions();
 		const schemaName = Schema.info(schema).name || "public";
 		return introspectLocalSchema(
 			schema,
@@ -60,12 +58,15 @@ export type IntrospectionContext = {
 };
 
 export function introspectSchemas(schema: AnySchema, allSchemas: AnySchema[]) {
-	return Effect.gen(function* (_) {
-		const introspectedRemote = yield* _(
-			introspectRemote(Schema.info(schema).name ?? "public"),
+	return Effect.gen(function* () {
+		const introspectedRemote = yield* introspectRemote(
+			Schema.info(schema).name ?? "public",
 		);
-		const introspectedLocalSchema = yield* _(
-			introspectLocal(schema, introspectedRemote, allSchemas),
+
+		const introspectedLocalSchema = yield* introspectLocal(
+			schema,
+			introspectedRemote,
+			allSchemas,
 		);
 
 		const localTables = Object.keys(introspectedLocalSchema.table);
@@ -91,8 +92,8 @@ export function introspectSchemas(schema: AnySchema, allSchemas: AnySchema[]) {
 }
 
 export function renameMigrationInfo(context: IntrospectionContext) {
-	return Effect.gen(function* (_) {
-		const camelCase = yield* _(camelCaseOptions());
+	return Effect.gen(function* () {
+		const camelCase = yield* camelCaseOptions();
 		context.remote = renameTables(
 			context.remote,
 			context.tablesToRename,

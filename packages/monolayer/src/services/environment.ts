@@ -48,21 +48,17 @@ export function devEnvironmentLayer(configurationName: string) {
 }
 
 function environmentGenerator(environment: string, configurationName: string) {
-	return Effect.gen(function* (_) {
-		const monolayer = yield* _(
-			Effect.promise(async () => await importConfig()),
-		);
-		const configurations = yield* _(
-			Effect.promise(async () => await importConfigurations()),
+	return Effect.gen(function* () {
+		const monolayer = yield* Effect.promise(async () => await importConfig());
+		const configurations = yield* Effect.promise(
+			async () => await importConfigurations(),
 		);
 		const environmentConfigForConnection = configurations;
 
 		if (environmentConfigForConnection === undefined) {
 			p.log.error(color.red("Error"));
-			return yield* _(
-				Effect.fail(
-					`No configurations found. Check your configuration.ts file.`,
-				),
+			return yield* Effect.fail(
+				`No configurations found. Check your configuration.ts file.`,
 			);
 		}
 
@@ -70,19 +66,15 @@ function environmentGenerator(environment: string, configurationName: string) {
 
 		if (configuration === undefined) {
 			p.log.error(color.red("Error"));
-			return yield* _(
-				Effect.fail(
-					`Configuration ${configurationName} not found. Check your configuration.ts file.`,
-				),
+			return yield* Effect.fail(
+				`Configuration ${configurationName} not found. Check your configuration.ts file.`,
 			);
 		}
 		const environmentConfig = configuration.environments[environment];
 		if (environmentConfig === undefined) {
 			p.log.error(color.red("Error"));
-			return yield* _(
-				Effect.fail(
-					`Environment: '${environment}' missing in connector ${configurationName}. Check your configuration.ts file.`,
-				),
+			return yield* Effect.fail(
+				`Environment: '${environment}' missing in connector ${configurationName}. Check your configuration.ts file.`,
 			);
 		}
 		return {
@@ -103,8 +95,8 @@ function environmentGenerator(environment: string, configurationName: string) {
 }
 
 export function schemaMigrationsFolder() {
-	return Effect.gen(function* (_) {
-		const environment = yield* _(Environment);
+	return Effect.gen(function* () {
+		const environment = yield* Environment;
 		return environment.schemaMigrationsFolder;
 	});
 }
@@ -118,8 +110,8 @@ export function camelCaseOptions() {
 }
 
 export function configurationSchemas() {
-	return Effect.gen(function* (_) {
-		const environment = yield* _(DevEnvironment);
+	return Effect.gen(function* () {
+		const environment = yield* DevEnvironment;
 		return environment.configuration.schemas;
 	});
 }

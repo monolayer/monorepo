@@ -43,20 +43,20 @@ type Renames = {
 };
 
 function iterateSchemas() {
-	return Effect.gen(function* (_) {
-		const schemas = yield* _(configurationSchemas());
+	return Effect.gen(function* () {
+		const schemas = yield* configurationSchemas();
 		const all: Renames = {
 			tablesToRename: [],
 			columnsToRename: {},
 		};
 		for (const schema of schemas) {
-			const introspectionContext = yield* _(introspectSchemas(schema, schemas));
-			yield* _(selectTableDiffChoicesInteractive(introspectionContext));
-			yield* _(selectColumnDiffChoicesInteractive(introspectionContext));
+			const introspectionContext = yield* introspectSchemas(schema, schemas);
+			yield* selectTableDiffChoicesInteractive(introspectionContext);
+			yield* selectColumnDiffChoicesInteractive(introspectionContext);
 			all.tablesToRename.push(...introspectionContext.tablesToRename);
 			Object.assign(all.columnsToRename, introspectionContext.columnsToRename);
 		}
-		return yield* _(Effect.succeed(all));
+		return yield* Effect.succeed(all);
 	});
 }
 

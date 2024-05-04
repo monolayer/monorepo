@@ -56,19 +56,17 @@ export class MigrationError extends TypeError {
 }
 
 export function migrationName() {
-	return Effect.gen(function* (_) {
-		const migrationName = yield* _(
-			Effect.tryPromise(() => migrationNamePrompt()),
-		);
+	return Effect.gen(function* () {
+		const migrationName = yield* Effect.tryPromise(() => migrationNamePrompt());
 		if (typeof migrationName !== "string") {
-			return yield* _(Effect.fail(new PromptCancelError()));
+			return yield* Effect.fail(new PromptCancelError());
 		}
 		return kebabCase(migrationName);
 	});
 }
 export function migrationDependency() {
-	return Effect.gen(function* (_) {
-		const migrations = yield* _(allMigrations());
+	return Effect.gen(function* () {
+		const migrations = yield* allMigrations();
 		return migrations.map((m) => m.name).slice(-1)[0] ?? "NO_DEPENDENCY";
 	});
 }

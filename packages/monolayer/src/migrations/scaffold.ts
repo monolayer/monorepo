@@ -6,9 +6,9 @@ import { Environment } from "../services/environment.js";
 import { migrationDependency, migrationName } from "./migration.js";
 
 export function scaffoldMigration() {
-	return Effect.gen(function* (_) {
-		const environment = yield* _(Environment);
-		const name = yield* _(migrationName());
+	return Effect.gen(function* () {
+		const environment = yield* Environment;
+		const name = yield* migrationName();
 		const timestamp = new Date()
 			.toISOString()
 			.replace(/[-:]/g, "")
@@ -20,7 +20,7 @@ export function scaffoldMigration() {
 
 		const content = nunjucks
 			.compile(migrationTemplate)
-			.render({ dependsOn: yield* _(migrationDependency()) });
+			.render({ dependsOn: yield* migrationDependency() });
 		createFile(filePath, content, true);
 
 		return filePath;

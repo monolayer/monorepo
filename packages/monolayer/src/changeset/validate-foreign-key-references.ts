@@ -11,7 +11,7 @@ export function validateForeignKeyReferences(
 	schema: AnySchema,
 	allSchemas: AnySchema[],
 ) {
-	return Effect.gen(function* (_) {
+	return Effect.gen(function* () {
 		for (const [tableName, table] of Object.entries(schema.tables)) {
 			const foreignKeys = tableInfo(table).definition.constraints?.foreignKeys;
 			if (foreignKeys === undefined) {
@@ -22,13 +22,13 @@ export function validateForeignKeyReferences(
 				if (
 					findTableInSchema(foreignKeyTargetTable, allSchemas) === undefined
 				) {
-					return yield* _(
-						Effect.fail(new ForeignKeyReferencedTableMissing(tableName)),
+					return yield* Effect.fail(
+						new ForeignKeyReferencedTableMissing(tableName),
 					);
 				}
 			}
 		}
-		return yield* _(Effect.succeed(true));
+		return yield* Effect.succeed(true);
 	});
 }
 

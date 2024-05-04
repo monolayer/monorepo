@@ -104,10 +104,10 @@ function deletePendingMigration(migration: PendingMigration) {
 }
 
 export function localPendingSchemaMigrations() {
-	return Effect.gen(function* (_) {
-		const folder = yield* _(schemaMigrationsFolder());
+	return Effect.gen(function* () {
+		const folder = yield* schemaMigrationsFolder();
 
-		return (yield* _(allMigrations()))
+		return (yield* allMigrations())
 			.filter(byNotExecuted)
 			.map((m) => migrationNameAndPath(m, folder));
 	});
