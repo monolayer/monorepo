@@ -2,6 +2,7 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { printChangesetSummary } from "~/changeset/print-changeset-summary.js";
 import { MigrationOpPriority, type Changeset } from "~/changeset/types.js";
+import { validateUniqueSchemaName } from "~/changeset/validate-unique-schema-name.js";
 import { computeExtensionChangeset } from "~/database/extension/changeset.js";
 import { schemaDependencies } from "~/introspection/dependencies.js";
 import { renderToFile } from "~/migrations/render.js";
@@ -11,6 +12,7 @@ import { migrationDependency, migrationName } from "./migration.js";
 
 export function generateMigration(name?: string) {
 	return DevEnvironment.pipe(
+		Effect.tap((env) => validateUniqueSchemaName(env.configuration.schemas)),
 		Effect.flatMap((environment) =>
 			Effect.all([changeset(), computeExtensionChangeset()])
 				.pipe(
