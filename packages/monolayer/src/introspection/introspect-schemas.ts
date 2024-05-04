@@ -1,4 +1,5 @@
 import { Effect } from "effect";
+import { toSnakeCase } from "~/changeset/helpers.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { sortTableDependencies } from "~/introspection/dependencies.js";
 import {
@@ -14,8 +15,11 @@ import { camelCaseOptions } from "~/services/environment.js";
 export function introspectRemote(schemaName: string) {
 	return Effect.gen(function* (_) {
 		const kysely = yield* _(devEnvirinmentDbClient("kyselyNoCamelCase"));
+		const camelCase = (yield* _(camelCaseOptions())) ?? { enabled: false };
 		return yield* _(
-			Effect.tryPromise(() => introspectRemoteSchema(kysely, schemaName)),
+			Effect.tryPromise(() =>
+				introspectRemoteSchema(kysely, toSnakeCase(schemaName, camelCase)),
+			),
 		);
 	});
 }

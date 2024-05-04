@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import { Kysely } from "kysely";
+import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { schemaInDb } from "~/database/database_schemas/introspection.js";
 import { dbExtensionInfo } from "~/database/extension/introspection.js";
@@ -111,7 +112,10 @@ export function introspectLocalSchema(
 		},
 		enums: localEnumInfo(schema),
 		tablePriorities: localSchemaTableDependencies(schema, allSchemas),
-		schemaInfo: schemaName === "public" ? {} : { [schemaName]: true },
+		schemaInfo:
+			schemaName === "public"
+				? {}
+				: { [toSnakeCase(schemaName, camelCase)]: true },
 		foreignKeyDefinitions,
 	};
 }

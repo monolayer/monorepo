@@ -12,6 +12,7 @@ import {
 	type DropTableTableDiff,
 } from "../database/schema/table/changeset.js";
 import { migrationOpGenerators } from "./generators.js";
+import { toSnakeCase } from "./helpers.js";
 import { Changeset } from "./types.js";
 
 interface Generator {
@@ -59,7 +60,7 @@ export function schemaChangeset(
 		db: remote,
 		addedTables: addedTables,
 		droppedTables: droppedTables,
-		schemaName: schemaName,
+		schemaName: toSnakeCase(schemaName, camelCaseOptions),
 		camelCaseOptions,
 		tablesToRename,
 		columnsToRename,

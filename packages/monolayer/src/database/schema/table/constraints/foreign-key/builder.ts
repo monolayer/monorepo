@@ -116,7 +116,8 @@ export class ForeignKeyBuilder {
 			this.context.tablesToRename,
 			this.foreignKey.targetTable.split(".")[0]!,
 		);
-		return `${this.foreignKey.targetTable.split(".")[0]}.${renamedTable}`;
+		const targetTable = this.foreignKey.targetTable.split(".")[0] ?? "";
+		return `${toSnakeCase(targetTable, this.context.camelCase)}.${renamedTable}`;
 	}
 
 	#columns(mode: BuildMode) {
