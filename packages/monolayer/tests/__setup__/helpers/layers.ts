@@ -13,12 +13,6 @@ import pg from "pg";
 import { env } from "process";
 import type { Configuration } from "~/configuration.js";
 import { DbClients, dbClientsLayer } from "~/services/db-clients.js";
-import {
-	DevEnvironment,
-	Environment,
-	devEnvironmentLayer,
-	environmentLayer,
-} from "~/services/environment.js";
 import { Migrator, migratorLayer } from "~/services/migrator.js";
 import { globalPool } from "../setup.js";
 dotenv.config();
@@ -100,60 +94,6 @@ function mockedMigratorLayer(
 	);
 }
 
-function mockedEnvironmentLayer(
-	schemaMigrationsFolder: string,
-	connector: EnvironmentLessConnector,
-) {
-	return Layer.effect(
-		Environment,
-		// eslint-disable-next-line require-yield
-		Effect.gen(function* () {
-			return {
-				name: "development",
-				configurationName: "default",
-				folder: "migrations",
-				schemaMigrationsFolder,
-				configuration: {
-					schemas: connector.schemas,
-					extensions: connector.extensions,
-					environments: {
-						development: {},
-					},
-				},
-				configurationConfig: {},
-				camelCasePlugin: connector.camelCasePlugin,
-			};
-		}),
-	);
-}
-
-function mockedDevEnvironmentLayer(
-	schemaMigrationsFolder: string,
-	connector: EnvironmentLessConnector,
-) {
-	return Layer.effect(
-		DevEnvironment,
-		// eslint-disable-next-line require-yield
-		Effect.gen(function* () {
-			return {
-				name: "development",
-				configurationName: "default",
-				folder: "migrations",
-				schemaMigrationsFolder,
-				configuration: {
-					schemas: connector.schemas,
-					extensions: connector.extensions,
-					environments: {
-						development: {},
-					},
-				},
-				configurationConfig: {},
-				camelCasePlugin: connector.camelCasePlugin,
-			};
-		}),
-	);
-}
-
 export type EnvironmentLessConnector = Omit<Configuration, "environments">;
 
 export function newLayers(
@@ -169,13 +109,9 @@ export function newLayers(
 		Layer.provideMerge(
 			mockedDbClientsLayer(databaseName, connector.camelCasePlugin),
 		),
-		Layer.provideMerge(mockedEnvironmentLayer(migrationFolder, connector)),
-		Layer.provideMerge(mockedDevEnvironmentLayer(migrationFolder, connector)),
 	);
 }
 
 export const layers = migratorLayer().pipe(
 	Layer.provideMerge(dbClientsLayer()),
-	Layer.provideMerge(environmentLayer("development", "default")),
-	Layer.provideMerge(devEnvironmentLayer("default")),
 );

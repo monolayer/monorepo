@@ -2,10 +2,10 @@ import { Effect } from "effect";
 import fs from "fs/promises";
 import path from "path";
 import { pgQuery } from "~/services/db-clients.js";
+import { appEnvironment } from "~/state/app-environment.js";
 import { checkWithFail } from "../cli/check-with-fail.js";
 import { spinnerTask } from "../cli/spinner-task.js";
 import { DbClients } from "../services/db-clients.js";
-import { Environment } from "../services/environment.js";
 import { createDatabase } from "./create.js";
 import { dropDatabase } from "./drop.js";
 
@@ -18,7 +18,7 @@ export function structureLoad() {
 }
 
 function checkStructureFile() {
-	return Environment.pipe(
+	return appEnvironment.pipe(
 		Effect.flatMap((environment) =>
 			checkWithFail({
 				name: `Check structure.sql file`,
@@ -55,7 +55,7 @@ function checkStructureFile() {
 }
 
 function restoreDatabaseFromStructureFile() {
-	return Effect.all([Environment, DbClients]).pipe(
+	return Effect.all([appEnvironment, DbClients]).pipe(
 		Effect.flatMap(([environment, dbClients]) =>
 			spinnerTask(
 				`Restore ${dbClients.currentEnvironment.databaseName} from structure.${environment.configurationName}.sql`,

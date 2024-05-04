@@ -1,6 +1,8 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { loadEnv } from "~/cli/cli-action.js";
 import { migrate } from "~/migrations/apply.js";
+import { AppEnvironment } from "~/state/app-environment.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -20,7 +22,11 @@ describe("migrate", () => {
 
 	test<ProgramContext>("applies all pending migrations", async (context) => {
 		const migrateResult = await Effect.runPromise(
-			Effect.provide(programWithErrorCause(migrate()), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(migrate()), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		expect(migrateResult).toBe(true);
@@ -40,7 +46,11 @@ describe("migrate", () => {
 
 		expect(
 			await Effect.runPromise(
-				Effect.provide(programWithErrorCause(migrate()), layers),
+				Effect.provideServiceEffect(
+					Effect.provide(programWithErrorCause(migrate()), layers),
+					AppEnvironment,
+					Ref.make(await loadEnv("development", "default")),
+				),
 			),
 		).toBe(true);
 	});

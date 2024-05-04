@@ -1,8 +1,10 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import { type MigrationInfo } from "kysely";
 import type { Equal, Expect } from "type-testing";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { loadEnv } from "~/cli/cli-action.js";
 import { allMigrations } from "~/migrations/migration.js";
+import { AppEnvironment } from "~/state/app-environment.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -25,8 +27,13 @@ describe("allMigrations", () => {
 		await context.migrator.migrateUp();
 		await context.kysely.destroy();
 
-		const program = programWithErrorCause(allMigrations());
-		const result = await Effect.runPromise(Effect.provide(program, layers));
+		const program = Effect.provideServiceEffect(
+			Effect.provide(programWithErrorCause(allMigrations()), layers),
+			AppEnvironment,
+			Ref.make(await loadEnv("development", "default")),
+		);
+
+		const result = await Effect.runPromise(program);
 
 		type resultType = typeof result;
 		type Expected = readonly MigrationInfo[];

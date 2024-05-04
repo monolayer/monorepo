@@ -1,8 +1,10 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import { readFileSync, rmSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { loadEnv } from "~/cli/cli-action.js";
 import { scaffoldMigration } from "~/migrations/scaffold.js";
+import { AppEnvironment } from "~/state/app-environment.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -26,8 +28,13 @@ describe("scaffoldMigration", () => {
 			recursive: true,
 			force: true,
 		});
+
 		const result = await Effect.runPromise(
-			Effect.provide(programWithErrorCause(scaffoldMigration()), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(scaffoldMigration()), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		const expected = `import { Kysely } from "kysely";
@@ -48,7 +55,11 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 	test<ProgramContext>("creates an empty migration file with dependecies", async () => {
 		const result = await Effect.runPromise(
-			Effect.provide(programWithErrorCause(scaffoldMigration()), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(scaffoldMigration()), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		const expected = `import { Kysely } from "kysely";

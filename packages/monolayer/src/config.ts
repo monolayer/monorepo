@@ -34,7 +34,7 @@ export async function importConfig() {
 	return config;
 }
 
-type ConfigurationImport = Record<string, Configuration>;
+export type ConfigurationImport = Record<string, Configuration>;
 
 export type SeedImport = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

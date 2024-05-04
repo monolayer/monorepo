@@ -1,10 +1,11 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {
 	SchemaNameError,
 	validateUniqueSchemaName,
 } from "~/changeset/validate-unique-schema-name.js";
 import { schema } from "~/database/schema/schema.js";
+import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -26,8 +27,26 @@ describe("validate uique schema name", () => {
 			name: "another",
 		});
 
+		const env: AppEnv = {
+			name: "development",
+			configurationName: "default",
+			folder: ".",
+			configuration: {
+				schemas: [dbSchema, anotherSchema],
+				camelCasePlugin: { enabled: false },
+				extensions: [],
+				environments: {
+					development: {},
+				},
+			},
+		};
+
 		const result = Effect.runSync(
-			validateUniqueSchemaName([dbSchema, anotherSchema]),
+			Effect.provideServiceEffect(
+				validateUniqueSchemaName(),
+				AppEnvironment,
+				Ref.make(env),
+			),
 		);
 		expect(result).toBe(true);
 	});
@@ -36,8 +55,26 @@ describe("validate uique schema name", () => {
 		const dbSchema = schema({});
 		const anotherSchema = schema({});
 
+		const env: AppEnv = {
+			name: "development",
+			configurationName: "default",
+			folder: ".",
+			configuration: {
+				schemas: [dbSchema, anotherSchema],
+				camelCasePlugin: { enabled: false },
+				extensions: [],
+				environments: {
+					development: {},
+				},
+			},
+		};
+
 		const result = Effect.runSync(
-			validateUniqueSchemaName([dbSchema, anotherSchema]).pipe(
+			Effect.provideServiceEffect(
+				validateUniqueSchemaName(),
+				AppEnvironment,
+				Ref.make(env),
+			).pipe(
 				Effect.catchAll((error) => {
 					return Effect.succeed(error);
 				}),
@@ -54,8 +91,26 @@ describe("validate uique schema name", () => {
 		const dbSchema = schema({ name: "demo" });
 		const anotherSchema = schema({ name: "demo" });
 
+		const env: AppEnv = {
+			name: "development",
+			configurationName: "default",
+			folder: ".",
+			configuration: {
+				schemas: [dbSchema, anotherSchema],
+				camelCasePlugin: { enabled: false },
+				extensions: [],
+				environments: {
+					development: {},
+				},
+			},
+		};
+
 		const result = Effect.runSync(
-			validateUniqueSchemaName([dbSchema, anotherSchema]).pipe(
+			Effect.provideServiceEffect(
+				validateUniqueSchemaName(),
+				AppEnvironment,
+				Ref.make(env),
+			).pipe(
 				Effect.catchAll((error) => {
 					return Effect.succeed(error);
 				}),

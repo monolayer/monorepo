@@ -6,14 +6,14 @@ import { validateUniqueSchemaName } from "~/changeset/validate-unique-schema-nam
 import { computeExtensionChangeset } from "~/database/extension/changeset.js";
 import { schemaDependencies } from "~/introspection/dependencies.js";
 import { renderToFile } from "~/migrations/render.js";
+import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { changeset } from "../changeset/changeset.js";
-import { DevEnvironment } from "../services/environment.js";
 import { migrationDependency, migrationName } from "./migration.js";
 
 export function generateMigration(name?: string) {
-	return DevEnvironment.pipe(
-		Effect.tap((env) => validateUniqueSchemaName(env.configuration.schemas)),
-		Effect.flatMap((environment) =>
+	return appEnvironmentMigrationsFolder.pipe(
+		Effect.tap(() => validateUniqueSchemaName()),
+		Effect.flatMap((schemaMigrationsFolder) =>
 			Effect.all([changeset(), computeExtensionChangeset()])
 				.pipe(
 					Effect.flatMap(([schemaChangeset, extensionChangeset]) =>
@@ -46,7 +46,7 @@ export function generateMigration(name?: string) {
 															Effect.tap((upDown) => {
 																renderToFile(
 																	upDown,
-																	environment.schemaMigrationsFolder,
+																	schemaMigrationsFolder,
 																	migrationName,
 																	dependency,
 																);

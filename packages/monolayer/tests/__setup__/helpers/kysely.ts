@@ -60,4 +60,5 @@ export interface DbContext {
 	tableNames: string[];
 	dbName: string;
 	folder: string;
+	currentWorkingDirectory: string;
 }

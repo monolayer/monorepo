@@ -1,6 +1,8 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { loadEnv } from "~/cli/cli-action.js";
 import { dropDatabase } from "~/database/drop.js";
+import { AppEnvironment } from "~/state/app-environment.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -26,7 +28,11 @@ describe("dropDatabase", () => {
 		).toEqual(context.dbName);
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(dropDatabase()), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(dropDatabase()), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		expect(

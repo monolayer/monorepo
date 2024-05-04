@@ -5,7 +5,7 @@ import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { foreignKeyOptions } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
 import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 import { DbClients } from "~/services/db-clients.js";
-import { configurationSchemas } from "~/services/environment.js";
+import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
 import { tableInfo } from "./helpers.js";
 import { currentTableName } from "./table-name.js";
 import type { InformationSchemaDB } from "./types.js";
@@ -124,7 +124,7 @@ export function localSchemaTableDependencies(
 
 export function schemaDependencies() {
 	return Effect.gen(function* () {
-		const schemas = yield* configurationSchemas();
+		const schemas = yield* appEnvironmentConfigurationSchemas;
 		const dbClients = yield* DbClients;
 		const remoteSchemaDeps = yield* Effect.tryPromise(() =>
 			databaseSchemaDependencies(dbClients.currentEnvironment.kysely),

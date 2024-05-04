@@ -6,7 +6,7 @@ import type { MigrationInfo } from "kysely";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
-import { schemaMigrationsFolder } from "~/services/environment.js";
+import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
 import { allMigrations } from "./migration.js";
 
@@ -105,7 +105,7 @@ function deletePendingMigration(migration: PendingMigration) {
 
 export function localPendingSchemaMigrations() {
 	return Effect.gen(function* () {
-		const folder = yield* schemaMigrationsFolder();
+		const folder = yield* appEnvironmentMigrationsFolder;
 
 		return (yield* allMigrations())
 			.filter(byNotExecuted)

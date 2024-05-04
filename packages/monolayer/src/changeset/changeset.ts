@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import { type AnySchema } from "~/database/schema/schema.js";
-import { configurationSchemas } from "~/services/environment.js";
+import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
 import {
 	introspectSchemas,
 	renameMigrationInfo,
@@ -15,13 +15,13 @@ import { context } from "./context.js";
 import { validateForeignKeyReferences } from "./validate-foreign-key-references.js";
 
 export function changeset() {
-	return schemaRenamePrompt().pipe(
+	return schemaRenamePrompts().pipe(
 		Effect.flatMap((renames) =>
-			configurationSchemas().pipe(
-				Effect.flatMap((configurationSchema) =>
+			appEnvironmentConfigurationSchemas.pipe(
+				Effect.flatMap((configurationSchemas) =>
 					Effect.all(
-						configurationSchema.flatMap((schema) =>
-							changesetForLocalSchema(schema, configurationSchema, renames),
+						configurationSchemas.flatMap((schema) =>
+							changesetForLocalSchema(schema, configurationSchemas, renames),
 						),
 					).pipe(
 						Effect.flatMap((changesets) =>
@@ -42,9 +42,9 @@ type Renames = {
 	columnsToRename: ColumnsToRename;
 };
 
-function schemaRenamePrompt() {
+function schemaRenamePrompts() {
 	return Effect.gen(function* () {
-		const schemas = yield* configurationSchemas();
+		const schemas = yield* appEnvironmentConfigurationSchemas;
 		const all: Renames = {
 			tablesToRename: [],
 			columnsToRename: {},

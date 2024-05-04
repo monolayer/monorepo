@@ -7,10 +7,13 @@ import { Writable, type WritableOptions } from "stream";
 import { dbExtensionInfo } from "~/database/extension/introspection.js";
 import { Schema } from "~/database/schema/schema.js";
 import { pgQuery } from "~/services/db-clients.js";
+import {
+	appEnvironment,
+	appEnvironmentPgConfig,
+} from "~/state/app-environment.js";
 import { pipeCommandStdoutToWritable } from "../cli/pipe-command-stdout-to-writable.js";
 import { spinnerTask } from "../cli/spinner-task.js";
 import { DbClients } from "../services/db-clients.js";
-import { Environment } from "../services/environment.js";
 
 export function dumpDatabase() {
 	return setPgDumpEnv().pipe(
@@ -61,8 +64,7 @@ function installedExtensions() {
 
 function setPgDumpEnv() {
 	return Effect.gen(function* () {
-		const environment = yield* Environment;
-		const config = environment.configurationConfig;
+		const config = yield* appEnvironmentPgConfig;
 		const parsedConfig =
 			config.connectionString !== undefined
 				? pgConnectionString.parse(config.connectionString)
@@ -77,7 +79,7 @@ function setPgDumpEnv() {
 
 function dumpStructure() {
 	return Effect.gen(function* () {
-		const schemaArgs = (yield* Environment).configuration.schemas
+		const schemaArgs = (yield* appEnvironment).configuration.schemas
 			.map((schema) => Schema.info(schema).name || "public")
 			.map((schema) => `--schema=${schema}`);
 		const extensionArgs = (yield* installedExtensions()).map(
@@ -133,13 +135,13 @@ function databaseSearchPath() {
 
 function databaseDumpPath() {
 	return Effect.gen(function* () {
-		const environment = yield* Environment;
+		const env = yield* appEnvironment;
 		return path.join(
-			environment.folder,
+			env.folder,
 			"dumps",
-			environment.name === "development"
-				? `structure.${environment.configurationName}.sql`
-				: `structure_${environment.name}.${environment.configurationName}.sql`,
+			env.name === "development"
+				? `structure.${env.configurationName}.sql`
+				: `structure_${env.name}.${env.configurationName}.sql`,
 		);
 	});
 }

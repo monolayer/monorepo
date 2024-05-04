@@ -1,11 +1,12 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import type { Layer } from "effect/Layer";
+import path from "path";
 import { expect } from "vitest";
 import { migrate } from "~/migrations/apply.js";
 import { generateMigration } from "~/migrations/generate.js";
 import { DbClients } from "~/services/db-clients.js";
-import type { DevEnvironment, Environment } from "~/services/environment.js";
 import type { Migrator } from "~/services/migrator.js";
+import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";
 import { newLayers, type EnvironmentLessConnector } from "./layers.js";
@@ -25,22 +26,35 @@ export async function testChangesetAndMigrations({
 	configuration: EnvironmentLessConnector;
 	mock?: () => void;
 }) {
-	if (configuration.camelCasePlugin === undefined) {
-		configuration.camelCasePlugin = { enabled: false };
-	}
-
-	const layers = newLayers(context.dbName, context.folder, configuration);
+	const env: AppEnv = {
+		name: "development",
+		configurationName: "default",
+		folder: ".",
+		configuration: {
+			schemas: configuration.schemas,
+			camelCasePlugin: configuration.camelCasePlugin ?? { enabled: false },
+			extensions: configuration.extensions ?? [],
+			environments: {
+				development: {},
+			},
+		},
+	};
+	const layers = newLayers(
+		context.dbName,
+		path.join(context.folder, "migrations", "default"),
+		configuration,
+	);
 
 	mock();
 
-	const result = await runGenerateChangesetMigration(layers);
+	const result = await runGenerateChangesetMigration(layers, env);
 
 	expect(result).toEqual(expected);
 
 	const migrationResult = await runMigrate(layers);
 	expect(migrationResult).toBe(true);
 
-	const afterUpCs = await runGenerateChangesetMigration(layers);
+	const afterUpCs = await runGenerateChangesetMigration(layers, env);
 	expect(afterUpCs).toEqual([]);
 
 	const migrateDownResult = await runMigrateDown(layers);
@@ -50,7 +64,7 @@ export async function testChangesetAndMigrations({
 
 	switch (down) {
 		case "reverse": {
-			const afterDownCs = await runGenerateChangesetMigration(layers);
+			const afterDownCs = await runGenerateChangesetMigration(layers, env);
 			expect(afterDownCs).toEqual(
 				result
 					.reverse()
@@ -59,12 +73,12 @@ export async function testChangesetAndMigrations({
 			break;
 		}
 		case "same": {
-			const afterDownCs = await runGenerateChangesetMigration(layers);
+			const afterDownCs = await runGenerateChangesetMigration(layers, env);
 			expect(afterDownCs).toEqual(result);
 			break;
 		}
 		case "empty": {
-			const afterDownCs = await runGenerateChangesetMigration(layers);
+			const afterDownCs = await runGenerateChangesetMigration(layers, env);
 			expect(afterDownCs).toEqual([]);
 			break;
 		}
@@ -73,14 +87,15 @@ export async function testChangesetAndMigrations({
 }
 
 async function runGenerateChangesetMigration(
-	layers: Layer<
-		Migrator | DbClients | Environment | DevEnvironment,
-		never,
-		never
-	>,
+	layers: Layer<Migrator | DbClients, never, never>,
+	env: AppEnv,
 ) {
 	return Effect.runPromise(
-		Effect.provide(programWithErrorCause(generateMigration()), layers),
+		Effect.provideServiceEffect(
+			Effect.provide(programWithErrorCause(generateMigration()), layers),
+			AppEnvironment,
+			Ref.make(env),
+		),
 	);
 }
 
@@ -94,24 +109,14 @@ function cleanup() {
 	);
 }
 
-async function runMigrate(
-	layers: Layer<
-		Migrator | DbClients | Environment | DevEnvironment,
-		never,
-		never
-	>,
-) {
+async function runMigrate(layers: Layer<Migrator | DbClients, never, never>) {
 	return Effect.runPromise(
 		Effect.provide(programWithErrorCause(migrate()), layers),
 	);
 }
 
 async function runMigrateDown(
-	layers: Layer<
-		Migrator | DbClients | Environment | DevEnvironment,
-		never,
-		never
-	>,
+	layers: Layer<Migrator | DbClients, never, never>,
 ) {
 	return Effect.runPromise(
 		Effect.provide(programWithErrorCause(migrateDownProgram()), layers),

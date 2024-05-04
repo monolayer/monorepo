@@ -1,9 +1,11 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import { readFileSync } from "fs";
 import { sql } from "kysely";
 import nunjucks from "nunjucks";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { loadEnv } from "~/cli/cli-action.js";
 import { dumpDatabaseStructureTask } from "~/database/dump.js";
+import { AppEnvironment } from "~/state/app-environment.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -25,9 +27,13 @@ describe("dumpDatabaseStructure", () => {
 		await context.migrator.migrateUp();
 
 		await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(dumpDatabaseStructureTask()),
-				layers,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(dumpDatabaseStructureTask()),
+					layers,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
 
@@ -52,9 +58,13 @@ describe("dumpDatabaseStructure", () => {
 		await sql`CREATE EXTENSION btree_gin`.execute(context.kysely);
 
 		await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(dumpDatabaseStructureTask()),
-				layers,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(dumpDatabaseStructureTask()),
+					layers,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
 

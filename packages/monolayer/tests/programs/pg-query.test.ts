@@ -1,17 +1,15 @@
 import dotenv from "dotenv";
-import { Effect, Layer } from "effect";
+import { Effect, Layer, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { loadEnv } from "~/cli/cli-action.js";
 import {
 	adminDevPgQuery,
 	adminPgQuery,
 	dbClientsLayer,
 	pgQuery,
 } from "~/services/db-clients.js";
-import {
-	devEnvironmentLayer,
-	environmentLayer,
-} from "~/services/environment.js";
 import { migratorLayer } from "~/services/migrator.js";
+import { AppEnvironment } from "~/state/app-environment.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
@@ -32,30 +30,36 @@ describe("pgQuery", () => {
 	test("configurations", async () => {
 		const layersWithDefaultConfiguration = migratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(environmentLayer("development", "default")),
-			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
 
 		const layersWithStatsConfiguration = migratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(environmentLayer("development", "stats")),
-			Layer.provideMerge(devEnvironmentLayer("stats")),
 		);
 
 		const defaultDatabase = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(pgQuery(`SELECT CURRENT_DATABASE();`)),
-				layersWithDefaultConfiguration,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(pgQuery(`SELECT CURRENT_DATABASE();`)),
+					layersWithDefaultConfiguration,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
+
 		expect(defaultDatabase).toStrictEqual([{ current_database: "d7e08363" }]);
 
 		const statsDatabase = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(pgQuery(`SELECT CURRENT_DATABASE();`)),
-				layersWithStatsConfiguration,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(pgQuery(`SELECT CURRENT_DATABASE();`)),
+					layersWithStatsConfiguration,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "stats")),
 			),
 		);
+
 		expect(statsDatabase).toStrictEqual([
 			{ current_database: "d7e08363_stats" },
 		]);
@@ -64,32 +68,38 @@ describe("pgQuery", () => {
 	test("configuration environments", async () => {
 		const layersWithDefaultConfiguration = migratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(environmentLayer("test", "default")),
-			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
 
 		const layersWithStatsConfiguration = migratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(environmentLayer("test", "stats")),
-			Layer.provideMerge(devEnvironmentLayer("stats")),
 		);
 
 		const defaultDatabase = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(pgQuery(`SELECT CURRENT_DATABASE();`)),
-				layersWithDefaultConfiguration,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(pgQuery(`SELECT CURRENT_DATABASE();`)),
+					layersWithDefaultConfiguration,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("test", "default")),
 			),
 		);
+
 		expect(defaultDatabase).toStrictEqual([
 			{ current_database: "10da7aa4_test" },
 		]);
 
 		const statsDatabase = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(pgQuery(`SELECT CURRENT_DATABASE();`)),
-				layersWithStatsConfiguration,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(pgQuery(`SELECT CURRENT_DATABASE();`)),
+					layersWithStatsConfiguration,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("test", "stats")),
 			),
 		);
+
 		expect(statsDatabase).toStrictEqual([
 			{ current_database: "10da7aa4_stats_test" },
 		]);
@@ -108,60 +118,72 @@ describe("adminPgQuery", () => {
 	test("admin configurations connect to 'postgres'", async () => {
 		const layersWithDefaultConfiguration = migratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(environmentLayer("development", "default")),
-			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
 
 		const layersWithStatsConfiguration = migratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(environmentLayer("development", "stats")),
-			Layer.provideMerge(devEnvironmentLayer("stats")),
 		);
 
 		const defaultDatabase = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
-				layersWithDefaultConfiguration,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
+					layersWithDefaultConfiguration,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
+
 		expect(defaultDatabase).toStrictEqual([{ current_database: "postgres" }]);
 
 		const statsDatabase = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
-				layersWithStatsConfiguration,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
+					layersWithStatsConfiguration,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
+
 		expect(statsDatabase).toStrictEqual([{ current_database: "postgres" }]);
 	});
 
 	test("admin environments connect to 'postgres'", async () => {
 		const layersWithDefaultConfiguration = migratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(environmentLayer("test", "default")),
-			Layer.provideMerge(devEnvironmentLayer("default")),
 		);
 
 		const layersWithStatsConfiguration = migratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(environmentLayer("test", "stats")),
-			Layer.provideMerge(devEnvironmentLayer("stats")),
 		);
 
 		const defaultDatabase = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
-				layersWithDefaultConfiguration,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
+					layersWithDefaultConfiguration,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
+
 		expect(defaultDatabase).toStrictEqual([{ current_database: "postgres" }]);
 
 		const statsDatabase = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
-				layersWithStatsConfiguration,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
+					layersWithStatsConfiguration,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
+
 		expect(statsDatabase).toStrictEqual([{ current_database: "postgres" }]);
 	});
 });
@@ -176,52 +198,63 @@ describe("devAdminPgQuery", () => {
 	});
 
 	test<ProgramContext>("default configurations connect to dev host postgres", async (context) => {
-		const layers = migratorLayer().pipe(
-			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(environmentLayer("test", "default")),
-			Layer.provideMerge(devEnvironmentLayer("default")),
-		);
+		const layers = migratorLayer().pipe(Layer.provideMerge(dbClientsLayer()));
 
 		const pgOneAddr = await context.pool.query(`SELECT inet_server_addr();`);
 		const result = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(adminDevPgQuery(`SELECT inet_server_addr();`)),
-				layers,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(adminDevPgQuery(`SELECT inet_server_addr();`)),
+					layers,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
+
 		expect(result).toStrictEqual(pgOneAddr.rows);
 
 		const statsDatabase = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
-				layers,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(adminDevPgQuery(`SELECT CURRENT_DATABASE();`)),
+					layers,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
 		expect(statsDatabase).toStrictEqual([{ current_database: "postgres" }]);
 	});
 
 	test<ProgramContext>("other configurations connect to dev host postgres", async (context) => {
-		const layers = migratorLayer().pipe(
-			Layer.provideMerge(dbClientsLayer()),
-			Layer.provideMerge(environmentLayer("test", "stats")),
-			Layer.provideMerge(devEnvironmentLayer("stats")),
-		);
+		const layers = migratorLayer().pipe(Layer.provideMerge(dbClientsLayer()));
 
 		const poolAddr = await context.pool.query(`SELECT inet_server_addr();`);
 		const result = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(adminDevPgQuery(`SELECT inet_server_addr();`)),
-				layers,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(adminDevPgQuery(`SELECT inet_server_addr();`)),
+					layers,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
+
 		expect(result).toStrictEqual(poolAddr.rows);
 
 		const statsDatabase = await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
-				layers,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(adminDevPgQuery(`SELECT CURRENT_DATABASE();`)),
+					layers,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
+
 		expect(statsDatabase).toStrictEqual([{ current_database: "postgres" }]);
 	});
 });

@@ -2,8 +2,8 @@ import { Context, Effect, Layer } from "effect";
 import { FileMigrationProvider, Migrator as KyselyMigrator } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
+import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { DbClients } from "./db-clients.js";
-import { Environment } from "./environment.js";
 
 export type MigratorAttributes = {
 	readonly instance: KyselyMigrator;
@@ -19,7 +19,7 @@ export function migratorLayer() {
 	return Layer.effect(
 		Migrator,
 		Effect.gen(function* () {
-			const environment = yield* Environment;
+			const schemaMigrationsFolder = yield* appEnvironmentMigrationsFolder;
 			const dbClients = yield* DbClients;
 			return {
 				instance: new KyselyMigrator({
@@ -27,10 +27,10 @@ export function migratorLayer() {
 					provider: new FileMigrationProvider({
 						fs,
 						path,
-						migrationFolder: environment.schemaMigrationsFolder,
+						migrationFolder: schemaMigrationsFolder,
 					}),
 				}),
-				folder: environment.schemaMigrationsFolder,
+				folder: schemaMigrationsFolder,
 			};
 		}),
 	);

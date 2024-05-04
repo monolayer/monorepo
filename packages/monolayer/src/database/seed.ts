@@ -7,11 +7,11 @@ import { exit } from "process";
 import { type SeedImport } from "~/config.js";
 import { dbTableInfo } from "~/database/schema/table/introspection.js";
 import { localPendingSchemaMigrations } from "~/migrations/pending.js";
+import { appEnvironment } from "~/state/app-environment.js";
 import { changeset } from "../changeset/changeset.js";
 import { checkWithFail } from "../cli/check-with-fail.js";
 import { spinnerTask } from "../cli/spinner-task.js";
 import { DbClients } from "../services/db-clients.js";
-import { Environment } from "../services/environment.js";
 
 type SeedOptions = {
 	disableWarnings?: boolean;
@@ -147,7 +147,7 @@ export class UndefinedSeedFunction extends TaggedClass(
 ) {}
 
 export function importSeedFunction(seedFile: string) {
-	return Environment.pipe(
+	return appEnvironment.pipe(
 		Effect.flatMap((environment) =>
 			Effect.tryPromise(async () => {
 				try {

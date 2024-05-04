@@ -3,11 +3,12 @@ import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import type { QueryResultRow } from "pg";
 import pg from "pg";
 import pgConnectionString from "pg-connection-string";
+import type { PgConfig } from "~/configuration.js";
 import {
-	DevEnvironment,
-	Environment,
-	type EnvironmentProperties,
-} from "./environment.js";
+	appEnvironmentCamelCasePlugin,
+	appEnvironmentPgConfig,
+	appEnvironmentPgConfigDev,
+} from "~/state/app-environment.js";
 
 export type DbClientProperties = {
 	readonly currentEnvironment: DbClientEnvironmentProperties;
@@ -34,17 +35,21 @@ export function dbClientsLayer() {
 		DbClients,
 		Effect.gen(function* () {
 			return {
-				currentEnvironment: dbClientEnvironmentProperties(yield* Environment),
+				currentEnvironment: dbClientEnvironmentProperties(
+					yield* appEnvironmentPgConfig,
+					(yield* appEnvironmentCamelCasePlugin).enabled,
+				),
 				developmentEnvironment: dbClientEnvironmentProperties(
-					yield* DevEnvironment,
+					yield* appEnvironmentPgConfigDev,
+					(yield* appEnvironmentCamelCasePlugin).enabled,
 				),
 			};
 		}),
 	);
 }
 
-function dbClientEnvironmentProperties(environment: EnvironmentProperties) {
-	const pg = poolAndConfig(environment.configurationConfig);
+function dbClientEnvironmentProperties(pgConfig: PgConfig, camelCase: boolean) {
+	const pg = poolAndConfig(pgConfig);
 	return {
 		databaseName: pg.config.database ?? "",
 		pgPool: pg.pool,
@@ -54,10 +59,7 @@ function dbClientEnvironmentProperties(environment: EnvironmentProperties) {
 			dialect: new PostgresDialect({
 				pool: pg.pool,
 			}),
-			plugins:
-				environment.configuration.camelCasePlugin?.enabled === true
-					? [new CamelCasePlugin()]
-					: [],
+			plugins: camelCase === true ? [new CamelCasePlugin()] : [],
 		}),
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		kyselyNoCamelCase: new Kysely<any>({

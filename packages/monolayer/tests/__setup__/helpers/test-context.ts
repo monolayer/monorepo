@@ -25,6 +25,7 @@ import { dbNameForTest, programFolder } from "./names.js";
 
 export async function teardownContext(context: TaskContext & DbContext) {
 	try {
+		chdir(context.currentWorkingDirectory);
 		await context.kysely.destroy();
 		// rmSync(context.folder, { recursive: true, force: true });
 		vi.restoreAllMocks();
@@ -35,18 +36,21 @@ export async function teardownContext(context: TaskContext & DbContext) {
 
 export async function setUpContext(context: TaskContext & DbContext) {
 	const pool = globalPool();
+	context.currentWorkingDirectory = cwd();
 	context.dbName = dbNameForTest(context);
 	await pool.query(`DROP DATABASE IF EXISTS "${context.dbName}"`);
 	await pool.query(`CREATE DATABASE "${context.dbName}"`);
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	context.kysely = await kyselyWithCustomDB(context.dbName);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
 	context.folder = path.join(
 		cwd(),
 		`tmp/schema_migrations/${dateStr}-${context.dbName}`,
 	);
-	mkdirSync(path.join(context.folder, "migrations"), { recursive: true });
+	mkdirSync(path.join(context.folder, "migrations", "default"), {
+		recursive: true,
+	});
 	context.migrator = await kyselyMigrator(context.kysely, context.folder);
+	chdir(context.folder);
 }
 
 export async function setupProgramContext(

@@ -1,10 +1,12 @@
 import { Effect } from "effect";
-import { Schema, type AnySchema } from "~/database/schema/schema.js";
+import { Schema } from "~/database/schema/schema.js";
+import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
 
-export function validateUniqueSchemaName(allSchemas: AnySchema[]) {
+export function validateUniqueSchemaName() {
 	return Effect.gen(function* () {
+		const schemas = yield* appEnvironmentConfigurationSchemas;
 		const uniqueSchemaNames = new Set();
-		const schemaNames = allSchemas.map((schema) => Schema.info(schema).name);
+		const schemaNames = schemas.map((schema) => Schema.info(schema).name);
 
 		for (const schemaName of schemaNames) {
 			if (uniqueSchemaNames.has(schemaName)) {

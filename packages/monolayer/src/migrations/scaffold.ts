@@ -2,19 +2,18 @@ import { Effect } from "effect";
 import nunjucks from "nunjucks";
 import path from "path";
 import { createFile } from "~/create-file.js";
-import { Environment } from "../services/environment.js";
+import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { migrationDependency, migrationName } from "./migration.js";
 
 export function scaffoldMigration() {
 	return Effect.gen(function* () {
-		const environment = yield* Environment;
 		const name = yield* migrationName();
 		const timestamp = new Date()
 			.toISOString()
 			.replace(/[-:]/g, "")
 			.split(".")[0];
 		const filePath = path.join(
-			environment.schemaMigrationsFolder,
+			yield* appEnvironmentMigrationsFolder,
 			`${timestamp}-${name}.ts`,
 		);
 

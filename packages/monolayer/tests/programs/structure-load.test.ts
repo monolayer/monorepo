@@ -1,8 +1,10 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import { copyFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { loadEnv } from "~/cli/cli-action.js";
 import { structureLoad } from "~/database/structure-load.js";
+import { AppEnvironment } from "~/state/app-environment.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -32,7 +34,11 @@ describe("structureLoad", () => {
 
 		await context.kysely.destroy();
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(structureLoad()), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(structureLoad()), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		const kysely = (await dbAndMigrator(context)).db;

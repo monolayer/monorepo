@@ -1,15 +1,17 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import {
 	mkdirSync,
-	readdirSync,
 	readFileSync,
+	readdirSync,
 	rmSync,
 	writeFileSync,
 } from "fs";
 import path from "path";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { loadEnv } from "~/cli/cli-action.js";
 import { generateMigration } from "~/migrations/generate.js";
+import { AppEnvironment } from "~/state/app-environment.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import { defaultMigrationPath } from "~tests/__setup__/helpers/default-migration-path.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
@@ -42,7 +44,11 @@ describe("generateChangesetMigration", () => {
 		writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(generateMigration()), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(generateMigration()), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
@@ -87,7 +93,11 @@ describe("generateChangesetMigration", () => {
 		);
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(generateMigration()), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(generateMigration()), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
@@ -111,7 +121,11 @@ describe("generateChangesetMigration", () => {
 			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
 			await Effect.runPromise(
-				Effect.provide(programWithErrorCause(generateMigration()), layers),
+				Effect.provideServiceEffect(
+					Effect.provide(programWithErrorCause(generateMigration()), layers),
+					AppEnvironment,
+					Ref.make(await loadEnv("development", "default")),
+				),
 			);
 
 			const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
@@ -148,7 +162,11 @@ describe("generateChangesetMigration", () => {
 			);
 
 			await Effect.runPromise(
-				Effect.provide(programWithErrorCause(generateMigration()), layers),
+				Effect.provideServiceEffect(
+					Effect.provide(programWithErrorCause(generateMigration()), layers),
+					AppEnvironment,
+					Ref.make(await loadEnv("development", "default")),
+				),
 			);
 
 			const migrationFiles = readdirSync(defaultMigrationPath(context.folder));

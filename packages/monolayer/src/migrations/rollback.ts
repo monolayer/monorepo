@@ -12,7 +12,7 @@ import {
 	confirmRollbackWithScaffoldedMigrationsPrompt,
 	rollbackMigrationPrompt,
 } from "~/prompts/rollback-migration.js";
-import { Environment } from "~/services/environment.js";
+import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
 import { ExitWithSuccess } from "../cli/cli-action.js";
 import { migrateTo } from "./apply.js";
@@ -165,10 +165,10 @@ function confirmRollbackWithScafoldedMigrations(
 
 function nameAndPath(migrations: MigrationInfo[]) {
 	return Effect.gen(function* () {
-		const env = yield* Environment;
+		const folder = yield* appEnvironmentMigrationsFolder;
 		return migrations.map((rev) => ({
 			name: rev.name,
-			path: path.join(env.schemaMigrationsFolder, `${rev.name}.ts`),
+			path: path.join(folder, `${rev.name}.ts`),
 		}));
 	});
 }

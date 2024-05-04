@@ -1,8 +1,10 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import { unlinkSync, writeFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { loadEnv } from "~/cli/cli-action.js";
 import { seed } from "~/database/seed.js";
+import { AppEnvironment } from "~/state/app-environment.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -26,10 +28,19 @@ describe("seed", () => {
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(seed({})), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(seed({})), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
+
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(seed({})), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(seed({})), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		const result = await context.kysely
@@ -50,16 +61,24 @@ describe("seed", () => {
 		);
 
 		await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(seed({ seedFile: "anotherSeed.ts" })),
-				layers,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(seed({ seedFile: "anotherSeed.ts" })),
+					layers,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
 
 		await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(seed({ seedFile: "anotherSeed.ts" })),
-				layers,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(seed({ seedFile: "anotherSeed.ts" })),
+					layers,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
 
@@ -83,13 +102,21 @@ describe("seed", () => {
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(seed({})), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(seed({})), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		await Effect.runPromise(
-			Effect.provide(
-				programWithErrorCause(seed({ replant: true, disableWarnings: true })),
-				layers,
+			Effect.provideServiceEffect(
+				Effect.provide(
+					programWithErrorCause(seed({ replant: true, disableWarnings: true })),
+					layers,
+				),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
 			),
 		);
 
@@ -106,12 +133,16 @@ describe("seed", () => {
 		expect(
 			async () =>
 				await Effect.runPromise(
-					Effect.provide(programWithErrorCause(seed({})), layers),
+					Effect.provideServiceEffect(
+						Effect.provide(programWithErrorCause(seed({})), layers),
+						AppEnvironment,
+						Ref.make(await loadEnv("development", "default")),
+					),
 				),
 		).rejects.toThrowError("Pending schema migrations");
 	});
 
-	test<ProgramContext>("fails with missing configuration.ts", async (context) => {
+	test<ProgramContext>("exits with missing configuration.ts", async (context) => {
 		await context.migrator.migrateToLatest();
 
 		unlinkSync(path.join(context.folder, "db", "configuration.ts"));
@@ -120,9 +151,13 @@ describe("seed", () => {
 		expect(
 			async () =>
 				await Effect.runPromise(
-					Effect.provide(programWithErrorCause(seed({})), layers),
+					Effect.provideServiceEffect(
+						Effect.provide(programWithErrorCause(seed({})), layers),
+						AppEnvironment,
+						Ref.make(await loadEnv("development", "default")),
+					),
 				),
-		).rejects.toThrowError(/Failed to load url/);
+		).rejects.toThrowError('process.exit unexpectedly called with "1"');
 	});
 
 	test<ProgramContext>("fails with seeded function missing", async (context) => {
@@ -133,7 +168,11 @@ describe("seed", () => {
 		expect(
 			async () =>
 				await Effect.runPromise(
-					Effect.provide(programWithErrorCause(seed({})), layers),
+					Effect.provideServiceEffect(
+						Effect.provide(programWithErrorCause(seed({})), layers),
+						AppEnvironment,
+						Ref.make(await loadEnv("development", "default")),
+					),
 				),
 		).rejects.toThrowError("Seeder function missing");
 	});

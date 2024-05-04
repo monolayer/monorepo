@@ -12,7 +12,7 @@ import {
 	type ExtensionInfo,
 } from "~/database/extension/introspection.js";
 import { DbClients } from "~/services/db-clients.js";
-import { DevEnvironment } from "~/services/environment.js";
+import { appEnvironment } from "~/state/app-environment.js";
 import { executeKyselyDbStatement } from "../../changeset/helpers.js";
 
 export function extensionMigrationOpGenerator(diff: Difference) {
@@ -105,7 +105,7 @@ function computeChangeset(info: [ExtensionInfo, ExtensionInfo]) {
 }
 
 function localExtensions() {
-	return DevEnvironment.pipe(
+	return appEnvironment.pipe(
 		Effect.flatMap((environment) =>
 			Effect.succeed(localExtensionInfo(environment.configuration.extensions)),
 		),

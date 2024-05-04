@@ -1,8 +1,10 @@
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import { writeFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { loadEnv } from "~/cli/cli-action.js";
 import { createDatabase, createDevDatabase } from "~/database/create.js";
+import { AppEnvironment } from "~/state/app-environment.js";
 import { configurationsTemplate } from "~tests/__setup__/fixtures/program.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
@@ -29,7 +31,11 @@ describe("createDatabase", () => {
 		).toBeUndefined();
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(createDatabase()), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(createDatabase()), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		expect(
@@ -65,7 +71,11 @@ describe("createDevDatabase", () => {
 		).toBeUndefined();
 
 		await Effect.runPromise(
-			Effect.provide(programWithErrorCause(createDevDatabase()), layers),
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(createDevDatabase()), layers),
+				AppEnvironment,
+				Ref.make(await loadEnv("development", "default")),
+			),
 		);
 
 		expect(
