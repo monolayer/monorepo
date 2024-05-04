@@ -15,7 +15,7 @@ import { context } from "./context.js";
 import { validateForeignKeyReferences } from "./validate-foreign-key-references.js";
 
 export function changeset() {
-	return iterateSchemas().pipe(
+	return schemaRenamePrompt().pipe(
 		Effect.flatMap((renames) =>
 			configurationSchemas().pipe(
 				Effect.flatMap((configurationSchema) =>
@@ -42,7 +42,7 @@ type Renames = {
 	columnsToRename: ColumnsToRename;
 };
 
-function iterateSchemas() {
+function schemaRenamePrompt() {
 	return Effect.gen(function* () {
 		const schemas = yield* configurationSchemas();
 		const all: Renames = {
