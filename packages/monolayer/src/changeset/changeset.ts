@@ -3,7 +3,7 @@ import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import { type AnySchema } from "~/database/schema/schema.js";
 import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
 import {
-	introspectSchemas,
+	introspectSchema,
 	renameMigrationInfo,
 	sortTablePriorities,
 	type ColumnsToRename,
@@ -50,7 +50,7 @@ function schemaRenamePrompts() {
 			columnsToRename: {},
 		};
 		for (const schema of schemas) {
-			const introspectionContext = yield* introspectSchemas(schema, schemas);
+			const introspectionContext = yield* introspectSchema(schema);
 			yield* selectTableDiffChoicesInteractive(introspectionContext);
 			yield* selectColumnDiffChoicesInteractive(introspectionContext);
 			all.tablesToRename.push(...introspectionContext.tablesToRename);
@@ -68,7 +68,7 @@ function changesetForLocalSchema(
 	return context(localSchema).pipe(
 		Effect.tap(() => validateForeignKeyReferences(localSchema, allSchemas)),
 		Effect.flatMap(() =>
-			introspectSchemas(localSchema, allSchemas).pipe(
+			introspectSchema(localSchema).pipe(
 				Effect.tap((introspectionContext) => {
 					introspectionContext.tablesToRename = renames.tablesToRename;
 					introspectionContext.columnsToRename = renames.columnsToRename;

@@ -10,7 +10,10 @@ import {
 	renameTables,
 } from "~/introspection/introspection.js";
 import { devEnvirinmentDbClient } from "~/services/db-clients.js";
-import { appEnvironmentCamelCasePlugin } from "~/state/app-environment.js";
+import {
+	appEnvironmentCamelCasePlugin,
+	appEnvironmentConfigurationSchemas,
+} from "~/state/app-environment.js";
 
 export function introspectRemote(schemaName: string) {
 	return Effect.gen(function* () {
@@ -57,8 +60,10 @@ export type IntrospectionContext = {
 	columnsToRename: ColumnsToRename;
 };
 
-export function introspectSchemas(schema: AnySchema, allSchemas: AnySchema[]) {
+export function introspectSchema(schema: AnySchema) {
 	return Effect.gen(function* () {
+		const allSchemas = yield* appEnvironmentConfigurationSchemas;
+
 		const introspectedRemote = yield* introspectRemote(
 			Schema.info(schema).name ?? "public",
 		);
