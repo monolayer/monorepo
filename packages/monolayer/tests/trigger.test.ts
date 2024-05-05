@@ -19,7 +19,7 @@ describe("pg_trigger", () => {
 BEFORE UPDATE OR DELETE ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
@@ -40,7 +40,7 @@ EXECUTE FUNCTION check_account_update`;
 AFTER UPDATE OR DELETE ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
@@ -61,7 +61,7 @@ EXECUTE FUNCTION check_account_update`;
 INSTEAD OF UPDATE OR DELETE ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
@@ -82,7 +82,7 @@ EXECUTE FUNCTION check_account_update`;
 INSTEAD OF UPDATE ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
@@ -103,7 +103,7 @@ EXECUTE FUNCTION check_account_update`;
 INSTEAD OF UPDATE OR INSERT ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
@@ -125,7 +125,7 @@ EXECUTE FUNCTION check_account_update`;
 INSTEAD OF UPDATE OF balance, name ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
@@ -146,7 +146,7 @@ EXECUTE FUNCTION check_account_update`;
 BEFORE UPDATE OR DELETE ON "public"."accounts"
 FOR EACH STATEMENT
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
@@ -167,7 +167,7 @@ EXECUTE FUNCTION check_account_update`;
 BEFORE UPDATE OR DELETE ON "public"."accounts"
 FOR EACH ROW
 WHEN OLD.balance IS DISTINCT FROM NEW.balance
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger", "accounts");
 		expect(compiled).toBe(expected);
@@ -189,7 +189,7 @@ EXECUTE FUNCTION check_account_update`;
 BEFORE DELETE ON "public"."accounts"
 REFERENCING NEW TABLE AS new_table OLD TABLE AS old_table
 FOR EACH STATEMENT
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger_2", "accounts");
 		expect(compiled).toBe(expected);
@@ -210,7 +210,7 @@ EXECUTE FUNCTION check_account_update`;
 BEFORE DELETE ON "public"."accounts"
 REFERENCING NEW TABLE AS new_table
 FOR EACH STATEMENT
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger_2", "accounts");
 		expect(compiled).toBe(expected);
@@ -231,7 +231,7 @@ EXECUTE FUNCTION check_account_update`;
 BEFORE DELETE ON "public"."accounts"
 REFERENCING OLD TABLE AS old_table
 FOR EACH STATEMENT
-EXECUTE FUNCTION check_account_update`;
+EXECUTE FUNCTION check_account_update()`;
 
 		const compiled = await compileTrigger(trg, "my_trigger_2", "accounts");
 		expect(compiled).toBe(expected);

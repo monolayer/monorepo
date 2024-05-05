@@ -81,7 +81,7 @@ export function triggerInfo(
 						return `${toSnakeCase(arg.compile(kysely).sql, camelCase)}`;
 					})
 					.join(", ")})`
-			: `${compileArgs.functionName}`;
+			: `${compileArgs.functionName}()`;
 
 	return [
 		`CREATE OR REPLACE TRIGGER ${triggerName}`,
