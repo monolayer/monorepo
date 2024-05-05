@@ -75,7 +75,6 @@ export const appEnvironmentMigrationsFolder = Effect.gen(function* () {
 	);
 });
 
-
 function monolayerFolder() {
 	return Effect.gen(function* () {
 		const config = yield* Effect.tryPromise(importConfig);

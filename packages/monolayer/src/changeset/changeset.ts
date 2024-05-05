@@ -1,21 +1,23 @@
 import { Effect } from "effect";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import { type AnySchema } from "~/database/schema/schema.js";
-import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
+import {
+	appEnvironmentCamelCasePlugin,
+	appEnvironmentConfigurationSchemas,
+} from "~/state/app-environment.js";
+import { type TableAndColumnRenames } from "~/state/table-column-rename.js";
 import {
 	introspectSchema,
 	renameMigrationInfo,
 	sortTablePriorities,
-	type ColumnsToRename,
 	type IntrospectionContext,
 } from "../introspection/introspect-schemas.js";
-import { selectColumnDiffChoicesInteractive } from "../introspection/select-column-diff-choices.js";
-import { selectTableDiffChoicesInteractive } from "../introspection/select-table-diff-choices.js";
 import { context } from "./context.js";
+import { promptSchemaRenames } from "./schema-rename.js";
 import { validateForeignKeyReferences } from "./validate-foreign-key-references.js";
 
 export function changeset() {
-	return schemaRenamePrompts().pipe(
+	return promptSchemaRenames.pipe(
 		Effect.flatMap((renames) =>
 			appEnvironmentConfigurationSchemas.pipe(
 				Effect.flatMap((configurationSchemas) =>
@@ -34,36 +36,10 @@ export function changeset() {
 	);
 }
 
-type Renames = {
-	tablesToRename: {
-		from: string;
-		to: string;
-	}[];
-	columnsToRename: ColumnsToRename;
-};
-
-function schemaRenamePrompts() {
-	return Effect.gen(function* () {
-		const schemas = yield* appEnvironmentConfigurationSchemas;
-		const all: Renames = {
-			tablesToRename: [],
-			columnsToRename: {},
-		};
-		for (const schema of schemas) {
-			const introspectionContext = yield* introspectSchema(schema);
-			yield* selectTableDiffChoicesInteractive(introspectionContext);
-			yield* selectColumnDiffChoicesInteractive(introspectionContext);
-			all.tablesToRename.push(...introspectionContext.tablesToRename);
-			Object.assign(all.columnsToRename, introspectionContext.columnsToRename);
-		}
-		return yield* Effect.succeed(all);
-	});
-}
-
 function changesetForLocalSchema(
 	localSchema: AnySchema,
 	allSchemas: AnySchema[],
-	renames: Renames,
+	renames: TableAndColumnRenames,
 ) {
 	return context(localSchema).pipe(
 		Effect.tap(() => validateForeignKeyReferences(localSchema, allSchemas)),

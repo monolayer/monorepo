@@ -3,7 +3,7 @@ import { Effect } from "effect";
 import { mkdirSync } from "fs";
 import type { Migration as KyselyMigration, MigrationInfo } from "kysely";
 import { migrationNamePrompt } from "~/prompts/migration-name.js";
-import { PromptCancelError } from "../cli/cli-action.js";
+import { promptCancelError } from "../cli/cli-action.js";
 import { Migrator, type MigratorAttributes } from "../services/migrator.js";
 
 export const NO_DEPENDENCY: NoDependencies = Object.freeze({
@@ -59,7 +59,7 @@ export function migrationName() {
 	return Effect.gen(function* () {
 		const migrationName = yield* Effect.tryPromise(() => migrationNamePrompt());
 		if (typeof migrationName !== "string") {
-			return yield* Effect.fail(new PromptCancelError());
+			return yield* promptCancelError;
 		}
 		return kebabCase(migrationName);
 	});

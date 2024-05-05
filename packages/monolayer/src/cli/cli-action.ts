@@ -18,6 +18,8 @@ export class PromptCancelError {
 	readonly _tag = "PromptCancelError";
 }
 
+export const promptCancelError = Effect.fail(new PromptCancelError());
+
 export async function cliAction(
 	name: string,
 	options: { readonly environment: string; readonly connection?: string },
