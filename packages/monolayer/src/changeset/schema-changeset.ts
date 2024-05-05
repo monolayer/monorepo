@@ -62,36 +62,14 @@ export function schemaChangeset(
 		columnsToRename: introspection.columnsToRename,
 	};
 
-	const tableOrderIndex = introspection.tablePriorities.reduce(
-		(acc, name, index) => {
-			acc[name] = index;
-			return acc;
-		},
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		{} as Record<string, any>,
-	);
-
-	return diff
-		.flatMap((difference) => {
-			for (const generator of generators) {
-				const op = generator(difference, context);
-				if (op !== undefined) return op;
-			}
-			return [];
-		})
-		.sort((a, b) => (a.priority || 1) - (b.priority || 1))
-		.sort((a, b) => {
-			if (a.type === "createTable" || a.type === "dropTable") {
-				const indexA = introspection.tablePriorities.includes(a.tableName)
-					? tableOrderIndex[a.tableName]
-					: -diff.length;
-				const indexB = introspection.tablePriorities.includes(b.tableName)
-					? tableOrderIndex[b.tableName]
-					: -diff.length;
-				return indexA - indexB;
-			}
-			return 1 - 1;
-		});
+	const changesets = diff.flatMap((difference) => {
+		for (const generator of generators) {
+			const op = generator(difference, context);
+			if (op !== undefined) return op;
+		}
+		return [];
+	});
+	return sortChangeset(changesets, introspection);
 }
 
 export function changesetDiff(
@@ -108,4 +86,33 @@ export function changesetDiff(
 		addedTables,
 		droppedTables,
 	};
+}
+
+function sortChangeset(
+	changeset: Changeset[],
+	introspection: SchemaIntrospection,
+) {
+	const tableOrderIndex = introspection.tablePriorities.reduce(
+		(acc, name, index) => {
+			acc[name] = index;
+			return acc;
+		},
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		{} as Record<string, any>,
+	);
+
+	return changeset
+		.sort((a, b) => (a.priority || 1) - (b.priority || 1))
+		.sort((a, b) => {
+			if (a.type === "createTable" || a.type === "dropTable") {
+				const indexA = introspection.tablePriorities.includes(a.tableName)
+					? tableOrderIndex[a.tableName]
+					: -changeset.length;
+				const indexB = introspection.tablePriorities.includes(b.tableName)
+					? tableOrderIndex[b.tableName]
+					: -changeset.length;
+				return indexA - indexB;
+			}
+			return 1 - 1;
+		});
 }
