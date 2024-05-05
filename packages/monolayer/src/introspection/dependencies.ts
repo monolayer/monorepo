@@ -103,7 +103,6 @@ export async function databaseTableDependencies(
 	return toposort(mapped);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function localSchemaTableDependencies(
 	local: AnySchema,
 	allSchemas: AnySchema[],
