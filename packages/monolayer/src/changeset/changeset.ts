@@ -1,7 +1,10 @@
 import { Effect } from "effect";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import { type AnySchema } from "~/database/schema/schema.js";
-import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
+import {
+	appEnvironmentCamelCasePlugin,
+	appEnvironmentConfigurationSchemas,
+} from "~/state/app-environment.js";
 import { type TableAndColumnRenames } from "~/state/table-column-rename.js";
 import {
 	introspectSchema,
@@ -9,7 +12,6 @@ import {
 	sortTablePriorities,
 	type SchemaIntrospection,
 } from "../introspection/introspect-schemas.js";
-import { context } from "./context.js";
 import { promptSchemaRenames } from "./schema-rename.js";
 import { validateForeignKeyReferences } from "./validate-foreign-key-references.js";
 
@@ -38,7 +40,7 @@ function changesetForLocalSchema(
 	allSchemas: AnySchema[],
 	renames: TableAndColumnRenames,
 ) {
-	return context(localSchema).pipe(
+	return Effect.succeed(true).pipe(
 		Effect.tap(() => validateForeignKeyReferences(localSchema, allSchemas)),
 		Effect.flatMap(() =>
 			introspectSchema(localSchema).pipe(
@@ -56,11 +58,41 @@ function changesetForLocalSchema(
 }
 
 function computeChangeset(introspectionContext: SchemaIntrospection) {
-	return context(introspectionContext.schema).pipe(
-		Effect.flatMap((context) =>
-			Effect.succeed(
-				schemaChangeset(introspectionContext, context.camelCasePlugin),
-			),
+	return appEnvironmentCamelCasePlugin.pipe(
+		Effect.flatMap((camelCasePlugin) =>
+			Effect.succeed(schemaChangeset(introspectionContext, camelCasePlugin)),
 		),
 	);
 }
+
+// export function changeset() {
+// 	return Effect.gen(function* () {
+// 		const renames = yield* promptSchemaRenames;
+// 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
+// 		const camelCasePlugin = yield* appEnvironmentCamelCasePlugin;
+
+// 		let changesets: Changeset[] = [];
+
+// 		for (const schema of allSchemas) {
+// 			yield* validateForeignKeyReferences(schema, allSchemas);
+// 			const introspection = yield* schemaIntrospection(schema, renames);
+// 			const changeset = schemaChangeset(introspection, camelCasePlugin);
+// 			changesets = [...changesets, ...changeset];
+// 		}
+
+// 		return changesets;
+// 	});
+// }
+
+// function schemaIntrospection(
+// 	schema: AnySchema,
+// 	renames: TableAndColumnRenames,
+// ) {
+// 	return Effect.gen(function* () {
+// 		const introspection = yield* introspectSchema(schema);
+// 		yield* renameMigrationInfo(introspection, renames);
+// 		yield* renameMigrationInfo(introspection, renames);
+// 		yield* sortTablePriorities(introspection, renames);
+// 		return introspection;
+// 	});
+// }
