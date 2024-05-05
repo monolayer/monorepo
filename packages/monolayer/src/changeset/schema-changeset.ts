@@ -2,6 +2,7 @@ import microdiff, { type Difference } from "microdiff";
 import type { CamelCaseOptions } from "~/configuration.js";
 import type {
 	ColumnsToRename,
+	SchemaIntrospection,
 	TablesToRename,
 } from "~/introspection/introspect-schemas.js";
 import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
@@ -34,21 +35,16 @@ export interface GeneratorContext {
 }
 
 export function schemaChangeset(
-	local: SchemaMigrationInfo,
-	remote: SchemaMigrationInfo,
-	schemaName = "public",
+	introspection: SchemaIntrospection,
 	camelCaseOptions: CamelCaseOptions,
-	tablesToRename: TablesToRename,
-	columnsToRename: ColumnsToRename,
-	tablePriorities: string[],
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
 	const localValues = {
-		...local,
+		...introspection.local,
 		tablePriorities: [],
 	};
 	const remoteValues = {
-		...remote,
+		...introspection.remote,
 		tablePriorities: [],
 	};
 	const { diff, addedTables, droppedTables } = changesetDiff(
@@ -56,17 +52,17 @@ export function schemaChangeset(
 		remoteValues,
 	);
 	const context: GeneratorContext = {
-		local: local,
-		db: remote,
+		local: introspection.local,
+		db: introspection.remote,
 		addedTables: addedTables,
 		droppedTables: droppedTables,
-		schemaName: toSnakeCase(schemaName, camelCaseOptions),
+		schemaName: toSnakeCase(introspection.schemaName, camelCaseOptions),
 		camelCaseOptions,
-		tablesToRename,
-		columnsToRename,
+		tablesToRename: introspection.tablesToRename,
+		columnsToRename: introspection.columnsToRename,
 	};
 
-	const tableOrderIndex = tablePriorities.reduce(
+	const tableOrderIndex = introspection.tablePriorities.reduce(
 		(acc, name, index) => {
 			acc[name] = index;
 			return acc;
@@ -86,10 +82,10 @@ export function schemaChangeset(
 		.sort((a, b) => (a.priority || 1) - (b.priority || 1))
 		.sort((a, b) => {
 			if (a.type === "createTable" || a.type === "dropTable") {
-				const indexA = tablePriorities.includes(a.tableName)
+				const indexA = introspection.tablePriorities.includes(a.tableName)
 					? tableOrderIndex[a.tableName]
 					: -diff.length;
-				const indexB = tablePriorities.includes(b.tableName)
+				const indexB = introspection.tablePriorities.includes(b.tableName)
 					? tableOrderIndex[b.tableName]
 					: -diff.length;
 				return indexA - indexB;

@@ -59,15 +59,7 @@ function computeChangeset(introspectionContext: SchemaIntrospection) {
 	return context(introspectionContext.schema).pipe(
 		Effect.flatMap((context) =>
 			Effect.succeed(
-				schemaChangeset(
-					introspectionContext.local,
-					introspectionContext.remote,
-					introspectionContext.schemaName,
-					context.camelCasePlugin,
-					introspectionContext.tablesToRename,
-					introspectionContext.columnsToRename,
-					introspectionContext.tablePriorities,
-				),
+				schemaChangeset(introspectionContext, context.camelCasePlugin),
 			),
 		),
 	);

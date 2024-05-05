@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, test } from "vitest";
 import { schema } from "~/database/schema/schema.js";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
-import { computeChangeset } from "./__setup__/helpers/compute-changeset.js";
+import { testChangesetAndMigrations } from "./__setup__/helpers/migration-success.js";
 import {
 	setUpContext,
 	teardownContext,
@@ -16,9 +16,14 @@ describe("Database migrations", () => {
 		await teardownContext(context);
 	});
 
-	test<DbContext>("database without tables", async ({ kysely }) => {
+	test<DbContext>("database without tables", async (context) => {
 		const dbSchema = schema({});
-		const cs = await computeChangeset(kysely, dbSchema);
-		expect(cs).toEqual([]);
+
+		await testChangesetAndMigrations({
+			context,
+			configuration: { schemas: [dbSchema] },
+			expected: [],
+			down: "same",
+		});
 	});
 });
