@@ -45,7 +45,7 @@ export function introspectLocal(
 	});
 }
 
-export type IntrospectionContext = {
+export type SchemaIntrospection = {
 	schema: AnySchema;
 	allSchemas: AnySchema[];
 	schemaName: string;
@@ -81,7 +81,7 @@ export function introspectSchema(schema: AnySchema) {
 			deleted: remoteTables.filter((table) => !localTables.includes(table)),
 		};
 
-		const introspectionContext: IntrospectionContext = {
+		const introspectionContext: SchemaIntrospection = {
 			schema,
 			schemaName: Schema.info(schema).name || "public",
 			local: introspectedLocalSchema,
@@ -96,7 +96,7 @@ export function introspectSchema(schema: AnySchema) {
 	});
 }
 
-export function renameMigrationInfo(context: IntrospectionContext) {
+export function renameMigrationInfo(context: SchemaIntrospection) {
 	return Effect.gen(function* () {
 		const camelCase = yield* appEnvironmentCamelCasePlugin;
 		context.remote = renameTables(
@@ -123,7 +123,7 @@ export function renameMigrationInfo(context: IntrospectionContext) {
 	});
 }
 
-export function sortTablePriorities(context: IntrospectionContext) {
+export function sortTablePriorities(context: SchemaIntrospection) {
 	context.tablePriorities = sortTableDependencies(
 		context.remote.tablePriorities,
 		context.local.tablePriorities,

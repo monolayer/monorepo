@@ -1,16 +1,13 @@
 import { Effect } from "effect";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import { type AnySchema } from "~/database/schema/schema.js";
-import {
-	appEnvironmentCamelCasePlugin,
-	appEnvironmentConfigurationSchemas,
-} from "~/state/app-environment.js";
+import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
 import { type TableAndColumnRenames } from "~/state/table-column-rename.js";
 import {
 	introspectSchema,
 	renameMigrationInfo,
 	sortTablePriorities,
-	type IntrospectionContext,
+	type SchemaIntrospection,
 } from "../introspection/introspect-schemas.js";
 import { context } from "./context.js";
 import { promptSchemaRenames } from "./schema-rename.js";
@@ -58,7 +55,7 @@ function changesetForLocalSchema(
 	);
 }
 
-function computeChangeset(introspectionContext: IntrospectionContext) {
+function computeChangeset(introspectionContext: SchemaIntrospection) {
 	return context(introspectionContext.schema).pipe(
 		Effect.flatMap((context) =>
 			Effect.succeed(
