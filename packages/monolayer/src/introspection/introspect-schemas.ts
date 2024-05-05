@@ -14,6 +14,7 @@ import {
 	appEnvironmentCamelCasePlugin,
 	appEnvironmentConfigurationSchemas,
 } from "~/state/app-environment.js";
+import type { TableAndColumnRenames } from "~/state/table-column-rename.js";
 
 export function introspectRemote(schemaName: string) {
 	return Effect.gen(function* () {
@@ -60,7 +61,10 @@ export type SchemaIntrospection = {
 	columnsToRename: ColumnsToRename;
 };
 
-export function introspectSchema(schema: AnySchema) {
+export function introspectSchema(
+	schema: AnySchema,
+	renames?: TableAndColumnRenames,
+) {
 	return Effect.gen(function* () {
 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
 
@@ -87,9 +91,9 @@ export function introspectSchema(schema: AnySchema) {
 			local: introspectedLocalSchema,
 			remote: introspectedRemote,
 			tableDiff,
-			tablesToRename: [],
+			tablesToRename: renames !== undefined ? renames.tablesToRename : [],
 			tablePriorities: introspectedRemote.tablePriorities,
-			columnsToRename: {},
+			columnsToRename: renames !== undefined ? renames.columnsToRename : {},
 			allSchemas,
 		};
 		return introspectionContext;
