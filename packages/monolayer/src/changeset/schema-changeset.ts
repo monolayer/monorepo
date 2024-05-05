@@ -39,17 +39,15 @@ export function schemaChangeset(
 	camelCaseOptions: CamelCaseOptions,
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
-	const localValues = {
-		...introspection.local,
-		tablePriorities: [],
-	};
-	const remoteValues = {
-		...introspection.remote,
-		tablePriorities: [],
-	};
 	const { diff, addedTables, droppedTables } = changesetDiff(
-		localValues,
-		remoteValues,
+		{
+			...introspection.local,
+			tablePriorities: [],
+		},
+		{
+			...introspection.remote,
+			tablePriorities: [],
+		},
 	);
 	const context: GeneratorContext = {
 		local: introspection.local,
