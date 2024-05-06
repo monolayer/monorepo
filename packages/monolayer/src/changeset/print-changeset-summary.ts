@@ -18,6 +18,7 @@ type TableRecord = Record<
 		uniqueConstraints: string;
 		checkConstraints: string;
 		indexes: string;
+		triggers: string;
 	}
 >;
 
@@ -54,6 +55,7 @@ export function renderChangesetSummary(changeset: Changeset[]) {
 					"check constraints",
 				),
 				indexes: addDropAlterSummary(table.indexes, "indexes"),
+				triggers: addDropAlterSummary(table.triggers, "triggers"),
 			};
 		}
 		schemas[schemaName] = {
@@ -112,6 +114,9 @@ Schemas: {{ schemasSummary }}
 {%- endif %}
 {%- if tableStats.indexes !== '' %}
     {{ tableStats.indexes }}
+{%- endif %}
+{%- if tableStats.triggers !== '' %}
+    {{ tableStats.triggers }}
 {%- endif %}
 {% endfor %}
 {%- endfor -%}

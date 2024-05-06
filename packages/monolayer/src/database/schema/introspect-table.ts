@@ -134,7 +134,7 @@ function foreignKeyInfo(
 			findTableInSchema(options.targetTable, allSchemas) || "";
 		const targetTableSchema = tableInfo(options.targetTable).schemaName;
 		return {
-			columns: options.columns as string[],
+			columns: options.columns,
 			targetTable: `${targetTableSchema}.${targetTable}`,
 			targetColumns: options.targetColumns,
 			deleteRule: options.deleteRule,

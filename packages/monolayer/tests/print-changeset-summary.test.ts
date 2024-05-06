@@ -878,6 +878,7 @@ Schemas: added (1)
     unique constraints: added (2)
     check constraints: dropped (2)
     indexes: added (1), dropped (2)
+    triggers: added (1)
 
   'new_books' table
     columns: added (2), dropped (2), changed (3), renamed (1)
@@ -901,12 +902,14 @@ Schemas: added (1)
     unique constraints: dropped (2), renamed (2)
     check constraints: renamed (1)
     indexes: added (1), renamed (1)
+    triggers: dropped (1)
 
   'triggers' table (renamed from 'trigger_table')
     columns: changed (6)
     foreign keys: renamed (2)
     check constraints: added (1), dropped (1)
     indexes: renamed (2)
+    triggers: added (2), dropped (2)
 
   'devices' table (dropped)
 
