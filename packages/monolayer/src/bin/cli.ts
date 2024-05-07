@@ -65,6 +65,23 @@ async function main() {
 		);
 
 	program
+		.command("db:reset")
+		.description("Restores a database from its structure file")
+		.option(
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
+			"default",
+		)
+		.option(
+			"-e, --environment <environment-name>",
+			"configuration environment name as defined in configuration.ts",
+			"development",
+		)
+		.action(async (opts) => {
+			await cliAction("monolayer db:reset", opts, [structureLoad()]);
+		});
+
+	program
 		.command("generate")
 		.description("generate a schema migration")
 		.option(
@@ -169,23 +186,6 @@ async function main() {
 					seedFile: opts.file,
 				}),
 			]);
-		});
-
-	program
-		.command("structure:load")
-		.description("loads a database structure")
-		.option(
-			"-c, --configuration <configuration-name>",
-			"configuration name as defined in configuration.ts",
-			"default",
-		)
-		.option(
-			"-e, --environment <environment-name>",
-			"configuration environment name as defined in configuration.ts",
-			"development",
-		)
-		.action(async (opts) => {
-			await cliAction("monolayer structure load", opts, [structureLoad()]);
 		});
 
 	program
