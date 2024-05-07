@@ -21,7 +21,7 @@ function checkStructureFile() {
 	return appEnvironment.pipe(
 		Effect.flatMap((environment) =>
 			checkWithFail({
-				name: `Check structure.sql file`,
+				name: `Check structure.${environment.configurationName}.sql`,
 				nextSteps: `Follow these steps to generate a structure file:
 
 1) Create the development database: \`npx monolayer db:create -e development\`.
