@@ -1,6 +1,6 @@
 {
 	"extends": "./tsconfig.json",
-	"exclude": ["src/**/*test.ts", "tests/**/*"],
+	"exclude": ["src/**/*test.ts", "tests/**/*", "src/playground.ts"],
 	"compilerOptions": {
 		"target": "es2020",
 		"module": "CommonJS",
