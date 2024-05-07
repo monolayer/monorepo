@@ -3,7 +3,7 @@ import { Effect } from "effect";
 import type { MigrationResult } from "kysely";
 import { NO_MIGRATIONS } from "kysely";
 import color from "picocolors";
-import { dumpDatabase } from "../database/dump.js";
+import { dumpDatabaseStructureTask } from "~/database/dump.js";
 import { Migrator } from "../services/migrator.js";
 import { validateMigrationDependencies } from "./validate.js";
 
@@ -11,7 +11,7 @@ export function applyMigrations() {
 	return Effect.gen(function* () {
 		const result = yield* migrate();
 		if (result) {
-			yield* dumpDatabase();
+			yield* dumpDatabaseStructureTask();
 		}
 		return result;
 	});
