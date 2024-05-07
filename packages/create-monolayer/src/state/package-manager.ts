@@ -38,7 +38,7 @@ export class PackageManagerState extends Context.Tag("PackageManagerState")<
 	}
 }
 
-type PackageManagerName = "npm" | "pnpm" | "yarn" | "bun";
+export type PackageManagerName = "npm" | "pnpm" | "yarn" | "bun";
 
 export interface PackageManagerSelection {
 	name: PackageManagerName;
