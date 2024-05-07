@@ -7,24 +7,22 @@ import { exit } from "process";
 import { initFolderAndFiles } from "~/init-folders-and-files.js";
 import { installPackage } from "~/install-package.js";
 import { selectDbFolder } from "~/prompts/select-db-folder.js";
-import {
-	packageInstallEnvironmentLayer,
-	selectPackageManager,
-} from "~/prompts/select-package-manager.js";
+import { selectPackageManager } from "~/prompts/select-package-manager.js";
 import { DbFolderState, type DbFolder } from "~/state/db-folder.js";
+import {
+	PackageManagerState,
+	defaultPackageManagerRef,
+} from "~/state/package-manager.js";
 import { yarnInstallPeerDependencies } from "~/yarn-install-peer-dependencies.js";
 
-const program = Effect.provide(
-	Effect.all([
-		selectPackageManager,
-		selectDbFolder,
-		installPackage("@types/pg", { development: true }),
-		installPackage("monolayer", { development: false }),
-		yarnInstallPeerDependencies(["pg", "kysely"]),
-		initFolderAndFiles,
-	]),
-	packageInstallEnvironmentLayer(),
-).pipe(
+const program = Effect.all([
+	selectPackageManager,
+	selectDbFolder,
+	installPackage("@types/pg", { development: true }),
+	installPackage("monolayer", { development: false }),
+	yarnInstallPeerDependencies(["pg", "kysely"]),
+	initFolderAndFiles,
+]).pipe(
 	Effect.catchTags({
 		PromptCancelError: (): Effect.Effect<never, never, never> => {
 			p.cancel("Operation cancelled.");
@@ -38,13 +36,19 @@ const program = Effect.provide(
 
 p.intro("Create monolayer");
 
-const result = await Effect.runPromise(
-	Effect.provideServiceEffect(
-		Effect.scoped(program),
-		DbFolderState,
-		Ref.make({} as DbFolder),
-	),
-).then(
+const programWithPackageManager = Effect.provideServiceEffect(
+	Effect.scoped(program),
+	PackageManagerState,
+	defaultPackageManagerRef,
+);
+
+const programWithDbFolder = Effect.provideServiceEffect(
+	programWithPackageManager,
+	DbFolderState,
+	Ref.make({} as DbFolder),
+);
+
+const result = await Effect.runPromise(programWithDbFolder).then(
 	() => true,
 	() => false,
 );
