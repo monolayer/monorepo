@@ -53,7 +53,7 @@ type PackageManagerSelectOptions = {
 }[];
 
 export function selectPackageManager() {
-	return Effect.gen(function* (_) {
+	return Effect.gen(function* () {
 		const packageEnv = yield* PackageInstallEnvironment;
 		const packageManager = yield* Effect.tryPromise(() =>
 			askUserPackageManager(),
