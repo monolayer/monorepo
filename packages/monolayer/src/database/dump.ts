@@ -1,136 +1,203 @@
 import { Effect } from "effect";
-import { appendFileSync, mkdirSync, writeFileSync } from "fs";
+import { mkdirSync, writeFileSync } from "fs";
+import { sql, type Kysely } from "kysely";
 import path from "path";
-import pgConnectionString from "pg-connection-string";
-import { env } from "process";
-import { Writable, type WritableOptions } from "stream";
-import { dbExtensionInfo } from "~/database/extension/introspection.js";
-import { Schema } from "~/database/schema/schema.js";
-import { pgQuery } from "~/services/db-clients.js";
+import { spinnerTask } from "~/cli/spinner-task.js";
+import { databaseTableDependencies } from "~/introspection/dependencies.js";
+import type { InformationSchemaDB } from "~/introspection/types.js";
+import { DbClients } from "~/services/db-clients.js";
+import { appEnvironment } from "~/state/app-environment.js";
+import { databaseClientSettings } from "./client-settings.js";
+import { databaseComments } from "./comments.js";
+import { schemasDumpInfo } from "./database_schemas/introspection.js";
 import {
-	appEnvironment,
-	appEnvironmentPgConfig,
-} from "~/state/app-environment.js";
-import { pipeCommandStdoutToWritable } from "../cli/pipe-command-stdout-to-writable.js";
-import { spinnerTask } from "../cli/spinner-task.js";
-import { DbClients } from "../services/db-clients.js";
-
-export function dumpDatabase() {
-	return setPgDumpEnv().pipe(
-		Effect.tap(dumpStructure),
-		Effect.tap(appendSearchPathToDump),
-		Effect.tap(appendMigrationDataToDump),
-		Effect.tap(Effect.succeed(true)),
-	);
-}
+	dbExtensionInfo,
+	type ExtensionInfo,
+} from "./extension/introspection.js";
+import { databaseFunctions } from "./functions.js";
+import { tableDumpInfo } from "./schema/table/introspection.js";
+import { enumDumpInfo } from "./schema/types/enum/introspection.js";
 
 export function dumpDatabaseStructureTask() {
 	return spinnerTask("Dump database structure", () => dumpDatabase());
 }
 
-function appendMigrationDataToDump() {
+export function dumpDatabase() {
 	return Effect.gen(function* () {
-		const database = yield* databaseInConfig();
+		const dbClients = yield* DbClients;
+		const db = dbClients.currentEnvironment.kyselyNoCamelCase;
+		const dumpData = yield* Effect.tryPromise(() => dump(db));
+		const dumpContent = printDump(dumpData);
 		const dumpPath = yield* databaseDumpPath();
-		const migrationDumpArgs = [
-			"--no-privileges",
-			"--no-owner",
-			"--schema=public",
-			"--inserts",
-			"--table=kysely_migration_lock",
-			"--table=kysely_migration",
-			"-a",
-			"--no-comments",
-			`${database}`,
-		];
-		yield* pipeCommandStdoutToWritable(
-			"pg_dump",
-			migrationDumpArgs,
-			new InsertWritable(dumpPath),
-		);
-	});
-}
-
-function installedExtensions() {
-	return DbClients.pipe(
-		Effect.flatMap((dbClients) =>
-			Effect.tryPromise(() =>
-				dbExtensionInfo(dbClients.developmentEnvironment.kyselyNoCamelCase),
-			),
-		),
-		Effect.flatMap((extensions) => Effect.succeed(Object.keys(extensions))),
-	);
-}
-
-function setPgDumpEnv() {
-	return Effect.gen(function* () {
-		const config = yield* appEnvironmentPgConfig;
-		const parsedConfig =
-			config.connectionString !== undefined
-				? pgConnectionString.parse(config.connectionString)
-				: config;
-		env.PGHOST = `${parsedConfig.host}`;
-		env.PGPORT = `${parsedConfig.port}`;
-		env.PGUSER = `${parsedConfig.user}`;
-		env.PGPASSWORD = `${parsedConfig.password}`;
-		return true;
-	});
-}
-
-function dumpStructure() {
-	return Effect.gen(function* () {
-		const schemaArgs = (yield* appEnvironment).configuration.schemas
-			.map((schema) => Schema.info(schema).name || "public")
-			.map((schema) => `--schema=${schema}`);
-		const extensionArgs = (yield* installedExtensions()).map(
-			(extension) => `--extension=${extension}`,
-		);
-		const args = [
-			"--schema-only",
-			"--no-privileges",
-			"--no-owner",
-			...schemaArgs,
-			...extensionArgs,
-			`${yield* databaseInConfig()}`,
-		];
-
-		const dumpPath = yield* databaseDumpPath();
-
 		mkdirSync(path.join(path.dirname(dumpPath)), {
 			recursive: true,
 		});
+		writeFileSync(dumpPath, dumpContent);
+	});
+}
 
-		yield* pipeCommandStdoutToWritable(
-			"pg_dump",
-			args,
-			new DumpWritable(dumpPath),
+interface TableDump {
+	schema: string | null;
+	name: string;
+	table: string;
+}
+
+interface EnumDump {
+	schema: string | null;
+	enum: string;
+	comment: string | null;
+}
+
+interface SchemaDump {
+	tables: TableDump[];
+	enumTypes: EnumDump[];
+	comments: string[];
+}
+
+interface DumpData {
+	settings: string[];
+	functions: string[];
+	extensions: ExtensionInfo;
+	schemas: Record<string, SchemaDump>;
+	migrationData: string[];
+}
+
+export async function dump(db: Kysely<InformationSchemaDB>) {
+	const allSchemas = await schemasDumpInfo(db);
+	const tables = await tableDumpInfo(db);
+	const settings = await databaseClientSettings(db);
+	const enumTypes = await enumDumpInfo(db);
+	const functions = await databaseFunctions(db);
+	const extensions = await dbExtensionInfo(db);
+	const comments = await databaseComments(db);
+	const migrationData = await kyselyMigrationData(db);
+
+	const dumpData: DumpData = {
+		settings: settings.map((setting) => setting.settings),
+		functions: functions.map((func) => func.function),
+		extensions: extensions,
+		schemas: {} as Record<string, SchemaDump>,
+		migrationData: [
+			...migrationData.migrations.map((migration) => migration.migration),
+			...migrationData.lock.map((lock) => lock.lock),
+		],
+	};
+
+	for (const schema in allSchemas) {
+		const schemaName = allSchemas[schema]?.name;
+		const schemaTables = tables.filter((table) => table.schema === schemaName);
+		const schemaComments = comments.filter(
+			(comment) => comment.schema === schemaName,
 		);
-	});
+		const sortedTables = await sortTables(db, schemaName!, schemaTables);
+
+		const schemaEnumTypes = enumTypes.filter(
+			(enumType) => enumType.schema === schemaName,
+		);
+		dumpData.schemas[schemaName!] = {
+			tables: sortedTables,
+			enumTypes: schemaEnumTypes,
+			comments: schemaComments.map((comment) => comment.ddl),
+		};
+	}
+	return dumpData;
 }
 
-function databaseInConfig() {
-	return Effect.gen(function* () {
-		const db = yield* DbClients;
-		if (db.currentEnvironment.databaseName === "") {
-			return yield* Effect.fail(
-				new Error("Database not defined in configuration."),
-			);
+export function printDump(dumpData: DumpData) {
+	const lines: string[] = [];
+
+	lines.push("-- Settings");
+	lines.push("");
+	for (const setting of dumpData.settings) {
+		lines.push(setting);
+	}
+
+	lines.push("");
+	lines.push("-- Extensions");
+	for (const extension in dumpData.extensions) {
+		lines.push("");
+		lines.push(`CREATE EXTENSION IF NOT EXISTS "${extension}";`);
+	}
+
+	lines.push("");
+	lines.push("-- Functions");
+	lines.push("");
+	for (const func of dumpData.functions) {
+		const functionLines = func
+			.split("\n")
+			.filter((line) => line.trim().length > 0);
+		functionLines.forEach((line, idx) =>
+			idx + 1 === functionLines.length
+				? lines.push(`${line};`)
+				: lines.push(line),
+		);
+		lines.push("");
+	}
+	lines.push("-- Schemas");
+	for (const schema in dumpData.schemas) {
+		lines.push("");
+		const schemaData = dumpData.schemas[schema]!;
+		lines.push(`-- ${schema} schema`);
+		lines.push("");
+		lines.push(`CREATE SCHEMA IF NOT EXISTS "${schema}";`);
+		lines.push("");
+		for (const enumType of schemaData.enumTypes) {
+			lines.push(enumType.enum);
+			if (enumType.comment !== null) {
+				lines.push(enumType.comment);
+			}
+			lines.push("");
 		}
-		return db.currentEnvironment.databaseName;
-	});
+		for (const table of schemaData.tables) {
+			table.table
+				.split("\n")
+				.filter((line) => line.trim().length > 0)
+				.map((line) => line.replace("  ", " "))
+				.forEach((line) => lines.push(line));
+			lines.push("");
+		}
+		for (const comment of schemaData.comments) {
+			lines.push(comment);
+		}
+	}
+	lines.push("");
+
+	lines.push("-- Migration Data");
+	lines.push("");
+	for (const migrationData of dumpData.migrationData) {
+		lines.push(migrationData);
+	}
+	return lines.join("\n");
 }
 
-function databaseSearchPath() {
-	return pgQuery<{
-		search_path: string;
-	}>("SHOW search_path").pipe(
-		Effect.flatMap((result) =>
-			Effect.if(result[0] === undefined, {
-				onTrue: () => Effect.fail(new Error("Search path not found")),
-				onFalse: () => Effect.succeed(result[0]!.search_path),
-			}),
-		),
+async function sortTables(
+	db: Kysely<InformationSchemaDB>,
+	schema: string,
+	tables: {
+		schema: string | null;
+		name: string;
+		table: string;
+	}[],
+) {
+	const dependencies = await databaseTableDependencies(
+		db,
+		schema,
+		tables.map((table) => table.name),
 	);
+
+	const tableOrderIndex = dependencies.reduce(
+		(acc, name, index) => {
+			acc[name] = index;
+			return acc;
+		},
+		{} as Record<string, number>,
+	);
+
+	return tables.toSorted((a, b) => {
+		const indexA = tableOrderIndex[a.name] ?? -tables.length;
+		const indexB = tableOrderIndex[b.name]! ?? -tables.length;
+		return indexB - indexA;
+	});
 }
 
 function databaseDumpPath() {
@@ -146,74 +213,42 @@ function databaseDumpPath() {
 	});
 }
 
-function appendSearchPathToDump() {
-	return Effect.all([databaseDumpPath(), databaseSearchPath()]).pipe(
-		Effect.tap(([dumpPath, searchPath]) =>
-			appendFileSync(dumpPath, `SET search_path TO ${searchPath};\n\n`),
-		),
-	);
+interface KyselyMigration {
+	name: string;
+	timestamp: string;
 }
 
-class DumpWritable extends Writable {
-	#dumpPath: string;
-	#contents: string[] = [];
-	constructor(dumpPath: string, opts?: WritableOptions) {
-		super(opts);
-		this.#dumpPath = dumpPath;
-	}
-
-	_write(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		chunk: any,
-		_encoding: BufferEncoding,
-		callback: (error?: Error | null) => void,
-	) {
-		const lines = chunk.toString().split("\n");
-		for (const line of lines) {
-			if (line.startsWith("CREATE SCHEMA ")) {
-				this.#contents.push(
-					line.replace("CREATE SCHEMA ", "CREATE SCHEMA IF NOT EXISTS "),
-				);
-				continue;
-			}
-			if (!line.startsWith("-- Dumped")) {
-				this.#contents.push(line);
-			}
-		}
-		callback();
-	}
-
-	end() {
-		writeFileSync(this.#dumpPath, this.#contents.join("\n"));
-		return this;
-	}
+interface KyselyMigrationLock {
+	id: string;
+	is_locked: number;
 }
 
-class InsertWritable extends Writable {
-	#dumpPath: string;
-	#contents: string[] = [];
+interface KyselyMigrationData {
+	kysely_migration: KyselyMigration;
+	kysely_migration_lock: KyselyMigrationLock;
+}
 
-	constructor(dumpPath: string, opts?: WritableOptions) {
-		super(opts);
-		this.#dumpPath = dumpPath;
-	}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function kyselyMigrationData(db: Kysely<any>) {
+	const migrations = await (db as Kysely<KyselyMigrationData>)
+		.selectFrom("kysely_migration")
+		.select([
+			sql<string>`'INSERT INTO public.kysely_migration' || ' VALUES (' || quote_literal(kysely_migration.name) || ', ' || quote_literal(kysely_migration.timestamp) || ');'`.as(
+				"migration",
+			),
+		])
+		.orderBy("timestamp asc")
+		.execute();
 
-	_write(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		chunk: any,
-		_encoding: BufferEncoding,
-		callback: (error?: Error | null) => void,
-	) {
-		const lines = chunk.toString().split("\n");
-		for (const line of lines) {
-			if (line.startsWith("INSERT INTO")) {
-				this.#contents.push(line);
-			}
-		}
-		callback();
-	}
-	end() {
-		appendFileSync(this.#dumpPath, this.#contents.join("\n"));
-		return this;
-	}
+	const lock = await db
+		.selectFrom("kysely_migration_lock")
+		.select([
+			sql<string>`'INSERT INTO public.kysely_migration_lock VALUES (' || quote_literal('migration_lock') || ', ' || kysely_migration_lock.is_locked || ');'`.as(
+				"lock",
+			),
+		])
+		.orderBy("id asc")
+		.execute();
+
+	return { migrations, lock };
 }

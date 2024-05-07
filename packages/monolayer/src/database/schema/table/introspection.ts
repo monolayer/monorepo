@@ -1,5 +1,6 @@
-import { Kysely } from "kysely";
+import { Kysely, sql } from "kysely";
 import type { InformationSchemaDB } from "../../../introspection/types.js";
+import { createTableDefFunction } from "./pg-get-table-def.js";
 
 export async function dbTableInfo(
 	kysely: Kysely<InformationSchemaDB>,
@@ -21,5 +22,34 @@ export async function queryDbTableInfo(
 		.where("table_name", "!=", "kysely_migration_lock")
 		.where("table_name", "!=", "kysely_migration")
 		.where("table_type", "!=", "VIEW")
+		.execute();
+}
+
+export async function tableDumpInfo(db: Kysely<InformationSchemaDB>) {
+	await createTableDefFunction(db);
+
+	return await db
+		.selectFrom("pg_class")
+		.leftJoin("pg_namespace", "pg_namespace.oid", "pg_class.relnamespace")
+		.where("pg_class.relkind", "=", "r")
+		.where((eb) =>
+			eb.or([
+				eb("pg_namespace.nspname", "=", "public"),
+				eb(
+					sql`obj_description(pg_namespace.oid, 'pg_namespace')`,
+					"=",
+					"monolayer",
+				),
+			]),
+		)
+		.where("pg_namespace.nspname", "=", "public")
+		.select([
+			"pg_namespace.nspname as schema",
+			"pg_class.relname as name",
+			sql<string>`public.pg_get_tabledef(nspname::text, relname::text, false, 'PKEY_EXTERNAL', 'FKEYS_EXTERNAL', 'COMMENTS', 'INCLUDE_TRIGGERS')`.as(
+				"table",
+			),
+		])
+		.orderBy(["nspname", "relname"])
 		.execute();
 }

@@ -79,6 +79,7 @@ describe("dumpDatabaseStructure", () => {
 			.orderBy("timestamp")
 			.executeTakeFirst();
 
+		console.log(dump);
 		expect(dump).toEqual(
 			expectedDumpWithExtensions.render({ timestamp: result!.timestamp }),
 		);
@@ -90,206 +91,96 @@ describe("dumpDatabaseStructure", () => {
 	);
 });
 
-const expectedDump = nunjucks.compile(`--
--- PostgreSQL database dump
---
+const expectedDump = nunjucks.compile(`-- Settings
 
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
+SET check_function_bodies = on;
 SET client_encoding = 'UTF8';
+SET client_min_messages = notice;
+SET idle_in_transaction_session_timeout = 0;
+SET lock_timeout = 0;
+SET row_security = on;
+SET search_path = "$user", public;
 SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
+SET statement_timeout = 0;
 SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
 
---
--- Name: public; Type: SCHEMA; Schema: -; Owner: -
---
+-- Extensions
 
-CREATE SCHEMA IF NOT EXISTS public;
+-- Functions
 
+-- Schemas
 
---
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
---
+-- public schema
 
-COMMENT ON SCHEMA public IS 'standard public schema';
-
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
-
---
--- Name: kysely_migration; Type: TABLE; Schema: public; Owner: -
---
+CREATE SCHEMA IF NOT EXISTS "public";
 
 CREATE TABLE public.kysely_migration (
-    name character varying(255) NOT NULL,
-    "timestamp" character varying(255) NOT NULL
-);
-
-
---
--- Name: kysely_migration_lock; Type: TABLE; Schema: public; Owner: -
---
+ name character varying(255) NOT NULL,
+ timestamp character varying(255) NOT NULL
+) TABLESPACE pg_default;
+ALTER TABLE ONLY public.kysely_migration ADD CONSTRAINT kysely_migration_pkey PRIMARY KEY (name);
 
 CREATE TABLE public.kysely_migration_lock (
-    id character varying(255) NOT NULL,
-    is_locked integer DEFAULT 0 NOT NULL
-);
-
-
---
--- Name: regulus_mint; Type: TABLE; Schema: public; Owner: -
---
+ id character varying(255) NOT NULL,
+ is_locked integer NOT NULL DEFAULT 0
+) TABLESPACE pg_default;
+ALTER TABLE ONLY public.kysely_migration_lock ADD CONSTRAINT kysely_migration_lock_pkey PRIMARY KEY (id);
 
 CREATE TABLE public.regulus_mint (
-    name text NOT NULL
-);
+ name text NOT NULL
+) TABLESPACE pg_default;
 
 
---
--- Name: kysely_migration_lock kysely_migration_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.kysely_migration_lock
-    ADD CONSTRAINT kysely_migration_lock_pkey PRIMARY KEY (id);
-
-
---
--- Name: kysely_migration kysely_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.kysely_migration
-    ADD CONSTRAINT kysely_migration_pkey PRIMARY KEY (name);
-
-
---
--- PostgreSQL database dump complete
---
-
-SET search_path TO "$user", public;
+-- Migration Data
 
 INSERT INTO public.kysely_migration VALUES ('20240405T120024-regulus-mint', '{{ timestamp }}');
 INSERT INTO public.kysely_migration_lock VALUES ('migration_lock', 0);`);
 
-const expectedDumpWithExtensions = nunjucks.compile(`--
--- PostgreSQL database dump
---
+const expectedDumpWithExtensions = nunjucks.compile(`-- Settings
 
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
+SET check_function_bodies = on;
 SET client_encoding = 'UTF8';
+SET client_min_messages = notice;
+SET idle_in_transaction_session_timeout = 0;
+SET lock_timeout = 0;
+SET row_security = on;
+SET search_path = "$user", public;
 SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
+SET statement_timeout = 0;
 SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
 
---
--- Name: public; Type: SCHEMA; Schema: -; Owner: -
---
+-- Extensions
 
-CREATE SCHEMA IF NOT EXISTS public;
+CREATE EXTENSION IF NOT EXISTS "moddatetime";
 
+CREATE EXTENSION IF NOT EXISTS "btree_gin";
 
---
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
---
+-- Functions
 
-COMMENT ON SCHEMA public IS 'standard public schema';
+-- Schemas
 
+-- public schema
 
---
--- Name: btree_gin; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS btree_gin WITH SCHEMA public;
-
-
---
--- Name: EXTENSION btree_gin; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN';
-
-
---
--- Name: moddatetime; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS moddatetime WITH SCHEMA public;
-
-
---
--- Name: EXTENSION moddatetime; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION moddatetime IS 'functions for tracking last modification time';
-
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
-
---
--- Name: kysely_migration; Type: TABLE; Schema: public; Owner: -
---
+CREATE SCHEMA IF NOT EXISTS "public";
 
 CREATE TABLE public.kysely_migration (
-    name character varying(255) NOT NULL,
-    "timestamp" character varying(255) NOT NULL
-);
-
-
---
--- Name: kysely_migration_lock; Type: TABLE; Schema: public; Owner: -
---
+ name character varying(255) NOT NULL,
+ timestamp character varying(255) NOT NULL
+) TABLESPACE pg_default;
+ALTER TABLE ONLY public.kysely_migration ADD CONSTRAINT kysely_migration_pkey PRIMARY KEY (name);
 
 CREATE TABLE public.kysely_migration_lock (
-    id character varying(255) NOT NULL,
-    is_locked integer DEFAULT 0 NOT NULL
-);
-
-
---
--- Name: regulus_mint; Type: TABLE; Schema: public; Owner: -
---
+ id character varying(255) NOT NULL,
+ is_locked integer NOT NULL DEFAULT 0
+) TABLESPACE pg_default;
+ALTER TABLE ONLY public.kysely_migration_lock ADD CONSTRAINT kysely_migration_lock_pkey PRIMARY KEY (id);
 
 CREATE TABLE public.regulus_mint (
-    name text NOT NULL
-);
+ name text NOT NULL
+) TABLESPACE pg_default;
 
 
---
--- Name: kysely_migration_lock kysely_migration_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.kysely_migration_lock
-    ADD CONSTRAINT kysely_migration_lock_pkey PRIMARY KEY (id);
-
-
---
--- Name: kysely_migration kysely_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.kysely_migration
-    ADD CONSTRAINT kysely_migration_pkey PRIMARY KEY (name);
-
-
---
--- PostgreSQL database dump complete
---
-
-SET search_path TO "$user", public;
+-- Migration Data
 
 INSERT INTO public.kysely_migration VALUES ('20240405T120024-regulus-mint', '{{ timestamp }}');
 INSERT INTO public.kysely_migration_lock VALUES ('migration_lock', 0);`);

@@ -235,6 +235,24 @@ export type Schemata = {
 	schema_owner: string;
 };
 
+export type PgSettings = {
+	name: string;
+	setting: string;
+};
+
+export type PgProc = {
+	oid: number;
+	proname: string;
+	pronamespace: number;
+};
+
+export type PgDepend = {
+	objid: number;
+	refobjid: number;
+	classid: number;
+	deptype: string;
+};
+
 export type InformationSchemaDB = {
 	"information_schema.tables": InformationSchemaTables;
 	"information_schema.columns": InformationSchemaColumns;
@@ -253,4 +271,7 @@ export type InformationSchemaDB = {
 	pg_type: PgTypeTable;
 	pg_enum: PgEnumTable;
 	pg_description: PgDescriptionTable;
+	pg_settings: PgSettings;
+	pg_proc: PgProc;
+	pg_depend: PgDepend;
 };

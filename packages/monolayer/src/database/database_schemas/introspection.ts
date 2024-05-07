@@ -27,3 +27,17 @@ export async function schemaInDb(
 		.filter((result) => (result.comment ?? "").match(/monolayer/))
 		.filter((result) => result.name === schemaName);
 }
+
+export async function schemasDumpInfo(db: Kysely<InformationSchemaDB>) {
+	const results = await db
+		.selectFrom("pg_namespace")
+		.select(["nspname as name"])
+		.where((eb) =>
+			eb.or([
+				eb("nspname", "=", "public"),
+				eb(sql`obj_description(oid, 'pg_namespace')`, "=", "monolayer"),
+			]),
+		)
+		.execute();
+	return results;
+}
