@@ -5,7 +5,7 @@ import { checkPackageInstallation } from "./check-package-installation.js";
 import {
 	PackageInstallEnvironment,
 	type PackageManager,
-} from "./select-package-manager.js";
+} from "./prompts/select-package-manager.js";
 
 export function installPackage(
 	name: string,

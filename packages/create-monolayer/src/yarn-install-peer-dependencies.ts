@@ -1,6 +1,6 @@
 import { Effect } from "effect";
 import { installPackage } from "./install-package.js";
-import { PackageInstallEnvironment } from "./select-package-manager.js";
+import { PackageInstallEnvironment } from "./prompts/select-package-manager.js";
 
 export function yarnInstallPeerDependencies(dependencies: string[]) {
 	return PackageInstallEnvironment.pipe(

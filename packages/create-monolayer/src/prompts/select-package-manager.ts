@@ -52,33 +52,31 @@ type PackageManagerSelectOptions = {
 	label: string;
 }[];
 
-export function selectPackageManager() {
-	return Effect.gen(function* () {
-		const packageEnv = yield* PackageInstallEnvironment;
-		const packageManager = yield* Effect.tryPromise(() =>
-			askUserPackageManager(),
-		);
-		if (typeof packageManager === "string") {
-			switch (packageManager) {
-				case "npm":
-					packageEnv.packageManager = npmPackageManager;
-					break;
-				case "pnpm":
-					packageEnv.packageManager = pnpmPackageManager;
-					break;
-				case "yarn":
-					packageEnv.packageManager = yarnPackageManager;
-					break;
-				case "bun":
-					packageEnv.packageManager = bunPackageManager;
-					break;
-			}
-		} else {
-			return yield* Effect.fail(new PromptCancelError());
+export const selectPackageManager = Effect.gen(function* () {
+	const packageEnv = yield* PackageInstallEnvironment;
+	const packageManager = yield* Effect.tryPromise(() =>
+		askUserPackageManager(),
+	);
+	if (typeof packageManager === "string") {
+		switch (packageManager) {
+			case "npm":
+				packageEnv.packageManager = npmPackageManager;
+				break;
+			case "pnpm":
+				packageEnv.packageManager = pnpmPackageManager;
+				break;
+			case "yarn":
+				packageEnv.packageManager = yarnPackageManager;
+				break;
+			case "bun":
+				packageEnv.packageManager = bunPackageManager;
+				break;
 		}
-		return yield* Effect.succeed(true);
-	});
-}
+	} else {
+		return yield* Effect.fail(new PromptCancelError());
+	}
+	return yield* Effect.succeed(true);
+});
 
 async function askUserPackageManager() {
 	const selectOptions: PackageManagerSelectOptions = [

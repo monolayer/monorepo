@@ -5,6 +5,51 @@ import nunjucks from "nunjucks";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
+import { DbFolderState, UndefinedDbFolderError } from "./state/db-folder.js";
+
+export const initFolderAndFiles = Effect.gen(function* () {
+	const dbFolder = yield* DbFolderState.current;
+	const dbFolderPath = dbFolder?.path;
+	if (dbFolderPath === undefined) {
+		yield* Effect.fail(new UndefinedDbFolderError());
+	} else {
+		yield* Effect.tryPromise(async () => {
+			log.lineMessage("");
+
+			await createFile(
+				path.join(cwd(), "monolayer.ts"),
+				configTemplate.render({ folder: dbFolderPath }),
+				true,
+			);
+			await createDir(dbFolderPath, true);
+			await createFile(`${dbFolderPath}/db.ts`, dbTemplate.render(), true);
+			await createFile(
+				`${dbFolderPath}/schema.ts`,
+				schemaTemplate.render(),
+				true,
+			);
+			await createFile(
+				`${dbFolderPath}/configuration.ts`,
+				configurationTemplate.render(),
+				true,
+			);
+			await createFile(
+				`${dbFolderPath}/extensions.ts`,
+				extensionsTemplate.render(),
+				true,
+			);
+			await createFile(`${dbFolderPath}/seed.ts`, seedTemplate.render(), true);
+			await createDir(`${dbFolderPath}/migrations`, true);
+
+			const nextSteps = `1) Edit the default configuration in \`${path.join(dbFolderPath, "configuration.ts")}\`.
+2) Run \`npx monolayer db:create\` to create the database.
+3) Edit the schema file at \`${path.join(dbFolderPath, "schema.ts")}\`.
+4) Run 'npx monolayer generate' to create migrations.
+5) Run 'npx monolayer migrate' to migrate the database.`;
+			p.note(nextSteps, "Next Steps");
+		});
+	}
+});
 
 export async function createDir(path: string, outputLog = false) {
 	try {
@@ -40,62 +85,6 @@ const log: LogWithSimpleMessage = {
 		process.stdout.write(`${color.gray("│")}  ${message}\n`);
 	},
 };
-
-export function initFolderAndFiles() {
-	return Effect.tryPromise(async () => {
-		const folder = await p.group(
-			{
-				path: () =>
-					p.text({
-						message: "Where should the db folder be created?",
-						placeholder: "app/db",
-						defaultValue: "app/db",
-						validate: (value) => {
-							let path = value;
-							if (path === "") path = "app/db";
-							if (path[0] === "/") return "Please enter a relative path.";
-						},
-					}),
-			},
-			{
-				onCancel: () => {
-					p.cancel("Operation cancelled.");
-					process.exit(0);
-				},
-			},
-		);
-
-		log.lineMessage("");
-
-		await createFile(
-			path.join(cwd(), "monolayer.ts"),
-			configTemplate.render({ folder: folder.path }),
-			true,
-		);
-		await createDir(folder.path, true);
-		await createFile(`${folder.path}/db.ts`, dbTemplate.render(), true);
-		await createFile(`${folder.path}/schema.ts`, schemaTemplate.render(), true);
-		await createFile(
-			`${folder.path}/configuration.ts`,
-			configurationTemplate.render(),
-			true,
-		);
-		await createFile(
-			`${folder.path}/extensions.ts`,
-			extensionsTemplate.render(),
-			true,
-		);
-		await createFile(`${folder.path}/seed.ts`, seedTemplate.render(), true);
-		await createDir(`${folder.path}/migrations`, true);
-
-		const nextSteps = `1) Edit the default configuration in \`${path.join(folder.path, "configuration.ts")}\`.
-2) Run \`npx monolayer db:create\` to create the database.
-3) Edit the schema file at \`${path.join(folder.path, "schema.ts")}\`.
-4) Run 'npx monolayer generate' to create migrations.
-5) Run 'npx monolayer migrate' to migrate the database.`;
-		p.note(nextSteps, "Next Steps");
-	});
-}
 
 export const configTemplate =
 	nunjucks.compile(`import type { Monolayer } from "monolayer/config";
