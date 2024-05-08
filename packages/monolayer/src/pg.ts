@@ -116,5 +116,6 @@ export {
 	type PgTrigger,
 	type TriggerEvent,
 	type TriggerFiringTime,
+	type TriggerOptions,
 } from "./database/schema/table/trigger/trigger.js";
 export { enumType, type EnumType } from "./database/schema/types/enum/enum.js";
