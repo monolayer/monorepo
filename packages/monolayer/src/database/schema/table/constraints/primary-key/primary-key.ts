@@ -1,3 +1,33 @@
+/**
+ * Defines a column or a group of columns, that can be used as a unique identifier for rows in the table.
+ *
+ * @remarks
+ * A primary key constraint is a special case of a unique contraint that also guarantees that all of the attributes
+ * within the primary key do not have null values.
+ *
+ * A table can have at most one primary key.
+ *
+ * @example
+ * ```ts
+ * import { integer, schema, table } from "monolayer/pg";
+ *
+ * const dbSchema = schema({
+ *   tables: {
+ *     documents: table({
+ *       columns: {
+ *         id: integer().generatedAlwasyAsIdentity(),
+ *       },
+ *       constraints: {
+ *         primaryKey: primaryKey(["id"]),
+ *       },
+ *     }),
+ *   },
+ * });
+ * ```
+ *
+ * @see
+ * *PostgreSQL docs*: {@link https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-PRIMARY-KEYS | Primary Keys }
+ */
 export function primaryKey<T extends string, PK extends string>(
 	columns: (PK | T)[],
 ) {
