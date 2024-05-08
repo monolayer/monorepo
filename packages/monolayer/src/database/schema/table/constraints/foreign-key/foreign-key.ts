@@ -1,9 +1,55 @@
 import type { ForeignKeyRule } from "~/database/schema/introspect-table.js";
 import type { AnyPgTable, PgTable } from "../../table.js";
 
+/**
+ * Defines a foreign key constraint on a column or a group of columns.
+ *
+ * Values in the column (or a group of columns) must match the values appearing in some row of another table,
+ * maintaining referential integrity between two related tables.
+ *
+ * @example
+ * ```ts
+ * import { integer, schema, table } from "monolayer/pg";
+ *
+ * const users = table({
+ *  columns: {
+ *    id: integer().generatedAlwaysAsIdentity(),
+ *  },
+ * });
+ *
+ * const documents = table({
+ *   columns: {
+ *     id: integer().generatedAlwaysAsIdentity(),
+ *     userId: integer(),
+ *   },
+ *   constraints: {
+ *     foreignKey: foreignKey(["userId"], users, ["id"]),
+ *   },
+ * });
+ *
+ * const dbSchema = schema({
+ *   tables: {
+ *     users,
+ *     documents,
+ *   },
+ * });
+ * ```
+ *
+ * @see
+ * *PostgreSQL docs*: {@link https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK | Foreign Keys }
+ */
 export function foreignKey<T extends string, C extends AnyPgTable>(
+	/**
+	 * The column or a group of columns that will be constrained by the foreign key.
+	 */
 	columns: T[],
+	/**
+	 * The target table that the foreign key references.
+	 */
 	targetTable: C,
+	/**
+	 * The column or a group of columns in the target table that the foreign key references.
+	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	targetColumns: C extends PgTable<infer U, any> ? (keyof U)[] : never,
 ) {
