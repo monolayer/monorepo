@@ -35,9 +35,42 @@ import type { AnyPgTable, PgTable } from "../../table.js";
  * });
  * ```
  *
+ * You can also create self-referential foreign keys, by ommiting the target table:
+ *
+ * ```ts
+ * import { integer, schema, table } from "monolayer/pg";
+ *
+ * const tree = table({
+ *   columns: {
+ *     nodeId: integer().generatedAlwaysAsIdentity(),
+ *     parentId: integer(),
+ *   },
+ *   constraints: {
+ *     foreignKey: foreignKey(["parentId"], ["nodeId"]),
+ *   },
+ * });
+ *
+ * const dbSchema = schema({
+ *   tables: {
+ *     users,
+ *     documents,
+ *   },
+ * });
+ * ```
+ *
  * @see
  * *PostgreSQL docs*: {@link https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK | Foreign Keys }
  */
+export function foreignKey<T extends string, C extends AnyPgTable>(
+	/**
+	 * The column or a group of columns that will be constrained by the foreign key.
+	 */
+	columns: T[],
+	/**
+	 * The column or a group of columns in the target table that the foreign key references.
+	 */
+	targetColumns: T[],
+): PgForeignKey<T, C>;
 export function foreignKey<T extends string, C extends AnyPgTable>(
 	/**
 	 * The column or a group of columns that will be constrained by the foreign key.
@@ -52,14 +85,27 @@ export function foreignKey<T extends string, C extends AnyPgTable>(
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	targetColumns: C extends PgTable<infer U, any> ? (keyof U)[] : never,
-) {
-	return new PgForeignKey(columns, targetTable, targetColumns as (keyof C)[]);
+): PgForeignKey<T, C>;
+export function foreignKey<T extends string, C extends AnyPgTable>(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	...args: unknown[]
+): PgForeignKey<T, C> | PgSelfReferentialForeignKey<T, T> {
+	if (args[2] !== undefined) {
+		return new PgForeignKey(
+			args[0] as T[],
+			args[1] as C,
+			args[2] as (keyof C)[],
+		);
+	} else {
+		return new PgSelfReferentialForeignKey(args[0] as T[], args[1] as T[]);
+	}
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function foreignKeyOptions<T extends PgForeignKey<any, any>>(
-	foreignKey: T,
-) {
+export function foreignKeyOptions<
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	T extends PgForeignKey<any, any> | PgSelfReferentialForeignKey<any, any>,
+>(foreignKey: T) {
 	assertForeignKeyWithInfo(foreignKey);
 	return foreignKey.options;
 }
@@ -72,8 +118,10 @@ export function isExternalForeignKey<T extends PgForeignKey<any, any>>(
 	return foreignKey.isExternal;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function assertForeignKeyWithInfo<T extends PgForeignKey<any, any>>(
+function assertForeignKeyWithInfo<
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	T extends PgForeignKey<any, any> | PgSelfReferentialForeignKey<any, any>,
+>(
 	val: T,
 ): asserts val is T & {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -84,7 +132,7 @@ function assertForeignKeyWithInfo<T extends PgForeignKey<any, any>>(
 }
 export type ForeignKeyOptions<T extends AnyPgTable> = {
 	columns: string[];
-	targetTable: T;
+	targetTable: T | string;
 	targetColumns: string[];
 	deleteRule: ForeignKeyRule;
 	updateRule: ForeignKeyRule;
@@ -139,3 +187,59 @@ export class PgForeignKey<T extends string, C extends AnyPgTable> {
 }
 
 export type AnyPgForeignKey = PgForeignKey<string, AnyPgTable>;
+
+export type SelfReferentialForeignKeyOptions = {
+	columns: string[];
+	targetColumns: string[];
+	deleteRule: ForeignKeyRule;
+	updateRule: ForeignKeyRule;
+};
+
+export class PgSelfReferentialForeignKey<T extends string, C extends string> {
+	/**
+	 * @hidden
+	 */
+	protected isExternal = false;
+
+	/**
+	 * @hidden
+	 */
+	protected options: SelfReferentialForeignKeyOptions;
+
+	/**
+	 * @hidden
+	 */
+	constructor(
+		/**
+		 * @hidden
+		 */
+		protected columns: T[],
+		/**
+		 * @hidden
+		 */
+		protected targetColumns: C[],
+	) {
+		this.isExternal = false;
+		this.options = {
+			columns: this.columns,
+			targetColumns: this.targetColumns,
+			deleteRule: "NO ACTION",
+			updateRule: "NO ACTION",
+		};
+	}
+
+	deleteRule(rule: Lowercase<ForeignKeyRule>) {
+		this.options.deleteRule = rule.toUpperCase() as ForeignKeyRule;
+		return this;
+	}
+
+	updateRule(rule: Lowercase<ForeignKeyRule>) {
+		this.options.updateRule = rule.toUpperCase() as ForeignKeyRule;
+		return this;
+	}
+
+	external() {
+		this.isExternal = true;
+		return this;
+	}
+}

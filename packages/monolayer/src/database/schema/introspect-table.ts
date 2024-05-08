@@ -123,6 +123,7 @@ function uniqueConstraintInfo(uniqueConstraints?: PgUnique<any>[]) {
 	});
 }
 function foreignKeyInfo(
+	currentTable: AnyPgTable,
 	allSchemas: AnySchema[],
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	foreignKeys?: PgForeignKey<any, any>[],
@@ -130,9 +131,10 @@ function foreignKeyInfo(
 	return (foreignKeys || []).map<ForeignKeyIntrospection>((fk) => {
 		const options = foreignKeyOptions(fk);
 		const isExternal = isExternalForeignKey(fk);
+		const foreignKeyTargetTable = options.targetTable ?? currentTable;
 		const targetTable =
-			findTableInSchema(options.targetTable, allSchemas) || "";
-		const targetTableSchema = tableInfo(options.targetTable).schemaName;
+			findTableInSchema(foreignKeyTargetTable, allSchemas) || "";
+		const targetTableSchema = tableInfo(foreignKeyTargetTable).schemaName;
 		return {
 			columns: options.columns,
 			targetTable: `${targetTableSchema}.${targetTable}`,
@@ -200,6 +202,7 @@ export function introspectTable(table: AnyPgTable, allSchemas: AnySchema[]) {
 		primaryKey: primaryKey(defininition.columns),
 		columns: columnInfo(defininition.columns),
 		foreignKeys: foreignKeyInfo(
+			table,
 			allSchemas,
 			defininition.constraints?.foreignKeys,
 		).filter((fk) => fk.isExternal === false),

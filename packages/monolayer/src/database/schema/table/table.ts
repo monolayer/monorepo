@@ -1,7 +1,10 @@
 import type { Simplify } from "kysely";
 import type { InferColumnTypes } from "../inference.js";
 import type { PgCheck } from "./constraints/check/check.js";
-import type { PgForeignKey } from "./constraints/foreign-key/foreign-key.js";
+import type {
+	PgForeignKey,
+	PgSelfReferentialForeignKey,
+} from "./constraints/foreign-key/foreign-key.js";
 import type { PgPrimaryKey } from "./constraints/primary-key/primary-key.js";
 import type { PgUnique } from "./constraints/unique/unique.js";
 import type { PgIndex } from "./index/index.js";
@@ -19,7 +22,12 @@ export type TableDefinition<T, PK extends string> = {
 				: PgPrimaryKey<keyof T, PK>
 			: never;
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		foreignKeys?: keyof T extends string ? PgForeignKey<keyof T, any>[] : [];
+		foreignKeys?: keyof T extends string
+			? Array<
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					PgForeignKey<keyof T, any> | PgSelfReferentialForeignKey<keyof T, any>
+				>
+			: [];
 		unique?: keyof T extends string ? PgUnique<keyof T>[] : [];
 		checks?: PgCheck[];
 	};

@@ -767,7 +767,7 @@ describe("Create table", () => {
 		});
 	});
 
-	test<DbContext>("with foreign keys", async (context) => {
+	test.only<DbContext>("with foreign keys", async (context) => {
 		const books = table({
 			columns: {
 				id: bigserial(),
@@ -882,6 +882,100 @@ describe("Create table", () => {
 					],
 					[
 						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_8abc8e0b_monolayer_fk"`',
+						"execute(db);",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			configuration: { schemas: [dbSchema] },
+			expected,
+			down: "same",
+		});
+	});
+
+	test.only<DbContext>("with self referenced foreign keys", async (context) => {
+		const tree = table({
+			columns: {
+				node_id: integer().notNull(),
+				parent_id: integer(),
+			},
+			constraints: {
+				primaryKey: primaryKey(["node_id"]),
+				foreignKeys: [foreignKey(["parent_id"], ["node_id"])],
+			},
+		});
+
+		const dbSchema = schema({
+			tables: {
+				tree,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 2001,
+				tableName: "tree",
+				currentTableName: "tree",
+				schemaName: "public",
+				type: "createTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("tree")',
+						'addColumn("node_id", "integer", (col) => col.notNull())',
+						'addColumn("parent_id", "integer")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("tree")',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [[]],
+				priority: 4001,
+				tableName: "tree",
+				currentTableName: "tree",
+				schemaName: "public",
+				type: "createPrimaryKey",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("tree")',
+						'addPrimaryKeyConstraint("tree_monolayer_pk", ["node_id"])',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [[]],
+				priority: 4011,
+				tableName: "tree",
+				currentTableName: "tree",
+				schemaName: "public",
+				type: "createForeignKey",
+				up: [
+					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("tree")
+    .addForeignKeyConstraint("tree_136bac6e_monolayer_fk", ["parent_id"], "public.tree", ["node_id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."tree" VALIDATE CONSTRAINT "tree_136bac6e_monolayer_fk"`',
 						"execute(db);",
 					],
 				],

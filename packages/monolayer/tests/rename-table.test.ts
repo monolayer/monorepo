@@ -1043,6 +1043,108 @@ describe("Rename table without camel case plugin", () => {
 		});
 	});
 
+	test<DbContext>("rename self foreign key table", async (context) => {
+		await context.kysely.schema
+			.createTable("tree")
+			.addColumn("node_id", "integer", (col) => col.generatedAlwaysAsIdentity())
+			.addColumn("parent_id", "integer")
+			.execute();
+
+		await context.kysely.schema
+			.alterTable("tree")
+			.addPrimaryKeyConstraint("tree_monolayer_pk", ["node_id"])
+			.execute();
+
+		await context.kysely.schema
+			.alterTable("tree")
+			.addForeignKeyConstraint(
+				"tree_136bac6e_monolayer_fk",
+				["parent_id"],
+				"tree",
+				["node_id"],
+			)
+			.onDelete("no action")
+			.onUpdate("no action")
+			.execute();
+
+		const trees = table({
+			columns: {
+				node_id: integer().generatedAlwaysAsIdentity(),
+				parent_id: integer(),
+			},
+			constraints: {
+				primaryKey: primaryKey(["node_id"]),
+				foreignKeys: [foreignKey(["parent_id"], ["node_id"])],
+			},
+		});
+
+		const dbSchema = schema({
+			tables: {
+				trees,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 900,
+				tableName: "tree",
+				currentTableName: "trees",
+				schemaName: "public",
+				type: "renameTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("tree")',
+						'renameTo("trees")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("trees")',
+						'renameTo("tree")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 5002,
+				tableName: "trees",
+				currentTableName: "trees",
+				schemaName: "public",
+				type: "renameForeignKey",
+				up: [
+					[
+						'await sql`ALTER TABLE "public"."trees" RENAME CONSTRAINT tree_136bac6e_monolayer_fk TO trees_66cc3267_monolayer_fk`',
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						'await sql`ALTER TABLE "public"."trees" RENAME CONSTRAINT trees_66cc3267_monolayer_fk TO tree_136bac6e_monolayer_fk`',
+						"execute(db);",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			configuration: { schemas: [dbSchema] },
+			expected: expected,
+			down: "same",
+			mock: () => {
+				mockTableDiffOnce([
+					{
+						from: "tree",
+						to: "trees",
+					},
+				]);
+			},
+		});
+	});
+
 	test<DbContext>("rename foreign key child table", async (context) => {
 		await context.kysely.schema
 			.createTable("books")
@@ -3961,6 +4063,111 @@ describe("Rename table with camel case plugin", () => {
 					{
 						from: "books",
 						to: "new_books",
+					},
+				]);
+			},
+		});
+	});
+
+	test<DbContext>("rename self foreign key table", async (context) => {
+		await context.kysely.schema
+			.createTable("tree")
+			.addColumn("node_id", "integer", (col) => col.generatedAlwaysAsIdentity())
+			.addColumn("parent_id", "integer")
+			.execute();
+
+		await context.kysely.schema
+			.alterTable("tree")
+			.addPrimaryKeyConstraint("tree_monolayer_pk", ["node_id"])
+			.execute();
+
+		await context.kysely.schema
+			.alterTable("tree")
+			.addForeignKeyConstraint(
+				"tree_136bac6e_monolayer_fk",
+				["parent_id"],
+				"tree",
+				["node_id"],
+			)
+			.onDelete("no action")
+			.onUpdate("no action")
+			.execute();
+
+		const myTree = table({
+			columns: {
+				node_id: integer().generatedAlwaysAsIdentity(),
+				parent_id: integer(),
+			},
+			constraints: {
+				primaryKey: primaryKey(["node_id"]),
+				foreignKeys: [foreignKey(["parent_id"], ["node_id"])],
+			},
+		});
+
+		const dbSchema = schema({
+			tables: {
+				myTree,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 900,
+				tableName: "tree",
+				currentTableName: "my_tree",
+				schemaName: "public",
+				type: "renameTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("tree")',
+						'renameTo("my_tree")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("my_tree")',
+						'renameTo("tree")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 5002,
+				tableName: "my_tree",
+				currentTableName: "my_tree",
+				schemaName: "public",
+				type: "renameForeignKey",
+				up: [
+					[
+						'await sql`ALTER TABLE "public"."my_tree" RENAME CONSTRAINT tree_136bac6e_monolayer_fk TO my_tree_a8a26230_monolayer_fk`',
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						'await sql`ALTER TABLE "public"."my_tree" RENAME CONSTRAINT my_tree_a8a26230_monolayer_fk TO tree_136bac6e_monolayer_fk`',
+						"execute(db);",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			configuration: {
+				schemas: [dbSchema],
+				camelCasePlugin: { enabled: true },
+			},
+			expected: expected,
+			down: "same",
+			mock: () => {
+				mockTableDiffOnce([
+					{
+						from: "tree",
+						to: "my_tree",
 					},
 				]);
 			},

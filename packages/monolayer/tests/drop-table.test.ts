@@ -573,6 +573,106 @@ describe("Table drop migrations", () => {
 		});
 	});
 
+	test<DbContext>("drop table with self referential foreign keys", async (context) => {
+		const dbSchema = schema({
+			tables: {},
+		});
+		await context.kysely.schema
+			.createTable("tree")
+			.addColumn("node_id", "integer", (col) => col.generatedAlwaysAsIdentity())
+			.addColumn("parent_id", "integer")
+			.execute();
+
+		await sql`ALTER TABLE tree ADD CONSTRAINT tree_monolayer_pk PRIMARY KEY ("node_id")`.execute(
+			context.kysely,
+		);
+
+		await context.kysely.schema
+			.alterTable("tree")
+			.addForeignKeyConstraint(
+				"tree_136bac6e_monolayer_fk",
+				["parent_id"],
+				"tree",
+				["node_id"],
+			)
+			.execute();
+
+		const expected = [
+			{
+				priority: 810,
+				tableName: "tree",
+				currentTableName: "tree",
+				schemaName: "public",
+				type: "dropForeignKey",
+				up: [[]],
+				down: [
+					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("tree")
+    .addForeignKeyConstraint("tree_136bac6e_monolayer_fk", ["parent_id"], "public.tree", ["node_id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."tree" VALIDATE CONSTRAINT "tree_136bac6e_monolayer_fk"`',
+						"execute(db);",
+					],
+				],
+			},
+			{
+				priority: 1004,
+				tableName: "tree",
+				currentTableName: "tree",
+				schemaName: "public",
+				type: "dropPrimaryKey",
+				up: [[]],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("tree")',
+						'addPrimaryKeyConstraint("tree_monolayer_pk", ["node_id"])',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 1006,
+				tableName: "tree",
+				currentTableName: "tree",
+				schemaName: "public",
+				type: "dropTable",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("tree")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("tree")',
+						'addColumn("node_id", "integer", (col) => col.notNull().generatedAlwaysAsIdentity())',
+						'addColumn("parent_id", "integer")',
+						"execute();",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			configuration: { schemas: [dbSchema] },
+			expected,
+			down: "same",
+		});
+	});
+
 	test<DbContext>("drop table with check constraints", async (context) => {
 		const dbSchema = schema({
 			tables: {

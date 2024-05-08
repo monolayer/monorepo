@@ -82,6 +82,11 @@ export async function databaseTableDependencies(
 			schemaName,
 		)
 		.where("information_schema.table_constraints.table_name", "in", tables)
+		.whereRef(
+			"information_schema.table_constraints.table_name",
+			"<>",
+			"information_schema.constraint_column_usage.table_name",
+		)
 		.select([
 			sql<string>`information_schema.table_constraints.table_name`.as(
 				"foreigh_key_table",
@@ -112,7 +117,10 @@ export function localSchemaTableDependencies(
 		(acc, [tableName, table]) => {
 			const introspect = tableInfo(table).introspect(allSchemas);
 			for (const foreignKey of introspect.foreignKeys) {
-				acc.push([tableName, foreignKey.targetTable.split(".")[1]]);
+				const targetTableName = foreignKey.targetTable.split(".")[1];
+				if (targetTableName !== tableName) {
+					acc.push([tableName, targetTableName]);
+				}
 			}
 			return acc;
 		},
@@ -169,7 +177,8 @@ function localSchemaDependencies(allSchemas: AnySchema[]) {
 			const foreignKeys = info.definition.constraints?.foreignKeys ?? [];
 			for (const foreignKey of foreignKeys) {
 				const options = foreignKeyOptions(foreignKey);
-				const targetTableInfo = tableInfo(options.targetTable);
+				const foreignKeyTargetTable = options.targetTable ?? table;
+				const targetTableInfo = tableInfo(foreignKeyTargetTable);
 				if (targetTableInfo.schemaName != info.schemaName) {
 					dependencies.push([info.schemaName, targetTableInfo.schemaName]);
 				}

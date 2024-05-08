@@ -2,6 +2,7 @@ import { Effect } from "effect";
 import { findTableInSchema } from "~/database/schema/introspect-table.js";
 import type { AnySchema } from "~/database/schema/schema.js";
 import {
+	PgSelfReferentialForeignKey,
 	foreignKeyOptions,
 	type AnyPgForeignKey,
 } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
@@ -18,6 +19,9 @@ export function validateForeignKeyReferences(
 				continue;
 			}
 			for (const foreignKey of foreignKeys as AnyPgForeignKey[]) {
+				if (foreignKey instanceof PgSelfReferentialForeignKey) {
+					continue;
+				}
 				const foreignKeyTargetTable = foreignKeyOptions(foreignKey).targetTable;
 				if (
 					findTableInSchema(foreignKeyTargetTable, allSchemas) === undefined
