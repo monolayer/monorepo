@@ -65,7 +65,7 @@ describe("pgQuery", () => {
 		]);
 	});
 
-	test("configuration environments", async () => {
+	test("configuration connections", async () => {
 		const layersWithDefaultConfiguration = migratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);
@@ -86,7 +86,7 @@ describe("pgQuery", () => {
 		);
 
 		expect(defaultDatabase).toStrictEqual([
-			{ current_database: "10da7aa4_test" },
+			{ current_database: "1d6addc0_test" },
 		]);
 
 		const statsDatabase = await Effect.runPromise(
@@ -101,7 +101,7 @@ describe("pgQuery", () => {
 		);
 
 		expect(statsDatabase).toStrictEqual([
-			{ current_database: "10da7aa4_stats_test" },
+			{ current_database: "1d6addc0_stats_test" },
 		]);
 	});
 });
@@ -151,7 +151,7 @@ describe("adminPgQuery", () => {
 		expect(statsDatabase).toStrictEqual([{ current_database: "postgres" }]);
 	});
 
-	test("admin environments connect to 'postgres'", async () => {
+	test("admin connections connect to 'postgres'", async () => {
 		const layersWithDefaultConfiguration = migratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);

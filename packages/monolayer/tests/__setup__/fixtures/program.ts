@@ -12,7 +12,7 @@ export const configurationsTemplate =
 
 export default {
 	schemas: [dbSchema],
-	environments: {
+	connections: {
 		development: {
 			user: "${process.env.POSTGRES_USER}",
 			password: "${process.env.POSTGRES_PASSWORD}",
@@ -31,7 +31,7 @@ export default {
 };
 
 export const stats = {
-	environments: {
+	connections: {
 		development: {
 			user: "${process.env.POSTGRES_USER}",
 			password: "${process.env.POSTGRES_PASSWORD}",
@@ -57,7 +57,7 @@ import { dbSchema as anotherDbSchema } from "./{{ secondSchemaFile }}";
 
 export default {
 	schemas: [dbSchema, anotherDbSchema],
-	environments: {
+	connections: {
 		development: {
 			user: "${process.env.POSTGRES_USER}",
 			password: "${process.env.POSTGRES_PASSWORD}",
@@ -76,7 +76,7 @@ export default {
 };
 
 export const stats =  {
-	environments: {
+	connections: {
 		development: {
 			user: "${process.env.POSTGRES_USER}",
 			password: "${process.env.POSTGRES_PASSWORD}",

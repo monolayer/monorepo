@@ -38,7 +38,7 @@ export const appEnvironment = Effect.gen(function* () {
 export const appEnvironmentPgConfig = Effect.gen(function* () {
 	const env = yield* appEnvironment;
 	const configuration = yield* configurationByName(env.configurationName);
-	const environmentConfiguration = configuration.environments[env.name];
+	const environmentConfiguration = configuration.connections[env.name];
 	if (environmentConfiguration === undefined) {
 		p.log.error(color.red("Error"));
 		return yield* Effect.fail(
@@ -51,7 +51,7 @@ export const appEnvironmentPgConfig = Effect.gen(function* () {
 export const appEnvironmentPgConfigDev = Effect.gen(function* () {
 	const env = yield* appEnvironment;
 	const configuration = yield* configurationByName(env.configurationName);
-	const environmentConfiguration = configuration.environments["development"];
+	const environmentConfiguration = configuration.connections["development"];
 	return environmentConfiguration;
 });
 

@@ -104,14 +104,14 @@ import { dbExtensions } from "./extensions";
 export default {
 	schemas: [dbSchema],
 	extensions: dbExtensions,
-	environments: {
+	connections: {
 		development: {
 			// With credentials
 			database: "#database_development",
 			user: "#user",
 			password: "#password",
 			host: "#host",
-			port: "#port",
+			port: 5432,
 			// With connection string
 			// connectionString: "#connection_string",
 		},

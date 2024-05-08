@@ -22,17 +22,14 @@ export const promptCancelError = Effect.fail(new PromptCancelError());
 
 export async function cliAction(
 	name: string,
-	options: { readonly environment: string; readonly connection?: string },
+	options: { readonly connection: string; readonly name?: string },
 	tasks: Effect.Effect<unknown, unknown, ProgramContext>[],
 ) {
 	p.intro(name);
 
 	const layers = migratorLayer().pipe(Layer.provideMerge(dbClientsLayer()));
 
-	const appEnv = await loadEnv(
-		options.environment,
-		options.connection ?? "default",
-	);
+	const appEnv = await loadEnv(options.connection, options.name ?? "default");
 
 	const action = Effect.provide(Effect.all(tasks), layers)
 		.pipe(

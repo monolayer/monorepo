@@ -35,7 +35,7 @@ describe("validate uique schema name", () => {
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
-				environments: {
+				connections: {
 					development: {},
 				},
 			},
@@ -63,7 +63,7 @@ describe("validate uique schema name", () => {
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
-				environments: {
+				connections: {
 					development: {},
 				},
 			},
@@ -99,7 +99,7 @@ describe("validate uique schema name", () => {
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
-				environments: {
+				connections: {
 					development: {},
 				},
 			},

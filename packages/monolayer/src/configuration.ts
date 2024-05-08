@@ -17,7 +17,7 @@ export type Configuration = {
 	schemas: AnySchema[];
 	camelCasePlugin?: CamelCaseOptions;
 	extensions?: PgExtension[];
-	environments: {
+	connections: {
 		development: PgConfig;
 	} & Record<string, PgConfig>;
 };
@@ -31,7 +31,7 @@ export function kyselyConfig(
 	configuration: Configuration,
 	environment: string,
 ) {
-	const environmentConfig = configuration.environments[environment];
+	const environmentConfig = configuration.connections[environment];
 	return {
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(environmentConfig),

@@ -31,13 +31,13 @@ async function main() {
 	program
 		.command("db:create")
 		.option(
-			"-c, --configuration <configuration-name>",
+			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
-			"-e, --environment <environment-name>",
-			"configuration environment name as defined in configuration.ts",
+			"-c, --connection <connection-name>",
+			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
 		.description("creates a database")
@@ -49,13 +49,13 @@ async function main() {
 	program
 		.command("db:drop")
 		.option(
-			"-c, --configuration <configuration-name>",
+			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
-			"-e, --environment <environment-name>",
-			"configuration environment name as defined in configuration.ts",
+			"-c, --connection <connection-name>",
+			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
 		.description("drops a database")
@@ -68,13 +68,13 @@ async function main() {
 		.command("db:reset")
 		.description("Restores a database from its structure file")
 		.option(
-			"-c, --configuration <configuration-name>",
+			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
-			"-e, --environment <environment-name>",
-			"configuration environment name as defined in configuration.ts",
+			"-c, --connection <connection-name>",
+			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -85,13 +85,13 @@ async function main() {
 		.command("generate")
 		.description("generate a schema migration")
 		.option(
-			"-c, --configuration <configuration-name>",
+			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
-			"-e, --environment <environment-name>",
-			"configuration environment name as defined in configuration.ts",
+			"-c, --connection <connection-name>",
+			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -106,13 +106,13 @@ async function main() {
 		.command("pending")
 		.description("list pending schema migrations")
 		.option(
-			"-c, --configuration <configuration-name>",
+			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
-			"-e, --environment <environment-name>",
-			"configuration environment name as defined in configuration.ts",
+			"-c, --connection <connection-name>",
+			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -123,13 +123,13 @@ async function main() {
 		.command("migrate")
 		.description("migrate pending schema migrations")
 		.option(
-			"-c, --configuration <configuration-name>",
+			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
-			"-e, --environment <environment-name>",
-			"configuration environment name as defined in configuration.ts",
+			"-c, --connection <connection-name>",
+			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -140,13 +140,13 @@ async function main() {
 		.command("rollback")
 		.description("rollback to a previous schema migration")
 		.option(
-			"-c, --configuration <configuration-name>",
+			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
-			"-e, --environment <environment-name>",
-			"configuration environment name as defined in configuration.ts",
+			"-c, --connection <connection-name>",
+			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {
@@ -157,7 +157,7 @@ async function main() {
 		.command("scaffold")
 		.description("creates an empty schema migration file")
 		.action(async () => {
-			await cliAction("monolayer scaffold", { environment: "development" }, [
+			await cliAction("monolayer scaffold", { connection: "development" }, [
 				scaffoldMigration(),
 			]);
 		});
@@ -166,13 +166,13 @@ async function main() {
 		.command("seed")
 		.description("seeds a database")
 		.option(
-			"-c, --configuration <configuration-name>",
+			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
-			"-e, --environment <environment-name>",
-			"configuration environment name as defined in configuration.ts",
+			"-c, --connection <connection-name>",
+			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
 		.option("-r, --replant", "Truncate tables before seeding")
@@ -192,13 +192,13 @@ async function main() {
 		.command("sync")
 		.description("generate a schema migration and migrate")
 		.option(
-			"-c, --configuration <configuration-name>",
+			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
 		)
 		.option(
-			"-e, --environment <environment-name>",
-			"configuration environment name as defined in configuration.ts",
+			"-c, --connection <connection-name>",
+			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
 		.action(async (opts) => {

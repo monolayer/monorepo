@@ -94,12 +94,12 @@ function mockedMigratorLayer(
 	);
 }
 
-export type EnvironmentLessConnector = Omit<Configuration, "environments">;
+export type ConnectionLessConfiguration = Omit<Configuration, "connections">;
 
 export function newLayers(
 	databaseName: string,
 	migrationFolder: string,
-	connector: EnvironmentLessConnector,
+	connector: ConnectionLessConfiguration,
 ) {
 	return mockedMigratorLayer(
 		databaseName,

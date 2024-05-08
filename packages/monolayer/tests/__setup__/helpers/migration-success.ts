@@ -9,7 +9,7 @@ import type { Migrator } from "~/services/migrator.js";
 import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";
-import { newLayers, type EnvironmentLessConnector } from "./layers.js";
+import { newLayers, type ConnectionLessConfiguration } from "./layers.js";
 import { programWithErrorCause } from "./run-program.js";
 
 export async function testChangesetAndMigrations({
@@ -23,7 +23,7 @@ export async function testChangesetAndMigrations({
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expected: any[];
 	down: "same" | "reverse" | "empty";
-	configuration: EnvironmentLessConnector;
+	configuration: ConnectionLessConfiguration;
 	mock?: () => void;
 }) {
 	const env: AppEnv = {
@@ -34,7 +34,7 @@ export async function testChangesetAndMigrations({
 			schemas: configuration.schemas,
 			camelCasePlugin: configuration.camelCasePlugin ?? { enabled: false },
 			extensions: configuration.extensions ?? [],
-			environments: {
+			connections: {
 				development: {},
 			},
 		},
