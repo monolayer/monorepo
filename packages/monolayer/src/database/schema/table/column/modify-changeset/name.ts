@@ -5,6 +5,7 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
 import { currentTableName } from "~/introspection/table-name.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
 
@@ -46,6 +47,18 @@ function columnNameMigrationOperation(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+		warnings: [
+			{
+				type: ChangeWarningType.BackwardIncompatible,
+				code: ChangeWarningCode.ColumnRename,
+				schema: schemaName,
+				table: currentTableName(tableName, tablesToRename, schemaName),
+				columnRename: {
+					from: diff.oldValue,
+					to: diff.value,
+				},
+			},
+		],
 		type: ChangeSetType.RenameColumn,
 		up: [
 			executeKyselySchemaStatement(

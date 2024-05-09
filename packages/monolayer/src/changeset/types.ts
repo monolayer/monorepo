@@ -1,3 +1,5 @@
+import type { ChangeWarning } from "./warnings.js";
+
 export enum ChangeSetType {
 	CreateTable = "createTable",
 	DropTable = "dropTable",
@@ -40,6 +42,7 @@ export type Changeset = {
 	down: string[][];
 	priority: number;
 	schemaName: string | null;
+	warnings?: Array<ChangeWarning>;
 };
 
 export enum MigrationOpPriority {

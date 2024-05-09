@@ -43,6 +43,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "teams",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "users",
+							to: "teams",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -103,6 +114,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -184,6 +206,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -249,6 +282,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -414,6 +458,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -539,6 +594,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -606,6 +672,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -668,6 +745,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -770,6 +858,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -881,6 +980,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -985,6 +1095,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1091,6 +1212,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "trees",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "tree",
+							to: "trees",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1211,6 +1343,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "users",
+							to: "persons",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1331,6 +1474,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1451,6 +1605,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1474,6 +1639,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "users",
+							to: "persons",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1597,6 +1773,17 @@ describe("Rename table without camel case plugin", () => {
 				tableName: "users",
 				currentTableName: "persons",
 				schemaName: "public",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "users",
+							to: "persons",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				type: "renameTable",
 				up: [
 					[
@@ -1718,6 +1905,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1838,6 +2036,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1861,6 +2070,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "users",
+							to: "persons",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1952,6 +2172,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2013,6 +2244,17 @@ describe("Rename table without camel case plugin", () => {
 				tableName: "books",
 				currentTableName: "publications",
 				schemaName: "public",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				type: "renameTable",
 				up: [
 					[
@@ -2124,6 +2366,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2221,6 +2474,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2338,6 +2602,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2404,6 +2679,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2504,6 +2790,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "publications",
+							to: "books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2583,6 +2880,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2674,6 +2982,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2766,6 +3085,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2891,6 +3221,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -2984,6 +3325,17 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "publications",
+							to: "books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3047,6 +3399,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_users",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "users",
+							to: "new_users",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3110,6 +3473,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3194,6 +3568,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3262,6 +3647,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3430,6 +3826,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3558,6 +3965,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "publications",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3617,6 +4035,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3682,6 +4111,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3787,6 +4227,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -3901,6 +4352,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4008,6 +4470,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4117,6 +4590,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "my_tree",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "tree",
+							to: "my_tree",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4240,6 +4724,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "users",
+							to: "user_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4363,6 +4858,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4486,6 +4992,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4509,6 +5026,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "users",
+							to: "user_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4640,6 +5168,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "book_users",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "users",
+							to: "book_users",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4770,6 +5309,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4900,6 +5450,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4923,6 +5484,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "users",
+							to: "user_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5017,6 +5589,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5082,6 +5665,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5195,6 +5789,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5295,6 +5900,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5415,6 +6031,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "books_and_documents",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5484,6 +6111,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5587,6 +6225,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5669,6 +6318,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5771,6 +6431,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5866,6 +6537,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5994,6 +6676,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6090,6 +6783,17 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
+				warnings: [
+					{
+						code: "BI001",
+						schema: "public",
+						tableRename: {
+							from: "books",
+							to: "new_books",
+						},
+						type: "backwardIncompatible",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',

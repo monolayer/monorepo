@@ -767,7 +767,7 @@ describe("Create table", () => {
 		});
 	});
 
-	test.only<DbContext>("with foreign keys", async (context) => {
+	test<DbContext>("with foreign keys", async (context) => {
 		const books = table({
 			columns: {
 				id: bigserial(),
@@ -896,7 +896,7 @@ describe("Create table", () => {
 		});
 	});
 
-	test.only<DbContext>("with self referenced foreign keys", async (context) => {
+	test<DbContext>("with self referenced foreign keys", async (context) => {
 		const tree = table({
 			columns: {
 				node_id: integer().notNull(),

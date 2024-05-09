@@ -148,6 +148,17 @@ test("print summary", () => {
 			currentTableName: "books_and_documents",
 			schemaName: "public",
 			type: "renameTable",
+			warnings: [
+				{
+					code: "BI001",
+					schema: "public",
+					tableRename: {
+						from: "books",
+						to: "books_and_documents",
+					},
+					type: "backwardIncompatible",
+				},
+			],
 			up: [],
 			down: [],
 		},
@@ -157,6 +168,17 @@ test("print summary", () => {
 			currentTableName: "triggers",
 			schemaName: "public",
 			type: "renameTable",
+			warnings: [
+				{
+					code: "BI001",
+					schema: "public",
+					tableRename: {
+						from: "trigger_table",
+						to: "triggers",
+					},
+					type: "backwardIncompatible",
+				},
+			],
 			up: [],
 			down: [],
 		},
@@ -330,6 +352,18 @@ test("print summary", () => {
 			currentTableName: "library_building",
 			schemaName: "public",
 			type: "renameColumn",
+			warnings: [
+				{
+					code: "BI002",
+					columnRename: {
+						from: "id",
+						to: "book_id",
+					},
+					schema: "public",
+					table: "library_building",
+					type: "backwardIncompatible",
+				},
+			],
 			up: [],
 		},
 		{
@@ -339,6 +373,18 @@ test("print summary", () => {
 			currentTableName: "library_building",
 			schemaName: "public",
 			type: "renameColumn",
+			warnings: [
+				{
+					code: "BI002",
+					columnRename: {
+						from: "id",
+						to: "book_id",
+					},
+					schema: "public",
+					table: "library_building",
+					type: "backwardIncompatible",
+				},
+			],
 			up: [],
 		},
 		{
