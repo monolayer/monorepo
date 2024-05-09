@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
+import color from "picocolors";
 import type { ProgramContext } from "../program-context.js";
-import { check } from "./spinner-task.js";
 
 export function checkWithFail({
 	name,
@@ -16,21 +16,31 @@ export function checkWithFail({
 	failMessage: string;
 	callback: () => Effect.Effect<boolean, unknown, ProgramContext>;
 }) {
-	return check(name, () =>
-		Effect.succeed(true).pipe(Effect.flatMap(callback)),
-	).pipe(
-		Effect.flatMap((result) =>
-			Effect.if(result, {
-				onTrue: () => Effect.succeed(true),
-				onFalse: () =>
-					Effect.succeed(true).pipe(
-						Effect.flatMap(() => {
-							p.log.error(errorMessage);
-							p.note(nextSteps, "Next Steps");
-							return Effect.fail(failMessage);
-						}),
-					),
-			}),
-		),
-	);
+	return Effect.gen(function* () {
+		const success = yield* check(name, callback);
+		if (success) {
+			return true;
+		} else {
+			p.log.error(errorMessage);
+			p.note(nextSteps, "Next Steps");
+			return yield* Effect.fail(failMessage);
+		}
+	});
+}
+
+function check(
+	name: string,
+	callback: () => Effect.Effect<boolean, unknown, ProgramContext>,
+) {
+	return Effect.gen(function* () {
+		const spinner = p.spinner();
+		spinner.start();
+		const success = yield* callback();
+		if (success) {
+			spinner.stop(`${name} ${color.green("✓")}`);
+		} else {
+			spinner.stop(`${name} ${color.red("x")}`);
+		}
+		return success;
+	});
 }

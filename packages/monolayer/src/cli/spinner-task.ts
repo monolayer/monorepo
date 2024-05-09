@@ -23,28 +23,3 @@ export function spinnerTask(
 		)
 		.pipe(Effect.flatMap(() => Effect.succeed(true)));
 }
-
-export function check(
-	name: string,
-	callback: () => Effect.Effect<boolean, unknown, ProgramContext>,
-) {
-	return Effect.succeed(p.spinner()).pipe(
-		Effect.tap((spinner) => spinner.start()),
-		Effect.flatMap((spinner) =>
-			callback().pipe(
-				Effect.tap((result) =>
-					Effect.if(result, {
-						onTrue: () =>
-							Effect.succeed(true).pipe(
-								Effect.tap(() => spinner.stop(`${name} ${color.green("✓")}`)),
-							),
-						onFalse: () =>
-							Effect.succeed(false).pipe(
-								Effect.tap(() => spinner.stop(`${name} ${color.red("x")}`)),
-							),
-					}),
-				),
-			),
-		),
-	);
-}
