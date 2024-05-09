@@ -5691,6 +5691,28 @@ describe("json", () => {
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
+				const schemaShape = zodSchema(tbl).shape;
+				const lalo = z.object({
+					...schemaShape,
+					id: schemaShape.id.superRefine((data, ctx) => {
+						const objectKeys = Object.keys(data);
+						if (
+							objectKeys.length !== 2 ||
+							objectKeys[0] !== "count" ||
+							objectKeys[1] !== "name"
+						) {
+							ctx.addIssue({
+								code: z.ZodIssueCode.custom,
+								message: "Invalid data",
+							});
+						}
+						return z.NEVER;
+					}),
+				});
+				const result = lalo.safeParse({ id: { a: 1 } });
+				if (result.success) {
+					result.data;
+				}
 				type OutputType = z.output<typeof schema>;
 				type Expected = JsonValue;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -5998,6 +6020,199 @@ describe("json", () => {
 				expect(isEqualOutput).toBe(true);
 
 				expect(schema.safeParse("2").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("with custom data type", () => {
+			type Data = {
+				count: number;
+				name: string;
+			};
+			test("input type is custom data type, null, or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = Data | null | undefined;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is custom data type, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = Data | null | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const objectResult = schema.safeParse({ count: 1, name: "example" });
+				expect(objectResult.success).toBe(true);
+				if (objectResult.success) {
+					expect(objectResult.data).toEqual({ count: 1, name: "example" });
+				}
+				const arrayObjectResult = schema.safeParse({
+					count: 1,
+					name: "example",
+				});
+				expect(arrayObjectResult.success).toBe(true);
+				if (arrayObjectResult.success) {
+					expect(arrayObjectResult.data).toEqual({ count: 1, name: "example" });
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(true);
+			});
+
+			test("input type is custom data type with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = Data;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is custom data type with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = Data;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const objectResult = schema.safeParse({ count: 1, name: "example" });
+				expect(objectResult.success).toBe(true);
+				if (objectResult.success) {
+					expect(objectResult.data).toEqual({ count: 1, name: "example" });
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
+			test("input type is custom data type, or undefined with notNull and default", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>().notNull().default({ count: 1, name: "example" }),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = Data | undefined;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is custom data type, or undefined with notNull and default", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>().notNull().default({ count: 1, name: "example" }),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				type Expected = Data | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const objectResult = schema.safeParse({ count: 2, name: "example" });
+				expect(objectResult.success).toBe(true);
+				if (objectResult.success) {
+					expect(objectResult.data).toEqual({ count: 2, name: "example" });
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses objects", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse({ count: 1, name: "example" }).success).toBe(
+					true,
+				);
+			});
+
+			test("does not parse explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>().default({ count: 1, name: "example" }),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse({ count: 2, name: "example" }).success).toBe(
+					true,
+				);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse({ count: 1, name: "example" }).success).toBe(
+					true,
+				);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: json<Data>().notNull().default({ count: 1, name: "example" }),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse({ count: 2, name: "example" }).success).toBe(
+					true,
+				);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
@@ -6527,6 +6742,199 @@ describe("jsonb", () => {
 				expect(isEqualOutput).toBe(true);
 
 				expect(schema.safeParse("2").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("with custom data type", () => {
+			type Data = {
+				count: number;
+				name: string;
+			};
+			test("input type is custom data type, null, or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = Data | null | undefined;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is custom data type, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = Data | null | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const objectResult = schema.safeParse({ count: 1, name: "example" });
+				expect(objectResult.success).toBe(true);
+				if (objectResult.success) {
+					expect(objectResult.data).toEqual({ count: 1, name: "example" });
+				}
+				const arrayObjectResult = schema.safeParse({
+					count: 1,
+					name: "example",
+				});
+				expect(arrayObjectResult.success).toBe(true);
+				if (arrayObjectResult.success) {
+					expect(arrayObjectResult.data).toEqual({ count: 1, name: "example" });
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(true);
+			});
+
+			test("input type is custom data type with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = Data;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is custom data type with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = Data;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const objectResult = schema.safeParse({ count: 1, name: "example" });
+				expect(objectResult.success).toBe(true);
+				if (objectResult.success) {
+					expect(objectResult.data).toEqual({ count: 1, name: "example" });
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
+			test("input type is custom data type, or undefined with notNull and default", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>().notNull().default({ count: 1, name: "example" }),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = Data | undefined;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is custom data type, or undefined with notNull and default", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>().notNull().default({ count: 1, name: "example" }),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				type Expected = Data | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+
+				const objectResult = schema.safeParse({ count: 2, name: "example" });
+				expect(objectResult.success).toBe(true);
+				if (objectResult.success) {
+					expect(objectResult.data).toEqual({ count: 2, name: "example" });
+				}
+				const nullResult = schema.safeParse(null);
+				expect(nullResult.success).toBe(false);
+			});
+
+			test("parses null", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("parses objects", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse({ count: 1, name: "example" }).success).toBe(
+					true,
+				);
+			});
+
+			test("does not parse explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>().default({ count: 1, name: "example" }),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse({ count: 2, name: "example" }).success).toBe(
+					true,
+				);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>().notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse({ count: 1, name: "example" }).success).toBe(
+					true,
+				);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb<Data>().notNull().default({ count: 1, name: "example" }),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse({ count: 2, name: "example" }).success).toBe(
+					true,
+				);
 				expect(schema.safeParse(null).success).toBe(false);
 				expect(schema.safeParse(undefined).success).toBe(false);
 			});
