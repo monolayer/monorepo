@@ -3610,6 +3610,15 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropColumn",
+					warnings: [
+						{
+							code: "D003",
+							column: "count",
+							schema: "public",
+							table: "users",
+							type: "destructive",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3633,6 +3642,15 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropColumn",
+					warnings: [
+						{
+							code: "D003",
+							column: "id",
+							schema: "public",
+							table: "users",
+							type: "destructive",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',

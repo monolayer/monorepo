@@ -5,6 +5,11 @@ export async function schemaInDb(
 	kysely: Kysely<InformationSchemaDB>,
 	schemaName: string,
 ) {
+	const results = await managedSchemas(kysely);
+	return results.filter((result) => result.name === schemaName);
+}
+
+export async function managedSchemas(kysely: Kysely<InformationSchemaDB>) {
 	const results = await kysely
 		.selectFrom("information_schema.schemata")
 		.fullJoin("pg_namespace", (join) =>
@@ -23,9 +28,7 @@ export async function schemaInDb(
 		])
 		.where("information_schema.schemata.schema_name", "!=", "public")
 		.execute();
-	return results
-		.filter((result) => (result.comment ?? "").match(/monolayer/))
-		.filter((result) => result.name === schemaName);
+	return results.filter((result) => (result.comment ?? "").match(/monolayer/));
 }
 
 export async function schemasDumpInfo(db: Kysely<InformationSchemaDB>) {

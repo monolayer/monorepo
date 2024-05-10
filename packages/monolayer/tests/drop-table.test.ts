@@ -43,6 +43,14 @@ describe("Table drop migrations", () => {
 				schemaName: "public",
 				type: "dropTable",
 				priority: 1006,
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
@@ -64,6 +72,14 @@ describe("Table drop migrations", () => {
 				schemaName: "public",
 				type: "dropTable",
 				priority: 1006,
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "organizations",
+						type: "destructive",
+					},
+				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
@@ -161,6 +177,14 @@ describe("Table drop migrations", () => {
 				schemaName: "public",
 				type: "dropTable",
 				priority: 1006,
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "books",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -206,6 +230,14 @@ describe("Table drop migrations", () => {
 				schemaName: "public",
 				type: "dropTable",
 				priority: 1006,
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -321,6 +353,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "books",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -343,6 +383,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -423,6 +471,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -509,6 +565,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -547,6 +611,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "books",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -646,6 +718,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "tree",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "tree",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -722,6 +802,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "books",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -808,6 +896,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "books",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -830,6 +926,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -878,6 +982,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -995,6 +1107,14 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				warnings: [
+					{
+						code: "D002",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1116,6 +1236,14 @@ describe("Table drop migrations", () => {
 				schemaName: "demo",
 				type: "dropTable",
 				priority: 1006,
+				warnings: [
+					{
+						code: "D002",
+						schema: "demo",
+						table: "books",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("demo").schema',
@@ -1161,6 +1289,14 @@ describe("Table drop migrations", () => {
 				schemaName: "demo",
 				type: "dropTable",
 				priority: 1006,
+				warnings: [
+					{
+						code: "D002",
+						schema: "demo",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("demo").schema',

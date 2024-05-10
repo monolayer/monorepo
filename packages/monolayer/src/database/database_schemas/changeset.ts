@@ -6,6 +6,7 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
 
 export function schemaMigrationOpGenerator(
 	diff: Difference,
@@ -26,7 +27,7 @@ type CreateSchemaDiff = {
 	value: true;
 };
 
-type DropSchemaDiff = {
+export type DropSchemaDiff = {
 	type: "REMOVE";
 	path: ["schemaInfo", string];
 	oldValue: true;
@@ -69,7 +70,7 @@ function createSchemaMigration(diff: CreateSchemaDiff) {
 	return changeset;
 }
 
-function dropSchemaMigration(diff: DropSchemaDiff) {
+export function dropSchemaMigration(diff: DropSchemaDiff) {
 	const schemaName = diff.path[1];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.DropSchema,
@@ -77,6 +78,13 @@ function dropSchemaMigration(diff: DropSchemaDiff) {
 		currentTableName: "none",
 		schemaName,
 		type: ChangeSetType.DropSchema,
+		warnings: [
+			{
+				type: ChangeWarningType.Destructive,
+				code: ChangeWarningCode.SchemaDrop,
+				schema: schemaName,
+			},
+		],
 		up: [executeKyselyDbStatement(`DROP SCHEMA IF EXISTS "${schemaName}";`)],
 		down: [
 			executeKyselyDbStatement(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`),

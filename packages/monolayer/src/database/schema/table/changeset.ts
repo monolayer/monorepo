@@ -123,6 +123,14 @@ function dropTableMigration(
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropTable,
+		warnings: [
+			{
+				type: ChangeWarningType.Destructive,
+				code: ChangeWarningCode.TableDrop,
+				schema: schemaName,
+				table: currentTableName(tableName, tablesToRename, schemaName),
+			},
+		],
 		up: [executeKyselySchemaStatement(schemaName, `dropTable("${tableName}")`)],
 		down: down,
 		schemaName,

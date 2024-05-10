@@ -12,6 +12,7 @@ import {
 	ChangeWarningCode,
 	type BackwardIncompatibleChange,
 	type ChangeWarning,
+	type DestructiveChange,
 } from "./warnings.js";
 
 type TableRecord = Record<
@@ -85,50 +86,12 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	const render = renderChangesetSummary(changeset);
 	p.log.step(color.underline("Change Summary:"));
 	p.log.message(render);
-	let warningsExist = false;
-	const warnings = changeset
-		.flatMap((c) => c.warnings)
-		.filter((c): c is ChangeWarning => c !== undefined)
-		.reduce(
-			(acc, warning) => {
-				switch (warning.code) {
-					case ChangeWarningCode.TableRename:
-						acc.backwardIncompatible = [...acc.backwardIncompatible, warning];
-						break;
-					case ChangeWarningCode.ColumnRename:
-						acc.backwardIncompatible = [...acc.backwardIncompatible, warning];
-						break;
-				}
-				warningsExist = true;
-				return acc;
-			},
-			{ backwardIncompatible: [] as Array<BackwardIncompatibleChange> },
-		);
 
-	if (warningsExist) {
+	if (anyWarnings(changeset)) {
 		p.log.warning(color.yellow("Warnings:"));
-		if (warnings.backwardIncompatible.length > 0) {
-			const messages = [];
-			for (const warning of warnings.backwardIncompatible) {
-				switch (warning.code) {
-					case ChangeWarningCode.TableRename:
-						messages.push(
-							`- Table '${warning.tableRename.from}' has been renamed to '${warning.tableRename.to}' (schema: '${warning.schema}')`,
-						);
-						break;
-					case ChangeWarningCode.ColumnRename:
-						messages.push(
-							`- Column '${warning.columnRename.from}' has been renamed to '${warning.columnRename.to}' (schema: '${warning.schema}', table: '${warning.table}')`,
-						);
-						break;
-				}
-			}
-			p.log.warning(`${color.underline("Backward incompatible changes")}
-
-${messages.join("\n")}`);
-			p.note(`${color.gray("These changes will prevent existing applications or clients that rely")}
-${color.gray("on the old schema from functioning correctly.")}`);
-		}
+		const warnings = changesetWarnings(changeset);
+		printBackwardIncompatibleWarnings(warnings.backwardIncompatible);
+		printDestructiveWarnings(warnings.destructive);
 	}
 }
 
@@ -241,4 +204,85 @@ function droppedTableHeader(droppedTables: string[]) {
 		},
 		{} as Record<string, string>,
 	);
+}
+
+function changesetWarnings(changeset: Changeset[]) {
+	return changeset
+		.flatMap((c) => c.warnings)
+		.filter((c): c is ChangeWarning => c !== undefined)
+		.reduce(
+			(acc, warning) => {
+				switch (warning.code) {
+					case ChangeWarningCode.TableRename:
+					case ChangeWarningCode.ColumnRename:
+						acc.backwardIncompatible = [...acc.backwardIncompatible, warning];
+						break;
+					case ChangeWarningCode.TableDrop:
+					case ChangeWarningCode.ColumnDrop:
+					case ChangeWarningCode.SchemaDrop:
+						acc.destructive = [...acc.destructive, warning];
+						break;
+				}
+				return acc;
+			},
+			{
+				backwardIncompatible: [] as Array<BackwardIncompatibleChange>,
+				destructive: [] as Array<DestructiveChange>,
+			},
+		);
+}
+
+function printBackwardIncompatibleWarnings(
+	backwardIncompatible: BackwardIncompatibleChange[],
+) {
+	const messages = [];
+	for (const warning of backwardIncompatible) {
+		switch (warning.code) {
+			case ChangeWarningCode.TableRename:
+				messages.push(
+					`- Table '${warning.tableRename.from}' has been renamed to '${warning.tableRename.to}' (schema: '${warning.schema}')`,
+				);
+				break;
+			case ChangeWarningCode.ColumnRename:
+				messages.push(
+					`- Column '${warning.columnRename.from}' has been renamed to '${warning.columnRename.to}' (schema: '${warning.schema}', table: '${warning.table}')`,
+				);
+				break;
+		}
+	}
+	p.log.warning(`${color.underline("Backward incompatible changes")}
+
+${messages.join("\n")}`);
+	p.note(`${color.gray("These changes will prevent existing applications or clients that rely")}
+${color.gray("on the old schema from functioning correctly.")}`);
+}
+
+function printDestructiveWarnings(destructive: DestructiveChange[]) {
+	const messages = [];
+	for (const warning of destructive) {
+		switch (warning.code) {
+			case ChangeWarningCode.SchemaDrop:
+				messages.push(`- Schema '${warning.schema}' has been dropped`);
+				break;
+			case ChangeWarningCode.TableDrop:
+				messages.push(
+					`- Table '${warning.table}' has been dropped (schema: '${warning.schema}')`,
+				);
+				break;
+			case ChangeWarningCode.ColumnDrop:
+				messages.push(
+					`- Column '${warning.column}' has been droppped (schema: '${warning.schema}', table: '${warning.table}')`,
+				);
+				break;
+		}
+	}
+	p.log.warning(`${color.underline("Destructive changes")}
+
+${messages.join("\n")}`);
+	p.note(`${color.gray("These changes may result in a data loss and will prevent existing applications or")}
+${color.gray("or clients that rely on the old schema from functioning correctly.")}`);
+}
+
+function anyWarnings(changeset: Changeset[]) {
+	return changeset.some((c) => (c.warnings || []).length > 0);
 }

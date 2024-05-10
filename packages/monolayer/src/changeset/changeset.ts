@@ -1,6 +1,13 @@
 import { Effect } from "effect";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
 import {
+	dropSchemaMigration,
+	type DropSchemaDiff,
+} from "~/database/database_schemas/changeset.js";
+import { managedSchemas } from "~/database/database_schemas/introspection.js";
+import { Schema, type AnySchema } from "~/database/schema/schema.js";
+import { devEnvirinmentDbClient } from "~/services/db-clients.js";
+import {
 	appEnvironmentCamelCasePlugin,
 	appEnvironmentConfigurationSchemas,
 } from "~/state/app-environment.js";
@@ -28,6 +35,39 @@ export function changeset() {
 				...schemaChangeset(introspection, yield* appEnvironmentCamelCasePlugin),
 			];
 		}
+		return [...changesets, ...(yield* dropSchemaChangeset(allSchemas))];
+	});
+}
+
+function dropSchemaChangeset(schemas: AnySchema[]) {
+	return Effect.gen(function* () {
+		const schemasToDrop = (yield* monolayerSchemasInDb()).filter(
+			(dbSchema) =>
+				!schemas.find((schema) => {
+					return (Schema.info(schema).name ?? "public") === dbSchema.name;
+				}),
+		);
+		const changesets: Changeset[] = [];
+
+		for (const schema of schemasToDrop) {
+			const diff = {
+				type: "REMOVE",
+				path: ["schemaInfo", schema.name],
+				oldValue: true,
+			} satisfies DropSchemaDiff;
+			const changeset = dropSchemaMigration(diff);
+			changesets.push(changeset);
+		}
 		return changesets;
+	});
+}
+
+function monolayerSchemasInDb() {
+	return Effect.gen(function* () {
+		const kysely = yield* devEnvirinmentDbClient("kyselyNoCamelCase");
+		return yield* Effect.tryPromise(async () => {
+			const dbManagedSchemas = await managedSchemas(kysely);
+			return dbManagedSchemas;
+		});
 	});
 }

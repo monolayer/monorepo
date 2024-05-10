@@ -5,6 +5,7 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
+import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
 import { currentTableName } from "~/introspection/table-name.js";
 import {
 	executeKyselyDbStatement,
@@ -135,6 +136,15 @@ function dropColumnMigration(
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropColumn,
+		warnings: [
+			{
+				type: ChangeWarningType.Destructive,
+				code: ChangeWarningCode.ColumnDrop,
+				schema: schemaName,
+				table: currentTableName(tableName, tablesToRename, schemaName),
+				column: columnName,
+			},
+		],
 		up: [
 			executeKyselySchemaStatement(
 				schemaName,

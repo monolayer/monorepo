@@ -136,6 +136,15 @@ describe("Database migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropColumn",
+				warnings: [
+					{
+						code: "D003",
+						column: "role",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',

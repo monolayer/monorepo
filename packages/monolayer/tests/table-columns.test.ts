@@ -142,6 +142,15 @@ describe("Table change migrations", () => {
 				currentTableName: "teams",
 				schemaName: "public",
 				type: "dropColumn",
+				warnings: [
+					{
+						code: "D003",
+						column: "location",
+						schema: "public",
+						table: "teams",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -165,6 +174,15 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropColumn",
+				warnings: [
+					{
+						code: "D003",
+						column: "email",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',

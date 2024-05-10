@@ -418,6 +418,49 @@ describe("Schema", () => {
 				down: "same",
 			});
 		});
+
+		test.only<DbContext>("drop schema", async (context) => {
+			await sql`CREATE SCHEMA IF NOT EXISTS "accounts"; COMMENT ON SCHEMA "accounts" IS 'monolayer'`.execute(
+				context.kysely,
+			);
+
+			await sql`CREATE SCHEMA IF NOT EXISTS "demo"; COMMENT ON SCHEMA "demo" IS 'monolayer'`.execute(
+				context.kysely,
+			);
+
+			const expected = [
+				{
+					priority: 6005,
+					schemaName: "demo",
+					tableName: "none",
+					currentTableName: "none",
+					type: "dropSchema",
+					warnings: [
+						{
+							code: "D001",
+							schema: "demo",
+							type: "destructive",
+						},
+					],
+					up: [['await sql`DROP SCHEMA IF EXISTS "demo";`', "execute(db);"]],
+					down: [
+						['await sql`CREATE SCHEMA IF NOT EXISTS "demo";`', "execute(db);"],
+					],
+				},
+			];
+
+			const accountsSchema = schema({
+				name: "accounts",
+				tables: {},
+			});
+
+			await testChangesetAndMigrations({
+				context,
+				configuration: { schemas: [accountsSchema] },
+				expected,
+				down: "empty",
+			});
+		});
 	});
 
 	describe("camel case plugin", () => {
