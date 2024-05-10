@@ -67,7 +67,6 @@ function checkCommandOutput(
 	checkOutput: string,
 ) {
 	return Effect.gen(function* () {
-		console.log("CHEKING WITH: ", packageManager, options, checkOutput);
 		const s = p.spinner();
 		s.start(`Checking ${packageName}`);
 		const response = yield* Effect.tryPromise(async () => {
