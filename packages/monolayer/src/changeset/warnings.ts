@@ -1,8 +1,12 @@
-export type ChangeWarning = BackwardIncompatibleChange | DestructiveChange;
+export type ChangeWarning =
+	| BackwardIncompatibleChange
+	| DestructiveChange
+	| BlockingChange;
 
 export enum ChangeWarningType {
 	BackwardIncompatible = "backwardIncompatible",
 	Destructive = "destructive",
+	Blocking = "blocking",
 }
 
 export enum ChangeWarningCode {
@@ -11,6 +15,7 @@ export enum ChangeWarningCode {
 	SchemaDrop = "D001",
 	TableDrop = "D002",
 	ColumnDrop = "D003",
+	CreatePrimaryKey = "B001",
 }
 
 export type BackwardIncompatibleChange =
@@ -56,4 +61,13 @@ export type ColumnDropWarning = {
 	schema: string;
 	table: string;
 	column: string;
+};
+
+export type BlockingChange = CreatePrimaryKey;
+
+export type CreatePrimaryKey = {
+	type: ChangeWarningType.Blocking;
+	code: ChangeWarningCode.CreatePrimaryKey;
+	schema: string;
+	table: string;
 };

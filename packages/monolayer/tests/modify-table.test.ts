@@ -125,6 +125,14 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "B001",
+							schema: "public",
+							table: "users",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -148,6 +156,14 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "B001",
+							schema: "public",
+							table: "books",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -497,6 +513,14 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "B001",
+							schema: "public",
+							table: "books",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -520,6 +544,14 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "B001",
+							schema: "public",
+							table: "users",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -722,6 +754,14 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "B001",
+							schema: "public",
+							table: "books",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -745,6 +785,14 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "B001",
+							schema: "public",
+							table: "users",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -865,6 +913,14 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "B001",
+							schema: "public",
+							table: "users",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -989,6 +1045,14 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "B001",
+							schema: "public",
+							table: "users",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',

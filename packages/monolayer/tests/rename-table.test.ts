@@ -795,6 +795,14 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				warnings: [
+					{
+						code: "B001",
+						schema: "public",
+						table: "publications",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -915,6 +923,14 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				warnings: [
+					{
+						code: "B001",
+						schema: "public",
+						table: "publications",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4161,6 +4177,14 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				warnings: [
+					{
+						code: "B001",
+						schema: "public",
+						table: "new_books",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -4284,6 +4308,14 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				warnings: [
+					{
+						code: "B001",
+						schema: "public",
+						table: "new_books",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',

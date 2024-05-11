@@ -13,6 +13,7 @@ import {
 	ChangeWarningCode,
 	type ChangeWarning,
 	type ColumnRenameWarning,
+	type CreatePrimaryKey,
 	type DestructiveChange,
 	type TableRenameWarning,
 } from "./warnings.js";
@@ -94,6 +95,7 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	printTableRenameWarnings(warnings.tableRename);
 	printColumnRenameWarnings(warnings.columnRename);
 	printDestructiveWarnings(warnings.destructive);
+	printCreatePrimaryKeyWarning(warnings.createPrimaryKey);
 }
 
 export const summaryTemplate = nunjucks.compile(`
@@ -219,6 +221,9 @@ function changesetWarnings(changeset: Changeset[]) {
 					case ChangeWarningCode.SchemaDrop:
 						acc.destructive = [...acc.destructive, warning];
 						break;
+					case ChangeWarningCode.CreatePrimaryKey:
+						acc.addPrimaryKey = [...acc.addPrimaryKey, warning];
+						break;
 				}
 				return acc;
 			},
@@ -226,6 +231,7 @@ function changesetWarnings(changeset: Changeset[]) {
 				tableRename: [] as Array<TableRenameWarning>,
 				columnRename: [] as Array<ColumnRenameWarning>,
 				destructive: [] as Array<DestructiveChange>,
+				addPrimaryKey: [] as Array<CreatePrimaryKey>,
 			},
 		);
 }
@@ -314,6 +320,26 @@ ${messages.join("\n")}`,
 		p.log.message(
 			color.gray(`These changes may result in a data loss and will prevent existing applications
 that rely on the old schema from functioning correctly.`),
+		);
+	}
+}
+
+function printCreatePrimaryKeyWarning(warnings: CreatePrimaryKey[]) {
+	const messages = [];
+	for (const warning of warnings) {
+		messages.push(
+			`- Primary key added to table '${warning.table}' (schema: '${warning.schema}')`,
+		);
+	}
+	if (messages.length > 0) {
+		p.log.warning(
+			`${color.yellow("Warning: Blocking changes detected.")}
+
+${messages.join("\n")}`,
+		);
+		p.log.message(
+			color.gray(`Creating a primary key acquires an ACCESS EXCLUSIVE lock on the table. This lock will prevent
+any other transactions from reading or writing to the table until the primary key is created.`),
 		);
 	}
 }

@@ -6,6 +6,7 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
 import { currentColumName } from "~/introspection/column-name.js";
 import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 import { currentTableName } from "~/introspection/table-name.js";
@@ -151,6 +152,17 @@ function createPrimaryKeyMigration(
 			: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
 	};
 
+	if (!addedTables.includes(tableName)) {
+		changeset.warnings = [
+			{
+				type: ChangeWarningType.Blocking,
+				code: ChangeWarningCode.CreatePrimaryKey,
+				schema: schemaName,
+				table: tableName,
+			},
+		];
+	}
+
 	const dropNotNull = addedTables.includes(tableName)
 		? []
 		: dropNotNullChangesets(
@@ -161,7 +173,6 @@ function createPrimaryKeyMigration(
 				tablesToRename,
 				"down",
 			);
-
 	return [changeset, ...dropNotNull];
 }
 
@@ -223,6 +234,14 @@ function changePrimaryKeyMigration(
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreatePrimaryKey,
+		warnings: [
+			{
+				type: ChangeWarningType.Blocking,
+				code: ChangeWarningCode.CreatePrimaryKey,
+				schema: schemaName,
+				table: tableName,
+			},
+		],
 		up: [
 			addPrimaryKeyOp(
 				tableName,
