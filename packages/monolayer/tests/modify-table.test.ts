@@ -2411,6 +2411,15 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createUniqueConstraint",
+					warnings: [
+						{
+							code: "B002",
+							columns: ["id"],
+							schema: "public",
+							table: "books",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2434,6 +2443,15 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createUniqueConstraint",
+					warnings: [
+						{
+							code: "B002",
+							columns: ["name"],
+							schema: "public",
+							table: "books",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2457,6 +2475,15 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createUniqueConstraint",
+					warnings: [
+						{
+							code: "B002",
+							columns: ["fullName", "id"],
+							schema: "public",
+							table: "users",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2675,6 +2702,15 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createUniqueConstraint",
+					warnings: [
+						{
+							code: "B002",
+							columns: ["id"],
+							schema: "public",
+							table: "users",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2782,6 +2818,15 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createUniqueConstraint",
+					warnings: [
+						{
+							code: "B002",
+							columns: ["fullName", "id"],
+							schema: "public",
+							table: "users",
+							type: "blocking",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',

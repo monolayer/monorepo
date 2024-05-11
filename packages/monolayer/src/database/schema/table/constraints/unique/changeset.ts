@@ -6,6 +6,7 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
 import { currentColumName } from "~/introspection/column-name.js";
 import { extractColumnsFromPrimaryKey } from "~/introspection/schema.js";
 import {
@@ -166,6 +167,17 @@ function createUniqueFirstConstraintMigration(
 				? [[]]
 				: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 		};
+		if (!addedTables.includes(tableName)) {
+			changeset.warnings = [
+				{
+					type: ChangeWarningType.Blocking,
+					code: ChangeWarningCode.CreateUniqueConstraint,
+					schema: schemaName,
+					table: tableName,
+					columns: uniqueConstraint.columns.toSorted(),
+				},
+			];
+		}
 		acc.push(changeset);
 		return acc;
 	}, [] as Changeset[]);
@@ -220,7 +232,7 @@ function dropUniqueLastConstraintMigration(
 
 function createUniqueConstraintMigration(
 	diff: UniqueCreateDiff,
-	{ schemaName, tablesToRename }: GeneratorContext,
+	{ schemaName, tablesToRename, addedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const hashValue = diff.path[2];
@@ -239,6 +251,17 @@ function createUniqueConstraintMigration(
 		up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 		down: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 	};
+	if (!addedTables.includes(tableName)) {
+		changeset.warnings = [
+			{
+				type: ChangeWarningType.Blocking,
+				code: ChangeWarningCode.CreateUniqueConstraint,
+				schema: schemaName,
+				table: tableName,
+				columns: uniqueConstraint.columns.toSorted(),
+			},
+		];
+	}
 	return changeset;
 }
 

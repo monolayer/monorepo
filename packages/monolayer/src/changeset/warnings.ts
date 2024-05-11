@@ -16,6 +16,7 @@ export enum ChangeWarningCode {
 	TableDrop = "D002",
 	ColumnDrop = "D003",
 	CreatePrimaryKey = "B001",
+	CreateUniqueConstraint = "B002",
 }
 
 export type BackwardIncompatibleChange =
@@ -63,11 +64,19 @@ export type ColumnDropWarning = {
 	column: string;
 };
 
-export type BlockingChange = CreatePrimaryKey;
+export type BlockingChange = CreatePrimaryKey | CreateUniqueConstraint;
 
 export type CreatePrimaryKey = {
 	type: ChangeWarningType.Blocking;
 	code: ChangeWarningCode.CreatePrimaryKey;
 	schema: string;
 	table: string;
+};
+
+export type CreateUniqueConstraint = {
+	type: ChangeWarningType.Blocking;
+	code: ChangeWarningCode.CreateUniqueConstraint;
+	schema: string;
+	table: string;
+	columns: string[];
 };

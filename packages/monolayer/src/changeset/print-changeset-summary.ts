@@ -14,6 +14,7 @@ import {
 	type ChangeWarning,
 	type ColumnRenameWarning,
 	type CreatePrimaryKey,
+	type CreateUniqueConstraint,
 	type DestructiveChange,
 	type TableRenameWarning,
 } from "./warnings.js";
@@ -96,6 +97,7 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	printColumnRenameWarnings(warnings.columnRename);
 	printDestructiveWarnings(warnings.destructive);
 	printCreatePrimaryKeyWarning(warnings.createPrimaryKey);
+	printCreateUniqueConstraintWarning(warnings.createUniqueConstraint);
 }
 
 export const summaryTemplate = nunjucks.compile(`
@@ -222,7 +224,13 @@ function changesetWarnings(changeset: Changeset[]) {
 						acc.destructive = [...acc.destructive, warning];
 						break;
 					case ChangeWarningCode.CreatePrimaryKey:
-						acc.addPrimaryKey = [...acc.addPrimaryKey, warning];
+						acc.createPrimaryKey = [...acc.createPrimaryKey, warning];
+						break;
+					case ChangeWarningCode.CreateUniqueConstraint:
+						acc.createUniqueConstraint = [
+							...acc.createUniqueConstraint,
+							warning,
+						];
 						break;
 				}
 				return acc;
@@ -231,7 +239,8 @@ function changesetWarnings(changeset: Changeset[]) {
 				tableRename: [] as Array<TableRenameWarning>,
 				columnRename: [] as Array<ColumnRenameWarning>,
 				destructive: [] as Array<DestructiveChange>,
-				addPrimaryKey: [] as Array<CreatePrimaryKey>,
+				createPrimaryKey: [] as Array<CreatePrimaryKey>,
+				createUniqueConstraint: [] as Array<CreateUniqueConstraint>,
 			},
 		);
 }
@@ -340,6 +349,35 @@ ${messages.join("\n")}`,
 		p.log.message(
 			color.gray(`Creating a primary key acquires an ACCESS EXCLUSIVE lock on the table. This lock will prevent
 any other transactions from reading or writing to the table until the primary key is created.`),
+		);
+	}
+}
+
+function printCreateUniqueConstraintWarning(
+	warnings: CreateUniqueConstraint[],
+) {
+	const messages = [];
+	for (const warning of warnings) {
+		if (warning.columns.length === 1) {
+			messages.push(
+				`- Unique contraint added to column '${warning.columns.join("")}' on table '${warning.table}' (schema: '${warning.schema}')`,
+			);
+		} else {
+			const columns = warning.columns.map((column) => `'${column}'`).join(", ");
+			messages.push(
+				`- Unique contraint added to columns ${columns} on table '${warning.table}' (schema: '${warning.schema}')`,
+			);
+		}
+	}
+	if (messages.length > 0) {
+		p.log.warning(
+			`${color.yellow("Warning: Blocking changes detected.")}
+
+${messages.join("\n")}`,
+		);
+		p.log.message(
+			color.gray(`Creating a unique constraint acquires an ACCESS EXCLUSIVE lock on the table. This lock will prevent
+any other transactions from reading or writing to the table until the unique constraint is created.`),
 		);
 	}
 }

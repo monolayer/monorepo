@@ -5772,6 +5772,15 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "createUniqueConstraint",
+				warnings: [
+					{
+						code: "B002",
+						columns: ["new_location_id"],
+						schema: "public",
+						table: "documents",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6104,6 +6113,15 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "createUniqueConstraint",
+				warnings: [
+					{
+						code: "B002",
+						columns: ["identifier"],
+						schema: "public",
+						table: "publications",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -13268,6 +13286,15 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "createUniqueConstraint",
+				warnings: [
+					{
+						code: "B002",
+						columns: ["book_id"],
+						schema: "public",
+						table: "books_and_documents",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
