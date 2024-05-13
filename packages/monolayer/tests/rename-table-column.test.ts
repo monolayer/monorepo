@@ -237,6 +237,17 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "changeColumn",
+				warnings: [
+					{
+						code: "B003",
+						column: "publication_id",
+						schema: "public",
+						table: "publications",
+						from: "integer",
+						to: "bigint",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -7405,6 +7416,17 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "changeColumn",
+				warnings: [
+					{
+						code: "B003",
+						column: "publication_id",
+						schema: "public",
+						table: "new_books",
+						from: "integer",
+						to: "bigint",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',

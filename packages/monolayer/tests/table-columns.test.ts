@@ -233,6 +233,17 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumn",
+				warnings: [
+					{
+						code: "B003",
+						column: "name",
+						schema: "public",
+						table: "users",
+						from: "text",
+						to: "character varying",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -543,6 +554,17 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumn",
+				warnings: [
+					{
+						code: "B003",
+						column: "name",
+						schema: "public",
+						table: "users",
+						from: "text",
+						to: "character varying",
+						type: "blocking",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',

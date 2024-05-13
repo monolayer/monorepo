@@ -11,6 +11,7 @@ import {
 import { type Changeset } from "~/changeset/types.js";
 import {
 	ChangeWarningCode,
+	type ChangeColumnType,
 	type ChangeWarning,
 	type ColumnRenameWarning,
 	type CreatePrimaryKey,
@@ -98,6 +99,7 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	printDestructiveWarnings(warnings.destructive);
 	printCreatePrimaryKeyWarning(warnings.createPrimaryKey);
 	printCreateUniqueConstraintWarning(warnings.createUniqueConstraint);
+	printChangeColumnTypeWarning(warnings.changeColumnType);
 }
 
 export const summaryTemplate = nunjucks.compile(`
@@ -232,6 +234,9 @@ function changesetWarnings(changeset: Changeset[]) {
 							warning,
 						];
 						break;
+					case ChangeWarningCode.ChangeColumnType:
+						acc.changeColumnType = [...acc.changeColumnType, warning];
+						break;
 				}
 				return acc;
 			},
@@ -241,6 +246,7 @@ function changesetWarnings(changeset: Changeset[]) {
 				destructive: [] as Array<DestructiveChange>,
 				createPrimaryKey: [] as Array<CreatePrimaryKey>,
 				createUniqueConstraint: [] as Array<CreateUniqueConstraint>,
+				changeColumnType: [] as Array<ChangeColumnType>,
 			},
 		);
 }
@@ -378,6 +384,34 @@ ${messages.join("\n")}`,
 		p.log.message(
 			color.gray(`Creating a unique constraint acquires an ACCESS EXCLUSIVE lock on the table. This lock will prevent
 any other transactions from reading or writing to the table until the unique constraint is created.`),
+		);
+	}
+}
+
+function printChangeColumnTypeWarning(warnings: ChangeColumnType[]) {
+	const messages = [];
+	for (const warning of warnings) {
+		messages.push(
+			`- Changed column '${warning.column}' data type from '${warning.from}' to '${warning.to}' (table: '${warning.table}' schema: '${warning.schema}')`,
+		);
+	}
+	if (messages.length > 0) {
+		p.log.warning(
+			`${color.yellow("Warning: Blocking changes detected.")}
+
+${messages.join("\n")}`,
+		);
+		p.log.message(
+			color.gray(`The column data type change will cause the entire table and indexes on changed columns to be rewritten
+Other transactions will not be able to read and write to the table until the rewrite is finished.
+
+Downtime for your application can only be avoided by using a safer but complex approach:
+  - 1. Create a new column with the new name.
+  - 2. Write to both columns (old and new).
+  - 3. Backfill data from the old column to the new column.
+  - 4. Move reads from the old column to the new column.
+  - 5. Stop writing to the old column.
+  - 6. Drop the old column.`),
 		);
 	}
 }
