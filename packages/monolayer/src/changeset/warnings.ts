@@ -20,6 +20,8 @@ export enum ChangeWarningCode {
 	ChangeColumnType = "B003",
 	ChangeColumnDefaultVolatile = "B004",
 	ChangeColumnNotNullable = "B005",
+	AddSerialColumn = "B006",
+	AddBigSerialColumn = "B007",
 }
 
 export type BackwardIncompatibleChange =
@@ -72,6 +74,8 @@ export type BlockingChange =
 	| CreateUniqueConstraint
 	| ChangeColumnType
 	| ChangeColumnDefaultVolatile
+	| AddSerialColumn
+	| AddBigSerialColumn;
 
 export type CreatePrimaryKey = {
 	type: ChangeWarningType.Blocking;
@@ -101,6 +105,22 @@ export type ChangeColumnType = {
 export type ChangeColumnDefaultVolatile = {
 	type: ChangeWarningType.Blocking;
 	code: ChangeWarningCode.ChangeColumnDefaultVolatile;
+	schema: string;
+	table: string;
+	column: string;
+};
+
+export type AddSerialColumn = {
+	type: ChangeWarningType.Blocking;
+	code: ChangeWarningCode.AddSerialColumn;
+	schema: string;
+	table: string;
+	column: string;
+};
+
+export type AddBigSerialColumn = {
+	type: ChangeWarningType.Blocking;
+	code: ChangeWarningCode.AddBigSerialColumn;
 	schema: string;
 	table: string;
 	column: string;

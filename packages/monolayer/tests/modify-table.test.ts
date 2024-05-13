@@ -56,7 +56,7 @@ describe("Modify table", () => {
 
 			const books = table({
 				columns: {
-					name: text(),
+					name: text().notNull(),
 				},
 				constraints: {
 					primaryKey: primaryKey(["name"]),
@@ -71,6 +71,49 @@ describe("Modify table", () => {
 			});
 
 			const expected = [
+				{
+					priority: 3011,
+					schemaName: "public",
+					tableName: "books",
+					currentTableName: "books",
+					type: "changeColumn",
+					up: [
+						[
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("books")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"name" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							"execute(db);",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'alterColumn("name", (col) => col.setNotNull())',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropConstraint("temporary_not_null_check_constraint")',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+				},
 				{
 					priority: 3011,
 					schemaName: "public",
@@ -98,22 +141,6 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'alterColumn("name", (col) => col.dropNotNull())',
-							"execute();",
-						],
-					],
-				},
-				{
-					priority: 3011,
-					schemaName: "public",
-					tableName: "books",
-					currentTableName: "books",
-					type: "changeColumn",
-					up: [],
-					down: [
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("books")',
 							'alterColumn("name", (col) => col.dropNotNull())',
 							"execute();",
 						],
@@ -4115,6 +4142,98 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				expected,
 				down: "same",
 			});
+		});
+	});
+
+	test.only<DbContext>("add serial column", async (context) => {
+		await context.kysely.schema
+			.createTable("users")
+			.addColumn("count", "integer")
+			.execute();
+
+		const dbSchema = schema({
+			tables: {
+				users: table({
+					columns: {
+						id: serial(),
+						second_id: serial(),
+						count: integer(),
+					},
+				}),
+			},
+		});
+
+		const expected = [
+			{
+				priority: 2003,
+				schemaName: "public",
+				tableName: "users",
+				currentTableName: "users",
+				type: "createColumn",
+				warnings: [
+					{
+						code: "B006",
+						column: "id",
+						schema: "public",
+						table: "users",
+						type: "blocking",
+					},
+				],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'addColumn("id", "serial", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'dropColumn("id")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 2003,
+				schemaName: "public",
+				tableName: "users",
+				currentTableName: "users",
+				type: "createColumn",
+				warnings: [
+					{
+						code: "B006",
+						column: "second_id",
+						schema: "public",
+						table: "users",
+						type: "blocking",
+					},
+				],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'addColumn("second_id", "serial", (col) => col.notNull())',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'dropColumn("second_id")',
+						"execute();",
+					],
+				],
+			},
+		];
+		await testChangesetAndMigrations({
+			context,
+			configuration: { schemas: [dbSchema] },
+			expected,
+			down: "same",
 		});
 	});
 });

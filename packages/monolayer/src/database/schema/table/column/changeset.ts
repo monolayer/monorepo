@@ -87,6 +87,20 @@ function createColumnMigration(
 		],
 		schemaName,
 	};
+	if (columnDef.dataType === "serial" || columnDef.dataType === "bigserial") {
+		changeset.warnings = [
+			{
+				type: ChangeWarningType.Blocking,
+				code:
+					columnDef.dataType === "serial"
+						? ChangeWarningCode.AddSerialColumn
+						: ChangeWarningCode.AddBigSerialColumn,
+				schema: schemaName,
+				table: currentTableName(tableName, tablesToRename, schemaName),
+				column: columnName,
+			},
+		];
+	}
 	return changeset;
 }
 
