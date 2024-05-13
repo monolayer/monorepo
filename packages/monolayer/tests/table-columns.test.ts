@@ -6,6 +6,7 @@ import { varchar } from "~/database/schema/table/column/data-types/character-var
 import { integer } from "~/database/schema/table/column/data-types/integer.js";
 import { text } from "~/database/schema/table/column/data-types/text.js";
 import { table } from "~/database/schema/table/table.js";
+import { timestampWithTimeZone } from "~/pg.js";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
 import {
@@ -271,13 +272,18 @@ describe("Table change migrations", () => {
 		});
 	});
 
-	test<DbContext>("change column default", async (context) => {
+	test.only<DbContext>("change column default", async (context) => {
 		await context.kysely.schema
 			.createTable("users")
 			.addColumn("name", "text", (col) => col.defaultTo(sql`'foo'::text`))
+			.addColumn("createdAt", "timestamptz", (col) => col.defaultTo(sql`now()`))
 			.execute();
 
 		await sql`COMMENT ON COLUMN "users"."name" IS 'ae72411e'`.execute(
+			context.kysely,
+		);
+
+		await sql`COMMENT ON COLUMN "users"."createdAt" IS '28a4dae0'`.execute(
 			context.kysely,
 		);
 
@@ -286,12 +292,53 @@ describe("Table change migrations", () => {
 				users: table({
 					columns: {
 						name: text().default("bar"),
+						createdAt: timestampWithTimeZone().default(sql`current_timestamp`),
 					},
 				}),
 			},
 		});
 
 		const expected = [
+			{
+				priority: 3007,
+				tableName: "users",
+				currentTableName: "users",
+				schemaName: "public",
+				type: "changeColumn",
+				warnings: [
+					{
+						code: "B004",
+						column: "createdAt",
+						schema: "public",
+						table: "users",
+						type: "blocking",
+					},
+				],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'alterColumn("createdAt", (col) => col.setDefault(sql`current_timestamp`))',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "public"."users"."createdAt" IS \'40eac1c2\'`',
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'alterColumn("createdAt", (col) => col.setDefault(sql`now()`))',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "public"."users"."createdAt" IS \'28a4dae0\'`',
+						"execute(db);",
+					],
+				],
+			},
 			{
 				priority: 3007,
 				tableName: "users",

@@ -38,6 +38,7 @@ export abstract class PgColumnBase<Select, Insert, Update> {
 			dataType: dataType,
 			isNullable: true,
 			defaultValue: null,
+			volatileDefault: "unknown",
 			characterMaximumLength: null,
 			numericPrecision: null,
 			numericScale: null,
@@ -77,8 +78,10 @@ export abstract class PgColumn<
 	default(value: Insert | Expression<unknown>) {
 		if (isExpression(value)) {
 			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
+			this.info.volatileDefault = "yes";
 		} else {
 			this.info.defaultValue = this.transformDefault(value);
+			this.info.volatileDefault = "no";
 		}
 		return this as this & WithDefaultColumn;
 	}

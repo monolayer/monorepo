@@ -18,6 +18,7 @@ export enum ChangeWarningCode {
 	CreatePrimaryKey = "B001",
 	CreateUniqueConstraint = "B002",
 	ChangeColumnType = "B003",
+	ChangeColumnDefaultVolatile = "B004",
 }
 
 export type BackwardIncompatibleChange =
@@ -68,7 +69,8 @@ export type ColumnDropWarning = {
 export type BlockingChange =
 	| CreatePrimaryKey
 	| CreateUniqueConstraint
-	| ChangeColumnType;
+	| ChangeColumnType
+	| ChangeColumnDefaultVolatile;
 
 export type CreatePrimaryKey = {
 	type: ChangeWarningType.Blocking;
@@ -93,4 +95,12 @@ export type ChangeColumnType = {
 	column: string;
 	from: string;
 	to: string;
+};
+
+export type ChangeColumnDefaultVolatile = {
+	type: ChangeWarningType.Blocking;
+	code: ChangeWarningCode.ChangeColumnDefaultVolatile;
+	schema: string;
+	table: string;
+	column: string;
 };

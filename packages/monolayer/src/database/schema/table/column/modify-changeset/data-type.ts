@@ -37,7 +37,7 @@ function isColumnDataType(test: Difference): test is ColumnDataTypeDifference {
 
 function columnDatatypeMigrationOperation(
 	diff: ColumnDataTypeDifference,
-	{ schemaName, tablesToRename, local }: GeneratorContext,
+	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];

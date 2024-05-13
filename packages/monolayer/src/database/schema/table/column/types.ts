@@ -44,6 +44,7 @@ export type ColumnInfo = {
 	columnName: string | null;
 	dataType: string;
 	defaultValue: string | null;
+	volatileDefault: "unknown" | "yes" | "no";
 	isNullable: boolean;
 	originalIsNullable?: boolean | null;
 	numericPrecision: number | null;

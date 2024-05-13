@@ -280,6 +280,7 @@ export function transformDbColumnInfo(
 					? row.identity_generation
 					: null,
 			enum: row.user_defined_type_name !== null,
+			volatileDefault: "unknown",
 		});
 	}
 	return transformed;
@@ -304,6 +305,7 @@ export function mapColumnsToTables(
 				datetimePrecision: curr.datetimePrecision,
 				identity: curr.identity,
 				enum: curr.enum,
+				volatileDefault: curr.volatileDefault,
 			};
 			if (currentTable === undefined) {
 				acc[curr.tableName] = {
@@ -405,6 +407,7 @@ export function schemaColumnInfo(
 		defaultValue: meta.defaultValue !== null ? meta.defaultValue : null,
 		identity: meta.identity,
 		enum: meta.enum,
+		volatileDefault: meta.volatileDefault,
 	};
 }
 export type TableInfo = {

@@ -5,6 +5,8 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
+import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
+import type { SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { currentTableName } from "~/introspection/table-name.js";
 import {
 	executeKyselyDbStatement,
@@ -172,7 +174,7 @@ function columnDefaultDropMigrationOperation(
 
 function columnDefaultChangeMigrationOperation(
 	diff: ColumnDefaultChangeDifference,
-	{ schemaName, tablesToRename }: GeneratorContext,
+	{ schemaName, tablesToRename, local }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -225,5 +227,26 @@ function columnDefaultChangeMigrationOperation(
 		down: down,
 		schemaName,
 	};
+	if (columnDefaultIsVolatile(columnName, tableName, local)) {
+		changeset.warnings = [
+			{
+				type: ChangeWarningType.Blocking,
+				code: ChangeWarningCode.ChangeColumnDefaultVolatile,
+				schema: schemaName,
+				table: tableName,
+				column: columnName,
+			},
+		];
+	}
 	return changeset;
+}
+
+function columnDefaultIsVolatile(
+	columnName: string,
+	tableName: string,
+	local: SchemaMigrationInfo,
+) {
+	const column = local.table[tableName]?.columns[columnName];
+	const volatileDefault = column?.volatileDefault;
+	return volatileDefault === "yes";
 }

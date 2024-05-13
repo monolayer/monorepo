@@ -12738,6 +12738,7 @@ describe("enumerated", () => {
 			numericPrecision: null,
 			numericScale: null,
 			enum: true,
+			volatileDefault: "unknown",
 		});
 	});
 
