@@ -1213,7 +1213,7 @@ describe("Rename table and column without camel case plugin", () => {
 				],
 			},
 			{
-				priority: 3008,
+				priority: 3011,
 				schemaName: "public",
 				tableName: "publications",
 				currentTableName: "publications",
@@ -1377,16 +1377,36 @@ describe("Rename table and column without camel case plugin", () => {
 				],
 			},
 			{
-				priority: 3008,
+				priority: 3011,
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("publications")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"identifier" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."publications" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						"execute(db);",
+					],
+					[
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
 						'alterColumn("identifier", (col) => col.setNotNull())',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("publications")',
+						'dropConstraint("temporary_not_null_check_constraint")',
 						"execute();",
 					],
 				],
@@ -8409,7 +8429,7 @@ describe("Rename table and column with camel case plugin", () => {
 				],
 			},
 			{
-				priority: 3008,
+				priority: 3011,
 				schemaName: "public",
 				tableName: "new_books",
 				currentTableName: "new_books",
@@ -8576,16 +8596,36 @@ describe("Rename table and column with camel case plugin", () => {
 				],
 			},
 			{
-				priority: 3008,
+				priority: 3011,
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "changeColumn",
 				up: [
 					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("new_books")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"book_id" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						"execute(db);",
+					],
+					[
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
 						'alterColumn("book_id", (col) => col.setNotNull())',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("new_books")',
+						'dropConstraint("temporary_not_null_check_constraint")',
 						"execute();",
 					],
 				],

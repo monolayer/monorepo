@@ -7,6 +7,10 @@ import {
 } from "~/changeset/types.js";
 import { currentTableName } from "~/introspection/table-name.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
+import {
+	addCheckWithSchemaStatements,
+	dropCheckKyselySchemaStatement,
+} from "../../constraints/check/changeset.js";
 
 export function columnNullableMigrationOpGenerator(
 	diff: Difference,
@@ -47,35 +51,46 @@ function columnNullableMigrationOperation(
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumn,
 		up: diff.value
-			? [
-					executeKyselySchemaStatement(
-						schemaName,
-						`alterTable("${tableName}")`,
-						`alterColumn("${columnName}", (col) => col.dropNotNull())`,
-					),
-				]
-			: [
-					executeKyselySchemaStatement(
-						schemaName,
-						`alterTable("${tableName}")`,
-						`alterColumn("${columnName}", (col) => col.setNotNull())`,
-					),
-				],
+			? [dropNotNullOp(schemaName, tableName, columnName)]
+			: setNotNullOp(schemaName, tableName, columnName),
 		down: diff.value
-			? [
-					executeKyselySchemaStatement(
-						schemaName,
-						`alterTable("${tableName}")`,
-						`alterColumn("${columnName}", (col) => col.setNotNull())`,
-					),
-				]
-			: [
-					executeKyselySchemaStatement(
-						schemaName,
-						`alterTable("${tableName}")`,
-						`alterColumn("${columnName}", (col) => col.dropNotNull())`,
-					),
-				],
+			? setNotNullOp(schemaName, tableName, columnName)
+			: [dropNotNullOp(schemaName, tableName, columnName)],
 	};
 	return changeset;
+}
+
+function setNotNullOp(
+	schemaName: string,
+	tableName: string,
+	columnName: string,
+) {
+	return [
+		...addCheckWithSchemaStatements(schemaName, tableName, {
+			name: "temporary_not_null_check_constraint",
+			definition: `"${columnName}" IS NOT NULL`,
+		}),
+		executeKyselySchemaStatement(
+			schemaName,
+			`alterTable("${tableName}")`,
+			`alterColumn("${columnName}", (col) => col.setNotNull())`,
+		),
+		dropCheckKyselySchemaStatement(
+			schemaName,
+			tableName,
+			"temporary_not_null_check_constraint",
+		),
+	];
+}
+
+function dropNotNullOp(
+	schemaName: string,
+	tableName: string,
+	columnName: string,
+) {
+	return executeKyselySchemaStatement(
+		schemaName,
+		`alterTable("${tableName}")`,
+		`alterColumn("${columnName}", (col) => col.dropNotNull())`,
+	);
 }

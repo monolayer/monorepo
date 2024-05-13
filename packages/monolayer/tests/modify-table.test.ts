@@ -72,7 +72,7 @@ describe("Modify table", () => {
 
 			const expected = [
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -88,7 +88,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -104,7 +104,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "books",
 					currentTableName: "books",
@@ -281,7 +281,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "books",
 					currentTableName: "books",
@@ -297,7 +297,7 @@ describe("Modify table", () => {
 					down: [],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -313,7 +313,7 @@ describe("Modify table", () => {
 					down: [],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -444,7 +444,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "books",
 					currentTableName: "books",
@@ -460,7 +460,7 @@ describe("Modify table", () => {
 					down: [],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -476,7 +476,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -492,7 +492,7 @@ describe("Modify table", () => {
 					down: [],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -685,7 +685,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "books",
 					currentTableName: "books",
@@ -701,7 +701,7 @@ describe("Modify table", () => {
 					down: [],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -717,7 +717,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -733,7 +733,7 @@ describe("Modify table", () => {
 					down: [],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -876,7 +876,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -892,7 +892,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -1001,16 +1001,36 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
 					up: [
 						[
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"email" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							"execute(db);",
+						],
+						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'alterColumn("email", (col) => col.setNotNull())',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("temporary_not_null_check_constraint")',
 							"execute();",
 						],
 					],
@@ -1024,7 +1044,7 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -3807,16 +3827,36 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 
 			const expected = [
 				{
-					priority: 3008,
+					priority: 3011,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"count" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							"execute(db);",
+						],
+						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'alterColumn("count", (col) => col.setNotNull())',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("temporary_not_null_check_constraint")',
 							"execute();",
 						],
 					],
@@ -3830,16 +3870,36 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
 					up: [
 						[
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"id" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							"execute(db);",
+						],
+						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'alterColumn("id", (col) => col.setNotNull())',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("temporary_not_null_check_constraint")',
 							"execute();",
 						],
 					],
@@ -3853,7 +3913,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					],
 				},
 				{
-					priority: 3009,
+					priority: 3012,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
@@ -3872,7 +3932,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					],
 				},
 				{
-					priority: 3009,
+					priority: 3012,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
@@ -3962,7 +4022,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
@@ -3977,15 +4037,35 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					],
 					down: [
 						[
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"count" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							"execute(db);",
+						],
+						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'alterColumn("count", (col) => col.setNotNull())',
 							"execute();",
 						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("temporary_not_null_check_constraint")',
+							"execute();",
+						],
 					],
 				},
 				{
-					priority: 3008,
+					priority: 3011,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
@@ -4000,9 +4080,29 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					],
 					down: [
 						[
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"id" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							"execute(db);",
+						],
+						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'alterColumn("id", (col) => col.setNotNull())',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("temporary_not_null_check_constraint")',
 							"execute();",
 						],
 					],

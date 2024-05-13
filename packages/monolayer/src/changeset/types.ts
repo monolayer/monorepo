@@ -69,12 +69,13 @@ export enum MigrationOpPriority {
 	ChangeColumnName = 3000,
 	ChangeColumnDatatype = 3001,
 	ChangeColumnBase = 3002,
-	ChangeColumnIdentityAdd = 3009,
 	ChangeColumnIdentityDrop = 3004,
 	ChangeColumnDefaultAdd = 3005,
 	ChangeColumnDefaultDrop = 3006,
 	ChangeColumnDefaultChange = 3007,
-	ChangeColumnNullable = 3008,
+
+	ChangeColumnNullable = 3011,
+	ChangeColumnIdentityAdd = 3012,
 
 	PrimaryKeyCreate = 4001,
 

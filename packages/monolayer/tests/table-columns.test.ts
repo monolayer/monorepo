@@ -512,7 +512,7 @@ describe("Table change migrations", () => {
 
 		const expected = [
 			{
-				priority: 3008,
+				priority: 3011,
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
@@ -535,7 +535,7 @@ describe("Table change migrations", () => {
 				],
 			},
 			{
-				priority: 3008,
+				priority: 3011,
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
@@ -661,7 +661,7 @@ describe("Table change migrations", () => {
 						"execute();",
 					],
 				],
-				priority: 3008,
+				priority: 3011,
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",

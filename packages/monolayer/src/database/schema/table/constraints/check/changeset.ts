@@ -304,7 +304,7 @@ function reshashCheckMigration(
 	return changeset;
 }
 
-function dropCheckKyselySchemaStatement(
+export function dropCheckKyselySchemaStatement(
 	schemaName: string,
 	tableName: string,
 	checkName: string,
@@ -334,7 +334,7 @@ function addCheckWithDbStatements(
 	];
 }
 
-function addCheckWithSchemaStatements(
+export function addCheckWithSchemaStatements(
 	schemaName: string,
 	tableName: string,
 	check: {
