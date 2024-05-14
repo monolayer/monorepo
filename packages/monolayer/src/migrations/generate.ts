@@ -42,15 +42,11 @@ export function generateMigration(name?: string) {
 											Effect.tap((migrationName) =>
 												migrationDependency().pipe(
 													Effect.tap((dependency) =>
-														extractMigrationOps(cset).pipe(
-															Effect.tap((upDown) => {
-																renderToFile(
-																	upDown,
-																	schemaMigrationsFolder,
-																	migrationName,
-																	dependency,
-																);
-															}),
+														renderChangesets(
+															cset,
+															schemaMigrationsFolder,
+															migrationName,
+															dependency,
 														),
 													),
 												),
@@ -157,4 +153,52 @@ function reverseChangeset(changesets: Changeset[]) {
 		}
 		return 1 - 1;
 	});
+}
+
+function renderChangesets(
+	changesets: Changeset[],
+	schemaMigrationsFolder: string,
+	migrationName: string,
+	dependency: string,
+) {
+	return Effect.gen(function* () {
+		const isolatedChangesets = isolateChangesets(changesets);
+		let previousMigrationName: string = "";
+		const multipleMigrations = isolatedChangesets.length > 1;
+		for (const [idx, isolatedChangeset] of isolatedChangesets.entries()) {
+			const ops = yield* extractMigrationOps(isolatedChangeset);
+			const numberedName = multipleMigrations
+				? `${migrationName}-${idx + 1}`
+				: migrationName;
+			previousMigrationName = renderToFile(
+				ops,
+				schemaMigrationsFolder,
+				numberedName,
+				previousMigrationName === "" ? dependency : previousMigrationName,
+				isolatedChangeset.some((m) => (m.transaction ?? true) === false)
+					? false
+					: true,
+			);
+		}
+	});
+}
+
+function isolateChangesets(changesets: Changeset[]) {
+	return changesets.reduce<Changeset[][]>((acc, changeset) => {
+		const lastGroup = acc.slice(-1)[0];
+		if (lastGroup === undefined) {
+			acc.push([changeset]);
+			return acc;
+		}
+		if (changeset.transaction === false) {
+			acc.push([changeset]);
+			return acc;
+		}
+		if (lastGroup.some((m) => m.transaction === false)) {
+			acc.push([changeset]);
+			return acc;
+		}
+		lastGroup.push(changeset);
+		return acc;
+	}, []);
 }

@@ -1,5 +1,11 @@
 import { Context, Effect, Layer } from "effect";
-import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
+import {
+	CamelCasePlugin,
+	Kysely,
+	PostgresAdapter,
+	PostgresDialect,
+	type DialectAdapter,
+} from "kysely";
 import type { QueryResultRow } from "pg";
 import pg from "pg";
 import pgConnectionString from "pg-connection-string";
@@ -48,6 +54,20 @@ export function dbClientsLayer() {
 	);
 }
 
+export class MonolayerPostgresAdapter extends PostgresAdapter {
+	public static useTransaction: boolean = true;
+
+	get supportsTransactionalDdl() {
+		return MonolayerPostgresAdapter.useTransaction;
+	}
+}
+
+export class MonolayerPostgresDialect extends PostgresDialect {
+	createAdapter(): DialectAdapter {
+		return new MonolayerPostgresAdapter();
+	}
+}
+
 function dbClientEnvironmentProperties(pgConfig: PgConfig, camelCase: boolean) {
 	const pg = poolAndConfig(pgConfig);
 	return {
@@ -56,14 +76,14 @@ function dbClientEnvironmentProperties(pgConfig: PgConfig, camelCase: boolean) {
 		pgAdminPool: pg.adminPool,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		kysely: new Kysely<any>({
-			dialect: new PostgresDialect({
+			dialect: new MonolayerPostgresDialect({
 				pool: pg.pool,
 			}),
 			plugins: camelCase === true ? [new CamelCasePlugin()] : [],
 		}),
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		kyselyNoCamelCase: new Kysely<any>({
-			dialect: new PostgresDialect({
+			dialect: new MonolayerPostgresDialect({
 				pool: pg.pool,
 			}),
 		}),

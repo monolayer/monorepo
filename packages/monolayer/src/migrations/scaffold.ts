@@ -4,22 +4,21 @@ import path from "path";
 import { createFile } from "~/create-file.js";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { migrationDependency, migrationName } from "./migration.js";
+import { dateStringWithMilliseconds } from "./render.js";
 
 export function scaffoldMigration() {
 	return Effect.gen(function* () {
 		const name = yield* migrationName();
-		const timestamp = new Date()
-			.toISOString()
-			.replace(/[-:]/g, "")
-			.split(".")[0];
+		const dateStr = dateStringWithMilliseconds();
+		const scaffoldName = `${dateStr}-${name}`;
 		const filePath = path.join(
 			yield* appEnvironmentMigrationsFolder,
-			`${timestamp}-${name}.ts`,
+			`${scaffoldName}.ts`,
 		);
 
 		const content = nunjucks
 			.compile(migrationTemplate)
-			.render({ dependsOn: yield* migrationDependency() });
+			.render({ dependsOn: yield* migrationDependency(), name: scaffoldName });
 		createFile(filePath, content, true);
 
 		return filePath;
@@ -34,8 +33,10 @@ import { Migration } from "monolayer/migration";
 {%- endif %}
 
 export const migration: Migration = {
-	scaffold: true,
-	dependsOn: {{ dependsOn if dependsOn === "NO_DEPENDENCY" else ['"', dependsOn, '"'] | join("") | safe }},
+  name: "{{ name }}",
+  transaction: false,
+  scaffold: true,
+  dependsOn: {{ dependsOn if dependsOn === "NO_DEPENDENCY" else ['"', dependsOn, '"'] | join("") | safe }},
 };
 
 export async function up(db: Kysely<any>): Promise<void> {

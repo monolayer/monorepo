@@ -1,4 +1,4 @@
-import { Kysely, PostgresDialect, sql } from "kysely";
+import { Kysely, sql } from "kysely";
 import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
@@ -13,6 +13,7 @@ import { previousColumnName } from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import type { ColumnsToRename } from "~/introspection/introspect-schemas.js";
 import type { UniqueInfo } from "~/introspection/schema.js";
+import { MonolayerPostgresDialect } from "~/services/db-clients.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 
@@ -113,7 +114,7 @@ export function localUniqueConstraintInfo(
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
-		dialect: new PostgresDialect({
+		dialect: new MonolayerPostgresDialect({
 			pool: new pg.Pool({}),
 		}),
 	});

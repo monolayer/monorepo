@@ -41,8 +41,10 @@ describe("scaffoldMigration", () => {
 import { NO_DEPENDENCY, Migration } from "monolayer/migration";
 
 export const migration: Migration = {
-	scaffold: true,
-	dependsOn: NO_DEPENDENCY,
+  name: "${path.basename(result).substring(0, path.basename(result).lastIndexOf("."))}",
+  transaction: false,
+  scaffold: true,
+  dependsOn: NO_DEPENDENCY,
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -66,8 +68,10 @@ export async function down(db: Kysely<any>): Promise<void> {
 import { Migration } from "monolayer/migration";
 
 export const migration: Migration = {
-	scaffold: true,
-	dependsOn: "20240405T154913-mirfak-mustard",
+  name: "${path.basename(result).substring(0, path.basename(result).lastIndexOf("."))}",
+  transaction: false,
+  scaffold: true,
+  dependsOn: "20240405T154913-mirfak-mustard",
 };
 
 export async function up(db: Kysely<any>): Promise<void> {

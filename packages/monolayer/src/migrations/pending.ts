@@ -107,7 +107,7 @@ export function localPendingSchemaMigrations() {
 	return Effect.gen(function* () {
 		const folder = yield* appEnvironmentMigrationsFolder;
 
-		return (yield* allMigrations())
+		return (yield* allMigrations)
 			.filter(byNotExecuted)
 			.map((m) => migrationNameAndPath(m, folder));
 	});

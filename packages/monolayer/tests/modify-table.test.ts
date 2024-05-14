@@ -3063,7 +3063,7 @@ describe("Modify table", () => {
 	});
 
 	describe("indexes", () => {
-		test<DbContext>("add indexes", async (context) => {
+		test.only<DbContext>("add indexes", async (context) => {
 			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
@@ -4145,7 +4145,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 		});
 	});
 
-	test.only<DbContext>("add serial column", async (context) => {
+	test<DbContext>("add serial column", async (context) => {
 		await context.kysely.schema
 			.createTable("users")
 			.addColumn("count", "integer")

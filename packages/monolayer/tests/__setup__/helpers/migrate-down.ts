@@ -1,13 +1,13 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
-import type { MigrationResult } from "kysely";
+import { NO_MIGRATIONS, type MigrationResult } from "kysely";
 import color from "picocolors";
 import { Migrator } from "../../../src/services/migrator.js";
 
 export function migrateDown() {
 	return Migrator.pipe(
 		Effect.flatMap((migrator) =>
-			Effect.tryPromise(() => migrator.instance.migrateDown()),
+			Effect.tryPromise(() => migrator.instance.migrateTo(NO_MIGRATIONS)),
 		),
 		Effect.tap(({ results }) =>
 			Effect.if(results !== undefined, {

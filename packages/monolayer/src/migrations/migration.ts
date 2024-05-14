@@ -1,10 +1,17 @@
 import { kebabCase } from "case-anything";
 import { Effect } from "effect";
 import { mkdirSync } from "fs";
-import type { Migration as KyselyMigration, MigrationInfo } from "kysely";
+import type {
+	Migration as KyselyMigration,
+	MigrationInfo as KyselyMigrationInfo,
+} from "kysely";
 import { migrationNamePrompt } from "~/prompts/migration-name.js";
 import { promptCancelError } from "../cli/cli-action.js";
-import { Migrator, type MigratorAttributes } from "../services/migrator.js";
+import {
+	getMigrations,
+	migratorFolder,
+	readMigration,
+} from "../services/migrator.js";
 
 export const NO_DEPENDENCY: NoDependencies = Object.freeze({
 	__noDependencies__: true,
@@ -32,19 +39,31 @@ export type Migration = {
 	 * @internal
 	 */
 	scaffold: boolean;
+	/**
+	 * Whether the migration runs in a transaction.
+	 * @internal
+	 */
+	transaction?: boolean;
 };
 
-export interface ExtendedMigration extends KyselyMigration {
+export interface MonolayerMigrationInfo extends KyselyMigrationInfo {
+	dependsOn: MigrationDependency;
+	scaffold: boolean;
+	transaction: boolean;
+}
+
+export interface MonolayerMigration extends KyselyMigration {
 	migration: Migration;
 }
 
 export function migrationInfoToMigration(
-	migrationInfo: readonly MigrationInfo[],
+	migrationInfo: readonly KyselyMigrationInfo[],
 ) {
 	return migrationInfo.map((info) => {
 		return {
-			...(info.migration as ExtendedMigration).migration,
+			...(info.migration as MonolayerMigration).migration,
 			name: info.name,
+			transaction: false,
 		} satisfies Migration;
 	});
 }
@@ -66,22 +85,35 @@ export function migrationName() {
 }
 export function migrationDependency() {
 	return Effect.gen(function* () {
-		const migrations = yield* allMigrations();
+		const migrations = yield* allMigrations;
 		return migrations.map((m) => m.name).slice(-1)[0] ?? "NO_DEPENDENCY";
 	});
 }
 
-export function allMigrations() {
-	return Migrator.pipe(
-		Effect.tap(createMigrationFolder),
-		Effect.flatMap(getMigrations),
-	);
-}
+export const allMigrations = Effect.gen(function* () {
+	const folder = yield* migratorFolder;
+	mkdirSync(folder, { recursive: true });
 
-function createMigrationFolder(migrator: MigratorAttributes) {
-	mkdirSync(migrator.folder, { recursive: true });
-}
+	const migrationInfo = yield* getMigrations;
 
-function getMigrations(migrator: MigratorAttributes) {
-	return Effect.tryPromise(() => migrator.instance.getMigrations());
+	return yield* kyselyMigrationInfoToMonolayerMigrationInfo(migrationInfo);
+});
+
+export function kyselyMigrationInfoToMonolayerMigrationInfo(
+	migrationInfo: readonly KyselyMigrationInfo[],
+) {
+	return Effect.gen(function* () {
+		const monolayerMigrationInfo: MonolayerMigrationInfo[] = [];
+		for (const info of migrationInfo) {
+			const migration = yield* readMigration(info.name);
+			monolayerMigrationInfo.push({
+				...info,
+				transaction: migration.migration.transaction ?? false,
+				scaffold: migration.migration.scaffold,
+				dependsOn: migration.migration.dependsOn,
+			});
+		}
+
+		return monolayerMigrationInfo;
+	});
 }

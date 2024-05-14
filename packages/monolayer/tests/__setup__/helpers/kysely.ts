@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { env } from "node:process";
 import pg from "pg";
+import { MonolayerPostgresDialect } from "~/services/db-clients.js";
 
 async function importKysely() {
 	const kyselyImport = await import("kysely");
@@ -14,10 +15,10 @@ async function importKysely() {
 }
 
 export async function kyselyWithCustomDB(databaseName: string) {
-	const { Kysely, PostgresDialect } = await importKysely();
+	const { Kysely } = await importKysely();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return new Kysely<any>({
-		dialect: new PostgresDialect({
+		dialect: new MonolayerPostgresDialect({
 			pool: new pg.Pool({
 				user: env.POSTGRES_USER,
 				password: env.POSTGRES_PASSWORD,
@@ -30,10 +31,10 @@ export async function kyselyWithCustomDB(databaseName: string) {
 }
 
 export async function kyselyWithEmptyPool() {
-	const { Kysely, PostgresDialect } = await importKysely();
+	const { Kysely } = await importKysely();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return new Kysely<any>({
-		dialect: new PostgresDialect({
+		dialect: new MonolayerPostgresDialect({
 			pool: new pg.Pool({}),
 		}),
 	});

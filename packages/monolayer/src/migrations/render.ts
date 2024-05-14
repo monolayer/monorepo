@@ -11,8 +11,10 @@ import { Migration } from "monolayer/migration";
 {%- endif %}
 
 export const migration: Migration = {
-	scaffold: false,
+	name: "{{ name }}",
+	transaction: {{ transaction | safe }},
 	dependsOn: {{ dependsOn if dependsOn === "NO_DEPENDENCY" else ['"', dependsOn, '"'] | join("") | safe }},
+	scaffold: false,
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -36,18 +38,33 @@ export function renderToFile(
 	folder: string,
 	name: string,
 	dependsOn: string,
+	transaction: boolean,
 ) {
 	const { up, down } = upDown;
-	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
-	const migrationFilePath = path.join(folder, `${dateStr}-${name}.ts`);
+	const dateStr = dateStringWithMilliseconds();
+	const migrationName = `${dateStr}-${name}`;
+	const migrationFilePath = path.join(folder, `${migrationName}.ts`);
 	const rendered = nunjucks.compile(template).render({
 		up: up,
 		down: down,
 		dependsOn,
+		transaction,
+		name: migrationName,
 	});
+
 	createFile(
 		migrationFilePath,
 		rendered.includes("sql`") ? rendered : rendered.replace(", sql", ""),
 		false,
 	);
+	return migrationName;
+}
+
+export function dateStringWithMilliseconds() {
+	return new Date()
+		.toISOString()
+		.replace(/[-:]/g, "")
+		.replace(".", "")
+		.replace("T", "")
+		.replace("Z", "");
 }

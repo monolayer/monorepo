@@ -42,6 +42,7 @@ export type Changeset = {
 	down: string[][];
 	priority: number;
 	schemaName: string | null;
+	transaction?: boolean;
 	warnings?: Array<ChangeWarning>;
 };
 

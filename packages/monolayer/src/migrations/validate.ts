@@ -3,8 +3,8 @@ import type { MigrationInfo } from "kysely";
 import {
 	MigrationError,
 	migrationInfoToMigration,
-	type ExtendedMigration,
 	type Migration,
+	type MonolayerMigration,
 } from "~/migrations/migration.js";
 import { Migrator } from "~/services/migrator.js";
 
@@ -37,7 +37,7 @@ function validateMigrationInfoAsMigration(
 	migrationInfo: readonly MigrationInfo[],
 ): Effect.Effect<boolean, MissingDependenciesError, never> {
 	for (const migration of migrationInfo) {
-		const migrationWithDependecies = migration.migration as ExtendedMigration;
+		const migrationWithDependecies = migration.migration as MonolayerMigration;
 		if (migrationWithDependecies.migration === undefined) {
 			return Effect.die(new MigrationError(migration.name));
 		}

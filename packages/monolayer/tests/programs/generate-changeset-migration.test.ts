@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Effect, Ref } from "effect";
 import {
 	mkdirSync,
@@ -64,7 +65,13 @@ describe("generateChangesetMigration", () => {
 				migrationFiles[0]!,
 			),
 		);
-		expect(migration.toString()).toBe(expectedMigration);
+		const migrationName = migrationFiles[0]!;
+		expect(migration.toString()).toBe(
+			expectedMigration.replace(
+				"#name",
+				migrationName.substring(0, migrationName.lastIndexOf(".")),
+			),
+		);
 	});
 
 	test<ProgramContext>("returns a changeset list for multiple database definitions", async (context) => {
@@ -113,7 +120,14 @@ describe("generateChangesetMigration", () => {
 				migrationFiles[0]!,
 			),
 		);
-		expect(migration.toString()).toBe(expectedMigrationWithSchemas);
+
+		const migrationName = migrationFiles[0]!;
+		expect(migration.toString()).toBe(
+			expectedMigrationWithSchemas.replace(
+				"#name",
+				migrationName.substring(0, migrationName.lastIndexOf(".")),
+			),
+		);
 	});
 
 	describe("with dependencies", () => {
@@ -141,7 +155,13 @@ describe("generateChangesetMigration", () => {
 					migrationFiles.slice(-1)[0]!,
 				),
 			);
-			expect(migration.toString()).toBe(expectedMigrationWithDependency);
+			const migrationName = migrationFiles.slice(-1)[0]!;
+			expect(migration.toString()).toBe(
+				expectedMigrationWithDependency.replace(
+					"#name",
+					migrationName.substring(0, migrationName.lastIndexOf(".")),
+				),
+			);
 		});
 
 		test<ProgramContext>("returns a changeset list for multiple database definitions", async (context) => {
@@ -182,8 +202,13 @@ describe("generateChangesetMigration", () => {
 					migrationFiles.slice(-1)[0]!,
 				),
 			);
+
+			const migrationName = migrationFiles.slice(-1)[0]!;
 			expect(migration.toString()).toBe(
-				expectedMigrationWithSchemasAndDependency,
+				expectedMigrationWithSchemasAndDependency.replace(
+					"#name",
+					migrationName.substring(0, migrationName.lastIndexOf(".")),
+				),
 			);
 		});
 	});
@@ -222,8 +247,10 @@ import { Kysely } from "kysely";
 import { NO_DEPENDENCY, Migration } from "monolayer/migration";
 
 export const migration: Migration = {
-	scaffold: false,
+	name: "#name",
+	transaction: true,
 	dependsOn: NO_DEPENDENCY,
+	scaffold: false,
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -245,8 +272,10 @@ import { Kysely, sql } from "kysely";
 import { NO_DEPENDENCY, Migration } from "monolayer/migration";
 
 export const migration: Migration = {
-	scaffold: false,
+	name: "#name",
+	transaction: true,
 	dependsOn: NO_DEPENDENCY,
+	scaffold: false,
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -286,8 +315,10 @@ import { Kysely } from "kysely";
 import { Migration } from "monolayer/migration";
 
 export const migration: Migration = {
-	scaffold: false,
+	name: "#name",
+	transaction: true,
 	dependsOn: "20240405T154913-mirfak-mustard",
+	scaffold: false,
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -309,8 +340,10 @@ import { Kysely, sql } from "kysely";
 import { Migration } from "monolayer/migration";
 
 export const migration: Migration = {
-	scaffold: false,
+	name: "#name",
+	transaction: true,
 	dependsOn: "20240405T154913-mirfak-mustard",
+	scaffold: false,
 };
 
 export async function up(db: Kysely<any>): Promise<void> {

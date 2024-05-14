@@ -1,4 +1,4 @@
-import { Kysely, PostgresDialect, sql } from "kysely";
+import { Kysely, sql } from "kysely";
 import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
@@ -8,6 +8,7 @@ import {
 	type AnyTrigger,
 } from "~/database/schema/table/trigger/trigger.js";
 import { tableInfo } from "~/introspection/helpers.js";
+import { MonolayerPostgresDialect } from "~/services/db-clients.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 
@@ -116,7 +117,7 @@ export function localTriggersInfo(
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
-		dialect: new PostgresDialect({
+		dialect: new MonolayerPostgresDialect({
 			pool: new pg.Pool({}),
 		}),
 	});

@@ -15,9 +15,12 @@ import {
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
 import { ExitWithSuccess } from "../cli/cli-action.js";
-import { migrateTo } from "./apply.js";
+import { logMigrationResultStatus } from "./apply.js";
 import { allMigrations } from "./migration.js";
 import { deletePendingMigrations, pendingMigrations } from "./pending.js";
+import { migrateTo, rollbackPlan } from "./phased-migrator.js";
+
+export class RollbackError extends Error {}
 
 export function rollback() {
 	return Effect.gen(function* () {
@@ -33,13 +36,30 @@ export function rollback() {
 
 		yield* confirmRollback(promptResult.migrationNames);
 
-		yield* confirmRollbackWithScafoldedMigrations(
-			migrationInfoToMigration(executedMigrations),
+		const migrationsToRollback = executedMigrations.filter(
+			(m) =>
+				promptResult.migrationNames.includes(m.name) ||
+				m.name === promptResult.downTo,
 		);
 
-		const migration = yield* migrateTo(promptResult.downTo);
-		if (!migration) {
-			return yield* Effect.succeed(false);
+		yield* confirmRollbackWithScafoldedMigrations(
+			migrationInfoToMigration(migrationsToRollback),
+		);
+
+		const plan = rollbackPlan(migrationsToRollback, promptResult.downTo);
+
+		for (const migration of plan) {
+			const { error, results } = yield* migrateTo(migration, "down");
+			const migrationSuccess = results !== undefined && results.length > 0;
+			if (!migrationSuccess) {
+				for (const result of results!) {
+					logMigrationResultStatus(result, error, "down");
+					return yield* Effect.fail(new Error("Migration failed"));
+				}
+			}
+			if (error !== undefined) {
+				return yield* Effect.fail(new RollbackError(error?.toString()));
+			}
 		}
 
 		p.log.info("Pending migrations after rollback:");
@@ -47,7 +67,7 @@ export function rollback() {
 		yield* pendingMigrations();
 
 		if (yield* confirmDelete()) {
-			yield* nameAndPath(
+			yield* migrationNameAndPath(
 				executedMigrations.filter((r) =>
 					promptResult.migrationNames.includes(r.name),
 				),
@@ -58,10 +78,10 @@ export function rollback() {
 }
 
 function executedMigrationsWithCheck() {
-	return allMigrations().pipe(
+	return allMigrations.pipe(
 		Effect.flatMap((migrations) => {
 			if (migrations.length === 0) {
-				p.log.warn("Nothing to squash. There are no migrations.");
+				p.log.warn("Nothing to rollback. There are no migrations.");
 				return Effect.fail(new ExitWithSuccess({ cause: "No migraitons" }));
 			}
 
@@ -163,7 +183,7 @@ function confirmRollbackWithScafoldedMigrations(
 	});
 }
 
-function nameAndPath(migrations: MigrationInfo[]) {
+function migrationNameAndPath(migrations: MigrationInfo[]) {
 	return Effect.gen(function* () {
 		const folder = yield* appEnvironmentMigrationsFolder;
 		return migrations.map((rev) => ({

@@ -27,7 +27,7 @@ export async function teardownContext(context: TaskContext & DbContext) {
 	try {
 		chdir(context.currentWorkingDirectory);
 		await context.kysely.destroy();
-		rmSync(context.folder, { recursive: true, force: true });
+		// rmSync(context.folder, { recursive: true, force: true });
 		vi.restoreAllMocks();
 	} catch (e) {
 		/* empty */
@@ -137,22 +137,24 @@ export type ProgramContext = {
 	migrator: Migrator;
 };
 
-function copyMigration(migrationName: string, context: ProgramContext) {
+function copyMigration(
+	migrationName: string,
+	context: ProgramContext | DbContext,
+	migrationsFolder = "db/migrations/default",
+) {
 	copyFileSync(
 		`tests/__setup__/fixtures/migrations/${migrationName}.ts`,
-		path.join(
-			context.folder,
-			"db",
-			"migrations",
-			"default",
-			`${migrationName}.ts`,
-		),
+		path.join(context.folder, migrationsFolder, `${migrationName}.ts`),
 	);
 }
 
-export function copyMigrations(migrations: string[], context: ProgramContext) {
+export function copyMigrations(
+	migrations: string[],
+	context: ProgramContext | DbContext,
+	migrationsFolder = "db/migrations/default",
+) {
 	migrations.forEach((migration) => {
-		copyMigration(migration, context);
+		copyMigration(migration, context, migrationsFolder);
 	});
 }
 

@@ -1,10 +1,10 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import type { MigrationResult } from "kysely";
-import { NO_MIGRATIONS } from "kysely";
 import color from "picocolors";
 import { dumpDatabaseStructureTask } from "~/database/dump.js";
 import { Migrator } from "../services/migrator.js";
+import { migrateToLatest } from "./phased-migrator.js";
 import { validateMigrationDependencies } from "./validate.js";
 
 export function applyMigrations() {
@@ -20,9 +20,7 @@ export function applyMigrations() {
 export function migrate() {
 	return Migrator.pipe(
 		Effect.tap(() => validateMigrationDependencies()),
-		Effect.flatMap((migrator) =>
-			Effect.tryPromise(() => migrator.instance.migrateToLatest()),
-		),
+		Effect.flatMap(() => migrateToLatest),
 		Effect.tap(({ error, results }) =>
 			Effect.if(results !== undefined && results.length > 0, {
 				onTrue: () =>
@@ -56,27 +54,7 @@ export function migrate() {
 	);
 }
 
-export function migrateTo(downTo: string | typeof NO_MIGRATIONS) {
-	return Migrator.pipe(
-		Effect.flatMap((migrator) =>
-			Effect.tryPromise(() => migrator.instance.migrateTo(downTo)),
-		),
-		Effect.tap(({ error, results }) =>
-			Effect.if(!(results !== undefined && results.length > 0), {
-				onTrue: () =>
-					Effect.forEach(results!, (result) =>
-						logMigrationResultStatus(result, error, "down"),
-					),
-				onFalse: () => Effect.void,
-			}),
-		),
-		Effect.flatMap(({ results }) =>
-			Effect.succeed(results !== undefined && results.length > 0),
-		),
-	);
-}
-
-function logMigrationResultStatus(
+export function logMigrationResultStatus(
 	result: MigrationResult,
 	error: unknown,
 	direction: "up" | "down",

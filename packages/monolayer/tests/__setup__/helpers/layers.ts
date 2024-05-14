@@ -5,14 +5,17 @@ import {
 	FileMigrationProvider,
 	Kysely,
 	Migrator as KyselyMigrator,
-	PostgresDialect,
 } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
 import pg from "pg";
 import { env } from "process";
 import type { Configuration } from "~/configuration.js";
-import { DbClients, dbClientsLayer } from "~/services/db-clients.js";
+import {
+	DbClients,
+	MonolayerPostgresDialect,
+	dbClientsLayer,
+} from "~/services/db-clients.js";
 import { Migrator, migratorLayer } from "~/services/migrator.js";
 import { globalPool } from "../setup.js";
 dotenv.config();
@@ -43,14 +46,14 @@ export function mockedDbClientsLayer(
 				pgAdminPool: adminPool,
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				kysely: new Kysely<any>({
-					dialect: new PostgresDialect({
+					dialect: new MonolayerPostgresDialect({
 						pool: pool,
 					}),
 					plugins: useCamelCase.enabled ? [new CamelCasePlugin()] : [],
 				}),
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				kyselyNoCamelCase: new Kysely<any>({
-					dialect: new PostgresDialect({
+					dialect: new MonolayerPostgresDialect({
 						pool: pool,
 					}),
 				}),
@@ -77,7 +80,7 @@ function mockedMigratorLayer(
 				instance: new KyselyMigrator({
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					db: new Kysely<any>({
-						dialect: new PostgresDialect({
+						dialect: new MonolayerPostgresDialect({
 							pool: pool,
 						}),
 						plugins: useCamelCase.enabled ? [new CamelCasePlugin()] : [],
