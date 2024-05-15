@@ -17,9 +17,8 @@ export enum ChangeWarningCode {
 	ColumnDrop = "D003",
 	ChangeColumnType = "B001",
 	ChangeColumnDefaultVolatile = "B002",
-	ChangeColumnNotNullable = "B003",
-	AddSerialColumn = "B004",
-	AddBigSerialColumn = "B005",
+	AddSerialColumn = "B003",
+	AddBigSerialColumn = "B004",
 }
 
 export type BackwardIncompatibleChange =

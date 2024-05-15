@@ -4723,7 +4723,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				type: "createColumn",
 				warnings: [
 					{
-						code: "B004",
+						code: "B003",
 						column: "id",
 						schema: "public",
 						table: "users",
@@ -4755,7 +4755,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				type: "createColumn",
 				warnings: [
 					{
-						code: "B004",
+						code: "B003",
 						column: "second_id",
 						schema: "public",
 						table: "users",
