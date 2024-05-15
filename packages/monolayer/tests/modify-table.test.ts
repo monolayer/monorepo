@@ -3063,7 +3063,7 @@ describe("Modify table", () => {
 	});
 
 	describe("indexes", () => {
-		test.only<DbContext>("add indexes", async (context) => {
+		test<DbContext>("add indexes", async (context) => {
 			await context.kysely.schema
 				.createTable("users")
 				.addColumn("name", "text")
@@ -3097,16 +3097,25 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createIndex",
+					transaction: false,
 					up: [
 						[
-							'await sql`create index "users_e42f0227_monolayer_idx" on "public"."users" ("name")`',
-							"execute(db);",
+							`try {
+    await sql\`\${sql.raw('create index concurrently "users_e42f0227_monolayer_idx" on "public"."users" ("name")')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("users_e42f0227_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 						],
 					],
 					down: [
 						[
 							'await db.withSchema("public").schema',
 							'dropIndex("users_e42f0227_monolayer_idx")',
+							"ifExists()",
 							"execute();",
 						],
 					],
@@ -3245,16 +3254,25 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createIndex",
+					transaction: false,
 					up: [
 						[
-							'await sql`create index "users_2d87ba04_monolayer_idx" on "public"."users" ("name", "fullName")`',
-							"execute(db);",
+							`try {
+    await sql\`\${sql.raw('create index concurrently "users_2d87ba04_monolayer_idx" on "public"."users" ("name", "fullName")')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("users_2d87ba04_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 						],
 					],
 					down: [
 						[
 							'await db.withSchema("public").schema',
 							'dropIndex("users_2d87ba04_monolayer_idx")',
+							"ifExists()",
 							"execute();",
 						],
 					],
@@ -3329,16 +3347,25 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createIndex",
+					transaction: false,
 					up: [
 						[
-							'await sql`create unique index "users_861127a4_monolayer_idx" on "public"."users" ("fullName")`',
-							"execute(db);",
+							`try {
+    await sql\`\${sql.raw('create unique index concurrently "users_861127a4_monolayer_idx" on "public"."users" ("fullName")')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("users_861127a4_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 						],
 					],
 					down: [
 						[
 							'await db.withSchema("public").schema',
 							'dropIndex("users_861127a4_monolayer_idx")',
+							"ifExists()",
 							"execute();",
 						],
 					],

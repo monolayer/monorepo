@@ -2959,16 +2959,25 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "createIndex",
+				transaction: false,
 				up: [
 					[
-						'await sql`create index "publications_0c84fd75_monolayer_idx" on "public"."publications" ("id")`',
-						"execute(db);",
+						`try {
+    await sql\`\${sql.raw('create index concurrently "publications_0c84fd75_monolayer_idx" on "public"."publications" ("id")')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("publications_0c84fd75_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
 						'dropIndex("publications_0c84fd75_monolayer_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -3061,16 +3070,25 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "createIndex",
+				transaction: false,
 				up: [
 					[
-						'await sql`create unique index "publications_6b9be986_monolayer_idx" on "public"."publications" using btree ("id", "samples") nulls not distinct where "samples" > 20 and "ratings" > 5`',
-						"execute(db);",
+						`try {
+    await sql\`\${sql.raw('create unique index concurrently "publications_6b9be986_monolayer_idx" on "public"."publications" using btree ("id", "samples") nulls not distinct where "samples" > 20 and "ratings" > 5')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("publications_6b9be986_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
 						'dropIndex("publications_6b9be986_monolayer_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -3164,16 +3182,25 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "createIndex",
+				transaction: false,
 				up: [
 					[
-						'await sql`create index "publications_0c84fd75_monolayer_idx" on "public"."publications" ("id")`',
-						"execute(db);",
+						`try {
+    await sql\`\${sql.raw('create index concurrently "publications_0c84fd75_monolayer_idx" on "public"."publications" ("id")')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("publications_0c84fd75_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
 						'dropIndex("publications_0c84fd75_monolayer_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -3184,16 +3211,25 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "createIndex",
+				transaction: false,
 				up: [
 					[
-						'await sql`create unique index "publications_6b9be986_monolayer_idx" on "public"."publications" using btree ("id", "samples") nulls not distinct where "samples" > 20 and "ratings" > 5`',
-						"execute(db);",
+						`try {
+    await sql\`\${sql.raw('create unique index concurrently "publications_6b9be986_monolayer_idx" on "public"."publications" using btree ("id", "samples") nulls not distinct where "samples" > 20 and "ratings" > 5')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("publications_6b9be986_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
 						'dropIndex("publications_6b9be986_monolayer_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -6442,16 +6478,25 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createIndex",
+				transaction: false,
 				up: [
 					[
-						'await sql`create index "new_books_03cf58de_monolayer_idx" on "public"."new_books" ("book_id")`',
-						"execute(db);",
+						`try {
+    await sql\`\${sql.raw('create index concurrently "new_books_03cf58de_monolayer_idx" on "public"."new_books" ("book_id")')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("new_books_03cf58de_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
 						'dropIndex("new_books_03cf58de_monolayer_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -6555,16 +6600,25 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createIndex",
+				transaction: false,
 				up: [
 					[
-						'await sql`create unique index "new_books_d92f1fb8_monolayer_idx" on "public"."new_books" using btree ("book_id", "sample_count") nulls not distinct where "sample_count" > 20 and "rating_count" > 5`',
-						"execute(db);",
+						`try {
+    await sql\`\${sql.raw('create unique index concurrently "new_books_d92f1fb8_monolayer_idx" on "public"."new_books" using btree ("book_id", "sample_count") nulls not distinct where "sample_count" > 20 and "rating_count" > 5')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("new_books_d92f1fb8_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
 						'dropIndex("new_books_d92f1fb8_monolayer_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -6661,16 +6715,25 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createIndex",
+				transaction: false,
 				up: [
 					[
-						'await sql`create index "new_books_03cf58de_monolayer_idx" on "public"."new_books" ("book_id")`',
-						"execute(db);",
+						`try {
+    await sql\`\${sql.raw('create index concurrently "new_books_03cf58de_monolayer_idx" on "public"."new_books" ("book_id")')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("new_books_03cf58de_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
 						'dropIndex("new_books_03cf58de_monolayer_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -6681,16 +6744,25 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createIndex",
+				transaction: false,
 				up: [
 					[
-						'await sql`create unique index "new_books_d92f1fb8_monolayer_idx" on "public"."new_books" using btree ("book_id", "sample_count") nulls not distinct where "sample_count" > 20 and "rating_count" > 5`',
-						"execute(db);",
+						`try {
+    await sql\`\${sql.raw('create unique index concurrently "new_books_d92f1fb8_monolayer_idx" on "public"."new_books" using btree ("book_id", "sample_count") nulls not distinct where "sample_count" > 20 and "rating_count" > 5')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("new_books_d92f1fb8_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
 					],
 				],
 				down: [
 					[
 						'await db.withSchema("public").schema',
 						'dropIndex("new_books_d92f1fb8_monolayer_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],

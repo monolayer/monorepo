@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { Difference } from "microdiff";
 import {
 	executeKyselyDbStatement,
@@ -71,22 +72,35 @@ function createFirstIndexMigration(
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [indexHash, index]) => {
 		const redefinedIndex = rehashIndex(tableName, index, indexHash);
+		const indexOnTableCreation = addedTables.includes(tableName);
 		const changeSet: Changeset = {
 			priority: MigrationOpPriority.IndexCreate,
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 			type: ChangeSetType.CreateIndex,
-			up: [executeKyselyDbStatement(`${redefinedIndex.definition}`)],
+			up: [
+				indexOnTableCreation
+					? executeKyselyDbStatement(`${redefinedIndex.definition}`)
+					: concurrentIndex(
+							schemaName,
+							redefinedIndex.name,
+							redefinedIndex.definition,
+						),
+			],
 			down: addedTables.includes(tableName)
 				? [[]]
 				: [
 						executeKyselySchemaStatement(
 							schemaName,
 							`dropIndex("${redefinedIndex.name}")`,
+							"ifExists()",
 						),
 					],
 		};
+		if (!indexOnTableCreation) {
+			changeSet.transaction = false;
+		}
 		acc.push(changeSet);
 		return acc;
 	}, [] as Changeset[]);
@@ -146,23 +160,37 @@ function isCreateIndex(test: Difference): test is CreateIndex {
 
 function createIndexMigration(
 	diff: CreateIndex,
-	{ schemaName, tablesToRename }: GeneratorContext,
+	{ schemaName, tablesToRename, addedTables }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const hash = diff.path[2];
 	const indexName = `${tableName}_${hash}_monolayer_idx`;
 	const index = diff.value;
+	const indexOnTableCreation = addedTables.includes(tableName);
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.IndexCreate,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreateIndex,
-		up: [executeKyselyDbStatement(`${index}`)],
+		up: [
+			indexOnTableCreation
+				? executeKyselyDbStatement(`${index}`)
+				: concurrentIndex(schemaName, indexName, index),
+		],
 		down: [
-			executeKyselySchemaStatement(schemaName, `dropIndex("${indexName}")`),
+			executeKyselySchemaStatement(
+				schemaName,
+				`dropIndex("${indexName}")`,
+				"ifExists()",
+			),
 		],
 	};
+	if (!indexOnTableCreation) {
+		changeset.transaction = false;
+	}
+
 	return changeset;
 }
 
@@ -298,4 +326,26 @@ function changeIndexNameChangeset(
 		],
 	};
 	return changeset;
+}
+
+function concurrentIndex(
+	schenaName: string,
+	indexName: string,
+	definition: string,
+) {
+	const concurrentIndexDefinition = definition.replace(
+		`index "${indexName}"`,
+		`index concurrently "${indexName}"`,
+	);
+	const createIndex = `try {
+    await sql\`\${sql.raw('${concurrentIndexDefinition}')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("${schenaName}").schema.dropIndex("${indexName}").ifExists().execute();
+    }
+    throw error;
+  }`;
+
+	return [createIndex];
 }
