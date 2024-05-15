@@ -16,6 +16,7 @@ import {
 	renameMigrationInfo,
 	sortTablePriorities,
 } from "../introspection/introspect-schemas.js";
+import { toSnakeCase } from "./helpers.js";
 import { promptSchemaRenames } from "./schema-rename.js";
 import type { Changeset } from "./types.js";
 import { validateForeignKeyReferences } from "./validate-foreign-key-references.js";
@@ -41,10 +42,14 @@ export function changeset() {
 
 function dropSchemaChangeset(schemas: AnySchema[]) {
 	return Effect.gen(function* () {
+		const camelCase = yield* appEnvironmentCamelCasePlugin;
 		const schemasToDrop = (yield* monolayerSchemasInDb()).filter(
 			(dbSchema) =>
 				!schemas.find((schema) => {
-					return (Schema.info(schema).name ?? "public") === dbSchema.name;
+					return (
+						toSnakeCase(Schema.info(schema).name ?? "public", camelCase) ===
+						dbSchema.name
+					);
 				}),
 		);
 		const changesets: Changeset[] = [];

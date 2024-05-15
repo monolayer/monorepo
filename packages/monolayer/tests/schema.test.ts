@@ -419,7 +419,7 @@ describe("Schema", () => {
 			});
 		});
 
-		test.only<DbContext>("drop schema", async (context) => {
+		test<DbContext>("drop schema", async (context) => {
 			await sql`CREATE SCHEMA IF NOT EXISTS "accounts"; COMMENT ON SCHEMA "accounts" IS 'monolayer'`.execute(
 				context.kysely,
 			);
