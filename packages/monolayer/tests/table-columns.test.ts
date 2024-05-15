@@ -236,7 +236,7 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				warnings: [
 					{
-						code: "B002",
+						code: "B001",
 						column: "name",
 						schema: "public",
 						table: "users",
@@ -307,7 +307,7 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				warnings: [
 					{
-						code: "B003",
+						code: "B002",
 						column: "createdAt",
 						schema: "public",
 						table: "users",
@@ -643,7 +643,7 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				warnings: [
 					{
-						code: "B002",
+						code: "B001",
 						column: "name",
 						schema: "public",
 						table: "users",

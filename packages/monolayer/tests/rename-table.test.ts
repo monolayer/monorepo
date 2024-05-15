@@ -2400,26 +2400,44 @@ describe("Rename table without camel case plugin", () => {
 				],
 			},
 			{
-				priority: 4010,
+				priority: 4003,
+				schemaName: "public",
 				tableName: "publications",
 				currentTableName: "publications",
-				schemaName: "public",
-				type: "createUniqueConstraint",
-				warnings: [
-					{
-						code: "B001",
-						columns: ["id"],
-						schema: "public",
-						table: "publications",
-						type: "blocking",
-					},
-				],
+				type: "createIndex",
+				transaction: false,
 				up: [
 					[
-						`await db.withSchema("public").schema`,
-						`alterTable("publications")`,
-						`addUniqueConstraint("publications_acdd8fa3_monolayer_key", ["id"])`,
-						`execute();`,
+						"try {\n" +
+							'    await sql`${sql.raw(\'create unique index concurrently "publications_acdd8fa3_monolayer_key_monolayer_uc_idx" on "public"."publications" ("id") nulls distinct\')}`.execute(db);\n' +
+							"  }\n" +
+							"  catch (error: any) {\n" +
+							"    if (error.code === '23505') {\n" +
+							'      await db.withSchema("public").schema.dropIndex("publications_acdd8fa3_monolayer_key_monolayer_uc_idx").ifExists().execute();\n' +
+							"    }\n" +
+							"    throw error;\n" +
+							"  }",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("publications_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4010,
+				schemaName: "public",
+				tableName: "publications",
+				currentTableName: "publications",
+				type: "createUniqueConstraint",
+				up: [
+					[
+						'await sql`alter table "public"."publications" add constraint "publications_acdd8fa3_monolayer_key" unique using index "publications_acdd8fa3_monolayer_key_monolayer_uc_idx"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -2427,6 +2445,12 @@ describe("Rename table without camel case plugin", () => {
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
 						'dropConstraint("publications_acdd8fa3_monolayer_key")',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("publications_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -2483,6 +2507,12 @@ describe("Rename table without camel case plugin", () => {
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("books_acdd8fa3_monolayer_key")',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -2593,6 +2623,12 @@ describe("Rename table without camel case plugin", () => {
 						'dropConstraint("books_acdd8fa3_monolayer_key")',
 						"execute();",
 					],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
+						"execute();",
+					],
 				],
 				down: [
 					[
@@ -2698,6 +2734,12 @@ describe("Rename table without camel case plugin", () => {
 						'dropConstraint("books_acdd8fa3_monolayer_key")',
 						"execute();",
 					],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
+						"execute();",
+					],
 				],
 				down: [
 					[
@@ -2719,6 +2761,12 @@ describe("Rename table without camel case plugin", () => {
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("books_d0c857aa_monolayer_key")',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_d0c857aa_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -5991,26 +6039,44 @@ describe("Rename table with camel case plugin", () => {
 				],
 			},
 			{
-				priority: 4010,
+				priority: 4003,
+				schemaName: "public",
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
-				schemaName: "public",
-				type: "createUniqueConstraint",
-				warnings: [
-					{
-						code: "B001",
-						columns: ["id"],
-						schema: "public",
-						table: "books_and_documents",
-						type: "blocking",
-					},
-				],
+				type: "createIndex",
+				transaction: false,
 				up: [
 					[
-						`await db.withSchema("public").schema`,
-						`alterTable("books_and_documents")`,
-						`addUniqueConstraint("books_and_documents_acdd8fa3_monolayer_key", ["id"])`,
-						`execute();`,
+						"try {\n" +
+							'    await sql`${sql.raw(\'create unique index concurrently "books_and_documents_acdd8fa3_monolayer_key_monolayer_uc_idx" on "public"."books_and_documents" ("id") nulls distinct\')}`.execute(db);\n' +
+							"  }\n" +
+							"  catch (error: any) {\n" +
+							"    if (error.code === '23505') {\n" +
+							'      await db.withSchema("public").schema.dropIndex("books_and_documents_acdd8fa3_monolayer_key_monolayer_uc_idx").ifExists().execute();\n' +
+							"    }\n" +
+							"    throw error;\n" +
+							"  }",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_and_documents_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4010,
+				schemaName: "public",
+				tableName: "books_and_documents",
+				currentTableName: "books_and_documents",
+				type: "createUniqueConstraint",
+				up: [
+					[
+						'await sql`alter table "public"."books_and_documents" add constraint "books_and_documents_acdd8fa3_monolayer_key" unique using index "books_and_documents_acdd8fa3_monolayer_key_monolayer_uc_idx"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -6018,6 +6084,12 @@ describe("Rename table with camel case plugin", () => {
 						'await db.withSchema("public").schema',
 						'alterTable("books_and_documents")',
 						'dropConstraint("books_and_documents_acdd8fa3_monolayer_key")',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_and_documents_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -6077,6 +6149,12 @@ describe("Rename table with camel case plugin", () => {
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("books_acdd8fa3_monolayer_key")',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],
@@ -6190,6 +6268,12 @@ describe("Rename table with camel case plugin", () => {
 						'dropConstraint("books_acdd8fa3_monolayer_key")',
 						"execute();",
 					],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
+						"execute();",
+					],
 				],
 				down: [
 					[
@@ -6298,6 +6382,12 @@ describe("Rename table with camel case plugin", () => {
 						'dropConstraint("books_acdd8fa3_monolayer_key")',
 						"execute();",
 					],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
+						"execute();",
+					],
 				],
 				down: [
 					[
@@ -6319,6 +6409,12 @@ describe("Rename table with camel case plugin", () => {
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
 						'dropConstraint("books_d0c857aa_monolayer_key")',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_d0c857aa_monolayer_key_monolayer_uc_idx")',
+						"ifExists()",
 						"execute();",
 					],
 				],

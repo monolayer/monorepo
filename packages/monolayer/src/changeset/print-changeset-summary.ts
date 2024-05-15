@@ -17,7 +17,6 @@ import {
 	type ChangeColumnType,
 	type ChangeWarning,
 	type ColumnRenameWarning,
-	type CreateUniqueConstraint,
 	type DestructiveChange,
 	type TableRenameWarning,
 } from "./warnings.js";
@@ -99,7 +98,6 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	printTableRenameWarnings(warnings.tableRename);
 	printColumnRenameWarnings(warnings.columnRename);
 	printDestructiveWarnings(warnings.destructive);
-	printCreateUniqueConstraintWarning(warnings.createUniqueConstraint);
 	printChangeColumnTypeWarning(warnings.changeColumnType);
 	printChangeColumnDefaultVolatileWarning(warnings.changeColumnDefault);
 	printAddSerialColumn(warnings.addSerialColumn);
@@ -229,12 +227,6 @@ function changesetWarnings(changeset: Changeset[]) {
 					case ChangeWarningCode.SchemaDrop:
 						acc.destructive = [...acc.destructive, warning];
 						break;
-					case ChangeWarningCode.CreateUniqueConstraint:
-						acc.createUniqueConstraint = [
-							...acc.createUniqueConstraint,
-							warning,
-						];
-						break;
 					case ChangeWarningCode.ChangeColumnType:
 						acc.changeColumnType = [...acc.changeColumnType, warning];
 						break;
@@ -254,7 +246,6 @@ function changesetWarnings(changeset: Changeset[]) {
 				tableRename: [] as Array<TableRenameWarning>,
 				columnRename: [] as Array<ColumnRenameWarning>,
 				destructive: [] as Array<DestructiveChange>,
-				createUniqueConstraint: [] as Array<CreateUniqueConstraint>,
 				changeColumnType: [] as Array<ChangeColumnType>,
 				changeColumnDefault: [] as Array<ChangeColumnDefaultVolatile>,
 				addSerialColumn: [] as Array<AddSerialColumn>,
@@ -347,35 +338,6 @@ ${messages.join("\n")}`,
 		p.log.message(
 			color.gray(`These changes may result in a data loss and will prevent existing applications
 that rely on the old schema from functioning correctly.`),
-		);
-	}
-}
-
-function printCreateUniqueConstraintWarning(
-	warnings: CreateUniqueConstraint[],
-) {
-	const messages = [];
-	for (const warning of warnings) {
-		if (warning.columns.length === 1) {
-			messages.push(
-				`- Unique contraint added to column '${warning.columns.join("")}' on table '${warning.table}' (schema: '${warning.schema}')`,
-			);
-		} else {
-			const columns = warning.columns.map((column) => `'${column}'`).join(", ");
-			messages.push(
-				`- Unique contraint added to columns ${columns} on table '${warning.table}' (schema: '${warning.schema}')`,
-			);
-		}
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: Blocking changes detected.")}
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`Creating a unique constraint acquires an ACCESS EXCLUSIVE lock on the table. This lock will prevent
-any other transactions from reading or writing to the table until the unique constraint is created.`),
 		);
 	}
 }

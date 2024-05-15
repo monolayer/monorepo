@@ -2833,26 +2833,102 @@ describe("Modify table", () => {
 
 			const expected = [
 				{
-					priority: 4010,
+					priority: 4003,
+					schemaName: "public",
 					tableName: "books",
 					currentTableName: "books",
-					schemaName: "public",
-					type: "createUniqueConstraint",
-					warnings: [
-						{
-							code: "B001",
-							columns: ["id"],
-							schema: "public",
-							table: "books",
-							type: "blocking",
-						},
-					],
+					type: "createIndex",
+					transaction: false,
 					up: [
 						[
+							"try {\n" +
+								'    await sql`${sql.raw(\'create unique index concurrently "books_a91945e0_monolayer_key_monolayer_uc_idx" on "public"."books" ("id") nulls not distinct\')}`.execute(db);\n' +
+								"  }\n" +
+								"  catch (error: any) {\n" +
+								"    if (error.code === '23505') {\n" +
+								'      await db.withSchema("public").schema.dropIndex("books_a91945e0_monolayer_key_monolayer_uc_idx").ifExists().execute();\n' +
+								"    }\n" +
+								"    throw error;\n" +
+								"  }",
+						],
+					],
+					down: [
+						[
 							'await db.withSchema("public").schema',
-							'alterTable("books")',
-							'addUniqueConstraint("books_a91945e0_monolayer_key", ["id"], (col) => col.nullsNotDistinct())',
+							'dropIndex("books_a91945e0_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
 							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4003,
+					schemaName: "public",
+					tableName: "books",
+					currentTableName: "books",
+					type: "createIndex",
+					transaction: false,
+					up: [
+						[
+							"try {\n" +
+								'    await sql`${sql.raw(\'create unique index concurrently "books_adbefd84_monolayer_key_monolayer_uc_idx" on "public"."books" ("name") nulls distinct\')}`.execute(db);\n' +
+								"  }\n" +
+								"  catch (error: any) {\n" +
+								"    if (error.code === '23505') {\n" +
+								'      await db.withSchema("public").schema.dropIndex("books_adbefd84_monolayer_key_monolayer_uc_idx").ifExists().execute();\n' +
+								"    }\n" +
+								"    throw error;\n" +
+								"  }",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("books_adbefd84_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4003,
+					schemaName: "public",
+					tableName: "users",
+					currentTableName: "users",
+					type: "createIndex",
+					transaction: false,
+					up: [
+						[
+							"try {\n" +
+								'    await sql`${sql.raw(\'create unique index concurrently "users_83137b76_monolayer_key_monolayer_uc_idx" on "public"."users" ("fullName", "id") nulls distinct\')}`.execute(db);\n' +
+								"  }\n" +
+								"  catch (error: any) {\n" +
+								"    if (error.code === '23505') {\n" +
+								'      await db.withSchema("public").schema.dropIndex("users_83137b76_monolayer_key_monolayer_uc_idx").ifExists().execute();\n' +
+								"    }\n" +
+								"    throw error;\n" +
+								"  }",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("users_83137b76_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4010,
+					schemaName: "public",
+					tableName: "books",
+					currentTableName: "books",
+					type: "createUniqueConstraint",
+					up: [
+						[
+							'await sql`alter table "public"."books" add constraint "books_a91945e0_monolayer_key" unique using index "books_a91945e0_monolayer_key_monolayer_uc_idx"`',
+							"execute(db);",
 						],
 					],
 					down: [
@@ -2862,29 +2938,24 @@ describe("Modify table", () => {
 							'dropConstraint("books_a91945e0_monolayer_key")',
 							"execute();",
 						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("books_a91945e0_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
+							"execute();",
+						],
 					],
 				},
 				{
 					priority: 4010,
+					schemaName: "public",
 					tableName: "books",
 					currentTableName: "books",
-					schemaName: "public",
 					type: "createUniqueConstraint",
-					warnings: [
-						{
-							code: "B001",
-							columns: ["name"],
-							schema: "public",
-							table: "books",
-							type: "blocking",
-						},
-					],
 					up: [
 						[
-							'await db.withSchema("public").schema',
-							'alterTable("books")',
-							'addUniqueConstraint("books_adbefd84_monolayer_key", ["name"])',
-							"execute();",
+							'await sql`alter table "public"."books" add constraint "books_adbefd84_monolayer_key" unique using index "books_adbefd84_monolayer_key_monolayer_uc_idx"`',
+							"execute(db);",
 						],
 					],
 					down: [
@@ -2894,29 +2965,24 @@ describe("Modify table", () => {
 							'dropConstraint("books_adbefd84_monolayer_key")',
 							"execute();",
 						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("books_adbefd84_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
+							"execute();",
+						],
 					],
 				},
 				{
 					priority: 4010,
+					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					schemaName: "public",
 					type: "createUniqueConstraint",
-					warnings: [
-						{
-							code: "B001",
-							columns: ["fullName", "id"],
-							schema: "public",
-							table: "users",
-							type: "blocking",
-						},
-					],
 					up: [
 						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'addUniqueConstraint("users_83137b76_monolayer_key", ["fullName", "id"])',
-							"execute();",
+							'await sql`alter table "public"."users" add constraint "users_83137b76_monolayer_key" unique using index "users_83137b76_monolayer_key_monolayer_uc_idx"`',
+							"execute(db);",
 						],
 					],
 					down: [
@@ -2924,6 +2990,12 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_83137b76_monolayer_key")',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("users_83137b76_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
 							"execute();",
 						],
 					],
@@ -3006,6 +3078,12 @@ describe("Modify table", () => {
 							'dropConstraint("books_a91945e0_monolayer_key")',
 							"execute();",
 						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("books_a91945e0_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
+							"execute();",
+						],
 					],
 					down: [
 						[
@@ -3027,6 +3105,12 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
 							'dropConstraint("books_adbefd84_monolayer_key")',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("books_adbefd84_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
 							"execute();",
 						],
 					],
@@ -3113,6 +3197,12 @@ describe("Modify table", () => {
 							'dropConstraint("users_83137b76_monolayer_key")',
 							"execute();",
 						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("users_83137b76_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
+							"execute();",
+						],
 					],
 					down: [
 						[
@@ -3124,26 +3214,44 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 4010,
+					priority: 4003,
+					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					schemaName: "public",
-					type: "createUniqueConstraint",
-					warnings: [
-						{
-							code: "B001",
-							columns: ["id"],
-							schema: "public",
-							table: "users",
-							type: "blocking",
-						},
-					],
+					type: "createIndex",
+					transaction: false,
 					up: [
 						[
+							"try {\n" +
+								'    await sql`${sql.raw(\'create unique index concurrently "users_acdd8fa3_monolayer_key_monolayer_uc_idx" on "public"."users" ("id") nulls distinct\')}`.execute(db);\n' +
+								"  }\n" +
+								"  catch (error: any) {\n" +
+								"    if (error.code === '23505') {\n" +
+								'      await db.withSchema("public").schema.dropIndex("users_acdd8fa3_monolayer_key_monolayer_uc_idx").ifExists().execute();\n' +
+								"    }\n" +
+								"    throw error;\n" +
+								"  }",
+						],
+					],
+					down: [
+						[
 							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'addUniqueConstraint("users_acdd8fa3_monolayer_key", ["id"])',
+							'dropIndex("users_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
 							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4010,
+					schemaName: "public",
+					tableName: "users",
+					currentTableName: "users",
+					type: "createUniqueConstraint",
+					up: [
+						[
+							'await sql`alter table "public"."users" add constraint "users_acdd8fa3_monolayer_key" unique using index "users_acdd8fa3_monolayer_key_monolayer_uc_idx"`',
+							"execute(db);",
 						],
 					],
 					down: [
@@ -3151,6 +3259,12 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_acdd8fa3_monolayer_key")',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("users_acdd8fa3_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
 							"execute();",
 						],
 					],
@@ -3229,6 +3343,12 @@ describe("Modify table", () => {
 							'dropConstraint("users_83137b76_monolayer_key")',
 							"execute();",
 						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("users_83137b76_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
+							"execute();",
+						],
 					],
 					down: [
 						[
@@ -3240,26 +3360,44 @@ describe("Modify table", () => {
 					],
 				},
 				{
-					priority: 4010,
+					priority: 4003,
+					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					schemaName: "public",
-					type: "createUniqueConstraint",
-					warnings: [
-						{
-							code: "B001",
-							columns: ["fullName", "id"],
-							schema: "public",
-							table: "users",
-							type: "blocking",
-						},
-					],
+					type: "createIndex",
+					transaction: false,
 					up: [
 						[
+							"try {\n" +
+								'    await sql`${sql.raw(\'create unique index concurrently "users_fbf55213_monolayer_key_monolayer_uc_idx" on "public"."users" ("fullName", "id") nulls not distinct\')}`.execute(db);\n' +
+								"  }\n" +
+								"  catch (error: any) {\n" +
+								"    if (error.code === '23505') {\n" +
+								'      await db.withSchema("public").schema.dropIndex("users_fbf55213_monolayer_key_monolayer_uc_idx").ifExists().execute();\n' +
+								"    }\n" +
+								"    throw error;\n" +
+								"  }",
+						],
+					],
+					down: [
+						[
 							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'addUniqueConstraint("users_fbf55213_monolayer_key", ["fullName", "id"], (col) => col.nullsNotDistinct())',
+							'dropIndex("users_fbf55213_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
 							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4010,
+					schemaName: "public",
+					tableName: "users",
+					currentTableName: "users",
+					type: "createUniqueConstraint",
+					up: [
+						[
+							'await sql`alter table "public"."users" add constraint "users_fbf55213_monolayer_key" unique using index "users_fbf55213_monolayer_key_monolayer_uc_idx"`',
+							"execute(db);",
 						],
 					],
 					down: [
@@ -3267,6 +3405,12 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_fbf55213_monolayer_key")',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("users_fbf55213_monolayer_key_monolayer_uc_idx")',
+							"ifExists()",
 							"execute();",
 						],
 					],
@@ -4579,7 +4723,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				type: "createColumn",
 				warnings: [
 					{
-						code: "B005",
+						code: "B004",
 						column: "id",
 						schema: "public",
 						table: "users",
@@ -4611,7 +4755,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				type: "createColumn",
 				warnings: [
 					{
-						code: "B005",
+						code: "B004",
 						column: "second_id",
 						schema: "public",
 						table: "users",

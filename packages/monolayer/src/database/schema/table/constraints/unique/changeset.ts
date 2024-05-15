@@ -6,8 +6,8 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
-import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
 import { currentColumName } from "~/introspection/column-name.js";
+import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 import { extractColumnsFromPrimaryKey } from "~/introspection/schema.js";
 import {
 	currentTableName,
@@ -19,6 +19,7 @@ import {
 	executeKyselySchemaStatement,
 	toSnakeCase,
 } from "../../../../../changeset/helpers.js";
+import { concurrentIndex } from "../../index/changeset.js";
 
 export function uniqueConstraintMigrationOpGenerator(
 	diff: Difference,
@@ -156,29 +157,39 @@ function createUniqueFirstConstraintMigration(
 		);
 		uniqueConstraint.name = `${tableName}_${newHash}_monolayer_key`;
 
-		const changeset: Changeset = {
-			priority: MigrationOpPriority.UniqueCreate,
-			schemaName,
-			tableName: tableName,
-			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-			type: ChangeSetType.CreateUnique,
-			up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
-			down: addedTables.includes(tableName)
-				? [[]]
-				: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
-		};
 		if (!addedTables.includes(tableName)) {
-			changeset.warnings = [
-				{
-					type: ChangeWarningType.Blocking,
-					code: ChangeWarningCode.CreateUniqueConstraint,
-					schema: schemaName,
-					table: tableName,
-					columns: uniqueConstraint.columns.toSorted(),
-				},
-			];
+			acc.push(
+				...createUniqueConstraintWithIndex(
+					schemaName,
+					tableName,
+					uniqueConstraint,
+					tablesToRename,
+				),
+			);
+		} else {
+			const changeset: Changeset = {
+				priority: MigrationOpPriority.UniqueCreate,
+				schemaName,
+				tableName: tableName,
+				currentTableName: currentTableName(
+					tableName,
+					tablesToRename,
+					schemaName,
+				),
+				type: ChangeSetType.CreateUnique,
+				up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
+				down: addedTables.includes(tableName)
+					? [[]]
+					: [
+							...dropUniqueConstraintOp(
+								tableName,
+								uniqueConstraint,
+								schemaName,
+							),
+						],
+			};
+			acc.push(changeset);
 		}
-		acc.push(changeset);
 		return acc;
 	}, [] as Changeset[]);
 }
@@ -209,7 +220,7 @@ function dropUniqueLastConstraintMigration(
 				up: droppedTables.includes(tableName)
 					? [[]]
 					: [
-							dropUniqueConstraintOp(
+							...dropUniqueConstraintOp(
 								previousTableName(tableName, tablesToRename),
 								uniqueConstraint,
 								schemaName,
@@ -242,27 +253,27 @@ function createUniqueConstraintMigration(
 		hashValue,
 	);
 
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.UniqueCreate,
-		schemaName,
-		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateUnique,
-		up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
-		down: [dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
-	};
 	if (!addedTables.includes(tableName)) {
-		changeset.warnings = [
-			{
-				type: ChangeWarningType.Blocking,
-				code: ChangeWarningCode.CreateUniqueConstraint,
-				schema: schemaName,
-				table: tableName,
-				columns: uniqueConstraint.columns.toSorted(),
-			},
-		];
+		return createUniqueConstraintWithIndex(
+			schemaName,
+			tableName,
+			uniqueConstraint,
+			tablesToRename,
+		);
+	} else {
+		const changeset: Changeset = {
+			priority: MigrationOpPriority.UniqueCreate,
+			schemaName,
+			tableName: tableName,
+			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+			type: ChangeSetType.CreateUnique,
+			up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
+			down: [
+				...dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName),
+			],
+		};
+		return changeset;
 	}
-	return changeset;
 }
 
 function dropUniqueConstraintMigration(
@@ -284,7 +295,7 @@ function dropUniqueConstraintMigration(
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropUnique,
 		up: [
-			dropUniqueConstraintOp(
+			...dropUniqueConstraintOp(
 				previousTableName(tableName, tablesToRename),
 				uniqueConstraint,
 				schemaName,
@@ -372,10 +383,76 @@ function dropUniqueConstraintOp(
 	tableName: string,
 	definition: ConstraintDefinition,
 	schemaName: string,
-): string[] {
-	return executeKyselySchemaStatement(
+) {
+	return [
+		executeKyselySchemaStatement(
+			schemaName,
+			`alterTable("${tableName}")`,
+			`dropConstraint("${definition.name}")`,
+		),
+		executeKyselySchemaStatement(
+			schemaName,
+			`dropIndex("${definition.name}_monolayer_uc_idx")`,
+			"ifExists()",
+		),
+	];
+}
+
+function indexForUniqueConstraint(
+	schemaName: string,
+	tableName: string,
+	definition: ConstraintDefinition,
+	tablesToRename: TablesToRename,
+) {
+	const indexName = `${definition.name}_monolayer_uc_idx`;
+	const uniqueConstraintColumns = definition.columns
+		.map((col) => `"${col}"`)
+		.join(", ");
+
+	const nullsDistinct = definition.distinct
+		? "nulls distinct"
+		: "nulls not distinct";
+	const indexDefinition = `create unique index concurrently "${indexName}" on "${schemaName}"."${tableName}" (${uniqueConstraintColumns}) ${nullsDistinct}`;
+
+	const changeset: Changeset = {
+		priority: MigrationOpPriority.IndexCreate,
 		schemaName,
-		`alterTable("${tableName}")`,
-		`dropConstraint("${definition.name}")`,
-	);
+		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+		type: ChangeSetType.CreateIndex,
+		transaction: false,
+		up: [concurrentIndex(schemaName, indexName, indexDefinition)],
+		down: [
+			executeKyselySchemaStatement(
+				schemaName,
+				`dropIndex("${indexName}")`,
+				"ifExists()",
+			),
+		],
+	};
+	return changeset;
+}
+
+function createUniqueConstraintWithIndex(
+	schemaName: string,
+	tableName: string,
+	definition: ConstraintDefinition,
+	tablesToRename: TablesToRename,
+) {
+	const indexName = `${definition.name}_monolayer_uc_idx`;
+	const uniqueConstraintDefinition = `alter table "${schemaName}"."${tableName}" add constraint "${definition.name}" unique using index "${indexName}"`;
+	const createConstraint = {
+		priority: MigrationOpPriority.UniqueCreate,
+		schemaName,
+		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+		type: ChangeSetType.CreateUnique,
+		up: [executeKyselyDbStatement(uniqueConstraintDefinition)],
+		down: dropUniqueConstraintOp(tableName, definition, schemaName),
+	};
+	const changeset: Changeset[] = [
+		indexForUniqueConstraint(schemaName, tableName, definition, tablesToRename),
+		createConstraint,
+	];
+	return changeset;
 }
