@@ -272,7 +272,7 @@ describe("Table change migrations", () => {
 		});
 	});
 
-	test.only<DbContext>("change column default", async (context) => {
+	test<DbContext>("change column default", async (context) => {
 		await context.kysely.schema
 			.createTable("users")
 			.addColumn("name", "text", (col) => col.defaultTo(sql`'foo'::text`))
@@ -519,9 +519,29 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"email" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						"execute(db);",
+					],
+					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("email", (col) => col.setNotNull())',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'dropConstraint("temporary_not_null_check_constraint")',
 						"execute();",
 					],
 				],
@@ -550,9 +570,29 @@ describe("Table change migrations", () => {
 				],
 				down: [
 					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"name" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						"execute(db);",
+					],
+					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.setNotNull())',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'dropConstraint("temporary_not_null_check_constraint")',
 						"execute();",
 					],
 				],
@@ -653,14 +693,6 @@ describe("Table change migrations", () => {
 				],
 			},
 			{
-				down: [
-					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'alterColumn("name", (col) => col.dropNotNull())',
-						"execute();",
-					],
-				],
 				priority: 3011,
 				tableName: "users",
 				currentTableName: "users",
@@ -668,9 +700,37 @@ describe("Table change migrations", () => {
 				type: "changeColumn",
 				up: [
 					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"name" IS NOT NULL\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						"execute(db);",
+					],
+					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
 						'alterColumn("name", (col) => col.setNotNull())',
+						"execute();",
+					],
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'dropConstraint("temporary_not_null_check_constraint")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'alterColumn("name", (col) => col.dropNotNull())',
 						"execute();",
 					],
 				],
