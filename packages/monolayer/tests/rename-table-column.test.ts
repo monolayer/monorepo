@@ -239,7 +239,7 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "changeColumn",
 				warnings: [
 					{
-						code: "B003",
+						code: "B002",
 						column: "publication_id",
 						schema: "public",
 						table: "publications",
@@ -290,7 +290,7 @@ describe("Rename table and column without camel case plugin", () => {
 		});
 	});
 
-	test<DbContext>("kepp check constraint", async (context) => {
+	test<DbContext>("keep check constraint", async (context) => {
 		await context.kysely.schema
 			.createTable("books")
 			.addColumn("id", "integer")
@@ -1228,25 +1228,65 @@ describe("Rename table and column without camel case plugin", () => {
 					],
 				],
 			},
+
 			{
-				priority: 4001,
+				priority: 4003,
+				schemaName: "public",
 				tableName: "publications",
 				currentTableName: "publications",
-				schemaName: "public",
-				type: "createPrimaryKey",
-				warnings: [
-					{
-						code: "B001",
-						schema: "public",
-						table: "publications",
-						type: "blocking",
-					},
-				],
+				type: "createIndex",
+				transaction: false,
 				up: [
+					[
+						"try {\n" +
+							'    await sql`${sql.raw(\'create unique index concurrently "publications_monolayer_pk_idx" on "public"."publications" ("identifier")\')}`.execute(db);\n' +
+							"  }\n" +
+							"  catch (error: any) {\n" +
+							"    if (error.code === '23505') {\n" +
+							'      await db.withSchema("public").schema.dropIndex("publications_monolayer_pk_idx").ifExists().execute();\n' +
+							"    }\n" +
+							"    throw error;\n" +
+							"  }",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("publications_monolayer_pk_idx")',
+						"ifExists()",
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4013,
+				schemaName: "public",
+				tableName: "publications",
+				currentTableName: "publications",
+				type: "createPrimaryKey",
+				up: [
+					[
+						"await sql`${sql.raw(\n" +
+							"  db\n" +
+							'    .withSchema("public")\n' +
+							'    .schema.alterTable("publications")\n' +
+							'    .addCheckConstraint("identifier_temporary_not_null_check_constraint", sql`"identifier" IS NOT NULL`)\n' +
+							"    .compile()\n" +
+							'    .sql.concat(" not valid")\n' +
+							")}`.execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "public"."publications" VALIDATE CONSTRAINT "identifier_temporary_not_null_check_constraint"`',
+						"execute(db);",
+					],
+					[
+						'await sql`alter table "public"."publications" add constraint "publications_monolayer_pk" primary key using index "publications_monolayer_pk_idx"`',
+						"execute(db);",
+					],
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
-						'addPrimaryKeyConstraint("publications_monolayer_pk", ["identifier"])',
+						'dropConstraint("identifier_temporary_not_null_check_constraint")',
 						"execute();",
 					],
 				],
@@ -1420,24 +1460,63 @@ describe("Rename table and column without camel case plugin", () => {
 				],
 			},
 			{
-				priority: 4001,
+				priority: 4003,
+				schemaName: "public",
 				tableName: "publications",
 				currentTableName: "publications",
-				schemaName: "public",
-				type: "createPrimaryKey",
-				warnings: [
-					{
-						code: "B001",
-						schema: "public",
-						table: "publications",
-						type: "blocking",
-					},
-				],
+				type: "createIndex",
+				transaction: false,
 				up: [
+					[
+						"try {\n" +
+							'    await sql`${sql.raw(\'create unique index concurrently "publications_monolayer_pk_idx" on "public"."publications" ("identifier")\')}`.execute(db);\n' +
+							"  }\n" +
+							"  catch (error: any) {\n" +
+							"    if (error.code === '23505') {\n" +
+							'      await db.withSchema("public").schema.dropIndex("publications_monolayer_pk_idx").ifExists().execute();\n' +
+							"    }\n" +
+							"    throw error;\n" +
+							"  }",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("publications_monolayer_pk_idx")',
+						"ifExists()",
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4013,
+				schemaName: "public",
+				tableName: "publications",
+				currentTableName: "publications",
+				type: "createPrimaryKey",
+				up: [
+					[
+						"await sql`${sql.raw(\n" +
+							"  db\n" +
+							'    .withSchema("public")\n' +
+							'    .schema.alterTable("publications")\n' +
+							'    .addCheckConstraint("identifier_temporary_not_null_check_constraint", sql`"identifier" IS NOT NULL`)\n' +
+							"    .compile()\n" +
+							'    .sql.concat(" not valid")\n' +
+							")}`.execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "public"."publications" VALIDATE CONSTRAINT "identifier_temporary_not_null_check_constraint"`',
+						"execute(db);",
+					],
+					[
+						'await sql`alter table "public"."publications" add constraint "publications_monolayer_pk" primary key using index "publications_monolayer_pk_idx"`',
+						"execute(db);",
+					],
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
-						'addPrimaryKeyConstraint("publications_monolayer_pk", ["identifier"])',
+						'dropConstraint("identifier_temporary_not_null_check_constraint")',
 						"execute();",
 					],
 				],
@@ -5805,7 +5884,7 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "createUniqueConstraint",
 				warnings: [
 					{
-						code: "B002",
+						code: "B001",
 						columns: ["new_location_id"],
 						schema: "public",
 						table: "documents",
@@ -5830,7 +5909,7 @@ describe("Rename table and column without camel case plugin", () => {
 				],
 			},
 			{
-				priority: 4011,
+				priority: 4014,
 				tableName: "persons",
 				currentTableName: "persons",
 				schemaName: "public",
@@ -6146,7 +6225,7 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "createUniqueConstraint",
 				warnings: [
 					{
-						code: "B002",
+						code: "B001",
 						columns: ["identifier"],
 						schema: "public",
 						table: "publications",
@@ -7438,7 +7517,7 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "changeColumn",
 				warnings: [
 					{
-						code: "B003",
+						code: "B002",
 						column: "publication_id",
 						schema: "public",
 						table: "new_books",
@@ -8445,24 +8524,63 @@ describe("Rename table and column with camel case plugin", () => {
 				],
 			},
 			{
-				priority: 4001,
+				priority: 4003,
+				schemaName: "public",
 				tableName: "new_books",
 				currentTableName: "new_books",
-				schemaName: "public",
-				type: "createPrimaryKey",
-				warnings: [
-					{
-						code: "B001",
-						schema: "public",
-						table: "new_books",
-						type: "blocking",
-					},
-				],
+				type: "createIndex",
+				transaction: false,
 				up: [
+					[
+						"try {\n" +
+							'    await sql`${sql.raw(\'create unique index concurrently "new_books_monolayer_pk_idx" on "public"."new_books" ("book_id")\')}`.execute(db);\n' +
+							"  }\n" +
+							"  catch (error: any) {\n" +
+							"    if (error.code === '23505') {\n" +
+							'      await db.withSchema("public").schema.dropIndex("new_books_monolayer_pk_idx").ifExists().execute();\n' +
+							"    }\n" +
+							"    throw error;\n" +
+							"  }",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("new_books_monolayer_pk_idx")',
+						"ifExists()",
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4013,
+				schemaName: "public",
+				tableName: "new_books",
+				currentTableName: "new_books",
+				type: "createPrimaryKey",
+				up: [
+					[
+						"await sql`${sql.raw(\n" +
+							"  db\n" +
+							'    .withSchema("public")\n' +
+							'    .schema.alterTable("new_books")\n' +
+							'    .addCheckConstraint("book_id_temporary_not_null_check_constraint", sql`"book_id" IS NOT NULL`)\n' +
+							"    .compile()\n" +
+							'    .sql.concat(" not valid")\n' +
+							")}`.execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "book_id_temporary_not_null_check_constraint"`',
+						"execute(db);",
+					],
+					[
+						'await sql`alter table "public"."new_books" add constraint "new_books_monolayer_pk" primary key using index "new_books_monolayer_pk_idx"`',
+						"execute(db);",
+					],
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
-						'addPrimaryKeyConstraint("new_books_monolayer_pk", ["book_id"])',
+						'dropConstraint("book_id_temporary_not_null_check_constraint")',
 						"execute();",
 					],
 				],
@@ -8639,24 +8757,63 @@ describe("Rename table and column with camel case plugin", () => {
 				],
 			},
 			{
-				priority: 4001,
+				priority: 4003,
+				schemaName: "public",
 				tableName: "new_books",
 				currentTableName: "new_books",
-				schemaName: "public",
-				type: "createPrimaryKey",
-				warnings: [
-					{
-						code: "B001",
-						schema: "public",
-						table: "new_books",
-						type: "blocking",
-					},
-				],
+				type: "createIndex",
+				transaction: false,
 				up: [
+					[
+						"try {\n" +
+							'    await sql`${sql.raw(\'create unique index concurrently "new_books_monolayer_pk_idx" on "public"."new_books" ("book_id")\')}`.execute(db);\n' +
+							"  }\n" +
+							"  catch (error: any) {\n" +
+							"    if (error.code === '23505') {\n" +
+							'      await db.withSchema("public").schema.dropIndex("new_books_monolayer_pk_idx").ifExists().execute();\n' +
+							"    }\n" +
+							"    throw error;\n" +
+							"  }",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("new_books_monolayer_pk_idx")',
+						"ifExists()",
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4013,
+				schemaName: "public",
+				tableName: "new_books",
+				currentTableName: "new_books",
+				type: "createPrimaryKey",
+				up: [
+					[
+						"await sql`${sql.raw(\n" +
+							"  db\n" +
+							'    .withSchema("public")\n' +
+							'    .schema.alterTable("new_books")\n' +
+							'    .addCheckConstraint("book_id_temporary_not_null_check_constraint", sql`"book_id" IS NOT NULL`)\n' +
+							"    .compile()\n" +
+							'    .sql.concat(" not valid")\n' +
+							")}`.execute(db);",
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "book_id_temporary_not_null_check_constraint"`',
+						"execute(db);",
+					],
+					[
+						'await sql`alter table "public"."new_books" add constraint "new_books_monolayer_pk" primary key using index "new_books_monolayer_pk_idx"`',
+						"execute(db);",
+					],
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
-						'addPrimaryKeyConstraint("new_books_monolayer_pk", ["book_id"])',
+						'dropConstraint("book_id_temporary_not_null_check_constraint")',
 						"execute();",
 					],
 				],
@@ -13350,7 +13507,7 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "createUniqueConstraint",
 				warnings: [
 					{
-						code: "B002",
+						code: "B001",
 						columns: ["book_id"],
 						schema: "public",
 						table: "books_and_documents",

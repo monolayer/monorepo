@@ -15,13 +15,12 @@ export enum ChangeWarningCode {
 	SchemaDrop = "D001",
 	TableDrop = "D002",
 	ColumnDrop = "D003",
-	CreatePrimaryKey = "B001",
-	CreateUniqueConstraint = "B002",
-	ChangeColumnType = "B003",
-	ChangeColumnDefaultVolatile = "B004",
-	ChangeColumnNotNullable = "B005",
-	AddSerialColumn = "B006",
-	AddBigSerialColumn = "B007",
+	CreateUniqueConstraint = "B001",
+	ChangeColumnType = "B002",
+	ChangeColumnDefaultVolatile = "B003",
+	ChangeColumnNotNullable = "B004",
+	AddSerialColumn = "B005",
+	AddBigSerialColumn = "B006",
 }
 
 export type BackwardIncompatibleChange =
@@ -70,19 +69,11 @@ export type ColumnDropWarning = {
 };
 
 export type BlockingChange =
-	| CreatePrimaryKey
 	| CreateUniqueConstraint
 	| ChangeColumnType
 	| ChangeColumnDefaultVolatile
 	| AddSerialColumn
 	| AddBigSerialColumn;
-
-export type CreatePrimaryKey = {
-	type: ChangeWarningType.Blocking;
-	code: ChangeWarningCode.CreatePrimaryKey;
-	schema: string;
-	table: string;
-};
 
 export type CreateUniqueConstraint = {
 	type: ChangeWarningType.Blocking;

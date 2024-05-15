@@ -384,7 +384,7 @@ describe("Create table", () => {
 			},
 			{
 				down: [[]],
-				priority: 4001,
+				priority: 4013,
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
@@ -400,7 +400,7 @@ describe("Create table", () => {
 			},
 			{
 				down: [[]],
-				priority: 4001,
+				priority: 4013,
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
@@ -495,7 +495,7 @@ describe("Create table", () => {
 			},
 			{
 				down: [[]],
-				priority: 4001,
+				priority: 4013,
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
@@ -511,7 +511,7 @@ describe("Create table", () => {
 			},
 			{
 				down: [[]],
-				priority: 4001,
+				priority: 4013,
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
@@ -846,7 +846,7 @@ describe("Create table", () => {
 			},
 			{
 				down: [[]],
-				priority: 4001,
+				priority: 4013,
 				tableName: "books",
 				currentTableName: "books",
 				schemaName: "public",
@@ -862,7 +862,7 @@ describe("Create table", () => {
 			},
 			{
 				down: [[]],
-				priority: 4011,
+				priority: 4014,
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
@@ -940,7 +940,7 @@ describe("Create table", () => {
 			},
 			{
 				down: [[]],
-				priority: 4001,
+				priority: 4013,
 				tableName: "tree",
 				currentTableName: "tree",
 				schemaName: "public",
@@ -956,7 +956,7 @@ describe("Create table", () => {
 			},
 			{
 				down: [[]],
-				priority: 4011,
+				priority: 4014,
 				tableName: "tree",
 				currentTableName: "tree",
 				schemaName: "public",
@@ -1545,54 +1545,6 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 			},
 			{
 				down: [[]],
-				priority: 4001,
-				tableName: "books",
-				currentTableName: "books",
-				schemaName: "public",
-				type: "createPrimaryKey",
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_monolayer_pk", ["id"])',
-						"execute();",
-					],
-				],
-			},
-			{
-				down: [[]],
-				priority: 4001,
-				tableName: "new_books",
-				currentTableName: "new_books",
-				schemaName: "public",
-				type: "createPrimaryKey",
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'alterTable("new_books")',
-						'addPrimaryKeyConstraint("new_books_monolayer_pk", ["id"])',
-						"execute();",
-					],
-				],
-			},
-			{
-				down: [[]],
-				priority: 4001,
-				tableName: "library_building",
-				currentTableName: "library_building",
-				schemaName: "public",
-				type: "createPrimaryKey",
-				up: [
-					[
-						'await db.withSchema("public").schema',
-						'alterTable("library_building")',
-						'addPrimaryKeyConstraint("library_building_monolayer_pk", ["id"])',
-						"execute();",
-					],
-				],
-			},
-			{
-				down: [[]],
 				priority: 4003,
 				tableName: "users",
 				currentTableName: "users",
@@ -1665,84 +1617,6 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 				down: [[]],
 			},
 			{
-				priority: 4011,
-				tableName: "users",
-				currentTableName: "users",
-				schemaName: "public",
-				type: "createForeignKey",
-				up: [
-					[
-						`await sql\`\${sql.raw(
-  db
-    .withSchema("public")
-    .schema.alterTable("users")
-    .addForeignKeyConstraint("users_148cbac6_monolayer_fk", ["book_id"], "public.books", ["id"])
-    .onDelete("no action")
-    .onUpdate("no action")
-    .compile()
-    .sql.concat(" not valid")
-)}\`.execute(db);`,
-					],
-					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_148cbac6_monolayer_fk"`',
-						"execute(db);",
-					],
-				],
-				down: [[]],
-			},
-			{
-				priority: 4011,
-				tableName: "new_books",
-				currentTableName: "new_books",
-				schemaName: "public",
-				type: "createForeignKey",
-				up: [
-					[
-						`await sql\`\${sql.raw(
-  db
-    .withSchema("public")
-    .schema.alterTable("new_books")
-    .addForeignKeyConstraint("new_books_61f374e1_monolayer_fk", ["old_book_id"], "public.books", ["id"])
-    .onDelete("no action")
-    .onUpdate("no action")
-    .compile()
-    .sql.concat(" not valid")
-)}\`.execute(db);`,
-					],
-					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_61f374e1_monolayer_fk"`',
-						"execute(db);",
-					],
-				],
-				down: [[]],
-			},
-			{
-				priority: 4011,
-				tableName: "new_books",
-				currentTableName: "new_books",
-				schemaName: "public",
-				type: "createForeignKey",
-				up: [
-					[
-						`await sql\`\${sql.raw(
-  db
-    .withSchema("public")
-    .schema.alterTable("new_books")
-    .addForeignKeyConstraint("new_books_5e0a4bbc_monolayer_fk", ["library_building_id"], "public.library_building", ["id"])
-    .onDelete("no action")
-    .onUpdate("no action")
-    .compile()
-    .sql.concat(" not valid")
-)}\`.execute(db);`,
-					],
-					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_5e0a4bbc_monolayer_fk"`',
-						"execute(db);",
-					],
-				],
-				down: [[]],
-			},
-			{
 				priority: 4012,
 				tableName: "new_books",
 				currentTableName: "new_books",
@@ -1785,6 +1659,132 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 					],
 					[
 						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_1c05ff9f_monolayer_chk"`',
+						"execute(db);",
+					],
+				],
+				down: [[]],
+			},
+			{
+				down: [[]],
+				priority: 4013,
+				tableName: "books",
+				currentTableName: "books",
+				schemaName: "public",
+				type: "createPrimaryKey",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("books")',
+						'addPrimaryKeyConstraint("books_monolayer_pk", ["id"])',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [[]],
+				priority: 4013,
+				tableName: "new_books",
+				currentTableName: "new_books",
+				schemaName: "public",
+				type: "createPrimaryKey",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("new_books")',
+						'addPrimaryKeyConstraint("new_books_monolayer_pk", ["id"])',
+						"execute();",
+					],
+				],
+			},
+			{
+				down: [[]],
+				priority: 4013,
+				tableName: "library_building",
+				currentTableName: "library_building",
+				schemaName: "public",
+				type: "createPrimaryKey",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("library_building")',
+						'addPrimaryKeyConstraint("library_building_monolayer_pk", ["id"])',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 4014,
+				tableName: "users",
+				currentTableName: "users",
+				schemaName: "public",
+				type: "createForeignKey",
+				up: [
+					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_148cbac6_monolayer_fk", ["book_id"], "public.books", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_148cbac6_monolayer_fk"`',
+						"execute(db);",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4014,
+				tableName: "new_books",
+				currentTableName: "new_books",
+				schemaName: "public",
+				type: "createForeignKey",
+				up: [
+					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("new_books")
+    .addForeignKeyConstraint("new_books_61f374e1_monolayer_fk", ["old_book_id"], "public.books", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_61f374e1_monolayer_fk"`',
+						"execute(db);",
+					],
+				],
+				down: [[]],
+			},
+			{
+				priority: 4014,
+				tableName: "new_books",
+				currentTableName: "new_books",
+				schemaName: "public",
+				type: "createForeignKey",
+				up: [
+					[
+						`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("new_books")
+    .addForeignKeyConstraint("new_books_5e0a4bbc_monolayer_fk", ["library_building_id"], "public.library_building", ["id"])
+    .onDelete("no action")
+    .onUpdate("no action")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+					],
+					[
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "new_books_5e0a4bbc_monolayer_fk"`',
 						"execute(db);",
 					],
 				],

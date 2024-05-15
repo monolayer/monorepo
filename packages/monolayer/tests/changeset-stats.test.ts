@@ -636,7 +636,7 @@ describe("changeset-summary", () => {
 			},
 			{
 				down: [],
-				priority: 4001,
+				priority: 4013,
 				tableName: "books",
 				currentTableName: "books_and_documents",
 				schemaName: "public",
@@ -644,7 +644,7 @@ describe("changeset-summary", () => {
 				up: [],
 			},
 			{
-				priority: 4001,
+				priority: 4013,
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
@@ -653,7 +653,7 @@ describe("changeset-summary", () => {
 				down: [],
 			},
 			{
-				priority: 4001,
+				priority: 4013,
 				tableName: "library_building",
 				currentTableName: "library_building",
 				schemaName: "public",
@@ -761,7 +761,7 @@ describe("changeset-summary", () => {
 				down: [],
 			},
 			{
-				priority: 4011,
+				priority: 4014,
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
@@ -770,7 +770,7 @@ describe("changeset-summary", () => {
 				down: [],
 			},
 			{
-				priority: 4011,
+				priority: 4014,
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
@@ -779,7 +779,7 @@ describe("changeset-summary", () => {
 				down: [],
 			},
 			{
-				priority: 4011,
+				priority: 4014,
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",

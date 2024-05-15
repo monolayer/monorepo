@@ -623,7 +623,7 @@ test("print summary", () => {
 		},
 		{
 			down: [],
-			priority: 4001,
+			priority: 4013,
 			tableName: "books",
 			currentTableName: "books_and_documents",
 			schemaName: "public",
@@ -631,7 +631,7 @@ test("print summary", () => {
 			up: [],
 		},
 		{
-			priority: 4001,
+			priority: 4013,
 			tableName: "new_books",
 			currentTableName: "new_books",
 			schemaName: "public",
@@ -640,7 +640,7 @@ test("print summary", () => {
 			down: [],
 		},
 		{
-			priority: 4001,
+			priority: 4013,
 			tableName: "library_building",
 			currentTableName: "library_building",
 			schemaName: "public",
@@ -748,7 +748,7 @@ test("print summary", () => {
 			down: [],
 		},
 		{
-			priority: 4011,
+			priority: 4014,
 			tableName: "users",
 			currentTableName: "users",
 			schemaName: "public",
@@ -757,7 +757,7 @@ test("print summary", () => {
 			down: [],
 		},
 		{
-			priority: 4011,
+			priority: 4014,
 			tableName: "new_books",
 			currentTableName: "new_books",
 			schemaName: "public",
@@ -766,7 +766,7 @@ test("print summary", () => {
 			down: [],
 		},
 		{
-			priority: 4011,
+			priority: 4014,
 			tableName: "new_books",
 			currentTableName: "new_books",
 			schemaName: "public",

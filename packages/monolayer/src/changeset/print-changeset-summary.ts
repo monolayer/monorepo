@@ -17,7 +17,6 @@ import {
 	type ChangeColumnType,
 	type ChangeWarning,
 	type ColumnRenameWarning,
-	type CreatePrimaryKey,
 	type CreateUniqueConstraint,
 	type DestructiveChange,
 	type TableRenameWarning,
@@ -100,7 +99,6 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	printTableRenameWarnings(warnings.tableRename);
 	printColumnRenameWarnings(warnings.columnRename);
 	printDestructiveWarnings(warnings.destructive);
-	printCreatePrimaryKeyWarning(warnings.createPrimaryKey);
 	printCreateUniqueConstraintWarning(warnings.createUniqueConstraint);
 	printChangeColumnTypeWarning(warnings.changeColumnType);
 	printChangeColumnDefaultVolatileWarning(warnings.changeColumnDefault);
@@ -231,9 +229,6 @@ function changesetWarnings(changeset: Changeset[]) {
 					case ChangeWarningCode.SchemaDrop:
 						acc.destructive = [...acc.destructive, warning];
 						break;
-					case ChangeWarningCode.CreatePrimaryKey:
-						acc.createPrimaryKey = [...acc.createPrimaryKey, warning];
-						break;
 					case ChangeWarningCode.CreateUniqueConstraint:
 						acc.createUniqueConstraint = [
 							...acc.createUniqueConstraint,
@@ -259,7 +254,6 @@ function changesetWarnings(changeset: Changeset[]) {
 				tableRename: [] as Array<TableRenameWarning>,
 				columnRename: [] as Array<ColumnRenameWarning>,
 				destructive: [] as Array<DestructiveChange>,
-				createPrimaryKey: [] as Array<CreatePrimaryKey>,
 				createUniqueConstraint: [] as Array<CreateUniqueConstraint>,
 				changeColumnType: [] as Array<ChangeColumnType>,
 				changeColumnDefault: [] as Array<ChangeColumnDefaultVolatile>,
@@ -353,26 +347,6 @@ ${messages.join("\n")}`,
 		p.log.message(
 			color.gray(`These changes may result in a data loss and will prevent existing applications
 that rely on the old schema from functioning correctly.`),
-		);
-	}
-}
-
-function printCreatePrimaryKeyWarning(warnings: CreatePrimaryKey[]) {
-	const messages = [];
-	for (const warning of warnings) {
-		messages.push(
-			`- Primary key added to table '${warning.table}' (schema: '${warning.schema}')`,
-		);
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: Blocking changes detected.")}
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`Creating a primary key acquires an ACCESS EXCLUSIVE lock on the table. This lock will prevent
-any other transactions from reading or writing to the table until the primary key is created.`),
 		);
 	}
 }

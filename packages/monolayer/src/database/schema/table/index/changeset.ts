@@ -328,7 +328,7 @@ function changeIndexNameChangeset(
 	return changeset;
 }
 
-function concurrentIndex(
+export function concurrentIndex(
 	schenaName: string,
 	indexName: string,
 	definition: string,

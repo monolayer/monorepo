@@ -6,17 +6,24 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
-import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
 import { currentColumName } from "~/introspection/column-name.js";
 import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 import { currentTableName } from "~/introspection/table-name.js";
-import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
+import {
+	executeKyselyDbStatement,
+	executeKyselySchemaStatement,
+} from "../../../../../changeset/helpers.js";
 import type { LocalTableInfo } from "../../../../../introspection/introspection.js";
 import {
 	columnNameKey,
 	extractColumnsFromPrimaryKey,
 	findColumnByNameInTable,
 } from "../../../../../introspection/schema.js";
+import { concurrentIndex } from "../../index/changeset.js";
+import {
+	addCheckWithSchemaStatements,
+	dropCheckKyselySchemaStatement,
+} from "../check/changeset.js";
 
 export function primaryKeyMigrationOpGenerator(
 	diff: Difference,
@@ -133,47 +140,26 @@ function createPrimaryKeyMigration(
 		primaryKeyName
 	] as (typeof diff.value)[keyof typeof diff.value];
 
-	const changeset: Changeset = {
-		priority: MigrationOpPriority.PrimaryKeyCreate,
-		schemaName,
-		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreatePrimaryKey,
-		up: [
-			addPrimaryKeyOp(
-				tableName,
-				primaryKeyName as string,
-				primaryKeyValue,
-				schemaName,
-			),
-		],
-		down: addedTables.includes(tableName)
-			? [[]]
-			: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
-	};
-
 	if (!addedTables.includes(tableName)) {
-		changeset.warnings = [
-			{
-				type: ChangeWarningType.Blocking,
-				code: ChangeWarningCode.CreatePrimaryKey,
-				schema: schemaName,
-				table: tableName,
-			},
-		];
+		return onlinePrimaryKey(
+			schemaName,
+			tableName,
+			primaryKeyName as string,
+			primaryKeyValue,
+			tablesToRename,
+			local,
+		);
+	} else {
+		return defaultPrimaryKey(
+			schemaName,
+			tableName,
+			primaryKeyName as string,
+			primaryKeyValue,
+			tablesToRename,
+			addedTables,
+			local,
+		);
 	}
-
-	const dropNotNull = addedTables.includes(tableName)
-		? []
-		: dropNotNullChangesets(
-				primaryKeyValue,
-				tableName,
-				local,
-				schemaName,
-				tablesToRename,
-				"down",
-			);
-	return [changeset, ...dropNotNull];
 }
 
 function dropPrimaryKeyMigration(
@@ -196,7 +182,14 @@ function dropPrimaryKeyMigration(
 		type: ChangeSetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
 			? [[]]
-			: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
+			: [
+					dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName),
+					executeKyselySchemaStatement(
+						schemaName,
+						`dropIndex("${tableName}_monolayer_pk_idx")`,
+						"ifExists()",
+					),
+				],
 		down: [
 			addPrimaryKeyOp(
 				tableName,
@@ -228,38 +221,13 @@ function changePrimaryKeyMigration(
 	const tableName = diff.path[1];
 	const primaryKeyName = diff.path[2];
 
-	const createChangeset: Changeset = {
-		priority: MigrationOpPriority.PrimaryKeyCreate,
+	const on = onlinePrimaryKey(
 		schemaName,
-		tableName: tableName,
-		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreatePrimaryKey,
-		warnings: [
-			{
-				type: ChangeWarningType.Blocking,
-				code: ChangeWarningCode.CreatePrimaryKey,
-				schema: schemaName,
-				table: tableName,
-			},
-		],
-		up: [
-			addPrimaryKeyOp(
-				tableName,
-				primaryKeyName as string,
-				diff.value,
-				schemaName,
-			),
-		],
-		down: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
-	};
-
-	const createPrimaryKeyNotNull = dropNotNullChangesets(
-		diff.value,
 		tableName,
-		local,
-		schemaName,
+		primaryKeyName as string,
+		diff.value,
 		tablesToRename,
-		"down",
+		local,
 	);
 
 	const dropChangeset: Changeset = {
@@ -268,7 +236,14 @@ function changePrimaryKeyMigration(
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropPrimaryKey,
-		up: [dropPrimaryKeyOp(tableName, primaryKeyName, schemaName)],
+		up: [
+			dropPrimaryKeyOp(tableName, primaryKeyName, schemaName),
+			executeKyselySchemaStatement(
+				schemaName,
+				`dropIndex("${tableName}_monolayer_pk_idx")`,
+				"ifExists()",
+			),
+		],
 		down: [
 			addPrimaryKeyOp(tableName, primaryKeyName, diff.oldValue, schemaName),
 		],
@@ -283,12 +258,7 @@ function changePrimaryKeyMigration(
 		"up",
 	);
 
-	return [
-		createChangeset,
-		...createPrimaryKeyNotNull,
-		dropChangeset,
-		...dropPrimaryKeyNotNull,
-	];
+	return [...on, dropChangeset, ...dropPrimaryKeyNotNull];
 }
 
 function addPrimaryKeyOp(
@@ -420,4 +390,117 @@ function dropNotNullChangesets(
 		}
 	}
 	return changesets;
+}
+
+function defaultPrimaryKey(
+	schemaName: string,
+	tableName: string,
+	primaryKeyName: string,
+	primaryKeyValue: string,
+	tablesToRename: TablesToRename,
+	addedTables: string[],
+	local: LocalTableInfo,
+) {
+	const changeset: Changeset = {
+		priority: MigrationOpPriority.PrimaryKeyCreate,
+		schemaName,
+		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+		type: ChangeSetType.CreatePrimaryKey,
+		up: [
+			addPrimaryKeyOp(
+				tableName,
+				primaryKeyName as string,
+				primaryKeyValue,
+				schemaName,
+			),
+		],
+		down: addedTables.includes(tableName)
+			? [[]]
+			: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
+	};
+
+	const dropNotNull = addedTables.includes(tableName)
+		? []
+		: dropNotNullChangesets(
+				primaryKeyValue,
+				tableName,
+				local,
+				schemaName,
+				tablesToRename,
+				"down",
+			);
+	return [changeset, ...dropNotNull];
+}
+
+function onlinePrimaryKey(
+	schemaName: string,
+	tableName: string,
+	primaryKeyName: string,
+	primaryKeyValue: string,
+	tablesToRename: TablesToRename,
+	local: LocalTableInfo,
+) {
+	const indexName = `${tableName}_monolayer_pk_idx`;
+	const indexDefinition = `create unique index concurrently "${indexName}" on "${schemaName}"."${tableName}" ${primaryKeyValue}`;
+	const primaryKeyColumns = extractColumnsFromPrimaryKey(primaryKeyValue);
+	const addChecks = primaryKeyColumns.flatMap((col) => {
+		return addCheckWithSchemaStatements(schemaName, tableName, {
+			name: `${col}_temporary_not_null_check_constraint`,
+			definition: `"${col}" IS NOT NULL`,
+		});
+	});
+	const dropChecks = primaryKeyColumns.flatMap((col) => {
+		return [
+			dropCheckKyselySchemaStatement(
+				schemaName,
+				tableName,
+				`${col}_temporary_not_null_check_constraint`,
+			),
+		];
+	});
+	const primaryKeyDefinition = `alter table "${schemaName}"."${tableName}" add constraint "${primaryKeyName}" primary key using index "${indexName}"`;
+	const changeset: Changeset[] = [
+		{
+			priority: MigrationOpPriority.IndexCreate,
+			schemaName,
+			tableName: tableName,
+			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+			type: ChangeSetType.CreateIndex,
+			transaction: false,
+			up: [concurrentIndex(schemaName, indexName, indexDefinition)],
+			down: [
+				executeKyselySchemaStatement(
+					schemaName,
+					`dropIndex("${indexName}")`,
+					"ifExists()",
+				),
+			],
+		},
+		{
+			priority: MigrationOpPriority.PrimaryKeyCreate,
+			schemaName,
+			tableName: tableName,
+			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+			type: ChangeSetType.CreatePrimaryKey,
+			up: [
+				...addChecks,
+				...[executeKyselyDbStatement(primaryKeyDefinition)],
+				...dropChecks,
+			],
+			down: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
+		},
+	];
+
+	return [
+		...changeset,
+		...dropNotNullChangesets(
+			primaryKeyValue,
+			tableName,
+			local,
+			schemaName,
+			tablesToRename,
+			"down",
+		),
+	];
 }

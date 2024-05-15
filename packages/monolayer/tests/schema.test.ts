@@ -346,7 +346,7 @@ describe("Schema", () => {
 					],
 				},
 				{
-					priority: 4001,
+					priority: 4013,
 					schemaName: "permission",
 					tableName: "user_permissions",
 					currentTableName: "user_permissions",
@@ -385,7 +385,7 @@ describe("Schema", () => {
 					],
 				},
 				{
-					priority: 4011,
+					priority: 4014,
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
@@ -623,7 +623,7 @@ describe("Schema", () => {
 					],
 				},
 				{
-					priority: 4001,
+					priority: 4013,
 					schemaName: "permission_schema",
 					tableName: "user_permissions",
 					currentTableName: "user_permissions",
@@ -662,7 +662,7 @@ describe("Schema", () => {
 					],
 				},
 				{
-					priority: 4011,
+					priority: 4014,
 					schemaName: "public",
 					tableName: "new_users",
 					currentTableName: "new_users",
