@@ -139,7 +139,7 @@ export const schemaTemplate =
 	nunjucks.compile(`import { schema } from "monolayer/pg";
 
 export const dbSchema = schema({});
-x
+
 export type DB = typeof dbSchema.infer;
 `);
 
