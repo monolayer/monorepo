@@ -231,7 +231,7 @@ function columnDefaultChangeMigrationOperation(
 		changeset.warnings = [
 			{
 				type: ChangeWarningType.Blocking,
-				code: ChangeWarningCode.ChangeColumnDefaultVolatile,
+				code: ChangeWarningCode.AddVolatileDefault,
 				schema: schemaName,
 				table: tableName,
 				column: columnName,

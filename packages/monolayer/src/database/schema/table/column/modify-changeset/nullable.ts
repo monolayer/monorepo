@@ -60,7 +60,7 @@ function columnNullableMigrationOperation(
 	return changeset;
 }
 
-function setNotNullOp(
+export function setNotNullOp(
 	schemaName: string,
 	tableName: string,
 	columnName: string,

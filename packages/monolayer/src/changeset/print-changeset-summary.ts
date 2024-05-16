@@ -13,7 +13,7 @@ import {
 	ChangeWarningCode,
 	type AddBigSerialColumn,
 	type AddSerialColumn,
-	type ChangeColumnDefaultVolatile,
+	type AddVolatileDefault,
 	type ChangeColumnType,
 	type ChangeWarning,
 	type ColumnRenameWarning,
@@ -230,7 +230,7 @@ function changesetWarnings(changeset: Changeset[]) {
 					case ChangeWarningCode.ChangeColumnType:
 						acc.changeColumnType = [...acc.changeColumnType, warning];
 						break;
-					case ChangeWarningCode.ChangeColumnDefaultVolatile:
+					case ChangeWarningCode.AddVolatileDefault:
 						acc.changeColumnDefault = [...acc.changeColumnDefault, warning];
 						break;
 					case ChangeWarningCode.AddSerialColumn:
@@ -247,7 +247,7 @@ function changesetWarnings(changeset: Changeset[]) {
 				columnRename: [] as Array<ColumnRenameWarning>,
 				destructive: [] as Array<DestructiveChange>,
 				changeColumnType: [] as Array<ChangeColumnType>,
-				changeColumnDefault: [] as Array<ChangeColumnDefaultVolatile>,
+				changeColumnDefault: [] as Array<AddVolatileDefault>,
 				addSerialColumn: [] as Array<AddSerialColumn>,
 				addBigSerialColumn: [] as Array<AddBigSerialColumn>,
 			},
@@ -371,7 +371,7 @@ Downtime for your application can only be avoided by using a safer but complex a
 }
 
 function printChangeColumnDefaultVolatileWarning(
-	warnings: ChangeColumnDefaultVolatile[],
+	warnings: AddVolatileDefault[],
 ) {
 	const messages = [];
 	for (const warning of warnings) {

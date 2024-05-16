@@ -16,7 +16,7 @@ export enum ChangeWarningCode {
 	TableDrop = "D002",
 	ColumnDrop = "D003",
 	ChangeColumnType = "B001",
-	ChangeColumnDefaultVolatile = "B002",
+	AddVolatileDefault = "B002",
 	AddSerialColumn = "B003",
 	AddBigSerialColumn = "B004",
 }
@@ -68,7 +68,7 @@ export type ColumnDropWarning = {
 
 export type BlockingChange =
 	| ChangeColumnType
-	| ChangeColumnDefaultVolatile
+	| AddVolatileDefault
 	| AddSerialColumn
 	| AddBigSerialColumn;
 
@@ -82,9 +82,9 @@ export type ChangeColumnType = {
 	to: string;
 };
 
-export type ChangeColumnDefaultVolatile = {
+export type AddVolatileDefault = {
 	type: ChangeWarningType.Blocking;
-	code: ChangeWarningCode.ChangeColumnDefaultVolatile;
+	code: ChangeWarningCode.AddVolatileDefault;
 	schema: string;
 	table: string;
 	column: string;
