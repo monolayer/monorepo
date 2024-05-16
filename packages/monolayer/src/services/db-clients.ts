@@ -91,16 +91,21 @@ function dbClientEnvironmentProperties(pgConfig: PgConfig, camelCase: boolean) {
 }
 
 function poolAndConfig(environmentConfig: pg.ClientConfig & pg.PoolConfig) {
+	const config =
+		environmentConfig.connectionString !== undefined
+			? pgConnectionString.parse(environmentConfig.connectionString)
+			: environmentConfig;
+
 	return {
 		pool: new pg.Pool(environmentConfig),
 		adminPool: new pg.Pool({
-			...environmentConfig,
+			user: config.user,
+			password: config.password,
+			host: config.host ?? "",
+			port: Number(config.port ?? 5432),
 			database: undefined,
 		}),
-		config:
-			environmentConfig.connectionString !== undefined
-				? pgConnectionString.parse(environmentConfig.connectionString)
-				: environmentConfig,
+		config,
 	};
 }
 
