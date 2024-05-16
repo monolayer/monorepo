@@ -1,29 +1,25 @@
-import { prisma } from "~/db/prisma";
+import { defaultDb } from "~/db/db.js";
 
 export async function deleteBoard(boardId: number, accountId: string) {
-  return prisma.board.delete({
-    where: { id: boardId, accountId },
-  });
+  return await defaultDb
+    .deleteFrom("boards")
+    .where("id", "=", boardId)
+    .where("accountId", "=", accountId)
+    .execute();
 }
 
 export async function createBoard(userId: string, name: string, color: string) {
-  return prisma.board.create({
-    data: {
-      name,
-      color,
-      Account: {
-        connect: {
-          id: userId,
-        },
-      },
-    },
-  });
+  return await defaultDb
+    .insertInto("boards")
+    .values({ name, color, accountId: userId })
+    .returningAll()
+    .executeTakeFirstOrThrow();
 }
 
 export async function getHomeData(userId: string) {
-  return prisma.board.findMany({
-    where: {
-      accountId: userId,
-    },
-  });
+  return await defaultDb
+    .selectFrom("boards")
+    .selectAll()
+    .where("accountId", "=", userId)
+    .execute();
 }

@@ -1,13 +1,12 @@
 import crypto from "crypto";
-
-import { prisma } from "~/db/prisma";
+import { defaultDb } from "~/db/db.js";
 
 export async function accountExists(email: string) {
-  let account = await prisma.account.findUnique({
-    where: { email: email },
-    select: { id: true },
-  });
-
+  const account = await defaultDb
+    .selectFrom("accounts")
+    .select("id")
+    .where("email", "=", email)
+    .executeTakeFirst();
   return Boolean(account);
 }
 
@@ -17,10 +16,16 @@ export async function createAccount(email: string, password: string) {
     .pbkdf2Sync(password, salt, 1000, 64, "sha256")
     .toString("hex");
 
-  return prisma.account.create({
-    data: {
-      email: email,
-      Password: { create: { hash, salt } },
-    },
+  return await defaultDb.transaction().execute(async (trx) => {
+    const account = await trx
+      .insertInto("accounts")
+      .values({ email })
+      .returning("id")
+      .executeTakeFirstOrThrow();
+    await trx
+      .insertInto("passwords")
+      .values({ salt, hash, accountId: account.id })
+      .execute();
+    return account;
   });
 }
