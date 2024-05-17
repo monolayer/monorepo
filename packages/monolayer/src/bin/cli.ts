@@ -97,7 +97,7 @@ async function main() {
 		.action(async (opts) => {
 			await cliAction("monolayer generate", opts, [
 				handleMissingDatabase,
-				handlePendingSchemaMigrations(),
+				handlePendingSchemaMigrations,
 				generateMigration(),
 			]);
 		});
@@ -116,7 +116,7 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("monolayer pending", opts, [pendingMigrations()]);
+			await cliAction("monolayer pending", opts, [pendingMigrations]);
 		});
 
 	program
@@ -204,7 +204,7 @@ async function main() {
 		.action(async (opts) => {
 			await cliAction("monolayer sync", opts, [
 				handleMissingDatabase,
-				handlePendingSchemaMigrations(),
+				handlePendingSchemaMigrations,
 				generateMigration().pipe(
 					Effect.tap((result) =>
 						Effect.if(result.length !== 0, {

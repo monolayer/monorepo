@@ -2,7 +2,6 @@ import * as p from "@clack/prompts";
 import { confirm } from "@clack/prompts";
 import { Effect } from "effect";
 import { unlinkSync } from "fs";
-import type { MigrationInfo } from "kysely";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
@@ -10,23 +9,15 @@ import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
 import { allMigrations } from "./migration.js";
 
-export function pendingMigrations() {
-	return localPendingSchemaMigrations().pipe(
-		Effect.tap((pendingMigrations) =>
-			Effect.if(pendingMigrations.length > 0, {
-				onTrue: () =>
-					Effect.forEach(pendingMigrations, logPendingMigrationNames),
-				onFalse: () => logNoPendingMigrations(),
-			}),
-		),
-	);
-}
-
-function logNoPendingMigrations() {
-	return Effect.void.pipe(
-		Effect.tap(() => p.log.message("No pending migrations.")),
-	);
-}
+export const pendingMigrations = Effect.gen(function* () {
+	const pendingMigrations = yield* localPendingSchemaMigrations;
+	if (pendingMigrations.length > 0) {
+		yield* Effect.forEach(pendingMigrations, logPendingMigrationNames);
+	} else {
+		p.log.message("No pending migrations.");
+	}
+	return pendingMigrations;
+});
 
 function logPendingMigrationNames(migration: { name: string; path: string }) {
 	p.log.message(
@@ -35,28 +26,18 @@ function logPendingMigrationNames(migration: { name: string; path: string }) {
 	return Effect.void;
 }
 
-export function handlePendingSchemaMigrations() {
-	return localPendingSchemaMigrations().pipe(
-		Effect.flatMap((pendingMigrations) =>
-			Effect.if(pendingMigrations.length > 0, {
-				onTrue: () =>
-					logPendingMigrations(pendingMigrations).pipe(
-						Effect.flatMap(() =>
-							askConfirmationDelete().pipe(
-								Effect.flatMap((shouldContinue) =>
-									Effect.if(shouldContinue === true, {
-										onTrue: () => deletePendingMigrations(pendingMigrations),
-										onFalse: () => cancelOperation(),
-									}),
-								),
-							),
-						),
-					),
-				onFalse: () => Effect.succeed(true),
-			}),
-		),
-	);
-}
+export const handlePendingSchemaMigrations = Effect.gen(function* () {
+	const localPending = yield* localPendingSchemaMigrations;
+	if (localPending.length == 0) return true;
+
+	yield* logPendingMigrations(localPending);
+
+	if (yield* askConfirmationDelete) {
+		yield* deletePendingMigrations(localPending);
+	} else {
+		yield* cancelOperation();
+	}
+});
 
 function logPendingMigrations(
 	pending: {
@@ -64,21 +45,18 @@ function logPendingMigrations(
 		path: string;
 	}[],
 ) {
-	return Effect.succeed(true).pipe(
-		Effect.tap(() =>
-			Effect.forEach(pending, (pendingMigration) =>
-				Effect.succeed(
-					p.log.warn(
-						`${color.yellow("pending")} ${path.relative(cwd(), pendingMigration.path)}`,
-					),
-				),
-			),
-		),
-	);
+	return Effect.gen(function* () {
+		for (const migration of pending) {
+			p.log.warn(
+				`${color.yellow("pending")} ${path.relative(cwd(), migration.path)}`,
+			);
+		}
+		yield* Effect.succeed(true);
+	});
 }
 
-function askConfirmationDelete() {
-	return Effect.tryPromise(() =>
+const askConfirmationDelete = Effect.gen(function* () {
+	const promptConfirm = yield* Effect.tryPromise(() =>
 		confirm({
 			initialValue: false,
 			message: `You have pending schema migrations to apply and ${color.bold(
@@ -86,7 +64,8 @@ function askConfirmationDelete() {
 			)}. Do you want to proceed?`,
 		}),
 	);
-}
+	return promptConfirm === true;
+});
 
 interface PendingMigration {
 	name: string;
@@ -94,32 +73,24 @@ interface PendingMigration {
 }
 
 export function deletePendingMigrations(pendingMigrations: PendingMigration[]) {
-	return Effect.forEach(pendingMigrations, deletePendingMigration).pipe(
-		Effect.map(() => true),
-	);
-}
-
-function deletePendingMigration(migration: PendingMigration) {
-	return Effect.succeed(unlinkSync(migration.path));
-}
-
-export function localPendingSchemaMigrations() {
 	return Effect.gen(function* () {
-		const folder = yield* appEnvironmentMigrationsFolder;
-
-		return (yield* allMigrations)
-			.filter(byNotExecuted)
-			.map((m) => migrationNameAndPath(m, folder));
+		for (const migration of pendingMigrations) {
+			unlinkSync(migration.path);
+		}
+		return yield* Effect.succeed(true);
 	});
 }
 
-function byNotExecuted(info: MigrationInfo) {
-	return info.executedAt === undefined;
-}
+export const localPendingSchemaMigrations = Effect.gen(function* () {
+	const folder = yield* appEnvironmentMigrationsFolder;
+	const all = yield* allMigrations;
 
-function migrationNameAndPath(info: MigrationInfo, folder: string) {
-	return {
-		name: info.name,
-		path: path.join(folder, `${info.name}.ts`),
-	};
-}
+	return all
+		.filter((info) => info.executedAt === undefined)
+		.map((info) => {
+			return {
+				name: info.name,
+				path: path.join(folder, `${info.name}.ts`),
+			};
+		});
+});

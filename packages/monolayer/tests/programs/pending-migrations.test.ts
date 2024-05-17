@@ -31,7 +31,7 @@ describe("pendingMigrations", () => {
 
 		const pending = await Effect.runPromise(
 			Effect.provideServiceEffect(
-				Effect.provide(programWithErrorCause(pendingMigrations()), layers),
+				Effect.provide(programWithErrorCause(pendingMigrations), layers),
 				AppEnvironment,
 				Ref.make(await loadEnv("development", "default")),
 			),

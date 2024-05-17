@@ -62,7 +62,7 @@ function checkPendingMigrations() {
 		failMessage: "Pending schema migrations",
 		callback: () =>
 			Effect.succeed(true).pipe(
-				Effect.flatMap(localPendingSchemaMigrations),
+				Effect.flatMap(() => localPendingSchemaMigrations),
 				Effect.flatMap((result) => Effect.succeed(result.length === 0)),
 			),
 	});

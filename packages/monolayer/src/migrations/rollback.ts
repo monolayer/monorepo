@@ -64,7 +64,7 @@ export function rollback() {
 
 		p.log.info("Pending migrations after rollback:");
 
-		yield* pendingMigrations();
+		yield* pendingMigrations;
 
 		if (yield* confirmDelete()) {
 			yield* migrationNameAndPath(
