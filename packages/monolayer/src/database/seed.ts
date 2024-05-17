@@ -24,66 +24,47 @@ export function seed({
 	replant,
 	seedFile = "seed.ts",
 }: SeedOptions) {
-	return Effect.succeed(true)
-		.pipe(
-			Effect.map(() => {
-				p.log.message(
-					`${replant ? "Truncate tables and seed database" : "Seed Database"}`,
-				);
-			}),
-			Effect.tap(() => checkPendingMigrations()),
-			Effect.tap(() => checkPendingSchemaChanges()),
-			Effect.tap(() => checkSeederFunction(seedFile)),
-			Effect.tap(() =>
-				Effect.if(!!replant && !disableWarnings, {
-					onTrue: () => replantWarning(),
-					onFalse: () => Effect.void,
-				}),
-			),
-		)
-		.pipe(
-			Effect.tap(() =>
-				Effect.if(!!replant, {
-					onTrue: () => truncateAllTables(),
-					onFalse: () => Effect.void,
-				}),
-			),
-			Effect.tap(() => seedDatabase(seedFile)),
+	return Effect.gen(function* () {
+		p.log.message(
+			`${replant ? "Truncate tables and seed database" : "Seed Database"}`,
 		);
-}
+		yield* checkPendingMigrations;
+		yield* checkPendingSchemaChanges;
+		yield* checkSeederFunction(seedFile);
 
-function checkPendingMigrations() {
-	return checkWithFail({
-		name: "Check pending migrations",
-		nextSteps: `1) Run 'npx monolayer migrate' to migrate the database.
-2) Run again \`npx monolayer seed\`.`,
-		errorMessage:
-			"You have pending schema migrations. Cannot seed until they are run.",
-		failMessage: "Pending schema migrations",
-		callback: () =>
-			Effect.succeed(true).pipe(
-				Effect.flatMap(() => localPendingSchemaMigrations),
-				Effect.flatMap((result) => Effect.succeed(result.length === 0)),
-			),
+		if (!!replant && !disableWarnings) yield* replantWarning;
+		if (replant) yield* truncateAllTables;
+
+		yield* seedDatabase(seedFile);
 	});
 }
 
-function checkPendingSchemaChanges() {
-	return checkWithFail({
-		name: "Check pending schema changes",
-		nextSteps: `1) Run 'npx monolayer generate' to generate migrations.
+const checkPendingMigrations = checkWithFail({
+	name: "Check pending migrations",
+	nextSteps: `1) Run 'npx monolayer migrate' to migrate the database.
+2) Run again \`npx monolayer seed\`.`,
+	errorMessage:
+		"You have pending schema migrations. Cannot seed until they are run.",
+	failMessage: "Pending schema migrations",
+	callback: () =>
+		localPendingSchemaMigrations.pipe(
+			Effect.flatMap((result) => Effect.succeed(result.length === 0)),
+		),
+});
+
+const checkPendingSchemaChanges = checkWithFail({
+	name: "Check pending schema changes",
+	nextSteps: `1) Run 'npx monolayer generate' to generate migrations.
 2) Run 'npx monolayer migrate' to migrate the database.
 3) Run again \`npx monolayer seed\`.`,
-		errorMessage:
-			"The local schema does not match the database schema. Cannot continue.",
-		failMessage: "Pending Schema Changes",
-		callback: () =>
-			Effect.succeed(true).pipe(
-				Effect.flatMap(changeset),
-				Effect.flatMap((result) => Effect.succeed(result.length === 0)),
-			),
-	});
-}
+	errorMessage:
+		"The local schema does not match the database schema. Cannot continue.",
+	failMessage: "Pending Schema Changes",
+	callback: () =>
+		changeset().pipe(
+			Effect.flatMap((result) => Effect.succeed(result.length === 0)),
+		),
+});
 
 function checkSeederFunction(seedFile: string) {
 	return checkWithFail({
@@ -106,83 +87,64 @@ function checkSeederFunction(seedFile: string) {
 	});
 }
 
-function replantWarning() {
-	return Effect.tryPromise(async () => {
-		const shouldContinue = await p.confirm({
-			initialValue: false,
-			message: `Seeding with replant is a destructive operation. All tables in the database will be truncated. Do you want to proceed?`,
-		});
-		if (shouldContinue !== true) {
-			p.cancel("Operation cancelled.");
-			exit(1);
-		}
+const replantWarning = Effect.tryPromise(async () => {
+	const shouldContinue = await p.confirm({
+		initialValue: false,
+		message: `Seeding with replant is a destructive operation. All tables in the database will be truncated. Do you want to proceed?`,
 	});
-}
+	if (shouldContinue !== true) {
+		p.cancel("Operation cancelled.");
+		exit(1);
+	}
+});
 
-function truncateAllTables() {
-	return DbClients.pipe(
-		Effect.flatMap((dbClients) =>
-			Effect.tryPromise(() =>
-				dbTableInfo(dbClients.currentEnvironment.kysely, "public"),
-			).pipe(
-				Effect.tap((result) =>
-					Effect.forEach(result, (table) =>
-						Effect.tryPromise(async () => {
-							await sql`truncate table ${sql.table(
-								`${table.name}`,
-							)} RESTART IDENTITY CASCADE`.execute(
-								dbClients.currentEnvironment.kysely,
-							);
-							p.log.info(`Truncated ${table.name}.`);
-						}),
-					),
-				),
-			),
-		),
+const truncateAllTables = Effect.gen(function* () {
+	const dbClients = yield* DbClients;
+	const tableInfo = yield* Effect.tryPromise(() =>
+		dbTableInfo(dbClients.currentEnvironment.kysely, "public"),
 	);
-}
+	for (const table of tableInfo) {
+		yield* Effect.tryPromise(() =>
+			sql`truncate table ${sql.table(
+				`${table.name}`,
+			)} RESTART IDENTITY CASCADE`.execute(dbClients.currentEnvironment.kysely),
+		);
+		p.log.info(`Truncated ${table.name}.`);
+	}
+});
 
 export class UndefinedSeedFunction extends TaggedClass(
 	"UndefinedSeedFunction",
 ) {}
 
-export function importSeedFunction(seedFile: string) {
-	return appEnvironment.pipe(
-		Effect.flatMap((environment) =>
-			Effect.tryPromise(async () => {
-				try {
-					const moduleImport: SeedImport = await import(
-						path.join(process.cwd(), environment.folder, seedFile)
-					);
-					if (moduleImport.seed !== undefined) {
-						return moduleImport.seed;
-					}
-				} catch (error) {
-					return undefined;
-				}
-			}),
-		),
-		Effect.flatMap((seedFn) =>
-			Effect.if(seedFn !== undefined, {
-				onTrue: () => Effect.succeed(seedFn!),
-				onFalse: () => Effect.fail(new UndefinedSeedFunction()),
-			}),
-		),
-	);
+function importSeedFunction(seedFile: string) {
+	return Effect.gen(function* () {
+		const environment = yield* appEnvironment;
+		const seedFn = yield* Effect.tryPromise(async () => {
+			const mod: SeedImport = await import(
+				path.join(process.cwd(), environment.folder, seedFile)
+			);
+			return mod.seed;
+		});
+		if (seedFn === undefined) {
+			return yield* Effect.fail(new UndefinedSeedFunction());
+		} else {
+			return seedFn;
+		}
+	});
 }
 
 function seedDatabase(seedFile: string) {
-	return DbClients.pipe(
-		Effect.flatMap((dbClient) =>
-			spinnerTask(`Seed ${dbClient.currentEnvironment.databaseName}`, () =>
-				importSeedFunction(seedFile).pipe(
-					Effect.flatMap((seedImport) =>
-						Effect.tryPromise(() =>
-							seedImport(dbClient.currentEnvironment.kysely),
-						),
-					),
-				),
-			),
-		),
-	);
+	return Effect.gen(function* () {
+		const dbClients = yield* DbClients;
+		const databaseName = dbClients.currentEnvironment.databaseName;
+		const kysely = dbClients.currentEnvironment.kysely;
+
+		return yield* spinnerTask(`Seed ${databaseName}`, () =>
+			Effect.gen(function* () {
+				const seedFn = yield* importSeedFunction(seedFile);
+				yield* Effect.tryPromise(() => seedFn(kysely));
+			}),
+		);
+	});
 }
