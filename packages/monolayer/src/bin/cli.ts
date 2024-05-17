@@ -150,7 +150,7 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("monolayer rollback", opts, [rollback()]);
+			await cliAction("monolayer rollback", opts, [rollback]);
 		});
 
 	program

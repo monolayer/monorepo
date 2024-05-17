@@ -43,7 +43,7 @@ ${migrations.map((migration) => `- ${migration}`).join("\n")}`);
 }
 
 export async function confirmDeletePendingMigrationsPrompt() {
-	return await p.confirm({
+	return p.confirm({
 		initialValue: false,
 		message: `Do you want to delete the migration files?`,
 	});
