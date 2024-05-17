@@ -150,7 +150,7 @@ export function adminDevPgQuery<
 >(query: string) {
 	return DbClients.pipe(
 		Effect.flatMap((clients) =>
-			Effect.promise(async () => {
+			Effect.tryPromise(async () => {
 				const result =
 					await clients.developmentEnvironment.pgAdminPool.query<T>(query);
 				return result.rows;
@@ -158,3 +158,8 @@ export function adminDevPgQuery<
 		),
 	);
 }
+
+export const currentEnvironmentDatabaseName = Effect.gen(function* () {
+	const dbClients = yield* DbClients;
+	return dbClients.currentEnvironment.databaseName;
+});

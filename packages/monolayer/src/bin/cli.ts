@@ -96,7 +96,7 @@ async function main() {
 		)
 		.action(async (opts) => {
 			await cliAction("monolayer generate", opts, [
-				handleMissingDatabase(),
+				handleMissingDatabase,
 				handlePendingSchemaMigrations(),
 				generateMigration(),
 			]);
@@ -203,7 +203,7 @@ async function main() {
 		)
 		.action(async (opts) => {
 			await cliAction("monolayer sync", opts, [
-				handleMissingDatabase(),
+				handleMissingDatabase,
 				handlePendingSchemaMigrations(),
 				generateMigration().pipe(
 					Effect.tap((result) =>

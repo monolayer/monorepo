@@ -1,59 +1,44 @@
 import * as p from "@clack/prompts";
 import { confirm } from "@clack/prompts";
 import { Effect } from "effect";
-import { adminDevPgQuery } from "~/services/db-clients.js";
+import {
+	adminDevPgQuery,
+	currentEnvironmentDatabaseName,
+} from "~/services/db-clients.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
-import { DbClients } from "../services/db-clients.js";
 import { createDevDatabase } from "./create.js";
 
-export function handleMissingDatabase() {
-	return checkDatabaseExists().pipe(
-		Effect.flatMap((result) =>
-			Effect.if(result.exists, {
-				onTrue: () => Effect.succeed(true),
-				onFalse: () =>
-					Effect.tryPromise(async () => {
-						p.log.warn(`The database '${result.databaseName}' does not exist.`);
-						return await confirm({
-							initialValue: false,
-							message: `Do you want to create it?`,
-						});
-					}).pipe(
-						Effect.flatMap((shouldContinue) =>
-							Effect.if(shouldContinue === true, {
-								onTrue: () => createDevDatabase(),
-								onFalse: () => cancelOperation(),
-							}),
-						),
-					),
-			}),
-		),
-	);
+export const handleMissingDatabase = Effect.gen(function* () {
+	if (yield* databaseExists) return true;
+
+	if (yield* confirmDatabaseCreation) {
+		return yield* createDevDatabase();
+	} else {
+		return yield* cancelOperation();
+	}
+});
+
+interface DatabaseExists {
+	exists: boolean;
 }
 
-function checkDatabaseExists() {
-	return DbClients.pipe(
-		Effect.flatMap((dbClients) =>
-			adminDevPgQuery<{
-				databaseExists: boolean;
-			}>(
-				`SELECT true as databaseExists FROM pg_database WHERE datname = '${dbClients.currentEnvironment.databaseName}'`,
-			).pipe(
-				Effect.flatMap((result) =>
-					Effect.if(result.length !== 0, {
-						onTrue: () =>
-							Effect.succeed({
-								databaseName: dbClients.currentEnvironment.databaseName,
-								exists: true,
-							}),
-						onFalse: () =>
-							Effect.succeed({
-								databaseName: dbClients.currentEnvironment.databaseName,
-								exists: false,
-							}),
-					}),
-				),
-			),
-		),
+const databaseExists = Effect.gen(function* () {
+	const databaseName = yield* currentEnvironmentDatabaseName;
+	const query = `SELECT true as exists FROM pg_database WHERE datname = '${databaseName}'`;
+	const result = yield* adminDevPgQuery<DatabaseExists>(query);
+	return result.length !== 0;
+});
+
+const confirmDatabaseCreation = Effect.gen(function* () {
+	p.log.warn(
+		`The database '${yield* currentEnvironmentDatabaseName}' does not exist.`,
 	);
-}
+
+	const promptConfirm = yield* Effect.tryPromise(() =>
+		confirm({
+			initialValue: false,
+			message: `Do you want to create it?`,
+		}),
+	);
+	return promptConfirm === true;
+});
