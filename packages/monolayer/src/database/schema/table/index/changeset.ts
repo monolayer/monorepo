@@ -131,13 +131,15 @@ function dropAllIndexesMigration(
 				up: droppedTables.includes(tableName)
 					? [[]]
 					: [
-							executeKyselySchemaStatement(
-								schemaName,
-								`dropIndex("${indexName}")`,
+							executeKyselyDbStatement(
+								`DROP INDEX CONCURRENTLY IF EXISTS "${schemaName}"."${indexName}"`,
 							),
 						],
 				down: [executeKyselyDbStatement(`${diff.oldValue[indexHash]}`)],
 			};
+			if (!droppedTables.includes(tableName)) {
+				changeSet.transaction = false;
+			}
 			return changeSet;
 		})
 		.filter((x): x is Changeset => x !== undefined);
@@ -217,13 +219,19 @@ function dropIndexMigration(
 	const hash = diff.path[2];
 	const indexName = `${tableName}_${hash}_monolayer_idx`;
 	const index = diff.oldValue;
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.IndexDrop,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropIndex,
-		up: [executeKyselySchemaStatement(schemaName, `dropIndex("${indexName}")`)],
+		transaction: false,
+		up: [
+			executeKyselyDbStatement(
+				`DROP INDEX CONCURRENTLY IF EXISTS "${schemaName}"."${indexName}"`,
+			),
+		],
 		down: [executeKyselyDbStatement(`${index}`)],
 	};
 	return changeset;

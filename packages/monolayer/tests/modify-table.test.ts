@@ -3695,11 +3695,11 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropIndex",
+					transaction: false,
 					up: [
 						[
-							'await db.withSchema("public").schema',
-							'dropIndex("users_3cf2733f_monolayer_idx")',
-							"execute();",
+							'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."users_3cf2733f_monolayer_idx"`',
+							"execute(db);",
 						],
 					],
 					down: [
@@ -3759,11 +3759,11 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropIndex",
+					transaction: false,
 					up: [
 						[
-							'await db.withSchema("public").schema',
-							'dropIndex("users_3cf2733f_monolayer_idx")',
-							"execute();",
+							'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."users_3cf2733f_monolayer_idx"`',
+							"execute(db);",
 						],
 					],
 					down: [
@@ -3852,11 +3852,11 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropIndex",
+					transaction: false,
 					up: [
 						[
-							'await db.withSchema("public").schema',
-							'dropIndex("users_3cf2733f_monolayer_idx")',
-							"execute();",
+							'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."users_3cf2733f_monolayer_idx"`',
+							"execute(db);",
 						],
 					],
 					down: [

@@ -1213,11 +1213,11 @@ describe("without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropIndex",
+				transaction: false,
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'dropIndex("books_0c84fd75_monolayer_idx")',
-						"execute();",
+						'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."books_0c84fd75_monolayer_idx"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -1320,11 +1320,11 @@ describe("without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropIndex",
+				transaction: false,
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'dropIndex("books_6b9be986_monolayer_idx")',
-						"execute();",
+						'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."books_6b9be986_monolayer_idx"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -1473,11 +1473,11 @@ describe("without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropIndex",
+				transaction: false,
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'dropIndex("books_0c84fd75_monolayer_idx")',
-						"execute();",
+						'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."books_0c84fd75_monolayer_idx"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -1493,11 +1493,11 @@ describe("without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropIndex",
+				transaction: false,
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'dropIndex("books_6b9be986_monolayer_idx")',
-						"execute();",
+						'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."books_6b9be986_monolayer_idx"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -2825,11 +2825,11 @@ describe("Rename column with camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropIndex",
+				transaction: false,
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'dropIndex("books_0c84fd75_monolayer_idx")',
-						"execute();",
+						'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."books_0c84fd75_monolayer_idx"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -2936,11 +2936,11 @@ describe("Rename column with camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropIndex",
+				transaction: false,
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'dropIndex("books_6b9be986_monolayer_idx")',
-						"execute();",
+						'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."books_6b9be986_monolayer_idx"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -3091,11 +3091,11 @@ describe("Rename column with camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropIndex",
+				transaction: false,
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'dropIndex("books_0c84fd75_monolayer_idx")',
-						"execute();",
+						'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."books_0c84fd75_monolayer_idx"`',
+						"execute(db);",
 					],
 				],
 				down: [
@@ -3111,11 +3111,11 @@ describe("Rename column with camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropIndex",
+				transaction: false,
 				up: [
 					[
-						'await db.withSchema("public").schema',
-						'dropIndex("books_6b9be986_monolayer_idx")',
-						"execute();",
+						'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."books_6b9be986_monolayer_idx"`',
+						"execute(db);",
 					],
 				],
 				down: [
