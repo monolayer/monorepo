@@ -346,7 +346,7 @@ export function concurrentIndex(
 		`index concurrently "${indexName}"`,
 	);
 	const createIndex = `try {
-    await sql\`\${sql.raw('${concurrentIndexDefinition}')}\`.execute(db);
+    await sql\`\${sql.raw('${concurrentIndexDefinition.replace(/'/g, "\\'")}')}\`.execute(db);
   }
   catch (error: any) {
     if (error.code === '23505') {

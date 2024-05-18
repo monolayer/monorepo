@@ -1,6 +1,8 @@
 /* eslint-disable max-lines */
+import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { schema } from "~/database/schema/schema.js";
+import { integer } from "~/database/schema/table/column/data-types/integer.js";
 import { text } from "~/database/schema/table/column/data-types/text.js";
 import { index } from "~/database/schema/table/index/index.js";
 import { table } from "~/database/schema/table/table.js";
@@ -308,6 +310,79 @@ describe("Modify table and add concurrent index", () => {
 					[
 						'await db.withSchema("public").schema',
 						'dropIndex("users_e42f0227_monolayer_idx")',
+						"ifExists()",
+						"execute();",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			configuration: { schemas: [dbSchema] },
+			expected,
+			down: "same",
+		});
+	});
+
+	test.only<DbContext>("add complex index", async (context) => {
+		await context.kysely.schema
+			.createTable("books")
+			.addColumn("id", "integer")
+			.addColumn("samples", "integer")
+			.addColumn("ratings", "integer")
+			.execute();
+
+		const books = table({
+			columns: {
+				id: integer(),
+				samples: integer(),
+				ratings: integer(),
+			},
+			indexes: [
+				index(["id", "samples"])
+					.where("samples", ">", 20)
+					.where(sql.ref("ratings"), ">", 5)
+					.where((eb) =>
+						eb.and([eb("samples", "=", 2), eb(sql.ref("ratings"), ">=", 18)]),
+					)
+					.nullsNotDistinct()
+					.using("btree")
+					.unique(),
+			],
+		});
+
+		const dbSchema = schema({
+			tables: {
+				books,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 4003,
+				tableName: "books",
+				currentTableName: "books",
+				schemaName: "public",
+				transaction: false,
+				type: "createIndex",
+				up: [
+					[
+						`try {
+    await sql\`\${sql.raw('create unique index concurrently "books_679ece99_monolayer_idx" on "public"."books" using btree ("id", "samples") nulls not distinct where "samples" > 20 and "ratings" > 5 and ("samples" = 2 and "ratings" >= 18)')}\`.execute(db);
+  }
+  catch (error: any) {
+    if (error.code === '23505') {
+      await db.withSchema("public").schema.dropIndex("books_679ece99_monolayer_idx").ifExists().execute();
+    }
+    throw error;
+  }`,
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropIndex("books_679ece99_monolayer_idx")',
 						"ifExists()",
 						"execute();",
 					],
