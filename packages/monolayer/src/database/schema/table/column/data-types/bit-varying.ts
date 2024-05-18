@@ -115,6 +115,6 @@ export class PgBitVarying extends MaxLengthColumn<string, string> {
 	 * @hidden
 	 */
 	constructor(maximumLength?: number) {
-		super("varbit", maximumLength);
+		super("bit varying", maximumLength);
 	}
 }

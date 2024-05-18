@@ -38,6 +38,10 @@ import {
 import { isEnum, pgEnumSchema } from "./column-schemas/enum.js";
 import { isBigserial, isSerial } from "./column-schemas/generated.js";
 import {
+	isPgGenericColumn,
+	pgGenericSchema,
+} from "./column-schemas/generic.js";
+import {
 	isJson,
 	isJsonB,
 	pgJsonSchema,
@@ -208,6 +212,9 @@ export function pgColumnSchema<
 		| SerialColumn<unknown, unknown>,
 	PK extends boolean = false,
 >(column: T) {
+	if (isPgGenericColumn(column)) {
+		return pgGenericSchema(column) as unknown as ZodType<T, PK>;
+	}
 	if (isPgBoolean(column)) {
 		return pgBooleanSchema(column) as unknown as ZodType<T, PK>;
 	}

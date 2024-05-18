@@ -27,8 +27,10 @@ export function stringSchema(errorMessage: string, isNullable: boolean) {
 		}
 	});
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function rejectExplicitUndefinedParser(schema: z.ZodOptional<any>) {
+export function rejectExplicitUndefinedParser(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	schema: z.ZodAny | z.ZodOptional<any>,
+) {
 	const originalParse = schema._parse;
 	const modFunc = function myParse(
 		this: { input: ParseInput },

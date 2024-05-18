@@ -75,7 +75,7 @@ describe("Schema", () => {
 							secondBit: bit(10),
 							bitWithDefault: bit().default("1"),
 							varbit: bitVarying(),
-							varbitWithLength: bitVarying(10),
+							varbitWithLength: bitVarying(10).default("1010010111"),
 							inet: inet(),
 							inetWithDefault: inet().default("192.168.0.1"),
 							macaddr: macaddr(),
@@ -160,8 +160,8 @@ describe("Schema", () => {
 							'addColumn("bit", sql`bit(1)`)',
 							'addColumn("secondBit", sql`bit(10)`)',
 							"addColumn(\"bitWithDefault\", sql`bit(1)`, (col) => col.defaultTo(sql`'1'::bit`))",
-							'addColumn("varbit", sql`varbit`)',
-							'addColumn("varbitWithLength", sql`varbit(10)`)',
+							'addColumn("varbit", sql`bit varying`)',
+							"addColumn(\"varbitWithLength\", sql`bit varying(10)`, (col) => col.defaultTo(sql`'1010010111'::bit varying`))",
 							'addColumn("inet", sql`inet`)',
 							"addColumn(\"inetWithDefault\", sql`inet`, (col) => col.defaultTo(sql`'192.168.0.1'::inet`))",
 							'addColumn("macaddr", sql`macaddr`)',
@@ -172,6 +172,10 @@ describe("Schema", () => {
 						],
 						[
 							'await sql`COMMENT ON COLUMN "demo"."users"."bitWithDefault" IS \'e7152e01\'`',
+							"execute(db);",
+						],
+						[
+							'await sql`COMMENT ON COLUMN "demo"."users"."varbitWithLength" IS \'02bca1b7\'`',
 							"execute(db);",
 						],
 						[

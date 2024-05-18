@@ -33,6 +33,7 @@ import { tsquery } from "~/database/schema/table/column/data-types/tsquery.js";
 import { tsvector } from "~/database/schema/table/column/data-types/tsvector.js";
 import { uuid } from "~/database/schema/table/column/data-types/uuid.js";
 import { xml } from "~/database/schema/table/column/data-types/xml.js";
+import { genericColumn } from "~/database/schema/table/column/generic-column.js";
 import { check } from "~/database/schema/table/constraints/check/check.js";
 import { foreignKey } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
 import { primaryKey } from "~/database/schema/table/constraints/primary-key/primary-key.js";
@@ -212,8 +213,8 @@ describe("Create table", () => {
 						'addColumn("bit", sql`bit(1)`)',
 						'addColumn("secondBit", sql`bit(10)`)',
 						"addColumn(\"bitWithDefault\", sql`bit(1)`, (col) => col.defaultTo(sql`'1'::bit`))",
-						'addColumn("varbit", sql`varbit`)',
-						'addColumn("varbitWithLength", sql`varbit(10)`)',
+						'addColumn("varbit", sql`bit varying`)',
+						'addColumn("varbitWithLength", sql`bit varying(10)`)',
 						'addColumn("inet", sql`inet`)',
 						"addColumn(\"inetWithDefault\", sql`inet`, (col) => col.defaultTo(sql`'192.168.0.1'::inet`))",
 						'addColumn("macaddr", sql`macaddr`)',
@@ -301,6 +302,92 @@ describe("Create table", () => {
 					[
 						'await db.withSchema("public").schema',
 						'dropTable("books")',
+						"execute();",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			configuration: { schemas: [dbSchema] },
+			expected,
+			down: "same",
+		});
+	});
+
+	test<DbContext>("with generic columns", async (context) => {
+		const dbSchema = schema({
+			tables: {
+				users: table({
+					columns: {
+						bit_a: genericColumn<string, string>("bit(1)[]"),
+						bit_varying: genericColumn<string, string>("bit varying(1)[]"),
+						char_a: genericColumn<string, string>("character(1)[]"),
+						money: genericColumn<string, string>("money"),
+						numeric_5_a: genericColumn<string, string>("numeric(5,0)[]"),
+						numeric_5_2_arr: genericColumn<string, string>("numeric(5,2)[]"),
+						textArray: genericColumn<string[], string[]>("text[]"),
+						timestamp_a: genericColumn<string[], string[]>("timestamp[]"),
+						timestamp_a_3: genericColumn<string[], string[]>("timestamp(3)[]"),
+						timestamptz_a: genericColumn<string[], string[]>(
+							"timestamp with time zone[]",
+						),
+						timestamptz_a_3: genericColumn<string[], string[]>(
+							"timestamp(3) with time zone[]",
+						),
+						time_a: genericColumn<string[], string[]>("time[]"),
+						time_a_3: genericColumn<string[], string[]>("time(3)[]"),
+						timetz_a: genericColumn<string[], string[]>(
+							"time with time zone[]",
+						),
+						timetz_a_3: genericColumn<string[], string[]>(
+							"time(3) with time zone[]",
+						),
+						varchar_a: genericColumn<string, string>("character varying[]"),
+						varchar_a_255: genericColumn<string, string>(
+							"character varying(255)[]",
+						),
+					},
+				}),
+			},
+		});
+
+		const expected = [
+			{
+				tableName: "users",
+				currentTableName: "users",
+				schemaName: "public",
+				type: "createTable",
+				priority: 2001,
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createTable("users")',
+						'addColumn("bit_a", sql`bit(1)[]`)',
+						'addColumn("bit_varying", sql`bit varying(1)[]`)',
+						'addColumn("char_a", sql`character(1)[]`)',
+						'addColumn("money", sql`money`)',
+						'addColumn("numeric_5_a", sql`numeric(5,0)[]`)',
+						'addColumn("numeric_5_2_arr", sql`numeric(5,2)[]`)',
+						'addColumn("textArray", sql`text[]`)',
+						'addColumn("timestamp_a", sql`timestamp[]`)',
+						'addColumn("timestamp_a_3", sql`timestamp(3)[]`)',
+						'addColumn("timestamptz_a", sql`timestamp with time zone[]`)',
+						'addColumn("timestamptz_a_3", sql`timestamp(3) with time zone[]`)',
+						'addColumn("time_a", sql`time[]`)',
+						'addColumn("time_a_3", sql`time(3)[]`)',
+						'addColumn("timetz_a", sql`time with time zone[]`)',
+						'addColumn("timetz_a_3", sql`time(3) with time zone[]`)',
+						'addColumn("varchar_a", sql`character varying[]`)',
+						'addColumn("varchar_a_255", sql`character varying(255)[]`)',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropTable("users")',
 						"execute();",
 					],
 				],

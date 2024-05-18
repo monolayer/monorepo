@@ -16,6 +16,7 @@ import { integer } from "~/database/schema/table/column/data-types/integer.js";
 import { serial } from "~/database/schema/table/column/data-types/serial.js";
 import { text } from "~/database/schema/table/column/data-types/text.js";
 import { timestamptz } from "~/database/schema/table/column/data-types/timestamp-with-time-zone.js";
+import { genericColumn } from "~/database/schema/table/column/generic-column.js";
 import { foreignKey } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
 import { primaryKey } from "~/database/schema/table/constraints/primary-key/primary-key.js";
 import { index } from "~/database/schema/table/index/index.js";
@@ -1767,6 +1768,22 @@ describe("pgTable definition", () => {
 				});
 			});
 		});
+	});
+
+	test("table with generic columns", () => {
+		const tbl = table({
+			columns: {
+				id: integer(),
+				amount: genericColumn<string, string>("money"),
+			},
+		});
+		type expectedType = {
+			id: number | null;
+			amount: string | null;
+		};
+		type InferredType = Selectable<typeof tbl.infer>;
+		const equal: Expect<Equal<InferredType, expectedType>> = true;
+		expect(equal).toBe(true);
 	});
 
 	describe("zod", () => {

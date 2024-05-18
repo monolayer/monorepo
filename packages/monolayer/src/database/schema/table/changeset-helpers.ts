@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { sqlStatement } from "../../../changeset/helpers.js";
 import { type ColumnInfo } from "./column/types.js";
 export type ColumnsInfoDiff = Record<string, ColumnInfoDiff>;
@@ -74,27 +75,61 @@ export function compileDataType(dataType: string, isEnum: boolean) {
 }
 
 function useSqlInDataType(dataType: string) {
-	switch (dataType) {
-		case "smallint":
-		case "character":
-		case "character varying":
-		case "time with time zone":
-		case "timestamp with time zone":
-		case "tsvector":
-		case "tsquery":
-		case "xml":
-		case "bit":
-		case "varbit":
-		case "inet":
-		case "cidr":
-		case "macaddr":
-		case "macaddr8":
-			return true;
-		default:
-			break;
+	if (dataTypesWithoutSql.includes(dataType)) {
+		return false;
+	}
+	if (dataTypesWithSql.includes(dataType)) {
+		return true;
 	}
 	if (dataType.includes("bit(")) {
 		return true;
 	}
-	return false;
+	if (dataType.includes("[]")) {
+		return true;
+	}
+	if (
+		dataType.includes("numeric(") ||
+		dataType.includes("time(") ||
+		dataType.includes("timestamp(")
+	) {
+		return false;
+	}
+
+	return true;
 }
+
+const dataTypesWithoutSql = [
+	"bigint",
+	"bigserial",
+	"boolean",
+	"bytea",
+	"date",
+	"double precision",
+	"integer",
+	"json",
+	"jsonb",
+	"real",
+	"serial",
+	"text",
+	"time",
+	"numeric",
+	"uuid",
+	"timestamp",
+];
+
+const dataTypesWithSql = [
+	"smallint",
+	"character",
+	"character varying",
+	"time with time zone",
+	"timestamp with time zone",
+	"tsvector",
+	"tsquery",
+	"xml",
+	"bit",
+	"varbit",
+	"inet",
+	"cidr",
+	"macaddr",
+	"macaddr8",
+];

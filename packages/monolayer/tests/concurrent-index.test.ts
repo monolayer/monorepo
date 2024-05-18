@@ -325,7 +325,7 @@ describe("Modify table and add concurrent index", () => {
 		});
 	});
 
-	test.only<DbContext>("add complex index", async (context) => {
+	test<DbContext>("add complex index", async (context) => {
 		await context.kysely.schema
 			.createTable("books")
 			.addColumn("id", "integer")

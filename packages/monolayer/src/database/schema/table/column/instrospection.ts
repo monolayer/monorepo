@@ -76,6 +76,7 @@ export async function fetchDbColumnInfo(
 			"information_schema.columns.numeric_scale",
 			"information_schema.columns.character_maximum_length",
 			"information_schema.columns.datetime_precision",
+			"information_schema.columns.udt_name",
 			sql<
 				string | null
 			>`(SELECT obj_description(('${sql.raw(databaseSchema)}.' || '"' || "information_schema"."columns"."table_name" || '"')::regclass, 'pg_class')::json->>'previousName')`.as(
@@ -89,6 +90,9 @@ export async function fetchDbColumnInfo(
 			"pg_attribute.atttypmod",
 			sql`col_description(pg_attribute.attrelid, pg_attribute.attnum)`.as(
 				"column_comment",
+			),
+			sql<string>`pg_catalog.format_type(pg_type.oid,pg_attribute.atttypmod)`.as(
+				"display_name",
 			),
 		])
 		.select((eb) => [
@@ -146,7 +150,16 @@ export function transformDbColumnInfo(
 ) {
 	const transformed: (ColumnInfo & { tableName: string })[] = [];
 	for (const row of info) {
-		let dataTypeFullName: string;
+		let dataTypeFullName = "";
+
+		let isArray = false;
+		if (row.data_type === "ARRAY") {
+			row.data_type = nativeToStandardDataType(
+				`${row.udt_name}`.replace(/^_/, ""),
+			);
+			isArray = true;
+		}
+
 		switch (row.data_type) {
 			case "bigint":
 				dataTypeFullName = row.data_type;
@@ -163,19 +176,6 @@ export function transformDbColumnInfo(
 				row.numeric_precision = null;
 				row.numeric_scale = null;
 				dataTypeFullName = row.data_type;
-				break;
-			case "character":
-				dataTypeFullName =
-					row.atttypmod === -1
-						? "character"
-						: `character(${row.character_maximum_length})`;
-				break;
-			case "character varying":
-				if (row.character_maximum_length !== null) {
-					dataTypeFullName = `character varying(${row.character_maximum_length})`;
-				} else {
-					dataTypeFullName = "character varying";
-				}
 				break;
 			case "date":
 				row.datetime_precision = null;
@@ -208,53 +208,80 @@ export function transformDbColumnInfo(
 				if (row.numeric_precision !== null && row.numeric_scale !== null) {
 					dataTypeFullName = `${row.data_type}(${row.numeric_precision}, ${row.numeric_scale})`;
 				} else {
+					const match = row.display_name.match(/(\d+),(\d+)\)/);
+					if (match !== null) {
+						dataTypeFullName = `${row.data_type}(${match[1]},${match[2]})`;
+						break;
+					}
 					dataTypeFullName = row.data_type;
 				}
 				break;
 			case "timestamp without time zone":
-				dataTypeFullName =
-					row.atttypmod === -1
-						? "timestamp"
-						: `timestamp(${row.datetime_precision})`;
-				row.datetime_precision =
-					row.atttypmod === -1 ? null : row.datetime_precision;
+			case "time without time zone":
+				{
+					const base = row.data_type.match(/(\w+).+(with(\w+)?)/)![1];
+					if (row.datetime_precision !== null) {
+						dataTypeFullName =
+							row.atttypmod === -1
+								? `${base}`
+								: `${base}(${row.datetime_precision})`;
+						row.datetime_precision =
+							row.atttypmod === -1 ? null : row.datetime_precision;
+					} else {
+						const match = row.display_name.match(/(\d+)/);
+						if (match !== null) {
+							row.datetime_precision = parseInt(match[1]!);
+							dataTypeFullName = `${base}(${match[1]})`;
+							break;
+						}
+						dataTypeFullName = `${base}`;
+					}
+				}
 				break;
 			case "timestamp with time zone":
-				dataTypeFullName =
-					row.atttypmod === -1
-						? "timestamp with time zone"
-						: `timestamp(${row.datetime_precision}) with time zone`;
-				row.datetime_precision =
-					row.atttypmod === -1 ? null : row.datetime_precision;
+			case "time with time zone": {
+				const base = row.data_type.match(/(\w+).+(with(\w+)?)/)![1];
+				if (row.datetime_precision !== null) {
+					dataTypeFullName =
+						row.atttypmod === -1
+							? `${base} with time zone`
+							: `${base}(${row.datetime_precision}) with time zone`;
+					row.datetime_precision =
+						row.atttypmod === -1 ? null : row.datetime_precision;
+				} else {
+					const match = row.display_name.match(/(\d+)/);
+					if (match !== null) {
+						row.datetime_precision = parseInt(match[1]!);
+						dataTypeFullName = `${base}(${match[1]}) with time zone`;
+						break;
+					}
+					if (row.display_name === `${base} with time zone[]`) {
+						dataTypeFullName = `${base} with time zone`;
+						break;
+					}
+				}
 				break;
-			case "time with time zone":
-				dataTypeFullName =
-					row.atttypmod === -1
-						? "time with time zone"
-						: `time(${row.datetime_precision}) with time zone`;
-				row.datetime_precision =
-					row.atttypmod === -1 ? null : row.datetime_precision;
-				break;
-			case "time without time zone":
-				dataTypeFullName =
-					row.atttypmod === -1 ? "time" : `time(${row.datetime_precision})`;
-				row.datetime_precision =
-					row.atttypmod === -1 ? null : row.datetime_precision;
-				break;
+			}
 			case "bit varying":
-				dataTypeFullName =
-					row.atttypmod === -1
-						? "varbit"
-						: `varbit(${row.character_maximum_length})`;
-				break;
 			case "bit":
-				dataTypeFullName =
-					row.atttypmod === -1 ? "bit" : `bit(${row.character_maximum_length})`;
+			case "character":
+			case "character varying":
+				dataTypeFullName = [
+					row.data_type,
+					row.atttypmod !== -1
+						? `(${row.display_name.match(/(\d+)/)![1]})`
+						: undefined,
+				]
+					.filter((x) => x !== undefined)
+					.join("");
 				break;
-
 			default:
 				dataTypeFullName = row.data_type || "";
 				break;
+		}
+
+		if (isArray) {
+			dataTypeFullName = `${dataTypeFullName}[]`;
 		}
 
 		transformed.push({
@@ -414,3 +441,40 @@ export type TableInfo = {
 	name: string;
 	columns: Record<string, ColumnInfo>;
 };
+
+function nativeToStandardDataType(dataType: string) {
+	switch (dataType) {
+		case "bit":
+			return "bit";
+		case "bool":
+			return "boolean";
+		case "bpchar":
+			return "character";
+		case "int2":
+			return "smallint";
+		case "int4":
+			return "integer";
+		case "int8":
+			return "bigint";
+		case "float4":
+			return "real";
+		case "float8":
+			return "double precision";
+		case "time":
+			return "time without time zone";
+		case "timestamp":
+			return "timestamp without time zone";
+		case "timetz":
+			return "time with time zone";
+		case "timestamptz":
+			return "timestamp with time zone";
+		case "numeric":
+			return "numeric";
+		case "varbit":
+			return "bit varying";
+		case "varchar":
+			return "character varying";
+		default:
+			return dataType;
+	}
+}

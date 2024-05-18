@@ -128,6 +128,10 @@ import {
 } from "~/database/schema/table/column/data-types/uuid.js";
 import { PgXML, xml } from "~/database/schema/table/column/data-types/xml.js";
 import {
+	PgGenericColumn,
+	genericColumn,
+} from "~/database/schema/table/column/generic-column.js";
+import {
 	ColumnInfo,
 	type JsonValue,
 } from "~/database/schema/table/column/types.js";
@@ -15315,9 +15319,9 @@ describe("bit varying", () => {
 			expect(bitVarying()).toBeInstanceOf(PgColumn);
 		});
 
-		test("dataType is set to varbit", () => {
+		test("dataType is set to bit varying", () => {
 			const info = Object.fromEntries(Object.entries(bitVarying())).info;
-			expect(info.dataType).toBe("varbit");
+			expect(info.dataType).toBe("bit varying");
 		});
 
 		test("can set characterMaximumLength", () => {
@@ -15331,7 +15335,7 @@ describe("bit varying", () => {
 			const column = bitVarying().default("0101");
 			const info = Object.fromEntries(Object.entries(column)).info;
 
-			expect(info.defaultValue).toBe("921497e4:'0101'::varbit");
+			expect(info.defaultValue).toBe("f86fb28d:'0101'::bit varying");
 		});
 
 		test("default with expression", () => {
@@ -18096,6 +18100,491 @@ describe("macaddr8", () => {
 							path: [],
 							message: "Invalid macaddr8",
 							validation: "regex",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+		});
+	});
+});
+
+describe("generic column", () => {
+	test("returns a PgGenericColumn instance", () => {
+		const column = genericColumn("money");
+		expect(column).toBeInstanceOf(PgGenericColumn);
+	});
+
+	describe("PgGenericColumn", () => {
+		test("inherits from PgColumn", () => {
+			expect(genericColumn("money")).toBeInstanceOf(PgColumn);
+		});
+
+		test("dataType is set to constructor", () => {
+			const info = Object.fromEntries(
+				Object.entries(genericColumn("money")),
+			).info;
+			expect(info.dataType).toBe("money");
+		});
+
+		test("default with expression", () => {
+			const column = genericColumn("money");
+			const info = Object.fromEntries(Object.entries(column)).info;
+
+			column.default(sql`'12.34'::float8::numeric::money`);
+			expect(info.defaultValue).toBe(
+				"2523bc04:'12.34'::float8::numeric::money",
+			);
+			expect(info.volatileDefault).toBe("unknown");
+		});
+
+		test("does not have generatedAlwaysAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = genericColumn("money") as any;
+			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("does not have generatedByDefaultAsIdentity", () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const column = genericColumn("money") as any;
+			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
+				false,
+			);
+		});
+
+		test("select and insert types are unknown by default", () => {
+			const column = genericColumn("money");
+
+			type ExpectedType = PgGenericColumn<unknown, unknown>;
+			type ColumnType = typeof column;
+			const isEqual: Expect<Equal<ColumnType, ExpectedType>> = true;
+			expect(isEqual).toBe(true);
+		});
+
+		test("select and insert types can be customized", () => {
+			const column = genericColumn<string>("money");
+
+			type ExpectedType = PgGenericColumn<string, string>;
+			type ColumnType = typeof column;
+			const isEqual: Expect<Equal<ColumnType, ExpectedType>> = true;
+			expect(isEqual).toBe(true);
+
+			const anotherColumn = genericColumn<number, number>("money");
+			const isEqualAnother: Expect<
+				Equal<typeof anotherColumn, PgGenericColumn<number, number>>
+			> = true;
+			expect(isEqualAnother).toBe(true);
+		});
+	});
+
+	describe("zod", () => {
+		describe("by default", () => {
+			test("input type is any without type", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn("money"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				type Expected = any;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+			test("output type is any without type", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn("money"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.output<typeof schema>;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				type Expected = any;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is any without type", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn("money"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				type Expected = any;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is defined type, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<number>("money"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = number | null | undefined;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is defined type, null or undefined", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<number>("money"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = number | null | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is defined type with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<number>("money").notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = number;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is defined type with notNull", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<number>("money").notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = number;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("input type is defined type or undefined with notNull and default", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money")
+							.notNull()
+							.default(sql`'12.34'::float8::numeric::money`),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InputType = z.input<typeof schema>;
+				type Expected = string | undefined;
+				const isEqual: Expect<Equal<InputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is string or undefined with notNull and default", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money")
+							.notNull()
+							.default(sql`'12.34'::float8::numeric::money`),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = string | undefined;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("parses null", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("does not parse explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse(undefined).success).toBe(false);
+				const tableSchema = zodSchema(tbl);
+				expect(tableSchema.safeParse({ id: undefined }).success).toBe(false);
+				expect(tableSchema.safeParse({}).success).toBe(true);
+			});
+
+			test("with default value is nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money").default(
+							sql`'12.34'::float8::numeric::money`,
+						),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("12.35").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(true);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money").notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("12.35").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money")
+							.notNull()
+							.default(sql`'12.34'::float8::numeric::money`),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				expect(schema.safeParse("12.35").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("as primary key", () => {
+			test("input type is defined type with primary key", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<number>("money"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type InpuType = z.input<typeof schema>;
+				type Expected = number;
+				const isEqual: Expect<Equal<InpuType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("output type is defined type", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<number>("money"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				type OutputType = z.output<typeof schema>;
+				type Expected = number;
+				const isEqual: Expect<Equal<OutputType, Expected>> = true;
+				expect(isEqual).toBe(true);
+			});
+
+			test("is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<number>("money"),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+
+				type InputType = z.input<typeof schema>;
+				type ExpectedInputType = number;
+				const isEqualInput: Expect<Equal<InputType, ExpectedInputType>> = true;
+				expect(isEqualInput).toBe(true);
+				type OutputType = z.output<typeof schema>;
+				type ExpectedOutputType = number;
+				const isEqualOutput: Expect<Equal<OutputType, ExpectedOutputType>> =
+					true;
+				expect(isEqualOutput).toBe(true);
+
+				expect(schema.safeParse(12.23).success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default value is non nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money").default(
+							sql`'12.34'::float8::numeric::money`,
+						),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+
+				type InputType = z.input<typeof schema>;
+				type ExpectedInputType = string | undefined;
+				const isEqualInput: Expect<Equal<InputType, ExpectedInputType>> = true;
+				expect(isEqualInput).toBe(true);
+				type OutputType = z.output<typeof schema>;
+				type ExpectedOutputType = string | undefined;
+				const isEqualOutput: Expect<Equal<OutputType, ExpectedOutputType>> =
+					true;
+				expect(isEqualOutput).toBe(true);
+
+				expect(schema.safeParse("12.23").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with notNull is non nullable and required", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money").notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+
+				type InputType = z.input<typeof schema>;
+				type ExpectedInputType = string;
+				const isEqualInput: Expect<Equal<InputType, ExpectedInputType>> = true;
+				expect(isEqualInput).toBe(true);
+				type OutputType = z.output<typeof schema>;
+				type ExpectedOutputType = string;
+				const isEqualOutput: Expect<Equal<OutputType, ExpectedOutputType>> =
+					true;
+				expect(isEqualOutput).toBe(true);
+
+				expect(schema.safeParse("12.55").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+
+			test("with default and notNull is non nullable and optional", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money")
+							.default(sql`'12.34'::float8::numeric::money`)
+							.notNull(),
+					},
+					constraints: {
+						primaryKey: primaryKey(["id"]),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+
+				type InputType = z.input<typeof schema>;
+				type ExpectedInputType = string | undefined;
+				const isEqualInput: Expect<Equal<InputType, ExpectedInputType>> = true;
+				expect(isEqualInput).toBe(true);
+				type OutputType = z.output<typeof schema>;
+				type ExpectedOutputType = string | undefined;
+				const isEqualOutput: Expect<Equal<OutputType, ExpectedOutputType>> =
+					true;
+				expect(isEqualOutput).toBe(true);
+
+				expect(schema.safeParse("23.32").success).toBe(true);
+				expect(schema.safeParse(null).success).toBe(false);
+				expect(schema.safeParse(undefined).success).toBe(false);
+			});
+		});
+
+		describe("errors", () => {
+			test("undefined", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money").notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							fatal: true,
+							path: [],
+							message: "Required",
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("explicit undefined", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money"),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(undefined);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: [],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(result.error.errors).toStrictEqual(expected);
+				}
+
+				const tableSchema = zodSchema(tbl);
+				const tableResult = tableSchema.safeParse({ id: undefined });
+				expect(tableResult.success).toBe(false);
+				if (!tableResult.success) {
+					const expected = [
+						{
+							code: "custom",
+							path: ["id"],
+							message: "Value cannot be undefined",
+							fatal: true,
+						},
+					];
+					expect(tableResult.error.errors).toStrictEqual(expected);
+				}
+			});
+
+			test("null", () => {
+				const tbl = table({
+					columns: {
+						id: genericColumn<string>("money").notNull(),
+					},
+				});
+				const schema = zodSchema(tbl).shape.id;
+				const result = schema.safeParse(null);
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					const expected = [
+						{
+							code: "custom",
+							fatal: true,
+							path: [],
+							message: "Expected value, received null",
 						},
 					];
 					expect(result.error.errors).toStrictEqual(expected);
