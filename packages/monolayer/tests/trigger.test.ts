@@ -1,7 +1,12 @@
+/* eslint-disable max-lines */
 import { sql } from "kysely";
-import { describe, expect, test } from "vitest";
+import type { Equal, Expect } from "type-testing";
+import { describe, expect, expectTypeOf, test } from "vitest";
 import { compileTrigger } from "~tests/__setup__/helpers/indexes.js";
-import { trigger } from "../src/database/schema/table/trigger/trigger.js";
+import {
+	trigger,
+	type PgTrigger,
+} from "../src/database/schema/table/trigger/trigger.js";
 
 describe("pg_trigger", () => {
 	test("trigger before", async () => {
@@ -306,5 +311,37 @@ EXECUTE FUNCTION check_account_update("updated_at")`;
 			true,
 		);
 		expect(compiled).toBe(expected);
+	});
+
+	test("trigger with columns type", async () => {
+		const trg = trigger({
+			fireWhen: "before",
+			columns: ["balance", "name"],
+			events: ["delete"],
+			forEach: "statement",
+			referencingOldTableAs: "old_table",
+			function: {
+				name: "check_account_update",
+				args: [sql.ref("updatedAt")],
+			},
+		});
+		type Expected = PgTrigger<"balance" | "name">;
+		const triggerExpect: Expect<Equal<typeof trg, Expected>> = true;
+		expectTypeOf(triggerExpect).toMatchTypeOf<boolean>();
+	});
+
+	test("trigger without columns type", async () => {
+		const trg = trigger({
+			fireWhen: "before",
+			events: ["update", "delete"],
+			forEach: "statement",
+			condition: sql<string>`OLD.balance IS DISTINCT FROM NEW.balance`,
+			function: {
+				name: "check_account_update",
+			},
+		});
+		type Expected = PgTrigger<never>;
+		const triggerExpect: Expect<Equal<typeof trg, Expected>> = true;
+		expectTypeOf(triggerExpect).toMatchTypeOf<boolean>();
 	});
 });

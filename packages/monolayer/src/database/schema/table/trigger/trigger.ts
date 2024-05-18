@@ -9,7 +9,9 @@ export type TriggerEvent =
 	| "truncate"
 	| "update of";
 
-export type TriggerOptions<T> = {
+type InferColumns<T> = T extends { columns: (infer C)[] } ? C : never;
+
+export type TriggerOptions<T extends string | undefined> = {
 	/**
 	 * Controls when the trigger function is called.
 	 *
@@ -77,11 +79,21 @@ export type TriggerOptions<T> = {
 	};
 };
 
-export function trigger<T extends string>(triggerOtions: TriggerOptions<T>) {
-	return new PgTrigger<T>(triggerOtions);
+export function trigger<T extends { columns?: string[] }>(
+	triggerOptions: T & TriggerOptions<InferColumns<T>>,
+): PgTrigger<InferColumns<T>> {
+	return new PgTrigger<InferColumns<T>>(triggerOptions);
 }
 
-export class PgTrigger<T extends string> {
+// export class PgTrigger<T extends string | never> {
+// 	constructor(protected options: TriggerOptions<T>) {}
+// }
+
+// export function trigger<T extends string>(triggerOtions: TriggerOptions<T>) {
+// 	return new PgTrigger<T>(triggerOtions);
+// }
+
+export class PgTrigger<T extends string | never> {
 	/**
 	 * @hidden
 	 */
