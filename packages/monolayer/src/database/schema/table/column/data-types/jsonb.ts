@@ -1,5 +1,7 @@
-import { PgColumn } from "../column.js";
-import { JsonValue } from "../types.js";
+import type { Expression } from "kysely";
+import { compileDefaultExpression } from "~/introspection/helpers.js";
+import { PgColumn, isExpression, valueWithHash } from "../column.js";
+import { JsonValue, type WithDefaultColumn } from "../types.js";
 
 /**
  * Column that stores JSON data.
@@ -135,5 +137,22 @@ export class PgJsonB<S extends JsonValue = JsonValue, I = S> extends PgColumn<
 	 */
 	constructor() {
 		super("jsonb", "jsonb");
+	}
+
+	default(value: I | Expression<unknown>) {
+		if (isExpression(value)) {
+			this.info.defaultValue = valueWithHash(compileDefaultExpression(value));
+			this.info.volatileDefault = "yes";
+		} else {
+			if (typeof value === "string") {
+				this.info.defaultValue = this.transformDefault(value);
+			} else {
+				this.info.defaultValue = this.transformDefault(
+					JSON.stringify(value) as I,
+				);
+			}
+			this.info.volatileDefault = "no";
+		}
+		return this as this & WithDefaultColumn;
 	}
 }

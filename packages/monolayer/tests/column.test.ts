@@ -5605,6 +5605,9 @@ describe("json", () => {
 
 			column.default('{ "foo": "bar" }');
 			expect(info.defaultValue).toBe('b3b793dd:\'{ "foo": "bar" }\'::json');
+
+			column.default({ foo: "bar" });
+			expect(info.defaultValue).toBe('e18d3ea6:\'{"foo":"bar"}\'::json');
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
@@ -6354,6 +6357,9 @@ describe("jsonb", () => {
 
 			column.default('{ "foo": "bar" }');
 			expect(info.defaultValue).toBe('df3dc0bb:\'{ "foo": "bar" }\'::jsonb');
+
+			column.default({ foo: "bar" });
+			expect(info.defaultValue).toBe('8b9f0ea3:\'{"foo":"bar"}\'::jsonb');
 		});
 
 		test("does not have generatedAlwaysAsIdentity", () => {
