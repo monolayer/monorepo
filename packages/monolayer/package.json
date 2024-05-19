@@ -22,6 +22,11 @@
 			"require": "./dist/cjs/src/configuration.js",
 			"types": "./dist/esm/src/configuration.js"
 		},
+		"./helpers/pg": {
+			"import": "./dist/esm/src/helpers.js",
+			"require": "./dist/cjs/src/helpers.js",
+			"types": "./dist/esm/src/helpers.d.ts"
+		},
 		"./pg": {
 			"import": "./dist/esm/src/pg.js",
 			"require": "./dist/cjs/src/pg.js",
