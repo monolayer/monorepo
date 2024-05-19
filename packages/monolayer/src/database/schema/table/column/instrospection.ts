@@ -321,7 +321,7 @@ export function mapColumnsToTables(
 			const currentTable = acc[curr.tableName];
 			const tableName = curr.tableName;
 
-			const columnWithoutName = {
+			const columnWithoutName: ColumnInfo = {
 				columnName: curr.columnName,
 				dataType: curr.dataType,
 				defaultValue: curr.defaultValue,
