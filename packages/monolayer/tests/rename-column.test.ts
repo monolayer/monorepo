@@ -46,12 +46,12 @@ describe("without camel case plugin", () => {
 
 		const books = table({
 			columns: {
-				bookId: integer(),
+				book_id: integer(),
 			},
 			constraints: {
 				checks: [
-					check(sql`${sql.ref("bookId")} > 5`),
-					check(sql`${sql.ref("bookId")} < 50000`),
+					check(sql`${sql.ref("book_id")} > 5`),
+					check(sql`${sql.ref("book_id")} < 50000`),
 				],
 			},
 		});
@@ -141,7 +141,6 @@ describe("without camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
 			},
 			expected: expected,
 			down: "same",
