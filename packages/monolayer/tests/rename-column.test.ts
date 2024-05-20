@@ -3,7 +3,15 @@ import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test, vi } from "vitest";
 import { schema } from "~/database/schema/schema.js";
 import { table } from "~/database/schema/table/table.js";
-import { check, foreignKey, index, integer, primaryKey, text } from "~/pg.js";
+import {
+	check,
+	foreignKey,
+	index,
+	integer,
+	primaryKey,
+	text,
+	unique,
+} from "~/pg.js";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
 import {
@@ -20,6 +28,111 @@ describe("without camel case plugin", () => {
 	afterEach<DbContext>(async (context) => {
 		await teardownContext(context);
 		vi.restoreAllMocks();
+	});
+
+	test<DbContext>("renames unique constraint", async (context) => {
+		await context.kysely.schema
+			.createTable("books")
+			.addColumn("id", "integer")
+			.execute();
+
+		await context.kysely.schema
+			.alterTable("books")
+			.addUniqueConstraint("books_a91945e0_monolayer_key", ["id"], (col) =>
+				col.nullsNotDistinct(),
+			)
+			.execute();
+
+		const books = table({
+			columns: {
+				book_id: integer(),
+			},
+			constraints: {
+				unique: [unique(["book_id"]).nullsNotDistinct()],
+			},
+		});
+
+		const dbSchema = schema({
+			tables: {
+				books,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 3000,
+				tableName: "books",
+				currentTableName: "books",
+				schemaName: "public",
+				type: "renameColumn",
+				warnings: [
+					{
+						code: "BI002",
+						columnRename: {
+							from: "id",
+							to: "book_id",
+						},
+						schema: "public",
+						table: "books",
+						type: "backwardIncompatible",
+					},
+				],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("books")',
+						'renameColumn("id", "book_id")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("books")',
+						'renameColumn("book_id", "id")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 5002,
+				schemaName: "public",
+				tableName: "books",
+				currentTableName: "books",
+				type: "renameUniqueConstraint",
+				up: [
+					[
+						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_a91945e0_monolayer_key TO books_c9bd02ff_monolayer_key`',
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_c9bd02ff_monolayer_key TO books_a91945e0_monolayer_key`',
+						"execute(db);",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			configuration: {
+				schemas: [dbSchema],
+			},
+			expected: expected,
+			down: "same",
+			mock: () => {
+				mockColumnDiffOnce({
+					books: [
+						{
+							from: "id",
+							to: "book_id",
+						},
+					],
+				});
+			},
+		});
 	});
 
 	test<DbContext>("renames check constraint", async (context) => {
@@ -1609,6 +1722,112 @@ describe("Rename column with camel case plugin", () => {
 	afterEach<DbContext>(async (context) => {
 		await teardownContext(context);
 		vi.restoreAllMocks();
+	});
+
+	test<DbContext>("renames unique constraint", async (context) => {
+		await context.kysely.schema
+			.createTable("books")
+			.addColumn("id", "integer")
+			.execute();
+
+		await context.kysely.schema
+			.alterTable("books")
+			.addUniqueConstraint("books_a91945e0_monolayer_key", ["id"], (col) =>
+				col.nullsNotDistinct(),
+			)
+			.execute();
+
+		const books = table({
+			columns: {
+				bookId: integer(),
+			},
+			constraints: {
+				unique: [unique(["bookId"]).nullsNotDistinct()],
+			},
+		});
+
+		const dbSchema = schema({
+			tables: {
+				books,
+			},
+		});
+
+		const expected = [
+			{
+				priority: 3000,
+				tableName: "books",
+				currentTableName: "books",
+				schemaName: "public",
+				type: "renameColumn",
+				warnings: [
+					{
+						code: "BI002",
+						columnRename: {
+							from: "id",
+							to: "book_id",
+						},
+						schema: "public",
+						table: "books",
+						type: "backwardIncompatible",
+					},
+				],
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("books")',
+						'renameColumn("id", "book_id")',
+						"execute();",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'alterTable("books")',
+						'renameColumn("book_id", "id")',
+						"execute();",
+					],
+				],
+			},
+			{
+				priority: 5002,
+				schemaName: "public",
+				tableName: "books",
+				currentTableName: "books",
+				type: "renameUniqueConstraint",
+				up: [
+					[
+						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_a91945e0_monolayer_key TO books_c9bd02ff_monolayer_key`',
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						'await sql`ALTER TABLE "public"."books" RENAME CONSTRAINT books_c9bd02ff_monolayer_key TO books_a91945e0_monolayer_key`',
+						"execute(db);",
+					],
+				],
+			},
+		];
+
+		await testChangesetAndMigrations({
+			context,
+			configuration: {
+				schemas: [dbSchema],
+				camelCasePlugin: { enabled: true },
+			},
+			expected: expected,
+			down: "same",
+			mock: () => {
+				mockColumnDiffOnce({
+					books: [
+						{
+							from: "id",
+							to: "book_id",
+						},
+					],
+				});
+			},
+		});
 	});
 
 	test<DbContext>("renames check constraint", async (context) => {
