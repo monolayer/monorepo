@@ -19,7 +19,7 @@ import type { InformationSchemaDB } from "../../../../../introspection/types.js"
 
 export type UniqueConstraintInfo = {
 	constraintType: "UNIQUE";
-	table: string | null;
+	table: string;
 	columns: string[];
 	nullsDistinct: boolean;
 };
