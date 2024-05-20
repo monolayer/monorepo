@@ -1575,7 +1575,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_b0665b18_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -1692,13 +1692,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_b0665b18_monolayer_fk TO users_23a40a64_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO users_23a40a64_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_23a40a64_monolayer_fk TO users_b0665b18_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_23a40a64_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -1923,7 +1923,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_20368e97_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -2040,13 +2040,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_20368e97_monolayer_fk TO persons_e17f9ac0_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_e17f9ac0_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_e17f9ac0_monolayer_fk TO users_20368e97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_e17f9ac0_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -2097,7 +2097,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_33c5226c_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -2214,13 +2214,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_33c5226c_monolayer_fk TO persons_c7007f8e_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_c7007f8e_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_c7007f8e_monolayer_fk TO users_33c5226c_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_c7007f8e_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -2271,7 +2271,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_20368e97_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -2422,13 +2422,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_20368e97_monolayer_fk TO persons_75fad375_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_75fad375_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_75fad375_monolayer_fk TO users_20368e97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_75fad375_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -2483,7 +2483,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_33c5226c_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -2634,13 +2634,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_33c5226c_monolayer_fk TO persons_bf00d0e6_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_bf00d0e6_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_bf00d0e6_monolayer_fk TO users_33c5226c_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_bf00d0e6_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -2695,7 +2695,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_33c5226c_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -2847,13 +2847,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_33c5226c_monolayer_fk TO users_28a672c8_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO users_28a672c8_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_28a672c8_monolayer_fk TO users_33c5226c_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_28a672c8_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -2910,7 +2910,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_20368e97_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -3061,13 +3061,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_20368e97_monolayer_fk TO persons_75fad375_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_75fad375_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_75fad375_monolayer_fk TO users_20368e97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_75fad375_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -3122,7 +3122,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_3d08c4bf_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -3308,13 +3308,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_3d08c4bf_monolayer_fk TO persons_19fffdac_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_19fffdac_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_19fffdac_monolayer_fk TO users_3d08c4bf_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_19fffdac_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -3377,7 +3377,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_f9653f84_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -3534,13 +3534,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_f9653f84_monolayer_fk TO users_6260aee4_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_6260aee4_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6260aee4_monolayer_fk TO users_f9653f84_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6260aee4_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -3817,7 +3817,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_1c462d97_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -3974,13 +3974,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_1c462d97_monolayer_fk TO persons_13cbdbe7_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO persons_13cbdbe7_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_13cbdbe7_monolayer_fk TO users_1c462d97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_13cbdbe7_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -4037,7 +4037,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_307c8f02_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -4195,13 +4195,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_307c8f02_monolayer_fk TO persons_8710797a_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO persons_8710797a_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_8710797a_monolayer_fk TO users_307c8f02_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_8710797a_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -4258,7 +4258,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_307c8f02_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -4451,13 +4451,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_307c8f02_monolayer_fk TO users_d2f71aa1_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_d2f71aa1_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_d2f71aa1_monolayer_fk TO users_307c8f02_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_d2f71aa1_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -4518,7 +4518,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_1c462d97_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -4709,13 +4709,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_1c462d97_monolayer_fk TO persons_608311bd_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO persons_608311bd_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_608311bd_monolayer_fk TO users_1c462d97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_608311bd_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -4776,7 +4776,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_307c8f02_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -4967,13 +4967,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_307c8f02_monolayer_fk TO persons_6f4f3476_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO persons_6f4f3476_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_6f4f3476_monolayer_fk TO users_307c8f02_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_6f4f3476_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -5034,7 +5034,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_307c8f02_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -5261,13 +5261,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_307c8f02_monolayer_fk TO users_c8e5c5fa_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_c8e5c5fa_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_c8e5c5fa_monolayer_fk TO users_307c8f02_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_c8e5c5fa_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -5334,7 +5334,7 @@ describe("Rename table and column without camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_1c462d97_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -5525,13 +5525,13 @@ describe("Rename table and column without camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_1c462d97_monolayer_fk TO persons_608311bd_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO persons_608311bd_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_608311bd_monolayer_fk TO users_1c462d97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT persons_608311bd_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -8947,7 +8947,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_b0665b18_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -9064,13 +9064,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_b0665b18_monolayer_fk TO users_fe8c140e_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO users_fe8c140e_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_fe8c140e_monolayer_fk TO users_b0665b18_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_fe8c140e_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -9301,7 +9301,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_20368e97_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -9418,13 +9418,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_20368e97_monolayer_fk TO user_books_365f2f70_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_365f2f70_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_365f2f70_monolayer_fk TO users_20368e97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_365f2f70_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -9478,7 +9478,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_33c5226c_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -9595,13 +9595,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_33c5226c_monolayer_fk TO user_books_872929b3_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_872929b3_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_872929b3_monolayer_fk TO users_33c5226c_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_872929b3_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -9655,7 +9655,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_20368e97_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -9806,13 +9806,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_20368e97_monolayer_fk TO user_books_9e23e12e_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_9e23e12e_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_9e23e12e_monolayer_fk TO users_20368e97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_9e23e12e_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -9870,7 +9870,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_33c5226c_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -10021,13 +10021,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_33c5226c_monolayer_fk TO user_books_fd670911_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_fd670911_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_fd670911_monolayer_fk TO users_33c5226c_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_fd670911_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -10085,7 +10085,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_33c5226c_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -10237,13 +10237,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_33c5226c_monolayer_fk TO users_622e2dfc_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO users_622e2dfc_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_622e2dfc_monolayer_fk TO users_33c5226c_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_622e2dfc_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -10303,7 +10303,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_20368e97_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -10454,13 +10454,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_20368e97_monolayer_fk TO user_books_9e23e12e_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_9e23e12e_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_9e23e12e_monolayer_fk TO users_20368e97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_9e23e12e_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -10518,7 +10518,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_3d08c4bf_monolayer_fk",
+				"users_58e6ca22_monolayer_fk",
 				["book_id"],
 				"books",
 				["id"],
@@ -10704,13 +10704,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_3d08c4bf_monolayer_fk TO user_books_2c8633b9_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_2c8633b9_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_2c8633b9_monolayer_fk TO users_3d08c4bf_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_2c8633b9_monolayer_fk TO users_58e6ca22_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -10776,7 +10776,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_f9653f84_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -10933,13 +10933,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_f9653f84_monolayer_fk TO users_2004fe40_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_2004fe40_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_2004fe40_monolayer_fk TO users_f9653f84_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_2004fe40_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -11222,7 +11222,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_1c462d97_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -11379,13 +11379,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_1c462d97_monolayer_fk TO user_books_827a56e0_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_827a56e0_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_827a56e0_monolayer_fk TO users_1c462d97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_827a56e0_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -11445,7 +11445,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_307c8f02_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -11602,13 +11602,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_307c8f02_monolayer_fk TO user_books_f99b728b_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_f99b728b_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_f99b728b_monolayer_fk TO users_307c8f02_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_f99b728b_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -11668,7 +11668,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_307c8f02_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -11861,13 +11861,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_307c8f02_monolayer_fk TO users_d2f71aa1_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_d2f71aa1_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_d2f71aa1_monolayer_fk TO users_307c8f02_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_d2f71aa1_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -11931,7 +11931,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_1c462d97_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -12122,13 +12122,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_1c462d97_monolayer_fk TO user_books_a5f1a0ff_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_a5f1a0ff_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_a5f1a0ff_monolayer_fk TO users_1c462d97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_a5f1a0ff_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -12192,7 +12192,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_307c8f02_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -12383,13 +12383,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_307c8f02_monolayer_fk TO user_books_9a4b62c2_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_9a4b62c2_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_9a4b62c2_monolayer_fk TO users_307c8f02_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_9a4b62c2_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -12453,7 +12453,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_307c8f02_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -12680,13 +12680,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_307c8f02_monolayer_fk TO users_7b91551f_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_7b91551f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_7b91551f_monolayer_fk TO users_307c8f02_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_7b91551f_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -12756,7 +12756,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_1c462d97_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -12947,13 +12947,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_1c462d97_monolayer_fk TO user_books_a5f1a0ff_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_a5f1a0ff_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_a5f1a0ff_monolayer_fk TO users_1c462d97_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_a5f1a0ff_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],
@@ -13017,7 +13017,7 @@ describe("Rename table and column with camel case plugin", () => {
 		await context.kysely.schema
 			.alterTable("users")
 			.addForeignKeyConstraint(
-				"users_4d7f7de9_monolayer_fk",
+				"users_6f4acd2f_monolayer_fk",
 				["book_id", "book_location_id"],
 				"books",
 				["id", "location_id"],
@@ -13278,13 +13278,13 @@ describe("Rename table and column with camel case plugin", () => {
 				type: "renameForeignKey",
 				up: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_4d7f7de9_monolayer_fk TO user_books_124b3526_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_124b3526_monolayer_fk`',
 						"execute(db);",
 					],
 				],
 				down: [
 					[
-						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_124b3526_monolayer_fk TO users_4d7f7de9_monolayer_fk`',
+						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT user_books_124b3526_monolayer_fk TO users_6f4acd2f_monolayer_fk`',
 						"execute(db);",
 					],
 				],

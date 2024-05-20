@@ -18,7 +18,7 @@ import {
 import { MonolayerPostgresDialect } from "~/services/db-clients.js";
 import { hashValue } from "~/utils.js";
 
-interface BuilderContext {
+export interface BuilderContext {
 	camelCase: CamelCaseOptions;
 	tablesToRename: TablesToRename;
 	columnsToRename: ColumnsToRename;
@@ -42,7 +42,7 @@ export class ForeignKeyBuilder {
 		const key = [
 			this.#tableName(mode),
 			this.#columns(mode).join(","),
-			this.#targetTableName(mode),
+			this.#targetTableQualifiedName(mode),
 			this.#targetColumns(mode).join(","),
 			this.#onDelete(),
 			this.#onUpdate(),
@@ -55,7 +55,7 @@ export class ForeignKeyBuilder {
 		return {
 			name: name ?? `${foreignKeyTable}_${this.hash(mode)}_monolayer_fk`,
 			columns: this.#columns(mode),
-			targetTable: this.#targetTableName(mode),
+			targetTable: this.#targetTableQualifiedName(mode),
 			targetColumns: this.#targetColumns(mode),
 			onDelete: this.#onDelete(),
 			onUpdate: this.#onUpdate(),
@@ -105,11 +105,17 @@ export class ForeignKeyBuilder {
 				);
 	}
 
-	#targetTableName(mode: BuildMode) {
+	#targetTableQualifiedName(mode: BuildMode) {
 		if (mode === "preserve") {
 			return this.foreignKey.targetTable;
 		}
-		const renamedTable = this.#renameTableFn(mode)(
+		const renamedTable = this.#targetTableName(mode);
+		const schemaName = this.foreignKey.targetTable.split(".")[0] ?? "";
+		return `${toSnakeCase(schemaName, this.context.camelCase)}.${renamedTable}`;
+	}
+
+	#targetTableName(mode: Extract<BuildMode, "current" | "previous">) {
+		return this.#renameTableFn(mode)(
 			toSnakeCase(
 				this.foreignKey.targetTable.split(".")[1]!,
 				this.context.camelCase,
@@ -117,8 +123,6 @@ export class ForeignKeyBuilder {
 			this.context.tablesToRename,
 			this.foreignKey.targetTable.split(".")[0]!,
 		);
-		const targetTable = this.foreignKey.targetTable.split(".")[0] ?? "";
-		return `${toSnakeCase(targetTable, this.context.camelCase)}.${renamedTable}`;
 	}
 
 	#columns(mode: BuildMode) {
@@ -126,7 +130,7 @@ export class ForeignKeyBuilder {
 			return mode === "preserve"
 				? col
 				: this.#renameColumnFn(mode)(
-						this.#tableName(mode),
+						this.#tableName("current"),
 						this.context.schemaName,
 						toSnakeCase(col, this.context.camelCase),
 						this.context.columnsToRename,
@@ -139,8 +143,8 @@ export class ForeignKeyBuilder {
 			return mode === "preserve"
 				? col
 				: this.#renameColumnFn(mode)(
-						this.#targetTableName(mode),
-						"public",
+						this.#targetTableName("current"),
+						this.context.schemaName,
 						toSnakeCase(col, this.context.camelCase),
 						this.context.columnsToRename,
 					);

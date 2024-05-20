@@ -7,6 +7,7 @@ import { dbExtensionInfo } from "~/database/extension/introspection.js";
 import type { ForeignKeyIntrospection } from "~/database/schema/introspect-table.js";
 import { type AnySchema } from "~/database/schema/schema.js";
 import type { ColumnInfo } from "~/database/schema/table/column/types.js";
+import type { BuilderContext } from "~/database/schema/table/constraints/foreign-key/builder.js";
 import type {
 	ColumnsToRename,
 	TablesToRename,
@@ -124,6 +125,7 @@ export async function introspectRemoteSchema(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
 	schemaName = "public",
+	builderContext: BuilderContext,
 ) {
 	const remoteTableInfo = await dbTableInfo(kysely, schemaName);
 
@@ -156,6 +158,7 @@ export async function introspectRemoteSchema(
 
 	const remoteForeignKeyConstraintInfo = await dbForeignKeyConstraints(
 		remoteForeignKeyConstraints,
+		builderContext,
 	);
 
 	const primaryKeyConstraintInfo = await dbPrimaryKeyConstraintInfo(

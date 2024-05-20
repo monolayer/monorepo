@@ -1,6 +1,7 @@
 import { Effect } from "effect";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
+import type { BuilderContext } from "~/database/schema/table/constraints/foreign-key/builder.js";
 import { sortTableDependencies } from "~/introspection/dependencies.js";
 import {
 	SchemaMigrationInfo,
@@ -16,12 +17,23 @@ import {
 } from "~/state/app-environment.js";
 import type { TableAndColumnRenames } from "~/state/table-column-rename.js";
 
-export function introspectRemote(schemaName: string) {
+export function introspectRemote(
+	schemaName: string,
+	renames: TableAndColumnRenames,
+) {
 	return Effect.gen(function* () {
 		const kysely = yield* devEnvirinmentDbClient("kyselyNoCamelCase");
 		const camelCase = yield* appEnvironmentCamelCasePlugin;
+		const currentSchemaName = toSnakeCase(schemaName, camelCase);
+		const builderContext: BuilderContext = {
+			camelCase,
+			tablesToRename: renames !== undefined ? renames.tablesToRename : [],
+			columnsToRename: renames !== undefined ? renames.columnsToRename : {},
+			schemaName: currentSchemaName,
+		};
+
 		return yield* Effect.tryPromise(() =>
-			introspectRemoteSchema(kysely, toSnakeCase(schemaName, camelCase)),
+			introspectRemoteSchema(kysely, currentSchemaName, builderContext),
 		);
 	});
 }
@@ -68,8 +80,10 @@ export function introspectSchema(
 	return Effect.gen(function* () {
 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
 
+		const schemaName = Schema.info(schema).name || "public";
 		const introspectedRemote = yield* introspectRemote(
-			Schema.info(schema).name ?? "public",
+			schemaName,
+			renames ?? { tablesToRename: [], columnsToRename: {} },
 		);
 
 		const introspectedLocalSchema = yield* introspectLocal(

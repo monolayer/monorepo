@@ -15,20 +15,17 @@ import type {
 import { type ForeignKeyInfo } from "~/introspection/schema.js";
 import { currentTableName } from "~/introspection/table-name.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
-import { ForeignKeyBuilder } from "./builder.js";
+import { ForeignKeyBuilder, type BuilderContext } from "./builder.js";
 
 export async function dbForeignKeyConstraints(
 	fetchInfo: Awaited<ReturnType<typeof fetchForeignConstraintInfo>>,
+	builderContextNew: BuilderContext,
 ) {
 	const transformedResults = fetchInfo.reduce<{
 		info: ForeignKeyInfo;
 		definitions: Record<string, Record<string, ForeignKeyIntrospection>>;
 	}>(
 		(acc, result) => {
-			const constraintHash = result.conname!.match(
-				/^\w+_(\w+)_monolayer_fk$/,
-			)![1];
-
 			const builderContext = {
 				camelCase: { enabled: false },
 				tablesToRename: [],
@@ -44,19 +41,31 @@ export async function dbForeignKeyConstraints(
 				foreignKey,
 				builderContext,
 			);
+
+			const ancientBuilder = new ForeignKeyBuilder(
+				currentTableName(
+					result.table,
+					builderContextNew.tablesToRename,
+					builderContextNew.schemaName,
+				),
+				foreignKey,
+				builderContextNew,
+			);
+
+			const previousHash = ancientBuilder.hash("previous");
 			const table = result.table;
 			if (table !== null) {
 				acc.info[table] = {
 					...acc.info[table],
 					...{
-						[`${constraintHash}`]: builder.build("preserve", result.conname!),
+						[`${previousHash}`]: builder.build("preserve", result.conname!),
 					},
 				};
 				const definition = builder.definition("preserve");
 				acc.definitions[table] = {
 					...acc.definitions[table],
 					...{
-						[`${constraintHash}`]: {
+						[`${previousHash}`]: {
 							columns: definition.columns,
 							targetColumns: definition.targetColumns,
 							targetTable: definition.targetTable,
@@ -164,11 +173,12 @@ export function localForeignKeyConstraintInfoWithPreviousHash(
 						tablesToRename,
 						schemaName,
 					);
-					const builder = new ForeignKeyBuilder(
-						tableNameInDatabase,
-						foreignKey,
-						{ camelCase, tablesToRename, columnsToRename, schemaName },
-					);
+					const builder = new ForeignKeyBuilder(tableKey, foreignKey, {
+						camelCase,
+						tablesToRename,
+						columnsToRename,
+						schemaName,
+					});
 					const hash = builder.hash("previous");
 					acc[tableKey] = {
 						...acc[tableKey],
