@@ -1349,7 +1349,7 @@ describe("Create table", () => {
 				type: "createTrigger",
 				up: [
 					[
-						`await sql\`CREATE OR REPLACE TRIGGER users_8659ae36_trg
+						`await sql\`CREATE OR REPLACE TRIGGER users_8659ae36_monolayer_trg
 BEFORE UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updatedAt")\``,
@@ -1366,7 +1366,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				type: "createTrigger",
 				up: [
 					[
-						`await sql\`CREATE OR REPLACE TRIGGER users_7d730e02_trg
+						`await sql\`CREATE OR REPLACE TRIGGER users_7d730e02_monolayer_trg
 BEFORE UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
@@ -1694,7 +1694,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				type: "createTrigger",
 				up: [
 					[
-						`await sql\`CREATE OR REPLACE TRIGGER trigger_table_dd1e7d9a_trg
+						`await sql\`CREATE OR REPLACE TRIGGER trigger_table_dd1e7d9a_monolayer_trg
 BEFORE UPDATE ON "public"."trigger_table"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updated_at")\``,

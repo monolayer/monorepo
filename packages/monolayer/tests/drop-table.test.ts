@@ -1068,11 +1068,11 @@ describe("Table drop migrations", () => {
 			context.kysely,
 		);
 
-		await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg
+		await sql`CREATE OR REPLACE TRIGGER foo_before_update_monolayer_trg
 							BEFORE UPDATE ON users
 							FOR EACH ROW
 							EXECUTE FUNCTION moddatetime(updatedAt);
-							COMMENT ON TRIGGER foo_before_update_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(
+							COMMENT ON TRIGGER foo_before_update_monolayer_trg ON users IS 'c2304485eb6b41782bcb408b5118bc67aca3fae9eb9210ad78ce93ddbf438f67';`.execute(
 			context.kysely,
 		);
 
@@ -1096,7 +1096,7 @@ describe("Table drop migrations", () => {
 				up: [[]],
 				down: [
 					[
-						"await sql`CREATE OR REPLACE TRIGGER foo_before_update_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
+						"await sql`CREATE OR REPLACE TRIGGER foo_before_update_monolayer_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
 						"execute(db);",
 					],
 				],

@@ -29,6 +29,7 @@ export function primaryKeyMigrationOpGenerator(
 	diff: Difference,
 	context: GeneratorContext,
 ) {
+	console.dir(diff, { depth: null });
 	if (isPrimaryKeyCreate(diff)) {
 		return createPrimaryKeyMigration(diff, context);
 	}

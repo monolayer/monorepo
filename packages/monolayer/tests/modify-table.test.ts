@@ -3981,7 +3981,7 @@ describe("Modify table", () => {
 					type: "createTrigger",
 					up: [
 						[
-							`await sql\`CREATE OR REPLACE TRIGGER users_8659ae36_trg
+							`await sql\`CREATE OR REPLACE TRIGGER users_8659ae36_monolayer_trg
 BEFORE UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updatedAt")\``,
@@ -3990,7 +3990,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					],
 					down: [
 						[
-							'await sql`DROP TRIGGER users_8659ae36_trg ON "public"."users"`',
+							'await sql`DROP TRIGGER users_8659ae36_monolayer_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],
@@ -4003,7 +4003,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					type: "createTrigger",
 					up: [
 						[
-							`await sql\`CREATE OR REPLACE TRIGGER users_cd708de3_trg
+							`await sql\`CREATE OR REPLACE TRIGGER users_cd708de3_monolayer_trg
 AFTER UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updatedAt")\``,
@@ -4012,7 +4012,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					],
 					down: [
 						[
-							'await sql`DROP TRIGGER users_cd708de3_trg ON "public"."users"`',
+							'await sql`DROP TRIGGER users_cd708de3_monolayer_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],
@@ -4045,12 +4045,12 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				context.kysely,
 			);
 
-			await sql`CREATE OR REPLACE TRIGGER users_c2304485_trg
+			await sql`CREATE OR REPLACE TRIGGER users_c2304485_monolayer_trg
 									BEFORE UPDATE ON users
 									FOR EACH ROW
 									EXECUTE FUNCTION moddatetime(updatedAt);`.execute(context.kysely);
 
-			await sql`CREATE OR REPLACE TRIGGER users_9463c7cd_trg
+			await sql`CREATE OR REPLACE TRIGGER users_9463c7cd_monolayer_trg
 									AFTER UPDATE ON users
 									FOR EACH ROW
 									EXECUTE FUNCTION moddatetime(updatedAt);`.execute(context.kysely);
@@ -4077,13 +4077,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					type: "dropTrigger",
 					up: [
 						[
-							'await sql`DROP TRIGGER users_c2304485_trg ON "public"."users"`',
+							'await sql`DROP TRIGGER users_c2304485_monolayer_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],
 					down: [
 						[
-							"await sql`CREATE OR REPLACE TRIGGER users_c2304485_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
+							"await sql`CREATE OR REPLACE TRIGGER users_c2304485_monolayer_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
 							"execute(db);",
 						],
 					],
@@ -4096,13 +4096,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					type: "dropTrigger",
 					up: [
 						[
-							'await sql`DROP TRIGGER users_9463c7cd_trg ON "public"."users"`',
+							'await sql`DROP TRIGGER users_9463c7cd_monolayer_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],
 					down: [
 						[
-							"await sql`CREATE OR REPLACE TRIGGER users_9463c7cd_trg AFTER UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
+							"await sql`CREATE OR REPLACE TRIGGER users_9463c7cd_monolayer_trg AFTER UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
 							"execute(db);",
 						],
 					],
@@ -4135,7 +4135,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				context.kysely,
 			);
 
-			await sql`CREATE OR REPLACE TRIGGER users_c2304485_trg
+			await sql`CREATE OR REPLACE TRIGGER users_c2304485_monolayer_trg
 									BEFORE UPDATE ON users
 									FOR EACH ROW
 									EXECUTE FUNCTION moddatetime(updatedAt);`.execute(context.kysely);
@@ -4168,7 +4168,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				{
 					down: [
 						[
-							"await sql`CREATE OR REPLACE TRIGGER users_c2304485_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
+							"await sql`CREATE OR REPLACE TRIGGER users_c2304485_monolayer_trg BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
 							"execute(db);",
 						],
 					],
@@ -4179,7 +4179,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					type: "dropTrigger",
 					up: [
 						[
-							'await sql`DROP TRIGGER users_c2304485_trg ON "public"."users"`',
+							'await sql`DROP TRIGGER users_c2304485_monolayer_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],
@@ -4192,7 +4192,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					type: "createTrigger",
 					up: [
 						[
-							`await sql\`CREATE OR REPLACE TRIGGER users_cd708de3_trg
+							`await sql\`CREATE OR REPLACE TRIGGER users_cd708de3_monolayer_trg
 AFTER UPDATE ON "public"."users"
 FOR EACH ROW
 EXECUTE FUNCTION moddatetime("updatedAt")\``,
@@ -4201,7 +4201,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					],
 					down: [
 						[
-							'await sql`DROP TRIGGER users_cd708de3_trg ON "public"."users"`',
+							'await sql`DROP TRIGGER users_cd708de3_monolayer_trg ON "public"."users"`',
 							"execute(db);",
 						],
 					],

@@ -33,11 +33,13 @@ export async function dbTriggerInfo(
 		])
 		.where("pg_namespace.nspname", "=", databaseSchema)
 		.where("pg_class.relname", "in", tableNames)
-		.where("pg_trigger.tgname", "~", "_trg$")
+		.where("pg_trigger.tgname", "~", "_monolayer_trg$")
 		.execute();
 
 	const triggerInfo = results.reduce<TriggerInfo>((acc, curr) => {
-		const constraintHash = curr.trigger_name?.match(/^\w+_(\w+)_trg$/)![1];
+		const constraintHash = curr.trigger_name?.match(
+			/^\w+_(\w+)_monolayer_trg$/,
+		)![1];
 
 		acc[curr.table_name] = {
 			...acc[curr.table_name],
@@ -145,7 +147,7 @@ export function localTriggersInfo(
 
 				const triggerKey = hashValue(sampleTrigger);
 				const triggerName =
-					`${transformedTableName}_${triggerKey}_trg`.toLowerCase();
+					`${transformedTableName}_${triggerKey}_monolayer_trg`.toLowerCase();
 
 				const compiledTrigger = triggerInfo(
 					trigger,
