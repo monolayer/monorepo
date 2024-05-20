@@ -294,7 +294,7 @@ describe("Table drop migrations", () => {
 			.createTable("users")
 			.addColumn("id", "serial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE users ADD CONSTRAINT users_monolayer_pk PRIMARY KEY ("id")`.execute(
+		await sql`ALTER TABLE users ADD CONSTRAINT users_pkey PRIMARY KEY ("id")`.execute(
 			context.kysely,
 		);
 
@@ -302,7 +302,7 @@ describe("Table drop migrations", () => {
 			.createTable("books")
 			.addColumn("id", "bigserial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE books ADD CONSTRAINT books_monolayer_pk PRIMARY KEY ("id")`.execute(
+		await sql`ALTER TABLE books ADD CONSTRAINT books_pkey PRIMARY KEY ("id")`.execute(
 			context.kysely,
 		);
 
@@ -312,7 +312,7 @@ describe("Table drop migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_monolayer_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_pkey", ["id"])',
 						"execute();",
 					],
 				],
@@ -328,7 +328,7 @@ describe("Table drop migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addPrimaryKeyConstraint("users_monolayer_pk", ["id"])',
+						'addPrimaryKeyConstraint("users_pkey", ["id"])',
 						"execute();",
 					],
 				],
@@ -520,7 +520,7 @@ describe("Table drop migrations", () => {
 			.createTable("books")
 			.addColumn("id", "bigserial", (col) => col.notNull())
 			.execute();
-		await sql`ALTER TABLE books ADD CONSTRAINT books_monolayer_pk PRIMARY KEY ("id")`.execute(
+		await sql`ALTER TABLE books ADD CONSTRAINT books_pkey PRIMARY KEY ("id")`.execute(
 			context.kysely,
 		);
 
@@ -600,7 +600,7 @@ describe("Table drop migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("books")',
-						'addPrimaryKeyConstraint("books_monolayer_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_pkey", ["id"])',
 						"execute();",
 					],
 				],
@@ -655,7 +655,7 @@ describe("Table drop migrations", () => {
 			.addColumn("parent_id", "integer")
 			.execute();
 
-		await sql`ALTER TABLE tree ADD CONSTRAINT tree_monolayer_pk PRIMARY KEY ("node_id")`.execute(
+		await sql`ALTER TABLE tree ADD CONSTRAINT tree_pkey PRIMARY KEY ("node_id")`.execute(
 			context.kysely,
 		);
 
@@ -707,7 +707,7 @@ describe("Table drop migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("tree")',
-						'addPrimaryKeyConstraint("tree_monolayer_pk", ["node_id"])',
+						'addPrimaryKeyConstraint("tree_pkey", ["node_id"])',
 						"execute();",
 					],
 				],

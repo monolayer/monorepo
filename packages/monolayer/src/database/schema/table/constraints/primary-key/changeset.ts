@@ -29,7 +29,6 @@ export function primaryKeyMigrationOpGenerator(
 	diff: Difference,
 	context: GeneratorContext,
 ) {
-	console.dir(diff, { depth: null });
 	if (isPrimaryKeyCreate(diff)) {
 		return createPrimaryKeyMigration(diff, context);
 	}
@@ -187,7 +186,7 @@ function dropPrimaryKeyMigration(
 					dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName),
 					executeKyselySchemaStatement(
 						schemaName,
-						`dropIndex("${tableName}_monolayer_pk_idx")`,
+						`dropIndex("${tableName}_pkey_idx")`,
 						"ifExists()",
 					),
 				],
@@ -241,7 +240,7 @@ function changePrimaryKeyMigration(
 			dropPrimaryKeyOp(tableName, primaryKeyName, schemaName),
 			executeKyselySchemaStatement(
 				schemaName,
-				`dropIndex("${tableName}_monolayer_pk_idx")`,
+				`dropIndex("${tableName}_pkey_idx")`,
 				"ifExists()",
 			),
 		],
@@ -442,7 +441,7 @@ function onlinePrimaryKey(
 	tablesToRename: TablesToRename,
 	local: LocalTableInfo,
 ) {
-	const indexName = `${tableName}_monolayer_pk_idx`;
+	const indexName = `${tableName}_pkey_idx`;
 	const indexDefinition = `create unique index concurrently "${indexName}" on "${schemaName}"."${tableName}" ${primaryKeyValue}`;
 	const primaryKeyColumns = extractColumnsFromPrimaryKey(primaryKeyValue);
 	const addChecks = primaryKeyColumns.flatMap((col) => {

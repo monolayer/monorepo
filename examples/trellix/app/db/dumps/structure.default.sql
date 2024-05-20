@@ -26,7 +26,7 @@ CREATE TABLE public.accounts (
  email text NOT NULL,
  CONSTRAINT accounts_f368ca51_monolayer_key UNIQUE (email)
 ) TABLESPACE pg_default;
-ALTER TABLE ONLY public.accounts ADD CONSTRAINT accounts_monolayer_pk PRIMARY KEY (id);
+ALTER TABLE ONLY public.accounts ADD CONSTRAINT accounts_pkey PRIMARY KEY (id);
 CREATE INDEX IF NOT EXISTS accounts_cf8cf26f_monolayer_idx ON public.accounts USING btree (email) TABLESPACE pg_default;
 COMMENT ON COLUMN public.accounts.id IS 'eea9a3e7';
 
@@ -37,7 +37,7 @@ CREATE TABLE public.boards (
  "createdAt" timestamp with time zone NOT NULL DEFAULT now(),
  "accountId" uuid NOT NULL
 ) TABLESPACE pg_default;
-ALTER TABLE ONLY public.boards ADD CONSTRAINT boards_monolayer_pk PRIMARY KEY (id);
+ALTER TABLE ONLY public.boards ADD CONSTRAINT boards_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY public.boards ADD CONSTRAINT boards_58e1a15a_monolayer_fk FOREIGN KEY ("accountId") REFERENCES accounts(id);
 CREATE INDEX IF NOT EXISTS boards_c8367c81_monolayer_idx ON public.boards USING btree ("accountId") TABLESPACE pg_default;
 COMMENT ON COLUMN public.boards.createdAt IS '28a4dae0';
@@ -49,7 +49,7 @@ CREATE TABLE public.columns (
  "boardId" integer NOT NULL,
  "order" double precision NOT NULL DEFAULT '0'::double precision
 ) TABLESPACE pg_default;
-ALTER TABLE ONLY public.columns ADD CONSTRAINT columns_monolayer_pk PRIMARY KEY (id);
+ALTER TABLE ONLY public.columns ADD CONSTRAINT columns_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY public.columns ADD CONSTRAINT columns_cd31e386_monolayer_fk FOREIGN KEY ("boardId") REFERENCES boards(id) ON UPDATE CASCADE ON DELETE CASCADE;
 CREATE INDEX IF NOT EXISTS columns_78973606_monolayer_idx ON public.columns USING btree ("boardId") TABLESPACE pg_default;
 COMMENT ON COLUMN public.columns.order IS '6a590996';
@@ -63,7 +63,7 @@ CREATE TABLE public.items (
  "columnId" uuid NOT NULL,
  "boardId" integer NOT NULL
 ) TABLESPACE pg_default;
-ALTER TABLE ONLY public.items ADD CONSTRAINT items_monolayer_pk PRIMARY KEY (id);
+ALTER TABLE ONLY public.items ADD CONSTRAINT items_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY public.items ADD CONSTRAINT items_96b4f219_monolayer_fk FOREIGN KEY ("boardId") REFERENCES boards(id) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE ONLY public.items ADD CONSTRAINT items_42a31803_monolayer_fk FOREIGN KEY ("columnId") REFERENCES columns(id) ON UPDATE CASCADE ON DELETE CASCADE;
 CREATE INDEX IF NOT EXISTS items_78973606_monolayer_idx ON public.items USING btree ("boardId") TABLESPACE pg_default;
@@ -77,7 +77,7 @@ CREATE TABLE public.passwords (
  "accountId" uuid NOT NULL,
  CONSTRAINT passwords_15e65ee2_monolayer_key UNIQUE ("accountId")
 ) TABLESPACE pg_default;
-ALTER TABLE ONLY public.passwords ADD CONSTRAINT passwords_monolayer_pk PRIMARY KEY (id);
+ALTER TABLE ONLY public.passwords ADD CONSTRAINT passwords_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY public.passwords ADD CONSTRAINT passwords_73bf2dc0_monolayer_fk FOREIGN KEY ("accountId") REFERENCES accounts(id);
 CREATE INDEX IF NOT EXISTS passwords_c8367c81_monolayer_idx ON public.passwords USING btree ("accountId") TABLESPACE pg_default;
 COMMENT ON COLUMN public.passwords.id IS 'eea9a3e7';

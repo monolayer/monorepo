@@ -32,7 +32,7 @@ describe("Table create migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("buildings")
-			.addPrimaryKeyConstraint("buildings_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("buildings_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -60,7 +60,7 @@ describe("Table create migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -71,7 +71,7 @@ describe("Table create migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("videos")
-			.addPrimaryKeyConstraint("videos_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("videos_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -82,7 +82,7 @@ describe("Table create migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("posters")
-			.addPrimaryKeyConstraint("posters_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("posters_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema

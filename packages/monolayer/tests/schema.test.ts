@@ -359,7 +359,7 @@ describe("Schema", () => {
 						[
 							'await db.withSchema("permission").schema',
 							'alterTable("user_permissions")',
-							'addPrimaryKeyConstraint("user_permissions_monolayer_pk", ["id"])',
+							'addPrimaryKeyConstraint("user_permissions_pkey", ["id"])',
 							"execute();",
 						],
 					],
@@ -636,7 +636,7 @@ describe("Schema", () => {
 						[
 							'await db.withSchema("permission_schema").schema',
 							'alterTable("user_permissions")',
-							'addPrimaryKeyConstraint("user_permissions_monolayer_pk", ["id"])',
+							'addPrimaryKeyConstraint("user_permissions_pkey", ["id"])',
 							"execute();",
 						],
 					],

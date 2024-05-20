@@ -647,7 +647,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_id_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_id_pkey", ["id"])
 			.execute();
 
 		const publications = table({
@@ -799,11 +799,11 @@ describe("Rename table without camel case plugin", () => {
 				up: [
 					[
 						"try {\n" +
-							'    await sql`${sql.raw(\'create unique index concurrently "publications_monolayer_pk_idx" on "public"."publications" ("id")\')}`.execute(db);\n' +
+							'    await sql`${sql.raw(\'create unique index concurrently "publications_pkey_idx" on "public"."publications" ("id")\')}`.execute(db);\n' +
 							"  }\n" +
 							"  catch (error: any) {\n" +
 							"    if (error.code === '23505') {\n" +
-							'      await db.withSchema("public").schema.dropIndex("publications_monolayer_pk_idx").ifExists().execute();\n' +
+							'      await db.withSchema("public").schema.dropIndex("publications_pkey_idx").ifExists().execute();\n' +
 							"    }\n" +
 							"    throw error;\n" +
 							"  }",
@@ -812,7 +812,7 @@ describe("Rename table without camel case plugin", () => {
 				down: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("publications_monolayer_pk_idx")',
+						'dropIndex("publications_pkey_idx")',
 						"ifExists()",
 						"execute();",
 					],
@@ -840,7 +840,7 @@ describe("Rename table without camel case plugin", () => {
 						"execute(db);",
 					],
 					[
-						'await sql`alter table "public"."publications" add constraint "publications_monolayer_pk" primary key using index "publications_monolayer_pk_idx"`',
+						'await sql`alter table "public"."publications" add constraint "publications_pkey" primary key using index "publications_pkey_idx"`',
 						"execute(db);",
 					],
 					[
@@ -854,7 +854,7 @@ describe("Rename table without camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
-						'dropConstraint("publications_monolayer_pk")',
+						'dropConstraint("publications_pkey")',
 						"execute();",
 					],
 				],
@@ -986,11 +986,11 @@ describe("Rename table without camel case plugin", () => {
 				up: [
 					[
 						"try {\n" +
-							'    await sql`${sql.raw(\'create unique index concurrently "publications_monolayer_pk_idx" on "public"."publications" ("id")\')}`.execute(db);\n' +
+							'    await sql`${sql.raw(\'create unique index concurrently "publications_pkey_idx" on "public"."publications" ("id")\')}`.execute(db);\n' +
 							"  }\n" +
 							"  catch (error: any) {\n" +
 							"    if (error.code === '23505') {\n" +
-							'      await db.withSchema("public").schema.dropIndex("publications_monolayer_pk_idx").ifExists().execute();\n' +
+							'      await db.withSchema("public").schema.dropIndex("publications_pkey_idx").ifExists().execute();\n' +
 							"    }\n" +
 							"    throw error;\n" +
 							"  }",
@@ -999,7 +999,7 @@ describe("Rename table without camel case plugin", () => {
 				down: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("publications_monolayer_pk_idx")',
+						'dropIndex("publications_pkey_idx")',
 						"ifExists()",
 						"execute();",
 					],
@@ -1027,7 +1027,7 @@ describe("Rename table without camel case plugin", () => {
 						"execute(db);",
 					],
 					[
-						'await sql`alter table "public"."publications" add constraint "publications_monolayer_pk" primary key using index "publications_monolayer_pk_idx"`',
+						'await sql`alter table "public"."publications" add constraint "publications_pkey" primary key using index "publications_pkey_idx"`',
 						"execute(db);",
 					],
 					[
@@ -1041,7 +1041,7 @@ describe("Rename table without camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
-						'dropConstraint("publications_monolayer_pk")',
+						'dropConstraint("publications_pkey")',
 						"execute();",
 					],
 				],
@@ -1072,7 +1072,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		const publications = table({
@@ -1132,12 +1132,12 @@ describe("Rename table without camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
-						'dropConstraint("books_monolayer_pk")',
+						'dropConstraint("books_pkey")',
 						"execute();",
 					],
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("publications_monolayer_pk_idx")',
+						'dropIndex("publications_pkey_idx")',
 						"ifExists()",
 						"execute();",
 					],
@@ -1146,7 +1146,7 @@ describe("Rename table without camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
-						'addPrimaryKeyConstraint("books_monolayer_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_pkey", ["id"])',
 						"execute();",
 					],
 				],
@@ -1193,7 +1193,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		const publications = table({
@@ -1253,12 +1253,12 @@ describe("Rename table without camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
-						'dropConstraint("books_monolayer_pk")',
+						'dropConstraint("books_pkey")',
 						"execute();",
 					],
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("publications_monolayer_pk_idx")',
+						'dropIndex("publications_pkey_idx")',
 						"ifExists()",
 						"execute();",
 					],
@@ -1267,7 +1267,7 @@ describe("Rename table without camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
-						'addPrimaryKeyConstraint("books_monolayer_pk", ["id"])',
+						'addPrimaryKeyConstraint("books_pkey", ["id"])',
 						"execute();",
 					],
 				],
@@ -1299,7 +1299,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("tree")
-			.addPrimaryKeyConstraint("tree_monolayer_pk", ["node_id"])
+			.addPrimaryKeyConstraint("tree_pkey", ["node_id"])
 			.execute();
 
 		await context.kysely.schema
@@ -1411,7 +1411,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -1542,7 +1542,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -1673,7 +1673,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -1842,7 +1842,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -1973,7 +1973,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -2104,7 +2104,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -4384,11 +4384,11 @@ describe("Rename table with camel case plugin", () => {
 				up: [
 					[
 						"try {\n" +
-							'    await sql`${sql.raw(\'create unique index concurrently "new_books_monolayer_pk_idx" on "public"."new_books" ("book_id")\')}`.execute(db);\n' +
+							'    await sql`${sql.raw(\'create unique index concurrently "new_books_pkey_idx" on "public"."new_books" ("book_id")\')}`.execute(db);\n' +
 							"  }\n" +
 							"  catch (error: any) {\n" +
 							"    if (error.code === '23505') {\n" +
-							'      await db.withSchema("public").schema.dropIndex("new_books_monolayer_pk_idx").ifExists().execute();\n' +
+							'      await db.withSchema("public").schema.dropIndex("new_books_pkey_idx").ifExists().execute();\n' +
 							"    }\n" +
 							"    throw error;\n" +
 							"  }",
@@ -4397,7 +4397,7 @@ describe("Rename table with camel case plugin", () => {
 				down: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("new_books_monolayer_pk_idx")',
+						'dropIndex("new_books_pkey_idx")',
 						"ifExists()",
 						"execute();",
 					],
@@ -4425,7 +4425,7 @@ describe("Rename table with camel case plugin", () => {
 						"execute(db);",
 					],
 					[
-						'await sql`alter table "public"."new_books" add constraint "new_books_monolayer_pk" primary key using index "new_books_monolayer_pk_idx"`',
+						'await sql`alter table "public"."new_books" add constraint "new_books_pkey" primary key using index "new_books_pkey_idx"`',
 						"execute(db);",
 					],
 					[
@@ -4439,7 +4439,7 @@ describe("Rename table with camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
-						'dropConstraint("new_books_monolayer_pk")',
+						'dropConstraint("new_books_pkey")',
 						"execute();",
 					],
 				],
@@ -4574,11 +4574,11 @@ describe("Rename table with camel case plugin", () => {
 				up: [
 					[
 						"try {\n" +
-							'    await sql`${sql.raw(\'create unique index concurrently "new_books_monolayer_pk_idx" on "public"."new_books" ("book_id")\')}`.execute(db);\n' +
+							'    await sql`${sql.raw(\'create unique index concurrently "new_books_pkey_idx" on "public"."new_books" ("book_id")\')}`.execute(db);\n' +
 							"  }\n" +
 							"  catch (error: any) {\n" +
 							"    if (error.code === '23505') {\n" +
-							'      await db.withSchema("public").schema.dropIndex("new_books_monolayer_pk_idx").ifExists().execute();\n' +
+							'      await db.withSchema("public").schema.dropIndex("new_books_pkey_idx").ifExists().execute();\n' +
 							"    }\n" +
 							"    throw error;\n" +
 							"  }",
@@ -4587,7 +4587,7 @@ describe("Rename table with camel case plugin", () => {
 				down: [
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("new_books_monolayer_pk_idx")',
+						'dropIndex("new_books_pkey_idx")',
 						"ifExists()",
 						"execute();",
 					],
@@ -4615,7 +4615,7 @@ describe("Rename table with camel case plugin", () => {
 						"execute(db);",
 					],
 					[
-						'await sql`alter table "public"."new_books" add constraint "new_books_monolayer_pk" primary key using index "new_books_monolayer_pk_idx"`',
+						'await sql`alter table "public"."new_books" add constraint "new_books_pkey" primary key using index "new_books_pkey_idx"`',
 						"execute(db);",
 					],
 					[
@@ -4629,7 +4629,7 @@ describe("Rename table with camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
-						'dropConstraint("new_books_monolayer_pk")',
+						'dropConstraint("new_books_pkey")',
 						"execute();",
 					],
 				],
@@ -4663,7 +4663,7 @@ describe("Rename table with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["book_id"])
+			.addPrimaryKeyConstraint("books_pkey", ["book_id"])
 			.execute();
 
 		const newBooks = table({
@@ -4723,12 +4723,12 @@ describe("Rename table with camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
-						'dropConstraint("books_monolayer_pk")',
+						'dropConstraint("books_pkey")',
 						"execute();",
 					],
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("new_books_monolayer_pk_idx")',
+						'dropIndex("new_books_pkey_idx")',
 						"ifExists()",
 						"execute();",
 					],
@@ -4737,7 +4737,7 @@ describe("Rename table with camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
-						'addPrimaryKeyConstraint("books_monolayer_pk", ["book_id"])',
+						'addPrimaryKeyConstraint("books_pkey", ["book_id"])',
 						"execute();",
 					],
 				],
@@ -4787,7 +4787,7 @@ describe("Rename table with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["book_id"])
+			.addPrimaryKeyConstraint("books_pkey", ["book_id"])
 			.execute();
 
 		const newBooks = table({
@@ -4847,12 +4847,12 @@ describe("Rename table with camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
-						'dropConstraint("books_monolayer_pk")',
+						'dropConstraint("books_pkey")',
 						"execute();",
 					],
 					[
 						'await db.withSchema("public").schema',
-						'dropIndex("new_books_monolayer_pk_idx")',
+						'dropIndex("new_books_pkey_idx")',
 						"ifExists()",
 						"execute();",
 					],
@@ -4861,7 +4861,7 @@ describe("Rename table with camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
-						'addPrimaryKeyConstraint("books_monolayer_pk", ["book_id"])',
+						'addPrimaryKeyConstraint("books_pkey", ["book_id"])',
 						"execute();",
 					],
 				],
@@ -4896,7 +4896,7 @@ describe("Rename table with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("tree")
-			.addPrimaryKeyConstraint("tree_monolayer_pk", ["node_id"])
+			.addPrimaryKeyConstraint("tree_pkey", ["node_id"])
 			.execute();
 
 		await context.kysely.schema
@@ -5011,7 +5011,7 @@ describe("Rename table with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -5145,7 +5145,7 @@ describe("Rename table with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -5279,7 +5279,7 @@ describe("Rename table with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -5452,7 +5452,7 @@ describe("Rename table with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id", "location_id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id", "location_id"])
 			.execute();
 
 		await context.kysely.schema
@@ -5590,7 +5590,7 @@ describe("Rename table with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id", "location_id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id", "location_id"])
 			.execute();
 
 		await context.kysely.schema
@@ -5731,7 +5731,7 @@ describe("Rename table with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id", "location_id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id", "location_id"])
 			.execute();
 
 		await context.kysely.schema

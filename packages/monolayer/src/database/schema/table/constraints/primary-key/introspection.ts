@@ -50,13 +50,12 @@ export async function dbPrimaryKeyConstraintInfo(
 		])
 		.where("con.contype", "=", "p")
 		.where("ns.nspname", "=", databaseSchema)
-		.where("con.conname", "~", "monolayer_pk$")
 		.where("tbl.relname", "in", tableNames)
 		.groupBy(["tbl.relname"])
 		.orderBy(["table"])
 		.execute();
 	const transformedResults = results.reduce<PrimaryKeyInfo>((acc, result) => {
-		const key = `${result.table}_monolayer_pk`;
+		const key = `${result.table}_pkey`;
 		const constraintInfo = {
 			[key]: primaryKeyConstraintInfoToQuery(result),
 		};
@@ -90,7 +89,7 @@ export function localPrimaryKeyConstraintInfo(
 				schemaInfo.name,
 			);
 			if (primaryKeys.length !== 0 && !isExternalPrimaryKey(tableDefinition)) {
-				const keyName = `${transformedTableName}_monolayer_pk`;
+				const keyName = `${transformedTableName}_pkey`;
 				acc[transformedTableName] = {
 					[keyName]: primaryKeyConstraintInfoToQuery({
 						constraintType: "PRIMARY KEY",

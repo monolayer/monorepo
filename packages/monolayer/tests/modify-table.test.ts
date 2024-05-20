@@ -157,11 +157,11 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "users_monolayer_pk_idx" on "public"."users" ("fullName", "name")\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "users_pkey_idx" on "public"."users" ("fullName", "name")\')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
-								'      await db.withSchema("public").schema.dropIndex("users_monolayer_pk_idx").ifExists().execute();\n' +
+								'      await db.withSchema("public").schema.dropIndex("users_pkey_idx").ifExists().execute();\n' +
 								"    }\n" +
 								"    throw error;\n" +
 								"  }",
@@ -170,7 +170,7 @@ describe("Modify table", () => {
 					down: [
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_monolayer_pk_idx")',
+							'dropIndex("users_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -186,11 +186,11 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "books_monolayer_pk_idx" on "public"."books" ("name")\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "books_pkey_idx" on "public"."books" ("name")\')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
-								'      await db.withSchema("public").schema.dropIndex("books_monolayer_pk_idx").ifExists().execute();\n' +
+								'      await db.withSchema("public").schema.dropIndex("books_pkey_idx").ifExists().execute();\n' +
 								"    }\n" +
 								"    throw error;\n" +
 								"  }",
@@ -199,7 +199,7 @@ describe("Modify table", () => {
 					down: [
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("books_monolayer_pk_idx")',
+							'dropIndex("books_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -241,7 +241,7 @@ describe("Modify table", () => {
 							"execute(db);",
 						],
 						[
-							'await sql`alter table "public"."users" add constraint "users_monolayer_pk" primary key using index "users_monolayer_pk_idx"`',
+							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
 							"execute(db);",
 						],
 						[
@@ -261,7 +261,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_monolayer_pk")',
+							'dropConstraint("users_pkey")',
 							"execute();",
 						],
 					],
@@ -288,7 +288,7 @@ describe("Modify table", () => {
 							"execute(db);",
 						],
 						[
-							'await sql`alter table "public"."books" add constraint "books_monolayer_pk" primary key using index "books_monolayer_pk_idx"`',
+							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
 							"execute(db);",
 						],
 						[
@@ -302,7 +302,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
-							'dropConstraint("books_monolayer_pk")',
+							'dropConstraint("books_pkey")',
 							"execute();",
 						],
 					],
@@ -326,7 +326,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("users")
-				.addPrimaryKeyConstraint("users_monolayer_pk", ["name", "fullName"])
+				.addPrimaryKeyConstraint("users_pkey", ["name", "fullName"])
 				.execute();
 
 			await context.kysely.schema
@@ -336,7 +336,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("books")
-				.addPrimaryKeyConstraint("books_monolayer_pk", ["name"])
+				.addPrimaryKeyConstraint("books_pkey", ["name"])
 				.execute();
 
 			const users = table({
@@ -370,12 +370,12 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
-							'dropConstraint("books_monolayer_pk")',
+							'dropConstraint("books_pkey")',
 							"execute();",
 						],
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("books_monolayer_pk_idx")',
+							'dropIndex("books_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -384,7 +384,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
-							'addPrimaryKeyConstraint("books_monolayer_pk", ["name"])',
+							'addPrimaryKeyConstraint("books_pkey", ["name"])',
 							"execute();",
 						],
 					],
@@ -399,12 +399,12 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_monolayer_pk")',
+							'dropConstraint("users_pkey")',
 							"execute();",
 						],
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_monolayer_pk_idx")',
+							'dropIndex("users_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -413,7 +413,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addPrimaryKeyConstraint("users_monolayer_pk", ["fullName", "name"])',
+							'addPrimaryKeyConstraint("users_pkey", ["fullName", "name"])',
 							"execute();",
 						],
 					],
@@ -485,7 +485,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("users")
-				.addPrimaryKeyConstraint("users_monolayer_pk", ["name", "fullName"])
+				.addPrimaryKeyConstraint("users_pkey", ["name", "fullName"])
 				.execute();
 
 			await context.kysely.schema
@@ -498,7 +498,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("books")
-				.addPrimaryKeyConstraint("books_monolayer_pk", ["description", "id"])
+				.addPrimaryKeyConstraint("books_pkey", ["description", "id"])
 				.execute();
 
 			await context.kysely.schema
@@ -545,12 +545,12 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
-							'dropConstraint("books_monolayer_pk")',
+							'dropConstraint("books_pkey")',
 							"execute();",
 						],
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("books_monolayer_pk_idx")',
+							'dropIndex("books_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -559,7 +559,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
-							'addPrimaryKeyConstraint("books_monolayer_pk", ["description", "id"])',
+							'addPrimaryKeyConstraint("books_pkey", ["description", "id"])',
 							"execute();",
 						],
 					],
@@ -574,12 +574,12 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_monolayer_pk")',
+							'dropConstraint("users_pkey")',
 							"execute();",
 						],
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_monolayer_pk_idx")',
+							'dropIndex("users_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -588,7 +588,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addPrimaryKeyConstraint("users_monolayer_pk", ["fullName", "name"])',
+							'addPrimaryKeyConstraint("users_pkey", ["fullName", "name"])',
 							"execute();",
 						],
 					],
@@ -667,11 +667,11 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "books_monolayer_pk_idx" on "public"."books" ("description")\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "books_pkey_idx" on "public"."books" ("description")\')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
-								'      await db.withSchema("public").schema.dropIndex("books_monolayer_pk_idx").ifExists().execute();\n' +
+								'      await db.withSchema("public").schema.dropIndex("books_pkey_idx").ifExists().execute();\n' +
 								"    }\n" +
 								"    throw error;\n" +
 								"  }",
@@ -680,7 +680,7 @@ describe("Modify table", () => {
 					down: [
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("books_monolayer_pk_idx")',
+							'dropIndex("books_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -696,11 +696,11 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "users_monolayer_pk_idx" on "public"."users" ("name")\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "users_pkey_idx" on "public"."users" ("name")\')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
-								'      await db.withSchema("public").schema.dropIndex("users_monolayer_pk_idx").ifExists().execute();\n' +
+								'      await db.withSchema("public").schema.dropIndex("users_pkey_idx").ifExists().execute();\n' +
 								"    }\n" +
 								"    throw error;\n" +
 								"  }",
@@ -709,7 +709,7 @@ describe("Modify table", () => {
 					down: [
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_monolayer_pk_idx")',
+							'dropIndex("users_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -737,7 +737,7 @@ describe("Modify table", () => {
 							"execute(db);",
 						],
 						[
-							'await sql`alter table "public"."books" add constraint "books_monolayer_pk" primary key using index "books_monolayer_pk_idx"`',
+							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
 							"execute(db);",
 						],
 						[
@@ -751,7 +751,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
-							'dropConstraint("books_monolayer_pk")',
+							'dropConstraint("books_pkey")',
 							"execute();",
 						],
 					],
@@ -778,7 +778,7 @@ describe("Modify table", () => {
 							"execute(db);",
 						],
 						[
-							'await sql`alter table "public"."users" add constraint "users_monolayer_pk" primary key using index "users_monolayer_pk_idx"`',
+							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
 							"execute(db);",
 						],
 						[
@@ -792,7 +792,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_monolayer_pk")',
+							'dropConstraint("users_pkey")',
 							"execute();",
 						],
 					],
@@ -816,7 +816,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("users")
-				.addPrimaryKeyConstraint("users_monolayer_pk", ["name", "full_name"])
+				.addPrimaryKeyConstraint("users_pkey", ["name", "full_name"])
 				.execute();
 
 			await context.kysely.schema
@@ -829,7 +829,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("books")
-				.addPrimaryKeyConstraint("books_monolayer_pk", ["location_id", "id"])
+				.addPrimaryKeyConstraint("books_pkey", ["location_id", "id"])
 				.execute();
 
 			await context.kysely.schema
@@ -876,12 +876,12 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
-							'dropConstraint("books_monolayer_pk")',
+							'dropConstraint("books_pkey")',
 							"execute();",
 						],
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("books_monolayer_pk_idx")',
+							'dropIndex("books_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -890,7 +890,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
-							'addPrimaryKeyConstraint("books_monolayer_pk", ["id", "location_id"])',
+							'addPrimaryKeyConstraint("books_pkey", ["id", "location_id"])',
 							"execute();",
 						],
 					],
@@ -905,12 +905,12 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_monolayer_pk")',
+							'dropConstraint("users_pkey")',
 							"execute();",
 						],
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_monolayer_pk_idx")',
+							'dropIndex("users_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -919,7 +919,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addPrimaryKeyConstraint("users_monolayer_pk", ["full_name", "name"])',
+							'addPrimaryKeyConstraint("users_pkey", ["full_name", "name"])',
 							"execute();",
 						],
 					],
@@ -998,11 +998,11 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "books_monolayer_pk_idx" on "public"."books" ("location_id")\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "books_pkey_idx" on "public"."books" ("location_id")\')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
-								'      await db.withSchema("public").schema.dropIndex("books_monolayer_pk_idx").ifExists().execute();\n' +
+								'      await db.withSchema("public").schema.dropIndex("books_pkey_idx").ifExists().execute();\n' +
 								"    }\n" +
 								"    throw error;\n" +
 								"  }",
@@ -1011,7 +1011,7 @@ describe("Modify table", () => {
 					down: [
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("books_monolayer_pk_idx")',
+							'dropIndex("books_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -1027,11 +1027,11 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "users_monolayer_pk_idx" on "public"."users" ("name")\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "users_pkey_idx" on "public"."users" ("name")\')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
-								'      await db.withSchema("public").schema.dropIndex("users_monolayer_pk_idx").ifExists().execute();\n' +
+								'      await db.withSchema("public").schema.dropIndex("users_pkey_idx").ifExists().execute();\n' +
 								"    }\n" +
 								"    throw error;\n" +
 								"  }",
@@ -1040,7 +1040,7 @@ describe("Modify table", () => {
 					down: [
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_monolayer_pk_idx")',
+							'dropIndex("users_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -1068,7 +1068,7 @@ describe("Modify table", () => {
 							"execute(db);",
 						],
 						[
-							'await sql`alter table "public"."books" add constraint "books_monolayer_pk" primary key using index "books_monolayer_pk_idx"`',
+							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
 							"execute(db);",
 						],
 						[
@@ -1082,7 +1082,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
-							'dropConstraint("books_monolayer_pk")',
+							'dropConstraint("books_pkey")',
 							"execute();",
 						],
 					],
@@ -1109,7 +1109,7 @@ describe("Modify table", () => {
 							"execute(db);",
 						],
 						[
-							'await sql`alter table "public"."users" add constraint "users_monolayer_pk" primary key using index "users_monolayer_pk_idx"`',
+							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
 							"execute(db);",
 						],
 						[
@@ -1123,7 +1123,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_monolayer_pk")',
+							'dropConstraint("users_pkey")',
 							"execute();",
 						],
 					],
@@ -1150,7 +1150,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("users")
-				.addPrimaryKeyConstraint("users_monolayer_pk", ["name", "fullName"])
+				.addPrimaryKeyConstraint("users_pkey", ["name", "fullName"])
 				.execute();
 
 			const users = table({
@@ -1180,12 +1180,12 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_monolayer_pk")',
+							'dropConstraint("users_pkey")',
 							"execute();",
 						],
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_monolayer_pk_idx")',
+							'dropIndex("users_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -1194,7 +1194,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addPrimaryKeyConstraint("users_monolayer_pk", ["fullName", "name"])',
+							'addPrimaryKeyConstraint("users_pkey", ["fullName", "name"])',
 							"execute();",
 						],
 					],
@@ -1241,11 +1241,11 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "users_monolayer_pk_idx" on "public"."users" ("name")\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "users_pkey_idx" on "public"."users" ("name")\')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
-								'      await db.withSchema("public").schema.dropIndex("users_monolayer_pk_idx").ifExists().execute();\n' +
+								'      await db.withSchema("public").schema.dropIndex("users_pkey_idx").ifExists().execute();\n' +
 								"    }\n" +
 								"    throw error;\n" +
 								"  }",
@@ -1254,7 +1254,7 @@ describe("Modify table", () => {
 					down: [
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_monolayer_pk_idx")',
+							'dropIndex("users_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -1282,7 +1282,7 @@ describe("Modify table", () => {
 							"execute(db);",
 						],
 						[
-							'await sql`alter table "public"."users" add constraint "users_monolayer_pk" primary key using index "users_monolayer_pk_idx"`',
+							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
 							"execute(db);",
 						],
 						[
@@ -1296,7 +1296,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_monolayer_pk")',
+							'dropConstraint("users_pkey")',
 							"execute();",
 						],
 					],
@@ -1320,7 +1320,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("users")
-				.addPrimaryKeyConstraint("users_monolayer_pk", ["name"])
+				.addPrimaryKeyConstraint("users_pkey", ["name"])
 				.execute();
 
 			const users = table({
@@ -1350,12 +1350,12 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_monolayer_pk")',
+							'dropConstraint("users_pkey")',
 							"execute();",
 						],
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_monolayer_pk_idx")',
+							'dropIndex("users_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -1364,7 +1364,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addPrimaryKeyConstraint("users_monolayer_pk", ["name"])',
+							'addPrimaryKeyConstraint("users_pkey", ["name"])',
 							"execute();",
 						],
 					],
@@ -1438,11 +1438,11 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "users_monolayer_pk_idx" on "public"."users" ("email")\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "users_pkey_idx" on "public"."users" ("email")\')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
-								'      await db.withSchema("public").schema.dropIndex("users_monolayer_pk_idx").ifExists().execute();\n' +
+								'      await db.withSchema("public").schema.dropIndex("users_pkey_idx").ifExists().execute();\n' +
 								"    }\n" +
 								"    throw error;\n" +
 								"  }",
@@ -1451,7 +1451,7 @@ describe("Modify table", () => {
 					down: [
 						[
 							'await db.withSchema("public").schema',
-							'dropIndex("users_monolayer_pk_idx")',
+							'dropIndex("users_pkey_idx")',
 							"ifExists()",
 							"execute();",
 						],
@@ -1479,7 +1479,7 @@ describe("Modify table", () => {
 							"execute(db);",
 						],
 						[
-							'await sql`alter table "public"."users" add constraint "users_monolayer_pk" primary key using index "users_monolayer_pk_idx"`',
+							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
 							"execute(db);",
 						],
 						[
@@ -1493,7 +1493,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("users_monolayer_pk")',
+							'dropConstraint("users_pkey")',
 							"execute();",
 						],
 					],
@@ -1518,7 +1518,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("books")
-				.addPrimaryKeyConstraint("books_id_monolayer_pk", ["id"])
+				.addPrimaryKeyConstraint("books_id_pkey", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -1633,7 +1633,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("old_books")
-				.addPrimaryKeyConstraint("old_books_id_monolayer_pk", ["id"])
+				.addPrimaryKeyConstraint("old_books_id_pkey", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -1643,7 +1643,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("books")
-				.addPrimaryKeyConstraint("books_id_monolayer_pk", ["id"])
+				.addPrimaryKeyConstraint("books_id_pkey", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -1828,7 +1828,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("books")
-				.addPrimaryKeyConstraint("books_id_monolayer_pk", ["id"])
+				.addPrimaryKeyConstraint("books_id_pkey", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -1924,7 +1924,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("books")
-				.addPrimaryKeyConstraint("books_id_monolayer_pk", ["id"])
+				.addPrimaryKeyConstraint("books_id_pkey", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -1934,7 +1934,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("old_books")
-				.addPrimaryKeyConstraint("old_books_id_monolayer_pk", ["id"])
+				.addPrimaryKeyConstraint("old_books_id_pkey", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -2087,7 +2087,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("books")
-				.addPrimaryKeyConstraint("books_id_monolayer_pk", ["id"])
+				.addPrimaryKeyConstraint("books_id_pkey", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -2223,7 +2223,7 @@ describe("Modify table", () => {
 
 			await context.kysely.schema
 				.alterTable("books")
-				.addPrimaryKeyConstraint("books_id_monolayer_pk", ["id"])
+				.addPrimaryKeyConstraint("books_id_pkey", ["id"])
 				.execute();
 
 			await context.kysely.schema
@@ -3500,7 +3500,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addPrimaryKeyConstraint("users_monolayer_pk", ["id"])',
+							'addPrimaryKeyConstraint("users_pkey", ["id"])',
 							"execute();",
 						],
 					],
@@ -3570,7 +3570,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("users").schema',
 							'alterTable("users")',
-							'addPrimaryKeyConstraint("users_monolayer_pk", ["id"])',
+							'addPrimaryKeyConstraint("users_pkey", ["id"])',
 							"execute();",
 						],
 					],

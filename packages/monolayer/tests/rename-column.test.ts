@@ -166,7 +166,7 @@ describe("without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -341,7 +341,7 @@ describe("without camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_id_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_id_pkey", ["id"])
 			.execute();
 
 		const books = table({
@@ -1756,7 +1756,7 @@ describe("Rename column with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_pkey", ["id"])
 			.execute();
 
 		await context.kysely.schema
@@ -1934,7 +1934,7 @@ describe("Rename column with camel case plugin", () => {
 
 		await context.kysely.schema
 			.alterTable("books")
-			.addPrimaryKeyConstraint("books_id_monolayer_pk", ["id"])
+			.addPrimaryKeyConstraint("books_id_pkey", ["id"])
 			.execute();
 
 		const books = table({
