@@ -430,7 +430,7 @@ describe("Table drop migrations", () => {
 
 		await context.kysely.schema
 			.alterTable("users")
-			.addUniqueConstraint("users_plwe342w_monolayer_key", ["id", "fullName"])
+			.addUniqueConstraint("users_83137b76_monolayer_key", ["id", "fullName"])
 			.execute();
 
 		const books = table({
@@ -460,7 +460,7 @@ describe("Table drop migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addUniqueConstraint("users_plwe342w_monolayer_key", ["fullName", "id"])',
+						'addUniqueConstraint("users_83137b76_monolayer_key", ["fullName", "id"])',
 						"execute();",
 					],
 				],

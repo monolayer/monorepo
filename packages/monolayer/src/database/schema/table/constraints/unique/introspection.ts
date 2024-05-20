@@ -93,10 +93,11 @@ export async function dbUniqueConstraintInfo(
 		])
 		.execute();
 	const transformedResults = results.reduce<UniqueInfo>((acc, result) => {
-		const constraintHash = result.name.match(/^\w+_(\w+)_monolayer_key$/)![1];
 		const constraintInfo = {
-			[`${constraintHash}`]: uniqueConstraintInfoToQuery(result),
+			[hashValue(`${result.nullsDistinct}_${result.columns.sort().join("_")}`)]:
+				uniqueConstraintInfoToQuery(result),
 		};
+
 		const table = result.table;
 		acc[table] = {
 			...acc[table],
