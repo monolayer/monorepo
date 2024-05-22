@@ -103,8 +103,10 @@ export function foreignKey<T extends string, C extends AnyPgTable>(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function foreignKeyOptions<
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	T extends PgForeignKey<any, any> | PgSelfReferentialForeignKey<any, any>,
+	T extends
+		| AnyPgForeignKey
+		| AnyPgSelfReferentialForeignKey
+		| AnyPgExternalForeignKey,
 >(foreignKey: T) {
 	assertForeignKeyWithInfo(foreignKey);
 	return foreignKey.options;
@@ -119,8 +121,10 @@ export function isExternalForeignKey<T extends PgForeignKey<any, any>>(
 }
 
 function assertForeignKeyWithInfo<
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	T extends PgForeignKey<any, any> | PgSelfReferentialForeignKey<any, any>,
+	T extends
+		| AnyPgForeignKey
+		| AnyPgSelfReferentialForeignKey
+		| AnyPgExternalForeignKey,
 >(
 	val: T,
 ): asserts val is T & {
@@ -130,6 +134,7 @@ function assertForeignKeyWithInfo<
 } {
 	true;
 }
+
 export type ForeignKeyOptions<T extends AnyPgTable> = {
 	columns: string[];
 	targetTable: T | string;
@@ -243,3 +248,77 @@ export class PgSelfReferentialForeignKey<T extends string, C extends string> {
 		return this;
 	}
 }
+
+export type AnyPgSelfReferentialForeignKey = PgSelfReferentialForeignKey<
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	any,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	any
+>;
+
+export type PgExternalForeignKeyOptions = {
+	columns: string[];
+	targetTable: string;
+	targetColumns: string[];
+	deleteRule: ForeignKeyRule;
+	updateRule: ForeignKeyRule;
+};
+
+export function unmanagedForeignKey<T extends string, C extends string>(
+	columns: T[],
+	targetTable: C,
+	targetColumns: string[],
+) {
+	return new PgUnmanagedForeignKey(columns, targetTable, targetColumns);
+}
+
+export class PgUnmanagedForeignKey<T extends string, C extends string> {
+	/**
+	 * @hidden
+	 */
+	protected isExternal: boolean;
+
+	/**
+	 * @hidden
+	 */
+	protected options: PgExternalForeignKeyOptions;
+
+	/**
+	 * @hidden
+	 */
+	constructor(
+		/**
+		 * @hidden
+		 */
+		protected columns: T[],
+		targetTable: C,
+		targetColumns: string[],
+	) {
+		this.isExternal = true;
+		this.options = {
+			columns: this.columns,
+			targetTable,
+			targetColumns: targetColumns,
+			deleteRule: "NO ACTION",
+			updateRule: "NO ACTION",
+		};
+	}
+
+	deleteRule(rule: Lowercase<ForeignKeyRule>) {
+		this.options.deleteRule = rule.toUpperCase() as ForeignKeyRule;
+		return this;
+	}
+
+	updateRule(rule: Lowercase<ForeignKeyRule>) {
+		this.options.updateRule = rule.toUpperCase() as ForeignKeyRule;
+		return this;
+	}
+
+	external() {
+		this.isExternal = true;
+		return this;
+	}
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyPgExternalForeignKey = PgUnmanagedForeignKey<any, any>;

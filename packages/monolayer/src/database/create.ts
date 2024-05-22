@@ -16,17 +16,3 @@ export function createDatabase() {
 		),
 	);
 }
-
-export function createDevDatabase() {
-	return DbClients.pipe(
-		Effect.flatMap((clients) =>
-			spinnerTask(
-				`Create database ${clients.developmentEnvironment.databaseName}`,
-				() =>
-					adminPgQuery(
-						`CREATE DATABASE "${clients.developmentEnvironment.databaseName}";`,
-					),
-			),
-		),
-	);
-}

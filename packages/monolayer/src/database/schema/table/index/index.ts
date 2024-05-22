@@ -134,3 +134,16 @@ type DrainOuterGeneric<T> = [T] extends [unknown] ? T : never;
 type ShallowRecord<K extends keyof any, T> = DrainOuterGeneric<{
 	[P in K]: T;
 }>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function unmanagedIndex(name: string, definition: Expression<any>) {
+	return new PgUnmanagedIndex(name, definition);
+}
+
+export class PgUnmanagedIndex {
+	constructor(
+		protected name: string,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		protected expression: Expression<any>,
+	) {}
+}

@@ -6,7 +6,9 @@ type optional = Partial<
 	SetNonNullable<Omit<ColumnInfo, "tableName" | "dataType" | "columnName">>
 >;
 
-export function columnInfoFactory(options: required & optional) {
+export type ColumnInfoFactoryOptions = required & optional;
+
+export function columnInfoFactory(options: ColumnInfoFactoryOptions) {
 	return {
 		columnName: options.columnName,
 		dataType: options.dataType,
@@ -19,5 +21,6 @@ export function columnInfoFactory(options: required & optional) {
 		characterMaximumLength: options.characterMaximumLength ?? null,
 		identity: options.identity ?? null,
 		enum: options.enum ?? false,
+		volatileDefault: options.volatileDefault ?? "unknown",
 	};
 }

@@ -6,6 +6,7 @@ import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { findPrimaryKey } from "~/introspection/schema.js";
+import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 import { type TableColumn } from "../table-column.js";
 import { ColumnInfo } from "./types.js";
@@ -284,6 +285,13 @@ export function transformDbColumnInfo(
 			dataTypeFullName = `${dataTypeFullName}[]`;
 		}
 
+		const columnDefault =
+			row.sequence_name === null
+				? row.column_default !== null
+					? `${row.column_comment !== null ? row.column_comment : hashValue(row.column_default)}:${row.column_default}`
+					: null
+				: null;
+
 		transformed.push({
 			tableName: row.table_name!,
 			columnName: row.column_name,
@@ -291,12 +299,7 @@ export function transformDbColumnInfo(
 				row.user_defined_type_name !== null
 					? row.user_defined_type_name
 					: dataTypeFullName,
-			defaultValue:
-				row.sequence_name === null
-					? row.column_default !== null
-						? `${row.column_comment !== null ? row.column_comment : ""}:${row.column_default}`
-						: null
-					: null,
+			defaultValue: columnDefault,
 			isNullable: row.is_nullable,
 			numericPrecision: row.numeric_precision,
 			numericScale: row.numeric_scale,

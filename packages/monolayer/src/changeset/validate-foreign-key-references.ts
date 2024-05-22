@@ -6,6 +6,7 @@ import {
 	foreignKeyOptions,
 	type AnyPgForeignKey,
 } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
+import { PgTable } from "~/database/schema/table/table.js";
 import { tableInfo } from "~/introspection/helpers.js";
 
 export function validateForeignKeyReferences(
@@ -23,12 +24,14 @@ export function validateForeignKeyReferences(
 					continue;
 				}
 				const foreignKeyTargetTable = foreignKeyOptions(foreignKey).targetTable;
-				if (
-					findTableInSchema(foreignKeyTargetTable, allSchemas) === undefined
-				) {
-					return yield* Effect.fail(
-						new ForeignKeyReferencedTableMissing(tableName),
-					);
+				if (foreignKeyTargetTable instanceof PgTable) {
+					if (
+						findTableInSchema(foreignKeyTargetTable, allSchemas) === undefined
+					) {
+						return yield* Effect.fail(
+							new ForeignKeyReferencedTableMissing(tableName),
+						);
+					}
 				}
 			}
 		}

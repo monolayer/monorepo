@@ -25,7 +25,7 @@ export function extensionMigrationOpGenerator(diff: Difference) {
 }
 
 export function computeExtensionChangeset() {
-	return Effect.all([localExtensions(), remoteExtensions()]).pipe(
+	return Effect.all([localExtensions(), remoteExtensions]).pipe(
 		Effect.flatMap(computeChangeset),
 	);
 }
@@ -111,12 +111,11 @@ function localExtensions() {
 		),
 	);
 }
-function remoteExtensions() {
-	return DbClients.pipe(
-		Effect.flatMap((dbClients) =>
-			Effect.tryPromise(() =>
-				dbExtensionInfo(dbClients.developmentEnvironment.kyselyNoCamelCase),
-			),
+
+export const remoteExtensions = DbClients.pipe(
+	Effect.flatMap((dbClients) =>
+		Effect.tryPromise(() =>
+			dbExtensionInfo(dbClients.currentEnvironment.kyselyNoCamelCase),
 		),
-	);
-}
+	),
+);

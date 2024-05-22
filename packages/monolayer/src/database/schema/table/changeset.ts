@@ -7,11 +7,9 @@ import {
 } from "~/changeset/types.js";
 import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
 import { currentTableName } from "~/introspection/table-name.js";
+import { executeKyselySchemaStatement } from "../../../changeset/helpers.js";
 import {
-	executeKyselyDbStatement,
-	executeKyselySchemaStatement,
-} from "../../../changeset/helpers.js";
-import {
+	commentForDefault,
 	tableColumnsOps,
 	toValueAndHash,
 	type ColumnsInfoDiff,
@@ -61,8 +59,11 @@ function createTableMigration(
 		if (column.defaultValue !== null) {
 			const valueAndHash = toValueAndHash(column.defaultValue);
 			up.push(
-				executeKyselyDbStatement(
-					`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${column.columnName}" IS '${valueAndHash.hash}'`,
+				commentForDefault(
+					schemaName,
+					tableName,
+					`${column.columnName}`,
+					valueAndHash,
 				),
 			);
 		}
@@ -111,8 +112,11 @@ function dropTableMigration(
 		if (column.defaultValue !== null) {
 			const valueAndHash = toValueAndHash(column.defaultValue);
 			down.push(
-				executeKyselyDbStatement(
-					`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${column.columnName}" IS '${valueAndHash.hash}'`,
+				commentForDefault(
+					schemaName,
+					tableName,
+					`${column.columnName}`,
+					valueAndHash,
 				),
 			);
 		}

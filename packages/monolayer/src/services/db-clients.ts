@@ -13,12 +13,10 @@ import type { PgConfig } from "~/configuration.js";
 import {
 	appEnvironmentCamelCasePlugin,
 	appEnvironmentPgConfig,
-	appEnvironmentPgConfigDev,
 } from "~/state/app-environment.js";
 
 export type DbClientProperties = {
 	readonly currentEnvironment: DbClientEnvironmentProperties;
-	readonly developmentEnvironment: DbClientEnvironmentProperties;
 };
 
 export type DbClientEnvironmentProperties = {
@@ -43,10 +41,6 @@ export function dbClientsLayer() {
 			return {
 				currentEnvironment: dbClientEnvironmentProperties(
 					yield* appEnvironmentPgConfig,
-					(yield* appEnvironmentCamelCasePlugin).enabled,
-				),
-				developmentEnvironment: dbClientEnvironmentProperties(
-					yield* appEnvironmentPgConfigDev,
 					(yield* appEnvironmentCamelCasePlugin).enabled,
 				),
 			};
@@ -109,21 +103,27 @@ function poolAndConfig(environmentConfig: pg.ClientConfig & pg.PoolConfig) {
 	};
 }
 
-export function devEnvirinmentDbClient<
-	T extends keyof DbClientEnvironmentProperties,
->(key: T) {
-	return DbClients.pipe(
-		Effect.flatMap((dbClients) =>
-			Effect.succeed(dbClients.developmentEnvironment[key]),
-		),
-	);
-}
+export const dbClient = Effect.gen(function* () {
+	const dbClients = yield* DbClients;
+	return dbClients.currentEnvironment;
+});
+
+export const kyselyDb = Effect.gen(function* () {
+	const dbClients = yield* DbClients;
+	return dbClients.currentEnvironment.kysely;
+});
+
+export const kyselyNoCamelCaseDb = Effect.gen(function* () {
+	const dbClients = yield* DbClients;
+	return dbClients.currentEnvironment.kyselyNoCamelCase;
+});
+
 export function pgQuery<T extends QueryResultRow = Record<string, unknown>>(
 	query: string,
 ) {
 	return DbClients.pipe(
 		Effect.flatMap((clients) =>
-			Effect.promise(async () => {
+			Effect.tryPromise(async () => {
 				const result = await clients.currentEnvironment.pgPool.query<T>(query);
 				return result.rows;
 			}),
@@ -136,23 +136,9 @@ export function adminPgQuery<
 >(query: string) {
 	return DbClients.pipe(
 		Effect.flatMap((clients) =>
-			Effect.promise(async () => {
-				const result =
-					await clients.currentEnvironment.pgAdminPool.query<T>(query);
-				return result.rows;
-			}),
-		),
-	);
-}
-
-export function adminDevPgQuery<
-	T extends QueryResultRow = Record<string, unknown>,
->(query: string) {
-	return DbClients.pipe(
-		Effect.flatMap((clients) =>
 			Effect.tryPromise(async () => {
 				const result =
-					await clients.developmentEnvironment.pgAdminPool.query<T>(query);
+					await clients.currentEnvironment.pgAdminPool.query<T>(query);
 				return result.rows;
 			}),
 		),
@@ -163,3 +149,11 @@ export const currentEnvironmentDatabaseName = Effect.gen(function* () {
 	const dbClients = yield* DbClients;
 	return dbClients.currentEnvironment.databaseName;
 });
+
+export function kyselyWithConnectionString(connection_string: string) {
+	const pgPool = new pg.Pool({ connectionString: connection_string });
+	const kysely = new Kysely({
+		dialect: new MonolayerPostgresDialect({ pool: pgPool }),
+	});
+	return Effect.succeed(kysely);
+}

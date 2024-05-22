@@ -23,6 +23,7 @@ export interface BuilderContext {
 	tablesToRename: TablesToRename;
 	columnsToRename: ColumnsToRename;
 	schemaName: string;
+	external: boolean;
 }
 
 type BuildMode = "current" | "previous" | "preserve";

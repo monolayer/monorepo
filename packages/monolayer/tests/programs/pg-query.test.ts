@@ -3,7 +3,6 @@ import { Effect, Layer, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { loadEnv } from "~/cli/cli-action.js";
 import {
-	adminDevPgQuery,
 	adminPgQuery,
 	dbClientsLayer,
 	pgQuery,
@@ -178,77 +177,6 @@ describe("adminPgQuery", () => {
 				Effect.provide(
 					programWithErrorCause(adminPgQuery(`SELECT CURRENT_DATABASE();`)),
 					layersWithStatsConfiguration,
-				),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
-
-		expect(statsDatabase).toStrictEqual([{ current_database: "postgres" }]);
-	});
-});
-
-describe("devAdminPgQuery", () => {
-	beforeEach<ProgramContext>(async (context) => {
-		await setupProgramContext(context);
-	});
-
-	afterEach<ProgramContext>(async (context) => {
-		await teardownProgramContext(context);
-	});
-
-	test<ProgramContext>("default configurations connect to dev host postgres", async (context) => {
-		const layers = migratorLayer().pipe(Layer.provideMerge(dbClientsLayer()));
-
-		const pgOneAddr = await context.pool.query(`SELECT inet_server_addr();`);
-		const result = await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(
-					programWithErrorCause(adminDevPgQuery(`SELECT inet_server_addr();`)),
-					layers,
-				),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
-
-		expect(result).toStrictEqual(pgOneAddr.rows);
-
-		const statsDatabase = await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(
-					programWithErrorCause(adminDevPgQuery(`SELECT CURRENT_DATABASE();`)),
-					layers,
-				),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
-		expect(statsDatabase).toStrictEqual([{ current_database: "postgres" }]);
-	});
-
-	test<ProgramContext>("other configurations connect to dev host postgres", async (context) => {
-		const layers = migratorLayer().pipe(Layer.provideMerge(dbClientsLayer()));
-
-		const poolAddr = await context.pool.query(`SELECT inet_server_addr();`);
-		const result = await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(
-					programWithErrorCause(adminDevPgQuery(`SELECT inet_server_addr();`)),
-					layers,
-				),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
-
-		expect(result).toStrictEqual(poolAddr.rows);
-
-		const statsDatabase = await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(
-					programWithErrorCause(adminDevPgQuery(`SELECT CURRENT_DATABASE();`)),
-					layers,
 				),
 				AppEnvironment,
 				Ref.make(await loadEnv("development", "default")),

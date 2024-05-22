@@ -28,7 +28,6 @@ export async function dbEnumInfo(
 		])
 		.where("pg_namespace.nspname", "=", databaseSchema)
 		.where("pg_type.typtype", "=", "e")
-		.where("pg_description.description", "=", "monolayer")
 		.groupBy("pg_type.typname")
 		.groupBy("pg_namespace.nspname")
 		.orderBy("pg_type.typname")
@@ -38,41 +37,7 @@ export async function dbEnumInfo(
 		acc[curr.enum_name] = curr.enum_values.sort().join(", ");
 		return acc;
 	}, {});
-
 	return enumInfo;
-}
-
-export async function enumDumpInfo(db: Kysely<InformationSchemaDB>) {
-	const results = await db
-		.selectFrom("pg_type")
-		.leftJoin("pg_namespace", "pg_namespace.oid", "pg_type.typnamespace")
-		.leftJoin("pg_enum", "pg_enum.enumtypid", "pg_type.oid")
-		.select([
-			"pg_namespace.nspname as schema",
-			sql<string>`
-				'CREATE TYPE ' || quote_ident(pg_namespace.nspname) || '.' || quote_ident(pg_type.typname) ||
-				' AS ENUM (' ||
-				string_agg(quote_literal(pg_enum.enumlabel), ', ') || ');'`.as("enum"),
-			sql<string>`
-				'COMMENT ON TYPE ' || quote_ident(pg_namespace.nspname) || '.' || quote_ident(pg_type.typname) || ' IS ' || quote_literal(obj_description(pg_type.oid, 'pg_type')) || ';'`.as(
-				"comment",
-			),
-		])
-		.where("pg_type.typtype", "=", "e")
-		.where("pg_type.typname", "!=", "tabledefs")
-		.where((eb) =>
-			eb.or([
-				eb("pg_namespace.nspname", "=", "public"),
-				eb(
-					sql`obj_description(pg_namespace.oid, 'pg_namespace')`,
-					"=",
-					"monolayer",
-				),
-			]),
-		)
-		.groupBy(["pg_namespace.nspname", "pg_type.typname", "pg_type.oid"])
-		.execute();
-	return results;
 }
 
 export function localEnumInfo(schema: AnySchema) {

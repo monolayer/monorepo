@@ -31,9 +31,9 @@ export async function dbPrimaryKeyConstraintInfo(
 		return {};
 	}
 	const results = await kysely
-		.selectFrom("pg_constraint as con")
+		.selectFrom("pg_constraint")
 		.fullJoin("pg_class as tbl", (join) =>
-			join.onRef("tbl.oid", "=", "con.conrelid"),
+			join.onRef("tbl.oid", "=", "pg_constraint.conrelid"),
 		)
 		.fullJoin("pg_namespace as ns", (join) =>
 			join.onRef("tbl.relnamespace", "=", "ns.oid"),
@@ -41,21 +41,22 @@ export async function dbPrimaryKeyConstraintInfo(
 		.fullJoin("pg_attribute as att", (join) =>
 			join
 				.onRef("att.attrelid", "=", "tbl.oid")
-				.on("att.attnum", "=", sql`ANY(con.conkey)`),
+				.on("att.attnum", "=", sql`ANY(pg_constraint.conkey)`),
 		)
 		.select([
 			sql<"PRIMARY KEY">`'PRIMARY KEY'`.as("constraintType"),
 			sql<string>`tbl.relname`.as("table"),
 			sql<string[]>`json_agg(att.attname ORDER BY att.attnum)`.as("columns"),
+			"pg_constraint.conname",
 		])
-		.where("con.contype", "=", "p")
+		.where("pg_constraint.contype", "=", "p")
 		.where("ns.nspname", "=", databaseSchema)
 		.where("tbl.relname", "in", tableNames)
-		.groupBy(["tbl.relname"])
+		.groupBy(["tbl.relname", "pg_constraint.conname"])
 		.orderBy(["table"])
 		.execute();
 	const transformedResults = results.reduce<PrimaryKeyInfo>((acc, result) => {
-		const key = `${result.table}_pkey`;
+		const key = `${result.conname}`;
 		const constraintInfo = {
 			[key]: primaryKeyConstraintInfoToQuery(result),
 		};

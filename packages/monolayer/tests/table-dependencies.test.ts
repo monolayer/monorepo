@@ -38,7 +38,7 @@ describe("Table create migrations", () => {
 		await context.kysely.schema
 			.createTable("rooms")
 			.addColumn("id", "integer")
-			.addColumn("building_id", "integer")
+			.addColumn("building_id", "integer", (col) => col.notNull())
 			.execute();
 
 		await context.kysely.schema
@@ -55,7 +55,7 @@ describe("Table create migrations", () => {
 
 		await context.kysely.schema
 			.createTable("books")
-			.addColumn("id", "integer")
+			.addColumn("id", "integer", (col) => col.notNull())
 			.execute();
 
 		await context.kysely.schema
@@ -66,7 +66,7 @@ describe("Table create migrations", () => {
 		await context.kysely.schema
 			.createTable("videos")
 			.addColumn("id", "integer")
-			.addColumn("poster_id", "integer")
+			.addColumn("poster_id", "integer", (col) => col.notNull())
 			.execute();
 
 		await context.kysely.schema
@@ -77,7 +77,7 @@ describe("Table create migrations", () => {
 		await context.kysely.schema
 			.createTable("posters")
 			.addColumn("id", "integer")
-			.addColumn("book_id", "integer")
+			.addColumn("book_id", "integer", (col) => col.notNull())
 			.execute();
 
 		await context.kysely.schema
@@ -88,8 +88,8 @@ describe("Table create migrations", () => {
 		await context.kysely.schema
 			.createTable("users")
 			.addColumn("id", "integer")
-			.addColumn("book_id", "integer")
-			.addColumn("video_id", "integer")
+			.addColumn("book_id", "integer", (col) => col.notNull())
+			.addColumn("video_id", "integer", (col) => col.notNull())
 			.execute();
 
 		await context.kysely.schema

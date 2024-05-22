@@ -1,6 +1,7 @@
 import * as p from "@clack/prompts";
 import { Context, Effect, Ref } from "effect";
 import path from "path";
+import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 import { cwd } from "process";
 import { importConfig, importConfigurations } from "~/config.js";
@@ -35,24 +36,39 @@ export const appEnvironment = Effect.gen(function* () {
 	return yield* Ref.get(state);
 });
 
+export class MissingConnectionConfiguration extends Error {
+	constructor(name: string) {
+		super(`Connection '${name}' not found. Check your configuration.ts file.`);
+	}
+}
+
 export const appEnvironmentPgConfig = Effect.gen(function* () {
 	const env = yield* appEnvironment;
 	const configuration = yield* configurationByName(env.configurationName);
 	const environmentConfiguration = configuration.connections[env.name];
 	if (environmentConfiguration === undefined) {
-		p.log.error(color.red("Error"));
-		return yield* Effect.fail(
-			`No environment found for ${env.name}. Check your configuration.ts file.`,
-		);
+		return yield* Effect.fail(new MissingConnectionConfiguration(env.name));
 	}
 	return environmentConfiguration;
 });
 
-export const appEnvironmentPgConfigDev = Effect.gen(function* () {
-	const env = yield* appEnvironment;
-	const configuration = yield* configurationByName(env.configurationName);
-	const environmentConfiguration = configuration.connections["development"];
-	return environmentConfiguration;
+export class NoDatabaseFound extends Error {
+	constructor() {
+		super("No database found in connection configuration.");
+	}
+}
+
+export const currentDatabaseName = Effect.gen(function* () {
+	const pgConfig = yield* appEnvironmentPgConfig;
+	const parsedConfig =
+		pgConfig.connectionString !== undefined
+			? pgConnectionString.parse(pgConfig.connectionString)
+			: pgConfig;
+
+	if (parsedConfig.database === undefined || parsedConfig.database === null) {
+		return yield* Effect.fail(new NoDatabaseFound());
+	}
+	return parsedConfig.database;
 });
 
 export const appEnvironmentConfigurationSchemas = Effect.gen(function* () {
@@ -75,12 +91,26 @@ export const appEnvironmentMigrationsFolder = Effect.gen(function* () {
 	);
 });
 
-function monolayerFolder() {
+export function monolayerFolder() {
 	return Effect.gen(function* () {
 		const config = yield* Effect.tryPromise(importConfig);
 		return config.folder;
 	});
 }
+
+export const importSchemaEnvironment = Effect.gen(function* () {
+	return {
+		name: "import",
+		configurationName: "default",
+		configuration: {
+			schemas: [],
+			connections: {
+				development: {},
+			},
+		},
+		folder: yield* monolayerFolder(),
+	} satisfies AppEnv as AppEnv;
+});
 
 function allConfigurations() {
 	return Effect.gen(function* () {

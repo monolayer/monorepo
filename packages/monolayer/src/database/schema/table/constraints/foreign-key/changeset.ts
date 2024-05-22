@@ -424,6 +424,7 @@ function foreignKeyDefinition(
 		columnsToRename,
 		camelCase: camelCaseOptions,
 		schemaName: schemaName,
+		external: false,
 	});
 	return localBuilder.definition(mode);
 }

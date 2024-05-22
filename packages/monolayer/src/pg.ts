@@ -1,6 +1,10 @@
 export { PgExtension, extension } from "./database/extension/extension.js";
 export { schema, type Schema } from "./database/schema/schema.js";
 export {
+	columnWithType,
+	type pgColumnWithType,
+} from "./database/schema/table/column/column-with-type.js";
+export {
 	bigint,
 	type PgBigInt,
 } from "./database/schema/table/column/data-types/bigint.js";
@@ -91,29 +95,41 @@ export {
 } from "./database/schema/table/column/data-types/uuid.js";
 export {
 	check,
+	unmanagedCheck,
 	type PgCheck,
+	type PgUnmanagedCheck,
 } from "./database/schema/table/constraints/check/check.js";
 export {
 	foreignKey,
+	unmanagedForeignKey,
 	type PgForeignKey,
+	type PgUnmanagedForeignKey,
 } from "./database/schema/table/constraints/foreign-key/foreign-key.js";
 export {
 	primaryKey,
 	type PgPrimaryKey,
 } from "./database/schema/table/constraints/primary-key/primary-key.js";
+export { type PgRawConstraint } from "./database/schema/table/constraints/raw-constraint.js";
 export {
 	unique,
 	type PgUnique,
 } from "./database/schema/table/constraints/unique/unique.js";
-export { index, type PgIndex } from "./database/schema/table/index/index.js";
+export {
+	index,
+	unmanagedIndex,
+	type PgIndex,
+	type PgUnmanagedIndex,
+} from "./database/schema/table/index/index.js";
 export {
 	table,
 	type PgTable,
 	type TableDefinition as TableSchema,
 } from "./database/schema/table/table.js";
 export {
+	unmanagedTrigger as externalTrigger,
 	trigger,
 	type PgTrigger,
+	type PgUnmanagedTrigger,
 	type TriggerEvent,
 	type TriggerFiringTime,
 	type TriggerOptions,

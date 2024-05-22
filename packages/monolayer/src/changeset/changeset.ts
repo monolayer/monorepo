@@ -6,7 +6,7 @@ import {
 } from "~/database/database_schemas/changeset.js";
 import { managedSchemas } from "~/database/database_schemas/introspection.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
-import { devEnvirinmentDbClient } from "~/services/db-clients.js";
+import { kyselyNoCamelCaseDb } from "~/services/db-clients.js";
 import {
 	appEnvironmentCamelCasePlugin,
 	appEnvironmentConfigurationSchemas,
@@ -69,7 +69,7 @@ function dropSchemaChangeset(schemas: AnySchema[]) {
 
 function monolayerSchemasInDb() {
 	return Effect.gen(function* () {
-		const kysely = yield* devEnvirinmentDbClient("kyselyNoCamelCase");
+		const kysely = yield* kyselyNoCamelCaseDb;
 		return yield* Effect.tryPromise(async () => {
 			const dbManagedSchemas = await managedSchemas(kysely);
 			return dbManagedSchemas;

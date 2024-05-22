@@ -106,6 +106,7 @@ export function buildNodes(
 		}
 		return deps.map((dep) => [droppedTable, dep] as NodeTuple);
 	});
+
 	return toposort(nodes).filter((node) => node !== undefined);
 }
 

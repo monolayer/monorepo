@@ -8,6 +8,7 @@ import {
 import { Equal, Expect } from "type-testing";
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
+import { columnWithType } from "~/database/schema/table/column/column-with-type.js";
 import { bigint } from "~/database/schema/table/column/data-types/bigint.js";
 import { boolean } from "~/database/schema/table/column/data-types/boolean.js";
 import { varchar } from "~/database/schema/table/column/data-types/character-varying.js";
@@ -16,7 +17,6 @@ import { integer } from "~/database/schema/table/column/data-types/integer.js";
 import { serial } from "~/database/schema/table/column/data-types/serial.js";
 import { text } from "~/database/schema/table/column/data-types/text.js";
 import { timestamptz } from "~/database/schema/table/column/data-types/timestamp-with-time-zone.js";
-import { genericColumn } from "~/database/schema/table/column/generic-column.js";
 import { foreignKey } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
 import { primaryKey } from "~/database/schema/table/constraints/primary-key/primary-key.js";
 import { index } from "~/database/schema/table/index/index.js";
@@ -1774,7 +1774,7 @@ describe("pgTable definition", () => {
 		const tbl = table({
 			columns: {
 				id: integer(),
-				amount: genericColumn<string, string>("money"),
+				amount: columnWithType<string, string>("money"),
 			},
 		});
 		type expectedType = {

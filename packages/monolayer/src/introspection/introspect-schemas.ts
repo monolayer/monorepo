@@ -10,7 +10,7 @@ import {
 	renameRemoteColums,
 	renameTables,
 } from "~/introspection/introspection.js";
-import { devEnvirinmentDbClient } from "~/services/db-clients.js";
+import { kyselyNoCamelCaseDb } from "~/services/db-clients.js";
 import {
 	appEnvironmentCamelCasePlugin,
 	appEnvironmentConfigurationSchemas,
@@ -20,9 +20,10 @@ import type { TableAndColumnRenames } from "~/state/table-column-rename.js";
 export function introspectRemote(
 	schemaName: string,
 	renames: TableAndColumnRenames,
+	external = false,
 ) {
 	return Effect.gen(function* () {
-		const kysely = yield* devEnvirinmentDbClient("kyselyNoCamelCase");
+		const kysely = yield* kyselyNoCamelCaseDb;
 		const camelCase = yield* appEnvironmentCamelCasePlugin;
 		const currentSchemaName = toSnakeCase(schemaName, camelCase);
 		const builderContext: BuilderContext = {
@@ -30,6 +31,7 @@ export function introspectRemote(
 			tablesToRename: renames !== undefined ? renames.tablesToRename : [],
 			columnsToRename: renames !== undefined ? renames.columnsToRename : {},
 			schemaName: currentSchemaName,
+			external,
 		};
 
 		return yield* Effect.tryPromise(() =>
@@ -84,6 +86,7 @@ export function introspectSchema(
 		const introspectedRemote = yield* introspectRemote(
 			schemaName,
 			renames ?? { tablesToRename: [], columnsToRename: {} },
+			false,
 		);
 
 		const introspectedLocalSchema = yield* introspectLocal(

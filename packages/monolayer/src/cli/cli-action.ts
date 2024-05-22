@@ -4,7 +4,12 @@ import type { Cause } from "effect/Cause";
 import { TaggedClass } from "effect/Data";
 import color from "picocolors";
 import { exit } from "process";
-import { AppEnvironment, getEnvironment } from "~/state/app-environment.js";
+import {
+	AppEnvironment,
+	getEnvironment,
+	importSchemaEnvironment,
+	type AppEnv,
+} from "~/state/app-environment.js";
 import type { ProgramContext } from "../program-context.js";
 import { dbClientsLayer } from "../services/db-clients.js";
 import { migratorLayer } from "../services/migrator.js";
@@ -32,43 +37,69 @@ export async function cliAction(
 	const appEnv = await loadEnv(options.connection, options.name ?? "default");
 
 	const action = Effect.provide(Effect.all(tasks), layers)
-		.pipe(
-			Effect.catchTags({
-				ExitWithSuccess: () => Effect.succeed(1),
-				PromptCancelError: () => cancelOperation(),
-			}),
-		)
-		.pipe(Effect.tapErrorCause(printCause));
+		.pipe(catchErrorTags)
+		.pipe(printAnyErrors);
 
 	await Effect.runPromise(
 		Effect.scoped(
 			Effect.provideServiceEffect(action, AppEnvironment, Ref.make(appEnv)),
 		),
-	).then(
-		() => {
-			p.outro(`${color.green("Done")}`);
-			exit(0);
-		},
-		() => {
-			p.outro(`${color.red("Failed")}`);
-			exit(1);
-		},
-	);
+	).then(cliActionSuccessOutro, cliActionFailureOutro);
 }
+
+export async function cliActionWithoutContext(
+	name: string,
+	tasks: Effect.Effect<unknown, unknown, AppEnvironment>[],
+) {
+	p.intro(name);
+
+	const importAppEnv = await loadImportSchemaEnv();
+	const action = Effect.all(tasks).pipe(catchErrorTags).pipe(printAnyErrors);
+
+	await Effect.runPromise(
+		Effect.provideServiceEffect(action, AppEnvironment, Ref.make(importAppEnv)),
+	).then(cliActionSuccessOutro, cliActionFailureOutro);
+}
+
+const catchErrorTags = Effect.catchTags({
+	ExitWithSuccess: () => Effect.succeed(1),
+	PromptCancelError: () => cancelOperation(),
+});
+
+const printAnyErrors = Effect.tapErrorCause(printCause);
+
+const cliActionSuccessOutro = () => {
+	p.outro(`${color.green("Done")}`);
+	exit(0);
+};
+
+const cliActionFailureOutro = () => {
+	p.outro(`${color.red("Failed")}`);
+	exit(1);
+};
 
 export async function loadEnv(environment: string, connection: string) {
 	return await Effect.runPromise(
 		Effect.gen(function* () {
 			return yield* getEnvironment(environment, connection);
 		}).pipe(Effect.tapErrorCause(printCause)),
-	).then(
-		(result) => result,
-		() => {
-			p.outro(`${color.red("Failed")}`);
-			exit(1);
-		},
-	);
+	).then(envLoadSuccess, envLoadFailure);
 }
+
+export async function loadImportSchemaEnv() {
+	return await Effect.runPromise(
+		Effect.gen(function* () {
+			return yield* importSchemaEnvironment;
+		}).pipe(Effect.tapErrorCause(printCause)),
+	).then(envLoadSuccess, envLoadFailure);
+}
+
+const envLoadSuccess = (result: AppEnv) => result;
+
+const envLoadFailure = () => {
+	p.outro(`${color.red("Failed")}`);
+	exit(1);
+};
 
 export function printCause(cause: Cause<unknown>) {
 	const error =

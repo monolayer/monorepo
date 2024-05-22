@@ -11,7 +11,7 @@ export function applyMigrations() {
 	return Effect.gen(function* () {
 		const result = yield* migrate();
 		if (result) {
-			yield* dumpDatabaseStructureTask();
+			yield* dumpDatabaseStructureTask;
 		}
 		return result;
 	});

@@ -1,4 +1,4 @@
-import { type RawBuilder } from "kysely";
+import { type Expression, type RawBuilder } from "kysely";
 
 export type TriggerFiringTime = "before" | "after" | "instead of";
 
@@ -120,6 +120,19 @@ export class PgTrigger<T extends string | never> {
 	constructor(protected options: TriggerOptions<T>) {
 		this.isExternal = false;
 	}
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function unmanagedTrigger(name: string, definition: Expression<any>) {
+	return new PgUnmanagedTrigger(name, definition);
+}
+
+export class PgUnmanagedTrigger {
+	constructor(
+		protected name: string,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		protected expression: Expression<any>,
+	) {}
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -31,6 +31,7 @@ export async function dbForeignKeyConstraints(
 				tablesToRename: [],
 				columnsToRename: {},
 				schemaName: result.schemaName,
+				external: false,
 			};
 			const foreignKey = {
 				...result,
@@ -87,6 +88,7 @@ export async function fetchForeignConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
+	builderContext: BuilderContext,
 ) {
 	if (tableNames.length === 0) {
 		return [];
@@ -137,7 +139,7 @@ export async function fetchForeignConstraintInfo(
 		])
 		.where("con.contype", "=", "f")
 		.where("ns.nspname", "=", databaseSchema)
-		.where("con.conname", "~", "monolayer_fk$")
+		.where("con.conname", "~", builderContext.external ? "" : "monolayer_fk$")
 		.where("tbl.relname", "in", tableNames)
 		.groupBy([
 			"tbl.relname",
@@ -178,6 +180,7 @@ export function localForeignKeyConstraintInfoWithPreviousHash(
 						tablesToRename,
 						columnsToRename,
 						schemaName,
+						external: false,
 					});
 					const hash = builder.hash("previous");
 					acc[tableKey] = {
@@ -218,7 +221,13 @@ export function localForeignKeys(
 					const builder = new ForeignKeyBuilder(
 						tableNameInDatabase,
 						foreignKey,
-						{ camelCase, tablesToRename, columnsToRename, schemaName },
+						{
+							camelCase,
+							tablesToRename,
+							columnsToRename,
+							schemaName,
+							external: false,
+						},
 					);
 					acc[tableKey] = {
 						...acc[tableKey],
@@ -248,6 +257,7 @@ export function remoteForeignKeys(schema: AnySchema, allSchemas: AnySchema[]) {
 						tablesToRename: [],
 						columnsToRename: {},
 						schemaName: schemaInfo.name,
+						external: false,
 					});
 					acc[tableName] = {
 						...acc[tableName],

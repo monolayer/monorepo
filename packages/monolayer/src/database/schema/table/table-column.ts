@@ -1,3 +1,4 @@
+import { pgColumnWithType } from "./column/column-with-type.js";
 import type { PgBigInt } from "./column/data-types/bigint.js";
 import type { PgBigSerial } from "./column/data-types/bigserial.js";
 import type { PgBoolean } from "./column/data-types/boolean.js";
@@ -20,7 +21,6 @@ import type { PgTime } from "./column/data-types/time.js";
 import type { PgTimestampWithTimeZone } from "./column/data-types/timestamp-with-time-zone.js";
 import type { PgTimestamp } from "./column/data-types/timestamp.js";
 import type { PgUuid } from "./column/data-types/uuid.js";
-import { PgGenericColumn } from "./column/generic-column.js";
 
 export type TableColumn =
 	| PgBigInt
@@ -45,7 +45,7 @@ export type TableColumn =
 	| PgUuid
 	| PgCharacterVarying
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	| PgGenericColumn<any, any>
+	| pgColumnWithType<any, any>
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	| PgEnum<any>;
 export type ColumnRecord = Record<string, TableColumn>;

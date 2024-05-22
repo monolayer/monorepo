@@ -14,6 +14,7 @@ import {
 	sqlStatement,
 } from "../../../../changeset/helpers.js";
 import {
+	commentForDefault,
 	compileDataType,
 	optionsForColumn,
 	toValueAndHash,
@@ -78,7 +79,6 @@ function createColumnMigration(
 			`alterTable("${tableName}")`,
 			`addColumn("${columnName}", ${compileDataType(
 				columnDef.dataType,
-				columnDef.enum,
 			)}${optionsForColumn(columnDef)})`,
 		),
 	];
@@ -86,9 +86,7 @@ function createColumnMigration(
 
 	if (columnDef.defaultValue !== null) {
 		up.push(
-			executeKyselyDbStatement(
-				`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
-			),
+			commentForDefault(schemaName, tableName, columnName, defaultValueAndHash),
 		);
 	}
 	const changeset: Changeset = {
@@ -122,10 +120,7 @@ function createNullableColumnMigration(
 		executeKyselySchemaStatement(
 			schemaName,
 			`alterTable("${tableName}")`,
-			`addColumn("${columnName}", ${compileDataType(
-				columnDef.dataType,
-				columnDef.enum,
-			)})`,
+			`addColumn("${columnName}", ${compileDataType(columnDef.dataType)})`,
 		),
 		...(columnDef.dataType !== "serial" && columnDef.dataType !== "bigserial"
 			? setNotNullOp(schemaName, tableName, columnName)
@@ -171,9 +166,7 @@ function createNullableColumnMigration(
 		);
 
 		up.push(
-			executeKyselyDbStatement(
-				`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
-			),
+			commentForDefault(schemaName, tableName, columnName, defaultValueAndHash),
 		);
 	}
 	const changeset: Changeset = {
@@ -218,16 +211,13 @@ function dropColumnMigration(
 			`alterTable("${tableName}")`,
 			`addColumn("${columnName}", ${compileDataType(
 				columnDef.dataType,
-				columnDef.enum,
 			)}${optionsForColumn(columnDef)})`,
 		),
 	];
 	if (columnDef.defaultValue !== null) {
 		const defaultValueAndHash = toValueAndHash(String(columnDef.defaultValue));
 		down.push(
-			executeKyselyDbStatement(
-				`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
-			),
+			commentForDefault(schemaName, tableName, columnName, defaultValueAndHash),
 		);
 	}
 	const changeset: Changeset = {

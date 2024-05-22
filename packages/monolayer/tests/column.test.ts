@@ -4,6 +4,10 @@ import { Equal, Expect } from "type-testing";
 import { beforeEach, describe, expect, test } from "vitest";
 import { z } from "zod";
 import {
+	columnWithType,
+	pgColumnWithType,
+} from "~/database/schema/table/column/column-with-type.js";
+import {
 	PgBigInt,
 	bigint,
 } from "~/database/schema/table/column/data-types/bigint.js";
@@ -127,10 +131,6 @@ import {
 	uuid,
 } from "~/database/schema/table/column/data-types/uuid.js";
 import { PgXML, xml } from "~/database/schema/table/column/data-types/xml.js";
-import {
-	PgGenericColumn,
-	genericColumn,
-} from "~/database/schema/table/column/generic-column.js";
 import {
 	ColumnInfo,
 	type JsonValue,
@@ -18117,24 +18117,24 @@ describe("macaddr8", () => {
 
 describe("generic column", () => {
 	test("returns a PgGenericColumn instance", () => {
-		const column = genericColumn("money");
-		expect(column).toBeInstanceOf(PgGenericColumn);
+		const column = columnWithType("money");
+		expect(column).toBeInstanceOf(pgColumnWithType);
 	});
 
 	describe("PgGenericColumn", () => {
 		test("inherits from PgColumn", () => {
-			expect(genericColumn("money")).toBeInstanceOf(PgColumn);
+			expect(columnWithType("money")).toBeInstanceOf(PgColumn);
 		});
 
 		test("dataType is set to constructor", () => {
 			const info = Object.fromEntries(
-				Object.entries(genericColumn("money")),
+				Object.entries(columnWithType("money")),
 			).info;
 			expect(info.dataType).toBe("money");
 		});
 
 		test("default with expression", () => {
-			const column = genericColumn("money");
+			const column = columnWithType("money");
 			const info = Object.fromEntries(Object.entries(column)).info;
 
 			column.default(sql`'12.34'::float8::numeric::money`);
@@ -18146,7 +18146,7 @@ describe("generic column", () => {
 
 		test("does not have generatedAlwaysAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = genericColumn("money") as any;
+			const column = columnWithType("money") as any;
 			expect(typeof column.generatedAlwaysAsIdentity === "function").toBe(
 				false,
 			);
@@ -18154,32 +18154,32 @@ describe("generic column", () => {
 
 		test("does not have generatedByDefaultAsIdentity", () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const column = genericColumn("money") as any;
+			const column = columnWithType("money") as any;
 			expect(typeof column.generatedByDefaultAsIdentity === "function").toBe(
 				false,
 			);
 		});
 
 		test("select and insert types are unknown by default", () => {
-			const column = genericColumn("money");
+			const column = columnWithType("money");
 
-			type ExpectedType = PgGenericColumn<unknown, unknown>;
+			type ExpectedType = pgColumnWithType<unknown, unknown>;
 			type ColumnType = typeof column;
 			const isEqual: Expect<Equal<ColumnType, ExpectedType>> = true;
 			expect(isEqual).toBe(true);
 		});
 
 		test("select and insert types can be customized", () => {
-			const column = genericColumn<string>("money");
+			const column = columnWithType<string>("money");
 
-			type ExpectedType = PgGenericColumn<string, string>;
+			type ExpectedType = pgColumnWithType<string, string>;
 			type ColumnType = typeof column;
 			const isEqual: Expect<Equal<ColumnType, ExpectedType>> = true;
 			expect(isEqual).toBe(true);
 
-			const anotherColumn = genericColumn<number, number>("money");
+			const anotherColumn = columnWithType<number, number>("money");
 			const isEqualAnother: Expect<
-				Equal<typeof anotherColumn, PgGenericColumn<number, number>>
+				Equal<typeof anotherColumn, pgColumnWithType<number, number>>
 			> = true;
 			expect(isEqualAnother).toBe(true);
 		});
@@ -18190,7 +18190,7 @@ describe("generic column", () => {
 			test("input type is any without type", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn("money"),
+						id: columnWithType("money"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18203,7 +18203,7 @@ describe("generic column", () => {
 			test("output type is any without type", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn("money"),
+						id: columnWithType("money"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18217,7 +18217,7 @@ describe("generic column", () => {
 			test("input type is any without type", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn("money"),
+						id: columnWithType("money"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18231,7 +18231,7 @@ describe("generic column", () => {
 			test("input type is defined type, null or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<number>("money"),
+						id: columnWithType<number>("money"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18244,7 +18244,7 @@ describe("generic column", () => {
 			test("output type is defined type, null or undefined", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<number>("money"),
+						id: columnWithType<number>("money"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18257,7 +18257,7 @@ describe("generic column", () => {
 			test("input type is defined type with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<number>("money").notNull(),
+						id: columnWithType<number>("money").notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18270,7 +18270,7 @@ describe("generic column", () => {
 			test("output type is defined type with notNull", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<number>("money").notNull(),
+						id: columnWithType<number>("money").notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18283,7 +18283,7 @@ describe("generic column", () => {
 			test("input type is defined type or undefined with notNull and default", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money")
+						id: columnWithType<string>("money")
 							.notNull()
 							.default(sql`'12.34'::float8::numeric::money`),
 					},
@@ -18298,7 +18298,7 @@ describe("generic column", () => {
 			test("output type is string or undefined with notNull and default", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money")
+						id: columnWithType<string>("money")
 							.notNull()
 							.default(sql`'12.34'::float8::numeric::money`),
 					},
@@ -18313,7 +18313,7 @@ describe("generic column", () => {
 			test("parses null", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money"),
+						id: columnWithType<string>("money"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18323,7 +18323,7 @@ describe("generic column", () => {
 			test("does not parse explicit undefined", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money"),
+						id: columnWithType<string>("money"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18336,7 +18336,7 @@ describe("generic column", () => {
 			test("with default value is nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money").default(
+						id: columnWithType<string>("money").default(
 							sql`'12.34'::float8::numeric::money`,
 						),
 					},
@@ -18349,7 +18349,7 @@ describe("generic column", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money").notNull(),
+						id: columnWithType<string>("money").notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18361,7 +18361,7 @@ describe("generic column", () => {
 			test("with default and notNull is non nullable", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money")
+						id: columnWithType<string>("money")
 							.notNull()
 							.default(sql`'12.34'::float8::numeric::money`),
 					},
@@ -18377,7 +18377,7 @@ describe("generic column", () => {
 			test("input type is defined type with primary key", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<number>("money"),
+						id: columnWithType<number>("money"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -18393,7 +18393,7 @@ describe("generic column", () => {
 			test("output type is defined type", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<number>("money"),
+						id: columnWithType<number>("money"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -18409,7 +18409,7 @@ describe("generic column", () => {
 			test("is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<number>("money"),
+						id: columnWithType<number>("money"),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -18435,7 +18435,7 @@ describe("generic column", () => {
 			test("with default value is non nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money").default(
+						id: columnWithType<string>("money").default(
 							sql`'12.34'::float8::numeric::money`,
 						),
 					},
@@ -18463,7 +18463,7 @@ describe("generic column", () => {
 			test("with notNull is non nullable and required", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money").notNull(),
+						id: columnWithType<string>("money").notNull(),
 					},
 					constraints: {
 						primaryKey: primaryKey(["id"]),
@@ -18489,7 +18489,7 @@ describe("generic column", () => {
 			test("with default and notNull is non nullable and optional", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money")
+						id: columnWithType<string>("money")
 							.default(sql`'12.34'::float8::numeric::money`)
 							.notNull(),
 					},
@@ -18519,7 +18519,7 @@ describe("generic column", () => {
 			test("undefined", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money").notNull(),
+						id: columnWithType<string>("money").notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18541,7 +18541,7 @@ describe("generic column", () => {
 			test("explicit undefined", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money"),
+						id: columnWithType<string>("money"),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
@@ -18578,7 +18578,7 @@ describe("generic column", () => {
 			test("null", () => {
 				const tbl = table({
 					columns: {
-						id: genericColumn<string>("money").notNull(),
+						id: columnWithType<string>("money").notNull(),
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;

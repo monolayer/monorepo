@@ -9,11 +9,10 @@ import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
 import type { SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { currentTableName } from "~/introspection/table-name.js";
 import {
-	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
 	sqlStatement,
 } from "../../../../../changeset/helpers.js";
-import { toValueAndHash } from "../../changeset-helpers.js";
+import { commentForDefault, toValueAndHash } from "../../changeset-helpers.js";
 
 export function columnDefaultMigrationOpGenerator(
 	diff: Difference,
@@ -115,9 +114,7 @@ function columnDefaultAddMigrationOperation(
 					defaultValueAndHash.value ?? "",
 				)}))`,
 			),
-			executeKyselyDbStatement(
-				`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
-			),
+			commentForDefault(schemaName, tableName, columnName, defaultValueAndHash),
 		],
 		down: [
 			executeKyselySchemaStatement(
@@ -140,9 +137,6 @@ function columnDefaultDropMigrationOperation(
 
 	const defaultValueAndHash = toValueAndHash(String(diff.oldValue));
 
-	executeKyselyDbStatement(
-		`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
-	);
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultDrop,
 		schemaName,
@@ -164,9 +158,7 @@ function columnDefaultDropMigrationOperation(
 					defaultValueAndHash.value ?? "",
 				)}))`,
 			),
-			executeKyselyDbStatement(
-				`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${defaultValueAndHash.hash}'`,
-			),
+			commentForDefault(schemaName, tableName, columnName, defaultValueAndHash),
 		],
 	};
 	return changeset;
@@ -197,8 +189,11 @@ function columnDefaultChangeMigrationOperation(
 	];
 
 	up.push(
-		executeKyselyDbStatement(
-			`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${newDefaultValueAndHash.hash}'`,
+		commentForDefault(
+			schemaName,
+			tableName,
+			columnName,
+			newDefaultValueAndHash,
 		),
 	);
 
@@ -213,8 +208,11 @@ function columnDefaultChangeMigrationOperation(
 	];
 
 	down.push(
-		executeKyselyDbStatement(
-			`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${oldDefaultValueAndHash.hash}'`,
+		commentForDefault(
+			schemaName,
+			tableName,
+			columnName,
+			oldDefaultValueAndHash,
 		),
 	);
 

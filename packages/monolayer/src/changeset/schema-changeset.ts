@@ -49,6 +49,7 @@ export function schemaChangeset(
 			tablePriorities: [],
 		},
 	);
+
 	const context: GeneratorContext = {
 		local: introspection.local,
 		db: introspection.remote,

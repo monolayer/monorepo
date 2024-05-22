@@ -71,6 +71,24 @@ export async function databaseTableDependencies(
 					"information_schema.key_column_usage.table_schema",
 				),
 		)
+		.fullJoin("information_schema.columns", (join) =>
+			join
+				.onRef(
+					"information_schema.columns.table_name",
+					"=",
+					"information_schema.table_constraints.table_name",
+				)
+				.onRef(
+					"information_schema.columns.column_name",
+					"=",
+					"information_schema.key_column_usage.column_name",
+				)
+				.onRef(
+					"information_schema.columns.table_schema",
+					"=",
+					"information_schema.table_constraints.table_schema",
+				),
+		)
 		.where(
 			"information_schema.table_constraints.constraint_type",
 			"=",
@@ -87,6 +105,7 @@ export async function databaseTableDependencies(
 			"<>",
 			"information_schema.constraint_column_usage.table_name",
 		)
+		.where("information_schema.columns.is_nullable", "=", "NO")
 		.select([
 			sql<string>`information_schema.table_constraints.table_name`.as(
 				"foreigh_key_table",
@@ -164,6 +183,7 @@ async function databaseSchemaDependencies(kysely: Kysely<InformationSchemaDB>) {
 		])
 		.groupBy(["pg_namespace.nspname", "dependency_ns.nspname"])
 		.execute();
+
 	return toposort(results.map((row) => [row.schema, row.depends_on]));
 }
 
@@ -178,9 +198,11 @@ function localSchemaDependencies(allSchemas: AnySchema[]) {
 			for (const foreignKey of foreignKeys) {
 				const options = foreignKeyOptions(foreignKey);
 				const foreignKeyTargetTable = options.targetTable ?? table;
-				const targetTableInfo = tableInfo(foreignKeyTargetTable);
-				if (targetTableInfo.schemaName != info.schemaName) {
-					dependencies.push([info.schemaName, targetTableInfo.schemaName]);
+				if (typeof foreignKeyTargetTable !== "string") {
+					const targetTableInfo = tableInfo(foreignKeyTargetTable);
+					if (targetTableInfo.schemaName != info.schemaName) {
+						dependencies.push([info.schemaName, targetTableInfo.schemaName]);
+					}
 				}
 			}
 		}

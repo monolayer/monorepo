@@ -132,17 +132,28 @@ function foreignKeyInfo(
 		const options = foreignKeyOptions(fk);
 		const isExternal = isExternalForeignKey(fk);
 		const foreignKeyTargetTable = options.targetTable ?? currentTable;
-		const targetTable =
-			findTableInSchema(foreignKeyTargetTable, allSchemas) || "";
-		const targetTableSchema = tableInfo(foreignKeyTargetTable).schemaName;
-		return {
-			columns: options.columns,
-			targetTable: `${targetTableSchema}.${targetTable}`,
-			targetColumns: options.targetColumns,
-			deleteRule: options.deleteRule,
-			updateRule: options.updateRule,
-			isExternal: isExternal,
-		};
+		if (typeof foreignKeyTargetTable === "string") {
+			return {
+				columns: options.columns,
+				targetTable: foreignKeyTargetTable,
+				targetColumns: options.targetColumns,
+				deleteRule: options.deleteRule,
+				updateRule: options.updateRule,
+				isExternal: isExternal,
+			};
+		} else {
+			const targetTable =
+				findTableInSchema(foreignKeyTargetTable, allSchemas) || "";
+			const targetTableSchema = tableInfo(foreignKeyTargetTable).schemaName;
+			return {
+				columns: options.columns,
+				targetTable: `${targetTableSchema}.${targetTable}`,
+				targetColumns: options.targetColumns,
+				deleteRule: options.deleteRule,
+				updateRule: options.updateRule,
+				isExternal: isExternal,
+			};
+		}
 	});
 }
 
@@ -198,6 +209,10 @@ function primaryKey(columns?: ColumnRecord) {
 export function introspectTable(table: AnyPgTable, allSchemas: AnySchema[]) {
 	const info = tableInfo(table);
 	const defininition = info.definition;
+	const triggers = (defininition.triggers ??
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		[]) as PgTrigger<any>[];
+
 	const introspectedTable: TableIntrospection = {
 		primaryKey: primaryKey(defininition.columns),
 		columns: columnInfo(defininition.columns),
@@ -207,7 +222,7 @@ export function introspectTable(table: AnyPgTable, allSchemas: AnySchema[]) {
 			defininition.constraints?.foreignKeys,
 		).filter((fk) => fk.isExternal === false),
 		uniqueConstraints: uniqueConstraintInfo(defininition.constraints?.unique),
-		triggers: triggerInfo(defininition.triggers),
+		triggers: triggerInfo(triggers),
 	};
 	return introspectedTable;
 }

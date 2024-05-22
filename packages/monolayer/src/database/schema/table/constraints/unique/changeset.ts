@@ -148,7 +148,11 @@ function createUniqueFirstConstraintMigration(
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [hash, value]) => {
-		const uniqueConstraint = uniqueConstraintDefinition(value, tableName, hash);
+		const uniqueConstraint = uniqueConstraintDefinitionFromString(
+			value,
+			tableName,
+			hash,
+		);
 		uniqueConstraint.columns = uniqueConstraint.columns.map((col) =>
 			currentColumName(tableName, schemaName, col, columnsToRename),
 		);
@@ -202,7 +206,7 @@ function dropUniqueLastConstraintMigration(
 
 	return Object.entries(diff.oldValue).reduce(
 		(acc, [hashValue, constraintValue]) => {
-			const uniqueConstraint = uniqueConstraintDefinition(
+			const uniqueConstraint = uniqueConstraintDefinitionFromString(
 				constraintValue,
 				previousTableName(tableName, tablesToRename),
 				hashValue,
@@ -247,7 +251,7 @@ function createUniqueConstraintMigration(
 ) {
 	const tableName = diff.path[1];
 	const hashValue = diff.path[2];
-	const uniqueConstraint = uniqueConstraintDefinition(
+	const uniqueConstraint = uniqueConstraintDefinitionFromString(
 		diff.value,
 		tableName,
 		hashValue,
@@ -282,7 +286,7 @@ function dropUniqueConstraintMigration(
 ) {
 	const tableName = diff.path[1];
 	const hashValue = diff.path[2];
-	const uniqueConstraint = uniqueConstraintDefinition(
+	const uniqueConstraint = uniqueConstraintDefinitionFromString(
 		diff.oldValue,
 		previousTableName(tableName, tablesToRename),
 		hashValue,
@@ -348,7 +352,7 @@ type ConstraintDefinition = {
 	columns: string[];
 };
 
-function uniqueConstraintDefinition(
+export function uniqueConstraintDefinitionFromString(
 	unique: string,
 	tableName: string,
 	hashValue: string,

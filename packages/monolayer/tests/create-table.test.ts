@@ -3,6 +3,7 @@ import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { extension } from "~/database/extension/extension.js";
 import { schema } from "~/database/schema/schema.js";
+import { columnWithType } from "~/database/schema/table/column/column-with-type.js";
 import { bigint } from "~/database/schema/table/column/data-types/bigint.js";
 import { bigserial } from "~/database/schema/table/column/data-types/bigserial.js";
 import { bitVarying } from "~/database/schema/table/column/data-types/bit-varying.js";
@@ -33,9 +34,11 @@ import { tsquery } from "~/database/schema/table/column/data-types/tsquery.js";
 import { tsvector } from "~/database/schema/table/column/data-types/tsvector.js";
 import { uuid } from "~/database/schema/table/column/data-types/uuid.js";
 import { xml } from "~/database/schema/table/column/data-types/xml.js";
-import { genericColumn } from "~/database/schema/table/column/generic-column.js";
 import { check } from "~/database/schema/table/constraints/check/check.js";
-import { foreignKey } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
+import {
+	foreignKey,
+	unmanagedForeignKey,
+} from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
 import { primaryKey } from "~/database/schema/table/constraints/primary-key/primary-key.js";
 import { unique } from "~/database/schema/table/constraints/unique/unique.js";
 import { index } from "~/database/schema/table/index/index.js";
@@ -321,31 +324,31 @@ describe("Create table", () => {
 			tables: {
 				users: table({
 					columns: {
-						bit_a: genericColumn<string, string>("bit(1)[]"),
-						bit_varying: genericColumn<string, string>("bit varying(1)[]"),
-						char_a: genericColumn<string, string>("character(1)[]"),
-						money: genericColumn<string, string>("money"),
-						numeric_5_a: genericColumn<string, string>("numeric(5,0)[]"),
-						numeric_5_2_arr: genericColumn<string, string>("numeric(5,2)[]"),
-						textArray: genericColumn<string[], string[]>("text[]"),
-						timestamp_a: genericColumn<string[], string[]>("timestamp[]"),
-						timestamp_a_3: genericColumn<string[], string[]>("timestamp(3)[]"),
-						timestamptz_a: genericColumn<string[], string[]>(
+						bit_a: columnWithType<string, string>("bit(1)[]"),
+						bit_varying: columnWithType<string, string>("bit varying(1)[]"),
+						char_a: columnWithType<string, string>("character(1)[]"),
+						money: columnWithType<string, string>("money"),
+						numeric_5_a: columnWithType<string, string>("numeric(5,0)[]"),
+						numeric_5_2_arr: columnWithType<string, string>("numeric(5,2)[]"),
+						textArray: columnWithType<string[], string[]>("text[]"),
+						timestamp_a: columnWithType<string[], string[]>("timestamp[]"),
+						timestamp_a_3: columnWithType<string[], string[]>("timestamp(3)[]"),
+						timestamptz_a: columnWithType<string[], string[]>(
 							"timestamp with time zone[]",
 						),
-						timestamptz_a_3: genericColumn<string[], string[]>(
+						timestamptz_a_3: columnWithType<string[], string[]>(
 							"timestamp(3) with time zone[]",
 						),
-						time_a: genericColumn<string[], string[]>("time[]"),
-						time_a_3: genericColumn<string[], string[]>("time(3)[]"),
-						timetz_a: genericColumn<string[], string[]>(
+						time_a: columnWithType<string[], string[]>("time[]"),
+						time_a_3: columnWithType<string[], string[]>("time(3)[]"),
+						timetz_a: columnWithType<string[], string[]>(
 							"time with time zone[]",
 						),
-						timetz_a_3: genericColumn<string[], string[]>(
+						timetz_a_3: columnWithType<string[], string[]>(
 							"time(3) with time zone[]",
 						),
-						varchar_a: genericColumn<string, string>("character varying[]"),
-						varchar_a_255: genericColumn<string, string>(
+						varchar_a: columnWithType<string, string>("character varying[]"),
+						varchar_a_255: columnWithType<string, string>(
 							"character varying(255)[]",
 						),
 					},
@@ -367,7 +370,7 @@ describe("Create table", () => {
 						'addColumn("bit_a", sql`bit(1)[]`)',
 						'addColumn("bit_varying", sql`bit varying(1)[]`)',
 						'addColumn("char_a", sql`character(1)[]`)',
-						'addColumn("money", sql`money`)',
+						'addColumn("money", sql`"money"`)',
 						'addColumn("numeric_5_a", sql`numeric(5,0)[]`)',
 						'addColumn("numeric_5_2_arr", sql`numeric(5,2)[]`)',
 						'addColumn("textArray", sql`text[]`)',
@@ -871,6 +874,7 @@ describe("Create table", () => {
 			},
 			constraints: {
 				foreignKeys: [
+					unmanagedForeignKey(["id"], "other", ["id"]),
 					foreignKey(["id"], books, ["id"])
 						.deleteRule("set null")
 						.updateRule("set null"),
@@ -1184,15 +1188,19 @@ describe("Create table", () => {
 
 	test<DbContext>("with enums", async (context) => {
 		const role = enumType("role", ["admin", "user"]);
+		const status = enumType("STATUS", ["active", "inactive"]);
+
 		const users = table({
 			columns: {
 				name: text(),
 				role: enumerated(role),
+				status: enumerated(status),
+				multipleStatus: columnWithType<string[]>("STATUS[]"),
 			},
 		});
 
 		const dbSchema = schema({
-			types: [role],
+			types: [role, status],
 			tables: {
 				users,
 			},
@@ -1225,6 +1233,32 @@ describe("Create table", () => {
 				],
 			},
 			{
+				priority: 2,
+				tableName: "none",
+				currentTableName: "none",
+				schemaName: "public",
+				type: "createEnum",
+				up: [
+					[
+						'await db.withSchema("public").schema',
+						'createType("STATUS")',
+						'asEnum(["active", "inactive"])',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON TYPE "public"."STATUS" IS \'monolayer\'`',
+						"execute(db);",
+					],
+				],
+				down: [
+					[
+						'await db.withSchema("public").schema',
+						'dropType("STATUS")',
+						"execute();",
+					],
+				],
+			},
+			{
 				priority: 2001,
 				tableName: "users",
 				currentTableName: "users",
@@ -1235,7 +1269,9 @@ describe("Create table", () => {
 						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("name", "text")',
-						'addColumn("role", sql`role`)',
+						'addColumn("role", sql`"role"`)',
+						'addColumn("status", sql`"STATUS"`)',
+						'addColumn("multipleStatus", sql`"STATUS"[]`)',
 						"execute();",
 					],
 				],
@@ -1547,7 +1583,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 						'await db.withSchema("public").schema',
 						'createTable("trigger_table")',
 						'addColumn("updated_at", "timestamp", (col) => col.defaultTo(sql`now()`))',
-						'addColumn("role", sql`role`)',
+						'addColumn("role", sql`"role"`)',
 						"execute();",
 					],
 					[

@@ -137,6 +137,8 @@ export type PgClassTable = {
 	relname: string;
 	relkind: string;
 	relnamespace: number;
+	relam: number;
+	tableoid: number;
 };
 
 export type PgConstraintTable = {
@@ -166,6 +168,7 @@ export type PgConstraintTable = {
 	confdelsetcols: number[];
 	conexclop: number[];
 	conbin: string;
+	tableoid: number;
 };
 
 export type PgAttributeTable = {
@@ -209,6 +212,7 @@ export type PgTrigger = {
 	tgname: string;
 	tgfoid: number;
 	tgrelid: number;
+	tgisinternal: boolean;
 };
 
 export type PgTypeTable = {
@@ -227,6 +231,7 @@ export type PgDescriptionTable = {
 	objoid: number;
 	objsubid: number;
 	description: string;
+	classoid: number;
 };
 
 export type Schemata = {
@@ -251,6 +256,15 @@ export type PgDepend = {
 	refobjid: number;
 	classid: number;
 	deptype: string;
+	refobjsubid: number;
+	refclassid: number;
+};
+
+export type PgAm = {
+	oid: number;
+	amname: string;
+	amhandler: number;
+	amtype: string;
 };
 
 export type InformationSchemaDB = {
@@ -274,4 +288,5 @@ export type InformationSchemaDB = {
 	pg_settings: PgSettings;
 	pg_proc: PgProc;
 	pg_depend: PgDepend;
+	pg_am: PgAm;
 };

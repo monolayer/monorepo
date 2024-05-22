@@ -142,18 +142,25 @@ export async function introspectRemoteSchema(
 
 	const remoteColumnInfo = await dbColumnInfo(kysely, schemaName, tables);
 
-	const remoteIndexInfo = await dbIndexInfo(kysely, schemaName, tables);
+	const remoteIndexInfo = await dbIndexInfo(
+		kysely,
+		schemaName,
+		tables,
+		builderContext,
+	);
 
 	const remoteUniqueConstraintInfo = await dbUniqueConstraintInfo(
 		kysely,
 		schemaName,
 		tables,
+		builderContext,
 	);
 
 	const remoteForeignKeyConstraints = await fetchForeignConstraintInfo(
 		kysely,
 		schemaName,
 		tables,
+		builderContext,
 	);
 
 	const remoteForeignKeyConstraintInfo = await dbForeignKeyConstraints(
@@ -167,7 +174,12 @@ export async function introspectRemoteSchema(
 		tables,
 	);
 
-	const triggerInfo = await dbTriggerInfo(kysely, schemaName, tables);
+	const triggerInfo = await dbTriggerInfo(
+		kysely,
+		schemaName,
+		tables,
+		builderContext,
+	);
 
 	const enumInfo = await dbEnumInfo(kysely, schemaName);
 
@@ -175,6 +187,7 @@ export async function introspectRemoteSchema(
 		kysely,
 		schemaName,
 		tables,
+		builderContext,
 	);
 
 	const schemaInfo = (await schemaInDb(kysely, schemaName)).reduce(

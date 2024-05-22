@@ -1,5 +1,8 @@
 /* eslint-disable complexity */
-import { sqlStatement } from "../../../changeset/helpers.js";
+import {
+	executeKyselyDbStatement,
+	sqlStatement,
+} from "../../../changeset/helpers.js";
 import { type ColumnInfo } from "./column/types.js";
 export type ColumnsInfoDiff = Record<string, ColumnInfoDiff>;
 
@@ -12,7 +15,6 @@ export function tableColumnsOps(columnsInfo: ColumnsInfoDiff) {
 		const base = [
 			`addColumn("${column.columnName}", ${compileDataType(
 				column.dataType,
-				column.enum,
 			)}${optionsForColumn(column)})`,
 		];
 		return base;
@@ -55,47 +57,39 @@ export function optionsForColumn(column: ColumnInfoDiff) {
 	return columnOptions;
 }
 
-export function compileDataType(dataType: string, isEnum: boolean) {
-	if (isEnum) {
-		return `sql\`${dataType}\``;
-	}
-	if (dataType.includes("character(")) {
-		return `sql\`${dataType}\``;
-	}
-	if (dataType.includes("character varying(")) {
-		return `sql\`${dataType}\``;
-	}
-	if (dataType.includes("with time zone")) {
-		return `sql\`${dataType}\``;
-	}
-	if (useSqlInDataType(dataType)) {
-		return `sql\`${dataType}\``;
-	}
-	return `"${dataType}"`;
-}
+export function compileDataType(dataType: string) {
+	const base = dataType.endsWith("[]") ? dataType.split("[]").at(0)! : dataType;
+	const isArray = dataType.endsWith("[]");
 
-function useSqlInDataType(dataType: string) {
-	if (dataTypesWithoutSql.includes(dataType)) {
-		return false;
-	}
-	if (dataTypesWithSql.includes(dataType)) {
-		return true;
-	}
-	if (dataType.includes("bit(")) {
-		return true;
-	}
-	if (dataType.includes("[]")) {
-		return true;
+	if (
+		dataTypesWithoutSql.includes(base) ||
+		dataType.includes("numeric(") ||
+		(dataType.includes("time(") && !dataType.includes("with time zone")) ||
+		(dataType.includes("timestamp(") && !dataType.includes("with time zone"))
+	) {
+		if (isArray) {
+			return `sql\`${base}[]\``;
+		}
+		return `"${dataType}"`;
 	}
 	if (
-		dataType.includes("numeric(") ||
-		dataType.includes("time(") ||
-		dataType.includes("timestamp(")
+		dataTypesWithSql.includes(base) ||
+		dataType.includes("bit(") ||
+		dataType.includes("bit varying(") ||
+		dataType.includes("character(") ||
+		dataType.includes("character varying(") ||
+		dataType.includes("with time zone")
 	) {
-		return false;
+		if (isArray) {
+			return `sql\`${base}[]\``;
+		}
+		return `sql\`${dataType}\``;
 	}
-
-	return true;
+	if (isArray) {
+		return `sql\`"${base}"[]\``;
+	} else {
+		return `sql\`"${dataType}"\``;
+	}
 }
 
 const dataTypesWithoutSql = [
@@ -120,6 +114,7 @@ const dataTypesWithoutSql = [
 const dataTypesWithSql = [
 	"smallint",
 	"character",
+	"bit varying",
 	"character varying",
 	"time with time zone",
 	"timestamp with time zone",
@@ -133,3 +128,14 @@ const dataTypesWithSql = [
 	"macaddr",
 	"macaddr8",
 ];
+
+export function commentForDefault(
+	schemaName: string,
+	tableName: string,
+	columnName: string,
+	defaultValueAndHash: DefaultValueAndHash,
+) {
+	return executeKyselyDbStatement(
+		`COMMENT ON COLUMN "${schemaName}"."${tableName}"."${columnName}" IS '${defaultValueAndHash.hash ?? ""}'`,
+	);
+}

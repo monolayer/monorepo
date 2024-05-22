@@ -11,11 +11,25 @@ import { tableInfo } from "~/introspection/helpers.js";
 import { MonolayerPostgresDialect } from "~/services/db-clients.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
+import type { BuilderContext } from "../constraints/foreign-key/builder.js";
+
+//SELECT nsp.nspname AS schema ,rel.relname AS table
+//         FROM pg_catalog.pg_class rel
+//             JOIN pg_catalog.pg_namespace nsp
+//             ON rel.relnamespace = nsp.oid::oid
+//             WHERE rel.oid = 41058::oid
+// SELECT t.oid, t.tgname as name, t.tgenabled AS is_enable_trigger, des.description
+//         FROM pg_catalog.pg_trigger t
+//             LEFT OUTER JOIN pg_catalog.pg_description des ON (des.objoid=t.oid AND des.classoid='pg_trigger'::regclass)
+//         WHERE NOT tgisinternal
+//             AND tgrelid = 41058::OID
+//             ORDER BY tgname;
 
 export async function dbTriggerInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
+	builderContext: BuilderContext,
 ) {
 	if (tableNames.length === 0) {
 		return {};
@@ -33,18 +47,25 @@ export async function dbTriggerInfo(
 		])
 		.where("pg_namespace.nspname", "=", databaseSchema)
 		.where("pg_class.relname", "in", tableNames)
-		.where("pg_trigger.tgname", "~", "_monolayer_trg$")
+		.where("pg_trigger.tgisinternal", "=", false)
+		.where(
+			"pg_trigger.tgname",
+			"~",
+			builderContext.external ? "" : "_monolayer_trg$",
+		)
 		.execute();
 
 	const triggerInfo = results.reduce<TriggerInfo>((acc, curr) => {
-		const constraintHash = curr.trigger_name?.match(
-			/^\w+_(\w+)_monolayer_trg$/,
-		)![1];
+		const key = builderContext.external
+			? curr.trigger_name
+			: curr.trigger_name?.match(/^\w+_(\w+)_monolayer_trg$/)![1];
 
 		acc[curr.table_name] = {
 			...acc[curr.table_name],
 			...{
-				[curr.trigger_name]: `${constraintHash}:${curr.definition}`,
+				[curr.trigger_name]: builderContext.external
+					? curr.definition
+					: `${key}:${curr.definition}`,
 			},
 		};
 		return acc;
@@ -128,7 +149,10 @@ export function localTriggersInfo(
 	return Object.entries(tables || {}).reduce<TriggerInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const triggers = tableInfo(tableDefinition).definition.triggers;
+			const triggers = (tableInfo(tableDefinition).definition.triggers ??
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				[]) as PgTrigger<any>[];
+
 			if (triggers === undefined) {
 				return acc;
 			}

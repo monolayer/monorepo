@@ -3,11 +3,11 @@ import { compileDefaultExpression } from "~/introspection/helpers.js";
 import { PgColumn, valueWithHash } from "./column.js";
 import type { WithDefaultColumn } from "./types.js";
 
-export function genericColumn<S, I = S>(dataType: string) {
-	return new PgGenericColumn<S, I>(dataType);
+export function columnWithType<S, I = S>(dataType: string) {
+	return new pgColumnWithType<S, I>(dataType);
 }
 
-export class PgGenericColumn<S, I = S> extends PgColumn<S, I> {
+export class pgColumnWithType<S, I = S> extends PgColumn<S, I> {
 	/**
 	 * @hidden
 	 */

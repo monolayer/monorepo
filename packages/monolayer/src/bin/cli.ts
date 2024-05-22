@@ -4,13 +4,14 @@ import { Command } from "@commander-js/extra-typings";
 import { CommanderError } from "commander";
 import { Effect } from "effect";
 import { exit } from "process";
-import { cliAction } from "~/cli/cli-action.js";
+import { cliAction, cliActionWithoutContext } from "~/cli/cli-action.js";
+import { importSchema } from "~/cli/import-schema.js";
 import { createDatabase } from "~/database/create.js";
 import { dropDatabase } from "~/database/drop.js";
 import { handleMissingDatabase } from "~/database/handle-missing.js";
 import { seed } from "~/database/seed.js";
 import { structureLoad } from "~/database/structure-load.js";
-import { applyMigrations, migrate } from "~/migrations/apply.js";
+import { applyMigrations } from "~/migrations/apply.js";
 import { generateMigration } from "~/migrations/generate.js";
 import {
 	handlePendingSchemaMigrations,
@@ -103,6 +104,13 @@ async function main() {
 		});
 
 	program
+		.command("import-schema")
+		.description("imports schema")
+		.action(async () => {
+			await cliActionWithoutContext("monolayer import", [importSchema]);
+		});
+
+	program
 		.command("pending")
 		.description("list pending schema migrations")
 		.option(
@@ -133,7 +141,7 @@ async function main() {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("monolayer migrate", opts, [migrate()]);
+			await cliAction("monolayer migrate", opts, [applyMigrations()]);
 		});
 
 	program
@@ -156,10 +164,17 @@ async function main() {
 	program
 		.command("scaffold")
 		.description("creates an empty schema migration file")
-		.action(async () => {
-			await cliAction("monolayer scaffold", { connection: "development" }, [
-				scaffoldMigration(),
-			]);
+		.option(
+			"-n, --name <configuration-name>",
+			"configuration name as defined in configuration.ts",
+			"default",
+		)
+		.action(async (opts) => {
+			await cliAction(
+				"monolayer scaffold",
+				{ ...opts, connection: "development" },
+				[scaffoldMigration()],
+			);
 		});
 
 	program

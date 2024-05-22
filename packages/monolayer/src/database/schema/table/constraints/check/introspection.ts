@@ -3,8 +3,8 @@ import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import {
+	PgCheck,
 	assertCheckWithInfo,
-	type PgCheck,
 } from "~/database/schema/table/constraints/check/check.js";
 import {
 	currentColumName,
@@ -18,11 +18,13 @@ import type { ColumnsToRename } from "~/introspection/introspect-schemas.js";
 import type { CheckInfo } from "~/introspection/schema.js";
 import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
+import type { BuilderContext } from "../foreign-key/builder.js";
 
 export async function dbCheckConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,
 	databaseSchema: string,
 	tableNames: string[],
+	builderContext: BuilderContext,
 ) {
 	if (tableNames.length === 0) {
 		return {};
@@ -42,16 +44,21 @@ export async function dbCheckConstraintInfo(
 		])
 		.where("pg_constraint.contype", "=", "c")
 		.where("pg_namespace.nspname", "=", databaseSchema)
-		.where("pg_constraint.conname", "~", "monolayer_chk$")
+		.where(
+			"pg_constraint.conname",
+			"~",
+			builderContext.external ? "" : "monolayer_chk$",
+		)
 		.where("pg_class.relname", "in", tableNames)
 		.orderBy("constraint_name asc")
 		.execute();
 	const transformedResults = results.reduce<CheckInfo>((acc, result) => {
-		const constraintHash = result.constraint_name?.match(
-			/^\w+_(\w+)_monolayer_chk$/,
-		)![1];
+		const key = builderContext.external
+			? result.constraint_name
+			: result.constraint_name?.match(/^\w+_(\w+)_monolayer_chk$/)![1];
+
 		const constraintInfo = {
-			[`${constraintHash}`]: `${result.definition}`,
+			[`${key}`]: `${result.definition}`,
 		};
 		const table = result.table;
 		acc[table] = {
@@ -73,8 +80,11 @@ export function localCheckConstraintInfo(
 	return Object.entries(tables || {}).reduce<CheckInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const checkConstraints = tableInfo(tableDefinition).definition.constraints
-				?.checks as PgCheck[];
+			const checkConstraints = (
+				tableInfo(tableDefinition).definition.constraints?.checks ?? []
+			).filter((check): check is PgCheck =>
+				check instanceof PgCheck ? true : false,
+			);
 			if (checkConstraints !== undefined) {
 				for (const checkConstraint of checkConstraints) {
 					const check = checkConstraint;

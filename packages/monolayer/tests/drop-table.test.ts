@@ -1002,7 +1002,7 @@ describe("Table drop migrations", () => {
 						'await db.withSchema("public").schema',
 						'createTable("users")',
 						'addColumn("name", "text")',
-						'addColumn("role", sql`role`)',
+						'addColumn("role", sql`"role"`)',
 						"execute();",
 					],
 				],

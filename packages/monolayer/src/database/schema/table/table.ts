@@ -1,21 +1,26 @@
 import type { Simplify } from "kysely";
 import type { InferColumnTypes } from "../inference.js";
-import type { PgCheck } from "./constraints/check/check.js";
-import type {
+import { PgCheck, PgUnmanagedCheck } from "./constraints/check/check.js";
+import {
 	PgForeignKey,
 	PgSelfReferentialForeignKey,
+	PgUnmanagedForeignKey,
 } from "./constraints/foreign-key/foreign-key.js";
 import type { PgPrimaryKey } from "./constraints/primary-key/primary-key.js";
 import type { PgUnique } from "./constraints/unique/unique.js";
-import type { PgIndex } from "./index/index.js";
+import { PgIndex, PgUnmanagedIndex } from "./index/index.js";
 import type { ColumnRecord } from "./table-column.js";
-import type { PgTrigger } from "./trigger/trigger.js";
+import { PgTrigger, PgUnmanagedTrigger } from "./trigger/trigger.js";
 
 export type TableDefinition<T, PK extends string> = {
 	columns: T extends ColumnRecord ? T : never;
-	indexes?: keyof T extends string ? PgIndex<keyof T>[] : never;
+	indexes?: keyof T extends string
+		? (PgIndex<keyof T> | PgUnmanagedIndex)[]
+		: never;
 	triggers?: Array<
-		PgTrigger<keyof T extends string ? keyof T : never> | PgTrigger<never>
+		| PgTrigger<keyof T extends string ? keyof T : never>
+		| PgTrigger<never>
+		| PgUnmanagedTrigger
 	>;
 	constraints?: {
 		primaryKey?: keyof T extends string
@@ -27,11 +32,15 @@ export type TableDefinition<T, PK extends string> = {
 		foreignKeys?: keyof T extends string
 			? Array<
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					PgForeignKey<keyof T, any> | PgSelfReferentialForeignKey<keyof T, any>
+					| PgForeignKey<keyof T, any>
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					| PgSelfReferentialForeignKey<keyof T, any>
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					| PgUnmanagedForeignKey<keyof T, any>
 				>
 			: [];
 		unique?: keyof T extends string ? PgUnique<keyof T>[] : [];
-		checks?: PgCheck[];
+		checks?: (PgCheck | PgUnmanagedCheck)[];
 	};
 };
 
@@ -74,6 +83,26 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 				}
 			}
 		}
+		this.definition.constraints = {
+			...this.definition.constraints,
+			checks: (this.definition.constraints?.checks ?? []).filter(
+				(check): check is PgCheck => (check instanceof PgCheck ? true : false),
+			),
+		};
+
+		this.definition.indexes = (this.definition.indexes ?? []).filter(
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(index): index is PgIndex<string & keyof T> =>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				index instanceof PgUnmanagedIndex ? false : true,
+		) as keyof T extends string ? PgIndex<keyof T>[] : never;
+
+		this.definition.triggers = (this.definition.triggers ?? []).filter(
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(index): index is PgTrigger<any> =>
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				index instanceof PgUnmanagedTrigger ? false : true,
+		);
 	}
 }
 

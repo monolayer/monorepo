@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Expression } from "kysely";
+import { PgRawConstraint } from "../raw-constraint.js";
 
 export function check(expression: Expression<any>) {
 	return new PgCheck(expression);
@@ -36,3 +37,10 @@ export function assertCheckWithInfo<T extends PgCheck>(
 } {
 	true;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function unmanagedCheck(name: string, expression: Expression<any>) {
+	return new PgUnmanagedCheck(name, expression);
+}
+
+export class PgUnmanagedCheck extends PgRawConstraint {}

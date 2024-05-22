@@ -81,7 +81,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addColumn("role", sql`role`)',
+						'addColumn("role", sql`"role"`)',
 						"execute();",
 					],
 				],
@@ -157,7 +157,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addColumn("role", sql`role`)',
+						'addColumn("role", sql`"role"`)',
 						"execute();",
 					],
 				],
@@ -311,7 +311,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'createTable("users")',
-						'addColumn("role", sql`role`)',
+						'addColumn("role", sql`"role"`)',
 						"execute();",
 					],
 				],
@@ -374,7 +374,7 @@ describe("Database migrations", () => {
 					[
 						'await db.withSchema("users").schema',
 						'createTable("users")',
-						'addColumn("role", sql`role`)',
+						'addColumn("role", sql`"role"`)',
 						"execute();",
 					],
 				],
