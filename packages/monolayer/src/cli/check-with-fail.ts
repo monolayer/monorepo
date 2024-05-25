@@ -2,6 +2,7 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import color from "picocolors";
 import type { ProgramContext } from "../program-context.js";
+import { ActionError, type ActionErrors } from "./cli-action.js";
 
 export function checkWithFail({
 	name,
@@ -14,7 +15,7 @@ export function checkWithFail({
 	nextSteps: string;
 	errorMessage: string;
 	failMessage: string;
-	callback: () => Effect.Effect<boolean, unknown, ProgramContext>;
+	callback: () => Effect.Effect<boolean, ActionErrors, ProgramContext>;
 }) {
 	return Effect.gen(function* () {
 		const success = yield* check(name, callback);
@@ -23,14 +24,14 @@ export function checkWithFail({
 		} else {
 			p.log.error(errorMessage);
 			p.note(nextSteps, "Next Steps");
-			return yield* Effect.fail(failMessage);
+			return yield* Effect.fail(new ActionError("Check fail", failMessage));
 		}
 	});
 }
 
 function check(
 	name: string,
-	callback: () => Effect.Effect<boolean, unknown, ProgramContext>,
+	callback: () => Effect.Effect<boolean, ActionErrors, ProgramContext>,
 ) {
 	return Effect.gen(function* () {
 		const spinner = p.spinner();

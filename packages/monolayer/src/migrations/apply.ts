@@ -2,14 +2,14 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import type { MigrationResult } from "kysely";
 import color from "picocolors";
+import { UnknownActionError } from "~/cli/cli-action.js";
 import { dumpDatabaseStructureTask } from "~/database/dump.js";
-import { Migrator } from "../services/migrator.js";
 import { migrateToLatest } from "./phased-migrator.js";
 import { validateMigrationDependencies } from "./validate.js";
 
 export function applyMigrations() {
 	return Effect.gen(function* () {
-		const result = yield* migrate();
+		const result = yield* migrate;
 		if (result) {
 			yield* dumpDatabaseStructureTask;
 		}
@@ -17,42 +17,26 @@ export function applyMigrations() {
 	});
 }
 
-export function migrate() {
-	return Migrator.pipe(
-		Effect.tap(() => validateMigrationDependencies()),
-		Effect.flatMap(() => migrateToLatest),
-		Effect.tap(({ error, results }) =>
-			Effect.if(results !== undefined && results.length > 0, {
-				onTrue: () =>
-					Effect.forEach(results!, (result) =>
-						logMigrationResultStatus(result, error, "up"),
-					),
-				onFalse: () => Effect.void,
-			}),
-		),
-		Effect.tap(({ results }) =>
-			Effect.if(results !== undefined && results.length === 0, {
-				onTrue: () =>
-					Effect.succeed(true).pipe(
-						Effect.map(() => p.log.info("No migrations to apply.")),
-					),
-				onFalse: () => Effect.void,
-			}),
-		),
-		Effect.tap(({ error }) =>
-			Effect.if(error !== undefined, {
-				onTrue: () => Effect.fail(error),
-				onFalse: () => Effect.succeed(true),
-			}),
-		),
-		Effect.flatMap(({ error, results }) =>
-			Effect.if(error === undefined && results !== undefined, {
-				onTrue: () => Effect.succeed(true),
-				onFalse: () => Effect.succeed(false),
-			}),
-		),
-	);
-}
+export const migrate = Effect.gen(function* () {
+	yield* validateMigrationDependencies;
+	const { error, results } = yield* migrateToLatest;
+	if (results !== undefined && results.length > 0) {
+		for (const result of results) {
+			yield* logMigrationResultStatus(result, error, "up");
+		}
+	}
+	if (results !== undefined && results.length === 0) {
+		p.log.info("No migrations to apply.");
+	}
+	if (error !== undefined) {
+		yield* Effect.fail(new UnknownActionError("Migration error", error));
+	}
+	if (error === undefined && results !== undefined) {
+		return true;
+	} else {
+		return false;
+	}
+});
 
 export function logMigrationResultStatus(
 	result: MigrationResult,

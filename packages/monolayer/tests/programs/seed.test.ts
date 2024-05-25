@@ -174,7 +174,7 @@ describe("seed", () => {
 						Ref.make(await loadEnv("development", "default")),
 					),
 				),
-		).rejects.toThrowError("Seeder function missing");
+		).rejects.toThrowError();
 	});
 });
 

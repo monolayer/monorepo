@@ -111,7 +111,7 @@ function cleanup() {
 
 async function runMigrate(layers: Layer<Migrator | DbClients, never, never>) {
 	return Effect.runPromise(
-		Effect.provide(programWithErrorCause(migrate()), layers),
+		Effect.provide(programWithErrorCause(migrate), layers),
 	);
 }
 

@@ -1,9 +1,7 @@
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import {
-	ForeignKeyReferencedTableMissing,
-	validateForeignKeyReferences,
-} from "~/changeset/validate-foreign-key-references.js";
+import { validateForeignKeyReferences } from "~/changeset/validate-foreign-key-references.js";
+import { ActionError } from "~/cli/cli-action.js";
 import { schema } from "~/database/schema/schema.js";
 import { integer } from "~/database/schema/table/column/data-types/integer.js";
 import { text } from "~/database/schema/table/column/data-types/text.js";
@@ -88,8 +86,8 @@ describe("validateLocalSchema", () => {
 				}),
 			),
 		);
-		expect(result).toBeInstanceOf(ForeignKeyReferencedTableMissing);
-		const error = result as ForeignKeyReferencedTableMissing;
+		expect(result).toBeInstanceOf(ActionError);
+		const error = result as ActionError;
 		expect(error.message).toBe(
 			"Foreign key in table documents references a table that is not in the schema",
 		);

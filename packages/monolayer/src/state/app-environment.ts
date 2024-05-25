@@ -4,6 +4,7 @@ import path from "path";
 import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 import { cwd } from "process";
+import { ActionError } from "~/cli/cli-action.js";
 import { importConfig, importConfigurations } from "~/config.js";
 import type { Configuration } from "~/configuration.js";
 
@@ -36,27 +37,20 @@ export const appEnvironment = Effect.gen(function* () {
 	return yield* Ref.get(state);
 });
 
-export class MissingConnectionConfiguration extends Error {
-	constructor(name: string) {
-		super(`Connection '${name}' not found. Check your configuration.ts file.`);
-	}
-}
-
 export const appEnvironmentPgConfig = Effect.gen(function* () {
 	const env = yield* appEnvironment;
 	const configuration = yield* configurationByName(env.configurationName);
 	const environmentConfiguration = configuration.connections[env.name];
 	if (environmentConfiguration === undefined) {
-		return yield* Effect.fail(new MissingConnectionConfiguration(env.name));
+		return yield* Effect.fail(
+			new ActionError(
+				"Missing connection configuration",
+				`Connection '${env.name}' not found. Check your configuration.ts file.`,
+			),
+		);
 	}
 	return environmentConfiguration;
 });
-
-export class NoDatabaseFound extends Error {
-	constructor() {
-		super("No database found in connection configuration.");
-	}
-}
 
 export const currentDatabaseName = Effect.gen(function* () {
 	const pgConfig = yield* appEnvironmentPgConfig;
@@ -66,7 +60,12 @@ export const currentDatabaseName = Effect.gen(function* () {
 			: pgConfig;
 
 	if (parsedConfig.database === undefined || parsedConfig.database === null) {
-		return yield* Effect.fail(new NoDatabaseFound());
+		return yield* Effect.fail(
+			new ActionError(
+				"Missing database",
+				"No database found in connection configuration.",
+			),
+		);
 	}
 	return parsedConfig.database;
 });
@@ -120,7 +119,10 @@ function allConfigurations() {
 		if (configurations === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* Effect.fail(
-				`No configurations found. Check your configuration.ts file.`,
+				new ActionError(
+					"Missing configurations",
+					"No configurations found. Check your configuration.ts file.",
+				),
 			);
 		}
 		return configurations;
@@ -134,7 +136,10 @@ export function configurationByName(configurationName: string) {
 		if (configuration === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* Effect.fail(
-				`No configuration found for ${configurationName}. Check your configuration.ts file.`,
+				new ActionError(
+					"Missing configuration",
+					`No configuration found for ${configurationName}. Check your configuration.ts file.`,
+				),
 			);
 		}
 		return configuration;

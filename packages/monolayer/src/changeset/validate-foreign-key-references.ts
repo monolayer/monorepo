@@ -1,4 +1,5 @@
 import { Effect } from "effect";
+import { ActionError } from "~/cli/cli-action.js";
 import { findTableInSchema } from "~/database/schema/introspect-table.js";
 import type { AnySchema } from "~/database/schema/schema.js";
 import {
@@ -29,7 +30,10 @@ export function validateForeignKeyReferences(
 						findTableInSchema(foreignKeyTargetTable, allSchemas) === undefined
 					) {
 						return yield* Effect.fail(
-							new ForeignKeyReferencedTableMissing(tableName),
+							new ActionError(
+								"Missing foreign key",
+								`Foreign key in table ${tableName} references a table that is not in the schema`,
+							),
 						);
 					}
 				}
@@ -37,12 +41,4 @@ export function validateForeignKeyReferences(
 		}
 		return yield* Effect.succeed(true);
 	});
-}
-
-export class ForeignKeyReferencedTableMissing extends TypeError {
-	constructor(tableName: string) {
-		super(
-			`Foreign key in table ${tableName} references a table that is not in the schema`,
-		);
-	}
 }

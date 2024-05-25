@@ -1,9 +1,7 @@
 import { Effect, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import {
-	SchemaNameError,
-	validateUniqueSchemaName,
-} from "~/changeset/validate-unique-schema-name.js";
+import { validateUniqueSchemaName } from "~/changeset/validate-unique-schema-name.js";
+import { ActionError } from "~/cli/cli-action.js";
 import { schema } from "~/database/schema/schema.js";
 import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
 import {
@@ -80,8 +78,8 @@ describe("validate uique schema name", () => {
 				}),
 			),
 		);
-		expect(result).toBeInstanceOf(SchemaNameError);
-		const error = result as SchemaNameError;
+		expect(result).toBeInstanceOf(ActionError);
+		const error = result as ActionError;
 		expect(error.message).toBe(
 			"Multiple schemas with the same name: 'public'.",
 		);
@@ -116,8 +114,8 @@ describe("validate uique schema name", () => {
 				}),
 			),
 		);
-		expect(result).toBeInstanceOf(SchemaNameError);
-		const error = result as SchemaNameError;
+		expect(result).toBeInstanceOf(ActionError);
+		const error = result as ActionError;
 		expect(error.message).toBe("Multiple schemas with the same name: 'demo'.");
 	});
 });

@@ -1,20 +1,19 @@
 import { Effect } from "effect";
+import type { UnknownException } from "effect/Cause";
 import type { MigrationInfo } from "kysely";
+import { ActionError } from "~/cli/cli-action.js";
 import {
-	MigrationError,
 	migrationInfoToMigration,
 	type Migration,
 	type MonolayerMigration,
 } from "~/migrations/migration.js";
 import { Migrator } from "~/services/migrator.js";
 
-export function validateMigrationDependencies() {
-	getMigrationInfo().pipe(
-		Effect.tap(validateMigrationInfoAsMigration),
-		Effect.flatMap(migrationsFromMigrationInfo),
-		Effect.flatMap(validateMigrations),
-	);
-}
+export const validateMigrationDependencies = getMigrationInfo().pipe(
+	Effect.tap(validateMigrationInfoAsMigration),
+	Effect.flatMap(migrationsFromMigrationInfo),
+	Effect.flatMap(validateMigrations),
+);
 
 function getMigrationInfo() {
 	return Effect.gen(function* () {
@@ -27,28 +26,35 @@ function migrationsFromMigrationInfo(migrationInfo: readonly MigrationInfo[]) {
 	return Effect.succeed(migrationInfoToMigration(migrationInfo));
 }
 
-class MissingDependenciesError extends TypeError {
-	constructor(migration: string) {
-		super(`migration ${migration} is missing dependsOn export`);
-	}
-}
-
 function validateMigrationInfoAsMigration(
 	migrationInfo: readonly MigrationInfo[],
-): Effect.Effect<boolean, MissingDependenciesError, never> {
-	for (const migration of migrationInfo) {
-		const migrationWithDependecies = migration.migration as MonolayerMigration;
-		if (migrationWithDependecies.migration === undefined) {
-			return Effect.die(new MigrationError(migration.name));
+): Effect.Effect<boolean, ActionError | UnknownException, never> {
+	return Effect.gen(function* () {
+		for (const migration of migrationInfo) {
+			const migrationWithDependecies =
+				migration.migration as MonolayerMigration;
+			if (migrationWithDependecies.migration === undefined) {
+				yield* Effect.die(
+					new ActionError(
+						"Undefined migration",
+						`undefined migration in ${migration.name}`,
+					),
+				);
+			}
+			if (migrationWithDependecies.migration.dependsOn === undefined) {
+				yield* Effect.die(
+					new ActionError(
+						"Missing migration dependencies",
+						`migration ${migration.name} is missing dependsOn export`,
+					),
+				);
+			}
 		}
-		if (migrationWithDependecies.migration.dependsOn === undefined) {
-			return Effect.die(new MissingDependenciesError(migration.name));
-		}
-	}
-	return Effect.succeed(true);
+		return true;
+	});
 }
 
-class MultipleMigrationsWithNoDependencyError extends TypeError {
+export class MultipleMigrationsWithNoDependencyError extends TypeError {
 	constructor(migrations: string[]) {
 		super(`multiple migrations with no dependency`, {
 			cause: { migrationsWithNoDependency: migrations },
@@ -56,7 +62,7 @@ class MultipleMigrationsWithNoDependencyError extends TypeError {
 	}
 }
 
-class MigrationWithMoreThanOneDependantError extends TypeError {
+export class MigrationWithMoreThanOneDependantError extends TypeError {
 	constructor(migration: string, dependants: string[]) {
 		super(`migration ${migration} has more than one dependant`, {
 			cause: { migration: migration, dependants },
@@ -64,11 +70,19 @@ class MigrationWithMoreThanOneDependantError extends TypeError {
 	}
 }
 
-class MigrationDependencyError extends AggregateError {
+export class MigrationDependencyError {
+	declare readonly _tag: "MigrationDependencyError";
+	errors: (
+		| MultipleMigrationsWithNoDependencyError
+		| MigrationWithMoreThanOneDependantError
+	)[];
+	message: string;
+
 	constructor(reason: DependencyErrors) {
-		const errors = [];
+		this.errors = [];
+		this.message = "";
 		if (reason.multipleMigrationsNoDependency.length > 0) {
-			errors.push(
+			this.errors.push(
 				new MultipleMigrationsWithNoDependencyError(
 					reason.multipleMigrationsNoDependency,
 				),
@@ -78,17 +92,18 @@ class MigrationDependencyError extends AggregateError {
 			for (const [migration, dependants] of Object.entries(
 				reason.migrationsWithMoreThanOneDependant,
 			)) {
-				errors.push(
+				this.errors.push(
 					new MigrationWithMoreThanOneDependantError(migration, dependants),
 				);
 			}
 		}
-		super(errors, errors.map((error) => error.message).join(", "));
-		this.cause = errors.map((error) => error.cause);
+		this.message = this.errors.map((error) => error.message).join(", ");
 	}
 }
 
-function validateMigrations(migrations: Required<Migration>[]) {
+function validateMigrations(
+	migrations: Required<Migration>[],
+): Effect.Effect<boolean, MigrationDependencyError | UnknownException, never> {
 	return Effect.gen(function* () {
 		const dependencyErrors = mapMigrationDependencies(migrations);
 		if (
@@ -96,7 +111,7 @@ function validateMigrations(migrations: Required<Migration>[]) {
 			Object.keys(dependencyErrors.migrationsWithMoreThanOneDependant).length >
 				0
 		) {
-			return yield* Effect.die(new MigrationDependencyError(dependencyErrors));
+			yield* Effect.die(new MigrationDependencyError(dependencyErrors));
 		}
 		return true;
 	});

@@ -23,7 +23,7 @@ describe("migrate", () => {
 	test<ProgramContext>("applies all pending migrations", async (context) => {
 		const migrateResult = await Effect.runPromise(
 			Effect.provideServiceEffect(
-				Effect.provide(programWithErrorCause(migrate()), layers),
+				Effect.provide(programWithErrorCause(migrate), layers),
 				AppEnvironment,
 				Ref.make(await loadEnv("development", "default")),
 			),
@@ -47,7 +47,7 @@ describe("migrate", () => {
 		expect(
 			await Effect.runPromise(
 				Effect.provideServiceEffect(
-					Effect.provide(programWithErrorCause(migrate()), layers),
+					Effect.provide(programWithErrorCause(migrate), layers),
 					AppEnvironment,
 					Ref.make(await loadEnv("development", "default")),
 				),

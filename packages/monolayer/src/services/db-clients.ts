@@ -1,4 +1,5 @@
 import { Context, Effect, Layer } from "effect";
+import { UnknownException } from "effect/Cause";
 import {
 	CamelCasePlugin,
 	Kysely,
@@ -9,6 +10,7 @@ import {
 import type { QueryResultRow } from "pg";
 import pg from "pg";
 import pgConnectionString from "pg-connection-string";
+import { ActionError } from "~/cli/cli-action.js";
 import type { PgConfig } from "~/configuration.js";
 import {
 	appEnvironmentCamelCasePlugin,
@@ -134,16 +136,33 @@ export function pgQuery<T extends QueryResultRow = Record<string, unknown>>(
 export function adminPgQuery<
 	T extends QueryResultRow = Record<string, unknown>,
 >(query: string) {
-	return DbClients.pipe(
-		Effect.flatMap((clients) =>
-			Effect.tryPromise(async () => {
-				const result =
-					await clients.currentEnvironment.pgAdminPool.query<T>(query);
-				return result.rows;
-			}),
-		),
-	);
+	return Effect.gen(function* () {
+		const pool = yield* pgAdminPool;
+		return yield* Effect.tryPromise({
+			try: async () => {
+				return (await pool.query<T>(query)).rows;
+			},
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			catch: (error: unknown) => {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const anyError = error as unknown as any;
+				if (
+					anyError.code !== undefined &&
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					anyError.severity !== undefined
+				) {
+					return new ActionError("QueryError", anyError.message);
+				}
+				return new UnknownException(error);
+			},
+		});
+	});
 }
+
+const pgAdminPool = Effect.gen(function* () {
+	const dbClients = yield* DbClients;
+	return dbClients.currentEnvironment.pgAdminPool;
+});
 
 export const currentEnvironmentDatabaseName = Effect.gen(function* () {
 	const dbClients = yield* DbClients;

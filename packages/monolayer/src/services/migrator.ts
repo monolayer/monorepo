@@ -6,6 +6,7 @@ import {
 } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
+import { ActionError } from "~/cli/cli-action.js";
 import type { MonolayerMigration } from "~/migrations/migration.js";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { DbClients } from "./db-clients.js";
@@ -59,12 +60,6 @@ export const lastExecutedMigration = Effect.gen(function* () {
 	return all.find((m) => m.executedAt !== undefined)?.name ?? NO_MIGRATIONS;
 });
 
-export class UndefinedMigrationError extends Error {
-	constructor(path: string) {
-		super(`undefined migration in ${path}`);
-	}
-}
-
 export const migratorFolder = Effect.gen(function* () {
 	const migrator = yield* Migrator;
 	return migrator.folder;
@@ -77,7 +72,12 @@ export function readMigration(name: string) {
 		const migration = yield* Effect.tryPromise(() => import(migrationPath));
 
 		if (!isExtendedMigration(migration)) {
-			return yield* Effect.fail(new UndefinedMigrationError(migrationPath));
+			return yield* Effect.fail(
+				new ActionError(
+					"Undefined migration",
+					`No migration defined migration in ${migrationPath}`,
+				),
+			);
 		}
 
 		return migration;

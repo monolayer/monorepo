@@ -14,13 +14,11 @@ import {
 } from "~/prompts/rollback-migration.js";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
-import { ExitWithSuccess } from "../cli/cli-action.js";
+import { ActionError, ExitWithSuccess } from "../cli/cli-action.js";
 import { logMigrationResultStatus } from "./apply.js";
 import { allMigrations } from "./migration.js";
 import { deletePendingMigrations, pendingMigrations } from "./pending.js";
 import { migrateTo, rollbackPlan } from "./phased-migrator.js";
-
-export class RollbackError extends Error {}
 
 export const rollback = Effect.gen(function* () {
 	const executedMigrations = yield* executedMigrationsWithCheck;
@@ -53,11 +51,18 @@ export const rollback = Effect.gen(function* () {
 		if (!migrationSuccess) {
 			for (const result of results!) {
 				logMigrationResultStatus(result, error, "down");
-				return yield* Effect.fail(new Error("Migration failed"));
 			}
+			return yield* Effect.fail(
+				new ActionError(
+					"Migration failed",
+					results!.map((r) => r.migrationName).join(", "),
+				),
+			);
 		}
 		if (error !== undefined) {
-			return yield* Effect.fail(new RollbackError(error?.toString()));
+			return yield* Effect.fail(
+				new ActionError("Rollback error", error?.toString() || ""),
+			);
 		}
 	}
 

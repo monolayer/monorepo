@@ -1,4 +1,5 @@
 import { Effect } from "effect";
+import { ActionError } from "~/cli/cli-action.js";
 import { Schema } from "~/database/schema/schema.js";
 import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
 
@@ -10,17 +11,16 @@ export function validateUniqueSchemaName() {
 
 		for (const schemaName of schemaNames) {
 			if (uniqueSchemaNames.has(schemaName)) {
-				return yield* Effect.fail(new SchemaNameError(schemaName));
+				return yield* Effect.fail(
+					new ActionError(
+						"Schema name error",
+						`Multiple schemas with the same name: '${schemaName}'.`,
+					),
+				);
 			} else {
 				uniqueSchemaNames.add(schemaName);
 			}
 		}
 		return yield* Effect.succeed(true);
 	});
-}
-
-export class SchemaNameError extends TypeError {
-	constructor(schemaName: string) {
-		super(`Multiple schemas with the same name: '${schemaName}'.`);
-	}
 }

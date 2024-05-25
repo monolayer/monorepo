@@ -1,9 +1,10 @@
 import * as p from "@clack/prompts";
 import { Effect, Layer, Ref } from "effect";
-import type { Cause } from "effect/Cause";
+import type { Cause, UnknownException } from "effect/Cause";
 import { TaggedClass } from "effect/Data";
 import color from "picocolors";
 import { exit } from "process";
+import type { MigrationDependencyError } from "~/migrations/validate.js";
 import {
 	AppEnvironment,
 	getEnvironment,
@@ -17,18 +18,43 @@ import { cancelOperation } from "./cancel-operation.js";
 
 export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 	readonly cause: string;
-}> {}
+}> {
+	readonly _tag = "ExitWithSuccess";
+}
 
 export class PromptCancelError {
 	readonly _tag = "PromptCancelError";
 }
+
+export class ActionError {
+	readonly _tag = "ActionError";
+	constructor(
+		readonly name: string,
+		readonly message: string,
+	) {}
+}
+
+export class UnknownActionError {
+	readonly _tag = "UnknownActionError";
+	constructor(
+		readonly name: string,
+		readonly error: unknown,
+	) {}
+}
+export type ActionErrors =
+	| ActionError
+	| ExitWithSuccess
+	| UnknownActionError
+	| PromptCancelError
+	| MigrationDependencyError
+	| UnknownException;
 
 export const promptCancelError = Effect.fail(new PromptCancelError());
 
 export async function cliAction(
 	name: string,
 	options: { readonly connection: string; readonly name?: string },
-	tasks: Effect.Effect<unknown, unknown, ProgramContext>[],
+	tasks: Effect.Effect<unknown, ActionErrors, ProgramContext>[],
 ) {
 	p.intro(name);
 
@@ -36,7 +62,21 @@ export async function cliAction(
 
 	const appEnv = await loadEnv(options.connection, options.name ?? "default");
 
-	const action = Effect.provide(Effect.all(tasks), layers)
+	const action = Effect.provide(
+		Effect.all(tasks).pipe(
+			Effect.catchTags({
+				ActionError: (error) =>
+					Effect.gen(function* () {
+						p.log.error(`${color.red(error.name)}: ${error.message}`);
+						p.outro(`${color.red("Failed")}`);
+						yield* Effect.fail(exit(1));
+					}),
+				ExitWithSuccess: () => Effect.succeed(1),
+				PromptCancelError: () => cancelOperation(),
+			}),
+		),
+		layers,
+	)
 		.pipe(catchErrorTags)
 		.pipe(printAnyErrors);
 
@@ -49,12 +89,25 @@ export async function cliAction(
 
 export async function cliActionWithoutContext(
 	name: string,
-	tasks: Effect.Effect<unknown, unknown, AppEnvironment>[],
+	tasks: Effect.Effect<unknown, ActionErrors, AppEnvironment>[],
 ) {
 	p.intro(name);
 
 	const importAppEnv = await loadImportSchemaEnv();
-	const action = Effect.all(tasks).pipe(catchErrorTags).pipe(printAnyErrors);
+	const action = Effect.all(tasks)
+		.pipe(
+			Effect.catchTags({
+				ActionError: (error) =>
+					Effect.gen(function* () {
+						p.log.error(`${color.red(error.message)}: ${error.message}`);
+						p.outro(`${color.red("Failed")}`);
+						yield* Effect.fail("exit");
+					}),
+				ExitWithSuccess: () => Effect.succeed(1),
+				PromptCancelError: () => cancelOperation(),
+			}),
+		)
+		.pipe(printAnyErrors);
 
 	await Effect.runPromise(
 		Effect.provideServiceEffect(action, AppEnvironment, Ref.make(importAppEnv)),

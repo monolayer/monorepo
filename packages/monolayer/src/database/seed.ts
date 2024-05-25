@@ -1,9 +1,9 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
-import { TaggedClass } from "effect/Data";
 import { sql } from "kysely";
 import path from "path";
 import { exit } from "process";
+import { ActionError } from "~/cli/cli-action.js";
 import { type SeedImport } from "~/config.js";
 import { dbTableInfo } from "~/database/schema/table/introspection.js";
 import { localPendingSchemaMigrations } from "~/migrations/pending.js";
@@ -75,13 +75,7 @@ function checkSeederFunction(seedFile: string) {
 		failMessage: "Seeder function missing",
 		callback: () =>
 			Effect.succeed(true).pipe(
-				Effect.flatMap(() =>
-					importSeedFunction(seedFile).pipe(
-						Effect.catchTags({
-							UndefinedSeedFunction: () => Effect.succeed(undefined),
-						}),
-					),
-				),
+				Effect.flatMap(() => importSeedFunction(seedFile)),
 				Effect.flatMap((result) => Effect.succeed(result !== undefined)),
 			),
 	});
@@ -113,10 +107,6 @@ const truncateAllTables = Effect.gen(function* () {
 	}
 });
 
-export class UndefinedSeedFunction extends TaggedClass(
-	"UndefinedSeedFunction",
-) {}
-
 function importSeedFunction(seedFile: string) {
 	return Effect.gen(function* () {
 		const environment = yield* appEnvironment;
@@ -127,7 +117,12 @@ function importSeedFunction(seedFile: string) {
 			return mod.seed;
 		});
 		if (seedFn === undefined) {
-			return yield* Effect.fail(new UndefinedSeedFunction());
+			return yield* Effect.fail(
+				new ActionError(
+					"Missing seed function",
+					`Could not find a seed function in ${seedFile}.`,
+				),
+			);
 		} else {
 			return seedFn;
 		}
