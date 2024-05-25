@@ -29,7 +29,7 @@ describe("createDatabase", () => {
 
 		await Effect.runPromise(
 			Effect.provideServiceEffect(
-				Effect.provide(programWithErrorCause(createDatabase()), layers),
+				Effect.provide(programWithErrorCause(createDatabase), layers),
 				AppEnvironment,
 				Ref.make(await loadEnv("development", "default")),
 			),

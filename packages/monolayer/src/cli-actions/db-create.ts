@@ -18,6 +18,6 @@ export function dbCreateAction(program: Command) {
 		.description("creates a database")
 		.action(
 			async (opts) =>
-				await cliAction("monolayer db:create", opts, [createDatabase()]),
+				await cliAction("monolayer db:create", opts, [createDatabase]),
 		);
 }

@@ -12,7 +12,7 @@ export const handleMissingDatabase = Effect.gen(function* () {
 	if (yield* databaseExists) return true;
 
 	if (yield* confirmDatabaseCreation) {
-		return yield* createDatabase();
+		return yield* createDatabase;
 	} else {
 		return yield* cancelOperation();
 	}
