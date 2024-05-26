@@ -1,5 +1,6 @@
 import { Effect } from "effect";
 import { schemaChangeset } from "~/changeset/schema-changeset.js";
+import { introspectAlignment } from "~/database/alignment.js";
 import {
 	dropSchemaMigration,
 	type DropSchemaDiff,
@@ -26,6 +27,7 @@ export function changeset() {
 		const renames = yield* promptSchemaRenames;
 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
 		let changesets: Changeset[] = [];
+		const typeAlignments = yield* introspectAlignment;
 		for (const schema of allSchemas) {
 			yield* validateForeignKeyReferences(schema, allSchemas);
 			const introspection = yield* introspectSchema(schema, renames);
@@ -33,7 +35,11 @@ export function changeset() {
 			yield* sortTablePriorities(introspection);
 			changesets = [
 				...changesets,
-				...schemaChangeset(introspection, yield* appEnvironmentCamelCasePlugin),
+				...schemaChangeset(
+					introspection,
+					yield* appEnvironmentCamelCasePlugin,
+					typeAlignments,
+				),
 			];
 		}
 		return [...changesets, ...(yield* dropSchemaChangeset(allSchemas))];

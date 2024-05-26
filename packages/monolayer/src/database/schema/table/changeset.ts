@@ -44,14 +44,15 @@ export function isCreateTable(test: Difference): test is CreateTableDiff {
 
 function createTableMigration(
 	diff: CreateTableDiff,
-	{ schemaName, tablesToRename }: GeneratorContext,
+	{ schemaName, tablesToRename, typeAlignments }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
+
 	const up = [
 		executeKyselySchemaStatement(
 			schemaName,
 			`createTable("${tableName}")`,
-			...tableColumnsOps(diff.value.columns),
+			...tableColumnsOps(diff.value.columns, typeAlignments),
 		),
 	];
 
@@ -97,14 +98,14 @@ export function isDropTable(test: Difference): test is DropTableTableDiff {
 
 function dropTableMigration(
 	diff: DropTableTableDiff,
-	{ schemaName, tablesToRename }: GeneratorContext,
+	{ schemaName, tablesToRename, typeAlignments }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const down = [
 		executeKyselySchemaStatement(
 			schemaName,
 			`createTable("${tableName}")`,
-			...tableColumnsOps(diff.oldValue.columns),
+			...tableColumnsOps(diff.oldValue.columns, typeAlignments),
 		),
 	];
 

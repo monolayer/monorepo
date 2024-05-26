@@ -1,5 +1,6 @@
 import microdiff, { type Difference } from "microdiff";
 import type { CamelCaseOptions } from "~/configuration.js";
+import type { TypeAlignment } from "~/database/alignment.js";
 import type {
 	ColumnsToRename,
 	SchemaIntrospection,
@@ -32,11 +33,13 @@ export interface GeneratorContext {
 	camelCaseOptions: CamelCaseOptions;
 	tablesToRename: TablesToRename;
 	columnsToRename: ColumnsToRename;
+	typeAlignments: TypeAlignment[];
 }
 
 export function schemaChangeset(
 	introspection: SchemaIntrospection,
 	camelCaseOptions: CamelCaseOptions,
+	typeAlignments: TypeAlignment[],
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
 	const { diff, addedTables, droppedTables } = changesetDiff(
@@ -59,6 +62,7 @@ export function schemaChangeset(
 		camelCaseOptions,
 		tablesToRename: introspection.tablesToRename,
 		columnsToRename: introspection.columnsToRename,
+		typeAlignments: typeAlignments,
 	};
 
 	const changesets = diff.flatMap((difference) => {

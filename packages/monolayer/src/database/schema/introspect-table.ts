@@ -31,7 +31,7 @@ export interface TableIntrospection {
 	triggers: TriggerInstrospection[];
 }
 
-interface ColumnInstrospection {
+export interface ColumnInstrospection {
 	dataType: string;
 	nullable: boolean;
 	generated: boolean;

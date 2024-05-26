@@ -1,5 +1,10 @@
 /* eslint-disable complexity */
 import {
+	alignColumns,
+	type ColumnToAlign,
+	type TypeAlignment,
+} from "~/database/alignment.js";
+import {
 	executeKyselyDbStatement,
 	sqlStatement,
 } from "../../../changeset/helpers.js";
@@ -10,8 +15,14 @@ export type ColumnInfoDiff = Omit<ColumnInfo, "defaultValue"> & {
 	defaultValue: string;
 };
 
-export function tableColumnsOps(columnsInfo: ColumnsInfoDiff) {
-	return Object.entries(columnsInfo).flatMap(([, column]) => {
+export function tableColumnsOps(
+	columnsInfo: ColumnsInfoDiff,
+	typeAlignments: TypeAlignment[],
+) {
+	const cols = Object.entries(columnsInfo).flatMap(([, column]) => column);
+	const aligned = alignColumns(cols, typeAlignments);
+
+	return aligned.flatMap((column) => {
 		const base = [
 			`addColumn("${column.columnName}", ${compileDataType(
 				column.dataType,
@@ -38,7 +49,7 @@ export function toValueAndHash(value: string) {
 	return valueAndHash;
 }
 
-export function optionsForColumn(column: ColumnInfoDiff) {
+export function optionsForColumn(column: ColumnToAlign | ColumnInfoDiff) {
 	let columnOptions = "";
 	const options = [];
 
