@@ -5,6 +5,8 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
+import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
+import { ChangeWarningType } from "~/changeset/warnings/types.js";
 import { currentTableName } from "~/introspection/table-name.js";
 import { executeKyselySchemaStatement } from "../../../../../changeset/helpers.js";
 import {
@@ -57,6 +59,17 @@ function columnNullableMigrationOperation(
 			? setNotNullOp(schemaName, tableName, columnName)
 			: [dropNotNullOp(schemaName, tableName, columnName)],
 	};
+	if (diff.value === false) {
+		changeset.warnings = [
+			{
+				type: ChangeWarningType.MightFail,
+				code: ChangeWarningCode.ChangeColumnToNonNullable,
+				schema: schemaName,
+				table: tableName,
+				column: columnName,
+			},
+		];
+	}
 	return changeset;
 }
 

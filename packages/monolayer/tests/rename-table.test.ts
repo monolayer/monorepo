@@ -948,6 +948,15 @@ describe("Rename table without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "changeColumn",
+				warnings: [
+					{
+						code: "MF005",
+						column: "id",
+						schema: "public",
+						table: "publications",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -4563,6 +4572,15 @@ describe("Rename table with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "changeColumn",
+				warnings: [
+					{
+						code: "MF005",
+						column: "book_id",
+						schema: "public",
+						table: "new_books",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						`await sql\`\${sql.raw(

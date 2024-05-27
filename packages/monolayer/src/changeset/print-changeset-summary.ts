@@ -39,6 +39,10 @@ import {
 	type AddVolatileDefault,
 } from "./warnings/add-volatile-default.js";
 import {
+	printChangeColumnToNonNullableWarning,
+	type ChangeColumnToNonNullable,
+} from "./warnings/change-column-to-non-nullable.js";
+import {
 	printChangeColumnTypeWarning,
 	type ChangeColumnType,
 } from "./warnings/change-column-type.js";
@@ -139,6 +143,7 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	printAddPrimaryKeyToNewColumn(warnings.addPrimaryKeyToNewNullableColumn);
 	printAddUniqueToExisitingColumnWarning(warnings.addUniqueToExistingColumn);
 	printAddNonNullableColumnWarning(warnings.addNonNullableColumn);
+	printChangeColumnToNonNullableWarning(warnings.changeColumnToNonNullable);
 }
 
 export const summaryTemplate = nunjucks.compile(`
@@ -297,6 +302,12 @@ function changesetWarnings(changeset: Changeset[]) {
 					case ChangeWarningCode.AddNonNullableColumn:
 						acc.addNonNullableColumn = [...acc.addNonNullableColumn, warning];
 						break;
+					case ChangeWarningCode.ChangeColumnToNonNullable:
+						acc.changeColumnToNonNullable = [
+							...acc.changeColumnToNonNullable,
+							warning,
+						];
+						break;
 				}
 				return acc;
 			},
@@ -313,6 +324,7 @@ function changesetWarnings(changeset: Changeset[]) {
 				addPrimaryKeyToNewNullableColumn: [] as Array<AddPrimaryKeyToNewColumn>,
 				addUniqueToExistingColumn: [] as Array<AddUniqueToExistingColumn>,
 				addNonNullableColumn: [] as Array<AddNonNullableColumn>,
+				changeColumnToNonNullable: [] as Array<ChangeColumnToNonNullable>,
 			},
 		);
 }

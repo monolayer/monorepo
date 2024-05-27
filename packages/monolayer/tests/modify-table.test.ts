@@ -78,6 +78,15 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "changeColumn",
+					warnings: [
+						{
+							code: "MF005",
+							column: "name",
+							schema: "public",
+							table: "books",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1526,6 +1535,15 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					warnings: [
+						{
+							code: "MF005",
+							column: "email",
+							schema: "public",
+							table: "users",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -4676,6 +4694,15 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
+					warnings: [
+						{
+							code: "MF005",
+							column: "count",
+							schema: "public",
+							table: "users",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -4719,6 +4746,15 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
+					warnings: [
+						{
+							code: "MF005",
+							column: "id",
+							schema: "public",
+							table: "users",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							`await sql\`\${sql.raw(

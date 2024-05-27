@@ -12,4 +12,5 @@ export enum ChangeWarningCode {
 	AddPrimaryKeyToNewColumn = "MF002",
 	AddUniqueToExistingColumn = "MF003",
 	AddNonNullableColumn = "MF004",
+	ChangeColumnToNonNullable = "MF005",
 }

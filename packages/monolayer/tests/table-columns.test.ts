@@ -517,6 +517,15 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumn",
+				warnings: [
+					{
+						code: "MF005",
+						column: "email",
+						schema: "public",
+						table: "users",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -698,6 +707,15 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumn",
+				warnings: [
+					{
+						code: "MF005",
+						column: "name",
+						schema: "public",
+						table: "users",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						`await sql\`\${sql.raw(

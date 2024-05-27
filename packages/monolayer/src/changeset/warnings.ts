@@ -5,6 +5,7 @@ import { AddPrimaryKeyToNewColumn } from "./warnings/add-primary-key-to-new-colu
 import { AddSerialColumn } from "./warnings/add-serial-column.js";
 import type { AddUniqueToExistingColumn } from "./warnings/add-unique.js";
 import { AddVolatileDefault } from "./warnings/add-volatile-default.js";
+import type { ChangeColumnToNonNullable } from "./warnings/change-column-to-non-nullable.js";
 import { ChangeColumnType } from "./warnings/change-column-type.js";
 import { ColumnDrop } from "./warnings/column-drop.js";
 import { ColumnRename } from "./warnings/column-rename.js";
@@ -32,4 +33,5 @@ export type MightFailChange =
 	| AddPrimaryKeyToExistingNullableColumn
 	| AddPrimaryKeyToNewColumn
 	| AddUniqueToExistingColumn
-	| AddNonNullableColumn;
+	| AddNonNullableColumn
+	| ChangeColumnToNonNullable;
