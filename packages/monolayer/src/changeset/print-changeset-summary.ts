@@ -9,6 +9,7 @@ import {
 	type TableStats,
 } from "~/changeset/changeset-stats.js";
 import { type Changeset } from "~/changeset/types.js";
+import { printWarning } from "~/prompts/print-warning.js";
 import { type ChangeWarning, type DestructiveChange } from "./warnings.js";
 import {
 	printAddBigSerialColumn,
@@ -329,34 +330,23 @@ function changesetWarnings(changeset: Changeset[]) {
 		);
 }
 
-function printDestructiveWarnings(destructive: DestructiveChange[]) {
-	const messages = [];
-	for (const warning of destructive) {
-		switch (warning.code) {
-			case ChangeWarningCode.SchemaDrop:
-				messages.push(`- Schema '${warning.schema}' has been dropped`);
-				break;
-			case ChangeWarningCode.TableDrop:
-				messages.push(
-					`- Table '${warning.table}' has been dropped (schema: '${warning.schema}')`,
-				);
-				break;
-			case ChangeWarningCode.ColumnDrop:
-				messages.push(
-					`- Column '${warning.column}' has been droppped (schema: '${warning.schema}', table: '${warning.table}')`,
-				);
-				break;
-		}
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: Destructive changes detected.")}
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`These changes may result in a data loss and will prevent existing applications
-that rely on the old schema from functioning correctly.`),
-		);
-	}
+function printDestructiveWarnings(warnings: DestructiveChange[]) {
+	if (warnings.length === 0) return;
+	printWarning({
+		header: "Destructive changes detected",
+		details: warnings.map((warning) => {
+			switch (warning.code) {
+				case ChangeWarningCode.SchemaDrop:
+					return `- Dropped schema '${color.underline(warning.schema)}'`;
+				case ChangeWarningCode.TableDrop:
+					return `- Dropped table '${color.underline(warning.table)}' ${color.gray(`(schema: '${warning.schema}')`)}`;
+				case ChangeWarningCode.ColumnDrop:
+					return `- Dropped column '${color.underline(warning.column)}' ${color.gray(`(table: '${warning.table}' schema: '${warning.schema}')`)}`;
+			}
+		}),
+		notes: [
+			"These changes may result in a data loss and will prevent existing applications",
+			"that rely on the dropped objects from functioning correctly.",
+		],
+	});
 }
