@@ -9,19 +9,40 @@ import {
 	type TableStats,
 } from "~/changeset/changeset-stats.js";
 import { type Changeset } from "~/changeset/types.js";
+import { type ChangeWarning, type DestructiveChange } from "./warnings.js";
 import {
-	ChangeWarningCode,
+	printAddBigSerialColumn,
 	type AddBigSerialColumn,
+} from "./warnings/add-bigserial-column.js";
+import {
+	printAddPrimaryKeyToExistingNullableColumn,
 	type AddPrimaryKeyToExistingNullableColumn,
+} from "./warnings/add-primary-key-to-existing-nullable-column.js";
+import {
+	printAddPrimaryKeyToNewColumn,
 	type AddPrimaryKeyToNewColumn,
+} from "./warnings/add-primary-key-to-new-column.js";
+import {
+	printAddSerialColumn,
 	type AddSerialColumn,
+} from "./warnings/add-serial-column.js";
+import {
+	printChangeColumnDefaultVolatileWarning,
 	type AddVolatileDefault,
+} from "./warnings/add-volatile-default.js";
+import {
+	printChangeColumnTypeWarning,
 	type ChangeColumnType,
-	type ChangeWarning,
-	type ColumnRenameWarning,
-	type DestructiveChange,
-	type TableRenameWarning,
-} from "./warnings.js";
+} from "./warnings/change-column-type.js";
+import { ChangeWarningCode } from "./warnings/codes.js";
+import {
+	printColumnRenameWarnings,
+	type ColumnRename,
+} from "./warnings/column-rename.js";
+import {
+	printTableRenameWarnings,
+	type TableRename,
+} from "./warnings/table-rename.js";
 
 type TableRecord = Record<
 	string,
@@ -260,8 +281,8 @@ function changesetWarnings(changeset: Changeset[]) {
 				return acc;
 			},
 			{
-				tableRename: [] as Array<TableRenameWarning>,
-				columnRename: [] as Array<ColumnRenameWarning>,
+				tableRename: [] as Array<TableRename>,
+				columnRename: [] as Array<ColumnRename>,
 				destructive: [] as Array<DestructiveChange>,
 				changeColumnType: [] as Array<ChangeColumnType>,
 				changeColumnDefault: [] as Array<AddVolatileDefault>,
@@ -272,62 +293,6 @@ function changesetWarnings(changeset: Changeset[]) {
 				addPrimaryKeyToNewNullableColumn: [] as Array<AddPrimaryKeyToNewColumn>,
 			},
 		);
-}
-
-function printTableRenameWarnings(tableRenameWarnings: TableRenameWarning[]) {
-	const messages = [];
-	for (const warning of tableRenameWarnings) {
-		messages.push(
-			`- Table '${warning.tableRename.from}' has been renamed to '${warning.tableRename.to}' (schema: '${warning.schema}')`,
-		);
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: detected table renames")} (backward incompatible change)
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`Renaming a table will disrupt running applications that rely on the old table name.
-
-Downtime for your application can only be avoided by using a safer but complex approach:
- - 1. Create a new table with the new name.
- - 2. Write to both tables (old and new).
- - 3. Backfill data from the old table to the new table.
- - 4. Move reads from the old table to the new table.
- - 5. Stop writing to the old table.
- - 6. Drop the old table.`),
-		);
-	}
-}
-
-function printColumnRenameWarnings(
-	columnRenameWarnings: ColumnRenameWarning[],
-) {
-	const messages = [];
-	for (const warning of columnRenameWarnings) {
-		messages.push(
-			`- Column '${warning.columnRename.from}' has been renamed to '${warning.columnRename.to}' (schema: '${warning.schema}', table: '${warning.table}')`,
-		);
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: detected column renames")} (backward incompatible change)
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`Renaming a column will disrupt running applications that rely on the old column name.
-
-Downtime for your application can only be avoided by using a safer but complex approach:
-  - 1. Create a new column with the new name.
-  - 2. Write to both columns (old and new).
-  - 3. Backfill data from the old column to the new column.
-  - 4. Move reads from the old column to the new column.
-  - 5. Stop writing to the old column.
-  - 6. Drop the old column.`),
-		);
-	}
 }
 
 function printDestructiveWarnings(destructive: DestructiveChange[]) {
@@ -358,182 +323,6 @@ ${messages.join("\n")}`,
 		p.log.message(
 			color.gray(`These changes may result in a data loss and will prevent existing applications
 that rely on the old schema from functioning correctly.`),
-		);
-	}
-}
-
-function printChangeColumnTypeWarning(warnings: ChangeColumnType[]) {
-	const messages = [];
-	for (const warning of warnings) {
-		messages.push(
-			`- Changed column '${warning.column}' data type from '${warning.from}' to '${warning.to}' (table: '${warning.table}' schema: '${warning.schema}')`,
-		);
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: Blocking changes detected.")}
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`The column data type change will cause the entire table and indexes on changed columns to be rewritten
-Other transactions will not be able to read and write to the table until the rewrite is finished.
-
-Downtime for your application can only be avoided by using a safer but complex approach:
-  - 1. Create a new column with the new name.
-  - 2. Write to both columns (old and new).
-  - 3. Backfill data from the old column to the new column.
-  - 4. Move reads from the old column to the new column.
-  - 5. Stop writing to the old column.
-  - 6. Drop the old column.`),
-		);
-	}
-}
-
-function printChangeColumnDefaultVolatileWarning(
-	warnings: AddVolatileDefault[],
-) {
-	const messages = [];
-	for (const warning of warnings) {
-		messages.push(
-			`- Changed default value on column '${warning.column}' (table: '${warning.table}' schema: '${warning.schema}')`,
-		);
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: Blocking changes detected.")}
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`The column default has been changed to a potentially volatile function. If the new default is a volatile
-function, it will cause the entire table to be rewritten.
-Other transactions will not be able to read and write to the table until the rewrite is finished.
-
-Downtime for your application can only be avoided by using a safer but complex approach:
-  - 1. Create a new column with the new name.
-  - 2. Write to both columns (old and new).
-  - 3. Backfill data from the old column to the new column.
-  - 4. Move reads from the old column to the new column.
-  - 5. Stop writing to the old column.
-  - 6. Drop the old column.`),
-		);
-	}
-}
-
-function printAddSerialColumn(warnings: AddSerialColumn[]) {
-	const messages = [];
-	for (const warning of warnings) {
-		messages.push(
-			`- Auto-incrementing column '${warning.column}' has been added with 'serial' data type (table: '${warning.table}' schema: '${warning.schema}')`,
-		);
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: Blocking changes detected.")}
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`Adding a serial column to an existing table will cause the entire table to be rewritten.
-Other transactions will not be able to read and write to the table until the rewrite is finished.
-
-Downtime for your application can only be avoided by using a safer but complex approach:
-  - 1. Create a new table with a new name.
-  - 2. Write to both tables (old and new).
-  - 3. Backfill data from the old table to the new table.
-  - 4. Move reads from the old table to the new table.
-  - 5. Stop writing to the old table.
-  - 6. Drop the old table.`),
-		);
-	}
-}
-
-function printAddBigSerialColumn(warnings: AddBigSerialColumn[]) {
-	const messages = [];
-	for (const warning of warnings) {
-		messages.push(
-			`- Auto-incrementing column '${warning.column}' has been added with 'bigserial' data type (table: '${warning.table}' schema: '${warning.schema}')`,
-		);
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: Blocking changes detected.")}
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`Adding a bigserial column to an existing table will cause the entire table to be rewritten.
-Other transactions will not be able to read and write to the table until the rewrite is finished.
-
-Downtime for your application can only be avoided by using a safer but complex approach:
-  - 1. Create a new table with a new name.
-  - 2. Write to both tables (old and new).
-  - 3. Backfill data from the old table to the new table.
-  - 4. Move reads from the old table to the new table.
-  - 5. Stop writing to the old table.
-  - 6. Drop the old table.`),
-		);
-	}
-}
-
-function printAddPrimaryKeyToExistingNullableColumn(
-	warnings: AddPrimaryKeyToExistingNullableColumn[],
-) {
-	const messages = [];
-	for (const warning of warnings) {
-		const columnNames = warning.columns.join(", ");
-		messages.push(
-			`- A primary key has been added to nullable column(s) on an existing table
-  (columns: '${columnNames}' table: '${warning.table}' schema: '${warning.schema}')`,
-		);
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: Migration might fail.")}
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`Adding a primary key constraint to existing nullable column(s)
-may fail if the column contains \`NULL\` values or duplicate entries.
-
-How to prevent a migration failure and downtime on an existing colum:
-  1. Ensure the column does not have duplicate entries.
-  2. If the column is nullable:
-    - Remove \`NULL\` values from the column.
-    - Add a non-volatile default value to the column in a separate
-		   migration before adding the primary key.
-	3. Ensure existing applications do not insert NULL or duplicate entries into the column.
-	4. Create the primary key.`),
-		);
-	}
-}
-
-function printAddPrimaryKeyToNewColumn(warnings: AddPrimaryKeyToNewColumn[]) {
-	const messages = [];
-	for (const warning of warnings) {
-		const columnNames = warning.columns.join(", ");
-		messages.push(
-			`- A primary key has been added to new column(s) on an existing table
-  (columns: '${columnNames}' table: '${warning.table}' schema: '${warning.schema}')`,
-		);
-	}
-	if (messages.length > 0) {
-		p.log.warning(
-			`${color.yellow("Warning: Migration might fail.")}
-
-${messages.join("\n")}`,
-		);
-		p.log.message(
-			color.gray(`Adding a primary key constraint to a new column(s) may fail if the column
-contains \`NULL\` values or duplicate entries.
-
-How to prevent a migration failure and downtime on new colums:
-	1. Add the column to the database as nullable.
-	2. Populate it with unique values.
-	3. Ensure applications do not insert \`NULL\` or duplicate entries into it.
-	4. Create the primary key.`),
 		);
 	}
 }

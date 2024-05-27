@@ -5,7 +5,8 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
-import { ChangeWarningCode, ChangeWarningType } from "~/changeset/warnings.js";
+import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
+import { ChangeWarningType } from "~/changeset/warnings/types.js";
 import type { SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { currentTableName } from "~/introspection/table-name.js";
 import {

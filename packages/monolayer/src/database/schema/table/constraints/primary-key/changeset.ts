@@ -6,11 +6,9 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
-import {
-	ChangeWarningCode,
-	ChangeWarningType,
-	type ChangeWarning,
-} from "~/changeset/warnings.js";
+import { type ChangeWarning } from "~/changeset/warnings.js";
+import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
+import { ChangeWarningType } from "~/changeset/warnings/types.js";
 import { currentColumName } from "~/introspection/column-name.js";
 import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 import { currentTableName } from "~/introspection/table-name.js";
