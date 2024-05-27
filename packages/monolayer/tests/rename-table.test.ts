@@ -2452,6 +2452,15 @@ describe("Rename table without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "createUniqueConstraint",
+				warnings: [
+					{
+						code: "MF003",
+						columns: ["id"],
+						schema: "public",
+						table: "publications",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						'await sql`alter table "public"."publications" add constraint "publications_acdd8fa3_monolayer_key" unique using index "publications_acdd8fa3_monolayer_key_monolayer_uc_idx"`',
@@ -6109,6 +6118,15 @@ describe("Rename table with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				type: "createUniqueConstraint",
+				warnings: [
+					{
+						code: "MF003",
+						columns: ["id"],
+						schema: "public",
+						table: "books_and_documents",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						'await sql`alter table "public"."books_and_documents" add constraint "books_and_documents_acdd8fa3_monolayer_key" unique using index "books_and_documents_acdd8fa3_monolayer_key_monolayer_uc_idx"`',

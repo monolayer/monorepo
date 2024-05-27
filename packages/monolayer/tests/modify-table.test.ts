@@ -3086,6 +3086,15 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createUniqueConstraint",
+					warnings: [
+						{
+							code: "MF003",
+							columns: ["id"],
+							schema: "public",
+							table: "books",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							'await sql`alter table "public"."books" add constraint "books_a91945e0_monolayer_key" unique using index "books_a91945e0_monolayer_key_monolayer_uc_idx"`',
@@ -3113,6 +3122,15 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createUniqueConstraint",
+					warnings: [
+						{
+							code: "MF003",
+							columns: ["name"],
+							schema: "public",
+							table: "books",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							'await sql`alter table "public"."books" add constraint "books_adbefd84_monolayer_key" unique using index "books_adbefd84_monolayer_key_monolayer_uc_idx"`',
@@ -3140,6 +3158,15 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createUniqueConstraint",
+					warnings: [
+						{
+							code: "MF003",
+							columns: ["fullName", "id"],
+							schema: "public",
+							table: "users",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							'await sql`alter table "public"."users" add constraint "users_83137b76_monolayer_key" unique using index "users_83137b76_monolayer_key_monolayer_uc_idx"`',
@@ -3409,6 +3436,15 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createUniqueConstraint",
+					warnings: [
+						{
+							code: "MF003",
+							columns: ["id"],
+							schema: "public",
+							table: "users",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							'await sql`alter table "public"."users" add constraint "users_acdd8fa3_monolayer_key" unique using index "users_acdd8fa3_monolayer_key_monolayer_uc_idx"`',
@@ -3555,6 +3591,15 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createUniqueConstraint",
+					warnings: [
+						{
+							code: "MF003",
+							columns: ["fullName", "id"],
+							schema: "public",
+							table: "users",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							'await sql`alter table "public"."users" add constraint "users_fbf55213_monolayer_key" unique using index "users_fbf55213_monolayer_key_monolayer_uc_idx"`',

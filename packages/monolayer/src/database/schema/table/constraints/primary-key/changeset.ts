@@ -13,8 +13,11 @@ import { currentColumName } from "~/introspection/column-name.js";
 import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 import { currentTableName } from "~/introspection/table-name.js";
 import {
+	columnInDb,
+	columnInTable,
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
+	type ColumnExists,
 } from "../../../../../changeset/helpers.js";
 import type {
 	LocalTableInfo,
@@ -445,57 +448,6 @@ interface PrimaryKeyColumnDetails {
 	columnName: string;
 	inDb: ColumnExists;
 	inTable: ColumnExists;
-}
-
-type ColumnExists =
-	| {
-			exists: true;
-			nullable: boolean;
-	  }
-	| {
-			exists: false;
-	  };
-
-function columnInDb(
-	tableName: string,
-	column: string,
-	db: SchemaMigrationInfo,
-): ColumnExists {
-	const table = db.table[tableName];
-	if (table !== undefined) {
-		const tableColumn =
-			table.columns[column] || findColumnByNameInTable(table, column);
-		if (tableColumn !== undefined) {
-			return {
-				exists: true,
-				nullable: tableColumn.isNullable,
-			};
-		}
-	}
-	return {
-		exists: false,
-	};
-}
-
-function columnInTable(
-	tableName: string,
-	column: string,
-	local: LocalTableInfo,
-): ColumnExists {
-	const table = local.table[tableName];
-	if (table !== undefined) {
-		const tableColumn =
-			table.columns[column] || findColumnByNameInTable(table, column);
-		if (tableColumn !== undefined) {
-			return {
-				exists: true,
-				nullable: tableColumn.isNullable,
-			};
-		}
-	}
-	return {
-		exists: false,
-	};
 }
 
 function onlinePrimaryKey(

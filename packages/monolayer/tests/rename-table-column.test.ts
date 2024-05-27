@@ -5929,6 +5929,15 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				type: "createUniqueConstraint",
+				warnings: [
+					{
+						code: "MF003",
+						columns: ["new_location_id"],
+						schema: "public",
+						table: "documents",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						'await sql`alter table "public"."documents" add constraint "documents_c78003f2_monolayer_key" unique using index "documents_c78003f2_monolayer_key_monolayer_uc_idx"`',
@@ -6294,6 +6303,15 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "createUniqueConstraint",
+				warnings: [
+					{
+						code: "MF003",
+						columns: ["identifier"],
+						schema: "public",
+						table: "publications",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						'await sql`alter table "public"."publications" add constraint "publications_1c0982e8_monolayer_key" unique using index "publications_1c0982e8_monolayer_key_monolayer_uc_idx"`',
@@ -13642,6 +13660,15 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				type: "createUniqueConstraint",
+				warnings: [
+					{
+						code: "MF003",
+						columns: ["book_id"],
+						schema: "public",
+						table: "books_and_documents",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						'await sql`alter table "public"."books_and_documents" add constraint "books_and_documents_b663df16_monolayer_key" unique using index "books_and_documents_b663df16_monolayer_key_monolayer_uc_idx"`',

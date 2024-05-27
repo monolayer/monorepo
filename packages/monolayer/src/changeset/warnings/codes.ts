@@ -10,4 +10,5 @@ export enum ChangeWarningCode {
 	AddBigSerialColumn = "B004",
 	AddPrimaryKeyToExistingNullableColumn = "MF001",
 	AddPrimaryKeyToNewColumn = "MF002",
+	AddUniqueToExistingColumn = "MF003",
 }

@@ -6,8 +6,14 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
+import { ChangeWarningType } from "~/changeset/warnings/types.js";
 import { currentColumName } from "~/introspection/column-name.js";
 import type { TablesToRename } from "~/introspection/introspect-schemas.js";
+import type {
+	LocalTableInfo,
+	SchemaMigrationInfo,
+} from "~/introspection/introspection.js";
 import { extractColumnsFromPrimaryKey } from "~/introspection/schema.js";
 import {
 	currentTableName,
@@ -17,6 +23,7 @@ import { hashValue } from "~/utils.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
+	existingColumns,
 	toSnakeCase,
 } from "../../../../../changeset/helpers.js";
 import { concurrentIndex } from "../../index/changeset.js";
@@ -144,6 +151,8 @@ function createUniqueFirstConstraintMigration(
 		addedTables,
 		columnsToRename,
 		tablesToRename,
+		local,
+		db,
 	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
@@ -168,6 +177,8 @@ function createUniqueFirstConstraintMigration(
 					tableName,
 					uniqueConstraint,
 					tablesToRename,
+					local,
+					db,
 				),
 			);
 		} else {
@@ -247,7 +258,7 @@ function dropUniqueLastConstraintMigration(
 
 function createUniqueConstraintMigration(
 	diff: UniqueCreateDiff,
-	{ schemaName, tablesToRename, addedTables }: GeneratorContext,
+	{ schemaName, tablesToRename, addedTables, local, db }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const hashValue = diff.path[2];
@@ -263,6 +274,8 @@ function createUniqueConstraintMigration(
 			tableName,
 			uniqueConstraint,
 			tablesToRename,
+			local,
+			db,
 		);
 	} else {
 		const changeset: Changeset = {
@@ -442,10 +455,18 @@ function createUniqueConstraintWithIndex(
 	tableName: string,
 	definition: ConstraintDefinition,
 	tablesToRename: TablesToRename,
+	local: LocalTableInfo,
+	db: SchemaMigrationInfo,
 ) {
 	const indexName = `${definition.name}_monolayer_uc_idx`;
 	const uniqueConstraintDefinition = `alter table "${schemaName}"."${tableName}" add constraint "${definition.name}" unique using index "${indexName}"`;
-	const createConstraint = {
+	const existingColumnsWithUniqueAdded = existingColumns({
+		columns: definition.columns,
+		table: tableName,
+		local,
+		db,
+	});
+	const createConstraint: Changeset = {
 		priority: MigrationOpPriority.UniqueCreate,
 		schemaName,
 		tableName: tableName,
@@ -454,6 +475,17 @@ function createUniqueConstraintWithIndex(
 		up: [executeKyselyDbStatement(uniqueConstraintDefinition)],
 		down: dropUniqueConstraintOp(tableName, definition, schemaName),
 	};
+	if (existingColumnsWithUniqueAdded.length > 0) {
+		createConstraint.warnings = [
+			{
+				type: ChangeWarningType.MightFail,
+				code: ChangeWarningCode.AddUniqueToExistingColumn,
+				schema: schemaName,
+				table: tableName,
+				columns: existingColumnsWithUniqueAdded,
+			},
+		];
+	}
 	const changeset: Changeset[] = [
 		indexForUniqueConstraint(schemaName, tableName, definition, tablesToRename),
 		createConstraint,

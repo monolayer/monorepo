@@ -27,6 +27,10 @@ import {
 	type AddSerialColumn,
 } from "./warnings/add-serial-column.js";
 import {
+	printAddUniqueToExisitingColumnWarning,
+	type AddUniqueToExistingColumn,
+} from "./warnings/add-unique.js";
+import {
 	printChangeColumnDefaultVolatileWarning,
 	type AddVolatileDefault,
 } from "./warnings/add-volatile-default.js";
@@ -129,6 +133,7 @@ export function printChangesetSummary(changeset: Changeset[]) {
 		warnings.addPrimaryKeyToExistingNullableColumn,
 	);
 	printAddPrimaryKeyToNewColumn(warnings.addPrimaryKeyToNewNullableColumn);
+	printAddUniqueToExisitingColumnWarning(warnings.addUniqueToExistingColumn);
 }
 
 export const summaryTemplate = nunjucks.compile(`
@@ -277,6 +282,13 @@ function changesetWarnings(changeset: Changeset[]) {
 							...acc.addPrimaryKeyToNewNullableColumn,
 							warning,
 						];
+						break;
+					case ChangeWarningCode.AddUniqueToExistingColumn:
+						acc.addUniqueToExistingColumn = [
+							...acc.addUniqueToExistingColumn,
+							warning,
+						];
+						break;
 				}
 				return acc;
 			},
@@ -291,6 +303,7 @@ function changesetWarnings(changeset: Changeset[]) {
 				addPrimaryKeyToExistingNullableColumn:
 					[] as Array<AddPrimaryKeyToExistingNullableColumn>,
 				addPrimaryKeyToNewNullableColumn: [] as Array<AddPrimaryKeyToNewColumn>,
+				addUniqueToExistingColumn: [] as Array<AddUniqueToExistingColumn>,
 			},
 		);
 }
