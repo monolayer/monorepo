@@ -43,6 +43,8 @@ export const rollback = Effect.gen(function* () {
 		migrationInfoToMigration(migrationsToRollback),
 	);
 
+	migrationsToRollback.pop();
+
 	const plan = rollbackPlan(migrationsToRollback, promptResult.downTo);
 
 	for (const migration of plan) {
