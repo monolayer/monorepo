@@ -6,6 +6,11 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
+import {
+	ChangeWarningCode,
+	ChangeWarningType,
+	type ChangeWarning,
+} from "~/changeset/warnings.js";
 import { currentColumName } from "~/introspection/column-name.js";
 import type { TablesToRename } from "~/introspection/introspect-schemas.js";
 import { currentTableName } from "~/introspection/table-name.js";
@@ -13,7 +18,10 @@ import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
 } from "../../../../../changeset/helpers.js";
-import type { LocalTableInfo } from "../../../../../introspection/introspection.js";
+import type {
+	LocalTableInfo,
+	SchemaMigrationInfo,
+} from "../../../../../introspection/introspection.js";
 import {
 	columnNameKey,
 	extractColumnsFromPrimaryKey,
@@ -132,7 +140,7 @@ export function primaryKeyColumnsChange(
 
 function createPrimaryKeyMigration(
 	diff: PrimaryKeyCreate,
-	{ schemaName, addedTables, local, tablesToRename }: GeneratorContext,
+	{ schemaName, addedTables, local, tablesToRename, db }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(diff.value)[0] as keyof typeof diff.value;
@@ -148,6 +156,7 @@ function createPrimaryKeyMigration(
 			primaryKeyValue,
 			tablesToRename,
 			local,
+			db,
 		);
 	} else {
 		return defaultPrimaryKey(
@@ -216,7 +225,7 @@ function dropPrimaryKeyMigration(
 
 function changePrimaryKeyMigration(
 	diff: PrimaryKeyChangeDiff,
-	{ schemaName, local, tablesToRename }: GeneratorContext,
+	{ schemaName, local, tablesToRename, db }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const primaryKeyName = diff.path[2];
@@ -228,6 +237,7 @@ function changePrimaryKeyMigration(
 		diff.value,
 		tablesToRename,
 		local,
+		db,
 	);
 
 	const dropChangeset: Changeset = {
@@ -433,6 +443,63 @@ function defaultPrimaryKey(
 	return [changeset, ...dropNotNull];
 }
 
+interface PrimaryKeyColumnDetails {
+	columnName: string;
+	inDb: ColumnExists;
+	inTable: ColumnExists;
+}
+
+type ColumnExists =
+	| {
+			exists: true;
+			nullable: boolean;
+	  }
+	| {
+			exists: false;
+	  };
+
+function columnInDb(
+	tableName: string,
+	column: string,
+	db: SchemaMigrationInfo,
+): ColumnExists {
+	const table = db.table[tableName];
+	if (table !== undefined) {
+		const tableColumn =
+			table.columns[column] || findColumnByNameInTable(table, column);
+		if (tableColumn !== undefined) {
+			return {
+				exists: true,
+				nullable: tableColumn.isNullable,
+			};
+		}
+	}
+	return {
+		exists: false,
+	};
+}
+
+function columnInTable(
+	tableName: string,
+	column: string,
+	local: LocalTableInfo,
+): ColumnExists {
+	const table = local.table[tableName];
+	if (table !== undefined) {
+		const tableColumn =
+			table.columns[column] || findColumnByNameInTable(table, column);
+		if (tableColumn !== undefined) {
+			return {
+				exists: true,
+				nullable: tableColumn.isNullable,
+			};
+		}
+	}
+	return {
+		exists: false,
+	};
+}
+
 function onlinePrimaryKey(
 	schemaName: string,
 	tableName: string,
@@ -440,17 +507,39 @@ function onlinePrimaryKey(
 	primaryKeyValue: string,
 	tablesToRename: TablesToRename,
 	local: LocalTableInfo,
+	db: SchemaMigrationInfo,
 ) {
 	const indexName = `${tableName}_pkey_idx`;
 	const indexDefinition = `create unique index concurrently "${indexName}" on "${schemaName}"."${tableName}" ${primaryKeyValue}`;
 	const primaryKeyColumns = extractColumnsFromPrimaryKey(primaryKeyValue);
+	const primaryKeyColumnDetails = primaryKeyColumns.reduce(
+		(acc, col) => {
+			const inDb = columnInDb(tableName, col, db);
+			const inTable = columnInTable(tableName, col, local);
+			acc[col] = {
+				columnName: col,
+				inDb,
+				inTable,
+			};
+			return acc;
+		},
+		{} as Record<string, PrimaryKeyColumnDetails>,
+	);
 	const addChecks = primaryKeyColumns.flatMap((col) => {
+		const inDb = primaryKeyColumnDetails[col];
+		if (inDb !== undefined && inDb.inDb.exists && !inDb.inDb.nullable) {
+			return [];
+		}
 		return addCheckWithSchemaStatements(schemaName, tableName, {
 			name: `${col}_temporary_not_null_check_constraint`,
 			definition: `"${col}" IS NOT NULL`,
 		});
 	});
 	const dropChecks = primaryKeyColumns.flatMap((col) => {
+		const inDb = primaryKeyColumnDetails[col];
+		if (inDb !== undefined && inDb.inDb.exists && !inDb.inDb.nullable) {
+			return [];
+		}
 		return [
 			dropCheckKyselySchemaStatement(
 				schemaName,
@@ -460,37 +549,66 @@ function onlinePrimaryKey(
 		];
 	});
 	const primaryKeyDefinition = `alter table "${schemaName}"."${tableName}" add constraint "${primaryKeyName}" primary key using index "${indexName}"`;
-	const changeset: Changeset[] = [
-		{
-			priority: MigrationOpPriority.IndexCreate,
-			schemaName,
-			tableName: tableName,
-			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-			type: ChangeSetType.CreateIndex,
-			transaction: false,
-			up: [concurrentIndex(schemaName, indexName, indexDefinition)],
-			down: [
-				executeKyselySchemaStatement(
-					schemaName,
-					`dropIndex("${indexName}")`,
-					"ifExists()",
-				),
-			],
-		},
-		{
-			priority: MigrationOpPriority.PrimaryKeyCreate,
-			schemaName,
-			tableName: tableName,
-			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-			type: ChangeSetType.CreatePrimaryKey,
-			up: [
-				...addChecks,
-				...[executeKyselyDbStatement(primaryKeyDefinition)],
-				...dropChecks,
-			],
-			down: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
-		},
-	];
+
+	const warnings: ChangeWarning[] = [];
+	const existingNullableColumns = Object.values(primaryKeyColumnDetails).filter(
+		(details) => details.inDb.exists && details.inDb.nullable,
+	);
+	const newColumns = Object.values(primaryKeyColumnDetails).filter(
+		(details) => !details.inDb.exists && details.inTable.exists,
+	);
+	if (existingNullableColumns.length > 0) {
+		warnings.push({
+			type: ChangeWarningType.MightFail,
+			code: ChangeWarningCode.AddPrimaryKeyToExistingNullableColumn,
+			schema: schemaName,
+			table: tableName,
+			columns: existingNullableColumns.map((col) => col.columnName),
+		});
+	}
+	if (newColumns.length > 0) {
+		warnings.push({
+			type: ChangeWarningType.MightFail,
+			code: ChangeWarningCode.AddPrimaryKeyToNewColumn,
+			schema: schemaName,
+			table: tableName,
+			columns: newColumns.map((col) => col.columnName),
+		});
+	}
+	const indexChangeset: Changeset = {
+		priority: MigrationOpPriority.IndexCreate,
+		schemaName,
+		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+		type: ChangeSetType.CreateIndex,
+		transaction: false,
+		up: [concurrentIndex(schemaName, indexName, indexDefinition)],
+		down: [
+			executeKyselySchemaStatement(
+				schemaName,
+				`dropIndex("${indexName}")`,
+				"ifExists()",
+			),
+		],
+	};
+	const primaryKeyChangeset: Changeset = {
+		priority: MigrationOpPriority.PrimaryKeyCreate,
+		schemaName,
+		tableName: tableName,
+		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
+		type: ChangeSetType.CreatePrimaryKey,
+		up: [
+			...addChecks,
+			...[executeKyselyDbStatement(primaryKeyDefinition)],
+			...dropChecks,
+		],
+		down: [dropPrimaryKeyOp(tableName, primaryKeyName as string, schemaName)],
+	};
+
+	if (warnings.length > 0) {
+		primaryKeyChangeset.warnings = warnings;
+	}
+	const changeset: Changeset[] = [indexChangeset, primaryKeyChangeset];
 
 	return [
 		...changeset,

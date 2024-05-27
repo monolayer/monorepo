@@ -1264,6 +1264,15 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "createPrimaryKey",
+				warnings: [
+					{
+						code: "MF001",
+						columns: ["identifier"],
+						schema: "public",
+						table: "publications",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						"await sql`${sql.raw(\n" +
@@ -1494,6 +1503,15 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "createPrimaryKey",
+				warnings: [
+					{
+						code: "MF001",
+						columns: ["identifier"],
+						schema: "public",
+						table: "publications",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						"await sql`${sql.raw(\n" +
@@ -8630,6 +8648,15 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				type: "createPrimaryKey",
+				warnings: [
+					{
+						code: "MF001",
+						columns: ["book_id"],
+						schema: "public",
+						table: "new_books",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						"await sql`${sql.raw(\n" +
@@ -8863,6 +8890,15 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				type: "createPrimaryKey",
+				warnings: [
+					{
+						code: "MF001",
+						columns: ["book_id"],
+						schema: "public",
+						table: "new_books",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						"await sql`${sql.raw(\n" +

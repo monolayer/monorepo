@@ -12,6 +12,8 @@ import { type Changeset } from "~/changeset/types.js";
 import {
 	ChangeWarningCode,
 	type AddBigSerialColumn,
+	type AddPrimaryKeyToExistingNullableColumn,
+	type AddPrimaryKeyToNewColumn,
 	type AddSerialColumn,
 	type AddVolatileDefault,
 	type ChangeColumnType,
@@ -102,6 +104,10 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	printChangeColumnDefaultVolatileWarning(warnings.changeColumnDefault);
 	printAddSerialColumn(warnings.addSerialColumn);
 	printAddBigSerialColumn(warnings.addBigSerialColumn);
+	printAddPrimaryKeyToExistingNullableColumn(
+		warnings.addPrimaryKeyToExistingNullableColumn,
+	);
+	printAddPrimaryKeyToNewColumn(warnings.addPrimaryKeyToNewNullableColumn);
 }
 
 export const summaryTemplate = nunjucks.compile(`
@@ -239,6 +245,17 @@ function changesetWarnings(changeset: Changeset[]) {
 					case ChangeWarningCode.AddBigSerialColumn:
 						acc.addBigSerialColumn = [...acc.addBigSerialColumn, warning];
 						break;
+					case ChangeWarningCode.AddPrimaryKeyToExistingNullableColumn:
+						acc.addPrimaryKeyToExistingNullableColumn = [
+							...acc.addPrimaryKeyToExistingNullableColumn,
+							warning,
+						];
+						break;
+					case ChangeWarningCode.AddPrimaryKeyToNewColumn:
+						acc.addPrimaryKeyToNewNullableColumn = [
+							...acc.addPrimaryKeyToNewNullableColumn,
+							warning,
+						];
 				}
 				return acc;
 			},
@@ -250,6 +267,9 @@ function changesetWarnings(changeset: Changeset[]) {
 				changeColumnDefault: [] as Array<AddVolatileDefault>,
 				addSerialColumn: [] as Array<AddSerialColumn>,
 				addBigSerialColumn: [] as Array<AddBigSerialColumn>,
+				addPrimaryKeyToExistingNullableColumn:
+					[] as Array<AddPrimaryKeyToExistingNullableColumn>,
+				addPrimaryKeyToNewNullableColumn: [] as Array<AddPrimaryKeyToNewColumn>,
 			},
 		);
 }
@@ -453,6 +473,67 @@ Downtime for your application can only be avoided by using a safer but complex a
   - 4. Move reads from the old table to the new table.
   - 5. Stop writing to the old table.
   - 6. Drop the old table.`),
+		);
+	}
+}
+
+function printAddPrimaryKeyToExistingNullableColumn(
+	warnings: AddPrimaryKeyToExistingNullableColumn[],
+) {
+	const messages = [];
+	for (const warning of warnings) {
+		const columnNames = warning.columns.join(", ");
+		messages.push(
+			`- A primary key has been added to nullable column(s) on an existing table
+  (columns: '${columnNames}' table: '${warning.table}' schema: '${warning.schema}')`,
+		);
+	}
+	if (messages.length > 0) {
+		p.log.warning(
+			`${color.yellow("Warning: Migration might fail.")}
+
+${messages.join("\n")}`,
+		);
+		p.log.message(
+			color.gray(`Adding a primary key constraint to existing nullable column(s)
+may fail if the column contains \`NULL\` values or duplicate entries.
+
+How to prevent a migration failure and downtime on an existing colum:
+  1. Ensure the column does not have duplicate entries.
+  2. If the column is nullable:
+    - Remove \`NULL\` values from the column.
+    - Add a non-volatile default value to the column in a separate
+		   migration before adding the primary key.
+	3. Ensure existing applications do not insert NULL or duplicate entries into the column.
+	4. Create the primary key.`),
+		);
+	}
+}
+
+function printAddPrimaryKeyToNewColumn(warnings: AddPrimaryKeyToNewColumn[]) {
+	const messages = [];
+	for (const warning of warnings) {
+		const columnNames = warning.columns.join(", ");
+		messages.push(
+			`- A primary key has been added to new column(s) on an existing table
+  (columns: '${columnNames}' table: '${warning.table}' schema: '${warning.schema}')`,
+		);
+	}
+	if (messages.length > 0) {
+		p.log.warning(
+			`${color.yellow("Warning: Migration might fail.")}
+
+${messages.join("\n")}`,
+		);
+		p.log.message(
+			color.gray(`Adding a primary key constraint to a new column(s) may fail if the column
+contains \`NULL\` values or duplicate entries.
+
+How to prevent a migration failure and downtime on new colums:
+	1. Add the column to the database as nullable.
+	2. Populate it with unique values.
+	3. Ensure applications do not insert \`NULL\` or duplicate entries into it.
+	4. Create the primary key.`),
 		);
 	}
 }

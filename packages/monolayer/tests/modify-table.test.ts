@@ -211,6 +211,15 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "MF001",
+							columns: ["fullName", "name"],
+							schema: "public",
+							table: "users",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							"await sql`${sql.raw(\n" +
@@ -272,6 +281,15 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "MF001",
+							columns: ["name"],
+							schema: "public",
+							table: "books",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							"await sql`${sql.raw(\n" +
@@ -295,6 +313,239 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
 							'dropConstraint("name_temporary_not_null_check_constraint")',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropConstraint("books_pkey")',
+							"execute();",
+						],
+					],
+				},
+			];
+
+			await testChangesetAndMigrations({
+				context,
+				configuration: { schemas: [dbSchema] },
+				expected,
+				down: "same",
+			});
+		});
+
+		test<DbContext>("add to notNull column", async (context) => {
+			await context.kysely.schema
+				.createTable("books")
+				.addColumn("name", "text", (col) => col.notNull())
+				.execute();
+
+			const books = table({
+				columns: {
+					name: text().notNull(),
+				},
+				constraints: {
+					primaryKey: primaryKey(["name"]),
+				},
+			});
+
+			const dbSchema = schema({
+				tables: {
+					books,
+				},
+			});
+
+			const expected = [
+				{
+					priority: 4003,
+					schemaName: "public",
+					tableName: "books",
+					currentTableName: "books",
+					type: "createIndex",
+					transaction: false,
+					up: [
+						[
+							"try {\n" +
+								'    await sql`${sql.raw(\'create unique index concurrently "books_pkey_idx" on "public"."books" ("name")\')}`.execute(db);\n' +
+								"  }\n" +
+								"  catch (error: any) {\n" +
+								"    if (error.code === '23505') {\n" +
+								'      await db.withSchema("public").schema.dropIndex("books_pkey_idx").ifExists().execute();\n' +
+								"    }\n" +
+								"    throw error;\n" +
+								"  }",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("books_pkey_idx")',
+							"ifExists()",
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4013,
+					schemaName: "public",
+					tableName: "books",
+					currentTableName: "books",
+					type: "createPrimaryKey",
+					up: [
+						[
+							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
+							"execute(db);",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropConstraint("books_pkey")',
+							"execute();",
+						],
+					],
+				},
+			];
+
+			await testChangesetAndMigrations({
+				context,
+				configuration: { schemas: [dbSchema] },
+				expected,
+				down: "same",
+			});
+		});
+
+		test<DbContext>("add to new column", async (context) => {
+			await context.kysely.schema
+				.createTable("books")
+				.addColumn("name", "text")
+				.execute();
+
+			const books = table({
+				columns: {
+					id: integer(),
+					name: text(),
+				},
+				constraints: {
+					primaryKey: primaryKey(["id"]),
+				},
+			});
+
+			const dbSchema = schema({
+				tables: {
+					books,
+				},
+			});
+
+			const expected = [
+				{
+					currentTableName: "books",
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropColumn("id")',
+							"execute();",
+						],
+					],
+					priority: 2003,
+					schemaName: "public",
+					tableName: "books",
+					type: "createColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'addColumn("id", "integer")',
+							"execute();",
+						],
+					],
+				},
+				{
+					currentTableName: "books",
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'alterColumn("id", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					priority: 3011,
+					schemaName: "public",
+					tableName: "books",
+					type: "changeColumn",
+					up: [],
+				},
+				{
+					priority: 4003,
+					schemaName: "public",
+					tableName: "books",
+					currentTableName: "books",
+					type: "createIndex",
+					transaction: false,
+					up: [
+						[
+							"try {\n" +
+								'    await sql`${sql.raw(\'create unique index concurrently "books_pkey_idx" on "public"."books" ("id")\')}`.execute(db);\n' +
+								"  }\n" +
+								"  catch (error: any) {\n" +
+								"    if (error.code === '23505') {\n" +
+								'      await db.withSchema("public").schema.dropIndex("books_pkey_idx").ifExists().execute();\n' +
+								"    }\n" +
+								"    throw error;\n" +
+								"  }",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("books_pkey_idx")',
+							"ifExists()",
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4013,
+					schemaName: "public",
+					tableName: "books",
+					currentTableName: "books",
+					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "MF002",
+							columns: ["id"],
+							schema: "public",
+							table: "books",
+							type: "mightFail",
+						},
+					],
+					up: [
+						[
+							"await sql`${sql.raw(\n" +
+								"  db\n" +
+								'    .withSchema("public")\n' +
+								'    .schema.alterTable("books")\n' +
+								'    .addCheckConstraint("id_temporary_not_null_check_constraint", sql`"id" IS NOT NULL`)\n' +
+								"    .compile()\n" +
+								'    .sql.concat(" not valid")\n' +
+								")}`.execute(db);",
+						],
+						[
+							'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "id_temporary_not_null_check_constraint"`',
+							"execute(db);",
+						],
+						[
+							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
+							"execute(db);",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropConstraint("id_temporary_not_null_check_constraint")',
 							"execute();",
 						],
 					],
@@ -723,28 +974,8 @@ describe("Modify table", () => {
 					type: "createPrimaryKey",
 					up: [
 						[
-							"await sql`${sql.raw(\n" +
-								"  db\n" +
-								'    .withSchema("public")\n' +
-								'    .schema.alterTable("books")\n' +
-								'    .addCheckConstraint("description_temporary_not_null_check_constraint", sql`"description" IS NOT NULL`)\n' +
-								"    .compile()\n" +
-								'    .sql.concat(" not valid")\n' +
-								")}`.execute(db);",
-						],
-						[
-							'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "description_temporary_not_null_check_constraint"`',
-							"execute(db);",
-						],
-						[
 							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
 							"execute(db);",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("books")',
-							'dropConstraint("description_temporary_not_null_check_constraint")',
-							"execute();",
 						],
 					],
 					down: [
@@ -764,28 +995,8 @@ describe("Modify table", () => {
 					type: "createPrimaryKey",
 					up: [
 						[
-							"await sql`${sql.raw(\n" +
-								"  db\n" +
-								'    .withSchema("public")\n' +
-								'    .schema.alterTable("users")\n' +
-								'    .addCheckConstraint("name_temporary_not_null_check_constraint", sql`"name" IS NOT NULL`)\n' +
-								"    .compile()\n" +
-								'    .sql.concat(" not valid")\n' +
-								")}`.execute(db);",
-						],
-						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "name_temporary_not_null_check_constraint"`',
-							"execute(db);",
-						],
-						[
 							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
 							"execute(db);",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'dropConstraint("name_temporary_not_null_check_constraint")',
-							"execute();",
 						],
 					],
 					down: [
@@ -1054,28 +1265,8 @@ describe("Modify table", () => {
 					type: "createPrimaryKey",
 					up: [
 						[
-							"await sql`${sql.raw(\n" +
-								"  db\n" +
-								'    .withSchema("public")\n' +
-								'    .schema.alterTable("books")\n' +
-								'    .addCheckConstraint("location_id_temporary_not_null_check_constraint", sql`"location_id" IS NOT NULL`)\n' +
-								"    .compile()\n" +
-								'    .sql.concat(" not valid")\n' +
-								")}`.execute(db);",
-						],
-						[
-							'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "location_id_temporary_not_null_check_constraint"`',
-							"execute(db);",
-						],
-						[
 							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
 							"execute(db);",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("books")',
-							'dropConstraint("location_id_temporary_not_null_check_constraint")',
-							"execute();",
 						],
 					],
 					down: [
@@ -1095,28 +1286,8 @@ describe("Modify table", () => {
 					type: "createPrimaryKey",
 					up: [
 						[
-							"await sql`${sql.raw(\n" +
-								"  db\n" +
-								'    .withSchema("public")\n' +
-								'    .schema.alterTable("users")\n' +
-								'    .addCheckConstraint("name_temporary_not_null_check_constraint", sql`"name" IS NOT NULL`)\n' +
-								"    .compile()\n" +
-								'    .sql.concat(" not valid")\n' +
-								")}`.execute(db);",
-						],
-						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "name_temporary_not_null_check_constraint"`',
-							"execute(db);",
-						],
-						[
 							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
 							"execute(db);",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'dropConstraint("name_temporary_not_null_check_constraint")',
-							"execute();",
 						],
 					],
 					down: [
@@ -1268,28 +1439,8 @@ describe("Modify table", () => {
 					type: "createPrimaryKey",
 					up: [
 						[
-							"await sql`${sql.raw(\n" +
-								"  db\n" +
-								'    .withSchema("public")\n' +
-								'    .schema.alterTable("users")\n' +
-								'    .addCheckConstraint("name_temporary_not_null_check_constraint", sql`"name" IS NOT NULL`)\n' +
-								"    .compile()\n" +
-								'    .sql.concat(" not valid")\n' +
-								")}`.execute(db);",
-						],
-						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "name_temporary_not_null_check_constraint"`',
-							"execute(db);",
-						],
-						[
 							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
 							"execute(db);",
-						],
-						[
-							'await db.withSchema("public").schema',
-							'alterTable("users")',
-							'dropConstraint("name_temporary_not_null_check_constraint")',
-							"execute();",
 						],
 					],
 					down: [
@@ -1463,6 +1614,15 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
+					warnings: [
+						{
+							code: "MF001",
+							columns: ["email"],
+							schema: "public",
+							table: "users",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							"await sql`${sql.raw(\n" +

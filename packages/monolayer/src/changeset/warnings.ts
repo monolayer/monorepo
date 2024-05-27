@@ -1,12 +1,14 @@
 export type ChangeWarning =
 	| BackwardIncompatibleChange
 	| DestructiveChange
-	| BlockingChange;
+	| BlockingChange
+	| MightFailChange;
 
 export enum ChangeWarningType {
 	BackwardIncompatible = "backwardIncompatible",
 	Destructive = "destructive",
 	Blocking = "blocking",
+	MightFail = "mightFail",
 }
 
 export enum ChangeWarningCode {
@@ -19,6 +21,8 @@ export enum ChangeWarningCode {
 	AddVolatileDefault = "B002",
 	AddSerialColumn = "B003",
 	AddBigSerialColumn = "B004",
+	AddPrimaryKeyToExistingNullableColumn = "MF001",
+	AddPrimaryKeyToNewColumn = "MF002",
 }
 
 export type BackwardIncompatibleChange =
@@ -104,4 +108,24 @@ export type AddBigSerialColumn = {
 	schema: string;
 	table: string;
 	column: string;
+};
+
+export type MightFailChange =
+	| AddPrimaryKeyToExistingNullableColumn
+	| AddPrimaryKeyToNewColumn;
+
+export type AddPrimaryKeyToExistingNullableColumn = {
+	type: ChangeWarningType.MightFail;
+	code: ChangeWarningCode.AddPrimaryKeyToExistingNullableColumn;
+	schema: string;
+	table: string;
+	columns: string[];
+};
+
+export type AddPrimaryKeyToNewColumn = {
+	type: ChangeWarningType.MightFail;
+	code: ChangeWarningCode.AddPrimaryKeyToNewColumn;
+	schema: string;
+	table: string;
+	columns: string[];
 };
