@@ -126,7 +126,7 @@ export function renderChangesetSummary(changeset: Changeset[]) {
 
 export function printChangesetSummary(changeset: Changeset[]) {
 	const render = renderChangesetSummary(changeset);
-	p.log.step(color.underline("Change Summary:"));
+	p.log.info(color.underline("Change Summary:"));
 	p.log.message(render);
 
 	const warnings = changesetWarnings(changeset);
@@ -148,19 +148,20 @@ export function printChangesetSummary(changeset: Changeset[]) {
 }
 
 export const summaryTemplate = nunjucks.compile(`
-{%- if extensionsSummary !== '' -%}
+{%- if extensionsSummary !== '' %}
 Extensions: {{ extensionsSummary }}
 {%- endif %}
 {%- if schemasSummary !== '' %}
 Schemas: {{ schemasSummary }}
 {%- endif %}
-{% for schemaName, schemaStats in schemas %}
+{%- for schemaName, schemaStats in schemas %}
 '{{ schemaName }}' schema:
-{% if schemaStats.enumSummary !== '' %}
+{%- if schemaStats.enumSummary !== '' %}
   Enum Types: {{ schemaStats.enumSummary }}
-{% endif -%}
+{%- endif %}
 
-{% for tableName, tableStats in schemaStats.tables %}
+{%- for tableName, tableStats in schemaStats.tables %}
+
   {{ schemaStats.tableHeader[tableName] | safe }}
 {%- if tableStats.columns !== '' %}
     {{ tableStats.columns }}
@@ -183,8 +184,8 @@ Schemas: {{ schemasSummary }}
 {%- if tableStats.triggers !== '' %}
     {{ tableStats.triggers }}
 {%- endif %}
-{% endfor %}
-{%- endfor -%}
+{%- endfor %}
+{%- endfor %}
 `);
 
 function statCount(

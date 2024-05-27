@@ -43,20 +43,22 @@ export function logMigrationResultStatus(
 	error: unknown,
 	direction: "up" | "down",
 ) {
-	const action = direction === "up" ? "applied" : "reverted";
+	const action = direction === "up" ? "APPLIED" : "REVERTED";
 	switch (result.status) {
 		case "Success":
 			p.log.success(
-				`${color.green(`${action} migration`)} ${result.migrationName}${error !== undefined ? "(ROLLBACK)" : ""}`.trimEnd(),
+				`${color.bgGreen(color.black(` ${action} `))} ${result.migrationName}${error !== undefined ? "(ROLLBACK)" : ""}`.trimEnd(),
 			);
 			break;
 		case "Error":
 			p.log.error(
-				`${color.red("error in migration")} ${result.migrationName} (ROLLBACK)`.trimEnd(),
+				`${color.bgRed(color.black(" ERROR "))} ${result.migrationName} (ROLLBACK)`.trimEnd(),
 			);
 			break;
 		case "NotExecuted":
-			p.log.warn(`${color.yellow("not executed")} ${result.migrationName}`);
+			p.log.warn(
+				`${color.bgYellow(color.black(" NOT EXECUTED "))} ${result.migrationName}`,
+			);
 			break;
 	}
 	return Effect.succeed(true);

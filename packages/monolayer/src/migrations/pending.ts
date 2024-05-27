@@ -21,7 +21,7 @@ export const pendingMigrations = Effect.gen(function* () {
 
 function logPendingMigrationNames(migration: { name: string; path: string }) {
 	p.log.message(
-		`${color.yellow("pending")} ${path.basename(migration.path, ".ts")}`,
+		`${color.bgYellow(color.black(" PENDING "))} ${path.basename(migration.path, ".ts")}`,
 	);
 	return Effect.void;
 }
@@ -48,7 +48,7 @@ function logPendingMigrations(
 	return Effect.gen(function* () {
 		for (const migration of pending) {
 			p.log.warn(
-				`${color.yellow("pending")} ${path.relative(cwd(), migration.path)}`,
+				`${color.bgYellow(color.black(" PENDING "))} ${path.relative(cwd(), migration.path)}`,
 			);
 		}
 		yield* Effect.succeed(true);
