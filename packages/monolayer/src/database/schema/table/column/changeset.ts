@@ -280,7 +280,7 @@ function addWarnings(
 			column: columnName,
 		});
 	}
-	if (columnDef.isNullable === false && columnDef.defaultValue === null) {
+	if (columnDef.isNullable === false) {
 		warnings.push({
 			type: ChangeWarningType.MightFail,
 			code: ChangeWarningCode.AddNonNullableColumn,

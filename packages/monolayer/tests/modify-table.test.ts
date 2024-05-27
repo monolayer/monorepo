@@ -3050,7 +3050,7 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "books_adbefd84_monolayer_key_monolayer_uc_idx" on "public"."books" ("name") nulls distinct\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "books_adbefd84_monolayer_key_monolayer_uc_idx" on "public"."books" ("name") \')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
@@ -3079,7 +3079,7 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "users_83137b76_monolayer_key_monolayer_uc_idx" on "public"."users" ("fullName", "id") nulls distinct\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "users_83137b76_monolayer_key_monolayer_uc_idx" on "public"."users" ("fullName", "id") \')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
@@ -3429,7 +3429,7 @@ describe("Modify table", () => {
 					up: [
 						[
 							"try {\n" +
-								'    await sql`${sql.raw(\'create unique index concurrently "users_acdd8fa3_monolayer_key_monolayer_uc_idx" on "public"."users" ("id") nulls distinct\')}`.execute(db);\n' +
+								'    await sql`${sql.raw(\'create unique index concurrently "users_acdd8fa3_monolayer_key_monolayer_uc_idx" on "public"."users" ("id") \')}`.execute(db);\n' +
 								"  }\n" +
 								"  catch (error: any) {\n" +
 								"    if (error.code === '23505') {\n" +
@@ -4465,6 +4465,15 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createColumn",
+					warnings: [
+						{
+							code: "MF004",
+							column: "id",
+							schema: "public",
+							table: "users",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -4518,6 +4527,15 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createColumn",
+					warnings: [
+						{
+							code: "MF004",
+							column: "count",
+							schema: "public",
+							table: "users",
+							type: "mightFail",
+						},
+					],
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -5031,6 +5049,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						table: "users",
 						type: "blocking",
 					},
+					{
+						code: "MF004",
+						column: "id",
+						schema: "public",
+						table: "users",
+						type: "mightFail",
+					},
 				],
 				up: [
 					[
@@ -5062,6 +5087,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						schema: "public",
 						table: "users",
 						type: "blocking",
+					},
+					{
+						code: "MF004",
+						column: "second_id",
+						schema: "public",
+						table: "users",
+						type: "mightFail",
 					},
 				],
 				up: [
@@ -5110,6 +5142,15 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createColumn",
+				warnings: [
+					{
+						code: "MF004",
+						column: "name",
+						schema: "public",
+						table: "users",
+						type: "mightFail",
+					},
+				],
 				up: [
 					[
 						'await db.withSchema("public").schema',

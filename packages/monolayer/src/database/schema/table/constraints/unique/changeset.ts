@@ -426,9 +426,7 @@ function indexForUniqueConstraint(
 		.map((col) => `"${col}"`)
 		.join(", ");
 
-	const nullsDistinct = definition.distinct
-		? "nulls distinct"
-		: "nulls not distinct";
+	const nullsDistinct = !definition.distinct ? "nulls not distinct" : "";
 	const indexDefinition = `create unique index concurrently "${indexName}" on "${schemaName}"."${tableName}" (${uniqueConstraintColumns}) ${nullsDistinct}`;
 
 	const changeset: Changeset = {

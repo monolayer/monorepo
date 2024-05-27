@@ -5913,7 +5913,7 @@ describe("Rename table and column without camel case plugin", () => {
 				up: [
 					[
 						"try {\n" +
-							'    await sql`${sql.raw(\'create unique index concurrently "documents_c78003f2_monolayer_key_monolayer_uc_idx" on "public"."documents" ("new_location_id") nulls distinct\')}`.execute(db);\n' +
+							'    await sql`${sql.raw(\'create unique index concurrently "documents_c78003f2_monolayer_key_monolayer_uc_idx" on "public"."documents" ("new_location_id") \')}`.execute(db);\n' +
 							"  }\n" +
 							"  catch (error: any) {\n" +
 							"    if (error.code === '23505') {\n" +
@@ -6287,7 +6287,7 @@ describe("Rename table and column without camel case plugin", () => {
 				up: [
 					[
 						"try {\n" +
-							'    await sql`${sql.raw(\'create unique index concurrently "publications_1c0982e8_monolayer_key_monolayer_uc_idx" on "public"."publications" ("identifier") nulls distinct\')}`.execute(db);\n' +
+							'    await sql`${sql.raw(\'create unique index concurrently "publications_1c0982e8_monolayer_key_monolayer_uc_idx" on "public"."publications" ("identifier") \')}`.execute(db);\n' +
 							"  }\n" +
 							"  catch (error: any) {\n" +
 							"    if (error.code === '23505') {\n" +
@@ -13653,7 +13653,7 @@ describe("Rename table and column with camel case plugin", () => {
 				up: [
 					[
 						"try {\n" +
-							'    await sql`${sql.raw(\'create unique index concurrently "books_and_documents_b663df16_monolayer_key_monolayer_uc_idx" on "public"."books_and_documents" ("book_id") nulls distinct\')}`.execute(db);\n' +
+							'    await sql`${sql.raw(\'create unique index concurrently "books_and_documents_b663df16_monolayer_key_monolayer_uc_idx" on "public"."books_and_documents" ("book_id") \')}`.execute(db);\n' +
 							"  }\n" +
 							"  catch (error: any) {\n" +
 							"    if (error.code === '23505') {\n" +

@@ -2436,7 +2436,7 @@ describe("Rename table without camel case plugin", () => {
 				up: [
 					[
 						"try {\n" +
-							'    await sql`${sql.raw(\'create unique index concurrently "publications_acdd8fa3_monolayer_key_monolayer_uc_idx" on "public"."publications" ("id") nulls distinct\')}`.execute(db);\n' +
+							'    await sql`${sql.raw(\'create unique index concurrently "publications_acdd8fa3_monolayer_key_monolayer_uc_idx" on "public"."publications" ("id") \')}`.execute(db);\n' +
 							"  }\n" +
 							"  catch (error: any) {\n" +
 							"    if (error.code === '23505') {\n" +
@@ -6111,7 +6111,7 @@ describe("Rename table with camel case plugin", () => {
 				up: [
 					[
 						"try {\n" +
-							'    await sql`${sql.raw(\'create unique index concurrently "books_and_documents_acdd8fa3_monolayer_key_monolayer_uc_idx" on "public"."books_and_documents" ("id") nulls distinct\')}`.execute(db);\n' +
+							'    await sql`${sql.raw(\'create unique index concurrently "books_and_documents_acdd8fa3_monolayer_key_monolayer_uc_idx" on "public"."books_and_documents" ("id") \')}`.execute(db);\n' +
 							"  }\n" +
 							"  catch (error: any) {\n" +
 							"    if (error.code === '23505') {\n" +
