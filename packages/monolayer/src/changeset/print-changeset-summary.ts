@@ -148,15 +148,16 @@ export function printChangesetSummary(changeset: Changeset[]) {
 }
 
 export const summaryTemplate = nunjucks.compile(`
-{%- if extensionsSummary !== '' %}
+{%- if extensionsSummary !== '' -%}
 Extensions: {{ extensionsSummary }}
 {%- endif %}
 {%- if schemasSummary !== '' %}
 Schemas: {{ schemasSummary }}
 {%- endif %}
 {%- for schemaName, schemaStats in schemas %}
+
 '{{ schemaName }}' schema:
-{%- if schemaStats.enumSummary !== '' %}
+{% if schemaStats.enumSummary !== '' %}
   Enum Types: {{ schemaStats.enumSummary }}
 {%- endif %}
 
