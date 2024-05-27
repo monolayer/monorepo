@@ -1,4 +1,5 @@
 import { AddBigSerialColumn } from "./warnings/add-bigserial-column.js";
+import type { AddNonNullableColumn } from "./warnings/add-non-nullable-column.js";
 import { AddPrimaryKeyToExistingNullableColumn } from "./warnings/add-primary-key-to-existing-nullable-column.js";
 import { AddPrimaryKeyToNewColumn } from "./warnings/add-primary-key-to-new-column.js";
 import { AddSerialColumn } from "./warnings/add-serial-column.js";
@@ -30,4 +31,5 @@ export type BlockingChange =
 export type MightFailChange =
 	| AddPrimaryKeyToExistingNullableColumn
 	| AddPrimaryKeyToNewColumn
-	| AddUniqueToExistingColumn;
+	| AddUniqueToExistingColumn
+	| AddNonNullableColumn;

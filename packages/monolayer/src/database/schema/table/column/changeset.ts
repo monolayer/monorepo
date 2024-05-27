@@ -6,6 +6,7 @@ import {
 	Changeset,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
+import type { ChangeWarning } from "~/changeset/warnings.js";
 import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
 import { ChangeWarningType } from "~/changeset/warnings/types.js";
 import { currentTableName } from "~/introspection/table-name.js";
@@ -255,30 +256,40 @@ function addWarnings(
 	tableName: string,
 	columnName: string,
 ) {
+	const warnings: ChangeWarning[] = [];
+
 	if (columnDef.dataType === "serial" || columnDef.dataType === "bigserial") {
-		changeset.warnings = [
-			{
-				type: ChangeWarningType.Blocking,
-				code:
-					columnDef.dataType === "serial"
-						? ChangeWarningCode.AddSerialColumn
-						: ChangeWarningCode.AddBigSerialColumn,
-				schema: schemaName,
-				table: tableName,
-				column: columnName,
-			},
-		];
+		warnings.push({
+			type: ChangeWarningType.Blocking,
+			code:
+				columnDef.dataType === "serial"
+					? ChangeWarningCode.AddSerialColumn
+					: ChangeWarningCode.AddBigSerialColumn,
+			schema: schemaName,
+			table: tableName,
+			column: columnName,
+		});
 	}
 
 	if (columnDef.volatileDefault === "yes") {
-		changeset.warnings = [
-			{
-				type: ChangeWarningType.Blocking,
-				code: ChangeWarningCode.AddVolatileDefault,
-				schema: schemaName,
-				table: tableName,
-				column: columnName,
-			},
-		];
+		warnings.push({
+			type: ChangeWarningType.Blocking,
+			code: ChangeWarningCode.AddVolatileDefault,
+			schema: schemaName,
+			table: tableName,
+			column: columnName,
+		});
+	}
+	if (columnDef.isNullable === false && columnDef.defaultValue !== null) {
+		warnings.push({
+			type: ChangeWarningType.MightFail,
+			code: ChangeWarningCode.AddNonNullableColumn,
+			schema: schemaName,
+			table: tableName,
+			column: columnName,
+		});
+	}
+	if (warnings.length > 0) {
+		changeset.warnings = warnings;
 	}
 }

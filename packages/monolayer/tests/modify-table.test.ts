@@ -5156,6 +5156,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						table: "users",
 						type: "blocking",
 					},
+					{
+						code: "MF004",
+						column: "createdAt",
+						schema: "public",
+						table: "users",
+						type: "mightFail",
+					},
 				],
 				up: [
 					[

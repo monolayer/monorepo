@@ -15,6 +15,10 @@ import {
 	type AddBigSerialColumn,
 } from "./warnings/add-bigserial-column.js";
 import {
+	printAddNonNullableColumnWarning,
+	type AddNonNullableColumn,
+} from "./warnings/add-non-nullable-column.js";
+import {
 	printAddPrimaryKeyToExistingNullableColumn,
 	type AddPrimaryKeyToExistingNullableColumn,
 } from "./warnings/add-primary-key-to-existing-nullable-column.js";
@@ -134,6 +138,7 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	);
 	printAddPrimaryKeyToNewColumn(warnings.addPrimaryKeyToNewNullableColumn);
 	printAddUniqueToExisitingColumnWarning(warnings.addUniqueToExistingColumn);
+	printAddNonNullableColumnWarning(warnings.addNonNullableColumn);
 }
 
 export const summaryTemplate = nunjucks.compile(`
@@ -289,6 +294,9 @@ function changesetWarnings(changeset: Changeset[]) {
 							warning,
 						];
 						break;
+					case ChangeWarningCode.AddNonNullableColumn:
+						acc.addNonNullableColumn = [...acc.addNonNullableColumn, warning];
+						break;
 				}
 				return acc;
 			},
@@ -304,6 +312,7 @@ function changesetWarnings(changeset: Changeset[]) {
 					[] as Array<AddPrimaryKeyToExistingNullableColumn>,
 				addPrimaryKeyToNewNullableColumn: [] as Array<AddPrimaryKeyToNewColumn>,
 				addUniqueToExistingColumn: [] as Array<AddUniqueToExistingColumn>,
+				addNonNullableColumn: [] as Array<AddNonNullableColumn>,
 			},
 		);
 }
