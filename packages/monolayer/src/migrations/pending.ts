@@ -7,7 +7,7 @@ import color from "picocolors";
 import { cwd } from "process";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
-import { allMigrations } from "./migration.js";
+import { Migrator } from "../services/migrator.js";
 
 export const pendingMigrations = Effect.gen(function* () {
 	const pendingMigrations = yield* localPendingSchemaMigrations;
@@ -83,7 +83,8 @@ export function deletePendingMigrations(pendingMigrations: PendingMigration[]) {
 
 export const localPendingSchemaMigrations = Effect.gen(function* () {
 	const folder = yield* appEnvironmentMigrationsFolder;
-	const all = yield* allMigrations;
+	const migrator = yield* Migrator;
+	const all = yield* migrator.all;
 
 	return all
 		.filter((info) => info.executedAt === undefined)

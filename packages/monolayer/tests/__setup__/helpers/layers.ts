@@ -1,22 +1,15 @@
 import dotenv from "dotenv";
 import { Effect, Layer } from "effect";
-import {
-	CamelCasePlugin,
-	FileMigrationProvider,
-	Kysely,
-	Migrator as KyselyMigrator,
-} from "kysely";
-import fs from "node:fs/promises";
-import path from "path";
+import { CamelCasePlugin, Kysely } from "kysely";
 import pg from "pg";
 import { env } from "process";
 import type { Configuration } from "~/configuration.js";
+import { phasedMigratorLayer } from "~/migrations/phased-migrator.js";
 import {
 	DbClients,
 	MonolayerPostgresDialect,
 	dbClientsLayer,
 } from "~/services/db-clients.js";
-import { Migrator, migratorLayer } from "~/services/migrator.js";
 import { globalPool } from "../setup.js";
 dotenv.config();
 
@@ -68,33 +61,18 @@ export function mockedDbClientsLayer(
 
 function mockedMigratorLayer(
 	databaseName: string,
-	folder: string,
+	migrationFolder: string,
 	useCamelCase = { enabled: false },
 ) {
 	const pool = pgPool(databaseName);
-	return Layer.effect(
-		Migrator,
-		// eslint-disable-next-line require-yield
-		Effect.gen(function* () {
-			return {
-				instance: new KyselyMigrator({
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					db: new Kysely<any>({
-						dialect: new MonolayerPostgresDialect({
-							pool: pool,
-						}),
-						plugins: useCamelCase.enabled ? [new CamelCasePlugin()] : [],
-					}),
-					provider: new FileMigrationProvider({
-						fs,
-						path,
-						migrationFolder: folder,
-					}),
-				}),
-				folder: folder,
-			};
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const db = new Kysely<any>({
+		dialect: new MonolayerPostgresDialect({
+			pool: pool,
 		}),
-	);
+		plugins: useCamelCase.enabled ? [new CamelCasePlugin()] : [],
+	});
+	return phasedMigratorLayer({ client: db, migrationFolder });
 }
 
 export type ConnectionLessConfiguration = Omit<Configuration, "connections">;
@@ -115,6 +93,6 @@ export function newLayers(
 	);
 }
 
-export const layers = migratorLayer().pipe(
+export const layers = phasedMigratorLayer().pipe(
 	Layer.provideMerge(dbClientsLayer()),
 );

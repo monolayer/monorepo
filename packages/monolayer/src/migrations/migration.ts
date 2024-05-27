@@ -1,17 +1,11 @@
 import { kebabCase } from "case-anything";
 import { Effect } from "effect";
-import { mkdirSync } from "fs";
 import type {
 	Migration as KyselyMigration,
 	MigrationInfo as KyselyMigrationInfo,
 } from "kysely";
 import { migrationNamePrompt } from "~/prompts/migration-name.js";
 import { promptCancelError } from "../cli/cli-action.js";
-import {
-	getMigrations,
-	migratorFolder,
-	readMigration,
-} from "../services/migrator.js";
 
 export const NO_DEPENDENCY: NoDependencies = Object.freeze({
 	__noDependencies__: true,
@@ -46,11 +40,7 @@ export type Migration = {
 	transaction?: boolean;
 };
 
-export interface MonolayerMigrationInfo extends KyselyMigrationInfo {
-	dependsOn: MigrationDependency;
-	scaffold: boolean;
-	transaction: boolean;
-}
+export type MonolayerMigrationInfo = KyselyMigrationInfo & Migration;
 
 export interface MonolayerMigration extends KyselyMigration {
 	migration: Migration;
@@ -68,12 +58,6 @@ export function migrationInfoToMigration(
 	});
 }
 
-export class MigrationError extends TypeError {
-	constructor(migration: string) {
-		super(`undefined migration in ${migration}`);
-	}
-}
-
 export function migrationName() {
 	return Effect.gen(function* () {
 		const migrationName = yield* Effect.tryPromise(() => migrationNamePrompt());
@@ -81,39 +65,5 @@ export function migrationName() {
 			return yield* promptCancelError;
 		}
 		return kebabCase(migrationName);
-	});
-}
-export function migrationDependency() {
-	return Effect.gen(function* () {
-		const migrations = yield* allMigrations;
-		return migrations.map((m) => m.name).slice(-1)[0] ?? "NO_DEPENDENCY";
-	});
-}
-
-export const allMigrations = Effect.gen(function* () {
-	const folder = yield* migratorFolder;
-	mkdirSync(folder, { recursive: true });
-
-	const migrationInfo = yield* getMigrations;
-
-	return yield* kyselyMigrationInfoToMonolayerMigrationInfo(migrationInfo);
-});
-
-export function kyselyMigrationInfoToMonolayerMigrationInfo(
-	migrationInfo: readonly KyselyMigrationInfo[],
-) {
-	return Effect.gen(function* () {
-		const monolayerMigrationInfo: MonolayerMigrationInfo[] = [];
-		for (const info of migrationInfo) {
-			const migration = yield* readMigration(info.name);
-			monolayerMigrationInfo.push({
-				...info,
-				transaction: migration.migration.transaction ?? false,
-				scaffold: migration.migration.scaffold,
-				dependsOn: migration.migration.dependsOn,
-			});
-		}
-
-		return monolayerMigrationInfo;
 	});
 }

@@ -2,12 +2,12 @@ import dotenv from "dotenv";
 import { Effect, Layer, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { loadEnv } from "~/cli/cli-action.js";
+import { phasedMigratorLayer } from "~/migrations/phased-migrator.js";
 import {
 	adminPgQuery,
 	dbClientsLayer,
 	pgQuery,
 } from "~/services/db-clients.js";
-import { migratorLayer } from "~/services/migrator.js";
 import { AppEnvironment } from "~/state/app-environment.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -27,11 +27,11 @@ describe("pgQuery", () => {
 	});
 
 	test("configurations", async () => {
-		const layersWithDefaultConfiguration = migratorLayer().pipe(
+		const layersWithDefaultConfiguration = phasedMigratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);
 
-		const layersWithStatsConfiguration = migratorLayer().pipe(
+		const layersWithStatsConfiguration = phasedMigratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);
 
@@ -65,11 +65,11 @@ describe("pgQuery", () => {
 	});
 
 	test("configuration connections", async () => {
-		const layersWithDefaultConfiguration = migratorLayer().pipe(
+		const layersWithDefaultConfiguration = phasedMigratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);
 
-		const layersWithStatsConfiguration = migratorLayer().pipe(
+		const layersWithStatsConfiguration = phasedMigratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);
 
@@ -115,11 +115,11 @@ describe("adminPgQuery", () => {
 	});
 
 	test("admin configurations connect to 'postgres'", async () => {
-		const layersWithDefaultConfiguration = migratorLayer().pipe(
+		const layersWithDefaultConfiguration = phasedMigratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);
 
-		const layersWithStatsConfiguration = migratorLayer().pipe(
+		const layersWithStatsConfiguration = phasedMigratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);
 
@@ -151,11 +151,11 @@ describe("adminPgQuery", () => {
 	});
 
 	test("admin connections connect to 'postgres'", async () => {
-		const layersWithDefaultConfiguration = migratorLayer().pipe(
+		const layersWithDefaultConfiguration = phasedMigratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);
 
-		const layersWithStatsConfiguration = migratorLayer().pipe(
+		const layersWithStatsConfiguration = phasedMigratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);
 

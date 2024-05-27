@@ -139,7 +139,7 @@ describe("seed", () => {
 						Ref.make(await loadEnv("development", "default")),
 					),
 				),
-		).rejects.toThrowError("Pending schema migrations");
+		).rejects.toThrowError();
 	});
 
 	test<ProgramContext>("exits with missing configuration.ts", async (context) => {

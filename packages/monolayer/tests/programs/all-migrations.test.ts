@@ -2,10 +2,7 @@ import { Effect, Ref } from "effect";
 import type { Equal, Expect } from "type-testing";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { loadEnv } from "~/cli/cli-action.js";
-import {
-	allMigrations,
-	type MonolayerMigrationInfo,
-} from "~/migrations/migration.js";
+import { type MonolayerMigrationInfo } from "~/migrations/migration.js";
 import { AppEnvironment } from "~/state/app-environment.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
@@ -14,6 +11,7 @@ import {
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
+import { Migrator } from "../../src/services/migrator.js";
 
 describe("allMigrations", () => {
 	beforeEach<ProgramContext>(async (context) => {
@@ -28,6 +26,11 @@ describe("allMigrations", () => {
 		await context.migrator.migrateUp();
 		await context.migrator.migrateUp();
 		await context.kysely.destroy();
+
+		const allMigrations = Effect.gen(function* () {
+			const migrator = yield* Migrator;
+			return yield* migrator.all;
+		});
 
 		const program = Effect.provideServiceEffect(
 			Effect.provide(programWithErrorCause(allMigrations), layers),

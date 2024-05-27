@@ -4,7 +4,7 @@ import type { MigrationResult } from "kysely";
 import color from "picocolors";
 import { UnknownActionError } from "~/cli/cli-action.js";
 import { dumpDatabaseStructureTask } from "~/database/dump.js";
-import { migrateToLatest } from "./phased-migrator.js";
+import { Migrator } from "../services/migrator.js";
 import { validateMigrationDependencies } from "./validate.js";
 
 export function applyMigrations() {
@@ -19,7 +19,8 @@ export function applyMigrations() {
 
 export const migrate = Effect.gen(function* () {
 	yield* validateMigrationDependencies;
-	const { error, results } = yield* migrateToLatest;
+	const migrator = yield* Migrator;
+	const { error, results } = yield* migrator.migrateToLatest;
 	if (results !== undefined && results.length > 0) {
 		for (const result of results) {
 			yield* logMigrationResultStatus(result, error, "up");

@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Effect } from "effect";
+import { Effect, Ref } from "effect";
 import { copyFileSync } from "fs";
 import { NO_MIGRATIONS } from "kysely";
 import path from "path";
@@ -8,11 +8,8 @@ import {
 	NO_DEPENDENCY,
 	type MonolayerMigrationInfo,
 } from "~/migrations/migration.js";
-import {
-	migrateToLatest,
-	migrateToLatestPlan,
-	rollbackPlan,
-} from "~/migrations/phased-migrator.js";
+import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
+import { Migrator } from "../src/services/migrator.js";
 import type { DbContext } from "./__setup__/helpers/kysely.js";
 import { newLayers } from "./__setup__/helpers/layers.js";
 import { programWithErrorCause } from "./__setup__/helpers/run-program.js";
@@ -27,8 +24,31 @@ async function runPhasedMigration(context: DbContext) {
 		path.join(context.folder, "migrations", "default"),
 		{ schemas: [] },
 	);
+	const env: AppEnv = {
+		name: "development",
+		configurationName: "default",
+		folder: ".",
+		configuration: {
+			schemas: [],
+			camelCasePlugin: { enabled: false },
+			extensions: [],
+			connections: {
+				development: {},
+			},
+		},
+	};
+
+	const program = Effect.gen(function* () {
+		const migrator = yield* Migrator;
+		return yield* migrator.migrateToLatest;
+	});
+
 	return Effect.runPromise(
-		Effect.provide(programWithErrorCause(migrateToLatest), layers),
+		Effect.provideServiceEffect(
+			Effect.provide(programWithErrorCause(program), layers),
+			AppEnvironment,
+			Ref.make(env),
+		),
 	);
 }
 
@@ -301,7 +321,7 @@ describe("Phased Migrator", () => {
 		);
 	});
 
-	test("test plan up migrations", () => {
+	test<DbContext>("test plan up migrations", async (context) => {
 		const migrations: MonolayerMigrationInfo[] = [
 			{
 				migration: {
@@ -417,10 +437,43 @@ describe("Phased Migrator", () => {
 				up: "migration8",
 			},
 		];
-		expect(migrateToLatestPlan(migrations)).toStrictEqual(expected);
+
+		const layers = newLayers(
+			context.dbName,
+			path.join(context.folder, "migrations", "default"),
+			{ schemas: [] },
+		);
+		const env: AppEnv = {
+			name: "development",
+			configurationName: "default",
+			folder: ".",
+			configuration: {
+				schemas: [],
+				camelCasePlugin: { enabled: false },
+				extensions: [],
+				connections: {
+					development: {},
+				},
+			},
+		};
+
+		const program = Effect.gen(function* () {
+			const migrator = yield* Migrator;
+			return migrator.migrateToLatestPlan(migrations);
+		});
+
+		const result = await Effect.runPromise(
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(program), layers),
+				AppEnvironment,
+				Ref.make(env),
+			),
+		);
+
+		expect(result).toStrictEqual(expected);
 	});
 
-	test("test rollback plan", () => {
+	test<DbContext>("test rollback plan", async (context) => {
 		const migrations: MonolayerMigrationInfo[] = [
 			{
 				migration: {
@@ -536,10 +589,42 @@ describe("Phased Migrator", () => {
 				up: "migration2",
 			},
 		];
-		expect(rollbackPlan(migrations, "migration1")).toStrictEqual(expected);
+		const layers = newLayers(
+			context.dbName,
+			path.join(context.folder, "migrations", "default"),
+			{ schemas: [] },
+		);
+		const env: AppEnv = {
+			name: "development",
+			configurationName: "default",
+			folder: ".",
+			configuration: {
+				schemas: [],
+				camelCasePlugin: { enabled: false },
+				extensions: [],
+				connections: {
+					development: {},
+				},
+			},
+		};
+
+		const program = Effect.gen(function* () {
+			const migrator = yield* Migrator;
+			return migrator.rollbackPlan(migrations, "migration1");
+		});
+
+		const result = await Effect.runPromise(
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(program), layers),
+				AppEnvironment,
+				Ref.make(env),
+			),
+		);
+
+		expect(result).toStrictEqual(expected);
 	});
 
-	test("test rollback plan to no migrations", () => {
+	test<DbContext>("test rollback plan to no migrations", async (context) => {
 		const migrations: MonolayerMigrationInfo[] = [
 			{
 				migration: {
@@ -657,6 +742,39 @@ describe("Phased Migrator", () => {
 				up: "migration2",
 			},
 		];
-		expect(rollbackPlan(migrations, NO_MIGRATIONS)).toStrictEqual(expected);
+
+		const layers = newLayers(
+			context.dbName,
+			path.join(context.folder, "migrations", "default"),
+			{ schemas: [] },
+		);
+		const env: AppEnv = {
+			name: "development",
+			configurationName: "default",
+			folder: ".",
+			configuration: {
+				schemas: [],
+				camelCasePlugin: { enabled: false },
+				extensions: [],
+				connections: {
+					development: {},
+				},
+			},
+		};
+
+		const program = Effect.gen(function* () {
+			const migrator = yield* Migrator;
+			return migrator.rollbackPlan(migrations, NO_MIGRATIONS);
+		});
+
+		const result = await Effect.runPromise(
+			Effect.provideServiceEffect(
+				Effect.provide(programWithErrorCause(program), layers),
+				AppEnvironment,
+				Ref.make(env),
+			),
+		);
+
+		expect(result).toStrictEqual(expected);
 	});
 });

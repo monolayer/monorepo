@@ -51,13 +51,13 @@ export async function testChangesetAndMigrations({
 
 	expect(result).toEqual(expected);
 
-	const migrationResult = await runMigrate(layers);
+	const migrationResult = await runMigrate(layers, env);
 	expect(migrationResult).toBe(true);
 
 	const afterUpCs = await runGenerateChangesetMigration(layers, env);
 	expect(afterUpCs).toEqual([]);
 
-	const migrateDownResult = await runMigrateDown(layers);
+	const migrateDownResult = await runMigrateDown(layers, env);
 	expect(migrateDownResult).toBe(true);
 
 	mock();
@@ -83,11 +83,11 @@ export async function testChangesetAndMigrations({
 			break;
 		}
 	}
-	Effect.runPromise(Effect.provide(programWithErrorCause(cleanup()), layers));
+	await cleanup(layers, env);
 }
 
 async function runGenerateChangesetMigration(
-	layers: Layer<Migrator | DbClients, never, never>,
+	layers: Layer<Migrator | DbClients, never, AppEnvironment>,
 	env: AppEnv,
 ) {
 	return Effect.runPromise(
@@ -99,26 +99,48 @@ async function runGenerateChangesetMigration(
 	);
 }
 
-function cleanup() {
-	return DbClients.pipe(
+async function cleanup(
+	layers: Layer<Migrator | DbClients, never, AppEnvironment>,
+	env: AppEnv,
+) {
+	const program = DbClients.pipe(
 		Effect.flatMap((clients) =>
 			Effect.tryPromise(async () => {
 				await clients.currentEnvironment.pgPool.end();
 			}),
 		),
 	);
+	return Effect.runPromise(
+		Effect.provideServiceEffect(
+			Effect.provide(programWithErrorCause(program), layers),
+			AppEnvironment,
+			Ref.make(env),
+		),
+	);
 }
 
-async function runMigrate(layers: Layer<Migrator | DbClients, never, never>) {
+async function runMigrate(
+	layers: Layer<Migrator | DbClients, never, AppEnvironment>,
+	env: AppEnv,
+) {
 	return Effect.runPromise(
-		Effect.provide(programWithErrorCause(migrate), layers),
+		Effect.provideServiceEffect(
+			Effect.provide(programWithErrorCause(migrate), layers),
+			AppEnvironment,
+			Ref.make(env),
+		),
 	);
 }
 
 async function runMigrateDown(
-	layers: Layer<Migrator | DbClients, never, never>,
+	layers: Layer<Migrator | DbClients, never, AppEnvironment>,
+	env: AppEnv,
 ) {
 	return Effect.runPromise(
-		Effect.provide(programWithErrorCause(migrateDownProgram()), layers),
+		Effect.provideServiceEffect(
+			Effect.provide(programWithErrorCause(migrateDownProgram()), layers),
+			AppEnvironment,
+			Ref.make(env),
+		),
 	);
 }

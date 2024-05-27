@@ -1,6 +1,25 @@
 {
 	"recommendations": [
 		"dbaeumer.vscode-eslint",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"samuelcolvin.jinjahtml",
+		"adpyke.codesnap",
+		"mikestead.dotenv",
+		"sleistner.vscode-fileutils",
+		"github.copilot",
+		"github.github-vscode-theme",
+		"davidbwaters.macos-modern-theme",
+		"jebbs.markdown-extended",
+		"ms-vscode.theme-markdownkit",
+		"bierner.markdown-mermaid",
+		"unifiedjs.vscode-mdx",
+		"surajbarkale.ninja",
+		"christian-kohler.npm-intellisense",
+		"yoavbls.pretty-ts-errors",
+		"timonwong.shellcheck",
+		"raunofreiberg.vesper",
+		"antfu.theme-vitesse",
+		"vitest.explorer",
+		"monokai.theme-monokai-pro-vscode"
 	]
 }

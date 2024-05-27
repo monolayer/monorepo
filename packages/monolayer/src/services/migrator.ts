@@ -1,90 +1,131 @@
-import { Context, Effect, Layer } from "effect";
+import { Context, Effect } from "effect";
+import type { UnknownException } from "effect/Cause";
 import {
-	FileMigrationProvider,
 	Migrator as KyselyMigrator,
-	NO_MIGRATIONS,
+	type Kysely,
+	type MigrationResult,
+	type MigrationResultSet,
+	type NoMigrations,
 } from "kysely";
-import fs from "node:fs/promises";
-import path from "path";
-import { ActionError } from "~/cli/cli-action.js";
-import type { MonolayerMigration } from "~/migrations/migration.js";
-import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
+import { ActionError, ExitWithSuccess } from "~/cli/cli-action.js";
+import type {
+	MonolayerMigration,
+	MonolayerMigrationInfo,
+} from "~/migrations/migration.js";
+import { type AppEnvironment } from "~/state/app-environment.js";
+import type { Changeset } from "../changeset/types.js";
 import { DbClients } from "./db-clients.js";
 
-export type MigratorAttributes = {
-	readonly instance: KyselyMigrator;
-	readonly folder: string;
+export type MigratorInterface = {
+	all: Effect.Effect<
+		MonolayerMigrationInfo[],
+		UnknownException | ActionError,
+		Migrator
+	>;
+	executed: Effect.Effect<
+		MonolayerMigrationInfo[],
+		UnknownException | ActionError | ExitWithSuccess,
+		Migrator
+	>;
+	readonly pending: Effect.Effect<
+		MonolayerMigrationInfo[],
+		UnknownException | ActionError,
+		never
+	>;
+	lastExecuted: Effect.Effect<string | NoMigrations, UnknownException, never>;
+	nextDependency: Effect.Effect<
+		string,
+		UnknownException | ActionError,
+		Migrator
+	>;
+	migrateToLatest: Effect.Effect<
+		{
+			error?: unknown;
+			results?: MigrationResult[] | undefined;
+		},
+		UnknownException | ActionError,
+		Migrator
+	>;
+	migrateToLatestPlan(
+		migrations: MonolayerMigrationInfo[],
+	): MigrationPlanGroup[];
+	migrateTo(
+		migration: MigrationPlanGroup,
+		direction: "up" | "down",
+	): Effect.Effect<MigrationResultSet, UnknownException, Migrator>;
+	rollbackPlan(
+		migrations: MonolayerMigrationInfo[],
+		target: string | NoMigrations,
+	): MigrationPlanGroup[];
+	renderChangesets(
+		changesets: Changeset[],
+		migrationName: string,
+	): Effect.Effect<
+		void,
+		UnknownException | ActionError,
+		DbClients | AppEnvironment
+	>;
+	rollbackAll: Effect.Effect<MigrationResultSet, UnknownException, never>;
 };
 
 export class Migrator extends Context.Tag("Migrator")<
 	Migrator,
-	MigratorAttributes
+	MigratorInterface
 >() {}
 
 export class MonolayerMigrator extends KyselyMigrator {
 	declare migrateWithTransaction: boolean;
 }
 
-export function migratorLayer() {
-	return Layer.effect(
-		Migrator,
-		Effect.gen(function* () {
-			const schemaMigrationsFolder = yield* appEnvironmentMigrationsFolder;
-			const dbClients = yield* DbClients;
-			return {
-				instance: new MonolayerMigrator({
-					db: dbClients.currentEnvironment.kysely,
-					provider: new FileMigrationProvider({
-						fs,
-						path,
-						migrationFolder: schemaMigrationsFolder,
-					}),
-				}),
-				folder: schemaMigrationsFolder,
-			};
-		}),
-	);
+export interface MigratorLayerProps {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	client?: Kysely<any>;
+	migrationFolder?: string;
+	name?: string;
 }
 
-export const getMigrations = Effect.gen(function* () {
-	const migrator = yield* Migrator;
-	return yield* Effect.tryPromise(() => migrator.instance.getMigrations());
-});
-
-export const pendingMigrations = Effect.gen(function* () {
-	return (yield* getMigrations).filter((m) => m.executedAt === undefined);
-});
-
-export const lastExecutedMigration = Effect.gen(function* () {
-	const all = yield* getMigrations;
-	return all.find((m) => m.executedAt !== undefined)?.name ?? NO_MIGRATIONS;
-});
-
-export const migratorFolder = Effect.gen(function* () {
-	const migrator = yield* Migrator;
-	return migrator.folder;
-});
-
-export function readMigration(name: string) {
-	return Effect.gen(function* () {
-		const migrator = yield* Migrator;
-		const migrationPath = path.join(migrator.folder, `${name}.ts`);
-		const migration = yield* Effect.tryPromise(() => import(migrationPath));
-
-		if (!isExtendedMigration(migration)) {
-			return yield* Effect.fail(
-				new ActionError(
-					"Undefined migration",
-					`No migration defined migration in ${migrationPath}`,
-				),
-			);
-		}
-
-		return migration;
-	});
+export interface MigrationPlanGroup {
+	up: string;
+	down: string | NoMigrations;
+	transaction: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isExtendedMigration(obj: any): obj is Required<MonolayerMigration> {
+export function isExtendedMigration(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	obj: any,
+): obj is Required<MonolayerMigration> {
 	return obj.migration !== undefined;
+}
+
+export function isolateMigrations(
+	migrations: readonly MonolayerMigrationInfo[],
+) {
+	return migrations.reduce<Omit<MonolayerMigrationInfo, "migration">[][]>(
+		(acc, migrationInfo) => {
+			const lastGroup = acc.slice(-1)[0];
+			if (
+				lastGroup === undefined ||
+				migrationInfo.transaction ||
+				lastGroup.some((m) => (m.transaction ?? false) === true)
+			) {
+				acc.push([
+					{
+						name: migrationInfo.name,
+						transaction: migrationInfo.transaction,
+						scaffold: migrationInfo.scaffold,
+						dependsOn: migrationInfo.dependsOn,
+					},
+				]);
+			} else {
+				lastGroup.push({
+					name: migrationInfo.name,
+					transaction: migrationInfo.transaction,
+					scaffold: migrationInfo.scaffold,
+					dependsOn: migrationInfo.dependsOn,
+				});
+			}
+			return acc;
+		},
+		[],
+	);
 }

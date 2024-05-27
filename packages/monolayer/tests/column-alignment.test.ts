@@ -3,8 +3,8 @@ import { Effect, Layer, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { loadEnv } from "~/cli/cli-action.js";
 import { alignColumns, introspectAlignment } from "~/database/alignment.js";
+import { phasedMigratorLayer } from "~/migrations/phased-migrator.js";
 import { dbClientsLayer } from "~/services/db-clients.js";
-import { migratorLayer } from "~/services/migrator.js";
 import { AppEnvironment } from "~/state/app-environment.js";
 import { type ColumnInfoFactoryOptions } from "./__setup__/helpers/factories/column-info-factory.js";
 import { programWithErrorCause } from "./__setup__/helpers/run-program.js";
@@ -24,7 +24,7 @@ describe("column aligner", () => {
 	});
 
 	test.only("orders by typlen desc, non nullable", async () => {
-		const layersWithDefaultConfiguration = migratorLayer().pipe(
+		const layersWithDefaultConfiguration = phasedMigratorLayer().pipe(
 			Layer.provideMerge(dbClientsLayer()),
 		);
 

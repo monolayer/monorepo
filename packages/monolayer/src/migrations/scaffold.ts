@@ -3,7 +3,8 @@ import nunjucks from "nunjucks";
 import path from "path";
 import { createFile } from "~/create-file.js";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
-import { migrationDependency, migrationName } from "./migration.js";
+import { Migrator } from "../services/migrator.js";
+import { migrationName } from "./migration.js";
 import { dateStringWithMilliseconds } from "./render.js";
 
 export function scaffoldMigration() {
@@ -15,10 +16,11 @@ export function scaffoldMigration() {
 			yield* appEnvironmentMigrationsFolder,
 			`${scaffoldName}.ts`,
 		);
-
-		const content = nunjucks
-			.compile(migrationTemplate)
-			.render({ dependsOn: yield* migrationDependency(), name: scaffoldName });
+		const migrator = yield* Migrator;
+		const content = nunjucks.compile(migrationTemplate).render({
+			dependsOn: yield* migrator.nextDependency,
+			name: scaffoldName,
+		});
 		createFile(filePath, content, true);
 
 		return filePath;

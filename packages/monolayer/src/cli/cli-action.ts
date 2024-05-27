@@ -4,6 +4,7 @@ import type { Cause, UnknownException } from "effect/Cause";
 import { TaggedClass } from "effect/Data";
 import color from "picocolors";
 import { exit } from "process";
+import { phasedMigratorLayer } from "~/migrations/phased-migrator.js";
 import type { MigrationDependencyError } from "~/migrations/validate.js";
 import {
 	AppEnvironment,
@@ -13,7 +14,6 @@ import {
 } from "~/state/app-environment.js";
 import type { ProgramContext } from "../program-context.js";
 import { dbClientsLayer } from "../services/db-clients.js";
-import { migratorLayer } from "../services/migrator.js";
 import { cancelOperation } from "./cancel-operation.js";
 
 export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
@@ -58,7 +58,9 @@ export async function cliAction(
 ) {
 	p.intro(name);
 
-	const layers = migratorLayer().pipe(Layer.provideMerge(dbClientsLayer()));
+	const layers = phasedMigratorLayer().pipe(
+		Layer.provideMerge(dbClientsLayer()),
+	);
 
 	const appEnv = await loadEnv(options.connection, options.name ?? "default");
 

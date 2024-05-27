@@ -15,17 +15,16 @@ import {
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
 import { ActionError, ExitWithSuccess } from "../cli/cli-action.js";
+import { Migrator } from "../services/migrator.js";
 import { logMigrationResultStatus } from "./apply.js";
-import { allMigrations } from "./migration.js";
 import { deletePendingMigrations, pendingMigrations } from "./pending.js";
-import { migrateTo, rollbackPlan } from "./phased-migrator.js";
 
 export const rollback = Effect.gen(function* () {
-	const executedMigrations = yield* executedMigrationsWithCheck;
-
+	const migrator = yield* Migrator;
+	const executedMigrations = yield* migrator.executed;
 	if (executedMigrations.length === 0) {
-		p.log.info("Nothing to rollback.");
-		return true;
+		p.log.warn("Nothing to rollback. There are no migrations.");
+		yield* Effect.fail(new ExitWithSuccess({ cause: "No migraitons" }));
 	}
 
 	p.log.info(`You have ${executedMigrations.length} migrations applied.`);
@@ -45,10 +44,10 @@ export const rollback = Effect.gen(function* () {
 
 	migrationsToRollback.pop();
 
-	const plan = rollbackPlan(migrationsToRollback, promptResult.downTo);
+	const plan = migrator.rollbackPlan(migrationsToRollback, promptResult.downTo);
 
 	for (const migration of plan) {
-		const { error, results } = yield* migrateTo(migration, "down");
+		const { error, results } = yield* migrator.migrateTo(migration, "down");
 		const migrationSuccess = results !== undefined && results.length > 0;
 		if (!migrationSuccess) {
 			for (const result of results!) {
@@ -81,17 +80,6 @@ export const rollback = Effect.gen(function* () {
 	}
 	return true;
 });
-
-const executedMigrationsWithCheck = allMigrations.pipe(
-	Effect.flatMap((migrations) => {
-		if (migrations.length === 0) {
-			p.log.warn("Nothing to rollback. There are no migrations.");
-			return Effect.fail(new ExitWithSuccess({ cause: "No migraitons" }));
-		}
-
-		return Effect.succeed(migrations.filter((m) => m.executedAt !== undefined));
-	}),
-);
 
 function confirmRollback(migrations: string[]) {
 	return Effect.tryPromise(() => confirmRollbackPrompt(migrations)).pipe(

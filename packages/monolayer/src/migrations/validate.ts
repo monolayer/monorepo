@@ -18,7 +18,7 @@ export const validateMigrationDependencies = getMigrationInfo().pipe(
 function getMigrationInfo() {
 	return Effect.gen(function* () {
 		const migrator = yield* Migrator;
-		return yield* Effect.tryPromise(() => migrator.instance.getMigrations());
+		return yield* migrator.all;
 	});
 }
 
