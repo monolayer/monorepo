@@ -32,7 +32,6 @@ export type MigratorInterface = {
 		UnknownException | ActionError,
 		never
 	>;
-	lastExecuted: Effect.Effect<string | NoMigrations, UnknownException, never>;
 	nextDependency: Effect.Effect<
 		string,
 		UnknownException | ActionError,
