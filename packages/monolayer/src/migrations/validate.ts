@@ -9,24 +9,12 @@ import {
 } from "~/migrations/migration.js";
 import { Migrator } from "~/services/migrator.js";
 
-export const validateMigrationDependencies = getMigrationInfo().pipe(
-	Effect.tap(validateMigrationInfoAsMigration),
-	Effect.flatMap(migrationsFromMigrationInfo),
-	Effect.flatMap(validateMigrations),
-);
-
-function getMigrationInfo() {
-	return Effect.gen(function* () {
-		const migrator = yield* Migrator;
-		return yield* migrator.all;
-	});
-}
-
-function migrationsFromMigrationInfo(
-	migrationInfo: readonly MonolayerMigrationInfo[],
-) {
-	return Effect.succeed(migrationInfoToMigration(migrationInfo));
-}
+export const validateMigrationDependencies = Effect.gen(function* () {
+	const migrator = yield* Migrator;
+	const migrationInfo = yield* migrator.all;
+	yield* validateMigrationInfoAsMigration(migrationInfo);
+	return yield* validateMigrations(migrationInfoToMigration(migrationInfo));
+});
 
 function validateMigrationInfoAsMigration(
 	migrationInfo: readonly MonolayerMigrationInfo[],
