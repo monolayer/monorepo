@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import type { UnknownException } from "effect/Cause";
 import type { MigrationInfo } from "kysely";
-import { ActionError } from "~/cli/cli-action.js";
+import { ActionError } from "~/cli/errors.js";
 import {
 	migrationInfoToMigration,
 	type Migration,

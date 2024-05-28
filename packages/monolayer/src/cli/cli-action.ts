@@ -1,11 +1,9 @@
 import * as p from "@clack/prompts";
 import { Effect, Layer, Ref } from "effect";
-import type { Cause, UnknownException } from "effect/Cause";
-import { TaggedClass } from "effect/Data";
+import type { Cause } from "effect/Cause";
 import color from "picocolors";
 import { exit } from "process";
 import { phasedMigratorLayer } from "~/migrations/phased-migrator.js";
-import type { MigrationDependencyError } from "~/migrations/validate.js";
 import {
 	AppEnvironment,
 	getEnvironment,
@@ -15,39 +13,7 @@ import {
 import type { ProgramContext } from "../program-context.js";
 import { dbClientsLayer } from "../services/db-clients.js";
 import { cancelOperation } from "./cancel-operation.js";
-
-export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
-	readonly cause: string;
-}> {
-	readonly _tag = "ExitWithSuccess";
-}
-
-export class PromptCancelError {
-	readonly _tag = "PromptCancelError";
-}
-
-export class ActionError {
-	readonly _tag = "ActionError";
-	constructor(
-		readonly name: string,
-		readonly message: string,
-	) {}
-}
-
-export class UnknownActionError {
-	readonly _tag = "UnknownActionError";
-	constructor(
-		readonly name: string,
-		readonly error: unknown,
-	) {}
-}
-export type ActionErrors =
-	| ActionError
-	| ExitWithSuccess
-	| UnknownActionError
-	| PromptCancelError
-	| MigrationDependencyError
-	| UnknownException;
+import { ActionErrors, PromptCancelError } from "./errors.js";
 
 export const promptCancelError = Effect.fail(new PromptCancelError());
 

@@ -10,7 +10,7 @@ import {
 import type { QueryResultRow } from "pg";
 import pg from "pg";
 import pgConnectionString from "pg-connection-string";
-import { ActionError } from "~/cli/cli-action.js";
+import { ActionError } from "~/cli/errors.js";
 import type { PgConfig } from "~/configuration.js";
 import {
 	appEnvironmentCamelCasePlugin,

@@ -3,7 +3,7 @@ import { Effect } from "effect";
 import { sql } from "kysely";
 import path from "path";
 import { exit } from "process";
-import { ActionError } from "~/cli/cli-action.js";
+import { ActionError } from "~/cli/errors.js";
 import { type SeedImport } from "~/config.js";
 import { dbTableInfo } from "~/database/schema/table/introspection.js";
 import { localPendingSchemaMigrations } from "~/migrations/pending.js";

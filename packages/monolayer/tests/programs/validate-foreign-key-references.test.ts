@@ -1,7 +1,7 @@
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { validateForeignKeyReferences } from "~/changeset/validate-foreign-key-references.js";
-import { ActionError } from "~/cli/cli-action.js";
+import { ActionError } from "~/cli/errors.js";
 import { schema } from "~/database/schema/schema.js";
 import { integer } from "~/database/schema/table/column/data-types/integer.js";
 import { text } from "~/database/schema/table/column/data-types/text.js";

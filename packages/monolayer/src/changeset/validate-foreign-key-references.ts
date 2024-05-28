@@ -1,5 +1,5 @@
 import { Effect } from "effect";
-import { ActionError } from "~/cli/cli-action.js";
+import { ActionError } from "~/cli/errors.js";
 import { findTableInSchema } from "~/database/schema/introspect-table.js";
 import type { AnySchema } from "~/database/schema/schema.js";
 import {

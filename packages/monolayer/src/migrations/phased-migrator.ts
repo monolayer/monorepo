@@ -12,6 +12,7 @@ import {
 } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
+import { ActionError } from "~/cli/errors.js";
 import { DbClients, MonolayerPostgresAdapter } from "~/services/db-clients.js";
 import {
 	MigrationPlanGroup,
@@ -24,7 +25,6 @@ import {
 } from "~/services/migrator.js";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { MigrationOpPriority, type Changeset } from "../changeset/types.js";
-import { ActionError } from "../cli/cli-action.js";
 import { schemaDependencies } from "../introspection/dependencies.js";
 import { type Migration, type MonolayerMigrationInfo } from "./migration.js";
 import { renderToFile } from "./render.js";

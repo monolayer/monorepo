@@ -7,7 +7,7 @@ import {
 	type MigrationResultSet,
 	type NoMigrations,
 } from "kysely";
-import { ActionError, ExitWithSuccess } from "~/cli/cli-action.js";
+import { ActionError, ExitWithSuccess } from "~/cli/errors.js";
 import type {
 	MonolayerMigration,
 	MonolayerMigrationInfo,

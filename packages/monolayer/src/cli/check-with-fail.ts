@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import color from "picocolors";
 import type { ProgramContext } from "../program-context.js";
-import { ActionError, type ActionErrors } from "./cli-action.js";
+import { ActionError, type ActionErrors } from "./errors.js";
 
 export function checkWithFail({
 	name,

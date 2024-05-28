@@ -2,6 +2,7 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { NO_MIGRATIONS, type MigrationInfo } from "kysely";
 import path from "path";
+import { ActionError, ExitWithSuccess } from "~/cli/errors.js";
 import {
 	migrationInfoToMigration,
 	type Migration,
@@ -14,7 +15,6 @@ import {
 } from "~/prompts/rollback-migration.js";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
-import { ActionError, ExitWithSuccess } from "../cli/cli-action.js";
 import { Migrator } from "../services/migrator.js";
 import { logMigrationResultStatus } from "./apply.js";
 import { deletePendingMigrations, pendingMigrations } from "./pending.js";

@@ -4,7 +4,7 @@ import path from "path";
 import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 import { cwd } from "process";
-import { ActionError } from "~/cli/cli-action.js";
+import { ActionError } from "~/cli/errors.js";
 import { importConfig, importConfigurations } from "~/config.js";
 import type { Configuration } from "~/configuration.js";
 

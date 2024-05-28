@@ -1,5 +1,5 @@
 import { Effect } from "effect";
-import { ActionError } from "~/cli/cli-action.js";
+import { ActionError } from "~/cli/errors.js";
 import { Schema } from "~/database/schema/schema.js";
 import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
 
