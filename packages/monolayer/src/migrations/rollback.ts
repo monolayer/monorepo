@@ -142,9 +142,7 @@ function promptRollback(migrations: readonly MigrationInfo[], limit: number) {
 	});
 }
 
-function confirmRollbackWithScafoldedMigrations(
-	migrations: Required<Migration>[],
-) {
+function confirmRollbackWithScafoldedMigrations(migrations: Migration[]) {
 	return Effect.gen(function* () {
 		if (migrations.every((r) => !r.scaffold)) {
 			return;

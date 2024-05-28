@@ -22,7 +22,7 @@ export type Migration = {
 	 * The name of the migration.
 	 * @internal
 	 */
-	name?: string;
+	name: string;
 	/**
 	 * Dependency of the migration.
 	 * @internal

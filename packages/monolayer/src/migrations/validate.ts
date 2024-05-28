@@ -1,11 +1,11 @@
 import { Effect } from "effect";
 import type { UnknownException } from "effect/Cause";
-import type { MigrationInfo } from "kysely";
 import { ActionError } from "~/cli/errors.js";
 import {
 	migrationInfoToMigration,
 	type Migration,
 	type MonolayerMigration,
+	type MonolayerMigrationInfo,
 } from "~/migrations/migration.js";
 import { Migrator } from "~/services/migrator.js";
 
@@ -22,12 +22,14 @@ function getMigrationInfo() {
 	});
 }
 
-function migrationsFromMigrationInfo(migrationInfo: readonly MigrationInfo[]) {
+function migrationsFromMigrationInfo(
+	migrationInfo: readonly MonolayerMigrationInfo[],
+) {
 	return Effect.succeed(migrationInfoToMigration(migrationInfo));
 }
 
 function validateMigrationInfoAsMigration(
-	migrationInfo: readonly MigrationInfo[],
+	migrationInfo: readonly MonolayerMigrationInfo[],
 ): Effect.Effect<boolean, ActionError | UnknownException, never> {
 	return Effect.gen(function* () {
 		for (const migration of migrationInfo) {
@@ -102,7 +104,7 @@ export class MigrationDependencyError {
 }
 
 function validateMigrations(
-	migrations: Required<Migration>[],
+	migrations: Migration[],
 ): Effect.Effect<boolean, MigrationDependencyError | UnknownException, never> {
 	return Effect.gen(function* () {
 		const dependencyErrors = mapMigrationDependencies(migrations);
@@ -120,16 +122,17 @@ function validateMigrations(
 interface DependencyErrors {
 	multipleMigrationsNoDependency: string[];
 	migrationsWithMoreThanOneDependant: Record<string, string[]>;
+	missingNames: boolean;
 }
 
-function mapMigrationDependencies(migrations: Required<Migration>[]) {
+function mapMigrationDependencies(migrations: Migration[]) {
 	const dependencies = migrations.reduce(
 		(acc, migration) => {
 			const key =
 				typeof migration.dependsOn === "string"
 					? migration.dependsOn
 					: "NO_DEPENDENCY";
-			acc[key] = [...(acc[key] || []), migration.name];
+			acc[key] = [...(acc[key] || []), migration.name ?? ""];
 			return acc;
 		},
 		{} as Record<string, string[]>,
@@ -137,6 +140,7 @@ function mapMigrationDependencies(migrations: Required<Migration>[]) {
 	const errors: DependencyErrors = {
 		multipleMigrationsNoDependency: [],
 		migrationsWithMoreThanOneDependant: {},
+		missingNames: false,
 	};
 	for (const key in dependencies) {
 		const dependents = dependencies[key]!;
@@ -144,7 +148,11 @@ function mapMigrationDependencies(migrations: Required<Migration>[]) {
 		if (key === "NO_DEPENDENCY") {
 			errors.multipleMigrationsNoDependency = dependents;
 		} else {
-			errors.migrationsWithMoreThanOneDependant[key] = dependents;
+			if (key === "") {
+				errors.missingNames = true;
+			} else {
+				errors.migrationsWithMoreThanOneDependant[key] = dependents;
+			}
 		}
 	}
 	return errors;
