@@ -29,7 +29,7 @@ describe("allMigrations", () => {
 
 		const allMigrations = Effect.gen(function* () {
 			const migrator = yield* Migrator;
-			return yield* migrator.all;
+			return (yield* migrator.migrationStats).all;
 		});
 
 		const program = Effect.provideServiceEffect(

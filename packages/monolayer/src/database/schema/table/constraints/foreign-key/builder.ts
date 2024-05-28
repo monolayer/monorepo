@@ -1,4 +1,4 @@
-import { Kysely, type OnModifyForeignAction } from "kysely";
+import { Kysely, PostgresDialect, type OnModifyForeignAction } from "kysely";
 import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
@@ -15,7 +15,6 @@ import {
 	currentTableName,
 	previousTableName,
 } from "~/introspection/table-name.js";
-import { MonolayerPostgresDialect } from "~/services/db-clients.js";
 import { hashValue } from "~/utils.js";
 
 export interface BuilderContext {
@@ -81,7 +80,7 @@ export class ForeignKeyBuilder {
 	#db() {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const db = new Kysely<any>({
-			dialect: new MonolayerPostgresDialect({
+			dialect: new PostgresDialect({
 				pool: new pg.Pool({}),
 			}),
 		});

@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { NO_MIGRATIONS, type MigrationInfo } from "kysely";
 import path from "path";
-import { ActionError, ExitWithSuccess } from "~/cli/errors.js";
+import { ExitWithSuccess } from "~/cli/errors.js";
 import {
 	migrationInfoToMigration,
 	type Migration,
@@ -16,12 +16,12 @@ import {
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
 import { Migrator } from "../services/migrator.js";
-import { logMigrationResultStatus } from "./apply.js";
 import { deletePendingMigrations, pendingMigrations } from "./pending.js";
 
 export const rollback = Effect.gen(function* () {
 	const migrator = yield* Migrator;
-	const executedMigrations = yield* migrator.executed;
+	const stats = yield* migrator.migrationStats;
+	const executedMigrations = stats.executed;
 	if (executedMigrations.length === 0) {
 		p.log.warn("Nothing to rollback. There are no migrations.");
 		yield* Effect.fail(new ExitWithSuccess({ cause: "No migraitons" }));
@@ -44,28 +44,7 @@ export const rollback = Effect.gen(function* () {
 
 	migrationsToRollback.pop();
 
-	const plan = migrator.rollbackPlan(migrationsToRollback, promptResult.downTo);
-
-	for (const migration of plan) {
-		const { error, results } = yield* migrator.migrateTo(migration, "down");
-		const migrationSuccess = results !== undefined && results.length > 0;
-		if (!migrationSuccess) {
-			for (const result of results!) {
-				logMigrationResultStatus(result, error, "down");
-			}
-			return yield* Effect.fail(
-				new ActionError(
-					"Migration failed",
-					results!.map((r) => r.migrationName).join(", "),
-				),
-			);
-		}
-		if (error !== undefined) {
-			return yield* Effect.fail(
-				new ActionError("Rollback error", error?.toString() || ""),
-			);
-		}
-	}
+	yield* migrator.rollback(migrationsToRollback, promptResult.downTo);
 
 	p.log.info("Pending migrations after rollback:");
 

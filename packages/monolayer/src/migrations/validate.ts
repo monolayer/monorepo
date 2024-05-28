@@ -11,7 +11,7 @@ import { Migrator } from "~/services/migrator.js";
 
 export const validateMigrationDependencies = Effect.gen(function* () {
 	const migrator = yield* Migrator;
-	const migrationInfo = yield* migrator.all;
+	const migrationInfo = (yield* migrator.migrationStats).all;
 	yield* validateMigrationInfoAsMigration(migrationInfo);
 	return yield* validateMigrations(migrationInfoToMigration(migrationInfo));
 });

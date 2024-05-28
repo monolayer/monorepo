@@ -6,6 +6,7 @@ import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {
 	NO_DEPENDENCY,
+	migrationPlan,
 	type MonolayerMigrationInfo,
 } from "~/migrations/migration.js";
 import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
@@ -321,158 +322,6 @@ describe("Phased Migrator", () => {
 		);
 	});
 
-	test<DbContext>("test plan up migrations", async (context) => {
-		const migrations: MonolayerMigrationInfo[] = [
-			{
-				migration: {
-					up: async () => {},
-					down: async () => {},
-				},
-				name: "migration1",
-				scaffold: false,
-				dependsOn: NO_DEPENDENCY,
-				transaction: false,
-			},
-			{
-				migration: {
-					up: async () => {},
-					down: async () => {},
-				},
-				name: "migration2",
-				transaction: false,
-				dependsOn: "migration1",
-				scaffold: false,
-			},
-			{
-				migration: {
-					up: async () => {},
-					down: async () => {},
-				},
-				name: "migration3",
-				transaction: true,
-				dependsOn: "migration2",
-				scaffold: false,
-			},
-			{
-				migration: {
-					up: async () => {},
-					down: async () => {},
-				},
-				name: "migration4",
-				transaction: true,
-				dependsOn: "migration3",
-				scaffold: false,
-			},
-			{
-				migration: {
-					up: async () => {},
-					down: async () => {},
-				},
-				name: "migration5",
-				transaction: false,
-				dependsOn: "migration4",
-				scaffold: false,
-			},
-			{
-				migration: {
-					up: async () => {},
-					down: async () => {},
-				},
-				name: "migration6",
-				transaction: false,
-				dependsOn: "migration5",
-				scaffold: false,
-			},
-			{
-				migration: {
-					up: async () => {},
-					down: async () => {},
-				},
-				name: "migration7",
-				transaction: true,
-				dependsOn: "migration6",
-				scaffold: false,
-			},
-			{
-				migration: {
-					up: async () => {},
-					down: async () => {},
-				},
-				name: "migration8",
-				transaction: false,
-				dependsOn: "migration7",
-				scaffold: false,
-			},
-		];
-
-		const expected = [
-			{
-				down: "migration1",
-				transaction: false,
-				up: "migration2",
-			},
-			{
-				down: "migration3",
-				transaction: true,
-				up: "migration3",
-			},
-			{
-				down: "migration4",
-				transaction: true,
-				up: "migration4",
-			},
-			{
-				down: "migration5",
-				transaction: false,
-				up: "migration6",
-			},
-			{
-				down: "migration7",
-				transaction: true,
-				up: "migration7",
-			},
-			{
-				down: "migration8",
-				transaction: false,
-				up: "migration8",
-			},
-		];
-
-		const layers = newLayers(
-			context.dbName,
-			path.join(context.folder, "migrations", "default"),
-			{ schemas: [] },
-		);
-		const env: AppEnv = {
-			name: "development",
-			configurationName: "default",
-			folder: ".",
-			configuration: {
-				schemas: [],
-				camelCasePlugin: { enabled: false },
-				extensions: [],
-				connections: {
-					development: {},
-				},
-			},
-		};
-
-		const program = Effect.gen(function* () {
-			const migrator = yield* Migrator;
-			return migrator.migrateToLatestPlan(migrations);
-		});
-
-		const result = await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(programWithErrorCause(program), layers),
-				AppEnvironment,
-				Ref.make(env),
-			),
-		);
-
-		expect(result).toStrictEqual(expected);
-	});
-
 	test<DbContext>("test rollback plan", async (context) => {
 		const migrations: MonolayerMigrationInfo[] = [
 			{
@@ -559,34 +408,34 @@ describe("Phased Migrator", () => {
 
 		const expected = [
 			{
-				down: "migration8",
+				steps: 1,
+				names: ["migration8"],
 				transaction: false,
-				up: "migration8",
 			},
 			{
-				down: "migration7",
+				steps: 1,
+				names: ["migration7"],
 				transaction: true,
-				up: "migration7",
 			},
 			{
-				down: "migration5",
+				steps: 2,
+				names: ["migration5", "migration6"],
 				transaction: false,
-				up: "migration6",
 			},
 			{
-				down: "migration4",
+				steps: 1,
+				names: ["migration4"],
 				transaction: true,
-				up: "migration4",
 			},
 			{
-				down: "migration3",
+				steps: 1,
+				names: ["migration3"],
 				transaction: true,
-				up: "migration3",
 			},
 			{
-				down: "migration1",
+				steps: 2,
+				names: ["migration1", "migration2"],
 				transaction: false,
-				up: "migration2",
 			},
 		];
 		const layers = newLayers(
@@ -609,8 +458,7 @@ describe("Phased Migrator", () => {
 		};
 
 		const program = Effect.gen(function* () {
-			const migrator = yield* Migrator;
-			return migrator.rollbackPlan(migrations, "migration1");
+			return yield* Effect.succeed(migrationPlan(migrations, "migration1"));
 		});
 
 		const result = await Effect.runPromise(
@@ -620,8 +468,12 @@ describe("Phased Migrator", () => {
 				Ref.make(env),
 			),
 		);
-
-		expect(result).toStrictEqual(expected);
+		const filteredResult = result.map((r) => ({
+			steps: r.steps,
+			names: r.migrations.map((m) => m.name),
+			transaction: r.transaction,
+		}));
+		expect(filteredResult.reverse()).toStrictEqual(expected);
 	});
 
 	test<DbContext>("test rollback plan to no migrations", async (context) => {
@@ -710,36 +562,34 @@ describe("Phased Migrator", () => {
 
 		const expected = [
 			{
-				down: "migration8",
+				steps: 1,
+				names: ["migration8"],
 				transaction: false,
-				up: "migration8",
 			},
 			{
-				down: "migration7",
+				steps: 1,
+				names: ["migration7"],
 				transaction: true,
-				up: "migration7",
 			},
 			{
-				down: "migration5",
+				steps: 2,
+				names: ["migration5", "migration6"],
 				transaction: false,
-				up: "migration6",
 			},
 			{
-				down: "migration4",
+				steps: 1,
+				names: ["migration4"],
 				transaction: true,
-				up: "migration4",
 			},
 			{
-				down: "migration3",
+				steps: 1,
+				names: ["migration3"],
 				transaction: true,
-				up: "migration3",
 			},
 			{
-				down: {
-					__noMigrations__: true,
-				},
+				steps: Infinity,
+				names: ["migration1", "migration2"],
 				transaction: false,
-				up: "migration2",
 			},
 		];
 
@@ -763,8 +613,7 @@ describe("Phased Migrator", () => {
 		};
 
 		const program = Effect.gen(function* () {
-			const migrator = yield* Migrator;
-			return migrator.rollbackPlan(migrations, NO_MIGRATIONS);
+			return yield* Effect.succeed(migrationPlan(migrations, NO_MIGRATIONS));
 		});
 
 		const result = await Effect.runPromise(
@@ -775,6 +624,12 @@ describe("Phased Migrator", () => {
 			),
 		);
 
-		expect(result).toStrictEqual(expected);
+		const filteredResult = result.map((r) => ({
+			steps: r.steps,
+			names: r.migrations.map((m) => m.name),
+			transaction: r.transaction,
+		}));
+
+		expect(filteredResult.reverse()).toStrictEqual(expected);
 	});
 });

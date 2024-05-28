@@ -1,4 +1,5 @@
 import { Effect } from "effect";
+import { mkdirSync } from "fs";
 import nunjucks from "nunjucks";
 import path from "path";
 import { createFile } from "~/create-file.js";
@@ -17,8 +18,9 @@ export function scaffoldMigration() {
 			`${scaffoldName}.ts`,
 		);
 		const migrator = yield* Migrator;
+		mkdirSync(path.dirname(filePath), { recursive: true });
 		const content = nunjucks.compile(migrationTemplate).render({
-			dependsOn: yield* migrator.nextDependency,
+			dependsOn: yield* migrator.currentDependency,
 			name: scaffoldName,
 		});
 		createFile(filePath, content, true);

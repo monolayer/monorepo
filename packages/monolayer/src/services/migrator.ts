@@ -1,61 +1,61 @@
 import { Context, Effect } from "effect";
 import type { UnknownException } from "effect/Cause";
-import {
-	Migrator as KyselyMigrator,
-	type Kysely,
-	type MigrationResult,
-	type MigrationResultSet,
-	type NoMigrations,
-} from "kysely";
-import { ActionError, ExitWithSuccess } from "~/cli/errors.js";
+import type { Kysely } from "kysely";
+import { ActionError } from "~/cli/errors.js";
 import type {
 	MonolayerMigration,
 	MonolayerMigrationInfo,
 } from "~/migrations/migration.js";
 import { type AppEnvironment } from "~/state/app-environment.js";
 import type { Changeset } from "../changeset/types.js";
+import type {
+	MigrationResultSet,
+	NoMigrations,
+} from "../migrations/migrator.js";
 import { DbClients } from "./db-clients.js";
 
+interface MigrationStats {
+	all: MonolayerMigrationInfo[];
+	executed: MonolayerMigrationInfo[];
+	pending: MonolayerMigrationInfo[];
+	localPending: {
+		name: string;
+		path: string;
+	}[];
+	byPhase?: MigrationsByPhase;
+}
+
 export type MigratorInterface = {
-	all: Effect.Effect<
-		MonolayerMigrationInfo[],
-		UnknownException | ActionError,
-		Migrator
-	>;
-	executed: Effect.Effect<
-		MonolayerMigrationInfo[],
-		UnknownException | ActionError | ExitWithSuccess,
-		Migrator
-	>;
-	readonly pending: Effect.Effect<
-		MonolayerMigrationInfo[],
-		UnknownException | ActionError,
-		never
-	>;
-	nextDependency: Effect.Effect<
-		string,
+	migrationStats: Effect.Effect<
+		MigrationStats,
 		UnknownException | ActionError,
 		Migrator
 	>;
 	migrateToLatest: Effect.Effect<
-		{
-			error?: unknown;
-			results?: MigrationResult[] | undefined;
-		},
+		MigrationResultSet,
 		UnknownException | ActionError,
 		Migrator
 	>;
-	migrateToLatestPlan(
-		migrations: MonolayerMigrationInfo[],
-	): MigrationPlanGroup[];
-	migrateTo(
-		migration: MigrationPlanGroup,
-		direction: "up" | "down",
-	): Effect.Effect<MigrationResultSet, UnknownException, Migrator>;
-	rollbackPlan(
+	rollback(
 		migrations: MonolayerMigrationInfo[],
 		target: string | NoMigrations,
-	): MigrationPlanGroup[];
+	): Effect.Effect<void, ActionError | UnknownException, never>;
+	expand: Effect.Effect<
+		MigrationResultSet,
+		UnknownException | ActionError,
+		Migrator
+	>;
+	contract: Effect.Effect<
+		MigrationResultSet,
+		UnknownException | ActionError,
+		Migrator
+	>;
+	rollbackAll: Effect.Effect<MigrationResultSet, UnknownException, never>;
+	currentDependency: Effect.Effect<
+		string,
+		UnknownException | ActionError,
+		Migrator
+	>;
 	renderChangesets(
 		changesets: Changeset[],
 		migrationName: string,
@@ -64,25 +64,12 @@ export type MigratorInterface = {
 		UnknownException | ActionError,
 		DbClients | AppEnvironment
 	>;
-	rollbackAll: Effect.Effect<MigrationResultSet, UnknownException, never>;
-	localPendingSchemaMigrations: Effect.Effect<
-		{
-			name: string;
-			path: string;
-		}[],
-		UnknownException | ActionError,
-		Migrator | AppEnvironment
-	>;
 };
 
 export class Migrator extends Context.Tag("Migrator")<
 	Migrator,
 	MigratorInterface
 >() {}
-
-export class MonolayerMigrator extends KyselyMigrator {
-	declare migrateWithTransaction: boolean;
-}
 
 export interface MigratorLayerProps {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,35 +91,14 @@ export function isExtendedMigration(
 	return obj.migration !== undefined;
 }
 
-export function isolateMigrations(
-	migrations: readonly MonolayerMigrationInfo[],
-) {
-	return migrations.reduce<Omit<MonolayerMigrationInfo, "migration">[][]>(
-		(acc, migrationInfo) => {
-			const lastGroup = acc.slice(-1)[0];
-			if (
-				lastGroup === undefined ||
-				migrationInfo.transaction ||
-				lastGroup.some((m) => (m.transaction ?? false) === true)
-			) {
-				acc.push([
-					{
-						name: migrationInfo.name,
-						transaction: migrationInfo.transaction,
-						scaffold: migrationInfo.scaffold,
-						dependsOn: migrationInfo.dependsOn,
-					},
-				]);
-			} else {
-				lastGroup.push({
-					name: migrationInfo.name,
-					transaction: migrationInfo.transaction,
-					scaffold: migrationInfo.scaffold,
-					dependsOn: migrationInfo.dependsOn,
-				});
-			}
-			return acc;
-		},
-		[],
-	);
+interface MigrationPhaseStat {
+	all: MonolayerMigrationInfo[];
+	pending: MonolayerMigrationInfo[];
+	executed: MonolayerMigrationInfo[];
+	localPending: { name: string; path: string }[];
+}
+
+export interface MigrationsByPhase {
+	expand: MigrationPhaseStat;
+	contract: MigrationPhaseStat;
 }

@@ -82,5 +82,6 @@ export function deletePendingMigrations(pendingMigrations: PendingMigration[]) {
 
 export const localPendingSchemaMigrations = Effect.gen(function* () {
 	const migrator = yield* Migrator;
-	return yield* migrator.localPendingSchemaMigrations;
+	const stats = yield* migrator.migrationStats;
+	return stats.localPending;
 });

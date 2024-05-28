@@ -1,6 +1,7 @@
 import {
 	CamelCasePlugin,
 	Kysely,
+	PostgresDialect,
 	type Expression,
 	type RawBuilder,
 } from "kysely";
@@ -15,7 +16,6 @@ import type {
 	PgTable,
 	TableDefinition,
 } from "~/database/schema/table/table.js";
-import { MonolayerPostgresDialect } from "~/services/db-clients.js";
 
 export function compileDefaultExpression(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +24,7 @@ export function compileDefaultExpression(
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
-		dialect: new MonolayerPostgresDialect({
+		dialect: new PostgresDialect({
 			pool: new pg.Pool({}),
 		}),
 		plugins: camelCase ? [new CamelCasePlugin()] : [],
