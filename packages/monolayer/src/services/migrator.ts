@@ -66,6 +66,14 @@ export type MigratorInterface = {
 		DbClients | AppEnvironment
 	>;
 	rollbackAll: Effect.Effect<MigrationResultSet, UnknownException, never>;
+	localPendingSchemaMigrations: Effect.Effect<
+		{
+			name: string;
+			path: string;
+		}[],
+		UnknownException | ActionError,
+		Migrator | AppEnvironment
+	>;
 };
 
 export class Migrator extends Context.Tag("Migrator")<

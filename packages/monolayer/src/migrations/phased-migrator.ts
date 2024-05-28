@@ -136,6 +136,23 @@ export class PhasedMigrator implements MigratorInterface {
 		});
 	}
 
+	get localPendingSchemaMigrations() {
+		return Effect.gen(function* () {
+			const folder = yield* appEnvironmentMigrationsFolder;
+			const migrator = yield* Migrator;
+			const all = yield* migrator.all;
+
+			return all
+				.filter((info) => info.executedAt === undefined)
+				.map((info) => {
+					return {
+						name: info.name,
+						path: path.join(folder, `${info.name}.ts`),
+					};
+				});
+		});
+	}
+
 	migrateTo(migration: MigrationPlanGroup, direction: "up" | "down") {
 		return Effect.gen(this, function* () {
 			MonolayerPostgresAdapter.useTransaction = migration.transaction;

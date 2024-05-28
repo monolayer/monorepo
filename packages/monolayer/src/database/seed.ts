@@ -6,11 +6,11 @@ import { exit } from "process";
 import { ActionError } from "~/cli/errors.js";
 import { type SeedImport } from "~/config.js";
 import { dbTableInfo } from "~/database/schema/table/introspection.js";
-import { localPendingSchemaMigrations } from "~/migrations/pending.js";
 import { appEnvironment } from "~/state/app-environment.js";
 import { changeset } from "../changeset/changeset.js";
 import { checkWithFail } from "../cli/check-with-fail.js";
 import { spinnerTask } from "../cli/spinner-task.js";
+import { localPendingSchemaMigrations } from "../migrations/pending.js";
 import { DbClients } from "../services/db-clients.js";
 
 type SeedOptions = {
@@ -47,9 +47,9 @@ const checkPendingMigrations = checkWithFail({
 		"You have pending schema migrations. Cannot seed until they are run.",
 	failMessage: "Pending schema migrations",
 	callback: () =>
-		localPendingSchemaMigrations.pipe(
-			Effect.flatMap((result) => Effect.succeed(result.length === 0)),
-		),
+		Effect.gen(function* () {
+			return (yield* localPendingSchemaMigrations).length === 0;
+		}),
 });
 
 const checkPendingSchemaChanges = checkWithFail({

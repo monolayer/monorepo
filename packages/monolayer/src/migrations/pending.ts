@@ -5,7 +5,6 @@ import { unlinkSync } from "fs";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
-import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
 import { Migrator } from "../services/migrator.js";
 
@@ -82,16 +81,6 @@ export function deletePendingMigrations(pendingMigrations: PendingMigration[]) {
 }
 
 export const localPendingSchemaMigrations = Effect.gen(function* () {
-	const folder = yield* appEnvironmentMigrationsFolder;
 	const migrator = yield* Migrator;
-	const all = yield* migrator.all;
-
-	return all
-		.filter((info) => info.executedAt === undefined)
-		.map((info) => {
-			return {
-				name: info.name,
-				path: path.join(folder, `${info.name}.ts`),
-			};
-		});
+	return yield* migrator.localPendingSchemaMigrations;
 });
