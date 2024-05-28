@@ -20,22 +20,18 @@ export type MigrationDependency = NoDependencies | string;
 export type Migration = {
 	/**
 	 * The name of the migration.
-	 * @internal
 	 */
 	name: string;
 	/**
 	 * Dependency of the migration.
-	 * @internal
 	 */
 	dependsOn: MigrationDependency;
 	/**
 	 * Whether the migration was scaffolded.
-	 * @internal
 	 */
 	scaffold: boolean;
 	/**
 	 * Whether the migration runs in a transaction.
-	 * @internal
 	 */
 	transaction?: boolean;
 };
