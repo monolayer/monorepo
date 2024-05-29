@@ -153,7 +153,7 @@ export async function dbUniqueConstraintInfo(
 				sql<string>`pg_class.relname`.as("table"),
 				sql<string>`pg_constraint.conname`.as("name"),
 				sql<string[]>`json_agg(pg_attribute.attname)`.as("columns"),
-				sql<boolean>`false`.as("nullsDistinct"),
+				sql<boolean>`true`.as("nullsDistinct"),
 			])
 			.where("pg_constraint.contype", "=", "u")
 			.where(
