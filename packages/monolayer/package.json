@@ -8,42 +8,72 @@
 	"type": "module",
 	"main": "dist/cjs/index.js",
 	"module": "./dist/esm/index.js",
+	"types": "./dist/esm/src/index.d.ts",
 	"bin": {
 		"monolayer": "dist/esm/src/bin/cli.js"
 	},
 	"exports": {
 		".": {
-			"import": "./dist/esm/src/index.js",
-			"require": "./dist/cjs/src/index.js",
-			"types": "./dist/esm/src/index.d.ts"
+			"import": {
+				"types": "./dist/esm/src/index.d.ts",
+				"default": "./dist/esm/src/index.js"
+			},
+			"require": {
+				"types": "./dist/esm/src/index.d.ts",
+				"default": "./dist/esm/src/index.js"
+			}
 		},
 		"./config": {
-			"import": "./dist/esm/src/configuration.js",
-			"require": "./dist/cjs/src/configuration.js",
-			"types": "./dist/esm/src/configuration.d.ts"
+			"import": {
+				"types": "./dist/esm/src/configuration.d.ts",
+				"default": "./dist/esm/src/configuration.js"
+			},
+			"require": {
+				"types": "./dist/cjs/src/configuration.d.ts",
+				"default": "./dist/cjs/src/configuration.js"
+			}
 		},
 		"./helpers/pg": {
-			"import": "./dist/esm/src/helpers.js",
-			"require": "./dist/cjs/src/helpers.js",
-			"types": "./dist/esm/src/helpers.d.ts"
+			"import": {
+				"types": "./dist/esm/src/helpers.d.ts",
+				"default": "./dist/esm/src/helpers.js"
+			},
+			"require": {
+				"types": "./dist/cjs/src/helpers.d.ts",
+				"default": "./dist/cjs/src/helpers.js"
+			}
 		},
 		"./pg": {
-			"import": "./dist/esm/src/pg.js",
-			"require": "./dist/cjs/src/pg.js",
-			"types": "./dist/esm/src/pg.d.ts"
+			"import": {
+				"types": "./dist/esm/src/pg.d.ts",
+				"default": "./dist/esm/src/pg.js"
+			},
+			"require": {
+				"types": "./dist/cjs/src/pg.d.ts",
+				"default": "./dist/cjs/src/pg.js"
+			}
 		},
 		"./migration": {
-			"import": "./dist/esm/src/migration.js",
-			"require": "./dist/cjs/src/migration.js",
-			"types": "./dist/esm/src/migration.d.ts"
+			"import": {
+				"types": "./dist/esm/src/migration.d.ts",
+				"default": "./dist/esm/src/migration.js"
+			},
+			"require": {
+				"types": "./dist/cjs/src/migration.d.ts",
+				"default": "./dist/cjs/src/migration.js"
+			}
 		},
 		"./zod": {
-			"import": "./dist/esm/src/zod.js",
-			"require": "./dist/cjs/src/zod.js",
-			"types": "./dist/esm/src/zod.js"
+			"import": {
+				"types": "./dist/esm/src/zod.d.ts",
+				"default": "./dist/esm/src/zod.js"
+			},
+			"require": {
+				"types": "./dist/cjs/src/zod.d.ts",
+				"default": "./dist/cjs/src/zod.js"
+			}
 		}
 	},
-	"types": "./dist/esm/src/index.d.ts",
 	"files": [
 		"dist/**/*"
 	],
