@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import { Effect, Layer } from "effect";
+import { mkdirSync } from "fs";
 import { FileMigrationProvider } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
@@ -40,6 +41,7 @@ export class PhasedMigrator implements MigratorInterface {
 	get migrationStats() {
 		return Effect.gen(this, function* () {
 			const folder = this.folder;
+			mkdirSync(folder, { recursive: true });
 			const all = yield* migrationInfoToMonolayerMigrationInfo(
 				folder,
 				yield* Effect.tryPromise(() => this.instance.getMigrations()),
@@ -62,6 +64,7 @@ export class PhasedMigrator implements MigratorInterface {
 
 	get lastExecuted() {
 		return Effect.gen(this, function* () {
+			mkdirSync(this.folder, { recursive: true });
 			const migrations = yield* Effect.tryPromise(() =>
 				this.instance.getMigrations(),
 			);
