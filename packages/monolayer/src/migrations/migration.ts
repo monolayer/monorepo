@@ -257,6 +257,7 @@ export function migrationInfoToMonolayerMigrationInfo(
 				transaction: migration.migration.transaction ?? false,
 				scaffold: migration.migration.scaffold,
 				dependsOn: migration.migration.dependsOn,
+				warnings: migration.migration.warnings,
 			});
 		}
 		return monolayerMigrationInfo;

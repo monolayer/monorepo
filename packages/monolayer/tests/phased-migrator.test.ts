@@ -41,7 +41,7 @@ async function runPhasedMigration(context: DbContext) {
 
 	const program = Effect.gen(function* () {
 		const migrator = yield* Migrator;
-		return yield* migrator.migrateToLatest;
+		return yield* migrator.migrateToLatest();
 	});
 
 	return Effect.runPromise(

@@ -10,52 +10,23 @@ import {
 } from "~/changeset/changeset-stats.js";
 import { type Changeset } from "~/changeset/types.js";
 import { printWarning } from "~/prompts/print-warning.js";
-import { type ChangeWarning, type DestructiveChange } from "./warnings.js";
 import {
-	printAddBigSerialColumn,
-	type AddBigSerialColumn,
-} from "./warnings/add-bigserial-column.js";
-import {
-	printAddNonNullableColumnWarning,
-	type AddNonNullableColumn,
-} from "./warnings/add-non-nullable-column.js";
-import {
-	printAddPrimaryKeyToExistingNullableColumn,
-	type AddPrimaryKeyToExistingNullableColumn,
-} from "./warnings/add-primary-key-to-existing-nullable-column.js";
-import {
-	printAddPrimaryKeyToNewColumn,
-	type AddPrimaryKeyToNewColumn,
-} from "./warnings/add-primary-key-to-new-column.js";
-import {
-	printAddSerialColumn,
-	type AddSerialColumn,
-} from "./warnings/add-serial-column.js";
-import {
-	printAddUniqueToExisitingColumnWarning,
-	type AddUniqueToExistingColumn,
-} from "./warnings/add-unique.js";
-import {
-	printChangeColumnDefaultVolatileWarning,
-	type AddVolatileDefault,
-} from "./warnings/add-volatile-default.js";
-import {
-	printChangeColumnToNonNullableWarning,
-	type ChangeColumnToNonNullable,
-} from "./warnings/change-column-to-non-nullable.js";
-import {
-	printChangeColumnTypeWarning,
-	type ChangeColumnType,
-} from "./warnings/change-column-type.js";
+	classifyWarnings,
+	type ChangeWarning,
+	type DestructiveChange,
+} from "./warnings.js";
+import { printAddBigSerialColumn } from "./warnings/add-bigserial-column.js";
+import { printAddNonNullableColumnWarning } from "./warnings/add-non-nullable-column.js";
+import { printAddPrimaryKeyToExistingNullableColumn } from "./warnings/add-primary-key-to-existing-nullable-column.js";
+import { printAddPrimaryKeyToNewColumn } from "./warnings/add-primary-key-to-new-column.js";
+import { printAddSerialColumn } from "./warnings/add-serial-column.js";
+import { printAddUniqueToExisitingColumnWarning } from "./warnings/add-unique.js";
+import { printChangeColumnDefaultVolatileWarning } from "./warnings/add-volatile-default.js";
+import { printChangeColumnToNonNullableWarning } from "./warnings/change-column-to-non-nullable.js";
+import { printChangeColumnTypeWarning } from "./warnings/change-column-type.js";
 import { ChangeWarningCode } from "./warnings/codes.js";
-import {
-	printColumnRenameWarnings,
-	type ColumnRename,
-} from "./warnings/column-rename.js";
-import {
-	printTableRenameWarnings,
-	type TableRename,
-} from "./warnings/table-rename.js";
+import { printColumnRenameWarnings } from "./warnings/column-rename.js";
+import { printTableRenameWarnings } from "./warnings/table-rename.js";
 
 type TableRecord = Record<
 	string,
@@ -129,24 +100,36 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	p.log.info(color.underline("Change Summary:"));
 	p.log.message(render);
 
-	const warnings = changesetWarnings(changeset);
-
-	printTableRenameWarnings(warnings.tableRename);
-	printColumnRenameWarnings(warnings.columnRename);
-	printDestructiveWarnings(warnings.destructive);
-	printChangeColumnTypeWarning(warnings.changeColumnType);
-	printChangeColumnDefaultVolatileWarning(warnings.changeColumnDefault);
-	printAddSerialColumn(warnings.addSerialColumn);
-	printAddBigSerialColumn(warnings.addBigSerialColumn);
-	printAddPrimaryKeyToExistingNullableColumn(
-		warnings.addPrimaryKeyToExistingNullableColumn,
+	printWarnigns(
+		changeset
+			.flatMap((c) => c.warnings)
+			.filter((c): c is ChangeWarning => c !== undefined),
 	);
-	printAddPrimaryKeyToNewColumn(warnings.addPrimaryKeyToNewNullableColumn);
-	printAddUniqueToExisitingColumnWarning(warnings.addUniqueToExistingColumn);
-	printAddNonNullableColumnWarning(warnings.addNonNullableColumn);
-	printChangeColumnToNonNullableWarning(warnings.changeColumnToNonNullable);
 }
 
+export function printWarnigns(warnings: ChangeWarning[]) {
+	const warningsByCode = classifyWarnings(warnings);
+	printTableRenameWarnings(warningsByCode.tableRename);
+	printColumnRenameWarnings(warningsByCode.columnRename);
+	printDestructiveWarnings(warningsByCode.destructive);
+	printChangeColumnTypeWarning(warningsByCode.changeColumnType);
+	printChangeColumnDefaultVolatileWarning(warningsByCode.changeColumnDefault);
+	printAddSerialColumn(warningsByCode.addSerialColumn);
+	printAddBigSerialColumn(warningsByCode.addBigSerialColumn);
+	printAddPrimaryKeyToExistingNullableColumn(
+		warningsByCode.addPrimaryKeyToExistingNullableColumn,
+	);
+	printAddPrimaryKeyToNewColumn(
+		warningsByCode.addPrimaryKeyToNewNullableColumn,
+	);
+	printAddUniqueToExisitingColumnWarning(
+		warningsByCode.addUniqueToExistingColumn,
+	);
+	printAddNonNullableColumnWarning(warningsByCode.addNonNullableColumn);
+	printChangeColumnToNonNullableWarning(
+		warningsByCode.changeColumnToNonNullable,
+	);
+}
 export const summaryTemplate = nunjucks.compile(`
 {%- if extensionsSummary !== '' -%}
 Extensions: {{ extensionsSummary }}
@@ -252,84 +235,6 @@ function droppedTableHeader(droppedTables: string[]) {
 		acc[droppedTable] = `'${droppedTable}' table (${color.red("dropped")})`;
 		return acc;
 	}, {});
-}
-
-function changesetWarnings(changeset: Changeset[]) {
-	return changeset
-		.flatMap((c) => c.warnings)
-		.filter((c): c is ChangeWarning => c !== undefined)
-		.reduce(
-			(acc, warning) => {
-				switch (warning.code) {
-					case ChangeWarningCode.TableRename:
-						acc.tableRename = [...acc.tableRename, warning];
-						break;
-					case ChangeWarningCode.ColumnRename:
-						acc.columnRename = [...acc.columnRename, warning];
-						break;
-					case ChangeWarningCode.TableDrop:
-					case ChangeWarningCode.ColumnDrop:
-					case ChangeWarningCode.SchemaDrop:
-						acc.destructive = [...acc.destructive, warning];
-						break;
-					case ChangeWarningCode.ChangeColumnType:
-						acc.changeColumnType = [...acc.changeColumnType, warning];
-						break;
-					case ChangeWarningCode.AddVolatileDefault:
-						acc.changeColumnDefault = [...acc.changeColumnDefault, warning];
-						break;
-					case ChangeWarningCode.AddSerialColumn:
-						acc.addSerialColumn = [...acc.addSerialColumn, warning];
-						break;
-					case ChangeWarningCode.AddBigSerialColumn:
-						acc.addBigSerialColumn = [...acc.addBigSerialColumn, warning];
-						break;
-					case ChangeWarningCode.AddPrimaryKeyToExistingNullableColumn:
-						acc.addPrimaryKeyToExistingNullableColumn = [
-							...acc.addPrimaryKeyToExistingNullableColumn,
-							warning,
-						];
-						break;
-					case ChangeWarningCode.AddPrimaryKeyToNewColumn:
-						acc.addPrimaryKeyToNewNullableColumn = [
-							...acc.addPrimaryKeyToNewNullableColumn,
-							warning,
-						];
-						break;
-					case ChangeWarningCode.AddUniqueToExistingColumn:
-						acc.addUniqueToExistingColumn = [
-							...acc.addUniqueToExistingColumn,
-							warning,
-						];
-						break;
-					case ChangeWarningCode.AddNonNullableColumn:
-						acc.addNonNullableColumn = [...acc.addNonNullableColumn, warning];
-						break;
-					case ChangeWarningCode.ChangeColumnToNonNullable:
-						acc.changeColumnToNonNullable = [
-							...acc.changeColumnToNonNullable,
-							warning,
-						];
-						break;
-				}
-				return acc;
-			},
-			{
-				tableRename: [] as Array<TableRename>,
-				columnRename: [] as Array<ColumnRename>,
-				destructive: [] as Array<DestructiveChange>,
-				changeColumnType: [] as Array<ChangeColumnType>,
-				changeColumnDefault: [] as Array<AddVolatileDefault>,
-				addSerialColumn: [] as Array<AddSerialColumn>,
-				addBigSerialColumn: [] as Array<AddBigSerialColumn>,
-				addPrimaryKeyToExistingNullableColumn:
-					[] as Array<AddPrimaryKeyToExistingNullableColumn>,
-				addPrimaryKeyToNewNullableColumn: [] as Array<AddPrimaryKeyToNewColumn>,
-				addUniqueToExistingColumn: [] as Array<AddUniqueToExistingColumn>,
-				addNonNullableColumn: [] as Array<AddNonNullableColumn>,
-				changeColumnToNonNullable: [] as Array<ChangeColumnToNonNullable>,
-			},
-		);
 }
 
 function printDestructiveWarnings(warnings: DestructiveChange[]) {

@@ -20,7 +20,7 @@ export function applyMigrations() {
 export const migrate = Effect.gen(function* () {
 	yield* validateMigrationDependencies;
 	const migrator = yield* Migrator;
-	const { error, results } = yield* migrator.migrateToLatest;
+	const { error, results } = yield* migrator.migrateToLatest(true);
 	if (results !== undefined && results.length > 0) {
 		for (const result of results) {
 			yield* logMigrationResultStatus(result, error, "up");

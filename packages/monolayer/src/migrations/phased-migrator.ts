@@ -12,7 +12,9 @@ import {
 	type MigratorInterface,
 } from "~/services/migrator.js";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
+import { printWarnigns } from "../changeset/print-changeset-summary.js";
 import { type Changeset } from "../changeset/types.js";
+import { type ChangeWarning } from "../changeset/warnings.js";
 import { logMigrationResultStatus } from "./apply.js";
 import {
 	collectResults,
@@ -82,11 +84,18 @@ export class PhasedMigrator implements MigratorInterface {
 		});
 	}
 
-	get migrateToLatest() {
+	migrateToLatest(printWarnings = false) {
 		return Effect.gen(this, function* () {
 			let results: MigrationResultSet[] = [];
 			const stats = yield* this.migrationStats;
 			const pendingMigrations = stats.pending;
+			if (printWarnings === true) {
+				printWarnigns(
+					pendingMigrations
+						.flatMap((c) => c.warnings)
+						.filter((c): c is ChangeWarning => c !== undefined),
+				);
+			}
 			const plan = migrationPlan(pendingMigrations);
 			if (plan.length === 0) {
 				return { results: [] };
@@ -151,8 +160,8 @@ export class PhasedMigrator implements MigratorInterface {
 			return collectResults(results);
 		});
 	}
-	public expand = this.migrateToLatest;
-	public contract = this.migrateToLatest;
+	public expand = this.migrateToLatest();
+	public contract = this.migrateToLatest();
 
 	get rollbackAll() {
 		return Effect.gen(this, function* () {
@@ -233,21 +242,23 @@ class PhasedMigratorRenderer {
 				const numberedName = multipleMigrations
 					? `${migrationName}-${idx + 1}`
 					: migrationName;
-				const warnings = JSON.stringify(
-					isolatedChangeset.flatMap((m) => m.warnings),
-					undefined,
-					2,
-				)
-					.replace(/("(.+)"):/g, "$2:")
-					.split("\n")
-					.map((l, idx) =>
-						idx == 0
-							? l
-							: l.includes("{")
-								? `  ${l}`
-								: `  ${l.replace(/,/, "")},`,
-					)
-					.join("\n");
+				const changesetWarnings = isolatedChangeset.flatMap(
+					(m) => m.warnings ?? [],
+				);
+				const warnings =
+					changesetWarnings.length === 0
+						? "[],"
+						: JSON.stringify(changesetWarnings, undefined, 2)
+								.replace(/("(.+)"):/g, "$2:")
+								.split("\n")
+								.map((l, idx) =>
+									idx == 0
+										? l
+										: l.includes("{")
+											? `  ${l}`
+											: `  ${l.replace(/,/, "")},`,
+								)
+								.join("\n");
 				previousMigrationName = renderToFile(
 					ops,
 					folder,

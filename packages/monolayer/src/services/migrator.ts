@@ -31,7 +31,9 @@ export type MigratorInterface = {
 		UnknownException | ActionError,
 		Migrator
 	>;
-	migrateToLatest: Effect.Effect<
+	migrateToLatest: (
+		printWarnings?: boolean,
+	) => Effect.Effect<
 		MigrationResultSet,
 		UnknownException | ActionError,
 		Migrator
