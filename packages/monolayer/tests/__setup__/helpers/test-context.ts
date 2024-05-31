@@ -20,7 +20,7 @@ import {
 	kyselyWithCustomDB,
 	type DbContext,
 } from "~tests/__setup__/helpers/kysely.js";
-import { globalPool, globalPoolTwo } from "~tests/__setup__/setup.js";
+import { globalPool } from "~tests/__setup__/setup.js";
 import { dbNameForTest, programFolder } from "./names.js";
 
 export async function teardownContext(context: TaskContext & DbContext) {
@@ -67,23 +67,18 @@ export async function setupProgramContext(
 		recursive: true,
 	});
 	context.pool = globalPool();
-	context.poolTwo = globalPoolTwo();
 	context.dbName = dbNameForTest(context);
 	await context.pool.query(`DROP DATABASE IF EXISTS "${context.dbName}"`);
-	await context.poolTwo.query(
-		`DROP DATABASE IF EXISTS "${context.dbName}_test"`,
-	);
+	await context.pool.query(`DROP DATABASE IF EXISTS "${context.dbName}_test"`);
 	await context.pool.query(`DROP DATABASE IF EXISTS "${context.dbName}_stats"`);
-	await context.poolTwo.query(
+	await context.pool.query(
 		`DROP DATABASE IF EXISTS "${context.dbName}_stats_test"`,
 	);
 	if (createDb) {
 		await context.pool.query(`CREATE DATABASE "${context.dbName}"`);
-		await context.poolTwo.query(`CREATE DATABASE "${context.dbName}_test"`);
+		await context.pool.query(`CREATE DATABASE "${context.dbName}_test"`);
 		await context.pool.query(`CREATE DATABASE "${context.dbName}_stats"`);
-		await context.poolTwo.query(
-			`CREATE DATABASE "${context.dbName}_stats_test"`,
-		);
+		await context.pool.query(`CREATE DATABASE "${context.dbName}_stats_test"`);
 	}
 
 	const dbMigrator = await dbAndMigrator(context);
@@ -129,7 +124,6 @@ export async function teardownProgramContext(
 export type ProgramContext = {
 	folder: string;
 	pool: Pool;
-	poolTwo: Pool;
 	dbName: string;
 	currentWorkingDirectory: string;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

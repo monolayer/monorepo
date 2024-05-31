@@ -32,20 +32,6 @@ export function globalPool() {
 	return globalTestThis.pool;
 }
 
-export function globalPoolTwo() {
-	const globalTestThis = globalThis as GlobalThisInTests;
-
-	if (globalTestThis.poolTwo === undefined) {
-		globalTestThis.poolTwo = new pg.Pool({
-			user: env.POSTGRES_USER,
-			password: env.POSTGRES_PASSWORD,
-			host: env.POSTGRES_HOST,
-			port: Number(env.POSTGRES_TWO_PORT ?? 5432),
-		});
-	}
-	return globalTestThis.poolTwo;
-}
-
 vi.mock("~/prompts/table-diff.js", async (importOriginal) => {
 	await importOriginal();
 	return {
