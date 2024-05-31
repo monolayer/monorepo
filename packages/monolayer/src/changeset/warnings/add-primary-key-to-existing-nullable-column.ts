@@ -4,8 +4,10 @@ import { ChangeWarningCode } from "./codes.js";
 import { ChangeWarningType } from "./types.js";
 
 export type AddPrimaryKeyToExistingNullableColumn = {
-	type: ChangeWarningType.MightFail;
-	code: ChangeWarningCode.AddPrimaryKeyToExistingNullableColumn;
+	type: ChangeWarningType.MightFail | `${ChangeWarningType.MightFail}`;
+	code:
+		| ChangeWarningCode.AddPrimaryKeyToExistingNullableColumn
+		| `${ChangeWarningCode.AddPrimaryKeyToExistingNullableColumn}`;
 	schema: string;
 	table: string;
 	columns: string[];

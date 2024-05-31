@@ -233,6 +233,21 @@ class PhasedMigratorRenderer {
 				const numberedName = multipleMigrations
 					? `${migrationName}-${idx + 1}`
 					: migrationName;
+				const warnings = JSON.stringify(
+					isolatedChangeset.flatMap((m) => m.warnings),
+					undefined,
+					2,
+				)
+					.replace(/("(.+)"):/g, "$2:")
+					.split("\n")
+					.map((l, idx) =>
+						idx == 0
+							? l
+							: l.includes("{")
+								? `  ${l}`
+								: `  ${l.replace(/,/, "")},`,
+					)
+					.join("\n");
 				previousMigrationName = renderToFile(
 					ops,
 					folder,
@@ -241,6 +256,7 @@ class PhasedMigratorRenderer {
 					isolatedChangeset.some((m) => (m.transaction ?? true) === false)
 						? false
 						: true,
+					warnings,
 				);
 			}
 		});

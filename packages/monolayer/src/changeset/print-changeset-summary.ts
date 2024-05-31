@@ -339,10 +339,13 @@ function printDestructiveWarnings(warnings: DestructiveChange[]) {
 		details: warnings.map((warning) => {
 			switch (warning.code) {
 				case ChangeWarningCode.SchemaDrop:
+				case `${ChangeWarningCode.SchemaDrop}`:
 					return `- Dropped schema '${color.underline(warning.schema)}'`;
 				case ChangeWarningCode.TableDrop:
+				case `${ChangeWarningCode.TableDrop}`:
 					return `- Dropped table '${color.underline(warning.table)}' ${color.gray(`(schema: '${warning.schema}')`)}`;
 				case ChangeWarningCode.ColumnDrop:
+				case `${ChangeWarningCode.ColumnDrop}`:
 					return `- Dropped column '${color.underline(warning.column)}' ${color.gray(`(table: '${warning.table}' schema: '${warning.schema}')`)}`;
 			}
 		}),

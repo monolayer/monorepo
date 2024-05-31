@@ -4,8 +4,10 @@ import { ChangeWarningCode } from "./codes.js";
 import { ChangeWarningType } from "./types.js";
 
 export type AddPrimaryKeyToNewColumn = {
-	type: ChangeWarningType.MightFail;
-	code: ChangeWarningCode.AddPrimaryKeyToNewColumn;
+	type: ChangeWarningType.MightFail | `${ChangeWarningType.MightFail}`;
+	code:
+		| ChangeWarningCode.AddPrimaryKeyToNewColumn
+		| `${ChangeWarningCode.AddPrimaryKeyToNewColumn}`;
 	schema: string;
 	table: string;
 	columns: string[];

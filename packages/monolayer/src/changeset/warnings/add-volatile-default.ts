@@ -4,8 +4,10 @@ import { ChangeWarningCode } from "./codes.js";
 import { ChangeWarningType } from "./types.js";
 
 export type AddVolatileDefault = {
-	type: ChangeWarningType.Blocking;
-	code: ChangeWarningCode.AddVolatileDefault;
+	type: ChangeWarningType.Blocking | `${ChangeWarningType.Blocking}`;
+	code:
+		| ChangeWarningCode.AddVolatileDefault
+		| `${ChangeWarningCode.AddVolatileDefault}`;
 	schema: string;
 	table: string;
 	column: string;

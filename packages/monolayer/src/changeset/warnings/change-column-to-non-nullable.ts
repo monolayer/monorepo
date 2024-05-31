@@ -4,8 +4,10 @@ import { ChangeWarningCode } from "./codes.js";
 import { ChangeWarningType } from "./types.js";
 
 export type ChangeColumnToNonNullable = {
-	type: ChangeWarningType.MightFail;
-	code: ChangeWarningCode.ChangeColumnToNonNullable;
+	type: ChangeWarningType.MightFail | `${ChangeWarningType.MightFail}`;
+	code:
+		| ChangeWarningCode.ChangeColumnToNonNullable
+		| `${ChangeWarningCode.ChangeColumnToNonNullable}`;
 	schema: string;
 	table: string;
 	column: string;

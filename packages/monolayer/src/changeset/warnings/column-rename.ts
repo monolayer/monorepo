@@ -4,8 +4,10 @@ import { ChangeWarningCode } from "./codes.js";
 import { ChangeWarningType } from "./types.js";
 
 export type ColumnRename = {
-	type: ChangeWarningType.BackwardIncompatible;
-	code: ChangeWarningCode.ColumnRename;
+	type:
+		| ChangeWarningType.BackwardIncompatible
+		| `${ChangeWarningType.BackwardIncompatible}`;
+	code: ChangeWarningCode.ColumnRename | `${ChangeWarningCode.ColumnRename}`;
 	schema: string;
 	table: string;
 	columnRename: { from: string; to: string };

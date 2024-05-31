@@ -15,6 +15,7 @@ export const migration: Migration = {
 	transaction: {{ transaction | safe }},
 	dependsOn: {{ dependsOn if dependsOn === "NO_DEPENDENCY" else ['"', dependsOn, '"'] | join("") | safe }},
 	scaffold: false,
+	warnings: {{ warnings | safe}}
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -39,6 +40,7 @@ export function renderToFile(
 	name: string,
 	dependsOn: string,
 	transaction: boolean,
+	warnings: string,
 ) {
 	const { up, down } = upDown;
 	const dateStr = dateStringWithMilliseconds();
@@ -50,6 +52,7 @@ export function renderToFile(
 		dependsOn,
 		transaction,
 		name: migrationName,
+		warnings,
 	});
 
 	createFile(

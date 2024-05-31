@@ -9,6 +9,7 @@ import { ActionError } from "~/cli/errors.js";
 import { migrationNamePrompt } from "~/prompts/migration-name.js";
 import { isExtendedMigration } from "~/services/migrator.js";
 import { MigrationOpPriority, type Changeset } from "../changeset/types.js";
+import type { ChangeWarning } from "../changeset/warnings.js";
 import { promptCancelError } from "../cli/cli-action.js";
 import { schemaDependencies } from "../introspection/dependencies.js";
 import type {
@@ -45,6 +46,11 @@ export type Migration = {
 	 * Whether the migration runs in a transaction.
 	 */
 	transaction?: boolean;
+
+	/**
+	 * Migration warnings
+	 */
+	warnings?: Array<ChangeWarning>;
 };
 
 export type MonolayerMigrationInfo = KyselyMigrationInfo & Migration;

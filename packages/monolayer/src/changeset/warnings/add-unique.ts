@@ -4,8 +4,10 @@ import { ChangeWarningCode } from "./codes.js";
 import { ChangeWarningType } from "./types.js";
 
 export type AddUniqueToExistingColumn = {
-	type: ChangeWarningType.MightFail;
-	code: ChangeWarningCode.AddUniqueToExistingColumn;
+	type: ChangeWarningType.MightFail | `${ChangeWarningType.MightFail}`;
+	code:
+		| ChangeWarningCode.AddUniqueToExistingColumn
+		| `${ChangeWarningCode.AddUniqueToExistingColumn}`;
 	schema: string;
 	table: string;
 	columns: string[];

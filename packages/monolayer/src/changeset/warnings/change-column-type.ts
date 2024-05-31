@@ -4,8 +4,10 @@ import { ChangeWarningCode } from "./codes.js";
 import { ChangeWarningType } from "./types.js";
 
 export type ChangeColumnType = {
-	type: ChangeWarningType.Blocking;
-	code: ChangeWarningCode.ChangeColumnType;
+	type: ChangeWarningType.Blocking | `${ChangeWarningType.Blocking}`;
+	code:
+		| ChangeWarningCode.ChangeColumnType
+		| `${ChangeWarningCode.ChangeColumnType}`;
 	schema: string;
 	table: string;
 	column: string;
