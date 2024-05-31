@@ -106,7 +106,7 @@ async function cleanup(
 	const program = DbClients.pipe(
 		Effect.flatMap((clients) =>
 			Effect.tryPromise(async () => {
-				await clients.currentEnvironment.pgPool.end();
+				await clients.pgPool.end();
 			}),
 		),
 	);

@@ -58,7 +58,7 @@ function restoreDatabaseFromStructureFile() {
 	return Effect.all([appEnvironment, DbClients]).pipe(
 		Effect.flatMap(([environment, dbClients]) =>
 			spinnerTask(
-				`Restore ${dbClients.currentEnvironment.databaseName} from structure.${environment.configurationName}.sql`,
+				`Restore ${dbClients.databaseName} from structure.${environment.configurationName}.sql`,
 				() =>
 					Effect.tryPromise(async () => {
 						const structurePath = path.join(

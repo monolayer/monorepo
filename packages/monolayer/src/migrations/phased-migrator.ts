@@ -250,7 +250,7 @@ export function phasedMigratorLayer(props?: MigratorLayerProps) {
 		Effect.gen(function* () {
 			const folder =
 				props?.migrationFolder ?? (yield* appEnvironmentMigrationsFolder);
-			const db = props?.client ?? (yield* DbClients).currentEnvironment.kysely;
+			const db = props?.client ?? (yield* DbClients).kysely;
 			const provider = new FileMigrationProvider({
 				fs,
 				path,

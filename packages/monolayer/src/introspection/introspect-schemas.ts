@@ -10,7 +10,7 @@ import {
 	renameRemoteColums,
 	renameTables,
 } from "~/introspection/introspection.js";
-import { kyselyNoCamelCaseDb } from "~/services/db-clients.js";
+import { DbClients } from "~/services/db-clients.js";
 import {
 	appEnvironmentCamelCasePlugin,
 	appEnvironmentConfigurationSchemas,
@@ -23,7 +23,7 @@ export function introspectRemote(
 	external = false,
 ) {
 	return Effect.gen(function* () {
-		const kysely = yield* kyselyNoCamelCaseDb;
+		const kysely = (yield* DbClients).kyselyNoCamelCase;
 		const camelCase = yield* appEnvironmentCamelCasePlugin;
 		const currentSchemaName = toSnakeCase(schemaName, camelCase);
 		const builderContext: BuilderContext = {

@@ -95,13 +95,13 @@ const replantWarning = Effect.tryPromise(async () => {
 const truncateAllTables = Effect.gen(function* () {
 	const dbClients = yield* DbClients;
 	const tableInfo = yield* Effect.tryPromise(() =>
-		dbTableInfo(dbClients.currentEnvironment.kysely, "public"),
+		dbTableInfo(dbClients.kysely, "public"),
 	);
 	for (const table of tableInfo) {
 		yield* Effect.tryPromise(() =>
 			sql`truncate table ${sql.table(
 				`${table.name}`,
-			)} RESTART IDENTITY CASCADE`.execute(dbClients.currentEnvironment.kysely),
+			)} RESTART IDENTITY CASCADE`.execute(dbClients.kysely),
 		);
 		p.log.info(`Truncated ${table.name}.`);
 	}
@@ -132,8 +132,8 @@ function importSeedFunction(seedFile: string) {
 function seedDatabase(seedFile: string) {
 	return Effect.gen(function* () {
 		const dbClients = yield* DbClients;
-		const databaseName = dbClients.currentEnvironment.databaseName;
-		const kysely = dbClients.currentEnvironment.kysely;
+		const databaseName = dbClients.databaseName;
+		const kysely = dbClients.kysely;
 
 		return yield* spinnerTask(`Seed ${databaseName}`, () =>
 			Effect.gen(function* () {

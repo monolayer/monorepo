@@ -7,7 +7,6 @@ import {
 } from "~/database/database_schemas/changeset.js";
 import { managedSchemas } from "~/database/database_schemas/introspection.js";
 import { Schema, type AnySchema } from "~/database/schema/schema.js";
-import { kyselyNoCamelCaseDb } from "~/services/db-clients.js";
 import {
 	appEnvironmentCamelCasePlugin,
 	appEnvironmentConfigurationSchemas,
@@ -17,6 +16,7 @@ import {
 	renameMigrationInfo,
 	sortTablePriorities,
 } from "../introspection/introspect-schemas.js";
+import { DbClients } from "../services/db-clients.js";
 import { toSnakeCase } from "./helpers.js";
 import { promptSchemaRenames } from "./schema-rename.js";
 import type { Changeset } from "./types.js";
@@ -75,7 +75,7 @@ function dropSchemaChangeset(schemas: AnySchema[]) {
 
 function monolayerSchemasInDb() {
 	return Effect.gen(function* () {
-		const kysely = yield* kyselyNoCamelCaseDb;
+		const kysely = (yield* DbClients).kyselyNoCamelCase;
 		return yield* Effect.tryPromise(async () => {
 			const dbManagedSchemas = await managedSchemas(kysely);
 			return dbManagedSchemas;

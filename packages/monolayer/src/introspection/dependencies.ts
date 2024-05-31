@@ -153,7 +153,7 @@ export function schemaDependencies() {
 		const schemas = yield* appEnvironmentConfigurationSchemas;
 		const dbClients = yield* DbClients;
 		const remoteSchemaDeps = yield* Effect.tryPromise(() =>
-			databaseSchemaDependencies(dbClients.currentEnvironment.kysely),
+			databaseSchemaDependencies(dbClients.kysely),
 		);
 		const localSchemaDeps = localSchemaDependencies(schemas);
 		return [...new Set([...remoteSchemaDeps, ...localSchemaDeps])].reverse();

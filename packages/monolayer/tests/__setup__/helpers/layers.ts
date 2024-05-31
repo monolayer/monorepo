@@ -29,10 +29,10 @@ export function mockedDbClientsLayer(
 		// eslint-disable-next-line require-yield
 		Effect.gen(function* () {
 			const adminPool = globalPool();
-			const currentEnvironment = {
-				databaseName: databaseName,
+			return {
 				pgPool: pool,
 				pgAdminPool: adminPool,
+				databaseName,
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				kysely: new Kysely<any>({
 					dialect: new PostgresDialect({
@@ -46,10 +46,6 @@ export function mockedDbClientsLayer(
 						pool: pool,
 					}),
 				}),
-			};
-			return {
-				currentEnvironment,
-				developmentEnvironment: currentEnvironment,
 			};
 		}),
 	);

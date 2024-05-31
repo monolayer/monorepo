@@ -114,8 +114,6 @@ function localExtensions() {
 
 export const remoteExtensions = DbClients.pipe(
 	Effect.flatMap((dbClients) =>
-		Effect.tryPromise(() =>
-			dbExtensionInfo(dbClients.currentEnvironment.kyselyNoCamelCase),
-		),
+		Effect.tryPromise(() => dbExtensionInfo(dbClients.kyselyNoCamelCase)),
 	),
 );

@@ -6,12 +6,10 @@ import { DbClients } from "../services/db-clients.js";
 export function dropDatabase(failSafe = false) {
 	return DbClients.pipe(
 		Effect.flatMap((clients) =>
-			spinnerTask(
-				`Drop database ${clients.currentEnvironment.databaseName}`,
-				() =>
-					adminPgQuery(
-						`DROP DATABASE ${failSafe ? "IF EXISTS" : ""} "${clients.currentEnvironment.databaseName}";`,
-					),
+			spinnerTask(`Drop database ${clients.databaseName}`, () =>
+				adminPgQuery(
+					`DROP DATABASE ${failSafe ? "IF EXISTS" : ""} "${clients.databaseName}";`,
+				),
 			),
 		),
 	);
