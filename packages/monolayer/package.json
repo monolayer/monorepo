@@ -20,7 +20,7 @@
 		"./config": {
 			"import": "./dist/esm/src/configuration.js",
 			"require": "./dist/cjs/src/configuration.js",
-			"types": "./dist/esm/src/configuration.js"
+			"types": "./dist/esm/src/configuration.d.ts"
 		},
 		"./helpers/pg": {
 			"import": "./dist/esm/src/helpers.js",
