@@ -13,7 +13,7 @@ import {
 import type { ProgramContext } from "../program-context.js";
 import { dbClientsLayer } from "../services/db-clients.js";
 import { cancelOperation } from "./cancel-operation.js";
-import { ActionErrors, PromptCancelError } from "./errors.js";
+import { ActionErrors, PromptCancelError, formatErrorStack } from "./errors.js";
 
 export const promptCancelError = Effect.fail(new PromptCancelError());
 
@@ -129,14 +129,19 @@ export function printCause(cause: Cause<unknown>) {
 			: cause._tag === "Fail" && cause.error instanceof Error
 				? cause.error
 				: undefined;
-
 	if (error !== undefined) {
 		p.log.error(`${color.red(error.name)} ${error.message}`);
-		const errorStr = JSON.stringify(error, null, 2);
-		if (errorStr !== "{}") {
-			p.log.message(errorStr);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const err = error as any;
+		if (err.error !== undefined && err.error instanceof Error) {
+			p.log.message(formatErrorStack(err.error.stack));
+		} else {
+			if (error.stack !== undefined) {
+				p.log.message(formatErrorStack(error.stack));
+			} else {
+				p.log.message(JSON.stringify(error, null, 2));
+			}
 		}
-		p.log.message(error.stack);
 	} else {
 		p.log.error(color.red("Error"));
 		p.log.message(JSON.stringify(cause, null, 2));
