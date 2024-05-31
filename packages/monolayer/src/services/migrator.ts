@@ -62,7 +62,7 @@ export type MigratorInterface = {
 		changesets: Changeset[],
 		migrationName: string,
 	): Effect.Effect<
-		void,
+		string[],
 		UnknownException | ActionError,
 		DbClients | AppEnvironment
 	>;

@@ -21,10 +21,13 @@ export function generateMigration(name?: string) {
 		const sorted = yield* sortChangesetsBySchemaPriority(allChangeset);
 		if (allChangeset.length > 0) {
 			const migrator = yield* Migrator;
-			yield* migrator.renderChangesets(
+			const renderedMigrations = yield* migrator.renderChangesets(
 				sorted,
 				name ?? (yield* migrationName()),
 			);
+			for (const renderedMigration of renderedMigrations) {
+				p.log.info(`Generated migration: ${renderedMigration}`);
+			}
 		} else {
 			p.log.info(`Nothing to do. No changes detected.`);
 		}

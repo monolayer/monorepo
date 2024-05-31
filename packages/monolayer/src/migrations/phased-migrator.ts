@@ -4,6 +4,7 @@ import { mkdirSync } from "fs";
 import { FileMigrationProvider } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
+import { cwd } from "process";
 import { ActionError } from "~/cli/errors.js";
 import { DbClients } from "~/services/db-clients.js";
 import {
@@ -235,6 +236,7 @@ class PhasedMigratorRenderer {
 			const dependency =
 				migrations.map((m) => m.name).slice(-1)[0] ?? "NO_DEPENDENCY";
 			const isolatedChangesets = isolateChangesets(changesets);
+			const renderedMigrations: string[] = [];
 			let previousMigrationName: string = "";
 			const multipleMigrations = isolatedChangesets.length > 1;
 			for (const [idx, isolatedChangeset] of isolatedChangesets.entries()) {
@@ -269,7 +271,14 @@ class PhasedMigratorRenderer {
 						: true,
 					warnings,
 				);
+				renderedMigrations.push(
+					path.relative(
+						cwd(),
+						path.join(folder, `${previousMigrationName}.ts`),
+					),
+				);
 			}
+			return renderedMigrations;
 		});
 	}
 }
