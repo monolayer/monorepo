@@ -49,6 +49,12 @@ export async function setUpContext(context: TaskContext & DbContext) {
 	mkdirSync(path.join(context.folder, "migrations", "default", "breaking"), {
 		recursive: true,
 	});
+	mkdirSync(path.join(context.folder, "migrations", "default", "expand"), {
+		recursive: true,
+	});
+	mkdirSync(path.join(context.folder, "migrations", "default", "contract"), {
+		recursive: true,
+	});
 	context.migrator = await kyselyMigrator(context.kysely, context.folder);
 	chdir(context.folder);
 }
@@ -62,6 +68,18 @@ export async function setupProgramContext(
 	rmSync(context.folder, { recursive: true, force: true });
 	mkdirSync(
 		path.join(context.folder, "db", "migrations", "default", "breaking"),
+		{
+			recursive: true,
+		},
+	);
+	mkdirSync(
+		path.join(context.folder, "db", "migrations", "default", "expand"),
+		{
+			recursive: true,
+		},
+	);
+	mkdirSync(
+		path.join(context.folder, "db", "migrations", "default", "contract"),
 		{
 			recursive: true,
 		},

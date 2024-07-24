@@ -84,7 +84,7 @@ export class PhasedMigrator implements MigratorInterface {
 			mkdirSync(folder, { recursive: true });
 			const all = yield* migrationInfoToMonolayerMigrationInfo(
 				path.join(folder, "breaking"),
-				yield* Effect.tryPromise(() => this.breakingInstance.getMigrations()),
+				yield* this.#allMigrations(),
 			);
 
 			const pending = all.filter((m) => m.executedAt === undefined);
@@ -99,6 +99,22 @@ export class PhasedMigrator implements MigratorInterface {
 					};
 				}),
 			};
+		});
+	}
+
+	#allMigrations() {
+		return Effect.gen(this, function* () {
+			return [
+				...(yield* Effect.tryPromise(() =>
+					this.expandInstance.getMigrations(),
+				)),
+				...(yield* Effect.tryPromise(() =>
+					this.breakingInstance.getMigrations(),
+				)),
+				...(yield* Effect.tryPromise(() =>
+					this.contractInstance.getMigrations(),
+				)),
+			];
 		});
 	}
 
