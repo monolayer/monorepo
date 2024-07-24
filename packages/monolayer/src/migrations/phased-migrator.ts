@@ -50,8 +50,8 @@ export class PhasedMigrator implements MigratorInterface {
 				path,
 				migrationFolder: folder,
 			}),
-			migrationTableName: `kysely_migration`,
-			migrationLockTableName: `kysely_migration_lock`,
+			migrationTableName: `monolayer_migration`,
+			migrationLockTableName: `monolayer_migration_lock`,
 		});
 		this.folder = folder;
 	}

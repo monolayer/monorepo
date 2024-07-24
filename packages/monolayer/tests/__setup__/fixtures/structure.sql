@@ -47,17 +47,17 @@ SET
   default_table_access_method = heap;
 
 --
--- Name: kysely_migration; Type: TABLE; Schema: public; Owner: -
+-- Name: monolayer_migration; Type: TABLE; Schema: public; Owner: -
 --
-CREATE TABLE public.kysely_migration (
+CREATE TABLE public.monolayer_migration (
   name character varying(255) NOT NULL,
   "timestamp" character varying(255) NOT NULL
 );
 
 --
--- Name: kysely_migration_lock; Type: TABLE; Schema: public; Owner: -
+-- Name: monolayer_migration_lock; Type: TABLE; Schema: public; Owner: -
 --
-CREATE TABLE public.kysely_migration_lock (
+CREATE TABLE public.monolayer_migration_lock (
   id character varying(255) NOT NULL,
   is_locked integer DEFAULT 0 NOT NULL
 );
@@ -68,20 +68,20 @@ CREATE TABLE public.kysely_migration_lock (
 CREATE TABLE public.regulus_mint (name text NOT NULL);
 
 --
--- Name: kysely_migration_lock kysely_migration_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: monolayer_migration_lock monolayer_migration_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 ALTER TABLE
-  ONLY public.kysely_migration_lock
+  ONLY public.monolayer_migration_lock
 ADD
-  CONSTRAINT kysely_migration_lock_pkey PRIMARY KEY (id);
+  CONSTRAINT monolayer_migration_lock_pkey PRIMARY KEY (id);
 
 --
--- Name: kysely_migration kysely_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: monolayer_migration monolayer_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 ALTER TABLE
-  ONLY public.kysely_migration
+  ONLY public.monolayer_migration
 ADD
-  CONSTRAINT kysely_migration_pkey PRIMARY KEY (name);
+  CONSTRAINT monolayer_migration_pkey PRIMARY KEY (name);
 
 --
 -- PostgreSQL database dump complete

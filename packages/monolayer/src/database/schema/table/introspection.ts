@@ -19,8 +19,8 @@ export async function queryDbTableInfo(
 		.where("table_schema", "=", databaseSchema)
 		.where("table_name", "!=", "geometry_columns")
 		.where("table_name", "!=", "spatial_ref_sys")
-		.where("table_name", "!=", "kysely_migration_lock")
-		.where("table_name", "!=", "kysely_migration")
+		.where("table_name", "!=", "monolayer_migration_lock")
+		.where("table_name", "!=", "monolayer_migration")
 		.where("table_type", "!=", "VIEW")
 		.execute();
 }

@@ -36,8 +36,8 @@ import {
 	type UnknownRow,
 } from "kysely";
 
-export const DEFAULT_MIGRATION_TABLE = "kysely_migration";
-export const DEFAULT_MIGRATION_LOCK_TABLE = "kysely_migration_lock";
+export const DEFAULT_MIGRATION_TABLE = "monolayer_migration";
+export const DEFAULT_MIGRATION_LOCK_TABLE = "monolayer_migration_lock";
 export const DEFAULT_ALLOW_UNORDERED_MIGRATIONS = false;
 export const MIGRATION_LOCK_ID = "migration_lock";
 export const NO_MIGRATIONS: NoMigrations = Object.freeze({

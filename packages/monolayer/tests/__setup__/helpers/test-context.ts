@@ -167,6 +167,8 @@ export async function dbAndMigrator(context: ProgramContext) {
 					"default",
 				),
 			}),
+			migrationTableName: `monolayer_migration`,
+			migrationLockTableName: `monolayer_migration_lock`,
 		}),
 	};
 }

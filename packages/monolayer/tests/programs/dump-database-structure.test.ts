@@ -42,7 +42,7 @@ describe("dumpDatabaseStructure", () => {
 		);
 
 		const result = await context.kysely
-			.selectFrom("kysely_migration")
+			.selectFrom("monolayer_migration")
 			.select("timestamp")
 			.orderBy("timestamp")
 			.executeTakeFirst();
@@ -86,20 +86,20 @@ SET default_tablespace = '';
 SET default_table_access_method = "heap";
 
 --
--- Name: kysely_migration; Type: TABLE; Schema: public; Owner: -
+-- Name: monolayer_migration; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE "public"."kysely_migration" (
+CREATE TABLE "public"."monolayer_migration" (
     "name" character varying(255) NOT NULL,
     "timestamp" character varying(255) NOT NULL
 );
 
 
 --
--- Name: kysely_migration_lock; Type: TABLE; Schema: public; Owner: -
+-- Name: monolayer_migration_lock; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE "public"."kysely_migration_lock" (
+CREATE TABLE "public"."monolayer_migration_lock" (
     "id" character varying(255) NOT NULL,
     "is_locked" integer DEFAULT 0 NOT NULL
 );
@@ -115,24 +115,24 @@ CREATE TABLE "public"."regulus_mint" (
 
 
 --
--- Name: kysely_migration_lock kysely_migration_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: monolayer_migration_lock monolayer_migration_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY "public"."kysely_migration_lock"
-    ADD CONSTRAINT "kysely_migration_lock_pkey" PRIMARY KEY ("id");
+ALTER TABLE ONLY "public"."monolayer_migration_lock"
+    ADD CONSTRAINT "monolayer_migration_lock_pkey" PRIMARY KEY ("id");
 
 
 --
--- Name: kysely_migration kysely_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: monolayer_migration monolayer_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY "public"."kysely_migration"
-    ADD CONSTRAINT "kysely_migration_pkey" PRIMARY KEY ("name");
+ALTER TABLE ONLY "public"."monolayer_migration"
+    ADD CONSTRAINT "monolayer_migration_pkey" PRIMARY KEY ("name");
 
 
 --
 -- PostgreSQL database dump complete
 --
 
-INSERT INTO "public"."kysely_migration" VALUES ('20240405T120024-regulus-mint', '{{ timestamp }}');
-INSERT INTO "public"."kysely_migration_lock" VALUES ('migration_lock', 0);`);
+INSERT INTO "public"."monolayer_migration" VALUES ('20240405T120024-regulus-mint', '{{ timestamp }}');
+INSERT INTO "public"."monolayer_migration_lock" VALUES ('migration_lock', 0);`);

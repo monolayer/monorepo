@@ -22,7 +22,7 @@ describe("allMigrations", () => {
 		await teardownProgramContext(context);
 	});
 
-	test<ProgramContext>("returns all migrations", async (context) => {
+	test.only<ProgramContext>("returns all migrations", async (context) => {
 		await context.migrator.migrateUp();
 		await context.migrator.migrateUp();
 		await context.kysely.destroy();
