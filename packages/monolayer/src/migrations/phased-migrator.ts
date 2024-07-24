@@ -45,36 +45,9 @@ export class PhasedMigrator implements MigratorInterface {
 		client: Kysely<any>,
 		folder: string,
 	) {
-		this.breakingInstance = new MonolayerMigrator({
-			db: client,
-			provider: new FileMigrationProvider({
-				fs,
-				path,
-				migrationFolder: path.join(folder, "breaking"),
-			}),
-			migrationTableName: `monolayer_breaking_migration`,
-			migrationLockTableName: `monolayer_breaking_migration_lock`,
-		});
-		this.expandInstance = new MonolayerMigrator({
-			db: client,
-			provider: new FileMigrationProvider({
-				fs,
-				path,
-				migrationFolder: path.join(folder, "expand"),
-			}),
-			migrationTableName: `monolayer_expand_migration`,
-			migrationLockTableName: `monolayer_expand_migration_lock`,
-		});
-		this.contractInstance = new MonolayerMigrator({
-			db: client,
-			provider: new FileMigrationProvider({
-				fs,
-				path,
-				migrationFolder: path.join(folder, "contract"),
-			}),
-			migrationTableName: `monolayer_contract_migration`,
-			migrationLockTableName: `monolayer_contract_migration_lock`,
-		});
+		this.breakingInstance = makeMigrator(client, folder, "breaking");
+		this.expandInstance = makeMigrator(client, folder, "expand");
+		this.contractInstance = makeMigrator(client, folder, "contract");
 		this.folder = folder;
 	}
 
@@ -333,4 +306,18 @@ export function phasedMigratorLayer(props?: MigratorLayerProps) {
 			return new PhasedMigrator(db, folder);
 		}),
 	);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function makeMigrator(client: Kysely<any>, folder: string, name: string) {
+	return new MonolayerMigrator({
+		db: client,
+		provider: new FileMigrationProvider({
+			fs,
+			path,
+			migrationFolder: path.join(folder, name),
+		}),
+		migrationTableName: `monolayer_${name}_migration`,
+		migrationLockTableName: `monolayer_${name}_migration_lock`,
+	});
 }
