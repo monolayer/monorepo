@@ -62,6 +62,7 @@ describe("generateChangesetMigration", () => {
 				"db",
 				"migrations",
 				"default",
+				"breaking",
 				migrationFiles[0]!,
 			),
 		);
@@ -117,6 +118,7 @@ describe("generateChangesetMigration", () => {
 				"db",
 				"migrations",
 				"default",
+				"breaking",
 				migrationFiles[0]!,
 			),
 		);
@@ -152,6 +154,7 @@ describe("generateChangesetMigration", () => {
 					"db",
 					"migrations",
 					"default",
+					"breaking",
 					migrationFiles.slice(-1)[0]!,
 				),
 			);
@@ -199,6 +202,7 @@ describe("generateChangesetMigration", () => {
 					"db",
 					"migrations",
 					"default",
+					"breaking",
 					migrationFiles.slice(-1)[0]!,
 				),
 			);

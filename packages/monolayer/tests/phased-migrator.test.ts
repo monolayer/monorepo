@@ -75,7 +75,13 @@ describe("Phased Migrator", () => {
 					context.currentWorkingDirectory,
 					`tests/__setup__/fixtures/migrations/phased-migrator/single-transaction/${migration}.ts`,
 				),
-				path.join(context.folder, "migrations", "default", `${migration}.ts`),
+				path.join(
+					context.folder,
+					"migrations",
+					"default",
+					"breaking",
+					`${migration}.ts`,
+				),
 			);
 		}
 		const result = await runPhasedMigration(context);
@@ -138,7 +144,13 @@ describe("Phased Migrator", () => {
 					context.currentWorkingDirectory,
 					`tests/__setup__/fixtures/migrations/phased-migrator/multiple-transactions/${migration}.ts`,
 				),
-				path.join(context.folder, "migrations", "default", `${migration}.ts`),
+				path.join(
+					context.folder,
+					"migrations",
+					"default",
+					"breaking",
+					`${migration}.ts`,
+				),
 			);
 		}
 		const result = await runPhasedMigration(context);
@@ -208,7 +220,13 @@ describe("Phased Migrator", () => {
 					context.currentWorkingDirectory,
 					`tests/__setup__/fixtures/migrations/phased-migrator/error-in-transactionless/${migration}.ts`,
 				),
-				path.join(context.folder, "migrations", "default", `${migration}.ts`),
+				path.join(
+					context.folder,
+					"migrations",
+					"default",
+					"breaking",
+					`${migration}.ts`,
+				),
 			);
 		}
 		const result = await runPhasedMigration(context);
@@ -272,7 +290,13 @@ describe("Phased Migrator", () => {
 					context.currentWorkingDirectory,
 					`tests/__setup__/fixtures/migrations/phased-migrator/error-in-transaction/${migration}.ts`,
 				),
-				path.join(context.folder, "migrations", "default", `${migration}.ts`),
+				path.join(
+					context.folder,
+					"migrations",
+					"default",
+					"breaking",
+					`${migration}.ts`,
+				),
 			);
 		}
 		const result = await runPhasedMigration(context);

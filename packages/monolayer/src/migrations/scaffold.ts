@@ -15,6 +15,7 @@ export function scaffoldMigration() {
 		const scaffoldName = `${dateStr}-${name}`;
 		const filePath = path.join(
 			yield* appEnvironmentMigrationsFolder,
+			"breaking",
 			`${scaffoldName}.ts`,
 		);
 		const migrator = yield* Migrator;

@@ -46,7 +46,7 @@ export async function setUpContext(context: TaskContext & DbContext) {
 		cwd(),
 		`tmp/schema_migrations/${dateStr}-${context.dbName}`,
 	);
-	mkdirSync(path.join(context.folder, "migrations", "default"), {
+	mkdirSync(path.join(context.folder, "migrations", "default", "breaking"), {
 		recursive: true,
 	});
 	context.migrator = await kyselyMigrator(context.kysely, context.folder);
@@ -60,9 +60,12 @@ export async function setupProgramContext(
 	context.currentWorkingDirectory = cwd();
 	context.folder = path.join(cwd(), `tmp/programs/${programFolder(context)}`);
 	rmSync(context.folder, { recursive: true, force: true });
-	mkdirSync(path.join(context.folder, "db", "migrations", "default"), {
-		recursive: true,
-	});
+	mkdirSync(
+		path.join(context.folder, "db", "migrations", "default", "breaking"),
+		{
+			recursive: true,
+		},
+	);
 	mkdirSync(path.join(context.folder, "db", "dumps"), {
 		recursive: true,
 	});
@@ -134,7 +137,7 @@ export type ProgramContext = {
 function copyMigration(
 	migrationName: string,
 	context: ProgramContext | DbContext,
-	migrationsFolder = "db/migrations/default",
+	migrationsFolder = "db/migrations/default/breaking",
 ) {
 	copyFileSync(
 		`tests/__setup__/fixtures/migrations/${migrationName}.ts`,
@@ -145,7 +148,7 @@ function copyMigration(
 export function copyMigrations(
 	migrations: string[],
 	context: ProgramContext | DbContext,
-	migrationsFolder = "db/migrations/default",
+	migrationsFolder = "db/migrations/default/breaking",
 ) {
 	migrations.forEach((migration) => {
 		copyMigration(migration, context, migrationsFolder);
@@ -165,6 +168,7 @@ export async function dbAndMigrator(context: ProgramContext) {
 					"db",
 					"migrations",
 					"default",
+					"breaking",
 				),
 			}),
 			migrationTableName: `monolayer_migration`,

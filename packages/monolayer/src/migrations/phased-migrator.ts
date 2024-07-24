@@ -48,7 +48,7 @@ export class PhasedMigrator implements MigratorInterface {
 			provider: new FileMigrationProvider({
 				fs,
 				path,
-				migrationFolder: folder,
+				migrationFolder: path.join(folder, "breaking"),
 			}),
 			migrationTableName: `monolayer_migration`,
 			migrationLockTableName: `monolayer_migration_lock`,
@@ -61,7 +61,7 @@ export class PhasedMigrator implements MigratorInterface {
 			const folder = this.folder;
 			mkdirSync(folder, { recursive: true });
 			const all = yield* migrationInfoToMonolayerMigrationInfo(
-				folder,
+				path.join(folder, "breaking"),
 				yield* Effect.tryPromise(() => this.breakingInstance.getMigrations()),
 			);
 
@@ -230,7 +230,7 @@ export class PhasedMigrator implements MigratorInterface {
 				this,
 				changesets,
 				migrationName,
-				this.folder,
+				path.join(this.folder, "breaking"),
 			);
 		});
 	}
