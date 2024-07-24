@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { Effect, Layer } from "effect";
 import { mkdirSync } from "fs";
-import { FileMigrationProvider } from "kysely";
+import { FileMigrationProvider, type Kysely } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
 import { cwd } from "process";
@@ -36,10 +36,25 @@ import {
 import { renderToFile } from "./render.js";
 
 export class PhasedMigrator implements MigratorInterface {
+	protected readonly instance: MonolayerMigrator;
+	protected readonly folder: string;
 	constructor(
-		protected readonly instance: MonolayerMigrator,
-		protected readonly folder: string,
-	) {}
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		client: Kysely<any>,
+		folder: string,
+	) {
+		this.instance = new MonolayerMigrator({
+			db: client,
+			provider: new FileMigrationProvider({
+				fs,
+				path,
+				migrationFolder: folder,
+			}),
+			migrationTableName: `kysely_migration`,
+			migrationLockTableName: `kysely_migration_lock`,
+		});
+		this.folder = folder;
+	}
 
 	get migrationStats() {
 		return Effect.gen(this, function* () {
@@ -290,21 +305,7 @@ export function phasedMigratorLayer(props?: MigratorLayerProps) {
 			const folder =
 				props?.migrationFolder ?? (yield* appEnvironmentMigrationsFolder);
 			const db = props?.client ?? (yield* DbClients).kysely;
-			const provider = new FileMigrationProvider({
-				fs,
-				path,
-				migrationFolder: folder,
-			});
-			const name = props?.name ?? "migration";
-			const migrationTableName = `kysely_${name}`;
-			const migrationLockTableName = `kysely_${name}_lock`;
-			const migrator = new MonolayerMigrator({
-				db,
-				provider,
-				migrationTableName,
-				migrationLockTableName,
-			});
-			return new PhasedMigrator(migrator, folder);
+			return new PhasedMigrator(db, folder);
 		}),
 	);
 }

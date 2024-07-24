@@ -77,7 +77,6 @@ export interface MigratorLayerProps {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	client?: Kysely<any>;
 	migrationFolder?: string;
-	name?: string;
 }
 
 export interface MigrationPlanGroup {
