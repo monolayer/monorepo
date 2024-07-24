@@ -118,19 +118,6 @@ export class PhasedMigrator implements MigratorInterface {
 		});
 	}
 
-	get lastExecuted() {
-		return Effect.gen(this, function* () {
-			mkdirSync(this.folder, { recursive: true });
-			const migrations = yield* Effect.tryPromise(() =>
-				this.breakingInstance.getMigrations(),
-			);
-			return (
-				migrations.find((m) => m.executedAt !== undefined)?.name ??
-				NO_MIGRATIONS
-			);
-		});
-	}
-
 	get currentDependency() {
 		return Effect.gen(this, function* () {
 			const migrations = yield* this.migrationStats;
