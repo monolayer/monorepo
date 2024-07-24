@@ -171,8 +171,8 @@ export async function dbAndMigrator(context: ProgramContext) {
 					"breaking",
 				),
 			}),
-			migrationTableName: `monolayer_migration`,
-			migrationLockTableName: `monolayer_migration_lock`,
+			migrationTableName: `monolayer_breaking_migration`,
+			migrationLockTableName: `monolayer_breaking_migration_lock`,
 		}),
 	};
 }

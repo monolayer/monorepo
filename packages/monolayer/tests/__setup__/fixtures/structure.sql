@@ -47,17 +47,17 @@ SET
   default_table_access_method = heap;
 
 --
--- Name: monolayer_migration; Type: TABLE; Schema: public; Owner: -
+-- Name: monolayer_breaking_migration; Type: TABLE; Schema: public; Owner: -
 --
-CREATE TABLE public.monolayer_migration (
+CREATE TABLE public.monolayer_breaking_migration (
   name character varying(255) NOT NULL,
   "timestamp" character varying(255) NOT NULL
 );
 
 --
--- Name: monolayer_migration_lock; Type: TABLE; Schema: public; Owner: -
+-- Name: monolayer_breaking_migration_lock; Type: TABLE; Schema: public; Owner: -
 --
-CREATE TABLE public.monolayer_migration_lock (
+CREATE TABLE public.monolayer_breaking_migration_lock (
   id character varying(255) NOT NULL,
   is_locked integer DEFAULT 0 NOT NULL
 );
@@ -68,20 +68,20 @@ CREATE TABLE public.monolayer_migration_lock (
 CREATE TABLE public.regulus_mint (name text NOT NULL);
 
 --
--- Name: monolayer_migration_lock monolayer_migration_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: monolayer_breaking_migration_lock monolayer_breaking_migration_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 ALTER TABLE
-  ONLY public.monolayer_migration_lock
+  ONLY public.monolayer_breaking_migration_lock
 ADD
-  CONSTRAINT monolayer_migration_lock_pkey PRIMARY KEY (id);
+  CONSTRAINT monolayer_breaking_migration_lock_pkey PRIMARY KEY (id);
 
 --
--- Name: monolayer_migration monolayer_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: monolayer_breaking_migration monolayer_breaking_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 ALTER TABLE
-  ONLY public.monolayer_migration
+  ONLY public.monolayer_breaking_migration
 ADD
-  CONSTRAINT monolayer_migration_pkey PRIMARY KEY (name);
+  CONSTRAINT monolayer_breaking_migration_pkey PRIMARY KEY (name);
 
 --
 -- PostgreSQL database dump complete

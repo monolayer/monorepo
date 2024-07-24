@@ -272,7 +272,10 @@ describe("Phased Migrator", () => {
 			.execute();
 
 		expect(tablesExist.map((r) => r.tablename).sort()).toStrictEqual(
-			["monolayer_migration", "monolayer_migration_lock"].sort(),
+			[
+				"monolayer_breaking_migration",
+				"monolayer_breaking_migration_lock",
+			].sort(),
 		);
 	});
 
@@ -342,7 +345,10 @@ describe("Phased Migrator", () => {
 			.execute();
 
 		expect(tablesExist.map((r) => r.tablename).sort()).toStrictEqual(
-			["monolayer_migration", "monolayer_migration_lock"].sort(),
+			[
+				"monolayer_breaking_migration",
+				"monolayer_breaking_migration_lock",
+			].sort(),
 		);
 	});
 

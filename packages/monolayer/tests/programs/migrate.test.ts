@@ -31,7 +31,7 @@ describe("migrate", () => {
 
 		expect(migrateResult).toBe(true);
 		const migrations = await context.kysely
-			.selectFrom("monolayer_migration")
+			.selectFrom("monolayer_breaking_migration")
 			.select("name")
 			.orderBy("name")
 			.execute();

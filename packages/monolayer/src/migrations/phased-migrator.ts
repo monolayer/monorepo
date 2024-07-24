@@ -50,8 +50,8 @@ export class PhasedMigrator implements MigratorInterface {
 				path,
 				migrationFolder: path.join(folder, "breaking"),
 			}),
-			migrationTableName: `monolayer_migration`,
-			migrationLockTableName: `monolayer_migration_lock`,
+			migrationTableName: `monolayer_breaking_migration`,
+			migrationLockTableName: `monolayer_breaking_migration_lock`,
 		});
 		this.folder = folder;
 	}
