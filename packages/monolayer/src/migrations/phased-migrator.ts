@@ -37,6 +37,8 @@ import { renderToFile } from "./render.js";
 
 export class PhasedMigrator implements MigratorInterface {
 	protected readonly breakingInstance: MonolayerMigrator;
+	protected readonly expandInstance: MonolayerMigrator;
+	protected readonly contractInstance: MonolayerMigrator;
 	protected readonly folder: string;
 	constructor(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,6 +54,26 @@ export class PhasedMigrator implements MigratorInterface {
 			}),
 			migrationTableName: `monolayer_breaking_migration`,
 			migrationLockTableName: `monolayer_breaking_migration_lock`,
+		});
+		this.expandInstance = new MonolayerMigrator({
+			db: client,
+			provider: new FileMigrationProvider({
+				fs,
+				path,
+				migrationFolder: path.join(folder, "expand"),
+			}),
+			migrationTableName: `monolayer_expand_migration`,
+			migrationLockTableName: `monolayer_expand_migration_lock`,
+		});
+		this.contractInstance = new MonolayerMigrator({
+			db: client,
+			provider: new FileMigrationProvider({
+				fs,
+				path,
+				migrationFolder: path.join(folder, "contract"),
+			}),
+			migrationTableName: `monolayer_contract_migration`,
+			migrationLockTableName: `monolayer_contract_migration_lock`,
 		});
 		this.folder = folder;
 	}
