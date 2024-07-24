@@ -251,6 +251,7 @@ export const migration: Migration = {
 	transaction: true,
 	dependsOn: NO_DEPENDENCY,
 	scaffold: false,
+	warnings: [],
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -276,6 +277,7 @@ export const migration: Migration = {
 	transaction: true,
 	dependsOn: NO_DEPENDENCY,
 	scaffold: false,
+	warnings: [],
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -319,6 +321,7 @@ export const migration: Migration = {
 	transaction: true,
 	dependsOn: "20240405T154913-mirfak-mustard",
 	scaffold: false,
+	warnings: [],
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -344,6 +347,7 @@ export const migration: Migration = {
 	transaction: true,
 	dependsOn: "20240405T154913-mirfak-mustard",
 	scaffold: false,
+	warnings: [],
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
