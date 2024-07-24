@@ -36,14 +36,14 @@ import {
 import { renderToFile } from "./render.js";
 
 export class PhasedMigrator implements MigratorInterface {
-	protected readonly instance: MonolayerMigrator;
+	protected readonly breakingInstance: MonolayerMigrator;
 	protected readonly folder: string;
 	constructor(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		client: Kysely<any>,
 		folder: string,
 	) {
-		this.instance = new MonolayerMigrator({
+		this.breakingInstance = new MonolayerMigrator({
 			db: client,
 			provider: new FileMigrationProvider({
 				fs,
@@ -62,7 +62,7 @@ export class PhasedMigrator implements MigratorInterface {
 			mkdirSync(folder, { recursive: true });
 			const all = yield* migrationInfoToMonolayerMigrationInfo(
 				folder,
-				yield* Effect.tryPromise(() => this.instance.getMigrations()),
+				yield* Effect.tryPromise(() => this.breakingInstance.getMigrations()),
 			);
 
 			const pending = all.filter((m) => m.executedAt === undefined);
@@ -84,7 +84,7 @@ export class PhasedMigrator implements MigratorInterface {
 		return Effect.gen(this, function* () {
 			mkdirSync(this.folder, { recursive: true });
 			const migrations = yield* Effect.tryPromise(() =>
-				this.instance.getMigrations(),
+				this.breakingInstance.getMigrations(),
 			);
 			return (
 				migrations.find((m) => m.executedAt !== undefined)?.name ??
@@ -124,10 +124,10 @@ export class PhasedMigrator implements MigratorInterface {
 			}[] = [];
 
 			for (const phase of plan) {
-				this.instance.migrateWithTransaction = phase.transaction;
+				this.breakingInstance.migrateWithTransaction = phase.transaction;
 
 				const migrationResult = yield* Effect.tryPromise(() =>
-					this.instance.migrate(() => ({
+					this.breakingInstance.migrate(() => ({
 						direction: "Up",
 						step: phase.steps,
 					})),
@@ -142,7 +142,7 @@ export class PhasedMigrator implements MigratorInterface {
 
 					for (const rollbackPhase of rollbackSteps) {
 						yield* Effect.tryPromise(() =>
-							this.instance.migrate(() => ({
+							this.breakingInstance.migrate(() => ({
 								direction: "Down",
 								step: rollbackPhase.steps,
 							})),
@@ -182,7 +182,7 @@ export class PhasedMigrator implements MigratorInterface {
 	get rollbackAll() {
 		return Effect.gen(this, function* () {
 			return yield* Effect.tryPromise(() =>
-				this.instance.migrateTo(NO_MIGRATIONS),
+				this.breakingInstance.migrateTo(NO_MIGRATIONS),
 			);
 		});
 	}
@@ -194,9 +194,9 @@ export class PhasedMigrator implements MigratorInterface {
 		return Effect.gen(this, function* () {
 			const groups = migrationPlan(migrations, target).reverse();
 			for (const phase of groups) {
-				this.instance.migrateWithTransaction = phase.transaction;
+				this.breakingInstance.migrateWithTransaction = phase.transaction;
 				const migrate = Effect.tryPromise(() =>
-					this.instance.migrate(() => ({
+					this.breakingInstance.migrate(() => ({
 						direction: "Down",
 						step: phase.steps,
 					})),
