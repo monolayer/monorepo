@@ -51,6 +51,7 @@ describe("Database migrations", () => {
 				currentTableName: "none",
 				schemaName: "public",
 				type: "createEnum",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -77,6 +78,7 @@ describe("Database migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createColumn",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -136,6 +138,7 @@ describe("Database migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropColumn",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D003",
@@ -168,6 +171,7 @@ describe("Database migrations", () => {
 				currentTableName: "none",
 				schemaName: "public",
 				type: "dropEnum",
+				phase: "contract",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -233,6 +237,7 @@ describe("Database migrations", () => {
 				currentTableName: "none",
 				schemaName: "public",
 				type: "changeEnum",
+				phase: "expand",
 				up: [
 					[
 						'await sql`ALTER TYPE "public"."role" ADD VALUE IF NOT EXISTS \'superuser\';`',
@@ -281,6 +286,7 @@ describe("Database migrations", () => {
 				currentTableName: "none",
 				schemaName: "public",
 				type: "createEnum",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -307,6 +313,7 @@ describe("Database migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -329,6 +336,7 @@ describe("Database migrations", () => {
 				currentTableName: "none",
 				schemaName: "users",
 				type: "createSchema",
+				phase: "expand",
 				up: [
 					['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
 					[
@@ -344,6 +352,7 @@ describe("Database migrations", () => {
 				currentTableName: "none",
 				schemaName: "users",
 				type: "createEnum",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("users").schema',
@@ -370,6 +379,7 @@ describe("Database migrations", () => {
 				currentTableName: "users",
 				schemaName: "users",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("users").schema',

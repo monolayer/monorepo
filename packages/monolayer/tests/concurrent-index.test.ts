@@ -43,6 +43,7 @@ describe("Modify table and add concurrent index", () => {
 				tableName: "users",
 				currentTableName: "users",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -65,6 +66,7 @@ describe("Modify table and add concurrent index", () => {
 				tableName: "users",
 				currentTableName: "users",
 				type: "createIndex",
+				phase: "expand",
 				up: [
 					[
 						'await sql`create index "users_e42f0227_monolayer_idx" on "public"."users" ("name")`',
@@ -111,6 +113,7 @@ describe("Modify table and add concurrent index", () => {
 				tableName: "users",
 				currentTableName: "users",
 				type: "createColumn",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -134,6 +137,7 @@ describe("Modify table and add concurrent index", () => {
 				tableName: "users",
 				currentTableName: "users",
 				type: "createColumn",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -158,6 +162,7 @@ describe("Modify table and add concurrent index", () => {
 				schemaName: "public",
 				transaction: false,
 				type: "createIndex",
+				phase: "expand",
 				up: [
 					[
 						`try {
@@ -227,6 +232,7 @@ describe("Modify table and add concurrent index", () => {
 				schemaName: "public",
 				type: "dropIndex",
 				transaction: false,
+				phase: "contract",
 				up: [
 					[
 						'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."users_3cf2733f_monolayer_idx"`',
@@ -246,6 +252,7 @@ describe("Modify table and add concurrent index", () => {
 				tableName: "users",
 				currentTableName: "users",
 				type: "createColumn",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -269,6 +276,7 @@ describe("Modify table and add concurrent index", () => {
 				tableName: "users",
 				currentTableName: "users",
 				type: "createColumn",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -293,6 +301,7 @@ describe("Modify table and add concurrent index", () => {
 				schemaName: "public",
 				transaction: false,
 				type: "createIndex",
+				phase: "expand",
 				up: [
 					[
 						`try {
@@ -366,6 +375,7 @@ describe("Modify table and add concurrent index", () => {
 				schemaName: "public",
 				transaction: false,
 				type: "createIndex",
+				phase: "expand",
 				up: [
 					[
 						`try {

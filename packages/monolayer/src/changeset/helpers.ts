@@ -5,6 +5,14 @@ import type {
 	SchemaMigrationInfo,
 } from "~/introspection/introspection.js";
 import { findColumnByNameInTable } from "~/introspection/schema.js";
+import type {
+	ColumnsToRename,
+	TablesToRename,
+} from "../introspection/introspect-schemas.js";
+import {
+	currentTableName,
+	previousTableName,
+} from "../introspection/table-name.js";
 
 export function executeKyselySchemaStatement(
 	schemaName: string,
@@ -102,4 +110,36 @@ export function existingColumns(options: {
 		return localColumn.exists === true && dbColumn.exists === true;
 	});
 	return existingColumns;
+}
+
+export function includedInRecord(
+	values: string[],
+	record: Record<string, string[]>,
+	key: string,
+) {
+	return values
+		.reduce((acc, col) => {
+			if (record[key] !== undefined && record[key].includes(col)) {
+				acc.push(true);
+			} else {
+				acc.push(false);
+			}
+			return acc;
+		}, [] as boolean[])
+		.every((col) => col === true);
+}
+
+export function tableStructureHasChanged(
+	tableName: string,
+	schemaName: string,
+	tablesToRename: TablesToRename,
+	columnsToRename: ColumnsToRename,
+) {
+	const tableNameChanged =
+		currentTableName(tableName, tablesToRename, schemaName) !==
+		previousTableName(tableName, tablesToRename, schemaName);
+	return (
+		tableNameChanged ||
+		columnsToRename[`${schemaName}.${tableName}`] !== undefined
+	);
 }

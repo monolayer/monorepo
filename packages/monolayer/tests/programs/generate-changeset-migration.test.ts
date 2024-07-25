@@ -14,7 +14,11 @@ import { loadEnv } from "~/cli/cli-action.js";
 import { generateMigration } from "~/migrations/generate.js";
 import { AppEnvironment } from "~/state/app-environment.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
-import { defaultMigrationPath } from "~tests/__setup__/helpers/default-migration-path.js";
+import {
+	contractMigrationPath,
+	expandMigrationPath,
+	unsafeMigrationPath,
+} from "~tests/__setup__/helpers/default-migration-path.js";
 import { layers } from "~tests/__setup__/helpers/layers.js";
 import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -24,115 +28,125 @@ import {
 } from "~tests/__setup__/helpers/test-context.js";
 
 describe("generateChangesetMigration", () => {
-	beforeEach<ProgramContext>(async (context) => {
-		await setupProgramContext(context);
-		vi.unmock("~/create-file.ts");
-	});
-
-	afterEach<ProgramContext>(async (context) => {
-		await teardownProgramContext(context);
-	});
-
-	test<ProgramContext>("returns a changeset list", async (context) => {
-		rmSync(defaultMigrationPath(context.folder), {
-			recursive: true,
-			force: true,
-		});
-		mkdirSync(defaultMigrationPath(context.folder), {
-			recursive: true,
+	describe("without dependencies", () => {
+		beforeEach<ProgramContext>(async (context) => {
+			await setupProgramContext(context, true, false);
+			vi.unmock("~/create-file.ts");
 		});
 
-		writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
-
-		await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(programWithErrorCause(generateMigration()), layers),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
-
-		const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
-
-		expect(migrationFiles.length).toBe(1);
-
-		const migration = readFileSync(
-			path.join(
-				context.folder,
-				"db",
-				"migrations",
-				"default",
-				"breaking",
-				migrationFiles[0]!,
-			),
-		);
-		const migrationName = migrationFiles[0]!;
-		expect(migration.toString()).toBe(
-			expectedMigration.replace(
-				"#name",
-				migrationName.substring(0, migrationName.lastIndexOf(".")),
-			),
-		);
-	});
-
-	test<ProgramContext>("returns a changeset list for multiple database definitions", async (context) => {
-		rmSync(defaultMigrationPath(context.folder), {
-			recursive: true,
-			force: true,
-		});
-		mkdirSync(defaultMigrationPath(context.folder), {
-			recursive: true,
+		afterEach<ProgramContext>(async (context) => {
+			await teardownProgramContext(context);
 		});
 
-		writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
-		writeFileSync(
-			path.join(context.folder, "db", "anotherSchema.ts"),
-			anotherSchemaFile,
-		);
+		test<ProgramContext>("returns a changeset list", async (context) => {
+			rmSync(expandMigrationPath(context.folder), {
+				recursive: true,
+				force: true,
+			});
+			mkdirSync(expandMigrationPath(context.folder), {
+				recursive: true,
+			});
 
-		const configurations = configurationsTemplateTwoDatabaseSchemas.render({
-			dbName: context.dbName,
-			secondSchemaFile: "anotherSchema",
+			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
+
+			await Effect.runPromise(
+				Effect.provideServiceEffect(
+					Effect.provide(programWithErrorCause(generateMigration()), layers),
+					AppEnvironment,
+					Ref.make(await loadEnv("development", "default")),
+				),
+			);
+
+			const migrationFiles = readdirSync(expandMigrationPath(context.folder));
+
+			expect(migrationFiles.length).toBe(1);
+
+			const migration = readFileSync(
+				path.join(
+					context.folder,
+					"db",
+					"migrations",
+					"default",
+					"expand",
+					migrationFiles[0]!,
+				),
+			);
+			const migrationName = migrationFiles[0]!;
+			expect(migration.toString()).toBe(
+				expectedMigration.replace(
+					"#name",
+					migrationName.substring(0, migrationName.lastIndexOf(".")),
+				),
+			);
 		});
 
-		writeFileSync(
-			path.join(context.folder, "db", "configuration.ts"),
-			configurations,
-		);
+		test<ProgramContext>("returns a changeset list for multiple database definitions", async (context) => {
+			rmSync(expandMigrationPath(context.folder), {
+				recursive: true,
+				force: true,
+			});
+			mkdirSync(expandMigrationPath(context.folder), {
+				recursive: true,
+			});
 
-		await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(programWithErrorCause(generateMigration()), layers),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
+			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
+			writeFileSync(
+				path.join(context.folder, "db", "anotherSchema.ts"),
+				anotherSchemaFile,
+			);
 
-		const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
+			const configurations = configurationsTemplateTwoDatabaseSchemas.render({
+				dbName: context.dbName,
+				secondSchemaFile: "anotherSchema",
+			});
 
-		expect(migrationFiles.length).toBe(1);
+			writeFileSync(
+				path.join(context.folder, "db", "configuration.ts"),
+				configurations,
+			);
 
-		const migration = readFileSync(
-			path.join(
-				context.folder,
-				"db",
-				"migrations",
-				"default",
-				"breaking",
-				migrationFiles[0]!,
-			),
-		);
+			await Effect.runPromise(
+				Effect.provideServiceEffect(
+					Effect.provide(programWithErrorCause(generateMigration()), layers),
+					AppEnvironment,
+					Ref.make(await loadEnv("development", "default")),
+				),
+			);
 
-		const migrationName = migrationFiles[0]!;
-		expect(migration.toString()).toBe(
-			expectedMigrationWithSchemas.replace(
-				"#name",
-				migrationName.substring(0, migrationName.lastIndexOf(".")),
-			),
-		);
+			const migrationFiles = readdirSync(expandMigrationPath(context.folder));
+
+			expect(migrationFiles.length).toBe(1);
+
+			const migration = readFileSync(
+				path.join(
+					context.folder,
+					"db",
+					"migrations",
+					"default",
+					"expand",
+					migrationFiles[0]!,
+				),
+			);
+
+			const migrationName = migrationFiles[0]!;
+			expect(migration.toString()).toBe(
+				expectedMigrationWithSchemas.replace(
+					"#name",
+					migrationName.substring(0, migrationName.lastIndexOf(".")),
+				),
+			);
+		});
 	});
 
 	describe("with dependencies", () => {
+		beforeEach<ProgramContext>(async (context) => {
+			await setupProgramContext(context, true, true);
+			vi.unmock("~/create-file.ts");
+		});
+
+		afterEach<ProgramContext>(async (context) => {
+			await teardownProgramContext(context);
+		});
 		test<ProgramContext>("returns a changeset list", async (context) => {
 			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
@@ -144,9 +158,13 @@ describe("generateChangesetMigration", () => {
 				),
 			);
 
-			const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
+			const expandFiles = readdirSync(expandMigrationPath(context.folder));
+			const unsafeFiles = readdirSync(unsafeMigrationPath(context.folder));
+			const contractFiles = readdirSync(contractMigrationPath(context.folder));
 
-			expect(migrationFiles.length).toBe(5);
+			expect(
+				expandFiles.length + unsafeFiles.length + contractFiles.length,
+			).toBe(5);
 
 			const migration = readFileSync(
 				path.join(
@@ -154,11 +172,11 @@ describe("generateChangesetMigration", () => {
 					"db",
 					"migrations",
 					"default",
-					"breaking",
-					migrationFiles.slice(-1)[0]!,
+					"expand",
+					expandFiles.slice(-1)[0]!,
 				),
 			);
-			const migrationName = migrationFiles.slice(-1)[0]!;
+			const migrationName = expandFiles.slice(-1)[0]!;
 			expect(migration.toString()).toBe(
 				expectedMigrationWithDependency.replace(
 					"#name",
@@ -192,9 +210,13 @@ describe("generateChangesetMigration", () => {
 				),
 			);
 
-			const migrationFiles = readdirSync(defaultMigrationPath(context.folder));
+			const expandFiles = readdirSync(expandMigrationPath(context.folder));
+			const unsafeFiles = readdirSync(unsafeMigrationPath(context.folder));
+			const contractFiles = readdirSync(contractMigrationPath(context.folder));
 
-			expect(migrationFiles.length).toBe(5);
+			expect(
+				expandFiles.length + unsafeFiles.length + contractFiles.length,
+			).toBe(5);
 
 			const migration = readFileSync(
 				path.join(
@@ -202,12 +224,12 @@ describe("generateChangesetMigration", () => {
 					"db",
 					"migrations",
 					"default",
-					"breaking",
-					migrationFiles.slice(-1)[0]!,
+					"expand",
+					expandFiles.slice(-1)[0]!,
 				),
 			);
 
-			const migrationName = migrationFiles.slice(-1)[0]!;
+			const migrationName = expandFiles.slice(-1)[0]!;
 			expect(migration.toString()).toBe(
 				expectedMigrationWithSchemasAndDependency.replace(
 					"#name",

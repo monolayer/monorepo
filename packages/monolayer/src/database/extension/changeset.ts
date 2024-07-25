@@ -2,6 +2,7 @@ import { Effect } from "effect";
 import type { Difference } from "microdiff";
 import { extensionChangeset } from "~/changeset/extension-changeset.js";
 import {
+	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -64,6 +65,7 @@ function createExtensionMigration(diff: CreateExtensionDiff) {
 	const extensionName = diff.path[1];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.CreateExtension,
+		phase: ChangesetPhase.Expand,
 		tableName: "none",
 		currentTableName: "none",
 		type: ChangeSetType.CreateExtension,
@@ -84,6 +86,7 @@ function dropExtensionMigration(diff: DropExtensionDiff) {
 	const extensionName = diff.path[1];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.DropExtension,
+		phase: ChangesetPhase.Contract,
 		tableName: "none",
 		currentTableName: "none",
 		type: ChangeSetType.DropExtension,

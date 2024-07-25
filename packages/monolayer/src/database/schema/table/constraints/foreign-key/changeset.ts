@@ -2,6 +2,7 @@
 import type { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
+	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -15,6 +16,7 @@ import {
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
+	includedInRecord,
 } from "../../../../../changeset/helpers.js";
 import { ForeignKeyBuilder, type ForeignKeyDefinition } from "./builder.js";
 
@@ -147,6 +149,7 @@ function createforeignKeyFirstConstraintMigration(
 		tablesToRename,
 		columnsToRename,
 		camelCaseOptions,
+		addedColumns,
 	}: GeneratorContext,
 ) {
 	const tableName = currentTableName(diff.path[1], tablesToRename, schemaName);
@@ -164,8 +167,18 @@ function createforeignKeyFirstConstraintMigration(
 			},
 		);
 
+		const allAddedColumns = includedInRecord(
+			definition.columns,
+			addedColumns,
+			tableName,
+		);
+
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.ForeignKeyCreate,
+			phase:
+				addedTables.includes(tableName) || allAddedColumns
+					? ChangesetPhase.Expand
+					: ChangesetPhase.Unsafe,
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -188,6 +201,8 @@ function createForeignKeyConstraintMigration(
 		tablesToRename,
 		columnsToRename,
 		camelCaseOptions,
+		addedTables,
+		addedColumns,
 	}: GeneratorContext,
 ) {
 	const tableName = currentTableName(diff.path[1], tablesToRename, schemaName);
@@ -199,8 +214,18 @@ function createForeignKeyConstraintMigration(
 		{ columnsToRename, tablesToRename, camelCaseOptions, schemaName },
 	);
 
+	const allAddedColumns = includedInRecord(
+		definition.columns,
+		addedColumns,
+		tableName,
+	);
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ForeignKeyCreate,
+		phase:
+			addedTables.includes(tableName) || allAddedColumns
+				? ChangesetPhase.Expand
+				: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -240,6 +265,9 @@ function dropforeignKeyLastConstraintMigration(
 
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.ForeignKeyDrop,
+			phase: droppedTables.includes(tableName)
+				? ChangesetPhase.Contract
+				: ChangesetPhase.Unsafe,
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -262,6 +290,7 @@ function dropForeignKeyConstraintMigration(
 		columnsToRename,
 		db,
 		camelCaseOptions,
+		droppedTables,
 	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
@@ -276,6 +305,9 @@ function dropForeignKeyConstraintMigration(
 	);
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ForeignKeyDrop,
+		phase: droppedTables.includes(tableName)
+			? ChangesetPhase.Contract
+			: ChangesetPhase.Unsafe,
 		tableName: previousTableName(tableName, tablesToRename),
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		schemaName,
@@ -342,6 +374,7 @@ function renameForeignKeyOp(
 ) {
 	return {
 		priority: MigrationOpPriority.ConstraintChange,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

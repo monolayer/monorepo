@@ -24,13 +24,10 @@ describe("scaffoldMigration", () => {
 	});
 
 	test<ProgramContext>("creates an empty migration file with no dependecies", async (context) => {
-		rmSync(
-			path.join(context.folder, "db", "migrations", "default", "breaking"),
-			{
-				recursive: true,
-				force: true,
-			},
-		);
+		rmSync(path.join(context.folder, "db", "migrations", "default", "unsafe"), {
+			recursive: true,
+			force: true,
+		});
 
 		const result = await Effect.runPromise(
 			Effect.provideServiceEffect(

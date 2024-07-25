@@ -1,6 +1,7 @@
 import type { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
+	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -130,6 +131,7 @@ function createTriggerFirstMigration(
 		const trigger = value.split(":");
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.TriggerCreate,
+			phase: ChangesetPhase.Expand,
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -156,6 +158,7 @@ function createTriggerMigration(
 	const trigger = diff.value.split(":");
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TriggerCreate,
+		phase: ChangesetPhase.Expand,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -179,6 +182,7 @@ function dropTriggerFirstMigration(
 		const trigger = value.split(":");
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.TriggerDrop,
+			phase: ChangesetPhase.Contract,
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -213,6 +217,7 @@ function dropTriggerMigration(
 	const trigger = diff.oldValue.split(":");
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TriggerDrop,
+		phase: ChangesetPhase.Contract,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -243,6 +248,7 @@ function changeTriggerMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TriggerUpdate,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

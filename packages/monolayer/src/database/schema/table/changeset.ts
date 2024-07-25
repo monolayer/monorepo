@@ -1,6 +1,7 @@
 import { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
+	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -73,6 +74,7 @@ function createTableMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TableCreate,
+		phase: ChangesetPhase.Expand,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreateTable,
@@ -126,6 +128,7 @@ function dropTableMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TableDrop,
+		phase: ChangesetPhase.Contract,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropTable,
@@ -170,6 +173,7 @@ function changeTableNameMigration(
 ) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeTableName,
+		phase: ChangesetPhase.Unsafe,
 		tableName: diff.oldValue,
 		currentTableName: currentTableName(
 			diff.oldValue,

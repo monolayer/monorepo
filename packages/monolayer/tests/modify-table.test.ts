@@ -78,6 +78,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "changeColumn",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF005",
@@ -130,6 +131,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [],
 					down: [
 						[
@@ -146,6 +148,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [],
 					down: [
 						[
@@ -162,6 +165,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createIndex",
+					phase: "unsafe",
 					transaction: false,
 					up: [
 						[
@@ -191,6 +195,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createIndex",
+					phase: "unsafe",
 					transaction: false,
 					up: [
 						[
@@ -220,6 +225,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF001",
@@ -290,6 +296,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createPrimaryKey",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF001",
@@ -372,6 +379,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createIndex",
+					phase: "unsafe",
 					transaction: false,
 					up: [
 						[
@@ -401,6 +409,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
@@ -463,6 +472,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "books",
 					type: "createColumn",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -486,6 +496,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "books",
 					type: "changeColumn",
+					phase: "expand",
 					up: [],
 				},
 				{
@@ -494,6 +505,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createIndex",
+					phase: "expand",
 					transaction: false,
 					up: [
 						[
@@ -523,6 +535,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createPrimaryKey",
+					phase: "expand",
 					warnings: [
 						{
 							code: "MF002",
@@ -626,6 +639,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -655,6 +669,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -684,6 +699,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -700,6 +716,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -716,6 +733,200 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'alterColumn("name", (col) => col.dropNotNull())',
+							"execute();",
+						],
+					],
+					down: [],
+				},
+			];
+
+			await testChangesetAndMigrations({
+				context,
+				configuration: { schemas: [dbSchema] },
+				expected,
+				down: "same",
+			});
+		});
+
+		test<DbContext>("drop with column drop", async (context) => {
+			await context.kysely.schema
+				.createTable("users")
+				.addColumn("name", "text")
+				.addColumn("fullName", "text")
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("users")
+				.addPrimaryKeyConstraint("users_pkey", ["name", "fullName"])
+				.execute();
+
+			await context.kysely.schema
+				.createTable("books")
+				.addColumn("name", "text")
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("books")
+				.addPrimaryKeyConstraint("books_pkey", ["name"])
+				.execute();
+
+			const users = table({
+				columns: {
+					name: text(),
+				},
+			});
+
+			const books = table({
+				columns: {},
+			});
+
+			const dbSchema = schema({
+				tables: {
+					users,
+					books,
+				},
+			});
+
+			const expected = [
+				{
+					priority: 1004,
+					tableName: "books",
+					currentTableName: "books",
+					schemaName: "public",
+					type: "dropPrimaryKey",
+					phase: "contract",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropConstraint("books_pkey")',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("books_pkey_idx")',
+							"ifExists()",
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'addPrimaryKeyConstraint("books_pkey", ["name"])',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 1004,
+					tableName: "users",
+					currentTableName: "users",
+					schemaName: "public",
+					type: "dropPrimaryKey",
+					phase: "unsafe",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("users_pkey")',
+							"execute();",
+						],
+						[
+							'await db.withSchema("public").schema',
+							'dropIndex("users_pkey_idx")',
+							"ifExists()",
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'addPrimaryKeyConstraint("users_pkey", ["fullName", "name"])',
+							"execute();",
+						],
+					],
+				},
+				{
+					currentTableName: "books",
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'addColumn("name", "text", (col) => col.notNull())',
+							"execute();",
+						],
+					],
+					phase: "contract",
+					priority: 1005,
+					schemaName: "public",
+					tableName: "books",
+					type: "dropColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropColumn("name")',
+							"execute();",
+						],
+					],
+					warnings: [
+						{
+							code: "D003",
+							column: "name",
+							schema: "public",
+							table: "books",
+							type: "destructive",
+						},
+					],
+				},
+				{
+					currentTableName: "users",
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'addColumn("fullName", "text", (col) => col.notNull())',
+							"execute();",
+						],
+					],
+					phase: "contract",
+					priority: 1005,
+					schemaName: "public",
+					tableName: "users",
+					type: "dropColumn",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropColumn("fullName")',
+							"execute();",
+						],
+					],
+					warnings: [
+						{
+							code: "D003",
+							column: "fullName",
+							schema: "public",
+							table: "users",
+							type: "destructive",
+						},
+					],
+				},
+				{
+					priority: 3011,
+					schemaName: "public",
+					tableName: "users",
+					currentTableName: "users",
+					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -801,6 +1012,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -830,6 +1042,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -859,6 +1072,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -875,6 +1089,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [],
 					down: [
 						[
@@ -891,6 +1106,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -907,6 +1123,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -924,6 +1141,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					type: "createIndex",
 					transaction: false,
+					phase: "unsafe",
 					up: [
 						[
 							"try {\n" +
@@ -953,6 +1171,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
+					phase: "unsafe",
 					up: [
 						[
 							"try {\n" +
@@ -981,6 +1200,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
@@ -1002,6 +1222,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
@@ -1092,6 +1313,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1121,6 +1343,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1150,6 +1373,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1166,6 +1390,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [],
 					down: [
 						[
@@ -1182,6 +1407,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1198,6 +1424,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1215,6 +1442,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					type: "createIndex",
 					transaction: false,
+					phase: "unsafe",
 					up: [
 						[
 							"try {\n" +
@@ -1244,6 +1472,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
+					phase: "unsafe",
 					up: [
 						[
 							"try {\n" +
@@ -1272,6 +1501,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
@@ -1293,6 +1523,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
@@ -1356,6 +1587,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1385,6 +1617,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [],
 					down: [
 						[
@@ -1401,6 +1634,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1418,6 +1652,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
+					phase: "unsafe",
 					up: [
 						[
 							"try {\n" +
@@ -1446,6 +1681,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
@@ -1506,6 +1742,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1535,6 +1772,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF005",
@@ -1587,6 +1825,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1604,6 +1843,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
+					phase: "unsafe",
 					up: [
 						[
 							"try {\n" +
@@ -1632,6 +1872,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF001",
@@ -1743,6 +1984,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createColumn",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1766,6 +2008,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createForeignKey",
+					phase: "unsafe",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1789,6 +2032,250 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
 							'dropConstraint("users_8abc8e0b_monolayer_fk")',
+							"execute();",
+						],
+					],
+				},
+			];
+
+			await testChangesetAndMigrations({
+				context,
+				configuration: { schemas: [dbSchema] },
+				expected,
+				down: "same",
+			});
+		});
+
+		test<DbContext>("add with new column", async (context) => {
+			await context.kysely.schema
+				.createTable("books")
+				.addColumn("id", "integer")
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("books")
+				.addPrimaryKeyConstraint("books_id_pkey", ["id"])
+				.execute();
+
+			await context.kysely.schema
+				.createTable("users")
+				.addColumn("id", "serial")
+				.addColumn("name", "varchar")
+				.execute();
+
+			const books = table({
+				columns: {
+					id: integer(),
+				},
+				constraints: {
+					primaryKey: primaryKey(["id"]),
+				},
+			});
+
+			const users = table({
+				columns: {
+					id: serial(),
+					book_id: integer(),
+					name: varchar(),
+				},
+				constraints: {
+					foreignKeys: [
+						foreignKey(["book_id"], books, ["id"])
+							.updateRule("set null")
+							.deleteRule("set null"),
+					],
+				},
+			});
+
+			const dbSchema = schema({
+				tables: {
+					books,
+					users,
+				},
+			});
+
+			const expected = [
+				{
+					priority: 2003,
+					tableName: "users",
+					currentTableName: "users",
+					schemaName: "public",
+					type: "createColumn",
+					phase: "expand",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'addColumn("book_id", "integer")',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropColumn("book_id")',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4014,
+					tableName: "users",
+					currentTableName: "users",
+					schemaName: "public",
+					type: "createForeignKey",
+					phase: "expand",
+					up: [
+						[
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_58e6ca22_monolayer_fk", ["book_id"], "public.books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_58e6ca22_monolayer_fk"`',
+							"execute(db);",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("users_58e6ca22_monolayer_fk")',
+							"execute();",
+						],
+					],
+				},
+			];
+
+			await testChangesetAndMigrations({
+				context,
+				configuration: { schemas: [dbSchema] },
+				expected,
+				down: "same",
+			});
+		});
+
+		test<DbContext>("add with new column and existing foreign key", async (context) => {
+			await context.kysely.schema
+				.createTable("books")
+				.addColumn("id", "integer")
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("books")
+				.addPrimaryKeyConstraint("books_id_pkey", ["id"])
+				.execute();
+
+			await context.kysely.schema
+				.createTable("users")
+				.addColumn("id", "serial")
+				.addColumn("name", "varchar")
+				.addForeignKeyConstraint(
+					"users_8abc8e0b_monolayer_fk",
+					["id"],
+					"public.books",
+					["id"],
+					(fk) => fk.onDelete("set null").onUpdate("set null"),
+				)
+				.execute();
+
+			const books = table({
+				columns: {
+					id: integer(),
+				},
+				constraints: {
+					primaryKey: primaryKey(["id"]),
+				},
+			});
+
+			const users = table({
+				columns: {
+					id: serial(),
+					book_id: integer(),
+					name: varchar(),
+				},
+				constraints: {
+					foreignKeys: [
+						foreignKey(["id"], books, ["id"])
+							.updateRule("set null")
+							.deleteRule("set null"),
+						foreignKey(["book_id"], books, ["id"])
+							.updateRule("set null")
+							.deleteRule("set null"),
+					],
+				},
+			});
+
+			const dbSchema = schema({
+				tables: {
+					books,
+					users,
+				},
+			});
+
+			const expected = [
+				{
+					priority: 2003,
+					tableName: "users",
+					currentTableName: "users",
+					schemaName: "public",
+					type: "createColumn",
+					phase: "expand",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'addColumn("book_id", "integer")',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropColumn("book_id")',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4014,
+					tableName: "users",
+					currentTableName: "users",
+					schemaName: "public",
+					type: "createForeignKey",
+					phase: "expand",
+					up: [
+						[
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_58e6ca22_monolayer_fk", ["book_id"], "public.books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_58e6ca22_monolayer_fk"`',
+							"execute(db);",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("users_58e6ca22_monolayer_fk")',
 							"execute();",
 						],
 					],
@@ -1882,6 +2369,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createColumn",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1905,6 +2393,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createColumn",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1928,6 +2417,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createForeignKey",
+					phase: "unsafe",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -1961,6 +2451,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createForeignKey",
+					phase: "expand",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2057,6 +2548,104 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
+					phase: "unsafe",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("users")',
+							'dropConstraint("users_58e6ca22_monolayer_fk")',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("users")
+    .addForeignKeyConstraint("users_58e6ca22_monolayer_fk", ["book_id"], "public.books", ["id"])
+    .onDelete("set null")
+    .onUpdate("set null")
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "users_58e6ca22_monolayer_fk"`',
+							"execute(db);",
+						],
+					],
+				},
+			];
+
+			await testChangesetAndMigrations({
+				context,
+				configuration: { schemas: [dbSchema] },
+				expected,
+				down: "same",
+			});
+		});
+
+		test<DbContext>("drop with column", async (context) => {
+			await context.kysely.schema
+				.createTable("books")
+				.addColumn("id", "integer")
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("books")
+				.addPrimaryKeyConstraint("books_id_pkey", ["id"])
+				.execute();
+
+			await context.kysely.schema
+				.createTable("users")
+				.addColumn("id", "serial")
+				.addColumn("book_id", "integer")
+				.execute();
+
+			await context.kysely.schema
+				.alterTable("users")
+				.addForeignKeyConstraint(
+					"users_58e6ca22_monolayer_fk",
+					["book_id"],
+					"books",
+					["id"],
+				)
+				.onDelete("set null")
+				.onUpdate("set null")
+				.execute();
+
+			const books = table({
+				columns: {
+					id: integer(),
+				},
+				constraints: {
+					primaryKey: primaryKey(["id"]),
+				},
+			});
+
+			const users = table({
+				columns: {
+					id: serial(),
+					book_id: integer(),
+				},
+			});
+
+			const dbSchema = schema({
+				tables: {
+					books,
+					users,
+				},
+			});
+
+			const expected = [
+				{
+					priority: 810,
+					tableName: "users",
+					currentTableName: "users",
+					schemaName: "public",
+					type: "dropForeignKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2187,6 +2776,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2220,6 +2810,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2323,6 +2914,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2356,6 +2948,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createForeignKey",
+					phase: "unsafe",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2459,6 +3052,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2492,6 +3086,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createForeignKey",
+					phase: "unsafe",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2567,6 +3162,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createCheckConstraint",
+					phase: "unsafe",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2588,6 +3184,95 @@ describe("Modify table", () => {
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
 							'dropConstraint("books_e37c55a5_monolayer_chk")',
+							"execute();",
+						],
+					],
+				},
+			];
+
+			await testChangesetAndMigrations({
+				context,
+				configuration: { schemas: [dbSchema] },
+				expected,
+				down: "same",
+			});
+		});
+
+		test<DbContext>("add with new column", async (context) => {
+			await context.kysely.schema
+				.createTable("books")
+				.addColumn("id", "integer")
+				.execute();
+
+			const books = table({
+				columns: {
+					id: integer(),
+					count: integer(),
+				},
+				constraints: {
+					checks: [check(sql`${sql.ref("count")} < 50000`)],
+				},
+			});
+
+			const dbSchema = schema({
+				tables: {
+					books,
+				},
+			});
+
+			const expected = [
+				{
+					currentTableName: "books",
+					priority: 2003,
+					schemaName: "public",
+					tableName: "books",
+					type: "createColumn",
+					phase: "expand",
+					up: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'addColumn("count", "integer")',
+							"execute();",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropColumn("count")',
+							"execute();",
+						],
+					],
+				},
+				{
+					priority: 4012,
+					tableName: "books",
+					currentTableName: "books",
+					schemaName: "public",
+					type: "createCheckConstraint",
+					phase: "unsafe",
+					up: [
+						[
+							`await sql\`\${sql.raw(
+  db
+    .withSchema("public")
+    .schema.alterTable("books")
+    .addCheckConstraint("books_a40b9865_monolayer_chk", sql\`"count" < 50000\`)
+    .compile()
+    .sql.concat(" not valid")
+)}\`.execute(db);`,
+						],
+						[
+							'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "books_a40b9865_monolayer_chk"`',
+							"execute(db);",
+						],
+					],
+					down: [
+						[
+							'await db.withSchema("public").schema',
+							'alterTable("books")',
+							'dropConstraint("books_a40b9865_monolayer_chk")',
 							"execute();",
 						],
 					],
@@ -2633,6 +3318,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createCheckConstraint",
+					phase: "unsafe",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2664,6 +3350,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createCheckConstraint",
+					phase: "unsafe",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2739,6 +3426,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropCheckConstraint",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2798,6 +3486,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropCheckConstraint",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2857,6 +3546,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createTable",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2879,6 +3569,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createCheckConstraint",
+					phase: "expand",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2903,6 +3594,7 @@ describe("Modify table", () => {
 					currentTableName: "none",
 					schemaName: "users",
 					type: "createSchema",
+					phase: "expand",
 					up: [
 						['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
 						[
@@ -2918,6 +3610,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "users",
 					type: "createTable",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("users").schema',
@@ -2940,6 +3633,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "users",
 					type: "createCheckConstraint",
+					phase: "expand",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -3018,6 +3712,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					type: "createIndex",
 					transaction: false,
+					phase: "unsafe",
 					up: [
 						[
 							"try {\n" +
@@ -3047,6 +3742,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					type: "createIndex",
 					transaction: false,
+					phase: "unsafe",
 					up: [
 						[
 							"try {\n" +
@@ -3076,6 +3772,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
+					phase: "unsafe",
 					up: [
 						[
 							"try {\n" +
@@ -3104,6 +3801,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createUniqueConstraint",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF003",
@@ -3140,6 +3838,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createUniqueConstraint",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF003",
@@ -3176,6 +3875,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createUniqueConstraint",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF003",
@@ -3277,6 +3977,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropUniqueConstraint",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3306,6 +4007,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropUniqueConstraint",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3396,6 +4098,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropUniqueConstraint",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3426,6 +4129,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
+					phase: "unsafe",
 					up: [
 						[
 							"try {\n" +
@@ -3454,6 +4158,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createUniqueConstraint",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF003",
@@ -3551,6 +4256,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropUniqueConstraint",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3580,6 +4286,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createIndex",
+					phase: "unsafe",
 					transaction: false,
 					up: [
 						[
@@ -3609,6 +4316,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createUniqueConstraint",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF003",
@@ -3680,6 +4388,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createTable",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3703,6 +4412,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createUniqueConstraint",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3719,6 +4429,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createPrimaryKey",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3735,6 +4446,7 @@ describe("Modify table", () => {
 					currentTableName: "none",
 					schemaName: "users",
 					type: "createSchema",
+					phase: "expand",
 					up: [
 						['await sql`CREATE SCHEMA IF NOT EXISTS "users";`', "execute(db);"],
 						[
@@ -3750,6 +4462,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "users",
 					type: "createTable",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("users").schema',
@@ -3773,6 +4486,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "users",
 					type: "createUniqueConstraint",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("users").schema',
@@ -3789,6 +4503,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "users",
 					type: "createPrimaryKey",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("users").schema',
@@ -3846,6 +4561,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					type: "createIndex",
 					transaction: false,
+					phase: "expand",
 					up: [
 						[
 							`try {
@@ -3919,6 +4635,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					type: "dropIndex",
 					transaction: false,
+					phase: "contract",
 					up: [
 						[
 							'await sql`DROP INDEX CONCURRENTLY IF EXISTS "public"."users_3cf2733f_monolayer_idx"`',
@@ -3982,6 +4699,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropIndex",
+					phase: "contract",
 					transaction: false,
 					up: [
 						[
@@ -4002,6 +4720,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createIndex",
+					phase: "expand",
 					transaction: false,
 					up: [
 						[
@@ -4075,6 +4794,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropIndex",
+					phase: "contract",
 					transaction: false,
 					up: [
 						[
@@ -4095,6 +4815,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createIndex",
+					phase: "expand",
 					transaction: false,
 					up: [
 						[
@@ -4183,6 +4904,7 @@ describe("Modify table", () => {
 					currentTableName: "none",
 					schemaName: null,
 					type: "createExtension",
+					phase: "expand",
 					up: [
 						[
 							"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`",
@@ -4202,6 +4924,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createTrigger",
+					phase: "expand",
 					up: [
 						[
 							`await sql\`CREATE OR REPLACE TRIGGER users_8659ae36_monolayer_trg
@@ -4224,6 +4947,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createTrigger",
+					phase: "expand",
 					up: [
 						[
 							`await sql\`CREATE OR REPLACE TRIGGER users_cd708de3_monolayer_trg
@@ -4298,6 +5022,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropTrigger",
+					phase: "contract",
 					up: [
 						[
 							'await sql`DROP TRIGGER users_c2304485_monolayer_trg ON "public"."users"`',
@@ -4317,6 +5042,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropTrigger",
+					phase: "contract",
 					up: [
 						[
 							'await sql`DROP TRIGGER users_9463c7cd_monolayer_trg ON "public"."users"`',
@@ -4400,6 +5126,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropTrigger",
+					phase: "contract",
 					up: [
 						[
 							'await sql`DROP TRIGGER users_c2304485_monolayer_trg ON "public"."users"`',
@@ -4413,6 +5140,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createTrigger",
+					phase: "expand",
 					up: [
 						[
 							`await sql\`CREATE OR REPLACE TRIGGER users_cd708de3_monolayer_trg
@@ -4465,6 +5193,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createColumn",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF004",
@@ -4527,6 +5256,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createColumn",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF004",
@@ -4619,6 +5349,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropColumn",
+					phase: "contract",
 					warnings: [
 						{
 							code: "D003",
@@ -4651,6 +5382,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropColumn",
+					phase: "contract",
 					warnings: [
 						{
 							code: "D003",
@@ -4712,6 +5444,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF005",
@@ -4764,6 +5497,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
+					phase: "unsafe",
 					warnings: [
 						{
 							code: "MF005",
@@ -4816,6 +5550,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await sql`ALTER TABLE "public"."users" ALTER COLUMN "count" ADD GENERATED BY DEFAULT AS IDENTITY`',
@@ -4835,6 +5570,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await sql`ALTER TABLE "public"."users" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY`',
@@ -4887,6 +5623,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await sql`ALTER TABLE "public"."users" ALTER COLUMN "count" DROP IDENTITY`',
@@ -4906,6 +5643,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await sql`ALTER TABLE "public"."users" ALTER COLUMN "id" DROP IDENTITY`',
@@ -4925,6 +5663,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -4968,6 +5707,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumn",
+					phase: "unsafe",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -5041,6 +5781,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				tableName: "users",
 				currentTableName: "users",
 				type: "createColumn",
+				phase: "unsafe",
 				warnings: [
 					{
 						code: "B003",
@@ -5080,6 +5821,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				tableName: "users",
 				currentTableName: "users",
 				type: "createColumn",
+				phase: "unsafe",
 				warnings: [
 					{
 						code: "B004",
@@ -5142,6 +5884,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createColumn",
+				phase: "unsafe",
 				warnings: [
 					{
 						code: "MF004",
@@ -5225,6 +5968,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createColumn",
+				phase: "unsafe",
 				warnings: [
 					{
 						code: "B002",
@@ -5323,6 +6067,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createColumn",
+				phase: "expand",
 				warnings: [
 					{
 						code: "B002",

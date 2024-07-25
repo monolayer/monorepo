@@ -2,6 +2,7 @@
 import type { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
+	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -179,11 +180,15 @@ function createUniqueFirstConstraintMigration(
 					tablesToRename,
 					local,
 					db,
+					addedTables,
 				),
 			);
 		} else {
 			const changeset: Changeset = {
 				priority: MigrationOpPriority.UniqueCreate,
+				phase: addedTables.includes(tableName)
+					? ChangesetPhase.Expand
+					: ChangesetPhase.Unsafe,
 				schemaName,
 				tableName: tableName,
 				currentTableName: currentTableName(
@@ -224,6 +229,9 @@ function dropUniqueLastConstraintMigration(
 			);
 			const changeset: Changeset = {
 				priority: MigrationOpPriority.UniqueConstraintDrop,
+				phase: droppedTables.includes(tableName)
+					? ChangesetPhase.Contract
+					: ChangesetPhase.Unsafe,
 				schemaName,
 				tableName: previousTableName(tableName, tablesToRename),
 				currentTableName: currentTableName(
@@ -276,10 +284,14 @@ function createUniqueConstraintMigration(
 			tablesToRename,
 			local,
 			db,
+			addedTables,
 		);
 	} else {
 		const changeset: Changeset = {
 			priority: MigrationOpPriority.UniqueCreate,
+			phase: addedTables.includes(tableName)
+				? ChangesetPhase.Expand
+				: ChangesetPhase.Unsafe,
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -295,7 +307,7 @@ function createUniqueConstraintMigration(
 
 function dropUniqueConstraintMigration(
 	diff: UuniqueDropDiff,
-	{ schemaName, tablesToRename }: GeneratorContext,
+	{ droppedTables, schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const hashValue = diff.path[2];
@@ -307,6 +319,9 @@ function dropUniqueConstraintMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.UniqueConstraintDrop,
+		phase: droppedTables.includes(tableName)
+			? ChangesetPhase.Expand
+			: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -341,6 +356,7 @@ function changeUniqueConstraintNameMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -420,6 +436,7 @@ function indexForUniqueConstraint(
 	tableName: string,
 	definition: ConstraintDefinition,
 	tablesToRename: TablesToRename,
+	addedTables: string[],
 ) {
 	const indexName = `${definition.name}_monolayer_uc_idx`;
 	const uniqueConstraintColumns = definition.columns
@@ -431,6 +448,9 @@ function indexForUniqueConstraint(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.IndexCreate,
+		phase: addedTables.includes(tableName)
+			? ChangesetPhase.Expand
+			: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -455,6 +475,7 @@ function createUniqueConstraintWithIndex(
 	tablesToRename: TablesToRename,
 	local: LocalTableInfo,
 	db: SchemaMigrationInfo,
+	addedTables: string[],
 ) {
 	const indexName = `${definition.name}_monolayer_uc_idx`;
 	const uniqueConstraintDefinition = `alter table "${schemaName}"."${tableName}" add constraint "${definition.name}" unique using index "${indexName}"`;
@@ -466,6 +487,9 @@ function createUniqueConstraintWithIndex(
 	});
 	const createConstraint: Changeset = {
 		priority: MigrationOpPriority.UniqueCreate,
+		phase: addedTables.includes(tableName)
+			? ChangesetPhase.Expand
+			: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -485,7 +509,13 @@ function createUniqueConstraintWithIndex(
 		];
 	}
 	const changeset: Changeset[] = [
-		indexForUniqueConstraint(schemaName, tableName, definition, tablesToRename),
+		indexForUniqueConstraint(
+			schemaName,
+			tableName,
+			definition,
+			tablesToRename,
+			addedTables,
+		),
 		createConstraint,
 	];
 	return changeset;

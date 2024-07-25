@@ -2,6 +2,7 @@
 import type { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
+	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -17,6 +18,7 @@ import {
 	columnInTable,
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
+	includedInRecord,
 	type ColumnExists,
 } from "../../../../../changeset/helpers.js";
 import type {
@@ -141,7 +143,14 @@ export function primaryKeyColumnsChange(
 
 function createPrimaryKeyMigration(
 	diff: PrimaryKeyCreate,
-	{ schemaName, addedTables, local, tablesToRename, db }: GeneratorContext,
+	{
+		schemaName,
+		addedTables,
+		local,
+		tablesToRename,
+		db,
+		addedColumns,
+	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(diff.value)[0] as keyof typeof diff.value;
@@ -149,17 +158,7 @@ function createPrimaryKeyMigration(
 		primaryKeyName
 	] as (typeof diff.value)[keyof typeof diff.value];
 
-	if (!addedTables.includes(tableName)) {
-		return onlinePrimaryKey(
-			schemaName,
-			tableName,
-			primaryKeyName as string,
-			primaryKeyValue,
-			tablesToRename,
-			local,
-			db,
-		);
-	} else {
+	if (addedTables.includes(tableName)) {
 		return defaultPrimaryKey(
 			schemaName,
 			tableName,
@@ -169,12 +168,29 @@ function createPrimaryKeyMigration(
 			addedTables,
 			local,
 		);
+	} else {
+		return onlinePrimaryKey(
+			schemaName,
+			tableName,
+			primaryKeyName as string,
+			primaryKeyValue,
+			tablesToRename,
+			local,
+			db,
+			addedColumns,
+		);
 	}
 }
 
 function dropPrimaryKeyMigration(
 	diff: PrimaryKeyDropDiff,
-	{ schemaName, droppedTables, local, tablesToRename }: GeneratorContext,
+	{
+		schemaName,
+		droppedTables,
+		local,
+		tablesToRename,
+		droppedColumns,
+	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const primaryKeyName = Object.keys(
@@ -184,8 +200,20 @@ function dropPrimaryKeyMigration(
 		primaryKeyName
 	] as (typeof diff.oldValue)[keyof typeof diff.oldValue];
 
+	const primaryKeyColumns = extractColumnsFromPrimaryKey(primaryKeyValue);
+
+	const allDroppedColumns = includedInRecord(
+		primaryKeyColumns,
+		droppedColumns,
+		tableName,
+	);
+
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
+		phase:
+			droppedTables.includes(tableName) || allDroppedColumns
+				? ChangesetPhase.Contract
+				: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -226,7 +254,7 @@ function dropPrimaryKeyMigration(
 
 function changePrimaryKeyMigration(
 	diff: PrimaryKeyChangeDiff,
-	{ schemaName, local, tablesToRename, db }: GeneratorContext,
+	{ schemaName, local, tablesToRename, db, addedColumns }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const primaryKeyName = diff.path[2];
@@ -239,10 +267,12 @@ function changePrimaryKeyMigration(
 		tablesToRename,
 		local,
 		db,
+		addedColumns,
 	);
 
 	const dropChangeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -320,6 +350,7 @@ function dropNotNullChangesets(
 	schemaName: string,
 	tablesToRename: TablesToRename,
 	direction: "up" | "down",
+	phase: ChangesetPhase.Unsafe | ChangesetPhase.Expand = ChangesetPhase.Unsafe,
 ) {
 	const primaryKeyColumns = extractColumnsFromPrimaryKey(primaryKeyValue);
 	const changesets: Changeset[] = [];
@@ -335,6 +366,7 @@ function dropNotNullChangesets(
 						if (tableColumn.isNullable) {
 							changesets.push({
 								priority: MigrationOpPriority.ChangeColumnNullable,
+								phase: phase,
 								schemaName,
 								tableName: tableName,
 								currentTableName: currentTableName(
@@ -357,6 +389,7 @@ function dropNotNullChangesets(
 						if (tableColumn.originalIsNullable !== tableColumn.isNullable) {
 							changesets.push({
 								priority: MigrationOpPriority.ChangeColumnNullable,
+								phase: phase,
 								schemaName,
 								tableName: tableName,
 								currentTableName: currentTableName(
@@ -380,6 +413,7 @@ function dropNotNullChangesets(
 			} else {
 				changesets.push({
 					priority: MigrationOpPriority.ChangeColumnNullable,
+					phase: phase,
 					schemaName,
 					tableName: tableName,
 					currentTableName: currentTableName(
@@ -414,6 +448,9 @@ function defaultPrimaryKey(
 ) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyCreate,
+		phase: addedTables.includes(tableName)
+			? ChangesetPhase.Expand
+			: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -458,6 +495,7 @@ function onlinePrimaryKey(
 	tablesToRename: TablesToRename,
 	local: LocalTableInfo,
 	db: SchemaMigrationInfo,
+	addedColumns: Record<string, string[]>,
 ) {
 	const indexName = `${tableName}_pkey_idx`;
 	const indexDefinition = `create unique index concurrently "${indexName}" on "${schemaName}"."${tableName}" ${primaryKeyValue}`;
@@ -475,6 +513,13 @@ function onlinePrimaryKey(
 		},
 		{} as Record<string, PrimaryKeyColumnDetails>,
 	);
+
+	const allNewColumns = includedInRecord(
+		primaryKeyColumns,
+		addedColumns,
+		tableName,
+	);
+
 	const addChecks = primaryKeyColumns.flatMap((col) => {
 		const inDb = primaryKeyColumnDetails[col];
 		if (inDb !== undefined && inDb.inDb.exists && !inDb.inDb.nullable) {
@@ -525,8 +570,11 @@ function onlinePrimaryKey(
 			columns: newColumns.map((col) => col.columnName),
 		});
 	}
+
+	const phase = allNewColumns ? ChangesetPhase.Expand : ChangesetPhase.Unsafe;
 	const indexChangeset: Changeset = {
 		priority: MigrationOpPriority.IndexCreate,
+		phase,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -543,6 +591,7 @@ function onlinePrimaryKey(
 	};
 	const primaryKeyChangeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyCreate,
+		phase,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -569,6 +618,7 @@ function onlinePrimaryKey(
 			schemaName,
 			tablesToRename,
 			"down",
+			phase,
 		),
 	];
 }

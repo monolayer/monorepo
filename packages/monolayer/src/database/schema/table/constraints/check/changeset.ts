@@ -2,6 +2,7 @@
 import type { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
+	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -109,6 +110,9 @@ function createFirstCheckMigration(
 			if (checkDefinition !== undefined) {
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.CheckCreate,
+					phase: addedTables.includes(tableName)
+						? ChangesetPhase.Expand
+						: ChangesetPhase.Unsafe,
 					schemaName,
 					tableName: tableName,
 					currentTableName: currentTableName(
@@ -153,6 +157,9 @@ function dropAllChecksMigration(
 				const checkName = `${previousTableName(tableName, tablesToRename)}_${checkHash}_monolayer_chk`;
 				const changeSet: Changeset = {
 					priority: MigrationOpPriority.CheckConstraintDrop,
+					phase: droppedTables.includes(tableName)
+						? ChangesetPhase.Contract
+						: ChangesetPhase.Unsafe,
 					tableName: previousTableName(tableName, tablesToRename),
 					currentTableName: currentTableName(
 						tableName,
@@ -199,7 +206,12 @@ function isCreateCheck(test: Difference): test is CreateCheck {
 
 function createCheckMigration(
 	diff: CreateCheck,
-	{ schemaName, columnsToRename, tablesToRename }: GeneratorContext,
+	{
+		addedTables,
+		schemaName,
+		columnsToRename,
+		tablesToRename,
+	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const checkDefinition = redefineCheck(
@@ -211,6 +223,9 @@ function createCheckMigration(
 	);
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.CheckCreate,
+		phase: addedTables.includes(tableName)
+			? ChangesetPhase.Expand
+			: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -244,7 +259,7 @@ function isDropCheck(test: Difference): test is DropCheck {
 
 function dropCheckMigration(
 	diff: DropCheck,
-	{ schemaName, tablesToRename }: GeneratorContext,
+	{ droppedTables, schemaName, tablesToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const checkHash = diff.path[2];
@@ -253,6 +268,9 @@ function dropCheckMigration(
 
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.CheckConstraintDrop,
+		phase: droppedTables.includes(tableName)
+			? ChangesetPhase.Expand
+			: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -286,6 +304,7 @@ function reshashCheckMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

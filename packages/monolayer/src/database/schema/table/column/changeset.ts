@@ -4,6 +4,7 @@ import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	Changeset,
+	ChangesetPhase,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
 import type { ChangeWarning } from "~/changeset/warnings.js";
@@ -39,13 +40,13 @@ export function columnMigrationOpGenerator(
 	}
 }
 
-type CreateColumnDiff = {
+export type CreateColumnDiff = {
 	type: "CREATE";
 	path: ["table", string, "column", string];
 	value: ColumnInfoDiff;
 };
 
-function isCreateColumn(test: Difference): test is CreateColumnDiff {
+export function isCreateColumn(test: Difference): test is CreateColumnDiff {
 	return (
 		test.type === "CREATE" &&
 		test.path.length === 4 &&
@@ -93,6 +94,7 @@ function createColumnMigration(
 	}
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnCreate,
+		phase: ChangesetPhase.Expand,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreateColumn,
@@ -173,6 +175,7 @@ function createNullableColumnMigration(
 	}
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnCreate,
+		phase: ChangesetPhase.Unsafe,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreateColumn,
@@ -184,13 +187,13 @@ function createNullableColumnMigration(
 	return changeset;
 }
 
-type DropColumnDiff = {
+export type DropColumnDiff = {
 	type: "REMOVE";
 	path: ["table", string, "columns", string];
 	oldValue: ColumnInfoDiff;
 };
 
-function isDropColumn(test: Difference): test is DropColumnDiff {
+export function isDropColumn(test: Difference): test is DropColumnDiff {
 	return (
 		test.type === "REMOVE" &&
 		test.path.length === 4 &&
@@ -224,6 +227,7 @@ function dropColumnMigration(
 	}
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnDrop,
+		phase: ChangesetPhase.Contract,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.DropColumn,

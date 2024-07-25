@@ -1,6 +1,7 @@
 import type { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
+	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -45,6 +46,7 @@ function columnNameMigrationOperation(
 	const tableName = diff.path[1];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnName,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

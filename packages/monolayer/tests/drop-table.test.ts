@@ -42,6 +42,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				priority: 1006,
 				warnings: [
 					{
@@ -71,6 +72,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "organizations",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				priority: 1006,
 				warnings: [
 					{
@@ -176,6 +178,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				priority: 1006,
 				warnings: [
 					{
@@ -229,6 +232,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				priority: 1006,
 				warnings: [
 					{
@@ -321,6 +325,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropPrimaryKey",
+				phase: "contract",
 				up: [[]],
 			},
 			{
@@ -337,6 +342,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropPrimaryKey",
+				phase: "contract",
 				up: [[]],
 			},
 			{
@@ -353,6 +359,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -383,6 +390,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -455,6 +463,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropUniqueConstraint",
+				phase: "contract",
 				up: [[]],
 				down: [
 					[
@@ -471,6 +480,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -539,6 +549,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropForeignKey",
+				phase: "contract",
 				up: [[]],
 				down: [
 					[
@@ -565,6 +576,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -595,6 +607,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropPrimaryKey",
+				phase: "contract",
 				up: [[]],
 				down: [
 					[
@@ -611,6 +624,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -676,6 +690,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "tree",
 				schemaName: "public",
 				type: "dropForeignKey",
+				phase: "contract",
 				up: [[]],
 				down: [
 					[
@@ -702,6 +717,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "tree",
 				schemaName: "public",
 				type: "dropPrimaryKey",
+				phase: "contract",
 				up: [[]],
 				down: [
 					[
@@ -718,6 +734,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "tree",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -784,6 +801,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropCheckConstraint",
+				phase: "contract",
 				down: [
 					[
 						'await sql`ALTER TABLE "public"."books" ADD CONSTRAINT "books_971041d9_monolayer_chk" CHECK ((id > 50)) NOT VALID`',
@@ -802,6 +820,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -868,6 +887,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropIndex",
+				phase: "contract",
 				up: [[]],
 				down: [
 					[
@@ -882,6 +902,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropIndex",
+				phase: "contract",
 				up: [[]],
 				down: [
 					[
@@ -896,6 +917,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -926,6 +948,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -982,6 +1005,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -1013,6 +1037,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "none",
 				schemaName: "public",
 				type: "dropEnum",
+				phase: "contract",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1093,6 +1118,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTrigger",
+				phase: "contract",
 				up: [[]],
 				down: [
 					[
@@ -1107,6 +1133,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "dropTable",
+				phase: "contract",
 				warnings: [
 					{
 						code: "D002",
@@ -1235,6 +1262,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "books",
 				schemaName: "demo",
 				type: "dropTable",
+				phase: "contract",
 				priority: 1006,
 				warnings: [
 					{
@@ -1288,6 +1316,7 @@ describe("Table drop migrations", () => {
 				currentTableName: "users",
 				schemaName: "demo",
 				type: "dropTable",
+				phase: "contract",
 				priority: 1006,
 				warnings: [
 					{

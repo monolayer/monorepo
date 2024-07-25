@@ -20,10 +20,12 @@ import { logMigrationResultStatus } from "./apply.js";
 import {
 	collectResults,
 	extractMigrationOps,
-	isolateChangesets,
+	isolateTransactionlessChangesets,
 	migrationInfoToMonolayerMigrationInfo,
 	migrationPlan,
-	type Migration,
+	migrationPlanTwo,
+	splitChangesetsByPhase,
+	type MigrationPhase,
 	type MonolayerMigrationInfo,
 } from "./migration.js";
 import {
@@ -36,7 +38,7 @@ import {
 import { renderToFile } from "./render.js";
 
 export class PhasedMigrator implements MigratorInterface {
-	protected readonly breakingInstance: MonolayerMigrator;
+	protected readonly unsafeInstance: MonolayerMigrator;
 	protected readonly expandInstance: MonolayerMigrator;
 	protected readonly contractInstance: MonolayerMigrator;
 	protected readonly folder: string;
@@ -45,7 +47,7 @@ export class PhasedMigrator implements MigratorInterface {
 		client: Kysely<any>,
 		folder: string,
 	) {
-		this.breakingInstance = makeMigrator(client, folder, "breaking");
+		this.unsafeInstance = makeMigrator(client, folder, "unsafe");
 		this.expandInstance = makeMigrator(client, folder, "expand");
 		this.contractInstance = makeMigrator(client, folder, "contract");
 		this.folder = folder;
@@ -54,12 +56,23 @@ export class PhasedMigrator implements MigratorInterface {
 	get migrationStats() {
 		return Effect.gen(this, function* () {
 			const folder = this.folder;
-			mkdirSync(folder, { recursive: true });
-			const all = yield* migrationInfoToMonolayerMigrationInfo(
-				path.join(folder, "breaking"),
-				yield* this.#allMigrations(),
-			);
-
+			mkdirSync(path.join(folder, "unsafe"), { recursive: true });
+			mkdirSync(path.join(folder, "expand"), { recursive: true });
+			mkdirSync(path.join(folder, "contract"), { recursive: true });
+			const all = [
+				...(yield* migrationInfoToMonolayerMigrationInfo(
+					path.join(folder, "expand"),
+					yield* this.#allExpandMigrations(),
+				)),
+				...(yield* migrationInfoToMonolayerMigrationInfo(
+					path.join(folder, "unsafe"),
+					yield* this.#allUnsafeMigrations(),
+				)),
+				...(yield* migrationInfoToMonolayerMigrationInfo(
+					path.join(folder, "contract"),
+					yield* this.#allContractMigrations(),
+				)),
+			];
 			const pending = all.filter((m) => m.executedAt === undefined);
 			return {
 				all,
@@ -75,22 +88,6 @@ export class PhasedMigrator implements MigratorInterface {
 		});
 	}
 
-	#allMigrations() {
-		return Effect.gen(this, function* () {
-			return [
-				...(yield* Effect.tryPromise(() =>
-					this.expandInstance.getMigrations(),
-				)),
-				...(yield* Effect.tryPromise(() =>
-					this.breakingInstance.getMigrations(),
-				)),
-				...(yield* Effect.tryPromise(() =>
-					this.contractInstance.getMigrations(),
-				)),
-			];
-		});
-	}
-
 	get currentDependency() {
 		return Effect.gen(this, function* () {
 			const migrations = yield* this.migrationStats;
@@ -101,54 +98,54 @@ export class PhasedMigrator implements MigratorInterface {
 	migrateToLatest(printWarnings = false) {
 		return Effect.gen(this, function* () {
 			let results: MigrationResultSet[] = [];
-			const stats = yield* this.migrationStats;
-			const pendingMigrations = stats.pending;
-			if (printWarnings === true) {
-				printWarnigns(
-					pendingMigrations
-						.flatMap((c) => c.warnings)
-						.filter((c): c is ChangeWarning => c !== undefined),
-				);
-			}
-			const plan = migrationPlan(pendingMigrations);
-			if (plan.length === 0) {
-				return { results: [] };
-			}
+			const stats = yield* this.migrationStatsByPhase;
+			const pending = [
+				...stats.expand.pending.map((stat) => ({
+					...stat,
+					phase: "expand" as const,
+				})),
+				...stats.unsafe.pending.map((stat) => ({
+					...stat,
+					phase: "unsafe" as const,
+				})),
+				...stats.contract.pending.map((stat) => ({
+					...stat,
+					phase: "contract" as const,
+				})),
+			];
 
-			const migratedSteps: {
-				steps: number;
-				migrations: Migration[];
-				transaction: boolean;
-			}[] = [];
+			if (printWarnings === true) this.#printWarnings(pending);
 
-			for (const phase of plan) {
-				this.breakingInstance.migrateWithTransaction = phase.transaction;
-
-				const migrationResult = yield* Effect.tryPromise(() =>
-					this.breakingInstance.migrate(() => ({
-						direction: "Up",
-						step: phase.steps,
+			const migratedSteps: MigrationPhase[] = [];
+			for (const planPhase of [
+				...migrationPlanTwo(
+					stats.expand.pending.map((stat) => ({
+						...stat,
+						phase: "expand" as const,
 					})),
-				);
+				),
+				...migrationPlanTwo(
+					stats.unsafe.pending.map((stat) => ({
+						...stat,
+						phase: "unsafe" as const,
+					})),
+				),
+				...migrationPlanTwo(
+					stats.contract.pending.map((stat) => ({
+						...stat,
+						phase: "contract" as const,
+					})),
+				),
+			]) {
+				// for (const planPhase of migrationPlanTwo(pending)) {
+				const migrationResult = yield* this.#migratePhase(planPhase, "Up");
 				results = [...results, migrationResult];
 
 				if (migrationResult.error !== undefined) {
-					const rollbackSteps =
-						phase.transaction === true
-							? [...migratedSteps].reverse()
-							: [...migratedSteps, phase].reverse();
-
-					for (const rollbackPhase of rollbackSteps) {
-						yield* Effect.tryPromise(() =>
-							this.breakingInstance.migrate(() => ({
-								direction: "Down",
-								step: rollbackPhase.steps,
-							})),
-						);
-					}
+					yield* this.#rollbackPeformedMigrations(planPhase, migratedSteps);
 					break;
 				}
-				migratedSteps.push(phase);
+				migratedSteps.push(planPhase);
 			}
 
 			const totalMigrations = results.reduce(
@@ -156,8 +153,7 @@ export class PhasedMigrator implements MigratorInterface {
 				0,
 			);
 
-			const pending = pendingMigrations.slice(totalMigrations);
-			const notExecuted = pending.map(
+			const notExecuted = pending.slice(totalMigrations).map(
 				(m) =>
 					({
 						migrationName: m.name!,
@@ -171,17 +167,152 @@ export class PhasedMigrator implements MigratorInterface {
 				},
 			];
 			results = [...results, ...resultSet];
+
 			return collectResults(results);
 		});
 	}
-	public expand = this.migrateToLatest();
-	public contract = this.migrateToLatest();
+
+	#printWarnings(pendingMigrations: MonolayerMigrationInfo[]) {
+		printWarnigns(
+			pendingMigrations
+				.flatMap((c) => c.warnings)
+				.filter((c): c is ChangeWarning => c !== undefined),
+		);
+	}
+
+	#migratorForPhase(phase: "unsafe" | "expand" | "contract") {
+		switch (phase) {
+			case "unsafe":
+				return this.unsafeInstance;
+			case "expand":
+				return this.expandInstance;
+			case "contract":
+				return this.contractInstance;
+		}
+	}
+
+	#migratePhase(phase: MigrationPhase, direction: "Up" | "Down") {
+		return Effect.gen(this, function* () {
+			const migrator = this.#migratorForPhase(phase.phase);
+			migrator.migrateWithTransaction = phase.transaction;
+			return yield* Effect.tryPromise(() =>
+				migrator.migrate(() => ({
+					direction: direction,
+					step: phase.steps,
+				})),
+			);
+		});
+	}
+
+	#rollbackPeformedMigrations(
+		currentPhase: MigrationPhase,
+		performedPhases: MigrationPhase[],
+	) {
+		return Effect.gen(this, function* () {
+			const rollbackPhases =
+				currentPhase.transaction === true
+					? [...performedPhases].reverse()
+					: [...performedPhases, currentPhase].reverse();
+
+			for (const phase of rollbackPhases) {
+				yield* this.#migratePhase(phase, "Down");
+			}
+		});
+	}
+
+	get migrationStatsByPhase() {
+		return Effect.gen(this, function* () {
+			const folder = this.folder;
+			mkdirSync(path.join(folder, "unsafe"), { recursive: true });
+			mkdirSync(path.join(folder, "expand"), { recursive: true });
+			mkdirSync(path.join(folder, "contract"), { recursive: true });
+			const all = {
+				expand: yield* migrationInfoToMonolayerMigrationInfo(
+					path.join(folder, "expand"),
+					yield* this.#allExpandMigrations(),
+				),
+				unsafe: yield* migrationInfoToMonolayerMigrationInfo(
+					path.join(folder, "unsafe"),
+					yield* this.#allUnsafeMigrations(),
+				),
+				contract: yield* migrationInfoToMonolayerMigrationInfo(
+					path.join(folder, "contract"),
+					yield* this.#allContractMigrations(),
+				),
+			};
+			return {
+				expand: {
+					all: all.expand,
+					executed: all.expand.filter((m) => m.executedAt !== undefined),
+					pending: all.expand.filter((m) => m.executedAt === undefined),
+					localPending: all.expand
+						.filter((m) => m.executedAt === undefined)
+						.map((info) => {
+							return {
+								name: info.name,
+								path: path.join(this.folder, "expand", `${info.name}.ts`),
+							};
+						}),
+				},
+				unsafe: {
+					all: all.unsafe,
+					executed: all.unsafe.filter((m) => m.executedAt !== undefined),
+					pending: all.unsafe.filter((m) => m.executedAt === undefined),
+					localPending: all.unsafe
+						.filter((m) => m.executedAt === undefined)
+						.map((info) => {
+							return {
+								name: info.name,
+								path: path.join(this.folder, "unsafe", `${info.name}.ts`),
+							};
+						}),
+				},
+				contract: {
+					all: all.contract,
+					executed: all.contract.filter((m) => m.executedAt !== undefined),
+					pending: all.contract.filter((m) => m.executedAt === undefined),
+					localPending: all.contract
+						.filter((m) => m.executedAt === undefined)
+						.map((info) => {
+							return {
+								name: info.name,
+								path: path.join(this.folder, "contract", `${info.name}.ts`),
+							};
+						}),
+				},
+			};
+		});
+	}
+
+	#allExpandMigrations() {
+		return Effect.tryPromise(() => this.expandInstance.getMigrations());
+	}
+
+	#allUnsafeMigrations() {
+		return Effect.tryPromise(() => this.unsafeInstance.getMigrations());
+	}
+
+	#allContractMigrations() {
+		return Effect.tryPromise(() => this.contractInstance.getMigrations());
+	}
 
 	get rollbackAll() {
 		return Effect.gen(this, function* () {
-			return yield* Effect.tryPromise(() =>
-				this.breakingInstance.migrateTo(NO_MIGRATIONS),
+			const contractRollback = yield* Effect.tryPromise(() =>
+				this.contractInstance.migrateTo(NO_MIGRATIONS),
 			);
+			const unsafeRollback = yield* Effect.tryPromise(() =>
+				this.unsafeInstance.migrateTo(NO_MIGRATIONS),
+			);
+			const expandRollBack = yield* Effect.tryPromise(() =>
+				this.expandInstance.migrateTo(NO_MIGRATIONS),
+			);
+			const result = collectResults([
+				contractRollback,
+				unsafeRollback,
+				expandRollBack,
+			]);
+			return result;
 		});
 	}
 
@@ -192,9 +323,9 @@ export class PhasedMigrator implements MigratorInterface {
 		return Effect.gen(this, function* () {
 			const groups = migrationPlan(migrations, target).reverse();
 			for (const phase of groups) {
-				this.breakingInstance.migrateWithTransaction = phase.transaction;
+				this.unsafeInstance.migrateWithTransaction = phase.transaction;
 				const migrate = Effect.tryPromise(() =>
-					this.breakingInstance.migrate(() => ({
+					this.unsafeInstance.migrate(() => ({
 						direction: "Down",
 						step: phase.steps,
 					})),
@@ -228,7 +359,7 @@ export class PhasedMigrator implements MigratorInterface {
 				this,
 				changesets,
 				migrationName,
-				path.join(this.folder, "breaking"),
+				this.folder,
 			);
 		});
 	}
@@ -243,56 +374,83 @@ class PhasedMigratorRenderer {
 		migrationName: string,
 		folder: string,
 	) {
-		return Effect.gen(function* () {
+		return Effect.gen(this, function* () {
 			const stats = yield* migrator.migrationStats;
 			const migrations = stats.all;
 			const dependency =
 				migrations.map((m) => m.name).slice(-1)[0] ?? "NO_DEPENDENCY";
-			const isolatedChangesets = isolateChangesets(changesets);
+			const byPhase = splitChangesetsByPhase(changesets);
 			const renderedMigrations: string[] = [];
 			let previousMigrationName: string = "";
-			const multipleMigrations = isolatedChangesets.length > 1;
-			for (const [idx, isolatedChangeset] of isolatedChangesets.entries()) {
-				const ops = yield* extractMigrationOps(isolatedChangeset);
-				const numberedName = multipleMigrations
-					? `${migrationName}-${idx + 1}`
-					: migrationName;
-				const changesetWarnings = isolatedChangeset.flatMap(
-					(m) => m.warnings ?? [],
-				);
-				const warnings =
-					changesetWarnings.length === 0
-						? "[],"
-						: JSON.stringify(changesetWarnings, undefined, 2)
-								.replace(/("(.+)"):/g, "$2:")
-								.split("\n")
-								.map((l, idx) =>
-									idx == 0
-										? l
-										: l.includes("{")
-											? `  ${l}`
-											: `  ${l.replace(/,/, "")},`,
-								)
-								.join("\n");
-				previousMigrationName = renderToFile(
-					ops,
-					folder,
-					numberedName,
-					previousMigrationName === "" ? dependency : previousMigrationName,
-					isolatedChangeset.some((m) => (m.transaction ?? true) === false)
-						? false
-						: true,
-					warnings,
-				);
-				renderedMigrations.push(
-					path.relative(
-						cwd(),
-						path.join(folder, `${previousMigrationName}.ts`),
-					),
-				);
+			const isolatedExpand = isolateTransactionlessChangesets(
+				byPhase["expand"],
+			);
+			const isolatedUnsafe = isolateTransactionlessChangesets(
+				byPhase["unsafe"],
+			);
+			const isolatedContract = isolateTransactionlessChangesets(
+				byPhase["contract"],
+			);
+			const multipleMigrations =
+				isolatedExpand.length +
+					isolatedUnsafe.length +
+					isolatedContract.length >
+				1;
+			let idx = 0;
+
+			const isolatedChangesets: [string, Changeset[][]][] = [
+				["expand", isolateTransactionlessChangesets(byPhase["expand"])],
+				["unsafe", isolateTransactionlessChangesets(byPhase["unsafe"])],
+				["contract", isolateTransactionlessChangesets(byPhase["contract"])],
+			];
+
+			for (const [phase, phaseIsolatedChangeset] of isolatedChangesets) {
+				for (const isolatedChangeset of phaseIsolatedChangeset) {
+					if (isolatedChangeset.length === 0) continue;
+					const ops = yield* extractMigrationOps(isolatedChangeset);
+					const numberedName = multipleMigrations
+						? `${migrationName}-${idx + 1}`
+						: migrationName;
+					previousMigrationName = renderToFile(
+						ops,
+						path.join(folder, phase),
+						numberedName,
+						previousMigrationName === "" ? dependency : previousMigrationName,
+						isolatedChangeset.some((m) => (m.transaction ?? true) === false)
+							? false
+							: true,
+						this.#changesetWarnings(isolatedChangeset),
+					);
+					renderedMigrations.push(
+						path.relative(
+							cwd(),
+							path.join(folder, phase, `${previousMigrationName}.ts`),
+						),
+					);
+					idx += 1;
+				}
 			}
 			return renderedMigrations;
 		});
+	}
+
+	#changesetWarnings(changeset: Changeset[]) {
+		const changesetWarnings = changeset.flatMap((m) => m.warnings ?? []);
+		const warnings =
+			changesetWarnings.length === 0
+				? "[],"
+				: JSON.stringify(changesetWarnings, undefined, 2)
+						.replace(/("(.+)"):/g, "$2:")
+						.split("\n")
+						.map((l, idx) =>
+							idx == 0
+								? l
+								: l.includes("{")
+									? `  ${l}`
+									: `  ${l.replace(/,/, "")},`,
+						)
+						.join("\n");
+		return warnings;
 	}
 }
 

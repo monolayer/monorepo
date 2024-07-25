@@ -125,6 +125,7 @@ describe("Schema", () => {
 					currentTableName: "none",
 					schemaName: "demo",
 					type: "createSchema",
+					phase: "expand",
 					up: [
 						['await sql`CREATE SCHEMA IF NOT EXISTS "demo";`', "execute(db);"],
 						[
@@ -139,6 +140,7 @@ describe("Schema", () => {
 					currentTableName: "users",
 					schemaName: "demo",
 					type: "createTable",
+					phase: "expand",
 					priority: 2001,
 					up: [
 						[
@@ -204,6 +206,7 @@ describe("Schema", () => {
 					currentTableName: "books",
 					schemaName: "demo",
 					type: "createTable",
+					phase: "expand",
 					priority: 2001,
 					up: [
 						[
@@ -313,6 +316,7 @@ describe("Schema", () => {
 					tableName: "none",
 					currentTableName: "none",
 					type: "createSchema",
+					phase: "expand",
 					up: [
 						[
 							'await sql`CREATE SCHEMA IF NOT EXISTS "permission";`',
@@ -333,6 +337,7 @@ describe("Schema", () => {
 					tableName: "user_permissions",
 					currentTableName: "user_permissions",
 					type: "createTable",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("permission").schema',
@@ -355,6 +360,7 @@ describe("Schema", () => {
 					tableName: "user_permissions",
 					currentTableName: "user_permissions",
 					type: "createPrimaryKey",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("permission").schema',
@@ -371,6 +377,7 @@ describe("Schema", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createTable",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -394,6 +401,7 @@ describe("Schema", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createForeignKey",
+					phase: "expand",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -439,6 +447,7 @@ describe("Schema", () => {
 					tableName: "none",
 					currentTableName: "none",
 					type: "dropSchema",
+					phase: "contract",
 					warnings: [
 						{
 							code: "D001",
@@ -493,6 +502,7 @@ describe("Schema", () => {
 					schemaName: "db_schema",
 					tableName: "none",
 					type: "createSchema",
+					phase: "expand",
 					up: [
 						[
 							'await sql`CREATE SCHEMA IF NOT EXISTS "db_schema";`',
@@ -517,6 +527,7 @@ describe("Schema", () => {
 					schemaName: "db_schema",
 					tableName: "new_users",
 					type: "createTable",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("db_schema").schema',
@@ -587,6 +598,7 @@ describe("Schema", () => {
 					tableName: "none",
 					currentTableName: "none",
 					type: "createSchema",
+					phase: "expand",
 					up: [
 						[
 							'await sql`CREATE SCHEMA IF NOT EXISTS "permission_schema";`',
@@ -610,6 +622,7 @@ describe("Schema", () => {
 					tableName: "user_permissions",
 					currentTableName: "user_permissions",
 					type: "createTable",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("permission_schema").schema',
@@ -632,6 +645,7 @@ describe("Schema", () => {
 					tableName: "user_permissions",
 					currentTableName: "user_permissions",
 					type: "createPrimaryKey",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("permission_schema").schema',
@@ -648,6 +662,7 @@ describe("Schema", () => {
 					tableName: "new_users",
 					currentTableName: "new_users",
 					type: "createTable",
+					phase: "expand",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -671,6 +686,7 @@ describe("Schema", () => {
 					tableName: "new_users",
 					currentTableName: "new_users",
 					type: "createForeignKey",
+					phase: "expand",
 					up: [
 						[
 							`await sql\`\${sql.raw(

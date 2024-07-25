@@ -3,6 +3,7 @@ import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	Changeset,
+	ChangesetPhase,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
 import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
@@ -48,6 +49,7 @@ function columnNullableMigrationOperation(
 	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnNullable,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

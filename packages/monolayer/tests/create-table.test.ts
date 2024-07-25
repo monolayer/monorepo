@@ -79,6 +79,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				priority: 2001,
 				up: [
 					[
@@ -100,6 +101,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				priority: 2001,
 				up: [
 					[
@@ -195,6 +197,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				priority: 2001,
 				up: [
 					[
@@ -256,6 +259,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				priority: 2001,
 				up: [
 					[
@@ -362,6 +366,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				priority: 2001,
 				up: [
 					[
@@ -433,6 +438,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				priority: 2001,
 				up: [
 					[
@@ -455,6 +461,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				priority: 2001,
 				up: [
 					[
@@ -479,6 +486,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -495,6 +503,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -543,6 +552,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				priority: 2001,
 				up: [
 					[
@@ -566,6 +576,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				priority: 2001,
 				up: [
 					[
@@ -590,6 +601,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -606,6 +618,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -659,6 +672,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -681,6 +695,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -704,6 +719,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createUniqueConstraint",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -720,6 +736,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createUniqueConstraint",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -767,6 +784,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -789,6 +807,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createUniqueConstraint",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -805,6 +824,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createCheckConstraint",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -829,6 +849,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createCheckConstraint",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -903,6 +924,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -926,6 +948,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -942,6 +965,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -958,6 +982,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createForeignKey",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1012,6 +1037,7 @@ describe("Create table", () => {
 				currentTableName: "tree",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1036,6 +1062,7 @@ describe("Create table", () => {
 				currentTableName: "tree",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1052,6 +1079,7 @@ describe("Create table", () => {
 				currentTableName: "tree",
 				schemaName: "public",
 				type: "createForeignKey",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1117,6 +1145,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1139,6 +1168,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1155,6 +1185,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createIndex",
+				phase: "expand",
 				up: [
 					[
 						'await sql`create index "users_e42f0227_monolayer_idx" on "public"."users" ("name")`',
@@ -1169,6 +1200,7 @@ describe("Create table", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createIndex",
+				phase: "expand",
 				up: [
 					[
 						'await sql`create unique index "books_e8f5ecda_monolayer_idx" on "public"."books" ("id")`',
@@ -1212,6 +1244,7 @@ describe("Create table", () => {
 				currentTableName: "none",
 				schemaName: "public",
 				type: "createEnum",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1238,6 +1271,7 @@ describe("Create table", () => {
 				currentTableName: "none",
 				schemaName: "public",
 				type: "createEnum",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1264,6 +1298,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1335,6 +1370,7 @@ describe("Create table", () => {
 				currentTableName: "none",
 				schemaName: null,
 				type: "createExtension",
+				phase: "expand",
 				up: [
 					[
 						"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`",
@@ -1351,6 +1387,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1383,6 +1420,7 @@ describe("Create table", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTrigger",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`CREATE OR REPLACE TRIGGER users_8659ae36_monolayer_trg
@@ -1400,6 +1438,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTrigger",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`CREATE OR REPLACE TRIGGER users_7d730e02_monolayer_trg
@@ -1512,6 +1551,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "none",
 				schemaName: null,
 				type: "createExtension",
+				phase: "expand",
 				up: [
 					[
 						"await sql`CREATE EXTENSION IF NOT EXISTS moddatetime;`",
@@ -1528,6 +1568,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "none",
 				schemaName: "public",
 				type: "createEnum",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1561,6 +1602,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1578,6 +1620,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "trigger_table",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1612,6 +1655,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "library_building",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1627,6 +1671,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1657,6 +1702,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createTable",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1673,6 +1719,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createIndex",
+				phase: "expand",
 				up: [
 					[
 						'await sql`create index "users_82175e31_monolayer_idx" on "public"."users" ("full_name")`',
@@ -1687,6 +1734,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createIndex",
+				phase: "expand",
 				up: [
 					[
 						'await sql`create unique index "books_e8f5ecda_monolayer_idx" on "public"."books" ("id")`',
@@ -1701,6 +1749,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createIndex",
+				phase: "expand",
 				up: [
 					[
 						'await sql`create unique index "new_books_e8f5ecda_monolayer_idx" on "public"."new_books" ("id")`',
@@ -1715,6 +1764,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "library_building",
 				schemaName: "public",
 				type: "createIndex",
+				phase: "expand",
 				up: [
 					[
 						'await sql`create unique index "library_building_e8f5ecda_monolayer_idx" on "public"."library_building" ("id")`',
@@ -1728,6 +1778,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 				currentTableName: "trigger_table",
 				schemaName: "public",
 				type: "createTrigger",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`CREATE OR REPLACE TRIGGER trigger_table_dd1e7d9a_monolayer_trg
@@ -1745,6 +1796,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createCheckConstraint",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1769,6 +1821,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createCheckConstraint",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1794,6 +1847,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 				currentTableName: "books",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1810,6 +1864,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1826,6 +1881,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 				currentTableName: "library_building",
 				schemaName: "public",
 				type: "createPrimaryKey",
+				phase: "expand",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -1841,6 +1897,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createForeignKey",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1867,6 +1924,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createForeignKey",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -1893,6 +1951,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "createForeignKey",
+				phase: "expand",
 				up: [
 					[
 						`await sql\`\${sql.raw(

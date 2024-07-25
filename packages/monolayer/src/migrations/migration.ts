@@ -167,7 +167,7 @@ function reverseChangeset(changesets: Changeset[]) {
 		return 1 - 1;
 	});
 }
-export function isolateChangesets(changesets: Changeset[]) {
+export function isolateTransactionlessChangesets(changesets: Changeset[]) {
 	return changesets.reduce<Changeset[][]>((acc, changeset) => {
 		const lastGroup = acc.slice(-1)[0];
 		if (lastGroup === undefined) {
@@ -186,8 +186,31 @@ export function isolateChangesets(changesets: Changeset[]) {
 		return acc;
 	}, []);
 }
+
 function isolateMigrations(migrations: readonly MonolayerMigrationInfo[]) {
 	const groups = migrations.reduce<MonolayerMigrationInfo[][]>(
+		(acc, migrationInfo) => {
+			const lastGroup = acc.slice(-1)[0];
+			if (
+				lastGroup === undefined ||
+				migrationInfo.transaction ||
+				lastGroup.some((m) => (m.transaction ?? false) === true)
+			) {
+				acc.push([migrationInfo]);
+			} else {
+				lastGroup.push(migrationInfo);
+			}
+			return acc;
+		},
+		[],
+	);
+	return groups;
+}
+
+function isolateMigrations2(
+	migrations: readonly MonolayerMigrationInfoWithPhase[],
+) {
+	const groups = migrations.reduce<MonolayerMigrationInfoWithPhase[][]>(
 		(acc, migrationInfo) => {
 			const lastGroup = acc.slice(-1)[0];
 			if (
@@ -219,14 +242,42 @@ export function migrationPlan(
 		};
 	});
 }
+
+export interface MonolayerMigrationInfoWithPhase
+	extends MonolayerMigrationInfo {
+	phase: "unsafe" | "expand" | "contract";
+}
+
+export interface MigrationPhase {
+	steps: number;
+	migrations: MonolayerMigrationInfoWithPhase[];
+	transaction: boolean;
+	phase: "unsafe" | "expand" | "contract";
+}
+
+export function migrationPlanTwo(
+	migrations: MonolayerMigrationInfoWithPhase[],
+	target?: string | NoMigrations,
+) {
+	return isolateMigrations2(migrations).flatMap((group, idx) => {
+		if (group.length === 0) return [];
+		return {
+			steps: idx === 0 && typeof target === "object" ? Infinity : group.length,
+			migrations: group,
+			transaction: group.some((m) => m.transaction ?? false),
+			phase: group[0]!.phase,
+		} satisfies MigrationPhase;
+	});
+}
+
 export function collectResults(results: MigrationResultSet[]) {
-	return results.reduce<{ error?: unknown; results?: MigrationResult[] }>(
+	return results.reduce<{ error?: unknown; results: MigrationResult[] }>(
 		(acc, resultSet) => {
 			if (resultSet.error !== undefined) acc.error = resultSet.error;
 			acc.results = [...(acc.results ?? []), ...(resultSet.results ?? [])];
 			return acc;
 		},
-		{},
+		{ results: [] },
 	);
 }
 function readMigration(folder: string, name: string) {
@@ -262,4 +313,18 @@ export function migrationInfoToMonolayerMigrationInfo(
 		}
 		return monolayerMigrationInfo;
 	});
+}
+
+export function splitChangesetsByPhase(changesets: Changeset[]) {
+	return changesets.reduce(
+		(acc, changeset) => {
+			acc[changeset.phase].push(changeset);
+			return acc;
+		},
+		{
+			unsafe: [] as Changeset[],
+			expand: [] as Changeset[],
+			contract: [] as Changeset[],
+		},
+	);
 }

@@ -44,6 +44,7 @@ export type Changeset = {
 	schemaName: string | null;
 	transaction?: boolean;
 	warnings?: Array<ChangeWarning>;
+	phase: ChangesetPhase;
 };
 
 export enum MigrationOpPriority {
@@ -92,4 +93,10 @@ export enum MigrationOpPriority {
 	DropEnum = 6003,
 	DropExtension = 6004,
 	DropSchema = 6005,
+}
+
+export enum ChangesetPhase {
+	Unsafe = "unsafe",
+	Expand = "expand",
+	Contract = "contract",
 }

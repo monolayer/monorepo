@@ -3,6 +3,7 @@ import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	Changeset,
+	ChangesetPhase,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
 import { currentTableName } from "~/introspection/table-name.js";
@@ -69,6 +70,7 @@ function columnIdentityAddMigrationOperation(
 	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnIdentityAdd,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -102,6 +104,7 @@ function columnIdentityDropMigrationOperation(
 	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnIdentityDrop,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

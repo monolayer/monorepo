@@ -2,6 +2,7 @@ import type { Difference } from "microdiff";
 import { executeKyselyDbStatement } from "~/changeset/helpers.js";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
+	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
 	type Changeset,
@@ -56,6 +57,7 @@ function createSchemaMigration(diff: CreateSchemaDiff) {
 	const schemaName = diff.path[1];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.CreateSchema,
+		phase: ChangesetPhase.Expand,
 		tableName: "none",
 		currentTableName: "none",
 		schemaName,
@@ -75,6 +77,7 @@ export function dropSchemaMigration(diff: DropSchemaDiff) {
 	const schemaName = diff.path[1];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.DropSchema,
+		phase: ChangesetPhase.Contract,
 		tableName: "none",
 		currentTableName: "none",
 		schemaName,

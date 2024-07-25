@@ -3,6 +3,7 @@ import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
 	Changeset,
+	ChangesetPhase,
 	MigrationOpPriority,
 } from "~/changeset/types.js";
 import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
@@ -104,6 +105,7 @@ function columnDefaultAddMigrationOperation(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultAdd,
+		phase: ChangesetPhase.Unsafe,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumn,
@@ -140,6 +142,7 @@ function columnDefaultDropMigrationOperation(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultDrop,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -219,6 +222,7 @@ function columnDefaultChangeMigrationOperation(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultChange,
+		phase: ChangesetPhase.Unsafe,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumn,

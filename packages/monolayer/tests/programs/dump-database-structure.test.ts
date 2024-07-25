@@ -42,7 +42,7 @@ describe("dumpDatabaseStructure", () => {
 		);
 
 		const result = await context.kysely
-			.selectFrom("monolayer_breaking_migration")
+			.selectFrom("monolayer_unsafe_migration")
 			.select("timestamp")
 			.orderBy("timestamp")
 			.executeTakeFirst();
@@ -86,20 +86,20 @@ SET default_tablespace = '';
 SET default_table_access_method = "heap";
 
 --
--- Name: monolayer_breaking_migration; Type: TABLE; Schema: public; Owner: -
+-- Name: monolayer_unsafe_migration; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE "public"."monolayer_breaking_migration" (
+CREATE TABLE "public"."monolayer_unsafe_migration" (
     "name" character varying(255) NOT NULL,
     "timestamp" character varying(255) NOT NULL
 );
 
 
 --
--- Name: monolayer_breaking_migration_lock; Type: TABLE; Schema: public; Owner: -
+-- Name: monolayer_unsafe_migration_lock; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE "public"."monolayer_breaking_migration_lock" (
+CREATE TABLE "public"."monolayer_unsafe_migration_lock" (
     "id" character varying(255) NOT NULL,
     "is_locked" integer DEFAULT 0 NOT NULL
 );
@@ -115,24 +115,24 @@ CREATE TABLE "public"."regulus_mint" (
 
 
 --
--- Name: monolayer_breaking_migration_lock monolayer_breaking_migration_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: monolayer_unsafe_migration_lock monolayer_unsafe_migration_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY "public"."monolayer_breaking_migration_lock"
-    ADD CONSTRAINT "monolayer_breaking_migration_lock_pkey" PRIMARY KEY ("id");
+ALTER TABLE ONLY "public"."monolayer_unsafe_migration_lock"
+    ADD CONSTRAINT "monolayer_unsafe_migration_lock_pkey" PRIMARY KEY ("id");
 
 
 --
--- Name: monolayer_breaking_migration monolayer_breaking_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: monolayer_unsafe_migration monolayer_unsafe_migration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY "public"."monolayer_breaking_migration"
-    ADD CONSTRAINT "monolayer_breaking_migration_pkey" PRIMARY KEY ("name");
+ALTER TABLE ONLY "public"."monolayer_unsafe_migration"
+    ADD CONSTRAINT "monolayer_unsafe_migration_pkey" PRIMARY KEY ("name");
 
 
 --
 -- PostgreSQL database dump complete
 --
 
-INSERT INTO "public"."monolayer_breaking_migration" VALUES ('20240405T120024-regulus-mint', '{{ timestamp }}');
-INSERT INTO "public"."monolayer_breaking_migration_lock" VALUES ('migration_lock', 0);`);
+INSERT INTO "public"."monolayer_unsafe_migration" VALUES ('20240405T120024-regulus-mint', '{{ timestamp }}');
+INSERT INTO "public"."monolayer_unsafe_migration_lock" VALUES ('migration_lock', 0);`);

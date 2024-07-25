@@ -6,6 +6,7 @@ import {
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
+	ChangesetPhase,
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
@@ -36,6 +37,7 @@ function createEnumMigration(
 		.join(", ");
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.CreateEnum,
+		phase: ChangesetPhase.Expand,
 		schemaName,
 		tableName: "none",
 		currentTableName: "none",
@@ -66,6 +68,7 @@ function dropEnumMigration(
 		.join(", ");
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.DropEnum,
+		phase: ChangesetPhase.Contract,
 		schemaName,
 		tableName: "none",
 		currentTableName: "none",
@@ -106,6 +109,7 @@ function changeEnumMigration(
 
 	const changeSet: Changeset = {
 		priority: MigrationOpPriority.ChangeEnum,
+		phase: ChangesetPhase.Expand,
 		schemaName,
 		tableName: "none",
 		currentTableName: "none",

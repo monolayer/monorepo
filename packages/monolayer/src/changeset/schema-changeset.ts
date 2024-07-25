@@ -10,9 +10,11 @@ import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
 import {
 	isCreateTable,
 	isDropTable,
-	type CreateTableDiff,
-	type DropTableTableDiff,
 } from "../database/schema/table/changeset.js";
+import {
+	isCreateColumn,
+	isDropColumn,
+} from "../database/schema/table/column/changeset.js";
 import { migrationOpGenerators } from "./generators.js";
 import { toSnakeCase } from "./helpers.js";
 import { Changeset } from "./types.js";
@@ -34,6 +36,8 @@ export interface GeneratorContext {
 	tablesToRename: TablesToRename;
 	columnsToRename: ColumnsToRename;
 	typeAlignments: TypeAlignment[];
+	addedColumns: Record<string, string[]>;
+	droppedColumns: Record<string, string[]>;
 }
 
 export function schemaChangeset(
@@ -42,27 +46,30 @@ export function schemaChangeset(
 	typeAlignments: TypeAlignment[],
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
-	const { diff, addedTables, droppedTables } = changesetDiff(
-		{
-			...introspection.local,
-			tablePriorities: [],
-		},
-		{
-			...introspection.remote,
-			tablePriorities: [],
-		},
-	);
+	const { diff, addedTables, droppedTables, addedColumns, droppedColumns } =
+		changesetDiff(
+			{
+				...introspection.local,
+				tablePriorities: [],
+			},
+			{
+				...introspection.remote,
+				tablePriorities: [],
+			},
+		);
 
 	const context: GeneratorContext = {
 		local: introspection.local,
 		db: introspection.remote,
-		addedTables: addedTables,
-		droppedTables: droppedTables,
+		addedTables,
+		droppedTables,
 		schemaName: toSnakeCase(introspection.schemaName, camelCaseOptions),
 		camelCaseOptions,
 		tablesToRename: introspection.tablesToRename,
 		columnsToRename: introspection.columnsToRename,
 		typeAlignments: typeAlignments,
+		addedColumns,
+		droppedColumns,
 	};
 
 	const changesets = diff.flatMap((difference) => {
@@ -80,15 +87,45 @@ export function changesetDiff(
 	remote: SchemaMigrationInfo,
 ) {
 	const diff = microdiff(remote, local);
-	const tableName = (diff: CreateTableDiff | DropTableTableDiff) =>
-		diff.path[1];
-	const addedTables = diff.filter(isCreateTable).map(tableName);
-	const droppedTables = diff.filter(isDropTable).map(tableName);
 	return {
 		diff,
-		addedTables,
-		droppedTables,
+		addedTables: diff.filter(isCreateTable).map((diff) => diff.path[1]),
+		droppedTables: diff.filter(isDropTable).map((diff) => diff.path[1]),
+		addedColumns: addedColumns(diff),
+		droppedColumns: droppedColumns(diff),
 	};
+}
+
+function addedColumns(diff: Difference[]) {
+	return diff
+		.filter(isCreateColumn)
+		.map((diff) => [diff.path[1], diff.path[3]] as [string, string])
+		.reduce(
+			(acc, [table, column]) => {
+				if (acc[table] === undefined) {
+					acc[table] = [];
+				}
+				acc[table].push(column);
+				return acc;
+			},
+			{} as Record<string, string[]>,
+		);
+}
+
+function droppedColumns(diff: Difference[]) {
+	return diff
+		.filter(isDropColumn)
+		.map((diff) => [diff.path[1], diff.path[3]] as [string, string])
+		.reduce(
+			(acc, [table, column]) => {
+				if (acc[table] === undefined) {
+					acc[table] = [];
+				}
+				acc[table].push(column);
+				return acc;
+			},
+			{} as Record<string, string[]>,
+		);
 }
 
 function sortChangeset(

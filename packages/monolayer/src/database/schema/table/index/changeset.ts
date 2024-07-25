@@ -3,10 +3,12 @@ import type { Difference } from "microdiff";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
+	tableStructureHasChanged,
 } from "~/changeset/helpers.js";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
 	ChangeSetType,
+	ChangesetPhase,
 	MigrationOpPriority,
 	type Changeset,
 } from "~/changeset/types.js";
@@ -67,7 +69,12 @@ function isDropAllIndexes(test: Difference): test is DropAllIndexesDiff {
 
 function createFirstIndexMigration(
 	diff: CreateFirstIndexDiff,
-	{ schemaName, addedTables, tablesToRename }: GeneratorContext,
+	{
+		schemaName,
+		addedTables,
+		tablesToRename,
+		columnsToRename,
+	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	return Object.entries(diff.value).reduce((acc, [indexHash, index]) => {
@@ -75,6 +82,14 @@ function createFirstIndexMigration(
 		const indexOnTableCreation = addedTables.includes(tableName);
 		const changeSet: Changeset = {
 			priority: MigrationOpPriority.IndexCreate,
+			phase: tableStructureHasChanged(
+				tableName,
+				schemaName,
+				tablesToRename,
+				columnsToRename,
+			)
+				? ChangesetPhase.Unsafe
+				: ChangesetPhase.Expand,
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -108,7 +123,12 @@ function createFirstIndexMigration(
 
 function dropAllIndexesMigration(
 	diff: DropAllIndexesDiff,
-	{ schemaName, droppedTables, tablesToRename }: GeneratorContext,
+	{
+		schemaName,
+		droppedTables,
+		tablesToRename,
+		columnsToRename,
+	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const indexHashes = Object.keys(diff.oldValue) as Array<
@@ -120,6 +140,14 @@ function dropAllIndexesMigration(
 			const indexName = `${indexTableName}_${indexHash}_monolayer_idx`;
 			const changeSet: Changeset = {
 				priority: MigrationOpPriority.IndexDrop,
+				phase: tableStructureHasChanged(
+					tableName,
+					schemaName,
+					tablesToRename,
+					columnsToRename,
+				)
+					? ChangesetPhase.Unsafe
+					: ChangesetPhase.Contract,
 				schemaName,
 				tableName: indexTableName,
 				currentTableName: currentTableName(
@@ -162,7 +190,12 @@ function isCreateIndex(test: Difference): test is CreateIndex {
 
 function createIndexMigration(
 	diff: CreateIndex,
-	{ schemaName, tablesToRename, addedTables }: GeneratorContext,
+	{
+		schemaName,
+		tablesToRename,
+		addedTables,
+		columnsToRename,
+	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const hash = diff.path[2];
@@ -172,6 +205,14 @@ function createIndexMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.IndexCreate,
+		phase: tableStructureHasChanged(
+			tableName,
+			schemaName,
+			tablesToRename,
+			columnsToRename,
+		)
+			? ChangesetPhase.Unsafe
+			: ChangesetPhase.Expand,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -213,7 +254,7 @@ function isDropIndex(test: Difference): test is DropIndex {
 
 function dropIndexMigration(
 	diff: DropIndex,
-	{ schemaName, tablesToRename }: GeneratorContext,
+	{ schemaName, tablesToRename, columnsToRename }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const hash = diff.path[2];
@@ -222,6 +263,14 @@ function dropIndexMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.IndexDrop,
+		phase: tableStructureHasChanged(
+			tableName,
+			schemaName,
+			tablesToRename,
+			columnsToRename,
+		)
+			? ChangesetPhase.Unsafe
+			: ChangesetPhase.Contract,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -318,6 +367,7 @@ function changeIndexNameChangeset(
 ) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeIndex,
+		phase: ChangesetPhase.Unsafe,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

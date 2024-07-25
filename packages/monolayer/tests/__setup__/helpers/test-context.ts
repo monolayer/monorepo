@@ -46,7 +46,7 @@ export async function setUpContext(context: TaskContext & DbContext) {
 		cwd(),
 		`tmp/schema_migrations/${dateStr}-${context.dbName}`,
 	);
-	mkdirSync(path.join(context.folder, "migrations", "default", "breaking"), {
+	mkdirSync(path.join(context.folder, "migrations", "default", "unsafe"), {
 		recursive: true,
 	});
 	mkdirSync(path.join(context.folder, "migrations", "default", "expand"), {
@@ -62,12 +62,13 @@ export async function setUpContext(context: TaskContext & DbContext) {
 export async function setupProgramContext(
 	context: TaskContext & ProgramContext,
 	createDb = true,
+	copyMigrationFiles = true,
 ) {
 	context.currentWorkingDirectory = cwd();
 	context.folder = path.join(cwd(), `tmp/programs/${programFolder(context)}`);
 	rmSync(context.folder, { recursive: true, force: true });
 	mkdirSync(
-		path.join(context.folder, "db", "migrations", "default", "breaking"),
+		path.join(context.folder, "db", "migrations", "default", "unsafe"),
 		{
 			recursive: true,
 		},
@@ -118,22 +119,24 @@ export async function setupProgramContext(
 
 	writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
-	copyMigrations(
-		[
-			"20240405T120024-regulus-mint",
-			"20240405T120250-canopus-teal",
-			"20240405T153857-alphard-black",
-			"20240405T154913-mirfak-mustard",
-		],
-		context,
-	);
+	if (copyMigrationFiles) {
+		copyMigrations(
+			[
+				"20240405T120024-regulus-mint",
+				"20240405T120250-canopus-teal",
+				"20240405T153857-alphard-black",
+				"20240405T154913-mirfak-mustard",
+			],
+			context,
+		);
+	}
 	chdir(context.folder);
 }
 
 export async function teardownProgramContext(
 	context: TaskContext & ProgramContext,
 ) {
-	rmSync(context.folder, { recursive: true, force: true });
+	// rmSync(context.folder, { recursive: true, force: true });
 	try {
 		await context.kysely.destroy();
 	} catch (e) {
@@ -155,7 +158,7 @@ export type ProgramContext = {
 function copyMigration(
 	migrationName: string,
 	context: ProgramContext | DbContext,
-	migrationsFolder = "db/migrations/default/breaking",
+	migrationsFolder = "db/migrations/default/unsafe",
 ) {
 	copyFileSync(
 		`tests/__setup__/fixtures/migrations/${migrationName}.ts`,
@@ -166,7 +169,7 @@ function copyMigration(
 export function copyMigrations(
 	migrations: string[],
 	context: ProgramContext | DbContext,
-	migrationsFolder = "db/migrations/default/breaking",
+	migrationsFolder = "db/migrations/default/unsafe",
 ) {
 	migrations.forEach((migration) => {
 		copyMigration(migration, context, migrationsFolder);
@@ -186,11 +189,11 @@ export async function dbAndMigrator(context: ProgramContext) {
 					"db",
 					"migrations",
 					"default",
-					"breaking",
+					"unsafe",
 				),
 			}),
-			migrationTableName: `monolayer_breaking_migration`,
-			migrationLockTableName: `monolayer_breaking_migration_lock`,
+			migrationTableName: `monolayer_unsafe_migration`,
+			migrationLockTableName: `monolayer_unsafe_migration_lock`,
 		}),
 	};
 }

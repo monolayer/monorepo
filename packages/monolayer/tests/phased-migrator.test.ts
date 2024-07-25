@@ -79,7 +79,7 @@ describe("Phased Migrator", () => {
 					context.folder,
 					"migrations",
 					"default",
-					"breaking",
+					"unsafe",
 					`${migration}.ts`,
 				),
 			);
@@ -148,7 +148,7 @@ describe("Phased Migrator", () => {
 					context.folder,
 					"migrations",
 					"default",
-					"breaking",
+					"unsafe",
 					`${migration}.ts`,
 				),
 			);
@@ -224,7 +224,7 @@ describe("Phased Migrator", () => {
 					context.folder,
 					"migrations",
 					"default",
-					"breaking",
+					"unsafe",
 					`${migration}.ts`,
 				),
 			);
@@ -272,10 +272,7 @@ describe("Phased Migrator", () => {
 			.execute();
 
 		expect(tablesExist.map((r) => r.tablename).sort()).toStrictEqual(
-			[
-				"monolayer_breaking_migration",
-				"monolayer_breaking_migration_lock",
-			].sort(),
+			["monolayer_unsafe_migration", "monolayer_unsafe_migration_lock"].sort(),
 		);
 	});
 
@@ -297,7 +294,7 @@ describe("Phased Migrator", () => {
 					context.folder,
 					"migrations",
 					"default",
-					"breaking",
+					"unsafe",
 					`${migration}.ts`,
 				),
 			);
@@ -345,10 +342,7 @@ describe("Phased Migrator", () => {
 			.execute();
 
 		expect(tablesExist.map((r) => r.tablename).sort()).toStrictEqual(
-			[
-				"monolayer_breaking_migration",
-				"monolayer_breaking_migration_lock",
-			].sort(),
+			["monolayer_unsafe_migration", "monolayer_unsafe_migration_lock"].sort(),
 		);
 	});
 
