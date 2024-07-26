@@ -108,7 +108,7 @@ function columnDefaultAddMigrationOperation(
 		phase: ChangesetPhase.Unsafe,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumn,
+		type: ChangeSetType.ChangeColumnDefault,
 		up: [
 			executeKyselySchemaStatement(
 				schemaName,
@@ -146,7 +146,7 @@ function columnDefaultDropMigrationOperation(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumn,
+		type: ChangeSetType.ChangeColumnDefault,
 		up: [
 			executeKyselySchemaStatement(
 				schemaName,
@@ -225,7 +225,7 @@ function columnDefaultChangeMigrationOperation(
 		phase: ChangesetPhase.Unsafe,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumn,
+		type: ChangeSetType.ChangeColumnDefault,
 		up: up,
 		down: down,
 		schemaName,
