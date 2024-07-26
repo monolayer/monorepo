@@ -33,7 +33,7 @@ export function columnMigrationOpGenerator(
 		return createColumnMigration(diff, context);
 	}
 	if (isCreateColumnNonNullableColumn(diff)) {
-		return createNullableColumnMigration(diff, context);
+		return createNonNullableColumnMigration(diff, context);
 	}
 	if (isDropColumn(diff)) {
 		return dropColumnMigration(diff, context);
@@ -112,7 +112,7 @@ function createColumnMigration(
 	return changeset;
 }
 
-function createNullableColumnMigration(
+function createNonNullableColumnMigration(
 	diff: CreateColumnDiff,
 	{ schemaName, tablesToRename }: GeneratorContext,
 ) {
@@ -178,7 +178,7 @@ function createNullableColumnMigration(
 		phase: ChangesetPhase.Unsafe,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateColumn,
+		type: ChangeSetType.CreateNullableColumn,
 		up,
 		down,
 		schemaName,

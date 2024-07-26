@@ -5192,7 +5192,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
-					type: "createColumn",
+					type: "createNonNullableColumn",
 					phase: "unsafe",
 					warnings: [
 						{
@@ -5255,7 +5255,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
-					type: "createColumn",
+					type: "createNonNullableColumn",
 					phase: "unsafe",
 					warnings: [
 						{
@@ -5780,7 +5780,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				schemaName: "public",
 				tableName: "users",
 				currentTableName: "users",
-				type: "createColumn",
+				type: "createNonNullableColumn",
 				phase: "unsafe",
 				warnings: [
 					{
@@ -5820,7 +5820,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				schemaName: "public",
 				tableName: "users",
 				currentTableName: "users",
-				type: "createColumn",
+				type: "createNonNullableColumn",
 				phase: "unsafe",
 				warnings: [
 					{
@@ -5883,7 +5883,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "createColumn",
+				type: "createNonNullableColumn",
 				phase: "unsafe",
 				warnings: [
 					{
@@ -5967,7 +5967,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "createColumn",
+				type: "createNonNullableColumn",
 				phase: "unsafe",
 				warnings: [
 					{
