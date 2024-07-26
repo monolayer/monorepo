@@ -240,7 +240,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumn",
+				type: "changeColumnDataType",
 				phase: "unsafe",
 				warnings: [
 					{
@@ -7785,7 +7785,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumn",
+				type: "changeColumnDataType",
 				phase: "unsafe",
 				warnings: [
 					{

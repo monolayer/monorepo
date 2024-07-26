@@ -51,7 +51,7 @@ function columnDatatypeMigrationOperation(
 		phase: ChangesetPhase.Unsafe,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumn,
+		type: ChangeSetType.ChangeColumnDataType,
 		up: [
 			executeKyselySchemaStatement(
 				schemaName,
