@@ -374,7 +374,7 @@ function dropNotNullChangesets(
 									tablesToRename,
 									schemaName,
 								),
-								type: ChangeSetType.ChangeColumn,
+								type: ChangeSetType.ChangeColumnNullable,
 								up:
 									direction === "up"
 										? [dropNotNullOp(tableName, column, schemaName)]
@@ -397,7 +397,7 @@ function dropNotNullChangesets(
 									tablesToRename,
 									schemaName,
 								),
-								type: ChangeSetType.ChangeColumn,
+								type: ChangeSetType.ChangeColumnNullable,
 								up:
 									direction === "up"
 										? [dropNotNullOp(tableName, column, schemaName)]
@@ -421,7 +421,7 @@ function dropNotNullChangesets(
 						tablesToRename,
 						schemaName,
 					),
-					type: ChangeSetType.ChangeColumn,
+					type: ChangeSetType.ChangeColumnNullable,
 					up:
 						direction === "up"
 							? [dropNotNullOp(tableName, column, schemaName)]

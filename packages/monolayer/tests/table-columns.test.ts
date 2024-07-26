@@ -525,7 +525,7 @@ describe("Table change migrations", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumn",
+				type: "changeColumnNullable",
 				phase: "unsafe",
 				warnings: [
 					{
@@ -578,7 +578,7 @@ describe("Table change migrations", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumn",
+				type: "changeColumnNullable",
 				phase: "unsafe",
 				up: [
 					[
@@ -719,7 +719,7 @@ describe("Table change migrations", () => {
 				tableName: "users",
 				currentTableName: "users",
 				schemaName: "public",
-				type: "changeColumn",
+				type: "changeColumnNullable",
 				phase: "unsafe",
 				warnings: [
 					{

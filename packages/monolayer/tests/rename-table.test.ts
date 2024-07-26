@@ -791,7 +791,7 @@ describe("Rename table without camel case plugin", () => {
 				schemaName: "public",
 				tableName: "publications",
 				currentTableName: "publications",
-				type: "changeColumn",
+				type: "changeColumnNullable",
 				phase: "unsafe",
 				up: [],
 				down: [
@@ -964,7 +964,7 @@ describe("Rename table without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				schemaName: "public",
-				type: "changeColumn",
+				type: "changeColumnNullable",
 				phase: "unsafe",
 				warnings: [
 					{
@@ -1205,7 +1205,7 @@ describe("Rename table without camel case plugin", () => {
 				schemaName: "public",
 				tableName: "publications",
 				currentTableName: "publications",
-				type: "changeColumn",
+				type: "changeColumnNullable",
 				phase: "unsafe",
 				up: [
 					[
@@ -4479,7 +4479,7 @@ describe("Rename table with camel case plugin", () => {
 				schemaName: "public",
 				tableName: "new_books",
 				currentTableName: "new_books",
-				type: "changeColumn",
+				type: "changeColumnNullable",
 				phase: "unsafe",
 				up: [],
 				down: [
@@ -4655,7 +4655,7 @@ describe("Rename table with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				schemaName: "public",
-				type: "changeColumn",
+				type: "changeColumnNullable",
 				phase: "unsafe",
 				warnings: [
 					{
@@ -4899,7 +4899,7 @@ describe("Rename table with camel case plugin", () => {
 				schemaName: "public",
 				tableName: "new_books",
 				currentTableName: "new_books",
-				type: "changeColumn",
+				type: "changeColumnNullable",
 				phase: "unsafe",
 				up: [
 					[

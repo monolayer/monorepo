@@ -53,7 +53,7 @@ function columnNullableMigrationOperation(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumn,
+		type: ChangeSetType.ChangeColumnNullable,
 		up: diff.value
 			? [dropNotNullOp(schemaName, tableName, columnName)]
 			: setNotNullOp(schemaName, tableName, columnName),

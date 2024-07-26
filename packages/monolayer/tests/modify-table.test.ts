@@ -77,7 +77,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "books",
 					currentTableName: "books",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					warnings: [
 						{
@@ -130,7 +130,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [],
 					down: [
@@ -147,7 +147,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [],
 					down: [
@@ -484,6 +484,12 @@ describe("Modify table", () => {
 				},
 				{
 					currentTableName: "books",
+					priority: 3011,
+					schemaName: "public",
+					tableName: "books",
+					type: "changeColumnNullable",
+					phase: "expand",
+					up: [],
 					down: [
 						[
 							'await db.withSchema("public").schema',
@@ -492,12 +498,6 @@ describe("Modify table", () => {
 							"execute();",
 						],
 					],
-					priority: 3011,
-					schemaName: "public",
-					tableName: "books",
-					type: "changeColumn",
-					phase: "expand",
-					up: [],
 				},
 				{
 					priority: 4003,
@@ -698,7 +698,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "books",
 					currentTableName: "books",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -715,7 +715,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -732,7 +732,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -925,7 +925,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -1071,7 +1071,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "books",
 					currentTableName: "books",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -1088,7 +1088,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [],
 					down: [
@@ -1105,7 +1105,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -1122,7 +1122,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -1372,7 +1372,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "books",
 					currentTableName: "books",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -1389,7 +1389,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [],
 					down: [
@@ -1406,7 +1406,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -1423,7 +1423,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -1616,7 +1616,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [],
 					down: [
@@ -1633,7 +1633,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -1771,7 +1771,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					warnings: [
 						{
@@ -1824,7 +1824,7 @@ describe("Modify table", () => {
 					schemaName: "public",
 					tableName: "users",
 					currentTableName: "users",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -5443,7 +5443,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					warnings: [
 						{
@@ -5496,7 +5496,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					warnings: [
 						{
@@ -5662,7 +5662,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
@@ -5706,7 +5706,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
-					type: "changeColumn",
+					type: "changeColumnNullable",
 					phase: "unsafe",
 					up: [
 						[
