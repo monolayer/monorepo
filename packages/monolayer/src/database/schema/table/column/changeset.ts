@@ -178,7 +178,7 @@ function createNonNullableColumnMigration(
 		phase: ChangesetPhase.Unsafe,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateNullableColumn,
+		type: ChangeSetType.CreateNonNullableColumn,
 		up,
 		down,
 		schemaName,
