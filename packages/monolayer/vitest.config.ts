@@ -5,6 +5,12 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
 	test: {
 		pool: "forks",
+		poolOptions: {
+			forks: {
+				minForks: 1,
+				maxForks: 3,
+			},
+		},
 		coverage: {
 			provider: "istanbul",
 			reporter: ["html", "json"],
