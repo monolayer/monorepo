@@ -5549,7 +5549,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
-					type: "changeColumn",
+					type: "changeColumnGeneration",
 					phase: "unsafe",
 					up: [
 						[
@@ -5569,7 +5569,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
-					type: "changeColumn",
+					type: "changeColumnGeneration",
 					phase: "unsafe",
 					up: [
 						[
@@ -5622,7 +5622,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
-					type: "changeColumn",
+					type: "changeColumnGeneration",
 					phase: "unsafe",
 					up: [
 						[
@@ -5642,7 +5642,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					tableName: "users",
 					currentTableName: "users",
 					schemaName: "public",
-					type: "changeColumn",
+					type: "changeColumnGeneration",
 					phase: "unsafe",
 					up: [
 						[

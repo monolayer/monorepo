@@ -9,6 +9,7 @@ export enum ChangeSetType {
 	ChangeColumn = "changeColumn",
 	ChangeColumnDataType = "changeColumnDataType",
 	ChangeColumnDefault = "changeColumnDefault",
+	ChangeColumnGeneration = "changeColumnGeneration",
 	RenameTable = "renameTable",
 	CreateIndex = "createIndex",
 	RenameIndex = "renameIndex",

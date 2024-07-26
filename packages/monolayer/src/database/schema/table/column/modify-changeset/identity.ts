@@ -74,7 +74,7 @@ function columnIdentityAddMigrationOperation(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumn,
+		type: ChangeSetType.ChangeColumnGeneration,
 		up:
 			diff.value === "ALWAYS"
 				? [
@@ -108,7 +108,7 @@ function columnIdentityDropMigrationOperation(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumn,
+		type: ChangeSetType.ChangeColumnGeneration,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" ALTER COLUMN "${columnName}" DROP IDENTITY`,
