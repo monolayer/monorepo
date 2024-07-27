@@ -2,7 +2,6 @@ import type { UnknownException } from "effect/Cause";
 import { TaggedClass } from "effect/Data";
 import { sep } from "node:path";
 import color from "picocolors";
-import type { MigrationDependencyError } from "~/migrations/validate.js";
 
 export class ExitWithSuccess extends TaggedClass("ExitWithSuccess")<{
 	readonly cause: string;
@@ -34,7 +33,6 @@ export type ActionErrors =
 	| ExitWithSuccess
 	| UnknownActionError
 	| PromptCancelError
-	| MigrationDependencyError
 	| UnknownException;
 
 export function formatErrorStack(stack: string) {

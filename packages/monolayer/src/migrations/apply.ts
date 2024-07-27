@@ -5,7 +5,6 @@ import color from "picocolors";
 import { UnknownActionError } from "~/cli/errors.js";
 import { dumpDatabaseStructureTask } from "~/database/dump.js";
 import { Migrator } from "../services/migrator.js";
-import { validateMigrationDependencies } from "./validate.js";
 
 export function applyMigrations() {
 	return Effect.gen(function* () {
@@ -18,7 +17,6 @@ export function applyMigrations() {
 }
 
 export const migrate = Effect.gen(function* () {
-	yield* validateMigrationDependencies;
 	const migrator = yield* Migrator;
 	const { error, results } = yield* migrator.migrateToLatest(true);
 	if (results !== undefined && results.length > 0) {
