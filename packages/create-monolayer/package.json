@@ -25,7 +25,8 @@
 		"format": "prettier --write .",
 		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
 		"pack": "npm pack --pack-destination ./build",
-		"publish:local": "npm unpublish --registry http://localhost:4873 create-monolayer -f && npm publish --registry http://localhost:4873"
+		"publish:local": "npm publish --registry http://localhost:4873",
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 create-monolayer -f"
 	},
 	"dependencies": {
 		"@clack/prompts": "^0.7.0",
