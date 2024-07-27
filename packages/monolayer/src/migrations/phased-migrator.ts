@@ -63,14 +63,17 @@ export class PhasedMigrator implements MigratorInterface {
 				...(yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "expand"),
 					yield* this.#allExpandMigrations(),
+					"expand",
 				)),
 				...(yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "unsafe"),
 					yield* this.#allUnsafeMigrations(),
+					"unsafe",
 				)),
 				...(yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "contract"),
 					yield* this.#allContractMigrations(),
+					"contract",
 				)),
 			];
 			const pending = all.filter((m) => m.executedAt === undefined);
@@ -81,7 +84,8 @@ export class PhasedMigrator implements MigratorInterface {
 				localPending: pending.map((info) => {
 					return {
 						name: info.name,
-						path: path.join(this.folder, `${info.name}.ts`),
+						path: path.join(this.folder, info.phase, `${info.name}.ts`),
+						phase: info.phase,
 					};
 				}),
 			};
@@ -230,14 +234,17 @@ export class PhasedMigrator implements MigratorInterface {
 				expand: yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "expand"),
 					yield* this.#allExpandMigrations(),
+					"expand",
 				),
 				unsafe: yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "unsafe"),
 					yield* this.#allUnsafeMigrations(),
+					"unsafe",
 				),
 				contract: yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "contract"),
 					yield* this.#allContractMigrations(),
+					"contract",
 				),
 			};
 			return {

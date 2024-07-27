@@ -357,6 +357,7 @@ describe("Phased Migrator", () => {
 				scaffold: false,
 				dependsOn: NO_DEPENDENCY,
 				transaction: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -367,6 +368,7 @@ describe("Phased Migrator", () => {
 				transaction: false,
 				dependsOn: "migration1",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -377,6 +379,7 @@ describe("Phased Migrator", () => {
 				transaction: true,
 				dependsOn: "migration2",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -387,6 +390,7 @@ describe("Phased Migrator", () => {
 				transaction: true,
 				dependsOn: "migration3",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -397,6 +401,7 @@ describe("Phased Migrator", () => {
 				transaction: false,
 				dependsOn: "migration4",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -407,6 +412,7 @@ describe("Phased Migrator", () => {
 				transaction: false,
 				dependsOn: "migration5",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -417,6 +423,7 @@ describe("Phased Migrator", () => {
 				transaction: true,
 				dependsOn: "migration6",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -427,6 +434,7 @@ describe("Phased Migrator", () => {
 				transaction: false,
 				dependsOn: "migration7",
 				scaffold: false,
+				phase: "expand",
 			},
 		];
 
@@ -511,6 +519,7 @@ describe("Phased Migrator", () => {
 				scaffold: false,
 				dependsOn: NO_DEPENDENCY,
 				transaction: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -521,6 +530,7 @@ describe("Phased Migrator", () => {
 				transaction: false,
 				dependsOn: "migration1",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -531,6 +541,7 @@ describe("Phased Migrator", () => {
 				transaction: true,
 				dependsOn: "migration2",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -541,6 +552,7 @@ describe("Phased Migrator", () => {
 				transaction: true,
 				dependsOn: "migration3",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -551,6 +563,7 @@ describe("Phased Migrator", () => {
 				transaction: false,
 				dependsOn: "migration4",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -561,6 +574,7 @@ describe("Phased Migrator", () => {
 				transaction: false,
 				dependsOn: "migration5",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -571,6 +585,7 @@ describe("Phased Migrator", () => {
 				transaction: true,
 				dependsOn: "migration6",
 				scaffold: false,
+				phase: "expand",
 			},
 			{
 				migration: {
@@ -581,6 +596,7 @@ describe("Phased Migrator", () => {
 				transaction: false,
 				dependsOn: "migration7",
 				scaffold: false,
+				phase: "expand",
 			},
 		];
 

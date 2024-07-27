@@ -21,6 +21,7 @@ interface MigrationStats {
 	localPending: {
 		name: string;
 		path: string;
+		phase: string;
 	}[];
 	byPhase?: MigrationsByPhase;
 }

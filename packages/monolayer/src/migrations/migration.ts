@@ -53,7 +53,8 @@ export type Migration = {
 	warnings?: Array<ChangeWarning>;
 };
 
-export type MonolayerMigrationInfo = KyselyMigrationInfo & Migration;
+export type MonolayerMigrationInfo = KyselyMigrationInfo &
+	Migration & { phase: string };
 
 export interface MonolayerMigration extends KyselyMigration {
 	migration: Migration;
@@ -298,6 +299,7 @@ function readMigration(folder: string, name: string) {
 export function migrationInfoToMonolayerMigrationInfo(
 	folder: string,
 	migrationInfo: readonly MigrationInfo[],
+	phase: string,
 ) {
 	return Effect.gen(function* () {
 		const monolayerMigrationInfo: MonolayerMigrationInfo[] = [];
@@ -309,6 +311,7 @@ export function migrationInfoToMonolayerMigrationInfo(
 				scaffold: migration.migration.scaffold,
 				dependsOn: migration.migration.dependsOn,
 				warnings: migration.migration.warnings,
+				phase,
 			});
 		}
 		return monolayerMigrationInfo;

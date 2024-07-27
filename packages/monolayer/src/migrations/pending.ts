@@ -11,19 +11,17 @@ import { Migrator } from "../services/migrator.js";
 export const pendingMigrations = Effect.gen(function* () {
 	const pendingMigrations = yield* localPendingSchemaMigrations;
 	if (pendingMigrations.length > 0) {
-		yield* Effect.forEach(pendingMigrations, logPendingMigrationNames);
+		yield* Effect.forEach(pendingMigrations, (pendingMigration) => {
+			p.log.message(
+				`${color.bgYellow(color.black(" PENDING "))} ${path.basename(pendingMigration.path, ".ts")} (${pendingMigration.phase})`,
+			);
+			return Effect.void;
+		});
 	} else {
 		p.log.message("No pending migrations.");
 	}
 	return pendingMigrations;
 });
-
-function logPendingMigrationNames(migration: { name: string; path: string }) {
-	p.log.message(
-		`${color.bgYellow(color.black(" PENDING "))} ${path.basename(migration.path, ".ts")}`,
-	);
-	return Effect.void;
-}
 
 export const handlePendingSchemaMigrations = Effect.gen(function* () {
 	const localPending = yield* localPendingSchemaMigrations;
