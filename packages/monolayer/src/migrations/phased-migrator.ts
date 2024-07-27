@@ -38,7 +38,7 @@ import {
 import { renderToFile } from "./render.js";
 
 export class PhasedMigrator implements MigratorInterface {
-	protected readonly unsafeInstance: MonolayerMigrator;
+	protected readonly alterInstance: MonolayerMigrator;
 	protected readonly expandInstance: MonolayerMigrator;
 	protected readonly contractInstance: MonolayerMigrator;
 	protected readonly folder: string;
@@ -47,7 +47,7 @@ export class PhasedMigrator implements MigratorInterface {
 		client: Kysely<any>,
 		folder: string,
 	) {
-		this.unsafeInstance = makeMigrator(client, folder, ChangesetPhase.Unsafe);
+		this.alterInstance = makeMigrator(client, folder, ChangesetPhase.Alter);
 		this.expandInstance = makeMigrator(client, folder, ChangesetPhase.Expand);
 		this.contractInstance = makeMigrator(
 			client,
@@ -60,7 +60,7 @@ export class PhasedMigrator implements MigratorInterface {
 	get migrationStats() {
 		return Effect.gen(this, function* () {
 			const folder = this.folder;
-			mkdirSync(path.join(folder, ChangesetPhase.Unsafe), { recursive: true });
+			mkdirSync(path.join(folder, ChangesetPhase.Alter), { recursive: true });
 			mkdirSync(path.join(folder, ChangesetPhase.Expand), { recursive: true });
 			mkdirSync(path.join(folder, ChangesetPhase.Contract), {
 				recursive: true,
@@ -72,9 +72,9 @@ export class PhasedMigrator implements MigratorInterface {
 					ChangesetPhase.Expand,
 				)),
 				...(yield* migrationInfoToMonolayerMigrationInfo(
-					path.join(folder, ChangesetPhase.Unsafe),
+					path.join(folder, ChangesetPhase.Alter),
 					yield* this.#allUnsafeMigrations(),
-					ChangesetPhase.Unsafe,
+					ChangesetPhase.Alter,
 				)),
 				...(yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, ChangesetPhase.Contract),
@@ -119,9 +119,9 @@ export class PhasedMigrator implements MigratorInterface {
 					...stat,
 					phase: ChangesetPhase.Expand,
 				})),
-				...stats.unsafe.pending.map((stat) => ({
+				...stats.alter.pending.map((stat) => ({
 					...stat,
-					phase: ChangesetPhase.Unsafe,
+					phase: ChangesetPhase.Alter,
 				})),
 				...stats.contract.pending.map((stat) => ({
 					...stat,
@@ -140,9 +140,9 @@ export class PhasedMigrator implements MigratorInterface {
 					})),
 				),
 				...migrationPlanTwo(
-					stats.unsafe.pending.map((stat) => ({
+					stats.alter.pending.map((stat) => ({
 						...stat,
-						phase: ChangesetPhase.Unsafe,
+						phase: ChangesetPhase.Alter,
 					})),
 				),
 				...migrationPlanTwo(
@@ -196,8 +196,8 @@ export class PhasedMigrator implements MigratorInterface {
 
 	#migratorForPhase(phase: ChangesetPhase) {
 		switch (phase) {
-			case ChangesetPhase.Unsafe:
-				return this.unsafeInstance;
+			case ChangesetPhase.Alter:
+				return this.alterInstance;
 			case ChangesetPhase.Expand:
 				return this.expandInstance;
 			case ChangesetPhase.Contract:
@@ -237,7 +237,7 @@ export class PhasedMigrator implements MigratorInterface {
 	get migrationStatsByPhase() {
 		return Effect.gen(this, function* () {
 			const folder = this.folder;
-			mkdirSync(path.join(folder, ChangesetPhase.Unsafe), { recursive: true });
+			mkdirSync(path.join(folder, ChangesetPhase.Alter), { recursive: true });
 			mkdirSync(path.join(folder, ChangesetPhase.Expand), { recursive: true });
 			mkdirSync(path.join(folder, ChangesetPhase.Contract), {
 				recursive: true,
@@ -248,10 +248,10 @@ export class PhasedMigrator implements MigratorInterface {
 					yield* this.#allExpandMigrations(),
 					ChangesetPhase.Expand,
 				),
-				unsafe: yield* migrationInfoToMonolayerMigrationInfo(
-					path.join(folder, ChangesetPhase.Unsafe),
+				alter: yield* migrationInfoToMonolayerMigrationInfo(
+					path.join(folder, ChangesetPhase.Alter),
 					yield* this.#allUnsafeMigrations(),
-					ChangesetPhase.Unsafe,
+					ChangesetPhase.Alter,
 				),
 				contract: yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, ChangesetPhase.Contract),
@@ -277,18 +277,18 @@ export class PhasedMigrator implements MigratorInterface {
 							};
 						}),
 				},
-				unsafe: {
-					all: all.unsafe,
-					executed: all.unsafe.filter((m) => m.executedAt !== undefined),
-					pending: all.unsafe.filter((m) => m.executedAt === undefined),
-					localPending: all.unsafe
+				alter: {
+					all: all.alter,
+					executed: all.alter.filter((m) => m.executedAt !== undefined),
+					pending: all.alter.filter((m) => m.executedAt === undefined),
+					localPending: all.alter
 						.filter((m) => m.executedAt === undefined)
 						.map((info) => {
 							return {
 								name: info.name,
 								path: path.join(
 									this.folder,
-									ChangesetPhase.Unsafe,
+									ChangesetPhase.Alter,
 									`${info.name}.ts`,
 								),
 							};
@@ -320,7 +320,7 @@ export class PhasedMigrator implements MigratorInterface {
 	}
 
 	#allUnsafeMigrations() {
-		return Effect.tryPromise(() => this.unsafeInstance.getMigrations());
+		return Effect.tryPromise(() => this.alterInstance.getMigrations());
 	}
 
 	#allContractMigrations() {
@@ -332,15 +332,15 @@ export class PhasedMigrator implements MigratorInterface {
 			const contractRollback = yield* Effect.tryPromise(() =>
 				this.contractInstance.migrateTo(NO_MIGRATIONS),
 			);
-			const unsafeRollback = yield* Effect.tryPromise(() =>
-				this.unsafeInstance.migrateTo(NO_MIGRATIONS),
+			const alterRollback = yield* Effect.tryPromise(() =>
+				this.alterInstance.migrateTo(NO_MIGRATIONS),
 			);
 			const expandRollBack = yield* Effect.tryPromise(() =>
 				this.expandInstance.migrateTo(NO_MIGRATIONS),
 			);
 			const result = collectResults([
 				contractRollback,
-				unsafeRollback,
+				alterRollback,
 				expandRollBack,
 			]);
 			return result;
@@ -412,13 +412,13 @@ class PhasedMigratorRenderer {
 			const renderedMigrations: string[] = [];
 			let previousMigrationName: string = "";
 			const isolatedExpand = isolateTransactionlessChangesets(
-				byPhase["expand"],
+				byPhase[ChangesetPhase.Expand],
 			);
 			const isolatedUnsafe = isolateTransactionlessChangesets(
-				byPhase["unsafe"],
+				byPhase[ChangesetPhase.Alter],
 			);
 			const isolatedContract = isolateTransactionlessChangesets(
-				byPhase["contract"],
+				byPhase[ChangesetPhase.Contract],
 			);
 			const multipleMigrations =
 				isolatedExpand.length +
@@ -428,9 +428,18 @@ class PhasedMigratorRenderer {
 			let idx = 0;
 
 			const isolatedChangesets: [string, Changeset[][]][] = [
-				["expand", isolateTransactionlessChangesets(byPhase["expand"])],
-				["unsafe", isolateTransactionlessChangesets(byPhase["unsafe"])],
-				["contract", isolateTransactionlessChangesets(byPhase["contract"])],
+				[
+					ChangesetPhase.Expand,
+					isolateTransactionlessChangesets(byPhase[ChangesetPhase.Expand]),
+				],
+				[
+					ChangesetPhase.Alter,
+					isolateTransactionlessChangesets(byPhase[ChangesetPhase.Alter]),
+				],
+				[
+					ChangesetPhase.Contract,
+					isolateTransactionlessChangesets(byPhase[ChangesetPhase.Contract]),
+				],
 			];
 
 			for (const [phase, phaseIsolatedChangeset] of isolatedChangesets) {

@@ -175,7 +175,7 @@ function createNonNullableColumnMigration(
 	}
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ColumnCreate,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.CreateNonNullableColumn,

@@ -70,7 +70,7 @@ function columnIdentityAddMigrationOperation(
 	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnIdentityAdd,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -104,7 +104,7 @@ function columnIdentityDropMigrationOperation(
 	const columnName = diff.path[3];
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnIdentityDrop,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

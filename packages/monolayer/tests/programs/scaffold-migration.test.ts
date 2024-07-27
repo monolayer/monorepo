@@ -8,6 +8,7 @@ import {
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
+import { ChangesetPhase } from "../../src/changeset/types.js";
 
 describe("scaffoldMigration", () => {
 	beforeEach<ProgramContext>(async (context) => {
@@ -20,10 +21,19 @@ describe("scaffoldMigration", () => {
 	});
 
 	test<ProgramContext>("creates an empty migration file with no dependecies", async (context) => {
-		rmSync(path.join(context.folder, "db", "migrations", "default", "unsafe"), {
-			recursive: true,
-			force: true,
-		});
+		rmSync(
+			path.join(
+				context.folder,
+				"db",
+				"migrations",
+				"default",
+				ChangesetPhase.Alter,
+			),
+			{
+				recursive: true,
+				force: true,
+			},
+		);
 		const result = await runProgramWithErrorCause(scaffoldMigration());
 
 		const expected = `import { Kysely } from "kysely";

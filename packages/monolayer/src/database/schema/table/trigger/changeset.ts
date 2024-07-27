@@ -248,7 +248,7 @@ function changeTriggerMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.TriggerUpdate,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

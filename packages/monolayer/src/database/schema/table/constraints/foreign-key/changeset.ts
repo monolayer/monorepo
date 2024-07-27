@@ -178,7 +178,7 @@ function createforeignKeyFirstConstraintMigration(
 			phase:
 				addedTables.includes(tableName) || allAddedColumns
 					? ChangesetPhase.Expand
-					: ChangesetPhase.Unsafe,
+					: ChangesetPhase.Alter,
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -225,7 +225,7 @@ function createForeignKeyConstraintMigration(
 		phase:
 			addedTables.includes(tableName) || allAddedColumns
 				? ChangesetPhase.Expand
-				: ChangesetPhase.Unsafe,
+				: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -267,7 +267,7 @@ function dropforeignKeyLastConstraintMigration(
 			priority: MigrationOpPriority.ForeignKeyDrop,
 			phase: droppedTables.includes(tableName)
 				? ChangesetPhase.Contract
-				: ChangesetPhase.Unsafe,
+				: ChangesetPhase.Alter,
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -307,7 +307,7 @@ function dropForeignKeyConstraintMigration(
 		priority: MigrationOpPriority.ForeignKeyDrop,
 		phase: droppedTables.includes(tableName)
 			? ChangesetPhase.Contract
-			: ChangesetPhase.Unsafe,
+			: ChangesetPhase.Alter,
 		tableName: previousTableName(tableName, tablesToRename),
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		schemaName,
@@ -374,7 +374,7 @@ function renameForeignKeyOp(
 ) {
 	return {
 		priority: MigrationOpPriority.ConstraintChange,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

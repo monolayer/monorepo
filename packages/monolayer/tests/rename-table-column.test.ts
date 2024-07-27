@@ -55,7 +55,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -90,7 +90,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -170,7 +170,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -205,7 +205,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -241,7 +241,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "changeColumnDataType",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "B001",
@@ -342,7 +342,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -377,7 +377,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -419,7 +419,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."publications" RENAME CONSTRAINT books_2f1f415e_monolayer_chk TO publications_a80ce83d_monolayer_chk`',
@@ -439,7 +439,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."publications" RENAME CONSTRAINT books_e37c55a5_monolayer_chk TO publications_b3606c7d_monolayer_chk`',
@@ -504,7 +504,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -539,7 +539,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -575,7 +575,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "createCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -607,7 +607,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "createCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -702,7 +702,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "dropCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -728,7 +728,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -763,7 +763,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -799,7 +799,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."publications" RENAME CONSTRAINT books_e37c55a5_monolayer_chk TO publications_b3606c7d_monolayer_chk`',
@@ -879,7 +879,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "dropCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -905,7 +905,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "dropCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -931,7 +931,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -966,7 +966,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -1054,7 +1054,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -1089,7 +1089,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -1172,7 +1172,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -1207,7 +1207,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -1243,7 +1243,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "changeColumnNullable",
-				phase: "unsafe",
+				phase: "alter",
 				up: [],
 				down: [
 					[
@@ -1261,7 +1261,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "createIndex",
-				phase: "unsafe",
+				phase: "alter",
 				transaction: false,
 				up: [
 					[
@@ -1291,7 +1291,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "createPrimaryKey",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF001",
@@ -1390,7 +1390,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -1425,7 +1425,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -1461,7 +1461,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "changeColumnNullable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF005",
@@ -1514,7 +1514,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "createIndex",
-				phase: "unsafe",
+				phase: "alter",
 				transaction: false,
 				up: [
 					[
@@ -1544,7 +1544,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "createPrimaryKey",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF001",
@@ -1681,7 +1681,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -1716,7 +1716,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -1753,7 +1753,7 @@ describe("Rename table and column without camel case plugin", () => {
 				schemaName: "public",
 				type: "renameForeignKey",
 
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO users_23a40a64_monolayer_fk`',
@@ -1859,7 +1859,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -1894,7 +1894,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -1930,7 +1930,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO users_10f6a685_monolayer_fk`',
@@ -2036,7 +2036,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -2071,7 +2071,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -2108,7 +2108,7 @@ describe("Rename table and column without camel case plugin", () => {
 				schemaName: "public",
 
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_e17f9ac0_monolayer_fk`',
@@ -2214,7 +2214,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -2249,7 +2249,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -2285,7 +2285,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_c7007f8e_monolayer_fk`',
@@ -2391,7 +2391,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -2426,7 +2426,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -2461,7 +2461,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -2497,7 +2497,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_75fad375_monolayer_fk`',
@@ -2607,7 +2607,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -2642,7 +2642,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -2677,7 +2677,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -2713,7 +2713,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_bf00d0e6_monolayer_fk`',
@@ -2823,7 +2823,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -2858,7 +2858,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -2894,7 +2894,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -2930,7 +2930,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO users_28a672c8_monolayer_fk`',
@@ -3042,7 +3042,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -3077,7 +3077,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -3112,7 +3112,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -3148,7 +3148,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_75fad375_monolayer_fk`',
@@ -3258,7 +3258,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -3293,7 +3293,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -3328,7 +3328,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -3364,7 +3364,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -3400,7 +3400,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO persons_19fffdac_monolayer_fk`',
@@ -3523,7 +3523,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -3558,7 +3558,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -3594,7 +3594,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -3630,7 +3630,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_6260aee4_monolayer_fk`',
@@ -3747,7 +3747,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -3782,7 +3782,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -3818,7 +3818,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -3854,7 +3854,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_5f06df12_monolayer_fk`',
@@ -3971,7 +3971,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -4006,7 +4006,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -4042,7 +4042,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -4078,7 +4078,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO persons_13cbdbe7_monolayer_fk`',
@@ -4195,7 +4195,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -4230,7 +4230,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -4266,7 +4266,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -4303,7 +4303,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO persons_8710797a_monolayer_fk`',
@@ -4420,7 +4420,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -4456,7 +4456,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -4492,7 +4492,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -4528,7 +4528,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -4564,7 +4564,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_d2f71aa1_monolayer_fk`',
@@ -4685,7 +4685,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -4720,7 +4720,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -4755,7 +4755,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -4791,7 +4791,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -4827,7 +4827,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO persons_608311bd_monolayer_fk`',
@@ -4948,7 +4948,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -4983,7 +4983,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -5018,7 +5018,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5054,7 +5054,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5090,7 +5090,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO persons_6f4f3476_monolayer_fk`',
@@ -5211,7 +5211,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -5246,7 +5246,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5282,7 +5282,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5318,7 +5318,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5354,7 +5354,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5390,7 +5390,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_c8e5c5fa_monolayer_fk`',
@@ -5517,7 +5517,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -5552,7 +5552,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -5587,7 +5587,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5623,7 +5623,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5659,7 +5659,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."persons" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO persons_608311bd_monolayer_fk`',
@@ -5778,7 +5778,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "dropForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -5812,7 +5812,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -5847,7 +5847,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -5882,7 +5882,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5918,7 +5918,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5954,7 +5954,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -5990,7 +5990,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -6026,7 +6026,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				type: "createIndex",
-				phase: "unsafe",
+				phase: "alter",
 				transaction: false,
 				up: [
 					[
@@ -6056,7 +6056,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "documents",
 				currentTableName: "documents",
 				type: "createUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF003",
@@ -6093,7 +6093,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "persons",
 				schemaName: "public",
 				type: "createForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -6198,7 +6198,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -6233,7 +6233,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -6269,7 +6269,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."publications" RENAME CONSTRAINT books_acdd8fa3_monolayer_key TO publications_1c0982e8_monolayer_key`',
@@ -6337,7 +6337,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -6372,7 +6372,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -6408,7 +6408,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "createIndex",
-				phase: "unsafe",
+				phase: "alter",
 				transaction: false,
 				up: [
 					[
@@ -6438,7 +6438,7 @@ describe("Rename table and column without camel case plugin", () => {
 				tableName: "publications",
 				currentTableName: "publications",
 				type: "createUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF003",
@@ -6524,7 +6524,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "dropUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6554,7 +6554,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -6589,7 +6589,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -6684,7 +6684,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "dropUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6714,7 +6714,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -6749,7 +6749,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -6785,7 +6785,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -6821,7 +6821,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."publications" RENAME CONSTRAINT books_d0c857aa_monolayer_key TO publications_f2bf9399_monolayer_key`',
@@ -6901,7 +6901,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "dropUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6931,7 +6931,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "dropUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -6961,7 +6961,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -6996,7 +6996,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -7032,7 +7032,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -7123,7 +7123,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -7158,7 +7158,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -7194,7 +7194,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameIndex",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						"await sql`ALTER INDEX books_0c84fd75_monolayer_idx RENAME TO publications_03cf58de_monolayer_idx`",
@@ -7273,7 +7273,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -7308,7 +7308,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -7344,7 +7344,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameIndex",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						"await sql`ALTER INDEX books_0c84fd75_monolayer_idx RENAME TO publications_0c84fd75_monolayer_idx`",
@@ -7364,7 +7364,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameIndex",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						"await sql`ALTER INDEX books_457992e0_monolayer_idx RENAME TO publications_2b1ab334_monolayer_idx`",
@@ -7450,7 +7450,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -7485,7 +7485,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -7521,7 +7521,7 @@ describe("Rename table and column without camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameIndex",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						"await sql`ALTER INDEX publications_6b9be986_monolayer_idx RENAME TO books_a338e985_monolayer_idx`",
@@ -7597,7 +7597,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -7632,7 +7632,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -7715,7 +7715,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -7750,7 +7750,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -7786,7 +7786,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "changeColumnDataType",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "B001",
@@ -7890,7 +7890,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -7925,7 +7925,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -7961,7 +7961,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books_and_documents" RENAME CONSTRAINT books_2f1f415e_monolayer_chk TO books_and_documents_dc912898_monolayer_chk`',
@@ -7981,7 +7981,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books_and_documents" RENAME CONSTRAINT books_e37c55a5_monolayer_chk TO books_and_documents_f685097b_monolayer_chk`',
@@ -8054,7 +8054,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -8089,7 +8089,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -8125,7 +8125,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "createCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -8157,7 +8157,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "createCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						`await sql\`\${sql.raw(
@@ -8255,7 +8255,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "dropCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8281,7 +8281,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -8316,7 +8316,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -8352,7 +8352,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books_and_documents" RENAME CONSTRAINT books_e37c55a5_monolayer_chk TO books_and_documents_f685097b_monolayer_chk`',
@@ -8435,7 +8435,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "dropCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8461,7 +8461,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "dropCheckConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -8487,7 +8487,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -8522,7 +8522,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -8613,7 +8613,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -8648,7 +8648,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -8734,7 +8734,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -8769,7 +8769,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -8805,7 +8805,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				type: "changeColumnNullable",
-				phase: "unsafe",
+				phase: "alter",
 				up: [],
 				down: [
 					[
@@ -8822,7 +8822,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				type: "createIndex",
-				phase: "unsafe",
+				phase: "alter",
 				transaction: false,
 				up: [
 					[
@@ -8852,7 +8852,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				type: "createPrimaryKey",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF001",
@@ -8954,7 +8954,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -8989,7 +8989,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -9025,7 +9025,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "changeColumnNullable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF005",
@@ -9078,7 +9078,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				type: "createIndex",
-				phase: "unsafe",
+				phase: "alter",
 				transaction: false,
 				up: [
 					[
@@ -9108,7 +9108,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "new_books",
 				currentTableName: "new_books",
 				type: "createPrimaryKey",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF001",
@@ -9248,7 +9248,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -9283,7 +9283,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -9319,7 +9319,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO users_fe8c140e_monolayer_fk`',
@@ -9428,7 +9428,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -9463,7 +9463,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -9499,7 +9499,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO users_460912ed_monolayer_fk`',
@@ -9608,7 +9608,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -9643,7 +9643,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -9679,7 +9679,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_365f2f70_monolayer_fk`',
@@ -9788,7 +9788,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -9823,7 +9823,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -9859,7 +9859,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_872929b3_monolayer_fk`',
@@ -9968,7 +9968,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -10003,7 +10003,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -10038,7 +10038,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -10074,7 +10074,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_9e23e12e_monolayer_fk`',
@@ -10187,7 +10187,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -10222,7 +10222,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -10257,7 +10257,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -10293,7 +10293,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_fd670911_monolayer_fk`',
@@ -10406,7 +10406,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -10441,7 +10441,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -10477,7 +10477,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -10513,7 +10513,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO users_622e2dfc_monolayer_fk`',
@@ -10628,7 +10628,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -10663,7 +10663,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -10698,7 +10698,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -10734,7 +10734,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_9e23e12e_monolayer_fk`',
@@ -10847,7 +10847,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -10882,7 +10882,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -10917,7 +10917,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -10953,7 +10953,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -10989,7 +10989,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_58e6ca22_monolayer_fk TO user_books_2c8633b9_monolayer_fk`',
@@ -11115,7 +11115,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -11150,7 +11150,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -11186,7 +11186,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -11222,7 +11222,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_2004fe40_monolayer_fk`',
@@ -11342,7 +11342,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -11377,7 +11377,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -11413,7 +11413,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -11449,7 +11449,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_f8a1fdc9_monolayer_fk`',
@@ -11569,7 +11569,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -11604,7 +11604,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -11640,7 +11640,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -11676,7 +11676,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_827a56e0_monolayer_fk`',
@@ -11796,7 +11796,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -11831,7 +11831,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -11867,7 +11867,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -11903,7 +11903,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_f99b728b_monolayer_fk`',
@@ -12023,7 +12023,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12059,7 +12059,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12095,7 +12095,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12131,7 +12131,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12167,7 +12167,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_d2f71aa1_monolayer_fk`',
@@ -12291,7 +12291,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -12326,7 +12326,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -12361,7 +12361,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12397,7 +12397,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12433,7 +12433,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_a5f1a0ff_monolayer_fk`',
@@ -12557,7 +12557,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -12592,7 +12592,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -12627,7 +12627,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12663,7 +12663,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12699,7 +12699,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_9a4b62c2_monolayer_fk`',
@@ -12823,7 +12823,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -12858,7 +12858,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12894,7 +12894,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12930,7 +12930,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -12966,7 +12966,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -13002,7 +13002,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."users" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO users_7b91551f_monolayer_fk`',
@@ -13132,7 +13132,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -13167,7 +13167,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -13202,7 +13202,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -13238,7 +13238,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -13274,7 +13274,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_a5f1a0ff_monolayer_fk`',
@@ -13398,7 +13398,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -13433,7 +13433,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -13468,7 +13468,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -13504,7 +13504,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -13540,7 +13540,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -13576,7 +13576,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -13612,7 +13612,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "user_books",
 				schemaName: "public",
 				type: "renameForeignKey",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."user_books" RENAME CONSTRAINT users_6f4acd2f_monolayer_fk TO user_books_124b3526_monolayer_fk`',
@@ -13706,7 +13706,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -13741,7 +13741,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -13777,7 +13777,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books_and_documents" RENAME CONSTRAINT books_acdd8fa3_monolayer_key TO books_and_documents_b663df16_monolayer_key`',
@@ -13848,7 +13848,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -13883,7 +13883,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -13919,7 +13919,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				type: "createIndex",
-				phase: "unsafe",
+				phase: "alter",
 				transaction: false,
 				up: [
 					[
@@ -13949,7 +13949,7 @@ describe("Rename table and column with camel case plugin", () => {
 				tableName: "books_and_documents",
 				currentTableName: "books_and_documents",
 				type: "createUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF003",
@@ -14038,7 +14038,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "dropUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -14068,7 +14068,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -14103,7 +14103,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -14201,7 +14201,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "dropUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -14231,7 +14231,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -14266,7 +14266,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -14302,7 +14302,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -14338,7 +14338,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await sql`ALTER TABLE "public"."books_and_documents" RENAME CONSTRAINT books_d0c857aa_monolayer_key TO books_and_documents_f2bf9399_monolayer_key`',
@@ -14422,7 +14422,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "dropUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -14452,7 +14452,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "dropUniqueConstraint",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -14482,7 +14482,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -14518,7 +14518,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -14554,7 +14554,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "books_and_documents",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -14649,7 +14649,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -14684,7 +14684,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -14720,7 +14720,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameIndex",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						"await sql`ALTER INDEX books_0c84fd75_monolayer_idx RENAME TO new_books_03cf58de_monolayer_idx`",
@@ -14802,7 +14802,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -14837,7 +14837,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -14873,7 +14873,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameIndex",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						"await sql`ALTER INDEX books_0c84fd75_monolayer_idx RENAME TO publications_0c84fd75_monolayer_idx`",
@@ -14893,7 +14893,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "publications",
 				schemaName: "public",
 				type: "renameIndex",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						"await sql`ALTER INDEX books_457992e0_monolayer_idx RENAME TO publications_2b1ab334_monolayer_idx`",
@@ -14982,7 +14982,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameTable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI001",
@@ -15017,7 +15017,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -15053,7 +15053,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "BI002",
@@ -15089,7 +15089,7 @@ describe("Rename table and column with camel case plugin", () => {
 				currentTableName: "new_books",
 				schemaName: "public",
 				type: "renameIndex",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						"await sql`ALTER INDEX books_07ceb5ca_monolayer_idx RENAME TO new_books_a2402dca_monolayer_idx`",

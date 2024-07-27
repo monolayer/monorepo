@@ -213,7 +213,7 @@ function dropPrimaryKeyMigration(
 		phase:
 			droppedTables.includes(tableName) || allDroppedColumns
 				? ChangesetPhase.Contract
-				: ChangesetPhase.Unsafe,
+				: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -272,7 +272,7 @@ function changePrimaryKeyMigration(
 
 	const dropChangeset: Changeset = {
 		priority: MigrationOpPriority.PrimaryKeyDrop,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -350,7 +350,7 @@ function dropNotNullChangesets(
 	schemaName: string,
 	tablesToRename: TablesToRename,
 	direction: "up" | "down",
-	phase: ChangesetPhase.Unsafe | ChangesetPhase.Expand = ChangesetPhase.Unsafe,
+	phase: ChangesetPhase.Alter | ChangesetPhase.Expand = ChangesetPhase.Alter,
 ) {
 	const primaryKeyColumns = extractColumnsFromPrimaryKey(primaryKeyValue);
 	const changesets: Changeset[] = [];
@@ -450,7 +450,7 @@ function defaultPrimaryKey(
 		priority: MigrationOpPriority.PrimaryKeyCreate,
 		phase: addedTables.includes(tableName)
 			? ChangesetPhase.Expand
-			: ChangesetPhase.Unsafe,
+			: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -571,7 +571,7 @@ function onlinePrimaryKey(
 		});
 	}
 
-	const phase = allNewColumns ? ChangesetPhase.Expand : ChangesetPhase.Unsafe;
+	const phase = allNewColumns ? ChangesetPhase.Expand : ChangesetPhase.Alter;
 	const indexChangeset: Changeset = {
 		priority: MigrationOpPriority.IndexCreate,
 		phase,

@@ -4,6 +4,7 @@ import { copyFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
+import { ChangesetPhase } from "../src/changeset/types.js";
 import { Migrator } from "../src/services/migrator.js";
 import type { DbContext } from "./__setup__/helpers/kysely.js";
 import { newLayers } from "./__setup__/helpers/layers.js";
@@ -73,7 +74,7 @@ describe("Phased Migrator", () => {
 					context.folder,
 					"migrations",
 					"default",
-					"unsafe",
+					ChangesetPhase.Alter,
 					`${migration}.ts`,
 				),
 			);
@@ -142,7 +143,7 @@ describe("Phased Migrator", () => {
 					context.folder,
 					"migrations",
 					"default",
-					"unsafe",
+					ChangesetPhase.Alter,
 					`${migration}.ts`,
 				),
 			);
@@ -218,7 +219,7 @@ describe("Phased Migrator", () => {
 					context.folder,
 					"migrations",
 					"default",
-					"unsafe",
+					ChangesetPhase.Alter,
 					`${migration}.ts`,
 				),
 			);
@@ -266,7 +267,7 @@ describe("Phased Migrator", () => {
 			.execute();
 
 		expect(tablesExist.map((r) => r.tablename).sort()).toStrictEqual(
-			["monolayer_unsafe_migration", "monolayer_unsafe_migration_lock"].sort(),
+			["monolayer_alter_migration", "monolayer_alter_migration_lock"].sort(),
 		);
 	});
 
@@ -288,7 +289,7 @@ describe("Phased Migrator", () => {
 					context.folder,
 					"migrations",
 					"default",
-					"unsafe",
+					ChangesetPhase.Alter,
 					`${migration}.ts`,
 				),
 			);
@@ -336,7 +337,7 @@ describe("Phased Migrator", () => {
 			.execute();
 
 		expect(tablesExist.map((r) => r.tablename).sort()).toStrictEqual(
-			["monolayer_unsafe_migration", "monolayer_unsafe_migration_lock"].sort(),
+			["monolayer_alter_migration", "monolayer_alter_migration_lock"].sort(),
 		);
 	});
 });

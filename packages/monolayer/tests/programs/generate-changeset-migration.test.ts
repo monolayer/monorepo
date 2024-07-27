@@ -12,9 +12,9 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { generateMigration } from "~/migrations/generate.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import {
+	alterMigrationPath,
 	contractMigrationPath,
 	expandMigrationPath,
-	unsafeMigrationPath,
 } from "~tests/__setup__/helpers/default-migration-path.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
@@ -137,11 +137,11 @@ describe("generateChangesetMigration", () => {
 			await runProgramWithErrorCause(generateMigration());
 
 			const expandFiles = readdirSync(expandMigrationPath(context.folder));
-			const unsafeFiles = readdirSync(unsafeMigrationPath(context.folder));
+			const alterFiles = readdirSync(alterMigrationPath(context.folder));
 			const contractFiles = readdirSync(contractMigrationPath(context.folder));
 
 			expect(
-				expandFiles.length + unsafeFiles.length + contractFiles.length,
+				expandFiles.length + alterFiles.length + contractFiles.length,
 			).toBe(5);
 
 			const migration = readFileSync(
@@ -183,11 +183,11 @@ describe("generateChangesetMigration", () => {
 			await runProgramWithErrorCause(generateMigration());
 
 			const expandFiles = readdirSync(expandMigrationPath(context.folder));
-			const unsafeFiles = readdirSync(unsafeMigrationPath(context.folder));
+			const alterFiles = readdirSync(alterMigrationPath(context.folder));
 			const contractFiles = readdirSync(contractMigrationPath(context.folder));
 
 			expect(
-				expandFiles.length + unsafeFiles.length + contractFiles.length,
+				expandFiles.length + alterFiles.length + contractFiles.length,
 			).toBe(5);
 
 			const migration = readFileSync(

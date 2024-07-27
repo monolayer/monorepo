@@ -48,7 +48,7 @@ function columnDatatypeMigrationOperation(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDatatype,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumnDataType,

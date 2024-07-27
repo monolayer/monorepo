@@ -78,7 +78,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF005",
@@ -131,7 +131,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [],
 					down: [
 						[
@@ -148,7 +148,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [],
 					down: [
 						[
@@ -165,7 +165,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createIndex",
-					phase: "unsafe",
+					phase: "alter",
 					transaction: false,
 					up: [
 						[
@@ -195,7 +195,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createIndex",
-					phase: "unsafe",
+					phase: "alter",
 					transaction: false,
 					up: [
 						[
@@ -225,7 +225,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF001",
@@ -296,7 +296,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF001",
@@ -379,7 +379,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createIndex",
-					phase: "unsafe",
+					phase: "alter",
 					transaction: false,
 					up: [
 						[
@@ -409,7 +409,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
@@ -639,7 +639,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -669,7 +669,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -699,7 +699,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -716,7 +716,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -733,7 +733,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -830,7 +830,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -926,7 +926,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1012,7 +1012,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1042,7 +1042,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1072,7 +1072,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1089,7 +1089,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [],
 					down: [
 						[
@@ -1106,7 +1106,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1123,7 +1123,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1141,7 +1141,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					type: "createIndex",
 					transaction: false,
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							"try {\n" +
@@ -1171,7 +1171,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							"try {\n" +
@@ -1200,7 +1200,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
@@ -1222,7 +1222,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
@@ -1313,7 +1313,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1343,7 +1343,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1373,7 +1373,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1390,7 +1390,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [],
 					down: [
 						[
@@ -1407,7 +1407,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1424,7 +1424,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1442,7 +1442,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					type: "createIndex",
 					transaction: false,
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							"try {\n" +
@@ -1472,7 +1472,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							"try {\n" +
@@ -1501,7 +1501,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await sql`alter table "public"."books" add constraint "books_pkey" primary key using index "books_pkey_idx"`',
@@ -1523,7 +1523,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
@@ -1587,7 +1587,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1617,7 +1617,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [],
 					down: [
 						[
@@ -1634,7 +1634,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1652,7 +1652,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							"try {\n" +
@@ -1681,7 +1681,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await sql`alter table "public"."users" add constraint "users_pkey" primary key using index "users_pkey_idx"`',
@@ -1742,7 +1742,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1772,7 +1772,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF005",
@@ -1825,7 +1825,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -1843,7 +1843,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							"try {\n" +
@@ -1872,7 +1872,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createPrimaryKey",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF001",
@@ -2008,7 +2008,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createForeignKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2417,7 +2417,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createForeignKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -2548,7 +2548,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2645,7 +2645,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2776,7 +2776,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2810,7 +2810,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2914,7 +2914,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -2948,7 +2948,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createForeignKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -3052,7 +3052,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropForeignKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3086,7 +3086,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createForeignKey",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -3162,7 +3162,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createCheckConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -3251,7 +3251,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createCheckConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -3318,7 +3318,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createCheckConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -3350,7 +3350,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "createCheckConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							`await sql\`\${sql.raw(
@@ -3426,7 +3426,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropCheckConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3486,7 +3486,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropCheckConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -3712,7 +3712,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					type: "createIndex",
 					transaction: false,
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							"try {\n" +
@@ -3742,7 +3742,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					type: "createIndex",
 					transaction: false,
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							"try {\n" +
@@ -3772,7 +3772,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							"try {\n" +
@@ -3801,7 +3801,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createUniqueConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF003",
@@ -3838,7 +3838,7 @@ describe("Modify table", () => {
 					tableName: "books",
 					currentTableName: "books",
 					type: "createUniqueConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF003",
@@ -3875,7 +3875,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createUniqueConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF003",
@@ -3977,7 +3977,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropUniqueConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -4007,7 +4007,7 @@ describe("Modify table", () => {
 					currentTableName: "books",
 					schemaName: "public",
 					type: "dropUniqueConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -4098,7 +4098,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropUniqueConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -4129,7 +4129,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					type: "createIndex",
 					transaction: false,
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							"try {\n" +
@@ -4158,7 +4158,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createUniqueConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF003",
@@ -4256,7 +4256,7 @@ describe("Modify table", () => {
 					currentTableName: "users",
 					schemaName: "public",
 					type: "dropUniqueConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -4286,7 +4286,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createIndex",
-					phase: "unsafe",
+					phase: "alter",
 					transaction: false,
 					up: [
 						[
@@ -4316,7 +4316,7 @@ describe("Modify table", () => {
 					tableName: "users",
 					currentTableName: "users",
 					type: "createUniqueConstraint",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF003",
@@ -5193,7 +5193,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createNonNullableColumn",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF004",
@@ -5256,7 +5256,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createNonNullableColumn",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF004",
@@ -5444,7 +5444,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF005",
@@ -5497,7 +5497,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					warnings: [
 						{
 							code: "MF005",
@@ -5550,7 +5550,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumnGeneration",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await sql`ALTER TABLE "public"."users" ALTER COLUMN "count" ADD GENERATED BY DEFAULT AS IDENTITY`',
@@ -5570,7 +5570,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumnGeneration",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await sql`ALTER TABLE "public"."users" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY`',
@@ -5623,7 +5623,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumnGeneration",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await sql`ALTER TABLE "public"."users" ALTER COLUMN "count" DROP IDENTITY`',
@@ -5643,7 +5643,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumnGeneration",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await sql`ALTER TABLE "public"."users" ALTER COLUMN "id" DROP IDENTITY`',
@@ -5663,7 +5663,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -5707,7 +5707,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "changeColumnNullable",
-					phase: "unsafe",
+					phase: "alter",
 					up: [
 						[
 							'await db.withSchema("public").schema',
@@ -5781,7 +5781,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				tableName: "users",
 				currentTableName: "users",
 				type: "createNonNullableColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "B003",
@@ -5821,7 +5821,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				tableName: "users",
 				currentTableName: "users",
 				type: "createNonNullableColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "B004",
@@ -5884,7 +5884,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createNonNullableColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF004",
@@ -5968,7 +5968,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createNonNullableColumn",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "B002",

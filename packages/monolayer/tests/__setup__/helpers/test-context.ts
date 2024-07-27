@@ -21,6 +21,7 @@ import {
 	type DbContext,
 } from "~tests/__setup__/helpers/kysely.js";
 import { globalPool } from "~tests/__setup__/setup.js";
+import { ChangesetPhase } from "../../../src/changeset/types.js";
 import { dbNameForTest, programFolder } from "./names.js";
 
 export async function teardownContext(context: TaskContext & DbContext) {
@@ -46,15 +47,24 @@ export async function setUpContext(context: TaskContext & DbContext) {
 		cwd(),
 		`tmp/schema_migrations/${dateStr}-${context.dbName}`,
 	);
-	mkdirSync(path.join(context.folder, "migrations", "default", "unsafe"), {
-		recursive: true,
-	});
-	mkdirSync(path.join(context.folder, "migrations", "default", "expand"), {
-		recursive: true,
-	});
-	mkdirSync(path.join(context.folder, "migrations", "default", "contract"), {
-		recursive: true,
-	});
+	mkdirSync(
+		path.join(context.folder, "migrations", "default", ChangesetPhase.Alter),
+		{
+			recursive: true,
+		},
+	);
+	mkdirSync(
+		path.join(context.folder, "migrations", "default", ChangesetPhase.Expand),
+		{
+			recursive: true,
+		},
+	);
+	mkdirSync(
+		path.join(context.folder, "migrations", "default", ChangesetPhase.Contract),
+		{
+			recursive: true,
+		},
+	);
 	context.migrator = await kyselyMigrator(context.kysely, context.folder);
 	chdir(context.folder);
 }
@@ -68,19 +78,37 @@ export async function setupProgramContext(
 	context.folder = path.join(cwd(), `tmp/programs/${programFolder(context)}`);
 	rmSync(context.folder, { recursive: true, force: true });
 	mkdirSync(
-		path.join(context.folder, "db", "migrations", "default", "unsafe"),
+		path.join(
+			context.folder,
+			"db",
+			"migrations",
+			"default",
+			ChangesetPhase.Alter,
+		),
 		{
 			recursive: true,
 		},
 	);
 	mkdirSync(
-		path.join(context.folder, "db", "migrations", "default", "expand"),
+		path.join(
+			context.folder,
+			"db",
+			"migrations",
+			"default",
+			ChangesetPhase.Expand,
+		),
 		{
 			recursive: true,
 		},
 	);
 	mkdirSync(
-		path.join(context.folder, "db", "migrations", "default", "contract"),
+		path.join(
+			context.folder,
+			"db",
+			"migrations",
+			"default",
+			ChangesetPhase.Contract,
+		),
 		{
 			recursive: true,
 		},
@@ -158,7 +186,7 @@ export type ProgramContext = {
 function copyMigration(
 	migrationName: string,
 	context: ProgramContext | DbContext,
-	migrationsFolder = "db/migrations/default/unsafe",
+	migrationsFolder = `db/migrations/default/${ChangesetPhase.Alter}`,
 ) {
 	copyFileSync(
 		`tests/__setup__/fixtures/migrations/${migrationName}.ts`,
@@ -169,7 +197,7 @@ function copyMigration(
 export function copyMigrations(
 	migrations: string[],
 	context: ProgramContext | DbContext,
-	migrationsFolder = "db/migrations/default/unsafe",
+	migrationsFolder = `db/migrations/default/${ChangesetPhase.Alter}`,
 ) {
 	migrations.forEach((migration) => {
 		copyMigration(migration, context, migrationsFolder);
@@ -189,11 +217,11 @@ export async function dbAndMigrator(context: ProgramContext) {
 					"db",
 					"migrations",
 					"default",
-					"unsafe",
+					ChangesetPhase.Alter,
 				),
 			}),
-			migrationTableName: `monolayer_unsafe_migration`,
-			migrationLockTableName: `monolayer_unsafe_migration_lock`,
+			migrationTableName: `monolayer_alter_migration`,
+			migrationLockTableName: `monolayer_alter_migration_lock`,
 		}),
 	};
 }

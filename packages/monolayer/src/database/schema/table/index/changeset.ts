@@ -88,7 +88,7 @@ function createFirstIndexMigration(
 				tablesToRename,
 				columnsToRename,
 			)
-				? ChangesetPhase.Unsafe
+				? ChangesetPhase.Alter
 				: ChangesetPhase.Expand,
 			schemaName,
 			tableName: tableName,
@@ -146,7 +146,7 @@ function dropAllIndexesMigration(
 					tablesToRename,
 					columnsToRename,
 				)
-					? ChangesetPhase.Unsafe
+					? ChangesetPhase.Alter
 					: ChangesetPhase.Contract,
 				schemaName,
 				tableName: indexTableName,
@@ -211,7 +211,7 @@ function createIndexMigration(
 			tablesToRename,
 			columnsToRename,
 		)
-			? ChangesetPhase.Unsafe
+			? ChangesetPhase.Alter
 			: ChangesetPhase.Expand,
 		schemaName,
 		tableName: tableName,
@@ -269,7 +269,7 @@ function dropIndexMigration(
 			tablesToRename,
 			columnsToRename,
 		)
-			? ChangesetPhase.Unsafe
+			? ChangesetPhase.Alter
 			: ChangesetPhase.Contract,
 		schemaName,
 		tableName: tableName,
@@ -367,7 +367,7 @@ function changeIndexNameChangeset(
 ) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeIndex,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

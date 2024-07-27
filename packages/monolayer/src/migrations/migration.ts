@@ -57,12 +57,6 @@ export type Migration = {
 	warnings?: Array<ChangeWarning>;
 };
 
-export enum Phase {
-	Expand = "expand",
-	Unsafe = "unsafe",
-	Contract = "contract",
-}
-
 export type MonolayerMigrationInfo = KyselyMigrationInfo &
 	Migration & { phase: ChangesetPhase };
 
@@ -305,7 +299,7 @@ export function splitChangesetsByPhase(changesets: Changeset[]) {
 			return acc;
 		},
 		{
-			unsafe: [] as Changeset[],
+			alter: [] as Changeset[],
 			expand: [] as Changeset[],
 			contract: [] as Changeset[],
 		},

@@ -188,7 +188,7 @@ function createUniqueFirstConstraintMigration(
 				priority: MigrationOpPriority.UniqueCreate,
 				phase: addedTables.includes(tableName)
 					? ChangesetPhase.Expand
-					: ChangesetPhase.Unsafe,
+					: ChangesetPhase.Alter,
 				schemaName,
 				tableName: tableName,
 				currentTableName: currentTableName(
@@ -231,7 +231,7 @@ function dropUniqueLastConstraintMigration(
 				priority: MigrationOpPriority.UniqueConstraintDrop,
 				phase: droppedTables.includes(tableName)
 					? ChangesetPhase.Contract
-					: ChangesetPhase.Unsafe,
+					: ChangesetPhase.Alter,
 				schemaName,
 				tableName: previousTableName(tableName, tablesToRename),
 				currentTableName: currentTableName(
@@ -291,7 +291,7 @@ function createUniqueConstraintMigration(
 			priority: MigrationOpPriority.UniqueCreate,
 			phase: addedTables.includes(tableName)
 				? ChangesetPhase.Expand
-				: ChangesetPhase.Unsafe,
+				: ChangesetPhase.Alter,
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -321,7 +321,7 @@ function dropUniqueConstraintMigration(
 		priority: MigrationOpPriority.UniqueConstraintDrop,
 		phase: droppedTables.includes(tableName)
 			? ChangesetPhase.Expand
-			: ChangesetPhase.Unsafe,
+			: ChangesetPhase.Alter,
 		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -356,7 +356,7 @@ function changeUniqueConstraintNameMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -450,7 +450,7 @@ function indexForUniqueConstraint(
 		priority: MigrationOpPriority.IndexCreate,
 		phase: addedTables.includes(tableName)
 			? ChangesetPhase.Expand
-			: ChangesetPhase.Unsafe,
+			: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -489,7 +489,7 @@ function createUniqueConstraintWithIndex(
 		priority: MigrationOpPriority.UniqueCreate,
 		phase: addedTables.includes(tableName)
 			? ChangesetPhase.Expand
-			: ChangesetPhase.Unsafe,
+			: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

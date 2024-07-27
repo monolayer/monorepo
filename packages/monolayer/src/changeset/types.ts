@@ -101,7 +101,7 @@ export enum MigrationOpPriority {
 }
 
 export enum ChangesetPhase {
-	Unsafe = "unsafe",
+	Alter = "alter",
 	Expand = "expand",
 	Contract = "contract",
 }

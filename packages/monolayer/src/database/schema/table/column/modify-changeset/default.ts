@@ -105,7 +105,7 @@ function columnDefaultAddMigrationOperation(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultAdd,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumnDefault,
@@ -142,7 +142,7 @@ function columnDefaultDropMigrationOperation(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultDrop,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -222,7 +222,7 @@ function columnDefaultChangeMigrationOperation(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeColumnDefaultChange,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangeSetType.ChangeColumnDefault,

@@ -112,7 +112,7 @@ function createFirstCheckMigration(
 					priority: MigrationOpPriority.CheckCreate,
 					phase: addedTables.includes(tableName)
 						? ChangesetPhase.Expand
-						: ChangesetPhase.Unsafe,
+						: ChangesetPhase.Alter,
 					schemaName,
 					tableName: tableName,
 					currentTableName: currentTableName(
@@ -159,7 +159,7 @@ function dropAllChecksMigration(
 					priority: MigrationOpPriority.CheckConstraintDrop,
 					phase: droppedTables.includes(tableName)
 						? ChangesetPhase.Contract
-						: ChangesetPhase.Unsafe,
+						: ChangesetPhase.Alter,
 					tableName: previousTableName(tableName, tablesToRename),
 					currentTableName: currentTableName(
 						tableName,
@@ -225,7 +225,7 @@ function createCheckMigration(
 		priority: MigrationOpPriority.CheckCreate,
 		phase: addedTables.includes(tableName)
 			? ChangesetPhase.Expand
-			: ChangesetPhase.Unsafe,
+			: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -270,7 +270,7 @@ function dropCheckMigration(
 		priority: MigrationOpPriority.CheckConstraintDrop,
 		phase: droppedTables.includes(tableName)
 			? ChangesetPhase.Expand
-			: ChangesetPhase.Unsafe,
+			: ChangesetPhase.Alter,
 		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
@@ -304,7 +304,7 @@ function reshashCheckMigration(
 
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ConstraintChange,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),

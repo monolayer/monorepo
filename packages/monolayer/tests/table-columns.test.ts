@@ -238,7 +238,7 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumnDataType",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "B001",
@@ -310,7 +310,7 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumnDefault",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "B002",
@@ -351,7 +351,7 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumnDefault",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -410,7 +410,7 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumnDefault",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -469,7 +469,7 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumnDefault",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -526,7 +526,7 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumnNullable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF005",
@@ -579,7 +579,7 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumnNullable",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -661,7 +661,7 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumnDataType",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "B001",
@@ -700,7 +700,7 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumnDefault",
-				phase: "unsafe",
+				phase: "alter",
 				up: [
 					[
 						'await db.withSchema("public").schema',
@@ -720,7 +720,7 @@ describe("Table change migrations", () => {
 				currentTableName: "users",
 				schemaName: "public",
 				type: "changeColumnNullable",
-				phase: "unsafe",
+				phase: "alter",
 				warnings: [
 					{
 						code: "MF005",

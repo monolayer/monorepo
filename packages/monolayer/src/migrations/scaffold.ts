@@ -4,6 +4,7 @@ import nunjucks from "nunjucks";
 import path from "path";
 import { createFile } from "~/create-file.js";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
+import { ChangesetPhase } from "../changeset/types.js";
 import { Migrator } from "../services/migrator.js";
 import { migrationName } from "./migration.js";
 import { dateStringWithMilliseconds } from "./render.js";
@@ -15,7 +16,7 @@ export function scaffoldMigration() {
 		const scaffoldName = `${dateStr}-${name}`;
 		const filePath = path.join(
 			yield* appEnvironmentMigrationsFolder,
-			"unsafe",
+			ChangesetPhase.Alter,
 			`${scaffoldName}.ts`,
 		);
 		const migrator = yield* Migrator;

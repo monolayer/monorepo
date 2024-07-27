@@ -173,7 +173,7 @@ function changeTableNameMigration(
 ) {
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ChangeTableName,
-		phase: ChangesetPhase.Unsafe,
+		phase: ChangesetPhase.Alter,
 		tableName: diff.oldValue,
 		currentTableName: currentTableName(
 			diff.oldValue,
