@@ -53,8 +53,18 @@ export type Migration = {
 	warnings?: Array<ChangeWarning>;
 };
 
+export enum Phase {
+	Expand = "expand",
+	Unsafe = "unsafe",
+	Contract = "contract",
+}
+
 export type MonolayerMigrationInfo = KyselyMigrationInfo &
-	Migration & { phase: string };
+	Migration & { phase: Phase };
+
+export type MonolayerMigrationInfoWithExecutedAt = MonolayerMigrationInfo & {
+	executedAt: Date;
+};
 
 export interface MonolayerMigration extends KyselyMigration {
 	migration: Migration;
@@ -188,26 +198,6 @@ export function isolateTransactionlessChangesets(changesets: Changeset[]) {
 	}, []);
 }
 
-function isolateMigrations(migrations: readonly MonolayerMigrationInfo[]) {
-	const groups = migrations.reduce<MonolayerMigrationInfo[][]>(
-		(acc, migrationInfo) => {
-			const lastGroup = acc.slice(-1)[0];
-			if (
-				lastGroup === undefined ||
-				migrationInfo.transaction ||
-				lastGroup.some((m) => (m.transaction ?? false) === true)
-			) {
-				acc.push([migrationInfo]);
-			} else {
-				lastGroup.push(migrationInfo);
-			}
-			return acc;
-		},
-		[],
-	);
-	return groups;
-}
-
 function isolateMigrations2(
 	migrations: readonly MonolayerMigrationInfoWithPhase[],
 ) {
@@ -230,23 +220,9 @@ function isolateMigrations2(
 	return groups;
 }
 
-export function migrationPlan(
-	migrations: MonolayerMigrationInfo[],
-	target?: string | NoMigrations,
-) {
-	return isolateMigrations(migrations).flatMap((group, idx) => {
-		if (group.length === 0) return [];
-		return {
-			steps: idx === 0 && typeof target === "object" ? Infinity : group.length,
-			migrations: group,
-			transaction: group.some((m) => m.transaction ?? false),
-		};
-	});
-}
-
 export interface MonolayerMigrationInfoWithPhase
 	extends MonolayerMigrationInfo {
-	phase: "unsafe" | "expand" | "contract";
+	phase: Phase;
 }
 
 export interface MigrationPhase {
@@ -299,7 +275,7 @@ function readMigration(folder: string, name: string) {
 export function migrationInfoToMonolayerMigrationInfo(
 	folder: string,
 	migrationInfo: readonly MigrationInfo[],
-	phase: string,
+	phase: Phase,
 ) {
 	return Effect.gen(function* () {
 		const monolayerMigrationInfo: MonolayerMigrationInfo[] = [];

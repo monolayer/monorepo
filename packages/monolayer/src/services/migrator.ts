@@ -14,14 +14,14 @@ import type {
 } from "../migrations/migrator.js";
 import { DbClients } from "./db-clients.js";
 
-interface MigrationStats {
+export interface MigrationStats {
 	all: MonolayerMigrationInfo[];
 	executed: MonolayerMigrationInfo[];
 	pending: MonolayerMigrationInfo[];
 	localPending: {
 		name: string;
 		path: string;
-		phase: string;
+		phase: "expand" | "unsafe" | "contract";
 	}[];
 	byPhase?: MigrationsByPhase;
 }
@@ -41,7 +41,6 @@ export type MigratorInterface = {
 	>;
 	rollback(
 		migrations: MonolayerMigrationInfo[],
-		target: string | NoMigrations,
 	): Effect.Effect<void, ActionError | UnknownException, never>;
 	rollbackAll: Effect.Effect<MigrationResultSet, UnknownException, never>;
 	currentDependency: Effect.Effect<

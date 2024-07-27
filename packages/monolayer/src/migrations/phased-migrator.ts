@@ -5,35 +5,36 @@ import { FileMigrationProvider, type Kysely } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
 import { cwd } from "process";
-import { ActionError } from "~/cli/errors.js";
 import { DbClients } from "~/services/db-clients.js";
 import {
 	Migrator,
 	MigratorLayerProps,
+	type MigrationStats,
 	type MigratorInterface,
 } from "~/services/migrator.js";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { printWarnigns } from "../changeset/print-changeset-summary.js";
 import { type Changeset } from "../changeset/types.js";
 import { type ChangeWarning } from "../changeset/warnings.js";
+import { ActionError } from "../cli/errors.js";
 import { logMigrationResultStatus } from "./apply.js";
 import {
+	Phase,
 	collectResults,
 	extractMigrationOps,
 	isolateTransactionlessChangesets,
 	migrationInfoToMonolayerMigrationInfo,
-	migrationPlan,
 	migrationPlanTwo,
 	splitChangesetsByPhase,
 	type MigrationPhase,
 	type MonolayerMigrationInfo,
+	type MonolayerMigrationInfoWithExecutedAt,
 } from "./migration.js";
 import {
 	MonolayerMigrator,
 	NO_MIGRATIONS,
 	type MigrationResult,
 	type MigrationResultSet,
-	type NoMigrations,
 } from "./migrator.js";
 import { renderToFile } from "./render.js";
 
@@ -63,32 +64,37 @@ export class PhasedMigrator implements MigratorInterface {
 				...(yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "expand"),
 					yield* this.#allExpandMigrations(),
-					"expand",
+					Phase.Expand,
 				)),
 				...(yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "unsafe"),
 					yield* this.#allUnsafeMigrations(),
-					"unsafe",
+					Phase.Unsafe,
 				)),
 				...(yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "contract"),
 					yield* this.#allContractMigrations(),
-					"contract",
+					Phase.Contract,
 				)),
 			];
 			const pending = all.filter((m) => m.executedAt === undefined);
 			return {
 				all,
-				executed: all.filter((m) => m.executedAt !== undefined),
+				executed: all
+					.filter(
+						(m): m is MonolayerMigrationInfoWithExecutedAt =>
+							m.executedAt !== undefined,
+					)
+					.sort((ma, mb) => ma.executedAt.getTime() - mb.executedAt.getTime()),
 				pending,
 				localPending: pending.map((info) => {
 					return {
 						name: info.name,
 						path: path.join(this.folder, info.phase, `${info.name}.ts`),
-						phase: info.phase,
+						phase: info.phase as "expand" | "unsafe" | "contract",
 					};
 				}),
-			};
+			} satisfies MigrationStats;
 		});
 	}
 
@@ -106,15 +112,15 @@ export class PhasedMigrator implements MigratorInterface {
 			const pending = [
 				...stats.expand.pending.map((stat) => ({
 					...stat,
-					phase: "expand" as const,
+					phase: Phase.Expand,
 				})),
 				...stats.unsafe.pending.map((stat) => ({
 					...stat,
-					phase: "unsafe" as const,
+					phase: Phase.Unsafe,
 				})),
 				...stats.contract.pending.map((stat) => ({
 					...stat,
-					phase: "contract" as const,
+					phase: Phase.Contract,
 				})),
 			];
 
@@ -125,23 +131,22 @@ export class PhasedMigrator implements MigratorInterface {
 				...migrationPlanTwo(
 					stats.expand.pending.map((stat) => ({
 						...stat,
-						phase: "expand" as const,
+						phase: Phase.Expand,
 					})),
 				),
 				...migrationPlanTwo(
 					stats.unsafe.pending.map((stat) => ({
 						...stat,
-						phase: "unsafe" as const,
+						phase: Phase.Unsafe,
 					})),
 				),
 				...migrationPlanTwo(
 					stats.contract.pending.map((stat) => ({
 						...stat,
-						phase: "contract" as const,
+						phase: Phase.Contract,
 					})),
 				),
 			]) {
-				// for (const planPhase of migrationPlanTwo(pending)) {
 				const migrationResult = yield* this.#migratePhase(planPhase, "Up");
 				results = [...results, migrationResult];
 
@@ -234,17 +239,17 @@ export class PhasedMigrator implements MigratorInterface {
 				expand: yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "expand"),
 					yield* this.#allExpandMigrations(),
-					"expand",
+					Phase.Expand,
 				),
 				unsafe: yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "unsafe"),
 					yield* this.#allUnsafeMigrations(),
-					"unsafe",
+					Phase.Unsafe,
 				),
 				contract: yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, "contract"),
 					yield* this.#allContractMigrations(),
-					"contract",
+					Phase.Contract,
 				),
 			};
 			return {
@@ -323,21 +328,18 @@ export class PhasedMigrator implements MigratorInterface {
 		});
 	}
 
-	rollback(
-		migrations: MonolayerMigrationInfo[],
-		target: string | NoMigrations,
-	) {
+	rollback(migrations: MonolayerMigrationInfo[]) {
 		return Effect.gen(this, function* () {
-			const groups = migrationPlan(migrations, target).reverse();
-			for (const phase of groups) {
-				this.unsafeInstance.migrateWithTransaction = phase.transaction;
-				const migrate = Effect.tryPromise(() =>
-					this.unsafeInstance.migrate(() => ({
-						direction: "Down",
-						step: phase.steps,
-					})),
+			for (const migration of migrations) {
+				const { error, results } = yield* this.#migratePhase(
+					{
+						steps: 1,
+						migrations: [migration],
+						transaction: migration.transaction ?? true,
+						phase: migration.phase,
+					},
+					"Down",
 				);
-				const { error, results } = yield* migrate;
 				const migrationSuccess = results !== undefined && results.length > 0;
 				if (!migrationSuccess) {
 					for (const result of results!) {
@@ -356,6 +358,7 @@ export class PhasedMigrator implements MigratorInterface {
 					);
 				}
 			}
+			return true;
 		});
 	}
 

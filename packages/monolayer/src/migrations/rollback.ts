@@ -6,6 +6,7 @@ import { ExitWithSuccess } from "~/cli/errors.js";
 import {
 	migrationInfoToMigration,
 	type Migration,
+	type MonolayerMigrationInfo,
 } from "~/migrations/migration.js";
 import {
 	confirmDeletePendingMigrationsPrompt,
@@ -13,9 +14,9 @@ import {
 	confirmRollbackWithScaffoldedMigrationsPrompt,
 	rollbackMigrationPrompt,
 } from "~/prompts/rollback-migration.js";
-import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
 import { Migrator } from "../services/migrator.js";
+import { appEnvironmentMigrationsFolder } from "../state/app-environment.js";
 import { deletePendingMigrations, pendingMigrations } from "./pending.js";
 
 export const rollback = Effect.gen(function* () {
@@ -24,7 +25,7 @@ export const rollback = Effect.gen(function* () {
 	const executedMigrations = stats.executed;
 	if (executedMigrations.length === 0) {
 		p.log.warn("Nothing to rollback. There are no migrations.");
-		yield* Effect.fail(new ExitWithSuccess({ cause: "No migraitons" }));
+		yield* Effect.fail(new ExitWithSuccess({ cause: "No migrations" }));
 	}
 
 	p.log.info(`You have ${executedMigrations.length} migrations applied.`);
@@ -42,9 +43,11 @@ export const rollback = Effect.gen(function* () {
 		migrationInfoToMigration(migrationsToRollback),
 	);
 
-	migrationsToRollback.pop();
+	if (promptResult.downTo !== NO_MIGRATIONS) {
+		migrationsToRollback.shift();
+	}
 
-	yield* migrator.rollback(migrationsToRollback, promptResult.downTo);
+	yield* migrator.rollback(migrationsToRollback);
 
 	p.log.info("Pending migrations after rollback:");
 
@@ -142,12 +145,12 @@ function confirmRollbackWithScafoldedMigrations(migrations: Migration[]) {
 	});
 }
 
-function migrationNameAndPath(migrations: MigrationInfo[]) {
+function migrationNameAndPath(migrations: MonolayerMigrationInfo[]) {
 	return Effect.gen(function* () {
 		const folder = yield* appEnvironmentMigrationsFolder;
 		return migrations.map((rev) => ({
 			name: rev.name,
-			path: path.join(folder, `${rev.name}.ts`),
+			path: path.join(folder, rev.phase, `${rev.name}.ts`),
 		}));
 	});
 }
