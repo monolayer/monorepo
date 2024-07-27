@@ -7,7 +7,7 @@ import type {
 	MonolayerMigrationInfo,
 } from "~/migrations/migration.js";
 import { type AppEnvironment } from "~/state/app-environment.js";
-import type { Changeset } from "../changeset/types.js";
+import type { Changeset, ChangesetPhase } from "../changeset/types.js";
 import type {
 	MigrationResultSet,
 	NoMigrations,
@@ -21,7 +21,7 @@ export interface MigrationStats {
 	localPending: {
 		name: string;
 		path: string;
-		phase: "expand" | "unsafe" | "contract";
+		phase: ChangesetPhase;
 	}[];
 	byPhase?: MigrationsByPhase;
 }

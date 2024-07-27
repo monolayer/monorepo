@@ -8,7 +8,11 @@ import path from "path";
 import { ActionError } from "~/cli/errors.js";
 import { migrationNamePrompt } from "~/prompts/migration-name.js";
 import { isExtendedMigration } from "~/services/migrator.js";
-import { MigrationOpPriority, type Changeset } from "../changeset/types.js";
+import {
+	MigrationOpPriority,
+	type Changeset,
+	type ChangesetPhase,
+} from "../changeset/types.js";
 import type { ChangeWarning } from "../changeset/warnings.js";
 import { promptCancelError } from "../cli/cli-action.js";
 import { schemaDependencies } from "../introspection/dependencies.js";
@@ -60,7 +64,7 @@ export enum Phase {
 }
 
 export type MonolayerMigrationInfo = KyselyMigrationInfo &
-	Migration & { phase: Phase };
+	Migration & { phase: ChangesetPhase };
 
 export type MonolayerMigrationInfoWithExecutedAt = MonolayerMigrationInfo & {
 	executedAt: Date;
@@ -222,14 +226,14 @@ function isolateMigrations2(
 
 export interface MonolayerMigrationInfoWithPhase
 	extends MonolayerMigrationInfo {
-	phase: Phase;
+	phase: ChangesetPhase;
 }
 
 export interface MigrationPhase {
 	steps: number;
 	migrations: MonolayerMigrationInfoWithPhase[];
 	transaction: boolean;
-	phase: "unsafe" | "expand" | "contract";
+	phase: ChangesetPhase;
 }
 
 export function migrationPlanTwo(
@@ -275,7 +279,7 @@ function readMigration(folder: string, name: string) {
 export function migrationInfoToMonolayerMigrationInfo(
 	folder: string,
 	migrationInfo: readonly MigrationInfo[],
-	phase: Phase,
+	phase: ChangesetPhase,
 ) {
 	return Effect.gen(function* () {
 		const monolayerMigrationInfo: MonolayerMigrationInfo[] = [];
