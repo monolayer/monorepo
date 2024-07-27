@@ -1,12 +1,8 @@
-import { Effect, Ref } from "effect";
 import { readFileSync } from "fs";
 import nunjucks from "nunjucks";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { loadEnv } from "~/cli/cli-action.js";
 import { dumpDatabaseStructureTask } from "~/database/dump.js";
-import { AppEnvironment } from "~/state/app-environment.js";
-import { layers } from "~tests/__setup__/helpers/layers.js";
-import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -25,16 +21,7 @@ describe("dumpDatabaseStructure", () => {
 	test<ProgramContext>("dumps database structure", async (context) => {
 		await context.migrator.migrateUp();
 
-		await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(
-					programWithErrorCause(dumpDatabaseStructureTask),
-					layers,
-				),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
+		await runProgramWithErrorCause(dumpDatabaseStructureTask);
 
 		const dump = readFileSync(
 			`${context.folder}/db/dumps/structure.default.sql`,

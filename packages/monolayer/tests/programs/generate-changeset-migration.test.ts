@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { Effect, Ref } from "effect";
 import {
 	mkdirSync,
 	readFileSync,
@@ -10,17 +9,14 @@ import {
 import path from "path";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { loadEnv } from "~/cli/cli-action.js";
 import { generateMigration } from "~/migrations/generate.js";
-import { AppEnvironment } from "~/state/app-environment.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import {
 	contractMigrationPath,
 	expandMigrationPath,
 	unsafeMigrationPath,
 } from "~tests/__setup__/helpers/default-migration-path.js";
-import { layers } from "~tests/__setup__/helpers/layers.js";
-import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -49,13 +45,7 @@ describe("generateChangesetMigration", () => {
 
 			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
-			await Effect.runPromise(
-				Effect.provideServiceEffect(
-					Effect.provide(programWithErrorCause(generateMigration()), layers),
-					AppEnvironment,
-					Ref.make(await loadEnv("development", "default")),
-				),
-			);
+			await runProgramWithErrorCause(generateMigration());
 
 			const migrationFiles = readdirSync(expandMigrationPath(context.folder));
 
@@ -105,13 +95,7 @@ describe("generateChangesetMigration", () => {
 				configurations,
 			);
 
-			await Effect.runPromise(
-				Effect.provideServiceEffect(
-					Effect.provide(programWithErrorCause(generateMigration()), layers),
-					AppEnvironment,
-					Ref.make(await loadEnv("development", "default")),
-				),
-			);
+			await runProgramWithErrorCause(generateMigration());
 
 			const migrationFiles = readdirSync(expandMigrationPath(context.folder));
 
@@ -150,13 +134,7 @@ describe("generateChangesetMigration", () => {
 		test<ProgramContext>("returns a changeset list", async (context) => {
 			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
-			await Effect.runPromise(
-				Effect.provideServiceEffect(
-					Effect.provide(programWithErrorCause(generateMigration()), layers),
-					AppEnvironment,
-					Ref.make(await loadEnv("development", "default")),
-				),
-			);
+			await runProgramWithErrorCause(generateMigration());
 
 			const expandFiles = readdirSync(expandMigrationPath(context.folder));
 			const unsafeFiles = readdirSync(unsafeMigrationPath(context.folder));
@@ -202,13 +180,7 @@ describe("generateChangesetMigration", () => {
 				configurations,
 			);
 
-			await Effect.runPromise(
-				Effect.provideServiceEffect(
-					Effect.provide(programWithErrorCause(generateMigration()), layers),
-					AppEnvironment,
-					Ref.make(await loadEnv("development", "default")),
-				),
-			);
+			await runProgramWithErrorCause(generateMigration());
 
 			const expandFiles = readdirSync(expandMigrationPath(context.folder));
 			const unsafeFiles = readdirSync(unsafeMigrationPath(context.folder));

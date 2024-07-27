@@ -1,12 +1,8 @@
-import { Effect, Ref } from "effect";
 import { unlinkSync, writeFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { loadEnv } from "~/cli/cli-action.js";
 import { seed } from "~/database/seed.js";
-import { AppEnvironment } from "~/state/app-environment.js";
-import { layers } from "~tests/__setup__/helpers/layers.js";
-import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -27,21 +23,8 @@ describe("seed", () => {
 
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
-		await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(programWithErrorCause(seed({})), layers),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
-
-		await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(programWithErrorCause(seed({})), layers),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
+		await runProgramWithErrorCause(seed({}));
+		await runProgramWithErrorCause(seed({}));
 
 		const result = await context.kysely
 			.selectFrom("regulus_mint")
@@ -60,27 +43,8 @@ describe("seed", () => {
 			anotherSeedFile,
 		);
 
-		await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(
-					programWithErrorCause(seed({ seedFile: "anotherSeed.ts" })),
-					layers,
-				),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
-
-		await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(
-					programWithErrorCause(seed({ seedFile: "anotherSeed.ts" })),
-					layers,
-				),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
+		await runProgramWithErrorCause(seed({ seedFile: "anotherSeed.ts" }));
+		await runProgramWithErrorCause(seed({ seedFile: "anotherSeed.ts" }));
 
 		const result = await context.kysely
 			.selectFrom("regulus_mint")
@@ -101,23 +65,10 @@ describe("seed", () => {
 
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
-		await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(programWithErrorCause(seed({})), layers),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
+		await runProgramWithErrorCause(seed({}));
 
-		await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(
-					programWithErrorCause(seed({ replant: true, disableWarnings: true })),
-					layers,
-				),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
+		await runProgramWithErrorCause(
+			seed({ replant: true, disableWarnings: true }),
 		);
 
 		const result = await context.kysely
@@ -131,14 +82,7 @@ describe("seed", () => {
 
 	test<ProgramContext>("fails with pending schema migrations", async () => {
 		expect(
-			async () =>
-				await Effect.runPromise(
-					Effect.provideServiceEffect(
-						Effect.provide(programWithErrorCause(seed({})), layers),
-						AppEnvironment,
-						Ref.make(await loadEnv("development", "default")),
-					),
-				),
+			async () => await runProgramWithErrorCause(seed({})),
 		).rejects.toThrowError();
 	});
 
@@ -149,14 +93,7 @@ describe("seed", () => {
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
 		expect(
-			async () =>
-				await Effect.runPromise(
-					Effect.provideServiceEffect(
-						Effect.provide(programWithErrorCause(seed({})), layers),
-						AppEnvironment,
-						Ref.make(await loadEnv("development", "default")),
-					),
-				),
+			async () => await runProgramWithErrorCause(seed({})),
 		).rejects.toThrowError('process.exit unexpectedly called with "1"');
 	});
 
@@ -166,14 +103,7 @@ describe("seed", () => {
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), "");
 
 		expect(
-			async () =>
-				await Effect.runPromise(
-					Effect.provideServiceEffect(
-						Effect.provide(programWithErrorCause(seed({})), layers),
-						AppEnvironment,
-						Ref.make(await loadEnv("development", "default")),
-					),
-				),
+			async () => await runProgramWithErrorCause(seed({})),
 		).rejects.toThrowError();
 	});
 });

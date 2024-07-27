@@ -1,11 +1,7 @@
 import captureConsole from "capture-console";
-import { Effect, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { loadEnv } from "~/cli/cli-action.js";
 import { pendingMigrations } from "~/migrations/pending.js";
-import { AppEnvironment } from "~/state/app-environment.js";
-import { layers } from "~tests/__setup__/helpers/layers.js";
-import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -29,13 +25,7 @@ describe("pendingMigrations", () => {
 			output += stdout;
 		});
 
-		const pending = await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(programWithErrorCause(pendingMigrations), layers),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
+		const pending = await runProgramWithErrorCause(pendingMigrations);
 
 		captureConsole.stopCapture(process.stdout);
 

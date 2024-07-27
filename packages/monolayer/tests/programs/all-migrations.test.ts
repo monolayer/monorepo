@@ -1,17 +1,14 @@
-import { Effect, Ref } from "effect";
+import { Effect } from "effect";
+import type { Equal, Expect } from "type-testing";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {
 	setupProgramContext,
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
-import { loadEnv } from "../../src/cli/cli-action.js";
-import { Migrator } from "../../src/services/migrator.js";
-import { AppEnvironment } from "../../src/state/app-environment.js";
-import { layers } from "../__setup__/helpers/layers.js";
-import { programWithErrorCause } from "../__setup__/helpers/run-program.js";
 import type { MonolayerMigrationInfo } from "../../src/migrations/migration.js";
-import type { Equal, Expect } from "type-testing";
+import { Migrator } from "../../src/services/migrator.js";
+import { runProgramWithErrorCause } from "../__setup__/helpers/run-program.js";
 
 describe("allMigrations", () => {
 	beforeEach<ProgramContext>(async (context) => {
@@ -30,12 +27,8 @@ describe("allMigrations", () => {
 			const migrator = yield* Migrator;
 			return (yield* migrator.migrationStats).all;
 		});
-		const program = Effect.provideServiceEffect(
-			Effect.provide(programWithErrorCause(allMigrations), layers),
-			AppEnvironment,
-			Ref.make(await loadEnv("development", "default")),
-		);
-		const result = await Effect.runPromise(program);
+
+		const result = await runProgramWithErrorCause(allMigrations);
 		type resultType = typeof result;
 		type Expected = MonolayerMigrationInfo[];
 		const isEqual: Expect<Equal<resultType, Expected>> = true;

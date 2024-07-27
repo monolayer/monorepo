@@ -34,6 +34,12 @@ export function dbClientsLayer() {
 				yield* appEnvironmentPgConfig,
 				(yield* appEnvironmentCamelCasePlugin).enabled,
 			);
+			yield* Effect.addFinalizer(() =>
+				Effect.gen(function* () {
+					yield* Effect.promise(() => props.pgPool.end());
+					yield* Effect.promise(() => props.pgAdminPool.end());
+				}),
+			);
 			return {
 				pgPool: props.pgPool,
 				pgAdminPool: props.pgAdminPool,

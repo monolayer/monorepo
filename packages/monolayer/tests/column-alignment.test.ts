@@ -1,13 +1,8 @@
 /* eslint-disable max-lines */
-import { Effect, Layer, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { loadEnv } from "~/cli/cli-action.js";
 import { alignColumns, introspectAlignment } from "~/database/alignment.js";
-import { phasedMigratorLayer } from "~/migrations/phased-migrator.js";
-import { dbClientsLayer } from "~/services/db-clients.js";
-import { AppEnvironment } from "~/state/app-environment.js";
 import { type ColumnInfoFactoryOptions } from "./__setup__/helpers/factories/column-info-factory.js";
-import { programWithErrorCause } from "./__setup__/helpers/run-program.js";
+import { runProgramWithErrorCause } from "./__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -24,10 +19,6 @@ describe("column aligner", () => {
 	});
 
 	test.only("orders by typlen desc, non nullable", async () => {
-		const layersWithDefaultConfiguration = phasedMigratorLayer().pipe(
-			Layer.provideMerge(dbClientsLayer()),
-		);
-
 		const columns = [
 			column({ columnName: "bigSerial", dataType: "bigserial" }),
 			column({ columnName: "bigInt", dataType: "bigint" }),
@@ -96,16 +87,7 @@ describe("column aligner", () => {
 			column({ columnName: "xml", dataType: "xml", isNullable: false }),
 		];
 
-		const typeAlignments = await Effect.runPromise(
-			Effect.provideServiceEffect(
-				Effect.provide(
-					programWithErrorCause(introspectAlignment),
-					layersWithDefaultConfiguration,
-				),
-				AppEnvironment,
-				Ref.make(await loadEnv("development", "default")),
-			),
-		);
+		const typeAlignments = await runProgramWithErrorCause(introspectAlignment);
 		const aligned = alignColumns(columns, typeAlignments);
 		const alignedNames = aligned.map((column) => column.columnName);
 
