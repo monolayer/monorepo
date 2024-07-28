@@ -24,7 +24,7 @@ describe("dumpDatabaseStructure", () => {
 		await runProgramWithErrorCause(dumpDatabaseStructureTask);
 
 		const dump = readFileSync(
-			`${context.folder}/db/dumps/structure.default.sql`,
+			`${context.folder}/monolayer/dumps/structure.default.sql`,
 			"utf-8",
 		);
 

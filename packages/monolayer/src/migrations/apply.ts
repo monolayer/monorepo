@@ -107,7 +107,11 @@ export function applyMigrations({
 			);
 		}
 
-		if (migrationError === undefined && migrationError !== undefined) {
+		if (
+			migrationError === undefined &&
+			migrationResults !== undefined &&
+			migrationResults.length !== 0
+		) {
 			yield* dumpDatabaseStructureTask;
 			return true;
 		} else {

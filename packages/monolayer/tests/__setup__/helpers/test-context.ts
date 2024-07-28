@@ -80,7 +80,7 @@ export async function setupProgramContext(
 	mkdirSync(
 		path.join(
 			context.folder,
-			"db",
+			"monolayer",
 			"migrations",
 			"default",
 			ChangesetPhase.Alter,
@@ -92,7 +92,7 @@ export async function setupProgramContext(
 	mkdirSync(
 		path.join(
 			context.folder,
-			"db",
+			"monolayer",
 			"migrations",
 			"default",
 			ChangesetPhase.Expand,
@@ -104,7 +104,7 @@ export async function setupProgramContext(
 	mkdirSync(
 		path.join(
 			context.folder,
-			"db",
+			"monolayer",
 			"migrations",
 			"default",
 			ChangesetPhase.Contract,
@@ -186,7 +186,7 @@ export type ProgramContext = {
 function copyMigration(
 	migrationName: string,
 	context: ProgramContext | DbContext,
-	migrationsFolder = `db/migrations/default/${ChangesetPhase.Alter}`,
+	migrationsFolder = `monolayer/migrations/default/${ChangesetPhase.Alter}`,
 ) {
 	copyFileSync(
 		`tests/__setup__/fixtures/migrations/${migrationName}.ts`,
@@ -197,7 +197,7 @@ function copyMigration(
 export function copyMigrations(
 	migrations: string[],
 	context: ProgramContext | DbContext,
-	migrationsFolder = `db/migrations/default/${ChangesetPhase.Alter}`,
+	migrationsFolder = `monolayer/migrations/default/${ChangesetPhase.Alter}`,
 ) {
 	migrations.forEach((migration) => {
 		copyMigration(migration, context, migrationsFolder);
@@ -214,7 +214,7 @@ export async function dbAndMigrator(context: ProgramContext) {
 				path,
 				migrationFolder: path.join(
 					context.folder,
-					"db",
+					"monolayer",
 					"migrations",
 					"default",
 					ChangesetPhase.Alter,

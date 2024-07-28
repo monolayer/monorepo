@@ -82,12 +82,7 @@ export const appEnvironmentCamelCasePlugin = Effect.gen(function* () {
 
 export const appEnvironmentMigrationsFolder = Effect.gen(function* () {
 	const state = yield* appEnvironment;
-	return path.join(
-		cwd(),
-		state.folder!,
-		"migrations",
-		state.configurationName!,
-	);
+	return path.join(cwd(), "monolayer", "migrations", state.configurationName!);
 });
 
 export function monolayerFolder() {

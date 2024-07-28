@@ -5,7 +5,7 @@ import { execa } from "execa";
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import pgConnectionString from "pg-connection-string";
-import { env } from "process";
+import { cwd, env } from "process";
 import { Writable, type WritableOptions } from "stream";
 import { pipeCommandStdoutToWritable } from "~/cli/pipe-command-stdout-to-writable.js";
 import { spinnerTask } from "~/cli/spinner-task.js";
@@ -59,8 +59,10 @@ const checkPgDumpExecutableExists = Effect.gen(function* () {
 
 const databaseDumpPath = Effect.gen(function* () {
 	const env = yield* appEnvironment;
+
 	return path.join(
-		env.folder,
+		cwd(),
+		"monolayer",
 		"dumps",
 		env.name === "development"
 			? `structure.${env.configurationName}.sql`

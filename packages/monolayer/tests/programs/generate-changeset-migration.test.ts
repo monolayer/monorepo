@@ -54,7 +54,7 @@ describe("generateChangesetMigration", () => {
 			const migration = readFileSync(
 				path.join(
 					context.folder,
-					"db",
+					"monolayer",
 					"migrations",
 					"default",
 					"expand",
@@ -104,7 +104,7 @@ describe("generateChangesetMigration", () => {
 			const migration = readFileSync(
 				path.join(
 					context.folder,
-					"db",
+					"monolayer",
 					"migrations",
 					"default",
 					"expand",
@@ -147,7 +147,7 @@ describe("generateChangesetMigration", () => {
 			const migration = readFileSync(
 				path.join(
 					context.folder,
-					"db",
+					"monolayer",
 					"migrations",
 					"default",
 					"expand",
@@ -193,7 +193,7 @@ describe("generateChangesetMigration", () => {
 			const migration = readFileSync(
 				path.join(
 					context.folder,
-					"db",
+					"monolayer",
 					"migrations",
 					"default",
 					"expand",
