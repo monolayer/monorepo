@@ -16,6 +16,7 @@ function promptFolderSelection() {
 					p.text({
 						message: "Where should the db folder be created?",
 						placeholder: "app/db",
+						defaultValue: "app/db",
 						validate: (value) => {
 							let path = value;
 							if (path === "") path = "app/db";
