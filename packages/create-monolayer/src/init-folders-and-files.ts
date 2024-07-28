@@ -22,7 +22,7 @@ export const initFolderAndFiles = Effect.gen(function* () {
 				true,
 			);
 			await createDir(dbFolderPath, true);
-			await createFile(`${dbFolderPath}/db.ts`, dbTemplate.render(), true);
+			await createFile(`${dbFolderPath}/client.ts`, dbTemplate.render(), true);
 			await createFile(
 				`${dbFolderPath}/schema.ts`,
 				schemaTemplate.render(),
@@ -33,13 +33,7 @@ export const initFolderAndFiles = Effect.gen(function* () {
 				configurationTemplate.render(),
 				true,
 			);
-			await createFile(
-				`${dbFolderPath}/extensions.ts`,
-				extensionsTemplate.render(),
-				true,
-			);
 			await createFile(`${dbFolderPath}/seed.ts`, seedTemplate.render(), true);
-			await createDir(`${dbFolderPath}/migrations`, true);
 
 			const nextSteps = `1) Edit the default configuration in \`${path.join(dbFolderPath, "configuration.ts")}\`.
 2) Run \`npx monolayer db:create\` to create the database.
@@ -99,21 +93,13 @@ export default monolayer;
 export const configurationTemplate =
 	nunjucks.compile(`import { type Configuration } from "monolayer/config";
 import { dbSchema } from "./schema";
-import { dbExtensions } from "./extensions";
 
 export default {
 	schemas: [dbSchema],
-	extensions: dbExtensions,
+	extensions: [],
 	connections: {
 		development: {
-			// With credentials
-			database: "#database_development",
-			user: "#user",
-			password: "#password",
-			host: "#host",
-			port: 5432,
-			// With connection string
-			// connectionString: "#connection_string",
+			connectionString: "#connection_string",
 		},
 		production: {
 			connectionString: process.env.DATABASE_URL,
@@ -130,7 +116,7 @@ import { kyselyConfig } from "monolayer/config";
 import configuration from "./configuration";
 import { type DB } from "./schema";
 
-export const defaultDb = new Kysely<DB>(
+export const defaultDbClient = new Kysely<DB>(
 	kyselyConfig(configuration, process.env.NODE_ENV || "development")
 );
 `);
@@ -148,8 +134,4 @@ export const seedTemplate =
 import type { DB } from "./schema";
 
 export async function seed(db: Kysely<DB>){}
-`);
-
-export const extensionsTemplate =
-	nunjucks.compile(`export const dbExtensions = [];
 `);
