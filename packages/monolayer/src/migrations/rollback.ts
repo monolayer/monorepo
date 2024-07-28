@@ -104,7 +104,7 @@ function migrationsForPrompt(
 		value: `rollback all migrations (${migrations.length})`,
 	});
 	migrationValues.pop();
-	return migrationValues.slice(-limit);
+	return migrationValues.slice(-limit).reverse();
 }
 
 function promptRollback(migrations: readonly MigrationInfo[], limit: number) {
