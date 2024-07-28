@@ -19,7 +19,9 @@ export function migrateAlterAction(program: Command) {
 		)
 		.action(async (opts) => {
 			await cliAction("monolayer migrate alter", opts, [
-				applyMigrations(ChangesetPhase.Alter),
+				applyMigrations({
+					phase: ChangesetPhase.Alter,
+				}),
 			]);
 		});
 }

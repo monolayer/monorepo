@@ -48,6 +48,14 @@ export type MigratorInterface = {
 		UnknownException | ActionError,
 		Migrator
 	>;
+	migrateTargetUpInPhase: (
+		phase: ChangesetPhase,
+		migrationName: string,
+	) => Effect.Effect<
+		MigrationResultSet,
+		UnknownException | ActionError,
+		Migrator
+	>;
 	rollback(
 		migrations: MonolayerMigrationInfo[],
 	): Effect.Effect<void, ActionError | UnknownException, never>;

@@ -27,7 +27,7 @@ export function syncAction(program: Command) {
 				generateMigration().pipe(
 					Effect.tap((result) =>
 						Effect.if(result.length !== 0, {
-							onTrue: () => applyMigrations("all"),
+							onTrue: () => applyMigrations({ phase: "all" }),
 							onFalse: () => Effect.succeed(true),
 						}),
 					),

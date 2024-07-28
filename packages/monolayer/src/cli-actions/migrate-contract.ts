@@ -17,9 +17,13 @@ export function migrateContractAction(program: Command) {
 			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
+		.option("-m, --migration <migration-name-name>", "migration name")
 		.action(async (opts) => {
 			await cliAction("monolayer migrate contract", opts, [
-				applyMigrations(ChangesetPhase.Contract),
+				applyMigrations({
+					phase: ChangesetPhase.Contract,
+					migrationName: opts.migration,
+				}),
 			]);
 		});
 }

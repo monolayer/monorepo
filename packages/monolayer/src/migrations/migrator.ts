@@ -693,6 +693,62 @@ export class MonolayerMigrator {
 		return { results };
 	}
 
+	async migrateUpNamedMigration(
+		migration: NamedMigration,
+	): Promise<MigrationResultSet> {
+		const adapter = this.#props.db.getExecutor().adapter;
+
+		const lockOptions: MigrationLockOptions = Object.freeze({
+			lockTable:
+				this.#props.migrationLockTableName ?? DEFAULT_MIGRATION_LOCK_TABLE,
+			lockRowId: MIGRATION_LOCK_ID,
+			lockTableSchema: this.#props.migrationTableSchema,
+		});
+
+		const db = this.#props.db;
+		try {
+			await this.#ensureMigrationTablesExists();
+			adapter.acquireMigrationLock(db, lockOptions);
+
+			await this.#props.db.transaction().execute(async (trx) => {
+				await migration.up(this.#props.db);
+				await trx
+					.withPlugin(this.#schemaPlugin)
+					.insertInto(this.#migrationTable)
+					.values({
+						name: migration.name,
+						timestamp: new Date().toISOString(),
+					})
+					.execute();
+			});
+			return {
+				results: [
+					{
+						migrationName: migration.name,
+						direction: "Up",
+						status: "Success",
+					},
+				],
+			};
+		} catch (error) {
+			const resultSetError = new MigrationResultSetError({
+				error,
+				results: [
+					{
+						migrationName: migration.name,
+						direction: "Up",
+						status: "Error",
+					},
+				],
+			});
+			return {
+				error: resultSetError,
+			};
+		} finally {
+			await adapter.releaseMigrationLock(db, lockOptions);
+		}
+	}
+
 	async #createIfNotExists(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		qb: CreateTableBuilder<any, any> | CreateSchemaBuilder,

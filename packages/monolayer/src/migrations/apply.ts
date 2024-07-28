@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import type { MigrationResult } from "kysely";
@@ -8,7 +9,34 @@ import { ChangesetPhase } from "../changeset/types.js";
 import { Migrator } from "../services/migrator.js";
 import { checkNoPendingMigrations } from "./pending.js";
 
-export function applyMigrations(phase: ChangesetPhase | "all") {
+interface ApplyExpandMigrations {
+	phase: ChangesetPhase.Expand;
+	migrationName?: undefined;
+}
+
+interface ApplyAlterMigrations {
+	phase: ChangesetPhase.Alter;
+	migrationName?: undefined;
+}
+
+interface ApplyContractMigrations {
+	phase: ChangesetPhase.Contract;
+	migrationName?: string;
+}
+
+interface ApplyAllMigrations {
+	phase: "all";
+	migrationName?: undefined;
+}
+
+export function applyMigrations({
+	phase,
+	migrationName,
+}:
+	| ApplyExpandMigrations
+	| ApplyAlterMigrations
+	| ApplyContractMigrations
+	| ApplyAllMigrations) {
 	return Effect.gen(function* () {
 		const migrator = yield* Migrator;
 		let noPending: boolean = true;
@@ -40,24 +68,46 @@ export function applyMigrations(phase: ChangesetPhase | "all") {
 			);
 		}
 
-		const { error, results } =
-			phase === "all"
-				? yield* migrator.migrateToLatest(true)
-				: yield* migrator.migratePhaseToLatest(phase, true);
+		let migrationError: unknown;
+		let migrationResults: MigrationResult[] | undefined;
 
-		if (results !== undefined && results.length > 0) {
-			for (const result of results) {
-				yield* logMigrationResultStatus(result, error, "up");
+		switch (phase) {
+			case "all":
+				({ error: migrationError, results: migrationResults } =
+					yield* migrator.migrateToLatest(true));
+				break;
+			case ChangesetPhase.Expand:
+				({ error: migrationError, results: migrationResults } =
+					yield* migrator.migratePhaseToLatest(phase, true));
+				break;
+			case ChangesetPhase.Alter:
+				({ error: migrationError, results: migrationResults } =
+					yield* migrator.migratePhaseToLatest(phase, true));
+				break;
+			case ChangesetPhase.Contract:
+				({ error: migrationError, results: migrationResults } =
+					migrationName !== undefined
+						? yield* migrator.migrateTargetUpInPhase(phase, migrationName)
+						: yield* migrator.migratePhaseToLatest(phase, true));
+				break;
+		}
+
+		if (migrationResults !== undefined && migrationResults.length > 0) {
+			for (const result of migrationResults) {
+				yield* logMigrationResultStatus(result, migrationError, "up");
 			}
 		}
 
-		if (results !== undefined && results.length === 0) {
+		if (migrationResults !== undefined && migrationResults.length === 0) {
 			p.log.info("No migrations to apply.");
 		}
-		if (error !== undefined) {
-			yield* Effect.fail(new UnknownActionError("Migration error", error));
+		if (migrationError !== undefined) {
+			yield* Effect.fail(
+				new UnknownActionError("Migration error", migrationError),
+			);
 		}
-		if (error === undefined && results !== undefined) {
+
+		if (migrationError === undefined && migrationError !== undefined) {
 			yield* dumpDatabaseStructureTask;
 			return true;
 		} else {

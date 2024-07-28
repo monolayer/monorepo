@@ -247,6 +247,33 @@ export class PhasedMigrator implements MigratorInterface {
 		});
 	}
 
+	migrateTargetUpInPhase(phase: ChangesetPhase, migrationName: string) {
+		return Effect.gen(this, function* () {
+			const stats = yield* this.migrationStatsByPhase;
+			const namedPending = stats[phase].pending.find(
+				(m) => m.name === migrationName,
+			);
+			if (namedPending === undefined) {
+				yield* Effect.fail(
+					new ActionError(
+						"Migration not found",
+						`Migration ${migrationName} not found in phase ${phase}`,
+					),
+				);
+			}
+			const migrator = this.#migratorForPhase(phase);
+			console.log("migrateTargetInPhase", phase, migrationName);
+			migrator.migrateWithTransaction = true;
+			const result = yield* Effect.tryPromise(() =>
+				migrator.migrateUpNamedMigration({
+					...namedPending!.migration,
+					name: migrationName,
+				}),
+			);
+			return collectResults([result]);
+		});
+	}
+
 	#printWarnings(pendingMigrations: MonolayerMigrationInfo[]) {
 		printWarnigns(
 			pendingMigrations

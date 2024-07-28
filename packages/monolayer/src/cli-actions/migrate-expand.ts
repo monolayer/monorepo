@@ -19,7 +19,7 @@ export function migrateExpandAction(program: Command) {
 		)
 		.action(async (opts) => {
 			await cliAction("monolayer migrate expand", opts, [
-				applyMigrations(ChangesetPhase.Expand),
+				applyMigrations({ phase: ChangesetPhase.Expand }),
 			]);
 		});
 }

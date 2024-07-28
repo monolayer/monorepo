@@ -17,6 +17,8 @@ export function migrateAction(program: Command) {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("monolayer migrate", opts, [applyMigrations("all")]);
+			await cliAction("monolayer migrate", opts, [
+				applyMigrations({ phase: "all" }),
+			]);
 		});
 }
