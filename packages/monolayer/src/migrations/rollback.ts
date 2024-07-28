@@ -54,7 +54,7 @@ export const rollback = Effect.gen(function* () {
 		migrationsToRollback.shift();
 	}
 
-	yield* migrator.rollback(migrationsToRollback);
+	yield* migrator.rollback(migrationsToRollback.reverse());
 
 	p.log.info("Pending migrations after rollback:");
 
