@@ -357,7 +357,6 @@ function generateFirstMigration(
 		removeSelectConfigLine(initialStructurePath);
 		rmSync(path.dirname(dumpPath), { recursive: true, force: true });
 		const content = nunjucks.compile(migrationTemplate).render({
-			dependsOn: "NO_DEPENDENCY",
 			name,
 			initialStructurePath,
 		});
@@ -378,12 +377,11 @@ function removeSelectConfigLine(filePath: string): void {
 
 const migrationTemplate = `import { Kysely, sql } from "kysely";
 import { readFileSync } from "fs";
-import { NO_DEPENDENCY, Migration } from "monolayer/migration";
+import { Migration } from "monolayer/migration";
 
 export const migration: Migration = {
   name: "{{ name }}",
 	transaction: true,
-	dependsOn: NO_DEPENDENCY,
 	scaffold: false,
 };
 

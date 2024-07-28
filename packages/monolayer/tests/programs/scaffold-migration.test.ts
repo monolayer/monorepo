@@ -37,13 +37,12 @@ describe("scaffoldMigration", () => {
 		const result = await runProgramWithErrorCause(scaffoldMigration());
 
 		const expected = `import { Kysely } from "kysely";
-import { NO_DEPENDENCY, Migration } from "monolayer/migration";
+import { Migration } from "monolayer/migration";
 
 export const migration: Migration = {
   name: "${path.basename(result).substring(0, path.basename(result).lastIndexOf("."))}",
   transaction: false,
   scaffold: true,
-  dependsOn: NO_DEPENDENCY,
 };
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -64,7 +63,6 @@ export const migration: Migration = {
   name: "${path.basename(result).substring(0, path.basename(result).lastIndexOf("."))}",
   transaction: false,
   scaffold: true,
-  dependsOn: "20240405T154913-mirfak-mustard",
 };
 
 export async function up(db: Kysely<any>): Promise<void> {

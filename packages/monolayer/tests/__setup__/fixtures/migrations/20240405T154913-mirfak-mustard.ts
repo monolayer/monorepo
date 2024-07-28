@@ -3,7 +3,6 @@ import { Kysely } from "kysely";
 
 export const migration = {
 	scaffold: false,
-	dependsOn: "20240405T153857-alphard-black",
 };
 
 export async function up(db: Kysely<any>): Promise<void> {

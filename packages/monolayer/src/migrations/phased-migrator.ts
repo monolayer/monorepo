@@ -104,13 +104,6 @@ export class PhasedMigrator implements MigratorInterface {
 		});
 	}
 
-	get currentDependency() {
-		return Effect.gen(this, function* () {
-			const migrations = yield* this.migrationStats;
-			return migrations.all.map((m) => m.name).slice(-1)[0] ?? "NO_DEPENDENCY";
-		});
-	}
-
 	migrateToLatest(printWarnings = false) {
 		return Effect.gen(this, function* () {
 			let results: MigrationResultSet[] = [];
@@ -492,10 +485,6 @@ class PhasedMigratorRenderer {
 		folder: string,
 	) {
 		return Effect.gen(this, function* () {
-			const stats = yield* migrator.migrationStats;
-			const migrations = stats.all;
-			const dependency =
-				migrations.map((m) => m.name).slice(-1)[0] ?? "NO_DEPENDENCY";
 			const byPhase = splitChangesetsByPhase(changesets);
 			const renderedMigrations: string[] = [];
 			let previousMigrationName: string = "";
@@ -541,7 +530,6 @@ class PhasedMigratorRenderer {
 						ops,
 						path.join(folder, phase),
 						numberedName,
-						previousMigrationName === "" ? dependency : previousMigrationName,
 						isolatedChangeset.some((m) => (m.transaction ?? true) === false)
 							? false
 							: true,

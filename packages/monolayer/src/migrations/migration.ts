@@ -23,25 +23,11 @@ import type {
 	NoMigrations,
 } from "./migrator.js";
 
-export const NO_DEPENDENCY: NoDependencies = Object.freeze({
-	__noDependencies__: true,
-});
-
-export interface NoDependencies {
-	readonly __noDependencies__: true;
-}
-
-export type MigrationDependency = NoDependencies | string;
-
 export type Migration = {
 	/**
 	 * The name of the migration.
 	 */
 	name: string;
-	/**
-	 * Dependency of the migration.
-	 */
-	dependsOn: MigrationDependency;
 	/**
 	 * Whether the migration was scaffolded.
 	 */
@@ -290,7 +276,6 @@ export function migrationInfoToMonolayerMigrationInfo(
 				...info,
 				transaction: migration.migration.transaction ?? false,
 				scaffold: migration.migration.scaffold,
-				dependsOn: migration.migration.dependsOn,
 				warnings: migration.migration.warnings,
 				phase,
 			});

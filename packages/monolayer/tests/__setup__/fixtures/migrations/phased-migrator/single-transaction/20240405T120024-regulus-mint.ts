@@ -4,9 +4,6 @@ import type { Migration } from "~/migration.js";
 
 export const migration = {
 	name: "20240405T120024-regulus-mint",
-	dependsOn: {
-		__noDependencies__: true,
-	},
 	scaffold: false,
 	transaction: true,
 } satisfies Migration;

@@ -242,12 +242,11 @@ export const dbSchema = schema({
 
 const expectedMigration = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely } from "kysely";
-import { NO_DEPENDENCY, Migration } from "monolayer/migration";
+import { Migration } from "monolayer/migration";
 
 export const migration: Migration = {
 	name: "#name",
 	transaction: true,
-	dependsOn: NO_DEPENDENCY,
 	scaffold: false,
 	warnings: [],
 };
@@ -268,12 +267,11 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 const expectedMigrationWithSchemas = `/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
-import { NO_DEPENDENCY, Migration } from "monolayer/migration";
+import { Migration } from "monolayer/migration";
 
 export const migration: Migration = {
 	name: "#name",
 	transaction: true,
-	dependsOn: NO_DEPENDENCY,
 	scaffold: false,
 	warnings: [],
 };
@@ -317,7 +315,6 @@ import { Migration } from "monolayer/migration";
 export const migration: Migration = {
 	name: "#name",
 	transaction: true,
-	dependsOn: "20240405T154913-mirfak-mustard",
 	scaffold: false,
 	warnings: [],
 };
@@ -343,7 +340,6 @@ import { Migration } from "monolayer/migration";
 export const migration: Migration = {
 	name: "#name",
 	transaction: true,
-	dependsOn: "20240405T154913-mirfak-mustard",
 	scaffold: false,
 	warnings: [],
 };

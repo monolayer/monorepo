@@ -3,9 +3,6 @@ import { Kysely } from "kysely";
 
 export const migration = {
 	scaffold: false,
-	dependsOn: {
-		__noDependencies__: true,
-	},
 };
 
 export async function up(db: Kysely<any>): Promise<void> {

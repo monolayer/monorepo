@@ -4,7 +4,6 @@ import type { Migration } from "~/migration.js";
 
 export const migration = {
 	name: "20240405T154913-mirfak-mustard",
-	dependsOn: "20240405T153857-alphard-black",
 	scaffold: false,
 	transaction: true,
 } satisfies Migration;

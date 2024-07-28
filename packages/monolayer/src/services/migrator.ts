@@ -52,11 +52,6 @@ export type MigratorInterface = {
 		migrations: MonolayerMigrationInfo[],
 	): Effect.Effect<void, ActionError | UnknownException, never>;
 	rollbackAll: Effect.Effect<MigrationResultSet, UnknownException, never>;
-	currentDependency: Effect.Effect<
-		string,
-		UnknownException | ActionError,
-		Migrator
-	>;
 	renderChangesets(
 		changesets: Changeset[],
 		migrationName: string,
