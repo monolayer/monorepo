@@ -603,5 +603,6 @@ function makeMigrator(client: Kysely<any>, folder: string, name: string) {
 		}),
 		migrationTableName: `monolayer_${name}_migration`,
 		migrationLockTableName: `monolayer_${name}_migration_lock`,
+		allowUnorderedMigrations: true,
 	});
 }
