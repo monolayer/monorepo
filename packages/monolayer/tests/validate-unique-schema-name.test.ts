@@ -9,6 +9,7 @@ import {
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
+import { MonolayerPgConfiguration } from "../src/pg.js";
 
 describe("validate uique schema name", () => {
 	beforeEach<ProgramContext>(async (context) => {
@@ -29,14 +30,14 @@ describe("validate uique schema name", () => {
 			name: "development",
 			configurationName: "default",
 			folder: ".",
-			configuration: {
+			configuration: new MonolayerPgConfiguration({
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
 				connections: {
 					development: {},
 				},
-			},
+			}),
 		};
 
 		const result = Effect.runSync(
@@ -57,14 +58,14 @@ describe("validate uique schema name", () => {
 			name: "development",
 			configurationName: "default",
 			folder: ".",
-			configuration: {
+			configuration: new MonolayerPgConfiguration({
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
 				connections: {
 					development: {},
 				},
-			},
+			}),
 		};
 
 		const result = Effect.runSync(
@@ -93,14 +94,14 @@ describe("validate uique schema name", () => {
 			name: "development",
 			configurationName: "default",
 			folder: ".",
-			configuration: {
+			configuration: new MonolayerPgConfiguration({
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
 				connections: {
 					development: {},
 				},
-			},
+			}),
 		};
 
 		const result = Effect.runSync(

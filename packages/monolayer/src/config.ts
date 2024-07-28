@@ -1,6 +1,7 @@
 import type { Kysely } from "kysely";
 import path from "path";
-import { Monolayer, type Configuration } from "./configuration.js";
+import { Monolayer } from "./configuration.js";
+import type { MonolayerPgConfiguration } from "./pg.js";
 
 type GlobalsWithDatabaseSchema = typeof globalThis & {
 	schema: unknown;
@@ -34,7 +35,7 @@ export async function importConfig() {
 	return config;
 }
 
-export type ConfigurationImport = Record<string, Configuration>;
+export type ConfigurationImport = Record<string, MonolayerPgConfiguration>;
 
 export type SeedImport = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

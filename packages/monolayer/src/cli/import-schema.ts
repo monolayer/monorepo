@@ -31,6 +31,7 @@ import {
 	appEnvironment,
 	type AppEnv,
 } from "~/state/app-environment.js";
+import { MonolayerPgConfiguration } from "../pg.js";
 import { createSchema } from "./import/create-schemas.js";
 import {
 	checkConstraintDefinition,
@@ -150,14 +151,14 @@ function dumpDatabase(
 		const dumpEnv: AppEnv = {
 			name: "development",
 			configurationName,
-			configuration: {
+			configuration: new MonolayerPgConfiguration({
 				schemas: [],
 				connections: {
 					development: {
 						connectionString,
 					},
 				},
-			},
+			}),
 			folder: migrationsFolder, // Needs to be migrations folder
 		};
 

@@ -91,10 +91,10 @@ export default monolayer;
 `);
 
 export const configurationTemplate =
-	nunjucks.compile(`import { type Configuration } from "monolayer/config";
+	nunjucks.compile(`import { defineConfig } from "monolayer/pg";
 import { dbSchema } from "./schema";
 
-export default {
+export default defineConfig({
 	schemas: [dbSchema],
 	extensions: [],
 	connections: {
@@ -108,17 +108,23 @@ export default {
 	camelCasePlugin: {
 		enabled: false,
 	},
-} satisfies Configuration;
+});
 `);
 
-export const dbTemplate = nunjucks.compile(`import { Kysely } from "kysely";
-import { kyselyConfig } from "monolayer/config";
-import configuration from "./configuration";
+export const dbTemplate =
+	nunjucks.compile(`import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
+import pg from "pg";
+import config from "./configuration";
 import { type DB } from "./schema";
 
-export const defaultDbClient = new Kysely<DB>(
-	kyselyConfig(configuration, process.env.NODE_ENV || "development")
-);
+export const defaultDbClient = new Kysely<DB>({
+	dialect: new PostgresDialect({
+		pool: new pg.Pool(config.connection(process.env.NODE_ENV || "development")),
+	}),
+	plugins: config.camelCasePluginEnabled
+		? [new CamelCasePlugin(config.camelCasePluginOptions)]
+		: [],
+});
 `);
 
 export const schemaTemplate =

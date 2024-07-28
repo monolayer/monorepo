@@ -11,7 +11,10 @@ import { importSchemaAction } from "~/cli-actions/import-schema.js";
 import { migrateAction } from "~/cli-actions/migrate.js";
 import { pendingAction } from "~/cli-actions/pending.js";
 import { rollbackAction } from "~/cli-actions/rollback.js";
-import { scaffoldAction } from "~/cli-actions/scaffold.js";
+import {
+	scaffoldAlterAction,
+	scaffoldDataAction,
+} from "~/cli-actions/scaffold.js";
 import { seedAction } from "~/cli-actions/seed.js";
 import { syncAction } from "~/cli-actions/sync.js";
 import { migrateAlterAction } from "../cli-actions/migrate-alter.js";
@@ -38,7 +41,8 @@ async function main() {
 	migrateAlterAction(program);
 	migrateContractAction(program);
 	rollbackAction(program);
-	scaffoldAction(program);
+	scaffoldAlterAction(program);
+	scaffoldDataAction(program);
 	seedAction(program);
 	syncAction(program);
 

@@ -1,3 +1,5 @@
+import type { Configuration } from "./configuration.js";
+
 export { PgExtension, extension } from "./database/extension/extension.js";
 export { schema, type Schema } from "./database/schema/schema.js";
 export {
@@ -135,3 +137,37 @@ export {
 	type TriggerOptions,
 } from "./database/schema/table/trigger/trigger.js";
 export { enumType, type EnumType } from "./database/schema/types/enum/enum.js";
+
+export function defineConfig(config: Configuration) {
+	return new MonolayerPgConfiguration(config);
+}
+
+export class MonolayerPgConfiguration {
+	constructor(public configuration: Configuration) {
+		this.configuration = configuration;
+	}
+
+	get schemas() {
+		return this.configuration.schemas;
+	}
+
+	get extensions() {
+		return this.configuration.extensions;
+	}
+
+	connection(environment: string) {
+		return this.configuration.connections[environment] || {};
+	}
+
+	get camelCasePlugin() {
+		return this.configuration.camelCasePlugin;
+	}
+
+	get camelCasePluginEnabled() {
+		return this.configuration.camelCasePlugin?.enabled ?? false;
+	}
+
+	get camelCasePluginOptions() {
+		return this.configuration.camelCasePlugin?.options ?? { enabled: false };
+	}
+}

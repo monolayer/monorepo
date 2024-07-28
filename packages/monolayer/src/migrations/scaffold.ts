@@ -8,14 +8,16 @@ import { ChangesetPhase } from "../changeset/types.js";
 import { migrationName } from "./migration.js";
 import { dateStringWithMilliseconds } from "./render.js";
 
-export function scaffoldMigration() {
+export function scaffoldMigration(
+	migrationPhase: ChangesetPhase.Alter | ChangesetPhase.Data,
+) {
 	return Effect.gen(function* () {
 		const name = yield* migrationName();
 		const dateStr = dateStringWithMilliseconds();
 		const scaffoldName = `${dateStr}-${name}`;
 		const filePath = path.join(
 			yield* appEnvironmentMigrationsFolder,
-			ChangesetPhase.Alter,
+			migrationPhase,
 			`${scaffoldName}.ts`,
 		);
 		mkdirSync(path.dirname(filePath), { recursive: true });

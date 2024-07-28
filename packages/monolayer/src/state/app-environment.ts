@@ -6,13 +6,13 @@ import color from "picocolors";
 import { cwd } from "process";
 import { ActionError } from "~/cli/errors.js";
 import { importConfig, importConfigurations } from "~/config.js";
-import type { Configuration } from "~/configuration.js";
+import { MonolayerPgConfiguration } from "../pg.js";
 
 export interface AppEnv {
 	name: string;
 	configurationName: string;
 	folder: string;
-	configuration: Configuration;
+	configuration: MonolayerPgConfiguration;
 }
 
 export class AppEnvironment extends Context.Tag("EnvironmentState")<
@@ -40,7 +40,7 @@ export const appEnvironment = Effect.gen(function* () {
 export const appEnvironmentPgConfig = Effect.gen(function* () {
 	const env = yield* appEnvironment;
 	const configuration = yield* configurationByName(env.configurationName);
-	const environmentConfiguration = configuration.connections[env.name];
+	const environmentConfiguration = configuration.connection(env.name);
 	if (environmentConfiguration === undefined) {
 		return yield* Effect.fail(
 			new ActionError(
@@ -96,12 +96,12 @@ export const importSchemaEnvironment = Effect.gen(function* () {
 	return {
 		name: "import",
 		configurationName: "default",
-		configuration: {
+		configuration: new MonolayerPgConfiguration({
 			schemas: [],
 			connections: {
 				development: {},
 			},
-		},
+		}),
 		folder: yield* monolayerFolder(),
 	} satisfies AppEnv as AppEnv;
 });

@@ -5,6 +5,7 @@ import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
 import { ChangesetPhase } from "../src/changeset/types.js";
+import { MonolayerPgConfiguration } from "../src/pg.js";
 import { Migrator } from "../src/services/migrator.js";
 import type { DbContext } from "./__setup__/helpers/kysely.js";
 import { newLayers } from "./__setup__/helpers/layers.js";
@@ -24,14 +25,14 @@ async function runPhasedMigration(context: DbContext) {
 		name: "development",
 		configurationName: "default",
 		folder: ".",
-		configuration: {
+		configuration: new MonolayerPgConfiguration({
 			schemas: [],
 			camelCasePlugin: { enabled: false },
 			extensions: [],
 			connections: {
 				development: {},
 			},
-		},
+		}),
 	};
 
 	const program = Effect.gen(function* () {

@@ -139,7 +139,9 @@ export async function setupProgramContext(
 
 	const configurations = configurationsTemplate.render({
 		dbName: context.dbName,
+		pgPath: path.join(cwd(), "src", "pg"),
 	});
+
 	writeFileSync(
 		path.join(context.folder, "db", "configuration.ts"),
 		configurations,

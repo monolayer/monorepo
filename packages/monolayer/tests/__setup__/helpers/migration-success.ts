@@ -8,6 +8,7 @@ import { Migrator } from "~/services/migrator.js";
 import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";
+import { MonolayerPgConfiguration } from "../../../src/pg.js";
 import { newLayers, type ConnectionLessConfiguration } from "./layers.js";
 import { programWithErrorCause } from "./run-program.js";
 
@@ -29,14 +30,14 @@ export async function testChangesetAndMigrations({
 		name: "development",
 		configurationName: "default",
 		folder: ".",
-		configuration: {
+		configuration: new MonolayerPgConfiguration({
 			schemas: configuration.schemas,
 			camelCasePlugin: configuration.camelCasePlugin ?? { enabled: false },
 			extensions: configuration.extensions ?? [],
 			connections: {
 				development: {},
 			},
-		},
+		}),
 	};
 	const layers = newLayers(
 		context.dbName,

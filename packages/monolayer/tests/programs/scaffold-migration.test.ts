@@ -20,7 +20,7 @@ describe("scaffoldMigration", () => {
 		await teardownProgramContext(context);
 	});
 
-	test<ProgramContext>("creates an empty migration file with no dependecies", async (context) => {
+	test<ProgramContext>("creates an empty alter migration file", async (context) => {
 		rmSync(
 			path.join(
 				context.folder,
@@ -34,8 +34,13 @@ describe("scaffoldMigration", () => {
 				force: true,
 			},
 		);
-		const result = await runProgramWithErrorCause(scaffoldMigration());
+		const result = await runProgramWithErrorCause(
+			scaffoldMigration(ChangesetPhase.Alter),
+		);
 
+		expect(result.match(/alter\/.+\.ts$/)).not.toBeNull();
+
+		console.log("RESULT", result.match(/alter\/.+\.ts$/));
 		const expected = `import { Kysely } from "kysely";
 import { Migration } from "monolayer/migration";
 
@@ -53,8 +58,25 @@ export async function down(db: Kysely<any>): Promise<void> {
 		expect(readFileSync(result).toString()).toBe(expected);
 	});
 
-	test<ProgramContext>("creates an empty migration file with dependencies", async () => {
-		const result = await runProgramWithErrorCause(scaffoldMigration());
+	test<ProgramContext>("creates an empty data migration file", async (context) => {
+		rmSync(
+			path.join(
+				context.folder,
+				"db",
+				"migrations",
+				"default",
+				ChangesetPhase.Data,
+			),
+			{
+				recursive: true,
+				force: true,
+			},
+		);
+		const result = await runProgramWithErrorCause(
+			scaffoldMigration(ChangesetPhase.Data),
+		);
+
+		expect(result.match(/data\/.+\.ts$/)).not.toBeNull();
 
 		const expected = `import { Kysely } from "kysely";
 import { Migration } from "monolayer/migration";

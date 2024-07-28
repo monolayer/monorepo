@@ -1,9 +1,5 @@
-import {
-	CamelCasePlugin,
-	PostgresDialect,
-	type CamelCasePluginOptions,
-} from "kysely";
-import pg, { type ClientConfig, type PoolConfig } from "pg";
+import { type CamelCasePluginOptions } from "kysely";
+import { type ClientConfig, type PoolConfig } from "pg";
 import type { PgExtension } from "./database/extension/extension.js";
 import type { AnySchema } from "./database/schema/schema.js";
 
@@ -26,18 +22,3 @@ export type CamelCaseOptions = {
 	enabled: boolean;
 	options?: CamelCasePluginOptions;
 };
-
-export function kyselyConfig(
-	configuration: Configuration,
-	environment: string,
-) {
-	const environmentConfig = configuration.connections[environment];
-	return {
-		dialect: new PostgresDialect({
-			pool: new pg.Pool(environmentConfig),
-		}),
-		plugins: configuration.camelCasePlugin?.enabled
-			? [new CamelCasePlugin(configuration.camelCasePlugin.options)]
-			: [],
-	};
-}

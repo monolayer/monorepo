@@ -9,8 +9,9 @@ export const monolayerTemplate = nunjucks.compile(`export default {
 
 export const configurationsTemplate =
 	nunjucks.compile(`import { dbSchema } from "./schema";
+import { defineConfig } from "{{ pgPath }}";
 
-export default {
+export default defineConfig({
 	schemas: [dbSchema],
 	connections: {
 		development: {
@@ -28,9 +29,9 @@ export default {
 			database: "{{ dbName }}_test",
 		},
 	},
-};
+});
 
-export const stats = {
+export const stats = defineConfig({
 	connections: {
 		development: {
 			user: "${process.env.POSTGRES_USER}",
@@ -47,15 +48,15 @@ export const stats = {
 			database: "{{ dbName }}_stats_test",
 		},
 	},
-};
+	});
 `);
 
 export const configurationsTemplateTwoDatabaseSchemas =
 	nunjucks.compile(`import { dbSchema } from "./schema";
-
+import { defineConfig } from "{{ pgPath }}";
 import { dbSchema as anotherDbSchema } from "./{{ secondSchemaFile }}";
 
-export default {
+export default defineConfig({
 	schemas: [dbSchema, anotherDbSchema],
 	connections: {
 		development: {
@@ -73,9 +74,9 @@ export default {
 			database: "{{ dbName }}_test",
 		},
 	},
-};
+});
 
-export const stats =  {
+export const stats = defineConfig({
 	connections: {
 		development: {
 			user: "${process.env.POSTGRES_USER}",
@@ -92,5 +93,5 @@ export const stats =  {
 			database: "{{ dbName }}_stats_test",
 		},
 	},
-};
+});
 `);
