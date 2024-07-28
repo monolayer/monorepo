@@ -29,6 +29,13 @@ export const rollback = Effect.gen(function* () {
 	}
 
 	p.log.info(`You have ${executedMigrations.length} migrations applied.`);
+
+	const lastExecutedMigration = executedMigrations.slice(-1)[0];
+	if (lastExecutedMigration !== undefined) {
+		p.log.info(
+			`Last executed migration: ${lastExecutedMigration.name} (${lastExecutedMigration.phase}).`,
+		);
+	}
 	const promptResult = yield* promptRollback(executedMigrations, 10);
 
 	yield* confirmRollback(promptResult.migrationNames);
