@@ -230,6 +230,13 @@ export interface MigrationPhase {
 	phase: ChangesetPhase;
 }
 
+export type MigrationPhasePlan = {
+	steps: number;
+	migrations: MonolayerMigrationInfoWithPhase[];
+	transaction: boolean;
+	phase: ChangesetPhase;
+}[];
+
 export function migrationPlanTwo(
 	migrations: MonolayerMigrationInfoWithPhase[],
 	target?: string | NoMigrations,

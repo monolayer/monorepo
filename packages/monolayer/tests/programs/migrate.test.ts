@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { migrate } from "~/migrations/apply.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
+import { migrate } from "../__setup__/helpers/migration-success.js";
 
 describe("migrate", () => {
 	beforeEach<ProgramContext>(async (context) => {

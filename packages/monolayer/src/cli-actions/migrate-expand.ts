@@ -1,11 +1,12 @@
 import type { Command } from "@commander-js/extra-typings";
 import { cliAction } from "~/cli/cli-action.js";
 import { applyMigrations } from "~/migrations/apply.js";
+import { ChangesetPhase } from "../changeset/types.js";
 
-export function migrateAction(program: Command) {
+export function migrateExpandAction(program: Command) {
 	program
-		.command("migrate")
-		.description("migrate pending schema migrations")
+		.command("migrate:expand")
+		.description("migrate pending expand schema migrations")
 		.option(
 			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
@@ -17,6 +18,8 @@ export function migrateAction(program: Command) {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("monolayer migrate", opts, [applyMigrations("all")]);
+			await cliAction("monolayer migrate expand", opts, [
+				applyMigrations(ChangesetPhase.Expand),
+			]);
 		});
 }

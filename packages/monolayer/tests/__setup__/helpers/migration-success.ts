@@ -2,10 +2,9 @@ import { Effect, Ref } from "effect";
 import type { Layer } from "effect/Layer";
 import path from "path";
 import { expect } from "vitest";
-import { migrate } from "~/migrations/apply.js";
 import { generateMigration } from "~/migrations/generate.js";
 import { DbClients } from "~/services/db-clients.js";
-import type { Migrator } from "~/services/migrator.js";
+import { Migrator } from "~/services/migrator.js";
 import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";
@@ -118,6 +117,16 @@ async function cleanup(
 		),
 	);
 }
+
+export const migrate = Effect.gen(function* () {
+	const migrator = yield* Migrator;
+	const { error, results } = yield* migrator.migrateToLatest(true);
+	if (error === undefined && results !== undefined) {
+		return true;
+	} else {
+		return false;
+	}
+});
 
 async function runMigrate(
 	layers: Layer<Migrator | DbClients, never, AppEnvironment>,

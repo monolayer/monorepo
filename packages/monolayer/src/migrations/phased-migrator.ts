@@ -28,6 +28,7 @@ import {
 	type MigrationPhase,
 	type MonolayerMigrationInfo,
 	type MonolayerMigrationInfoWithExecutedAt,
+	type MonolayerMigrationInfoWithPhase,
 } from "./migration.js";
 import {
 	MonolayerMigrator,
@@ -186,6 +187,73 @@ export class PhasedMigrator implements MigratorInterface {
 		});
 	}
 
+	migratePhaseToLatest(phase: ChangesetPhase, printWarnings = false) {
+		return Effect.gen(this, function* () {
+			let results: MigrationResultSet[] = [];
+			const stats = yield* this.migrationStatsByPhase;
+			let plan: MigrationPhase[];
+			let pending: MonolayerMigrationInfoWithPhase[];
+			switch (phase) {
+				case ChangesetPhase.Expand:
+					pending = stats.expand.pending.map((stat) => ({
+						...stat,
+						phase: ChangesetPhase.Expand,
+					}));
+					plan = migrationPlanTwo(pending);
+					break;
+				case ChangesetPhase.Alter:
+					pending = stats.alter.pending.map((stat) => ({
+						...stat,
+						phase: ChangesetPhase.Alter,
+					}));
+					plan = migrationPlanTwo(pending);
+					break;
+				case ChangesetPhase.Contract:
+					pending = stats.contract.pending.map((stat) => ({
+						...stat,
+						phase: ChangesetPhase.Contract,
+					}));
+					plan = migrationPlanTwo(pending);
+					break;
+			}
+			if (printWarnings === true) this.#printWarnings(pending);
+
+			const migratedSteps: MigrationPhase[] = [];
+
+			for (const planPhase of plan) {
+				const migrationResult = yield* this.#migratePhase(planPhase, "Up");
+				results = [...results, migrationResult];
+				if (migrationResult.error !== undefined) {
+					yield* this.#rollbackPeformedMigrations(planPhase, migratedSteps);
+					break;
+				}
+				migratedSteps.push(planPhase);
+			}
+
+			const totalMigrations = results.reduce(
+				(acc, result) => acc + (result.results ?? []).length,
+				0,
+			);
+
+			const notExecuted = pending.slice(totalMigrations).map(
+				(m) =>
+					({
+						migrationName: m.name!,
+						direction: "Up",
+						status: "NotExecuted",
+					}) satisfies MigrationResult,
+			);
+			const resultSet: MigrationResultSet[] = [
+				{
+					results: notExecuted,
+				},
+			];
+			results = [...results, ...resultSet];
+
+			return collectResults(results);
+		});
+	}
+
 	#printWarnings(pendingMigrations: MonolayerMigrationInfo[]) {
 		printWarnigns(
 			pendingMigrations
@@ -234,6 +302,26 @@ export class PhasedMigrator implements MigratorInterface {
 		});
 	}
 
+	get pendingMigrations() {
+		return Effect.gen(this, function* () {
+			const stats = yield* this.migrationStatsByPhase;
+			const pending: MonolayerMigrationInfoWithPhase[] = [
+				...stats.expand.pending.map((stat) => ({
+					...stat,
+					phase: ChangesetPhase.Expand,
+				})),
+				...stats.alter.pending.map((stat) => ({
+					...stat,
+					phase: ChangesetPhase.Alter,
+				})),
+				...stats.contract.pending.map((stat) => ({
+					...stat,
+					phase: ChangesetPhase.Contract,
+				})),
+			];
+			return pending;
+		});
+	}
 	get migrationStatsByPhase() {
 		return Effect.gen(this, function* () {
 			const folder = this.folder;

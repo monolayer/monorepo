@@ -5,6 +5,7 @@ import { unlinkSync } from "fs";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
+import { ChangesetPhase } from "../changeset/types.js";
 import { cancelOperation } from "../cli/cancel-operation.js";
 import { Migrator } from "../services/migrator.js";
 
@@ -40,12 +41,13 @@ function logPendingMigrations(
 	pending: {
 		name: string;
 		path: string;
+		phase: ChangesetPhase;
 	}[],
 ) {
 	return Effect.gen(function* () {
 		for (const migration of pending) {
 			p.log.warn(
-				`${color.bgYellow(color.black(" PENDING "))} ${path.relative(cwd(), migration.path)}`,
+				`${color.bgYellow(color.black(" PENDING "))} ${path.relative(cwd(), migration.path)} (${migration.phase})`,
 			);
 		}
 		yield* Effect.succeed(true);
@@ -78,8 +80,44 @@ export function deletePendingMigrations(pendingMigrations: PendingMigration[]) {
 	});
 }
 
+export function checkNoPendingMigrations(phases: ChangesetPhase[]) {
+	return Effect.gen(function* () {
+		let noPending = true;
+		const pendingPhases: ChangesetPhase[] = [];
+		const pendingByPhase = yield* localPendingSchemaMigrationsByPhase;
+		for (const phase of phases) {
+			if (pendingByPhase[phase].length !== 0) {
+				noPending = false;
+				pendingPhases.push(phase);
+				yield* logPendingMigrations(pendingByPhase[phase]);
+			}
+		}
+		return [noPending, pendingPhases] as [boolean, ChangesetPhase[]];
+	});
+}
+
 export const localPendingSchemaMigrations = Effect.gen(function* () {
 	const migrator = yield* Migrator;
 	const stats = yield* migrator.migrationStats;
 	return stats.localPending;
+});
+
+const localPendingSchemaMigrationsByPhase = Effect.gen(function* () {
+	const localPending = yield* localPendingSchemaMigrations;
+	const initial: Record<
+		ChangesetPhase,
+		{
+			name: string;
+			path: string;
+			phase: ChangesetPhase;
+		}[]
+	> = {
+		[`${ChangesetPhase.Expand}`]: [],
+		[`${ChangesetPhase.Alter}`]: [],
+		[`${ChangesetPhase.Contract}`]: [],
+	};
+	return localPending.reduce((acc, pending) => {
+		acc[pending.phase].push(pending);
+		return acc;
+	}, initial);
 });

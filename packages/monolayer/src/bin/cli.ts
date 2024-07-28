@@ -14,6 +14,9 @@ import { rollbackAction } from "~/cli-actions/rollback.js";
 import { scaffoldAction } from "~/cli-actions/scaffold.js";
 import { seedAction } from "~/cli-actions/seed.js";
 import { syncAction } from "~/cli-actions/sync.js";
+import { migrateAlterAction } from "../cli-actions/migrate-alter.js";
+import { migrateContractAction } from "../cli-actions/migrate-contract.js";
+import { migrateExpandAction } from "../cli-actions/migrate-expand.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
@@ -31,6 +34,9 @@ async function main() {
 	importSchemaAction(program);
 	pendingAction(program);
 	migrateAction(program);
+	migrateExpandAction(program);
+	migrateAlterAction(program);
+	migrateContractAction(program);
 	rollbackAction(program);
 	scaffoldAction(program);
 	seedAction(program);

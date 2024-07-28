@@ -2,40 +2,69 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import type { MigrationResult } from "kysely";
 import color from "picocolors";
-import { UnknownActionError } from "~/cli/errors.js";
+import { ActionError, UnknownActionError } from "~/cli/errors.js";
 import { dumpDatabaseStructureTask } from "~/database/dump.js";
+import { ChangesetPhase } from "../changeset/types.js";
 import { Migrator } from "../services/migrator.js";
+import { checkNoPendingMigrations } from "./pending.js";
 
-export function applyMigrations() {
+export function applyMigrations(phase: ChangesetPhase | "all") {
 	return Effect.gen(function* () {
-		const result = yield* migrate;
-		if (result) {
-			yield* dumpDatabaseStructureTask;
+		const migrator = yield* Migrator;
+		let noPending: boolean = true;
+		let pendingPhases: ChangesetPhase[] = [];
+		switch (phase) {
+			case ChangesetPhase.Alter:
+				[noPending, pendingPhases] = yield* checkNoPendingMigrations([
+					ChangesetPhase.Expand,
+				]);
+				break;
+			case ChangesetPhase.Contract:
+				[noPending, pendingPhases] = yield* checkNoPendingMigrations([
+					ChangesetPhase.Expand,
+					ChangesetPhase.Alter,
+				]);
+				break;
+			default:
+				break;
 		}
-		return result;
+
+		if (!noPending) {
+			yield* Effect.fail(
+				new ActionError(
+					`Cannot apply ${phase} migrations`,
+					pendingPhases.length > 1
+						? `There are pending ${pendingPhases.join(" and ")} migrations to apply.`
+						: `There are pending ${pendingPhases.join()} migrations to apply.`,
+				),
+			);
+		}
+
+		const { error, results } =
+			phase === "all"
+				? yield* migrator.migrateToLatest(true)
+				: yield* migrator.migratePhaseToLatest(phase, true);
+
+		if (results !== undefined && results.length > 0) {
+			for (const result of results) {
+				yield* logMigrationResultStatus(result, error, "up");
+			}
+		}
+
+		if (results !== undefined && results.length === 0) {
+			p.log.info("No migrations to apply.");
+		}
+		if (error !== undefined) {
+			yield* Effect.fail(new UnknownActionError("Migration error", error));
+		}
+		if (error === undefined && results !== undefined) {
+			yield* dumpDatabaseStructureTask;
+			return true;
+		} else {
+			return false;
+		}
 	});
 }
-
-export const migrate = Effect.gen(function* () {
-	const migrator = yield* Migrator;
-	const { error, results } = yield* migrator.migrateToLatest(true);
-	if (results !== undefined && results.length > 0) {
-		for (const result of results) {
-			yield* logMigrationResultStatus(result, error, "up");
-		}
-	}
-	if (results !== undefined && results.length === 0) {
-		p.log.info("No migrations to apply.");
-	}
-	if (error !== undefined) {
-		yield* Effect.fail(new UnknownActionError("Migration error", error));
-	}
-	if (error === undefined && results !== undefined) {
-		return true;
-	} else {
-		return false;
-	}
-});
 
 export function logMigrationResultStatus(
 	result: MigrationResult,

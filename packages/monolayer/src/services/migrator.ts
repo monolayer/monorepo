@@ -5,6 +5,7 @@ import { ActionError } from "~/cli/errors.js";
 import type {
 	MonolayerMigration,
 	MonolayerMigrationInfo,
+	MonolayerMigrationInfoWithPhase,
 } from "~/migrations/migration.js";
 import { type AppEnvironment } from "~/state/app-environment.js";
 import type { Changeset, ChangesetPhase } from "../changeset/types.js";
@@ -39,6 +40,14 @@ export type MigratorInterface = {
 		UnknownException | ActionError,
 		Migrator
 	>;
+	migratePhaseToLatest: (
+		phase: ChangesetPhase,
+		printWarnings?: boolean,
+	) => Effect.Effect<
+		MigrationResultSet,
+		UnknownException | ActionError,
+		Migrator
+	>;
 	rollback(
 		migrations: MonolayerMigrationInfo[],
 	): Effect.Effect<void, ActionError | UnknownException, never>;
@@ -55,6 +64,11 @@ export type MigratorInterface = {
 		string[],
 		UnknownException | ActionError,
 		DbClients | AppEnvironment
+	>;
+	pendingMigrations: Effect.Effect<
+		MonolayerMigrationInfoWithPhase[],
+		UnknownException | ActionError,
+		never
 	>;
 };
 
