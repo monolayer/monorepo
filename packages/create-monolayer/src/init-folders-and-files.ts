@@ -91,8 +91,8 @@ export default monolayer;
 `);
 
 export const configurationTemplate =
-	nunjucks.compile(`import { defineConfig } from "monolayer/pg";
-import { dbSchema } from "./schema";
+	nunjucks.compile(`import { dbSchema } from "./schema";
+import { defineConfig } from "monolayer/pg";
 
 export default defineConfig({
 	schemas: [dbSchema],
