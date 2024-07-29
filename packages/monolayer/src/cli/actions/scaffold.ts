@@ -60,3 +60,4 @@ export function scaffoldDataAction(program: Command) {
 			);
 		});
 }
+
