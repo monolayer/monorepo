@@ -21,12 +21,18 @@ export type GlobalThisInTests = GlobalThis & {
 export function globalPool() {
 	const globalTestThis = globalThis as GlobalThisInTests;
 
+	console.log(
+		env.POSTGRES_PORT,
+		env.POSTGRES_USER,
+		env.POSTGRES_PASSWORD,
+		env.POSTGRES_HOST,
+	);
 	if (globalTestThis.pool === undefined) {
 		globalTestThis.pool = new pg.Pool({
 			user: env.POSTGRES_USER,
 			password: env.POSTGRES_PASSWORD,
 			host: env.POSTGRES_HOST,
-			port: Number(env.POSTGRES_ONE_PORT ?? 5432),
+			port: Number(env.POSTGRES_PORT ?? 5432),
 		});
 	}
 	return globalTestThis.pool;

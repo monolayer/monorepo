@@ -5,7 +5,7 @@ services:
     image: postgres:16.1
     restart: unless-stopped
     ports:
-      - ${POSTGRES_ONE_PORT}:5432
+      - ${POSTGRES_PORT}:5432
     volumes:
       - postgres_data_one:/var/lib/postgresql/data
     environment:
@@ -22,7 +22,7 @@ services:
     image: postgres:16.1
     restart: unless-stopped
     ports:
-      - ${POSTGRES_TWO_PORT}:5432
+      - ${POSTGRES_PORT}:5432
     volumes:
       - postgres_data_two:/var/lib/postgresql/data
     environment:
