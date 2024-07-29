@@ -132,7 +132,7 @@
 		"mock-fs": "^5.2.0",
 		"mock-stdin": "^1.0.0",
 		"postcss": "^8.4.35",
-		"prettier": "3.2.5",
+		"prettier": "3.3.3",
 		"prettier-plugin-organize-imports": "^3.2.4",
 		"skott": "^0.33.2",
 		"tsc-alias": "^1.8.8",
