@@ -24,7 +24,6 @@ export interface MigrationStats {
 		path: string;
 		phase: ChangesetPhase;
 	}[];
-	byPhase?: MigrationsByPhase;
 }
 
 export type MigratorInterface = {
