@@ -154,6 +154,8 @@ const appendMigrationDataToDump = Effect.gen(function* () {
 			"--table=monolayer_expand_migration",
 			"--table=monolayer_contract_migration_lock",
 			"--table=monolayer_contract_migration",
+			"--table=monolayer_data_migration_lock",
+			"--table=monolayer_data_migration",
 			"--quote-all-identifiers",
 			"-a",
 			"--no-comments",

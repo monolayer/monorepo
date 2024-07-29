@@ -40,7 +40,6 @@ describe("scaffoldMigration", () => {
 
 		expect(result.match(/alter\/.+\.ts$/)).not.toBeNull();
 
-		console.log("RESULT", result.match(/alter\/.+\.ts$/));
 		const expected = `import { Kysely } from "kysely";
 import { Migration } from "monolayer/migration";
 

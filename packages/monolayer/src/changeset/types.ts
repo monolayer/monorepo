@@ -104,4 +104,5 @@ export enum ChangesetPhase {
 	Alter = "alter",
 	Expand = "expand",
 	Contract = "contract",
+	Data = "data",
 }

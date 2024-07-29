@@ -25,6 +25,8 @@ export async function queryDbTableInfo(
 		.where("table_name", "!=", "monolayer_expand_migration")
 		.where("table_name", "!=", "monolayer_contract_migration_lock")
 		.where("table_name", "!=", "monolayer_contract_migration")
+		.where("table_name", "!=", "monolayer_data_migration_lock")
+		.where("table_name", "!=", "monolayer_data_migration")
 		.where("table_type", "!=", "VIEW")
 		.execute();
 }

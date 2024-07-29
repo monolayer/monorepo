@@ -115,6 +115,7 @@ const localPendingSchemaMigrationsByPhase = Effect.gen(function* () {
 		[`${ChangesetPhase.Expand}`]: [],
 		[`${ChangesetPhase.Alter}`]: [],
 		[`${ChangesetPhase.Contract}`]: [],
+		[`${ChangesetPhase.Data}`]: [],
 	};
 	return localPending.reduce((acc, pending) => {
 		acc[pending.phase].push(pending);

@@ -19,6 +19,7 @@ import { seedAction } from "~/cli-actions/seed.js";
 import { syncAction } from "~/cli-actions/sync.js";
 import { migrateAlterAction } from "../cli-actions/migrate-alter.js";
 import { migrateContractAction } from "../cli-actions/migrate-contract.js";
+import { migrateDataAction } from "../cli-actions/migrate-data.js";
 import { migrateExpandAction } from "../cli-actions/migrate-expand.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
@@ -40,6 +41,7 @@ async function main() {
 	migrateExpandAction(program);
 	migrateAlterAction(program);
 	migrateContractAction(program);
+	migrateDataAction(program);
 	rollbackAction(program);
 	scaffoldAlterAction(program);
 	scaffoldDataAction(program);

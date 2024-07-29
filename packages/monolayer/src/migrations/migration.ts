@@ -294,6 +294,7 @@ export function splitChangesetsByPhase(changesets: Changeset[]) {
 			alter: [] as Changeset[],
 			expand: [] as Changeset[],
 			contract: [] as Changeset[],
+			data: [] as Changeset[],
 		},
 	);
 }

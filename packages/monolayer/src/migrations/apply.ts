@@ -24,6 +24,11 @@ interface ApplyContractMigrations {
 	migrationName?: string;
 }
 
+interface ApplyDataMigrations {
+	phase: ChangesetPhase.Data;
+	migrationName?: string;
+}
+
 interface ApplyAllMigrations {
 	phase: "all";
 	migrationName?: undefined;
@@ -36,6 +41,7 @@ export function applyMigrations({
 	| ApplyExpandMigrations
 	| ApplyAlterMigrations
 	| ApplyContractMigrations
+	| ApplyDataMigrations
 	| ApplyAllMigrations) {
 	return Effect.gen(function* () {
 		const migrator = yield* Migrator;
@@ -47,6 +53,7 @@ export function applyMigrations({
 					ChangesetPhase.Expand,
 				]);
 				break;
+			case ChangesetPhase.Data:
 			case ChangesetPhase.Contract:
 				[noPending, pendingPhases] = yield* checkNoPendingMigrations([
 					ChangesetPhase.Expand,
@@ -77,10 +84,8 @@ export function applyMigrations({
 					yield* migrator.migrateToLatest(true));
 				break;
 			case ChangesetPhase.Expand:
-				({ error: migrationError, results: migrationResults } =
-					yield* migrator.migratePhaseToLatest(phase, true));
-				break;
 			case ChangesetPhase.Alter:
+			case ChangesetPhase.Data:
 				({ error: migrationError, results: migrationResults } =
 					yield* migrator.migratePhaseToLatest(phase, true));
 				break;

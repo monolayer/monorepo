@@ -42,6 +42,7 @@ export class PhasedMigrator implements MigratorInterface {
 	protected readonly alterInstance: MonolayerMigrator;
 	protected readonly expandInstance: MonolayerMigrator;
 	protected readonly contractInstance: MonolayerMigrator;
+	protected readonly dataInstance: MonolayerMigrator;
 	protected readonly folder: string;
 	constructor(
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,6 +56,7 @@ export class PhasedMigrator implements MigratorInterface {
 			folder,
 			ChangesetPhase.Contract,
 		);
+		this.dataInstance = makeMigrator(client, folder, ChangesetPhase.Data);
 		this.folder = folder;
 	}
 
@@ -64,6 +66,9 @@ export class PhasedMigrator implements MigratorInterface {
 			mkdirSync(path.join(folder, ChangesetPhase.Alter), { recursive: true });
 			mkdirSync(path.join(folder, ChangesetPhase.Expand), { recursive: true });
 			mkdirSync(path.join(folder, ChangesetPhase.Contract), {
+				recursive: true,
+			});
+			mkdirSync(path.join(folder, ChangesetPhase.Data), {
 				recursive: true,
 			});
 			const all = [
@@ -81,6 +86,11 @@ export class PhasedMigrator implements MigratorInterface {
 					path.join(folder, ChangesetPhase.Contract),
 					yield* this.#allContractMigrations(),
 					ChangesetPhase.Contract,
+				)),
+				...(yield* migrationInfoToMonolayerMigrationInfo(
+					path.join(folder, ChangesetPhase.Data),
+					yield* this.#allDataMigrations(),
+					ChangesetPhase.Data,
 				)),
 			];
 			const pending = all.filter((m) => m.executedAt === undefined);
@@ -121,6 +131,10 @@ export class PhasedMigrator implements MigratorInterface {
 					...stat,
 					phase: ChangesetPhase.Contract,
 				})),
+				...stats.data.pending.map((stat) => ({
+					...stat,
+					phase: ChangesetPhase.Data,
+				})),
 			];
 
 			if (printWarnings === true) this.#printWarnings(pending);
@@ -137,6 +151,12 @@ export class PhasedMigrator implements MigratorInterface {
 					stats.alter.pending.map((stat) => ({
 						...stat,
 						phase: ChangesetPhase.Alter,
+					})),
+				),
+				...migrationPlanTwo(
+					stats.data.pending.map((stat) => ({
+						...stat,
+						phase: ChangesetPhase.Data,
 					})),
 				),
 				...migrationPlanTwo(
@@ -208,6 +228,13 @@ export class PhasedMigrator implements MigratorInterface {
 					}));
 					plan = migrationPlanTwo(pending);
 					break;
+				case ChangesetPhase.Data:
+					pending = stats.data.pending.map((stat) => ({
+						...stat,
+						phase: ChangesetPhase.Data,
+					}));
+					plan = migrationPlanTwo(pending);
+					break;
 			}
 			if (printWarnings === true) this.#printWarnings(pending);
 
@@ -262,7 +289,6 @@ export class PhasedMigrator implements MigratorInterface {
 				);
 			}
 			const migrator = this.#migratorForPhase(phase);
-			console.log("migrateTargetInPhase", phase, migrationName);
 			migrator.migrateWithTransaction = true;
 			const result = yield* Effect.tryPromise(() =>
 				migrator.migrateUpNamedMigration({
@@ -290,6 +316,8 @@ export class PhasedMigrator implements MigratorInterface {
 				return this.expandInstance;
 			case ChangesetPhase.Contract:
 				return this.contractInstance;
+			case ChangesetPhase.Data:
+				return this.dataInstance;
 		}
 	}
 
@@ -350,6 +378,9 @@ export class PhasedMigrator implements MigratorInterface {
 			mkdirSync(path.join(folder, ChangesetPhase.Contract), {
 				recursive: true,
 			});
+			mkdirSync(path.join(folder, ChangesetPhase.Data), {
+				recursive: true,
+			});
 			const all = {
 				expand: yield* migrationInfoToMonolayerMigrationInfo(
 					path.join(folder, ChangesetPhase.Expand),
@@ -365,6 +396,11 @@ export class PhasedMigrator implements MigratorInterface {
 					path.join(folder, ChangesetPhase.Contract),
 					yield* this.#allContractMigrations(),
 					ChangesetPhase.Contract,
+				),
+				data: yield* migrationInfoToMonolayerMigrationInfo(
+					path.join(folder, ChangesetPhase.Data),
+					yield* this.#allDataMigrations(),
+					ChangesetPhase.Data,
 				),
 			};
 			return {
@@ -419,6 +455,23 @@ export class PhasedMigrator implements MigratorInterface {
 							};
 						}),
 				},
+				data: {
+					all: all.data,
+					executed: all.data.filter((m) => m.executedAt !== undefined),
+					pending: all.data.filter((m) => m.executedAt === undefined),
+					localPending: all.data
+						.filter((m) => m.executedAt === undefined)
+						.map((info) => {
+							return {
+								name: info.name,
+								path: path.join(
+									this.folder,
+									ChangesetPhase.Data,
+									`${info.name}.ts`,
+								),
+							};
+						}),
+				},
 			};
 		});
 	}
@@ -433,6 +486,10 @@ export class PhasedMigrator implements MigratorInterface {
 
 	#allContractMigrations() {
 		return Effect.tryPromise(() => this.contractInstance.getMigrations());
+	}
+
+	#allDataMigrations() {
+		return Effect.tryPromise(() => this.dataInstance.getMigrations());
 	}
 
 	get rollbackAll() {
