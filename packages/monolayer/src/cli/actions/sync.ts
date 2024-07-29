@@ -21,7 +21,7 @@ export function syncAction(program: Command) {
 			"development",
 		)
 		.action(async (opts) => {
-			await cliAction("monolayer sync", opts, [
+			await cliAction("Sync: generate migrations and migrate", opts, [
 				handleMissingDatabase,
 				handlePendingSchemaMigrations,
 				generateMigration().pipe(

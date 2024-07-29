@@ -3,24 +3,9 @@
 import { Command } from "@commander-js/extra-typings";
 import { CommanderError } from "commander";
 import { exit } from "process";
-import { dbCreateAction } from "~/cli-actions/db-create.js";
-import { dbDropAction } from "~/cli-actions/db-drop.js";
-import { dbResetAction } from "~/cli-actions/db-reset.js";
-import { generateAction } from "~/cli-actions/generate.js";
-import { importSchemaAction } from "~/cli-actions/import-schema.js";
-import { migrateAction } from "~/cli-actions/migrate.js";
-import { pendingAction } from "~/cli-actions/pending.js";
-import { rollbackAction } from "~/cli-actions/rollback.js";
-import {
-	scaffoldAlterAction,
-	scaffoldDataAction,
-} from "~/cli-actions/scaffold.js";
-import { seedAction } from "~/cli-actions/seed.js";
-import { syncAction } from "~/cli-actions/sync.js";
-import { migrateAlterAction } from "../cli-actions/migrate-alter.js";
-import { migrateContractAction } from "../cli-actions/migrate-contract.js";
-import { migrateDataAction } from "../cli-actions/migrate-data.js";
-import { migrateExpandAction } from "../cli-actions/migrate-expand.js";
+import { dbCommand } from "../cli/commands/db.js";
+import { migrateCommand } from "../cli/commands/migrate.js";
+import { migrationsCommand } from "../cli/commands/migrations.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
@@ -31,22 +16,9 @@ async function main() {
 
 	program.name("monolayer").version("1.0.0");
 
-	dbCreateAction(program);
-	dbDropAction(program);
-	dbResetAction(program);
-	generateAction(program);
-	importSchemaAction(program);
-	pendingAction(program);
-	migrateAction(program);
-	migrateExpandAction(program);
-	migrateAlterAction(program);
-	migrateContractAction(program);
-	migrateDataAction(program);
-	rollbackAction(program);
-	scaffoldAlterAction(program);
-	scaffoldDataAction(program);
-	seedAction(program);
-	syncAction(program);
+	dbCommand(program);
+	migrateCommand(program);
+	migrationsCommand(program);
 
 	program.exitOverride();
 

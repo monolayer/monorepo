@@ -1,10 +1,11 @@
 import type { Command } from "@commander-js/extra-typings";
 import { cliAction } from "~/cli/cli-action.js";
-import { dropDatabase } from "~/database/drop.js";
+import { pendingMigrations } from "~/migrations/pending.js";
 
-export function dbDropAction(program: Command) {
+export function pendingAction(program: Command) {
 	program
-		.command("db:drop")
+		.command("pending")
+		.description("list pending schema migrations")
 		.option(
 			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
@@ -15,9 +16,7 @@ export function dbDropAction(program: Command) {
 			"configuration connection name as defined in configuration.ts",
 			"development",
 		)
-		.description("drops a database")
-		.action(
-			async (opts) =>
-				await cliAction("monolayer db:drop", opts, [dropDatabase()]),
-		);
+		.action(async (opts) => {
+			await cliAction("Pending migrations", opts, [pendingMigrations]);
+		});
 }
