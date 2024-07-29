@@ -8,7 +8,10 @@ import { ChangesetPhase } from "../changeset/types.js";
 import { migrationName } from "./migration.js";
 import { dateStringWithMilliseconds } from "./render.js";
 
-export function scaffoldMigration(migrationPhase: ChangesetPhase) {
+export function scaffoldMigration(
+	migrationPhase: ChangesetPhase,
+	transaction?: boolean,
+) {
 	return Effect.gen(function* () {
 		const name = yield* migrationName();
 		const dateStr = dateStringWithMilliseconds();
@@ -21,6 +24,7 @@ export function scaffoldMigration(migrationPhase: ChangesetPhase) {
 		mkdirSync(path.dirname(filePath), { recursive: true });
 		const content = nunjucks.compile(migrationTemplate).render({
 			name: scaffoldName,
+			transaction,
 		});
 		createFile(filePath, content, true);
 
@@ -33,7 +37,7 @@ import { Migration } from "monolayer/migration";
 
 export const migration: Migration = {
   name: "{{ name }}",
-  transaction: false,
+  transaction: {{ transaction }},
   scaffold: true,
 };
 

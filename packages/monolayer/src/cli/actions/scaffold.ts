@@ -10,65 +10,102 @@ export function scaffoldCommand(program: Command) {
 
 	scaffold
 		.command("alter")
-		.description("creates an empty alter migration file")
+		.description(
+			`Creates an empty alter migration file.
+
+The migration will be configured to run in a transaction by default.
+
+If you want to configure the migration not to run in a transaction, use the --no-transaction flag.`,
+		)
 		.option(
-			"-n, --name <configuration-name>",
+			"-c, --configuration <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
+		)
+		.option(
+			"-n, --no-transaction",
+			"configure migration not to run in a transaction",
 		)
 		.action(async (opts) => {
 			await cliAction(
 				"Scaffold alter migration",
 				{ ...opts, connection: "development" },
-				[scaffoldMigration(ChangesetPhase.Alter)],
+				[scaffoldMigration(ChangesetPhase.Alter, opts.transaction)],
 			);
 		});
 
 	scaffold
 		.command("contract")
-		.description("creates an empty contract migration file")
+		.description(
+			`Creates an empty contract migration file.
+
+The migration will be configured to run in a transaction by default.
+
+If you want to configure the migration not to run in a transaction, use the --no-transaction flag.`,
+		)
 		.option(
-			"-n, --name <configuration-name>",
+			"-c, --configuration <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
+		)
+		.option(
+			"-n, --no-transaction",
+			"configure migration not to run in a transaction",
 		)
 		.action(async (opts) => {
 			await cliAction(
 				"Scaffold contract migration",
 				{ ...opts, connection: "development" },
-				[scaffoldMigration(ChangesetPhase.Contract)],
+				[scaffoldMigration(ChangesetPhase.Contract, opts.transaction)],
 			);
 		});
 
 	scaffold
 		.command("data")
-		.description("creates an empty data migration file")
+		.description(
+			`Creates an empty data migration file.
+
+The migration will be configured to run in a transaction by default.
+
+If you want to configure the migration to run in a transaction, use the --transaction flag.`,
+		)
 		.option(
-			"-n, --name <configuration-name>",
+			"-c, --configuration <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
 		)
+		.option("-t, --transaction", "configure migration to run in a transaction")
 		.action(async (opts) => {
 			await cliAction(
 				"Scaffold data migration",
 				{ ...opts, connection: "development" },
-				[scaffoldMigration(ChangesetPhase.Data)],
+				[scaffoldMigration(ChangesetPhase.Data, opts.transaction ?? false)],
 			);
 		});
 
 	scaffold
 		.command("expand")
-		.description("creates an empty expand migration file")
+		.description(
+			`Creates an empty expand migration file.
+
+The migration will be configured to run in a transaction by default.
+
+If you want to configure the migration not to run in a transaction, use the --no-transaction flag.`,
+		)
 		.option(
-			"-n, --name <configuration-name>",
+			"-c, --configuration <configuration-name>",
 			"configuration name as defined in configuration.ts",
 			"default",
+		)
+		.option(
+			"-n, --no-transaction",
+			"configure migration not to run in a transaction",
 		)
 		.action(async (opts) => {
 			await cliAction(
 				"Scaffold expand migration",
 				{ ...opts, connection: "development" },
-				[scaffoldMigration(ChangesetPhase.Alter)],
+				[scaffoldMigration(ChangesetPhase.Alter, opts.transaction)],
 			);
 		});
 

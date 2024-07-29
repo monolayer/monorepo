@@ -35,7 +35,7 @@ describe("scaffoldMigration", () => {
 			},
 		);
 		const result = await runProgramWithErrorCause(
-			scaffoldMigration(ChangesetPhase.Alter),
+			scaffoldMigration(ChangesetPhase.Alter, true),
 		);
 
 		expect(result.match(/alter\/.+\.ts$/)).not.toBeNull();
@@ -45,7 +45,7 @@ import { Migration } from "monolayer/migration";
 
 export const migration: Migration = {
   name: "${path.basename(result).substring(0, path.basename(result).lastIndexOf("."))}",
-  transaction: false,
+  transaction: true,
   scaffold: true,
 };
 
@@ -72,7 +72,44 @@ export async function down(db: Kysely<any>): Promise<void> {
 			},
 		);
 		const result = await runProgramWithErrorCause(
-			scaffoldMigration(ChangesetPhase.Data),
+			scaffoldMigration(ChangesetPhase.Data, false),
+		);
+
+		expect(result.match(/data\/.+\.ts$/)).not.toBeNull();
+
+		const expected = `import { Kysely } from "kysely";
+import { Migration } from "monolayer/migration";
+
+export const migration: Migration = {
+  name: "${path.basename(result).substring(0, path.basename(result).lastIndexOf("."))}",
+  transaction: false,
+  scaffold: true,
+};
+
+export async function up(db: Kysely<any>): Promise<void> {
+}
+
+export async function down(db: Kysely<any>): Promise<void> {
+}`;
+		expect(readFileSync(result).toString()).toBe(expected);
+	});
+
+	test<ProgramContext>("creates an empty data migration file with transaction", async (context) => {
+		rmSync(
+			path.join(
+				context.folder,
+				"db",
+				"migrations",
+				"default",
+				ChangesetPhase.Data,
+			),
+			{
+				recursive: true,
+				force: true,
+			},
+		);
+		const result = await runProgramWithErrorCause(
+			scaffoldMigration(ChangesetPhase.Data, false),
 		);
 
 		expect(result.match(/data\/.+\.ts$/)).not.toBeNull();
