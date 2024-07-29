@@ -8,9 +8,7 @@ import { ChangesetPhase } from "../changeset/types.js";
 import { migrationName } from "./migration.js";
 import { dateStringWithMilliseconds } from "./render.js";
 
-export function scaffoldMigration(
-	migrationPhase: ChangesetPhase.Alter | ChangesetPhase.Data,
-) {
+export function scaffoldMigration(migrationPhase: ChangesetPhase) {
 	return Effect.gen(function* () {
 		const name = yield* migrationName();
 		const dateStr = dateStringWithMilliseconds();

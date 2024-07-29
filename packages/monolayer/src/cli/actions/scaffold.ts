@@ -10,7 +10,7 @@ export function scaffoldCommand(program: Command) {
 
 	scaffold
 		.command("alter")
-		.description("creates an empty schema migration file")
+		.description("creates an empty alter migration file")
 		.option(
 			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
@@ -25,8 +25,24 @@ export function scaffoldCommand(program: Command) {
 		});
 
 	scaffold
+		.command("contract")
+		.description("creates an empty contract migration file")
+		.option(
+			"-n, --name <configuration-name>",
+			"configuration name as defined in configuration.ts",
+			"default",
+		)
+		.action(async (opts) => {
+			await cliAction(
+				"Scaffold contract migration",
+				{ ...opts, connection: "development" },
+				[scaffoldMigration(ChangesetPhase.Contract)],
+			);
+		});
+
+	scaffold
 		.command("data")
-		.description("creates an empty schema migration file")
+		.description("creates an empty data migration file")
 		.option(
 			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
@@ -40,13 +56,9 @@ export function scaffoldCommand(program: Command) {
 			);
 		});
 
-	return scaffold;
-}
-
-export function scaffoldDataAction(program: Command) {
-	program
-		.command("scaffold:data")
-		.description("creates an empty schema migration file")
+	scaffold
+		.command("expand")
+		.description("creates an empty expand migration file")
 		.option(
 			"-n, --name <configuration-name>",
 			"configuration name as defined in configuration.ts",
@@ -54,10 +66,11 @@ export function scaffoldDataAction(program: Command) {
 		)
 		.action(async (opts) => {
 			await cliAction(
-				"monolayer scaffold",
+				"Scaffold expand migration",
 				{ ...opts, connection: "development" },
-				[scaffoldMigration(ChangesetPhase.Data)],
+				[scaffoldMigration(ChangesetPhase.Alter)],
 			);
 		});
-}
 
+	return scaffold;
+}
