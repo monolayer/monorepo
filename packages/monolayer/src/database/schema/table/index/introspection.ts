@@ -255,7 +255,6 @@ function buildIndex(
 		indexName = `${transformedColumnNames.join("_")}_monolayer_idx`;
 	}
 
-	camelCase.enabled;
 	let kyselyBuilder = (
 		camelCase.enabled
 			? kysely.withPlugin(new CamelCasePlugin(camelCase.options))
