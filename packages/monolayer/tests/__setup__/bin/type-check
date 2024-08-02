@@ -8,6 +8,6 @@ if [[ "$TYPESCRIPT_VERSION" == "default" ]]; then
   tsc --noEmit
 else
   TYPESCRIPT_VERSION=${TYPESCRIPT_VERSION//./}
-  echo "Typescript $(./../../node_modules/typescript-${TYPESCRIPT_VERSION}/bin/tsc --version)"
-  ./../../node_modules/typescript-${TYPESCRIPT_VERSION}/bin/tsc --noEmit
+  echo "Typescript $(./../../node_modules/typescript-"${TYPESCRIPT_VERSION}"/bin/tsc --version)"
+  ./../../node_modules/typescript-"${TYPESCRIPT_VERSION}"/bin/tsc --noEmit
 fi
