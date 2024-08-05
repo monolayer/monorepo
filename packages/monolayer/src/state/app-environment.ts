@@ -5,7 +5,7 @@ import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 import { cwd } from "process";
 import { ActionError } from "~/cli/errors.js";
-import { importConfig, importConfigurations } from "~/config.js";
+import { importConfig, importConfigurations } from "~/import-config.js";
 import { MonolayerPgConfiguration } from "../pg.js";
 
 export interface AppEnv {
@@ -35,6 +35,11 @@ export function getEnvironment(name: string, configurationName: string) {
 export const appEnvironment = Effect.gen(function* () {
 	const state = yield* AppEnvironment;
 	return yield* Ref.get(state);
+});
+
+export const currentConfig = Effect.gen(function* () {
+	const env = yield* appEnvironment;
+	return yield* configurationByName(env.configurationName);
 });
 
 export const appEnvironmentPgConfig = Effect.gen(function* () {

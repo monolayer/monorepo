@@ -15,8 +15,10 @@ import {
 	isCreateColumn,
 	isDropColumn,
 } from "../database/schema/table/column/changeset.js";
+import { splitRefactorChangesets } from "../refactor/split-column/changeset.js";
 import { migrationOpGenerators } from "./generators.js";
 import { toSnakeCase } from "./helpers.js";
+import type { SplitColumnRefactoring } from "./schema-refactor.js";
 import { Changeset } from "./types.js";
 
 interface Generator {
@@ -38,6 +40,7 @@ export interface GeneratorContext {
 	typeAlignments: TypeAlignment[];
 	addedColumns: Record<string, string[]>;
 	droppedColumns: Record<string, string[]>;
+	splitRefactors: SplitColumnRefactoring[];
 }
 
 export function schemaChangeset(
@@ -70,6 +73,7 @@ export function schemaChangeset(
 		typeAlignments: typeAlignments,
 		addedColumns,
 		droppedColumns,
+		splitRefactors: introspection.splitRefactors,
 	};
 
 	const changesets = diff.flatMap((difference) => {
@@ -79,7 +83,13 @@ export function schemaChangeset(
 		}
 		return [];
 	});
-	return sortChangeset(changesets, introspection);
+	return sortChangeset(
+		[
+			...changesets,
+			...splitRefactorChangesets(introspection.splitRefactors, context),
+		],
+		introspection,
+	);
 }
 
 export function changesetDiff(
@@ -98,7 +108,7 @@ export function changesetDiff(
 
 function addedColumns(diff: Difference[]) {
 	return diff
-		.filter(isCreateColumn)
+		.filter((diff) => isCreateColumn(diff))
 		.map((diff) => [diff.path[1], diff.path[3]] as [string, string])
 		.reduce(
 			(acc, [table, column]) => {

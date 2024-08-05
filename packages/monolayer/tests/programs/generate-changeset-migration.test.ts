@@ -243,9 +243,8 @@ export const dbSchema = schema({
 });
 `;
 
-const expectedMigration = `/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Kysely } from "kysely";
-import { Migration } from "monolayer/migration";
+const expectedMigration = `import { Kysely } from "kysely";
+import { type Migration } from "monolayer/migration";
 
 export const migration: Migration = {
 	name: "#name",
@@ -268,9 +267,8 @@ export async function down(db: Kysely<any>): Promise<void> {
 }
 `;
 
-const expectedMigrationWithSchemas = `/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Kysely, sql } from "kysely";
-import { Migration } from "monolayer/migration";
+const expectedMigrationWithSchemas = `import { Kysely, sql } from "kysely";
+import { type Migration } from "monolayer/migration";
 
 export const migration: Migration = {
 	name: "#name",
@@ -311,9 +309,8 @@ export async function down(db: Kysely<any>): Promise<void> {
 }
 `;
 
-const expectedMigrationWithDependency = `/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Kysely } from "kysely";
-import { Migration } from "monolayer/migration";
+const expectedMigrationWithDependency = `import { Kysely } from "kysely";
+import { type Migration } from "monolayer/migration";
 
 export const migration: Migration = {
 	name: "#name",
@@ -336,9 +333,8 @@ export async function down(db: Kysely<any>): Promise<void> {
 }
 `;
 
-const expectedMigrationWithSchemasAndDependency = `/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Kysely, sql } from "kysely";
-import { Migration } from "monolayer/migration";
+const expectedMigrationWithSchemasAndDependency = `import { Kysely, sql } from "kysely";
+import { type Migration } from "monolayer/migration";
 
 export const migration: Migration = {
 	name: "#name",

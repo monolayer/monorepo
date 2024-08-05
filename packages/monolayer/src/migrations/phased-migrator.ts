@@ -14,7 +14,11 @@ import {
 } from "~/services/migrator.js";
 import { appEnvironmentMigrationsFolder } from "~/state/app-environment.js";
 import { printWarnigns } from "../changeset/print-changeset-summary.js";
-import { ChangesetPhase, type Changeset } from "../changeset/types.js";
+import {
+	ChangeSetType,
+	ChangesetPhase,
+	type Changeset,
+} from "../changeset/types.js";
 import { type ChangeWarning } from "../changeset/warnings.js";
 import { ActionError } from "../cli/errors.js";
 import { logMigrationResultStatus } from "./apply.js";
@@ -618,6 +622,9 @@ class PhasedMigratorRenderer {
 							? false
 							: true,
 						this.#changesetWarnings(isolatedChangeset),
+						isolatedChangeset.some(
+							(m) => m.type === ChangeSetType.SplitColumnRefactor,
+						),
 					);
 					renderedMigrations.push(
 						path.relative(

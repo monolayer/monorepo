@@ -5946,7 +5946,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 		});
 	});
 
-	test<DbContext>("add non nullable column with volatile default", async (context) => {
+	test.only<DbContext>("add non nullable column with volatile default", async (context) => {
 		await context.kysely.schema.createTable("users").execute();
 
 		const dbSchema = schema({
@@ -5993,6 +5993,16 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						"execute();",
 					],
 					[
+						'await db.withSchema("public").schema',
+						'alterTable("users")',
+						'alterColumn("createdAt", (col) => col.setDefault(sql`now()`))',
+						"execute();",
+					],
+					[
+						'await sql`COMMENT ON COLUMN "public"."users"."createdAt" IS \'28a4dae0\'`',
+						"execute(db);",
+					],
+					[
 						`await sql\`\${sql.raw(
   db
     .withSchema("public")
@@ -6017,16 +6027,6 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						'alterTable("users")',
 						'dropConstraint("temporary_not_null_check_constraint")',
 						"execute();",
-					],
-					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'alterColumn("createdAt", (col) => col.setDefault(sql`now()`))',
-						"execute();",
-					],
-					[
-						'await sql`COMMENT ON COLUMN "public"."users"."createdAt" IS \'28a4dae0\'`',
-						"execute(db);",
 					],
 				],
 				down: [

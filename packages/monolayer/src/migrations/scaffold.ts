@@ -33,7 +33,7 @@ export function scaffoldMigration(
 }
 
 const migrationTemplate = `import { Kysely } from "kysely";
-import { Migration } from "monolayer/migration";
+import { type Migration } from "monolayer/migration";
 
 export const migration: Migration = {
   name: "{{ name }}",

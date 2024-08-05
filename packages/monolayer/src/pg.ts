@@ -1,5 +1,4 @@
 import type { Configuration } from "./configuration.js";
-
 export { PgExtension, extension } from "./database/extension/extension.js";
 export { schema, type Schema } from "./database/schema/schema.js";
 export {
@@ -169,5 +168,9 @@ export class MonolayerPgConfiguration {
 
 	get camelCasePluginOptions() {
 		return this.configuration.camelCasePlugin?.options ?? { enabled: false };
+	}
+
+	get generatePrismaSchema() {
+		return this.configuration.generatePrismaSchema ?? false;
 	}
 }

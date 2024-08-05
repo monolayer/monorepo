@@ -82,7 +82,7 @@ export function setNotNullOp(
 ) {
 	return [
 		...addCheckWithSchemaStatements(schemaName, tableName, {
-			name: "temporary_not_null_check_constraint",
+			name: `temporary_not_null_check_constraint_${schemaName}_${tableName}_${columnName}`,
 			definition: `"${columnName}" IS NOT NULL`,
 		}),
 		executeKyselySchemaStatement(
@@ -93,7 +93,7 @@ export function setNotNullOp(
 		dropCheckKyselySchemaStatement(
 			schemaName,
 			tableName,
-			"temporary_not_null_check_constraint",
+			`temporary_not_null_check_constraint_${schemaName}_${tableName}_${columnName}`,
 		),
 	];
 }

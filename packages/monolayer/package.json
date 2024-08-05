@@ -23,7 +23,7 @@
 				"default": "./dist/esm/src/index.js"
 			}
 		},
-		"./config": {
+		"./configuration": {
 			"import": {
 				"types": "./dist/esm/src/configuration.d.ts",
 				"default": "./dist/esm/src/configuration.js"

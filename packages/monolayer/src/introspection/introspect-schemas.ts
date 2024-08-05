@@ -16,6 +16,7 @@ import {
 	appEnvironmentConfigurationSchemas,
 } from "~/state/app-environment.js";
 import type { TableAndColumnRenames } from "~/state/table-column-rename.js";
+import type { SplitColumnRefactoring } from "../changeset/schema-refactor.js";
 
 export function introspectRemote(
 	schemaName: string,
@@ -73,11 +74,13 @@ export type SchemaIntrospection = {
 	tablesToRename: TablesToRename;
 	tablePriorities: string[];
 	columnsToRename: ColumnsToRename;
+	splitRefactors: SplitColumnRefactoring[];
 };
 
 export function introspectSchema(
 	schema: AnySchema,
 	renames?: TableAndColumnRenames,
+	splitRefactors?: SplitColumnRefactoring[],
 ) {
 	return Effect.gen(function* () {
 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
@@ -112,6 +115,7 @@ export function introspectSchema(
 			tablePriorities: introspectedRemote.tablePriorities,
 			columnsToRename: renames !== undefined ? renames.columnsToRename : {},
 			allSchemas,
+			splitRefactors: splitRefactors ?? [],
 		};
 		return introspectionContext;
 	});

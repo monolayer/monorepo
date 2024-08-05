@@ -6,7 +6,6 @@ import { exit } from "process";
 import { dbCommand } from "../cli/commands/db.js";
 import { migrateCommand } from "../cli/commands/migrate.js";
 import { migrationsCommand } from "../cli/commands/migrations.js";
-import { refactorCommand } from "../cli/commands/refactor.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
@@ -20,7 +19,6 @@ async function main() {
 	dbCommand(program);
 	migrateCommand(program);
 	migrationsCommand(program);
-	refactorCommand(program);
 
 	program.exitOverride();
 

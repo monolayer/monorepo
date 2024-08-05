@@ -283,6 +283,7 @@ export class MonolayerMigrator {
 			await this.#ensureMigrationTablesExists();
 			return await this.#runMigrations(getMigrationDirectionAndStep);
 		} catch (error) {
+			console.dir(error);
 			if (error instanceof MigrationResultSetError) {
 				return error.resultSet;
 			}
@@ -677,6 +678,7 @@ export class MonolayerMigrator {
 					status: "Success",
 				};
 			} catch (error) {
+				console.log(error);
 				results[i] = {
 					migrationName: migration.name,
 					direction: "Up",

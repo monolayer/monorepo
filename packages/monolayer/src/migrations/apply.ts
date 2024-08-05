@@ -1,12 +1,15 @@
 /* eslint-disable complexity */
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
+import { execa } from "execa";
 import type { MigrationResult } from "kysely";
 import color from "picocolors";
 import { ActionError, UnknownActionError } from "~/cli/errors.js";
 import { dumpDatabaseStructureTask } from "~/database/dump.js";
 import { ChangesetPhase } from "../changeset/types.js";
+import { spinnerTask } from "../cli/spinner-task.js";
 import { Migrator } from "../services/migrator.js";
+import { currentConfig } from "../state/app-environment.js";
 import { checkNoPendingMigrations } from "./pending.js";
 
 interface ApplyExpandMigrations {
@@ -112,12 +115,14 @@ export function applyMigrations({
 			);
 		}
 
+		const config = yield* currentConfig;
 		if (
 			migrationError === undefined &&
 			migrationResults !== undefined &&
 			migrationResults.length !== 0
 		) {
 			yield* dumpDatabaseStructureTask;
+			if (config.generatePrismaSchema) yield* generatePrisma;
 			return true;
 		} else {
 			return false;
@@ -125,6 +130,20 @@ export function applyMigrations({
 	});
 }
 
+const generatePrisma = Effect.gen(function* () {
+	yield* spinnerTask("Generate prisma", () =>
+		Effect.gen(function* () {
+			yield* Effect.tryPromise(async () =>
+				execa("npx", ["prisma", "db", "pull"]),
+			);
+			yield* Effect.tryPromise(async () =>
+				execa("npx", ["prisma", "generate"]),
+			);
+		}),
+	);
+});
+
+// prisma db pull && prisma generate
 export function logMigrationResultStatus(
 	result: MigrationResult,
 	error: unknown,

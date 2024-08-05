@@ -18,19 +18,25 @@ import {
 } from "../introspection/introspect-schemas.js";
 import { DbClients } from "../services/db-clients.js";
 import { toSnakeCase } from "./helpers.js";
+import { promtSchemaRefactors as promptSplitSchemaRefacors } from "./schema-refactor.js";
 import { promptSchemaRenames } from "./schema-rename.js";
 import type { Changeset } from "./types.js";
 import { validateForeignKeyReferences } from "./validate-foreign-key-references.js";
 
 export function changeset() {
 	return Effect.gen(function* () {
-		const renames = yield* promptSchemaRenames;
+		const splitRefactors = yield* promptSplitSchemaRefacors;
+		const renames = yield* promptSchemaRenames(splitRefactors);
 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
 		let changesets: Changeset[] = [];
 		const typeAlignments = yield* introspectAlignment;
 		for (const schema of allSchemas) {
 			yield* validateForeignKeyReferences(schema, allSchemas);
-			const introspection = yield* introspectSchema(schema, renames);
+			const introspection = yield* introspectSchema(
+				schema,
+				renames,
+				splitRefactors,
+			);
 			yield* renameMigrationInfo(introspection);
 			yield* sortTablePriorities(introspection);
 			changesets = [

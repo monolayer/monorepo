@@ -378,7 +378,7 @@ function removeSelectConfigLine(filePath: string): void {
 
 const migrationTemplate = `import { Kysely, sql } from "kysely";
 import { readFileSync } from "fs";
-import { Migration } from "monolayer/migration";
+import { type Migration } from "monolayer/migration";
 
 export const migration: Migration = {
   name: "{{ name }}",

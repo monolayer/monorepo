@@ -267,7 +267,7 @@ export function addImportToConfiguration(
 
 const configurationTemplate = `
 
-export const {{ configurationName }} = {
+export const {{ configurationName }} = defineConfig({
 	schemas: [{{ schemaModuleName }}],
 	extensions: {{ schemaModuleExtensionName }},
 	connections: {
@@ -275,5 +275,5 @@ export const {{ configurationName }} = {
 			connectionString: process.env.{{ envVar }}_DATABASE_URL,
 		},
 	},
-} satisfies Configuration;
+});
 `;

@@ -8,6 +8,7 @@ export async function dbExtensionInfo(kysely: Kysely<InformationSchemaDB>) {
 		.leftJoin("pg_namespace", "pg_extension.extnamespace", "pg_namespace.oid")
 		.select(["extname"])
 		.where("extname", "!=", "plpgsql")
+		.where("extname", "!=", "plpgsql")
 		.execute();
 
 	const extensionInfo = results.reduce<ExtensionInfo>((acc, curr) => {

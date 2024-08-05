@@ -105,7 +105,7 @@ If you want to configure the migration not to run in a transaction, use the --no
 			await cliAction(
 				"Scaffold expand migration",
 				{ ...opts, connection: "development" },
-				[scaffoldMigration(ChangesetPhase.Alter, opts.transaction)],
+				[scaffoldMigration(ChangesetPhase.Expand, opts.transaction)],
 			);
 		});
 

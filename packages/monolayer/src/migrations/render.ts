@@ -2,9 +2,8 @@ import path from "node:path";
 import nunjucks from "nunjucks";
 import { createFile } from "~/create-file.js";
 
-const template = `/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Kysely, sql } from "kysely";
-import { Migration } from "monolayer/migration";
+const template = `import { Kysely, sql } from "kysely";
+import { type Migration{% if splitColumnRefactor %}, SplitColumnRefactor{% endif %} } from "monolayer/migration";
 
 export const migration: Migration = {
 	name: "{{ name }}",
@@ -35,6 +34,7 @@ export function renderToFile(
 	name: string,
 	transaction: boolean,
 	warnings: string,
+	splitColumnRefactor: boolean,
 ) {
 	const { up, down } = upDown;
 	const dateStr = dateStringWithMilliseconds();
@@ -46,6 +46,7 @@ export function renderToFile(
 		transaction,
 		name: migrationName,
 		warnings,
+		splitColumnRefactor,
 	});
 
 	createFile(

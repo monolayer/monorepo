@@ -16,6 +16,7 @@ export type Configuration = {
 	connections: {
 		development: PgConfig;
 	} & Record<string, PgConfig>;
+	generatePrismaSchema?: boolean;
 };
 
 export type CamelCaseOptions = {

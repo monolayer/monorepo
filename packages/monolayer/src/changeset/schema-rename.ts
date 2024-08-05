@@ -10,26 +10,79 @@ import {
 	makeTableColumnRenameState,
 	type ColumnsToRename,
 } from "~/state/table-column-rename.js";
+import type { SplitColumnRefactoring } from "./schema-refactor.js";
 
-export const promptSchemaRenames = Effect.provideServiceEffect(
-	Effect.gen(function* () {
-		const schemas = yield* appEnvironmentConfigurationSchemas;
-		for (const schema of schemas) {
-			const introspection = yield* introspectSchema(schema);
-			yield* selectTableDiffInteractive(
-				introspection.schemaName,
-				introspection.tableDiff,
-			);
-			yield* selectColumnDiffInteractive(
-				introspection.schemaName,
-				yield* computeColumnDiff(introspection.local, introspection.remote),
-			);
-		}
-		return yield* TableColumnRenameState.current;
-	}),
-	TableColumnRenameState,
-	makeTableColumnRenameState,
-);
+export function promptSchemaRenames(
+	splitColumnRefactors: SplitColumnRefactoring[],
+) {
+	return Effect.provideServiceEffect(
+		Effect.gen(function* () {
+			const schemas = yield* appEnvironmentConfigurationSchemas;
+			for (const schema of schemas) {
+				const introspection = yield* introspectSchema(schema);
+				yield* selectTableDiffInteractive(
+					introspection.schemaName,
+					introspection.tableDiff,
+				);
+				const columnDiff = yield* computeColumnDiff(
+					introspection.local,
+					introspection.remote,
+				);
+				const filteredColumnDiff = Object.entries(columnDiff).reduce(
+					(acc, [tableName, addedDeleted]) => {
+						if (
+							splitColumnRefactors.some(
+								(refactor) =>
+									refactor.schema === introspection.schemaName &&
+									refactor.tableName === tableName,
+							)
+						) {
+							const sourceColumnsForTable = splitColumnRefactors
+								.filter(
+									(refactor) =>
+										refactor.schema === introspection.schemaName &&
+										refactor.tableName === tableName,
+								)
+								.map((refactor) => refactor.sourceColumn);
+							const targetColumsForTable = splitColumnRefactors
+								.filter(
+									(refactor) =>
+										refactor.schema === introspection.schemaName &&
+										refactor.tableName === tableName,
+								)
+								.flatMap((refactor) => refactor.targetColumns);
+							acc[tableName] = {
+								added: addedDeleted.added.filter(
+									(added) => !targetColumsForTable.includes(added),
+								),
+								deleted: addedDeleted.deleted.filter(
+									(deleted) => !sourceColumnsForTable.includes(deleted),
+								),
+							};
+						} else {
+							acc[tableName] = addedDeleted;
+						}
+						return acc;
+					},
+					{} as Record<
+						string,
+						{
+							added: string[];
+							deleted: string[];
+						}
+					>,
+				);
+				yield* selectColumnDiffInteractive(
+					introspection.schemaName,
+					filteredColumnDiff,
+				);
+			}
+			return yield* TableColumnRenameState.current;
+		}),
+		TableColumnRenameState,
+		makeTableColumnRenameState,
+	);
+}
 
 function selectTableDiffInteractive(
 	schemaName: string,

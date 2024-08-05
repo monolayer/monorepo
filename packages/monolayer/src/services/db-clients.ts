@@ -80,13 +80,21 @@ function poolAndConfig(environmentConfig: pg.ClientConfig & pg.PoolConfig) {
 			: environmentConfig;
 
 	return {
-		pool: new pg.Pool(environmentConfig),
+		pool: new pg.Pool({
+			...environmentConfig,
+			...(environmentConfig.ssl !== undefined
+				? { ssl: environmentConfig.ssl }
+				: {}),
+		}),
 		adminPool: new pg.Pool({
 			user: config.user,
 			password: config.password,
 			host: config.host ?? "",
 			port: Number(config.port ?? 5432),
 			database: undefined,
+			...(environmentConfig.ssl !== undefined
+				? { ssl: environmentConfig.ssl }
+				: {}),
 		}),
 		config,
 	};
