@@ -7,6 +7,9 @@
 		"check": {
 			"dependsOn": ["^check"]
 		},
+		"pack": {
+			"dependsOn": ["^pack"]
+		},
 		"dev": {
 			"persistent": true,
 			"cache": false
