@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {

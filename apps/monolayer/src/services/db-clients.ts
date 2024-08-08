@@ -122,15 +122,10 @@ export function adminPgQuery<
 			try: async () => {
 				return (await pool.query<T>(query)).rows;
 			},
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			catch: (error: unknown) => {
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				const anyError = error as unknown as any;
-				if (
-					anyError.code !== undefined &&
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					anyError.severity !== undefined
-				) {
+				if (anyError.code !== undefined && anyError.severity !== undefined) {
 					return new ActionError("QueryError", anyError.message);
 				}
 				return new UnknownException(error);

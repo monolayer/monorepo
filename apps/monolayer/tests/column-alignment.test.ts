@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { alignColumns, introspectAlignment } from "~/database/alignment.js";
 import { type ColumnInfoFactoryOptions } from "./__setup__/helpers/factories/column-info-factory.js";

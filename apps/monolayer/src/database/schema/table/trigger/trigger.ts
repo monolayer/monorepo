@@ -97,7 +97,6 @@ export class PgTrigger<T extends string | never> {
 	/**
 	 * @hidden
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static info(trigger: AnyTrigger) {
 		return {
 			firingTime: trigger.options.fireWhen,

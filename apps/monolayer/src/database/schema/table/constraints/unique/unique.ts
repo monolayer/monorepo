@@ -65,9 +65,7 @@ function assertUniqueConstraintWithInfo<T extends PgUnique<any>>(
 ): asserts val is T & {
 	options: UniqueConstraintOptions;
 	isExternal: boolean;
-} {
-	true;
-}
+} {}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyPgUnique = PgUnique<any>;

@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 /* eslint-disable complexity */
 import { camelCase, constantCase, kebabCase } from "case-anything";
 import { appendFileSync, readFileSync, writeFileSync } from "fs";
@@ -106,7 +105,6 @@ export function createSchema(
 		", ",
 	);
 
-	schema.extensions.length > 0;
 	addImportToConfiguration(folder, schemaPath, moduleImports);
 
 	writeConfiguration({

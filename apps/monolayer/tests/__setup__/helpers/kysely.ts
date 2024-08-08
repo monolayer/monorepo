@@ -55,7 +55,6 @@ export async function kyselyMigrator(
 	});
 }
 export interface DbContext {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Awaited<ReturnType<typeof kyselyWithCustomDB>>;
 	migrator: InstanceType<Awaited<ReturnType<typeof importKysely>>["Migrator"]>;
 	tableNames: string[];

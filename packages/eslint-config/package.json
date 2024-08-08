@@ -1,0 +1,16 @@
+{
+	"name": "@monorepo/eslint-config",
+	"version": "0.0.0",
+	"private": true,
+	"files": [
+		"eslintrc.js"
+	],
+	"dependencies": {
+		"@typescript-eslint/parser": "^8.0.1",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint": "^9.8.0",
+		"prettier-plugin-organize-imports": "^3.2.4",
+		"prettier": "3.3.3",
+		"@typescript-eslint/eslint-plugin": "^8.0.1"
+	}
+}

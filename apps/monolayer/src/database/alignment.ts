@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { Effect } from "effect";
 import { adminPgQuery } from "~/services/db-clients.js";
 import type { ColumnInfo } from "./schema/table/column/types.js";

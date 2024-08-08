@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { execa } from "execa";

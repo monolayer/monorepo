@@ -34,11 +34,8 @@ export function assertCheckWithInfo<T extends PgCheck>(
 	hash: string;
 	name: string;
 	isExternal: boolean;
-} {
-	true;
-}
+} {}
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function unmanagedCheck(name: string, expression: Expression<any>) {
 	return new PgUnmanagedCheck(name, expression);
 }

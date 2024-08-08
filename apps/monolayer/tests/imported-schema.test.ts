@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import type { Changeset } from "~/changeset/types.js";

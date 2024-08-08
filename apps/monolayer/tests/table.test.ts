@@ -115,6 +115,7 @@ describe("pgTable definition", () => {
 	describe("column type inference", () => {
 		describe("column defaults", () => {
 			test("nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer(),
@@ -129,6 +130,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("nullable and optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer(),
@@ -143,6 +145,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer(),
@@ -157,6 +160,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer(),
@@ -177,6 +181,7 @@ describe("pgTable definition", () => {
 
 		describe("non nullable columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -191,6 +196,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and required inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -205,6 +211,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -219,6 +226,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -239,6 +247,7 @@ describe("pgTable definition", () => {
 
 		describe("columns with default", () => {
 			test("nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().default(0),
@@ -253,6 +262,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("nullable and optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().default(0),
@@ -267,6 +277,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().default(0),
@@ -281,6 +292,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().default(0),
@@ -301,6 +313,7 @@ describe("pgTable definition", () => {
 
 		describe("non nullable columns with default", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull().default(0),
@@ -315,6 +328,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull().default(0),
@@ -329,6 +343,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull().default(0),
@@ -343,6 +358,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull().default(0),
@@ -363,6 +379,7 @@ describe("pgTable definition", () => {
 
 		describe("columns with default non nullable", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().default(0).notNull(),
@@ -377,6 +394,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().default(0).notNull(),
@@ -391,6 +409,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().default(0).notNull(),
@@ -405,6 +424,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().default(0).notNull(),
@@ -425,6 +445,7 @@ describe("pgTable definition", () => {
 
 		describe("primary key columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						demo: bigint(),
@@ -445,6 +466,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and required inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer(),
@@ -462,6 +484,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer(),
@@ -479,6 +502,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer(),
@@ -502,6 +526,7 @@ describe("pgTable definition", () => {
 
 		describe("external primary key columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						demo: bigint(),
@@ -522,6 +547,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and required inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer(),
@@ -539,6 +565,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer(),
@@ -556,6 +583,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer(),
@@ -579,6 +607,7 @@ describe("pgTable definition", () => {
 
 		describe("non nullable primary key columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -596,6 +625,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and required inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -613,6 +643,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -630,6 +661,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -653,6 +685,7 @@ describe("pgTable definition", () => {
 
 		describe("non nullable external primary key columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -670,6 +703,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and required inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -687,6 +721,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -704,6 +739,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -727,6 +763,7 @@ describe("pgTable definition", () => {
 
 		describe("primary key columns with default", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull().default(1),
@@ -744,6 +781,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull().default(1),
@@ -761,6 +799,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull().default(1),
@@ -778,6 +817,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().notNull(),
@@ -801,6 +841,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (serial) columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -815,6 +856,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -829,6 +871,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -843,6 +886,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -863,6 +907,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (serial) primary key columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -880,6 +925,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -897,6 +943,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -914,6 +961,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -937,6 +985,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (serial) external primary key columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -954,6 +1003,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -971,6 +1021,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable and optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -988,6 +1039,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: serial(),
@@ -1011,6 +1063,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (by default as identity) columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1025,6 +1078,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1039,6 +1093,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1053,6 +1108,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1073,6 +1129,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (by default as identity) primary key columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1090,6 +1147,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1109,6 +1167,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1126,6 +1185,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1149,6 +1209,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (by default as identity) external primary key columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1166,6 +1227,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable optional inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1185,6 +1247,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("non nullable optional updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1202,6 +1265,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedByDefaultAsIdentity(),
@@ -1225,6 +1289,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (always as identity) primary key columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
@@ -1242,6 +1307,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("does not accept inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
@@ -1250,7 +1316,7 @@ describe("pgTable definition", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
-				// eslint-disable-next-line @typescript-eslint/ban-types
+				// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 				type expectedType = {};
 				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1258,6 +1324,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("does not accept updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
@@ -1266,7 +1333,7 @@ describe("pgTable definition", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
-				// eslint-disable-next-line @typescript-eslint/ban-types
+				// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 				type expectedType = {};
 				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1274,6 +1341,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
@@ -1297,6 +1365,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (always as identity) external primary key columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
@@ -1314,6 +1383,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("does not accept inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
@@ -1322,7 +1392,7 @@ describe("pgTable definition", () => {
 						primaryKey: primaryKey(["id"]).external(),
 					},
 				});
-				// eslint-disable-next-line @typescript-eslint/ban-types
+				// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 				type expectedType = {};
 				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1330,6 +1400,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("does not accept updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
@@ -1338,7 +1409,7 @@ describe("pgTable definition", () => {
 						primaryKey: primaryKey(["id"]).external(),
 					},
 				});
-				// eslint-disable-next-line @typescript-eslint/ban-types
+				// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 				type expectedType = {};
 				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1346,6 +1417,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
@@ -1369,6 +1441,7 @@ describe("pgTable definition", () => {
 
 		describe("generated (always as identity) columns", () => {
 			test("non nullable selects", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
@@ -1383,12 +1456,13 @@ describe("pgTable definition", () => {
 			});
 
 			test("does not accept inserts", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 					},
 				});
-				// eslint-disable-next-line @typescript-eslint/ban-types
+				// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 				type expectedType = {};
 				type InferredType = Simplify<Insertable<typeof tbl.infer>>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1396,12 +1470,13 @@ describe("pgTable definition", () => {
 			});
 
 			test("does not accept updates", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
 					},
 				});
-				// eslint-disable-next-line @typescript-eslint/ban-types
+				// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 				type expectedType = {};
 				type InferredType = Updateable<typeof tbl.infer>;
 				const equal: Expect<Equal<InferredType, expectedType>> = true;
@@ -1409,6 +1484,7 @@ describe("pgTable definition", () => {
 			});
 
 			test("infer select, insert, and update", () => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const tbl = table({
 					columns: {
 						id: integer().generatedAlwaysAsIdentity(),
@@ -1431,6 +1507,7 @@ describe("pgTable definition", () => {
 			describe("defaults", () => {
 				test("nullable selects", () => {
 					const role = enumType("role", ["admin", "user"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role),
@@ -1446,6 +1523,7 @@ describe("pgTable definition", () => {
 
 				test("nullable and optional inserts", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role),
@@ -1461,6 +1539,7 @@ describe("pgTable definition", () => {
 
 				test("nullable and optional updates", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role),
@@ -1476,6 +1555,7 @@ describe("pgTable definition", () => {
 
 				test("infer select, insert, and update", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role),
@@ -1502,6 +1582,7 @@ describe("pgTable definition", () => {
 			describe("non nullable", () => {
 				test("non nullable selects", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).notNull(),
@@ -1517,6 +1598,7 @@ describe("pgTable definition", () => {
 
 				test("non nullable and required inserts", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).notNull(),
@@ -1532,6 +1614,7 @@ describe("pgTable definition", () => {
 
 				test("non nullable and optional updates", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).notNull(),
@@ -1547,6 +1630,7 @@ describe("pgTable definition", () => {
 
 				test("infer select, insert, and update", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).notNull(),
@@ -1568,6 +1652,7 @@ describe("pgTable definition", () => {
 			describe("with default", () => {
 				test("nullable selects", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).default("user"),
@@ -1583,6 +1668,7 @@ describe("pgTable definition", () => {
 
 				test("nullable and optional inserts", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).default("user"),
@@ -1598,6 +1684,7 @@ describe("pgTable definition", () => {
 
 				test("nullable and optional updates", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).default("user"),
@@ -1613,6 +1700,7 @@ describe("pgTable definition", () => {
 
 				test("infer select, insert, and update", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).default("user"),
@@ -1639,6 +1727,7 @@ describe("pgTable definition", () => {
 			describe("non nullable with default", () => {
 				test("non nullable selects", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).notNull().default("user"),
@@ -1654,6 +1743,7 @@ describe("pgTable definition", () => {
 
 				test("non nullable and optional inserts", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).notNull().default("user"),
@@ -1669,6 +1759,7 @@ describe("pgTable definition", () => {
 
 				test("non nullable and optional updates", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).notNull().default("user"),
@@ -1684,6 +1775,7 @@ describe("pgTable definition", () => {
 
 				test("infer select, insert, and update", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).notNull().default("user"),
@@ -1705,6 +1797,7 @@ describe("pgTable definition", () => {
 			describe("with default non nullable", () => {
 				test("non nullable selects", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).default("user").notNull(),
@@ -1720,6 +1813,7 @@ describe("pgTable definition", () => {
 
 				test("non nullable and optional inserts", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).default("user").notNull(),
@@ -1735,6 +1829,7 @@ describe("pgTable definition", () => {
 
 				test("non nullable and optional updates", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).default("user").notNull(),
@@ -1750,6 +1845,7 @@ describe("pgTable definition", () => {
 
 				test("infer select, insert, and update", () => {
 					const role = enumType("role", ["user", "admin", "superuser"]);
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const tbl = table({
 						columns: {
 							role: enumerated(role).default("user").notNull(),
@@ -1771,6 +1867,7 @@ describe("pgTable definition", () => {
 	});
 
 	test("table with generic columns", () => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const tbl = table({
 			columns: {
 				id: integer(),
@@ -1800,6 +1897,7 @@ describe("pgTable definition", () => {
 				},
 			});
 
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const tableSchema = zodSchema(tbl);
 
 			type InputSchema = z.input<typeof tableSchema>;

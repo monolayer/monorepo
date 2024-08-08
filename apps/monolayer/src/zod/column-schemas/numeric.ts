@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { z } from "zod";
 import {
 	type PgColumn,
@@ -122,7 +121,7 @@ function bigintSchema(isNullable: boolean) {
 			try {
 				if (val === "") throw new Error("Invalid bigint");
 				BigInt(val);
-			} catch (e) {
+			} catch {
 				return customIssue(ctx, "Invalid bigint");
 			}
 		})
@@ -151,7 +150,7 @@ function variablePrecisionSchema(
 					}
 					BigInt(val);
 				}
-			} catch (e) {
+			} catch {
 				return customIssue(ctx, errorMessage);
 			}
 		})
@@ -231,7 +230,7 @@ function decimalSchema(
 					}
 					BigInt(val);
 				}
-			} catch (e) {
+			} catch {
 				return customIssue(ctx, errorMessage);
 			}
 		})

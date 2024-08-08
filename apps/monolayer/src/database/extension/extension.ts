@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function extension(name: ContribExtension | AnyExtension) {
 	return new PgExtension(name);
 }
@@ -16,7 +15,6 @@ export class PgExtension {
 	/**
 	 * @hidden
 	 */
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	constructor(protected name: ContribExtension | AnyExtension) {}
 }
 

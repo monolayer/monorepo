@@ -87,7 +87,6 @@ export function foreignKey<T extends string, C extends AnyPgTable>(
 	targetColumns: C extends PgTable<infer U, any> ? (keyof U)[] : never,
 ): PgForeignKey<T, C>;
 export function foreignKey<T extends string, C extends AnyPgTable>(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	...args: unknown[]
 ): PgForeignKey<T, C> | PgSelfReferentialForeignKey<T, T> {
 	if (args[2] !== undefined) {
@@ -101,7 +100,6 @@ export function foreignKey<T extends string, C extends AnyPgTable>(
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function foreignKeyOptions<
 	T extends
 		| AnyPgForeignKey
@@ -128,12 +126,9 @@ function assertForeignKeyWithInfo<
 >(
 	val: T,
 ): asserts val is T & {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	options: ForeignKeyOptions<AnyPgTable>;
 	isExternal: boolean;
-} {
-	true;
-}
+} {}
 
 export type ForeignKeyOptions<T extends AnyPgTable> = {
 	columns: string[];

@@ -205,7 +205,6 @@ function primaryKey(columns?: ColumnRecord) {
 	}, [] as string[]);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function introspectTable(table: AnyPgTable, allSchemas: AnySchema[]) {
 	const info = tableInfo(table);
 	const defininition = info.definition;

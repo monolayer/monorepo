@@ -28,7 +28,7 @@ type PrimaryKeyColumns<
 	T extends ColumnRecord,
 	PK extends string,
 > = string extends PK
-	? // eslint-disable-next-line @typescript-eslint/ban-types
+	? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 		{}
 	: Pick<
 			{
@@ -92,7 +92,7 @@ type PrimaryKeyColumnsZodSchemaObject<
 	T extends ColumnRecord,
 	PK extends string,
 > = string extends PK
-	? // eslint-disable-next-line @typescript-eslint/ban-types
+	? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 		{}
 	: Pick<
 			{

@@ -28,7 +28,6 @@ export type TableDefinition<T, PK extends string> = {
 				? PgPrimaryKey<keyof T, PK>
 				: PgPrimaryKey<keyof T, PK>
 			: never;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		foreignKeys?: keyof T extends string
 			? Array<
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,16 +90,13 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 		};
 
 		this.definition.indexes = (this.definition.indexes ?? []).filter(
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(index): index is PgIndex<string & keyof T> =>
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				index instanceof PgUnmanagedIndex ? false : true,
 		) as keyof T extends string ? PgIndex<keyof T>[] : never;
 
 		this.definition.triggers = (this.definition.triggers ?? []).filter(
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(index): index is PgTrigger<any> =>
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				index instanceof PgUnmanagedTrigger ? false : true,
 		);
 	}

@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
 import { Schema, schema } from "~/database/schema/schema.js";
@@ -13,8 +12,9 @@ import { tableInfo } from "~/introspection/helpers.js";
 
 describe("schema definition", () => {
 	test("without tables", () => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const dbSchema = schema({ tables: {} });
-		// eslint-disable-next-line @typescript-eslint/ban-types
+		// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 		const expect: Expect<Equal<typeof dbSchema, Schema<{}, "public">>> = true;
 		expectTypeOf(expect).toMatchTypeOf<boolean>();
 	});
@@ -112,6 +112,7 @@ test("types for Kysely with default public schema", () => {
 			borrowed: boolean().notNull(),
 		},
 	});
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const dbSchema = schema({
 		tables: {
 			users,
@@ -155,6 +156,7 @@ test("types for Kysely with schema", () => {
 			borrowed: boolean().notNull(),
 		},
 	});
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const dbSchema = schema({
 		name: "demo",
 		tables: {
@@ -184,6 +186,7 @@ test("types for Kysely with schema", () => {
 });
 
 test("types for Kysely on database without tables", () => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const dbSchema = schema({});
 	type InferredDBTypes = typeof dbSchema.infer;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

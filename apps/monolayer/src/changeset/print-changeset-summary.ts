@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import * as p from "@clack/prompts";
 import nunjucks from "nunjucks";
 import color from "picocolors";

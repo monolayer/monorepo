@@ -64,6 +64,4 @@ function assertEnumWithInfo<T extends EnumType<any>>(
 	val: T,
 ): asserts val is T & {
 	isExternal: boolean;
-} {
-	true;
-}
+} {}

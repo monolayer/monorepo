@@ -5,14 +5,13 @@ export interface TableRename {
 	to: string;
 }
 
-export interface ColumnsToRename
-	extends Record<
-		string,
-		{
-			from: string;
-			to: string;
-		}[]
-	> {}
+export type ColumnsToRename = Record<
+	string,
+	{
+		from: string;
+		to: string;
+	}[]
+>;
 
 export interface TableAndColumnRenames {
 	tablesToRename: Array<TableRename>;

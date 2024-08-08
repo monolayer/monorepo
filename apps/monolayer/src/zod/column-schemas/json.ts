@@ -47,7 +47,7 @@ export function jsonSchema(isNullable: boolean) {
 				JSON.parse(val);
 			}
 			JSON.stringify(val);
-		} catch (e) {
+		} catch {
 			return customIssue(ctx, "Invalid JSON");
 		}
 	});

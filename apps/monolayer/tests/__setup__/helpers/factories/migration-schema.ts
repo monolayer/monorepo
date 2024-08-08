@@ -1,5 +1,6 @@
 import type { SchemaMigrationInfo } from "~/introspection/introspection.js";
 
+// eslint-disable-next-line complexity
 export function schemaMigratonInfoFactory(
 	options?: Partial<SchemaMigrationInfo>,
 ): SchemaMigrationInfo {

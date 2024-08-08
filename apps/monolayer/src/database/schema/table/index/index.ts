@@ -91,7 +91,7 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
 		) => Expression<SqlBool>,
 	): this;
 	where(expression: Expression<SqlBool>): this;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 	where(...args: unknown[]) {
 		this.options.where.push(args);
 		return this;
@@ -125,7 +125,7 @@ export function isExternalIndex<T extends PgIndex<any>>(index: T) {
 function assertIndexWithInfo<T extends PgIndex<any>>(
 	val: T,
 ): asserts val is T & { options: IndexOptions; isExternal: boolean } {
-	true;
+	return;
 }
 
 type DrainOuterGeneric<T> = [T] extends [unknown] ? T : never;

@@ -258,7 +258,6 @@ export type SchemaMigrationInfo = {
 export function renameTables(
 	remote: SchemaMigrationInfo,
 	tablesToRename: TablesToRename,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	columnsToRename: ColumnsToRename,
 	schemaName: string,
 ) {

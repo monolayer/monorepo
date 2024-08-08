@@ -3,7 +3,8 @@
 	"version": "0.0.0",
 	"private": true,
 	"license": "MIT",
-	"publishConfig": {
-		"access": "public"
+	"dependencies": {
+		"typescript": "^5.5.4",
+		"tsc-alias": "^1.8.8"
 	}
 }

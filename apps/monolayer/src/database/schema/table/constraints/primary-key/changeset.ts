@@ -109,9 +109,11 @@ function isPrimaryKeyChange(
 		typeof test.value === "string" &&
 		typeof test.oldValue === "string"
 	) {
-		return (
-			true &&
-			primaryKeyColumnsChange(context, test.path[1], test.value, test.oldValue)
+		return primaryKeyColumnsChange(
+			context,
+			test.path[1],
+			test.value,
+			test.oldValue,
 		);
 	}
 

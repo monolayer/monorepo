@@ -30,7 +30,7 @@ export async function teardownContext(context: TaskContext & DbContext) {
 		await context.kysely.destroy();
 		rmSync(context.folder, { recursive: true, force: true });
 		vi.restoreAllMocks();
-	} catch (e) {
+	} catch {
 		/* empty */
 	}
 }
@@ -169,7 +169,7 @@ export async function teardownProgramContext(
 	// rmSync(context.folder, { recursive: true, force: true });
 	try {
 		await context.kysely.destroy();
-	} catch (e) {
+	} catch {
 		/* empty */
 	}
 	chdir(context.currentWorkingDirectory);

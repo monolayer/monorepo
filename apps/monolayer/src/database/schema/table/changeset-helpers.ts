@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import {
 	alignColumns,
 	type ColumnToAlign,

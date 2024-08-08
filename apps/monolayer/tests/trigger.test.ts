@@ -314,6 +314,7 @@ EXECUTE FUNCTION check_account_update("updated_at")`;
 	});
 
 	test("trigger with columns type", async () => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const trg = trigger({
 			fireWhen: "before",
 			columns: ["balance", "name"],
@@ -331,6 +332,7 @@ EXECUTE FUNCTION check_account_update("updated_at")`;
 	});
 
 	test("trigger without columns type", async () => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const trg = trigger({
 			fireWhen: "before",
 			events: ["update", "delete"],

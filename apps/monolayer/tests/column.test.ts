@@ -312,6 +312,7 @@ describe("boolean", () => {
 							id: boolean(),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type InpuType = z.input<typeof schema>;
 					type Expected = boolean | Boolish | null | undefined;
@@ -325,6 +326,7 @@ describe("boolean", () => {
 							id: boolean(),
 						},
 					});
+
 					const schema = zodSchema(tb).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = boolean | null | undefined;
@@ -348,6 +350,7 @@ describe("boolean", () => {
 							id: boolean().notNull(),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type InputType = z.input<typeof schema>;
 					type Expected = boolean | Boolish;
@@ -361,6 +364,7 @@ describe("boolean", () => {
 							id: boolean().notNull(),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = boolean;
@@ -374,6 +378,7 @@ describe("boolean", () => {
 							id: boolean().notNull().default(true),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type InputType = z.input<typeof schema>;
 					type Expected = boolean | Boolish | undefined;
@@ -387,6 +392,7 @@ describe("boolean", () => {
 							id: boolean().notNull().default(true),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = boolean | undefined;
@@ -400,6 +406,7 @@ describe("boolean", () => {
 							id: boolean(),
 						},
 					});
+
 					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse(true);
 					expect(result.success).toBe(true);
@@ -414,6 +421,7 @@ describe("boolean", () => {
 							id: boolean(),
 						},
 					});
+
 					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse(null);
 					expect(result.success).toBe(true);
@@ -428,6 +436,7 @@ describe("boolean", () => {
 							id: boolean(),
 						},
 					});
+
 					const schema = zodSchema(tbl).shape.id;
 					expect(schema.safeParse(undefined).success).toBe(false);
 					const tableSchema = zodSchema(tbl);
@@ -577,6 +586,7 @@ describe("boolean", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type InpuType = z.input<typeof schema>;
 					type Expected = boolean | Boolish;
@@ -593,6 +603,7 @@ describe("boolean", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = boolean;
@@ -868,6 +879,7 @@ describe("text", () => {
 						id: text(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -1060,6 +1072,7 @@ describe("text", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -1076,6 +1089,7 @@ describe("text", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -1348,6 +1362,7 @@ describe("bigint", () => {
 						id: bigint(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string | null | undefined;
@@ -1665,6 +1680,7 @@ describe("bigint", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string;
@@ -1681,6 +1697,7 @@ describe("bigint", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -1803,6 +1820,7 @@ describe("bigint", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string | undefined;
@@ -1819,6 +1837,7 @@ describe("bigint", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | undefined;
@@ -1889,6 +1908,7 @@ describe("bigint", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = never;
@@ -1905,6 +1925,7 @@ describe("bigint", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = never;
@@ -2082,6 +2103,7 @@ describe("bigserial", () => {
 						id: bigserial(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string | undefined;
@@ -2236,6 +2258,7 @@ describe("bigserial", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string | undefined;
@@ -2252,6 +2275,7 @@ describe("bigserial", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | undefined;
@@ -2447,6 +2471,7 @@ describe("bytea", () => {
 						id: bytea(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Buffer | string | null | undefined;
@@ -2489,6 +2514,7 @@ describe("bytea", () => {
 						id: bytea().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Buffer | string;
@@ -2526,6 +2552,7 @@ describe("bytea", () => {
 						id: bytea().notNull().default(Buffer.from("1")),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Buffer | string | undefined;
@@ -2661,6 +2688,7 @@ describe("bytea", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Buffer | string;
@@ -2677,6 +2705,7 @@ describe("bytea", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Buffer | string;
@@ -2947,6 +2976,7 @@ describe("date", () => {
 						id: date(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string | null | undefined;
@@ -2988,6 +3018,7 @@ describe("date", () => {
 						id: date().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Date | string;
@@ -3026,6 +3057,7 @@ describe("date", () => {
 						id: date().notNull().default(new Date(1)),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Date | string | undefined;
@@ -3163,6 +3195,7 @@ describe("date", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string;
@@ -3179,6 +3212,7 @@ describe("date", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date;
@@ -3453,6 +3487,7 @@ describe("doublePrecision", () => {
 						id: doublePrecision(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string | null | undefined;
@@ -3499,6 +3534,7 @@ describe("doublePrecision", () => {
 						id: doublePrecision().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = bigint | number | string;
@@ -3542,6 +3578,7 @@ describe("doublePrecision", () => {
 						id: doublePrecision().notNull().default(1.1),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = bigint | number | string | undefined;
@@ -3744,6 +3781,7 @@ describe("doublePrecision", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
@@ -3760,6 +3798,7 @@ describe("doublePrecision", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -4096,6 +4135,7 @@ describe("smallint", () => {
 						id: smallint(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string | null | undefined;
@@ -4137,6 +4177,7 @@ describe("smallint", () => {
 						id: smallint().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | string;
@@ -4175,6 +4216,7 @@ describe("smallint", () => {
 						id: smallint().notNull().default(1),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | string | undefined;
@@ -4376,6 +4418,7 @@ describe("smallint", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string;
@@ -4392,6 +4435,7 @@ describe("smallint", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
@@ -4513,6 +4557,7 @@ describe("smallint", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type InpuType = z.input<typeof schema>;
 					type Expected = number | string | undefined;
@@ -4529,6 +4574,7 @@ describe("smallint", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = number | undefined;
@@ -4601,6 +4647,7 @@ describe("smallint", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type InpuType = z.input<typeof schema>;
 					type Expected = never;
@@ -4617,6 +4664,7 @@ describe("smallint", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = never;
@@ -4868,6 +4916,7 @@ describe("integer", () => {
 						id: integer(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string | null | undefined;
@@ -4907,6 +4956,7 @@ describe("integer", () => {
 						id: integer().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | string;
@@ -4946,6 +4996,7 @@ describe("integer", () => {
 						id: integer().notNull().default(1),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | string | undefined;
@@ -5148,6 +5199,7 @@ describe("integer", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string;
@@ -5164,6 +5216,7 @@ describe("integer", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
@@ -5285,6 +5338,7 @@ describe("integer", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type InpuType = z.input<typeof schema>;
 					type Expected = number | string | undefined;
@@ -5301,6 +5355,7 @@ describe("integer", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = number | undefined;
@@ -5317,6 +5372,7 @@ describe("integer", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+
 					const schema = zodSchema(tbl).shape.id;
 
 					type InputType = z.input<typeof schema>;
@@ -5344,6 +5400,7 @@ describe("integer", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+
 					const schema = zodSchema(tbl).shape.id;
 
 					type InputType = z.input<typeof schema>;
@@ -5373,6 +5430,7 @@ describe("integer", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type InpuType = z.input<typeof schema>;
 					type Expected = never;
@@ -5389,6 +5447,7 @@ describe("integer", () => {
 							primaryKey: primaryKey(["id"]),
 						},
 					});
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const schema = zodSchema(tbl).shape.id;
 					type OutputType = z.output<typeof schema>;
 					type Expected = never;
@@ -5635,6 +5694,7 @@ describe("json", () => {
 						id: json(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = JsonValue | null | undefined;
@@ -5684,6 +5744,7 @@ describe("json", () => {
 						id: json().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = JsonValue;
@@ -5698,28 +5759,6 @@ describe("json", () => {
 					},
 				});
 				const schema = zodSchema(tbl).shape.id;
-				const schemaShape = zodSchema(tbl).shape;
-				const lalo = z.object({
-					...schemaShape,
-					id: schemaShape.id.superRefine((data, ctx) => {
-						const objectKeys = Object.keys(data);
-						if (
-							objectKeys.length !== 2 ||
-							objectKeys[0] !== "count" ||
-							objectKeys[1] !== "name"
-						) {
-							ctx.addIssue({
-								code: z.ZodIssueCode.custom,
-								message: "Invalid data",
-							});
-						}
-						return z.NEVER;
-					}),
-				});
-				const result = lalo.safeParse({ id: { a: 1 } });
-				if (result.success) {
-					result.data;
-				}
 				type OutputType = z.output<typeof schema>;
 				type Expected = JsonValue;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
@@ -5750,6 +5789,7 @@ describe("json", () => {
 						id: json().notNull().default({ a: 1 }),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = JsonValue | undefined;
@@ -5765,7 +5805,7 @@ describe("json", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				type Expected = JsonValue | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -5902,9 +5942,10 @@ describe("json", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				type Expected = JsonValue;
 				const isEqual: Expect<Equal<InpuType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -5919,9 +5960,10 @@ describe("json", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				type Expected = JsonValue;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -6043,6 +6085,7 @@ describe("json", () => {
 						id: json<Data>(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Data | null | undefined;
@@ -6085,6 +6128,7 @@ describe("json", () => {
 						id: json<Data>().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Data;
@@ -6119,6 +6163,7 @@ describe("json", () => {
 						id: json<Data>().notNull().default({ count: 1, name: "example" }),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Data | undefined;
@@ -6134,7 +6179,7 @@ describe("json", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				type Expected = Data | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -6387,6 +6432,7 @@ describe("jsonb", () => {
 						id: jsonb(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = JsonValue | null | undefined;
@@ -6431,6 +6477,7 @@ describe("jsonb", () => {
 						id: jsonb().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = JsonValue;
@@ -6444,9 +6491,10 @@ describe("jsonb", () => {
 						id: jsonb().notNull(),
 					},
 				});
+
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				type Expected = JsonValue;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -6476,6 +6524,7 @@ describe("jsonb", () => {
 						id: jsonb().notNull().default({ a: 1 }),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = JsonValue | undefined;
@@ -6491,7 +6540,7 @@ describe("jsonb", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				type Expected = JsonValue | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -6628,6 +6677,7 @@ describe("jsonb", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = JsonValue;
@@ -6644,9 +6694,10 @@ describe("jsonb", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				type Expected = JsonValue;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -6768,6 +6819,7 @@ describe("jsonb", () => {
 						id: jsonb<Data>(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Data | null | undefined;
@@ -6810,6 +6862,7 @@ describe("jsonb", () => {
 						id: jsonb<Data>().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Data;
@@ -6844,6 +6897,7 @@ describe("jsonb", () => {
 						id: jsonb<Data>().notNull().default({ count: 1, name: "example" }),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Data | undefined;
@@ -6859,7 +6913,7 @@ describe("jsonb", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 				type Expected = Data | undefined;
 				const isEqual: Expect<Equal<OutputType, Expected>> = true;
 				expect(isEqual).toBe(true);
@@ -7112,6 +7166,7 @@ describe("real", () => {
 						id: real(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string | null | undefined;
@@ -7156,6 +7211,7 @@ describe("real", () => {
 						id: real().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string | number | bigint;
@@ -7199,6 +7255,7 @@ describe("real", () => {
 						id: real().notNull().default(30),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = bigint | number | string | undefined;
@@ -7401,6 +7458,7 @@ describe("real", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = bigint | number | string;
@@ -7417,6 +7475,7 @@ describe("real", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
@@ -7749,6 +7808,7 @@ describe("serial", () => {
 						id: serial(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string | undefined;
@@ -7878,6 +7938,7 @@ describe("serial", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | string | undefined;
@@ -7894,6 +7955,7 @@ describe("serial", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number | undefined;
@@ -8167,6 +8229,7 @@ describe("uuid", () => {
 						id: uuid(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -8205,6 +8268,7 @@ describe("uuid", () => {
 						id: uuid().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
@@ -8245,6 +8309,7 @@ describe("uuid", () => {
 							.default("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string | undefined;
@@ -8378,6 +8443,7 @@ describe("uuid", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -8394,6 +8460,7 @@ describe("uuid", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -8522,6 +8589,7 @@ describe("uuid", () => {
 							id: uuid().notNull(),
 						},
 					});
+
 					const schema = zodSchema(tbl).shape.id;
 					const result = schema.safeParse(undefined);
 					expect(result.success).toBe(false);
@@ -8700,6 +8768,7 @@ describe("characterVarying", () => {
 						id: characterVarying(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -8734,6 +8803,7 @@ describe("characterVarying", () => {
 						id: characterVarying().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
@@ -8767,6 +8837,7 @@ describe("characterVarying", () => {
 						id: characterVarying().notNull().default("hello"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string | undefined;
@@ -8907,6 +8978,7 @@ describe("characterVarying", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -8923,6 +8995,7 @@ describe("characterVarying", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -8939,6 +9012,7 @@ describe("characterVarying", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+
 				const schema = zodSchema(tbl).shape.id;
 
 				type InputType = z.input<typeof schema>;
@@ -9251,6 +9325,7 @@ describe("character", () => {
 						id: character(10),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -9285,6 +9360,7 @@ describe("character", () => {
 						id: character(10).notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
@@ -9318,6 +9394,7 @@ describe("character", () => {
 						id: character(10).notNull().default("hello"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string | undefined;
@@ -9437,6 +9514,7 @@ describe("character", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -9453,6 +9531,7 @@ describe("character", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -9780,6 +9859,7 @@ describe("time", () => {
 						id: time(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -9814,6 +9894,7 @@ describe("time", () => {
 						id: time().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
@@ -9847,6 +9928,7 @@ describe("time", () => {
 						id: time().notNull().default("11:30"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string | undefined;
@@ -9984,6 +10066,7 @@ describe("time", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -10000,6 +10083,7 @@ describe("time", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -10314,6 +10398,7 @@ describe("timeWithTimeZone", () => {
 						id: timeWithTimeZone(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -10348,6 +10433,7 @@ describe("timeWithTimeZone", () => {
 						id: timeWithTimeZone().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string;
@@ -10381,6 +10467,7 @@ describe("timeWithTimeZone", () => {
 						id: timeWithTimeZone().notNull().default("11:30"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string | undefined;
@@ -10507,6 +10594,7 @@ describe("timeWithTimeZone", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -10523,6 +10611,7 @@ describe("timeWithTimeZone", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -10843,6 +10932,7 @@ describe("timestamp", () => {
 						id: timestamp(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string | null | undefined;
@@ -10883,6 +10973,7 @@ describe("timestamp", () => {
 						id: timestamp().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Date | string;
@@ -10923,6 +11014,7 @@ describe("timestamp", () => {
 						id: timestamp().notNull().default(new Date(1)),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Date | string | undefined;
@@ -11056,6 +11148,7 @@ describe("timestamp", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string;
@@ -11072,6 +11165,7 @@ describe("timestamp", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date;
@@ -11406,6 +11500,7 @@ describe("timestampWithTimeZone", () => {
 						id: timestampWithTimeZone(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string | null | undefined;
@@ -11446,6 +11541,7 @@ describe("timestampWithTimeZone", () => {
 						id: timestampWithTimeZone().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Date | string;
@@ -11486,6 +11582,7 @@ describe("timestampWithTimeZone", () => {
 						id: timestampWithTimeZone().notNull().default(new Date(1)),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = Date | string | undefined;
@@ -11619,6 +11716,7 @@ describe("timestampWithTimeZone", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = Date | string;
@@ -11635,6 +11733,7 @@ describe("timestampWithTimeZone", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = Date;
@@ -12021,6 +12120,7 @@ describe("numeric", () => {
 						id: numeric(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string | null | undefined;
@@ -12067,6 +12167,7 @@ describe("numeric", () => {
 						id: numeric().notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
@@ -12110,6 +12211,7 @@ describe("numeric", () => {
 						id: numeric().notNull().default(2),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number | bigint | string | undefined;
@@ -12417,6 +12519,7 @@ describe("numeric", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | bigint | string;
@@ -12433,6 +12536,7 @@ describe("numeric", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -12795,6 +12899,7 @@ describe("enumerated", () => {
 						id: enumerated(role),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = "user" | "admin" | "superuser" | null | undefined;
@@ -12834,6 +12939,7 @@ describe("enumerated", () => {
 						).notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = "user" | "admin" | "superuser";
@@ -12871,6 +12977,7 @@ describe("enumerated", () => {
 							.default("user"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = "user" | "admin" | "superuser" | undefined;
@@ -13004,6 +13111,7 @@ describe("enumerated", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = "user" | "admin" | "superuser";
@@ -13021,6 +13129,7 @@ describe("enumerated", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = "user" | "admin" | "superuser";
@@ -13310,6 +13419,7 @@ describe("tsvector", () => {
 						id: tsvector(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -13508,6 +13618,7 @@ describe("tsvector", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -13524,6 +13635,7 @@ describe("tsvector", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -13801,6 +13913,7 @@ describe("tsquery", () => {
 						id: tsquery(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -13999,6 +14112,7 @@ describe("tsquery", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -14015,6 +14129,7 @@ describe("tsquery", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -14299,6 +14414,7 @@ describe("xml", () => {
 						id: xml(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -14501,6 +14617,7 @@ describe("xml", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -14517,6 +14634,7 @@ describe("xml", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -14805,6 +14923,7 @@ describe("bit", () => {
 						id: bit(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -14999,6 +15118,7 @@ describe("bit", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -15015,6 +15135,7 @@ describe("bit", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -15377,6 +15498,7 @@ describe("bit varying", () => {
 						id: bitVarying(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -15581,6 +15703,7 @@ describe("bit varying", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -15597,6 +15720,7 @@ describe("bit varying", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -15947,6 +16071,7 @@ describe("inet", () => {
 						id: inet(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -16211,6 +16336,7 @@ describe("inet", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -16227,6 +16353,7 @@ describe("inet", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -16527,6 +16654,7 @@ describe("cidr", () => {
 						id: cidr(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -16773,6 +16901,7 @@ describe("cidr", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -16789,6 +16918,7 @@ describe("cidr", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -17123,6 +17253,7 @@ describe("macaddr", () => {
 						id: macaddr(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -17329,6 +17460,7 @@ describe("macaddr", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -17345,6 +17477,7 @@ describe("macaddr", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -17649,6 +17782,7 @@ describe("macaddr8", () => {
 						id: macaddr8(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string | null | undefined;
@@ -17855,6 +17989,7 @@ describe("macaddr8", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = string;
@@ -17871,6 +18006,7 @@ describe("macaddr8", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string;
@@ -18161,6 +18297,7 @@ describe("generic column", () => {
 		});
 
 		test("select and insert types are unknown by default", () => {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const column = columnWithType("money");
 
 			type ExpectedType = pgColumnWithType<unknown, unknown>;
@@ -18170,6 +18307,7 @@ describe("generic column", () => {
 		});
 
 		test("select and insert types can be customized", () => {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const column = columnWithType<string>("money");
 
 			type ExpectedType = pgColumnWithType<string, string>;
@@ -18177,6 +18315,7 @@ describe("generic column", () => {
 			const isEqual: Expect<Equal<ColumnType, ExpectedType>> = true;
 			expect(isEqual).toBe(true);
 
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const anotherColumn = columnWithType<number, number>("money");
 			const isEqualAnother: Expect<
 				Equal<typeof anotherColumn, pgColumnWithType<number, number>>
@@ -18193,6 +18332,7 @@ describe("generic column", () => {
 						id: columnWithType("money"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18206,6 +18346,7 @@ describe("generic column", () => {
 						id: columnWithType("money"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.output<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18220,6 +18361,7 @@ describe("generic column", () => {
 						id: columnWithType("money"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18234,6 +18376,7 @@ describe("generic column", () => {
 						id: columnWithType<number>("money"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number | null | undefined;
@@ -18247,6 +18390,7 @@ describe("generic column", () => {
 						id: columnWithType<number>("money"),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number | null | undefined;
@@ -18260,6 +18404,7 @@ describe("generic column", () => {
 						id: columnWithType<number>("money").notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = number;
@@ -18273,6 +18418,7 @@ describe("generic column", () => {
 						id: columnWithType<number>("money").notNull(),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;
@@ -18288,6 +18434,7 @@ describe("generic column", () => {
 							.default(sql`'12.34'::float8::numeric::money`),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InputType = z.input<typeof schema>;
 				type Expected = string | undefined;
@@ -18303,6 +18450,7 @@ describe("generic column", () => {
 							.default(sql`'12.34'::float8::numeric::money`),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = string | undefined;
@@ -18383,6 +18531,7 @@ describe("generic column", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type InpuType = z.input<typeof schema>;
 				type Expected = number;
@@ -18399,6 +18548,7 @@ describe("generic column", () => {
 						primaryKey: primaryKey(["id"]),
 					},
 				});
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const schema = zodSchema(tbl).shape.id;
 				type OutputType = z.output<typeof schema>;
 				type Expected = number;

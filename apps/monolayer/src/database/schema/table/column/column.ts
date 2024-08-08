@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { type ColumnType, type Expression } from "kysely";
 import { compileDefaultExpression } from "~/introspection/helpers.js";
 import { hashValue } from "~/utils.js";

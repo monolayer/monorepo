@@ -44,7 +44,7 @@ function checkStructureFile() {
 						);
 						try {
 							await fs.stat(structurePath);
-						} catch (error) {
+						} catch {
 							return false;
 						}
 						return true;
