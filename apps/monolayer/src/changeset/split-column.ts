@@ -1,12 +1,8 @@
-import type { GeneratorContext } from "../../changeset/schema-changeset.js";
-import type { SplitColumnRefactoring } from "../../changeset/schema-refactor.js";
-import {
-	ChangesetPhase,
-	ChangeSetType,
-	MigrationOpPriority,
-} from "../../changeset/types.js";
-import { extractColumnsFromPrimaryKey } from "../../introspection/schema.js";
-import { currentTableName } from "../../introspection/table-name.js";
+import { extractColumnsFromPrimaryKey } from "../introspection/schema.js";
+import { currentTableName } from "../introspection/table-name.js";
+import type { GeneratorContext } from "./schema-changeset.js";
+import type { SplitColumnRefactoring } from "./schema-refactor.js";
+import { ChangesetPhase, ChangeSetType, MigrationOpPriority } from "./types.js";
 
 export function splitRefactorChangesets(
 	splitRefactors: SplitColumnRefactoring[],

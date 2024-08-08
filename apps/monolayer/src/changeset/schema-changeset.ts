@@ -15,10 +15,10 @@ import {
 	isCreateColumn,
 	isDropColumn,
 } from "../database/schema/table/column/changeset.js";
-import { splitRefactorChangesets } from "../refactor/split-column/changeset.js";
 import { migrationOpGenerators } from "./generators.js";
 import { toSnakeCase } from "./helpers.js";
 import type { SplitColumnRefactoring } from "./schema-refactor.js";
+import { splitRefactorChangesets } from "./split-column.js";
 import { Changeset } from "./types.js";
 
 interface Generator {
