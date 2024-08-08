@@ -5,7 +5,8 @@
 	"workspaces": [
 		"apps/create-monolayer",
 		"apps/monolayer",
-		"docs"
+		"docs",
+		"packages/*"
 	],
 	"engines": {
 		"node": ">=18.0.0"
