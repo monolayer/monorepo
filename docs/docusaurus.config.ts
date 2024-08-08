@@ -61,12 +61,12 @@ const config: Config = {
       'docusaurus-plugin-typedoc',
       {
         entryPoints: [
-					'../packages/monolayer/src/configuration.ts',
-					'../packages/monolayer/src/pg.ts',
-					'../packages/monolayer/src/migration.ts',
-					'../packages/monolayer/src/zod.ts'
+					'../apps/monolayer/src/configuration.ts',
+					'../apps/monolayer/src/pg.ts',
+					'../apps/monolayer/src/migration.ts',
+					'../apps/monolayer/src/zod.ts'
 				],
-        tsconfig: '../packages/monolayer/tsconfig.json',
+        tsconfig: '../apps/monolayer/tsconfig.json',
 				watch: process.env.TYPEDOC_WATCH,
         // TypeDoc options
         enumMembersFormat: "table",

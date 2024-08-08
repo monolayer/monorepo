@@ -3,8 +3,8 @@
 	"private": true,
 	"license": "MIT",
 	"workspaces": [
-		"packages/create-monolayer",
-		"packages/monolayer",
+		"apps/create-monolayer",
+		"apps/monolayer",
 		"docs"
 	],
 	"engines": {
