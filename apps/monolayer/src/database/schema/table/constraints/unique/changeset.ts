@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { hashValue } from "@monorepo/utils/hash-value";
 import type { Difference } from "microdiff";
 import type { GeneratorContext } from "~/changeset/schema-changeset.js";
 import {
@@ -20,7 +21,6 @@ import {
 	currentTableName,
 	previousTableName,
 } from "~/introspection/table-name.js";
-import { hashValue } from "~/utils.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,

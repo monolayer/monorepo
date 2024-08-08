@@ -1,3 +1,4 @@
+import { hashValue } from "@monorepo/utils/hash-value";
 import { Kysely, PostgresDialect, type OnModifyForeignAction } from "kysely";
 import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
@@ -15,7 +16,6 @@ import {
 	currentTableName,
 	previousTableName,
 } from "~/introspection/table-name.js";
-import { hashValue } from "~/utils.js";
 
 export interface BuilderContext {
 	camelCase: CamelCaseOptions;

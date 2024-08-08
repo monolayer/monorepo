@@ -1,3 +1,4 @@
+import { hashValue } from "@monorepo/utils/hash-value";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
@@ -8,7 +9,6 @@ import {
 	type AnyTrigger,
 } from "~/database/schema/table/trigger/trigger.js";
 import { tableInfo } from "~/introspection/helpers.js";
-import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 import type { BuilderContext } from "../constraints/foreign-key/builder.js";
 

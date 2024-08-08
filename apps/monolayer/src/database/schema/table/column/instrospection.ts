@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { hashValue } from "@monorepo/utils/hash-value";
 import { Kysely, sql } from "kysely";
 import { toSnakeCase } from "~/changeset/helpers.js";
 import type { CamelCaseOptions } from "~/configuration.js";
@@ -6,7 +7,6 @@ import { Schema, type AnySchema } from "~/database/schema/schema.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import { type SchemaMigrationInfo } from "~/introspection/introspection.js";
 import { findPrimaryKey } from "~/introspection/schema.js";
-import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../introspection/types.js";
 import { type TableColumn } from "../table-column.js";
 import { ColumnInfo } from "./types.js";

@@ -1,5 +1,5 @@
+import { hashValue } from "@monorepo/utils/hash-value";
 import { type Suite, type TaskContext } from "vitest";
-import { hashValue } from "~/utils.js";
 
 export function dbNameForTest(context: TaskContext) {
 	const parts = [];

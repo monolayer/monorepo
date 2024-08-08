@@ -99,6 +99,7 @@
 		"kysely-0273": "npm:kysely@^0.27.3",
 		"mock-fs": "^5.2.0",
 		"mock-stdin": "^1.0.0",
+		"pg": ">=8.11.3",
 		"postcss": "^8.4.35",
 		"skott": "^0.33.2",
 		"type-fest": "^4.10.1",

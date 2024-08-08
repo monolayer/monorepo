@@ -1,3 +1,4 @@
+import { hashValue } from "@monorepo/utils/hash-value";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
 import { toSnakeCase } from "~/changeset/helpers.js";
@@ -13,7 +14,6 @@ import { previousColumnName } from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/helpers.js";
 import type { ColumnsToRename } from "~/introspection/introspect-schemas.js";
 import type { UniqueInfo } from "~/introspection/schema.js";
-import { hashValue } from "~/utils.js";
 import type { InformationSchemaDB } from "../../../../../introspection/types.js";
 import type { BuilderContext } from "../foreign-key/builder.js";
 

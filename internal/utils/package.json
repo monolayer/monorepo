@@ -2,10 +2,8 @@
 	"name": "@monorepo/utils",
 	"version": "1.0.0",
 	"exports": {
-		"./hash-value": {
-			"types": "./dist/src/hash-value.d.ts",
-			"default": "./dist/src/hash-value.js"
-		}
+		"./hash-value": "./src/hash-value.js",
+		"./path": "./src/path.js"
 	},
 	"scripts": {
 		"build": "tsc -b",
@@ -16,7 +14,9 @@
 	},
 	"devDependencies": {
 		"@monorepo/eslint-config": "*",
-		"@monorepo/typescript-config": "*"
+		"@monorepo/typescript-config": "*",
+		"@types/node": "^18.0.0",
+		"effect": "^3.0.7"
 	},
 	"engines": {
 		"node": ">=18.0.0"

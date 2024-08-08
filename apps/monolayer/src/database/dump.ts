@@ -1,4 +1,5 @@
 import * as p from "@clack/prompts";
+import { pathExists } from "@monorepo/utils/path";
 import { Effect } from "effect";
 import { execa } from "execa";
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from "fs";
@@ -14,7 +15,6 @@ import {
 	appEnvironmentPgConfig,
 	currentDatabaseName,
 } from "~/state/app-environment.js";
-import { pathExists } from "~/utils.js";
 import { Schema } from "./schema/schema.js";
 
 export const dumpDatabaseStructureTask = Effect.gen(function* () {

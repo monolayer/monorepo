@@ -1,6 +1,6 @@
+import { hashValue } from "@monorepo/utils/hash-value";
 import { type ColumnType, type Expression } from "kysely";
 import { compileDefaultExpression } from "~/introspection/helpers.js";
-import { hashValue } from "~/utils.js";
 import {
 	type ColumnInfo,
 	type GeneratedAlwaysColumn,
