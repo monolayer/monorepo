@@ -1,5 +1,5 @@
 import type { Configuration } from "./configuration.js";
-export { PgExtension, extension } from "./database/extension/extension.js";
+export { extension, PgExtension } from "./database/extension/extension.js";
 export { schema, type Schema } from "./database/schema/schema.js";
 export {
 	columnWithType,
@@ -73,8 +73,8 @@ export {
 	type PgText,
 } from "./database/schema/table/column/data-types/text.js";
 export {
-	timeWithTimeZone,
 	timetz,
+	timeWithTimeZone,
 	type PgTimeWithTimeZone,
 } from "./database/schema/table/column/data-types/time-with-time-zone.js";
 export {
@@ -82,8 +82,8 @@ export {
 	type PgTime,
 } from "./database/schema/table/column/data-types/time.js";
 export {
-	timestampWithTimeZone,
 	timestamptz,
+	timestampWithTimeZone,
 	type PgTimestampWithTimeZone,
 } from "./database/schema/table/column/data-types/timestamp-with-time-zone.js";
 export {
