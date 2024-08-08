@@ -95,7 +95,7 @@
 		"cli": "src/cli/cli.ts",
 		"format": "prettier --write .",
 		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
-		"pack": "npm pack --pack-destination ./build",
+		"package": "npm pack --pack-destination ./build",
 		"publish:local": "npm publish --registry http://localhost:4873",
 		"test": "./tests/__setup__/bin/run-tests",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
