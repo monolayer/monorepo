@@ -19,5 +19,8 @@
     "plugins": [
       "prettier-plugin-organize-imports"
     ]
+  },
+  "devDependencies": {
+    "turbo": "^2.0.12"
   }
 }
