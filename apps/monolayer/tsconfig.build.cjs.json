@@ -1,7 +1,0 @@
-{
-	"extends": [
-		"./tsconfig.json",
-		"@monorepo/typescript-config/tsconfig.target.cjs.json"
-	],
-	"exclude": ["src/**/*test.ts", "tests/**/*", "src/playground.ts"]
-}

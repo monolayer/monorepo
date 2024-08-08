@@ -1,0 +1,24 @@
+{
+	"name": "@monorepo/utils",
+	"version": "1.0.0",
+	"exports": {
+		"./hash-value": {
+			"types": "./dist/src/hash-value.d.ts",
+			"default": "./dist/src/hash-value.js"
+		}
+	},
+	"scripts": {
+		"build": "tsc -b",
+		"check": "npm run check:type && npm run check:prettier && npm run check:lint",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"check:type": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

@@ -14,78 +14,45 @@
 	},
 	"exports": {
 		".": {
-			"import": {
-				"types": "./dist/esm/src/index.d.ts",
-				"default": "./dist/esm/src/index.js"
-			},
-			"require": {
-				"types": "./dist/esm/src/index.d.ts",
-				"default": "./dist/esm/src/index.js"
-			}
+			"types": "./dist/esm/src/index.d.ts",
+			"default": "./dist/esm/src/index.js"
 		},
 		"./configuration": {
-			"import": {
-				"types": "./dist/esm/src/configuration.d.ts",
-				"default": "./dist/esm/src/configuration.js"
-			},
-			"require": {
-				"types": "./dist/cjs/src/configuration.d.ts",
-				"default": "./dist/cjs/src/configuration.js"
-			}
+			"types": "./dist/esm/src/configuration.d.ts",
+			"default": "./dist/esm/src/configuration.js"
 		},
 		"./helpers/pg": {
-			"import": {
-				"types": "./dist/esm/src/helpers.d.ts",
-				"default": "./dist/esm/src/helpers.js"
-			},
-			"require": {
-				"types": "./dist/cjs/src/helpers.d.ts",
-				"default": "./dist/cjs/src/helpers.js"
-			}
+			"types": "./dist/esm/src/helpers.d.ts",
+			"default": "./dist/esm/src/helpers.js"
 		},
 		"./pg": {
-			"import": {
-				"types": "./dist/esm/src/pg.d.ts",
-				"default": "./dist/esm/src/pg.js"
-			},
-			"require": {
-				"types": "./dist/cjs/src/pg.d.ts",
-				"default": "./dist/cjs/src/pg.js"
-			}
+			"types": "./dist/esm/src/pg.d.ts",
+			"default": "./dist/esm/src/pg.js"
 		},
 		"./migration": {
-			"import": {
-				"types": "./dist/esm/src/migration.d.ts",
-				"default": "./dist/esm/src/migration.js"
-			},
-			"require": {
-				"types": "./dist/cjs/src/migration.d.ts",
-				"default": "./dist/cjs/src/migration.js"
-			}
+			"types": "./dist/esm/src/migration.d.ts",
+			"default": "./dist/esm/src/migration.js"
 		},
 		"./zod": {
-			"import": {
-				"types": "./dist/esm/src/zod.d.ts",
-				"default": "./dist/esm/src/zod.js"
-			},
-			"require": {
-				"types": "./dist/cjs/src/zod.d.ts",
-				"default": "./dist/cjs/src/zod.js"
-			}
+			"types": "./dist/esm/src/zod.d.ts",
+			"default": "./dist/esm/src/zod.js"
 		}
 	},
 	"files": [
-		"dist/**/*"
+		"dist/**/*.js",
+		"dist/**/*.d.ts",
+		"dist/**/*.js.map"
 	],
 	"scripts": {
 		"prebuild": "rm -rf dist",
-		"build": "npm run build:esm && npm run build:cjs",
+		"build": "npm run build:esm",
 		"build:cjs": "tsc -p tsconfig.build.cjs.json --outDir dist/cjs",
 		"build:esm": "tsc -p tsconfig.build.esm.json --outDir dist/esm",
-		"postbuild": "npm run postbuild:makeexec && npm run postbuild:packagecjs && npm run postbuild:packageesm && npm run postbuild:transform-paths",
-		"postbuild:transform-paths": "tsc-alias -p tsconfig.json --outDir dist/esm && tsc-alias -p tsconfig.build.cjs.json --outDir dist/cjs",
+		"postbuild": "npm run postbuild:copy-internal-packages && npm run postbuild:copy-private-packages && npm run postbuild:makeexec && npm run postbuild:packageesm && npm run postbuild:transform-paths",
+		"postbuild:copy-internal-packages": "mkdir -p dist/esm/packages/internal && cp -r ./../../internal/utils/dist/src dist/esm/packages/internal/utils",
+		"postbuild:copy-private-packages": "mkdir -p dist/esm/packages/private && cp -r ./../../private/refactorings/dist/src dist/esm/packages/private/refactorings",
+		"postbuild:transform-paths": "tsc-alias -p tsconfig.build.esm.json --outDir dist/esm",
 		"postbuild:makeexec": "chmod +x dist/esm/src/bin/cli.js",
-		"postbuild:packagecjs": "echo '{\n  \"type\": \"commonjs\"\n}' > dist/cjs/src/package.json",
 		"postbuild:packageesm": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/src/package.json",
 		"check": "npm run check:type && npm run check:prettier && npm run check:lint && npm run check:skott",
 		"check:lint": "npx eslint .",
@@ -111,6 +78,8 @@
 	"devDependencies": {
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
+		"@monorepo/refactorings": "*",
+		"@monorepo/utils": "*",
 		"@types/capture-console": "^1.0.5",
 		"@types/jscodeshift": "^0.11.11",
 		"@types/mock-fs": "^4.13.4",

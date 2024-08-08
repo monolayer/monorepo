@@ -4,12 +4,11 @@
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
+		"outDir": "dist",
 		"paths": {
 			"~/*": ["src/*"],
 			"~tests/*": ["tests/*"]
 		},
-		"outDir": "./dist",
 		"composite": true
-	},
-	"references": [{ "path": "../../internal/utils" }]
+	}
 }

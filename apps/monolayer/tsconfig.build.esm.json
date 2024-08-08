@@ -1,4 +1,12 @@
 {
 	"extends": "./tsconfig.json",
-	"exclude": ["src/**/*test.ts", "tests/**/*", "src/playground.ts"]
+	"exclude": ["src/**/*test.ts", "tests/**/*", "src/playground.ts"],
+	"compilerOptions": {
+		"paths": {
+			"~/*": ["src/*"],
+			"~tests/*": ["tests/*"],
+			"@monorepo/utils/*": ["packages/internal/utils/*"],
+			"@monorepo/refactorings/*": ["packages/private/refactorings/*"]
+		}
+	}
 }
