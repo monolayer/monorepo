@@ -125,6 +125,7 @@
 		"dotenv": "^16.4.1",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
+		"kysely": "^0.27.4",
 		"kysely-0270": "npm:kysely@^0.27.0",
 		"kysely-0271": "npm:kysely@^0.27.1",
 		"kysely-0272": "npm:kysely@^0.27.2",
