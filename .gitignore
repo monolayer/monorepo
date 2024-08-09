@@ -4,9 +4,9 @@ dist
 tmp
 coverage
 .env
-.vscode
-!.vscode/extensions.json
+.vscode/tasks.json
 build
 playground.ts
 tsconfig.tsbuildinfo
+tsconfig.build.tsbuildinfo
 .turbo

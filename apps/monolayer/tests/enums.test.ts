@@ -1,12 +1,12 @@
 /* eslint-disable max-lines */
+import { enumType } from "@monorepo/pg/schema/column/data-types/enum.js";
+import { enumerated } from "@monorepo/pg/schema/column/data-types/enumerated.js";
+import { integer } from "@monorepo/pg/schema/column/data-types/integer.js";
+import { serial } from "@monorepo/pg/schema/column/data-types/serial.js";
+import { schema } from "@monorepo/pg/schema/schema.js";
+import { table } from "@monorepo/pg/schema/table.js";
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { schema } from "~/database/schema/schema.js";
-import { enumerated } from "~/database/schema/table/column/data-types/enumerated.js";
-import { integer } from "~/database/schema/table/column/data-types/integer.js";
-import { serial } from "~/database/schema/table/column/data-types/serial.js";
-import { table } from "~/database/schema/table/table.js";
-import { enumType } from "~/database/schema/types/enum/enum.js";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
 import {

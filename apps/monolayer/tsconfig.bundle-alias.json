@@ -1,0 +1,44 @@
+{
+	"compilerOptions": {
+		"rootDir": ".",
+		"paths": {
+			"~/*": [
+				"*",
+				"packages/base/*",
+				"packages/cli/*",
+				"packages/configuration/*",
+				"packages/migration/*",
+				"packages/pg/*",
+				"packages/prompts/*",
+				"packages/programs/*",
+				"packages/services/*",
+				"packages/state/*",
+				"packages/utils/*",
+				"packages/refactorings/*"
+			],
+			"@monorepo/base/*": ["packages/base/*"],
+			"@monorepo/cli/*": ["packages/cli/*"],
+			"@monorepo/configuration/*": ["packages/configuration/*"],
+			"@monorepo/migrator/*": ["packages/migrator/*"],
+			"@monorepo/pg/*": ["packages/pg/*"],
+			"@monorepo/prompts/*": ["packages/prompts/*"],
+			"@monorepo/programs/*": ["packages/programs/*"],
+			"@monorepo/services/*": ["packages/services/*"],
+			"@monorepo/state/*": ["packages/state/*"],
+			"@monorepo/utils/*": ["packages/utils/*"],
+			"@monorepo/refactorings/*": ["packages/refactorings/*"]
+		}
+	},
+	"references": [
+		{ "path": "../../internal/base/tsconfig.bundle.json" },
+		{ "path": "../../internal/configuration/tsconfig.bundle.json" },
+		{ "path": "../../internal/migrator/tsconfig.bundle.json" },
+		{ "path": "../../internal/pg/tsconfig.bundle.json" },
+		{ "path": "../../internal/prompts/tsconfig.bundle.json" },
+		{ "path": "../../internal/programs/tsconfig.bundle.json" },
+		{ "path": "../../internal/services/tsconfig.bundle.json" },
+		{ "path": "../../internal/state/tsconfig.bundle.json" },
+		{ "path": "../../internal/utils/tsconfig.bundle.json" },
+		{ "path": "../../private/refactorings/tsconfig.bundle.json" }
+	]
+}

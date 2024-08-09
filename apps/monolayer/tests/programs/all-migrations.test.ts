@@ -1,3 +1,5 @@
+import type { MonolayerMigrationInfo } from "@monorepo/migrator/migration.js";
+import { Migrator } from "@monorepo/services/migrator.js";
 import { Effect } from "effect";
 import type { Equal, Expect } from "type-testing";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
@@ -6,8 +8,6 @@ import {
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
-import type { MonolayerMigrationInfo } from "../../src/migrations/migration.js";
-import { Migrator } from "../../src/services/migrator.js";
 import { runProgramWithErrorCause } from "../__setup__/helpers/run-program.js";
 
 describe("allMigrations", () => {

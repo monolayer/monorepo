@@ -1,2 +1,2 @@
-export { SplitColumnRefactor } from "@monorepo/refactorings/split-column";
-export { type Migration } from "./migrations/migration.js";
+export { type Migration } from "@monorepo/migrator/migration.js";
+export { SplitColumnRefactor } from "@monorepo/refactorings/split-column.js";

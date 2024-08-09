@@ -1,5 +1,5 @@
+import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import path from "path";
-import { ChangesetPhase } from "../../../src/changeset/types.js";
 
 export function expandMigrationPath(folder: string) {
 	return path.join(

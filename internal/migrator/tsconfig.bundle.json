@@ -1,0 +1,12 @@
+{
+	"extends": "./tsconfig.build.json",
+	"compilerOptions": {
+		"outDir": "./../../apps/monolayer/dist/packages/migrator",
+		"tsBuildInfoFile": "./../../apps/monolayer/dist/packages/migrator/tsconfig.build.tsbuildinfo"
+	},
+	"references": [
+		{ "path": "../base/tsconfig.bundle.json" },
+		{ "path": "../pg/tsconfig.bundle.json" },
+		{ "path": "../utils/tsconfig.bundle.json" }
+	]
+}

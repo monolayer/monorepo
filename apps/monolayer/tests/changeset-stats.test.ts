@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
+import { changesetStats } from "@monorepo/pg/changeset/stats.js";
+import type { Changeset } from "@monorepo/pg/changeset/types.js";
 import { describe, expect, test } from "vitest";
-import { changesetStats } from "~/changeset/changeset-stats.js";
-import type { Changeset } from "~/changeset/types.js";
 
 describe("changeset-summary", () => {
 	test("Changeset summary", () => {

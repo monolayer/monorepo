@@ -1,13 +1,14 @@
+import { adminPgQuery, pgQuery } from "@monorepo/services/db-clients.js";
 import dotenv from "dotenv";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { loadEnv } from "~/cli/cli-action.js";
-import { adminPgQuery, pgQuery } from "~/services/db-clients.js";
+import { loadEnv } from "~/cli-action.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
+
 dotenv.config();
 
 describe("pgQuery", () => {
@@ -61,13 +62,13 @@ describe("pgQuery", () => {
 async function currentDatabase(environment: string, connection: string) {
 	return await runProgramWithErrorCause(
 		pgQuery(`SELECT CURRENT_DATABASE();`),
-		await loadEnv(environment, connection),
+		await loadEnv({ connection: environment, name: connection }),
 	);
 }
 
 async function currentDatabaseAsAdmin(environment: string, connection: string) {
 	return await runProgramWithErrorCause(
 		adminPgQuery(`SELECT CURRENT_DATABASE();`),
-		await loadEnv(environment, connection),
+		await loadEnv({ connection: environment, name: connection }),
 	);
 }

@@ -1,14 +1,14 @@
+import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { readFileSync, rmSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { scaffoldMigration } from "~/migrations/scaffold.js";
+import { scaffoldMigration } from "~/actions/migrations/scaffold.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
-import { ChangesetPhase } from "../../src/changeset/types.js";
 
 describe("scaffoldMigration", () => {
 	beforeEach<ProgramContext>(async (context) => {

@@ -6,36 +6,36 @@
 	"license": "MIT",
 	"homepage": "https://github.com/dunkelbraun/monolayer/packages/monolayer",
 	"type": "module",
-	"main": "dist/cjs/index.js",
-	"module": "./dist/esm/index.js",
-	"types": "./dist/esm/src/index.d.ts",
+	"main": "dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"bin": {
-		"monolayer": "dist/esm/src/bin/cli.js"
+		"monolayer": "dist/bin/cli.js"
 	},
 	"exports": {
 		".": {
-			"types": "./dist/esm/src/index.d.ts",
-			"default": "./dist/esm/src/index.js"
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		},
 		"./configuration": {
-			"types": "./dist/esm/src/configuration.d.ts",
-			"default": "./dist/esm/src/configuration.js"
+			"types": "./dist/configuration.d.ts",
+			"default": "./dist/configuration.js"
 		},
 		"./helpers/pg": {
-			"types": "./dist/esm/src/helpers.d.ts",
-			"default": "./dist/esm/src/helpers.js"
+			"types": "./dist/helpers.d.ts",
+			"default": "./dist/helpers.js"
 		},
 		"./pg": {
-			"types": "./dist/esm/src/pg.d.ts",
-			"default": "./dist/esm/src/pg.js"
+			"types": "./dist/pg.d.ts",
+			"default": "./dist/pg.js"
 		},
 		"./migration": {
-			"types": "./dist/esm/src/migration.d.ts",
-			"default": "./dist/esm/src/migration.js"
+			"types": "./dist/migration.d.ts",
+			"default": "./dist/migration.js"
 		},
 		"./zod": {
-			"types": "./dist/esm/src/zod.d.ts",
-			"default": "./dist/esm/src/zod.js"
+			"types": "./dist/zod.d.ts",
+			"default": "./dist/zod.js"
 		}
 	},
 	"files": [
@@ -45,26 +45,23 @@
 	],
 	"scripts": {
 		"prebuild": "rm -rf dist",
-		"build": "npm run build:esm",
-		"build:cjs": "tsc -p tsconfig.build.cjs.json --outDir dist/cjs",
-		"build:esm": "tsc -p tsconfig.build.esm.json --outDir dist/esm",
-		"postbuild": "npm run postbuild:copy-internal-packages && npm run postbuild:copy-private-packages && npm run postbuild:makeexec && npm run postbuild:packageesm && npm run postbuild:transform-paths",
-		"postbuild:copy-internal-packages": "mkdir -p dist/esm/packages/internal && cp -r ./../../internal/utils/dist/src dist/esm/packages/internal/utils",
-		"postbuild:copy-private-packages": "mkdir -p dist/esm/packages/private && cp -r ./../../private/refactorings/dist/src dist/esm/packages/private/refactorings",
-		"postbuild:transform-paths": "tsc-alias -p tsconfig.build.esm.json --outDir dist/esm",
-		"postbuild:makeexec": "chmod +x dist/esm/src/bin/cli.js",
-		"postbuild:packageesm": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/src/package.json",
-		"check": "npm run check:type && npm run check:prettier && npm run check:lint && npm run check:skott",
+		"build": "tsc -b tsconfig.build.json",
+		"postbuild": "npm run bundle",
+		"bundle": "tsc -b tsconfig.bundle.json",
+		"postbundle": "npm run postbundle:alias && npm run postbundle:makeexec",
+		"postbundle:alias": "tsc-alias -p tsconfig.bundle-alias.json --outDir dist/ --verbose",
+		"postbundle:makeexec": "chmod +x dist/bin/cli.js",
+		"postbundle:packageesm": "echo '{\n  \"type\": \"module\"\n}' > dist/package.json",
+		"check": "npm run check:prettier && npm run check:lint && npm run check:skott",
 		"check:lint": "npx eslint .",
 		"check:prettier": "prettier --check .",
 		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src",
-		"check:type": "tsc --noEmit",
 		"cli": "src/cli/cli.ts",
 		"format": "prettier --write .",
 		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
 		"package": "npm pack --pack-destination ./build",
 		"publish:local": "npm publish --registry http://localhost:4873",
-		"test": "./tests/__setup__/bin/run-tests",
+		"test": "vitest tests --run --coverage --pool=forks --passWithNoTests",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 monolayer -f"
 	},
@@ -76,10 +73,19 @@
 		"url": "https://github.com/dunkelbraun/monolayer/issues"
 	},
 	"devDependencies": {
+		"@monorepo/base": "*",
+		"@monorepo/cli": "*",
+		"@monorepo/configuration": "*",
 		"@monorepo/eslint-config": "*",
-		"@monorepo/typescript-config": "*",
+		"@monorepo/migrator": "*",
+		"@monorepo/prompts": "*",
+		"@monorepo/services": "*",
+		"@monorepo/state": "*",
 		"@monorepo/refactorings": "*",
+		"@monorepo/typescript-config": "*",
 		"@monorepo/utils": "*",
+		"@monorepo/pg": "*",
+		"@monorepo/programs": "*",
 		"@types/capture-console": "^1.0.5",
 		"@types/jscodeshift": "^0.11.11",
 		"@types/mock-fs": "^4.13.4",
@@ -92,11 +98,7 @@
 		"@vitest/ui": "=1.4.0",
 		"capture-console": "^1.0.2",
 		"dotenv": "^16.4.1",
-		"kysely": "^0.27.4",
-		"kysely-0270": "npm:kysely@^0.27.0",
-		"kysely-0271": "npm:kysely@^0.27.1",
-		"kysely-0272": "npm:kysely@^0.27.2",
-		"kysely-0273": "npm:kysely@^0.27.3",
+		"kysely": "^0.27.3",
 		"mock-fs": "^5.2.0",
 		"mock-stdin": "^1.0.0",
 		"pg": ">=8.11.3",

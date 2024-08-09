@@ -1,14 +1,14 @@
+import { tableInfo } from "@monorepo/pg/introspection/table.js";
+import { boolean } from "@monorepo/pg/schema/column/data-types/boolean.js";
+import { varchar } from "@monorepo/pg/schema/column/data-types/character-varying.js";
+import { enumType } from "@monorepo/pg/schema/column/data-types/enum.js";
+import { enumerated } from "@monorepo/pg/schema/column/data-types/enumerated.js";
+import { serial } from "@monorepo/pg/schema/column/data-types/serial.js";
+import { text } from "@monorepo/pg/schema/column/data-types/text.js";
+import { Schema, schema } from "@monorepo/pg/schema/schema.js";
+import { table } from "@monorepo/pg/schema/table.js";
 import { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { Schema, schema } from "~/database/schema/schema.js";
-import { boolean } from "~/database/schema/table/column/data-types/boolean.js";
-import { varchar } from "~/database/schema/table/column/data-types/character-varying.js";
-import { enumerated } from "~/database/schema/table/column/data-types/enumerated.js";
-import { serial } from "~/database/schema/table/column/data-types/serial.js";
-import { text } from "~/database/schema/table/column/data-types/text.js";
-import { table } from "~/database/schema/table/table.js";
-import { enumType } from "~/database/schema/types/enum/enum.js";
-import { tableInfo } from "~/introspection/helpers.js";
 
 describe("schema definition", () => {
 	test("without tables", () => {

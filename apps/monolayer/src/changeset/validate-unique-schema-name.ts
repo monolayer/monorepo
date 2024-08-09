@@ -1,7 +1,7 @@
+import { ActionError } from "@monorepo/base/errors.js";
+import { Schema } from "@monorepo/pg/schema/schema.js";
+import { appEnvironmentConfigurationSchemas } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
-import { ActionError } from "~/cli/errors.js";
-import { Schema } from "~/database/schema/schema.js";
-import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
 
 export function validateUniqueSchemaName() {
 	return Effect.gen(function* () {

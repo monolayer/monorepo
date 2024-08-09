@@ -1,0 +1,32 @@
+{
+	"name": "@monorepo/pg",
+	"version": "0.0.0",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"build": "tsc -b tsconfig.build.json",
+		"bundle": "tsc -b tsconfig.bundle.json",
+		"check": "npm run check:prettier && npm run check:lint",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src",
+		"test": "vitest tests --run"
+	},
+	"dependencies": {
+		"@config/testing": "*",
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@monorepo/utils": "*",
+		"@types/node": "^18.0.0",
+		"kysely": "^0.27.3",
+		"pg": "^8.11.3",
+		"microdiff": "^1.3.2",
+		"picocolors": "^1.0.0",
+		"nunjucks": "^3.2.4"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

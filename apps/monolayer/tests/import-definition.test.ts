@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { describe, expect, test } from "vitest";
-import { columnDefinition } from "~/cli/import/column-definition.js";
-import { primaryKeyDefinition } from "~/cli/import/definitions.js";
+import { columnDefinition } from "~/actions/import-schemas/column-definition.js";
+import { primaryKeyDefinition } from "~/actions/import-schemas/definitions.js";
 import {
 	columnInfoFactory,
 	type ColumnInfoFactoryOptions,

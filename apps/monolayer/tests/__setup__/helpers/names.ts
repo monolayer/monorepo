@@ -1,4 +1,4 @@
-import { hashValue } from "@monorepo/utils/hash-value";
+import { hashValue } from "@monorepo/utils/hash-value.js";
 import { type Suite, type TaskContext } from "vitest";
 
 export function dbNameForTest(context: TaskContext) {

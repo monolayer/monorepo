@@ -1,31 +1,31 @@
-import { Effect } from "effect";
-import { schemaChangeset } from "~/changeset/schema-changeset.js";
-import { introspectAlignment } from "~/database/alignment.js";
 import {
 	dropSchemaMigration,
 	type DropSchemaDiff,
-} from "~/database/database_schemas/changeset.js";
-import { managedSchemas } from "~/database/database_schemas/introspection.js";
-import { Schema, type AnySchema } from "~/database/schema/schema.js";
+} from "@monorepo/pg/changeset/generators/schema.js";
+import { schemaChangeset } from "@monorepo/pg/changeset/schema-changeset.js";
+import type { Changeset } from "@monorepo/pg/changeset/types.js";
+import { toSnakeCase } from "@monorepo/pg/helpers/to-snake-case.js";
+import { managedSchemas } from "@monorepo/pg/introspection/database-schemas.js";
+import { Schema, type AnySchema } from "@monorepo/pg/schema/schema.js";
+import { promptSchemaRenames } from "@monorepo/programs/schema-rename.js";
+import { DbClients } from "@monorepo/services/db-clients.js";
 import {
 	appEnvironmentCamelCasePlugin,
 	appEnvironmentConfigurationSchemas,
-} from "~/state/app-environment.js";
+} from "@monorepo/state/app-environment.js";
+import { Effect } from "effect";
+import { introspectAlignment } from "../actions/database/alignment.js";
 import {
 	introspectSchema,
 	renameMigrationInfo,
 	sortTablePriorities,
-} from "../introspection/introspect-schemas.js";
-import { DbClients } from "../services/db-clients.js";
-import { toSnakeCase } from "./helpers.js";
-import { promtSchemaRefactors as promptSplitSchemaRefacors } from "./schema-refactor.js";
-import { promptSchemaRenames } from "./schema-rename.js";
-import type { Changeset } from "./types.js";
+} from "./introspect-schemas.js";
+import { promtSchemaRefactors } from "./schema-refactor.js";
 import { validateForeignKeyReferences } from "./validate-foreign-key-references.js";
 
 export function changeset() {
 	return Effect.gen(function* () {
-		const splitRefactors = yield* promptSplitSchemaRefacors;
+		const splitRefactors = yield* promtSchemaRefactors;
 		const renames = yield* promptSchemaRenames([]);
 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
 		let changesets: Changeset[] = [];

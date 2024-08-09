@@ -1,0 +1,30 @@
+{
+	"name": "@monorepo/services",
+	"version": "0.0.0",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"build": "tsc -b tsconfig.build.json",
+		"bundle": "tsc -b tsconfig.bundle.json",
+		"check": "npm run check:prettier && npm run check:lint",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check ."
+	},
+	"dependencies": {
+		"@monorepo/base": "*",
+		"@monorepo/eslint-config": "*",
+		"@monorepo/migrator": "*",
+		"@monorepo/pg": "*",
+		"@monorepo/state": "*",
+		"@monorepo/typescript-config": "*",
+		"@types/node": "^18.0.0",
+		"effect": "^3.0.7",
+		"kysely": "^0.27.3",
+		"pg": "^8.11.3"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

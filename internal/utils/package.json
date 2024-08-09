@@ -1,21 +1,22 @@
 {
 	"name": "@monorepo/utils",
 	"version": "1.0.0",
+	"type": "module",
 	"exports": {
-		"./hash-value": "./src/hash-value.js",
-		"./path": "./src/path.js"
+		"./*": "./src/*"
 	},
 	"scripts": {
-		"build": "tsc -b",
-		"check": "npm run check:type && npm run check:prettier && npm run check:lint",
+		"build": "tsc -b tsconfig.build.json",
+		"bundle": "tsc -b tsconfig.bundle.json",
+		"check": "npm run check:prettier && npm run check:lint",
 		"check:lint": "npx eslint .",
-		"check:prettier": "prettier --check .",
-		"check:type": "tsc --noEmit"
+		"check:prettier": "prettier --check ."
 	},
-	"devDependencies": {
+	"depependencies": {
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
 		"@types/node": "^18.0.0",
+		"@clack/prompts": "^0.7.0",
 		"effect": "^3.0.7"
 	},
 	"engines": {

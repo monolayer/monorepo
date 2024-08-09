@@ -1,1 +1,1 @@
-export { timestamps } from "./helpers/timestamps.js";
+export { timestamps } from "@monorepo/pg/helpers/timestamps.js";

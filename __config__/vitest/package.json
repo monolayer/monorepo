@@ -1,0 +1,14 @@
+{
+	"name": "@config/testing",
+	"version": "0.0.0",
+	"private": true,
+	"license": "MIT",
+	"dependencies": {
+		"@vitest/coverage-istanbul": "=1.4.0",
+		"@vitest/ui": "=1.4.0",
+		"skott": "^0.33.2",
+		"type-fest": "^4.10.1",
+		"type-testing": "^0.2.0",
+		"vitest": "=1.4.0"
+	}
+}

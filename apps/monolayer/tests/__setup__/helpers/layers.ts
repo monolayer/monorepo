@@ -1,11 +1,11 @@
+import type { Configuration } from "@monorepo/configuration/configuration.js";
+import { DbClients, dbClientsLayer } from "@monorepo/services/db-clients.js";
+import { phasedMigratorLayer } from "@monorepo/services/phased-migrator.js";
 import dotenv from "dotenv";
 import { Effect, Layer } from "effect";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { env } from "process";
-import type { Configuration } from "~/configuration.js";
-import { phasedMigratorLayer } from "~/migrations/phased-migrator.js";
-import { DbClients, dbClientsLayer } from "~/services/db-clients.js";
 import { globalPool } from "../setup.js";
 dotenv.config();
 

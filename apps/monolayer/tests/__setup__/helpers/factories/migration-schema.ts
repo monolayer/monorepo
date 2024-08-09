@@ -1,4 +1,4 @@
-import type { SchemaMigrationInfo } from "~/introspection/introspection.js";
+import type { SchemaMigrationInfo } from "@monorepo/pg/schema/column/types.js";
 
 // eslint-disable-next-line complexity
 export function schemaMigratonInfoFactory(

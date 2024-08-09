@@ -1,0 +1,22 @@
+{
+	"extends": "@monorepo/typescript-config/tsconfig.base.json",
+	"files": [],
+	"emitDeclarationOnly": true,
+	"compilerOptions": {
+		"composite": true
+	},
+	"references": [
+		{ "path": "apps/monolayer" },
+		{ "path": "internal/base" },
+		{ "path": "internal/cli" },
+		{ "path": "internal/configuration" },
+		{ "path": "internal/migrator" },
+		{ "path": "internal/pg" },
+		{ "path": "internal/programs" },
+		{ "path": "internal/prompts" },
+		{ "path": "internal/services" },
+		{ "path": "internal/utils" },
+		{ "path": "internal/state" },
+		{ "path": "private/refactorings" }
+	]
+}

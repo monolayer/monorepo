@@ -1,12 +1,9 @@
 /* eslint-disable max-lines */
+import { trigger, type PgTrigger } from "@monorepo/pg/schema/trigger.js";
 import { sql } from "kysely";
 import type { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
 import { compileTrigger } from "~tests/__setup__/helpers/indexes.js";
-import {
-	trigger,
-	type PgTrigger,
-} from "../src/database/schema/table/trigger/trigger.js";
 
 describe("pg_trigger", () => {
 	test("trigger before", async () => {

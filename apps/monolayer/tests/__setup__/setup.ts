@@ -1,16 +1,15 @@
+import type { TablesToRename } from "@monorepo/pg/introspection/schema.js";
+import { askColumnsToRename } from "@monorepo/prompts/columns-to-rename.js";
+import { askMigrationName } from "@monorepo/prompts/migration-name.js";
+import { tablesToRename } from "@monorepo/prompts/tables-to-rename.js";
+import type { ColumnsToRename } from "@monorepo/state/table-column-rename.js";
 import dotenv from "dotenv";
-import path from "node:path";
-import { cwd, env } from "node:process";
+import { Effect } from "effect";
+import { env } from "node:process";
 import pg from "pg";
 import type { GlobalThis } from "type-fest";
 import { vi } from "vitest";
-import {
-	type ColumnsToRename,
-	type TablesToRename,
-} from "~/introspection/introspect-schemas.js";
-import { columnDiffPrompt } from "~/prompts/column-diff.js";
-import { migrationNamePrompt } from "~/prompts/migration-name.js";
-import { tableDiffPrompt } from "~/prompts/table-diff.js";
+
 dotenv.config();
 
 export type GlobalThisInTests = GlobalThis & {
@@ -32,20 +31,42 @@ export function globalPool() {
 	return globalTestThis.pool;
 }
 
-vi.mock("~/prompts/table-diff.js", async (importOriginal) => {
-	await importOriginal();
+vi.mock("@monorepo/prompts/tables-to-rename.js", async (importOriginal) => {
+	const actual =
+		(await importOriginal()) as typeof import("@monorepo/prompts/tables-to-rename.js");
 	return {
-		tableDiffPrompt: vi.fn(
+		...actual,
+		tablesToRename: vi.fn(
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			async (_tableDiff: { added: string[]; deleted: string[] }) => [],
 		),
 	};
 });
 
-vi.mock("~/prompts/column-diff.js", async (importOriginal) => {
-	await importOriginal();
+vi.mock("@monorepo/prompts/columns-to-rename.js", async (importOriginal) => {
+	const actual =
+		(await importOriginal()) as typeof import("@monorepo/prompts/columns-to-rename.ts");
 	return {
-		columnDiffPrompt: vi.fn(
+		...actual,
+		columnsToRenamePrompt: vi.fn(
+			(
+				schemaName: string,
+				diff: Record<
+					string,
+					{
+						added: string[];
+						deleted: string[];
+					}
+				>,
+			) => {
+				return Effect.gen(function* () {
+					return yield* Effect.tryPromise(() =>
+						askColumnsToRename(diff, schemaName),
+					);
+				});
+			},
+		),
+		askColumnsToRename: vi.fn(
 			async (
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				_columnDiff: Record<
@@ -63,48 +84,37 @@ vi.mock("~/prompts/column-diff.js", async (importOriginal) => {
 	};
 });
 
-vi.mock("~/prompts/migration-name.js", async (importOriginal) => {
-	await importOriginal();
+vi.mock("@monorepo/prompts/migration-name.js", async () => {
 	return {
-		migrationNamePrompt: vi.fn(async () => "default"),
-	};
-});
-
-const migrationPath = path.join(cwd(), "src", "migrations/migration.ts");
-
-export function mockedCreateFile(
-	originalImport: typeof import("~/create-file.ts"),
-) {
-	return vi.fn((path: string, content: string, log = true) => {
-		originalImport.createFile(
-			path,
-			content.replace("monolayer/migration", migrationPath),
-			log,
-		);
-	});
-}
-
-vi.mock("~/create-file.ts", async (importOriginal) => {
-	const original = await importOriginal<typeof import("~/create-file.ts")>();
-	return {
-		createFile: vi.fn((path: string, content: string, log = true) => {
-			original.createFile(
-				path,
-				content.replace("monolayer/migration", migrationPath),
-				log,
-			);
+		migrationNamePrompt: () => Effect.succeed("default"),
+		askMigrationName: vi.fn(async () => {
+			return "default";
 		}),
 	};
 });
 
-vi.mocked(tableDiffPrompt).mockResolvedValue([]);
+// const migrationPath = path.join(cwd(), "src", "migrations/migration.ts");
 
-vi.mocked(migrationNamePrompt).mockResolvedValue("default");
+// vi.mock("@monorepo/utils/create-file.ts", async (importOriginal) => {
+// 	const original =
+// 		await importOriginal<typeof import("@monorepo/utils/create-file.ts")>();
+// 	return {
+// 		createFile: vi.fn((path: string, content: string, log = true) => {
+// 			original.createFile(
+// 				path,
+// 				content.replace("monolayer/migration", migrationPath),
+// 				log,
+// 			);
+// 		}),
+// 	};
+// });
+
+vi.mocked(askMigrationName).mockResolvedValueOnce("default");
 
 export function mockTableDiffOnce(value: TablesToRename) {
-	vi.mocked(tableDiffPrompt).mockResolvedValueOnce(value);
+	vi.mocked(tablesToRename).mockResolvedValueOnce(value);
 }
 
 export function mockColumnDiffOnce(value: ColumnsToRename) {
-	vi.mocked(columnDiffPrompt).mockResolvedValueOnce(value);
+	vi.mocked(askColumnsToRename).mockResolvedValueOnce(value);
 }

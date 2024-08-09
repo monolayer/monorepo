@@ -1,5 +1,5 @@
+import type { ColumnInfo } from "@monorepo/pg/schema/column/types.js";
 import { SetNonNullable } from "type-fest";
-import type { ColumnInfo } from "~/database/schema/table/column/types.js";
 
 type required = SetNonNullable<Pick<ColumnInfo, "dataType" | "columnName">>;
 type optional = Partial<

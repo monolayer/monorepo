@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { alignColumns, introspectAlignment } from "~/database/alignment.js";
+import {
+	alignColumns,
+	introspectAlignment,
+} from "~/actions/database/alignment.js";
 import { type ColumnInfoFactoryOptions } from "./__setup__/helpers/factories/column-info-factory.js";
 import { runProgramWithErrorCause } from "./__setup__/helpers/run-program.js";
 import {

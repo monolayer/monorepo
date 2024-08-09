@@ -1,12 +1,12 @@
+import { ActionError } from "@monorepo/base/errors.js";
+import { integer } from "@monorepo/pg/schema/column/data-types/integer.js";
+import { text } from "@monorepo/pg/schema/column/data-types/text.js";
+import { foreignKey } from "@monorepo/pg/schema/foreign-key.js";
+import { schema } from "@monorepo/pg/schema/schema.js";
+import { table } from "@monorepo/pg/schema/table.js";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { validateForeignKeyReferences } from "~/changeset/validate-foreign-key-references.js";
-import { ActionError } from "~/cli/errors.js";
-import { schema } from "~/database/schema/schema.js";
-import { integer } from "~/database/schema/table/column/data-types/integer.js";
-import { text } from "~/database/schema/table/column/data-types/text.js";
-import { foreignKey } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
-import { table } from "~/database/schema/table/table.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,

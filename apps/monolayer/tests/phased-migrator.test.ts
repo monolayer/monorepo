@@ -1,12 +1,15 @@
 /* eslint-disable max-lines */
+import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
+import { Migrator } from "@monorepo/services/migrator.js";
+import {
+	type AppEnv,
+	AppEnvironment,
+} from "@monorepo/state/app-environment.js";
 import { Effect, Ref } from "effect";
 import { copyFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
-import { ChangesetPhase } from "../src/changeset/types.js";
 import { MonolayerPgConfiguration } from "../src/pg.js";
-import { Migrator } from "../src/services/migrator.js";
 import type { DbContext } from "./__setup__/helpers/kysely.js";
 import { newLayers } from "./__setup__/helpers/layers.js";
 import { programWithErrorCause } from "./__setup__/helpers/run-program.js";

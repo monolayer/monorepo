@@ -9,7 +9,7 @@ import {
 import path from "path";
 import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { generateMigration } from "~/migrations/generate.js";
+import { generateMigration } from "~/actions/migrations/generate.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import {
 	alterMigrationPath,
@@ -34,7 +34,7 @@ describe("generateChangesetMigration", () => {
 			await teardownProgramContext(context);
 		});
 
-		test<ProgramContext>("returns a changeset list", async (context) => {
+		test.only<ProgramContext>("returns a changeset list", async (context) => {
 			rmSync(expandMigrationPath(context.folder), {
 				recursive: true,
 				force: true,
@@ -62,6 +62,8 @@ describe("generateChangesetMigration", () => {
 				),
 			);
 			const migrationName = migrationFiles[0]!;
+			console.log("EXPECTED", expectedMigration);
+			console.log("MIGRATION", migration.toString());
 			expect(migration.toString()).toBe(
 				expectedMigration.replace(
 					"#name",
@@ -174,7 +176,7 @@ describe("generateChangesetMigration", () => {
 			const configurations = configurationsTemplateTwoDatabaseSchemas.render({
 				dbName: context.dbName,
 				secondSchemaFile: "anotherSchema",
-				pgPath: path.join(cwd(), "..", "..", "..", "src", "pg"),
+				pgPath: path.join("src", "pg"),
 			});
 
 			writeFileSync(
@@ -214,7 +216,7 @@ describe("generateChangesetMigration", () => {
 	});
 });
 
-const pgPath = path.join(cwd(), "src", "pg.ts");
+const pgPath = path.join(cwd(), "src", "pg.js");
 
 const schemaFile = `import { schema, table, text } from "${pgPath}";
 

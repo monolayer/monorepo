@@ -1,3 +1,4 @@
+import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import {
 	appendFileSync,
 	copyFileSync,
@@ -21,7 +22,6 @@ import {
 	type DbContext,
 } from "~tests/__setup__/helpers/kysely.js";
 import { globalPool } from "~tests/__setup__/setup.js";
-import { ChangesetPhase } from "../../../src/changeset/types.js";
 import { dbNameForTest, programFolder } from "./names.js";
 
 export async function teardownContext(context: TaskContext & DbContext) {
@@ -228,7 +228,7 @@ export async function dbAndMigrator(context: ProgramContext) {
 	};
 }
 
-const pgPath = path.join(cwd(), "src", "pg.ts");
+const pgPath = path.join(cwd(), "src", "pg.js");
 const schemaFile = `import { schema, table, text } from "${pgPath}";
 
 export const dbSchema = schema({

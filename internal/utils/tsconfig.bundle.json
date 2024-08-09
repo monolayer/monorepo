@@ -1,0 +1,7 @@
+{
+	"extends": "./tsconfig.build.json",
+	"compilerOptions": {
+		"outDir": "./../../apps/monolayer/dist/packages/utils",
+		"tsBuildInfoFile": "./../../apps/monolayer/dist/packages/utils/tsconfig.build.tsbuildinfo"
+	}
+}

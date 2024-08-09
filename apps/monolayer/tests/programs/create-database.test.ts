@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { createDatabase } from "~/database/create.js";
+import { createDatabase } from "~/actions/database/create.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,

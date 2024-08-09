@@ -1,12 +1,12 @@
 /* eslint-disable max-lines */
+import { integer } from "@monorepo/pg/schema/column/data-types/integer.js";
+import { text } from "@monorepo/pg/schema/column/data-types/text.js";
+import { extension } from "@monorepo/pg/schema/extension.js";
+import { schema } from "@monorepo/pg/schema/schema.js";
+import { table } from "@monorepo/pg/schema/table.js";
+import { unique } from "@monorepo/pg/schema/unique.js";
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { extension } from "~/database/extension/extension.js";
-import { schema } from "~/database/schema/schema.js";
-import { integer } from "~/database/schema/table/column/data-types/integer.js";
-import { text } from "~/database/schema/table/column/data-types/text.js";
-import { unique } from "~/database/schema/table/constraints/unique/unique.js";
-import { table } from "~/database/schema/table/table.js";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
 import {

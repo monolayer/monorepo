@@ -1,8 +1,11 @@
+import type { DbClients } from "@monorepo/services/db-clients.js";
+import type { Migrator } from "@monorepo/services/migrator.js";
+import {
+	AppEnvironment,
+	type AppEnv,
+} from "@monorepo/state/app-environment.js";
 import { Effect, Ref } from "effect";
-import { type DbClients } from "~/services/db-clients.js";
-import type { Migrator } from "~/services/migrator.js";
-import { AppEnv, AppEnvironment } from "~/state/app-environment.js";
-import { loadEnv } from "../../../src/cli/cli-action.js";
+import { loadEnv } from "~/cli-action.js";
 import { layers } from "./layers.js";
 
 export function programWithErrorCause<
@@ -44,7 +47,9 @@ export async function runProgramWithErrorCause<
 				),
 			),
 			AppEnvironment,
-			Ref.make(env ?? (await loadEnv("development", "default"))),
+			Ref.make(
+				env ?? (await loadEnv({ connection: "development", name: "default" })),
+			),
 		),
 	);
 }

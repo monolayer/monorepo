@@ -1,6 +1,6 @@
+import { index } from "@monorepo/pg/schema/index.js";
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
-import { index } from "~/database/schema/table/index/index.js";
 import { compileIndex } from "~tests/__setup__/helpers/indexes.js";
 
 describe("pgIndex", () => {

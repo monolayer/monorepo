@@ -1,5 +1,5 @@
+import { safeDataTypeChange } from "@monorepo/pg/changeset/generators/modify-column-data-type.js";
 import { describe, expect, test } from "vitest";
-import { safeDataTypeChange } from "~/database/schema/table/column/modify-changeset/data-type.js";
 
 describe("Safe data type change", () => {
 	test("from character varying to text is safe", () => {

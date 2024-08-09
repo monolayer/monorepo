@@ -1,12 +1,14 @@
 import * as p from "@clack/prompts";
 import { confirm, select } from "@clack/prompts";
+import { cancelOperation } from "@monorepo/base/programs/cancel-operation.js";
+import type {
+	ColumnInfo,
+	SchemaMigrationInfo,
+} from "@monorepo/pg/schema/column/types.js";
+import { Schema } from "@monorepo/pg/schema/schema.js";
+import { appEnvironmentConfigurationSchemas } from "@monorepo/state/app-environment.js";
 import { Context, Effect, Ref } from "effect";
-import { introspectSchema } from "~/introspection/introspect-schemas.js";
-import { appEnvironmentConfigurationSchemas } from "~/state/app-environment.js";
-import { cancelOperation } from "../cli/cancel-operation.js";
-import { Schema } from "../database/schema/schema.js";
-import type { ColumnInfo } from "../database/schema/table/column/types.js";
-import type { SchemaMigrationInfo } from "../introspection/introspection.js";
+import { introspectSchema } from "./introspect-schemas.js";
 
 export interface SplitColumnRefactoring {
 	schema: string;

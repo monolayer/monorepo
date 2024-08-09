@@ -1,14 +1,11 @@
 {
 	"extends": "@monorepo/typescript-config/tsconfig.base.json",
-	"include": ["src/", "tests/"],
+	"include": ["src/**/*", "tests/**/*"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
 		"outDir": "dist",
-		"paths": {
-			"~/*": ["src/*"],
-			"~tests/*": ["tests/*"]
-		},
 		"composite": true
-	}
+	},
+	"emitDeclarationOnly": true
 }

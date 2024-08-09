@@ -18,6 +18,7 @@
 		"raunofreiberg.vesper",
 		"antfu.theme-vitesse",
 		"vitest.explorer",
-		"monokai.theme-monokai-pro-vscode"
+		"monokai.theme-monokai-pro-vscode",
+		"vercel.turbo-vsc"
 	]
 }

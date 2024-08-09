@@ -1,11 +1,14 @@
+import { DbClients } from "@monorepo/services/db-clients.js";
+import { Migrator } from "@monorepo/services/migrator.js";
+import {
+	AppEnvironment,
+	type AppEnv,
+} from "@monorepo/state/app-environment.js";
 import { Effect, Ref } from "effect";
 import type { Layer } from "effect/Layer";
 import path from "path";
 import { expect } from "vitest";
-import { generateMigration } from "~/migrations/generate.js";
-import { DbClients } from "~/services/db-clients.js";
-import { Migrator } from "~/services/migrator.js";
-import { AppEnvironment, type AppEnv } from "~/state/app-environment.js";
+import { generateMigration } from "~/actions/migrations/generate.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";
 import { MonolayerPgConfiguration } from "../../../src/pg.js";

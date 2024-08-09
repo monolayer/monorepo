@@ -1,11 +1,11 @@
-import { describe, expect, test } from "vitest";
-import { integer } from "~/database/schema/table/column/data-types/integer.js";
+import { tableInfo } from "@monorepo/pg/introspection/table.js";
+import { integer } from "@monorepo/pg/schema/column/data-types/integer.js";
 import {
 	foreignKey,
 	foreignKeyOptions,
-} from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
-import { tableInfo } from "~/introspection/helpers.js";
-import { table } from "../src/database/schema/table/table.js";
+} from "@monorepo/pg/schema/foreign-key.js";
+import { table } from "@monorepo/pg/schema/table.js";
+import { describe, expect, test } from "vitest";
 
 describe("PgForeignKeyConstraint", () => {
 	test("foreign key with defaults", () => {

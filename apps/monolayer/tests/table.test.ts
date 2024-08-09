@@ -1,4 +1,21 @@
 /* eslint-disable max-lines */
+import { tableInfo } from "@monorepo/pg/introspection/table.js";
+import { columnWithType } from "@monorepo/pg/schema/column/column-with-type.js";
+import { bigint } from "@monorepo/pg/schema/column/data-types/bigint.js";
+import { boolean } from "@monorepo/pg/schema/column/data-types/boolean.js";
+import { varchar } from "@monorepo/pg/schema/column/data-types/character-varying.js";
+import { enumType } from "@monorepo/pg/schema/column/data-types/enum.js";
+import { enumerated } from "@monorepo/pg/schema/column/data-types/enumerated.js";
+import { integer } from "@monorepo/pg/schema/column/data-types/integer.js";
+import { serial } from "@monorepo/pg/schema/column/data-types/serial.js";
+import { text } from "@monorepo/pg/schema/column/data-types/text.js";
+import { timestamptz } from "@monorepo/pg/schema/column/data-types/timestamp-with-time-zone.js";
+import { foreignKey } from "@monorepo/pg/schema/foreign-key.js";
+import { index } from "@monorepo/pg/schema/index.js";
+import { primaryKey } from "@monorepo/pg/schema/primary-key.js";
+import { table } from "@monorepo/pg/schema/table.js";
+import { unique } from "@monorepo/pg/schema/unique.js";
+import { zodSchema } from "@monorepo/pg/schema/zod/zod_schema.js";
 import {
 	type Insertable,
 	type Selectable,
@@ -8,23 +25,6 @@ import {
 import { Equal, Expect } from "type-testing";
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
-import { columnWithType } from "~/database/schema/table/column/column-with-type.js";
-import { bigint } from "~/database/schema/table/column/data-types/bigint.js";
-import { boolean } from "~/database/schema/table/column/data-types/boolean.js";
-import { varchar } from "~/database/schema/table/column/data-types/character-varying.js";
-import { enumerated } from "~/database/schema/table/column/data-types/enumerated.js";
-import { integer } from "~/database/schema/table/column/data-types/integer.js";
-import { serial } from "~/database/schema/table/column/data-types/serial.js";
-import { text } from "~/database/schema/table/column/data-types/text.js";
-import { timestamptz } from "~/database/schema/table/column/data-types/timestamp-with-time-zone.js";
-import { foreignKey } from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
-import { primaryKey } from "~/database/schema/table/constraints/primary-key/primary-key.js";
-import { index } from "~/database/schema/table/index/index.js";
-import { table } from "~/database/schema/table/table.js";
-import { enumType } from "~/database/schema/types/enum/enum.js";
-import { tableInfo } from "~/introspection/helpers.js";
-import { zodSchema } from "~/zod/zod_schema.js";
-import { unique } from "../src/database/schema/table/constraints/unique/unique.js";
 
 describe("pgTable definition", () => {
 	test("has columns defined", () => {

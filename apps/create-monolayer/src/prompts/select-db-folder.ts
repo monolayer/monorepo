@@ -21,6 +21,7 @@ function promptFolderSelection() {
 							let path = value;
 							if (path === "") path = "app/db";
 							if (path[0] === "/") return "Please enter a relative path.";
+							return;
 						},
 					}),
 			},

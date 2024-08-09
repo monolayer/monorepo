@@ -1,8 +1,8 @@
 import * as p from "@clack/prompts";
+import { Migrator } from "@monorepo/services/migrator.js";
 import { Effect } from "effect";
 import { type MigrationResult } from "kysely";
 import color from "picocolors";
-import { Migrator } from "../../../src/services/migrator.js";
 
 export function migrateDown() {
 	return Migrator.pipe(

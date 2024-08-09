@@ -1,9 +1,6 @@
+import { PgCheck, assertCheckWithInfo } from "@monorepo/pg/schema/check.js";
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
-import {
-	PgCheck,
-	assertCheckWithInfo,
-} from "~/database/schema/table/constraints/check/check.js";
 
 describe("PgCheck", () => {
 	test("expression", () => {

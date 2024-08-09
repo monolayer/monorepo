@@ -1,0 +1,32 @@
+{
+	"name": "@monorepo/programs",
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"build": "tsc -b tsconfig.build.json",
+		"bundle": "tsc -b tsconfig.bundle.json",
+		"check": "npm run check:prettier && npm run check:lint",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check ."
+	},
+	"dependencies": {
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@monorepo/base": "*",
+		"@monorepo/pg": "*",
+		"@monorepo/prompts": "*",
+		"@monorepo/services": "*",
+		"@monorepo/state": "*",
+		"@types/node": "^18.0.0",
+		"@clack/prompts": "^0.7.0",
+		"effect": "^3.0.7",
+		"execa": "^8.0.1",
+		"picocolors": "^1.0.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

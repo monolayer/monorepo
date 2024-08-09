@@ -10,9 +10,8 @@
 		"package": {
 			"dependsOn": ["^package"]
 		},
-		"dev": {
-			"persistent": true,
-			"cache": false
+		"test": {
+			"dependsOn": ["^test"]
 		}
 	}
 }

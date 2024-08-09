@@ -1,6 +1,6 @@
+import { unique } from "@monorepo/pg/schema/unique.js";
 import { describe, expect, test } from "vitest";
 import { compileUnique } from "~tests/__setup__/helpers/indexes.js";
-import { unique } from "../src/database/schema/table/constraints/unique/unique.js";
 
 describe("PgUniqueConstraint", () => {
 	test("one column", async () => {

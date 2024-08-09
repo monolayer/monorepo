@@ -1,9 +1,9 @@
-import { uniqueToInfo } from "~/database/schema/table/constraints/unique/introspection.js";
-import type { PgUnique } from "~/database/schema/table/constraints/unique/unique.js";
-import type { PgIndex } from "~/database/schema/table/index/index.js";
-import { indexToInfo } from "~/database/schema/table/index/introspection.js";
-import { triggerInfo } from "~/database/schema/table/trigger/introspection.js";
-import type { AnyTrigger } from "~/database/schema/table/trigger/trigger.js";
+import { indexToInfo } from "@monorepo/pg/introspection/index.js";
+import { triggerInfo } from "@monorepo/pg/introspection/trigger.js";
+import { uniqueToInfo } from "@monorepo/pg/introspection/unique.js";
+import type { PgIndex } from "@monorepo/pg/schema/index.js";
+import type { AnyTrigger } from "@monorepo/pg/schema/trigger.js";
+import type { PgUnique } from "@monorepo/pg/schema/unique.js";
 import { kyselyWithEmptyPool } from "~tests/__setup__/helpers/kysely.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

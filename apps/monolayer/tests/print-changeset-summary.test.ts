@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
+import { renderChangesetSummary } from "@monorepo/pg/changeset/summary.js";
+import type { Changeset } from "@monorepo/pg/changeset/types.js";
 import { expect, test } from "vitest";
-import { renderChangesetSummary } from "~/changeset/print-changeset-summary.js";
-import type { Changeset } from "~/changeset/types.js";
 
 test("print summary", () => {
 	const changeset = [

@@ -1,14 +1,16 @@
-import { Effect } from "effect";
-import { ActionError } from "~/cli/errors.js";
-import { findTableInSchema } from "~/database/schema/introspect-table.js";
-import type { AnySchema } from "~/database/schema/schema.js";
+import { ActionError } from "@monorepo/base/errors.js";
+import {
+	findTableInSchema,
+	tableInfo,
+} from "@monorepo/pg/introspection/table.js";
 import {
 	PgSelfReferentialForeignKey,
 	foreignKeyOptions,
 	type AnyPgForeignKey,
-} from "~/database/schema/table/constraints/foreign-key/foreign-key.js";
-import { PgTable } from "~/database/schema/table/table.js";
-import { tableInfo } from "~/introspection/helpers.js";
+} from "@monorepo/pg/schema/foreign-key.js";
+import type { AnySchema } from "@monorepo/pg/schema/schema.js";
+import { PgTable } from "@monorepo/pg/schema/table.js";
+import { Effect } from "effect";
 
 export function validateForeignKeyReferences(
 	schema: AnySchema,

@@ -1,15 +1,28 @@
 {
 	"extends": "@monorepo/typescript-config/tsconfig.base.json",
-	"include": ["src/", "tests/"],
+	"include": ["**/src/**/*", "**/tests/**/*"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
 		"paths": {
 			"~/*": ["src/*"],
-			"~tests/*": ["tests/*"]
+			"~tests/*": ["tests/*"],
+			"@monorepo/prompts/*": ["./../../internal/prompts/src/*"]
 		},
-		"outDir": "./dist",
-		"composite": true
+		"outDir": "./dist"
 	},
-	"references": [{ "path": "../../internal/utils" }]
+	"emitDeclarationOnly": true,
+	"references": [
+		{ "path": "../../internal/base" },
+		{ "path": "../../internal/cli" },
+		{ "path": "../../internal/configuration" },
+		{ "path": "../../internal/migrator" },
+		{ "path": "../../internal/pg" },
+		{ "path": "../../internal/prompts" },
+		{ "path": "../../internal/programs" },
+		{ "path": "../../internal/services" },
+		{ "path": "../../internal/utils" },
+		{ "path": "../../internal/state" },
+		{ "path": "../../private/refactorings" }
+	]
 }
