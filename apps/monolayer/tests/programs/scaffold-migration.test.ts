@@ -115,7 +115,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 		expect(result.match(/data\/.+\.ts$/)).not.toBeNull();
 
 		const expected = `import { Kysely } from "kysely";
-import { Migraimport { type Migration } from "monolayer/migration";
+import { type Migration } from "monolayer/migration";
 
 export const migration: Migration = {
   name: "${path.basename(result).substring(0, path.basename(result).lastIndexOf("."))}",

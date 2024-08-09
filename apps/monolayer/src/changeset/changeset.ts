@@ -26,7 +26,7 @@ import { validateForeignKeyReferences } from "./validate-foreign-key-references.
 export function changeset() {
 	return Effect.gen(function* () {
 		const splitRefactors = yield* promptSplitSchemaRefacors;
-		const renames = yield* promptSchemaRenames(splitRefactors);
+		const renames = yield* promptSchemaRenames([]);
 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
 		let changesets: Changeset[] = [];
 		const typeAlignments = yield* introspectAlignment;

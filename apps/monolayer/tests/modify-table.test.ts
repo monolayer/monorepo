@@ -94,13 +94,13 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("books")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"name" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_books_name", sql\`"name" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							'await sql`ALTER TABLE "public"."books" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_books_name"`',
 							"execute(db);",
 						],
 						[
@@ -112,7 +112,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("books")',
-							'dropConstraint("temporary_not_null_check_constraint")',
+							'dropConstraint("temporary_not_null_check_constraint_public_books_name")',
 							"execute();",
 						],
 					],
@@ -1788,13 +1788,13 @@ describe("Modify table", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"email" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_email", sql\`"email" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_email"`',
 							"execute(db);",
 						],
 						[
@@ -1806,7 +1806,7 @@ describe("Modify table", () => {
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("temporary_not_null_check_constraint")',
+							'dropConstraint("temporary_not_null_check_constraint_public_users_email")',
 							"execute();",
 						],
 					],
@@ -5193,7 +5193,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createNonNullableColumn",
-					phase: "alter",
+					phase: "expand",
 					warnings: [
 						{
 							code: "MF004",
@@ -5207,7 +5207,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addColumn("id", "integer")',
+							'addColumn("id", "integer", (col) => col.generatedAlwaysAsIdentity())',
 							"execute();",
 						],
 						[
@@ -5215,13 +5215,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"id" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_id", sql\`"id" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_id"`',
 							"execute(db);",
 						],
 						[
@@ -5233,12 +5233,8 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("temporary_not_null_check_constraint")',
+							'dropConstraint("temporary_not_null_check_constraint_public_users_id")',
 							"execute();",
-						],
-						[
-							'await sql`ALTER TABLE "public"."users" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY`',
-							"execute(db);",
 						],
 					],
 					down: [
@@ -5256,7 +5252,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					currentTableName: "users",
 					schemaName: "public",
 					type: "createNonNullableColumn",
-					phase: "alter",
+					phase: "expand",
 					warnings: [
 						{
 							code: "MF004",
@@ -5270,7 +5266,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'addColumn("count", "integer")',
+							'addColumn("count", "integer", (col) => col.generatedByDefaultAsIdentity())',
 							"execute();",
 						],
 						[
@@ -5278,13 +5274,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"count" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_count", sql\`"count" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_count"`',
 							"execute(db);",
 						],
 						[
@@ -5296,12 +5292,8 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("temporary_not_null_check_constraint")',
+							'dropConstraint("temporary_not_null_check_constraint_public_users_count")',
 							"execute();",
-						],
-						[
-							'await sql`ALTER TABLE "public"."users" ALTER COLUMN "count" ADD GENERATED BY DEFAULT AS IDENTITY`',
-							"execute(db);",
 						],
 					],
 					down: [
@@ -5460,13 +5452,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"count" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_count", sql\`"count" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_count"`',
 							"execute(db);",
 						],
 						[
@@ -5478,7 +5470,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("temporary_not_null_check_constraint")',
+							'dropConstraint("temporary_not_null_check_constraint_public_users_count")',
 							"execute();",
 						],
 					],
@@ -5513,13 +5505,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"id" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_id", sql\`"id" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_id"`',
 							"execute(db);",
 						],
 						[
@@ -5531,7 +5523,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("temporary_not_null_check_constraint")',
+							'dropConstraint("temporary_not_null_check_constraint_public_users_id")',
 							"execute();",
 						],
 					],
@@ -5678,13 +5670,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"count" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_count", sql\`"count" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_count"`',
 							"execute(db);",
 						],
 						[
@@ -5696,7 +5688,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("temporary_not_null_check_constraint")',
+							'dropConstraint("temporary_not_null_check_constraint_public_users_count")',
 							"execute();",
 						],
 					],
@@ -5722,13 +5714,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"id" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_id", sql\`"id" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 						],
 						[
-							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+							'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_id"`',
 							"execute(db);",
 						],
 						[
@@ -5740,7 +5732,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 						[
 							'await db.withSchema("public").schema',
 							'alterTable("users")',
-							'dropConstraint("temporary_not_null_check_constraint")',
+							'dropConstraint("temporary_not_null_check_constraint_public_users_id")',
 							"execute();",
 						],
 					],
@@ -5781,7 +5773,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				tableName: "users",
 				currentTableName: "users",
 				type: "createNonNullableColumn",
-				phase: "alter",
+				phase: "expand",
 				warnings: [
 					{
 						code: "B003",
@@ -5821,7 +5813,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				tableName: "users",
 				currentTableName: "users",
 				type: "createNonNullableColumn",
-				phase: "alter",
+				phase: "expand",
 				warnings: [
 					{
 						code: "B004",
@@ -5884,7 +5876,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createNonNullableColumn",
-				phase: "alter",
+				phase: "expand",
 				warnings: [
 					{
 						code: "MF004",
@@ -5906,13 +5898,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"name" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_name", sql\`"name" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_name"`',
 						"execute(db);",
 					],
 					[
@@ -5924,7 +5916,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("temporary_not_null_check_constraint")',
+						'dropConstraint("temporary_not_null_check_constraint_public_users_name")',
 						"execute();",
 					],
 				],
@@ -5946,7 +5938,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 		});
 	});
 
-	test.only<DbContext>("add non nullable column with volatile default", async (context) => {
+	test<DbContext>("add non nullable column with volatile default", async (context) => {
 		await context.kysely.schema.createTable("users").execute();
 
 		const dbSchema = schema({
@@ -5968,7 +5960,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 				currentTableName: "users",
 				schemaName: "public",
 				type: "createNonNullableColumn",
-				phase: "alter",
+				phase: "expand",
 				warnings: [
 					{
 						code: "B002",
@@ -5989,13 +5981,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'addColumn("createdAt", sql`timestamp with time zone`)',
-						"execute();",
-					],
-					[
-						'await db.withSchema("public").schema',
-						'alterTable("users")',
-						'alterColumn("createdAt", (col) => col.setDefault(sql`now()`))',
+						'addColumn("createdAt", sql`timestamp with time zone`, (col) => col.defaultTo(sql`now()`))',
 						"execute();",
 					],
 					[
@@ -6007,13 +5993,13 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"createdAt" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_createdAt", sql\`"createdAt" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_createdAt"`',
 						"execute(db);",
 					],
 					[
@@ -6025,7 +6011,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("temporary_not_null_check_constraint")',
+						'dropConstraint("temporary_not_null_check_constraint_public_users_createdAt")',
 						"execute();",
 					],
 				],

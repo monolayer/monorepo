@@ -1477,13 +1477,13 @@ describe("Rename table and column without camel case plugin", () => {
   db
     .withSchema("public")
     .schema.alterTable("publications")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"identifier" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_publications_identifier", sql\`"identifier" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."publications" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						'await sql`ALTER TABLE "public"."publications" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_publications_identifier"`',
 						"execute(db);",
 					],
 					[
@@ -1495,7 +1495,7 @@ describe("Rename table and column without camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("publications")',
-						'dropConstraint("temporary_not_null_check_constraint")',
+						'dropConstraint("temporary_not_null_check_constraint_public_publications_identifier")',
 						"execute();",
 					],
 				],
@@ -9041,13 +9041,13 @@ describe("Rename table and column with camel case plugin", () => {
   db
     .withSchema("public")
     .schema.alterTable("new_books")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"book_id" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_new_books_book_id", sql\`"book_id" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						'await sql`ALTER TABLE "public"."new_books" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_new_books_book_id"`',
 						"execute(db);",
 					],
 					[
@@ -9059,7 +9059,7 @@ describe("Rename table and column with camel case plugin", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("new_books")',
-						'dropConstraint("temporary_not_null_check_constraint")',
+						'dropConstraint("temporary_not_null_check_constraint_public_new_books_book_id")',
 						"execute();",
 					],
 				],

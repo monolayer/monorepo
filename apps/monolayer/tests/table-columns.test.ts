@@ -542,13 +542,13 @@ describe("Table change migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"email" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_email", sql\`"email" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_email"`',
 						"execute(db);",
 					],
 					[
@@ -560,7 +560,7 @@ describe("Table change migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("temporary_not_null_check_constraint")',
+						'dropConstraint("temporary_not_null_check_constraint_public_users_email")',
 						"execute();",
 					],
 				],
@@ -594,13 +594,13 @@ describe("Table change migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"name" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_name", sql\`"name" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_name"`',
 						"execute(db);",
 					],
 					[
@@ -612,7 +612,7 @@ describe("Table change migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("temporary_not_null_check_constraint")',
+						'dropConstraint("temporary_not_null_check_constraint_public_users_name")',
 						"execute();",
 					],
 				],
@@ -736,13 +736,13 @@ describe("Table change migrations", () => {
   db
     .withSchema("public")
     .schema.alterTable("users")
-    .addCheckConstraint("temporary_not_null_check_constraint", sql\`"name" IS NOT NULL\`)
+    .addCheckConstraint("temporary_not_null_check_constraint_public_users_name", sql\`"name" IS NOT NULL\`)
     .compile()
     .sql.concat(" not valid")
 )}\`.execute(db);`,
 					],
 					[
-						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint"`',
+						'await sql`ALTER TABLE "public"."users" VALIDATE CONSTRAINT "temporary_not_null_check_constraint_public_users_name"`',
 						"execute(db);",
 					],
 					[
@@ -754,7 +754,7 @@ describe("Table change migrations", () => {
 					[
 						'await db.withSchema("public").schema',
 						'alterTable("users")',
-						'dropConstraint("temporary_not_null_check_constraint")',
+						'dropConstraint("temporary_not_null_check_constraint_public_users_name")',
 						"execute();",
 					],
 				],
