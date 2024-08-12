@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { trigger, type PgTrigger } from "@monorepo/pg/schema/trigger.js";
 import { sql } from "kysely";
 import type { Equal, Expect } from "type-testing";
