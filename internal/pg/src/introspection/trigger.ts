@@ -1,7 +1,6 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import { toSnakeCase } from "~/helpers/to-snake-case.js";
 import type { BuilderContext } from "~/introspection/introspection/foreign-key-builder.js";
 import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
@@ -64,7 +63,7 @@ export function triggerInfo(
 	tableName: string,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
-	camelCase: CamelCaseOptions,
+	camelCase: boolean,
 	schemaName: string,
 ) {
 	const compileArgs = PgTrigger.info(trigger);
@@ -118,10 +117,7 @@ export function triggerInfo(
 		.join("\n");
 }
 
-export function localTriggersInfo(
-	schema: AnySchema,
-	camelCase: CamelCaseOptions,
-) {
+export function localTriggersInfo(schema: AnySchema, camelCase: boolean) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({

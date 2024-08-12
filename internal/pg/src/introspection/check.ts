@@ -1,6 +1,5 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { Kysely, sql } from "kysely";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import { compileDefaultExpression } from "~/helpers/compile-default-expression.js";
 import { toSnakeCase } from "~/helpers/to-snake-case.js";
 import {
@@ -66,7 +65,7 @@ export async function dbCheckConstraintInfo(
 
 export function localCheckConstraintInfo(
 	schema: AnySchema,
-	camelCase: CamelCaseOptions,
+	camelCase: boolean,
 	columnsToRename: ColumnsToRename = {},
 ) {
 	const schemaInfo = Schema.info(schema);
@@ -87,7 +86,7 @@ export function localCheckConstraintInfo(
 						return acc;
 					}
 					const checkWithRenamedColumns = redefineCheck(
-						compileDefaultExpression(check.expression, camelCase.enabled),
+						compileDefaultExpression(check.expression, camelCase),
 						"previous",
 						transformedTableName,
 						columnsToRename,

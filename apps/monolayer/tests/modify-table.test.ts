@@ -1545,7 +1545,7 @@ describe("Modify table", () => {
 				context,
 				configuration: {
 					schemas: [dbSchema],
-					camelCasePlugin: { enabled: true },
+					camelCase: true,
 				},
 				expected,
 				down: "same",

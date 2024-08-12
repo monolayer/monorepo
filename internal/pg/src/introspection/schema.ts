@@ -1,5 +1,4 @@
 import toposort from "toposort";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import { toSnakeCase } from "~/helpers/to-snake-case.js";
 import { currentColumName } from "~/introspection/column-name.js";
 import { tableInfo } from "~/introspection/table.js";
@@ -26,7 +25,7 @@ export function findColumn(columName: string, schemaTable?: TableInfo) {
 
 export function primaryKeyColumns(
 	columns: ColumnRecord,
-	camelCase: CamelCaseOptions,
+	camelCase: boolean,
 	tableName: string,
 	columnsToRename: ColumnsToRename,
 	schemaName: string,
@@ -127,7 +126,7 @@ export function columnNameKey(table: TableInfo, columnName: string) {
 export function tableNameInSchema(
 	table: AnyPgTable,
 	schema: AnySchema,
-	camelCase: CamelCaseOptions = { enabled: false },
+	camelCase: boolean = false,
 ) {
 	const tableInSchema = findTable(table, schema);
 	if (tableInSchema !== undefined) {
@@ -147,7 +146,7 @@ export function findTable(table: AnyPgTable, schema: AnySchema) {
 export function findTableByNameInDatabaseSchema(
 	table: string,
 	schema: AnySchema,
-	camelCase: CamelCaseOptions = { enabled: false },
+	camelCase: boolean = false,
 ) {
 	const tables = Schema.info(schema).tables;
 	const tableInSchema = Object.entries(tables || {}).find(

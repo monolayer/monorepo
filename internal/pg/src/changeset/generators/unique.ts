@@ -348,7 +348,7 @@ function dropUniqueConstraintMigration(
 
 function changeUniqueConstraintNameMigration(
 	diff: UniqueChangeNameDiff,
-	{ schemaName, tablesToRename, camelCaseOptions }: GeneratorContext,
+	{ schemaName, tablesToRename, camelCase: camelCaseOptions }: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const oldName = `${previousTableName(toSnakeCase(tableName, camelCaseOptions), tablesToRename)}_${diff.path[2]}_monolayer_key`;

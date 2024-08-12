@@ -19,10 +19,7 @@ function pgPool(database?: string) {
 	});
 }
 
-export function mockedDbClientsLayer(
-	databaseName: string,
-	useCamelCase = { enabled: false },
-) {
+export function mockedDbClientsLayer(databaseName: string, camelCase = false) {
 	const pool = pgPool(databaseName);
 	return Layer.effect(
 		DbClients,
@@ -38,7 +35,7 @@ export function mockedDbClientsLayer(
 					dialect: new PostgresDialect({
 						pool: pool,
 					}),
-					plugins: useCamelCase.enabled ? [new CamelCasePlugin()] : [],
+					plugins: camelCase ? [new CamelCasePlugin()] : [],
 				}),
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				kyselyNoCamelCase: new Kysely<any>({
@@ -54,7 +51,7 @@ export function mockedDbClientsLayer(
 function mockedMigratorLayer(
 	databaseName: string,
 	migrationFolder: string,
-	useCamelCase = { enabled: false },
+	camelCase = false,
 ) {
 	const pool = pgPool(databaseName);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,7 +59,7 @@ function mockedMigratorLayer(
 		dialect: new PostgresDialect({
 			pool: pool,
 		}),
-		plugins: useCamelCase.enabled ? [new CamelCasePlugin()] : [],
+		plugins: camelCase ? [new CamelCasePlugin()] : [],
 	});
 	return phasedMigratorLayer({ client: db, migrationFolder });
 }

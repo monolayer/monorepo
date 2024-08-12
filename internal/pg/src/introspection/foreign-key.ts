@@ -1,5 +1,4 @@
 import { type Kysely, sql } from "kysely";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import { toSnakeCase } from "~/helpers/to-snake-case.js";
 import {
 	type BuilderContext,
@@ -29,7 +28,7 @@ export async function dbForeignKeyConstraints(
 	}>(
 		(acc, result) => {
 			const builderContext = {
-				camelCase: { enabled: false },
+				camelCase: false,
 				tablesToRename: [],
 				columnsToRename: {},
 				schemaName: result.schemaName,
@@ -158,7 +157,7 @@ export async function fetchForeignConstraintInfo(
 
 export function localForeignKeyConstraintInfoWithPreviousHash(
 	schema: AnySchema,
-	camelCase: CamelCaseOptions,
+	camelCase: boolean,
 	tablesToRename: TablesToRename,
 	columnsToRename: ColumnsToRename,
 	allSchemas: AnySchema[],
@@ -201,7 +200,7 @@ export function localForeignKeyConstraintInfoWithPreviousHash(
 
 export function localForeignKeys(
 	schema: AnySchema,
-	camelCase: CamelCaseOptions,
+	camelCase: boolean,
 	tablesToRename: TablesToRename,
 	columnsToRename: ColumnsToRename,
 	allSchemas: AnySchema[],
@@ -255,7 +254,7 @@ export function remoteForeignKeys(schema: AnySchema, allSchemas: AnySchema[]) {
 			if (foreignKeys !== undefined) {
 				for (const foreignKey of foreignKeys) {
 					const builder = new ForeignKeyBuilder(tableName, foreignKey, {
-						camelCase: { enabled: false },
+						camelCase: false,
 						tablesToRename: [],
 						columnsToRename: {},
 						schemaName: schemaInfo.name,

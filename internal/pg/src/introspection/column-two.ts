@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { Kysely, sql } from "kysely";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import { toSnakeCase } from "~/helpers/to-snake-case.js";
 import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
 import { findPrimaryKey } from "~/introspection/schema.js";
@@ -364,7 +363,7 @@ export function mapColumnsToTables(
 export function localColumnInfoByTable(
 	schema: AnySchema,
 	remoteSchema: SchemaMigrationInfo,
-	camelCase: CamelCaseOptions = { enabled: false },
+	camelCase: boolean = false,
 ) {
 	const tables = Schema.info(schema).tables ?? {};
 	return Object.entries(tables).reduce<Record<string, TableInfo>>(

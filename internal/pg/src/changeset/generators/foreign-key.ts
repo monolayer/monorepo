@@ -151,7 +151,7 @@ function createforeignKeyFirstConstraintMigration(
 		addedTables,
 		tablesToRename,
 		columnsToRename,
-		camelCaseOptions,
+		camelCase: camelCaseOptions,
 		addedColumns,
 	}: GeneratorContext,
 ) {
@@ -165,7 +165,7 @@ function createforeignKeyFirstConstraintMigration(
 			{
 				columnsToRename,
 				tablesToRename,
-				camelCaseOptions,
+				camelCase: camelCaseOptions,
 				schemaName,
 			},
 		);
@@ -203,7 +203,7 @@ function createForeignKeyConstraintMigration(
 		schemaName,
 		tablesToRename,
 		columnsToRename,
-		camelCaseOptions,
+		camelCase: camelCaseOptions,
 		addedTables,
 		addedColumns,
 	}: GeneratorContext,
@@ -214,7 +214,12 @@ function createForeignKeyConstraintMigration(
 		diff.path[2],
 		local,
 		"current",
-		{ columnsToRename, tablesToRename, camelCaseOptions, schemaName },
+		{
+			columnsToRename,
+			tablesToRename,
+			camelCase: camelCaseOptions,
+			schemaName,
+		},
 	);
 
 	const allAddedColumns = includedInRecord(
@@ -253,7 +258,7 @@ function dropforeignKeyLastConstraintMigration(
 		tablesToRename,
 		columnsToRename,
 		db,
-		camelCaseOptions,
+		camelCase: camelCaseOptions,
 	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
@@ -263,7 +268,12 @@ function dropforeignKeyLastConstraintMigration(
 			hashValue,
 			db,
 			"previous",
-			{ columnsToRename, tablesToRename, camelCaseOptions, schemaName },
+			{
+				columnsToRename,
+				tablesToRename,
+				camelCase: camelCaseOptions,
+				schemaName,
+			},
 		);
 
 		const changeset: Changeset = {
@@ -292,7 +302,7 @@ function dropForeignKeyConstraintMigration(
 		tablesToRename,
 		columnsToRename,
 		db,
-		camelCaseOptions,
+		camelCase: camelCaseOptions,
 		droppedTables,
 	}: GeneratorContext,
 ) {
@@ -304,7 +314,12 @@ function dropForeignKeyConstraintMigration(
 		hashValue,
 		db,
 		"previous",
-		{ columnsToRename, tablesToRename, camelCaseOptions, schemaName },
+		{
+			columnsToRename,
+			tablesToRename,
+			camelCase: camelCaseOptions,
+			schemaName,
+		},
 	);
 	const changeset: Changeset = {
 		priority: MigrationOpPriority.ForeignKeyDrop,
@@ -337,7 +352,7 @@ function changeForeignKeyChangeMigration(
 		schemaName,
 		tablesToRename,
 		local,
-		camelCaseOptions,
+		camelCase: camelCaseOptions,
 		columnsToRename,
 	}: GeneratorContext,
 ) {
@@ -347,14 +362,24 @@ function changeForeignKeyChangeMigration(
 		diff.path[2],
 		local,
 		"previous",
-		{ columnsToRename, tablesToRename, camelCaseOptions, schemaName },
+		{
+			columnsToRename,
+			tablesToRename,
+			camelCase: camelCaseOptions,
+			schemaName,
+		},
 	);
 	const currentLocalDef = foreignKeyDefinition(
 		tableName,
 		diff.path[2],
 		local,
 		"current",
-		{ columnsToRename, tablesToRename, camelCaseOptions, schemaName },
+		{
+			columnsToRename,
+			tablesToRename,
+			camelCase: camelCaseOptions,
+			schemaName,
+		},
 	);
 	if (previousLocalDef.name === currentLocalDef.name) {
 		return [];
@@ -447,18 +472,18 @@ function foreignKeyDefinition(
 	{
 		columnsToRename,
 		tablesToRename,
-		camelCaseOptions,
+		camelCase,
 		schemaName,
 	}: Pick<
 		GeneratorContext,
-		"tablesToRename" | "columnsToRename" | "camelCaseOptions" | "schemaName"
+		"tablesToRename" | "columnsToRename" | "camelCase" | "schemaName"
 	>,
 ) {
 	const localDef = fetchForeignKeyDefinition(tableName, hash, schema);
 	const localBuilder = new ForeignKeyBuilder(tableName, localDef, {
 		tablesToRename,
 		columnsToRename,
-		camelCase: camelCaseOptions,
+		camelCase,
 		schemaName: schemaName,
 		external: false,
 	});

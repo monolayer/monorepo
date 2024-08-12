@@ -67,7 +67,7 @@ export const appEnvironmentConfigurationSchemas = Effect.gen(function* () {
 
 export const appEnvironmentCamelCasePlugin = Effect.gen(function* () {
 	const state = yield* appEnvironment;
-	return state.database.camelCase ?? { enabled: false };
+	return state.database.camelCase;
 });
 
 export const appEnvironmentMigrationsFolder = Effect.gen(function* () {

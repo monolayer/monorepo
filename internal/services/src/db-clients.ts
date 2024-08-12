@@ -46,7 +46,6 @@ export function dbClientsLayer() {
 			const pgAdminPool = new pg.Pool({
 				connectionString: connectionOpts.admin,
 			});
-			const camelCaseEnabled = (yield* appEnvironmentCamelCasePlugin).enabled;
 			yield* Effect.addFinalizer(() =>
 				Effect.gen(function* () {
 					yield* Effect.promise(() => pgPool.end());
@@ -62,7 +61,10 @@ export function dbClientsLayer() {
 					dialect: new PostgresDialect({
 						pool: pgPool,
 					}),
-					plugins: camelCaseEnabled === true ? [new CamelCasePlugin()] : [],
+					plugins:
+						(yield* appEnvironmentCamelCasePlugin) === true
+							? [new CamelCasePlugin()]
+							: [],
 				}),
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				kyselyNoCamelCase: new Kysely<any>({

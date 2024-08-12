@@ -307,7 +307,7 @@ const introspectCustomRemote = Effect.gen(function* () {
 	const kysely = yield* kyselyWithConnectionString(connectionString);
 
 	const builderContext: BuilderContext = {
-		camelCase: { enabled: false },
+		camelCase: false,
 		tablesToRename: [],
 		columnsToRename: {},
 		schemaName,

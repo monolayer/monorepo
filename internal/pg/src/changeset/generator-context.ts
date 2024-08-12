@@ -1,4 +1,3 @@
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import type { TypeAlignment } from "~/changeset/helpers/alignment.js";
 import type { SplitColumnRefactoring } from "~/changeset/refactors/split-column.js";
 import type {
@@ -13,7 +12,7 @@ export interface GeneratorContext {
 	addedTables: string[];
 	droppedTables: string[];
 	schemaName: string;
-	camelCaseOptions: CamelCaseOptions;
+	camelCase: boolean;
 	tablesToRename: TablesToRename;
 	columnsToRename: ColumnsToRename;
 	typeAlignments: TypeAlignment[];

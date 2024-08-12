@@ -10,11 +10,7 @@ import type { PgUnique } from "./../../../src/schema/unique.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function compileIndex(index: PgIndex<any>, tableName: string) {
 	const kysely = await kyselyWithEmptyPool();
-	const opts = {
-		enabled: false,
-		options: {},
-	};
-	return indexToInfo(index, tableName, kysely, opts);
+	return indexToInfo(index, tableName, kysely, false);
 }
 
 export async function compileUnique(
@@ -24,17 +20,7 @@ export async function compileUnique(
 	schemaName: string,
 ) {
 	const kysely = await kyselyWithEmptyPool();
-	return uniqueToInfo(
-		unique,
-		tableName,
-		kysely,
-		{
-			enabled: false,
-			options: {},
-		},
-		{},
-		schemaName,
-	);
+	return uniqueToInfo(unique, tableName, kysely, false, {}, schemaName);
 }
 
 export async function compileTrigger(
@@ -50,10 +36,7 @@ export async function compileTrigger(
 		triggerName,
 		tableName,
 		kysely,
-		{
-			enabled: camelCase,
-			options: {},
-		},
+		camelCase,
 		"public",
 	);
 }

@@ -36,7 +36,7 @@ export async function testChangesetAndMigrations({
 		folder: ".",
 		database: new MonoLayerPgDatabase("default", {
 			schemas: configuration.schemas,
-			camelCasePlugin: configuration.camelCasePlugin ?? { enabled: false },
+			camelCase: configuration.camelCase ?? false,
 			extensions: configuration.extensions ?? [],
 		}),
 	};

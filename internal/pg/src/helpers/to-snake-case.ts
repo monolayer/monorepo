@@ -1,5 +1,4 @@
 import { CamelCasePlugin } from "kysely";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 
 class CamelCase extends CamelCasePlugin {
 	toSnakeCase(str: string): string {
@@ -7,9 +6,9 @@ class CamelCase extends CamelCasePlugin {
 	}
 }
 
-export function toSnakeCase(str: string, camelCase: CamelCaseOptions) {
-	if (camelCase.enabled === true) {
-		return new CamelCase(camelCase.options).toSnakeCase(str);
+export function toSnakeCase(str: string, camelCase: boolean) {
+	if (camelCase) {
+		return new CamelCase().toSnakeCase(str);
 	}
 	return str;
 }

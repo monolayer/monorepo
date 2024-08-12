@@ -1,7 +1,6 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import { toSnakeCase } from "~/helpers/to-snake-case.js";
 import { previousColumnName } from "~/introspection/column-name.js";
 import type { BuilderContext } from "~/introspection/introspection/foreign-key-builder.js";
@@ -184,7 +183,7 @@ export async function dbUniqueConstraintInfo(
 
 export function localUniqueConstraintInfo(
 	schema: AnySchema,
-	camelCase: CamelCaseOptions,
+	camelCase: boolean,
 	columnsToRename: ColumnsToRename,
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -231,7 +230,7 @@ export function uniqueToInfo(
 	tableName: string,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
-	camelCase: CamelCaseOptions,
+	camelCase: boolean,
 	columnsToRename: ColumnsToRename,
 	schemaName: string,
 ) {

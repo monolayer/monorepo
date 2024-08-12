@@ -1,7 +1,6 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { CamelCasePlugin, Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import { toSnakeCase } from "~/helpers/to-snake-case.js";
 import {
 	changedColumnNames,
@@ -138,7 +137,7 @@ export async function dbIndexInfo(
 
 export function localIndexInfoByTable(
 	schema: AnySchema,
-	camelCase: CamelCaseOptions = { enabled: false },
+	camelCase: boolean = false,
 	columnsToRename: ColumnsToRename = {},
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -185,7 +184,7 @@ export function indexToInfo(
 	tableName: string,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
-	camelCase: CamelCaseOptions,
+	camelCase: boolean,
 	schemaName = "public",
 	columnsToRename: ColumnsToRename = {},
 ) {
@@ -247,7 +246,7 @@ function buildIndex(
 	transformedColumnNames: string[],
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	kysely: Kysely<any>,
-	camelCase: CamelCaseOptions,
+	camelCase: boolean,
 	schemaName = "public",
 	indexName?: string,
 ) {
@@ -256,9 +255,7 @@ function buildIndex(
 	}
 
 	let kyselyBuilder = (
-		camelCase.enabled
-			? kysely.withPlugin(new CamelCasePlugin(camelCase.options))
-			: kysely
+		camelCase ? kysely.withPlugin(new CamelCasePlugin()) : kysely
 	)
 		.withSchema(schemaName)
 		.schema.createIndex(indexName)

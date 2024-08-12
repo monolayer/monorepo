@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { Kysely, sql } from "kysely";
 import toposort from "toposort";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import { toSnakeCase } from "~/helpers/to-snake-case.js";
 import {
 	dbCheckConstraintInfo,
@@ -66,7 +65,7 @@ import type { AnySchema } from "~/schema/schema.js";
 export function introspectLocalSchema(
 	schema: AnySchema,
 	remoteSchema: SchemaMigrationInfo,
-	camelCase: CamelCaseOptions = { enabled: false },
+	camelCase: boolean,
 	tablesToRename: TablesToRename = [],
 	columnsToRename: ColumnsToRename = {},
 	schemaName: string,

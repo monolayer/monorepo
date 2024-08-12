@@ -3756,7 +3756,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true, options: {} },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -3830,7 +3830,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -3926,7 +3926,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -4070,7 +4070,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -4189,7 +4189,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -4402,7 +4402,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -4578,7 +4578,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -4790,7 +4790,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -4917,7 +4917,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -5027,7 +5027,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -5145,7 +5145,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -5281,7 +5281,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -5417,7 +5417,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -5588,7 +5588,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -5732,7 +5732,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -5875,7 +5875,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -6053,7 +6053,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -6139,7 +6139,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -6283,7 +6283,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -6392,7 +6392,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -6511,7 +6511,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -6657,7 +6657,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -6758,7 +6758,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -6874,7 +6874,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -6979,7 +6979,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -7103,7 +7103,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -7250,7 +7250,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -7351,7 +7351,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",
@@ -7460,7 +7460,7 @@ describe("Rename table with camel case plugin", () => {
 			context,
 			configuration: {
 				schemas: [dbSchema],
-				camelCasePlugin: { enabled: true },
+				camelCase: true,
 			},
 			expected: expected,
 			down: "same",

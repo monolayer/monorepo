@@ -33,7 +33,7 @@ describe("validate uique schema name", () => {
 			folder: ".",
 			database: new MonoLayerPgDatabase("default", {
 				schemas: [dbSchema, anotherSchema],
-				camelCasePlugin: { enabled: false },
+				camelCase: false,
 				extensions: [],
 			}),
 		};
@@ -56,7 +56,7 @@ describe("validate uique schema name", () => {
 			folder: ".",
 			database: new MonoLayerPgDatabase("default", {
 				schemas: [dbSchema, anotherSchema],
-				camelCasePlugin: { enabled: false },
+				camelCase: false,
 				extensions: [],
 			}),
 		};
@@ -87,7 +87,7 @@ describe("validate uique schema name", () => {
 			folder: ".",
 			database: new MonoLayerPgDatabase("default", {
 				schemas: [dbSchema, anotherSchema],
-				camelCasePlugin: { enabled: false },
+				camelCase: false,
 				extensions: [],
 			}),
 		};

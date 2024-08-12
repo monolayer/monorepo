@@ -1,5 +1,4 @@
 import microdiff, { type Difference } from "microdiff";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import type { GeneratorContext } from "~/changeset/generator-context.js";
 import { migrationOpGenerators } from "~/changeset/generators.js";
 import { isCreateColumn, isDropColumn } from "~/changeset/generators/column.js";
@@ -43,7 +42,7 @@ export type SchemaIntrospection = {
 
 export function schemaChangeset(
 	introspection: SchemaIntrospection,
-	camelCaseOptions: CamelCaseOptions,
+	camelCase: boolean,
 	typeAlignments: TypeAlignment[],
 	generators: Generator[] = migrationOpGenerators,
 ): Changeset[] {
@@ -64,8 +63,8 @@ export function schemaChangeset(
 		db: introspection.remote,
 		addedTables,
 		droppedTables,
-		schemaName: toSnakeCase(introspection.schemaName, camelCaseOptions),
-		camelCaseOptions,
+		schemaName: toSnakeCase(introspection.schemaName, camelCase),
+		camelCase: camelCase,
 		tablesToRename: introspection.tablesToRename,
 		columnsToRename: introspection.columnsToRename,
 		typeAlignments: typeAlignments,

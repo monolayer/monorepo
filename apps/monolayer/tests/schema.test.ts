@@ -543,7 +543,7 @@ describe("Schema", () => {
 				context,
 				configuration: {
 					schemas: [dbSchema],
-					camelCasePlugin: { enabled: true },
+					camelCase: true,
 				},
 				expected,
 				down: "same",
@@ -712,7 +712,7 @@ describe("Schema", () => {
 				context,
 				configuration: {
 					schemas: [permissionSchema, dbSchema],
-					camelCasePlugin: { enabled: true },
+					camelCase: true,
 				},
 				expected,
 				down: "same",

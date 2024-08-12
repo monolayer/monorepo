@@ -28,7 +28,7 @@ async function runPhasedMigration(context: DbContext) {
 		folder: ".",
 		database: new MonoLayerPgDatabase("default", {
 			schemas: [],
-			camelCasePlugin: { enabled: false },
+			camelCase: false,
 			extensions: [],
 		}),
 	};

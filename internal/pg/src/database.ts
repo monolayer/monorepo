@@ -1,10 +1,9 @@
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import type { PgExtension } from "~/schema/extension.js";
 import type { AnySchema } from "~/schema/schema.js";
 
 export type DatabaseConfig = {
 	schemas: AnySchema[];
-	camelCasePlugin?: CamelCaseOptions;
+	camelCase?: boolean;
 	extensions?: PgExtension[];
 	generatePrismaSchema?: boolean;
 };
@@ -17,7 +16,7 @@ export class MonoLayerPgDatabase {
 	schemas: AnySchema[];
 	generatePrismaSchema: boolean;
 	extensions?: PgExtension[];
-	camelCase: CamelCaseOptions;
+	camelCase: boolean;
 
 	constructor(
 		public id: string,
@@ -26,7 +25,7 @@ export class MonoLayerPgDatabase {
 		this.schemas = config.schemas;
 		this.extensions = config.extensions;
 		this.generatePrismaSchema = config.generatePrismaSchema ?? false;
-		this.camelCase = config.camelCasePlugin ?? { enabled: false };
+		this.camelCase = config.camelCase ?? false;
 	}
 
 	get connectionString() {

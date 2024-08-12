@@ -1,7 +1,6 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { Kysely, PostgresDialect, type OnModifyForeignAction } from "kysely";
 import pg from "pg";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import { toSnakeCase } from "~/helpers/to-snake-case.js";
 import {
 	currentColumName,
@@ -18,7 +17,7 @@ import type {
 import type { ForeignKeyIntrospection } from "~/introspection/table.js";
 
 export interface BuilderContext {
-	camelCase: CamelCaseOptions;
+	camelCase: boolean;
 	tablesToRename: TablesToRename;
 	columnsToRename: ColumnsToRename;
 	schemaName: string;

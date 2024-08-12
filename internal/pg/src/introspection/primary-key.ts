@@ -1,5 +1,4 @@
 import { type Kysely, sql } from "kysely";
-import type { CamelCaseOptions } from "~/camel-case-options.js";
 import { toSnakeCase } from "~/helpers/to-snake-case.js";
 import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
 import {
@@ -69,7 +68,7 @@ export async function dbPrimaryKeyConstraintInfo(
 
 export function localPrimaryKeyConstraintInfo(
 	schema: AnySchema,
-	camelCase: CamelCaseOptions,
+	camelCase: boolean,
 	columnsToRename: ColumnsToRename,
 ) {
 	const schemaInfo = Schema.info(schema);

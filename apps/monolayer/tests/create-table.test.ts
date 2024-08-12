@@ -1979,7 +1979,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 			configuration: {
 				schemas: [dbSchema],
 				extensions: [extension("moddatetime")],
-				camelCasePlugin: { enabled: true, options: {} },
+				camelCase: true,
 			},
 			expected,
 			down: "same",

@@ -94,12 +94,10 @@ export const databasesTemplate =
 	nunjucks.compile(`import { dbSchema } from "./schema";
 import { defineDatabase } from "monolayer/pg";
 
-export defaultDb = defineDatabase("default",{
-	schemas: [dbSchema],
+export const defaultDb = defineDatabase("default", {
+	schemas: [],
 	extensions: [],
-	camelCasePlugin: {
-		enabled: false,
-	},
+	camelCase: false,
 });
 `);
 
@@ -114,7 +112,7 @@ export const defaultDbClient = new Kysely<DB>({
 		pool: new pg.Pool({ connectionString: defaultDb.connectionString}),
 	}),
 	plugins: defaultDb.camelCase.enabled
-		? [new CamelCasePlugin(defaultDb.camelCase.options)]
+		? [new CamelCasePlugin()]
 		: [],
 });
 `);
