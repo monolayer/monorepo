@@ -4,7 +4,7 @@ import { ActionError, UnknownActionError } from "@monorepo/base/errors.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { Migrator } from "@monorepo/services/migrator.js";
-import { currentConfig } from "@monorepo/state/app-environment.js";
+import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import { execa } from "execa";
 import type { MigrationResult } from "kysely";
@@ -115,14 +115,14 @@ export function applyMigrations({
 			);
 		}
 
-		const config = yield* currentConfig;
+		const appEnv = yield* appEnvironment;
 		if (
 			migrationError === undefined &&
 			migrationResults !== undefined &&
 			migrationResults.length !== 0
 		) {
 			yield* dumpDatabaseStructureTask;
-			if (config.generatePrismaSchema) yield* generatePrisma;
+			if (appEnv.database.generatePrismaSchema) yield* generatePrisma;
 			return true;
 		} else {
 			return false;

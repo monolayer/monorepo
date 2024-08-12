@@ -47,7 +47,7 @@ export async function runProgramWithErrorCause<
 				),
 			),
 			AppEnvironment,
-			Ref.make(env ?? (await loadEnv({ configuration: "default" }))),
+			Ref.make(env ?? (await loadEnv({ databaseId: "default" }))),
 		),
 	);
 }

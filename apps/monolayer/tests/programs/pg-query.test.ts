@@ -54,16 +54,16 @@ describe("pgQuery", () => {
 	});
 });
 
-async function currentDatabase(configuration: string) {
+async function currentDatabase(databaseId: string) {
 	return await runProgramWithErrorCause(
 		pgQuery(`SELECT CURRENT_DATABASE();`),
-		await loadEnv({ configuration }),
+		await loadEnv({ databaseId }),
 	);
 }
 
-async function currentDatabaseAsAdmin(configuration: string) {
+async function currentDatabaseAsAdmin(databaseId: string) {
 	return await runProgramWithErrorCause(
 		adminPgQuery(`SELECT CURRENT_DATABASE();`),
-		await loadEnv({ configuration }),
+		await loadEnv({ databaseId }),
 	);
 }

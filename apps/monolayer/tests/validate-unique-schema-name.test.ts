@@ -30,7 +30,6 @@ describe("validate uique schema name", () => {
 		});
 
 		const env: AppEnv = {
-			configurationName: "default",
 			folder: ".",
 			database: new MonoLayerPgDatabase("default", {
 				schemas: [dbSchema, anotherSchema],
@@ -54,7 +53,6 @@ describe("validate uique schema name", () => {
 		const anotherSchema = schema({});
 
 		const env: AppEnv = {
-			configurationName: "default",
 			folder: ".",
 			database: new MonoLayerPgDatabase("default", {
 				schemas: [dbSchema, anotherSchema],
@@ -86,7 +84,6 @@ describe("validate uique schema name", () => {
 		const anotherSchema = schema({ name: "demo" });
 
 		const env: AppEnv = {
-			configurationName: "default",
 			folder: ".",
 			database: new MonoLayerPgDatabase("default", {
 				schemas: [dbSchema, anotherSchema],

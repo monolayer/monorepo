@@ -27,7 +27,7 @@ import { exit } from "process";
 export async function cliAction(
 	name: string,
 	options: {
-		readonly configuration: string;
+		readonly databaseId: string;
 		readonly envFile?: string;
 	},
 	tasks: Effect.Effect<unknown, ActionErrors, ProgramContext>[],
@@ -63,12 +63,12 @@ export async function cliActionWithoutContext(
 }
 
 export async function loadEnv(options: {
-	readonly configuration: string;
+	readonly databaseId: string;
 	readonly envFile?: string;
 }) {
 	return await Effect.runPromise(
 		Effect.gen(function* () {
-			return yield* getEnvironment(options.configuration, options.envFile);
+			return yield* getEnvironment(options.databaseId, options.envFile);
 		}).pipe(printAnyErrors),
 	).then(envLoadSuccess, envLoadFailure);
 }

@@ -35,19 +35,19 @@ export async function importConfig() {
 	return config;
 }
 
-export type ConfigurationImport = Record<string, MonoLayerPgDatabase>;
+export type DatabaseImport = Record<string, MonoLayerPgDatabase>;
 
 export type SeedImport = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	seed?: (db: Kysely<any>) => Promise<void>;
 };
 
-export async function importConfigurations() {
+export async function importDatabases() {
 	const config = await importConfig();
-	const configurations: ConfigurationImport = await import(
+	const databases: DatabaseImport = await import(
 		path.join(process.cwd(), config.folder, "databases.ts")
 	);
-	return configurations;
+	return databases;
 }
 
 function isEsmImport(

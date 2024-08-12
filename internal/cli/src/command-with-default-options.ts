@@ -10,8 +10,8 @@ export function commandWithDefaultOptions({
 	return program
 		.command(name)
 		.option(
-			"-c, --configuration <configuration-name>",
-			"configuration name as defined in databases.ts",
+			"-d, --database-id <database-id>",
+			"Id of an exported database in databases.ts",
 			"default",
 		)
 		.option(

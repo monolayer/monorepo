@@ -6,7 +6,6 @@ import { connectionOptions } from "@monorepo/services/db-clients.js";
 import {
 	appEnvironment,
 	appEnvironmentConfigurationSchemas,
-	databaseUrl,
 } from "@monorepo/state/app-environment.js";
 import { pathExists } from "@monorepo/utils/path.js";
 import { Effect } from "effect";
@@ -60,12 +59,12 @@ const databaseDumpPath = Effect.gen(function* () {
 		cwd(),
 		"monolayer",
 		"dumps",
-		`structure.${env.configurationName}.sql`,
+		`structure.${env.database.id}.sql`,
 	);
 });
 
 const setPgDumpEnv = Effect.gen(function* () {
-	const connectionString = yield* databaseUrl;
+	const connectionString = (yield* appEnvironment).database.connectionString;
 	const parsedConfig = pgConnectionString.parse(connectionString);
 	env.PGHOST = `${parsedConfig.host}`;
 	env.PGPORT = `${parsedConfig.port}`;

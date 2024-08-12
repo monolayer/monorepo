@@ -20,7 +20,7 @@ function checkStructureFile() {
 	return appEnvironment.pipe(
 		Effect.flatMap((environment) =>
 			checkWithFail({
-				name: `Check structure.${environment.configurationName}.sql`,
+				name: `Check structure.${environment.database.id}.sql`,
 				nextSteps: `Follow these steps to generate a structure file:
 
 1) Create the development database: \`npx monolayer db:create -e development\`.
@@ -31,7 +31,7 @@ function checkStructureFile() {
 				errorMessage: `Structure file not found. Expected location: ${path.join(
 					environment.folder,
 					"dumps",
-					`structure.${environment.configurationName}.sql`,
+					`structure.${environment.database.id}.sql`,
 				)}`,
 				failMessage: "Structure file does not exist",
 				callback: () =>
@@ -39,7 +39,7 @@ function checkStructureFile() {
 						const structurePath = path.join(
 							environment.folder,
 							"dumps",
-							`structure.${environment.configurationName}.sql`,
+							`structure.${environment.database.id}.sql`,
 						);
 						try {
 							await fs.stat(structurePath);
@@ -57,13 +57,13 @@ function restoreDatabaseFromStructureFile() {
 	return Effect.all([appEnvironment, DbClients]).pipe(
 		Effect.flatMap(([environment, dbClients]) =>
 			spinnerTask(
-				`Restore ${dbClients.databaseName} from structure.${environment.configurationName}.sql`,
+				`Restore ${dbClients.databaseName} from structure.${environment.database.id}.sql`,
 				() =>
 					Effect.tryPromise(async () => {
 						const structurePath = path.join(
 							environment.folder,
 							"dumps",
-							`structure.${environment.configurationName}.sql`,
+							`structure.${environment.database.id}.sql`,
 						);
 						return (await fs.readFile(structurePath)).toString();
 					}).pipe(

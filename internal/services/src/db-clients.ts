@@ -1,7 +1,7 @@
 import { ActionError } from "@monorepo/base/errors.js";
 import {
+	appEnvironment,
 	appEnvironmentCamelCasePlugin,
-	databaseUrl,
 } from "@monorepo/state/app-environment.js";
 import { Context, Effect, Layer } from "effect";
 import { UnknownException } from "effect/Cause";
@@ -29,7 +29,7 @@ const CONNECTION_STRING_REGEX =
 	/^(postgresql:\/\/(?:[^@]*@)?[^/]*)(?:\/[^?]*)(.*)$/;
 
 export const connectionOptions = Effect.gen(function* () {
-	const connectionString = yield* databaseUrl;
+	const connectionString = (yield* appEnvironment).database.connectionString;
 	return {
 		app: connectionString,
 		admin: connectionString.replace(CONNECTION_STRING_REGEX, "$1$2"),

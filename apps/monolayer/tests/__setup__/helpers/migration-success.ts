@@ -33,7 +33,6 @@ export async function testChangesetAndMigrations({
 	mock?: () => void;
 }) {
 	const env: AppEnv = {
-		configurationName: "default",
 		folder: ".",
 		database: new MonoLayerPgDatabase("default", {
 			schemas: configuration.schemas,

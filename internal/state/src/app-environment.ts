@@ -6,13 +6,11 @@ import { Context, Effect, Ref } from "effect";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
-import { importConfig, importConfigurations } from "./import-config.js";
+import { importConfig, importDatabases } from "./import-config.js";
 
 export interface AppEnv {
-	configurationName: string;
 	folder: string;
 	database: MonoLayerPgDatabase;
-	databaseUrl?: string;
 }
 
 export class AppEnvironment extends Context.Tag("EnvironmentState")<
@@ -20,19 +18,15 @@ export class AppEnvironment extends Context.Tag("EnvironmentState")<
 	Ref.Ref<AppEnv>
 >() {}
 
-export function getEnvironment(configurationName: string, envFile?: string) {
+export function getEnvironment(databaseId: string, envFile?: string) {
 	return Effect.gen(function* () {
 		if (envFile) {
 			yield* loadMonoPGEnvironmentVariables(envFile);
 		}
+		const database = yield* databaseById(databaseId);
 		const env: AppEnv = {
-			configurationName,
 			folder: yield* monolayerFolder(),
-			database: yield* databaseByConfigurationName(configurationName),
-			databaseUrl:
-				process.env[
-					`MONO_PG_${configurationName.toUpperCase()}_DATABASE_URL`
-				] ?? "",
+			database,
 		};
 		return env;
 	});
@@ -66,22 +60,6 @@ export const appEnvironment = Effect.gen(function* () {
 	return yield* Ref.get(state);
 });
 
-export const currentConfig = Effect.gen(function* () {
-	const env = yield* appEnvironment;
-	return yield* databaseByConfigurationName(env.configurationName);
-});
-
-export const databaseUrl = Effect.gen(function* () {
-	const env = yield* appEnvironment;
-	const envVar = yield* databaseURLEnvVar;
-	if (env.databaseUrl === undefined) {
-		return yield* Effect.fail(
-			new ActionError("Missing database URL", `undefined ${envVar}.`),
-		);
-	}
-	return env.databaseUrl;
-});
-
 export const appEnvironmentConfigurationSchemas = Effect.gen(function* () {
 	const state = yield* appEnvironment;
 	return state.database.schemas;
@@ -93,8 +71,8 @@ export const appEnvironmentCamelCasePlugin = Effect.gen(function* () {
 });
 
 export const appEnvironmentMigrationsFolder = Effect.gen(function* () {
-	const state = yield* appEnvironment;
-	return path.join(cwd(), "monolayer", "migrations", state.configurationName!);
+	const appEnv = yield* appEnvironment;
+	return path.join(cwd(), "monolayer", "migrations", appEnv.database.id);
 });
 
 export function monolayerFolder() {
@@ -106,7 +84,6 @@ export function monolayerFolder() {
 
 export const importSchemaEnvironment = Effect.gen(function* () {
 	return {
-		configurationName: "default",
 		database: new MonoLayerPgDatabase("default", {
 			schemas: [],
 		}),
@@ -114,12 +91,10 @@ export const importSchemaEnvironment = Effect.gen(function* () {
 	} satisfies AppEnv as AppEnv;
 });
 
-function allDatabaseConfigurations() {
+function allDatabases() {
 	return Effect.gen(function* () {
-		const configurations = yield* Effect.tryPromise(() =>
-			importConfigurations(),
-		);
-		if (configurations === undefined) {
+		const databases = yield* Effect.tryPromise(() => importDatabases());
+		if (databases === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* Effect.fail(
 				new ActionError(
@@ -128,29 +103,23 @@ function allDatabaseConfigurations() {
 				),
 			);
 		}
-		return configurations;
+		return databases;
 	});
 }
 
-export function databaseByConfigurationName(configurationName: string) {
+export function databaseById(databaseId: string) {
 	return Effect.gen(function* () {
-		const databaseConfigurations = yield* allDatabaseConfigurations();
-		const database = databaseConfigurations[configurationName];
+		const databases = yield* allDatabases();
+		const database = databases[databaseId];
 		if (database === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* Effect.fail(
 				new ActionError(
-					"Missing configuration",
-					`No configuration found for ${configurationName}. Check your databases.ts file.`,
+					"Missing database",
+					`No database found with id "${databaseId}". Check your databases.ts file.`,
 				),
 			);
 		}
 		return database;
 	});
 }
-
-export const databaseURLEnvVar = Effect.gen(function* () {
-	const env = yield* appEnvironment;
-	const upperCaseEnvironmentName = env.configurationName.toUpperCase();
-	return `MONO_PG_${upperCaseEnvironmentName}_DATABASE_URL` as const;
-});

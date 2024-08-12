@@ -25,7 +25,6 @@ async function runPhasedMigration(context: DbContext) {
 		new MonoLayerPgDatabase("default", { schemas: [] }),
 	);
 	const env: AppEnv = {
-		configurationName: "default",
 		folder: ".",
 		database: new MonoLayerPgDatabase("default", {
 			schemas: [],
