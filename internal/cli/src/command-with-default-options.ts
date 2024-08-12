@@ -11,7 +11,7 @@ export function commandWithDefaultOptions({
 		.command(name)
 		.option(
 			"-c, --configuration <configuration-name>",
-			"configuration name as defined in configuration.ts",
+			"configuration name as defined in databases.ts",
 			"default",
 		)
 		.option(

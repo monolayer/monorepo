@@ -144,7 +144,7 @@ export async function setupProgramContext(
 	});
 
 	writeFileSync(
-		path.join(context.folder, "db", "configuration.ts"),
+		path.join(context.folder, "db", "databases.ts"),
 		configurations,
 	);
 

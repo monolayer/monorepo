@@ -1,4 +1,4 @@
-import type { Configuration } from "@monorepo/configuration/configuration.js";
+import type { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import { DbClients, dbClientsLayer } from "@monorepo/services/db-clients.js";
 import { phasedMigratorLayer } from "@monorepo/services/phased-migrator.js";
 import dotenv from "dotenv";
@@ -67,21 +67,17 @@ function mockedMigratorLayer(
 	return phasedMigratorLayer({ client: db, migrationFolder });
 }
 
-export type ConnectionLessConfiguration = Omit<Configuration, "connections">;
-
 export function newLayers(
 	databaseName: string,
 	migrationFolder: string,
-	connector: ConnectionLessConfiguration,
+	database: MonoLayerPgDatabase,
 ) {
 	return mockedMigratorLayer(
 		databaseName,
 		migrationFolder,
-		connector.camelCasePlugin,
+		database.camelCase,
 	).pipe(
-		Layer.provideMerge(
-			mockedDbClientsLayer(databaseName, connector.camelCasePlugin),
-		),
+		Layer.provideMerge(mockedDbClientsLayer(databaseName, database.camelCase)),
 	);
 }
 

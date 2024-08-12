@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
+import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import {
 	type AppEnv,
@@ -9,7 +10,6 @@ import { Effect, Ref } from "effect";
 import { copyFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { MonolayerPgConfiguration } from "../src/pg.js";
 import type { DbContext } from "./__setup__/helpers/kysely.js";
 import { newLayers } from "./__setup__/helpers/layers.js";
 import { programWithErrorCause } from "./__setup__/helpers/run-program.js";
@@ -22,12 +22,12 @@ async function runPhasedMigration(context: DbContext) {
 	const layers = newLayers(
 		context.dbName,
 		path.join(context.folder, "migrations", "default"),
-		{ schemas: [] },
+		new MonoLayerPgDatabase({ schemas: [] }),
 	);
 	const env: AppEnv = {
 		configurationName: "default",
 		folder: ".",
-		configuration: new MonolayerPgConfiguration({
+		database: new MonoLayerPgDatabase({
 			schemas: [],
 			camelCasePlugin: { enabled: false },
 			extensions: [],

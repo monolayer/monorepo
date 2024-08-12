@@ -9,23 +9,23 @@ export const monolayerTemplate = nunjucks.compile(`export default {
 
 export const configurationsTemplate =
 	nunjucks.compile(`import { dbSchema } from "./schema";
-import { defineConfig } from "{{ pgPath }}";
+import { defineDatabase } from "{{ pgPath }}";
 
-export default defineConfig({
+export default defineDatabase({
 	schemas: [dbSchema],
 });
 
-export const stats = defineConfig({});
+export const stats = defineDatabase({});
 `);
 
 export const configurationsTemplateTwoDatabaseSchemas =
 	nunjucks.compile(`import { dbSchema } from "./schema";
-import { defineConfig } from "{{ pgPath }}";
+import { defineDatabase } from "{{ pgPath }}";
 import { dbSchema as anotherDbSchema } from "./{{ secondSchemaFile }}";
 
-export default defineConfig({
+export default defineDatabase({
 	schemas: [dbSchema, anotherDbSchema],
 });
 
-export const stats = defineConfig({});
+export const stats = defineDatabase({});
 `);

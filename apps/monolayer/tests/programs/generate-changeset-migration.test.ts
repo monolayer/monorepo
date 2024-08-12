@@ -92,7 +92,7 @@ describe("generateChangesetMigration", () => {
 			});
 
 			writeFileSync(
-				path.join(context.folder, "db", "configuration.ts"),
+				path.join(context.folder, "db", "databases.ts"),
 				configurations,
 			);
 
@@ -178,7 +178,7 @@ describe("generateChangesetMigration", () => {
 			});
 
 			writeFileSync(
-				path.join(context.folder, "db", "configuration.ts"),
+				path.join(context.folder, "db", "databases.ts"),
 				configurations,
 			);
 

@@ -61,7 +61,7 @@ const config: Config = {
       'docusaurus-plugin-typedoc',
       {
         entryPoints: [
-					'../apps/monolayer/src/configuration.ts',
+					'../apps/monolayer/src/databases.ts',
 					'../apps/monolayer/src/pg.ts',
 					'../apps/monolayer/src/migration.ts',
 					'../apps/monolayer/src/zod.ts'

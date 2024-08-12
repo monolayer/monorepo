@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { ActionError } from "@monorepo/base/errors.js";
-import { MonolayerPgConfiguration } from "@monorepo/configuration/configuration.js";
+import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import dotenv from "dotenv";
 import { Context, Effect, Ref } from "effect";
 import path from "path";
@@ -11,7 +11,7 @@ import { importConfig, importConfigurations } from "./import-config.js";
 export interface AppEnv {
 	configurationName: string;
 	folder: string;
-	configuration: MonolayerPgConfiguration;
+	database: MonoLayerPgDatabase;
 	databaseUrl?: string;
 }
 
@@ -28,7 +28,7 @@ export function getEnvironment(configurationName: string, envFile?: string) {
 		const env: AppEnv = {
 			configurationName,
 			folder: yield* monolayerFolder(),
-			configuration: yield* configurationByName(configurationName),
+			database: yield* databaseByConfigurationName(configurationName),
 			databaseUrl:
 				process.env[
 					`MONO_PG_${configurationName.toUpperCase()}_DATABASE_URL`
@@ -68,7 +68,7 @@ export const appEnvironment = Effect.gen(function* () {
 
 export const currentConfig = Effect.gen(function* () {
 	const env = yield* appEnvironment;
-	return yield* configurationByName(env.configurationName);
+	return yield* databaseByConfigurationName(env.configurationName);
 });
 
 export const databaseUrl = Effect.gen(function* () {
@@ -84,12 +84,12 @@ export const databaseUrl = Effect.gen(function* () {
 
 export const appEnvironmentConfigurationSchemas = Effect.gen(function* () {
 	const state = yield* appEnvironment;
-	return state.configuration.schemas;
+	return state.database.schemas;
 });
 
 export const appEnvironmentCamelCasePlugin = Effect.gen(function* () {
 	const state = yield* appEnvironment;
-	return state.configuration.camelCasePlugin ?? { enabled: false };
+	return state.database.camelCase ?? { enabled: false };
 });
 
 export const appEnvironmentMigrationsFolder = Effect.gen(function* () {
@@ -107,14 +107,14 @@ export function monolayerFolder() {
 export const importSchemaEnvironment = Effect.gen(function* () {
 	return {
 		configurationName: "default",
-		configuration: new MonolayerPgConfiguration({
+		database: new MonoLayerPgDatabase({
 			schemas: [],
 		}),
 		folder: yield* monolayerFolder(),
 	} satisfies AppEnv as AppEnv;
 });
 
-function allConfigurations() {
+function allDatabaseConfigurations() {
 	return Effect.gen(function* () {
 		const configurations = yield* Effect.tryPromise(() =>
 			importConfigurations(),
@@ -124,7 +124,7 @@ function allConfigurations() {
 			return yield* Effect.fail(
 				new ActionError(
 					"Missing configurations",
-					"No configurations found. Check your configuration.ts file.",
+					"No configurations found. Check your databases.ts file.",
 				),
 			);
 		}
@@ -132,20 +132,20 @@ function allConfigurations() {
 	});
 }
 
-export function configurationByName(configurationName: string) {
+export function databaseByConfigurationName(configurationName: string) {
 	return Effect.gen(function* () {
-		const configurations = yield* allConfigurations();
-		const configuration = configurations[configurationName];
-		if (configuration === undefined) {
+		const databaseConfigurations = yield* allDatabaseConfigurations();
+		const database = databaseConfigurations[configurationName];
+		if (database === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* Effect.fail(
 				new ActionError(
 					"Missing configuration",
-					`No configuration found for ${configurationName}. Check your configuration.ts file.`,
+					`No configuration found for ${configurationName}. Check your databases.ts file.`,
 				),
 			);
 		}
-		return configuration;
+		return database;
 	});
 }
 

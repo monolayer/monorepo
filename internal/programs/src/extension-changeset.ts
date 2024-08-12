@@ -21,7 +21,7 @@ export function computeExtensionChangeset() {
 function localExtensions() {
 	return appEnvironment.pipe(
 		Effect.flatMap((environment) =>
-			Effect.succeed(localExtensionInfo(environment.configuration.extensions)),
+			Effect.succeed(localExtensionInfo(environment.database.extensions)),
 		),
 	);
 }

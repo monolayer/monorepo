@@ -119,7 +119,7 @@ export function createSchema(
 	return {
 		configuration: {
 			name: configurationName,
-			path: path.join(folder, `configuration.ts`),
+			path: path.join(folder, `databases.ts`),
 		},
 		schema: {
 			path: schemaPath,
@@ -226,7 +226,7 @@ function writeConfiguration(options: {
 	schemaModuleExtensionName: string;
 	envVar: string;
 }) {
-	const configurationPath = path.join(options.folder, `configuration.ts`);
+	const configurationPath = path.join(options.folder, `databases.ts`);
 	const content = nunjucks.compile(configurationTemplate).render(options);
 	appendFileSync(configurationPath, content);
 }
@@ -236,7 +236,7 @@ export function addImportToConfiguration(
 	schemaPath: string,
 	moduleImports: string,
 ) {
-	const configurationPath = path.join(folder, `configuration.ts`);
+	const configurationPath = path.join(folder, `databases.ts`);
 	const importSchemaPath = path.relative(
 		folder,
 		schemaPath.substring(0, schemaPath.lastIndexOf(".")),
@@ -265,7 +265,7 @@ export function addImportToConfiguration(
 
 const configurationTemplate = `
 
-export const {{ configurationName }} = defineConfig({
+export const {{ configurationName }} = defineDatabase({
 	schemas: [{{ schemaModuleName }}],
 	extensions: {{ schemaModuleExtensionName }},
 });

@@ -86,10 +86,10 @@ describe("seed", () => {
 		).rejects.toThrowError();
 	});
 
-	test<ProgramContext>("exits with missing configuration.ts", async (context) => {
+	test<ProgramContext>("exits with missing databases.ts", async (context) => {
 		await context.migrator.migrateToLatest();
 
-		unlinkSync(path.join(context.folder, "db", "configuration.ts"));
+		unlinkSync(path.join(context.folder, "db", "databases.ts"));
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
 		expect(

@@ -38,9 +38,9 @@ export type StatsDB = typeof statsSchema.infer;
 ### 2. Add a configuration for the database
 
 In addition to the default configuration, export a new configuration for the additional database in
-your `configuration.ts` file associating it with the new schema and database credentials.
+your `databases.ts` file associating it with the new schema and database credentials.
 
-```ts title="configuration.ts"
+```ts title="databases.ts"
 import { type Configuration } from "monolayer/config";
 import { dbSchema } from "./schema";
 import { dbExtensions } from "./extensions";

@@ -1,7 +1,7 @@
 export {
-	MonolayerPgConfiguration,
-	defineConfig,
-} from "@monorepo/configuration/configuration.js";
+	defineDatabase,
+	type MonoLayerPgDatabase,
+} from "@monorepo/pg/database.js";
 export {
 	check,
 	unmanagedCheck,

@@ -1,5 +1,5 @@
-import type { MonolayerPgConfiguration } from "@monorepo/configuration/configuration.js";
 import { Monolayer } from "@monorepo/configuration/configuration.js";
+import type { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import type { Kysely } from "kysely";
 import path from "path";
 
@@ -35,7 +35,7 @@ export async function importConfig() {
 	return config;
 }
 
-export type ConfigurationImport = Record<string, MonolayerPgConfiguration>;
+export type ConfigurationImport = Record<string, MonoLayerPgDatabase>;
 
 export type SeedImport = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,7 +45,7 @@ export type SeedImport = {
 export async function importConfigurations() {
 	const config = await importConfig();
 	const configurations: ConfigurationImport = await import(
-		path.join(process.cwd(), config.folder, "configuration.ts")
+		path.join(process.cwd(), config.folder, "databases.ts")
 	);
 	return configurations;
 }

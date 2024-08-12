@@ -1,4 +1,5 @@
 import { ActionError } from "@monorepo/base/errors.js";
+import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
 import {
 	AppEnvironment,
@@ -12,7 +13,6 @@ import {
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
-import { MonolayerPgConfiguration } from "../src/pg.js";
 
 describe("validate uique schema name", () => {
 	beforeEach<ProgramContext>(async (context) => {
@@ -32,7 +32,7 @@ describe("validate uique schema name", () => {
 		const env: AppEnv = {
 			configurationName: "default",
 			folder: ".",
-			configuration: new MonolayerPgConfiguration({
+			database: new MonoLayerPgDatabase({
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
@@ -56,7 +56,7 @@ describe("validate uique schema name", () => {
 		const env: AppEnv = {
 			configurationName: "default",
 			folder: ".",
-			configuration: new MonolayerPgConfiguration({
+			database: new MonoLayerPgDatabase({
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
@@ -88,7 +88,7 @@ describe("validate uique schema name", () => {
 		const env: AppEnv = {
 			configurationName: "default",
 			folder: ".",
-			configuration: new MonolayerPgConfiguration({
+			database: new MonoLayerPgDatabase({
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],

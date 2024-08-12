@@ -29,13 +29,13 @@ export const initFolderAndFiles = Effect.gen(function* () {
 				true,
 			);
 			await createFile(
-				`${dbFolderPath}/configuration.ts`,
-				configurationTemplate.render(),
+				`${dbFolderPath}/databases.ts`,
+				databasesTemplate.render(),
 				true,
 			);
 			await createFile(`${dbFolderPath}/seed.ts`, seedTemplate.render(), true);
 
-			const nextSteps = `1) Edit the default configuration in \`${path.join(dbFolderPath, "configuration.ts")}\`.
+			const nextSteps = `1) Edit the default configuration in \`${path.join(dbFolderPath, "databases.ts")}\`.
 2) Run \`npx monolayer db:create\` to create the database.
 3) Edit the schema file at \`${path.join(dbFolderPath, "schema.ts")}\`.
 4) Run 'npx monolayer generate' to create migrations.
@@ -90,11 +90,11 @@ const monolayer = {
 export default monolayer;
 `);
 
-export const configurationTemplate =
+export const databasesTemplate =
 	nunjucks.compile(`import { dbSchema } from "./schema";
-import { defineConfig } from "monolayer/pg";
+import { defineDatabase } from "monolayer/pg";
 
-export default defineConfig({
+export default defineDatabase({
 	schemas: [dbSchema],
 	extensions: [],
 	camelCasePlugin: {

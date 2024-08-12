@@ -1,3 +1,7 @@
+import {
+	MonoLayerPgDatabase,
+	type DatabaseConfig,
+} from "@monorepo/pg/database.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import {
@@ -11,8 +15,7 @@ import { expect } from "vitest";
 import { generateMigration } from "~/actions/migrations/generate.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";
-import { MonolayerPgConfiguration } from "../../../src/pg.js";
-import { newLayers, type ConnectionLessConfiguration } from "./layers.js";
+import { newLayers } from "./layers.js";
 import { programWithErrorCause } from "./run-program.js";
 
 export async function testChangesetAndMigrations({
@@ -26,13 +29,13 @@ export async function testChangesetAndMigrations({
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expected: any[];
 	down: "same" | "reverse" | "empty";
-	configuration: ConnectionLessConfiguration;
+	configuration: DatabaseConfig;
 	mock?: () => void;
 }) {
 	const env: AppEnv = {
 		configurationName: "default",
 		folder: ".",
-		configuration: new MonolayerPgConfiguration({
+		database: new MonoLayerPgDatabase({
 			schemas: configuration.schemas,
 			camelCasePlugin: configuration.camelCasePlugin ?? { enabled: false },
 			extensions: configuration.extensions ?? [],
@@ -41,7 +44,7 @@ export async function testChangesetAndMigrations({
 	const layers = newLayers(
 		context.dbName,
 		path.join(context.folder, "migrations", "default"),
-		configuration,
+		env.database,
 	);
 
 	mock();

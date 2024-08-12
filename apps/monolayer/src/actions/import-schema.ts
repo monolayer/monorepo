@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import * as p from "@clack/prompts";
 import { dateStringWithMilliseconds } from "@monorepo/migrator/render.js";
+import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import type { EnumInfo } from "@monorepo/pg/introspection/enum.js";
 import { dbExtensionInfo } from "@monorepo/pg/introspection/extension.js";
 import type { IndexInfo } from "@monorepo/pg/introspection/index.js";
@@ -31,7 +32,6 @@ import path from "path";
 import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 import { dumpDatabaseWithoutMigrationTables } from "~/actions/database/dump.js";
-import { MonolayerPgConfiguration } from "../pg.js";
 import { createSchema } from "./import-schemas/create-schemas.js";
 import {
 	checkConstraintDefinition,
@@ -149,7 +149,7 @@ function dumpDatabase(
 
 		const dumpEnv: AppEnv = {
 			configurationName,
-			configuration: new MonolayerPgConfiguration({
+			database: new MonoLayerPgDatabase({
 				schemas: [],
 			}),
 			folder: migrationsFolder, // Needs to be migrations folder
