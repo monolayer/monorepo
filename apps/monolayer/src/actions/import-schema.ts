@@ -149,7 +149,7 @@ function dumpDatabase(
 
 		const dumpEnv: AppEnv = {
 			configurationName,
-			database: new MonoLayerPgDatabase({
+			database: new MonoLayerPgDatabase("default", {
 				schemas: [],
 			}),
 			folder: migrationsFolder, // Needs to be migrations folder

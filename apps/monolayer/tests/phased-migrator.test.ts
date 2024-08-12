@@ -22,12 +22,12 @@ async function runPhasedMigration(context: DbContext) {
 	const layers = newLayers(
 		context.dbName,
 		path.join(context.folder, "migrations", "default"),
-		new MonoLayerPgDatabase({ schemas: [] }),
+		new MonoLayerPgDatabase("default", { schemas: [] }),
 	);
 	const env: AppEnv = {
 		configurationName: "default",
 		folder: ".",
-		database: new MonoLayerPgDatabase({
+		database: new MonoLayerPgDatabase("default", {
 			schemas: [],
 			camelCasePlugin: { enabled: false },
 			extensions: [],

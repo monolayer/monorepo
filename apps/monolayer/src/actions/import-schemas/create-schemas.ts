@@ -265,7 +265,7 @@ export function addImportToConfiguration(
 
 const configurationTemplate = `
 
-export const {{ configurationName }} = defineDatabase({
+export const {{ configurationName }} = defineDatabase("{{ configurationName }}", {
 	schemas: [{{ schemaModuleName }}],
 	extensions: {{ schemaModuleExtensionName }},
 });

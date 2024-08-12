@@ -9,8 +9,8 @@ export type DatabaseConfig = {
 	generatePrismaSchema?: boolean;
 };
 
-export function defineDatabase(config: DatabaseConfig) {
-	return new MonoLayerPgDatabase(config);
+export function defineDatabase(id: string, config: DatabaseConfig) {
+	return new MonoLayerPgDatabase(id, config);
 }
 
 export class MonoLayerPgDatabase {
@@ -19,7 +19,10 @@ export class MonoLayerPgDatabase {
 	extensions?: PgExtension[];
 	camelCase: CamelCaseOptions;
 
-	constructor(config: DatabaseConfig) {
+	constructor(
+		public id: string,
+		config: DatabaseConfig,
+	) {
 		this.schemas = config.schemas;
 		this.extensions = config.extensions;
 		this.generatePrismaSchema = config.generatePrismaSchema ?? false;

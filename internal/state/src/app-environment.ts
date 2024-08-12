@@ -107,7 +107,7 @@ export function monolayerFolder() {
 export const importSchemaEnvironment = Effect.gen(function* () {
 	return {
 		configurationName: "default",
-		database: new MonoLayerPgDatabase({
+		database: new MonoLayerPgDatabase("default", {
 			schemas: [],
 		}),
 		folder: yield* monolayerFolder(),

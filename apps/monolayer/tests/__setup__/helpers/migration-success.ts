@@ -35,7 +35,7 @@ export async function testChangesetAndMigrations({
 	const env: AppEnv = {
 		configurationName: "default",
 		folder: ".",
-		database: new MonoLayerPgDatabase({
+		database: new MonoLayerPgDatabase("default", {
 			schemas: configuration.schemas,
 			camelCasePlugin: configuration.camelCasePlugin ?? { enabled: false },
 			extensions: configuration.extensions ?? [],

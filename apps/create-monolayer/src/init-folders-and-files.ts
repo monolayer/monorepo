@@ -94,7 +94,7 @@ export const databasesTemplate =
 	nunjucks.compile(`import { dbSchema } from "./schema";
 import { defineDatabase } from "monolayer/pg";
 
-export default defineDatabase({
+export default defineDatabase("default",{
 	schemas: [dbSchema],
 	extensions: [],
 	camelCasePlugin: {
