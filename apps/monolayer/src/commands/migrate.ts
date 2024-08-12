@@ -1,4 +1,5 @@
 import type { Command } from "@commander-js/extra-typings";
+import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { applyMigrations } from "~/actions/migrations/apply.js";
 import { cliAction } from "~/cli-action.js";
@@ -10,19 +11,11 @@ export function migrateCommand(program: Command) {
 
 	migrate.description("Migrate commands");
 
-	migrate
-		.command("all")
+	commandWithDefaultOptions({
+		name: "all",
+		program: migrate,
+	})
 		.description("migrate all pending migrations")
-		.option(
-			"-n, --name <configuration-name>",
-			"configuration name as defined in configuration.ts",
-			"default",
-		)
-		.option(
-			"-c, --connection <connection-name>",
-			"configuration connection name as defined in configuration.ts",
-			"development",
-		)
 		.action(async (opts) => {
 			await cliAction(
 				"Migrate all pending migrations (expand, alter, data, contract)",
@@ -31,19 +24,11 @@ export function migrateCommand(program: Command) {
 			);
 		});
 
-	migrate
-		.command("alter")
+	commandWithDefaultOptions({
+		name: "alter",
+		program: migrate,
+	})
 		.description("migrate pending alter migrations")
-		.option(
-			"-n, --name <configuration-name>",
-			"configuration name as defined in configuration.ts",
-			"default",
-		)
-		.option(
-			"-c, --connection <connection-name>",
-			"configuration connection name as defined in configuration.ts",
-			"development",
-		)
 		.action(async (opts) => {
 			await cliAction("Migrate pending alter migrations", opts, [
 				applyMigrations({
@@ -52,19 +37,11 @@ export function migrateCommand(program: Command) {
 			]);
 		});
 
-	migrate
-		.command("contract")
+	commandWithDefaultOptions({
+		name: "contract",
+		program: migrate,
+	})
 		.description("migrate pending contract migrations")
-		.option(
-			"-n, --name <configuration-name>",
-			"configuration name as defined in configuration.ts",
-			"default",
-		)
-		.option(
-			"-c, --connection <connection-name>",
-			"configuration connection name as defined in configuration.ts",
-			"development",
-		)
 		.option("-m, --migration <migration-name-name>", "migration name")
 		.action(async (opts) => {
 			await cliAction("Migrate pending contract migrations", opts, [
@@ -75,57 +52,33 @@ export function migrateCommand(program: Command) {
 			]);
 		});
 
-	migrate
-		.command("expand")
+	commandWithDefaultOptions({
+		name: "expand",
+		program: migrate,
+	})
 		.description("migrate pending expand migrations")
-		.option(
-			"-n, --name <configuration-name>",
-			"configuration name as defined in configuration.ts",
-			"default",
-		)
-		.option(
-			"-c, --connection <connection-name>",
-			"configuration connection name as defined in configuration.ts",
-			"development",
-		)
 		.action(async (opts) => {
 			await cliAction("Migrate pending expand migrations", opts, [
 				applyMigrations({ phase: ChangesetPhase.Expand }),
 			]);
 		});
 
-	migrate
-		.command("data")
+	commandWithDefaultOptions({
+		name: "data",
+		program: migrate,
+	})
 		.description("migrate pending data migrations")
-		.option(
-			"-n, --name <configuration-name>",
-			"configuration name as defined in configuration.ts",
-			"default",
-		)
-		.option(
-			"-c, --connection <connection-name>",
-			"configuration connection name as defined in configuration.ts",
-			"development",
-		)
 		.action(async (opts) => {
 			await cliAction("Migrate pending data migrations", opts, [
 				applyMigrations({ phase: ChangesetPhase.Data }),
 			]);
 		});
 
-	migrate
-		.command("rollback")
+	commandWithDefaultOptions({
+		name: "rollback",
+		program: migrate,
+	})
 		.description("rollback to a previous migration")
-		.option(
-			"-n, --name <configuration-name>",
-			"configuration name as defined in configuration.ts",
-			"default",
-		)
-		.option(
-			"-c, --connection <connection-name>",
-			"configuration connection name as defined in configuration.ts",
-			"development",
-		)
 		.action(async (opts) => {
 			await cliAction("Rollback to a previous migration", opts, [rollback]);
 		});

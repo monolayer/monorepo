@@ -1,6 +1,12 @@
 import type { Command } from "@commander-js/extra-typings";
-import { generateAction } from "../actions/generate.js";
-import { pendingAction } from "../actions/pending.js";
+import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
+import { handleMissingDatabase } from "~/actions/database/handle-missing.js";
+import { generateMigration } from "~/actions/migrations/generate.js";
+import {
+	handlePendingSchemaMigrations,
+	pendingMigrations,
+} from "~/actions/migrations/pending.js";
+import { cliAction } from "~/cli-action.js";
 import { scaffoldCommand } from "../actions/scaffold.js";
 
 export function migrationsCommand(program: Command) {
@@ -9,8 +15,28 @@ export function migrationsCommand(program: Command) {
 	migrations.description("Migrations commands");
 
 	scaffoldCommand(migrations);
-	pendingAction(migrations);
-	generateAction(migrations);
+
+	commandWithDefaultOptions({
+		name: "pending",
+		program: program,
+	})
+		.description("list pending schema migrations")
+		.action(async (opts) => {
+			await cliAction("Pending migrations", opts, [pendingMigrations]);
+		});
+
+	commandWithDefaultOptions({
+		name: "generate",
+		program: program,
+	})
+		.description("generate a schema migration")
+		.action(async (opts) => {
+			await cliAction("monolayer generate", opts, [
+				handleMissingDatabase,
+				handlePendingSchemaMigrations,
+				generateMigration(),
+			]);
+		});
 
 	return migrations;
 }
