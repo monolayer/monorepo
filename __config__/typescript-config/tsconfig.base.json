@@ -29,5 +29,6 @@
     // "pretty": true,
     // "removeComments": false,
     // "verbatimModuleSyntax": true
-	}
+	},
+	"exclude": ["node_modules", "dist"]
 }
