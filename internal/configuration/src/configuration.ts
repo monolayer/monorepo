@@ -13,9 +13,6 @@ export type Configuration = {
 	schemas: AnySchema[];
 	camelCasePlugin?: CamelCaseOptions;
 	extensions?: PgExtension[];
-	connections: {
-		development: PgConfig;
-	} & Record<string, PgConfig>;
 	generatePrismaSchema?: boolean;
 };
 
@@ -34,10 +31,6 @@ export class MonolayerPgConfiguration {
 
 	get extensions() {
 		return this.configuration.extensions;
-	}
-
-	connection(environment: string) {
-		return this.configuration.connections[environment] || {};
 	}
 
 	get camelCasePlugin() {

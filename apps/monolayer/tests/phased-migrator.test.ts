@@ -25,16 +25,12 @@ async function runPhasedMigration(context: DbContext) {
 		{ schemas: [] },
 	);
 	const env: AppEnv = {
-		name: "development",
 		configurationName: "default",
 		folder: ".",
 		configuration: new MonolayerPgConfiguration({
 			schemas: [],
 			camelCasePlugin: { enabled: false },
 			extensions: [],
-			connections: {
-				development: {},
-			},
 		}),
 	};
 

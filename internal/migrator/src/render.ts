@@ -47,7 +47,6 @@ export function renderToFile(
 		warnings,
 		splitColumnRefactor,
 	});
-	console.log("RENDER TO FILE", migrationFilePath, rendered);
 	createFile(
 		migrationFilePath,
 		rendered.includes("sql`") ? rendered : rendered.replace(", sql", ""),

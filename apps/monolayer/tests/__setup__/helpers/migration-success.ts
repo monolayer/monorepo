@@ -30,16 +30,12 @@ export async function testChangesetAndMigrations({
 	mock?: () => void;
 }) {
 	const env: AppEnv = {
-		name: "development",
 		configurationName: "default",
 		folder: ".",
 		configuration: new MonolayerPgConfiguration({
 			schemas: configuration.schemas,
 			camelCasePlugin: configuration.camelCasePlugin ?? { enabled: false },
 			extensions: configuration.extensions ?? [],
-			connections: {
-				development: {},
-			},
 		}),
 	};
 	const layers = newLayers(

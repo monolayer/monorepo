@@ -14,61 +14,56 @@ dotenv.config();
 describe("pgQuery", () => {
 	beforeEach<ProgramContext>(async (context) => {
 		await setupProgramContext(context);
+		console.dir(context.dbName);
 	});
 
 	afterEach<ProgramContext>(async (context) => {
 		await teardownProgramContext(context);
 	});
 
-	test("configurations", async () => {
-		expect(await currentDatabase("development", "default")).toStrictEqual([
-			{ current_database: "d7e08363" },
-		]);
-
-		expect(await currentDatabase("development", "stats")).toStrictEqual([
-			{ current_database: "d7e08363_stats" },
+	test<ProgramContext>("default configuration", async () => {
+		expect(await currentDatabase("default")).toStrictEqual([
+			{ current_database: "fa8238c1" },
 		]);
 	});
 
-	test("configuration connections", async () => {
-		expect(await currentDatabase("test", "default")).toStrictEqual([
-			{ current_database: "1d6addc0_test" },
-		]);
+	test.only<ProgramContext>("other configuration", async (context) => {
+		process.env.MONO_PG_STATS_DATABASE_URL = `postgresql://postgres:postgres@localhost:5440/${context.dbName}_stats`;
 
-		expect(await currentDatabase("test", "stats")).toStrictEqual([
-			{ current_database: "1d6addc0_stats_test" },
+		expect(await currentDatabase("stats")).toStrictEqual([
+			{ current_database: "83251755_stats" },
 		]);
 	});
 
 	test("admin configurations connect to 'postgres'", async () => {
-		expect(
-			await currentDatabaseAsAdmin("development", "default"),
-		).toStrictEqual([{ current_database: "postgres" }]);
-
-		expect(await currentDatabaseAsAdmin("development", "stats")).toStrictEqual([
+		expect(await currentDatabaseAsAdmin("default")).toStrictEqual([
 			{ current_database: "postgres" },
 		]);
 
-		expect(await currentDatabaseAsAdmin("test", "default")).toStrictEqual([
+		expect(await currentDatabaseAsAdmin("stats")).toStrictEqual([
 			{ current_database: "postgres" },
 		]);
 
-		expect(await currentDatabaseAsAdmin("test", "stats")).toStrictEqual([
+		expect(await currentDatabaseAsAdmin("default")).toStrictEqual([
+			{ current_database: "postgres" },
+		]);
+
+		expect(await currentDatabaseAsAdmin("stats")).toStrictEqual([
 			{ current_database: "postgres" },
 		]);
 	});
 });
 
-async function currentDatabase(environment: string, connection: string) {
+async function currentDatabase(configuration: string) {
 	return await runProgramWithErrorCause(
 		pgQuery(`SELECT CURRENT_DATABASE();`),
-		await loadEnv({ connection: environment, name: connection }),
+		await loadEnv({ configuration }),
 	);
 }
 
-async function currentDatabaseAsAdmin(environment: string, connection: string) {
+async function currentDatabaseAsAdmin(configuration: string) {
 	return await runProgramWithErrorCause(
 		adminPgQuery(`SELECT CURRENT_DATABASE();`),
-		await loadEnv({ connection: environment, name: connection }),
+		await loadEnv({ configuration }),
 	);
 }

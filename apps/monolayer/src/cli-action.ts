@@ -26,7 +26,10 @@ import { exit } from "process";
 
 export async function cliAction(
 	name: string,
-	options: { readonly connection: string; readonly name?: string },
+	options: {
+		readonly configuration: string;
+		readonly envFile?: string;
+	},
 	tasks: Effect.Effect<unknown, ActionErrors, ProgramContext>[],
 ) {
 	actionIntro(name);
@@ -60,15 +63,12 @@ export async function cliActionWithoutContext(
 }
 
 export async function loadEnv(options: {
-	readonly connection: string;
-	readonly name?: string;
+	readonly configuration: string;
+	readonly envFile?: string;
 }) {
 	return await Effect.runPromise(
 		Effect.gen(function* () {
-			return yield* getEnvironment(
-				options.connection,
-				options.name ?? "default",
-			);
+			return yield* getEnvironment(options.configuration, options.envFile);
 		}).pipe(printAnyErrors),
 	).then(envLoadSuccess, envLoadFailure);
 }

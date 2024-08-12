@@ -10,14 +10,9 @@ export function commandWithDefaultOptions({
 	return program
 		.command(name)
 		.option(
-			"-n, --name <configuration-name>" as const,
-			"configuration name as defined in configuration.ts" as const,
-			"default" as const,
-		)
-		.option(
-			"-c, --connection <connection-name>" as const,
-			"configuration connection name as defined in configuration.ts" as const,
-			"development" as const,
+			"-c, --configuration <configuration-name>",
+			"configuration name as defined in configuration.ts",
+			"default",
 		)
 		.option(
 			"-e, --env-file <env-file>" as const,

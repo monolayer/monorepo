@@ -1,18 +1,18 @@
 import * as p from "@clack/prompts";
 import { ActionError } from "@monorepo/base/errors.js";
 import { MonolayerPgConfiguration } from "@monorepo/configuration/configuration.js";
+import dotenv from "dotenv";
 import { Context, Effect, Ref } from "effect";
 import path from "path";
-import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 import { cwd } from "process";
 import { importConfig, importConfigurations } from "./import-config.js";
 
 export interface AppEnv {
-	name: string;
 	configurationName: string;
 	folder: string;
 	configuration: MonolayerPgConfiguration;
+	databaseUrl?: string;
 }
 
 export class AppEnvironment extends Context.Tag("EnvironmentState")<
@@ -20,15 +20,44 @@ export class AppEnvironment extends Context.Tag("EnvironmentState")<
 	Ref.Ref<AppEnv>
 >() {}
 
-export function getEnvironment(name: string, configurationName: string) {
+export function getEnvironment(configurationName: string, envFile?: string) {
 	return Effect.gen(function* () {
+		if (envFile) {
+			yield* loadMonoPGEnvironmentVariables(envFile);
+		}
 		const env: AppEnv = {
-			name,
 			configurationName,
 			folder: yield* monolayerFolder(),
 			configuration: yield* configurationByName(configurationName),
+			databaseUrl:
+				process.env[
+					`MONO_PG_${configurationName.toUpperCase()}_DATABASE_URL`
+				] ?? "",
 		};
 		return env;
+	});
+}
+
+function loadMonoPGEnvironmentVariables(envFile: string) {
+	return Effect.gen(function* () {
+		const myObject: Record<string, string> = {};
+		const env = dotenv.config({
+			path: path.resolve(process.cwd(), envFile),
+			processEnv: myObject,
+		});
+		for (const [key, value] of Object.entries(myObject)) {
+			if (key.startsWith("MONO_PG_")) {
+				process.env[key] = value;
+			}
+		}
+		if (env.error) {
+			yield* Effect.fail(
+				new ActionError(
+					`Error loading environment variables from ${envFile}`,
+					`${env.error}`,
+				),
+			);
+		}
 	});
 }
 
@@ -42,37 +71,15 @@ export const currentConfig = Effect.gen(function* () {
 	return yield* configurationByName(env.configurationName);
 });
 
-export const appEnvironmentPgConfig = Effect.gen(function* () {
+export const databaseUrl = Effect.gen(function* () {
 	const env = yield* appEnvironment;
-	const configuration = yield* configurationByName(env.configurationName);
-	const environmentConfiguration = configuration.connection(env.name);
-	if (environmentConfiguration === undefined) {
+	const envVar = yield* databaseURLEnvVar;
+	if (env.databaseUrl === undefined) {
 		return yield* Effect.fail(
-			new ActionError(
-				"Missing connection configuration",
-				`Connection '${env.name}' not found. Check your configuration.ts file.`,
-			),
+			new ActionError("Missing database URL", `undefined ${envVar}.`),
 		);
 	}
-	return environmentConfiguration;
-});
-
-export const currentDatabaseName = Effect.gen(function* () {
-	const pgConfig = yield* appEnvironmentPgConfig;
-	const parsedConfig =
-		pgConfig.connectionString !== undefined
-			? pgConnectionString.parse(pgConfig.connectionString)
-			: pgConfig;
-
-	if (parsedConfig.database === undefined || parsedConfig.database === null) {
-		return yield* Effect.fail(
-			new ActionError(
-				"Missing database",
-				"No database found in connection configuration.",
-			),
-		);
-	}
-	return parsedConfig.database;
+	return env.databaseUrl;
 });
 
 export const appEnvironmentConfigurationSchemas = Effect.gen(function* () {
@@ -99,13 +106,9 @@ export function monolayerFolder() {
 
 export const importSchemaEnvironment = Effect.gen(function* () {
 	return {
-		name: "import",
 		configurationName: "default",
 		configuration: new MonolayerPgConfiguration({
 			schemas: [],
-			connections: {
-				development: {},
-			},
 		}),
 		folder: yield* monolayerFolder(),
 	} satisfies AppEnv as AppEnv;
@@ -145,3 +148,9 @@ export function configurationByName(configurationName: string) {
 		return configuration;
 	});
 }
+
+export const databaseURLEnvVar = Effect.gen(function* () {
+	const env = yield* appEnvironment;
+	const upperCaseEnvironmentName = env.configurationName.toUpperCase();
+	return `MONO_PG_${upperCaseEnvironmentName}_DATABASE_URL` as const;
+});

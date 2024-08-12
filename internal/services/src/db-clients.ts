@@ -1,8 +1,7 @@
 import { ActionError } from "@monorepo/base/errors.js";
-import type { PgConfig } from "@monorepo/configuration/configuration.js";
 import {
 	appEnvironmentCamelCasePlugin,
-	appEnvironmentPgConfig,
+	databaseUrl,
 } from "@monorepo/state/app-environment.js";
 import { Context, Effect, Layer } from "effect";
 import { UnknownException } from "effect/Cause";
@@ -26,78 +25,54 @@ export class DbClients extends Context.Tag("DbClients")<
 	DbClientProperties
 >() {}
 
+const CONNECTION_STRING_REGEX =
+	/^(postgresql:\/\/(?:[^@]*@)?[^/]*)(?:\/[^?]*)(.*)$/;
+
+export const connectionOptions = Effect.gen(function* () {
+	const connectionString = yield* databaseUrl;
+	return {
+		app: connectionString,
+		admin: connectionString.replace(CONNECTION_STRING_REGEX, "$1$2"),
+		databaseName: pgConnectionString.parse(connectionString).database ?? "",
+	};
+});
+
 export function dbClientsLayer() {
 	return Layer.effect(
 		DbClients,
 		Effect.gen(function* () {
-			const props = dbClientEnvironmentProperties(
-				yield* appEnvironmentPgConfig,
-				(yield* appEnvironmentCamelCasePlugin).enabled,
-			);
+			const connectionOpts = yield* connectionOptions;
+			const pgPool = new pg.Pool({ connectionString: connectionOpts.app });
+			const pgAdminPool = new pg.Pool({
+				connectionString: connectionOpts.admin,
+			});
+			const camelCaseEnabled = (yield* appEnvironmentCamelCasePlugin).enabled;
 			yield* Effect.addFinalizer(() =>
 				Effect.gen(function* () {
-					yield* Effect.promise(() => props.pgPool.end());
-					yield* Effect.promise(() => props.pgAdminPool.end());
+					yield* Effect.promise(() => pgPool.end());
+					yield* Effect.promise(() => pgAdminPool.end());
 				}),
 			);
 			return {
-				pgPool: props.pgPool,
-				pgAdminPool: props.pgAdminPool,
-				databaseName: props.databaseName,
-				kysely: props.kysely,
-				kyselyNoCamelCase: props.kyselyNoCamelCase,
+				pgPool: pgPool,
+				pgAdminPool: pgAdminPool,
+				databaseName: connectionOpts.databaseName,
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				kysely: new Kysely<any>({
+					dialect: new PostgresDialect({
+						pool: pgPool,
+					}),
+					plugins: camelCaseEnabled === true ? [new CamelCasePlugin()] : [],
+				}),
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				kyselyNoCamelCase: new Kysely<any>({
+					dialect: new PostgresDialect({
+						pool: pgPool,
+					}),
+				}),
 			};
 		}),
 	);
-}
-
-function dbClientEnvironmentProperties(pgConfig: PgConfig, camelCase: boolean) {
-	const pg = poolAndConfig(pgConfig);
-	return {
-		databaseName: pg.config.database ?? "",
-		pgPool: pg.pool,
-		pgAdminPool: pg.adminPool,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		kysely: new Kysely<any>({
-			dialect: new PostgresDialect({
-				pool: pg.pool,
-			}),
-			plugins: camelCase === true ? [new CamelCasePlugin()] : [],
-		}),
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		kyselyNoCamelCase: new Kysely<any>({
-			dialect: new PostgresDialect({
-				pool: pg.pool,
-			}),
-		}),
-	};
-}
-
-function poolAndConfig(environmentConfig: pg.ClientConfig & pg.PoolConfig) {
-	const config =
-		environmentConfig.connectionString !== undefined
-			? pgConnectionString.parse(environmentConfig.connectionString)
-			: environmentConfig;
-
-	return {
-		pool: new pg.Pool({
-			...environmentConfig,
-			...(environmentConfig.ssl !== undefined
-				? { ssl: environmentConfig.ssl }
-				: {}),
-		}),
-		adminPool: new pg.Pool({
-			user: config.user,
-			password: config.password,
-			host: config.host ?? "",
-			port: Number(config.port ?? 5432),
-			database: undefined,
-			...(environmentConfig.ssl !== undefined
-				? { ssl: environmentConfig.ssl }
-				: {}),
-		}),
-		config,
-	};
 }
 
 export function pgQuery<T extends QueryResultRow = Record<string, unknown>>(

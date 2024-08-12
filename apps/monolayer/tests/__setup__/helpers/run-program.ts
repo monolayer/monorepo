@@ -47,9 +47,7 @@ export async function runProgramWithErrorCause<
 				),
 			),
 			AppEnvironment,
-			Ref.make(
-				env ?? (await loadEnv({ connection: "development", name: "default" })),
-			),
+			Ref.make(env ?? (await loadEnv({ configuration: "default" }))),
 		),
 	);
 }

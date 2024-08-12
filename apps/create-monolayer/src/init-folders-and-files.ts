@@ -97,14 +97,6 @@ import { defineConfig } from "monolayer/pg";
 export default defineConfig({
 	schemas: [dbSchema],
 	extensions: [],
-	connections: {
-		development: {
-			connectionString: "#connection_string",
-		},
-		production: {
-			connectionString: process.env.DATABASE_URL,
-		}
-	},
 	camelCasePlugin: {
 		enabled: false,
 	},

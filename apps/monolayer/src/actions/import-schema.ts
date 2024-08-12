@@ -148,17 +148,12 @@ function dumpDatabase(
 		mkdirSync(migrationsFolder, { recursive: true });
 
 		const dumpEnv: AppEnv = {
-			name: "development",
 			configurationName,
 			configuration: new MonolayerPgConfiguration({
 				schemas: [],
-				connections: {
-					development: {
-						connectionString,
-					},
-				},
 			}),
 			folder: migrationsFolder, // Needs to be migrations folder
+			databaseUrl: connectionString,
 		};
 
 		process.env[`${constantCase(configurationName)}_DATABASE_URL`] =

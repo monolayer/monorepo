@@ -268,10 +268,5 @@ const configurationTemplate = `
 export const {{ configurationName }} = defineConfig({
 	schemas: [{{ schemaModuleName }}],
 	extensions: {{ schemaModuleExtensionName }},
-	connections: {
-		development: {
-			connectionString: process.env.{{ envVar }}_DATABASE_URL,
-		},
-	},
 });
 `;

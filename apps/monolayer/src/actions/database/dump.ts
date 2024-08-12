@@ -2,11 +2,11 @@ import * as p from "@clack/prompts";
 import { pipeCommandStdoutToWritable } from "@monorepo/base/programs/pipe-command-stdout-to-writable.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import { Schema } from "@monorepo/pg/schema/schema.js";
+import { connectionOptions } from "@monorepo/services/db-clients.js";
 import {
 	appEnvironment,
 	appEnvironmentConfigurationSchemas,
-	appEnvironmentPgConfig,
-	currentDatabaseName,
+	databaseUrl,
 } from "@monorepo/state/app-environment.js";
 import { pathExists } from "@monorepo/utils/path.js";
 import { Effect } from "effect";
@@ -18,9 +18,6 @@ import { cwd, env } from "process";
 import { Writable, type WritableOptions } from "stream";
 
 export const dumpDatabaseStructureTask = Effect.gen(function* () {
-	const env = yield* appEnvironment;
-	if (env.name !== "development") return;
-
 	const pgDumpExists = yield* checkPgDumpExecutableExists;
 	const previousDumpExists = yield* pathExists(yield* databaseDumpPath);
 
@@ -63,18 +60,13 @@ const databaseDumpPath = Effect.gen(function* () {
 		cwd(),
 		"monolayer",
 		"dumps",
-		env.name === "development"
-			? `structure.${env.configurationName}.sql`
-			: `structure_${env.name}.${env.configurationName}.sql`,
+		`structure.${env.configurationName}.sql`,
 	);
 });
 
 const setPgDumpEnv = Effect.gen(function* () {
-	const config = yield* appEnvironmentPgConfig;
-	const parsedConfig =
-		config.connectionString !== undefined
-			? pgConnectionString.parse(config.connectionString)
-			: config;
+	const connectionString = yield* databaseUrl;
+	const parsedConfig = pgConnectionString.parse(connectionString);
 	env.PGHOST = `${parsedConfig.host}`;
 	env.PGPORT = `${parsedConfig.port}`;
 	env.PGUSER = `${parsedConfig.user}`;
@@ -87,7 +79,7 @@ const dumpStructure = Effect.gen(function* () {
 		.map((schema) => Schema.info(schema).name || "public")
 		.map((schema) => `--schema=${schema}`);
 
-	const database = yield* currentDatabaseName;
+	const database = (yield* connectionOptions).databaseName;
 
 	const dumpPath = yield* databaseDumpPath;
 
@@ -158,7 +150,7 @@ const appendMigrationDataToDump = Effect.gen(function* () {
 			"--quote-all-identifiers",
 			"-a",
 			"--no-comments",
-			`${yield* currentDatabaseName}`,
+			`${(yield* connectionOptions).databaseName}`,
 		],
 		new InsertWritable(yield* databaseDumpPath),
 	);

@@ -18,5 +18,6 @@
 		{ "path": "internal/utils" },
 		{ "path": "internal/state" },
 		{ "path": "private/refactorings" }
-	]
+	],
+	"exclude": ["node_modules", "dist"]
 }

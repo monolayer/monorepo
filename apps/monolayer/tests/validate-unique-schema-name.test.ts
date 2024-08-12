@@ -30,16 +30,12 @@ describe("validate uique schema name", () => {
 		});
 
 		const env: AppEnv = {
-			name: "development",
 			configurationName: "default",
 			folder: ".",
 			configuration: new MonolayerPgConfiguration({
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
-				connections: {
-					development: {},
-				},
 			}),
 		};
 
@@ -58,16 +54,12 @@ describe("validate uique schema name", () => {
 		const anotherSchema = schema({});
 
 		const env: AppEnv = {
-			name: "development",
 			configurationName: "default",
 			folder: ".",
 			configuration: new MonolayerPgConfiguration({
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
-				connections: {
-					development: {},
-				},
 			}),
 		};
 
@@ -94,16 +86,12 @@ describe("validate uique schema name", () => {
 		const anotherSchema = schema({ name: "demo" });
 
 		const env: AppEnv = {
-			name: "development",
 			configurationName: "default",
 			folder: ".",
 			configuration: new MonolayerPgConfiguration({
 				schemas: [dbSchema, anotherSchema],
 				camelCasePlugin: { enabled: false },
 				extensions: [],
-				connections: {
-					development: {},
-				},
 			}),
 		};
 

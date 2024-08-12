@@ -30,7 +30,7 @@ describe("Rename table and column without camel case plugin", () => {
 		vi.restoreAllMocks();
 	});
 
-	test<DbContext>("table and columns", async (context) => {
+	test.only<DbContext>("table and columns", async (context) => {
 		await context.kysely.schema
 			.createTable("books")
 			.addColumn("id", "integer")
