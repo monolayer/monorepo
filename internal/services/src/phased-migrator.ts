@@ -26,7 +26,7 @@ import {
 import type { ChangeWarning } from "@monorepo/pg/changeset/warnings/warnings.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
 import { Effect, Layer } from "effect";
-import { mkdirSync, readFileSync } from "fs";
+import { mkdirSync } from "fs";
 import {
 	FileMigrationProvider,
 	type Kysely,
@@ -638,14 +638,6 @@ class PhasedMigratorRenderer {
 					);
 					idx += 1;
 				}
-			}
-			console.log("RENDERED MIGRATIONS", renderedMigrations);
-			for (const migration of renderedMigrations) {
-				console.log(
-					"RENDERED MIGRATION",
-					migration,
-					readFileSync(migration).toString(),
-				);
 			}
 			return renderedMigrations;
 		});

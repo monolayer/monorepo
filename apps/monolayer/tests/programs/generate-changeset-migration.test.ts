@@ -62,8 +62,6 @@ describe("generateChangesetMigration", () => {
 				),
 			);
 			const migrationName = migrationFiles[0]!;
-			console.log("EXPECTED", expectedMigration);
-			console.log("MIGRATION", migration.toString());
 			expect(migration.toString()).toBe(
 				expectedMigration.replace(
 					"#name",
