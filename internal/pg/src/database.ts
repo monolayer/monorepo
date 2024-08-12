@@ -28,4 +28,16 @@ export class MonoLayerPgDatabase {
 		this.generatePrismaSchema = config.generatePrismaSchema ?? false;
 		this.camelCase = config.camelCasePlugin ?? { enabled: false };
 	}
+
+	get connectionString() {
+		const envVar = `MONO_PG_${this.id.toUpperCase()}_DATABASE_URL`;
+		const envConnectionString = process.env[envVar];
+		if (envConnectionString) {
+			return envConnectionString;
+		} else {
+			throw new Error(
+				`No connection string found for database ${this.id}. Environment variable ${envVar} is undefined`,
+			);
+		}
+	}
 }
