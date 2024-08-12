@@ -20,7 +20,7 @@ describe("column aligner", () => {
 		await teardownProgramContext(context);
 	});
 
-	test.only("orders by typlen desc, non nullable", async () => {
+	test("orders by typlen desc, non nullable", async () => {
 		const columns = [
 			column({ columnName: "bigSerial", dataType: "bigserial" }),
 			column({ columnName: "bigInt", dataType: "bigint" }),

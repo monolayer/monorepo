@@ -34,7 +34,7 @@ describe("generateChangesetMigration", () => {
 			await teardownProgramContext(context);
 		});
 
-		test.only<ProgramContext>("returns a changeset list", async (context) => {
+		test<ProgramContext>("returns a changeset list", async (context) => {
 			rmSync(expandMigrationPath(context.folder), {
 				recursive: true,
 				force: true,
