@@ -20,9 +20,10 @@ export class AppEnvironment extends Context.Tag("EnvironmentState")<
 
 export function getEnvironment(databaseId: string, envFile?: string) {
 	return Effect.gen(function* () {
-		if (envFile) {
-			yield* loadMonoPGEnvironmentVariables(envFile);
-		}
+		yield* loadMonoPGEnvironmentVariablesFromEnvFile(
+			envFile,
+			envFile !== undefined,
+		);
 		const database = yield* databaseById(databaseId);
 		const env: AppEnv = {
 			folder: yield* monolayerFolder(),
@@ -32,25 +33,34 @@ export function getEnvironment(databaseId: string, envFile?: string) {
 	});
 }
 
-function loadMonoPGEnvironmentVariables(envFile: string) {
+function loadMonoPGEnvironmentVariablesFromEnvFile(
+	envFile: string | undefined,
+	fail: boolean,
+) {
 	return Effect.gen(function* () {
-		const myObject: Record<string, string> = {};
-		const env = dotenv.config({
-			path: path.resolve(process.cwd(), envFile),
-			processEnv: myObject,
-		});
-		for (const [key, value] of Object.entries(myObject)) {
-			if (key.startsWith("MONO_PG_")) {
-				process.env[key] = value;
+		const envObject: Record<string, string> = {};
+		let configOutput: dotenv.DotenvConfigOutput = {};
+		try {
+			configOutput = dotenv.config({
+				path: path.resolve(process.cwd(), envFile ?? ".env"),
+				processEnv: envObject,
+			});
+			for (const [key, value] of Object.entries(envObject)) {
+				if (key.startsWith("MONO_PG_")) {
+					if (process.env[key] === undefined) {
+						process.env[key] = value;
+					}
+				}
 			}
-		}
-		if (env.error) {
-			yield* Effect.fail(
-				new ActionError(
-					`Error loading environment variables from ${envFile}`,
-					`${env.error}`,
-				),
-			);
+		} catch {
+			if (fail) {
+				yield* Effect.fail(
+					new ActionError(
+						`Error loading environment variables from ${envFile}`,
+						`${configOutput.error}`,
+					),
+				);
+			}
 		}
 	});
 }
