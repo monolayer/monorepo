@@ -10,3 +10,6 @@ playground.ts
 tsconfig.tsbuildinfo
 tsconfig.build.tsbuildinfo
 .turbo
+docs/.vitepress/cache
+docs/.vitepress/dist
+docs/api/

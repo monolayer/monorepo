@@ -3,4 +3,6 @@ dist
 coverage
 tmp
 files
-docs
+docs/.vitepress/cache
+docs/.vitepress/dist
+*.md

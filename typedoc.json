@@ -1,0 +1,46 @@
+{
+	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+	"basePath": "dddos",
+	"out": "docs/reference/api",
+	"entryPoints": ["./internal/pg/src/api", "./internal/migrator/src/api"],
+	"entryPointStrategy": "expand",
+	"tsconfig": "./tsconfig.typedoc.json",
+	"exclude": ["**/dist/**/*.ts", "**/vitest.config.ts", "**/tests/**/*.ts"],
+	"excludeExternals": true,
+	"skipErrorChecking": true,
+	"enumMembersFormat": "table",
+	"groupOrder": [
+		"Schema Definition",
+		"Functions",
+		"Classes",
+		"Type Aliases",
+		"*"
+	],
+	"categoryOrder": [
+		"Database and Tables",
+		"Column Types",
+		"Indexes and Constraints",
+		"Data Types",
+		"Other",
+		"Unmanaged",
+		"*"
+	],
+	"indexFormat": "list",
+	"outputFileStrategy": "members",
+	"parametersFormat": "table",
+	"propertiesFormat": "table",
+	"typeDeclarationFormat": "list",
+	"cleanOutputDir": false,
+	"navigation": {
+		"includeCategories": true,
+		"includeGroups": true,
+		"includeFolders": false
+	},
+	"categorizeByGroup": false,
+	"sidebar": {
+		"autoConfiguration": true,
+		"format": "vitepress",
+		"pretty": true,
+		"collapsed": true
+	}
+}

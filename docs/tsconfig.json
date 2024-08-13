@@ -1,7 +1,9 @@
 {
-  // This file is not used in compilation. It is here just for a nice editor experience.
-  "extends": "@docusaurus/tsconfig",
+  "include": ["./.vitepress/**/*"],
   "compilerOptions": {
-    "baseUrl": "."
-  }
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+  },
+  "exclude": ["node_modules", "dist", "tmp"]
 }
