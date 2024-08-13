@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 2
 ---
 
 # Camel Case Plugin
@@ -9,7 +9,7 @@ sidebar_position: 11
 
 To use this plugin with `monolayer`, you need to enable it in the `CamelCasePlugin` configuration property.
 
-```ts title="databases.ts" {7-9}
+```ts title="configuration.ts" {7-9}
 import { type Configuration } from "monolayer/config";
 import { dbSchema } from "./schema";
 
@@ -24,7 +24,7 @@ export default {
 
 [CamelCasePluginOptions](https://kysely-org.github.io/kysely-apidoc/interfaces/CamelCasePluginOptions.html) can be passed in the `CamelCasePlugin`.`options` property. Here's an example to enable [underscoreBeforeDigits](https://kysely-org.github.io/kysely-apidoc/interfaces/CamelCasePluginOptions.html#underscoreBeforeDigits):
 
-```ts title="databases.ts" {7-12}
+```ts title="configuration.ts" {7-12}
 import { type Configuration } from "monolayer/config";
 import { dbSchema } from "./schema";
 

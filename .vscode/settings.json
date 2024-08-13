@@ -21,5 +21,6 @@
 		"**/coverage": true
 	},
 	"typescript.tsdk": "./node_modules/typescript/lib",
-	"turbo.useLocalTurbo": true
+	"turbo.useLocalTurbo": true,
+	"npm-intellisense.recursivePackageJsonLookup": false
 }
