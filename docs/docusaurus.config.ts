@@ -64,24 +64,26 @@ const config: Config = {
     [
       'docusaurus-plugin-typedoc',
       {
+        out: 'docs/api',
         entryPoints: [
-					'../apps/monolayer/src/pg.ts',
-					'../apps/monolayer/src/migration.ts',
-					'../apps/monolayer/src/helpers.ts',
-					'../apps/monolayer/src/zod.ts'
-				],
-        tsconfig: '../apps/monolayer/tsconfig.json',
-				watch: process.env.TYPEDOC_WATCH,
-        // TypeDoc options
+          '../internal/pg/src/api',
+          '../internal/migrator/src/api',
+        ],
+        entryPointStrategy: "expand",
+        tsconfig: '../tsconfig.typedoc.json',
+        watch: process.env.TYPEDOC_WATCH,
+        exclude: ["**/dist/**/*.ts", "**/vitest.config.ts", "**/tests/**/*.ts"],
+        excludeExternals: true,
         skipErrorChecking: true,
         enumMembersFormat: "table",
-				groupOrder: ["Functions", "Classes", "Type Aliases", "*"],
+        groupOrder: ["Functions", "Classes", "Type Aliases", "*"],
         indexFormat: "list",
         outputFileStrategy: "members",
-				parametersFormat: "table",
+        parametersFormat: "table",
         propertiesFormat: "table",
         typeDeclarationFormat: "list",
-      },
+        cleanOutputDir: false,
+        },
     ],
 	],
 

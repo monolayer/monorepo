@@ -1,0 +1,37 @@
+{
+	"extends": "@monorepo/typescript-config/tsconfig.base.json",
+	"include": [
+		"internal/utils/src/**/*",
+		"internal/migrator/src/**/*",
+		"internal/pg/src/**/*",
+		"internal/services/src/**/*",
+		"internal/state/src/**/*",
+		"internal/utils/src/**/*"
+	],
+	"compilerOptions": {
+		"baseUrl": "./",
+		"rootDir": ".",
+		"outDir": "dist",
+		"paths": {
+			"~/*": [
+				"internal/utils/src/*",
+				"internal/migrator/src/*",
+				"internal/state/src/*",
+				"internal/cli/src/*",
+				"internal/services/src/*",
+				"internal/prompts/src/*",
+				"internal/programs/src/*",
+				"internal/pg/src/*"
+			],
+			"@monorepo/pg/*": ["internal/pg/src/*"],
+			"@monorepo/migrator/*": ["internal/migrator/src/*"],
+			"@monorepo/cli/*": ["internal/cli/src/*"],
+			"@monorepo/prompts/*": ["internal/prompts/src/*"],
+			"@monorepo/programs/*": ["internal/programs/src/*"],
+			"@monorepo/services/*": ["internal/services/src/*"],
+			"@monorepo/state/*": ["internal/migrator/src/*"]
+		}
+	},
+	"emitDeclarationOnly": true,
+	"exclude": ["node_modules", "dist", "tmp"]
+}

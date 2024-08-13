@@ -52,6 +52,7 @@ import { SerialColumn } from "~/schema/column/column.js";
  * const schema = zodSchema(database.tables.example);
  * ```
  * @see
+ *
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-SERIAL | bigserial}
  */
 export function bigserial() {
