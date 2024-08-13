@@ -50,11 +50,18 @@ import { StringColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-net-types.html#DATATYPE-INET | inet}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function inet() {
 	return new PgInet();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgInet extends StringColumn {
 	/**
 	 * @hidden

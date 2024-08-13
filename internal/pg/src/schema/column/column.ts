@@ -9,6 +9,10 @@ import type {
 	WithDefaultColumn,
 } from "~/schema/column/types.js";
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export abstract class PgColumnBase<Select, Insert, Update> {
 	/**
 	 * @hidden

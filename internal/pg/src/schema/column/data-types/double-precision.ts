@@ -65,11 +65,18 @@ import { PgColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FLOAT | double precision }
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function doublePrecision() {
 	return new PgDoublePrecision();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgDoublePrecision extends PgColumn<
 	string,
 	number | bigint | string

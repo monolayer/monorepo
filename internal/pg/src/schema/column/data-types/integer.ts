@@ -61,11 +61,18 @@ import type { WithDefaultColumn } from "~/schema/column/types.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT | integer }
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function integer() {
 	return new PgInteger();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgInteger extends IdentifiableColumn<number, number | string> {
 	/**
 	 * @hidden

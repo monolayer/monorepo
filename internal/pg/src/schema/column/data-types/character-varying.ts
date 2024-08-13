@@ -53,6 +53,9 @@ import { MaxLengthColumn } from "../column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-character.html#DATATYPE-CHARACTER | character varying }
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function characterVarying(maximumLength?: number) {
 	return new PgCharacterVarying("character varying", maximumLength);
@@ -111,9 +114,16 @@ export function characterVarying(maximumLength?: number) {
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-character.html#DATATYPE-CHARACTER | character varying }
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function varchar(maximumLength?: number) {
 	return characterVarying(maximumLength);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgCharacterVarying extends MaxLengthColumn<string, string> {}

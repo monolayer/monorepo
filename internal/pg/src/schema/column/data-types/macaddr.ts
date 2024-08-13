@@ -50,11 +50,18 @@ import { StringColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-net-types.html#DATATYPE-MACADDR | macaddr}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function macaddr() {
 	return new PgMacaddr();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgMacaddr extends StringColumn {
 	/**
 	 * @hidden

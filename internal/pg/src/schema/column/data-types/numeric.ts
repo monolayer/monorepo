@@ -62,11 +62,18 @@ import { PgColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-NUMERIC | numeric } (*PostgreSQL Docs*)
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function numeric(precision?: number, scale?: number) {
 	return new PgNumeric(precision, scale);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgNumeric extends PgColumn<string, number | bigint | string> {
 	/**
 	 * @hidden

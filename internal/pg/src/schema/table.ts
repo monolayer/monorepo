@@ -12,6 +12,10 @@ import type { PgPrimaryKey } from "~/schema/primary-key.js";
 import { type PgTrigger, PgUnmanagedTrigger } from "~/schema/trigger.js";
 import type { PgUnique } from "~/schema/unique.js";
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Types and Interfaces
+ */
 export type TableDefinition<T, PK extends string> = {
 	columns: T extends ColumnRecord ? T : never;
 	indexes?: keyof T extends string
@@ -43,12 +47,20 @@ export type TableDefinition<T, PK extends string> = {
 	};
 };
 
+/**
+ * @group Schema Definition
+ * @category Database and Tables
+ */
 export function table<T extends ColumnRecord, PK extends string>(
 	definition: TableDefinition<T, PK>,
 ) {
 	return new PgTable<T, PK>(definition);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgTable<T extends ColumnRecord, PK extends string> {
 	declare infer: Simplify<InferColumnTypes<T, PK>>;
 

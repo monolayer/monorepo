@@ -18,6 +18,10 @@ export type IndexOptions = {
 	columns: string[];
 };
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgIndex<T extends string | (string & Record<string, never>)> {
 	/**
 	 * @hidden
@@ -103,6 +107,10 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
 	}
 }
 
+/**
+ * @group Schema Definition
+ * @category Indexes and Constraints
+ */
 export function index<T extends string | (string & Record<string, never>)>(
 	columns: T[],
 ) {
@@ -135,11 +143,19 @@ type ShallowRecord<K extends keyof any, T> = DrainOuterGeneric<{
 	[P in K]: T;
 }>;
 
+/**
+ * @group Schema Definition
+ * @category Unmanaged
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function unmanagedIndex(name: string, definition: Expression<any>) {
 	return new PgUnmanagedIndex(name, definition);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgUnmanagedIndex {
 	constructor(
 		protected name: string,

@@ -52,10 +52,17 @@ import { SerialColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-SERIAL | serial }
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function serial() {
 	return new PgSerial();
 }
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgSerial extends SerialColumn<number, number | string> {
 	/**
 	 * @hidden

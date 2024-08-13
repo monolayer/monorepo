@@ -66,11 +66,18 @@ import { PgColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FLOAT | real}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function real() {
 	return new PgReal();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgReal extends PgColumn<number, number | bigint | string> {
 	/**
 	 * @hidden

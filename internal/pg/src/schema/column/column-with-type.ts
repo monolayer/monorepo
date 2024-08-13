@@ -3,10 +3,18 @@ import { compileDefaultExpression } from "~/helpers/compile-default-expression.j
 import { PgColumn, valueWithHash } from "~/schema/column/column.js";
 import type { WithDefaultColumn } from "~/schema/column/types.js";
 
+/**
+ * @group Schema Definition
+ * @category Column Types
+ */
 export function columnWithType<S, I = S>(dataType: string) {
 	return new pgColumnWithType<S, I>(dataType);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class pgColumnWithType<S, I = S> extends PgColumn<S, I> {
 	/**
 	 * @hidden

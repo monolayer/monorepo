@@ -51,11 +51,18 @@ import { PgColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-character.html#DATATYPE-CHARACTER | text}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function text() {
 	return new PgText();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgText extends PgColumn<string, string> {
 	/**
 	 * @hidden

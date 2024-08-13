@@ -57,11 +57,18 @@ import { PgColumn, valueWithHash } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Doc*: {@link https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME | date}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function date() {
 	return new PgDate();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgDate extends PgColumn<Date, Date | string> {
 	/**
 	 * @hidden

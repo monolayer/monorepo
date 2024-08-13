@@ -1,3 +1,7 @@
+/**
+ * @group Schema Definition
+ * @category Indexes and Constraints
+ */
 export function unique<T extends string>(columns: T[]) {
 	return new PgUnique(columns);
 }
@@ -7,6 +11,10 @@ type UniqueConstraintOptions = {
 	nullsDistinct: boolean;
 };
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgUnique<T extends string> {
 	/**
 	 * @hidden

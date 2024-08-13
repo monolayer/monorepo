@@ -8,10 +8,18 @@ export type DatabaseConfig = {
 	generatePrismaSchema?: boolean;
 };
 
+/**
+ * @group Schema Definition
+ * @category Database and Tables
+ */
 export function defineDatabase(id: string, config: DatabaseConfig) {
 	return new MonoLayerPgDatabase(id, config);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class MonoLayerPgDatabase {
 	schemas: AnySchema[];
 	generatePrismaSchema: boolean;

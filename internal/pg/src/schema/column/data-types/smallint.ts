@@ -54,11 +54,18 @@ import { IdentifiableColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT | smallint} (*PostgreSQL Docs*)
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function smallint() {
 	return new PgSmallint();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgSmallint extends IdentifiableColumn<number, number | string> {
 	/**
 	 * @hidden

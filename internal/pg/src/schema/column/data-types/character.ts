@@ -51,7 +51,9 @@ import { MaxLengthColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-character.html#DATATYPE-CHARACTER | character}
-
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function character(maximumLength?: number) {
 	return new PgCharacter("character", maximumLength ? maximumLength : 1);
@@ -108,10 +110,16 @@ export function character(maximumLength?: number) {
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-character.html#DATATYPE-CHARACTER | character}
-
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function char(maximumLength = 1) {
 	return character(maximumLength);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgCharacter extends MaxLengthColumn<string, string> {}

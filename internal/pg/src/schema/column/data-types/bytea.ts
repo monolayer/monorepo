@@ -51,11 +51,18 @@ import { PgColumn, valueWithHash } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-binary.html#DATATYPE-BINARY | bytea}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function bytea() {
 	return new PgBytea();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgBytea extends PgColumn<Buffer, Buffer | string> {
 	/**
 	 * @hidden

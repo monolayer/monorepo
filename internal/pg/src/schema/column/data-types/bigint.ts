@@ -54,11 +54,18 @@ import { IdentifiableColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT | bigint}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function bigint() {
 	return new PgBigInt();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgBigInt extends IdentifiableColumn<
 	string,
 	number | bigint | string

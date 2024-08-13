@@ -56,11 +56,18 @@ import type { EnumType } from "~/schema/column/data-types/enum.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-enum.html#DATATYPE-ENUM | enumerated types }
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function enumerated<Value extends string>(enumerated: EnumType<Value>) {
 	return new PgEnum(enumerated);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgEnum<Value extends string> extends StringColumn<Value, Value> {
 	/**
 	 * @hidden

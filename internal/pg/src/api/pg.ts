@@ -83,14 +83,11 @@ export {
 export { primaryKey, type PgPrimaryKey } from "~/schema/primary-key.js";
 export { type PgRawConstraint } from "~/schema/raw-constraint.js";
 // export { schema, type Schema } from "~/schema/schema.js";
+export { xml, type PgXML } from "~/schema/column/data-types/xml.js";
+export { table, type PgTable, type TableDefinition } from "~/schema/table.js";
 export {
-	table,
-	type PgTable,
-	type TableDefinition as TableSchema,
-} from "~/schema/table.js";
-export {
-	unmanagedTrigger as externalTrigger,
 	trigger,
+	unmanagedTrigger,
 	type PgTrigger,
 	type PgUnmanagedTrigger,
 	type TriggerEvent,

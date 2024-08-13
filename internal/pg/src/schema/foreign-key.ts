@@ -59,6 +59,9 @@ import type { AnyPgTable, PgTable } from "~/schema/table.js";
  *
  * @see
  * *PostgreSQL docs*: {@link https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK | Foreign Keys }
+ *
+ * @group Schema Definition
+ * @category Indexes and Constraints
  */
 export function foreignKey<T extends string, C extends AnyPgTable>(
 	/**
@@ -137,6 +140,10 @@ export type ForeignKeyOptions<T extends AnyPgTable> = {
 	updateRule: ForeignKeyRule;
 };
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgForeignKey<T extends string, C extends AnyPgTable> {
 	/**
 	 * @hidden
@@ -194,6 +201,10 @@ export type SelfReferentialForeignKeyOptions = {
 	updateRule: ForeignKeyRule;
 };
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgSelfReferentialForeignKey<T extends string, C extends string> {
 	/**
 	 * @hidden
@@ -258,6 +269,10 @@ export type PgExternalForeignKeyOptions = {
 	updateRule: ForeignKeyRule;
 };
 
+/**
+ * @group Schema Definition
+ * @category Unmanaged
+ */
 export function unmanagedForeignKey<T extends string, C extends string>(
 	columns: T[],
 	targetTable: C,
@@ -266,6 +281,10 @@ export function unmanagedForeignKey<T extends string, C extends string>(
 	return new PgUnmanagedForeignKey(columns, targetTable, targetColumns);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgUnmanagedForeignKey<T extends string, C extends string> {
 	/**
 	 * @hidden

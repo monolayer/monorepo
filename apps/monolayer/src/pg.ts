@@ -105,6 +105,7 @@ export {
 	uuid,
 	type PgUuid,
 } from "@monorepo/pg/schema/column/data-types/uuid.js";
+export { xml, type PgXML } from "@monorepo/pg/schema/column/data-types/xml.js";
 export { PgExtension, extension } from "@monorepo/pg/schema/extension.js";
 export {
 	foreignKey,
@@ -130,8 +131,8 @@ export {
 	type TableDefinition as TableSchema,
 } from "@monorepo/pg/schema/table.js";
 export {
-	unmanagedTrigger as externalTrigger,
 	trigger,
+	unmanagedTrigger,
 	type PgTrigger,
 	type PgUnmanagedTrigger,
 	type TriggerEvent,

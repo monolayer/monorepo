@@ -118,11 +118,18 @@ import type { JsonValue, WithDefaultColumn } from "~/schema/column/types.js";
  *
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-json.html#DATATYPE-JSON | jsonb}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function jsonb<T extends JsonValue = JsonValue>() {
 	return new PgJsonB<T, T>();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgJsonB<S extends JsonValue = JsonValue, I = S> extends PgColumn<
 	S,
 	I

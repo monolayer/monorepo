@@ -54,6 +54,9 @@ import { MaxLengthColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-bit.html#DATATYPE-BIT | bit varying(n)}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function varbit(maximumLength?: number) {
 	return new PgBitVarying(maximumLength);
@@ -110,6 +113,10 @@ export function bitVarying(maximumLength?: number) {
 	return varbit(maximumLength);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgBitVarying extends MaxLengthColumn<string, string> {
 	/**
 	 * @hidden

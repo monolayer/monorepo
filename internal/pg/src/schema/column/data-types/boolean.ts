@@ -52,6 +52,9 @@ import { PgColumn, valueWithHash } from "../column.js";
  * const schema = zodSchema(database.tables.example);
  * @see
  * *PostgreSQL native data type*: {@link https://www.postgresql.org/docs/current/datatype-boolean.html#DATATYPE-BOOLEAN | boolean }
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function boolean() {
 	return new PgBoolean();
@@ -69,6 +72,10 @@ export type Boolish =
 	| "on"
 	| "off";
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgBoolean extends PgColumn<boolean, boolean | Boolish> {
 	/**
 	 * @hidden

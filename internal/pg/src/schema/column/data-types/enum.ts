@@ -1,7 +1,15 @@
+/**
+ * @group Schema Definition
+ * @category Data Types
+ */
 export function enumType<V extends string>(name: string, values: V[]) {
 	return new EnumType(name, values);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class EnumType<Value extends string> {
 	/**
 	 * @hidden

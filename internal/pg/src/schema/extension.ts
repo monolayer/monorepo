@@ -1,7 +1,15 @@
+/**
+ * @group Schema Definition
+ * @category Other
+ */
 export function extension(name: ContribExtension | AnyExtension) {
 	return new PgExtension(name);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgExtension {
 	/**
 	 * @hidden

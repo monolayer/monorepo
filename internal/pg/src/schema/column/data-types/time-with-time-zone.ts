@@ -54,6 +54,9 @@ import type { DateTimePrecision } from "~/schema/column/types.js";
  * ```
  * @see
  * {@link https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME | time with time zone} (*PostgreSQL Docs*)
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function timeWithTimeZone(precision?: DateTimePrecision) {
 	return new PgTimeWithTimeZone(precision);
@@ -112,11 +115,18 @@ export function timeWithTimeZone(precision?: DateTimePrecision) {
  * ```
  * @see
  * {@link https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME | time with time zone} (*PostgreSQL Docs*)
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function timetz(precision?: DateTimePrecision) {
 	return timeWithTimeZone(precision);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgTimeWithTimeZone extends PgColumn<string, string> {
 	/**
 	 * @hidden

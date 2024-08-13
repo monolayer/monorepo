@@ -54,10 +54,18 @@ import { SerialColumn } from "~/schema/column/column.js";
  * @see
  *
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-SERIAL | bigserial}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function bigserial() {
 	return new PgBigSerial();
 }
+
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgBigSerial extends SerialColumn<
 	string,
 	number | bigint | string

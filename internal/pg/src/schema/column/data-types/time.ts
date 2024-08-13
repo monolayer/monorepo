@@ -54,11 +54,18 @@ import type { DateTimePrecision } from "~/schema/column/types.js";
  * ```
  * @see
  * {@link https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME | time without time zone} (*PostgreSQL Docs*)
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function time(precision?: DateTimePrecision) {
 	return new PgTime(precision);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgTime extends PgColumn<string, string> {
 	/**
 	 * @hidden

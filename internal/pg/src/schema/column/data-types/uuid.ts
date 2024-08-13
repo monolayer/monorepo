@@ -50,11 +50,18 @@ import { PgColumn, valueWithHash } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-uuid.html#DATATYPE-UUID | uuid}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function uuid() {
 	return new PgUuid();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgUuid extends PgColumn<string, string> {
 	/**
 	 * @hidden

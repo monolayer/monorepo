@@ -1,7 +1,25 @@
 import { type Expression, type RawBuilder } from "kysely";
 
+/**
+ * @group Schema Definition
+ * @category Other
+ */
+export function trigger<T extends { columns?: string[] }>(
+	triggerOptions: T & TriggerOptions<InferColumns<T>>,
+): PgTrigger<InferColumns<T>> {
+	return new PgTrigger<InferColumns<T>>(triggerOptions);
+}
+
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Types and Interfaces
+ */
 export type TriggerFiringTime = "before" | "after" | "instead of";
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Types and Interfaces
+ */
 export type TriggerEvent =
 	| "insert"
 	| "update"
@@ -11,6 +29,10 @@ export type TriggerEvent =
 
 type InferColumns<T> = T extends { columns: (infer C)[] } ? C : never;
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Types and Interfaces
+ */
 export type TriggerOptions<T extends string | undefined> = {
 	/**
 	 * Controls when the trigger function is called.
@@ -79,20 +101,10 @@ export type TriggerOptions<T extends string | undefined> = {
 	};
 };
 
-export function trigger<T extends { columns?: string[] }>(
-	triggerOptions: T & TriggerOptions<InferColumns<T>>,
-): PgTrigger<InferColumns<T>> {
-	return new PgTrigger<InferColumns<T>>(triggerOptions);
-}
-
-// export class PgTrigger<T extends string | never> {
-// 	constructor(protected options: TriggerOptions<T>) {}
-// }
-
-// export function trigger<T extends string>(triggerOtions: TriggerOptions<T>) {
-// 	return new PgTrigger<T>(triggerOtions);
-// }
-
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgTrigger<T extends string | never> {
 	/**
 	 * @hidden
@@ -121,11 +133,19 @@ export class PgTrigger<T extends string | never> {
 	}
 }
 
+/**
+ * @group Schema Definition
+ * @category Unmanaged
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function unmanagedTrigger(name: string, definition: Expression<any>) {
 	return new PgUnmanagedTrigger(name, definition);
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgUnmanagedTrigger {
 	constructor(
 		protected name: string,

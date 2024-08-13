@@ -49,11 +49,18 @@ import { StringColumn } from "~/schema/column/column.js";
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-textsearch.html#DATATYPE-TSQUERY | tsquery}
+ *
+ * @group Schema Definition
+ * @category Column Types
  */
 export function tsquery() {
 	return new PgTsquery();
 }
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgTsquery extends StringColumn {
 	/**
 	 * @hidden

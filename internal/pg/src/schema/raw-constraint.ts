@@ -1,5 +1,9 @@
 import type { Expression } from "kysely";
 
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
 export class PgRawConstraint {
 	constructor(
 		protected name: string,
