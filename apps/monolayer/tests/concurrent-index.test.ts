@@ -79,7 +79,7 @@ describe("Modify table and add concurrent index", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -189,7 +189,7 @@ describe("Modify table and add concurrent index", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -328,7 +328,7 @@ describe("Modify table and add concurrent index", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -402,7 +402,7 @@ describe("Modify table and add concurrent index", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});

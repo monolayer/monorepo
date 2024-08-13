@@ -100,7 +100,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -196,7 +196,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -250,7 +250,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "empty",
 		});
@@ -400,7 +400,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema, anotherDbSchema] },
+			configuration: { id: "default", schemas: [dbSchema, anotherDbSchema] },
 			expected,
 			down: "same",
 		});

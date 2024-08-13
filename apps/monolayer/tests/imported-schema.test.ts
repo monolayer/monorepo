@@ -105,7 +105,11 @@ describe("Imported Schema test", () => {
 		const expected: Changeset[] = [];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema], extensions: extensions },
+			configuration: {
+				id: "default",
+				schemas: [dbSchema],
+				extensions: extensions,
+			},
 			expected,
 			down: "same",
 		});
@@ -185,7 +189,11 @@ describe("Imported Schema test", () => {
 		const expected: Changeset[] = [];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema], extensions: extensions },
+			configuration: {
+				id: "default",
+				schemas: [dbSchema],
+				extensions: extensions,
+			},
 			expected,
 			down: "same",
 		});

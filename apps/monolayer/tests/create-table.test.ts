@@ -122,7 +122,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -317,7 +317,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -404,7 +404,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -517,7 +517,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -632,7 +632,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -751,7 +751,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -872,7 +872,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -1006,7 +1006,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -1103,7 +1103,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -1212,7 +1212,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -1322,7 +1322,7 @@ describe("Create table", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -1454,6 +1454,7 @@ EXECUTE FUNCTION moddatetime("updatedAtTwo")\``,
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				extensions: [extension("moddatetime")],
 			},
@@ -1977,6 +1978,7 @@ EXECUTE FUNCTION moddatetime("updated_at")\``,
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				extensions: [extension("moddatetime")],
 				camelCase: true,

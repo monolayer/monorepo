@@ -31,7 +31,8 @@ describe("validate uique schema name", () => {
 
 		const env: AppEnv = {
 			folder: ".",
-			database: new MonoLayerPgDatabase("default", {
+			database: new MonoLayerPgDatabase({
+				id: "default",
 				schemas: [dbSchema, anotherSchema],
 				camelCase: false,
 				extensions: [],
@@ -54,7 +55,8 @@ describe("validate uique schema name", () => {
 
 		const env: AppEnv = {
 			folder: ".",
-			database: new MonoLayerPgDatabase("default", {
+			database: new MonoLayerPgDatabase({
+				id: "default",
 				schemas: [dbSchema, anotherSchema],
 				camelCase: false,
 				extensions: [],
@@ -85,7 +87,8 @@ describe("validate uique schema name", () => {
 
 		const env: AppEnv = {
 			folder: ".",
-			database: new MonoLayerPgDatabase("default", {
+			database: new MonoLayerPgDatabase({
+				id: "default",
 				schemas: [dbSchema, anotherSchema],
 				camelCase: false,
 				extensions: [],

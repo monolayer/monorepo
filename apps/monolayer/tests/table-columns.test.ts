@@ -104,7 +104,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 		});
@@ -209,7 +209,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -271,7 +271,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -381,7 +381,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -436,7 +436,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -495,7 +495,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -620,7 +620,7 @@ describe("Table change migrations", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -771,7 +771,7 @@ describe("Table change migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});

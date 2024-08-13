@@ -101,7 +101,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -278,7 +278,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -411,7 +411,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -510,7 +510,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -653,7 +653,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -764,7 +764,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -849,7 +849,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -977,7 +977,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -1062,7 +1062,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -1173,6 +1173,7 @@ describe("Table drop migrations", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				extensions: [extension("moddatetime")],
 			},
@@ -1362,7 +1363,7 @@ describe("Table drop migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});

@@ -55,6 +55,7 @@ describe("Database migrations", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				extensions: [extension("btree_gist"), extension("cube")],
 			},
@@ -109,6 +110,7 @@ describe("Database migrations", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				extensions: [extension("btree_gin")],
 			},

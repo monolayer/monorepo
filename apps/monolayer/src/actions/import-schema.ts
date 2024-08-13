@@ -148,9 +148,7 @@ function dumpDatabase(
 		mkdirSync(migrationsFolder, { recursive: true });
 
 		const dumpEnv: AppEnv = {
-			database: new MonoLayerPgDatabase("default", {
-				schemas: [],
-			}),
+			database: new MonoLayerPgDatabase({ id: "default", schemas: [] }),
 			folder: migrationsFolder,
 		};
 

@@ -345,7 +345,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -429,7 +429,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -584,7 +584,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -748,7 +748,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -941,7 +941,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -1242,7 +1242,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -1544,6 +1544,7 @@ describe("Modify table", () => {
 			await testChangesetAndMigrations({
 				context,
 				configuration: {
+					id: "default",
 					schemas: [dbSchema],
 					camelCase: true,
 				},
@@ -1701,7 +1702,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -1921,7 +1922,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -2040,7 +2041,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -2157,7 +2158,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -2284,7 +2285,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -2483,7 +2484,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -2580,7 +2581,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -2677,7 +2678,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -2842,7 +2843,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -2980,7 +2981,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -3118,7 +3119,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -3192,7 +3193,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -3281,7 +3282,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -3380,7 +3381,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -3450,7 +3451,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -3510,7 +3511,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -3656,7 +3657,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema, usersSchema] },
+				configuration: { id: "default", schemas: [dbSchema, usersSchema] },
 				expected,
 				down: "same",
 			});
@@ -3910,7 +3911,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -4035,7 +4036,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -4193,7 +4194,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -4350,7 +4351,7 @@ describe("Modify table", () => {
 			];
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -4518,7 +4519,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema, usersSchema] },
+				configuration: { id: "default", schemas: [dbSchema, usersSchema] },
 				expected,
 				down: "same",
 			});
@@ -4588,7 +4589,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -4653,7 +4654,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -4748,7 +4749,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -4843,7 +4844,7 @@ describe("Modify table", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -4969,6 +4970,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 			await testChangesetAndMigrations({
 				context,
 				configuration: {
+					id: "default",
 					schemas: [dbSchema],
 					extensions: [extension("moddatetime")],
 				},
@@ -5061,6 +5063,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 			await testChangesetAndMigrations({
 				context,
 				configuration: {
+					id: "default",
 					schemas: [dbSchema],
 					extensions: [extension("moddatetime")],
 				},
@@ -5162,6 +5165,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 			await testChangesetAndMigrations({
 				context,
 				configuration: {
+					id: "default",
 					schemas: [dbSchema],
 					extensions: [extension("moddatetime")],
 				},
@@ -5309,7 +5313,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -5405,7 +5409,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -5580,7 +5584,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -5741,7 +5745,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -5850,7 +5854,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -5932,7 +5936,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -6027,7 +6031,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});
@@ -6087,7 +6091,7 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected,
 			down: "same",
 		});

@@ -2,6 +2,7 @@ import type { PgExtension } from "~/schema/extension.js";
 import type { AnySchema } from "~/schema/schema.js";
 
 export type DatabaseConfig = {
+	id: string;
 	schemas: AnySchema[];
 	camelCase?: boolean;
 	extensions?: PgExtension[];
@@ -12,8 +13,8 @@ export type DatabaseConfig = {
  * @group Schema Definition
  * @category Database and Tables
  */
-export function defineDatabase(id: string, config: DatabaseConfig) {
-	return new MonoLayerPgDatabase(id, config);
+export function defineDatabase(config: DatabaseConfig) {
+	return new MonoLayerPgDatabase(config);
 }
 
 /**
@@ -21,15 +22,14 @@ export function defineDatabase(id: string, config: DatabaseConfig) {
  * @category Classes
  */
 export class MonoLayerPgDatabase {
+	id: string;
 	schemas: AnySchema[];
 	generatePrismaSchema: boolean;
 	extensions?: PgExtension[];
 	camelCase: boolean;
 
-	constructor(
-		public id: string,
-		config: DatabaseConfig,
-	) {
+	constructor(config: DatabaseConfig) {
+		this.id = config.id;
 		this.schemas = config.schemas;
 		this.extensions = config.extensions;
 		this.generatePrismaSchema = config.generatePrismaSchema ?? false;

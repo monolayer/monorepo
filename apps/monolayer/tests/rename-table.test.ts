@@ -76,7 +76,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -147,7 +147,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -240,7 +240,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -381,7 +381,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -497,7 +497,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -636,7 +636,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -715,7 +715,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -888,7 +888,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -1097,7 +1097,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -1221,7 +1221,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -1328,7 +1328,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -1443,7 +1443,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -1576,7 +1576,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -1709,7 +1709,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -1877,7 +1877,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -2014,7 +2014,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -2147,7 +2147,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -2315,7 +2315,7 @@ describe("Rename table without camel case plugin", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -2398,7 +2398,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -2539,7 +2539,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -2645,7 +2645,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -2761,7 +2761,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -2904,7 +2904,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -3002,7 +3002,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -3115,7 +3115,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -3217,7 +3217,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -3330,7 +3330,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -3474,7 +3474,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -3572,7 +3572,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -3678,7 +3678,7 @@ describe("Rename table without camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -3755,6 +3755,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -3829,6 +3830,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -3925,6 +3927,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -4069,6 +4072,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -4188,6 +4192,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -4329,7 +4334,7 @@ describe("Rename table with camel case plugin", () => {
 		];
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
 			mock: () => {
@@ -4401,6 +4406,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -4577,6 +4583,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -4789,6 +4796,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -4916,6 +4924,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -5026,6 +5035,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -5144,6 +5154,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -5280,6 +5291,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -5416,6 +5428,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -5587,6 +5600,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -5731,6 +5745,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -5874,6 +5889,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -6052,6 +6068,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -6138,6 +6155,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -6282,6 +6300,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -6391,6 +6410,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -6510,6 +6530,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -6656,6 +6677,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -6757,6 +6779,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -6873,6 +6896,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -6978,6 +7002,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -7102,6 +7127,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -7249,6 +7275,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -7350,6 +7377,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},
@@ -7459,6 +7487,7 @@ describe("Rename table with camel case plugin", () => {
 		await testChangesetAndMigrations({
 			context,
 			configuration: {
+				id: "default",
 				schemas: [dbSchema],
 				camelCase: true,
 			},

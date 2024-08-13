@@ -21,7 +21,7 @@ describe("Database migrations", () => {
 
 		await testChangesetAndMigrations({
 			context,
-			configuration: { schemas: [dbSchema] },
+			configuration: { id: "default", schemas: [dbSchema] },
 			expected: [],
 			down: "same",
 		});

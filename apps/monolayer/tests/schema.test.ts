@@ -264,7 +264,7 @@ describe("Schema", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [dbSchema] },
+				configuration: { id: "default", schemas: [dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -425,7 +425,7 @@ describe("Schema", () => {
 			];
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [permission, dbSchema] },
+				configuration: { id: "default", schemas: [permission, dbSchema] },
 				expected,
 				down: "same",
 			});
@@ -469,7 +469,7 @@ describe("Schema", () => {
 
 			await testChangesetAndMigrations({
 				context,
-				configuration: { schemas: [accountsSchema] },
+				configuration: { id: "default", schemas: [accountsSchema] },
 				expected,
 				down: "empty",
 			});
@@ -542,6 +542,7 @@ describe("Schema", () => {
 			await testChangesetAndMigrations({
 				context,
 				configuration: {
+					id: "default",
 					schemas: [dbSchema],
 					camelCase: true,
 				},
@@ -711,6 +712,7 @@ describe("Schema", () => {
 			await testChangesetAndMigrations({
 				context,
 				configuration: {
+					id: "default",
 					schemas: [permissionSchema, dbSchema],
 					camelCase: true,
 				},

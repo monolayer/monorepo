@@ -11,11 +11,12 @@ export const configurationsTemplate =
 	nunjucks.compile(`import { dbSchema } from "./schema";
 import { defineDatabase } from "{{ pgPath }}";
 
-export default defineDatabase("default", {
+export default defineDatabase({
+  id: "default",
 	schemas: [dbSchema],
 });
 
-export const stats = defineDatabase("stats", {});
+export const stats = defineDatabase({id: "stats"});
 `);
 
 export const configurationsTemplateTwoDatabaseSchemas =
@@ -23,9 +24,10 @@ export const configurationsTemplateTwoDatabaseSchemas =
 import { defineDatabase } from "{{ pgPath }}";
 import { dbSchema as anotherDbSchema } from "./{{ secondSchemaFile }}";
 
-export default defineDatabase("default", {
+export default defineDatabase({
+  id: "default",
 	schemas: [dbSchema, anotherDbSchema],
 });
 
-export const stats = defineDatabase("stats", {});
+export const stats = defineDatabase({id: "stats"});
 `);
