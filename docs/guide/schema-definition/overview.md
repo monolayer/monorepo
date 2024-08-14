@@ -90,10 +90,8 @@ export const analyticsSchema = schema({
 ```ts title="schema.ts"
 import { enumType, schema, table, integer, enumerated, primaryKey } from "monolayer/pg";
 
-// highlight-start
-const role = enumType("role", ["admin", "user"]);
-const status = enumType("status", ["active", "inactive"]);
-// highlight-end
+const role = enumType("role", ["admin", "user"]); // [!code highlight]
+const status = enumType("status", ["active", "inactive"]); // [!code highlight]
 
 export const dbSchema = schema({
   // highlight-next-line

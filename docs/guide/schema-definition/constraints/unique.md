@@ -19,11 +19,9 @@ export const users = table({
     name: text(),
     email: text(),
   },
-  // highlight-start
   constraints: {
-    unique: unique(["name"]),
+    unique: unique(["name"]), // [!code highlight]
   },
-  // highlight-end
 });
 ```
 
@@ -37,11 +35,9 @@ export const users = table({
     name: text(),
     email: text(),
   },
-  // highlight-start
   constraints: {
-    unique: unique(["name", "email"]),
+    unique: unique(["name", "email"]), // [!code highlight]
   },
-  // highlight-end
 });
 ```
 

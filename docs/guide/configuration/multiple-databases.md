@@ -51,20 +51,18 @@ export default {
   ...
 } satisfies Configuration;
 
-// highlight-start
-export const stats = {
-  schemas: [statsSchema],
-  extensions: [],
-  connections: {
-    development: {
-      // database credentials
-    },
-    production: {
-      // database credentials
-    },
-  },
-} satisfies Configuration;
-// highlight-end
+export const stats = { // [!code highlight]
+  schemas: [statsSchema], // [!code highlight]
+  extensions: [], // [!code highlight]
+  connections: { // [!code highlight]
+    development: { // [!code highlight]
+      // database credentials // [!code highlight]
+    }, // [!code highlight]
+    production: { // [!code highlight]
+      // database credentials // [!code highlight]
+    }, // [!code highlight]
+  }, // [!code highlight]
+} satisfies Configuration; // [!code highlight]
 ```
 
 ### 3. Set up the database client

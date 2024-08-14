@@ -36,11 +36,9 @@ const documents = table({
   },
   constraints: {
     primaryKey: primaryKey(["id"]),
-    // highlight-start
-    foreignKeys: [
-      foreignKey(["userId"], users, ["id"]),
-    ],
-    // highlight-end
+    foreignKeys: [ // [!code highlight]
+      foreignKey(["userId"], users, ["id"]), // [!code highlight]
+    ], // [!code highlight]
   },
 });
 ```
@@ -75,15 +73,13 @@ const assignments = table({
     departmentId: integer(),
   },
   constraints: {
-    // highlight-start
-    foreignKeys: [
-      foreignKey(
-        ["projectId", "departmentId"],
-        projects,
-        ["id", "departmentId"]
-      ),
-    ],
-    // highlight-end
+    foreignKeys: [ // [!code highlight]
+      foreignKey( // [!code highlight]
+        ["projectId", "departmentId"], // [!code highlight]
+        projects, // [!code highlight]
+        ["id", "departmentId"] // [!code highlight]
+      ),// [!code highlight]
+    ], // [!code highlight]
   },
 });
 ```
@@ -103,9 +99,9 @@ const tree = table({
   },
   constraints: {
     primaryKey: primaryKey(["nodeId"]),
-    foreignKeys: [
-      foreignKey(["parentId"], ["nodeId"]),
-    ],
+    foreignKeys: [ // [!code highlight]
+      foreignKey(["parentId"], ["nodeId"]), // [!code highlight]
+    ], // [!code highlight]
   },
 });
 ```

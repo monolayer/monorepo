@@ -46,7 +46,7 @@ const documents = table({
     userId: integer(),
   },
   constraints: {
-    foreignKey: foreignKey(["userId"], users, ["id"]),
+    foreignKey: foreignKey(["userId"], users, ["id"]), 
   },
 });
 

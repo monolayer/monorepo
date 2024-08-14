@@ -224,11 +224,9 @@ export const db = new Kysely<DB>(
   kyselyConfig(configuration, process.env.NODE_ENV || "development")
 );
 
-// highlight-start
-export const statsDb = new Kysely<StatsDB>(
-  kyselyConfig(stats, process.env.NODE_ENV || "development")
-);
-// highlight-end
+export const statsDb = new Kysely<StatsDB>( // [!code highlight]
+  kyselyConfig(stats, process.env.NODE_ENV || "development") // [!code highlight]
+); // [!code highlight]
 ```
 
 ### 4. Running CLI commands

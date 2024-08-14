@@ -19,11 +19,9 @@ export const books = table({
     id: integer(),
     price: integer(),
   },
-  // highlight-start
   constraints: {
-    check: check(sql`${sql.ref("price")} > 0`),
+    check: check(sql`${sql.ref("price")} > 0`), // [!code highlight]
   },
-  // highlight-end
 });
 ```
 
@@ -41,7 +39,7 @@ export const books = table({
   },
   // highlight-start
   constraints: {
-    check: check(sql`${sql.ref("price")} > 0 AND ${sql.ref("discount")} >= 10`),
+    check: check(sql`${sql.ref("price")} > 0 AND ${sql.ref("discount")} >= 10`), // [!code highlight]
   },
   // highlight-end
 });

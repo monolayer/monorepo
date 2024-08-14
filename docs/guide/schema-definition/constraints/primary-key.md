@@ -23,11 +23,9 @@ export const users = table({
   columns: {
     id: integer().generatedAlwaysAsIdentity(),
   },
-  // highlight-start
   constraints: {
-    primaryKey: primaryKey(["id"]),
+    primaryKey: primaryKey(["id"]), // [!code highlight]
   },
-  // highlight-end
 });
 ```
 
@@ -43,10 +41,8 @@ export const books = table({
     id: integer().generatedAlwaysAsIdentity(),
     locationId: integer(),
   },
-  // highlight-start
   constraints: {
-    primaryKey: primaryKey(["id", "locationId"]),
+    primaryKey: primaryKey(["id", "locationId"]), // [!code highlight]
   },
-  // highlight-end
 });
 ```

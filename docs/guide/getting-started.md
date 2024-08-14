@@ -187,14 +187,12 @@ import type { Kysely } from "kysely";
 import type { DB } from "./schema";
 
 export async function seed(db: Kysely<DB>){
-  // highlight-start
-  const notes = [
-    { name: "Note 1", content: "Content of note 1" },
-    { name: "Note 2", content: "Content of note 2" },
-    { name: "Note 3", content: "Content of note 3" },
-  ];
-  await db.insertInto("notes").values(notes).execute();
-  // highlight-end
+  const notes = [ // [!code highlight]
+    { name: "Note 1", content: "Content of note 1" }, // [!code highlight]
+    { name: "Note 2", content: "Content of note 2" }, // [!code highlight]
+    { name: "Note 3", content: "Content of note 3" }, // [!code highlight]
+  ]; // [!code highlight]
+  await db.insertInto("notes").values(notes).execute(); // [!code highlight]
 }
 ```
 
