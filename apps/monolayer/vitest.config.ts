@@ -4,6 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	test: {
+		name: "monolayer/app",
 		pool: "forks",
 		poolOptions: {
 			forks: {

@@ -6,8 +6,8 @@ import {
 	rmSync,
 	writeFileSync,
 } from "fs";
+import { cwd } from "node:process";
 import path from "path";
-import { cwd } from "process";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { generateMigration } from "~/actions/migrations/generate.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
@@ -22,6 +22,7 @@ import {
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
+import { currentWorkingDirectory } from "~tests/__setup__/setup.js";
 
 describe("generateChangesetMigration", () => {
 	describe("without dependencies", () => {
@@ -214,7 +215,7 @@ describe("generateChangesetMigration", () => {
 	});
 });
 
-const pgPath = path.join(cwd(), "src", "pg.js");
+const pgPath = path.join(currentWorkingDirectory(), "src", "pg.js");
 
 const schemaFile = `import { schema, table, text } from "${pgPath}";
 

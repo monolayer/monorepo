@@ -14,7 +14,6 @@ dotenv.config();
 describe("pgQuery", () => {
 	beforeEach<ProgramContext>(async (context) => {
 		await setupProgramContext(context);
-		console.dir(context.dbName);
 	});
 
 	afterEach<ProgramContext>(async (context) => {
@@ -27,7 +26,7 @@ describe("pgQuery", () => {
 		]);
 	});
 
-	test.only<ProgramContext>("other configuration", async (context) => {
+	test<ProgramContext>("other configuration", async (context) => {
 		process.env.MONO_PG_STATS_DATABASE_URL = `postgresql://postgres:postgres@localhost:5440/${context.dbName}_stats`;
 
 		expect(await currentDatabase("stats")).toStrictEqual([

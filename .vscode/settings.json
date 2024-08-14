@@ -22,5 +22,9 @@
 	},
 	"typescript.tsdk": "./node_modules/typescript/lib",
 	"turbo.useLocalTurbo": true,
-	"npm-intellisense.recursivePackageJsonLookup": false
+	"npm-intellisense.recursivePackageJsonLookup": false,
+	"files.associations": {
+    ".env": "env",
+    ".env*": "env",
+  },
 }

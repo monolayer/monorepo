@@ -3,7 +3,8 @@ node_modules
 dist
 tmp
 coverage
-.env
+.env*
+!.env.sample
 .vscode/tasks.json
 build
 playground.ts

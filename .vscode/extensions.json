@@ -19,6 +19,7 @@
 		"antfu.theme-vitesse",
 		"vitest.explorer",
 		"monokai.theme-monokai-pro-vscode",
-		"vercel.turbo-vsc"
+		"vercel.turbo-vsc",
+		"irongeek.vscode-env"
 	]
 }

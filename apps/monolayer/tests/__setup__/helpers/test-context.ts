@@ -10,7 +10,7 @@ import { FileMigrationProvider, Migrator, type Kysely } from "kysely";
 import fs from "node:fs/promises";
 import path from "path";
 import type { Pool } from "pg";
-import { chdir, cwd } from "process";
+import { chdir } from "process";
 import { vi, type TaskContext } from "vitest";
 import {
 	configurationsTemplate,
@@ -21,7 +21,7 @@ import {
 	kyselyWithCustomDB,
 	type DbContext,
 } from "~tests/__setup__/helpers/kysely.js";
-import { globalPool } from "~tests/__setup__/setup.js";
+import { currentWorkingDirectory, globalPool } from "~tests/__setup__/setup.js";
 import { dbNameForTest, programFolder } from "./names.js";
 
 export async function teardownContext(context: TaskContext & DbContext) {
@@ -37,14 +37,14 @@ export async function teardownContext(context: TaskContext & DbContext) {
 
 export async function setUpContext(context: TaskContext & DbContext) {
 	const pool = globalPool();
-	context.currentWorkingDirectory = cwd();
+	context.currentWorkingDirectory = currentWorkingDirectory();
 	context.dbName = dbNameForTest(context);
 	await pool.query(`DROP DATABASE IF EXISTS "${context.dbName}"`);
 	await pool.query(`CREATE DATABASE "${context.dbName}"`);
 	context.kysely = await kyselyWithCustomDB(context.dbName);
 	const dateStr = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
 	context.folder = path.join(
-		cwd(),
+		currentWorkingDirectory(),
 		`tmp/schema_migrations/${dateStr}-${context.dbName}`,
 	);
 	mkdirSync(
@@ -74,8 +74,11 @@ export async function setupProgramContext(
 	createDb = true,
 	copyMigrationFiles = true,
 ) {
-	context.currentWorkingDirectory = cwd();
-	context.folder = path.join(cwd(), `tmp/programs/${programFolder(context)}`);
+	context.currentWorkingDirectory = currentWorkingDirectory();
+	context.folder = path.join(
+		currentWorkingDirectory(),
+		`tmp/programs/${programFolder(context)}`,
+	);
 	rmSync(context.folder, { recursive: true, force: true });
 	mkdirSync(
 		path.join(
@@ -140,7 +143,7 @@ export async function setupProgramContext(
 
 	const configurations = configurationsTemplate.render({
 		dbName: context.dbName,
-		pgPath: path.join(cwd(), "src", "pg"),
+		pgPath: path.join(currentWorkingDirectory(), "src", "pg"),
 	});
 
 	writeFileSync(
@@ -167,7 +170,7 @@ export async function setupProgramContext(
 export async function teardownProgramContext(
 	context: TaskContext & ProgramContext,
 ) {
-	// rmSync(context.folder, { recursive: true, force: true });
+	rmSync(context.folder, { recursive: true, force: true });
 	try {
 		await context.kysely.destroy();
 	} catch {
@@ -192,7 +195,10 @@ function copyMigration(
 	migrationsFolder = `monolayer/migrations/default/${ChangesetPhase.Alter}`,
 ) {
 	copyFileSync(
-		`tests/__setup__/fixtures/migrations/${migrationName}.ts`,
+		path.join(
+			currentWorkingDirectory(),
+			`tests/__setup__/fixtures/migrations/${migrationName}.ts`,
+		),
 		path.join(context.folder, migrationsFolder, `${migrationName}.ts`),
 	);
 }
@@ -229,7 +235,7 @@ export async function dbAndMigrator(context: ProgramContext) {
 	};
 }
 
-const pgPath = path.join(cwd(), "src", "pg.js");
+const pgPath = path.join(currentWorkingDirectory(), "src", "pg.js");
 const schemaFile = `import { schema, table, text } from "${pgPath}";
 
 export const dbSchema = schema({

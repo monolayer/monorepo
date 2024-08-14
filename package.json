@@ -38,7 +38,8 @@
 	},
 	"packageManager": "^npm@10.8.2",
 	"scripts": {
-		"test": "vitest --watch --ui --open",
+		"test": "vitest",
+		"test:watch": "CI=1 vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --allowOnly",
 		"typedoc": "typedoc",
 		"docs:dev": "vitepress dev docs",
 		"docs:build": "vitepress build docs",

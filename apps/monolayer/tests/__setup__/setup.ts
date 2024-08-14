@@ -5,12 +5,16 @@ import { tablesToRename } from "@monorepo/prompts/tables-to-rename.js";
 import type { ColumnsToRename } from "@monorepo/state/table-column-rename.js";
 import dotenv from "dotenv";
 import { Effect } from "effect";
+import path, { dirname } from "node:path";
 import { env } from "node:process";
 import pg from "pg";
 import type { GlobalThis } from "type-fest";
+import { fileURLToPath } from "url";
 import { vi } from "vitest";
 
-dotenv.config();
+dotenv.config({
+	path: path.resolve(currentWorkingDirectory(), ".env.test"),
+});
 
 export type GlobalThisInTests = GlobalThis & {
 	pool: pg.Pool | undefined;
@@ -93,22 +97,6 @@ vi.mock("@monorepo/prompts/migration-name.js", async () => {
 	};
 });
 
-// const migrationPath = path.join(cwd(), "src", "migrations/migration.ts");
-
-// vi.mock("@monorepo/utils/create-file.ts", async (importOriginal) => {
-// 	const original =
-// 		await importOriginal<typeof import("@monorepo/utils/create-file.ts")>();
-// 	return {
-// 		createFile: vi.fn((path: string, content: string, log = true) => {
-// 			original.createFile(
-// 				path,
-// 				content.replace("monolayer/migration", migrationPath),
-// 				log,
-// 			);
-// 		}),
-// 	};
-// });
-
 vi.mocked(askMigrationName).mockResolvedValueOnce("default");
 
 export function mockTableDiffOnce(value: TablesToRename) {
@@ -117,4 +105,8 @@ export function mockTableDiffOnce(value: TablesToRename) {
 
 export function mockColumnDiffOnce(value: ColumnsToRename) {
 	vi.mocked(askColumnsToRename).mockResolvedValueOnce(value);
+}
+
+export function currentWorkingDirectory() {
+	return path.resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 }
