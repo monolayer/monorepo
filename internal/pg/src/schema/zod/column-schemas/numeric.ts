@@ -69,10 +69,10 @@ export function pgBigintSchema(column: PgBigInt | PgBigSerial) {
 
 export function pgDoublePrecisionSchema(column: PgDoublePrecision) {
 	const isNullable = nullableColumn(column);
-	const base = variablePrecisionSchema(-1e308, 1e308, isNullable);
-	return finishSchema(isNullable, base).transform((val) =>
-		val === null || val === undefined ? val : val.toString(),
+	const base = variablePrecisionSchema(-1e308, 1e308, isNullable).transform(
+		(val) => val.toString(),
 	);
+	return finishSchema(isNullable, base);
 }
 
 export function pgSmallintSchema(column: PgSmallint) {
@@ -158,16 +158,6 @@ function variablePrecisionSchema(
 				return customIssue(ctx, errorMessage);
 			}
 		})
-		.superRefine((val: unknown) => {
-			const stringValue = String(val);
-			if (
-				stringValue === "NaN" ||
-				stringValue === "Infinity" ||
-				stringValue === "-Infinity"
-			) {
-				return;
-			}
-		})
 		.superRefine((val: unknown, ctx: z.RefinementCtx) => {
 			const stringValue = String(val);
 			if (
@@ -186,6 +176,7 @@ function variablePrecisionSchema(
 			}
 		})
 		.transform((val) => {
+			console.log("TRANSFORM", val, Number(val));
 			return Number(val);
 		});
 }

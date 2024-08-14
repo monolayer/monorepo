@@ -763,6 +763,49 @@ describe("boolean", () => {
 					}
 				});
 			});
+
+			describe("schema composition", () => {
+				test("optional column can be required on another schema", () => {
+					const tbl = table({
+						columns: {
+							id: boolean(),
+						},
+					});
+					const requiredSchema = z
+						.object({})
+						.extend({
+							id: zodSchema(tbl).shape.id,
+						})
+						.required();
+					const requiredSchemaResult = requiredSchema.safeParse({});
+					expect(requiredSchemaResult.success).toBe(false);
+					expect(requiredSchemaResult.error?.errors).toStrictEqual([
+						{
+							code: "invalid_type",
+							expected: "boolean",
+							received: "undefined",
+							message: "Required",
+							path: ["id"],
+						},
+					]);
+
+					type RequiredSchemaInput = z.input<typeof requiredSchema>;
+					type RequiredSchemaExpectedInput = {
+						id?: boolean | Boolish | null;
+					};
+					const requiredSchemaIsEqualInput: Expect<
+						Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+					> = true;
+					expect(requiredSchemaIsEqualInput).toBe(true);
+
+					type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+					type RequiredSchemaExpectedOutput = { id: boolean | null };
+					const requiredSchemaIsEqualOutput: Expect<
+						Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+					> = true;
+					expect(requiredSchemaIsEqualOutput).toBe(true);
+				});
+			});
 		});
 	});
 });
@@ -1245,6 +1288,49 @@ describe("text", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: text(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "invalid_type",
+						expected: "string",
+						received: "undefined",
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -1410,7 +1496,7 @@ describe("bigint", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type SchemaType = typeof schema;
-				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
+				type Expected = z.ZodOptional<z.ZodType<never, z.ZodTypeDef, never>>;
 				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -1996,6 +2082,49 @@ describe("bigint", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: bigint(),
+					},
+				});
+
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | number | bigint | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -2344,6 +2473,50 @@ describe("bigserial", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: bigserial(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | number | bigint;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = {
+					id: string;
+				};
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -2858,6 +3031,50 @@ describe("bytea", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: bytea(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | Buffer | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = {
+					id: string | Buffer | null;
+				};
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -3364,6 +3581,48 @@ describe("date", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: date(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | Date | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: Date | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -4019,6 +4278,48 @@ describe("doublePrecision", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: doublePrecision(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | number | bigint | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -4194,7 +4495,7 @@ describe("smallint", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type SchemaType = typeof schema;
-				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
+				type Expected = z.ZodOptional<z.ZodType<never, z.ZodTypeDef, never>>;
 				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -4797,6 +5098,48 @@ describe("smallint", () => {
 			}
 		});
 	});
+
+	describe("schema composition", () => {
+		test("optional column can be required on another schema", () => {
+			const tbl = table({
+				columns: {
+					id: smallint(),
+				},
+			});
+			const requiredSchema = z
+				.object({})
+				.extend({
+					id: zodSchema(tbl).shape.id,
+				})
+				.required();
+			const requiredSchemaResult = requiredSchema.safeParse({});
+			expect(requiredSchemaResult.success).toBe(false);
+			expect(requiredSchemaResult.error?.errors).toStrictEqual([
+				{
+					code: "custom",
+					fatal: true,
+					message: "Required",
+					path: ["id"],
+				},
+			]);
+
+			type RequiredSchemaInput = z.input<typeof requiredSchema>;
+			type RequiredSchemaExpectedInput = {
+				id?: string | number | null;
+			};
+			const requiredSchemaIsEqualInput: Expect<
+				Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+			> = true;
+			expect(requiredSchemaIsEqualInput).toBe(true);
+
+			type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+			type RequiredSchemaExpectedOutput = { id: number | null };
+			const requiredSchemaIsEqualOutput: Expect<
+				Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+			> = true;
+			expect(requiredSchemaIsEqualOutput).toBe(true);
+		});
+	});
 });
 
 describe("integer", () => {
@@ -4975,7 +5318,7 @@ describe("integer", () => {
 				});
 				const schema = zodSchema(tbl).shape.id;
 				type SchemaType = typeof schema;
-				type Expected = z.ZodType<never, z.ZodTypeDef, never>;
+				type Expected = z.ZodOptional<z.ZodType<never, z.ZodTypeDef, never>>;
 				const isEqual: Expect<Equal<SchemaType, Expected>> = true;
 				expect(isEqual).toBe(true);
 
@@ -5571,6 +5914,48 @@ describe("integer", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: integer(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | number | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: number | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -6311,6 +6696,48 @@ describe("json", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: json(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: JsonValue | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: JsonValue | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -7045,6 +7472,48 @@ describe("jsonb", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: jsonb(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: JsonValue | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: JsonValue | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -7696,6 +8165,48 @@ describe("real", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: real(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | number | bigint | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: number | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -8104,6 +8615,48 @@ describe("serial", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: serial(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | number;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: number };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -8623,6 +9176,48 @@ describe("uuid", () => {
 						expect(result.error.errors).toStrictEqual(expected);
 					}
 				});
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: uuid(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -9178,6 +9773,49 @@ describe("characterVarying", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: characterVarying(5),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "invalid_type",
+						expected: "string",
+						received: "undefined",
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -9713,6 +10351,49 @@ describe("character", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: character(10),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "invalid_type",
+						expected: "string",
+						received: "undefined",
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -10245,6 +10926,48 @@ describe("time", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: time(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -10784,6 +11507,48 @@ describe("timeWithTimeZone", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: timeWithTimeZone(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -11339,6 +12104,48 @@ describe("timestamp", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: timestamp(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | Date | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: Date | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -11907,6 +12714,48 @@ describe("timestampWithTimeZone", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: timestampWithTimeZone(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | Date | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: Date | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -12743,6 +13592,48 @@ describe("numeric", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: numeric(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | number | bigint | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -13296,6 +14187,52 @@ describe("enumerated", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const roleEnum = enumType("role", ["user", "admin", "superuser"]);
+
+				const tbl = table({
+					columns: {
+						id: enumerated(roleEnum),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: "user" | "admin" | "superuser" | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = {
+					id: "user" | "admin" | "superuser" | null;
+				};
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -13790,6 +14727,48 @@ describe("tsvector", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: tsvector(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -14282,6 +15261,48 @@ describe("tsquery", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: tsquery(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -14787,6 +15808,48 @@ describe("xml", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: xml(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -15363,6 +16426,49 @@ describe("bit", () => {
 				];
 				expect(result.error.errors).toStrictEqual(expected);
 			}
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: bit(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "invalid_type",
+						expected: "string",
+						received: "undefined",
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
 		});
 	});
 });
@@ -15949,6 +17055,49 @@ describe("bit varying", () => {
 				expect(result.error.errors).toStrictEqual(expected);
 			}
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: bitVarying(4),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "invalid_type",
+						expected: "string",
+						received: "undefined",
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -16530,6 +17679,49 @@ describe("inet", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: inet(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "invalid_type",
+						expected: "string",
+						received: "undefined",
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -17131,6 +18323,49 @@ describe("cidr", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: cidr(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "invalid_type",
+						expected: "string",
+						received: "undefined",
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -17654,6 +18889,49 @@ describe("macaddr", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "invalid_type",
+						received: "undefined",
+						expected: "string",
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});
@@ -18185,6 +19463,49 @@ describe("macaddr8", () => {
 				}
 			});
 		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: macaddr8(),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "invalid_type",
+						received: "undefined",
+						expected: "string",
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
+			});
+		});
 	});
 });
 
@@ -18682,6 +20003,48 @@ describe("generic column", () => {
 					];
 					expect(result.error.errors).toStrictEqual(expected);
 				}
+			});
+		});
+
+		describe("schema composition", () => {
+			test("optional column can be required on another schema", () => {
+				const tbl = table({
+					columns: {
+						id: columnWithType<string>("money"),
+					},
+				});
+				const requiredSchema = z
+					.object({})
+					.extend({
+						id: zodSchema(tbl).shape.id,
+					})
+					.required();
+				const requiredSchemaResult = requiredSchema.safeParse({});
+				expect(requiredSchemaResult.success).toBe(false);
+				expect(requiredSchemaResult.error?.errors).toStrictEqual([
+					{
+						code: "custom",
+						fatal: true,
+						message: "Required",
+						path: ["id"],
+					},
+				]);
+
+				type RequiredSchemaInput = z.input<typeof requiredSchema>;
+				type RequiredSchemaExpectedInput = {
+					id?: string | null;
+				};
+				const requiredSchemaIsEqualInput: Expect<
+					Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>
+				> = true;
+				expect(requiredSchemaIsEqualInput).toBe(true);
+
+				type RequiredSchemaOutput = z.output<typeof requiredSchema>;
+				type RequiredSchemaExpectedOutput = { id: string | null };
+				const requiredSchemaIsEqualOutput: Expect<
+					Equal<RequiredSchemaOutput, RequiredSchemaExpectedOutput>
+				> = true;
+				expect(requiredSchemaIsEqualOutput).toBe(true);
 			});
 		});
 	});

@@ -125,33 +125,27 @@ export type ZodType<
 			| WithDefaultColumn
 			| SerialColumn<unknown, unknown>
 			| GeneratedColumn
-		? InferZodType<T, PK, true>
-		: InferZodType<T, PK, false>
+		? z.ZodOptional<InferZodType<T, PK>>
+		: InferZodType<T, PK>
 	: T extends NonNullableColumn & WithDefaultColumn
-		? InferZodType<T, PK, true>
+		? z.ZodOptional<InferZodType<T, PK>>
 		: T extends NonNullableColumn
-			? InferZodType<T, PK, false>
-			: InferZodType<T, PK, true>;
+			? InferZodType<T, PK>
+			: z.ZodOptional<InferZodType<T, PK>>;
 
 type InferZodType<
 	T extends
 		| PgColumn<unknown, unknown, unknown>
 		| SerialColumn<unknown, unknown>,
 	PK extends boolean,
-	Optional extends boolean = false,
 > = z.ZodType<
 	T extends SerialColumn<unknown, unknown>
-		? SelectType<InferColumType<T, PK>> | undefined
+		? SelectType<InferColumType<T, PK>>
 		: T extends GeneratedAlwaysColumn
 			? never
 			: T extends PgBytea
-				?
-						| SelectType<InferColumType<T, PK>>
-						| string
-						| (Optional extends true ? undefined : never)
-				:
-						| SelectType<InferColumType<T, PK>>
-						| (Optional extends true ? undefined : never),
+				? SelectType<InferColumType<T, PK>> | string
+				: SelectType<InferColumType<T, PK>>,
 	z.ZodTypeDef,
 	InsertType<InferColumType<T, PK>>
 >;
