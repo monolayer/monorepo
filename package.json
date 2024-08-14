@@ -1,52 +1,55 @@
 {
-	"name": "monolayer-monorepo",
-	"private": true,
-	"type": "module",
-	"license": "MIT",
-	"workspaces": [
-		"__config__/*",
-		"apps/create-monolayer",
-		"apps/monolayer",
-		"internal/*",
-		"private/*",
-		"docs"
-	],
-	"engines": {
-		"node": ">=18.0.0"
-	},
-	"prettier": {
-		"trailingComma": "all",
-		"useTabs": true,
-		"tabWidth": 2,
-		"semi": true,
-		"singleQuote": false,
-		"plugins": [
-			"prettier-plugin-organize-imports"
-		]
-	},
-	"devDependencies": {
-		"@config/testing": "*",
-		"mermaid": "^10.9.1",
-		"npm-run-all": "^4.1.5",
-		"turbo": "^2.0.12",
-		"turbo-ignore": "^2.0.12",
-		"typedoc": "^0.26.5",
-		"typedoc-plugin-markdown": "^4.2.3",
-		"typedoc-vitepress-theme": "^1.0.1",
-		"vitepress": "^1.3.2",
-		"vitepress-sidebar": "^1.24.2",
-		"vitepress-plugin-mermaid": "^2.0.16",
-		"typescript": "^5.5.4"
-	},
-	"packageManager": "^npm@10.8.2",
-	"scripts": {
-		"test": "vitest",
-		"test:watch": "CI=1 vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --allowOnly",
-		"typedoc": "typedoc",
-		"typedoc:watch": "typedoc --watch",
-		"docs": "npm-run-all --parallel docs:dev typedoc:watch",
-		"docs:dev": "vitepress dev docs",
-		"docs:build": "vitepress build docs",
-		"docs:preview": "vitepress preview docs"
-	}
+  "name": "monolayer-monorepo",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "workspaces": [
+    "__config__/*",
+    "apps/create-monolayer",
+    "apps/monolayer",
+    "internal/*",
+    "private/*",
+    "docs"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "useTabs": true,
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": false,
+    "plugins": [
+      "prettier-plugin-organize-imports"
+    ]
+  },
+  "devDependencies": {
+    "@config/testing": "*",
+    "mermaid": "^10.9.1",
+    "npm-run-all": "^4.1.5",
+    "patch-package": "^8.0.0",
+    "turbo": "^2.0.12",
+    "turbo-ignore": "^2.0.12",
+    "typedoc": "^0.26.5",
+    "typedoc-plugin-markdown": "^4.2.3",
+    "typedoc-vitepress-theme": "^1.0.1",
+    "vitepress": "^1.3.2",
+    "vitepress-sidebar": "^1.24.2",
+    "vitepress-plugin-mermaid": "^2.0.16",
+    "typescript": "^5.5.4"
+  },
+  "packageManager": "^npm@10.8.2",
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "CI=1 vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --allowOnly",
+    "typedoc": "typedoc --docsRoot docs/reference",
+    "typedoc:watch": "npm run typedoc -- --watch",
+    "postinstall": "patch-package",
+    "predocs": "npm run typedoc",
+    "docs": "npm-run-all --parallel docs:dev typedoc:watch",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  }
 }

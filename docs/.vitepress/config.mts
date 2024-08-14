@@ -1,6 +1,5 @@
 import { withMermaid } from "vitepress-plugin-mermaid";
 import { generateSidebar } from "vitepress-sidebar";
-import typedocSidebar from "./../reference/api/typedoc-sidebar.json";
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
@@ -31,16 +30,16 @@ export default withMermaid({
 				},
 			]),
 			"/reference/": {
-				base: "/reference/",
 				items: [
 					{
 						text: "API",
+						base: "/reference/",
 						collapsed: true,
-						base: "/api/",
-						items: typedocSidebar,
+						items: require("./../reference/api/typedoc-sidebar.json"),
 					},
 					{
 						text: "Command Line Interface",
+						base: "/reference/",
 						items: [
 							{ text: "Intro", link: "cli" },
 							{

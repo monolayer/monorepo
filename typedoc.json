@@ -1,6 +1,5 @@
 {
 	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
-	"basePath": "dddos",
 	"out": "docs/reference/api",
 	"entryPoints": ["./internal/pg/src/api", "./internal/migrator/src/api"],
 	"entryPointStrategy": "expand",
@@ -34,13 +33,14 @@
 	"navigation": {
 		"includeCategories": true,
 		"includeGroups": true,
-		"includeFolders": false
+		"includeFolders": true
 	},
-	"categorizeByGroup": false,
+	"categorizeByGroup": true,
 	"sidebar": {
 		"autoConfiguration": true,
 		"format": "vitepress",
 		"pretty": true,
 		"collapsed": true
-	}
+	},
+	"disableSources": true,
 }
