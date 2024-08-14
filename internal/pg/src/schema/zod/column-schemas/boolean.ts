@@ -1,8 +1,11 @@
 import { ZodIssueCode, z } from "zod";
-import type { PgColumnBase } from "~/schema/column/column.js";
-import { PgBoolean, type Boolish } from "~/schema/column/data-types/boolean.js";
-import { finishSchema } from "~/schema/zod/common.js";
-import { customIssue, nullableColumn } from "~/schema/zod/helpers.js";
+import type { PgColumnBase } from "~pg/schema/column/column.js";
+import {
+	PgBoolean,
+	type Boolish,
+} from "~pg/schema/column/data-types/boolean.js";
+import { finishSchema } from "~pg/schema/zod/common.js";
+import { customIssue, nullableColumn } from "~pg/schema/zod/helpers.js";
 
 export function isPgBoolean(
 	column: PgColumnBase<unknown, unknown, unknown>,

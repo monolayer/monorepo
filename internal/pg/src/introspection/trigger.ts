@@ -1,12 +1,12 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
-import type { BuilderContext } from "~/introspection/introspection/foreign-key-builder.js";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
-import { tableInfo } from "~/introspection/table.js";
-import { type AnySchema, Schema } from "~/schema/schema.js";
-import { type AnyTrigger, PgTrigger } from "~/schema/trigger.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
+import type { BuilderContext } from "~pg/introspection/introspection/foreign-key-builder.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
+import { tableInfo } from "~pg/introspection/table.js";
+import { type AnySchema, Schema } from "~pg/schema/schema.js";
+import { type AnyTrigger, PgTrigger } from "~pg/schema/trigger.js";
 
 export async function dbTriggerInfo(
 	kysely: Kysely<InformationSchemaDB>,

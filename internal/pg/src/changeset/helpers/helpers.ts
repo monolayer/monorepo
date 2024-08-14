@@ -2,7 +2,7 @@ import { CamelCasePlugin } from "kysely";
 import type {
 	LocalTableInfo,
 	SchemaMigrationInfo,
-} from "~/schema/column/types.js";
+} from "~pg/schema/column/types.js";
 import {
 	currentTableName,
 	previousTableName,

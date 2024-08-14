@@ -1,4 +1,4 @@
-import { StringColumn } from "~/schema/column/column.js";
+import { StringColumn } from "~pg/schema/column/column.js";
 
 /**
  * Column that stores an IPv4 or IPv6 network specification.

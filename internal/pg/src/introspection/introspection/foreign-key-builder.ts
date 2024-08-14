@@ -1,20 +1,20 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { Kysely, PostgresDialect, type OnModifyForeignAction } from "kysely";
 import pg from "pg";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
 import {
 	currentColumName,
 	previousColumnName,
-} from "~/introspection/column-name.js";
+} from "~pg/introspection/column-name.js";
 import {
 	currentTableName,
 	previousTableName,
-} from "~/introspection/introspection/table-name.js";
+} from "~pg/introspection/introspection/table-name.js";
 import type {
 	ColumnsToRename,
 	TablesToRename,
-} from "~/introspection/schema.js";
-import type { ForeignKeyIntrospection } from "~/introspection/table.js";
+} from "~pg/introspection/schema.js";
+import type { ForeignKeyIntrospection } from "~pg/introspection/table.js";
 
 export interface BuilderContext {
 	camelCase: boolean;

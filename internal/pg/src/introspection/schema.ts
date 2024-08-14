@@ -1,11 +1,14 @@
 import toposort from "toposort";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
-import { currentColumName } from "~/introspection/column-name.js";
-import { tableInfo } from "~/introspection/table.js";
-import type { ColumnRecord } from "~/schema/column.js";
-import type { SchemaMigrationInfo, TableInfo } from "~/schema/column/types.js";
-import { type AnySchema, Schema } from "~/schema/schema.js";
-import type { AnyPgTable } from "~/schema/table.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
+import { currentColumName } from "~pg/introspection/column-name.js";
+import { tableInfo } from "~pg/introspection/table.js";
+import type { ColumnRecord } from "~pg/schema/column.js";
+import type {
+	SchemaMigrationInfo,
+	TableInfo,
+} from "~pg/schema/column/types.js";
+import { type AnySchema, Schema } from "~pg/schema/schema.js";
+import type { AnyPgTable } from "~pg/schema/table.js";
 
 type TableName = string;
 type Name = string;

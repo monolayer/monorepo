@@ -1,5 +1,6 @@
 import { withMermaid } from "vitepress-plugin-mermaid";
-import typedocSidebar from "../reference/api/typedoc-sidebar.json";
+import { generateSidebar } from "vitepress-sidebar";
+import typedocSidebar from "./../reference/api/typedoc-sidebar.json";
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
@@ -21,86 +22,14 @@ export default withMermaid({
 		],
 
 		sidebar: {
-			"/guide/": {
-				base: "/guide/",
-				items: [
-					{ text: "Introduction", link: "/intro" },
-					{ text: "Getting Started", link: "/getting-started" },
-					{
-						text: "Schema Definition",
-						collapsed: true,
-						items: [
-							{ text: "Overview", link: "/schema-definition/overview" },
-							{
-								text: "Adding Tables",
-								link: "/schema-definition/adding-tables",
-							},
-							{ text: "Columns", link: "/schema-definition/column-data-types" },
-							{
-								text: "Enum types",
-								link: "/schema-definition/enumerated-types",
-							},
-							{ text: "Indexes", link: "/schema-definition/indexes" },
-							{
-								text: "Constraints",
-								items: [
-									{
-										text: "Intro",
-										link: "/schema-definition/constraints/intro",
-									},
-									{
-										text: "Not Null",
-										link: "/schema-definition/constraints/not-null",
-									},
-									{
-										text: "Primary Key",
-										link: "/schema-definition/constraints/primary-key",
-									},
-									{
-										text: "Foreign Key",
-										link: "/schema-definition/constraints/foreign-key",
-									},
-									{
-										text: "Unique constraint",
-										link: "/schema-definition/constraints/unique",
-									},
-									{
-										text: "Check constraint",
-										link: "/schema-definition/constraints/check",
-									},
-								],
-							},
-
-							{ text: "Triggers", link: "/schema-definition/triggers" },
-							{
-								text: "Extensions",
-								link: "/schema-definition/postgresql-extensions",
-							},
-						],
-					},
-					{
-						text: "Migration System",
-						collapsed: true,
-						items: [
-							{ text: "Generated types", link: "/generated-types" },
-							{ text: "Validations with Zod", link: "/validations-with-zod" },
-						],
-					},
-					{
-						text: "Types and Validations",
-						collapsed: true,
-						items: [
-							{ text: "Generated types", link: "/generated-types" },
-							{ text: "Validations with Zod", link: "/validations-with-zod" },
-						],
-					},
-					{
-						text: "Workflows",
-						collapsed: true,
-						items: [{ text: "Evolving the schema", link: "/evolving-schema" }],
-					},
-				],
-			},
+			...generateSidebar([
+				{
+					documentRootPath: "docs",
+					scanStartPath: "guide",
+					resolvePath: "/guide/",
+					useTitleFromFileHeading: true,
+				},
+			]),
 			"/reference/": {
 				base: "/reference/",
 				items: [

@@ -1,19 +1,19 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
-import { previousColumnName } from "~/introspection/column-name.js";
-import type { BuilderContext } from "~/introspection/introspection/foreign-key-builder.js";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
-import type { ColumnsToRename, UniqueInfo } from "~/introspection/schema.js";
-import { tableInfo } from "~/introspection/table.js";
-import { type AnySchema, Schema } from "~/schema/schema.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
+import { previousColumnName } from "~pg/introspection/column-name.js";
+import type { BuilderContext } from "~pg/introspection/introspection/foreign-key-builder.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
+import type { ColumnsToRename, UniqueInfo } from "~pg/introspection/schema.js";
+import { tableInfo } from "~pg/introspection/table.js";
+import { type AnySchema, Schema } from "~pg/schema/schema.js";
 import {
 	type AnyPgUnique,
 	isExternalUnique,
 	type PgUnique,
 	uniqueConstraintOptions,
-} from "~/schema/unique.js";
+} from "~pg/schema/unique.js";
 
 export type UniqueConstraintInfo = {
 	constraintType: "UNIQUE";

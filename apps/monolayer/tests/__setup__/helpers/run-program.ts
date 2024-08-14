@@ -5,8 +5,8 @@ import {
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
 import { Effect, Ref } from "effect";
-import { loadEnv } from "~/cli-action.js";
-import { layers } from "./layers.js";
+import { loadEnv } from "~monolayer/cli-action.js";
+import { layers } from "~tests/__setup__/helpers/layers.js";
 
 export function programWithErrorCause<
 	T extends Effect.Effect<

@@ -1,4 +1,4 @@
-import { IdentifiableColumn } from "~/schema/column/column.js";
+import { IdentifiableColumn } from "~pg/schema/column/column.js";
 
 /**
  * Column that stores whole numbers.

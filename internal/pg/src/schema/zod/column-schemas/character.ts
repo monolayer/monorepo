@@ -3,12 +3,12 @@ import type {
 	PgColumn,
 	PgColumnBase,
 	SerialColumn,
-} from "~/schema/column/column.js";
-import { PgCharacterVarying } from "~/schema/column/data-types/character-varying.js";
-import { PgCharacter } from "~/schema/column/data-types/character.js";
-import { PgText } from "~/schema/column/data-types/text.js";
-import { finishSchema } from "~/schema/zod/common.js";
-import { columnData, nullableColumn } from "~/schema/zod/helpers.js";
+} from "~pg/schema/column/column.js";
+import { PgCharacterVarying } from "~pg/schema/column/data-types/character-varying.js";
+import { PgCharacter } from "~pg/schema/column/data-types/character.js";
+import { PgText } from "~pg/schema/column/data-types/text.js";
+import { finishSchema } from "~pg/schema/zod/common.js";
+import { columnData, nullableColumn } from "~pg/schema/zod/helpers.js";
 
 export function pgVarcharSchema(column: PgCharacterVarying) {
 	return characterSchema(column);

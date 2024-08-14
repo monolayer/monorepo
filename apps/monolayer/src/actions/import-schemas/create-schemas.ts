@@ -4,8 +4,8 @@ import { appendFileSync, readFileSync, writeFileSync } from "fs";
 import { default as jscodeshift } from "jscodeshift";
 import nunjucks from "nunjucks";
 import path from "path";
-import type { ImportedSchema } from "../import-schema.js";
-import { columnDefinition } from "./column-definition.js";
+import type { ImportedSchema } from "~monolayer/actions/import-schema.js";
+import { columnDefinition } from "~monolayer/actions/import-schemas/column-definition.js";
 
 export function createSchema(
 	databaseName: string,

@@ -1,6 +1,6 @@
 import { sql } from "kysely";
 import { describe, expect, test } from "vitest";
-import { PgCheck, assertCheckWithInfo } from "~/schema/check.js";
+import { PgCheck, assertCheckWithInfo } from "~pg/schema/check.js";
 
 describe("PgCheck", () => {
 	test("expression", () => {

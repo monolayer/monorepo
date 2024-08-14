@@ -2,12 +2,12 @@ import {
 	alignColumns,
 	type ColumnToAlign,
 	type TypeAlignment,
-} from "~/changeset/helpers/alignment.js";
+} from "~pg/changeset/helpers/alignment.js";
 import {
 	executeKyselyDbStatement,
 	sqlStatement,
-} from "~/changeset/helpers/helpers.js";
-import type { ColumnInfo } from "~/schema/column/types.js";
+} from "~pg/changeset/helpers/helpers.js";
+import type { ColumnInfo } from "~pg/schema/column/types.js";
 
 export type ColumnsInfoDiff = Record<string, ColumnInfoDiff>;
 

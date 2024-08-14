@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { tableInfo } from "~/introspection/table.js";
-import { integer } from "~/schema/column/data-types/integer.js";
-import { foreignKey, foreignKeyOptions } from "~/schema/foreign-key.js";
-import { table } from "~/schema/table.js";
+import { tableInfo } from "~pg/introspection/table.js";
+import { integer } from "~pg/schema/column/data-types/integer.js";
+import { foreignKey, foreignKeyOptions } from "~pg/schema/foreign-key.js";
+import { table } from "~pg/schema/table.js";
 
 describe("PgForeignKeyConstraint", () => {
 	test("foreign key with defaults", () => {

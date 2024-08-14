@@ -9,7 +9,7 @@ import {
 import { cwd } from "node:process";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { generateMigration } from "~/actions/migrations/generate.js";
+import { generateMigration } from "~monolayer/actions/migrations/generate.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import {
 	alterMigrationPath,
@@ -28,7 +28,7 @@ describe("generateChangesetMigration", () => {
 	describe("without dependencies", () => {
 		beforeEach<ProgramContext>(async (context) => {
 			await setupProgramContext(context, true, false);
-			vi.unmock("~/create-file.ts");
+			vi.unmock("~monolayer/create-file.ts");
 		});
 
 		afterEach<ProgramContext>(async (context) => {
@@ -127,7 +127,7 @@ describe("generateChangesetMigration", () => {
 	describe("with dependencies", () => {
 		beforeEach<ProgramContext>(async (context) => {
 			await setupProgramContext(context, true, true);
-			vi.unmock("~/create-file.ts");
+			vi.unmock("~monolayer/create-file.ts");
 		});
 
 		afterEach<ProgramContext>(async (context) => {

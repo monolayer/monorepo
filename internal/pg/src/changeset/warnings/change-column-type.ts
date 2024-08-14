@@ -1,7 +1,7 @@
 import color from "picocolors";
-import type { ChangeWarningType } from "~/changeset/warnings/change-warning-type.js";
-import type { ChangeWarningCode } from "~/changeset/warnings/codes.js";
-import { printWarning } from "~/changeset/warnings/print.js";
+import type { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
+import type { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
+import { printWarning } from "~pg/changeset/warnings/print.js";
 
 export type ChangeColumnType = {
 	type: ChangeWarningType.Blocking | `${ChangeWarningType.Blocking}`;

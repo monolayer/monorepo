@@ -2,14 +2,14 @@ import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {
 	alignColumns,
 	introspectAlignment,
-} from "~/actions/database/alignment.js";
-import { type ColumnInfoFactoryOptions } from "./__setup__/helpers/factories/column-info-factory.js";
-import { runProgramWithErrorCause } from "./__setup__/helpers/run-program.js";
+} from "~monolayer/actions/database/alignment.js";
+import type { ColumnInfoFactoryOptions } from "~tests/__setup__/helpers/factories/column-info-factory.js";
+import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
 	type ProgramContext,
-} from "./__setup__/helpers/test-context.js";
+} from "~tests/__setup__/helpers/test-context.js";
 
 describe("column aligner", () => {
 	beforeEach<ProgramContext>(async (context) => {

@@ -31,8 +31,8 @@ import nunjucks from "nunjucks";
 import path from "path";
 import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
-import { dumpDatabaseWithoutMigrationTables } from "~/actions/database/dump.js";
-import { createSchema } from "./import-schemas/create-schemas.js";
+import { dumpDatabaseWithoutMigrationTables } from "~monolayer/actions/database/dump.js";
+import { createSchema } from "~monolayer/actions/import-schemas/create-schemas.js";
 import {
 	checkConstraintDefinition,
 	foreignKeyDefinition,
@@ -40,7 +40,7 @@ import {
 	primaryKeyDefinition,
 	triggerDefinition,
 	uniqueConstraintDefinition,
-} from "./import-schemas/definitions.js";
+} from "~monolayer/actions/import-schemas/definitions.js";
 export interface ImportedSchema {
 	enums: {
 		name: string;

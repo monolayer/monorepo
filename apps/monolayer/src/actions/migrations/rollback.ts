@@ -13,7 +13,10 @@ import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.
 import { Effect } from "effect";
 import { type MigrationInfo } from "kysely";
 import path from "path";
-import { deletePendingMigrations, pendingMigrations } from "./pending.js";
+import {
+	deletePendingMigrations,
+	pendingMigrations,
+} from "~monolayer/actions/migrations/pending.js";
 
 export const rollback = Effect.gen(function* () {
 	const migrator = yield* Migrator;

@@ -1,14 +1,14 @@
 import type { ColumnType, Simplify } from "kysely";
-import type { EnumInfo } from "~/introspection/enum.js";
-import type { IndexInfo } from "~/introspection/index.js";
+import type { EnumInfo } from "~pg/introspection/enum.js";
+import type { IndexInfo } from "~pg/introspection/index.js";
 import type {
 	CheckInfo,
 	ForeignKeyInfo,
 	PrimaryKeyInfo,
 	UniqueInfo,
-} from "~/introspection/schema.js";
-import type { ForeignKeyIntrospection } from "~/introspection/table.js";
-import type { TriggerInfo } from "~/introspection/trigger.js";
+} from "~pg/introspection/schema.js";
+import type { ForeignKeyIntrospection } from "~pg/introspection/table.js";
+import type { TriggerInfo } from "~pg/introspection/trigger.js";
 
 export type JsonArray = JsonValue[];
 

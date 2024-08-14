@@ -3,7 +3,14 @@ import { schema } from "@monorepo/pg/schema/schema.js";
 import { table } from "@monorepo/pg/schema/table.js";
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test, vi } from "vitest";
-import { check, foreignKey, index, integer, primaryKey, unique } from "~/pg.js";
+import {
+	check,
+	foreignKey,
+	index,
+	integer,
+	primaryKey,
+	unique,
+} from "~monolayer/pg.js";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
 import {

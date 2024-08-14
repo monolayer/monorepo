@@ -1,18 +1,18 @@
-import type { AddBigSerialColumn } from "~/changeset/warnings/add-bigserial-column.js";
-import type { AddNonNullableColumn } from "~/changeset/warnings/add-non-nullable-column.js";
-import type { AddPrimaryKeyToExistingNullableColumn } from "~/changeset/warnings/add-primary-key-to-existing-nullable-column.js";
-import type { AddPrimaryKeyToNewColumn } from "~/changeset/warnings/add-primary-key-to-new-column.js";
-import type { AddSerialColumn } from "~/changeset/warnings/add-serial-column.js";
-import type { AddUniqueToExistingColumn } from "~/changeset/warnings/add-unique.js";
-import type { AddVolatileDefault } from "~/changeset/warnings/add-volatile-default.js";
-import type { ChangeColumnToNonNullable } from "~/changeset/warnings/change-column-to-non-nullable.js";
-import type { ChangeColumnType } from "~/changeset/warnings/change-column-type.js";
-import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
-import type { ColumnDrop } from "~/changeset/warnings/column-drop.js";
-import type { ColumnRename } from "~/changeset/warnings/column-rename.js";
-import type { SchemaDrop } from "~/changeset/warnings/schema-drop.js";
-import type { TableDrop } from "~/changeset/warnings/table-drop.js";
-import type { TableRename } from "~/changeset/warnings/table-rename.js";
+import type { AddBigSerialColumn } from "~pg/changeset/warnings/add-bigserial-column.js";
+import type { AddNonNullableColumn } from "~pg/changeset/warnings/add-non-nullable-column.js";
+import type { AddPrimaryKeyToExistingNullableColumn } from "~pg/changeset/warnings/add-primary-key-to-existing-nullable-column.js";
+import type { AddPrimaryKeyToNewColumn } from "~pg/changeset/warnings/add-primary-key-to-new-column.js";
+import type { AddSerialColumn } from "~pg/changeset/warnings/add-serial-column.js";
+import type { AddUniqueToExistingColumn } from "~pg/changeset/warnings/add-unique.js";
+import type { AddVolatileDefault } from "~pg/changeset/warnings/add-volatile-default.js";
+import type { ChangeColumnToNonNullable } from "~pg/changeset/warnings/change-column-to-non-nullable.js";
+import type { ChangeColumnType } from "~pg/changeset/warnings/change-column-type.js";
+import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
+import type { ColumnDrop } from "~pg/changeset/warnings/column-drop.js";
+import type { ColumnRename } from "~pg/changeset/warnings/column-rename.js";
+import type { SchemaDrop } from "~pg/changeset/warnings/schema-drop.js";
+import type { TableDrop } from "~pg/changeset/warnings/table-drop.js";
+import type { TableRename } from "~pg/changeset/warnings/table-rename.js";
 
 export type ChangeWarning =
 	| BackwardIncompatibleChange

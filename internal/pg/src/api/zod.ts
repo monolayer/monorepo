@@ -2,4 +2,4 @@
  * @module zod
  */
 
-export { zodSchema } from "~/schema/zod/zod_schema.js";
+export { zodSchema } from "~pg/schema/zod/zod_schema.js";

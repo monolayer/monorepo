@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from "kysely";
-import type { Migration } from "~/migration.js";
+import type { Migration } from "~monolayer/migration.js";
 
 export const migration = {
 	name: "20240405T153857-alphard-black",

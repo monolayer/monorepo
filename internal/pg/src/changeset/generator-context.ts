@@ -1,10 +1,10 @@
-import type { TypeAlignment } from "~/changeset/helpers/alignment.js";
-import type { SplitColumnRefactoring } from "~/changeset/refactors/split-column.js";
+import type { TypeAlignment } from "~pg/changeset/helpers/alignment.js";
+import type { SplitColumnRefactoring } from "~pg/changeset/refactors/split-column.js";
 import type {
 	ColumnsToRename,
 	TablesToRename,
-} from "~/introspection/schema.js";
-import type { SchemaMigrationInfo } from "~/schema/column/types.js";
+} from "~pg/introspection/schema.js";
+import type { SchemaMigrationInfo } from "~pg/schema/column/types.js";
 
 export interface GeneratorContext {
 	local: SchemaMigrationInfo;

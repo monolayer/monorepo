@@ -1,6 +1,6 @@
 import captureConsole from "capture-console";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { pendingMigrations } from "~/actions/migrations/pending.js";
+import { pendingMigrations } from "~monolayer/actions/migrations/pending.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,

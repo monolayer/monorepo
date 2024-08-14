@@ -1,7 +1,7 @@
 import { sql } from "kysely";
-import { timestampWithTimeZone } from "~/schema/column/data-types/timestamp-with-time-zone.js";
-import { extension } from "~/schema/extension.js";
-import { trigger } from "~/schema/trigger.js";
+import { timestampWithTimeZone } from "~pg/schema/column/data-types/timestamp-with-time-zone.js";
+import { extension } from "~pg/schema/extension.js";
+import { trigger } from "~pg/schema/trigger.js";
 
 export const timestamps = {
 	columns: {

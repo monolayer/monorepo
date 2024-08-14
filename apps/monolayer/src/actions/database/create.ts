@@ -4,7 +4,7 @@ import {
 	connectionOptions,
 } from "@monorepo/services/db-clients.js";
 import { Effect } from "effect";
-import { databaseExists } from "./exists.js";
+import { databaseExists } from "~monolayer/actions/database/exists.js";
 
 export const createDatabase = Effect.gen(function* () {
 	const databaseName = (yield* connectionOptions).databaseName;

@@ -1,6 +1,6 @@
-import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
-import { PgBigSerial } from "~/schema/column/data-types/bigserial.js";
-import { PgSerial } from "~/schema/column/data-types/serial.js";
+import type { PgColumn, SerialColumn } from "~pg/schema/column/column.js";
+import { PgBigSerial } from "~pg/schema/column/data-types/bigserial.js";
+import { PgSerial } from "~pg/schema/column/data-types/serial.js";
 
 export function isBigserial(
 	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,

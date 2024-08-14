@@ -1,16 +1,16 @@
 import type { Simplify } from "kysely";
-import { PgCheck, type PgUnmanagedCheck } from "~/schema/check.js";
-import type { ColumnRecord } from "~/schema/column.js";
+import { PgCheck, type PgUnmanagedCheck } from "~pg/schema/check.js";
+import type { ColumnRecord } from "~pg/schema/column.js";
 import type {
 	PgForeignKey,
 	PgSelfReferentialForeignKey,
 	PgUnmanagedForeignKey,
-} from "~/schema/foreign-key.js";
-import { type PgIndex, PgUnmanagedIndex } from "~/schema/index.js";
-import type { InferColumnTypes } from "~/schema/inference.js";
-import type { PgPrimaryKey } from "~/schema/primary-key.js";
-import { type PgTrigger, PgUnmanagedTrigger } from "~/schema/trigger.js";
-import type { PgUnique } from "~/schema/unique.js";
+} from "~pg/schema/foreign-key.js";
+import { type PgIndex, PgUnmanagedIndex } from "~pg/schema/index.js";
+import type { InferColumnTypes } from "~pg/schema/inference.js";
+import type { PgPrimaryKey } from "~pg/schema/primary-key.js";
+import { type PgTrigger, PgUnmanagedTrigger } from "~pg/schema/trigger.js";
+import type { PgUnique } from "~pg/schema/unique.js";
 
 /**
  * @group Classes, Types, and Interfaces

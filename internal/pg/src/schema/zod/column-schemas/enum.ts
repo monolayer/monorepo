@@ -1,8 +1,8 @@
 import { z } from "zod";
-import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
-import { PgEnum } from "~/schema/column/data-types/enumerated.js";
-import { baseSchema, finishSchema } from "~/schema/zod/common.js";
-import { nullableColumn } from "~/schema/zod/helpers.js";
+import type { PgColumn, SerialColumn } from "~pg/schema/column/column.js";
+import { PgEnum } from "~pg/schema/column/data-types/enumerated.js";
+import { baseSchema, finishSchema } from "~pg/schema/zod/common.js";
+import { nullableColumn } from "~pg/schema/zod/helpers.js";
 
 export function isEnum(
 	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,

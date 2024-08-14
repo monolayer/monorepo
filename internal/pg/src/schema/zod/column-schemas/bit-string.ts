@@ -1,10 +1,10 @@
 import { z } from "zod";
-import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
-import { PgBitVarying } from "~/schema/column/data-types/bit-varying.js";
-import { PgBit } from "~/schema/column/data-types/bit.js";
-import { finishSchema } from "~/schema/zod/common.js";
-import { columnData } from "~/schema/zod/helpers.js";
-import { bitRegex } from "~/schema/zod/regexes/regex.js";
+import type { PgColumn, SerialColumn } from "~pg/schema/column/column.js";
+import { PgBitVarying } from "~pg/schema/column/data-types/bit-varying.js";
+import { PgBit } from "~pg/schema/column/data-types/bit.js";
+import { finishSchema } from "~pg/schema/zod/common.js";
+import { columnData } from "~pg/schema/zod/helpers.js";
+import { bitRegex } from "~pg/schema/zod/regexes/regex.js";
 
 export function bitSchema(column: PgBit) {
 	const data = columnData(column);

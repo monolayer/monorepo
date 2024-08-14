@@ -1,16 +1,16 @@
 import { type Kysely, sql } from "kysely";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
 import {
 	type ColumnsToRename,
 	primaryKeyColumns,
 	type PrimaryKeyInfo,
-} from "~/introspection/schema.js";
-import { tableInfo } from "~/introspection/table.js";
-import type { ColumnRecord } from "~/schema/column.js";
-import { type AnyPgPrimaryKey, PgPrimaryKey } from "~/schema/primary-key.js";
-import { type AnySchema, Schema } from "~/schema/schema.js";
-import type { AnyPgTable } from "~/schema/table.js";
+} from "~pg/introspection/schema.js";
+import { tableInfo } from "~pg/introspection/table.js";
+import type { ColumnRecord } from "~pg/schema/column.js";
+import { type AnyPgPrimaryKey, PgPrimaryKey } from "~pg/schema/primary-key.js";
+import { type AnySchema, Schema } from "~pg/schema/schema.js";
+import type { AnyPgTable } from "~pg/schema/table.js";
 
 export type PrimaryKeyConstraintInfo = {
 	constraintType: "PRIMARY KEY";

@@ -1,17 +1,21 @@
 import { z } from "zod";
-import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
-import { PgDate } from "~/schema/column/data-types/date.js";
-import { PgTimeWithTimeZone } from "~/schema/column/data-types/time-with-time-zone.js";
-import { PgTime } from "~/schema/column/data-types/time.js";
-import { PgTimestampWithTimeZone } from "~/schema/column/data-types/timestamp-with-time-zone.js";
-import { PgTimestamp } from "~/schema/column/data-types/timestamp.js";
-import { baseSchema, finishSchema, stringSchema } from "~/schema/zod/common.js";
+import type { PgColumn, SerialColumn } from "~pg/schema/column/column.js";
+import { PgDate } from "~pg/schema/column/data-types/date.js";
+import { PgTimeWithTimeZone } from "~pg/schema/column/data-types/time-with-time-zone.js";
+import { PgTime } from "~pg/schema/column/data-types/time.js";
+import { PgTimestampWithTimeZone } from "~pg/schema/column/data-types/timestamp-with-time-zone.js";
+import { PgTimestamp } from "~pg/schema/column/data-types/timestamp.js";
+import {
+	baseSchema,
+	finishSchema,
+	stringSchema,
+} from "~pg/schema/zod/common.js";
 import {
 	columnData,
 	customIssue,
 	nullableColumn,
-} from "~/schema/zod/helpers.js";
-import { timeRegex } from "~/schema/zod/regexes/regex.js";
+} from "~pg/schema/zod/helpers.js";
+import { timeRegex } from "~pg/schema/zod/regexes/regex.js";
 
 export function isTime(
 	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,

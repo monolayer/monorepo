@@ -1,6 +1,6 @@
 import type { Kysely } from "kysely";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
-import { PgExtension } from "~/schema/extension.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
+import { PgExtension } from "~pg/schema/extension.js";
 
 export async function dbExtensionInfo(kysely: Kysely<InformationSchemaDB>) {
 	const results = await kysely

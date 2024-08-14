@@ -2,7 +2,7 @@ import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { readFileSync, rmSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { scaffoldMigration } from "~/actions/migrations/scaffold.js";
+import { scaffoldMigration } from "~monolayer/actions/migrations/scaffold.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
@@ -13,7 +13,7 @@ import {
 describe("scaffoldMigration", () => {
 	beforeEach<ProgramContext>(async (context) => {
 		await setupProgramContext(context);
-		vi.unmock("~/create-file.ts");
+		vi.unmock("~monolayer/create-file.ts");
 	});
 
 	afterEach<ProgramContext>(async (context) => {

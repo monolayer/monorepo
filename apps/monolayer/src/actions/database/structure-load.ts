@@ -5,8 +5,8 @@ import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import fs from "fs/promises";
 import path from "path";
-import { createDatabase } from "./create.js";
-import { dropDatabase } from "./drop.js";
+import { createDatabase } from "~monolayer/actions/database/create.js";
+import { dropDatabase } from "~monolayer/actions/database/drop.js";
 
 export function structureLoad() {
 	return checkStructureFile().pipe(

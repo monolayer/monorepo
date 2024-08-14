@@ -1,4 +1,4 @@
-import { PgColumn } from "~/schema/column/column.js";
+import { PgColumn } from "~pg/schema/column/column.js";
 
 /**
  * Column that can store numbers with a very large number of digits.

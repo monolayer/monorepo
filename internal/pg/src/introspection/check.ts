@@ -1,17 +1,17 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { Kysely, sql } from "kysely";
-import { compileDefaultExpression } from "~/helpers/compile-default-expression.js";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
+import { compileDefaultExpression } from "~pg/helpers/compile-default-expression.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
 import {
 	currentColumName,
 	previousColumnName,
-} from "~/introspection/column-name.js";
-import type { BuilderContext } from "~/introspection/introspection/foreign-key-builder.js";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
-import type { CheckInfo, ColumnsToRename } from "~/introspection/schema.js";
-import { tableInfo } from "~/introspection/table.js";
-import { PgCheck, assertCheckWithInfo } from "~/schema/check.js";
-import { type AnySchema, Schema } from "~/schema/schema.js";
+} from "~pg/introspection/column-name.js";
+import type { BuilderContext } from "~pg/introspection/introspection/foreign-key-builder.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
+import type { CheckInfo, ColumnsToRename } from "~pg/introspection/schema.js";
+import { tableInfo } from "~pg/introspection/table.js";
+import { PgCheck, assertCheckWithInfo } from "~pg/schema/check.js";
+import { type AnySchema, Schema } from "~pg/schema/schema.js";
 
 export async function dbCheckConstraintInfo(
 	kysely: Kysely<InformationSchemaDB>,

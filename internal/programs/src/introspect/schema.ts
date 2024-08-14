@@ -7,9 +7,9 @@ import type {
 	TableAndColumnRenames,
 } from "@monorepo/state/table-column-rename.js";
 import { Effect } from "effect";
+import { introspectLocal } from "~programs/introspect/local-schema.js";
+import { introspectRemote } from "~programs/introspect/remote-schema.js";
 import type { SplitColumnRefactoring } from "../schema-refactor.js";
-import { introspectLocal } from "./local-schema.js";
-import { introspectRemote } from "./remote-schema.js";
 
 export function introspectSchema(
 	schema: AnySchema,

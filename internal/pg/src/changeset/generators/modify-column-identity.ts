@@ -1,14 +1,14 @@
 import { Difference } from "microdiff";
-import type { GeneratorContext } from "~/changeset/generator-context.js";
-import { executeKyselyDbStatement } from "~/changeset/helpers/helpers.js";
+import type { GeneratorContext } from "~pg/changeset/generator-context.js";
+import { executeKyselyDbStatement } from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
-} from "~/changeset/types.js";
-import { currentTableName } from "~/introspection/introspection/table-name.js";
-import type { ColumnInfo } from "~/schema/column/types.js";
+} from "~pg/changeset/types.js";
+import { currentTableName } from "~pg/introspection/introspection/table-name.js";
+import type { ColumnInfo } from "~pg/schema/column/types.js";
 
 export function columnIdentityMigrationOpGenerator(
 	diff: Difference,

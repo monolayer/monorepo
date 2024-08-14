@@ -1,22 +1,22 @@
 import { type Kysely, sql } from "kysely";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
 import {
 	type BuilderContext,
 	ForeignKeyBuilder,
-} from "~/introspection/introspection/foreign-key-builder.js";
-import { currentTableName } from "~/introspection/introspection/table-name.js";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
+} from "~pg/introspection/introspection/foreign-key-builder.js";
+import { currentTableName } from "~pg/introspection/introspection/table-name.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
 import type {
 	ColumnsToRename,
 	ForeignKeyInfo,
 	TablesToRename,
-} from "~/introspection/schema.js";
+} from "~pg/introspection/schema.js";
 import {
 	type ForeignKeyIntrospection,
 	tableInfo,
-} from "~/introspection/table.js";
-import type { ForeignKeyRule } from "~/schema/foreign-key.js";
-import { type AnySchema, Schema } from "~/schema/schema.js";
+} from "~pg/introspection/table.js";
+import type { ForeignKeyRule } from "~pg/schema/foreign-key.js";
+import { type AnySchema, Schema } from "~pg/schema/schema.js";
 
 export async function dbForeignKeyConstraints(
 	fetchInfo: Awaited<ReturnType<typeof fetchForeignConstraintInfo>>,

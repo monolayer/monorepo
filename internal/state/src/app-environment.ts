@@ -6,7 +6,7 @@ import { Context, Effect, Ref } from "effect";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
-import { importConfig, importDatabases } from "./import-config.js";
+import { importConfig, importDatabases } from "~state/import-config.js";
 
 export interface AppEnv {
 	folder: string;

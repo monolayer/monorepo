@@ -1,7 +1,7 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
-import { createDatabase } from "~/actions/database/create.js";
-import { cliAction, cliActionWithoutContext } from "~/cli-action.js";
+import { createDatabase } from "~monolayer/actions/database/create.js";
+import { cliAction, cliActionWithoutContext } from "~monolayer/cli-action.js";
 import { dropDatabase } from "../actions/database/drop.js";
 import { seed } from "../actions/database/seed.js";
 import { structureLoad } from "../actions/database/structure-load.js";

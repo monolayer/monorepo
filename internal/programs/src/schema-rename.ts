@@ -9,8 +9,8 @@ import {
 	type ColumnsToRename,
 } from "@monorepo/state/table-column-rename.js";
 import { Effect } from "effect";
-import { introspectSchema } from "~/introspect/schema.js";
-import type { SplitColumnRefactoring } from "~/schema-refactor.js";
+import { introspectSchema } from "~programs/introspect/schema.js";
+import type { SplitColumnRefactoring } from "~programs/schema-refactor.js";
 
 export function promptSchemaRenames(
 	splitColumnRefactors: SplitColumnRefactoring[],

@@ -11,14 +11,17 @@ import {
 	schema,
 	table,
 	unique,
-} from "~/pg.js";
-import type { DbContext } from "./__setup__/helpers/kysely.js";
-import { testChangesetAndMigrations } from "./__setup__/helpers/migration-success.js";
+} from "~monolayer/pg.js";
+import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
+import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
 import {
 	setUpContext,
 	teardownContext,
-} from "./__setup__/helpers/test-context.js";
-import { mockColumnDiffOnce, mockTableDiffOnce } from "./__setup__/setup.js";
+} from "~tests/__setup__/helpers/test-context.js";
+import {
+	mockColumnDiffOnce,
+	mockTableDiffOnce,
+} from "~tests/__setup__/setup.js";
 
 describe("Rename table and column without camel case plugin", () => {
 	beforeEach<DbContext>(async (context) => {

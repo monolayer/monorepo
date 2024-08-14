@@ -1,8 +1,8 @@
-import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
-import { PgTsquery } from "~/schema/column/data-types/tsquery.js";
-import { PgTsvector } from "~/schema/column/data-types/tsvector.js";
-import { finishSchema, stringSchema } from "~/schema/zod/common.js";
-import { columnData } from "~/schema/zod/helpers.js";
+import type { PgColumn, SerialColumn } from "~pg/schema/column/column.js";
+import { PgTsquery } from "~pg/schema/column/data-types/tsquery.js";
+import { PgTsvector } from "~pg/schema/column/data-types/tsvector.js";
+import { finishSchema, stringSchema } from "~pg/schema/zod/common.js";
+import { columnData } from "~pg/schema/zod/helpers.js";
 
 export function tsvectorSchema(column: PgTsvector) {
 	const data = columnData(column);

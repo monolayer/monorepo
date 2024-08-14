@@ -1,4 +1,4 @@
-import type { AnyPgTable, PgTable } from "~/schema/table.js";
+import type { AnyPgTable, PgTable } from "~pg/schema/table.js";
 
 /**
  * Defines a foreign key constraint on a column or a group of columns.

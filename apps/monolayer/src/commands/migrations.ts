@@ -1,12 +1,12 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
-import { handleMissingDatabase } from "~/actions/database/handle-missing.js";
-import { generateMigration } from "~/actions/migrations/generate.js";
+import { handleMissingDatabase } from "~monolayer/actions/database/handle-missing.js";
+import { generateMigration } from "~monolayer/actions/migrations/generate.js";
 import {
 	handlePendingSchemaMigrations,
 	pendingMigrations,
-} from "~/actions/migrations/pending.js";
-import { cliAction } from "~/cli-action.js";
+} from "~monolayer/actions/migrations/pending.js";
+import { cliAction } from "~monolayer/cli-action.js";
 import { scaffoldCommand } from "../actions/scaffold.js";
 
 export function migrationsCommand(program: Command) {

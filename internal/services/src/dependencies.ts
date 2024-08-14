@@ -8,7 +8,7 @@ import { appEnvironmentConfigurationSchemas } from "@monorepo/state/app-environm
 import { Effect } from "effect";
 import { Kysely, sql } from "kysely";
 import toposort from "toposort";
-import { DbClients } from "./db-clients.js";
+import { DbClients } from "~services/db-clients.js";
 
 export type TableDependencies = {
 	foreigh_key_table: string;

@@ -1,22 +1,22 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { CamelCasePlugin, Kysely, PostgresDialect, sql } from "kysely";
 import pg from "pg";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
 import {
 	changedColumnNames,
 	previousColumnName,
-} from "~/introspection/column-name.js";
-import type { BuilderContext } from "~/introspection/introspection/foreign-key-builder.js";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
-import type { ColumnsToRename } from "~/introspection/schema.js";
-import { tableInfo } from "~/introspection/table.js";
+} from "~pg/introspection/column-name.js";
+import type { BuilderContext } from "~pg/introspection/introspection/foreign-key-builder.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
+import type { ColumnsToRename } from "~pg/introspection/schema.js";
+import { tableInfo } from "~pg/introspection/table.js";
 import {
 	indexOptions,
 	type IndexOptions,
 	isExternalIndex,
 	type PgIndex,
-} from "~/schema/index.js";
-import { type AnySchema, Schema } from "~/schema/schema.js";
+} from "~pg/schema/index.js";
+import { type AnySchema, Schema } from "~pg/schema/schema.js";
 
 export async function dbIndexInfo(
 	kysely: Kysely<InformationSchemaDB>,

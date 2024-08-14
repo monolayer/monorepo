@@ -1,4 +1,4 @@
-import { PgColumn, valueWithHash } from "~/schema/column/column.js";
+import { PgColumn, valueWithHash } from "~pg/schema/column/column.js";
 
 /**
  * Column that stores dates (without time of day).

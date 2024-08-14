@@ -1,5 +1,5 @@
-import { PgColumn } from "~/schema/column/column.js";
-import type { DateTimePrecision } from "~/schema/column/types.js";
+import { PgColumn } from "~pg/schema/column/column.js";
+import type { DateTimePrecision } from "~pg/schema/column/types.js";
 
 /**
  * Column that stores times of day (no date) without time zone.

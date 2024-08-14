@@ -1,7 +1,7 @@
-import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
-import { PgXML } from "~/schema/column/data-types/xml.js";
-import { finishSchema, stringSchema } from "~/schema/zod/common.js";
-import { columnData } from "~/schema/zod/helpers.js";
+import type { PgColumn, SerialColumn } from "~pg/schema/column/column.js";
+import { PgXML } from "~pg/schema/column/data-types/xml.js";
+import { finishSchema, stringSchema } from "~pg/schema/zod/common.js";
+import { columnData } from "~pg/schema/zod/helpers.js";
 
 export function xmlSchema(column: PgXML) {
 	const data = columnData(column);

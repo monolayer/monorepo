@@ -6,9 +6,9 @@ import type {
 	Simplify,
 } from "kysely";
 import type z from "zod";
-import type { ColumnRecord } from "~/schema/column.js";
-import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
-import type { PgBytea } from "~/schema/column/data-types/bytea.js";
+import type { ColumnRecord } from "~pg/schema/column.js";
+import type { PgColumn, SerialColumn } from "~pg/schema/column/column.js";
+import type { PgBytea } from "~pg/schema/column/data-types/bytea.js";
 import type {
 	GeneratedAlwaysColumn,
 	GeneratedColumn,
@@ -17,7 +17,7 @@ import type {
 	OptionalColumnType,
 	OptionalNullableColumnType,
 	WithDefaultColumn,
-} from "~/schema/column/types.js";
+} from "~pg/schema/column/types.js";
 
 export type InferColumnTypes<
 	T extends ColumnRecord,

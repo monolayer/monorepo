@@ -12,7 +12,7 @@ import type { AppEnvironment } from "@monorepo/state/app-environment.js";
 import { Context, Effect } from "effect";
 import type { UnknownException } from "effect/Cause";
 import type { Kysely, MigrationResultSet, NoMigrations } from "kysely";
-import type { DbClients } from "./db-clients.js";
+import type { DbClients } from "~services/db-clients.js";
 
 export interface MigrationStats {
 	all: MonolayerMigrationInfo[];

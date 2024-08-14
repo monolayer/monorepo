@@ -1,5 +1,5 @@
-import { PgColumn, valueWithHash } from "~/schema/column/column.js";
-import type { DateTimePrecision } from "~/schema/column/types.js";
+import { PgColumn, valueWithHash } from "~pg/schema/column/column.js";
+import type { DateTimePrecision } from "~pg/schema/column/types.js";
 
 /**
  * Column that stores both date and time without time zone with an optional precision.

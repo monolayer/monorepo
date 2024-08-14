@@ -1,20 +1,23 @@
 import { Difference } from "microdiff";
-import type { GeneratorContext } from "~/changeset/generator-context.js";
+import type { GeneratorContext } from "~pg/changeset/generator-context.js";
+import {
+	commentForDefault,
+	toValueAndHash,
+} from "~pg/changeset/generators/helpers.js";
 import {
 	executeKyselySchemaStatement,
 	sqlStatement,
-} from "~/changeset/helpers/helpers.js";
+} from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
-} from "~/changeset/types.js";
-import { ChangeWarningType } from "~/changeset/warnings/change-warning-type.js";
-import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
-import { currentTableName } from "~/introspection/introspection/table-name.js";
-import type { SchemaMigrationInfo } from "~/schema/column/types.js";
-import { commentForDefault, toValueAndHash } from "./helpers.js";
+} from "~pg/changeset/types.js";
+import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
+import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
+import { currentTableName } from "~pg/introspection/introspection/table-name.js";
+import type { SchemaMigrationInfo } from "~pg/schema/column/types.js";
 
 export function columnDefaultMigrationOpGenerator(
 	diff: Difference,

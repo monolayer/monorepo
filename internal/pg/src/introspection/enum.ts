@@ -1,7 +1,7 @@
 import { sql, type Kysely } from "kysely";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
-import type { EnumType } from "~/schema/column/data-types/enum.js";
-import { Schema, type AnySchema } from "~/schema/schema.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
+import type { EnumType } from "~pg/schema/column/data-types/enum.js";
+import { Schema, type AnySchema } from "~pg/schema/schema.js";
 
 export async function dbEnumInfo(
 	kysely: Kysely<InformationSchemaDB>,

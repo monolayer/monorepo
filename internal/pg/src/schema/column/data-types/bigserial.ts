@@ -1,4 +1,4 @@
-import { SerialColumn } from "~/schema/column/column.js";
+import { SerialColumn } from "~pg/schema/column/column.js";
 
 /**
  * Unique identifier column.

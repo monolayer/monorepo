@@ -21,8 +21,11 @@ import {
 	kyselyWithCustomDB,
 	type DbContext,
 } from "~tests/__setup__/helpers/kysely.js";
+import {
+	dbNameForTest,
+	programFolder,
+} from "~tests/__setup__/helpers/names.js";
 import { currentWorkingDirectory, globalPool } from "~tests/__setup__/setup.js";
-import { dbNameForTest, programFolder } from "./names.js";
 
 export async function teardownContext(context: TaskContext & DbContext) {
 	try {

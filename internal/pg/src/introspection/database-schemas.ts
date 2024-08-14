@@ -1,5 +1,5 @@
 import { sql, type Kysely } from "kysely";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
 
 export async function schemaInDb(
 	kysely: Kysely<InformationSchemaDB>,

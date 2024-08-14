@@ -6,26 +6,26 @@ import {
 	type AddDropStats,
 	type SummaryStats,
 	type TableStats,
-} from "~/changeset/stats.js";
-import type { Changeset } from "~/changeset/types.js";
-import { printAddBigSerialColumn } from "~/changeset/warnings/add-bigserial-column.js";
-import { printAddNonNullableColumnWarning } from "~/changeset/warnings/add-non-nullable-column.js";
-import { printAddPrimaryKeyToExistingNullableColumn } from "~/changeset/warnings/add-primary-key-to-existing-nullable-column.js";
-import { printAddPrimaryKeyToNewColumn } from "~/changeset/warnings/add-primary-key-to-new-column.js";
-import { printAddSerialColumn } from "~/changeset/warnings/add-serial-column.js";
-import { printAddUniqueToExisitingColumnWarning } from "~/changeset/warnings/add-unique.js";
-import { printChangeColumnDefaultVolatileWarning } from "~/changeset/warnings/add-volatile-default.js";
-import { printChangeColumnToNonNullableWarning } from "~/changeset/warnings/change-column-to-non-nullable.js";
-import { printChangeColumnTypeWarning } from "~/changeset/warnings/change-column-type.js";
-import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
-import { printColumnRenameWarnings } from "~/changeset/warnings/column-rename.js";
-import { printWarning } from "~/changeset/warnings/print.js";
-import { printTableRenameWarnings } from "~/changeset/warnings/table-rename.js";
+} from "~pg/changeset/stats.js";
+import type { Changeset } from "~pg/changeset/types.js";
+import { printAddBigSerialColumn } from "~pg/changeset/warnings/add-bigserial-column.js";
+import { printAddNonNullableColumnWarning } from "~pg/changeset/warnings/add-non-nullable-column.js";
+import { printAddPrimaryKeyToExistingNullableColumn } from "~pg/changeset/warnings/add-primary-key-to-existing-nullable-column.js";
+import { printAddPrimaryKeyToNewColumn } from "~pg/changeset/warnings/add-primary-key-to-new-column.js";
+import { printAddSerialColumn } from "~pg/changeset/warnings/add-serial-column.js";
+import { printAddUniqueToExisitingColumnWarning } from "~pg/changeset/warnings/add-unique.js";
+import { printChangeColumnDefaultVolatileWarning } from "~pg/changeset/warnings/add-volatile-default.js";
+import { printChangeColumnToNonNullableWarning } from "~pg/changeset/warnings/change-column-to-non-nullable.js";
+import { printChangeColumnTypeWarning } from "~pg/changeset/warnings/change-column-type.js";
+import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
+import { printColumnRenameWarnings } from "~pg/changeset/warnings/column-rename.js";
+import { printWarning } from "~pg/changeset/warnings/print.js";
+import { printTableRenameWarnings } from "~pg/changeset/warnings/table-rename.js";
 import {
 	classifyWarnings,
 	type ChangeWarning,
 	type DestructiveChange,
-} from "~/changeset/warnings/warnings.js";
+} from "~pg/changeset/warnings/warnings.js";
 
 type TableRecord = Record<
 	string,

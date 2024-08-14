@@ -1,11 +1,11 @@
 import type { Expression } from "kysely";
-import { compileDefaultExpression } from "~/helpers/compile-default-expression.js";
+import { compileDefaultExpression } from "~pg/helpers/compile-default-expression.js";
 import {
 	isExpression,
 	PgColumn,
 	valueWithHash,
-} from "~/schema/column/column.js";
-import type { JsonValue, WithDefaultColumn } from "~/schema/column/types.js";
+} from "~pg/schema/column/column.js";
+import type { JsonValue, WithDefaultColumn } from "~pg/schema/column/types.js";
 
 /**
  * Column that stores JSON data.

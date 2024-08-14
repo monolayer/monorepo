@@ -37,14 +37,14 @@ import fs from "node:fs/promises";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
-import { DbClients } from "./db-clients.js";
-import { extractMigrationOps } from "./dont-know.js";
+import { DbClients } from "~services/db-clients.js";
+import { extractMigrationOps } from "~services/dont-know.js";
 import {
 	type MigrationStats,
 	Migrator,
 	type MigratorInterface,
 	type MigratorLayerProps,
-} from "./migrator.js";
+} from "~services/migrator.js";
 
 export class PhasedMigrator implements MigratorInterface {
 	protected readonly alterInstance: MonolayerMigrator;

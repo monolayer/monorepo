@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { ChangeSetType, type Changeset } from "~/changeset/types.js";
+import { ChangeSetType, type Changeset } from "~pg/changeset/types.js";
 
 export type SummaryStats = {
 	added: number;

@@ -1,4 +1,4 @@
-import type { ColumnInfo } from "~/schema/column/types.js";
+import type { ColumnInfo } from "~pg/schema/column/types.js";
 
 export interface ColumnToAlign extends ColumnInfo {
 	alignment: TypeAlignment | undefined;

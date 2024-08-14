@@ -3,7 +3,7 @@ import {
 	catchErrorTags,
 	handleErrors,
 	printAnyErrors,
-} from "./handle-errors.js";
+} from "~cli/handle-errors.js";
 
 export function actionWithErrorHandling<AC, AE>(
 	tasks: Effect.Effect<unknown, AE, AC>[],

@@ -1,4 +1,4 @@
-import { PgColumn } from "~/schema/column/column.js";
+import { PgColumn } from "~pg/schema/column/column.js";
 
 /**
  * Column that stores inexact, variable-precision numeric types.

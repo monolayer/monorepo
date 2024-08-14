@@ -1,5 +1,5 @@
-import { StringColumn } from "~/schema/column/column.js";
-import type { EnumType } from "~/schema/column/data-types/enum.js";
+import { StringColumn } from "~pg/schema/column/column.js";
+import type { EnumType } from "~pg/schema/column/data-types/enum.js";
 
 /**
  * Column that stores a static, ordered set of values.

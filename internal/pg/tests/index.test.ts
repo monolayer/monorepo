@@ -1,7 +1,7 @@
 import { sql } from "kysely";
 import { compileIndex } from "tests/__setup__/helpers/indexes.js";
 import { describe, expect, test } from "vitest";
-import { index } from "~/schema/index.js";
+import { index } from "~pg/schema/index.js";
 
 describe("pgIndex", () => {
 	test("one column", async () => {

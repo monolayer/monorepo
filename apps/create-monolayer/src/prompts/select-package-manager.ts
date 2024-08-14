@@ -1,6 +1,6 @@
 import { select } from "@clack/prompts";
 import { Effect } from "effect";
-import { PackageManagerState } from "~/state/package-manager.js";
+import { PackageManagerState } from "~create-monolayer/state/package-manager.js";
 
 type PackageManagerSelectOptions = {
 	value: "npm" | "pnpm" | "yarn" | "bun";

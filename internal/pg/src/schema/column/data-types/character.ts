@@ -1,4 +1,4 @@
-import { MaxLengthColumn } from "~/schema/column/column.js";
+import { MaxLengthColumn } from "~pg/schema/column/column.js";
 
 /**
  * Column that stores a fixed-length, blank-padded string of up to `maximumLength` characters.

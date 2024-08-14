@@ -12,11 +12,11 @@ import { Effect, Ref } from "effect";
 import type { Layer } from "effect/Layer";
 import path from "path";
 import { expect } from "vitest";
-import { generateMigration } from "~/actions/migrations/generate.js";
+import { generateMigration } from "~monolayer/actions/migrations/generate.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
+import { newLayers } from "~tests/__setup__/helpers/layers.js";
 import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";
-import { newLayers } from "./layers.js";
-import { programWithErrorCause } from "./run-program.js";
+import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 
 export async function testChangesetAndMigrations({
 	context,

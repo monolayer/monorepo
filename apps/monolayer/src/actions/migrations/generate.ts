@@ -6,7 +6,7 @@ import { migrationNamePrompt } from "@monorepo/prompts/migration-name.js";
 import { schemaDependencies } from "@monorepo/services/dependencies.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { Effect } from "effect";
-import { validateUniqueSchemaName } from "~/changeset/validate-unique-schema-name.js";
+import { validateUniqueSchemaName } from "~monolayer/changeset/validate-unique-schema-name.js";
 import { changeset } from "../../changeset/changeset.js";
 
 export function generateMigration(name?: string) {

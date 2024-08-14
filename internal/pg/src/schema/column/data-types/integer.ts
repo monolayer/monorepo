@@ -1,11 +1,11 @@
 import { type Expression } from "kysely";
-import { compileDefaultExpression } from "~/helpers/compile-default-expression.js";
+import { compileDefaultExpression } from "~pg/helpers/compile-default-expression.js";
 import {
 	IdentifiableColumn,
 	isExpression,
 	valueWithHash,
-} from "~/schema/column/column.js";
-import type { WithDefaultColumn } from "~/schema/column/types.js";
+} from "~pg/schema/column/column.js";
+import type { WithDefaultColumn } from "~pg/schema/column/types.js";
 
 /**
  * Column that stores whole numbers.

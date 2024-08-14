@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Expression } from "kysely";
-import { PgRawConstraint } from "~/schema/raw-constraint.js";
+import { PgRawConstraint } from "~pg/schema/raw-constraint.js";
 
 /**
  * @group Schema Definition

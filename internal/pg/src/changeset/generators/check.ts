@@ -1,22 +1,22 @@
 /* eslint-disable max-lines */
 import type { Difference } from "microdiff";
-import type { GeneratorContext } from "~/changeset/generator-context.js";
+import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
-} from "~/changeset/helpers/helpers.js";
+} from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
-} from "~/changeset/types.js";
-import { redefineCheck } from "~/introspection/check.js";
-import { changedColumnNames } from "~/introspection/column-name.js";
+} from "~pg/changeset/types.js";
+import { redefineCheck } from "~pg/introspection/check.js";
+import { changedColumnNames } from "~pg/introspection/column-name.js";
 import {
 	currentTableName,
 	previousTableName,
-} from "~/introspection/introspection/table-name.js";
+} from "~pg/introspection/introspection/table-name.js";
 
 export function CheckMigrationOpGenerator(
 	diff: Difference,

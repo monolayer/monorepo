@@ -4,16 +4,19 @@ import * as p from "@clack/prompts";
 import { Effect, Ref } from "effect";
 import color from "picocolors";
 import { exit } from "process";
-import { initFolderAndFiles } from "~/init-folders-and-files.js";
-import { installPackage } from "~/install-package.js";
-import { selectDbFolder } from "~/prompts/select-db-folder.js";
-import { selectPackageManager } from "~/prompts/select-package-manager.js";
-import { DbFolderState, type DbFolder } from "~/state/db-folder.js";
+import { initFolderAndFiles } from "~create-monolayer/init-folders-and-files.js";
+import { installPackage } from "~create-monolayer/install-package.js";
+import { selectDbFolder } from "~create-monolayer/prompts/select-db-folder.js";
+import { selectPackageManager } from "~create-monolayer/prompts/select-package-manager.js";
+import {
+	DbFolderState,
+	type DbFolder,
+} from "~create-monolayer/state/db-folder.js";
 import {
 	PackageManagerState,
 	defaultPackageManagerRef,
-} from "~/state/package-manager.js";
-import { yarnInstallPeerDependencies } from "~/yarn-install-peer-dependencies.js";
+} from "~create-monolayer/state/package-manager.js";
+import { yarnInstallPeerDependencies } from "~create-monolayer/yarn-install-peer-dependencies.js";
 
 const program = Effect.all([
 	selectPackageManager,

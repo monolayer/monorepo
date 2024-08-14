@@ -1,4 +1,4 @@
-import { MaxLengthColumn } from "~/schema/column/column.js";
+import { MaxLengthColumn } from "~pg/schema/column/column.js";
 
 /**
  * Column that stores bit strings (strings of 1's and 0's) of fixed length.

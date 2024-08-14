@@ -7,7 +7,7 @@ import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-s
 import {
 	setUpContext,
 	teardownContext,
-} from "./__setup__/helpers/test-context.js";
+} from "~tests/__setup__/helpers/test-context.js";
 
 describe("Database migrations", () => {
 	beforeEach<DbContext>(async (context) => {

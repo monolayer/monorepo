@@ -8,7 +8,7 @@ import type {
 import { Schema } from "@monorepo/pg/schema/schema.js";
 import { appEnvironmentConfigurationSchemas } from "@monorepo/state/app-environment.js";
 import { Context, Effect, Ref } from "effect";
-import { introspectSchema } from "./introspect-schemas.js";
+import { introspectSchema } from "~monolayer/changeset/introspect-schemas.js";
 
 export interface SplitColumnRefactoring {
 	schema: string;

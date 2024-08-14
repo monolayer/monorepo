@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import nunjucks from "nunjucks";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { dumpDatabaseStructureTask } from "~/actions/database/dump.js";
+import { dumpDatabaseStructureTask } from "~monolayer/actions/database/dump.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,

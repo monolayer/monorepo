@@ -2,7 +2,7 @@ import { sql } from "kysely";
 import { compileTrigger } from "tests/__setup__/helpers/indexes.js";
 import type { Equal, Expect } from "type-testing";
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { trigger, type PgTrigger } from "~/schema/trigger.js";
+import { trigger, type PgTrigger } from "~pg/schema/trigger.js";
 
 describe("pg_trigger", () => {
 	test("trigger before", async () => {

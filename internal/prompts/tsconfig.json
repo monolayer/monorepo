@@ -6,7 +6,7 @@
 		"rootDir": ".",
 		"outDir": "dist",
 		"paths": {
-			"~/*": ["src/*"]
+			"~prompts/*": ["src/*"]
 		},
 		"composite": true
 	},

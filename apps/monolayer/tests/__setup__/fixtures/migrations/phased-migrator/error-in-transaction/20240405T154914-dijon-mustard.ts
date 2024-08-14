@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely } from "kysely";
-import type { Migration } from "~/migration.js";
+import type { Migration } from "~monolayer/migration.js";
 
 export const migration = {
 	name: "20240405T154914-dijon-mustard",

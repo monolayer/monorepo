@@ -1,6 +1,6 @@
 import { Kysely, sql } from "kysely";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
-import { createTableDefFunction } from "~/introspection/pg-get-table-def.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
+import { createTableDefFunction } from "~pg/introspection/pg-get-table-def.js";
 
 export async function dbTableInfo(
 	kysely: Kysely<InformationSchemaDB>,

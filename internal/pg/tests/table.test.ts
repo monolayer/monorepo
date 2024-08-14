@@ -8,23 +8,23 @@ import {
 import { Equal, Expect } from "type-testing";
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
-import { tableInfo } from "~/introspection/table.js";
-import { columnWithType } from "~/schema/column/column-with-type.js";
-import { bigint } from "~/schema/column/data-types/bigint.js";
-import { boolean } from "~/schema/column/data-types/boolean.js";
-import { varchar } from "~/schema/column/data-types/character-varying.js";
-import { enumType } from "~/schema/column/data-types/enum.js";
-import { enumerated } from "~/schema/column/data-types/enumerated.js";
-import { integer } from "~/schema/column/data-types/integer.js";
-import { serial } from "~/schema/column/data-types/serial.js";
-import { text } from "~/schema/column/data-types/text.js";
-import { timestamptz } from "~/schema/column/data-types/timestamp-with-time-zone.js";
-import { foreignKey } from "~/schema/foreign-key.js";
-import { index } from "~/schema/index.js";
-import { primaryKey } from "~/schema/primary-key.js";
-import { table } from "~/schema/table.js";
-import { unique } from "~/schema/unique.js";
-import { zodSchema } from "~/schema/zod/zod_schema.js";
+import { tableInfo } from "~pg/introspection/table.js";
+import { columnWithType } from "~pg/schema/column/column-with-type.js";
+import { bigint } from "~pg/schema/column/data-types/bigint.js";
+import { boolean } from "~pg/schema/column/data-types/boolean.js";
+import { varchar } from "~pg/schema/column/data-types/character-varying.js";
+import { enumType } from "~pg/schema/column/data-types/enum.js";
+import { enumerated } from "~pg/schema/column/data-types/enumerated.js";
+import { integer } from "~pg/schema/column/data-types/integer.js";
+import { serial } from "~pg/schema/column/data-types/serial.js";
+import { text } from "~pg/schema/column/data-types/text.js";
+import { timestamptz } from "~pg/schema/column/data-types/timestamp-with-time-zone.js";
+import { foreignKey } from "~pg/schema/foreign-key.js";
+import { index } from "~pg/schema/index.js";
+import { primaryKey } from "~pg/schema/primary-key.js";
+import { table } from "~pg/schema/table.js";
+import { unique } from "~pg/schema/unique.js";
+import { zodSchema } from "~pg/schema/zod/zod_schema.js";
 
 describe("pgTable definition", () => {
 	test("has columns defined", () => {

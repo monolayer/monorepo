@@ -1,13 +1,13 @@
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { type ColumnType, type Expression } from "kysely";
-import { compileDefaultExpression } from "~/helpers/compile-default-expression.js";
+import { compileDefaultExpression } from "~pg/helpers/compile-default-expression.js";
 import type {
 	ColumnInfo,
 	GeneratedAlwaysColumn,
 	GeneratedColumn,
 	NonNullableColumn,
 	WithDefaultColumn,
-} from "~/schema/column/types.js";
+} from "~pg/schema/column/types.js";
 
 /**
  * @group Classes, Types, and Interfaces

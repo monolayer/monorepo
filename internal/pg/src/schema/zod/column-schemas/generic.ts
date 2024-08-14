@@ -1,7 +1,7 @@
-import { pgColumnWithType } from "~/schema/column/column-with-type.js";
-import type { PgColumnBase } from "~/schema/column/column.js";
-import { baseSchema, finishSchema } from "~/schema/zod/common.js";
-import { nullableColumn } from "~/schema/zod/helpers.js";
+import { pgColumnWithType } from "~pg/schema/column/column-with-type.js";
+import type { PgColumnBase } from "~pg/schema/column/column.js";
+import { baseSchema, finishSchema } from "~pg/schema/zod/common.js";
+import { nullableColumn } from "~pg/schema/zod/helpers.js";
 
 export function isPgGenericColumn(
 	column: PgColumnBase<unknown, unknown, unknown>,

@@ -1,7 +1,7 @@
 import type { Expression } from "kysely";
-import { compileDefaultExpression } from "~/helpers/compile-default-expression.js";
-import { PgColumn, valueWithHash } from "~/schema/column/column.js";
-import type { WithDefaultColumn } from "~/schema/column/types.js";
+import { compileDefaultExpression } from "~pg/helpers/compile-default-expression.js";
+import { PgColumn, valueWithHash } from "~pg/schema/column/column.js";
+import type { WithDefaultColumn } from "~pg/schema/column/types.js";
 
 /**
  * @group Schema Definition

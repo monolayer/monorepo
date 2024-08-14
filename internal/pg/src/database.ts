@@ -1,5 +1,5 @@
-import type { PgExtension } from "~/schema/extension.js";
-import type { AnySchema } from "~/schema/schema.js";
+import type { PgExtension } from "~pg/schema/extension.js";
+import type { AnySchema } from "~pg/schema/schema.js";
 
 export type DatabaseConfig = {
 	id: string;

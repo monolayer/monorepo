@@ -16,7 +16,7 @@ import type {
 	MigrationResult,
 	MigrationResultSet,
 	NoMigrations,
-} from "./migrator.js";
+} from "~migrator/migrator.js";
 
 export type Migration = {
 	/**

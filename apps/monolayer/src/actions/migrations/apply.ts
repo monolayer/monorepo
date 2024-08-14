@@ -9,8 +9,8 @@ import { Effect } from "effect";
 import { execa } from "execa";
 import type { MigrationResult } from "kysely";
 import color from "picocolors";
-import { dumpDatabaseStructureTask } from "~/actions/database/dump.js";
-import { checkNoPendingMigrations } from "./pending.js";
+import { dumpDatabaseStructureTask } from "~monolayer/actions/database/dump.js";
+import { checkNoPendingMigrations } from "~monolayer/actions/migrations/pending.js";
 
 interface ApplyExpandMigrations {
 	phase: ChangesetPhase.Expand;

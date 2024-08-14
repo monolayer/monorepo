@@ -4,13 +4,13 @@ import type {
 	AnyPGColumn,
 	PgColumn,
 	SerialColumn,
-} from "~/schema/column/column.js";
-import { PgCIDR } from "~/schema/column/data-types/cidr.js";
-import { PgInet } from "~/schema/column/data-types/inet.js";
-import { PgMacaddr } from "~/schema/column/data-types/macaddr.js";
-import { PgMacaddr8 } from "~/schema/column/data-types/macaddr8.js";
-import { finishSchema } from "~/schema/zod/common.js";
-import { columnData, customIssue } from "~/schema/zod/helpers.js";
+} from "~pg/schema/column/column.js";
+import { PgCIDR } from "~pg/schema/column/data-types/cidr.js";
+import { PgInet } from "~pg/schema/column/data-types/inet.js";
+import { PgMacaddr } from "~pg/schema/column/data-types/macaddr.js";
+import { PgMacaddr8 } from "~pg/schema/column/data-types/macaddr8.js";
+import { finishSchema } from "~pg/schema/zod/common.js";
+import { columnData, customIssue } from "~pg/schema/zod/helpers.js";
 import {
 	cidrRegex,
 	ipRegex,
@@ -18,7 +18,7 @@ import {
 	macaddrRegex,
 	v4str,
 	v6str,
-} from "~/schema/zod/regexes/regex.js";
+} from "~pg/schema/zod/regexes/regex.js";
 
 export function inetSchema(column: PgInet) {
 	return regexStringSchema(column, ipRegex, "Invalid inet");

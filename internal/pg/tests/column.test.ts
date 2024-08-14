@@ -6,81 +6,81 @@ import { z } from "zod";
 import {
 	columnWithType,
 	pgColumnWithType,
-} from "~/schema/column/column-with-type.js";
+} from "~pg/schema/column/column-with-type.js";
 import {
 	PgColumn,
 	SerialColumn,
 	type PgColumnBase,
-} from "~/schema/column/column.js";
-import { bigint, PgBigInt } from "~/schema/column/data-types/bigint.js";
+} from "~pg/schema/column/column.js";
+import { bigint, PgBigInt } from "~pg/schema/column/data-types/bigint.js";
 import {
 	bigserial,
 	PgBigSerial,
-} from "~/schema/column/data-types/bigserial.js";
+} from "~pg/schema/column/data-types/bigserial.js";
 import {
 	bitVarying,
 	PgBitVarying,
 	varbit,
-} from "~/schema/column/data-types/bit-varying.js";
-import { bit, PgBit } from "~/schema/column/data-types/bit.js";
+} from "~pg/schema/column/data-types/bit-varying.js";
+import { bit, PgBit } from "~pg/schema/column/data-types/bit.js";
 import {
 	boolean,
 	PgBoolean,
 	type Boolish,
-} from "~/schema/column/data-types/boolean.js";
-import { bytea, PgBytea } from "~/schema/column/data-types/bytea.js";
+} from "~pg/schema/column/data-types/boolean.js";
+import { bytea, PgBytea } from "~pg/schema/column/data-types/bytea.js";
 import {
 	characterVarying,
 	PgCharacterVarying,
 	varchar,
-} from "~/schema/column/data-types/character-varying.js";
+} from "~pg/schema/column/data-types/character-varying.js";
 import {
 	char,
 	character,
 	PgCharacter,
-} from "~/schema/column/data-types/character.js";
-import { cidr, PgCIDR } from "~/schema/column/data-types/cidr.js";
-import { date, PgDate } from "~/schema/column/data-types/date.js";
+} from "~pg/schema/column/data-types/character.js";
+import { cidr, PgCIDR } from "~pg/schema/column/data-types/cidr.js";
+import { date, PgDate } from "~pg/schema/column/data-types/date.js";
 import {
 	doublePrecision,
 	PgDoublePrecision,
-} from "~/schema/column/data-types/double-precision.js";
-import { enumType } from "~/schema/column/data-types/enum.js";
-import { enumerated, PgEnum } from "~/schema/column/data-types/enumerated.js";
-import { inet, PgInet } from "~/schema/column/data-types/inet.js";
-import { integer, PgInteger } from "~/schema/column/data-types/integer.js";
-import { json, PgJson } from "~/schema/column/data-types/json.js";
-import { jsonb, PgJsonB } from "~/schema/column/data-types/jsonb.js";
-import { macaddr, PgMacaddr } from "~/schema/column/data-types/macaddr.js";
-import { macaddr8, PgMacaddr8 } from "~/schema/column/data-types/macaddr8.js";
-import { numeric, PgNumeric } from "~/schema/column/data-types/numeric.js";
-import { PgReal, real } from "~/schema/column/data-types/real.js";
-import { PgSerial, serial } from "~/schema/column/data-types/serial.js";
-import { PgSmallint, smallint } from "~/schema/column/data-types/smallint.js";
-import { PgText, text } from "~/schema/column/data-types/text.js";
+} from "~pg/schema/column/data-types/double-precision.js";
+import { enumType } from "~pg/schema/column/data-types/enum.js";
+import { enumerated, PgEnum } from "~pg/schema/column/data-types/enumerated.js";
+import { inet, PgInet } from "~pg/schema/column/data-types/inet.js";
+import { integer, PgInteger } from "~pg/schema/column/data-types/integer.js";
+import { json, PgJson } from "~pg/schema/column/data-types/json.js";
+import { jsonb, PgJsonB } from "~pg/schema/column/data-types/jsonb.js";
+import { macaddr, PgMacaddr } from "~pg/schema/column/data-types/macaddr.js";
+import { macaddr8, PgMacaddr8 } from "~pg/schema/column/data-types/macaddr8.js";
+import { numeric, PgNumeric } from "~pg/schema/column/data-types/numeric.js";
+import { PgReal, real } from "~pg/schema/column/data-types/real.js";
+import { PgSerial, serial } from "~pg/schema/column/data-types/serial.js";
+import { PgSmallint, smallint } from "~pg/schema/column/data-types/smallint.js";
+import { PgText, text } from "~pg/schema/column/data-types/text.js";
 import {
 	PgTimeWithTimeZone,
 	timetz,
 	timeWithTimeZone,
-} from "~/schema/column/data-types/time-with-time-zone.js";
-import { PgTime, time } from "~/schema/column/data-types/time.js";
+} from "~pg/schema/column/data-types/time-with-time-zone.js";
+import { PgTime, time } from "~pg/schema/column/data-types/time.js";
 import {
 	PgTimestampWithTimeZone,
 	timestamptz,
 	timestampWithTimeZone,
-} from "~/schema/column/data-types/timestamp-with-time-zone.js";
+} from "~pg/schema/column/data-types/timestamp-with-time-zone.js";
 import {
 	PgTimestamp,
 	timestamp,
-} from "~/schema/column/data-types/timestamp.js";
-import { PgTsquery, tsquery } from "~/schema/column/data-types/tsquery.js";
-import { PgTsvector, tsvector } from "~/schema/column/data-types/tsvector.js";
-import { PgUuid, uuid } from "~/schema/column/data-types/uuid.js";
-import { PgXML, xml } from "~/schema/column/data-types/xml.js";
-import type { ColumnInfo, JsonValue } from "~/schema/column/types.js";
-import { primaryKey } from "~/schema/primary-key.js";
-import { table } from "~/schema/table.js";
-import { zodSchema } from "~/schema/zod/zod_schema.js";
+} from "~pg/schema/column/data-types/timestamp.js";
+import { PgTsquery, tsquery } from "~pg/schema/column/data-types/tsquery.js";
+import { PgTsvector, tsvector } from "~pg/schema/column/data-types/tsvector.js";
+import { PgUuid, uuid } from "~pg/schema/column/data-types/uuid.js";
+import { PgXML, xml } from "~pg/schema/column/data-types/xml.js";
+import type { ColumnInfo, JsonValue } from "~pg/schema/column/types.js";
+import { primaryKey } from "~pg/schema/primary-key.js";
+import { table } from "~pg/schema/table.js";
+import { zodSchema } from "~pg/schema/zod/zod_schema.js";
 
 type ColumnContext = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

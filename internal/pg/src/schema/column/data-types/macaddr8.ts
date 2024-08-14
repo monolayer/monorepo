@@ -1,4 +1,4 @@
-import { StringColumn } from "~/schema/column/column.js";
+import { StringColumn } from "~pg/schema/column/column.js";
 
 /**
  * Column that stores MAC addresses in EUI-64 format.

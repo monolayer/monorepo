@@ -1,4 +1,4 @@
-import { ipRegex as ipRegexFn } from "~/schema/zod/regexes/ip-regex.js";
+import { ipRegex as ipRegexFn } from "~pg/schema/zod/regexes/ip-regex.js";
 
 export const bitRegex = /^(0|1)+$/;
 

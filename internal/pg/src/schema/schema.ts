@@ -1,6 +1,6 @@
-import type { EnumType } from "~/schema/column/data-types/enum.js";
-import type { PgExtension } from "~/schema/extension.js";
-import type { AnyPgTable } from "~/schema/table.js";
+import type { EnumType } from "~pg/schema/column/data-types/enum.js";
+import type { PgExtension } from "~pg/schema/extension.js";
+import type { AnyPgTable } from "~pg/schema/table.js";
 
 export type DatabaseSchema<T extends ColumnRecord, S extends string> = {
 	name?: S;

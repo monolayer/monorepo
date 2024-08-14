@@ -1,35 +1,35 @@
 /* eslint-disable max-lines */
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import type { Difference } from "microdiff";
-import type { GeneratorContext } from "~/changeset/generator-context.js";
-import { concurrentIndex } from "~/changeset/generators/index.js";
+import type { GeneratorContext } from "~pg/changeset/generator-context.js";
+import { concurrentIndex } from "~pg/changeset/generators/index.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
 	existingColumns,
-} from "~/changeset/helpers/helpers.js";
+} from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
-} from "~/changeset/types.js";
-import { ChangeWarningType } from "~/changeset/warnings/change-warning-type.js";
-import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
-import { currentColumName } from "~/introspection/column-name.js";
+} from "~pg/changeset/types.js";
+import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
+import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
+import { currentColumName } from "~pg/introspection/column-name.js";
 import {
 	currentTableName,
 	previousTableName,
-} from "~/introspection/introspection/table-name.js";
+} from "~pg/introspection/introspection/table-name.js";
 import {
 	extractColumnsFromPrimaryKey,
 	type TablesToRename,
-} from "~/introspection/schema.js";
+} from "~pg/introspection/schema.js";
 import type {
 	LocalTableInfo,
 	SchemaMigrationInfo,
-} from "~/schema/column/types.js";
+} from "~pg/schema/column/types.js";
 
 export function uniqueConstraintMigrationOpGenerator(
 	diff: Difference,

@@ -1,27 +1,27 @@
 /* eslint-disable max-lines */
 import type { Difference } from "microdiff";
-import type { GeneratorContext } from "~/changeset/generator-context.js";
+import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
 	includedInRecord,
-} from "~/changeset/helpers/helpers.js";
+} from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
-} from "~/changeset/types.js";
+} from "~pg/changeset/types.js";
 import {
 	type ForeignKeyDefinition,
 	ForeignKeyBuilder,
-} from "~/introspection/introspection/foreign-key-builder.js";
+} from "~pg/introspection/introspection/foreign-key-builder.js";
 import {
 	currentTableName,
 	previousTableName,
-} from "~/introspection/introspection/table-name.js";
-import type { TablesToRename } from "~/introspection/schema.js";
-import type { SchemaMigrationInfo } from "~/schema/column/types.js";
+} from "~pg/introspection/introspection/table-name.js";
+import type { TablesToRename } from "~pg/introspection/schema.js";
+import type { SchemaMigrationInfo } from "~pg/schema/column/types.js";
 
 export function foreignKeyMigrationOpGenerator(
 	diff: Difference,

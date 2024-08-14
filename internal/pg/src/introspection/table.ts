@@ -1,21 +1,21 @@
 import { isExpression } from "kysely";
-import { compileDefaultExpression } from "~/helpers/compile-default-expression.js";
-import type { ColumnRecord } from "~/schema/column.js";
-import type { ColumnInfo } from "~/schema/column/types.js";
+import { compileDefaultExpression } from "~pg/helpers/compile-default-expression.js";
+import type { ColumnRecord } from "~pg/schema/column.js";
+import type { ColumnInfo } from "~pg/schema/column/types.js";
 import {
 	type PgForeignKey,
 	foreignKeyOptions,
 	isExternalForeignKey,
-} from "~/schema/foreign-key.js";
-import { type AnySchema, Schema } from "~/schema/schema.js";
-import type { AnyPgTable, PgTable, TableDefinition } from "~/schema/table.js";
+} from "~pg/schema/foreign-key.js";
+import { type AnySchema, Schema } from "~pg/schema/schema.js";
+import type { AnyPgTable, PgTable, TableDefinition } from "~pg/schema/table.js";
 import {
 	type AnyTrigger,
 	PgTrigger,
 	type TriggerEvent,
 	type TriggerFiringTime,
-} from "~/schema/trigger.js";
-import { type PgUnique, uniqueConstraintOptions } from "~/schema/unique.js";
+} from "~pg/schema/trigger.js";
+import { type PgUnique, uniqueConstraintOptions } from "~pg/schema/unique.js";
 
 export interface TableIntrospection {
 	primaryKey: string[];

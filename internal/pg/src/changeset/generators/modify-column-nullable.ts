@@ -1,19 +1,19 @@
 import { Difference } from "microdiff";
-import type { GeneratorContext } from "~/changeset/generator-context.js";
+import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	addCheckWithSchemaStatements,
 	dropCheckKyselySchemaStatement,
-} from "~/changeset/generators/check.js";
-import { executeKyselySchemaStatement } from "~/changeset/helpers/helpers.js";
+} from "~pg/changeset/generators/check.js";
+import { executeKyselySchemaStatement } from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
-} from "~/changeset/types.js";
-import { ChangeWarningType } from "~/changeset/warnings/change-warning-type.js";
-import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
-import { currentTableName } from "~/introspection/introspection/table-name.js";
+} from "~pg/changeset/types.js";
+import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
+import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
+import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 
 export function columnNullableMigrationOpGenerator(
 	diff: Difference,

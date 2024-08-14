@@ -1,7 +1,7 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
-import { pendingMigrations } from "~/actions/migrations/pending.js";
-import { cliAction } from "~/cli-action.js";
+import { pendingMigrations } from "~monolayer/actions/migrations/pending.js";
+import { cliAction } from "~monolayer/cli-action.js";
 
 export function pendingAction(program: Command) {
 	commandWithDefaultOptions({

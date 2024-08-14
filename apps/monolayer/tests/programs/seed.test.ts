@@ -1,7 +1,7 @@
 import { unlinkSync, writeFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { seed } from "~/actions/database/seed.js";
+import { seed } from "~monolayer/actions/database/seed.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,

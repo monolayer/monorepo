@@ -15,8 +15,8 @@ import type {
 	NoMigrations,
 } from "kysely";
 import path from "path";
-import { schemaDependencies } from "./dependencies.js";
-import { isExtendedMigration } from "./migrator.js";
+import { schemaDependencies } from "~services/dependencies.js";
+import { isExtendedMigration } from "~services/migrator.js";
 
 export type Migration = {
 	/**

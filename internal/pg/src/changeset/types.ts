@@ -1,4 +1,4 @@
-import type { ChangeWarning } from "~/changeset/warnings/warnings.js";
+import type { ChangeWarning } from "~pg/changeset/warnings/warnings.js";
 
 export enum ChangeSetType {
 	CreateTable = "createTable",

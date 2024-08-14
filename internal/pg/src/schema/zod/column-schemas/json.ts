@@ -1,8 +1,8 @@
-import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
-import { PgJson } from "~/schema/column/data-types/json.js";
-import { PgJsonB } from "~/schema/column/data-types/jsonb.js";
-import { baseSchema, finishSchema } from "~/schema/zod/common.js";
-import { customIssue, nullableColumn } from "~/schema/zod/helpers.js";
+import type { PgColumn, SerialColumn } from "~pg/schema/column/column.js";
+import { PgJson } from "~pg/schema/column/data-types/json.js";
+import { PgJsonB } from "~pg/schema/column/data-types/jsonb.js";
+import { baseSchema, finishSchema } from "~pg/schema/zod/common.js";
+import { customIssue, nullableColumn } from "~pg/schema/zod/helpers.js";
 
 export function isJson(
 	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,

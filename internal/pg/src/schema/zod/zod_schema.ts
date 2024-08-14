@@ -1,20 +1,20 @@
 import { z } from "zod";
-import { tableInfo } from "~/introspection/table.js";
-import type { ColumnRecord } from "~/schema/column.js";
-import type { PgColumn, SerialColumn } from "~/schema/column/column.js";
-import type { ZodSchemaObject, ZodType } from "~/schema/inference.js";
-import type { PgTable } from "~/schema/table.js";
+import { tableInfo } from "~pg/introspection/table.js";
+import type { ColumnRecord } from "~pg/schema/column.js";
+import type { PgColumn, SerialColumn } from "~pg/schema/column/column.js";
+import type { ZodSchemaObject, ZodType } from "~pg/schema/inference.js";
+import type { PgTable } from "~pg/schema/table.js";
 import {
 	bitSchema,
 	isBitColumn,
 	isVarbitColumn,
 	varbitSchema,
-} from "~/schema/zod/column-schemas/bit-string.js";
+} from "~pg/schema/zod/column-schemas/bit-string.js";
 import {
 	isPgBoolean,
 	pgBooleanSchema,
-} from "~/schema/zod/column-schemas/boolean.js";
-import { isBytea, pgByteaSchema } from "~/schema/zod/column-schemas/bytea.js";
+} from "~pg/schema/zod/column-schemas/boolean.js";
+import { isBytea, pgByteaSchema } from "~pg/schema/zod/column-schemas/bytea.js";
 import {
 	isChar,
 	isPgText,
@@ -22,7 +22,7 @@ import {
 	pgCharSchema,
 	pgTextSchema,
 	pgVarcharSchema,
-} from "~/schema/zod/column-schemas/character.js";
+} from "~pg/schema/zod/column-schemas/character.js";
 import {
 	isDate,
 	isTime,
@@ -34,22 +34,22 @@ import {
 	pgTimestampSchema,
 	pgTimestampTzSchema,
 	pgTimeTzSchema,
-} from "~/schema/zod/column-schemas/date-time.js";
-import { isEnum, pgEnumSchema } from "~/schema/zod/column-schemas/enum.js";
+} from "~pg/schema/zod/column-schemas/date-time.js";
+import { isEnum, pgEnumSchema } from "~pg/schema/zod/column-schemas/enum.js";
 import {
 	isBigserial,
 	isSerial,
-} from "~/schema/zod/column-schemas/generated.js";
+} from "~pg/schema/zod/column-schemas/generated.js";
 import {
 	isPgGenericColumn,
 	pgGenericSchema,
-} from "~/schema/zod/column-schemas/generic.js";
+} from "~pg/schema/zod/column-schemas/generic.js";
 import {
 	isJson,
 	isJsonB,
 	pgJsonbSchema,
 	pgJsonSchema,
-} from "~/schema/zod/column-schemas/json.js";
+} from "~pg/schema/zod/column-schemas/json.js";
 import {
 	cidrSchema,
 	inetSchema,
@@ -59,7 +59,7 @@ import {
 	isMacaddrColumn,
 	macaddr8Schema,
 	macaddrSchema,
-} from "~/schema/zod/column-schemas/network-address.js";
+} from "~pg/schema/zod/column-schemas/network-address.js";
 import {
 	isBigInt,
 	isDoublePrecision,
@@ -73,15 +73,15 @@ import {
 	pgNumericSchema,
 	pgRealSchema,
 	pgSmallintSchema,
-} from "~/schema/zod/column-schemas/numeric.js";
+} from "~pg/schema/zod/column-schemas/numeric.js";
 import {
 	isTsQueryColumn,
 	isTsvectorColumn,
 	tsquerySchema,
 	tsvectorSchema,
-} from "~/schema/zod/column-schemas/text-search.js";
-import { isUuid, pgUuidSchema } from "~/schema/zod/column-schemas/uuid.js";
-import { isXMLColumn, xmlSchema } from "~/schema/zod/column-schemas/xml.js";
+} from "~pg/schema/zod/column-schemas/text-search.js";
+import { isUuid, pgUuidSchema } from "~pg/schema/zod/column-schemas/uuid.js";
+import { isXMLColumn, xmlSchema } from "~pg/schema/zod/column-schemas/xml.js";
 
 /**
  * Return a Zod schema for the table.

@@ -1,38 +1,38 @@
 /* eslint-disable max-lines */
 import { Kysely, sql } from "kysely";
 import toposort from "toposort";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
 import {
 	dbCheckConstraintInfo,
 	localCheckConstraintInfo,
-} from "~/introspection/check.js";
-import { currentColumName } from "~/introspection/column-name.js";
+} from "~pg/introspection/check.js";
+import { currentColumName } from "~pg/introspection/column-name.js";
 import {
 	dbColumnInfo,
 	localColumnInfoByTable,
-} from "~/introspection/column-two.js";
-import { schemaInDb } from "~/introspection/database-schemas.js";
-import { dbEnumInfo, localEnumInfo } from "~/introspection/enum.js";
-import { dbExtensionInfo } from "~/introspection/extension.js";
+} from "~pg/introspection/column-two.js";
+import { schemaInDb } from "~pg/introspection/database-schemas.js";
+import { dbEnumInfo, localEnumInfo } from "~pg/introspection/enum.js";
+import { dbExtensionInfo } from "~pg/introspection/extension.js";
 import {
 	dbForeignKeyConstraints,
 	fetchForeignConstraintInfo,
 	localForeignKeyConstraintInfoWithPreviousHash,
 	localForeignKeys,
-} from "~/introspection/foreign-key.js";
+} from "~pg/introspection/foreign-key.js";
 import {
 	dbIndexInfo,
 	type IndexInfo,
 	localIndexInfoByTable,
-} from "~/introspection/index.js";
-import type { BuilderContext } from "~/introspection/introspection/foreign-key-builder.js";
-import { currentTableName } from "~/introspection/introspection/table-name.js";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
+} from "~pg/introspection/index.js";
+import type { BuilderContext } from "~pg/introspection/introspection/foreign-key-builder.js";
+import { currentTableName } from "~pg/introspection/introspection/table-name.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
 import {
 	dbPrimaryKeyConstraintInfo,
 	localPrimaryKeyConstraintInfo,
 	primaryKeyConstraintInfoToQuery,
-} from "~/introspection/primary-key.js";
+} from "~pg/introspection/primary-key.js";
 import {
 	type CheckInfo,
 	type ColumnsToRename,
@@ -42,25 +42,25 @@ import {
 	type TablesToRename,
 	type TriggerInfo,
 	type UniqueInfo,
-} from "~/introspection/schema.js";
-import { dbTableInfo } from "~/introspection/table-two.js";
+} from "~pg/introspection/schema.js";
+import { dbTableInfo } from "~pg/introspection/table-two.js";
 import {
 	type ForeignKeyIntrospection,
 	tableInfo,
-} from "~/introspection/table.js";
-import { dbTriggerInfo, localTriggersInfo } from "~/introspection/trigger.js";
+} from "~pg/introspection/table.js";
+import { dbTriggerInfo, localTriggersInfo } from "~pg/introspection/trigger.js";
 import {
 	dbUniqueConstraintInfo,
 	localUniqueConstraintInfo,
-} from "~/introspection/unique.js";
+} from "~pg/introspection/unique.js";
 import type {
 	ColumnInfo,
 	SchemaInfo,
 	SchemaMigrationInfo,
 	TableColumnInfo,
 	TableInfo,
-} from "~/schema/column/types.js";
-import type { AnySchema } from "~/schema/schema.js";
+} from "~pg/schema/column/types.js";
+import type { AnySchema } from "~pg/schema/schema.js";
 
 export function introspectLocalSchema(
 	schema: AnySchema,

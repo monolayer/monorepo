@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { sql, type Kysely } from "kysely";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
 
 export async function createTableDefFunction(db: Kysely<InformationSchemaDB>) {
 	const checkTableDef = await checkTableDefFunction(db);

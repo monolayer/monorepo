@@ -1,6 +1,6 @@
 import { z, type ParseInput, type ZodIssue } from "zod";
-import { customIssue } from "~/schema/zod/helpers.js";
-import { nullable, required } from "~/schema/zod/refinements.js";
+import { customIssue } from "~pg/schema/zod/helpers.js";
+import { nullable, required } from "~pg/schema/zod/refinements.js";
 
 export function baseSchema(isNullable: boolean, errorMessage: string) {
 	return z

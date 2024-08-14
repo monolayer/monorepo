@@ -11,7 +11,7 @@ import {
 	primaryKey,
 	text,
 	unique,
-} from "~/pg.js";
+} from "~monolayer/pg.js";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
 import {

@@ -1,11 +1,11 @@
 /* eslint-disable max-lines */
 import { describe, expect, test } from "vitest";
-import { columnDefinition } from "~/actions/import-schemas/column-definition.js";
-import { primaryKeyDefinition } from "~/actions/import-schemas/definitions.js";
+import { columnDefinition } from "~monolayer/actions/import-schemas/column-definition.js";
+import { primaryKeyDefinition } from "~monolayer/actions/import-schemas/definitions.js";
 import {
-	columnInfoFactory,
 	type ColumnInfoFactoryOptions,
-} from "./__setup__/helpers/factories/column-info-factory.js";
+	columnInfoFactory,
+} from "~tests/__setup__/helpers/factories/column-info-factory.js";
 
 function expectCode(
 	expectedCode: string,

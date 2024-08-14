@@ -1,28 +1,28 @@
 import { Difference } from "microdiff";
-import type { GeneratorContext } from "~/changeset/generator-context.js";
+import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	type ColumnInfoDiff,
 	commentForDefault,
 	compileDataType,
 	optionsForColumn,
 	toValueAndHash,
-} from "~/changeset/generators/helpers.js";
-import { setNotNullOp } from "~/changeset/generators/modify-column-nullable.js";
-import type { ColumnToAlign } from "~/changeset/helpers/alignment.js";
+} from "~pg/changeset/generators/helpers.js";
+import { setNotNullOp } from "~pg/changeset/generators/modify-column-nullable.js";
+import type { ColumnToAlign } from "~pg/changeset/helpers/alignment.js";
 import {
 	executeKyselySchemaStatement,
 	sqlStatement,
-} from "~/changeset/helpers/helpers.js";
+} from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
-} from "~/changeset/types.js";
-import { ChangeWarningType } from "~/changeset/warnings/change-warning-type.js";
-import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
-import type { ChangeWarning } from "~/changeset/warnings/warnings.js";
-import { currentTableName } from "~/introspection/introspection/table-name.js";
+} from "~pg/changeset/types.js";
+import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
+import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
+import type { ChangeWarning } from "~pg/changeset/warnings/warnings.js";
+import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 
 export function columnMigrationOpGenerator(
 	diff: Difference,

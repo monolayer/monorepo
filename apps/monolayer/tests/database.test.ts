@@ -1,11 +1,11 @@
 import { schema } from "@monorepo/pg/schema/schema.js";
 import { afterEach, beforeEach, describe, test } from "vitest";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
-import { testChangesetAndMigrations } from "./__setup__/helpers/migration-success.js";
+import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
 import {
 	setUpContext,
 	teardownContext,
-} from "./__setup__/helpers/test-context.js";
+} from "~tests/__setup__/helpers/test-context.js";
 
 describe("Database migrations", () => {
 	beforeEach<DbContext>(async (context) => {

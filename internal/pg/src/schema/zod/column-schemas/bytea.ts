@@ -1,7 +1,7 @@
-import type { PgColumnBase, SerialColumn } from "~/schema/column/column.js";
-import { PgBytea } from "~/schema/column/data-types/bytea.js";
-import { baseSchema, finishSchema } from "~/schema/zod/common.js";
-import { customIssue, nullableColumn } from "~/schema/zod/helpers.js";
+import type { PgColumnBase, SerialColumn } from "~pg/schema/column/column.js";
+import { PgBytea } from "~pg/schema/column/data-types/bytea.js";
+import { baseSchema, finishSchema } from "~pg/schema/zod/common.js";
+import { customIssue, nullableColumn } from "~pg/schema/zod/helpers.js";
 
 export function isBytea(
 	column:

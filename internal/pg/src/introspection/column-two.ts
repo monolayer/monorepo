@@ -1,17 +1,17 @@
 /* eslint-disable max-lines */
 import { hashValue } from "@monorepo/utils/hash-value.js";
 import { Kysely, sql } from "kysely";
-import { toSnakeCase } from "~/helpers/to-snake-case.js";
-import type { InformationSchemaDB } from "~/introspection/introspection/types.js";
-import { findPrimaryKey } from "~/introspection/schema.js";
-import { tableInfo } from "~/introspection/table.js";
-import type { TableColumn } from "~/schema/column.js";
+import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
+import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
+import { findPrimaryKey } from "~pg/introspection/schema.js";
+import { tableInfo } from "~pg/introspection/table.js";
+import type { TableColumn } from "~pg/schema/column.js";
 import type {
 	ColumnInfo,
 	SchemaMigrationInfo,
 	TableInfo,
-} from "~/schema/column/types.js";
-import { type AnySchema, Schema } from "~/schema/schema.js";
+} from "~pg/schema/column/types.js";
+import { type AnySchema, Schema } from "~pg/schema/schema.js";
 
 export async function dbColumnInfo(
 	kysely: Kysely<InformationSchemaDB>,

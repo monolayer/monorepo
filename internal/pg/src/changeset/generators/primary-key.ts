@@ -1,11 +1,11 @@
 /* eslint-disable max-lines */
 import type { Difference } from "microdiff";
-import type { GeneratorContext } from "~/changeset/generator-context.js";
+import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	addCheckWithSchemaStatements,
 	dropCheckKyselySchemaStatement,
-} from "~/changeset/generators/check.js";
-import { concurrentIndex } from "~/changeset/generators/index.js";
+} from "~pg/changeset/generators/check.js";
+import { concurrentIndex } from "~pg/changeset/generators/index.js";
 import {
 	type ColumnExists,
 	columnInDb,
@@ -13,28 +13,28 @@ import {
 	executeKyselyDbStatement,
 	executeKyselySchemaStatement,
 	includedInRecord,
-} from "~/changeset/helpers/helpers.js";
+} from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
-} from "~/changeset/types.js";
-import { ChangeWarningType } from "~/changeset/warnings/change-warning-type.js";
-import { ChangeWarningCode } from "~/changeset/warnings/codes.js";
-import type { ChangeWarning } from "~/changeset/warnings/warnings.js";
-import { currentColumName } from "~/introspection/column-name.js";
-import { currentTableName } from "~/introspection/introspection/table-name.js";
+} from "~pg/changeset/types.js";
+import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
+import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
+import type { ChangeWarning } from "~pg/changeset/warnings/warnings.js";
+import { currentColumName } from "~pg/introspection/column-name.js";
+import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 import {
 	columnNameKey,
 	extractColumnsFromPrimaryKey,
 	findColumnByNameInTable,
 	type TablesToRename,
-} from "~/introspection/schema.js";
+} from "~pg/introspection/schema.js";
 import type {
 	LocalTableInfo,
 	SchemaMigrationInfo,
-} from "~/schema/column/types.js";
+} from "~pg/schema/column/types.js";
 
 export function primaryKeyMigrationOpGenerator(
 	diff: Difference,

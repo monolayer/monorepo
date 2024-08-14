@@ -10,13 +10,13 @@ import { Effect, Ref } from "effect";
 import { copyFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import type { DbContext } from "./__setup__/helpers/kysely.js";
-import { newLayers } from "./__setup__/helpers/layers.js";
-import { programWithErrorCause } from "./__setup__/helpers/run-program.js";
+import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
+import { newLayers } from "~tests/__setup__/helpers/layers.js";
+import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setUpContext,
 	teardownContext,
-} from "./__setup__/helpers/test-context.js";
+} from "~tests/__setup__/helpers/test-context.js";
 
 async function runPhasedMigration(context: DbContext) {
 	const layers = newLayers(

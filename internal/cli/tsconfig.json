@@ -5,7 +5,10 @@
 		"baseUrl": "./",
 		"rootDir": ".",
 		"outDir": "dist",
-		"composite": true
+		"composite": true,
+		"paths": {
+			"~cli/*": ["src/*"]
+		}
 	},
 	"emitDeclarationOnly": true,
 	"references": [{ "path": "../base" }]

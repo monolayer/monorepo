@@ -6,7 +6,7 @@
 		"rootDir": ".",
 		"outDir": "dist",
 		"paths": {
-			"~/*": ["src/*"]
+			"~pg/*": ["src/*"]
 		},
 		"composite": true
 	},

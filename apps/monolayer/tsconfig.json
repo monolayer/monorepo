@@ -5,7 +5,7 @@
 		"baseUrl": "./",
 		"rootDir": ".",
 		"paths": {
-			"~/*": ["src/*"],
+			"~monolayer/*": ["src/*"],
 			"~tests/*": ["tests/*"],
 			"@monorepo/prompts/*": ["./../../internal/prompts/src/*"]
 		},

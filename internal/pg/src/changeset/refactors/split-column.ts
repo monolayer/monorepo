@@ -1,11 +1,11 @@
-import type { GeneratorContext } from "~/changeset/generator-context.js";
+import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	ChangesetPhase,
 	ChangeSetType,
 	MigrationOpPriority,
-} from "~/changeset/types.js";
-import { currentTableName } from "~/introspection/introspection/table-name.js";
-import { extractColumnsFromPrimaryKey } from "~/introspection/schema.js";
+} from "~pg/changeset/types.js";
+import { currentTableName } from "~pg/introspection/introspection/table-name.js";
+import { extractColumnsFromPrimaryKey } from "~pg/introspection/schema.js";
 
 export interface SplitColumnRefactoring {
 	schema: string;

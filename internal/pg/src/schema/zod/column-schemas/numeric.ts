@@ -3,21 +3,21 @@ import type {
 	PgColumn,
 	PgColumnBase,
 	SerialColumn,
-} from "~/schema/column/column.js";
-import { PgBigInt } from "~/schema/column/data-types/bigint.js";
-import type { PgBigSerial } from "~/schema/column/data-types/bigserial.js";
-import { PgDoublePrecision } from "~/schema/column/data-types/double-precision.js";
-import { PgInteger } from "~/schema/column/data-types/integer.js";
-import { PgNumeric } from "~/schema/column/data-types/numeric.js";
-import { PgReal } from "~/schema/column/data-types/real.js";
-import type { PgSerial } from "~/schema/column/data-types/serial.js";
-import { PgSmallint } from "~/schema/column/data-types/smallint.js";
-import { baseSchema, finishSchema } from "~/schema/zod/common.js";
+} from "~pg/schema/column/column.js";
+import { PgBigInt } from "~pg/schema/column/data-types/bigint.js";
+import type { PgBigSerial } from "~pg/schema/column/data-types/bigserial.js";
+import { PgDoublePrecision } from "~pg/schema/column/data-types/double-precision.js";
+import { PgInteger } from "~pg/schema/column/data-types/integer.js";
+import { PgNumeric } from "~pg/schema/column/data-types/numeric.js";
+import { PgReal } from "~pg/schema/column/data-types/real.js";
+import type { PgSerial } from "~pg/schema/column/data-types/serial.js";
+import { PgSmallint } from "~pg/schema/column/data-types/smallint.js";
+import { baseSchema, finishSchema } from "~pg/schema/zod/common.js";
 import {
 	columnData,
 	customIssue,
 	nullableColumn,
-} from "~/schema/zod/helpers.js";
+} from "~pg/schema/zod/helpers.js";
 
 export function isNumeric(
 	column: PgColumn<unknown, unknown, unknown> | SerialColumn<unknown, unknown>,

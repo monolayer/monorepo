@@ -6,7 +6,7 @@ import { schema } from "@monorepo/pg/schema/schema.js";
 import { table } from "@monorepo/pg/schema/table.js";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { validateForeignKeyReferences } from "~/changeset/validate-foreign-key-references.js";
+import { validateForeignKeyReferences } from "~monolayer/changeset/validate-foreign-key-references.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,

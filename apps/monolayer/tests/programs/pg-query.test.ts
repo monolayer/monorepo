@@ -1,7 +1,7 @@
 import { adminPgQuery, pgQuery } from "@monorepo/services/db-clients.js";
 import dotenv from "dotenv";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { loadEnv } from "~/cli-action.js";
+import { loadEnv } from "~monolayer/cli-action.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
