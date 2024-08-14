@@ -1,4 +1,4 @@
-import { extensionChangeset } from "@monorepo/pg/changeset/generators/extension.ts";
+import { extensionChangeset } from "@monorepo/pg/changeset/generators/extension.js";
 import {
 	dbExtensionInfo,
 	ExtensionInfo,
