@@ -1,9 +1,10 @@
 {
-  "include": ["./.vitepress/**/*"],
-  "compilerOptions": {
-    "baseUrl": ".",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-  },
-  "exclude": ["node_modules", "dist", "tmp"]
+	"include": ["./.vitepress/**/*"],
+	"compilerOptions": {
+		"baseUrl": ".",
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true
+	},
+	"exclude": ["node_modules", "dist", "tmp"]
 }
