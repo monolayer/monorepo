@@ -175,10 +175,7 @@ function variablePrecisionSchema(
 				);
 			}
 		})
-		.transform((val) => {
-			console.log("TRANSFORM", val, Number(val));
-			return Number(val);
-		});
+		.transform((val) => Number(val));
 }
 
 function wholeNumberSchema(
