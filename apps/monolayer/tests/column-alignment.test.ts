@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {
 	alignColumns,
 	introspectAlignment,
-} from "~monolayer/actions/database/alignment.js";
+} from "@monorepo/programs/introspect/alignment.js";
+import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import type { ColumnInfoFactoryOptions } from "~tests/__setup__/helpers/factories/column-info-factory.js";
 import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 import {

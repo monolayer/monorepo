@@ -7,6 +7,7 @@ import type { Changeset } from "@monorepo/pg/changeset/types.js";
 import { toSnakeCase } from "@monorepo/pg/helpers/to-snake-case.js";
 import { managedSchemas } from "@monorepo/pg/introspection/database-schemas.js";
 import { Schema, type AnySchema } from "@monorepo/pg/schema/schema.js";
+import { introspectAlignment } from "@monorepo/programs/introspect/alignment.js";
 import { promtSchemaRefactors } from "@monorepo/programs/schema-refactor.js";
 import { promptSchemaRenames } from "@monorepo/programs/schema-rename.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
@@ -21,7 +22,6 @@ import {
 	sortTablePriorities,
 } from "~monolayer/changeset/introspect-schemas.js";
 import { validateForeignKeyReferences } from "~monolayer/changeset/validate-foreign-key-references.js";
-import { introspectAlignment } from "../actions/database/alignment.js";
 
 export function changeset() {
 	return Effect.gen(function* () {
