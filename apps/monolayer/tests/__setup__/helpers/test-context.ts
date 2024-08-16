@@ -1,3 +1,4 @@
+import { FileMigrationProvider } from "@monorepo/migrator/file-migration-provider.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import {
 	appendFileSync,
@@ -6,11 +7,11 @@ import {
 	rmSync,
 	writeFileSync,
 } from "fs";
-import { FileMigrationProvider, Migrator, type Kysely } from "kysely";
+import { Migrator, type Kysely } from "kysely";
 import fs from "node:fs/promises";
+import { chdir } from "node:process";
 import path from "path";
 import type { Pool } from "pg";
-import { chdir } from "process";
 import { vi, type TaskContext } from "vitest";
 import {
 	configurationsTemplate,

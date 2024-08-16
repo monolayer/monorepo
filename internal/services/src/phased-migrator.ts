@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import * as p from "@clack/prompts";
 import { ActionError } from "@monorepo/base/errors.js";
+import { FileMigrationProvider } from "@monorepo/migrator/file-migration-provider.js";
 import {
 	collectResults,
 	isolateTransactionlessChangesets,
@@ -28,7 +29,6 @@ import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.
 import { Effect, Layer } from "effect";
 import { mkdirSync } from "fs";
 import {
-	FileMigrationProvider,
 	type Kysely,
 	type MigrationResult,
 	type MigrationResultSet,
