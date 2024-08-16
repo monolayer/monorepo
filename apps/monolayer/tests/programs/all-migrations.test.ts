@@ -3,12 +3,12 @@ import { Migrator } from "@monorepo/services/migrator.js";
 import { Effect } from "effect";
 import type { Equal, Expect } from "type-testing";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
-import { runProgramWithErrorCause } from "../__setup__/helpers/run-program.js";
 
 describe("allMigrations", () => {
 	beforeEach<ProgramContext>(async (context) => {
@@ -28,7 +28,9 @@ describe("allMigrations", () => {
 			return (yield* migrator.migrationStats).all;
 		});
 
-		const result = await runProgramWithErrorCause(allMigrations);
+		const result = await Effect.runPromise(
+			await programWithContextAndServices(allMigrations),
+		);
 		type resultType = typeof result;
 		type Expected = MonolayerMigrationInfo[];
 		const isEqual: Expect<Equal<resultType, Expected>> = true;

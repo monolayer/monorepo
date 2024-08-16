@@ -1,8 +1,9 @@
 import { adminPgQuery, pgQuery } from "@monorepo/services/db-clients.js";
 import dotenv from "dotenv";
+import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { loadEnv } from "~monolayer/cli-action.js";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -54,15 +55,19 @@ describe("pgQuery", () => {
 });
 
 async function currentDatabase(databaseId: string) {
-	return await runProgramWithErrorCause(
-		pgQuery(`SELECT CURRENT_DATABASE();`),
-		await loadEnv({ databaseId }),
+	return await Effect.runPromise(
+		await programWithContextAndServices(
+			pgQuery(`SELECT CURRENT_DATABASE();`),
+			await loadEnv({ databaseId }),
+		),
 	);
 }
 
 async function currentDatabaseAsAdmin(databaseId: string) {
-	return await runProgramWithErrorCause(
-		adminPgQuery(`SELECT CURRENT_DATABASE();`),
-		await loadEnv({ databaseId }),
+	return await Effect.runPromise(
+		await programWithContextAndServices(
+			adminPgQuery(`SELECT CURRENT_DATABASE();`),
+			await loadEnv({ databaseId }),
+		),
 	);
 }

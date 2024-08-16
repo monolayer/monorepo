@@ -1,8 +1,9 @@
+import { Effect } from "effect";
 import { copyFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { structureLoad } from "~monolayer/actions/database/structure-load.js";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	dbAndMigrator,
 	setupProgramContext,
@@ -29,7 +30,9 @@ describe("structureLoad", () => {
 		);
 
 		await context.kysely.destroy();
-		await runProgramWithErrorCause(structureLoad());
+		await Effect.runPromise(
+			await programWithContextAndServices(structureLoad()),
+		);
 
 		const kysely = (await dbAndMigrator(context)).db;
 		expect(

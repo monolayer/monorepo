@@ -2,24 +2,21 @@
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import { Migrator } from "@monorepo/services/migrator.js";
-import {
-	type AppEnv,
-	AppEnvironment,
-} from "@monorepo/state/app-environment.js";
-import { Effect, Ref } from "effect";
+import { type AppEnv } from "@monorepo/state/app-environment.js";
+import { Effect } from "effect";
 import { copyFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
-import { newLayers } from "~tests/__setup__/helpers/layers.js";
-import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { testLayers } from "~tests/__setup__/helpers/layers.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setUpContext,
 	teardownContext,
 } from "~tests/__setup__/helpers/test-context.js";
 
 async function runPhasedMigration(context: DbContext) {
-	const layers = newLayers(
+	const layers = testLayers(
 		context.dbName,
 		path.join(context.folder, "migrations", "default"),
 		new MonoLayerPgDatabase({ id: "default", schemas: [] }),
@@ -40,11 +37,7 @@ async function runPhasedMigration(context: DbContext) {
 	});
 
 	return Effect.runPromise(
-		Effect.provideServiceEffect(
-			Effect.provide(programWithErrorCause(program), layers),
-			AppEnvironment,
-			Ref.make(env),
-		),
+		await programWithContextAndServices(program, env, layers),
 	);
 }
 

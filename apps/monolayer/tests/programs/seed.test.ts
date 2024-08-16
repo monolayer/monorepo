@@ -1,8 +1,9 @@
+import { Effect } from "effect";
 import { unlinkSync, writeFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { seed } from "~monolayer/actions/database/seed.js";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -23,8 +24,8 @@ describe("seed", () => {
 
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
-		await runProgramWithErrorCause(seed({}));
-		await runProgramWithErrorCause(seed({}));
+		await Effect.runPromise(await programWithContextAndServices(seed({})));
+		await Effect.runPromise(await programWithContextAndServices(seed({})));
 
 		const result = await context.kysely
 			.selectFrom("regulus_mint")
@@ -43,8 +44,12 @@ describe("seed", () => {
 			anotherSeedFile,
 		);
 
-		await runProgramWithErrorCause(seed({ seedFile: "anotherSeed.ts" }));
-		await runProgramWithErrorCause(seed({ seedFile: "anotherSeed.ts" }));
+		await Effect.runPromise(
+			await programWithContextAndServices(seed({ seedFile: "anotherSeed.ts" })),
+		);
+		await Effect.runPromise(
+			await programWithContextAndServices(seed({ seedFile: "anotherSeed.ts" })),
+		);
 
 		const result = await context.kysely
 			.selectFrom("regulus_mint")
@@ -65,10 +70,11 @@ describe("seed", () => {
 
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
-		await runProgramWithErrorCause(seed({}));
-
-		await runProgramWithErrorCause(
-			seed({ replant: true, disableWarnings: true }),
+		await Effect.runPromise(await programWithContextAndServices(seed({})));
+		await Effect.runPromise(
+			await programWithContextAndServices(
+				seed({ replant: true, disableWarnings: true }),
+			),
 		);
 
 		const result = await context.kysely
@@ -82,7 +88,8 @@ describe("seed", () => {
 
 	test<ProgramContext>("fails with pending schema migrations", async () => {
 		expect(
-			async () => await runProgramWithErrorCause(seed({})),
+			async () =>
+				await Effect.runPromise(await programWithContextAndServices(seed({}))),
 		).rejects.toThrowError();
 	});
 
@@ -93,7 +100,8 @@ describe("seed", () => {
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
 		expect(
-			async () => await runProgramWithErrorCause(seed({})),
+			async () =>
+				await Effect.runPromise(await programWithContextAndServices(seed({}))),
 		).rejects.toThrowError('process.exit unexpectedly called with "1"');
 	});
 
@@ -103,7 +111,8 @@ describe("seed", () => {
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), "");
 
 		expect(
-			async () => await runProgramWithErrorCause(seed({})),
+			async () =>
+				await Effect.runPromise(await programWithContextAndServices(seed({}))),
 		).rejects.toThrowError();
 	});
 });

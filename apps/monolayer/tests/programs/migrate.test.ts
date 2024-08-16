@@ -1,5 +1,6 @@
+import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -17,7 +18,9 @@ describe("migrate", () => {
 	});
 
 	test<ProgramContext>("applies all pending migrations", async (context) => {
-		const migrateResult = await runProgramWithErrorCause(migrate);
+		const migrateResult = await Effect.runPromise(
+			await programWithContextAndServices(migrate),
+		);
 
 		expect(migrateResult).toBe(true);
 		const migrations = await context.kysely
@@ -34,6 +37,8 @@ describe("migrate", () => {
 		];
 		expect(migrations).toEqual(expected);
 
-		expect(await runProgramWithErrorCause(migrate)).toBe(true);
+		expect(
+			await Effect.runPromise(await programWithContextAndServices(migrate)),
+		).toBe(true);
 	});
 });

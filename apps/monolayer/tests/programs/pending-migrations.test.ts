@@ -1,7 +1,8 @@
 import captureConsole from "capture-console";
+import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { pendingMigrations } from "~monolayer/actions/migrations/pending.js";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -25,7 +26,9 @@ describe("pendingMigrations", () => {
 			output += stdout;
 		});
 
-		const pending = await runProgramWithErrorCause(pendingMigrations);
+		const pending = await Effect.runPromise(
+			await programWithContextAndServices(pendingMigrations),
+		);
 
 		captureConsole.stopCapture(process.stdout);
 

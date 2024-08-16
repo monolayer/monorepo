@@ -1,6 +1,7 @@
+import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { createDatabase } from "~monolayer/actions/database/create.js";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -23,7 +24,9 @@ describe("createDatabase", () => {
 			),
 		).toBeUndefined();
 
-		await runProgramWithErrorCause(createDatabase);
+		await Effect.runPromise(
+			await programWithContextAndServices(createDatabase),
+		);
 
 		expect(
 			(await context.pool.query("SELECT datname FROM pg_database;")).rows.find(

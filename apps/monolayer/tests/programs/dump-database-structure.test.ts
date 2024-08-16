@@ -1,8 +1,9 @@
+import { Effect } from "effect";
 import { readFileSync } from "fs";
 import nunjucks from "nunjucks";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { dumpDatabaseStructureTask } from "~monolayer/actions/database/dump.js";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -21,7 +22,9 @@ describe("dumpDatabaseStructure", () => {
 	test<ProgramContext>("dumps database structure", async (context) => {
 		await context.migrator.migrateUp();
 
-		await runProgramWithErrorCause(dumpDatabaseStructureTask);
+		await Effect.runPromise(
+			await programWithContextAndServices(dumpDatabaseStructureTask),
+		);
 
 		const dump = readFileSync(
 			`${context.folder}/monolayer/dumps/structure.default.sql`,

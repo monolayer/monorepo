@@ -8,15 +8,15 @@ import {
 	AppEnvironment,
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
-import { Effect, Ref } from "effect";
+import { Effect } from "effect";
 import type { Layer } from "effect/Layer";
 import path from "path";
 import { expect } from "vitest";
 import { generateMigration } from "~monolayer/actions/migrations/generate.js";
+import { programWithContextAndServices } from "~monolayer/cli-action.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
-import { newLayers } from "~tests/__setup__/helpers/layers.js";
+import { testLayers } from "~tests/__setup__/helpers/layers.js";
 import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";
-import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 
 export async function testChangesetAndMigrations({
 	context,
@@ -41,7 +41,7 @@ export async function testChangesetAndMigrations({
 			extensions: configuration.extensions ?? [],
 		}),
 	};
-	const layers = newLayers(
+	const layers = testLayers(
 		context.dbName,
 		path.join(context.folder, "migrations", "default"),
 		env.database,
@@ -93,11 +93,7 @@ async function runGenerateChangesetMigration(
 	env: AppEnv,
 ) {
 	return Effect.runPromise(
-		Effect.provideServiceEffect(
-			Effect.provide(programWithErrorCause(generateMigration()), layers),
-			AppEnvironment,
-			Ref.make(env),
-		),
+		await programWithContextAndServices(generateMigration(), env, layers),
 	);
 }
 
@@ -113,11 +109,7 @@ async function cleanup(
 		),
 	);
 	return Effect.runPromise(
-		Effect.provideServiceEffect(
-			Effect.provide(programWithErrorCause(program), layers),
-			AppEnvironment,
-			Ref.make(env),
-		),
+		await programWithContextAndServices(program, env, layers),
 	);
 }
 
@@ -136,11 +128,7 @@ async function runMigrate(
 	env: AppEnv,
 ) {
 	return Effect.runPromise(
-		Effect.provideServiceEffect(
-			Effect.provide(programWithErrorCause(migrate), layers),
-			AppEnvironment,
-			Ref.make(env),
-		),
+		await programWithContextAndServices(migrate, env, layers),
 	);
 }
 
@@ -149,10 +137,6 @@ async function runMigrateDown(
 	env: AppEnv,
 ) {
 	return Effect.runPromise(
-		Effect.provideServiceEffect(
-			Effect.provide(programWithErrorCause(migrateDownProgram()), layers),
-			AppEnvironment,
-			Ref.make(env),
-		),
+		await programWithContextAndServices(migrateDownProgram(), env, layers),
 	);
 }

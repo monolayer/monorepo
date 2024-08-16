@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { ActionError } from "@monorepo/base/errors.js";
 import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import dotenv from "dotenv";
-import { Context, Effect, Ref } from "effect";
+import { Context, Effect, Layer, Ref } from "effect";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
@@ -16,7 +16,11 @@ export interface AppEnv {
 export class AppEnvironment extends Context.Tag("EnvironmentState")<
 	AppEnvironment,
 	Ref.Ref<AppEnv>
->() {}
+>() {
+	static provide<A, E, R>(program: Effect.Effect<A, E, R>, env: AppEnv) {
+		return Effect.provide(program, Layer.effect(AppEnvironment, Ref.make(env)));
+	}
+}
 
 export function getEnvironment(databaseId: string, envFile?: string) {
 	return Effect.gen(function* () {

@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { Effect } from "effect";
 import {
 	mkdirSync,
 	readFileSync,
@@ -16,7 +17,7 @@ import {
 	contractMigrationPath,
 	expandMigrationPath,
 } from "~tests/__setup__/helpers/default-migration-path.js";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -46,7 +47,9 @@ describe("generateChangesetMigration", () => {
 
 			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
-			await runProgramWithErrorCause(generateMigration());
+			await Effect.runPromise(
+				await programWithContextAndServices(generateMigration()),
+			);
 
 			const migrationFiles = readdirSync(expandMigrationPath(context.folder));
 
@@ -97,7 +100,9 @@ describe("generateChangesetMigration", () => {
 				configurations,
 			);
 
-			await runProgramWithErrorCause(generateMigration());
+			await Effect.runPromise(
+				await programWithContextAndServices(generateMigration()),
+			);
 
 			const migrationFiles = readdirSync(expandMigrationPath(context.folder));
 
@@ -136,7 +141,9 @@ describe("generateChangesetMigration", () => {
 		test<ProgramContext>("returns a changeset list", async (context) => {
 			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
-			await runProgramWithErrorCause(generateMigration());
+			await Effect.runPromise(
+				await programWithContextAndServices(generateMigration()),
+			);
 
 			const expandFiles = readdirSync(expandMigrationPath(context.folder));
 			const alterFiles = readdirSync(alterMigrationPath(context.folder));
@@ -183,7 +190,9 @@ describe("generateChangesetMigration", () => {
 				configurations,
 			);
 
-			await runProgramWithErrorCause(generateMigration());
+			await Effect.runPromise(
+				await programWithContextAndServices(generateMigration()),
+			);
 
 			const expandFiles = readdirSync(expandMigrationPath(context.folder));
 			const alterFiles = readdirSync(alterMigrationPath(context.folder));

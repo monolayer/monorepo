@@ -1,6 +1,7 @@
+import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { dropDatabase } from "~monolayer/actions/database/drop.js";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -23,7 +24,9 @@ describe("dropDatabase", () => {
 			).datname,
 		).toEqual(context.dbName);
 
-		await runProgramWithErrorCause(dropDatabase());
+		await Effect.runPromise(
+			await programWithContextAndServices(dropDatabase()),
+		);
 
 		expect(
 			(await context.pool.query("SELECT datname FROM pg_database;")).rows.find(

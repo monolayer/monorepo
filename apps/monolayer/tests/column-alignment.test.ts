@@ -2,9 +2,10 @@ import {
 	alignColumns,
 	introspectAlignment,
 } from "@monorepo/programs/introspect/alignment.js";
+import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import type { ColumnInfoFactoryOptions } from "~tests/__setup__/helpers/factories/column-info-factory.js";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -89,7 +90,9 @@ describe("column aligner", () => {
 			column({ columnName: "xml", dataType: "xml", isNullable: false }),
 		];
 
-		const typeAlignments = await runProgramWithErrorCause(introspectAlignment);
+		const typeAlignments = await Effect.runPromise(
+			await programWithContextAndServices(introspectAlignment),
+		);
 		const aligned = alignColumns(columns, typeAlignments);
 		const alignedNames = aligned.map((column) => column.columnName);
 

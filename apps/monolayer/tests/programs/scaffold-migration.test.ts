@@ -1,9 +1,10 @@
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
+import { Effect } from "effect";
 import { readFileSync, rmSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { scaffoldMigration } from "~monolayer/actions/migrations/scaffold.js";
-import { runProgramWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
+import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
@@ -34,8 +35,10 @@ describe("scaffoldMigration", () => {
 				force: true,
 			},
 		);
-		const result = await runProgramWithErrorCause(
-			scaffoldMigration(ChangesetPhase.Alter, true),
+		const result = await Effect.runPromise(
+			await programWithContextAndServices(
+				scaffoldMigration(ChangesetPhase.Alter, true),
+			),
 		);
 
 		expect(result.match(/alter\/.+\.ts$/)).not.toBeNull();
@@ -71,8 +74,10 @@ export async function down(db: Kysely<any>): Promise<void> {
 				force: true,
 			},
 		);
-		const result = await runProgramWithErrorCause(
-			scaffoldMigration(ChangesetPhase.Data, false),
+		const result = await Effect.runPromise(
+			await programWithContextAndServices(
+				scaffoldMigration(ChangesetPhase.Data, false),
+			),
 		);
 
 		expect(result.match(/data\/.+\.ts$/)).not.toBeNull();
@@ -108,8 +113,10 @@ export async function down(db: Kysely<any>): Promise<void> {
 				force: true,
 			},
 		);
-		const result = await runProgramWithErrorCause(
-			scaffoldMigration(ChangesetPhase.Data, false),
+		const result = await Effect.runPromise(
+			await programWithContextAndServices(
+				scaffoldMigration(ChangesetPhase.Data, false),
+			),
 		);
 
 		expect(result.match(/data\/.+\.ts$/)).not.toBeNull();

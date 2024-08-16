@@ -1,5 +1,5 @@
 import type { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
-import { DbClients, dbClientsLayer } from "@monorepo/services/db-clients.js";
+import { DbClients } from "@monorepo/services/db-clients.js";
 import { phasedMigratorLayer } from "@monorepo/services/phased-migrator.js";
 import dotenv from "dotenv";
 import { Effect, Layer } from "effect";
@@ -64,7 +64,7 @@ function mockedMigratorLayer(
 	return phasedMigratorLayer({ client: db, migrationFolder });
 }
 
-export function newLayers(
+export function testLayers(
 	databaseName: string,
 	migrationFolder: string,
 	database: MonoLayerPgDatabase,
@@ -77,7 +77,3 @@ export function newLayers(
 		Layer.provideMerge(mockedDbClientsLayer(databaseName, database.camelCase)),
 	);
 }
-
-export const layers = phasedMigratorLayer().pipe(
-	Layer.provideMerge(dbClientsLayer()),
-);
