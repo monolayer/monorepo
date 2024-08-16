@@ -1,7 +1,5 @@
-import type { TablesToRename } from "@monorepo/pg/introspection/schema.js";
 import { askColumnsToRename } from "@monorepo/prompts/columns-to-rename.js";
 import { askMigrationName } from "@monorepo/prompts/migration-name.js";
-import { tablesToRename } from "@monorepo/prompts/tables-to-rename.js";
 import type { ColumnsToRename } from "@monorepo/state/table-column-rename.js";
 import dotenv from "dotenv";
 import { Effect } from "effect";
@@ -35,14 +33,18 @@ export function globalPool() {
 	return globalTestThis.pool;
 }
 
-vi.mock("@monorepo/prompts/tables-to-rename.js", async (importOriginal) => {
+vi.mock("@monorepo/prompts/table-renames.js", async (importOriginal) => {
 	const actual =
-		(await importOriginal()) as typeof import("@monorepo/prompts/tables-to-rename.js");
+		(await importOriginal()) as typeof import("@monorepo/prompts/table-renames.js");
 	return {
 		...actual,
-		tablesToRename: vi.fn(
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			async (_tableDiff: { added: string[]; deleted: string[] }) => [],
+		tableRenames: vi.fn(
+			(
+				_tableDiff: { added: string[]; deleted: string[] },
+				schemaName: string,
+			) => {
+				return actual.tableRenames({ added: [], deleted: [] }, schemaName);
+			},
 		),
 	};
 });
@@ -98,10 +100,6 @@ vi.mock("@monorepo/prompts/migration-name.js", async () => {
 });
 
 vi.mocked(askMigrationName).mockResolvedValueOnce("default");
-
-export function mockTableDiffOnce(value: TablesToRename) {
-	vi.mocked(tablesToRename).mockResolvedValueOnce(value);
-}
 
 export function mockColumnDiffOnce(value: ColumnsToRename) {
 	vi.mocked(askColumnsToRename).mockResolvedValueOnce(value);

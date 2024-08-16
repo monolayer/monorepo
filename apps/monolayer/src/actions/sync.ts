@@ -1,5 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
+import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { Effect } from "effect";
 import { handleMissingDatabase } from "~monolayer/actions/database/handle-missing.js";
 import { applyMigrations } from "~monolayer/actions/migrations/apply.js";
@@ -17,7 +18,7 @@ export function syncAction(program: Command) {
 			await cliAction("Sync: generate migrations and migrate", opts, [
 				handleMissingDatabase,
 				handlePendingSchemaMigrations,
-				generateMigration().pipe(
+				TableRenameState.provide(generateMigration()).pipe(
 					Effect.tap((result) =>
 						Effect.if(result.length !== 0, {
 							onTrue: () => applyMigrations({ phase: "all" }),

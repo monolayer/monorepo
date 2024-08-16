@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { Effect } from "effect";
 import {
 	mkdirSync,
@@ -48,7 +49,9 @@ describe("generateChangesetMigration", () => {
 			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
 			await Effect.runPromise(
-				await programWithContextAndServices(generateMigration()),
+				await programWithContextAndServices(
+					TableRenameState.provide(generateMigration()),
+				),
 			);
 
 			const migrationFiles = readdirSync(expandMigrationPath(context.folder));
@@ -101,7 +104,9 @@ describe("generateChangesetMigration", () => {
 			);
 
 			await Effect.runPromise(
-				await programWithContextAndServices(generateMigration()),
+				await programWithContextAndServices(
+					TableRenameState.provide(generateMigration()),
+				),
 			);
 
 			const migrationFiles = readdirSync(expandMigrationPath(context.folder));
@@ -142,7 +147,9 @@ describe("generateChangesetMigration", () => {
 			writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
 			await Effect.runPromise(
-				await programWithContextAndServices(generateMigration()),
+				await programWithContextAndServices(
+					TableRenameState.provide(generateMigration()),
+				),
 			);
 
 			const expandFiles = readdirSync(expandMigrationPath(context.folder));
@@ -191,7 +198,9 @@ describe("generateChangesetMigration", () => {
 			);
 
 			await Effect.runPromise(
-				await programWithContextAndServices(generateMigration()),
+				await programWithContextAndServices(
+					TableRenameState.provide(generateMigration()),
+				),
 			);
 
 			const expandFiles = readdirSync(expandMigrationPath(context.folder));

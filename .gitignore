@@ -6,6 +6,7 @@ coverage
 .env*
 !.env.sample
 .vscode/tasks.json
+.vscode/*code-snippets
 build
 playground.ts
 tsconfig.tsbuildinfo

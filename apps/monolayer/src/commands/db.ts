@@ -1,5 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
+import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { createDatabase } from "~monolayer/actions/database/create.js";
 import { cliAction, cliActionWithoutContext } from "~monolayer/cli-action.js";
 import { dropDatabase } from "../actions/database/drop.js";
@@ -56,11 +57,13 @@ export function dbCommand(program: Command) {
 		.option("-f, --file <seed-file-name>", "seed file", "seed.ts")
 		.action(async (opts) => {
 			await cliAction("monolayer seed", opts, [
-				seed({
-					replant: opts.replant,
-					disableWarnings: opts.disableWarnings,
-					seedFile: opts.file,
-				}),
+				TableRenameState.provide(
+					seed({
+						replant: opts.replant,
+						disableWarnings: opts.disableWarnings,
+						seedFile: opts.file,
+					}),
+				),
 			]);
 		});
 

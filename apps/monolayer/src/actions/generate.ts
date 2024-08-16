@@ -1,5 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
+import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { handleMissingDatabase } from "~monolayer/actions/database/handle-missing.js";
 import { generateMigration } from "~monolayer/actions/migrations/generate.js";
 import { handlePendingSchemaMigrations } from "~monolayer/actions/migrations/pending.js";
@@ -15,7 +16,7 @@ export function generateAction(program: Command) {
 			await cliAction("monolayer generate", opts, [
 				handleMissingDatabase,
 				handlePendingSchemaMigrations,
-				generateMigration(),
+				TableRenameState.provide(generateMigration()),
 			]);
 		});
 }

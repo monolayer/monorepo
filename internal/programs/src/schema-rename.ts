@@ -1,7 +1,7 @@
 import { PromptCancelError } from "@monorepo/base/errors.js";
 import type { SchemaMigrationInfo } from "@monorepo/pg/schema/column/types.js";
 import { columnsToRenamePrompt } from "@monorepo/prompts/columns-to-rename.js";
-import { tablesToRename } from "@monorepo/prompts/tables-to-rename.js";
+import { tableRenames } from "@monorepo/prompts/table-renames.js";
 import { appEnvironmentConfigurationSchemas } from "@monorepo/state/app-environment.js";
 import {
 	makeTableColumnRenameState,
@@ -91,20 +91,12 @@ function selectTableDiffInteractive(
 	return Effect.gen(function* () {
 		if (deleted.length === 0 || added.length === 0) return yield* Effect.void;
 
-		const renameSelection = yield* Effect.tryPromise(() =>
-			tablesToRename({ added, deleted }, schemaName),
-		);
+		const renameSelection = yield* tableRenames({ added, deleted }, schemaName);
+
 		if (typeof renameSelection === "symbol")
 			return yield* Effect.fail(new PromptCancelError());
 
-		yield* TableColumnRenameState.updateTablesToRename(
-			renameSelection.map((tableToRename) => {
-				return {
-					from: `${schemaName}.${tableToRename.from}`,
-					to: `${schemaName}.${tableToRename.to}`,
-				};
-			}),
-		);
+		yield* TableColumnRenameState.updateTablesToRename(renameSelection);
 		return yield* Effect.void;
 	});
 }

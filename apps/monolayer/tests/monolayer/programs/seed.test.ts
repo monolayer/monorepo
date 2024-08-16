@@ -1,3 +1,4 @@
+import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { Effect } from "effect";
 import { unlinkSync, writeFileSync } from "fs";
 import path from "path";
@@ -24,8 +25,12 @@ describe("seed", () => {
 
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
-		await Effect.runPromise(await programWithContextAndServices(seed({})));
-		await Effect.runPromise(await programWithContextAndServices(seed({})));
+		await Effect.runPromise(
+			await programWithContextAndServices(TableRenameState.provide(seed({}))),
+		);
+		await Effect.runPromise(
+			await programWithContextAndServices(TableRenameState.provide(seed({}))),
+		);
 
 		const result = await context.kysely
 			.selectFrom("regulus_mint")
@@ -45,10 +50,14 @@ describe("seed", () => {
 		);
 
 		await Effect.runPromise(
-			await programWithContextAndServices(seed({ seedFile: "anotherSeed.ts" })),
+			await programWithContextAndServices(
+				TableRenameState.provide(seed({ seedFile: "anotherSeed.ts" })),
+			),
 		);
 		await Effect.runPromise(
-			await programWithContextAndServices(seed({ seedFile: "anotherSeed.ts" })),
+			await programWithContextAndServices(
+				TableRenameState.provide(seed({ seedFile: "anotherSeed.ts" })),
+			),
 		);
 
 		const result = await context.kysely
@@ -70,10 +79,14 @@ describe("seed", () => {
 
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
-		await Effect.runPromise(await programWithContextAndServices(seed({})));
+		await Effect.runPromise(
+			await programWithContextAndServices(TableRenameState.provide(seed({}))),
+		);
 		await Effect.runPromise(
 			await programWithContextAndServices(
-				seed({ replant: true, disableWarnings: true }),
+				TableRenameState.provide(
+					seed({ replant: true, disableWarnings: true }),
+				),
 			),
 		);
 
@@ -89,7 +102,11 @@ describe("seed", () => {
 	test<ProgramContext>("fails with pending schema migrations", async () => {
 		expect(
 			async () =>
-				await Effect.runPromise(await programWithContextAndServices(seed({}))),
+				await Effect.runPromise(
+					await programWithContextAndServices(
+						TableRenameState.provide(seed({})),
+					),
+				),
 		).rejects.toThrowError();
 	});
 
@@ -101,7 +118,11 @@ describe("seed", () => {
 
 		expect(
 			async () =>
-				await Effect.runPromise(await programWithContextAndServices(seed({}))),
+				await Effect.runPromise(
+					await programWithContextAndServices(
+						TableRenameState.provide(seed({})),
+					),
+				),
 		).rejects.toThrowError('process.exit unexpectedly called with "1"');
 	});
 
@@ -112,7 +133,11 @@ describe("seed", () => {
 
 		expect(
 			async () =>
-				await Effect.runPromise(await programWithContextAndServices(seed({}))),
+				await Effect.runPromise(
+					await programWithContextAndServices(
+						TableRenameState.provide(seed({})),
+					),
+				),
 		).rejects.toThrowError();
 	});
 });

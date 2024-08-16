@@ -18,10 +18,7 @@ import {
 	setUpContext,
 	teardownContext,
 } from "~tests/__setup__/helpers/test-context.js";
-import {
-	mockColumnDiffOnce,
-	mockTableDiffOnce,
-} from "~tests/__setup__/setup.js";
+import { mockColumnDiffOnce } from "~tests/__setup__/setup.js";
 
 describe("Rename table and column without camel case plugin", () => {
 	beforeEach<DbContext>(async (context) => {
@@ -33,7 +30,7 @@ describe("Rename table and column without camel case plugin", () => {
 		vi.restoreAllMocks();
 	});
 
-	test.only<DbContext>("table and columns", async (context) => {
+	test<DbContext>("table and columns", async (context) => {
 		await context.kysely.schema
 			.createTable("books")
 			.addColumn("id", "integer")
@@ -129,13 +126,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -279,13 +276,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -457,13 +454,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -642,13 +639,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -822,13 +819,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -1005,13 +1002,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -1128,13 +1125,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -1346,13 +1343,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -1599,13 +1596,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -1777,13 +1774,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					documents: [
 						{
@@ -1954,13 +1951,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					users: [
 						{
@@ -2132,13 +2129,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "persons",
-					},
-				]);
 				mockColumnDiffOnce({
 					persons: [
 						{
@@ -2309,13 +2306,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "persons",
-					},
-				]);
 				mockColumnDiffOnce({
 					books: [
 						{
@@ -2521,17 +2518,17 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "documents",
-					},
-					{
-						from: "users",
-						to: "persons",
-					},
-				]);
 				mockColumnDiffOnce({
 					persons: [
 						{
@@ -2737,17 +2734,17 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "documents",
-					},
-					{
-						from: "users",
-						to: "persons",
-					},
-				]);
 				mockColumnDiffOnce({
 					documents: [
 						{
@@ -2954,13 +2951,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					documents: [
 						{
@@ -3172,17 +3169,17 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "persons",
-					},
-					{
-						from: "books",
-						to: "documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					persons: [
 						{
@@ -3424,17 +3421,17 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "persons",
-					},
-					{
-						from: "books",
-						to: "documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					documents: [
 						{
@@ -3654,13 +3651,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					documents: [
 						{
@@ -3878,13 +3875,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					users: [
 						{
@@ -4102,13 +4099,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "persons",
-					},
-				]);
 				mockColumnDiffOnce({
 					persons: [
 						{
@@ -4327,13 +4324,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "persons",
-					},
-				]);
 				mockColumnDiffOnce({
 					books: [
 						{
@@ -4588,6 +4585,7 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [],
 			mock: () => {
 				mockColumnDiffOnce({
 					books: [
@@ -4851,17 +4849,17 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "documents",
-					},
-					{
-						from: "users",
-						to: "persons",
-					},
-				]);
 				mockColumnDiffOnce({
 					persons: [
 						{
@@ -5114,17 +5112,17 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "documents",
-					},
-					{
-						from: "users",
-						to: "persons",
-					},
-				]);
 				mockColumnDiffOnce({
 					documents: [
 						{
@@ -5414,13 +5412,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					documents: [
 						{
@@ -5683,17 +5681,17 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "persons",
-					},
-					{
-						from: "books",
-						to: "documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					persons: [
 						{
@@ -6131,17 +6129,17 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.documents",
+				},
+				{
+					from: "public.users",
+					to: "public.persons",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "persons",
-					},
-					{
-						from: "books",
-						to: "documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					documents: [
 						{
@@ -6293,13 +6291,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -6478,13 +6476,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -6628,13 +6626,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -6844,13 +6842,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -7071,13 +7069,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -7217,13 +7215,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -7387,13 +7385,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -7545,13 +7543,13 @@ describe("Rename table and column without camel case plugin", () => {
 			configuration: { id: "default", schemas: [dbSchema] },
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.publications",
+					to: "public.books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "publications",
-						to: "books",
-					},
-				]);
 				mockColumnDiffOnce({
 					books: [
 						{
@@ -7675,13 +7673,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.new_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "new_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					new_books: [
 						{
@@ -7829,13 +7827,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.new_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "new_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					new_books: [
 						{
@@ -8010,13 +8008,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -8199,13 +8197,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -8383,13 +8381,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -8570,13 +8568,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -8697,13 +8695,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.new_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "new_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					new_books: [
 						{
@@ -8918,13 +8916,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.new_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "new_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					new_books: [
 						{
@@ -9175,13 +9173,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.new_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "new_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					new_books: [
 						{
@@ -9356,13 +9354,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -9537,13 +9535,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					users: [
 						{
@@ -9718,13 +9716,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "user_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					user_books: [
 						{
@@ -9899,13 +9897,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "user_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					books: [
 						{
@@ -10115,17 +10113,17 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-					{
-						from: "users",
-						to: "user_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					user_books: [
 						{
@@ -10335,17 +10333,17 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-					{
-						from: "users",
-						to: "user_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -10556,13 +10554,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -10778,17 +10776,17 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "user_books",
-					},
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					user_books: [
 						{
@@ -11034,17 +11032,17 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "user_books",
-					},
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -11268,13 +11266,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -11496,13 +11494,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					users: [
 						{
@@ -11724,13 +11722,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "user_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					user_books: [
 						{
@@ -11952,13 +11950,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "user_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					books: [
 						{
@@ -12217,6 +12215,7 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [],
 			mock: () => {
 				mockColumnDiffOnce({
 					books: [
@@ -12484,17 +12483,17 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-					{
-						from: "users",
-						to: "user_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					user_books: [
 						{
@@ -12751,17 +12750,17 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-					{
-						from: "users",
-						to: "user_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -13055,13 +13054,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -13328,17 +13327,17 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "user_books",
-					},
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					user_books: [
 						{
@@ -13667,17 +13666,17 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+				{
+					from: "public.users",
+					to: "public.user_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "users",
-						to: "user_books",
-					},
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -13833,13 +13832,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -14022,13 +14021,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -14176,13 +14175,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -14397,13 +14396,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -14630,13 +14629,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.books_and_documents",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "books_and_documents",
-					},
-				]);
 				mockColumnDiffOnce({
 					books_and_documents: [
 						{
@@ -14780,13 +14779,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.new_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "new_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					new_books: [
 						{
@@ -14954,13 +14953,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.publications",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "publications",
-					},
-				]);
 				mockColumnDiffOnce({
 					publications: [
 						{
@@ -15151,13 +15150,13 @@ describe("Rename table and column with camel case plugin", () => {
 			},
 			expected: expected,
 			down: "same",
+			tableRenames: [
+				{
+					from: "public.books",
+					to: "public.new_books",
+				},
+			],
 			mock: () => {
-				mockTableDiffOnce([
-					{
-						from: "books",
-						to: "new_books",
-					},
-				]);
 				mockColumnDiffOnce({
 					new_books: [
 						{

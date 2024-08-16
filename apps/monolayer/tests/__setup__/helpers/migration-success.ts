@@ -2,12 +2,14 @@ import {
 	MonoLayerPgDatabase,
 	type DatabaseConfig,
 } from "@monorepo/pg/database.js";
+import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import {
 	AppEnvironment,
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
+import type { TableRename } from "@monorepo/state/table-column-rename.js";
 import { Effect } from "effect";
 import type { Layer } from "effect/Layer";
 import path from "path";
@@ -23,6 +25,7 @@ export async function testChangesetAndMigrations({
 	configuration,
 	expected,
 	down,
+	tableRenames = [] as TableRename[],
 	mock = () => true,
 }: {
 	context: DbContext;
@@ -30,6 +33,7 @@ export async function testChangesetAndMigrations({
 	expected: any[];
 	down: "same" | "reverse" | "empty";
 	configuration: DatabaseConfig;
+	tableRenames?: TableRename[];
 	mock?: () => void;
 }) {
 	const env: AppEnv = {
@@ -49,7 +53,7 @@ export async function testChangesetAndMigrations({
 
 	mock();
 
-	const result = await runGenerateChangesetMigration(layers, env);
+	const result = await runGenerateChangesetMigration(layers, env, tableRenames);
 
 	expect(result).toEqual(expected);
 
@@ -66,7 +70,11 @@ export async function testChangesetAndMigrations({
 
 	switch (down) {
 		case "reverse": {
-			const afterDownCs = await runGenerateChangesetMigration(layers, env);
+			const afterDownCs = await runGenerateChangesetMigration(
+				layers,
+				env,
+				tableRenames,
+			);
 			expect(afterDownCs).toEqual(
 				result
 					.reverse()
@@ -75,12 +83,20 @@ export async function testChangesetAndMigrations({
 			break;
 		}
 		case "same": {
-			const afterDownCs = await runGenerateChangesetMigration(layers, env);
+			const afterDownCs = await runGenerateChangesetMigration(
+				layers,
+				env,
+				tableRenames,
+			);
 			expect(afterDownCs).toEqual(result);
 			break;
 		}
 		case "empty": {
-			const afterDownCs = await runGenerateChangesetMigration(layers, env);
+			const afterDownCs = await runGenerateChangesetMigration(
+				layers,
+				env,
+				tableRenames,
+			);
 			expect(afterDownCs).toEqual([]);
 			break;
 		}
@@ -91,9 +107,13 @@ export async function testChangesetAndMigrations({
 async function runGenerateChangesetMigration(
 	layers: Layer<Migrator | DbClients, never, AppEnvironment>,
 	env: AppEnv,
+	tableRenames: TableRename[] = [],
 ) {
 	return Effect.runPromise(
-		await programWithContextAndServices(generateMigration(), env, layers),
+		TableRenameState.provide(
+			await programWithContextAndServices(generateMigration(), env, layers),
+			tableRenames,
+		),
 	);
 }
 

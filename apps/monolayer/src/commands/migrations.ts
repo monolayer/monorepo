@@ -8,6 +8,7 @@ import {
 } from "~monolayer/actions/migrations/pending.js";
 import { cliAction } from "~monolayer/cli-action.js";
 import { scaffoldCommand } from "../actions/scaffold.js";
+import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 
 export function migrationsCommand(program: Command) {
 	const migrations = program.command("migrations");
@@ -34,7 +35,7 @@ export function migrationsCommand(program: Command) {
 			await cliAction("monolayer generate", opts, [
 				handleMissingDatabase,
 				handlePendingSchemaMigrations,
-				generateMigration(),
+				TableRenameState.provide(generateMigration()),
 			]);
 		});
 
