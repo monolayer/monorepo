@@ -19,6 +19,7 @@ import { programWithContextAndServices } from "~monolayer/cli-action.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testLayers } from "~tests/__setup__/helpers/layers.js";
 import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";
+import { programWithErrorCause } from "~tests/__setup__/helpers/run-program.js";
 
 export async function testChangesetAndMigrations({
 	context,
@@ -111,7 +112,9 @@ async function runGenerateChangesetMigration(
 ) {
 	return Effect.runPromise(
 		TableRenameState.provide(
-			await programWithContextAndServices(generateMigration(), env, layers),
+			programWithErrorCause(
+				await programWithContextAndServices(generateMigration(), env, layers),
+			),
 			tableRenames,
 		),
 	);
@@ -129,7 +132,9 @@ async function cleanup(
 		),
 	);
 	return Effect.runPromise(
-		await programWithContextAndServices(program, env, layers),
+		programWithErrorCause(
+			await programWithContextAndServices(program, env, layers),
+		),
 	);
 }
 
@@ -148,7 +153,9 @@ async function runMigrate(
 	env: AppEnv,
 ) {
 	return Effect.runPromise(
-		await programWithContextAndServices(migrate, env, layers),
+		programWithErrorCause(
+			await programWithContextAndServices(migrate, env, layers),
+		),
 	);
 }
 
@@ -157,6 +164,8 @@ async function runMigrateDown(
 	env: AppEnv,
 ) {
 	return Effect.runPromise(
-		await programWithContextAndServices(migrateDownProgram(), env, layers),
+		programWithErrorCause(
+			await programWithContextAndServices(migrateDownProgram(), env, layers),
+		),
 	);
 }
