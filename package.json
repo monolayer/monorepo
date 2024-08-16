@@ -26,6 +26,8 @@
 	},
 	"devDependencies": {
 		"@config/testing": "*",
+		"@vitest/coverage-istanbul": "^2.0.5",
+		"@vitest/ui": "^2.0.5",
 		"mermaid": "^10.9.1",
 		"npm-run-all": "^4.1.5",
 		"patch-package": "^8.0.0",
@@ -35,14 +37,16 @@
 		"typedoc-plugin-markdown": "^4.2.3",
 		"typedoc-vitepress-theme": "^1.0.1",
 		"typescript": "^5.5.4",
+		"vite-plugin-dynamic-import": "^1.5.0",
 		"vitepress": "^1.3.2",
 		"vitepress-plugin-mermaid": "^2.0.16",
-		"vitepress-sidebar": "^1.24.2"
+		"vitepress-sidebar": "^1.24.2",
+		"vitest": "^2.0.5"
 	},
 	"packageManager": "^npm@10.8.2",
 	"scripts": {
 		"test": "vitest",
-		"test:watch": "CI=1 vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --allowOnly",
+		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open=false",
 		"typedoc": "typedoc --docsRoot docs/reference",
 		"typedoc:watch": "npm run typedoc -- --watch",
 		"postinstall": "patch-package",

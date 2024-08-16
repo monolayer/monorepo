@@ -23,7 +23,7 @@ describe("pgQuery", () => {
 
 	test<ProgramContext>("default configuration", async () => {
 		expect(await currentDatabase("default")).toStrictEqual([
-			{ current_database: "fa8238c1" },
+			{ current_database: "1b4d8555" },
 		]);
 	});
 
@@ -31,7 +31,7 @@ describe("pgQuery", () => {
 		process.env.MONO_PG_STATS_DATABASE_URL = `postgresql://postgres:postgres@localhost:5440/${context.dbName}_stats`;
 
 		expect(await currentDatabase("stats")).toStrictEqual([
-			{ current_database: "83251755_stats" },
+			{ current_database: "a93d7f8a_stats" },
 		]);
 	});
 

@@ -4,7 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	test: {
-		name: "monolayer/pg",
+		name: "pg",
 		coverage: {
 			provider: "istanbul",
 			reporter: ["html", "json"],

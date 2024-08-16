@@ -4,7 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	test: {
-		name: "monolayer/prompts",
+		name: "prompts",
 		coverage: {
 			provider: "istanbul",
 			reporter: ["html"],

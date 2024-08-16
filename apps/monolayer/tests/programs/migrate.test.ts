@@ -6,7 +6,7 @@ import {
 	teardownProgramContext,
 	type ProgramContext,
 } from "~tests/__setup__/helpers/test-context.js";
-import { migrate } from "../../__setup__/helpers/migration-success.js";
+import { migrate } from "../__setup__/helpers/migration-success.js";
 
 describe("migrate", () => {
 	beforeEach<ProgramContext>(async (context) => {
