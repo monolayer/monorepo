@@ -1,5 +1,4 @@
 import type { TypeAlignment } from "~pg/changeset/helpers/alignment.js";
-import type { SplitColumnRefactoring } from "~pg/changeset/refactors/split-column.js";
 import type {
 	ColumnsToRename,
 	TablesToRename,
@@ -18,5 +17,4 @@ export interface GeneratorContext {
 	typeAlignments: TypeAlignment[];
 	addedColumns: Record<string, string[]>;
 	droppedColumns: Record<string, string[]>;
-	splitRefactors: SplitColumnRefactoring[];
 }

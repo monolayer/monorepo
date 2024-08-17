@@ -55,16 +55,6 @@ export function isCreateColumn(
 		test.path[0] === "table" &&
 		test.path[2] === "columns" &&
 		test.value.isNullable !== false
-		// (context === undefined
-		// 	? true
-		// 	: context.splitRefactors.some(
-		// 			(splitRefactor) =>
-		// 				splitRefactor.schema === context.schemaName &&
-		// 				splitRefactor.tableName === test.path[1] &&
-		// 				!splitRefactor.targetColumns.includes(
-		// 					String(test.value.columnName),
-		// 				),
-		// 		))
 	);
 }
 
@@ -78,12 +68,6 @@ function isCreateColumnNonNullableColumn(
 		test.path[0] === "table" &&
 		test.path[2] === "columns" &&
 		test.value.isNullable === false
-		// context.splitRefactors.some(
-		// 	(splitRefactor) =>
-		// 		splitRefactor.schema === context.schemaName &&
-		// 		splitRefactor.tableName === test.path[1] &&
-		// 		!splitRefactor.targetColumns.includes(String(test.value.columnName)),
-		// )
 	);
 }
 

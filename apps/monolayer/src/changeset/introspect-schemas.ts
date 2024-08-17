@@ -9,7 +9,6 @@ import {
 import type { TablesToRename } from "@monorepo/pg/introspection/schema.js";
 import type { SchemaMigrationInfo } from "@monorepo/pg/schema/column/types.js";
 import { Schema, type AnySchema } from "@monorepo/pg/schema/schema.js";
-import type { SplitColumnRefactoring } from "@monorepo/programs/schema-refactor.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import { sortTableDependencies } from "@monorepo/services/dependencies.js";
 import {
@@ -78,13 +77,11 @@ export type SchemaIntrospection = {
 	tablesToRename: TablesToRename;
 	tablePriorities: string[];
 	columnsToRename: ColumnsToRename;
-	splitRefactors: SplitColumnRefactoring[];
 };
 
 export function introspectSchema(
 	schema: AnySchema,
 	renames?: TableAndColumnRenames,
-	splitRefactors?: SplitColumnRefactoring[],
 ) {
 	return Effect.gen(function* () {
 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
@@ -119,7 +116,6 @@ export function introspectSchema(
 			tablePriorities: introspectedRemote.tablePriorities,
 			columnsToRename: renames !== undefined ? renames.columnsToRename : {},
 			allSchemas,
-			splitRefactors: splitRefactors ?? [],
 		};
 		return introspectionContext;
 	});

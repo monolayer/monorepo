@@ -2,7 +2,7 @@ import { createFile } from "@monorepo/utils/create-file.js";
 import path from "node:path";
 import nunjucks from "nunjucks";
 const template = `import { Kysely, sql } from "kysely";
-import { type Migration{% if splitColumnRefactor %}, SplitColumnRefactor{% endif %} } from "monolayer/migration";
+import { type Migration } from "monolayer/migration";
 
 export const migration: Migration = {
 	name: "{{ name }}",
@@ -33,7 +33,6 @@ export function renderToFile(
 	name: string,
 	transaction: boolean,
 	warnings: string,
-	splitColumnRefactor: boolean,
 ) {
 	const { up, down } = upDown;
 	const dateStr = dateStringWithMilliseconds();
@@ -45,7 +44,6 @@ export function renderToFile(
 		transaction,
 		name: migrationName,
 		warnings,
-		splitColumnRefactor,
 	});
 	createFile(
 		migrationFilePath,

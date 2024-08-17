@@ -22,7 +22,6 @@ import { printWarnigns } from "@monorepo/pg/changeset/summary.js";
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
 } from "@monorepo/pg/changeset/types.js";
 import type { ChangeWarning } from "@monorepo/pg/changeset/warnings/warnings.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
@@ -626,9 +625,6 @@ class PhasedMigratorRenderer {
 							? false
 							: true,
 						this.#changesetWarnings(isolatedChangeset),
-						isolatedChangeset.some(
-							(m) => m.type === ChangeSetType.SplitColumnRefactor,
-						),
 					);
 					renderedMigrations.push(
 						path.relative(

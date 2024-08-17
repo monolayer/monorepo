@@ -15,5 +15,5 @@
 		"emitDeclarationOnly": true,
 		"declaration": true
 	},
-	"references": [{ "path": "../utils" }, { "path": "../programs" }]
+	"references": [{ "path": "../utils" }]
 }

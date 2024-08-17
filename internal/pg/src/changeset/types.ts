@@ -37,7 +37,6 @@ export enum ChangeSetType {
 	DropCheck = "dropCheckConstraint",
 	CreateSchema = "createSchema",
 	DropSchema = "dropSchema",
-	SplitColumnRefactor = "splitColumnRefactor",
 }
 
 export type Changeset = {
@@ -67,14 +66,12 @@ export enum MigrationOpPriority {
 	ChangeTableName = 900,
 
 	TriggerDrop = 1001,
-	SplitColumnRefactorDrop = 1002,
 	PrimaryKeyDrop = 1004,
 	ColumnDrop = 1005,
 	TableDrop = 1006,
 
 	TableCreate = 2001,
 	ColumnCreate = 2003,
-	SplitColumnRefactor = 2004,
 
 	ChangeColumnName = 3000,
 	ChangeColumnDatatype = 3001,

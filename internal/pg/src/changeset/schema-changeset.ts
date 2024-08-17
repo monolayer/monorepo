@@ -7,10 +7,6 @@ import {
 } from "~pg/changeset/generators/column.js";
 import { isCreateTable, isDropTable } from "~pg/changeset/generators/table.js";
 import type { TypeAlignment } from "~pg/changeset/helpers/alignment.js";
-import {
-	type SplitColumnRefactoring,
-	splitRefactorChangesets,
-} from "~pg/changeset/refactors/split-column.js";
 import type { Changeset } from "~pg/changeset/types.js";
 import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
 import type {
@@ -40,7 +36,6 @@ export type SchemaIntrospection = {
 	tablesToRename: TablesToRename;
 	tablePriorities: string[];
 	columnsToRename: ColumnsToRename;
-	splitRefactors: SplitColumnRefactoring[];
 };
 
 export function schemaChangeset(
@@ -73,7 +68,6 @@ export function schemaChangeset(
 		typeAlignments: typeAlignments,
 		addedColumns,
 		droppedColumns,
-		splitRefactors: introspection.splitRefactors,
 	};
 
 	const changesets = diff.flatMap((difference) => {
@@ -83,13 +77,7 @@ export function schemaChangeset(
 		}
 		return [];
 	});
-	return sortChangeset(
-		[
-			...changesets,
-			...splitRefactorChangesets(introspection.splitRefactors, context),
-		],
-		introspection,
-	);
+	return sortChangeset([...changesets], introspection);
 }
 
 export function changesetDiff(

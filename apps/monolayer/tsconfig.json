@@ -1,6 +1,6 @@
 {
 	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
-	"include": ["**/src/**/*", "**/tests/**/*"],
+	"include": ["**/src/**/*", "**/tests/**/*", "../../private/refactorings/src/schema-refactor.ts"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
