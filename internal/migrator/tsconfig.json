@@ -1,16 +1,19 @@
 {
-	"extends": "@monorepo/typescript-config/tsconfig.base.json",
+	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
 	"include": ["src/**/*", "tests/**/*"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
-		"outDir": "dist",
-		"composite": true,
+		"outDir": "./../../build/local/migrator",
+		"tsBuildInfoFile": "./../../build/local/migrator/tsconfig.build.tsbuildinfo",
 		"paths": {
 			"~migrator/*": ["src/*"]
-		}
+		},
+		"composite": true,
+		"emitDeclarationOnly": true,
+		"declaration": true,
+		"allowJs": true
 	},
-	"emitDeclarationOnly": true,
 	"references": [
 		{ "path": "../base" },
 		{ "path": "../pg" },

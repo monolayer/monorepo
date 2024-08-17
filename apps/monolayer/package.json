@@ -6,54 +6,55 @@
 	"license": "MIT",
 	"homepage": "https://github.com/dunkelbraun/monolayer/packages/monolayer",
 	"type": "module",
-	"main": "dist/index.js",
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
+	"main": "./dist/index.js",
+	"module": "./dist/esm/index.js",
+	"types": "./dist/esm/index.d.ts",
 	"bin": {
-		"monolayer": "dist/bin/cli.js"
+		"monolayer": "./dist/esm/bin/cli.js"
 	},
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"default": "./dist/index.js"
+			"types": "./dist/esm/index.d.ts",
+			"default": "./dist/esm/index.js",
+			"require": "./dist/cjs/index.js"
 		},
 		"./configuration": {
-			"types": "./dist/configuration.d.ts",
-			"default": "./dist/configuration.js"
+			"types": "./dist/esm/configuration.d.ts",
+			"default": "./dist/esm/configuration.js",
+			"require": "./dist/cjs/configuration.js"
 		},
 		"./helpers/pg": {
-			"types": "./dist/helpers.d.ts",
-			"default": "./dist/helpers.js"
+			"types": "./dist/esm/helpers.d.ts",
+			"default": "./dist/esm/helpers.js",
+			"require": "./dist/cjs/helper.js"
 		},
 		"./pg": {
 			"types": "./dist/pg.d.ts",
-			"default": "./dist/pg.js"
+			"default": "./dist/esm/pg.js",
+			"require": "./dist/cjs/pg.js"
 		},
 		"./migration": {
 			"types": "./dist/migration.d.ts",
-			"default": "./dist/migration.js"
+			"default": "./dist/esm/migration.js",
+			"require": "./dist/cjs/migration.js"
 		},
 		"./zod": {
 			"types": "./dist/zod.d.ts",
-			"default": "./dist/zod.js"
+			"default": "./dist/esm/zod.js",
+			"require": "./dist/cjs/zod.js"
 		}
 	},
 	"files": [
 		"dist/**/*.js",
-		"dist/**/*.d.ts",
-		"dist/**/*.js.map"
+		"dist/**/*.d.ts"
 	],
 	"scripts": {
-		"prebuild": "rm -rf dist",
-		"build": "npm run build-esm",
-		"build-esm": "tsc -b tsconfig.build.esm.json",
-		"postbuild": "npm run bundle",
-		"bundle": "npm run bundle:esm",
-		"bundle:esm": "tsc -b tsconfig.bundle.esm.json",
-		"postbundle": "npm run postbundle:alias:esm && npm run postbundle:makeexec:esm",
-		"postbundle:alias:esm": "tsc-alias -p tsconfig.bundle-alias.esm.json --outDir dist/esm --verbose",
-		"postbundle:makeexec:esm": "chmod +x dist/esm/bin/cli.js",
-		"postbundle:packageesm:esm": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/package.json",
+		"prebuild": "rm -rf dist/*",
+		"build": "tsc -b tsconfig.build.json && tsc -b tsconfig.build.cjs.json",
+		"postbuild": "npm run alias && npm run makeexec && npm run makepackage",
+		"alias": "tsc-alias -p tsconfig.alias.json --outDir dist/esm --verbose && tsc-alias -p tsconfig.alias.json --outDir dist/cjs --verbose",
+		"makeexec": "chmod +x dist/esm/bin/cli.js",
+		"makepackage": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/package.json && echo '{\n  \"type\": \"commonjs\"\n}' > dist/cjs/package.json",
 		"check": "npm run check:prettier && npm run check:lint && npm run check:skott",
 		"check:lint": "npx eslint .",
 		"check:prettier": "prettier --check .",

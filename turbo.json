@@ -4,6 +4,9 @@
 		"build": {
 			"dependsOn": ["^build"]
 		},
+		"bundle": {
+			"dependsOn": ["^bundle"]
+		},
 		"check": {
 			"dependsOn": ["^check"]
 		},

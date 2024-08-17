@@ -1,15 +1,17 @@
 {
-	"extends": "@monorepo/typescript-config/tsconfig.base.json",
+	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
 	"include": ["**/src/**/*", "**/tests/**/*"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
-		"outDir": "dist",
+		"outDir": "./../../build/local/configuration",
+		"tsBuildInfoFile": "./../../build/local/configuration/tsconfig.build.tsbuildinfo",
 		"paths": {
 			"~configuration/*": ["src/*"]
 		},
-		"composite": true
+		"composite": true,
+		"emitDeclarationOnly": true,
+		"declaration": true
 	},
-	"emitDeclarationOnly": true,
 	"references": [{ "path": "../pg" }]
 }

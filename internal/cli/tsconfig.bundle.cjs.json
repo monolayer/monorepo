@@ -1,0 +1,10 @@
+{
+	"extends": "./tsconfig.build.cjs.json",
+	"compilerOptions": {
+		"outDir": "./../../apps/monolayer/dist/cjs/packages/cli",
+		"tsBuildInfoFile": "./../../apps/monolayer/dist/cjs/packages/cli/tsconfig.bundle.cjs.tsbuildinfo",
+		"composite": true,
+		"declarationDir": "dist/cjs"
+	},
+	"references": [{ "path": "../base" }]
+}

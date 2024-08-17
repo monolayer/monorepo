@@ -1,0 +1,15 @@
+{
+	"extends": "./tsconfig.json",
+	"include": ["src/**/*"],
+	"exclude": ["src/api/*.ts"],
+	"compilerOptions": {
+		"emitDeclarationOnly": false,
+		"rootDir": "src",
+		"outDir": "dist/cjs",
+		"target": "es2020",
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"tsBuildInfoFile": "dist/tsconfig.build.cjs.tsbuildinfo"
+	},
+	"references": [{ "path": "../pg" }]
+}

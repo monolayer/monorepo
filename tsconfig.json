@@ -1,6 +1,7 @@
 {
 	"extends": "@monorepo/typescript-config/tsconfig.base.json",
 	"files": [],
+	"include": [],
 	"emitDeclarationOnly": true,
 	"compilerOptions": {
 		"composite": true

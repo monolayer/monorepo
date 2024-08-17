@@ -1,14 +1,16 @@
 {
 	"extends": "./tsconfig.json",
 	"include": ["src/**/*"],
-	"emitDeclarationOnly": false,
 	"compilerOptions": {
+		"emitDeclarationOnly": false,
+		"sourceMap": false,
 		"rootDir": "src",
-		"outDir": "dist",
+		"outDir": "dist/esm",
 		"tsBuildInfoFile": "dist/tsconfig.build.tsbuildinfo"
 	},
 	"references": [
 		{ "path": "../base/tsconfig.build.json" },
-		{ "path": "../configuration/tsconfig.build.json" }
+		{ "path": "../configuration/tsconfig.build.json" },
+		{ "path": "../pg/tsconfig.build.json" }
 	]
 }

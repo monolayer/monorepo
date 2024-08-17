@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"rootDir": ".",
+		"rootDir": "",
 		"paths": {
 			"~monolayer/*": ["*"],
 			"~base/*": ["packages/base/*"],
@@ -28,15 +28,15 @@
 		}
 	},
 	"references": [
-		{ "path": "../../internal/base/tsconfig.bundle.json" },
-		{ "path": "../../internal/configuration/tsconfig.bundle.json" },
-		{ "path": "../../internal/migrator/tsconfig.bundle.json" },
-		{ "path": "../../internal/pg/tsconfig.bundle.json" },
-		{ "path": "../../internal/prompts/tsconfig.bundle.json" },
-		{ "path": "../../internal/programs/tsconfig.bundle.json" },
-		{ "path": "../../internal/services/tsconfig.bundle.json" },
-		{ "path": "../../internal/state/tsconfig.bundle.json" },
-		{ "path": "../../internal/utils/tsconfig.bundle.json" },
-		{ "path": "../../private/refactorings/tsconfig.bundle.json" }
+		{ "path": "../../internal/base" },
+		{ "path": "../../internal/configuration" },
+		{ "path": "../../internal/migrator" },
+		{ "path": "../../internal/pg" },
+		{ "path": "../../internal/prompts" },
+		{ "path": "../../internal/programs" },
+		{ "path": "../../internal/services" },
+		{ "path": "../../internal/state" },
+		{ "path": "../../internal/utils" },
+		{ "path": "../../private/refactorings" }
 	]
 }

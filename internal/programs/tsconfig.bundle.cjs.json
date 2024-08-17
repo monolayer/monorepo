@@ -1,0 +1,16 @@
+{
+	"extends": "./tsconfig.build.cjs.json",
+	"compilerOptions": {
+		"outDir": "./../../apps/monolayer/dist/cjs/packages/programs",
+		"tsBuildInfoFile": "./../../apps/monolayer/dist/cjs/packages/programs/tsconfig.bundle.cjs.tsbuildinfo",
+		"composite": true,
+		"declarationDir": "dist/cjs"
+	},
+	"references": [
+		{ "path": "../base" },
+		{ "path": "../pg" },
+		{ "path": "../prompts" },
+		{ "path": "../services" },
+		{ "path": "../state" }
+	]
+}

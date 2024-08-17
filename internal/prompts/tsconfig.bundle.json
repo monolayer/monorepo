@@ -4,8 +4,5 @@
 		"outDir": "./../../apps/monolayer/dist/esm/packages/prompts",
 		"tsBuildInfoFile": "./../../apps/monolayer/dist/esm/packages/prompts/tsconfig.build.tsbuildinfo"
 	},
-	"references": [
-		{ "path": "../base/tsconfig.bundle.json" },
-		{ "path": "../pg/tsconfig.bundle.json" }
-	]
+	"references": [{ "path": "../base" }, { "path": "../pg" }]
 }

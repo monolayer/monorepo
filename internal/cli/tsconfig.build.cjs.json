@@ -1,0 +1,23 @@
+{
+	"extends": "./tsconfig.json",
+	"include": ["src/**/*"],
+	"compilerOptions": {
+		"composite": true,
+		"emitDeclarationOnly": false,
+		"sourceMap": false,
+		"rootDir": "src",
+		"outDir": "dist/cjs",
+		"target": "es2020",
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"incremental": true,
+		"tsBuildInfoFile": "dist/tsconfig.build.cjs.tsbuildinfo",
+		"paths": {
+			"~cli/*": ["src/*"],
+			"@monorepo/base/*": ["../base/src/*"],
+			"@monorepo/pg/*": ["../pg/src/*"],
+			"@monorepo/utils/*": ["../utils/src/*"]
+		}
+	},
+	"references": [{ "path": "../base" }]
+}

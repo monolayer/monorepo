@@ -5,9 +5,9 @@
 		"tsBuildInfoFile": "./../../apps/monolayer/dist/esm/packages/services/tsconfig.build.tsbuildinfo"
 	},
 	"references": [
-		{ "path": "../base/tsconfig.bundle.json" },
-		{ "path": "../migrator/tsconfig.bundle.json" },
-		{ "path": "../pg/tsconfig.bundle.json" },
-		{ "path": "../state/tsconfig.bundle.json" }
+		{ "path": "../base" },
+		{ "path": "../migrator" },
+		{ "path": "../pg" },
+		{ "path": "../state" }
 	]
 }

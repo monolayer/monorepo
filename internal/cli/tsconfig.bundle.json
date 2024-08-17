@@ -4,5 +4,5 @@
 		"outDir": "./../../apps/monolayer/dist/esm/packages/cli",
 		"tsBuildInfoFile": "./../../apps/monolayer/dist/esm/packages/cli/tsconfig.build.tsbuildinfo"
 	},
-	"references": [{ "path": "../pg/tsconfig.bundle.json" }]
+	"references": [{ "path": "../pg" }]
 }
