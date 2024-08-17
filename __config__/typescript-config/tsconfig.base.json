@@ -20,15 +20,15 @@
 		"skipLibCheck": true,
 		"composite": true,
 		"incremental": true,
-		"noEmitOnError": true,
+		"noEmitOnError": true
 		// "allowJs": false,
-    // "experimentalDecorators": false,
-    // "isolatedModules": true,
-    // "noImplicitOverride": true,
-    // "noImplicitReturns": true,
-    // "pretty": true,
-    // "removeComments": false,
-    // "verbatimModuleSyntax": true
+		// "experimentalDecorators": false,
+		// "isolatedModules": true,
+		// "noImplicitOverride": true,
+		// "noImplicitReturns": true,
+		// "pretty": true,
+		// "removeComments": false,
+		// "verbatimModuleSyntax": true
 	},
 	"exclude": ["node_modules", "dist"]
 }
