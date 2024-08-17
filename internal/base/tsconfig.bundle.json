@@ -1,7 +1,7 @@
 {
 	"extends": "./tsconfig.build.json",
 	"compilerOptions": {
-		"outDir": "./../../apps/monolayer/dist/packages/base",
-		"tsBuildInfoFile": "./../../apps/monolayer/dist/packages/base/tsconfig.build.tsbuildinfo"
+		"outDir": "./../../apps/monolayer/dist/esm/packages/base",
+		"tsBuildInfoFile": "./../../apps/monolayer/dist/esm/packages/base/tsconfig.build.tsbuildinfo"
 	}
 }

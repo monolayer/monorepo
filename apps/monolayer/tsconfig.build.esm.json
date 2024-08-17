@@ -4,8 +4,8 @@
 	"emitDeclarationOnly": false,
 	"compilerOptions": {
 		"rootDir": "src",
-		"outDir": "dist",
-		"tsBuildInfoFile": "dist/tsconfig.build.tsbuildinfo"
+		"outDir": "dist/esm",
+		"tsBuildInfoFile": "dist/esm/tsconfig.build.esm.tsbuildinfo"
 	},
 	"references": [
 		{ "path": "../../internal/base/tsconfig.build.json" },

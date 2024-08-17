@@ -1,8 +1,8 @@
 {
-	"extends": "./tsconfig.build.json",
+	"extends": "./tsconfig.build.esm.json",
 	"compilerOptions": {
-		"outDir": "./../../apps/monolayer/dist/",
-		"tsBuildInfoFile": "./../../apps/monolayer/dist/tsconfig.build.tsbuildinfo"
+		"outDir": "./../../apps/monolayer/dist/esm",
+		"tsBuildInfoFile": "./../../apps/monolayer/dist/esm/tsconfig.build.esm.tsbuildinfo"
 	},
 	"references": [
 		{ "path": "../../internal/base/tsconfig.bundle.json" },

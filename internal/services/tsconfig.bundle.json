@@ -1,8 +1,8 @@
 {
 	"extends": "./tsconfig.build.json",
 	"compilerOptions": {
-		"outDir": "./../../apps/monolayer/dist/packages/services",
-		"tsBuildInfoFile": "./../../apps/monolayer/dist/packages/services/tsconfig.build.tsbuildinfo"
+		"outDir": "./../../apps/monolayer/dist/esm/packages/services",
+		"tsBuildInfoFile": "./../../apps/monolayer/dist/esm/packages/services/tsconfig.build.tsbuildinfo"
 	},
 	"references": [
 		{ "path": "../base/tsconfig.bundle.json" },
