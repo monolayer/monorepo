@@ -24,7 +24,7 @@
 	"turbo.useLocalTurbo": true,
 	"npm-intellisense.recursivePackageJsonLookup": false,
 	"files.associations": {
-    ".env": "env",
-    ".env*": "env",
-  },
+		".env": "env",
+		".env*": "env"
+	}
 }
