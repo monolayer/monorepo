@@ -15,10 +15,12 @@
 	},
 	"references": [
 		{ "path": "../base" },
+		{ "path": "../cli" },
+		{ "path": "../migrator" },
 		{ "path": "../pg" },
 		{ "path": "../prompts" },
-		{ "path": "../migrator" },
 		{ "path": "../services" },
-		{ "path": "../state" }
+		{ "path": "../state" },
+		{ "path": "../utils" }
 	]
 }

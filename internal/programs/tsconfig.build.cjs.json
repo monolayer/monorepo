@@ -1,6 +1,7 @@
 {
 	"extends": "./tsconfig.json",
 	"include": ["src/**/*"],
+	"exclude": ["src/**/*.test.ts", "**/__test_setup__/**/*"],
 	"compilerOptions": {
 		"rootDir": "src",
 		"outDir": "dist/cjs",
@@ -10,12 +11,14 @@
 		"tsBuildInfoFile": "dist/tsconfig.build.cjs.tsbuildinfo",
 		"paths": {
 			"~programs/*": ["src/*"],
-			"@monorepo/pg/*": ["../pg/src/*"],
-			"@monorepo/services/*": ["../services/src/*"],
 			"@monorepo/base/*": ["../base/src/*"],
+			"@monorepo/cli/*": ["../cli/src/*"],
+			"@monorepo/migrator/*": ["../migrator/src/*"],
+			"@monorepo/pg/*": ["../pg/src/*"],
 			"@monorepo/prompts/*": ["../prompts/src/*"],
+			"@monorepo/services/*": ["../services/src/*"],
 			"@monorepo/state/*": ["../state/src/*"],
-			"@monorepo/migrator/*": ["../migrator/src/*"]
+			"@monorepo/utils/*": ["../utils/src/*"]
 		},
 		"emitDeclarationOnly": false,
 		"sourceMap": false,
@@ -23,10 +26,12 @@
 	},
 	"references": [
 		{ "path": "../base" },
+		{ "path": "../cli" },
+		{ "path": "../migrator" },
 		{ "path": "../pg" },
 		{ "path": "../prompts" },
-		{ "path": "../migrator" },
 		{ "path": "../services" },
-		{ "path": "../state" }
+		{ "path": "../state" },
+		{ "path": "../utils" }
 	]
 }
