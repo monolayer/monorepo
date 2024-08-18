@@ -6,10 +6,16 @@ import { cwd } from "node:process";
 import color from "picocolors";
 
 export function logPendingMigrations(pendingMigrations: PendingMigration[]) {
-	return Effect.forEach(pendingMigrations, (pending) => {
-		p.log.warn(
-			`${color.bgYellow(color.black(" PENDING "))} ${path.relative(cwd(), pending.path)} (${pending.phase})`,
-		);
-		return Effect.void;
+	return Effect.gen(function* () {
+		if (pendingMigrations.length > 0) {
+			yield* Effect.forEach(pendingMigrations, (pending) => {
+				p.log.warn(
+					`${color.bgYellow(color.black(" PENDING "))} ${path.relative(cwd(), pending.path)} (${pending.phase})`,
+				);
+				return Effect.void;
+			});
+		} else {
+			p.log.message("No pending migrations.");
+		}
 	});
 }

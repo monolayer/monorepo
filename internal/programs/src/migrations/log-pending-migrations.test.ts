@@ -58,3 +58,19 @@ test<TestProgramContext>("should list the pending migrations", async (context) =
 		count: 1,
 	});
 });
+
+test<TestProgramContext>("should print no pending migrations when there are no pending migrations", async (context) => {
+	await Effect.runPromise(runProgram(logPendingMigrations([]), context));
+
+	expectLogMessage({
+		expected: `${color.bgYellow(color.black(" PENDING "))}`,
+		messages: context.logMessages,
+		count: 0,
+	});
+
+	expectLogMessage({
+		expected: "No pending migrations.",
+		messages: context.logMessages,
+		count: 1,
+	});
+});
