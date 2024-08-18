@@ -46,7 +46,7 @@
 	"packageManager": "^npm@10.8.2",
 	"scripts": {
 		"test": "vitest",
-		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open=false",
+		"test:watch": "vitest ${TEST_FILE} --pool=forks --watch --ui --open=false",
 		"typedoc": "typedoc --docsRoot docs/reference",
 		"typedoc:watch": "npm run typedoc -- --watch",
 		"postinstall": "patch-package",

@@ -1,6 +1,6 @@
 {
 	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
-	"include": ["**/src/**/*", "**/tests/**/*"],
+	"include": ["**/src/**/*", "**/tests/**/*", "**/__test_setup__/**/*"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
@@ -17,6 +17,7 @@
 		{ "path": "../base" },
 		{ "path": "../pg" },
 		{ "path": "../prompts" },
+		{ "path": "../migrator" },
 		{ "path": "../services" },
 		{ "path": "../state" }
 	]

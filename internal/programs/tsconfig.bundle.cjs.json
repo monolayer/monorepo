@@ -11,6 +11,7 @@
 		{ "path": "../pg" },
 		{ "path": "../prompts" },
 		{ "path": "../services" },
-		{ "path": "../state" }
+		{ "path": "../state" },
+		{ "path": "../migrator" }
 	]
 }
