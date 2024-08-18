@@ -20,5 +20,5 @@ const config = defineConfig({
 	},
 	plugins: [tsconfigPaths()],
 });
-console.dir(config.root);
+
 export default config;
