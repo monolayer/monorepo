@@ -28,7 +28,7 @@ export const handlePendingSchemaMigrations = Effect.gen(function* () {
 	const localPending = yield* localPendingSchemaMigrations;
 	if (localPending.length == 0) return true;
 
-	yield* logPendingMigrations(localPending);
+	yield* logPendingMigrations;
 
 	if (yield* askConfirmationDelete) {
 		yield* deletePendingMigrations(localPending);
@@ -66,13 +66,13 @@ export function deletePendingMigrations(pendingMigrations: PendingMigration[]) {
 export function checkNoPendingMigrations(phases: ChangesetPhase[]) {
 	return Effect.gen(function* () {
 		let noPending = true;
+		yield* logPendingMigrations;
 		const pendingPhases: ChangesetPhase[] = [];
 		const pendingByPhase = yield* localPendingSchemaMigrationsByPhase;
 		for (const phase of phases) {
 			if (pendingByPhase[phase].length !== 0) {
 				noPending = false;
 				pendingPhases.push(phase);
-				yield* logPendingMigrations(pendingByPhase[phase]);
 			}
 		}
 		return [noPending, pendingPhases] as [boolean, ChangesetPhase[]];
