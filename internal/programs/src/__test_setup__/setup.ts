@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, vi } from "vitest";
 import {
-	dropDatabase,
+	dropTestDatabase,
 	setDefaultDatabaseURL,
 } from "~programs/__test_setup__/database.js";
 import {
@@ -18,14 +18,14 @@ beforeEach<TestProgramContext>(async (context) => {
 		);
 		return true;
 	});
-	await dropDatabase(context.databaseName);
+	await dropTestDatabase(context);
 	setDefaultDatabaseURL(context.databaseName);
 
 	await setupProgramContext(context);
 });
 
 afterEach<TestProgramContext>(async (context) => {
-	await dropDatabase(context.databaseName);
+	await dropTestDatabase(context);
 	await teardownProgramContext(context);
 	vi.resetAllMocks();
 });

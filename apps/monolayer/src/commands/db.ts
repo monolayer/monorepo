@@ -1,9 +1,9 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
-import { createDatabase } from "@monorepo/programs/create-database.js";
+import { createDatabase } from "@monorepo/programs/database/create-database.js";
+import { dropDatabase } from "@monorepo/programs/database/drop-database.js";
 import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { cliAction, cliActionWithoutContext } from "~monolayer/cli-action.js";
-import { dropDatabase } from "../actions/database/drop.js";
 import { seed } from "../actions/database/seed.js";
 import { structureLoad } from "../actions/database/structure-load.js";
 import { importSchema } from "../actions/import-schema.js";
@@ -29,7 +29,7 @@ export function dbCommand(program: Command) {
 	})
 		.description("drops a database")
 		.action(
-			async (opts) => await cliAction("Drop Database", opts, [dropDatabase()]),
+			async (opts) => await cliAction("Drop Database", opts, [dropDatabase]),
 		);
 
 	commandWithDefaultOptions({

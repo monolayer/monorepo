@@ -1,13 +1,14 @@
 import { pgAdminPool } from "~programs/__test_setup__/pool.js";
+import type { TestProgramContext } from "~programs/__test_setup__/setup.js";
 
-export async function createDatabase(databaseName: string) {
+export async function createTestDatabase(context: TestProgramContext) {
 	const pool = pgAdminPool();
-	await pool.query(`CREATE DATABASE "${databaseName}"`);
+	await pool.query(`CREATE DATABASE "${context.databaseName}"`);
 }
 
-export async function dropDatabase(databaseName: string) {
+export async function dropTestDatabase(context: TestProgramContext) {
 	const pool = pgAdminPool();
-	await pool.query(`DROP DATABASE IF EXISTS "${databaseName}"`);
+	await pool.query(`DROP DATABASE IF EXISTS "${context.databaseName}"`);
 }
 
 export function setDefaultDatabaseURL(databaseName: string) {

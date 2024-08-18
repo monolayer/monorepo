@@ -1,10 +1,13 @@
 import { Effect } from "effect";
 import color from "picocolors";
-import { describe, expect, test } from "vitest";
-import { pgAdminPool } from "~programs/__test_setup__/pool.js";
+import { describe, test } from "vitest";
+import {
+	assertCurrentConnectionDatabaseName,
+	expectLogMessage,
+} from "~programs/__test_setup__/assertions.js";
 import { runProgram } from "~programs/__test_setup__/run-program.js";
 import type { TestProgramContext } from "~programs/__test_setup__/setup.js";
-import { createDatabase } from "~programs/create-database.js";
+import { createDatabase } from "~programs/database/create-database.js";
 
 describe("createDatabase", () => {
 	test<TestProgramContext>("should create the current environment database", async (context) => {
@@ -31,32 +34,4 @@ describe("createDatabase", () => {
 			count: 3,
 		});
 	});
-
-	async function assertCurrentConnectionDatabaseName(expected?: string) {
-		const assertion = expect(
-			(await pgAdminPool().query("SELECT datname FROM pg_database;")).rows.find(
-				(row) => row.datname === expected,
-			),
-		);
-		if (expected === undefined) {
-			assertion.toBeUndefined();
-			return;
-		} else {
-			assertion.toEqual({ datname: expected });
-		}
-	}
-
-	function expectLogMessage({
-		messages,
-		expected,
-		count,
-	}: {
-		messages: string[];
-		expected: string;
-		count: number;
-	}) {
-		return expect(
-			messages.filter((message) => message.includes(expected)).length,
-		).toBe(count);
-	}
 });

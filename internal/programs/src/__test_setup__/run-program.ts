@@ -34,13 +34,9 @@ export function runProgram<A, E, R>(
 			extensions: [],
 		}),
 	};
-	const layers = testLayers(
-		testDatabaseName(context),
-		migrationFolder(context),
-	);
 
 	return Effect.scoped(
-		AppEnvironment.provide(Effect.provide(program, layers), env),
+		AppEnvironment.provide(Effect.provide(program, testLayers(context)), env),
 	);
 }
 
@@ -69,7 +65,8 @@ const dbSchema = schema({
 	},
 });
 
-export function testLayers(databaseName: string, migrationFolder: string) {
+function testLayers(context: TaskContext) {
+	const databaseName = testDatabaseName(context);
 	const pool = new pg.Pool({
 		database: databaseName,
 		user: env.POSTGRES_USER,
@@ -110,7 +107,8 @@ export function testLayers(databaseName: string, migrationFolder: string) {
 			};
 		}),
 	);
-	return phasedMigratorLayer({ client: db, migrationFolder }).pipe(
-		Layer.provideMerge(dbClientsLayer),
-	);
+	return phasedMigratorLayer({
+		client: db,
+		migrationFolder: migrationFolder(context),
+	}).pipe(Layer.provideMerge(dbClientsLayer));
 }

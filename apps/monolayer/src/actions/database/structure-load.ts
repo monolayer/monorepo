@@ -1,12 +1,12 @@
 import { checkWithFail } from "@monorepo/cli/check.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
-import { createDatabase } from "@monorepo/programs/create-database.js";
+import { createDatabase } from "@monorepo/programs/database/create-database.js";
+import { dropDatabase } from "@monorepo/programs/database/drop-database.js";
 import { DbClients, pgQuery } from "@monorepo/services/db-clients.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import fs from "fs/promises";
 import path from "path";
-import { dropDatabase } from "~monolayer/actions/database/drop.js";
 
 export function structureLoad() {
 	return checkStructureFile().pipe(
