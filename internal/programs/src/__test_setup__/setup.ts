@@ -1,13 +1,22 @@
-import { afterEach, beforeEach, vi } from "vitest";
+import dotenv from "dotenv";
+import path from "node:path";
+import { afterEach, beforeAll, beforeEach, vi } from "vitest";
 import {
 	dropTestDatabase,
 	setDefaultDatabaseURL,
 } from "~programs/__test_setup__/database.js";
 import {
+	currentWorkingDirectory,
 	setupProgramContext,
 	teardownProgramContext,
 	testDatabaseName,
 } from "~programs/__test_setup__/program_context.js";
+
+beforeAll(async () => {
+	dotenv.config({
+		path: path.resolve(currentWorkingDirectory(), ".env.test"),
+	});
+});
 
 beforeEach<TestProgramContext>(async (context) => {
 	context.logMessages = [];
@@ -25,7 +34,6 @@ beforeEach<TestProgramContext>(async (context) => {
 });
 
 afterEach<TestProgramContext>(async (context) => {
-	await dropTestDatabase(context);
 	await teardownProgramContext(context);
 	vi.resetAllMocks();
 });

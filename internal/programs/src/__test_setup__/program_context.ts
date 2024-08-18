@@ -45,11 +45,7 @@ export function programFolder(context: TaskContext) {
 }
 
 export function migrationFolder(context: TaskContext) {
-	return path.join(
-		programFolder(context),
-		currentWorkingDirectory(),
-		"monolayer/migrations/default",
-	);
+	return path.join(programFolder(context), "monolayer/migrations/default");
 }
 
 export function testDatabaseName(context: TaskContext) {

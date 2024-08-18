@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { confirm } from "@clack/prompts";
 import { cancelOperation } from "@monorepo/base/programs/cancel-operation.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
-import { Migrator } from "@monorepo/services/migrator.js";
+import { localPendingSchemaMigrations } from "@monorepo/programs/migrations/local-pending.js";
 import { Effect } from "effect";
 import { unlinkSync } from "fs";
 import path from "path";
@@ -95,12 +95,6 @@ export function checkNoPendingMigrations(phases: ChangesetPhase[]) {
 		return [noPending, pendingPhases] as [boolean, ChangesetPhase[]];
 	});
 }
-
-export const localPendingSchemaMigrations = Effect.gen(function* () {
-	const migrator = yield* Migrator;
-	const stats = yield* migrator.migrationStats;
-	return stats.localPending;
-});
 
 const localPendingSchemaMigrationsByPhase = Effect.gen(function* () {
 	const localPending = yield* localPendingSchemaMigrations;
