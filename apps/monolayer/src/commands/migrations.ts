@@ -1,14 +1,12 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
+import { logPendingMigrations } from "@monorepo/programs/migrations/log-pending-migrations.js";
+import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { handleMissingDatabase } from "~monolayer/actions/database/handle-missing.js";
 import { generateMigration } from "~monolayer/actions/migrations/generate.js";
-import {
-	handlePendingSchemaMigrations,
-	pendingMigrations,
-} from "~monolayer/actions/migrations/pending.js";
+import { handlePendingSchemaMigrations } from "~monolayer/actions/migrations/pending.js";
 import { cliAction } from "~monolayer/cli-action.js";
 import { scaffoldCommand } from "../actions/scaffold.js";
-import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 
 export function migrationsCommand(program: Command) {
 	const migrations = program.command("migrations");
@@ -23,7 +21,7 @@ export function migrationsCommand(program: Command) {
 	})
 		.description("list pending schema migrations")
 		.action(async (opts) => {
-			await cliAction("Pending migrations", opts, [pendingMigrations]);
+			await cliAction("Pending migrations", opts, [logPendingMigrations]);
 		});
 
 	commandWithDefaultOptions({

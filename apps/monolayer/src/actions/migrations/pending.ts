@@ -1,4 +1,3 @@
-import * as p from "@clack/prompts";
 import { confirm } from "@clack/prompts";
 import { cancelOperation } from "@monorepo/base/programs/cancel-operation.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
@@ -6,23 +5,7 @@ import { localPendingSchemaMigrations } from "@monorepo/programs/migrations/loca
 import { logPendingMigrations } from "@monorepo/programs/migrations/log-pending-migrations.js";
 import { Effect } from "effect";
 import { unlinkSync } from "fs";
-import path from "path";
 import color from "picocolors";
-
-export const pendingMigrations = Effect.gen(function* () {
-	const pendingMigrations = yield* localPendingSchemaMigrations;
-	if (pendingMigrations.length > 0) {
-		yield* Effect.forEach(pendingMigrations, (pendingMigration) => {
-			p.log.message(
-				`${color.bgYellow(color.black(" PENDING "))} ${path.basename(pendingMigration.path, ".ts")} (${pendingMigration.phase})`,
-			);
-			return Effect.void;
-		});
-	} else {
-		p.log.message("No pending migrations.");
-	}
-	return pendingMigrations;
-});
 
 export const handlePendingSchemaMigrations = Effect.gen(function* () {
 	const localPending = yield* localPendingSchemaMigrations;

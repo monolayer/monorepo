@@ -8,15 +8,13 @@ import {
 	type MonolayerMigrationInfo,
 } from "@monorepo/migrator/migration.js";
 import { NO_MIGRATIONS } from "@monorepo/migrator/migrator.js";
+import { logPendingMigrations } from "@monorepo/programs/migrations/log-pending-migrations.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import { type MigrationInfo } from "kysely";
 import path from "path";
-import {
-	deletePendingMigrations,
-	pendingMigrations,
-} from "~monolayer/actions/migrations/pending.js";
+import { deletePendingMigrations } from "~monolayer/actions/migrations/pending.js";
 
 export const rollback = Effect.gen(function* () {
 	const migrator = yield* Migrator;
@@ -57,7 +55,7 @@ export const rollback = Effect.gen(function* () {
 
 	p.log.info("Pending migrations after rollback:");
 
-	yield* pendingMigrations;
+	yield* logPendingMigrations;
 
 	if (yield* confirmDelete) {
 		yield* migrationNameAndPath(
