@@ -26,5 +26,6 @@ export function expectLogMessage({
 }) {
 	return expect(
 		messages.filter((message) => message.includes(expected)).length,
+		messages.join("\n"),
 	).toBe(count);
 }

@@ -18,11 +18,12 @@ export interface MigrationStats {
 	all: MonolayerMigrationInfo[];
 	executed: MonolayerMigrationInfo[];
 	pending: MonolayerMigrationInfo[];
-	localPending: {
-		name: string;
-		path: string;
-		phase: ChangesetPhase;
-	}[];
+	localPending: PendingMigration[];
+}
+export interface PendingMigration {
+	name: string;
+	path: string;
+	phase: ChangesetPhase;
 }
 
 export type MigratorInterface = {

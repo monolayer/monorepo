@@ -3,11 +3,11 @@ import { confirm } from "@clack/prompts";
 import { cancelOperation } from "@monorepo/base/programs/cancel-operation.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { localPendingSchemaMigrations } from "@monorepo/programs/migrations/local-pending.js";
+import { logPendingMigrations } from "@monorepo/programs/migrations/log-pending-migrations.js";
 import { Effect } from "effect";
 import { unlinkSync } from "fs";
 import path from "path";
 import color from "picocolors";
-import { cwd } from "process";
 
 export const pendingMigrations = Effect.gen(function* () {
 	const pendingMigrations = yield* localPendingSchemaMigrations;
@@ -36,23 +36,6 @@ export const handlePendingSchemaMigrations = Effect.gen(function* () {
 		yield* cancelOperation();
 	}
 });
-
-function logPendingMigrations(
-	pending: {
-		name: string;
-		path: string;
-		phase: ChangesetPhase;
-	}[],
-) {
-	return Effect.gen(function* () {
-		for (const migration of pending) {
-			p.log.warn(
-				`${color.bgYellow(color.black(" PENDING "))} ${path.relative(cwd(), migration.path)} (${migration.phase})`,
-			);
-		}
-		yield* Effect.succeed(true);
-	});
-}
 
 const askConfirmationDelete = Effect.gen(function* () {
 	const promptConfirm = yield* Effect.tryPromise(() =>
