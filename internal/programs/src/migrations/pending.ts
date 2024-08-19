@@ -1,26 +1,31 @@
 import * as p from "@clack/prompts";
-import { Migrator } from "@monorepo/services/migrator.js";
+import {
+	Migrator,
+	type PendingMigration,
+} from "@monorepo/services/migrator.js";
 import { Effect } from "effect";
+import { flatMap, forEach, succeed, tap } from "effect/Effect";
 import path from "node:path";
 import { cwd } from "node:process";
 import color from "picocolors";
 
-export const pendingMigrations = Effect.gen(function* () {
-	const migrator = yield* Migrator;
-	const stats = yield* migrator.migrationStats;
-	return stats.localPending;
-});
+export const pendingMigrations = Migrator.pipe(
+	flatMap((migrator) => migrator.migrationStats),
+	flatMap((stats) => succeed(stats.localPending)),
+);
 
-export const logPendingMigrations = Effect.gen(function* () {
-	const pending = yield* pendingMigrations;
-	if (pending.length > 0) {
-		yield* Effect.forEach(pending, (pending) => {
-			p.log.warn(
-				`${color.bgYellow(color.black(" PENDING "))} ${path.relative(cwd(), pending.path)} (${pending.phase})`,
-			);
-			return Effect.void;
-		});
-	} else {
-		p.log.message("No pending migrations.");
-	}
-});
+export const logPendingMigrations = pendingMigrations.pipe(
+	tap((pending) =>
+		Effect.if(pending.length > 0, {
+			onTrue: () => forEach(pending, logPending),
+			onFalse: () => Effect.succeed(p.log.message("No pending migrations.")),
+		}),
+	),
+);
+
+const logPending = (pending: PendingMigration) =>
+	Effect.succeed(
+		p.log.warn(
+			`${color.bgYellow(color.black(" PENDING "))} ${path.relative(cwd(), pending.path)} (${pending.phase})`,
+		),
+	);
