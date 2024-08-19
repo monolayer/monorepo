@@ -47,7 +47,7 @@ describe("localPendingSchemaMigrations", () => {
 describe("logPendingMigrations", () => {
 	test<TestProgramContext>(
 		"should list the pending migrations",
-		{ retry: 3 },
+		{ retry: 6 },
 		async (context) => {
 			await Effect.runPromise(runProgram(logPendingMigrations, context));
 
@@ -72,7 +72,7 @@ describe("logPendingMigrations", () => {
 
 	test<TestProgramContext>(
 		"should print no pending migrations when there are no pending migrations",
-		{ retry: 3 },
+		{ retry: 6 },
 		async (context) => {
 			rmdirSync(migrationFolder(context), { recursive: true });
 

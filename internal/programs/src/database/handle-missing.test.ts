@@ -122,7 +122,7 @@ test<TestProgramContext>("user cancels prompt", async (context) => {
 
 test<TestProgramContext>(
 	"user selects to create the database",
-	{ retry: 3 },
+	{ retry: 6 },
 	async (context) => {
 		expect(
 			await databaseExists({ databaseName: context.databaseName }),

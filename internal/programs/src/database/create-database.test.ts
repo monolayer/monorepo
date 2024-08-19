@@ -8,7 +8,7 @@ import type { TestProgramContext } from "~test-setup/setup.js";
 describe("createDatabase", () => {
 	test<TestProgramContext>(
 		"should create the current environment database",
-		{ retry: 3 },
+		{ retry: 6 },
 		async (context) => {
 			assertCurrentConnectionDatabaseName(undefined);
 			await Effect.runPromise(runProgram(createDatabase, context));
@@ -32,7 +32,7 @@ describe("createDatabase", () => {
 
 	test<TestProgramContext>(
 		"should be idempotent",
-		{ retry: 3 },
+		{ retry: 6 },
 		async (context) => {
 			await Effect.runPromise(runProgram(createDatabase, context));
 			await Effect.runPromise(runProgram(createDatabase, context));

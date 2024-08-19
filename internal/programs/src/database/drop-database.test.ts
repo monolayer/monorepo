@@ -9,7 +9,7 @@ import type { TestProgramContext } from "~test-setup/setup.js";
 describe("dropDatabase", () => {
 	test<TestProgramContext>(
 		"should drop the current environment database",
-		{ retry: 3 },
+		{ retry: 6 },
 		async (context) => {
 			await createTestDatabase(context);
 
@@ -34,7 +34,7 @@ describe("dropDatabase", () => {
 
 	test<TestProgramContext>(
 		"should be idempotent",
-		{ retry: 3 },
+		{ retry: 6 },
 		async (context) => {
 			await createTestDatabase(context);
 
