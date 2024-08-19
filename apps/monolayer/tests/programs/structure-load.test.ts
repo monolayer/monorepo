@@ -1,8 +1,8 @@
+import { structureLoad } from "@monorepo/programs/database/structure-load.js";
 import { Effect } from "effect";
 import { copyFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { structureLoad } from "~monolayer/actions/database/structure-load.js";
 import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	dbAndMigrator,

@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { generateMigration } from "@monorepo/programs/migrations/generate.js";
 import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { Effect } from "effect";
 import {
@@ -11,7 +12,6 @@ import {
 import { cwd } from "node:process";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { generateMigration } from "~monolayer/actions/migrations/generate.js";
 import { configurationsTemplateTwoDatabaseSchemas } from "~tests/__setup__/fixtures/program.js";
 import {
 	alterMigrationPath,

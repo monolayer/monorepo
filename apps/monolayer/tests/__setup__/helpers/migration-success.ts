@@ -2,6 +2,7 @@ import {
 	MonoLayerPgDatabase,
 	type DatabaseConfig,
 } from "@monorepo/pg/database.js";
+import { generateMigration } from "@monorepo/programs/migrations/generate.js";
 import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import { Migrator } from "@monorepo/services/migrator.js";
@@ -14,7 +15,6 @@ import { Effect } from "effect";
 import type { Layer } from "effect/Layer";
 import path from "path";
 import { expect } from "vitest";
-import { generateMigration } from "~monolayer/actions/migrations/generate.js";
 import { programWithContextAndServices } from "~monolayer/cli-action.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testLayers } from "~tests/__setup__/helpers/layers.js";

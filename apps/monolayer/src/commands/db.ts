@@ -2,10 +2,10 @@ import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { createDatabase } from "@monorepo/programs/database/create-database.js";
 import { dropDatabase } from "@monorepo/programs/database/drop-database.js";
+import { seed } from "@monorepo/programs/database/seed.js";
+import { structureLoad } from "@monorepo/programs/database/structure-load.js";
 import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { cliAction, cliActionWithoutContext } from "~monolayer/cli-action.js";
-import { seed } from "../actions/database/seed.js";
-import { structureLoad } from "../actions/database/structure-load.js";
 import { importSchema } from "../actions/import-schema.js";
 
 export function dbCommand(program: Command) {

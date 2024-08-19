@@ -1,11 +1,11 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { handleMissingDatabase } from "@monorepo/programs/database/handle-missing.js";
+import { applyMigrations } from "@monorepo/programs/migrations/apply.js";
+import { generateMigration } from "@monorepo/programs/migrations/generate.js";
+import { handlePendingSchemaMigrations } from "@monorepo/programs/migrations/pending.js";
 import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { Effect } from "effect";
-import { applyMigrations } from "~monolayer/actions/migrations/apply.js";
-import { generateMigration } from "~monolayer/actions/migrations/generate.js";
-import { handlePendingSchemaMigrations } from "~monolayer/actions/migrations/pending.js";
 import { cliAction } from "~monolayer/cli-action.js";
 
 export function syncAction(program: Command) {

@@ -1,9 +1,9 @@
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
+import { scaffoldMigration } from "@monorepo/programs/migrations/scaffold.js";
 import { Effect } from "effect";
 import { readFileSync, rmSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { scaffoldMigration } from "~monolayer/actions/migrations/scaffold.js";
 import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,

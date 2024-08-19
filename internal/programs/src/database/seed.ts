@@ -13,7 +13,7 @@ import { Effect } from "effect";
 import { sql, type Kysely } from "kysely";
 import path from "path";
 import { exit } from "process";
-import { changeset } from "../../changeset/changeset.js";
+import { changeset } from "~programs/changeset/changeset.js";
 
 type SeedOptions = {
 	disableWarnings?: boolean;

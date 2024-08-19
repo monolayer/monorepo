@@ -1,13 +1,13 @@
 import * as p from "@clack/prompts";
 import { printChangesetSummary } from "@monorepo/pg/changeset/summary.js";
 import { type Changeset } from "@monorepo/pg/changeset/types.js";
+import { changeset } from "@monorepo/programs/changeset/changeset.js";
+import { validateUniqueSchemaName } from "@monorepo/programs/changeset/validate-unique-schema-name.js";
 import { computeExtensionChangeset } from "@monorepo/programs/extension-changeset.js";
 import { migrationNamePrompt } from "@monorepo/prompts/migration-name.js";
 import { schemaDependencies } from "@monorepo/services/dependencies.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { Effect } from "effect";
-import { validateUniqueSchemaName } from "~monolayer/changeset/validate-unique-schema-name.js";
-import { changeset } from "../../changeset/changeset.js";
 
 export function generateMigration(name?: string) {
 	return Effect.gen(function* () {

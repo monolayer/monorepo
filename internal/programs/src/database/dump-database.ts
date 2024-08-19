@@ -155,7 +155,7 @@ const appendMigrationDataToDump = Effect.gen(function* () {
 	);
 });
 
-function cleanDump(filePath: string): void {
+function cleanDump(filePath: string) {
 	const fileContent = readFileSync(filePath, "utf-8");
 	const cleanedContent = fileContent
 		.split("\n")

@@ -15,7 +15,19 @@ import type {
 } from "@monorepo/pg/introspection/schema.js";
 import type { ForeignKeyIntrospection } from "@monorepo/pg/introspection/table.js";
 import type { TriggerInfo } from "@monorepo/pg/introspection/trigger.js";
-import type { ColumnInfo } from "@monorepo/pg/schema/column/types.js";
+import { dumpDatabaseWithoutMigrationTables } from "@monorepo/programs/database/dump-database.js";
+import {
+	createSchema,
+	type ImportedSchema,
+} from "@monorepo/programs/import-schemas/create-schemas.js";
+import {
+	checkConstraintDefinition,
+	foreignKeyDefinition,
+	indexDefinition,
+	primaryKeyDefinition,
+	triggerDefinition,
+	uniqueConstraintDefinition,
+} from "@monorepo/programs/import-schemas/definitions.js";
 import { kyselyWithConnectionString } from "@monorepo/services/db-clients.js";
 import {
 	AppEnvironment,
@@ -31,35 +43,6 @@ import nunjucks from "nunjucks";
 import path from "path";
 import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
-import { dumpDatabaseWithoutMigrationTables } from "~monolayer/actions/database/dump.js";
-import { createSchema } from "~monolayer/actions/import-schemas/create-schemas.js";
-import {
-	checkConstraintDefinition,
-	foreignKeyDefinition,
-	indexDefinition,
-	primaryKeyDefinition,
-	triggerDefinition,
-	uniqueConstraintDefinition,
-} from "~monolayer/actions/import-schemas/definitions.js";
-export interface ImportedSchema {
-	enums: {
-		name: string;
-		definition: string;
-	}[];
-	extensions: string[];
-	tables: [
-		string,
-		{
-			columns: Record<string, ColumnInfo>;
-			primaryKey: string | undefined;
-			foreignKeys: string[];
-			uniqueConstraints: string[];
-			checkConstraints: string[];
-			indexes: string[];
-			triggers: string[];
-		},
-	][];
-}
 
 export const importSchema = Effect.gen(function* () {
 	const { introspection, databaseName, connectionString, extensions } =

@@ -3,6 +3,7 @@ import * as p from "@clack/prompts";
 import { ActionError, UnknownActionError } from "@monorepo/base/errors.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
+import { dumpDatabaseStructureTask } from "@monorepo/programs/database/dump-database.js";
 import { checkNoPendingPhases } from "@monorepo/programs/migrations/phases.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
@@ -10,7 +11,6 @@ import { Effect } from "effect";
 import { execa } from "execa";
 import type { MigrationResult } from "kysely";
 import color from "picocolors";
-import { dumpDatabaseStructureTask } from "~monolayer/actions/database/dump.js";
 
 interface ApplyExpandMigrations {
 	phase: ChangesetPhase.Expand;

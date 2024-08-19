@@ -1,9 +1,9 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
-import { applyMigrations } from "~monolayer/actions/migrations/apply.js";
+import { applyMigrations } from "@monorepo/programs/migrations/apply.js";
+import { rollback } from "@monorepo/programs/migrations/rollback.js";
 import { cliAction } from "~monolayer/cli-action.js";
-import { rollback } from "../actions/migrations/rollback.js";
 import { syncAction } from "../actions/sync.js";
 
 export function migrateCommand(program: Command) {

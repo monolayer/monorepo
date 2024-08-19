@@ -3,7 +3,20 @@
 	"include": [
 		"**/src/**/*",
 		"**/tests/**/*",
-		"../../private/refactorings/src/schema-refactor.ts"
+		"../../private/refactorings/src/schema-refactor.ts",
+		"../../internal/programs/src/database/seed.ts",
+		"../../internal/programs/src/database/structure-load.ts",
+		"../../internal/programs/src/changeset",
+		"tests/dump-database-structure.test.ts",
+		"../../internal/programs/src/seed.test.ts",
+		"../../internal/programs/src/structure-load.test.ts",
+		"../../internal/programs/src/validate-foreign-key-references.test.ts",
+		"../../internal/programs/src/validate-unique-schema-name.test.ts",
+		"../../internal/programs/src/import-schemas",
+		"../../internal/programs/src/migrations/rollback.ts",
+		"../../internal/programs/src/migrations/scaffold.ts",
+		"../../internal/programs/src/migrations/generate.ts",
+		"../../internal/programs/src/migrations/apply.ts"
 	],
 	"compilerOptions": {
 		"baseUrl": "./",

@@ -1,7 +1,7 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
-import { scaffoldMigration } from "~monolayer/actions/migrations/scaffold.js";
+import { scaffoldMigration } from "@monorepo/programs/migrations/scaffold.js";
 import { cliAction } from "~monolayer/cli-action.js";
 
 export function scaffoldCommand(program: Command) {

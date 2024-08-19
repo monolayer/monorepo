@@ -16,11 +16,11 @@ import {
 } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import {
-	introspectSchema,
 	renameMigrationInfo,
 	sortTablePriorities,
-} from "~monolayer/changeset/introspect-schemas.js";
-import { validateForeignKeyReferences } from "~monolayer/changeset/validate-foreign-key-references.js";
+} from "~programs/changeset/introspect-schemas.js";
+import { validateForeignKeyReferences } from "~programs/changeset/validate-foreign-key-references.js";
+import { introspectSchema } from "~programs/introspect/schema.js";
 
 export function changeset() {
 	return Effect.gen(function* () {

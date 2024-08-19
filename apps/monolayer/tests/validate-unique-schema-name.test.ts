@@ -1,13 +1,13 @@
 import { ActionError } from "@monorepo/base/errors.js";
 import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
+import { validateUniqueSchemaName } from "@monorepo/programs/changeset/validate-unique-schema-name.js";
 import {
 	AppEnvironment,
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
 import { Effect, Ref } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { validateUniqueSchemaName } from "~monolayer/changeset/validate-unique-schema-name.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,

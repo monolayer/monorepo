@@ -1,11 +1,31 @@
 /* eslint-disable complexity */
+import type { ColumnInfo } from "@monorepo/pg/schema/column/types.js";
 import { camelCase, constantCase, kebabCase } from "case-anything";
 import { appendFileSync, readFileSync, writeFileSync } from "fs";
 import { default as jscodeshift } from "jscodeshift";
 import nunjucks from "nunjucks";
 import path from "path";
-import type { ImportedSchema } from "~monolayer/actions/import-schema.js";
-import { columnDefinition } from "~monolayer/actions/import-schemas/column-definition.js";
+import { columnDefinition } from "~programs/import-schemas/column-definition.js";
+
+export interface ImportedSchema {
+	enums: {
+		name: string;
+		definition: string;
+	}[];
+	extensions: string[];
+	tables: [
+		string,
+		{
+			columns: Record<string, ColumnInfo>;
+			primaryKey: string | undefined;
+			foreignKeys: string[];
+			uniqueConstraints: string[];
+			checkConstraints: string[];
+			indexes: string[];
+			triggers: string[];
+		},
+	][];
+}
 
 export function createSchema(
 	databaseName: string,

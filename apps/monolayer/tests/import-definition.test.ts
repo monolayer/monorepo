@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
+import { columnDefinition } from "@monorepo/programs/import-schemas/column-definition.js";
+import { primaryKeyDefinition } from "@monorepo/programs/import-schemas/definitions.js";
 import { describe, expect, test } from "vitest";
-import { columnDefinition } from "~monolayer/actions/import-schemas/column-definition.js";
-import { primaryKeyDefinition } from "~monolayer/actions/import-schemas/definitions.js";
 import {
 	type ColumnInfoFactoryOptions,
 	columnInfoFactory,
