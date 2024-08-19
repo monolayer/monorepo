@@ -3,6 +3,7 @@ import * as p from "@clack/prompts";
 import { ActionError, UnknownActionError } from "@monorepo/base/errors.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
+import { checkNoPendingPhases } from "@monorepo/programs/migrations/check-no-pending-phases.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
@@ -10,7 +11,6 @@ import { execa } from "execa";
 import type { MigrationResult } from "kysely";
 import color from "picocolors";
 import { dumpDatabaseStructureTask } from "~monolayer/actions/database/dump.js";
-import { checkNoPendingMigrations } from "~monolayer/actions/migrations/pending.js";
 
 interface ApplyExpandMigrations {
 	phase: ChangesetPhase.Expand;
@@ -48,17 +48,14 @@ export function applyMigrations({
 	| ApplyAllMigrations) {
 	return Effect.gen(function* () {
 		const migrator = yield* Migrator;
-		let noPending: boolean = true;
 		let pendingPhases: ChangesetPhase[] = [];
 		switch (phase) {
 			case ChangesetPhase.Alter:
-				[noPending, pendingPhases] = yield* checkNoPendingMigrations([
-					ChangesetPhase.Expand,
-				]);
+				pendingPhases = yield* checkNoPendingPhases([ChangesetPhase.Expand]);
 				break;
 			case ChangesetPhase.Data:
 			case ChangesetPhase.Contract:
-				[noPending, pendingPhases] = yield* checkNoPendingMigrations([
+				pendingPhases = yield* checkNoPendingPhases([
 					ChangesetPhase.Expand,
 					ChangesetPhase.Alter,
 				]);
@@ -67,7 +64,7 @@ export function applyMigrations({
 				break;
 		}
 
-		if (!noPending) {
+		if (pendingPhases.length > 0) {
 			yield* Effect.fail(
 				new ActionError(
 					`Cannot apply ${phase} migrations`,
