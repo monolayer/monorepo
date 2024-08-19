@@ -1,13 +1,15 @@
 import { confirm } from "@clack/prompts";
 import { cancelOperation } from "@monorepo/base/programs/cancel-operation.js";
-import { localPendingSchemaMigrations } from "@monorepo/programs/migrations/local-pending.js";
-import { logPendingMigrations } from "@monorepo/programs/migrations/log-pending-migrations.js";
+import {
+	logPendingMigrations,
+	pendingMigrations,
+} from "@monorepo/programs/migrations/pending.js";
 import { Effect } from "effect";
 import { unlinkSync } from "fs";
 import color from "picocolors";
 
 export const handlePendingSchemaMigrations = Effect.gen(function* () {
-	const localPending = yield* localPendingSchemaMigrations;
+	const localPending = yield* pendingMigrations;
 	if (localPending.length == 0) return true;
 
 	yield* logPendingMigrations;

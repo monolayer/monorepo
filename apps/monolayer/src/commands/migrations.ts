@@ -1,6 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
-import { logPendingMigrations } from "@monorepo/programs/migrations/log-pending-migrations.js";
+import { logPendingMigrations } from "@monorepo/programs/migrations/pending.js";
 import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { handleMissingDatabase } from "~monolayer/actions/database/handle-missing.js";
 import { generateMigration } from "~monolayer/actions/migrations/generate.js";

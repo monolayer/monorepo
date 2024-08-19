@@ -3,7 +3,7 @@ import * as p from "@clack/prompts";
 import { ActionError, UnknownActionError } from "@monorepo/base/errors.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
-import { checkNoPendingPhases } from "@monorepo/programs/migrations/check-no-pending-phases.js";
+import { checkNoPendingPhases } from "@monorepo/programs/migrations/phases.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";

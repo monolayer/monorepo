@@ -2,9 +2,9 @@ import type { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { groupBy } from "effect/Array";
 import { filter, flatMap, succeed } from "effect/Effect";
 import { keys } from "effect/Record";
-import { localPendingSchemaMigrations } from "~programs/migrations/local-pending.js";
+import { pendingMigrations } from "~programs/migrations/pending.js";
 
-export const pendingPhases = localPendingSchemaMigrations.pipe(
+export const pendingPhases = pendingMigrations.pipe(
 	flatMap((pending) => succeed(groupBy(pending, (p) => p.phase))),
 	flatMap((pendingByPhase) =>
 		succeed(keys(pendingByPhase) as ChangesetPhase[]),

@@ -8,7 +8,7 @@ import {
 	type MonolayerMigrationInfo,
 } from "@monorepo/migrator/migration.js";
 import { NO_MIGRATIONS } from "@monorepo/migrator/migrator.js";
-import { logPendingMigrations } from "@monorepo/programs/migrations/log-pending-migrations.js";
+import { logPendingMigrations } from "@monorepo/programs/migrations/pending.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";

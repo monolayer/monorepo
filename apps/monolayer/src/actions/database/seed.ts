@@ -4,7 +4,7 @@ import { checkWithFail } from "@monorepo/cli/check.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import type { InformationSchemaDB } from "@monorepo/pg/introspection/introspection/types.js";
 import { dbTableInfo } from "@monorepo/pg/introspection/table-two.js";
-import { localPendingSchemaMigrations } from "@monorepo/programs/migrations/local-pending.js";
+import { pendingMigrations } from "@monorepo/programs/migrations/pending.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import type { ProgramContext } from "@monorepo/services/program-context.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
@@ -50,7 +50,7 @@ const checkPendingMigrations = checkWithFail<ActionErrors, ProgramContext>({
 	failMessage: "Pending schema migrations",
 	callback: () =>
 		Effect.gen(function* () {
-			return (yield* localPendingSchemaMigrations).length === 0;
+			return (yield* pendingMigrations).length === 0;
 		}),
 });
 

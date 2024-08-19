@@ -1,14 +1,20 @@
 import * as p from "@clack/prompts";
+import { Migrator } from "@monorepo/services/migrator.js";
 import { Effect } from "effect";
 import path from "node:path";
 import { cwd } from "node:process";
 import color from "picocolors";
-import { localPendingSchemaMigrations } from "~programs/migrations/local-pending.js";
+
+export const pendingMigrations = Effect.gen(function* () {
+	const migrator = yield* Migrator;
+	const stats = yield* migrator.migrationStats;
+	return stats.localPending;
+});
 
 export const logPendingMigrations = Effect.gen(function* () {
-	const pendingMigrations = yield* localPendingSchemaMigrations;
-	if (pendingMigrations.length > 0) {
-		yield* Effect.forEach(pendingMigrations, (pending) => {
+	const pending = yield* pendingMigrations;
+	if (pending.length > 0) {
+		yield* Effect.forEach(pending, (pending) => {
 			p.log.warn(
 				`${color.bgYellow(color.black(" PENDING "))} ${path.relative(cwd(), pending.path)} (${pending.phase})`,
 			);
