@@ -13,12 +13,12 @@ import { Kysely, PostgresDialect } from "kysely";
 import { env } from "node:process";
 import pg from "pg";
 import type { TaskContext } from "vitest";
-import { pgAdminPool } from "~programs/__test_setup__/pool.js";
+import { pgAdminPool } from "~test-setup/pool.js";
 import {
 	migrationFolder,
 	programFolder,
 	testDatabaseName,
-} from "~programs/__test_setup__/program_context.js";
+} from "~test-setup/program_context.js";
 
 export function runProgram<A, E, R>(
 	program: Effect.Effect<A, E, R>,

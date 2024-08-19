@@ -1,5 +1,5 @@
-import { pgAdminPool } from "~programs/__test_setup__/pool.js";
-import type { TestProgramContext } from "~programs/__test_setup__/setup.js";
+import { pgAdminPool } from "~test-setup/pool.js";
+import type { TestProgramContext } from "~test-setup/setup.js";
 
 export async function createTestDatabase(context: TestProgramContext) {
 	const pool = pgAdminPool();

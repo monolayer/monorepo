@@ -1,13 +1,14 @@
 {
 	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
-	"include": ["**/src/**/*", "**/tests/**/*", "**/__test_setup__/**/*"],
+	"include": ["**/src/**/*", "__test_setup__"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
 		"outDir": "./../../build/local/programs",
 		"tsBuildInfoFile": "./../../build/local/programs/tsconfig.build.tsbuildinfo",
 		"paths": {
-			"~programs/*": ["src/*"]
+			"~programs/*": ["src/*"],
+			"~test-setup/*": ["__test_setup__/*"]
 		},
 		"composite": true,
 		"emitDeclarationOnly": true,

@@ -3,14 +3,14 @@ import { Effect } from "effect";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { beforeEach, expect, test } from "vitest";
-import { createTestDatabase } from "~programs/__test_setup__/database.js";
-import { migrationFolder } from "~programs/__test_setup__/program_context.js";
-import { runProgram } from "~programs/__test_setup__/run-program.js";
-import type { TestProgramContext } from "~programs/__test_setup__/setup.js";
 import {
 	checkNoPendingPhases,
 	pendingPhases,
 } from "~programs/migrations/phases.js";
+import { createTestDatabase } from "~test-setup/database.js";
+import { migrationFolder } from "~test-setup/program_context.js";
+import { runProgram } from "~test-setup/run-program.js";
+import type { TestProgramContext } from "~test-setup/setup.js";
 
 beforeEach<TestProgramContext>(async (context) => {
 	await createTestDatabase(context);

@@ -1,5 +1,5 @@
 import { expect } from "vitest";
-import { pgAdminPool } from "~programs/__test_setup__/pool.js";
+import { pgAdminPool } from "~test-setup/pool.js";
 
 export async function assertCurrentConnectionDatabaseName(expected?: string) {
 	const assertion = expect(

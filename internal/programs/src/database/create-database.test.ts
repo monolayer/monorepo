@@ -1,13 +1,13 @@
 import { Effect } from "effect";
 import color from "picocolors";
 import { describe, test } from "vitest";
+import { createDatabase } from "~programs/database/create-database.js";
 import {
 	assertCurrentConnectionDatabaseName,
 	expectLogMessage,
-} from "~programs/__test_setup__/assertions.js";
-import { runProgram } from "~programs/__test_setup__/run-program.js";
-import type { TestProgramContext } from "~programs/__test_setup__/setup.js";
-import { createDatabase } from "~programs/database/create-database.js";
+} from "~test-setup/assertions.js";
+import { runProgram } from "~test-setup/run-program.js";
+import type { TestProgramContext } from "~test-setup/setup.js";
 
 describe("createDatabase", () => {
 	test<TestProgramContext>("should create the current environment database", async (context) => {

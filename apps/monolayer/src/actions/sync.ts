@@ -1,8 +1,8 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
+import { handleMissingDatabase } from "@monorepo/programs/database/handle-missing.js";
 import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { Effect } from "effect";
-import { handleMissingDatabase } from "~monolayer/actions/database/handle-missing.js";
 import { applyMigrations } from "~monolayer/actions/migrations/apply.js";
 import { generateMigration } from "~monolayer/actions/migrations/generate.js";
 import { handlePendingSchemaMigrations } from "~monolayer/actions/migrations/pending.js";

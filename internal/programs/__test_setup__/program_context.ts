@@ -11,13 +11,7 @@ export async function setupProgramContext(context: TaskContext) {
 	rmSync(folder, { recursive: true, force: true });
 	mkdirSync(folder, { recursive: true });
 	await fs.cp(
-		path.join(
-			currentWorkingDirectory(),
-			"src",
-			"__test_setup__",
-			"fixtures",
-			"app",
-		),
+		path.join(currentWorkingDirectory(), "__test_setup__", "fixtures", "app"),
 		folder,
 		{ recursive: true },
 	);
@@ -30,7 +24,7 @@ export async function teardownProgramContext(context: TaskContext) {
 }
 
 export function currentWorkingDirectory() {
-	return path.resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
+	return path.resolve(dirname(fileURLToPath(import.meta.url)), "..");
 }
 
 export function programFolder(context: TaskContext) {

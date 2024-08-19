@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import path from "node:path";
 import pg from "pg";
 import type { GlobalThis } from "type-fest";
-import { currentWorkingDirectory } from "~programs/__test_setup__/program_context.js";
+import { currentWorkingDirectory } from "~test-setup/program_context.js";
 
 type GlobalThisInTests = GlobalThis & {
 	pool: pg.Pool | undefined;

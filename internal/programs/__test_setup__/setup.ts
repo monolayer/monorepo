@@ -4,13 +4,13 @@ import { afterEach, beforeAll, beforeEach, vi } from "vitest";
 import {
 	dropTestDatabase,
 	setDefaultDatabaseURL,
-} from "~programs/__test_setup__/database.js";
+} from "~test-setup/database.js";
 import {
 	currentWorkingDirectory,
 	setupProgramContext,
 	teardownProgramContext,
 	testDatabaseName,
-} from "~programs/__test_setup__/program_context.js";
+} from "~test-setup/program_context.js";
 
 beforeAll(async () => {
 	dotenv.config({

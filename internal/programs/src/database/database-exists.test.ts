@@ -1,9 +1,9 @@
 import { Effect } from "effect";
 import { describe, expect, test } from "vitest";
-import { createTestDatabase } from "~programs/__test_setup__/database.js";
-import { runProgram } from "~programs/__test_setup__/run-program.js";
-import type { TestProgramContext } from "~programs/__test_setup__/setup.js";
 import { databaseExists } from "~programs/database/database-exists.js";
+import { createTestDatabase } from "~test-setup/database.js";
+import { runProgram } from "~test-setup/run-program.js";
+import type { TestProgramContext } from "~test-setup/setup.js";
 
 describe("databaseExists", () => {
 	test<TestProgramContext>("should return false without a current environment database", async (context) => {

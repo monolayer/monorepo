@@ -3,15 +3,15 @@ import { rmdirSync } from "node:fs";
 import fs from "node:fs/promises";
 import color from "picocolors";
 import { beforeEach, describe, expect, test } from "vitest";
-import { expectLogMessage } from "~programs/__test_setup__/assertions.js";
-import { createTestDatabase } from "~programs/__test_setup__/database.js";
-import { migrationFolder } from "~programs/__test_setup__/program_context.js";
-import { runProgram } from "~programs/__test_setup__/run-program.js";
-import type { TestProgramContext } from "~programs/__test_setup__/setup.js";
 import {
 	logPendingMigrations,
 	pendingMigrations,
 } from "~programs/migrations/pending.js";
+import { expectLogMessage } from "~test-setup/assertions.js";
+import { createTestDatabase } from "~test-setup/database.js";
+import { migrationFolder } from "~test-setup/program_context.js";
+import { runProgram } from "~test-setup/run-program.js";
+import type { TestProgramContext } from "~test-setup/setup.js";
 
 beforeEach<TestProgramContext>(async (context) => {
 	await createTestDatabase(context);
