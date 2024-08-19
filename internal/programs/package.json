@@ -10,7 +10,8 @@
 		"bundle": "tsc -b tsconfig.bundle.json && tsc -b tsconfig.bundle.cjs.json",
 		"check": "npm run check:prettier && npm run check:lint",
 		"check:lint": "npx eslint .",
-		"check:prettier": "prettier --check ."
+		"check:prettier": "prettier --check .",
+		"test": "NO_COLOR=1 vitest --run"
 	},
 	"dependencies": {
 		"@monorepo/eslint-config": "*",

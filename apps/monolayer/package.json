@@ -64,7 +64,7 @@
 		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
 		"package": "npm pack --pack-destination ./build",
 		"publish:local": "npm publish --registry http://localhost:4873",
-		"test": "vitest tests --run --coverage --pool=forks --passWithNoTests",
+		"test": "NO_COLOR=1 vitest --run",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 monolayer -f"
 	},

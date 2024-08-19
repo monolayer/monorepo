@@ -11,7 +11,7 @@ const config = defineConfig({
 			exclude: ["**/tmp/**", "**/tests/**", "**/docs/**"],
 		},
 		setupFiles: ["__test_setup__/setup.ts"],
-		reporters: ["html	"],
+		reporters: ["default"],
 	},
 	server: {
 		watch: {

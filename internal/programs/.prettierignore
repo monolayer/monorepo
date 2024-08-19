@@ -4,3 +4,4 @@ coverage
 tmp
 files
 docs
+__snapshots__
