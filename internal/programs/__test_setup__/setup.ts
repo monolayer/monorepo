@@ -42,3 +42,11 @@ export interface TestProgramContext {
 	databaseName: string;
 	logMessages: string[];
 }
+
+vi.mock("execa", async (importOriginal) => {
+	const actual = (await importOriginal()) as typeof import("execa");
+	return {
+		...actual,
+		execa: vi.fn().mockResolvedValue({ stdout: "" }),
+	};
+});

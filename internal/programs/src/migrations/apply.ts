@@ -1,16 +1,15 @@
 /* eslint-disable complexity */
 import * as p from "@clack/prompts";
 import { ActionError, UnknownActionError } from "@monorepo/base/errors.js";
-import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { dumpDatabaseStructureTask } from "@monorepo/programs/database/dump-database.js";
 import { checkNoPendingPhases } from "@monorepo/programs/migrations/phases.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
-import { execa } from "execa";
 import type { MigrationResult } from "kysely";
 import color from "picocolors";
+import { generatePrisma } from "~programs/generate-prisma.js";
 
 interface ApplyExpandMigrations {
 	phase: ChangesetPhase.Expand;
@@ -126,19 +125,6 @@ export function applyMigrations({
 		}
 	});
 }
-
-const generatePrisma = Effect.gen(function* () {
-	yield* spinnerTask("Generate prisma", () =>
-		Effect.gen(function* () {
-			yield* Effect.tryPromise(async () =>
-				execa("npx", ["prisma", "db", "pull"]),
-			);
-			yield* Effect.tryPromise(async () =>
-				execa("npx", ["prisma", "generate"]),
-			);
-		}),
-	);
-});
 
 export function logMigrationResultStatus(
 	result: MigrationResult,
