@@ -1,5 +1,6 @@
 import { Effect } from "effect";
 import { rmdirSync } from "node:fs";
+import fs from "node:fs/promises";
 import { describe, expect, test } from "vitest";
 import { createTestDatabase } from "~programs/__test_setup__/database.js";
 import { migrationFolder } from "~programs/__test_setup__/program_context.js";
@@ -34,7 +35,7 @@ describe("localPendingSchemaMigrations", () => {
 	test<TestProgramContext>("should return an empty array without pending migrations", async (context) => {
 		await createTestDatabase(context);
 
-		rmdirSync(migrationFolder(context), { recursive: true });
+		await fs.rm(migrationFolder(context), { recursive: true });
 
 		expect(
 			await Effect.runPromise(
