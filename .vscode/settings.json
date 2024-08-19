@@ -2,7 +2,6 @@
 	"typescript.tsserver.experimental.enableProjectDiagnostics": true,
 	"typescript.tsserver.experimental.useVsCodeWatcher": false,
 	"editor.renderLineHighlight": "line",
-	"editor.glyphMargin": false,
 	"editor.selectionHighlight": false,
 	"editor.formatOnSave": true,
 	"explorer.excludeGitIgnore": false,
