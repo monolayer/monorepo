@@ -16,7 +16,7 @@ export function generateAction(program: Command) {
 			await cliAction("monolayer generate", opts, [
 				handleMissingDatabase,
 				handlePendingSchemaMigrations,
-				TableRenameState.provide(generateMigration()),
+				TableRenameState.provide(generateMigration),
 			]);
 		});
 }

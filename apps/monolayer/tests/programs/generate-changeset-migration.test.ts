@@ -50,7 +50,7 @@ describe("generateChangesetMigration", () => {
 
 			await Effect.runPromise(
 				await programWithContextAndServices(
-					TableRenameState.provide(generateMigration()),
+					TableRenameState.provide(generateMigration),
 				),
 			);
 
@@ -105,7 +105,7 @@ describe("generateChangesetMigration", () => {
 
 			await Effect.runPromise(
 				await programWithContextAndServices(
-					TableRenameState.provide(generateMigration()),
+					TableRenameState.provide(generateMigration),
 				),
 			);
 
@@ -148,7 +148,7 @@ describe("generateChangesetMigration", () => {
 
 			await Effect.runPromise(
 				await programWithContextAndServices(
-					TableRenameState.provide(generateMigration()),
+					TableRenameState.provide(generateMigration),
 				),
 			);
 
@@ -199,7 +199,7 @@ describe("generateChangesetMigration", () => {
 
 			await Effect.runPromise(
 				await programWithContextAndServices(
-					TableRenameState.provide(generateMigration()),
+					TableRenameState.provide(generateMigration),
 				),
 			);
 

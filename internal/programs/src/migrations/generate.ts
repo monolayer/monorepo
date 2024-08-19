@@ -1,39 +1,38 @@
 import * as p from "@clack/prompts";
 import { printChangesetSummary } from "@monorepo/pg/changeset/summary.js";
 import { type Changeset } from "@monorepo/pg/changeset/types.js";
-import { changeset } from "@monorepo/programs/changeset/changeset.js";
-import { validateUniqueSchemaName } from "@monorepo/programs/changeset/validate-unique-schema-name.js";
-import { computeExtensionChangeset } from "@monorepo/programs/extension-changeset.js";
 import { migrationNamePrompt } from "@monorepo/prompts/migration-name.js";
 import { schemaDependencies } from "@monorepo/services/dependencies.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { Effect } from "effect";
+import { gen } from "effect/Effect";
+import { changeset } from "~programs/changeset/changeset.js";
+import { validateUniqueSchemaName } from "~programs/changeset/validate-unique-schema-name.js";
+import { computeExtensionChangeset } from "~programs/extension-changeset.js";
 
-export function generateMigration(name?: string) {
-	return Effect.gen(function* () {
-		yield* validateUniqueSchemaName();
-		const allChangeset = (yield* computeExtensionChangeset()).concat(
-			yield* changeset(),
+export const generateMigration = gen(function* () {
+	yield* validateUniqueSchemaName;
+	const allChangeset = (yield* computeExtensionChangeset).concat(
+		yield* changeset,
+	);
+
+	if (allChangeset.length > 0) printChangesetSummary(allChangeset);
+
+	const sorted = yield* sortChangesetsBySchemaPriority(allChangeset);
+	if (allChangeset.length > 0) {
+		const migrator = yield* Migrator;
+		const renderedMigrations = yield* migrator.renderChangesets(
+			sorted,
+			yield* migrationNamePrompt(),
 		);
-
-		if (allChangeset.length > 0) printChangesetSummary(allChangeset);
-
-		const sorted = yield* sortChangesetsBySchemaPriority(allChangeset);
-		if (allChangeset.length > 0) {
-			const migrator = yield* Migrator;
-			const renderedMigrations = yield* migrator.renderChangesets(
-				sorted,
-				name ?? (yield* migrationNamePrompt()),
-			);
-			for (const renderedMigration of renderedMigrations) {
-				p.log.info(`Generated migration: ${renderedMigration}`);
-			}
-		} else {
-			p.log.info(`Nothing to do. No changes detected.`);
+		for (const renderedMigration of renderedMigrations) {
+			p.log.info(`Generated migration: ${renderedMigration}`);
 		}
-		return sorted;
-	});
-}
+	} else {
+		p.log.info(`Nothing to do. No changes detected.`);
+	}
+	return sorted;
+});
 
 function sortChangesetsBySchemaPriority(
 	changeset: Changeset[],

@@ -4,7 +4,6 @@ import { checkWithFail } from "@monorepo/cli/check.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import type { InformationSchemaDB } from "@monorepo/pg/introspection/introspection/types.js";
 import { dbTableInfo } from "@monorepo/pg/introspection/table-two.js";
-import { pendingMigrations } from "@monorepo/programs/migrations/pending.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import type { ProgramContext } from "@monorepo/services/program-context.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
@@ -14,6 +13,7 @@ import { sql, type Kysely } from "kysely";
 import path from "path";
 import { exit } from "process";
 import { changeset } from "~programs/changeset/changeset.js";
+import { pendingMigrations } from "~programs/migrations/pending.js";
 
 type SeedOptions = {
 	disableWarnings?: boolean;
@@ -63,7 +63,7 @@ const checkPendingSchemaChanges = checkWithFail({
 		"The local schema does not match the database schema. Cannot continue.",
 	failMessage: "Pending Schema Changes",
 	callback: () =>
-		changeset().pipe(
+		changeset.pipe(
 			Effect.flatMap((result) => Effect.succeed(result.length === 0)),
 		),
 });

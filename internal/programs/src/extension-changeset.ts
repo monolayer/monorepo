@@ -7,16 +7,22 @@ import {
 import { DbClients } from "@monorepo/services/db-clients.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
+import { all } from "effect/Effect";
 
 export function computeChangeset(info: [ExtensionInfo, ExtensionInfo]) {
 	return Effect.succeed(extensionChangeset(info[0], info[1]));
 }
 
-export function computeExtensionChangeset() {
-	return Effect.all([localExtensions(), remoteExtensions]).pipe(
-		Effect.flatMap(computeChangeset),
-	);
-}
+export const remoteExtensions = DbClients.pipe(
+	Effect.flatMap((dbClients) =>
+		Effect.tryPromise(() => dbExtensionInfo(dbClients.kyselyNoCamelCase)),
+	),
+);
+
+export const computeExtensionChangeset = all([
+	localExtensions(),
+	remoteExtensions,
+]).pipe(Effect.flatMap(computeChangeset));
 
 function localExtensions() {
 	return appEnvironment.pipe(
@@ -25,9 +31,3 @@ function localExtensions() {
 		),
 	);
 }
-
-export const remoteExtensions = DbClients.pipe(
-	Effect.flatMap((dbClients) =>
-		Effect.tryPromise(() => dbExtensionInfo(dbClients.kyselyNoCamelCase)),
-	),
-);

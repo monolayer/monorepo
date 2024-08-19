@@ -7,44 +7,43 @@ import type { Changeset } from "@monorepo/pg/changeset/types.js";
 import { toSnakeCase } from "@monorepo/pg/helpers/to-snake-case.js";
 import { managedSchemas } from "@monorepo/pg/introspection/database-schemas.js";
 import { Schema, type AnySchema } from "@monorepo/pg/schema/schema.js";
-import { introspectAlignment } from "@monorepo/programs/introspect/alignment.js";
-import { promptSchemaRenames } from "@monorepo/programs/schema-rename.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import {
 	appEnvironmentCamelCasePlugin,
 	appEnvironmentConfigurationSchemas,
 } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
+import { gen } from "effect/Effect";
 import {
 	renameMigrationInfo,
 	sortTablePriorities,
 } from "~programs/changeset/introspect-schemas.js";
 import { validateForeignKeyReferences } from "~programs/changeset/validate-foreign-key-references.js";
+import { introspectAlignment } from "~programs/introspect/alignment.js";
 import { introspectSchema } from "~programs/introspect/schema.js";
+import { promptSchemaRenames } from "~programs/schema-rename.js";
 
-export function changeset() {
-	return Effect.gen(function* () {
-		const renames = yield* promptSchemaRenames([]);
-		const allSchemas = yield* appEnvironmentConfigurationSchemas;
-		let changesets: Changeset[] = [];
-		const typeAlignments = yield* introspectAlignment;
-		for (const schema of allSchemas) {
-			yield* validateForeignKeyReferences(schema, allSchemas);
-			const introspection = yield* introspectSchema(schema, renames);
-			yield* renameMigrationInfo(introspection);
-			yield* sortTablePriorities(introspection);
-			changesets = [
-				...changesets,
-				...schemaChangeset(
-					introspection,
-					yield* appEnvironmentCamelCasePlugin,
-					typeAlignments,
-				),
-			];
-		}
-		return [...changesets, ...(yield* dropSchemaChangeset(allSchemas))];
-	});
-}
+export const changeset = gen(function* () {
+	const renames = yield* promptSchemaRenames([]);
+	const allSchemas = yield* appEnvironmentConfigurationSchemas;
+	let changesets: Changeset[] = [];
+	const typeAlignments = yield* introspectAlignment;
+	for (const schema of allSchemas) {
+		yield* validateForeignKeyReferences(schema, allSchemas);
+		const introspection = yield* introspectSchema(schema, renames);
+		yield* renameMigrationInfo(introspection);
+		yield* sortTablePriorities(introspection);
+		changesets = [
+			...changesets,
+			...schemaChangeset(
+				introspection,
+				yield* appEnvironmentCamelCasePlugin,
+				typeAlignments,
+			),
+		];
+	}
+	return [...changesets, ...(yield* dropSchemaChangeset(allSchemas))];
+});
 
 function dropSchemaChangeset(schemas: AnySchema[]) {
 	return Effect.gen(function* () {

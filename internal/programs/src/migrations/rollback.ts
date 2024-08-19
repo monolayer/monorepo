@@ -8,15 +8,15 @@ import {
 	type MonolayerMigrationInfo,
 } from "@monorepo/migrator/migration.js";
 import { NO_MIGRATIONS } from "@monorepo/migrator/migrator.js";
-import {
-	deletePendingMigrations,
-	logPendingMigrations,
-} from "@monorepo/programs/migrations/pending.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import { type MigrationInfo } from "kysely";
 import path from "path";
+import {
+	deletePendingMigrations,
+	logPendingMigrations,
+} from "~programs/migrations/pending.js";
 
 export const rollback = Effect.gen(function* () {
 	const migrator = yield* Migrator;

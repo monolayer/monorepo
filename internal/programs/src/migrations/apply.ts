@@ -2,14 +2,14 @@
 import * as p from "@clack/prompts";
 import { ActionError, UnknownActionError } from "@monorepo/base/errors.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
-import { dumpDatabaseStructureTask } from "@monorepo/programs/database/dump-database.js";
-import { checkNoPendingPhases } from "@monorepo/programs/migrations/phases.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import type { MigrationResult } from "kysely";
 import color from "picocolors";
+import { dumpDatabaseStructureTask } from "~programs/database/dump-database.js";
 import { generatePrisma } from "~programs/generate-prisma.js";
+import { checkNoPendingPhases } from "~programs/migrations/phases.js";
 
 interface ApplyExpandMigrations {
 	phase: ChangesetPhase.Expand;

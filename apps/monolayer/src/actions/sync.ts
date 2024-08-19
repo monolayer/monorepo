@@ -18,7 +18,7 @@ export function syncAction(program: Command) {
 			await cliAction("Sync: generate migrations and migrate", opts, [
 				handleMissingDatabase,
 				handlePendingSchemaMigrations,
-				TableRenameState.provide(generateMigration()).pipe(
+				TableRenameState.provide(generateMigration).pipe(
 					Effect.tap((result) =>
 						Effect.if(result.length !== 0, {
 							onTrue: () => applyMigrations({ phase: "all" }),

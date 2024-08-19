@@ -41,7 +41,7 @@ describe("validate uique schema name", () => {
 
 		const result = Effect.runSync(
 			Effect.provideServiceEffect(
-				validateUniqueSchemaName(),
+				validateUniqueSchemaName,
 				AppEnvironment,
 				Ref.make(env),
 			),
@@ -65,7 +65,7 @@ describe("validate uique schema name", () => {
 
 		const result = Effect.runSync(
 			Effect.provideServiceEffect(
-				validateUniqueSchemaName(),
+				validateUniqueSchemaName,
 				AppEnvironment,
 				Ref.make(env),
 			).pipe(
@@ -97,7 +97,7 @@ describe("validate uique schema name", () => {
 
 		const result = Effect.runSync(
 			Effect.provideServiceEffect(
-				validateUniqueSchemaName(),
+				validateUniqueSchemaName,
 				AppEnvironment,
 				Ref.make(env),
 			).pipe(

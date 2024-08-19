@@ -113,7 +113,7 @@ async function runGenerateChangesetMigration(
 	return Effect.runPromise(
 		TableRenameState.provide(
 			programWithErrorCause(
-				await programWithContextAndServices(generateMigration(), env, layers),
+				await programWithContextAndServices(generateMigration, env, layers),
 			),
 			tableRenames,
 		),

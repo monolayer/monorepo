@@ -2,9 +2,10 @@ import { text } from "@clack/prompts";
 import { PromptCancelError } from "@monorepo/base/errors.js";
 import { kebabCase } from "case-anything";
 import { Effect } from "effect";
+import { gen } from "effect/Effect";
 
 export function migrationNamePrompt() {
-	return Effect.gen(function* () {
+	return gen(function* () {
 		const migrationName = yield* Effect.tryPromise(() => askMigrationName());
 		if (typeof migrationName !== "string") {
 			return yield* Effect.fail(new PromptCancelError());
