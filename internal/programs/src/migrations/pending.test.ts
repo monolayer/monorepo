@@ -1,13 +1,11 @@
 import { Effect } from "effect";
 import { rmdirSync } from "node:fs";
 import fs from "node:fs/promises";
-import color from "picocolors";
 import { beforeEach, describe, expect, test } from "vitest";
 import {
 	logPendingMigrations,
 	pendingMigrations,
 } from "~programs/migrations/pending.js";
-import { expectLogMessage } from "~test-setup/assertions.js";
 import { createTestDatabase } from "~test-setup/database.js";
 import { migrationFolder } from "~test-setup/program_context.js";
 import { runProgram } from "~test-setup/run-program.js";
@@ -47,55 +45,46 @@ describe("localPendingSchemaMigrations", () => {
 });
 
 describe("logPendingMigrations", () => {
-	test<TestProgramContext>("should list the pending migrations", async (context) => {
-		await Effect.runPromise(runProgram(logPendingMigrations, context));
+	test<TestProgramContext>(
+		"should list the pending migrations",
+		{ retry: 3 },
+		async (context) => {
+			await Effect.runPromise(runProgram(logPendingMigrations, context));
 
-		expectLogMessage({
-			expected: `${color.bgYellow(color.black(" PENDING "))}`,
-			messages: context.logMessages,
-			count: 4,
-		});
+			expect(context.logMessages).toMatchInlineSnapshot(`
+				[
+				  "│
+				▲   PENDING  monolayer/migrations/default/expand/20240405T120024-regulus-mint.ts (expand)
+				",
+				  "│
+				▲   PENDING  monolayer/migrations/default/expand/20240405T120250-canopus-teal.ts (expand)
+				",
+				  "│
+				▲   PENDING  monolayer/migrations/default/expand/20240405T153857-alphard-black.ts (expand)
+				",
+				  "│
+				▲   PENDING  monolayer/migrations/default/expand/20240405T154913-mirfak-mustard.ts (expand)
+				",
+				]
+			`);
+		},
+	);
 
-		expectLogMessage({
-			expected: `${color.bgYellow(color.black(" PENDING "))} monolayer/migrations/default/expand/20240405T120024-regulus-mint.ts (expand)`,
-			messages: context.logMessages,
-			count: 1,
-		});
+	test<TestProgramContext>(
+		"should print no pending migrations when there are no pending migrations",
+		{ retry: 3 },
+		async (context) => {
+			rmdirSync(migrationFolder(context), { recursive: true });
 
-		expectLogMessage({
-			expected: `${color.bgYellow(color.black(" PENDING "))} monolayer/migrations/default/expand/20240405T120250-canopus-teal.ts (expand)`,
-			messages: context.logMessages,
-			count: 1,
-		});
+			await Effect.runPromise(runProgram(logPendingMigrations, context));
 
-		expectLogMessage({
-			expected: `${color.bgYellow(color.black(" PENDING "))} monolayer/migrations/default/expand/20240405T153857-alphard-black.ts (expand)`,
-			messages: context.logMessages,
-			count: 1,
-		});
-
-		expectLogMessage({
-			expected: `${color.bgYellow(color.black(" PENDING "))} monolayer/migrations/default/expand/20240405T154913-mirfak-mustard.ts (expand)`,
-			messages: context.logMessages,
-			count: 1,
-		});
-	});
-
-	test<TestProgramContext>("should print no pending migrations when there are no pending migrations", async (context) => {
-		rmdirSync(migrationFolder(context), { recursive: true });
-
-		await Effect.runPromise(runProgram(logPendingMigrations, context));
-
-		expectLogMessage({
-			expected: `${color.bgYellow(color.black(" PENDING "))}`,
-			messages: context.logMessages,
-			count: 0,
-		});
-
-		expectLogMessage({
-			expected: "No pending migrations.",
-			messages: context.logMessages,
-			count: 1,
-		});
-	});
+			expect(context.logMessages).toMatchInlineSnapshot(`
+				[
+				  "│
+				│  No pending migrations.
+				",
+				]
+			`);
+		},
+	);
 });

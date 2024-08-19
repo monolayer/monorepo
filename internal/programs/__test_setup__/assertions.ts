@@ -14,18 +14,3 @@ export async function assertCurrentConnectionDatabaseName(expected?: string) {
 		assertion.toEqual({ datname: expected });
 	}
 }
-
-export function expectLogMessage({
-	messages,
-	expected,
-	count,
-}: {
-	messages: string[];
-	expected: string;
-	count: number;
-}) {
-	return expect(
-		messages.filter((message) => message.includes(expected)).length,
-		messages.join("\n"),
-	).toBe(count);
-}
