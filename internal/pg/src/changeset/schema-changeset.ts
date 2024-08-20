@@ -1,3 +1,4 @@
+import { gen } from "effect/Effect";
 import microdiff, { type Difference } from "microdiff";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import { migrationOpGenerators } from "~pg/changeset/generators.js";
@@ -38,7 +39,7 @@ export type SchemaIntrospection = {
 	columnsToRename: ColumnsToRename;
 };
 
-export function schemaChangeset(
+export function schemaChangeset2(
 	introspection: SchemaIntrospection,
 	camelCase: boolean,
 	typeAlignments: TypeAlignment[],
@@ -78,6 +79,51 @@ export function schemaChangeset(
 		return [];
 	});
 	return sortChangeset([...changesets], introspection);
+}
+
+export function schemaChangeset(
+	introspection: SchemaIntrospection,
+	camelCase: boolean,
+	typeAlignments: TypeAlignment[],
+	generators: Generator[] = migrationOpGenerators,
+) {
+	// eslint-disable-next-line require-yield
+	return gen(function* () {
+		const { diff, addedTables, droppedTables, addedColumns, droppedColumns } =
+			changesetDiff(
+				{
+					...introspection.local,
+					tablePriorities: [],
+				},
+				{
+					...introspection.remote,
+					tablePriorities: [],
+				},
+			);
+
+		const context: GeneratorContext = {
+			local: introspection.local,
+			db: introspection.remote,
+			addedTables,
+			droppedTables,
+			schemaName: toSnakeCase(introspection.schemaName, camelCase),
+			camelCase: camelCase,
+			tablesToRename: introspection.tablesToRename,
+			columnsToRename: introspection.columnsToRename,
+			typeAlignments: typeAlignments,
+			addedColumns,
+			droppedColumns,
+		};
+
+		const changesets = diff.flatMap((difference) => {
+			for (const generator of generators) {
+				const op = generator(difference, context);
+				if (op !== undefined) return op;
+			}
+			return [];
+		});
+		return sortChangeset([...changesets], introspection);
+	});
 }
 
 export function changesetDiff(

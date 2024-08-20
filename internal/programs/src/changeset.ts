@@ -33,14 +33,12 @@ export const computeChangeset = gen(function* () {
 		const introspection = yield* introspectSchema(schema, renames);
 		yield* renameMigrationInfo(introspection);
 		yield* sortTablePriorities(introspection);
-		changesets = [
-			...changesets,
-			...schemaChangeset(
-				introspection,
-				yield* appEnvironmentCamelCasePlugin,
-				typeAlignments,
-			),
-		];
+		const changeset = yield* schemaChangeset(
+			introspection,
+			yield* appEnvironmentCamelCasePlugin,
+			typeAlignments,
+		);
+		changesets = [...changesets, ...changeset];
 	}
 	return [...changesets, ...(yield* dropSchemaChangeset(allSchemas))];
 });
