@@ -1,32 +1,35 @@
 import { ActionError } from "@monorepo/base/errors.js";
-import { Effect } from "effect";
+import { importFile } from "@monorepo/utils/import-file.js";
+import { Effect, pipe } from "effect";
+import { fail, flatMap, succeed } from "effect/Effect";
 import type { Kysely } from "kysely";
 import path from "path";
 import { importConfig } from "~configuration/import-config.js";
 
 type SeedImport = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	seed?: (db: Kysely<any>) => Promise<void>;
+	seed: (db: Kysely<any>) => Promise<void>;
 };
 
-export function importSeed(seedFile: string) {
-	return Effect.gen(function* () {
-		const config = yield* importConfig;
-		const seedFn = yield* Effect.tryPromise(async () => {
-			const mod: SeedImport = await import(
-				path.join(process.cwd(), config.folder, seedFile)
-			);
-			return mod.seed;
-		});
-		if (seedFn === undefined) {
-			return yield* Effect.fail(
-				new ActionError(
-					"Missing seed function",
-					`Could not find a seed function in ${seedFile}.`,
-				),
-			);
-		} else {
-			return seedFn;
-		}
-	});
-}
+export const importSeed = (seedFile: string) =>
+	pipe(
+		importConfig,
+		flatMap((config) =>
+			importFile<Partial<SeedImport>>(
+				path.join(process.cwd(), config.folder, seedFile),
+			),
+		),
+		flatMap((seed) => succeed(seed.seed)),
+		flatMap((seedFn) =>
+			Effect.if(seedFn !== undefined, {
+				onTrue: () => succeed(seedFn!),
+				onFalse: () =>
+					fail(
+						new ActionError(
+							"Missing seed function",
+							`Could not find a seed function in ${seedFile}.`,
+						),
+					),
+			}),
+		),
+	);

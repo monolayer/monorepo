@@ -13,8 +13,13 @@
 		"paths": {
 			"~configuration/*": ["src/*"],
 			"@monorepo/pg/*": ["../pg/src/*"],
-			"@monorepo/base/*": ["../base/src/*"]
+			"@monorepo/base/*": ["../base/src/*"],
+			"@monorepo/utils/*": ["../utils/src/*"]
 		}
 	},
-	"references": [{ "path": "../base" }, { "path": "../pg" }]
+	"references": [
+		{ "path": "../base" },
+		{ "path": "../pg" },
+		{ "path": "../utils" }
+	]
 }

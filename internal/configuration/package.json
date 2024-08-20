@@ -16,6 +16,7 @@
 		"@monorepo/eslint-config": "*",
 		"@monorepo/base": "*",
 		"@monorepo/pg": "*",
+		"@monorepo/utils": "*",
 		"@monorepo/typescript-config": "*",
 		"@types/node": "^18.0.0",
 		"dotenv": "^16.4.5",
