@@ -24,6 +24,7 @@ import {
 	ChangesetPhase,
 } from "@monorepo/pg/changeset/types.js";
 import type { ChangeWarning } from "@monorepo/pg/changeset/warnings/warnings.js";
+import { extractMigrationOps } from "@monorepo/programs/migrations/generate.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
 import { Effect, Layer } from "effect";
 import { mkdirSync } from "fs";
@@ -37,7 +38,6 @@ import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
 import { DbClients } from "~services/db-clients.js";
-import { extractMigrationOps } from "~services/dont-know.js";
 import {
 	type MigrationStats,
 	Migrator,

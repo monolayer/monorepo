@@ -23,6 +23,7 @@
 		{ "path": "../base" },
 		{ "path": "../migrator" },
 		{ "path": "../pg" },
+		{ "path": "../programs" },
 		{ "path": "../state" }
 	]
 }

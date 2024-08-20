@@ -12,6 +12,7 @@
 		{ "path": "../base/tsconfig.build.json" },
 		{ "path": "../migrator/tsconfig.build.json" },
 		{ "path": "../pg/tsconfig.build.json" },
+		{ "path": "../programs/tsconfig.build.json" },
 		{ "path": "../state/tsconfig.build.json" }
 	]
 }
