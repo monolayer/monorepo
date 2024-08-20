@@ -14,7 +14,7 @@ export interface AppEnv {
 	database: MonoLayerPgDatabase;
 }
 
-export class AppEnvironment extends Context.Tag("EnvironmentState")<
+export class AppEnvironment extends Context.Tag("AppEnvironment")<
 	AppEnvironment,
 	Ref.Ref<AppEnv>
 >() {
