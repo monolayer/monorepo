@@ -73,14 +73,22 @@ export class MonoLayerPgDatabase {
 	 * `MONO_PG_MY_DB_DATABASE_URL`
 	 */
 	get connectionString() {
-		const envVar = `MONO_PG_${snakeCase(this.id).toUpperCase()}_DATABASE_URL`;
-		const envConnectionString = process.env[envVar];
+		const envConnectionString = process.env[this.envVar];
 		if (envConnectionString) {
 			return envConnectionString;
 		} else {
 			throw new Error(
-				`No connection string found for database ${this.id}. Environment variable ${envVar} is undefined`,
+				`No connection string found for database ${this.id}. Environment variable ${this.envVar} is undefined`,
 			);
 		}
+	}
+
+	/**
+	 * Environment variable name for the database connection string.
+	 *
+	 * @internal
+	 */
+	get envVar() {
+		return `MONO_PG_${snakeCase(this.id).toUpperCase()}_DATABASE_URL`;
 	}
 }
