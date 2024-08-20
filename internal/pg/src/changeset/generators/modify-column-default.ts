@@ -11,7 +11,7 @@ import {
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
@@ -111,7 +111,7 @@ function columnDefaultAddMigrationOperation(
 		phase: ChangesetPhase.Alter,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumnDefault,
+		type: ChangesetType.ChangeColumnDefault,
 		up: [
 			executeKyselySchemaStatement(
 				schemaName,
@@ -149,7 +149,7 @@ function columnDefaultDropMigrationOperation(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumnDefault,
+		type: ChangesetType.ChangeColumnDefault,
 		up: [
 			executeKyselySchemaStatement(
 				schemaName,
@@ -228,7 +228,7 @@ function columnDefaultChangeMigrationOperation(
 		phase: ChangesetPhase.Alter,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumnDefault,
+		type: ChangesetType.ChangeColumnDefault,
 		up: up,
 		down: down,
 		schemaName,

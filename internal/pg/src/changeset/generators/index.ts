@@ -9,7 +9,7 @@ import {
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import {
@@ -96,7 +96,7 @@ function createFirstIndexMigration(
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-			type: ChangeSetType.CreateIndex,
+			type: ChangesetType.CreateIndex,
 			up: [
 				indexOnTableCreation
 					? executeKyselyDbStatement(`${redefinedIndex.definition}`)
@@ -158,7 +158,7 @@ function dropAllIndexesMigration(
 					tablesToRename,
 					schemaName,
 				),
-				type: ChangeSetType.DropIndex,
+				type: ChangesetType.DropIndex,
 				up: droppedTables.includes(tableName)
 					? [[]]
 					: [
@@ -219,7 +219,7 @@ function createIndexMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateIndex,
+		type: ChangesetType.CreateIndex,
 		up: [
 			indexOnTableCreation
 				? executeKyselyDbStatement(`${index}`)
@@ -277,7 +277,7 @@ function dropIndexMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.DropIndex,
+		type: ChangesetType.DropIndex,
 		transaction: false,
 		up: [
 			executeKyselyDbStatement(
@@ -374,7 +374,7 @@ function changeIndexNameChangeset(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.RenameIndex,
+		type: ChangesetType.RenameIndex,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER INDEX ${oldIndexName} RENAME TO ${newIndexName}`,

@@ -17,7 +17,7 @@ import {
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
@@ -219,7 +219,7 @@ function dropPrimaryKeyMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.DropPrimaryKey,
+		type: ChangesetType.DropPrimaryKey,
 		up: droppedTables.includes(tableName)
 			? [[]]
 			: [
@@ -278,7 +278,7 @@ function changePrimaryKeyMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.DropPrimaryKey,
+		type: ChangesetType.DropPrimaryKey,
 		up: [
 			dropPrimaryKeyOp(tableName, primaryKeyName, schemaName),
 			executeKyselySchemaStatement(
@@ -376,7 +376,7 @@ function dropNotNullChangesets(
 									tablesToRename,
 									schemaName,
 								),
-								type: ChangeSetType.ChangeColumnNullable,
+								type: ChangesetType.ChangeColumnNullable,
 								up:
 									direction === "up"
 										? [dropNotNullOp(tableName, column, schemaName)]
@@ -399,7 +399,7 @@ function dropNotNullChangesets(
 									tablesToRename,
 									schemaName,
 								),
-								type: ChangeSetType.ChangeColumnNullable,
+								type: ChangesetType.ChangeColumnNullable,
 								up:
 									direction === "up"
 										? [dropNotNullOp(tableName, column, schemaName)]
@@ -423,7 +423,7 @@ function dropNotNullChangesets(
 						tablesToRename,
 						schemaName,
 					),
-					type: ChangeSetType.ChangeColumnNullable,
+					type: ChangesetType.ChangeColumnNullable,
 					up:
 						direction === "up"
 							? [dropNotNullOp(tableName, column, schemaName)]
@@ -456,7 +456,7 @@ function defaultPrimaryKey(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreatePrimaryKey,
+		type: ChangesetType.CreatePrimaryKey,
 		up: [
 			addPrimaryKeyOp(
 				tableName,
@@ -580,7 +580,7 @@ function onlinePrimaryKey(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateIndex,
+		type: ChangesetType.CreateIndex,
 		transaction: false,
 		up: [concurrentIndex(schemaName, indexName, indexDefinition)],
 		down: [
@@ -597,7 +597,7 @@ function onlinePrimaryKey(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreatePrimaryKey,
+		type: ChangesetType.CreatePrimaryKey,
 		up: [
 			...addChecks,
 			...[executeKyselyDbStatement(primaryKeyDefinition)],

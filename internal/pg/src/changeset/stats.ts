@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { ChangeSetType, type Changeset } from "~pg/changeset/types.js";
+import { ChangesetType, type Changeset } from "~pg/changeset/types.js";
 
 export type SummaryStats = {
 	added: number;
@@ -48,10 +48,10 @@ const dbStatsFn: Record<
 		op: Extract<Ops, "add" | "drop">;
 	}
 > = {
-	[`${ChangeSetType.CreateSchema}`]: { key: "schemaSummary", op: "add" },
-	[`${ChangeSetType.DropSchema}`]: { key: "schemaSummary", op: "drop" },
-	[`${ChangeSetType.CreateExtension}`]: { key: "extensions", op: "add" },
-	[`${ChangeSetType.DropExtension}`]: { key: "extensions", op: "drop" },
+	[`${ChangesetType.CreateSchema}`]: { key: "schemaSummary", op: "add" },
+	[`${ChangesetType.DropSchema}`]: { key: "schemaSummary", op: "drop" },
+	[`${ChangesetType.CreateExtension}`]: { key: "extensions", op: "add" },
+	[`${ChangesetType.DropExtension}`]: { key: "extensions", op: "drop" },
 };
 
 const tableStatsFn: Record<
@@ -61,27 +61,27 @@ const tableStatsFn: Record<
 		op: Ops;
 	}
 > = {
-	[`${ChangeSetType.CreatePrimaryKey}`]: { key: "primaryKeys", op: "add" },
-	[`${ChangeSetType.DropPrimaryKey}`]: { key: "primaryKeys", op: "drop" },
-	[`${ChangeSetType.CreateForeignKey}`]: { key: "foreignKeys", op: "add" },
-	[`${ChangeSetType.DropForeignKey}`]: { key: "foreignKeys", op: "drop" },
-	[`${ChangeSetType.RenameForeignKey}`]: { key: "foreignKeys", op: "rename" },
-	[`${ChangeSetType.CreateColumn}`]: { key: "columns", op: "add" },
-	[`${ChangeSetType.DropColumn}`]: { key: "columns", op: "drop" },
-	[`${ChangeSetType.ChangeColumn}`]: { key: "columns", op: "alter" },
-	[`${ChangeSetType.CreateIndex}`]: { key: "indexes", op: "add" },
-	[`${ChangeSetType.RenameIndex}`]: { key: "indexes", op: "rename" },
-	[`${ChangeSetType.DropIndex}`]: { key: "indexes", op: "drop" },
-	[`${ChangeSetType.CreateTrigger}`]: { key: "triggers", op: "add" },
-	[`${ChangeSetType.DropTrigger}`]: { key: "triggers", op: "drop" },
-	[`${ChangeSetType.UpdateTrigger}`]: { key: "triggers", op: "alter" },
-	[`${ChangeSetType.RenameColumn}`]: { key: "columns", op: "rename" },
-	[`${ChangeSetType.CreateUnique}`]: { key: "uniqueConstraints", op: "add" },
-	[`${ChangeSetType.DropUnique}`]: { key: "uniqueConstraints", op: "drop" },
-	[`${ChangeSetType.RenameUnique}`]: { key: "uniqueConstraints", op: "rename" },
-	[`${ChangeSetType.CreateCheck}`]: { key: "checkConstraints", op: "add" },
-	[`${ChangeSetType.RenameCheck}`]: { key: "checkConstraints", op: "rename" },
-	[`${ChangeSetType.DropCheck}`]: { key: "checkConstraints", op: "drop" },
+	[`${ChangesetType.CreatePrimaryKey}`]: { key: "primaryKeys", op: "add" },
+	[`${ChangesetType.DropPrimaryKey}`]: { key: "primaryKeys", op: "drop" },
+	[`${ChangesetType.CreateForeignKey}`]: { key: "foreignKeys", op: "add" },
+	[`${ChangesetType.DropForeignKey}`]: { key: "foreignKeys", op: "drop" },
+	[`${ChangesetType.RenameForeignKey}`]: { key: "foreignKeys", op: "rename" },
+	[`${ChangesetType.CreateColumn}`]: { key: "columns", op: "add" },
+	[`${ChangesetType.DropColumn}`]: { key: "columns", op: "drop" },
+	[`${ChangesetType.ChangeColumn}`]: { key: "columns", op: "alter" },
+	[`${ChangesetType.CreateIndex}`]: { key: "indexes", op: "add" },
+	[`${ChangesetType.RenameIndex}`]: { key: "indexes", op: "rename" },
+	[`${ChangesetType.DropIndex}`]: { key: "indexes", op: "drop" },
+	[`${ChangesetType.CreateTrigger}`]: { key: "triggers", op: "add" },
+	[`${ChangesetType.DropTrigger}`]: { key: "triggers", op: "drop" },
+	[`${ChangesetType.UpdateTrigger}`]: { key: "triggers", op: "alter" },
+	[`${ChangesetType.RenameColumn}`]: { key: "columns", op: "rename" },
+	[`${ChangesetType.CreateUnique}`]: { key: "uniqueConstraints", op: "add" },
+	[`${ChangesetType.DropUnique}`]: { key: "uniqueConstraints", op: "drop" },
+	[`${ChangesetType.RenameUnique}`]: { key: "uniqueConstraints", op: "rename" },
+	[`${ChangesetType.CreateCheck}`]: { key: "checkConstraints", op: "add" },
+	[`${ChangesetType.RenameCheck}`]: { key: "checkConstraints", op: "rename" },
+	[`${ChangesetType.DropCheck}`]: { key: "checkConstraints", op: "drop" },
 };
 
 type TableAlterations = Record<string, Record<string, boolean>>;
@@ -168,13 +168,13 @@ function addEnumStats(changeset: Changeset, stats: ChangesetStats) {
 			changeset.schemaName,
 		);
 		switch (changeset.type) {
-			case ChangeSetType.CreateEnum:
+			case ChangesetType.CreateEnum:
 				schemaStats.enumTypes.added++;
 				break;
-			case ChangeSetType.DropEnum:
+			case ChangesetType.DropEnum:
 				schemaStats.enumTypes.dropped++;
 				break;
-			case ChangeSetType.ChangeEnum:
+			case ChangesetType.ChangeEnum:
 				schemaStats.enumTypes.altered++;
 				break;
 			default:
@@ -217,18 +217,18 @@ function addTableStats(
 			changeset.currentTableName,
 		);
 		switch (changeset.type) {
-			case ChangeSetType.CreateTable:
+			case ChangesetType.CreateTable:
 				schemaStats.tableSummary.added++;
 				tableStats.columns.added = (
 					changeset.up.toString().match(/addColumn/g) ?? []
 				).length;
 				schemaStats.addedTables.push(changeset.currentTableName);
 				break;
-			case ChangeSetType.DropTable:
+			case ChangesetType.DropTable:
 				schemaStats.tableSummary.dropped++;
 				schemaStats.droppedTables.push(changeset.currentTableName);
 				break;
-			case ChangeSetType.RenameTable:
+			case ChangesetType.RenameTable:
 				schemaStats.tableNameChanges[changeset.currentTableName] =
 					changeset.tableName;
 				addTableAlteration(
@@ -263,7 +263,7 @@ export function processTableStats(
 	changeset: Changeset,
 	changesetStats: ChangesetStats,
 	statName: keyof TableStats,
-	match: ChangeSetType,
+	match: ChangesetType,
 	op: "add" | "drop" | "alter" | "rename",
 	tableAlterations: TableAlterations,
 ) {

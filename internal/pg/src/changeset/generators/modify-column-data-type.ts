@@ -4,7 +4,7 @@ import { executeKyselySchemaStatement } from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
@@ -51,7 +51,7 @@ function columnDatatypeMigrationOperation(
 		phase: ChangesetPhase.Alter,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumnDataType,
+		type: ChangesetType.ChangeColumnDataType,
 		up: [
 			executeKyselySchemaStatement(
 				schemaName,

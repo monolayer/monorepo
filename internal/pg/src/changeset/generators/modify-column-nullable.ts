@@ -8,7 +8,7 @@ import { executeKyselySchemaStatement } from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
@@ -53,7 +53,7 @@ function columnNullableMigrationOperation(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumnNullable,
+		type: ChangesetType.ChangeColumnNullable,
 		up: diff.value
 			? [dropNotNullOp(schemaName, tableName, columnName)]
 			: setNotNullOp(schemaName, tableName, columnName),

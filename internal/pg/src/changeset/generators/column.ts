@@ -16,7 +16,7 @@ import {
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
@@ -100,7 +100,7 @@ function createColumnMigration(
 		phase: ChangesetPhase.Expand,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateColumn,
+		type: ChangesetType.CreateColumn,
 		up: up,
 		down: [
 			executeKyselySchemaStatement(
@@ -156,7 +156,7 @@ function createNonNullableColumnMigration(
 		phase: ChangesetPhase.Expand,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateNonNullableColumn,
+		type: ChangesetType.CreateNonNullableColumn,
 		up,
 		down,
 		schemaName,
@@ -208,7 +208,7 @@ function dropColumnMigration(
 		phase: ChangesetPhase.Contract,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.DropColumn,
+		type: ChangesetType.DropColumn,
 		warnings: [
 			{
 				type: ChangeWarningType.Destructive,

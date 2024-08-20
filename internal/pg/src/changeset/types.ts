@@ -1,6 +1,6 @@
 import type { ChangeWarning } from "~pg/changeset/warnings/warnings.js";
 
-export enum ChangeSetType {
+export enum ChangesetType {
 	CreateTable = "createTable",
 	DropTable = "dropTable",
 	CreateColumn = "createColumn",
@@ -42,7 +42,7 @@ export enum ChangeSetType {
 export type Changeset = {
 	tableName: string;
 	currentTableName: string;
-	type: ChangeSetType;
+	type: ChangesetType;
 	up: string[][];
 	down: string[][];
 	priority: number;

@@ -11,7 +11,7 @@ import {
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
@@ -198,7 +198,7 @@ function createUniqueFirstConstraintMigration(
 					tablesToRename,
 					schemaName,
 				),
-				type: ChangeSetType.CreateUnique,
+				type: ChangesetType.CreateUnique,
 				up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 				down: addedTables.includes(tableName)
 					? [[]]
@@ -241,7 +241,7 @@ function dropUniqueLastConstraintMigration(
 					tablesToRename,
 					schemaName,
 				),
-				type: ChangeSetType.DropUnique,
+				type: ChangesetType.DropUnique,
 				up: droppedTables.includes(tableName)
 					? [[]]
 					: [
@@ -297,7 +297,7 @@ function createUniqueConstraintMigration(
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-			type: ChangeSetType.CreateUnique,
+			type: ChangesetType.CreateUnique,
 			up: [addUniqueConstraintOp(tableName, uniqueConstraint, schemaName)],
 			down: [
 				...dropUniqueConstraintOp(tableName, uniqueConstraint, schemaName),
@@ -327,7 +327,7 @@ function dropUniqueConstraintMigration(
 		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.DropUnique,
+		type: ChangesetType.DropUnique,
 		up: [
 			...dropUniqueConstraintOp(
 				previousTableName(tableName, tablesToRename),
@@ -362,7 +362,7 @@ function changeUniqueConstraintNameMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.RenameUnique,
+		type: ChangesetType.RenameUnique,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${oldName} TO ${newName}`,
@@ -456,7 +456,7 @@ function indexForUniqueConstraint(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateIndex,
+		type: ChangesetType.CreateIndex,
 		transaction: false,
 		up: [concurrentIndex(schemaName, indexName, indexDefinition)],
 		down: [
@@ -495,7 +495,7 @@ function createUniqueConstraintWithIndex(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateUnique,
+		type: ChangesetType.CreateUnique,
 		up: [executeKyselyDbStatement(uniqueConstraintDefinition)],
 		down: dropUniqueConstraintOp(tableName, definition, schemaName),
 	};

@@ -7,7 +7,7 @@ import {
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "../types.js";
 
@@ -41,7 +41,7 @@ function createEnumMigration(
 		schemaName,
 		tableName: "none",
 		currentTableName: "none",
-		type: ChangeSetType.CreateEnum,
+		type: ChangesetType.CreateEnum,
 		up: [
 			executeKyselySchemaStatement(
 				schemaName,
@@ -72,7 +72,7 @@ function dropEnumMigration(
 		schemaName,
 		tableName: "none",
 		currentTableName: "none",
-		type: ChangeSetType.DropEnum,
+		type: ChangesetType.DropEnum,
 		up: [executeKyselySchemaStatement(schemaName, `dropType("${enumName}")`)],
 		down: [
 			executeKyselySchemaStatement(
@@ -113,7 +113,7 @@ function changeEnumMigration(
 		schemaName,
 		tableName: "none",
 		currentTableName: "none",
-		type: ChangeSetType.ChangeEnum,
+		type: ChangesetType.ChangeEnum,
 		up: [executeKyselyDbStatement(`${newValues.join(";")};`)],
 		down: [],
 	};

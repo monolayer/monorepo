@@ -8,7 +8,7 @@ import {
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import { redefineCheck } from "~pg/introspection/check.js";
@@ -120,7 +120,7 @@ function createFirstCheckMigration(
 						tablesToRename,
 						schemaName,
 					),
-					type: ChangeSetType.CreateCheck,
+					type: ChangesetType.CreateCheck,
 					up: addCheckWithSchemaStatements(
 						schemaName,
 						tableName,
@@ -167,7 +167,7 @@ function dropAllChecksMigration(
 						schemaName,
 					),
 					schemaName,
-					type: ChangeSetType.DropCheck,
+					type: ChangesetType.DropCheck,
 					up: droppedTables.includes(tableName)
 						? [[]]
 						: [
@@ -229,7 +229,7 @@ function createCheckMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateCheck,
+		type: ChangesetType.CreateCheck,
 		up: addCheckWithSchemaStatements(schemaName, tableName, checkDefinition),
 		down: [
 			dropCheckKyselySchemaStatement(
@@ -274,7 +274,7 @@ function dropCheckMigration(
 		schemaName,
 		tableName: previousTableName(tableName, tablesToRename),
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.DropCheck,
+		type: ChangesetType.DropCheck,
 		up: [
 			dropCheckKyselySchemaStatement(
 				schemaName,
@@ -308,7 +308,7 @@ function reshashCheckMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.RenameCheck,
+		type: ChangesetType.RenameCheck,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${previousCheckName} TO ${newCheckName}`,

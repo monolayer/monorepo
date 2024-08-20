@@ -9,7 +9,7 @@ import {
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import {
@@ -185,7 +185,7 @@ function createforeignKeyFirstConstraintMigration(
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-			type: ChangeSetType.CreateForeignKey,
+			type: ChangesetType.CreateForeignKey,
 			up: addForeigKeyOps(tableName, definition, schemaName),
 			down: addedTables.includes(tableName)
 				? [[]]
@@ -237,7 +237,7 @@ function createForeignKeyConstraintMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateForeignKey,
+		type: ChangesetType.CreateForeignKey,
 		up: addForeigKeyOps(tableName, definition, schemaName),
 		down: [
 			dropForeignKeyOp(
@@ -284,7 +284,7 @@ function dropforeignKeyLastConstraintMigration(
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-			type: ChangeSetType.DropForeignKey,
+			type: ChangesetType.DropForeignKey,
 			up: droppedTables.includes(tableName)
 				? [[]]
 				: [dropForeignKeyOp(tableName, definition, schemaName)],
@@ -329,7 +329,7 @@ function dropForeignKeyConstraintMigration(
 		tableName: previousTableName(tableName, tablesToRename),
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		schemaName,
-		type: ChangeSetType.DropForeignKey,
+		type: ChangesetType.DropForeignKey,
 		up: [
 			dropForeignKeyOp(
 				previousTableName(tableName, tablesToRename),
@@ -406,7 +406,7 @@ function renameForeignKeyOp(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.RenameForeignKey,
+		type: ChangesetType.RenameForeignKey,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${oldName} TO ${newName}`,

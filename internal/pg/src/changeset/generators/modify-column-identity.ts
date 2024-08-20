@@ -4,7 +4,7 @@ import { executeKyselyDbStatement } from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import { currentTableName } from "~pg/introspection/introspection/table-name.js";
@@ -74,7 +74,7 @@ function columnIdentityAddMigrationOperation(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumnGeneration,
+		type: ChangesetType.ChangeColumnGeneration,
 		up:
 			diff.value === "ALWAYS"
 				? [
@@ -108,7 +108,7 @@ function columnIdentityDropMigrationOperation(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.ChangeColumnGeneration,
+		type: ChangesetType.ChangeColumnGeneration,
 		up: [
 			executeKyselyDbStatement(
 				`ALTER TABLE "${schemaName}"."${tableName}" ALTER COLUMN "${columnName}" DROP IDENTITY`,

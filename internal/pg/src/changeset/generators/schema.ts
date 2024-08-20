@@ -4,7 +4,7 @@ import { executeKyselyDbStatement } from "../helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "../types.js";
 import { ChangeWarningType } from "../warnings/change-warning-type.js";
@@ -61,7 +61,7 @@ function createSchemaMigration(diff: CreateSchemaDiff) {
 		tableName: "none",
 		currentTableName: "none",
 		schemaName,
-		type: ChangeSetType.CreateSchema,
+		type: ChangesetType.CreateSchema,
 		up: [
 			executeKyselyDbStatement(`CREATE SCHEMA IF NOT EXISTS "${schemaName}";`),
 			executeKyselyDbStatement(
@@ -81,7 +81,7 @@ export function dropSchemaMigration(diff: DropSchemaDiff) {
 		tableName: "none",
 		currentTableName: "none",
 		schemaName,
-		type: ChangeSetType.DropSchema,
+		type: ChangesetType.DropSchema,
 		warnings: [
 			{
 				type: ChangeWarningType.Destructive,

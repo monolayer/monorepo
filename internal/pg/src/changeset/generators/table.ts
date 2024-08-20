@@ -10,7 +10,7 @@ import { executeKyselySchemaStatement } from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
@@ -77,7 +77,7 @@ function createTableMigration(
 		phase: ChangesetPhase.Expand,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateTable,
+		type: ChangesetType.CreateTable,
 		up: up,
 		down: [
 			executeKyselySchemaStatement(schemaName, `dropTable("${tableName}")`),
@@ -131,7 +131,7 @@ function dropTableMigration(
 		phase: ChangesetPhase.Contract,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.DropTable,
+		type: ChangesetType.DropTable,
 		warnings: [
 			{
 				type: ChangeWarningType.Destructive,
@@ -180,7 +180,7 @@ function changeTableNameMigration(
 			tablesToRename,
 			schemaName,
 		),
-		type: ChangeSetType.RenameTable,
+		type: ChangesetType.RenameTable,
 		warnings: [
 			{
 				type: ChangeWarningType.BackwardIncompatible,

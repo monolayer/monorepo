@@ -4,7 +4,7 @@ import { executeKyselyDbStatement } from "~pg/changeset/helpers/helpers.js";
 import {
 	type Changeset,
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
 import { currentTableName } from "~pg/introspection/introspection/table-name.js";
@@ -135,7 +135,7 @@ function createTriggerFirstMigration(
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-			type: ChangeSetType.CreateTrigger,
+			type: ChangesetType.CreateTrigger,
 			up: [executeKyselyDbStatement(`${trigger[1]}`)],
 			down: addedTables.includes(tableName)
 				? [[]]
@@ -162,7 +162,7 @@ function createTriggerMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.CreateTrigger,
+		type: ChangesetType.CreateTrigger,
 		up: [executeKyselyDbStatement(`${trigger[1]}`)],
 		down: [
 			executeKyselyDbStatement(
@@ -186,7 +186,7 @@ function dropTriggerFirstMigration(
 			schemaName,
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-			type: ChangeSetType.DropTrigger,
+			type: ChangesetType.DropTrigger,
 			up: droppedTables.includes(tableName)
 				? [[]]
 				: [
@@ -221,7 +221,7 @@ function dropTriggerMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.DropTrigger,
+		type: ChangesetType.DropTrigger,
 		up: [
 			executeKyselyDbStatement(
 				`DROP TRIGGER ${triggerName} ON "${schemaName}"."${tableName}"`,
@@ -252,7 +252,7 @@ function changeTriggerMigration(
 		schemaName,
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
-		type: ChangeSetType.UpdateTrigger,
+		type: ChangesetType.UpdateTrigger,
 		up: [executeKyselyDbStatement(`${newTrigger[1]}`)],
 		down: [
 			executeKyselyDbStatement(

@@ -4,7 +4,7 @@ import { type ExtensionInfo } from "../../introspection/extension.js";
 import { executeKyselyDbStatement } from "../helpers/helpers.js";
 import {
 	ChangesetPhase,
-	ChangeSetType,
+	ChangesetType,
 	MigrationOpPriority,
 	type Changeset,
 } from "../types.js";
@@ -55,7 +55,7 @@ function createExtensionMigration(diff: CreateExtensionDiff) {
 		phase: ChangesetPhase.Expand,
 		tableName: "none",
 		currentTableName: "none",
-		type: ChangeSetType.CreateExtension,
+		type: ChangesetType.CreateExtension,
 		up: [
 			executeKyselyDbStatement(
 				`CREATE EXTENSION IF NOT EXISTS ${extensionName};`,
@@ -76,7 +76,7 @@ function dropExtensionMigration(diff: DropExtensionDiff) {
 		phase: ChangesetPhase.Contract,
 		tableName: "none",
 		currentTableName: "none",
-		type: ChangeSetType.DropExtension,
+		type: ChangesetType.DropExtension,
 		up: [
 			executeKyselyDbStatement(`DROP EXTENSION IF EXISTS ${extensionName};`),
 		],
