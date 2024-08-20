@@ -2,7 +2,7 @@ import { ActionError } from "@monorepo/base/errors.js";
 import { pipe } from "effect";
 import { fail, flatMap, succeed, tryPromise } from "effect/Effect";
 import path from "node:path";
-import type { Monolayer } from "~configuration/configuration.js";
+import type { Monolayer } from "~configuration/monolayer.js";
 
 type ConfigImport =
 	| {
