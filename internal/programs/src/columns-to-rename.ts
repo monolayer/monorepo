@@ -1,5 +1,5 @@
 import { select } from "@clack/prompts";
-import { PromptCancelError } from "@monorepo/base/errors.js";
+import { PromptCancelError } from "@monorepo/cli/errors.js";
 import type { ColumnsToRename } from "@monorepo/state/table-column-rename.js";
 import { Effect } from "effect";
 import color from "picocolors";

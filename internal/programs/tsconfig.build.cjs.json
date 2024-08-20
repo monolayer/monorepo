@@ -11,7 +11,6 @@
 		"tsBuildInfoFile": "dist/tsconfig.build.cjs.tsbuildinfo",
 		"paths": {
 			"~programs/*": ["src/*"],
-			"@monorepo/base/*": ["../base/src/*"],
 			"@monorepo/cli/*": ["../cli/src/*"],
 			"@monorepo/configuration/*": ["../configuration/src/*"],
 			"@monorepo/migrator/*": ["../migrator/src/*"],
@@ -25,7 +24,6 @@
 		"composite": false
 	},
 	"references": [
-		{ "path": "../base" },
 		{ "path": "../cli" },
 		{ "path": "../configuration" },
 		{ "path": "../migrator" },

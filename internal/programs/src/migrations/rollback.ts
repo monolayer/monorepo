@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { select } from "@clack/prompts";
-import { ExitWithSuccess } from "@monorepo/base/errors.js";
-import { cancelOperation } from "@monorepo/base/programs/cancel-operation.js";
+import { cancelOperation } from "@monorepo/cli/cancel-operation.js";
+import { ExitWithSuccess } from "@monorepo/cli/errors.js";
 import {
 	migrationInfoToMigration,
 	type Migration,

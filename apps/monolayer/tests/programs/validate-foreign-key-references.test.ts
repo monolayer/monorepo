@@ -1,4 +1,4 @@
-import { ActionError } from "@monorepo/base/errors.js";
+import { ActionError } from "@monorepo/cli/errors.js";
 import { integer } from "@monorepo/pg/schema/column/data-types/integer.js";
 import { text } from "@monorepo/pg/schema/column/data-types/text.js";
 import { foreignKey } from "@monorepo/pg/schema/foreign-key.js";

@@ -77,7 +77,6 @@
 	},
 	"devDependencies": {
 		"@config/testing": "*",
-		"@monorepo/base": "*",
 		"@monorepo/cli": "*",
 		"@monorepo/configuration": "*",
 		"@monorepo/eslint-config": "*",

@@ -1,4 +1,4 @@
-import { ActionError } from "@monorepo/base/errors.js";
+import { ActionError } from "@monorepo/cli/errors.js";
 import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
 import { validateUniqueSchemaName } from "@monorepo/programs/validate-unique-schema-name.js";

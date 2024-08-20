@@ -1,4 +1,4 @@
-import { PromptCancelError } from "@monorepo/base/errors.js";
+import { PromptCancelError } from "@monorepo/cli/errors.js";
 import type { SchemaMigrationInfo } from "@monorepo/pg/schema/column/types.js";
 import { appEnvironmentConfigurationSchemas } from "@monorepo/state/app-environment.js";
 import {

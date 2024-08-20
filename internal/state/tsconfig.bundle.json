@@ -4,5 +4,5 @@
 		"outDir": "./../../apps/monolayer/dist/esm/packages/state",
 		"tsBuildInfoFile": "./../../apps/monolayer/dist/esm/packages/state/tsconfig.build.tsbuildinfo"
 	},
-	"references": [{ "path": "../base" }, { "path": "../configuration" }]
+	"references": [{ "path": "../cli" }, { "path": "../configuration" }]
 }

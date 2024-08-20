@@ -15,7 +15,7 @@
 		"declaration": true
 	},
 	"references": [
-		{ "path": "../base" },
+		{ "path": "../cli" },
 		{ "path": "../cli" },
 		{ "path": "../configuration" },
 		{ "path": "../migrator" },

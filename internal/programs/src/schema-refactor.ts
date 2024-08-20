@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { confirm, select } from "@clack/prompts";
-import { cancelOperation } from "@monorepo/base/programs/cancel-operation.js";
+import { cancelOperation } from "@monorepo/cli/cancel-operation.js";
 import type {
 	ColumnInfo,
 	SchemaMigrationInfo,

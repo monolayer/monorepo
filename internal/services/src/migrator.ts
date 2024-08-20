@@ -1,4 +1,4 @@
-import type { ActionError, PromptCancelError } from "@monorepo/base/errors.js";
+import type { ActionError, PromptCancelError } from "@monorepo/cli/errors.js";
 import {
 	type MonolayerMigration,
 	type MonolayerMigrationInfo,

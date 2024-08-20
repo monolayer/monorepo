@@ -14,7 +14,7 @@
 	},
 	"dependencies": {
 		"@monorepo/eslint-config": "*",
-		"@monorepo/base": "*",
+		"@monorepo/cli": "*",
 		"@monorepo/pg": "*",
 		"@monorepo/utils": "*",
 		"@monorepo/typescript-config": "*",

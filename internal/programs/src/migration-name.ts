@@ -1,5 +1,5 @@
 import { text } from "@clack/prompts";
-import { PromptCancelError } from "@monorepo/base/errors.js";
+import { PromptCancelError } from "@monorepo/cli/errors.js";
 import { kebabCase } from "case-anything";
 import { Effect } from "effect";
 import { gen } from "effect/Effect";

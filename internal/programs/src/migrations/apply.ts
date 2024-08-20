@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 import * as p from "@clack/prompts";
-import { ActionError, UnknownActionError } from "@monorepo/base/errors.js";
+import { ActionError, UnknownActionError } from "@monorepo/cli/errors.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";

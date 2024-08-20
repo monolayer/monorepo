@@ -1,5 +1,5 @@
 import * as p from "@clack/prompts";
-import { ActionError } from "@monorepo/base/errors.js";
+import { ActionError } from "@monorepo/cli/errors.js";
 import { importConfig } from "@monorepo/configuration/import-config.js";
 import { importDatabases } from "@monorepo/configuration/import-databases.js";
 import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";

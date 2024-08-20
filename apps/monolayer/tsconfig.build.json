@@ -9,7 +9,6 @@
 		"sourceMap": false
 	},
 	"references": [
-		{ "path": "../../internal/base/tsconfig.bundle.json" },
 		{ "path": "../../internal/cli/tsconfig.bundle.json" },
 		{ "path": "../../internal/configuration/tsconfig.bundle.json" },
 		{ "path": "../../internal/migrator/tsconfig.bundle.json" },

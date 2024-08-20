@@ -1,5 +1,5 @@
 import * as p from "@clack/prompts";
-import { type ActionErrors } from "@monorepo/base/errors.js";
+import { type ActionErrors } from "@monorepo/cli/errors.js";
 import {
 	catchErrorTags,
 	handleErrors,

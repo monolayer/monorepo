@@ -8,8 +8,5 @@
 		"outDir": "dist/esm",
 		"tsBuildInfoFile": "dist/tsconfig.build.tsbuildinfo"
 	},
-	"references": [
-		{ "path": "../pg/tsconfig.build.json" },
-		{ "path": "../base/tsconfig.build.json" }
-	]
+	"references": []
 }

@@ -9,7 +9,7 @@
 		"tsBuildInfoFile": "dist/tsconfig.build.tsbuildinfo"
 	},
 	"references": [
-		{ "path": "../base/tsconfig.build.json" },
+		{ "path": "../cli/tsconfig.build.json" },
 		{ "path": "../pg/tsconfig.build.json" },
 		{ "path": "../utils/tsconfig.build.json" }
 	]

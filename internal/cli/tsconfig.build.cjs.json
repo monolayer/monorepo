@@ -13,11 +13,8 @@
 		"incremental": true,
 		"tsBuildInfoFile": "dist/tsconfig.build.cjs.tsbuildinfo",
 		"paths": {
-			"~cli/*": ["src/*"],
-			"@monorepo/base/*": ["../base/src/*"],
-			"@monorepo/pg/*": ["../pg/src/*"],
-			"@monorepo/utils/*": ["../utils/src/*"]
+			"~cli/*": ["src/*"]
 		}
 	},
-	"references": [{ "path": "../base" }]
+	"references": []
 }

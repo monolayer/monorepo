@@ -1,4 +1,4 @@
-import { PromptCancelError } from "@monorepo/base/errors.js";
+import { PromptCancelError } from "@monorepo/cli/errors.js";
 import { Effect } from "effect";
 import { describe, expect, test } from "vitest";
 import { tableRenames, TableRenameState } from "~programs/table-renames.js";

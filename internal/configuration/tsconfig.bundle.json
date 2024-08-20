@@ -5,7 +5,7 @@
 		"tsBuildInfoFile": "./../../apps/monolayer/dist/esm/packages/configuration/tsconfig.build.tsbuildinfo"
 	},
 	"references": [
-		{ "path": "../base" },
+		{ "path": "../cli" },
 		{ "path": "../pg" },
 		{ "path": "../utils" }
 	]

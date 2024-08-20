@@ -8,7 +8,6 @@
 	},
 	"references": [
 		{ "path": "apps/monolayer" },
-		{ "path": "internal/base" },
 		{ "path": "internal/cli" },
 		{ "path": "internal/configuration" },
 		{ "path": "internal/migrator" },

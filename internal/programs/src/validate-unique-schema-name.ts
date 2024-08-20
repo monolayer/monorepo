@@ -1,4 +1,4 @@
-import { ActionError } from "@monorepo/base/errors.js";
+import { ActionError } from "@monorepo/cli/errors.js";
 import { Schema } from "@monorepo/pg/schema/schema.js";
 import { appEnvironmentConfigurationSchemas } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";

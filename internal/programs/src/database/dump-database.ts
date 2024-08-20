@@ -1,5 +1,4 @@
 import * as p from "@clack/prompts";
-import { pipeCommandStdoutToWritable } from "@monorepo/base/programs/pipe-command-stdout-to-writable.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import { Schema } from "@monorepo/pg/schema/schema.js";
 import { connectionOptions } from "@monorepo/services/db-clients.js";
@@ -15,6 +14,7 @@ import path from "path";
 import pgConnectionString from "pg-connection-string";
 import { cwd, env } from "process";
 import { Writable, type WritableOptions } from "stream";
+import { pipeCommandStdoutToWritable } from "~programs/pipe-command-stdout-to-writable.js";
 
 export const dumpDatabaseStructureTask = Effect.gen(function* () {
 	const pgDumpExists = yield* checkPgDumpExecutableExists;

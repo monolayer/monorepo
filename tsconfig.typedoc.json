@@ -1,7 +1,6 @@
 {
 	"extends": "@monorepo/typescript-config/tsconfig.base.json",
 	"include": [
-		"internal/base/src/**/*",
 		"internal/cli/src/**/*",
 		"internal/configuration/src/**/*",
 		"internal/migrator/src/**/*",
@@ -16,7 +15,6 @@
 		"rootDir": ".",
 		"outDir": "dist",
 		"paths": {
-			"~base/*": ["internal/base/src/*"],
 			"~cli/*": ["internal/cli/src/*"],
 			"~configuration/*": ["internal/configuration/src/*"],
 			"~migrator/*": ["internal/migrator/src/*"],
@@ -26,7 +24,6 @@
 			"~state/*": ["internal/state/src/*"],
 			"~refactorings/*": ["internal/refactorings/src/*"],
 			"~utils/*": ["internal/utils/src/*"],
-			"@monorepo/base/*": ["internal/base/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
 			"@monorepo/configuration/*": ["internal/configuration/src/*"],
 			"@monorepo/refactorings/*": ["private/refactorings/*"],

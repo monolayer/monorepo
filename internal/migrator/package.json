@@ -13,7 +13,7 @@
 		"check:prettier": "prettier --check ."
 	},
 	"dependencies": {
-		"@monorepo/base": "*",
+		"@monorepo/cli": "*",
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
 		"@monorepo/pg": "*",

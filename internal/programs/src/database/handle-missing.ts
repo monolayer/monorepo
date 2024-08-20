@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { confirm } from "@clack/prompts";
-import { cancelOperation } from "@monorepo/base/programs/cancel-operation.js";
+import { cancelOperation } from "@monorepo/cli/cancel-operation.js";
 import { Effect, pipe } from "effect";
 import { flatMap, succeed, tap, tryPromise } from "effect/Effect";
 import { createDatabase } from "~programs/database/create-database.js";

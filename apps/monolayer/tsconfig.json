@@ -1,27 +1,6 @@
 {
 	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
-	"include": [
-		"**/src/**/*",
-		"**/tests/**/*",
-		"../../private/refactorings/src/schema-refactor.ts",
-		"../../internal/programs/src/database/seed.ts",
-		"../../internal/programs/src/database/structure-load.ts",
-		"../../internal/programs/src/changeset",
-		"tests/dump-database-structure.test.ts",
-		"../../internal/programs/src/seed.test.ts",
-		"../../internal/programs/src/structure-load.test.ts",
-		"../../internal/programs/src/validate-foreign-key-references.test.ts",
-		"../../internal/programs/src/validate-unique-schema-name.test.ts",
-		"../../internal/programs/src/import-schemas",
-		"../../internal/programs/src/migrations/rollback.ts",
-		"../../internal/programs/src/migrations/scaffold.ts",
-		"../../internal/programs/src/migrations/generate.ts",
-		"../../internal/programs/src/migrations/apply.ts",
-		"../../internal/programs/src/changeset.ts",
-		"../../internal/programs/src/validate-unique-schema-name.ts",
-		"../../internal/programs/src/validate-foreign-key-references.ts",
-		"../../internal/programs/src/introspect-schemas.ts"
-	],
+	"include": ["**/src/**/*", "**/tests/**/*"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
@@ -34,7 +13,6 @@
 		"declaration": true
 	},
 	"references": [
-		{ "path": "../../internal/base" },
 		{ "path": "../../internal/cli" },
 		{ "path": "../../internal/configuration" },
 		{ "path": "../../internal/migrator" },

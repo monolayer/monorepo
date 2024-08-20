@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
-import { ActionError } from "@monorepo/base/errors.js";
 import { Effect } from "effect";
 import color from "picocolors";
+import { ActionError } from "~cli/errors.js";
 
 export function checkWithFail<E extends object, C extends object>({
 	name,

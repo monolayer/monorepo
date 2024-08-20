@@ -1,4 +1,4 @@
-import { ActionError } from "@monorepo/base/errors.js";
+import { ActionError } from "@monorepo/cli/errors.js";
 import { importFile } from "@monorepo/utils/import-file.js";
 import { Effect, pipe } from "effect";
 import { fail, flatMap, succeed } from "effect/Effect";

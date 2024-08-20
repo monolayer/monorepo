@@ -14,7 +14,6 @@
 		"moduleResolution": "Node",
 		"paths": {
 			"~monolayer/*": ["src/*"],
-			"~base/*": ["../../internal/base/src/*"],
 			"~cli/*": ["../../internal/cli/src/*"],
 			"~configuration/*": ["../../internal/configuration/src/*"],
 			"~migrator/*": ["../../internal/migrator/src/*"],
@@ -24,7 +23,6 @@
 			"~state/*": ["../../internal/state/src/*"],
 			"~refactorings/*": ["../../private/refactorings/src/*"],
 			"~utils/*": ["../../internal/utils/src/*"],
-			"@monorepo/base/*": ["../../internal/base/src/*"],
 			"@monorepo/cli/*": ["../../internal/cli/src/*"],
 			"@monorepo/configuration/*": ["../../internal/configuration/src/*"],
 			"@monorepo/migrator/*": ["../../internal/migrator/src/*"],
@@ -37,7 +35,6 @@
 		}
 	},
 	"references": [
-		{ "path": "../../internal/base/tsconfig.bundle.cjs.json" },
 		{ "path": "../../internal/cli/tsconfig.bundle.cjs.json" },
 		{ "path": "../../internal/configuration/tsconfig.bundle.cjs.json" },
 		{ "path": "../../internal/migrator/tsconfig.bundle.cjs.json" },

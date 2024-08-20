@@ -15,7 +15,7 @@
 		"allowJs": true
 	},
 	"references": [
-		{ "path": "../base" },
+		{ "path": "../cli" },
 		{ "path": "../pg" },
 		{ "path": "../utils" }
 	]

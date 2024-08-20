@@ -13,13 +13,13 @@
 		"tsBuildInfoFile": "dist/tsconfig.build.cjs.tsbuildinfo",
 		"paths": {
 			"~state/*": ["src/*"],
-			"@monorepo/base/*": ["../base/src/*"],
+			"@monorepo/cli/*": ["../cli/src/*"],
 			"@monorepo/configuration/*": ["../configuration/src/*"],
 			"@monorepo/pg/*": ["../pg/src/*"]
 		}
 	},
 	"references": [
-		{ "path": "../base" },
+		{ "path": "../cli" },
 		{ "path": "../configuration" },
 		{ "path": "../pg" }
 	]

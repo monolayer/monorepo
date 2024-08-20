@@ -1,4 +1,4 @@
-import { ActionError } from "@monorepo/base/errors.js";
+import { ActionError } from "@monorepo/cli/errors.js";
 import {
 	findTableInSchema,
 	tableInfo,

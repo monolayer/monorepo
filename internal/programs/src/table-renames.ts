@@ -1,5 +1,5 @@
 import { select } from "@clack/prompts";
-import { PromptCancelError } from "@monorepo/base/errors.js";
+import { PromptCancelError } from "@monorepo/cli/errors.js";
 import { Context, Effect, Layer, Ref } from "effect";
 import color from "picocolors";
 

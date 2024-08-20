@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import * as p from "@clack/prompts";
-import { ActionError } from "@monorepo/base/errors.js";
+import { ActionError } from "@monorepo/cli/errors.js";
 import { FileMigrationProvider } from "@monorepo/migrator/file-migration-provider.js";
 import {
 	collectResults,

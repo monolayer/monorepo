@@ -1,9 +1,9 @@
 import * as p from "@clack/prompts";
-import { formatErrorStack, type ActionError } from "@monorepo/base/errors.js";
-import { cancelOperation } from "@monorepo/base/programs/cancel-operation.js";
 import { Effect } from "effect";
 import type { Cause } from "effect/Cause";
 import color from "picocolors";
+import { cancelOperation } from "~cli/cancel-operation.js";
+import { formatErrorStack, type ActionError } from "~cli/errors.js";
 
 export const handleErrors = Effect.catchTags({
 	ActionError: (error: ActionError) =>

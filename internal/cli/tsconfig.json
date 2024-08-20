@@ -13,5 +13,5 @@
 		"composite": true,
 		"declaration": true
 	},
-	"references": [{ "path": "../base" }]
+	"references": []
 }

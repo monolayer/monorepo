@@ -3,7 +3,6 @@
 		"rootDir": "",
 		"paths": {
 			"~monolayer/*": ["*"],
-			"~base/*": ["packages/base/*"],
 			"~cli/*": ["packages/cli/*"],
 			"~configuration/*": ["packages/configuration/*"],
 			"~migrator/*": ["packages/migrator/*"],
@@ -13,7 +12,6 @@
 			"~state/*": ["packages/state/*"],
 			"~refactorings/*": ["packages/refactorings/*"],
 			"~utils/*": ["packages/utils/*"],
-			"@monorepo/base/*": ["packages/base/*"],
 			"@monorepo/cli/*": ["packages/cli/*"],
 			"@monorepo/configuration/*": ["packages/configuration/*"],
 			"@monorepo/migrator/*": ["packages/migrator/*"],
@@ -26,7 +24,7 @@
 		}
 	},
 	"references": [
-		{ "path": "../../internal/base" },
+		{ "path": "../../internal/cli" },
 		{ "path": "../../internal/configuration" },
 		{ "path": "../../internal/migrator" },
 		{ "path": "../../internal/pg" },

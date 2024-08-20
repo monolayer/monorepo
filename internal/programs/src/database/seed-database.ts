@@ -1,5 +1,5 @@
 // import * as p from "@clack/prompts";
-// import { ActionError, type ActionErrors } from "@monorepo/base/errors.js";
+// import { ActionError, type ActionErrors } from "@monorepo/cli/errors.js";
 // import { checkWithFail } from "@monorepo/cli/check.js";
 // import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 // import type { InformationSchemaDB } from "@monorepo/pg/introspection/introspection/types.js";
