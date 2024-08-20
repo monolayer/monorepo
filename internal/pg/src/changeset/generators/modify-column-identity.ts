@@ -1,4 +1,6 @@
+import { gen } from "effect/Effect";
 import { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import { executeKyselyDbStatement } from "~pg/changeset/helpers/helpers.js";
 import {
@@ -10,16 +12,17 @@ import {
 import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 import type { ColumnInfo } from "~pg/schema/column/types.js";
 
-export function columnIdentityMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isColumnIdentityAdd(diff)) {
-		return columnIdentityAddMigrationOperation(diff, context);
-	}
-	if (isColumnIdentityDrop(diff)) {
-		return columnIdentityDropMigrationOperation(diff, context);
-	}
+export function columnIdentityMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+
+		if (isColumnIdentityAdd(diff)) {
+			return columnIdentityAddMigrationOperation(diff, context);
+		}
+		if (isColumnIdentityDrop(diff)) {
+			return columnIdentityDropMigrationOperation(diff, context);
+		}
+	});
 }
 
 type IdentityAddDifference = {

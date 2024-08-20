@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
+import { gen } from "effect/Effect";
 import type { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	executeKyselyDbStatement,
@@ -22,28 +24,28 @@ import {
 } from "~pg/introspection/introspection/table-name.js";
 import type { TablesToRename } from "~pg/introspection/schema.js";
 
-export function indexMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isCreateFirstIndex(diff)) {
-		return createFirstIndexMigration(diff, context);
-	}
-	if (isDropAllIndexes(diff)) {
-		return dropAllIndexesMigration(diff, context);
-	}
-	if (isCreateIndex(diff)) {
-		return createIndexMigration(diff, context);
-	}
-	if (isDropIndex(diff)) {
-		return dropIndexMigration(diff, context);
-	}
-	if (isChangeIndexName(diff)) {
-		return changeIndexNameMigration(diff, context);
-	}
-	if (isRehashIndex(diff)) {
-		return rehashIndexMigration(diff, context);
-	}
+export function indexMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+		if (isCreateFirstIndex(diff)) {
+			return createFirstIndexMigration(diff, context);
+		}
+		if (isDropAllIndexes(diff)) {
+			return dropAllIndexesMigration(diff, context);
+		}
+		if (isCreateIndex(diff)) {
+			return createIndexMigration(diff, context);
+		}
+		if (isDropIndex(diff)) {
+			return dropIndexMigration(diff, context);
+		}
+		if (isChangeIndexName(diff)) {
+			return changeIndexNameMigration(diff, context);
+		}
+		if (isRehashIndex(diff)) {
+			return rehashIndexMigration(diff, context);
+		}
+	});
 }
 
 type CreateFirstIndexDiff = {

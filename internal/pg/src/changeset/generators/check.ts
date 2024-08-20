@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
+import { gen } from "effect/Effect";
 import type { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	executeKyselyDbStatement,
@@ -18,25 +20,25 @@ import {
 	previousTableName,
 } from "~pg/introspection/introspection/table-name.js";
 
-export function CheckMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (istCreateFirstCheck(diff)) {
-		return createFirstCheckMigration(diff, context);
-	}
-	if (isDropAllChecks(diff)) {
-		return dropAllChecksMigration(diff, context);
-	}
-	if (isCreateCheck(diff)) {
-		return createCheckMigration(diff, context);
-	}
-	if (isDropCheck(diff)) {
-		return dropCheckMigration(diff, context);
-	}
-	if (isRehashCheck(diff, context)) {
-		return reshashCheckMigration(diff, context);
-	}
+export function CheckMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+		if (istCreateFirstCheck(diff)) {
+			return createFirstCheckMigration(diff, context);
+		}
+		if (isDropAllChecks(diff)) {
+			return dropAllChecksMigration(diff, context);
+		}
+		if (isCreateCheck(diff)) {
+			return createCheckMigration(diff, context);
+		}
+		if (isDropCheck(diff)) {
+			return dropCheckMigration(diff, context);
+		}
+		if (isRehashCheck(diff, context)) {
+			return reshashCheckMigration(diff, context);
+		}
+	});
 }
 
 type CreateFirstCheckDiff = {

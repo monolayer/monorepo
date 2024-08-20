@@ -1,6 +1,8 @@
 /* eslint-disable max-lines */
 import { hashValue } from "@monorepo/utils/hash-value.js";
+import { gen } from "effect/Effect";
 import type { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import { concurrentIndex } from "~pg/changeset/generators/index.js";
 import {
@@ -31,25 +33,26 @@ import type {
 	SchemaMigrationInfo,
 } from "~pg/schema/column/types.js";
 
-export function uniqueConstraintMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isUniqueConstraintCreateFirst(diff)) {
-		return createUniqueFirstConstraintMigration(diff, context);
-	}
-	if (isUniqueConstraintDropLast(diff)) {
-		return dropUniqueLastConstraintMigration(diff, context);
-	}
-	if (isUniqueContraintCreateDiff(diff)) {
-		return createUniqueConstraintMigration(diff, context);
-	}
-	if (isUniqueConstraintDropDiff(diff)) {
-		return dropUniqueConstraintMigration(diff, context);
-	}
-	if (isUniqueChangeNameDiff(diff)) {
-		return changeUniqueConstraintNameMigration(diff, context);
-	}
+export function uniqueConstraintMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+
+		if (isUniqueConstraintCreateFirst(diff)) {
+			return createUniqueFirstConstraintMigration(diff, context);
+		}
+		if (isUniqueConstraintDropLast(diff)) {
+			return dropUniqueLastConstraintMigration(diff, context);
+		}
+		if (isUniqueContraintCreateDiff(diff)) {
+			return createUniqueConstraintMigration(diff, context);
+		}
+		if (isUniqueConstraintDropDiff(diff)) {
+			return dropUniqueConstraintMigration(diff, context);
+		}
+		if (isUniqueChangeNameDiff(diff)) {
+			return changeUniqueConstraintNameMigration(diff, context);
+		}
+	});
 }
 
 type UniqueCreateFirst = {

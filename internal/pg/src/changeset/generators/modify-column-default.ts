@@ -1,4 +1,6 @@
+import { gen } from "effect/Effect";
 import { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	commentForDefault,
@@ -19,19 +21,20 @@ import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
 import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 import type { SchemaMigrationInfo } from "~pg/schema/column/types.js";
 
-export function columnDefaultMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isColumnDefaultAddValue(diff)) {
-		return columnDefaultAddMigrationOperation(diff, context);
-	}
-	if (isColumnDefaultDropValue(diff)) {
-		return columnDefaultDropMigrationOperation(diff, context);
-	}
-	if (isColumnDefaultChangeValue(diff)) {
-		return columnDefaultChangeMigrationOperation(diff, context);
-	}
+export function columnDefaultMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+
+		if (isColumnDefaultAddValue(diff)) {
+			return columnDefaultAddMigrationOperation(diff, context);
+		}
+		if (isColumnDefaultDropValue(diff)) {
+			return columnDefaultDropMigrationOperation(diff, context);
+		}
+		if (isColumnDefaultChangeValue(diff)) {
+			return columnDefaultChangeMigrationOperation(diff, context);
+		}
+	});
 }
 
 type ColumnDefaultAddDifference = {
@@ -182,7 +185,7 @@ function columnDefaultChangeMigrationOperation(
 	const oldDefaultValueAndHash = toValueAndHash(String(diff.oldValue));
 
 	if (newDefaultValueAndHash.hash === oldDefaultValueAndHash.hash) {
-		return [];
+		return [] as unknown as Changeset;
 	}
 
 	const up = [

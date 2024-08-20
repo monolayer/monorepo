@@ -1,4 +1,6 @@
+import { gen } from "effect/Effect";
 import type { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "../generator-context.js";
 import {
 	executeKyselyDbStatement,
@@ -11,19 +13,19 @@ import {
 	MigrationOpPriority,
 } from "../types.js";
 
-export function enumMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isCreateEnum(diff)) {
-		return createEnumMigration(diff, context);
-	}
-	if (isDropEnum(diff)) {
-		return dropEnumMigration(diff, context);
-	}
-	if (isChangeEnum(diff)) {
-		return changeEnumMigration(diff, context);
-	}
+export function enumMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+		if (isCreateEnum(diff)) {
+			return createEnumMigration(diff, context);
+		}
+		if (isDropEnum(diff)) {
+			return dropEnumMigration(diff, context);
+		}
+		if (isChangeEnum(diff)) {
+			return changeEnumMigration(diff, context);
+		}
+	});
 }
 
 function createEnumMigration(

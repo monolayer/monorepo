@@ -1,7 +1,6 @@
-import { gen } from "effect/Effect";
+import { gen, type Effect } from "effect/Effect";
 import microdiff, { type Difference } from "microdiff";
 import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
-import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import { migrationOpGenerators } from "~pg/changeset/generators.js";
 import {
 	isCreateColumn,
@@ -18,12 +17,13 @@ import type {
 import type { SchemaMigrationInfo } from "~pg/schema/column/types.js";
 import type { AnySchema } from "~pg/schema/schema.js";
 
-interface Generator {
-	(
-		diff: Difference,
-		context: GeneratorContext,
-	): Changeset | Changeset[] | undefined;
-}
+type Generator = (
+	diff: Difference,
+) => Effect<
+	Changeset | Changeset[] | undefined,
+	never,
+	ChangesetGeneratorState | never
+>;
 
 export type SchemaIntrospection = {
 	schema: AnySchema;
@@ -39,7 +39,6 @@ export type SchemaIntrospection = {
 	tablePriorities: string[];
 	columnsToRename: ColumnsToRename;
 };
-
 
 export function schemaChangeset(
 	introspection: SchemaIntrospection,
@@ -60,7 +59,7 @@ export function schemaChangeset(
 				},
 			);
 
-		const context: GeneratorContext = {
+		yield* ChangesetGeneratorState.update({
 			local: introspection.local,
 			db: introspection.remote,
 			addedTables,
@@ -72,17 +71,18 @@ export function schemaChangeset(
 			typeAlignments: typeAlignments,
 			addedColumns,
 			droppedColumns,
-		};
-
-		yield* ChangesetGeneratorState.update(context);
-
-		const changesets = diff.flatMap((difference) => {
-			for (const generator of generators) {
-				const op = generator(difference, context);
-				if (op !== undefined) return op;
-			}
-			return [];
 		});
+
+		let changesets: Changeset[] = [];
+
+		for (const difference of diff) {
+			for (const generator of generators) {
+				const op = yield* generator(difference);
+				if (op !== undefined) {
+					changesets = [...changesets, ...(Array.isArray(op) ? op : [op])];
+				}
+			}
+		}
 		return sortChangeset([...changesets], introspection);
 	});
 }

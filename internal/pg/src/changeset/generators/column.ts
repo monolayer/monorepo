@@ -1,4 +1,6 @@
+import { gen } from "effect/Effect";
 import { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	type ColumnInfoDiff,
@@ -24,19 +26,20 @@ import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
 import type { ChangeWarning } from "~pg/changeset/warnings/warnings.js";
 import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 
-export function columnMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isCreateColumn(diff)) {
-		return createColumnMigration(diff, context);
-	}
-	if (isCreateColumnNonNullableColumn(diff)) {
-		return createNonNullableColumnMigration(diff, context);
-	}
-	if (isDropColumn(diff)) {
-		return dropColumnMigration(diff, context);
-	}
+export function columnMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+
+		if (isCreateColumn(diff)) {
+			return createColumnMigration(diff, context);
+		}
+		if (isCreateColumnNonNullableColumn(diff)) {
+			return createNonNullableColumnMigration(diff, context);
+		}
+		if (isDropColumn(diff)) {
+			return dropColumnMigration(diff, context);
+		}
+	});
 }
 
 export type CreateColumnDiff = {

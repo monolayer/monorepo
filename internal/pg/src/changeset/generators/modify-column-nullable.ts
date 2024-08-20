@@ -1,4 +1,6 @@
+import { gen } from "effect/Effect";
 import { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	addCheckWithSchemaStatements,
@@ -15,13 +17,14 @@ import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js
 import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
 import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 
-export function columnNullableMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isColumnNullable(diff)) {
-		return columnNullableMigrationOperation(diff, context);
-	}
+export function columnNullableMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+
+		if (isColumnNullable(diff)) {
+			return columnNullableMigrationOperation(diff, context);
+		}
+	});
 }
 
 type ColumnNullableDifference = {

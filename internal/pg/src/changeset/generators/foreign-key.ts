@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
+import { gen } from "effect/Effect";
 import type { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	executeKyselyDbStatement,
@@ -23,25 +25,25 @@ import {
 import type { TablesToRename } from "~pg/introspection/schema.js";
 import type { SchemaMigrationInfo } from "~pg/schema/column/types.js";
 
-export function foreignKeyMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isForeignKeyConstraintCreateFirst(diff)) {
-		return createforeignKeyFirstConstraintMigration(diff, context);
-	}
-	if (isForeignKeyConstraintDropLast(diff)) {
-		return dropforeignKeyLastConstraintMigration(diff, context);
-	}
-	if (isForeignKeyConstraintCreate(diff)) {
-		return createForeignKeyConstraintMigration(diff, context);
-	}
-	if (isForeignKeyConstraintDrop(diff)) {
-		return dropForeignKeyConstraintMigration(diff, context);
-	}
-	if (isForeignKeyNameChange(diff)) {
-		return changeForeignKeyChangeMigration(diff, context);
-	}
+export function foreignKeyMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+		if (isForeignKeyConstraintCreateFirst(diff)) {
+			return createforeignKeyFirstConstraintMigration(diff, context);
+		}
+		if (isForeignKeyConstraintDropLast(diff)) {
+			return dropforeignKeyLastConstraintMigration(diff, context);
+		}
+		if (isForeignKeyConstraintCreate(diff)) {
+			return createForeignKeyConstraintMigration(diff, context);
+		}
+		if (isForeignKeyConstraintDrop(diff)) {
+			return dropForeignKeyConstraintMigration(diff, context);
+		}
+		if (isForeignKeyNameChange(diff)) {
+			return changeForeignKeyChangeMigration(diff, context);
+		}
+	});
 }
 
 type ForeignKeyCreateFirstDiff = {
@@ -417,7 +419,7 @@ function renameForeignKeyOp(
 				`ALTER TABLE "${schemaName}"."${tableName}" RENAME CONSTRAINT ${newName} TO ${oldName}`,
 			),
 		],
-	} satisfies Changeset;
+	} satisfies Changeset as Changeset;
 }
 
 function addForeigKeyOps(

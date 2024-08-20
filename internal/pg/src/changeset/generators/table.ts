@@ -1,4 +1,6 @@
+import { gen } from "effect/Effect";
 import { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	type ColumnsInfoDiff,
@@ -17,19 +19,19 @@ import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js
 import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
 import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 
-export function tableMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isCreateTable(diff)) {
-		return createTableMigration(diff, context);
-	}
-	if (isDropTable(diff)) {
-		return dropTableMigration(diff, context);
-	}
-	if (isTableNameChange(diff)) {
-		return changeTableNameMigration(diff, context);
-	}
+export function tableMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+		if (isCreateTable(diff)) {
+			return createTableMigration(diff, context);
+		}
+		if (isDropTable(diff)) {
+			return dropTableMigration(diff, context);
+		}
+		if (isTableNameChange(diff)) {
+			return changeTableNameMigration(diff, context);
+		}
+	});
 }
 
 export type CreateTableDiff = {

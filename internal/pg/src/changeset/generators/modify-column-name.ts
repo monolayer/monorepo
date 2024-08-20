@@ -1,4 +1,6 @@
+import { gen } from "effect/Effect";
 import type { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import { executeKyselySchemaStatement } from "~pg/changeset/helpers/helpers.js";
 import {
@@ -11,13 +13,13 @@ import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js
 import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
 import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 
-export function ColumnNameMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isColumnName(diff)) {
-		return columnNameMigrationOperation(diff, context);
-	}
+export function ColumnNameMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+		if (isColumnName(diff)) {
+			return columnNameMigrationOperation(diff, context);
+		}
+	});
 }
 
 type ColumnNameDifference = {

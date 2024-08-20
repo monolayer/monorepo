@@ -1,4 +1,6 @@
+import { gen } from "effect/Effect";
 import type { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import { executeKyselyDbStatement } from "~pg/changeset/helpers/helpers.js";
 import {
@@ -9,25 +11,25 @@ import {
 } from "~pg/changeset/types.js";
 import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 
-export function triggerMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isTriggerCreateFirst(diff)) {
-		return createTriggerFirstMigration(diff, context);
-	}
-	if (isTriggerCreate(diff)) {
-		return createTriggerMigration(diff, context);
-	}
-	if (isTriggerDropFirst(diff)) {
-		return dropTriggerFirstMigration(diff, context);
-	}
-	if (isTriggerDrop(diff)) {
-		return dropTriggerMigration(diff, context);
-	}
-	if (isTriggerChange(diff)) {
-		return changeTriggerMigration(diff, context);
-	}
+export function triggerMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+		if (isTriggerCreateFirst(diff)) {
+			return createTriggerFirstMigration(diff, context);
+		}
+		if (isTriggerCreate(diff)) {
+			return createTriggerMigration(diff, context);
+		}
+		if (isTriggerDropFirst(diff)) {
+			return dropTriggerFirstMigration(diff, context);
+		}
+		if (isTriggerDrop(diff)) {
+			return dropTriggerMigration(diff, context);
+		}
+		if (isTriggerChange(diff)) {
+			return changeTriggerMigration(diff, context);
+		}
+	});
 }
 
 type TriggerCreateFirstDiff = {

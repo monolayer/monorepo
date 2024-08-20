@@ -1,5 +1,5 @@
+import { gen } from "effect/Effect";
 import type { Difference } from "microdiff";
-import type { GeneratorContext } from "../generator-context.js";
 import { executeKyselyDbStatement } from "../helpers/helpers.js";
 import {
 	type Changeset,
@@ -10,17 +10,16 @@ import {
 import { ChangeWarningType } from "../warnings/change-warning-type.js";
 import { ChangeWarningCode } from "../warnings/codes.js";
 
-export function schemaMigrationOpGenerator(
-	diff: Difference,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_context: GeneratorContext,
-) {
-	if (isCreateSchema(diff)) {
-		return createSchemaMigration(diff);
-	}
-	if (isDropSchema(diff)) {
-		return dropSchemaMigration(diff);
-	}
+export function schemaMigrationOpGenerator(diff: Difference) {
+	// eslint-disable-next-line require-yield
+	return gen(function* () {
+		if (isCreateSchema(diff)) {
+			return createSchemaMigration(diff);
+		}
+		if (isDropSchema(diff)) {
+			return dropSchemaMigration(diff);
+		}
+	});
 }
 
 type CreateSchemaDiff = {

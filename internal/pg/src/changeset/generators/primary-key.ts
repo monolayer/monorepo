@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
+import { gen } from "effect/Effect";
 import type { Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import {
 	addCheckWithSchemaStatements,
@@ -36,19 +38,19 @@ import type {
 	SchemaMigrationInfo,
 } from "~pg/schema/column/types.js";
 
-export function primaryKeyMigrationOpGenerator(
-	diff: Difference,
-	context: GeneratorContext,
-) {
-	if (isPrimaryKeyCreate(diff)) {
-		return createPrimaryKeyMigration(diff, context);
-	}
-	if (isPrimaryKeyDrop(diff)) {
-		return dropPrimaryKeyMigration(diff, context);
-	}
-	if (isPrimaryKeyChange(diff, context)) {
-		return changePrimaryKeyMigration(diff, context);
-	}
+export function primaryKeyMigrationOpGenerator(diff: Difference) {
+	return gen(function* () {
+		const context = yield* ChangesetGeneratorState.current;
+		if (isPrimaryKeyCreate(diff)) {
+			return createPrimaryKeyMigration(diff, context);
+		}
+		if (isPrimaryKeyDrop(diff)) {
+			return dropPrimaryKeyMigration(diff, context);
+		}
+		if (isPrimaryKeyChange(diff, context)) {
+			return changePrimaryKeyMigration(diff, context);
+		}
+	});
 }
 
 type PrimaryKeyCreate = {
