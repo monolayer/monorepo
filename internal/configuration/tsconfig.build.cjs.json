@@ -9,7 +9,11 @@
 		"target": "es2020",
 		"module": "CommonJS",
 		"moduleResolution": "Node",
-		"tsBuildInfoFile": "dist/tsconfig.build.cjs.tsbuildinfo"
+		"tsBuildInfoFile": "dist/tsconfig.build.cjs.tsbuildinfo",
+		"paths": {
+			"~configuration/*": ["src/*"],
+			"@monorepo/pg/*": ["../pg/src/*"]
+		}
 	},
 	"references": [{ "path": "../pg" }]
 }

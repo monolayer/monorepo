@@ -7,7 +7,6 @@ import { dbTableInfo } from "@monorepo/pg/introspection/table-two.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import type { ProgramContext } from "@monorepo/services/program-context.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
-import { type SeedImport } from "@monorepo/state/import-config.js";
 import { Effect } from "effect";
 import { sql, type Kysely } from "kysely";
 import path from "path";
@@ -109,6 +108,10 @@ const truncateAllTables = Effect.gen(function* () {
 	}
 });
 
+export type SeedImport = {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	seed?: (db: Kysely<any>) => Promise<void>;
+};
 function importSeedFunction(seedFile: string) {
 	return Effect.gen(function* () {
 		const environment = yield* appEnvironment;
