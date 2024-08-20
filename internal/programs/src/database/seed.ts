@@ -1,15 +1,14 @@
 import * as p from "@clack/prompts";
-import { ActionError, type ActionErrors } from "@monorepo/base/errors.js";
+import { type ActionErrors } from "@monorepo/base/errors.js";
 import { checkWithFail } from "@monorepo/cli/check.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
+import { importSeed } from "@monorepo/configuration/import-seed.js";
 import type { InformationSchemaDB } from "@monorepo/pg/introspection/introspection/types.js";
 import { dbTableInfo } from "@monorepo/pg/introspection/table-two.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import type { ProgramContext } from "@monorepo/services/program-context.js";
-import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import { sql, type Kysely } from "kysely";
-import path from "path";
 import { exit } from "process";
 import { computeChangeset } from "~programs/changeset.js";
 import { pendingMigrations } from "~programs/migrations/pending.js";
@@ -76,7 +75,7 @@ function checkSeederFunction(seedFile: string) {
 		failMessage: "Seeder function missing",
 		callback: () =>
 			Effect.succeed(true).pipe(
-				Effect.flatMap(() => importSeedFunction(seedFile)),
+				Effect.flatMap(() => importSeed(seedFile)),
 				Effect.flatMap((result) => Effect.succeed(result !== undefined)),
 			),
 	});
@@ -108,32 +107,6 @@ const truncateAllTables = Effect.gen(function* () {
 	}
 });
 
-export type SeedImport = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	seed?: (db: Kysely<any>) => Promise<void>;
-};
-function importSeedFunction(seedFile: string) {
-	return Effect.gen(function* () {
-		const environment = yield* appEnvironment;
-		const seedFn = yield* Effect.tryPromise(async () => {
-			const mod: SeedImport = await import(
-				path.join(process.cwd(), environment.folder, seedFile)
-			);
-			return mod.seed;
-		});
-		if (seedFn === undefined) {
-			return yield* Effect.fail(
-				new ActionError(
-					"Missing seed function",
-					`Could not find a seed function in ${seedFile}.`,
-				),
-			);
-		} else {
-			return seedFn;
-		}
-	});
-}
-
 function seedDatabase(seedFile: string) {
 	return Effect.gen(function* () {
 		const dbClients = yield* DbClients;
@@ -142,7 +115,7 @@ function seedDatabase(seedFile: string) {
 
 		return yield* spinnerTask(`Seed ${databaseName}`, () =>
 			Effect.gen(function* () {
-				const seedFn = yield* importSeedFunction(seedFile);
+				const seedFn = yield* importSeed(seedFile);
 				yield* Effect.tryPromise(() => seedFn(kysely));
 			}),
 		);

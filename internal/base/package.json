@@ -13,7 +13,6 @@
 		"check:prettier": "prettier --check ."
 	},
 	"dependencies": {
-		"@monorepo/configuration": "*",
 		"@monorepo/eslint-config": "*",
 		"@types/node": "^18.0.0",
 		"effect": "^3.0.7",

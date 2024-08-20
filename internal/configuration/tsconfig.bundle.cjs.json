@@ -6,5 +6,5 @@
 		"composite": true,
 		"declarationDir": "dist/cjs"
 	},
-	"references": [{ "path": "../pg" }]
+	"references": [{ "path": "../base" }, { "path": "../pg" }]
 }

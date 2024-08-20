@@ -13,5 +13,5 @@
 		"emitDeclarationOnly": true,
 		"declaration": true
 	},
-	"references": [{ "path": "../pg" }]
+	"references": [{ "path": "../base" }, { "path": "../pg" }]
 }

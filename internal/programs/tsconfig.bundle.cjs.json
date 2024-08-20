@@ -9,6 +9,7 @@
 	"references": [
 		{ "path": "../base" },
 		{ "path": "../cli" },
+		{ "path": "../configuration" },
 		{ "path": "../migrator" },
 		{ "path": "../pg" },
 		{ "path": "../services" },
