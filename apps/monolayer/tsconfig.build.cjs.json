@@ -30,7 +30,6 @@
 			"@monorepo/configuration/*": ["../../internal/configuration/src/*"],
 			"@monorepo/migrator/*": ["../../internal/migrator/src/*"],
 			"@monorepo/pg/*": ["../../internal/pg/src/*"],
-			"@monorepo/prompts/*": ["../../internal/prompts/src/*"],
 			"@monorepo/programs/*": ["../../internal/programs/src/*"],
 			"@monorepo/services/*": ["../../internal/services/src/*"],
 			"@monorepo/state/*": ["../../internal/state/src/*"],

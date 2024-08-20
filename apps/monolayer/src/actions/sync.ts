@@ -4,7 +4,7 @@ import { handleMissingDatabase } from "@monorepo/programs/database/handle-missin
 import { applyMigrations } from "@monorepo/programs/migrations/apply.js";
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
 import { handlePendingSchemaMigrations } from "@monorepo/programs/migrations/pending.js";
-import { TableRenameState } from "@monorepo/prompts/table-renames.js";
+import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import { Effect } from "effect";
 import { cliAction } from "~monolayer/cli-action.js";
 

@@ -17,7 +17,6 @@
 		{ "path": "../base" },
 		{ "path": "../migrator" },
 		{ "path": "../pg" },
-		{ "path": "../prompts" },
 		{ "path": "../programs" },
 		{ "path": "../state" }
 	]

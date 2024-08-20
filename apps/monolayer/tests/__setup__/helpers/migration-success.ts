@@ -3,7 +3,7 @@ import {
 	type DatabaseConfig,
 } from "@monorepo/pg/database.js";
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
-import { TableRenameState } from "@monorepo/prompts/table-renames.js";
+import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import {

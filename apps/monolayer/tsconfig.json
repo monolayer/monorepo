@@ -24,7 +24,6 @@
 		"paths": {
 			"~monolayer/*": ["src/*"],
 			"~tests/*": ["tests/*"],
-			"@monorepo/prompts/*": ["./../../internal/prompts/src/*"]
 		},
 		"outDir": "./dist",
 		"emitDeclarationOnly": true,

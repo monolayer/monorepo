@@ -19,7 +19,6 @@
 		{ "path": "../cli" },
 		{ "path": "../migrator" },
 		{ "path": "../pg" },
-		{ "path": "../prompts" },
 		{ "path": "../services" },
 		{ "path": "../state" },
 		{ "path": "../utils" }

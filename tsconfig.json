@@ -14,7 +14,6 @@
 		{ "path": "internal/migrator" },
 		{ "path": "internal/pg" },
 		{ "path": "internal/programs" },
-		{ "path": "internal/prompts" },
 		{ "path": "internal/services" },
 		{ "path": "internal/utils" },
 		{ "path": "internal/state" },

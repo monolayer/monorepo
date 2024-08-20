@@ -4,7 +4,7 @@ import { createDatabase } from "@monorepo/programs/database/create-database.js";
 import { dropDatabase } from "@monorepo/programs/database/drop-database.js";
 import { seed } from "@monorepo/programs/database/seed.js";
 import { structureLoad } from "@monorepo/programs/database/structure-load.js";
-import { TableRenameState } from "@monorepo/prompts/table-renames.js";
+import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import { cliAction, cliActionWithoutContext } from "~monolayer/cli-action.js";
 import { importSchema } from "../actions/import-schema.js";
 

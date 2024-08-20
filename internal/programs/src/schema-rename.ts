@@ -1,7 +1,5 @@
 import { PromptCancelError } from "@monorepo/base/errors.js";
 import type { SchemaMigrationInfo } from "@monorepo/pg/schema/column/types.js";
-import { columnsToRenamePrompt } from "@monorepo/prompts/columns-to-rename.js";
-import { tableRenames } from "@monorepo/prompts/table-renames.js";
 import { appEnvironmentConfigurationSchemas } from "@monorepo/state/app-environment.js";
 import {
 	makeTableColumnRenameState,
@@ -9,8 +7,10 @@ import {
 	type ColumnsToRename,
 } from "@monorepo/state/table-column-rename.js";
 import { Effect } from "effect";
+import { columnsToRenamePrompt } from "~programs/columns-to-rename.js";
 import { introspectSchema } from "~programs/introspect/schema.js";
 import type { SplitColumnRefactoring } from "~programs/schema-refactor.js";
+import { tableRenames } from "~programs/table-renames.js";
 
 export function promptSchemaRenames(
 	splitColumnRefactors: SplitColumnRefactoring[],

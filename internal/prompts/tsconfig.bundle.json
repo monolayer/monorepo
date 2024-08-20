@@ -1,8 +1,0 @@
-{
-	"extends": "./tsconfig.build.json",
-	"compilerOptions": {
-		"outDir": "./../../apps/monolayer/dist/esm/packages/prompts",
-		"tsBuildInfoFile": "./../../apps/monolayer/dist/esm/packages/prompts/tsconfig.build.tsbuildinfo"
-	},
-	"references": [{ "path": "../base" }, { "path": "../pg" }]
-}

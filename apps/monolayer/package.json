@@ -82,7 +82,6 @@
 		"@monorepo/configuration": "*",
 		"@monorepo/eslint-config": "*",
 		"@monorepo/migrator": "*",
-		"@monorepo/prompts": "*",
 		"@monorepo/services": "*",
 		"@monorepo/state": "*",
 		"@monorepo/refactorings": "*",

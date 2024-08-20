@@ -1,8 +1,8 @@
 import { PromptCancelError } from "@monorepo/base/errors.js";
 import { Effect } from "effect";
-import { pressKey } from "tests/__setup__/keys.js";
 import { describe, expect, test } from "vitest";
-import { tableRenames, TableRenameState } from "~prompts/table-renames.js";
+import { tableRenames, TableRenameState } from "~programs/table-renames.js";
+import { pressKey } from "~test-setup/keys.js";
 
 describe("tables to rename", () => {
 	test("returns an empty rename list when there are no added tables", async () => {

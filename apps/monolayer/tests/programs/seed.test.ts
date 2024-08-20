@@ -1,5 +1,5 @@
 import { seed } from "@monorepo/programs/database/seed.js";
-import { TableRenameState } from "@monorepo/prompts/table-renames.js";
+import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import { Effect } from "effect";
 import { unlinkSync, writeFileSync } from "fs";
 import path from "path";

@@ -6,9 +6,9 @@ import {
 	handlePendingSchemaMigrations,
 	logPendingMigrations,
 } from "@monorepo/programs/migrations/pending.js";
-import { TableRenameState } from "@monorepo/prompts/table-renames.js";
 import { cliAction } from "~monolayer/cli-action.js";
 import { scaffoldCommand } from "../actions/scaffold.js";
+import { TableRenameState } from "@monorepo/programs/table-renames.js";
 
 export function migrationsCommand(program: Command) {
 	const migrations = program.command("migrations");

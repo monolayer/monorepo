@@ -3,7 +3,6 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "@monorepo/pg/changeset/types.js";
-import { migrationNamePrompt } from "@monorepo/prompts/migration-name.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { Effect, pipe } from "effect";
 import { appendAll, forEach, isNonEmptyArray } from "effect/Array";
@@ -12,6 +11,7 @@ import { changeset } from "~programs/changeset/changeset.js";
 import { validateUniqueSchemaName } from "~programs/changeset/validate-unique-schema-name.js";
 import { schemaDependencies } from "~programs/dependencies.js";
 import { computeExtensionChangeset as extensionChangeset } from "~programs/extension-changeset.js";
+import { migrationNamePrompt } from "~programs/migration-name.js";
 
 const render = (changeset: Changeset[]) =>
 	pipe(

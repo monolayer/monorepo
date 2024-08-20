@@ -15,7 +15,6 @@
 			"@monorepo/cli/*": ["../cli/src/*"],
 			"@monorepo/migrator/*": ["../migrator/src/*"],
 			"@monorepo/pg/*": ["../pg/src/*"],
-			"@monorepo/prompts/*": ["../prompts/src/*"],
 			"@monorepo/services/*": ["../services/src/*"],
 			"@monorepo/state/*": ["../state/src/*"],
 			"@monorepo/utils/*": ["../utils/src/*"]
@@ -29,7 +28,6 @@
 		{ "path": "../cli" },
 		{ "path": "../migrator" },
 		{ "path": "../pg" },
-		{ "path": "../prompts" },
 		{ "path": "../services" },
 		{ "path": "../state" },
 		{ "path": "../utils" }

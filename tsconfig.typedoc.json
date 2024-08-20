@@ -7,7 +7,6 @@
 		"internal/migrator/src/**/*",
 		"internal/pg/src/**/*",
 		"internal/programs/src/**/*",
-		"internal/prompts/src/**/*",
 		"internal/services/src/**/*",
 		"internal/state/src/**/*",
 		"internal/utils/src/**/*"
@@ -22,7 +21,6 @@
 			"~configuration/*": ["internal/configuration/src/*"],
 			"~migrator/*": ["internal/migrator/src/*"],
 			"~pg/*": ["internal/pg/src/*"],
-			"~prompts/*": ["internal/prompts/src/*"],
 			"~programs/*": ["internal/programs/src/*"],
 			"~services/*": ["internal/services/src/*"],
 			"~state/*": ["internal/state/src/*"],
@@ -34,7 +32,6 @@
 			"@monorepo/refactorings/*": ["private/refactorings/*"],
 			"@monorepo/migrator/*": ["internal/migrator/src/*"],
 			"@monorepo/pg/*": ["internal/pg/src/*"],
-			"@monorepo/prompts/*": ["internal/prompts/src/*"],
 			"@monorepo/programs/*": ["internal/programs/src/*"],
 			"@monorepo/services/*": ["internal/services/src/*"],
 			"@monorepo/state/*": ["internal/state/src/*"],

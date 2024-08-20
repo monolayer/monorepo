@@ -3,7 +3,7 @@ import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-op
 import { handleMissingDatabase } from "@monorepo/programs/database/handle-missing.js";
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
 import { handlePendingSchemaMigrations } from "@monorepo/programs/migrations/pending.js";
-import { TableRenameState } from "@monorepo/prompts/table-renames.js";
+import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import { cliAction } from "~monolayer/cli-action.js";
 
 export function generateAction(program: Command) {

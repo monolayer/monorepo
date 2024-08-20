@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
-import { TableRenameState } from "@monorepo/prompts/table-renames.js";
+import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import { Effect } from "effect";
 import {
 	mkdirSync,

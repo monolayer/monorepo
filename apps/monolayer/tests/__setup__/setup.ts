@@ -1,5 +1,5 @@
-import { askColumnsToRename } from "@monorepo/prompts/columns-to-rename.js";
-import { askMigrationName } from "@monorepo/prompts/migration-name.js";
+import { askColumnsToRename } from "@monorepo/programs/columns-to-rename.js";
+import { askMigrationName } from "@monorepo/programs/migration-name.js";
 import type { ColumnsToRename } from "@monorepo/state/table-column-rename.js";
 import dotenv from "dotenv";
 import { Effect } from "effect";
@@ -33,9 +33,9 @@ export function globalPool() {
 	return globalTestThis.pool;
 }
 
-vi.mock("@monorepo/prompts/table-renames.js", async (importOriginal) => {
+vi.mock("@monorepo/programs/table-renames.js", async (importOriginal) => {
 	const actual =
-		(await importOriginal()) as typeof import("@monorepo/prompts/table-renames.js");
+		(await importOriginal()) as typeof import("@monorepo/programs/table-renames.js");
 	return {
 		...actual,
 		tableRenames: vi.fn(
@@ -49,9 +49,9 @@ vi.mock("@monorepo/prompts/table-renames.js", async (importOriginal) => {
 	};
 });
 
-vi.mock("@monorepo/prompts/columns-to-rename.js", async (importOriginal) => {
+vi.mock("@monorepo/programs/columns-to-rename.js", async (importOriginal) => {
 	const actual =
-		(await importOriginal()) as typeof import("@monorepo/prompts/columns-to-rename.ts");
+		(await importOriginal()) as typeof import("@monorepo/programs/columns-to-rename.ts");
 	return {
 		...actual,
 		columnsToRenamePrompt: vi.fn(
@@ -90,7 +90,7 @@ vi.mock("@monorepo/prompts/columns-to-rename.js", async (importOriginal) => {
 	};
 });
 
-vi.mock("@monorepo/prompts/migration-name.js", async () => {
+vi.mock("@monorepo/programs/migration-name.js", async () => {
 	return {
 		migrationNamePrompt: () => Effect.succeed("default"),
 		askMigrationName: vi.fn(async () => {
