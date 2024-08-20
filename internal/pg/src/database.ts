@@ -1,3 +1,4 @@
+import { snakeCase } from "case-anything";
 import type { PgExtension } from "~pg/schema/extension.js";
 import type { AnySchema } from "~pg/schema/schema.js";
 
@@ -37,7 +38,7 @@ export class MonoLayerPgDatabase {
 	}
 
 	get connectionString() {
-		const envVar = `MONO_PG_${this.id.toUpperCase()}_DATABASE_URL`;
+		const envVar = `MONO_PG_${snakeCase(this.id).toUpperCase()}_DATABASE_URL`;
 		const envConnectionString = process.env[envVar];
 		if (envConnectionString) {
 			return envConnectionString;
