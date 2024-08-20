@@ -17,7 +17,6 @@ import {
 	MonolayerMigrator,
 	NO_MIGRATIONS,
 } from "@monorepo/migrator/migrator.js";
-import { renderToFile } from "@monorepo/migrator/render.js";
 import { printWarnigns } from "@monorepo/pg/changeset/summary.js";
 import {
 	type Changeset,
@@ -25,6 +24,7 @@ import {
 } from "@monorepo/pg/changeset/types.js";
 import type { ChangeWarning } from "@monorepo/pg/changeset/warnings/warnings.js";
 import { extractMigrationOps } from "@monorepo/programs/migrations/generate.js";
+import { renderToFile } from "@monorepo/programs/render.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
 import { Effect, Layer } from "effect";
 import { mkdirSync } from "fs";

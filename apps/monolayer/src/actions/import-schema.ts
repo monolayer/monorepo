@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import * as p from "@clack/prompts";
-import { dateStringWithMilliseconds } from "@monorepo/migrator/render.js";
 import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import type { EnumInfo } from "@monorepo/pg/introspection/enum.js";
 import { dbExtensionInfo } from "@monorepo/pg/introspection/extension.js";
@@ -28,6 +27,7 @@ import {
 	triggerDefinition,
 	uniqueConstraintDefinition,
 } from "@monorepo/programs/import-schemas/definitions.js";
+import { dateStringWithMilliseconds } from "@monorepo/programs/render.js";
 import { kyselyWithConnectionString } from "@monorepo/services/db-clients.js";
 import {
 	AppEnvironment,

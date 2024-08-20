@@ -1,4 +1,3 @@
-import { dateStringWithMilliseconds } from "@monorepo/migrator/render.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { migrationNamePrompt } from "@monorepo/prompts/migration-name.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
@@ -7,6 +6,7 @@ import { Effect } from "effect";
 import { mkdirSync } from "fs";
 import nunjucks from "nunjucks";
 import path from "path";
+import { dateStringWithMilliseconds } from "~programs/render.js";
 
 export function scaffoldMigration(
 	migrationPhase: ChangesetPhase,
