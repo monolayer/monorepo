@@ -6,7 +6,7 @@ import { Schema } from "@monorepo/pg/schema/schema.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import { appEnvironmentConfigurationSchemas } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
-import { appendAll, flatMap, map, reduce, reverse, union } from "effect/Array";
+import { appendAll, map, reduce, reverse, union } from "effect/Array";
 import { gen, zipWith } from "effect/Effect";
 import { sql } from "kysely";
 import toposort from "toposort";
@@ -76,25 +76,29 @@ type SchemaDependency = [string, string];
 
 const localSchemaDependencies = gen(function* () {
 	const allSchemas = yield* appEnvironmentConfigurationSchemas;
-	const dependencies = flatMap(allSchemas, (schema) =>
-		flatMap(Object.values(Schema.info(schema).tables), (table) => {
-			const info = tableInfo(table);
-			const foreignKeys = info.definition.constraints?.foreignKeys ?? [];
-			return map(foreignKeys, (foreignKey) => {
-				const options = foreignKeyOptions(foreignKey);
-				const foreignKeyTargetTable = options.targetTable ?? table;
-				if (typeof foreignKeyTargetTable !== "string") {
-					const targetTableInfo = tableInfo(foreignKeyTargetTable);
-					if (targetTableInfo.schemaName != info.schemaName) {
-						return [
-							info.schemaName,
-							targetTableInfo.schemaName,
-						] as SchemaDependency;
+	const dependencies = reduce(
+		allSchemas,
+		[] as unknown as SchemaDependency[],
+		(acc, schema) => {
+			map(Object.values(Schema.info(schema).tables), (table) => {
+				const info = tableInfo(table);
+				const foreignKeys = info.definition.constraints?.foreignKeys ?? [];
+				return map(foreignKeys, (foreignKey) => {
+					const options = foreignKeyOptions(foreignKey);
+					const foreignKeyTargetTable = options.targetTable ?? table;
+					if (typeof foreignKeyTargetTable !== "string") {
+						const targetTableInfo = tableInfo(foreignKeyTargetTable);
+						if (targetTableInfo.schemaName != info.schemaName) {
+							acc.push([
+								info.schemaName,
+								targetTableInfo.schemaName,
+							] as SchemaDependency);
+						}
 					}
-				}
-				return [] as unknown as SchemaDependency;
+				});
 			});
-		}),
+			return acc;
+		},
 	);
 	return toposort(dependencies);
 });

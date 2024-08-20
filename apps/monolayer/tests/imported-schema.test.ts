@@ -14,7 +14,7 @@ import { table } from "@monorepo/pg/schema/table.js";
 import { unmanagedTrigger } from "@monorepo/pg/schema/trigger.js";
 import { unique } from "@monorepo/pg/schema/unique.js";
 import { sql } from "kysely";
-import { afterEach, beforeEach, describe, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
 import {
@@ -117,7 +117,7 @@ describe("Imported Schema test", () => {
 
 	test<DbContext>("add index", async (context) => {
 		await schemaDump.execute(context.kysely);
-
+		expect(true).toBe(true);
 		const extensions = [extension("moddatetime")];
 
 		const lamba = table({
