@@ -92,7 +92,7 @@ export const appEnvironmentMigrationsFolder = Effect.gen(function* () {
 
 export function monolayerFolder() {
 	return Effect.gen(function* () {
-		const config = yield* Effect.tryPromise(importConfig);
+		const config = yield* importConfig;
 		return config.folder;
 	});
 }
@@ -106,7 +106,7 @@ export const importSchemaEnvironment = Effect.gen(function* () {
 
 function allDatabases() {
 	return Effect.gen(function* () {
-		const databases = yield* Effect.tryPromise(() => importDatabases());
+		const databases = yield* importDatabases;
 		if (databases === undefined) {
 			p.log.error(color.red("Error"));
 			return yield* Effect.fail(

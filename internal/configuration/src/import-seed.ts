@@ -11,7 +11,7 @@ type SeedImport = {
 
 export function importSeed(seedFile: string) {
 	return Effect.gen(function* () {
-		const config = yield* Effect.tryPromise(() => importConfig());
+		const config = yield* importConfig;
 		const seedFn = yield* Effect.tryPromise(async () => {
 			const mod: SeedImport = await import(
 				path.join(process.cwd(), config.folder, seedFile)

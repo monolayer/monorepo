@@ -1,3 +1,5 @@
+import { pipe } from "effect";
+import { flatMap, succeed, tryPromise } from "effect/Effect";
 import path from "node:path";
 import type { Monolayer } from "~configuration/configuration.js";
 
@@ -11,13 +13,15 @@ type ConfigImport =
 			};
 	  };
 
-export async function importConfig() {
-	const def = await import(path.join(process.cwd(), "monolayer.ts"));
-	const config: Monolayer = isEsmImport(def)
-		? def.default
-		: def.default.default;
-	return config;
-}
+export const importConfig = pipe(
+	tryPromise(() => import(path.join(process.cwd(), "monolayer.ts"))),
+	flatMap((def) => {
+		const config: Monolayer = isEsmImport(def)
+			? def.default
+			: def.default.default;
+		return succeed(config);
+	}),
+);
 
 function isEsmImport(
 	imported: ConfigImport,
