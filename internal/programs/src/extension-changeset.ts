@@ -9,10 +9,6 @@ import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import { all } from "effect/Effect";
 
-export function computeChangeset(info: [ExtensionInfo, ExtensionInfo]) {
-	return Effect.succeed(extensionChangeset(info[0], info[1]));
-}
-
 export const remoteExtensions = DbClients.pipe(
 	Effect.flatMap((dbClients) =>
 		Effect.tryPromise(() => dbExtensionInfo(dbClients.kyselyNoCamelCase)),
@@ -22,7 +18,11 @@ export const remoteExtensions = DbClients.pipe(
 export const computeExtensionChangeset = all([
 	localExtensions(),
 	remoteExtensions,
-]).pipe(Effect.flatMap(computeChangeset));
+]).pipe(
+	Effect.flatMap((info: [ExtensionInfo, ExtensionInfo]) =>
+		Effect.succeed(extensionChangeset(info[0], info[1])),
+	),
+);
 
 function localExtensions() {
 	return appEnvironment.pipe(

@@ -10,12 +10,12 @@ import {
 	cliActionFailureOutro,
 	cliActionSuccessOutro,
 } from "@monorepo/cli/outros.js";
+import { phasedMigratorLayer } from "@monorepo/programs/phased-migrator.js";
 import {
 	dbClientsLayer,
 	type DbClients,
 } from "@monorepo/services/db-clients.js";
 import type { Migrator } from "@monorepo/services/migrator.js";
-import { phasedMigratorLayer } from "@monorepo/services/phased-migrator.js";
 import type { ProgramContext } from "@monorepo/services/program-context.js";
 import {
 	AppEnvironment,

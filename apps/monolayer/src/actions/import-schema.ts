@@ -27,7 +27,6 @@ import {
 	triggerDefinition,
 	uniqueConstraintDefinition,
 } from "@monorepo/programs/import-schemas/definitions.js";
-import { dateStringWithMilliseconds } from "@monorepo/programs/render.js";
 import { kyselyWithConnectionString } from "@monorepo/services/db-clients.js";
 import {
 	AppEnvironment,
@@ -35,6 +34,7 @@ import {
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
 import { createFile } from "@monorepo/utils/create-file.js";
+import { dateStringWithMilliseconds } from "@monorepo/utils/date-string.js";
 import { camelCase, constantCase } from "case-anything";
 import { Effect, Ref } from "effect";
 import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "fs";

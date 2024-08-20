@@ -1,7 +1,7 @@
 import { ActionError } from "@monorepo/base/errors.js";
 import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
-import { validateUniqueSchemaName } from "@monorepo/programs/changeset/validate-unique-schema-name.js";
+import { validateUniqueSchemaName } from "@monorepo/programs/validate-unique-schema-name.js";
 import {
 	AppEnvironment,
 	type AppEnv,

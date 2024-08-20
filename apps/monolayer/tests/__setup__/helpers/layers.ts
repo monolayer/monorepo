@@ -1,6 +1,6 @@
 import type { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
+import { phasedMigratorLayer } from "@monorepo/programs/phased-migrator.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
-import { phasedMigratorLayer } from "@monorepo/services/phased-migrator.js";
 import dotenv from "dotenv";
 import { Effect, Layer } from "effect";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";

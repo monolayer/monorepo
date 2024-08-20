@@ -15,15 +15,15 @@ import {
 import { Effect } from "effect";
 import { gen } from "effect/Effect";
 import {
+	introspectSchema,
 	renameMigrationInfo,
 	sortTablePriorities,
-} from "~programs/changeset/introspect-schemas.js";
-import { validateForeignKeyReferences } from "~programs/changeset/validate-foreign-key-references.js";
+} from "~programs/introspect-schemas.js";
 import { introspectAlignment } from "~programs/introspect/alignment.js";
-import { introspectSchema } from "~programs/introspect/schema.js";
 import { promptSchemaRenames } from "~programs/schema-rename.js";
+import { validateForeignKeyReferences } from "~programs/validate-foreign-key-references.js";
 
-export const changeset = gen(function* () {
+export const computeChangeset = gen(function* () {
 	const renames = yield* promptSchemaRenames([]);
 	const allSchemas = yield* appEnvironmentConfigurationSchemas;
 	let changesets: Changeset[] = [];

@@ -12,7 +12,7 @@ import { Effect } from "effect";
 import { sql, type Kysely } from "kysely";
 import path from "path";
 import { exit } from "process";
-import { changeset } from "~programs/changeset/changeset.js";
+import { computeChangeset } from "~programs/changeset.js";
 import { pendingMigrations } from "~programs/migrations/pending.js";
 
 type SeedOptions = {
@@ -63,7 +63,7 @@ const checkPendingSchemaChanges = checkWithFail({
 		"The local schema does not match the database schema. Cannot continue.",
 	failMessage: "Pending Schema Changes",
 	callback: () =>
-		changeset.pipe(
+		computeChangeset.pipe(
 			Effect.flatMap((result) => Effect.succeed(result.length === 0)),
 		),
 });

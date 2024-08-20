@@ -4,7 +4,7 @@ import { text } from "@monorepo/pg/schema/column/data-types/text.js";
 import { foreignKey } from "@monorepo/pg/schema/foreign-key.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
 import { table } from "@monorepo/pg/schema/table.js";
-import { validateForeignKeyReferences } from "@monorepo/programs/changeset/validate-foreign-key-references.js";
+import { validateForeignKeyReferences } from "@monorepo/programs/validate-foreign-key-references.js";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import {

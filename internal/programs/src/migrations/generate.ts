@@ -3,32 +3,18 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "@monorepo/pg/changeset/types.js";
-import { Migrator } from "@monorepo/services/migrator.js";
-import { Effect, pipe } from "effect";
-import { appendAll, forEach, isNonEmptyArray } from "effect/Array";
-import { all, andThen, flatMap, succeed, tap, zipWith } from "effect/Effect";
-import { changeset } from "~programs/changeset/changeset.js";
-import { validateUniqueSchemaName } from "~programs/changeset/validate-unique-schema-name.js";
+import { Effect } from "effect";
+import { appendAll, isNonEmptyArray } from "effect/Array";
+import { andThen, flatMap, succeed, tap, zipWith } from "effect/Effect";
+import { computeChangeset } from "~programs/changeset.js";
 import { schemaDependencies } from "~programs/dependencies.js";
-import { computeExtensionChangeset as extensionChangeset } from "~programs/extension-changeset.js";
-import { migrationNamePrompt } from "~programs/migration-name.js";
-
-const render = (changeset: Changeset[]) =>
-	pipe(
-		all([Migrator, migrationNamePrompt()]),
-		flatMap(([migrator, migrationName]) =>
-			migrator.renderChangesets(changeset, migrationName),
-		),
-		tap((migration) =>
-			forEach(migration, (migration) =>
-				p.log.info(`Generated migration: ${migration}`),
-			),
-		),
-	);
+import { computeExtensionChangeset } from "~programs/extension-changeset.js";
+import { render } from "~programs/migrations/render.js";
+import { validateUniqueSchemaName } from "~programs/validate-unique-schema-name.js";
 
 export const generateMigration = validateUniqueSchemaName.pipe(
 	andThen(
-		zipWith(extensionChangeset, changeset, (ecs, cs) =>
+		zipWith(computeExtensionChangeset, computeChangeset, (ecs, cs) =>
 			appendAll(ecs, cs),
 		).pipe(
 			flatMap(sortChangesetsBySchemaPriority),

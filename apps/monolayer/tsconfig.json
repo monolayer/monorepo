@@ -16,14 +16,18 @@
 		"../../internal/programs/src/migrations/rollback.ts",
 		"../../internal/programs/src/migrations/scaffold.ts",
 		"../../internal/programs/src/migrations/generate.ts",
-		"../../internal/programs/src/migrations/apply.ts"
+		"../../internal/programs/src/migrations/apply.ts",
+		"../../internal/programs/src/changeset.ts",
+		"../../internal/programs/src/validate-unique-schema-name.ts",
+		"../../internal/programs/src/validate-foreign-key-references.ts",
+		"../../internal/programs/src/introspect-schemas.ts"
 	],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
 		"paths": {
 			"~monolayer/*": ["src/*"],
-			"~tests/*": ["tests/*"],
+			"~tests/*": ["tests/*"]
 		},
 		"outDir": "./dist",
 		"emitDeclarationOnly": true,
@@ -35,7 +39,6 @@
 		{ "path": "../../internal/configuration" },
 		{ "path": "../../internal/migrator" },
 		{ "path": "../../internal/pg" },
-		{ "path": "../../internal/prompts" },
 		{ "path": "../../internal/programs" },
 		{ "path": "../../internal/services" },
 		{ "path": "../../internal/utils" },

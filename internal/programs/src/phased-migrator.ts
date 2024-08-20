@@ -23,9 +23,16 @@ import {
 	ChangesetPhase,
 } from "@monorepo/pg/changeset/types.js";
 import type { ChangeWarning } from "@monorepo/pg/changeset/warnings/warnings.js";
-import { extractMigrationOps } from "@monorepo/programs/migrations/generate.js";
-import { renderToFile } from "@monorepo/programs/render.js";
+import { DbClients } from "@monorepo/services/db-clients.js";
+import {
+	type MigrationStats,
+	Migrator,
+	type MigratorInterface,
+	type MigratorLayerProps,
+} from "@monorepo/services/migrator.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
+import { createFile } from "@monorepo/utils/create-file.js";
+import { dateStringWithMilliseconds } from "@monorepo/utils/date-string.js";
 import { Effect, Layer } from "effect";
 import { mkdirSync } from "fs";
 import {
@@ -34,16 +41,11 @@ import {
 	type MigrationResultSet,
 } from "kysely";
 import fs from "node:fs/promises";
-import path from "path";
+import path from "node:path";
+import nunjucks from "nunjucks";
 import color from "picocolors";
 import { cwd } from "process";
-import { DbClients } from "~services/db-clients.js";
-import {
-	type MigrationStats,
-	Migrator,
-	type MigratorInterface,
-	type MigratorLayerProps,
-} from "~services/migrator.js";
+import { extractMigrationOps } from "~programs/migrations/generate.js";
 
 export class PhasedMigrator implements MigratorInterface {
 	protected readonly alterInstance: MonolayerMigrator;
@@ -659,18 +661,6 @@ class PhasedMigratorRenderer {
 	}
 }
 
-export function phasedMigratorLayer(props?: MigratorLayerProps) {
-	return Layer.effect(
-		Migrator,
-		Effect.gen(function* () {
-			const folder =
-				props?.migrationFolder ?? (yield* appEnvironmentMigrationsFolder);
-			const db = props?.client ?? (yield* DbClients).kysely;
-			return new PhasedMigrator(db, folder);
-		}),
-	);
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function makeMigrator(client: Kysely<any>, folder: string, name: string) {
 	return new MonolayerMigrator({
@@ -710,4 +700,68 @@ export function logMigrationResultStatus(
 			break;
 	}
 	return Effect.succeed(true);
+}
+
+const template = `import { Kysely, sql } from "kysely";
+import { type Migration } from "monolayer/migration";
+
+export const migration: Migration = {
+	name: "{{ name }}",
+	transaction: {{ transaction | safe }},
+	scaffold: false,
+	warnings: {{ warnings | safe}}
+};
+
+export async function up(db: Kysely<any>): Promise<void> {
+{%- for u in up %}
+  {{ u | safe }}
+{% endfor -%}
+}
+
+export async function down(db: Kysely<any>): Promise<void> {
+{%- for downOps in down %}
+  {{ downOps | safe }}
+{% endfor -%}
+}
+`;
+
+function renderToFile(
+	upDown: {
+		up: string[];
+		down: string[];
+	},
+	folder: string,
+	name: string,
+	transaction: boolean,
+	warnings: string,
+) {
+	const { up, down } = upDown;
+	const dateStr = dateStringWithMilliseconds();
+	const migrationName = `${dateStr}-${name}`;
+	const migrationFilePath = path.join(folder, `${migrationName}.ts`);
+	const rendered = nunjucks.compile(template).render({
+		up: up,
+		down: down,
+		transaction,
+		name: migrationName,
+		warnings,
+	});
+	createFile(
+		migrationFilePath,
+		rendered.includes("sql`") ? rendered : rendered.replace(", sql", ""),
+		false,
+	);
+	return migrationName;
+}
+
+export function phasedMigratorLayer(props?: MigratorLayerProps) {
+	return Layer.effect(
+		Migrator,
+		Effect.gen(function* () {
+			const folder =
+				props?.migrationFolder ?? (yield* appEnvironmentMigrationsFolder);
+			const db = props?.client ?? (yield* DbClients).kysely;
+			return new PhasedMigrator(db, folder);
+		}),
+	);
 }

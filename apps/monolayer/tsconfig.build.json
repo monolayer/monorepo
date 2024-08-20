@@ -14,7 +14,6 @@
 		{ "path": "../../internal/configuration/tsconfig.bundle.json" },
 		{ "path": "../../internal/migrator/tsconfig.bundle.json" },
 		{ "path": "../../internal/pg/tsconfig.bundle.json" },
-		{ "path": "../../internal/prompts/tsconfig.bundle.json" },
 		{ "path": "../../internal/programs/tsconfig.bundle.json" },
 		{ "path": "../../internal/services/tsconfig.bundle.json" },
 		{ "path": "../../internal/utils/tsconfig.bundle.json" },

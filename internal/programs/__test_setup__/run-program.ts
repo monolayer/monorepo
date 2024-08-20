@@ -2,8 +2,8 @@ import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import { text } from "@monorepo/pg/schema/column/data-types/text.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
 import { table } from "@monorepo/pg/schema/table.js";
+import { phasedMigratorLayer } from "@monorepo/programs/phased-migrator.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
-import { phasedMigratorLayer } from "@monorepo/services/phased-migrator.js";
 import {
 	AppEnvironment,
 	type AppEnv,
