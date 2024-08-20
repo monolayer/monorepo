@@ -10,7 +10,6 @@ import type { TablesToRename } from "@monorepo/pg/introspection/schema.js";
 import type { SchemaMigrationInfo } from "@monorepo/pg/schema/column/types.js";
 import { Schema, type AnySchema } from "@monorepo/pg/schema/schema.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
-import { sortTableDependencies } from "@monorepo/services/dependencies.js";
 import {
 	appEnvironmentCamelCasePlugin,
 	appEnvironmentConfigurationSchemas,
@@ -20,6 +19,7 @@ import type {
 	TableAndColumnRenames,
 } from "@monorepo/state/table-column-rename.js";
 import { Effect } from "effect";
+import { sortTableDependencies } from "~programs/dependencies.js";
 
 export function introspectRemote(
 	schemaName: string,
