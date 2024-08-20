@@ -1,4 +1,4 @@
-import type { ActionError } from "@monorepo/base/errors.js";
+import type { ActionError, PromptCancelError } from "@monorepo/base/errors.js";
 import {
 	type MonolayerMigration,
 	type MonolayerMigrationInfo,
@@ -64,7 +64,7 @@ export type MigratorInterface = {
 		migrationName: string,
 	): Effect.Effect<
 		string[],
-		UnknownException | ActionError,
+		UnknownException | ActionError | PromptCancelError,
 		DbClients | AppEnvironment
 	>;
 	pendingMigrations: Effect.Effect<

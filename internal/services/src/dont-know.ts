@@ -5,6 +5,7 @@ import {
 	MigrationOpPriority,
 } from "@monorepo/pg/changeset/types.js";
 import type { ChangeWarning } from "@monorepo/pg/changeset/warnings/warnings.js";
+import { schemaDependencies } from "@monorepo/programs/dependencies.js";
 import { Effect } from "effect";
 import type {
 	Migration as KyselyMigration,
@@ -15,7 +16,6 @@ import type {
 	NoMigrations,
 } from "kysely";
 import path from "path";
-import { schemaDependencies } from "~services/dependencies.js";
 import { isExtendedMigration } from "~services/migrator.js";
 
 export type Migration = {
@@ -66,7 +66,7 @@ function sortChangesetsBySchemaPriority(
 	mode: "up" | "down" = "up",
 ) {
 	return Effect.gen(function* () {
-		const schemaPriorities = yield* schemaDependencies();
+		const schemaPriorities = yield* schemaDependencies;
 		const schemaOrderIndex = schemaPriorities.reduce(
 			(acc, name, index) => {
 				acc[name] = index;
