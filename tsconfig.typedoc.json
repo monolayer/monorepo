@@ -36,5 +36,5 @@
 		}
 	},
 	"emitDeclarationOnly": true,
-	"exclude": ["node_modules", "dist", "tmp"]
+	"exclude": ["node_modules", "dist", "tmp", "tests", "**/*/*.test.ts"]
 }
