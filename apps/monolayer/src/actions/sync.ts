@@ -1,5 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
+import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-generator.js";
 import { handleMissingDatabase } from "@monorepo/programs/database/handle-missing.js";
 import { applyMigrations } from "@monorepo/programs/migrations/apply.js";
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
@@ -18,12 +19,14 @@ export function syncAction(program: Command) {
 			await cliAction("Sync: generate migrations and migrate", opts, [
 				handleMissingDatabase,
 				handlePendingSchemaMigrations,
-				TableRenameState.provide(generateMigration).pipe(
-					Effect.tap((result) =>
-						Effect.if(result.length !== 0, {
-							onTrue: () => applyMigrations({ phase: "all" }),
-							onFalse: () => Effect.succeed(true),
-						}),
+				ChangesetGeneratorState.provide(
+					TableRenameState.provide(generateMigration).pipe(
+						Effect.tap((result) =>
+							Effect.if(result.length !== 0, {
+								onTrue: () => applyMigrations({ phase: "all" }),
+								onFalse: () => Effect.succeed(true),
+							}),
+						),
 					),
 				),
 			]);

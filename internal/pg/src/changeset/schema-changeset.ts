@@ -1,5 +1,6 @@
 import { gen } from "effect/Effect";
 import microdiff, { type Difference } from "microdiff";
+import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
 import type { GeneratorContext } from "~pg/changeset/generator-context.js";
 import { migrationOpGenerators } from "~pg/changeset/generators.js";
 import {
@@ -39,47 +40,6 @@ export type SchemaIntrospection = {
 	columnsToRename: ColumnsToRename;
 };
 
-export function schemaChangeset2(
-	introspection: SchemaIntrospection,
-	camelCase: boolean,
-	typeAlignments: TypeAlignment[],
-	generators: Generator[] = migrationOpGenerators,
-): Changeset[] {
-	const { diff, addedTables, droppedTables, addedColumns, droppedColumns } =
-		changesetDiff(
-			{
-				...introspection.local,
-				tablePriorities: [],
-			},
-			{
-				...introspection.remote,
-				tablePriorities: [],
-			},
-		);
-
-	const context: GeneratorContext = {
-		local: introspection.local,
-		db: introspection.remote,
-		addedTables,
-		droppedTables,
-		schemaName: toSnakeCase(introspection.schemaName, camelCase),
-		camelCase: camelCase,
-		tablesToRename: introspection.tablesToRename,
-		columnsToRename: introspection.columnsToRename,
-		typeAlignments: typeAlignments,
-		addedColumns,
-		droppedColumns,
-	};
-
-	const changesets = diff.flatMap((difference) => {
-		for (const generator of generators) {
-			const op = generator(difference, context);
-			if (op !== undefined) return op;
-		}
-		return [];
-	});
-	return sortChangeset([...changesets], introspection);
-}
 
 export function schemaChangeset(
 	introspection: SchemaIntrospection,
@@ -87,7 +47,6 @@ export function schemaChangeset(
 	typeAlignments: TypeAlignment[],
 	generators: Generator[] = migrationOpGenerators,
 ) {
-	// eslint-disable-next-line require-yield
 	return gen(function* () {
 		const { diff, addedTables, droppedTables, addedColumns, droppedColumns } =
 			changesetDiff(
@@ -114,6 +73,8 @@ export function schemaChangeset(
 			addedColumns,
 			droppedColumns,
 		};
+
+		yield* ChangesetGeneratorState.update(context);
 
 		const changesets = diff.flatMap((difference) => {
 			for (const generator of generators) {

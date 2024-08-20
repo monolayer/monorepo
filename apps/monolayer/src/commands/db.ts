@@ -7,6 +7,7 @@ import { structureLoad } from "@monorepo/programs/database/structure-load.js";
 import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import { cliAction, cliActionWithoutContext } from "~monolayer/cli-action.js";
 import { importSchema } from "../actions/import-schema.js";
+import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-generator.js";
 
 export function dbCommand(program: Command) {
 	const db = program.command("db");
@@ -57,12 +58,14 @@ export function dbCommand(program: Command) {
 		.option("-f, --file <seed-file-name>", "seed file", "seed.ts")
 		.action(async (opts) => {
 			await cliAction("monolayer seed", opts, [
-				TableRenameState.provide(
-					seed({
-						replant: opts.replant,
-						disableWarnings: opts.disableWarnings,
-						seedFile: opts.file,
-					}),
+				ChangesetGeneratorState.provide(
+					TableRenameState.provide(
+						seed({
+							replant: opts.replant,
+							disableWarnings: opts.disableWarnings,
+							seedFile: opts.file,
+						}),
+					),
 				),
 			]);
 		});

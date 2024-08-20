@@ -1,3 +1,4 @@
+import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-generator.js";
 import { seed } from "@monorepo/programs/database/seed.js";
 import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import { Effect } from "effect";
@@ -26,10 +27,14 @@ describe("seed", () => {
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
 		await Effect.runPromise(
-			await programWithContextAndServices(TableRenameState.provide(seed({}))),
+			await programWithContextAndServices(
+				ChangesetGeneratorState.provide(TableRenameState.provide(seed({}))),
+			),
 		);
 		await Effect.runPromise(
-			await programWithContextAndServices(TableRenameState.provide(seed({}))),
+			await programWithContextAndServices(
+				ChangesetGeneratorState.provide(TableRenameState.provide(seed({}))),
+			),
 		);
 
 		const result = await context.kysely
@@ -51,12 +56,16 @@ describe("seed", () => {
 
 		await Effect.runPromise(
 			await programWithContextAndServices(
-				TableRenameState.provide(seed({ seedFile: "anotherSeed.ts" })),
+				ChangesetGeneratorState.provide(
+					TableRenameState.provide(seed({ seedFile: "anotherSeed.ts" })),
+				),
 			),
 		);
 		await Effect.runPromise(
 			await programWithContextAndServices(
-				TableRenameState.provide(seed({ seedFile: "anotherSeed.ts" })),
+				ChangesetGeneratorState.provide(
+					TableRenameState.provide(seed({ seedFile: "anotherSeed.ts" })),
+				),
 			),
 		);
 
@@ -80,12 +89,16 @@ describe("seed", () => {
 		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
 		await Effect.runPromise(
-			await programWithContextAndServices(TableRenameState.provide(seed({}))),
+			await programWithContextAndServices(
+				ChangesetGeneratorState.provide(TableRenameState.provide(seed({}))),
+			),
 		);
 		await Effect.runPromise(
 			await programWithContextAndServices(
-				TableRenameState.provide(
-					seed({ replant: true, disableWarnings: true }),
+				ChangesetGeneratorState.provide(
+					TableRenameState.provide(
+						seed({ replant: true, disableWarnings: true }),
+					),
 				),
 			),
 		);
@@ -104,7 +117,7 @@ describe("seed", () => {
 			async () =>
 				await Effect.runPromise(
 					await programWithContextAndServices(
-						TableRenameState.provide(seed({})),
+						ChangesetGeneratorState.provide(TableRenameState.provide(seed({}))),
 					),
 				),
 		).rejects.toThrowError();
@@ -120,7 +133,7 @@ describe("seed", () => {
 			async () =>
 				await Effect.runPromise(
 					await programWithContextAndServices(
-						TableRenameState.provide(seed({})),
+						ChangesetGeneratorState.provide(TableRenameState.provide(seed({}))),
 					),
 				),
 		).rejects.toThrowError('process.exit unexpectedly called with "1"');
@@ -135,7 +148,7 @@ describe("seed", () => {
 			async () =>
 				await Effect.runPromise(
 					await programWithContextAndServices(
-						TableRenameState.provide(seed({})),
+						ChangesetGeneratorState.provide(TableRenameState.provide(seed({}))),
 					),
 				),
 		).rejects.toThrowError();

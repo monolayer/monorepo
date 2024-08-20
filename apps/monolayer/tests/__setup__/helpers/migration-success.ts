@@ -1,3 +1,4 @@
+import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-generator.js";
 import {
 	MonoLayerPgDatabase,
 	type DatabaseConfig,
@@ -111,11 +112,13 @@ async function runGenerateChangesetMigration(
 	tableRenames: TableRename[] = [],
 ) {
 	return Effect.runPromise(
-		TableRenameState.provide(
-			programWithErrorCause(
-				await programWithContextAndServices(generateMigration, env, layers),
+		ChangesetGeneratorState.provide(
+			TableRenameState.provide(
+				programWithErrorCause(
+					await programWithContextAndServices(generateMigration, env, layers),
+				),
+				tableRenames,
 			),
-			tableRenames,
 		),
 	);
 }
