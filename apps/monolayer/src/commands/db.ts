@@ -54,7 +54,7 @@ export function dbCommand(program: Command) {
 	})
 		.description("seeds a database")
 		.option("-r, --replant", "Truncate tables before seeding")
-		.option("-d, --disable-warnings", "disable truncation warnings")
+		.option("-n, --disable-warnings", "disable truncation warnings")
 		.option("-f, --file <seed-file-name>", "seed file", "seed.ts")
 		.action(async (opts) => {
 			await cliAction("monolayer seed", opts, [
