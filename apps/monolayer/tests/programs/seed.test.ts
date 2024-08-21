@@ -49,6 +49,8 @@ describe("seed", () => {
 	test<ProgramContext>("seeds database with seed file", async (context) => {
 		await context.migrator.migrateToLatest();
 
+		const seedFilePath = path.join(context.folder, "db", "anotherSeed.ts");
+
 		writeFileSync(
 			path.join(context.folder, "db", "anotherSeed.ts"),
 			anotherSeedFile,
@@ -57,14 +59,14 @@ describe("seed", () => {
 		await Effect.runPromise(
 			await programWithContextAndServices(
 				ChangesetGeneratorState.provide(
-					TableRenameState.provide(seed({ seedFile: "anotherSeed.ts" })),
+					TableRenameState.provide(seed({ seedFile: seedFilePath })),
 				),
 			),
 		);
 		await Effect.runPromise(
 			await programWithContextAndServices(
 				ChangesetGeneratorState.provide(
-					TableRenameState.provide(seed({ seedFile: "anotherSeed.ts" })),
+					TableRenameState.provide(seed({ seedFile: seedFilePath })),
 				),
 			),
 		);

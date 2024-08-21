@@ -2,6 +2,7 @@ import * as p from "@clack/prompts";
 import { ActionError } from "@monorepo/cli/errors.js";
 import { importConfig } from "@monorepo/configuration/import-config.js";
 import { importDatabases } from "@monorepo/configuration/import-databases.js";
+import type { MonolayerConfiguration } from "@monorepo/configuration/monolayer.js";
 import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
 import dotenv from "dotenv";
 import { Context, Effect, Layer, Ref } from "effect";
@@ -10,7 +11,7 @@ import color from "picocolors";
 import { cwd } from "process";
 
 export interface AppEnv {
-	folder: string;
+	entryPoints: MonolayerConfiguration["entryPoints"];
 	database: MonoLayerPgDatabase;
 }
 
@@ -31,7 +32,7 @@ export function getEnvironment(databaseId: string, envFile?: string) {
 		);
 		const database = yield* databaseById(databaseId);
 		const env: AppEnv = {
-			folder: yield* monolayerFolder(),
+			entryPoints: yield* entryPoints(),
 			database,
 		};
 		return env;
@@ -90,17 +91,17 @@ export const appEnvironmentMigrationsFolder = Effect.gen(function* () {
 	return path.join(cwd(), "monolayer", "migrations", appEnv.database.id);
 });
 
-export function monolayerFolder() {
+export function entryPoints() {
 	return Effect.gen(function* () {
 		const config = yield* importConfig;
-		return config.folder;
+		return config.entryPoints;
 	});
 }
 
 export const importSchemaEnvironment = Effect.gen(function* () {
 	return {
 		database: new MonoLayerPgDatabase({ id: "default", schemas: [] }),
-		folder: yield* monolayerFolder(),
+		entryPoints: yield* entryPoints(),
 	} satisfies AppEnv as AppEnv;
 });
 

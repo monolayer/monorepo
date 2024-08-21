@@ -19,11 +19,7 @@ type SeedOptions = {
 	seedFile?: string;
 };
 
-export function seed({
-	disableWarnings,
-	replant,
-	seedFile = "seed.ts",
-}: SeedOptions) {
+export function seed({ disableWarnings, replant, seedFile }: SeedOptions) {
 	return Effect.gen(function* () {
 		p.log.message(
 			`${replant ? "Truncate tables and seed database" : "Seed Database"}`,
@@ -66,7 +62,7 @@ const checkPendingSchemaChanges = checkWithFail({
 		),
 });
 
-function checkSeederFunction(seedFile: string) {
+function checkSeederFunction(seedFile?: string) {
 	return checkWithFail({
 		name: "Check seeder function",
 		nextSteps: `1) Check that a seeder function is exported in your seeder.ts file.
@@ -107,7 +103,7 @@ const truncateAllTables = Effect.gen(function* () {
 	}
 });
 
-function seedDatabase(seedFile: string) {
+function seedDatabase(seedFile?: string) {
 	return Effect.gen(function* () {
 		const dbClients = yield* DbClients;
 		const databaseName = dbClients.databaseName;

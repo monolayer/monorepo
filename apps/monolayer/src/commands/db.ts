@@ -55,7 +55,10 @@ export function dbCommand(program: Command) {
 		.description("seeds a database")
 		.option("-r, --replant", "Truncate tables before seeding")
 		.option("-n, --disable-warnings", "disable truncation warnings")
-		.option("-f, --file <seed-file-name>", "seed file", "seed.ts")
+		.option(
+			"-s, --seed-file <seed-file-name>",
+			"relative path to the seed file",
+		)
 		.action(async (opts) => {
 			await cliAction("monolayer seed", opts, [
 				ChangesetGeneratorState.provide(
@@ -63,7 +66,7 @@ export function dbCommand(program: Command) {
 						seed({
 							replant: opts.replant,
 							disableWarnings: opts.disableWarnings,
-							seedFile: opts.file,
+							seedFile: opts.seedFile,
 						}),
 					),
 				),

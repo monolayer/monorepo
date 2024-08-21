@@ -16,7 +16,10 @@ export const initFolderAndFiles = gen(function* () {
 		yield* tryPromise(async () => {
 			await createFile(
 				path.join(cwd(), "monolayer.ts"),
-				configTemplate.render({ folder: dbFolderPath }),
+				configTemplate.render({
+					databasePath: path.join(dbFolderPath, "databases.ts"),
+					seedPath: path.join(dbFolderPath, "seed.ts"),
+				}),
 				true,
 			);
 			await createDir(dbFolderPath, true);
@@ -82,7 +85,10 @@ export const configTemplate =
 	nunjucks.compile(`import { defineConfig } from "monolayer/config";
 
 export default defineConfig({
-	folder: "{{ folder }}",
+  entryPoints: {
+	  databases: "{{ databasePath }}",
+		seed: "{{ seedPath }}",
+	},
 });
 `);
 

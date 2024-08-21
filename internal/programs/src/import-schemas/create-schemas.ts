@@ -30,7 +30,7 @@ export interface ImportedSchema {
 export function createSchema(
 	databaseName: string,
 	schema: ImportedSchema,
-	folder: string,
+	databaseFilePath: string,
 ) {
 	const imports: Set<string> = new Set();
 	const extensions = schema.extensions;
@@ -46,7 +46,11 @@ export function createSchema(
 	}
 
 	const tables: string[] = [];
-	const schemaPath = path.join(folder, `${kebabCase(databaseName)}-schema.ts`);
+
+	const schemaPath = path.join(
+		path.dirname(databaseFilePath),
+		`${kebabCase(databaseName)}-schema.ts`,
+	);
 
 	for (const [tableName, tableSchema] of schema.tables) {
 		imports.add("table");
@@ -125,11 +129,11 @@ export function createSchema(
 		", ",
 	);
 
-	addImportToConfiguration(folder, schemaPath, moduleImports);
+	addImportToConfiguration(databaseFilePath, schemaPath, moduleImports);
 
 	writeConfiguration({
 		databaseName,
-		folder,
+		folder: path.dirname(databaseFilePath),
 		configurationName,
 		schemaModuleName,
 		schemaModuleExtensionName,
@@ -139,7 +143,7 @@ export function createSchema(
 	return {
 		configuration: {
 			name: configurationName,
-			path: path.join(folder, `databases.ts`),
+			path: databaseFilePath,
 		},
 		schema: {
 			path: schemaPath,
@@ -252,19 +256,18 @@ function writeConfiguration(options: {
 }
 
 export function addImportToConfiguration(
-	folder: string,
+	databaseFilePath: string,
 	schemaPath: string,
 	moduleImports: string,
 ) {
-	const configurationPath = path.join(folder, `databases.ts`);
 	const importSchemaPath = path.relative(
-		folder,
+		path.dirname(databaseFilePath),
 		schemaPath.substring(0, schemaPath.lastIndexOf(".")),
 	);
 
 	const file = {
-		path: configurationPath,
-		source: readFileSync(configurationPath, "utf8").toString(),
+		path: databaseFilePath,
+		source: readFileSync(databaseFilePath, "utf8").toString(),
 	};
 
 	const j = jscodeshift.withParser("ts");
@@ -280,7 +283,7 @@ export function addImportToConfiguration(
 	} else {
 		source.get().node.program.body.unshift(importDeclaration);
 	}
-	writeFileSync(configurationPath, source.toSource());
+	writeFileSync(databaseFilePath, source.toSource());
 }
 
 const configurationTemplate = `

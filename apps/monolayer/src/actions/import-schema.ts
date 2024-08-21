@@ -39,6 +39,7 @@ import { camelCase, constantCase } from "case-anything";
 import { Effect, Ref } from "effect";
 import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "fs";
 import type { Kysely } from "kysely";
+import { cwd } from "node:process";
 import nunjucks from "nunjucks";
 import path from "path";
 import pgConnectionString from "pg-connection-string";
@@ -47,8 +48,6 @@ import color from "picocolors";
 export const importSchema = Effect.gen(function* () {
 	const { introspection, databaseName, connectionString, extensions } =
 		yield* introspectCustomRemote;
-
-	const env = yield* appEnvironment;
 
 	const extensionNames = Object.keys(extensions);
 	const dbSchema: ImportedSchema = {
@@ -104,7 +103,14 @@ export const importSchema = Effect.gen(function* () {
 		return indexA - indexB;
 	});
 
-	const schemaImport = createSchema(databaseName, dbSchema, env.folder);
+	const env = yield* appEnvironment;
+
+	const schemaImport = createSchema(
+		databaseName,
+		dbSchema,
+		env.entryPoints.databases,
+	);
+
 	p.log.success(
 		`${color.green(`Successfully imported ${databaseName} schema`)}`,
 	);
@@ -116,23 +122,17 @@ export const importSchema = Effect.gen(function* () {
 	yield* generateFirstMigration(
 		schemaImport.configuration.name,
 		connectionString,
-		env.folder,
 	);
 	return yield* Effect.succeed(true);
 });
 
-function dumpDatabase(
-	configurationName: string,
-	connectionString: string,
-	folder: string,
-) {
+function dumpDatabase(configurationName: string, connectionString: string) {
 	return Effect.gen(function* () {
-		const migrationsFolder = path.join(folder, "migrations", configurationName);
-		mkdirSync(migrationsFolder, { recursive: true });
+		mkdirSync(migrationsFolder(configurationName), { recursive: true });
 
 		const dumpEnv: AppEnv = {
 			database: new MonoLayerPgDatabase({ id: "default", schemas: [] }),
-			folder: migrationsFolder,
+			entryPoints: (yield* appEnvironment).entryPoints,
 		};
 
 		process.env[`${constantCase(configurationName)}_DATABASE_URL`] =
@@ -142,6 +142,7 @@ function dumpDatabase(
 		return yield* dumpDatabaseWithoutMigrationTables;
 	});
 }
+
 function tablePrimaryKey(tableName: string, primaryKeys: PrimaryKeyInfo) {
 	const tablePrimaryKey = primaryKeys[tableName] || {};
 	if (
@@ -315,18 +316,14 @@ const introspectCustomRemote = Effect.gen(function* () {
 function generateFirstMigration(
 	configurationName: string,
 	connectionString: string,
-	folder: string,
 ) {
 	return Effect.gen(function* () {
-		const dumpPath = yield* dumpDatabase(
-			configurationName,
-			connectionString,
-			folder,
-		);
+		const dumpPath = yield* dumpDatabase(configurationName, connectionString);
 		const name = `${dateStringWithMilliseconds()}-initial-structure`;
-		const migrationsFolder = path.join(folder, "migrations", configurationName);
-		const migrationPath = path.join(migrationsFolder, `${name}.ts`);
-		const initialStructurePath = path.join(migrationsFolder, `${name}.sql`);
+
+		const folder = migrationsFolder(configurationName);
+		const migrationPath = path.join(folder, `${name}.ts`);
+		const initialStructurePath = path.join(folder, `${name}.sql`);
 		renameSync(dumpPath, initialStructurePath);
 		removeSelectConfigLine(initialStructurePath);
 		rmSync(path.dirname(dumpPath), { recursive: true, force: true });
@@ -373,3 +370,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 export async function down(db: Kysely<any>): Promise<void> {
 }`;
+
+function migrationsFolder(configurationName: string) {
+	return path.join(cwd(), "monolayer", "migrations", configurationName);
+}

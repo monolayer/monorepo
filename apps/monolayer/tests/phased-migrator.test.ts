@@ -22,7 +22,10 @@ async function runPhasedMigration(context: DbContext) {
 		new MonoLayerPgDatabase({ id: "default", schemas: [] }),
 	);
 	const env: AppEnv = {
-		folder: ".",
+		entryPoints: {
+			databases: "databases.ts",
+			seed: "seed.ts",
+		},
 		database: new MonoLayerPgDatabase({
 			id: "default",
 			schemas: [],

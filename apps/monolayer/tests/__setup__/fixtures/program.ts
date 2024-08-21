@@ -16,7 +16,10 @@ export const monolayerTemplate =
 	nunjucks.compile(`import { defineConfig } from "${configurationPath}";
 
 export default defineConfig({
-	folder: "db"
+	entryPoints: {
+		databases: "db/databases.ts",
+		seed: "db/seed.ts",
+	},
 });
 `);
 

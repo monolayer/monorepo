@@ -5,31 +5,39 @@ import { fail, flatMap, succeed } from "effect/Effect";
 import type { Kysely } from "kysely";
 import path from "path";
 import { importConfig } from "~configuration/import-config.js";
+import type { MonolayerConfig } from "~configuration/monolayer.js";
 
 type SeedImport = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	seed: (db: Kysely<any>) => Promise<void>;
 };
 
-export const importSeed = (seedFile: string) =>
+export const importSeed = (seedFile?: string) =>
 	pipe(
 		importConfig,
 		flatMap((config) =>
 			importFile<Partial<SeedImport>>(
-				path.join(process.cwd(), config.folder, seedFile),
+				resolveSeedFilePath(config, seedFile),
+			).pipe(
+				flatMap((seed) => succeed(seed.seed)),
+				flatMap((seedFn) =>
+					Effect.if(seedFn !== undefined, {
+						onTrue: () => succeed(seedFn!),
+						onFalse: () =>
+							fail(
+								new ActionError(
+									"Missing seed function",
+									`Could not find a seed function in ${resolveSeedFilePath(config, seedFile)}.`,
+								),
+							),
+					}),
+				),
 			),
 		),
-		flatMap((seed) => succeed(seed.seed)),
-		flatMap((seedFn) =>
-			Effect.if(seedFn !== undefined, {
-				onTrue: () => succeed(seedFn!),
-				onFalse: () =>
-					fail(
-						new ActionError(
-							"Missing seed function",
-							`Could not find a seed function in ${seedFile}.`,
-						),
-					),
-			}),
-		),
 	);
+
+function resolveSeedFilePath(config: MonolayerConfig, seedFile?: string) {
+	return seedFile
+		? seedFile
+		: path.join(process.cwd(), config.entryPoints.seed);
+}

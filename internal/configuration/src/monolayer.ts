@@ -3,9 +3,18 @@
  */
 export interface MonolayerConfiguration {
 	/**
-	 * Relative path to the `db` folder.
+	 * Entry points (files) for monolayer.
 	 */
-	folder: string;
+	entryPoints: {
+		/**
+		 * Relative path to the `databases.ts` file.
+		 */
+		databases: string;
+		/**
+		 * Relative path to the `seed.ts` file.
+		 */
+		seed: string;
+	};
 }
 
 /**
@@ -31,13 +40,20 @@ export function defineConfig(config: MonolayerConfiguration) {
  */
 export class MonolayerConfig {
 	/**
-	 * Relative path to the `db` folder.
-	 *
-	 * @readonly
+	 * Entry points (files) for monolayer.
 	 */
-	readonly folder: string;
+	readonly entryPoints: {
+		/**
+		 * Relative path to the `databases.ts` file.
+		 */
+		readonly databases: string;
+		/**
+		 * Relative path to the `seed.ts` file.
+		 */
+		readonly seed: string;
+	};
 
 	constructor(config: MonolayerConfiguration) {
-		this.folder = config.folder;
+		this.entryPoints = config.entryPoints;
 	}
 }

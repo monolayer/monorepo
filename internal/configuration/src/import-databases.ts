@@ -11,7 +11,7 @@ export const importDatabases = pipe(
 	importConfig,
 	flatMap((config) =>
 		importFile<DatabaseImport>(
-			path.join(process.cwd(), config.folder, "databases.ts"),
+			path.join(process.cwd(), config.entryPoints.databases),
 		),
 	),
 );

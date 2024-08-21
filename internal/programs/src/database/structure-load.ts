@@ -4,6 +4,7 @@ import { DbClients, pgQuery } from "@monorepo/services/db-clients.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import fs from "fs/promises";
+import { cwd } from "node:process";
 import path from "path";
 import { createDatabase } from "~programs/database/create-database.js";
 import { dropDatabase } from "~programs/database/drop-database.js";
@@ -29,7 +30,8 @@ function checkStructureFile() {
 
 3) Apply migrations: \`npx monolayer migrate -e development\``,
 				errorMessage: `Structure file not found. Expected location: ${path.join(
-					environment.folder,
+					cwd(),
+					"monolayer",
 					"dumps",
 					`structure.${environment.database.id}.sql`,
 				)}`,
@@ -37,7 +39,8 @@ function checkStructureFile() {
 				callback: () =>
 					Effect.tryPromise(async () => {
 						const structurePath = path.join(
-							environment.folder,
+							cwd(),
+							"monolayer",
 							"dumps",
 							`structure.${environment.database.id}.sql`,
 						);
@@ -61,7 +64,8 @@ function restoreDatabaseFromStructureFile() {
 				() =>
 					Effect.tryPromise(async () => {
 						const structurePath = path.join(
-							environment.folder,
+							cwd(),
+							"monolayer",
 							"dumps",
 							`structure.${environment.database.id}.sql`,
 						);

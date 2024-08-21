@@ -10,6 +10,7 @@ import {
 } from "@monorepo/state/app-environment.js";
 import { Effect, Layer } from "effect";
 import { Kysely, PostgresDialect } from "kysely";
+import path from "node:path";
 import { env } from "node:process";
 import pg from "pg";
 import type { TaskContext } from "vitest";
@@ -26,7 +27,10 @@ export function runProgram<A, E, R>(
 ) {
 	const folder = programFolder(context);
 	const env: AppEnv = {
-		folder: folder,
+		entryPoints: {
+			databases: path.join(folder, "databases.ts"),
+			seed: path.join(folder, "seed.ts"),
+		},
 		database: new MonoLayerPgDatabase({
 			id: "default",
 			schemas: [dbSchema],

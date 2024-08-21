@@ -21,11 +21,16 @@ export async function programWithContextAndServices<
 	env?: AppEnv,
 	layer?: Layer.Layer<Rin, never, AppEnvironment>,
 ) {
-	return originalprogramWithContextAndServices(
-		programWithErrorCause(program),
-		env ?? (await loadEnv({ databaseId: "default" })),
-		layer ?? layers,
-	);
+	try {
+		return originalprogramWithContextAndServices(
+			programWithErrorCause(program),
+			env ?? (await loadEnv({ databaseId: "default" })),
+			layer ?? layers,
+		);
+	} catch (error) {
+		console.dir(error);
+		process.exit(1);
+	}
 }
 
 export function programWithErrorCause<A, E, R>(
