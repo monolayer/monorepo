@@ -14,12 +14,12 @@ function promptFolderSelection() {
 			{
 				path: () =>
 					p.text({
-						message: "Where should the db folder be created?",
-						placeholder: "app/db",
-						defaultValue: "app/db",
+						message: "Where should we create the `db` folder?",
+						placeholder: "./app",
+						defaultValue: "./app",
 						validate: (value) => {
 							let path = value;
-							if (path === "") path = "app/db";
+							if (path === "") path = "./app";
 							if (path[0] === "/") return "Please enter a relative path.";
 							return;
 						},

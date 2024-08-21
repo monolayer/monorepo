@@ -1,4 +1,5 @@
 import { Context, Effect, Ref } from "effect";
+import path from "node:path";
 
 export interface DbFolder {
 	path?: string;
@@ -16,7 +17,7 @@ export class DbFolderState extends Context.Tag("DbFolderState")<
 	static update(folderPath: string) {
 		return Effect.gen(function* () {
 			yield* Ref.update(yield* DbFolderState, () => {
-				return { path: folderPath };
+				return { path: path.join(folderPath, "db") };
 			});
 		});
 	}
