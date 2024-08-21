@@ -45,6 +45,8 @@
 		}
 	},
 	"files": [
+		"dist/esm/package.json",
+		"dist/cjs/package.json",
 		"dist/**/*.js",
 		"dist/**/*.d.ts"
 	],
