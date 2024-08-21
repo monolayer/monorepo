@@ -16,14 +16,12 @@ import {
 	PackageManagerState,
 	defaultPackageManagerRef,
 } from "~create-monolayer/state/package-manager.js";
-import { yarnInstallPeerDependencies } from "~create-monolayer/yarn-install-peer-dependencies.js";
 
 const program = Effect.all([
 	selectPackageManager,
 	selectDbFolder,
-	installPackage("@types/pg", { development: true }),
 	installPackage("monolayer", { development: false }),
-	yarnInstallPeerDependencies(["pg", "kysely"]),
+	installPackage("@types/pg", { development: true }),
 	initFolderAndFiles,
 ]).pipe(
 	Effect.catchTags({
