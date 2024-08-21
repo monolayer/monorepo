@@ -3,10 +3,34 @@ import type { PgExtension } from "~pg/schema/extension.js";
 import type { AnySchema } from "~pg/schema/schema.js";
 
 export type DatabaseConfig = {
+	/**
+	 * Id of the database.
+	 *
+	 */
 	id: string;
-	schemas: AnySchema[];
-	camelCase?: boolean;
+	/**
+	 * Schemas in the database.
+	 *
+	 * @default []
+	 */
+	schemas?: AnySchema[];
+	/**
+	 * Extensions to install in the database.
+	 *
+	 * @default []
+	 */
 	extensions?: PgExtension[];
+	/**
+	 * Whether to convert camelCase column names to snake_case column names in the database.
+	 *
+	 * @default false
+	 */
+	camelCase?: boolean;
+	/**
+	 * Whether to generate a Prisma schema for the database after running migrations.
+	 *
+	 * @default false
+	 */
 	generatePrismaSchema?: boolean;
 };
 
@@ -24,30 +48,48 @@ export function defineDatabase(config: DatabaseConfig) {
  */
 export class MonoLayerPgDatabase {
 	/**
-	 * Id of the database
+	 * Id of the database.
+	 *
+	 * @readonly
 	 */
-	id: string;
+	readonly id: string;
 	/**
-	 * Schemas in the database
+	 * Schemas in the database.
+	 *
+	 * @readonly
+	 * @default []
+	 *
 	 */
-	schemas: AnySchema[];
+	readonly schemas: AnySchema[];
 	/**
-	 * Extensions to install in the database
+	 * Extensions to install in the database.
+	 *
+	 * @readonly
+	 * @default []
+	 *
 	 */
-	extensions?: PgExtension[];
+	readonly extensions: PgExtension[];
 	/**
 	 * Whether to generate a Prisma schema for the database after running migrations.
+	 *
+	 * @readonly
+	 * @default false
+	 *
 	 */
-	generatePrismaSchema: boolean;
+	readonly generatePrismaSchema: boolean;
 	/**
 	 * Whether to convert camelCase column names to snake_case column names in the database.
+	 *
+	 * @readonly
+	 * @default false
+	 *
 	 */
-	camelCase: boolean;
+	readonly camelCase: boolean;
 
 	constructor(config: DatabaseConfig) {
 		this.id = config.id;
-		this.schemas = config.schemas;
-		this.extensions = config.extensions;
+		this.schemas = config.schemas ?? [];
+		this.extensions = config.extensions ?? [];
 		this.generatePrismaSchema = config.generatePrismaSchema ?? false;
 		this.camelCase = config.camelCase ?? false;
 	}
