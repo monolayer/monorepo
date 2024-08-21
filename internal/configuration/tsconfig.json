@@ -1,6 +1,7 @@
 {
 	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
 	"include": ["**/src/**/*", "**/tests/**/*"],
+	"exclude": ["src/api/*.ts"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
@@ -13,5 +14,9 @@
 		"emitDeclarationOnly": true,
 		"declaration": true
 	},
-	"references": [{ "path": "../cli" }, { "path": "../pg" }, { "path": "../utils" }]
+	"references": [
+		{ "path": "../cli" },
+		{ "path": "../pg" },
+		{ "path": "../utils" }
+	]
 }

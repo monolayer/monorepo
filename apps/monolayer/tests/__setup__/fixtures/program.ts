@@ -1,10 +1,23 @@
 import dotenv from "dotenv";
+import path from "node:path";
+import { cwd } from "node:process";
 import nunjucks from "nunjucks";
 dotenv.config();
 
-export const monolayerTemplate = nunjucks.compile(`export default {
+const configurationPath = path.join(
+	cwd(),
+	"internal",
+	"configuration",
+	"src",
+	"monolayer.js",
+);
+
+export const monolayerTemplate =
+	nunjucks.compile(`import { defineConfig } from "${configurationPath}";
+
+export default defineConfig({
 	folder: "db"
-};
+});
 `);
 
 export const configurationsTemplate =

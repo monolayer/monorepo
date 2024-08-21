@@ -18,10 +18,10 @@
 			"default": "./dist/esm/index.js",
 			"require": "./dist/cjs/index.js"
 		},
-		"./configuration": {
-			"types": "./dist/esm/configuration.d.ts",
-			"default": "./dist/esm/configuration.js",
-			"require": "./dist/cjs/configuration.js"
+		"./config": {
+			"types": "./dist/esm/config.d.ts",
+			"default": "./dist/esm/config.js",
+			"require": "./dist/cjs/config.js"
 		},
 		"./helpers/pg": {
 			"types": "./dist/esm/helpers.d.ts",

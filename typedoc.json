@@ -1,7 +1,11 @@
 {
 	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
 	"out": "docs/reference/api",
-	"entryPoints": ["./internal/pg/src/api", "./internal/migrator/src/api"],
+	"entryPoints": [
+		"./internal/pg/src/api",
+		"./internal/migrator/src/api",
+		"./internal/configuration/src/api"
+	],
 	"entryPointStrategy": "expand",
 	"tsconfig": "./tsconfig.typedoc.json",
 	"exclude": ["**/dist/**/*.ts", "**/vitest.config.ts", "**/tests/**/*.ts"],
@@ -10,6 +14,7 @@
 	"enumMembersFormat": "table",
 	"groupOrder": [
 		"Schema Definition",
+		"Configuration",
 		"Functions",
 		"Classes",
 		"Type Aliases",
@@ -42,5 +47,5 @@
 		"pretty": true,
 		"collapsed": true
 	},
-	"disableSources": true,
+	"disableSources": true
 }

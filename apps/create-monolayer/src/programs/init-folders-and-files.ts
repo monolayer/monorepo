@@ -78,9 +78,12 @@ const log: LogWithSimpleMessage = {
 	},
 };
 
-export const configTemplate = nunjucks.compile(`export default {
+export const configTemplate =
+	nunjucks.compile(`import { defineConfig } from "monolayer/config";
+
+export default defineConfig({
 	folder: "{{ folder }}",
-};
+});
 `);
 
 export const databasesTemplate =
