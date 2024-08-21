@@ -16,9 +16,7 @@ export const monolayerTemplate =
 	nunjucks.compile(`import { defineConfig } from "${configurationPath}";
 
 export default defineConfig({
-	entryPoints: {
-		databases: "db/databases.ts",
-	},
+  databases: "db/databases.ts",
 });
 `);
 

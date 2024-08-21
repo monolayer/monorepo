@@ -105,11 +105,7 @@ export const importSchema = Effect.gen(function* () {
 
 	const env = yield* appEnvironment;
 
-	const schemaImport = createSchema(
-		databaseName,
-		dbSchema,
-		env.entryPoints.databases,
-	);
+	const schemaImport = createSchema(databaseName, dbSchema, env.databases);
 
 	p.log.success(
 		`${color.green(`Successfully imported ${databaseName} schema`)}`,
@@ -132,7 +128,7 @@ function dumpDatabase(configurationName: string, connectionString: string) {
 
 		const dumpEnv: AppEnv = {
 			database: new MonoLayerPgDatabase({ id: "default", schemas: [] }),
-			entryPoints: (yield* appEnvironment).entryPoints,
+			databases: (yield* appEnvironment).databases,
 		};
 
 		process.env[`${constantCase(configurationName)}_DATABASE_URL`] =

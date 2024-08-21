@@ -11,7 +11,7 @@ import color from "picocolors";
 import { cwd } from "process";
 
 export interface AppEnv {
-	entryPoints: MonolayerConfiguration["entryPoints"];
+	databases: MonolayerConfiguration["databases"];
 	database: MonoLayerPgDatabase;
 }
 
@@ -32,7 +32,7 @@ export function getEnvironment(databaseId: string, envFile?: string) {
 		);
 		const database = yield* databaseById(databaseId);
 		const env: AppEnv = {
-			entryPoints: yield* entryPoints(),
+			databases: yield* databasesFilePath(),
 			database,
 		};
 		return env;
@@ -91,17 +91,17 @@ export const appEnvironmentMigrationsFolder = Effect.gen(function* () {
 	return path.join(cwd(), "monolayer", "migrations", appEnv.database.id);
 });
 
-export function entryPoints() {
+export function databasesFilePath() {
 	return Effect.gen(function* () {
 		const config = yield* importConfig;
-		return config.entryPoints;
+		return config.databases;
 	});
 }
 
 export const importSchemaEnvironment = Effect.gen(function* () {
 	return {
 		database: new MonoLayerPgDatabase({ id: "default", schemas: [] }),
-		entryPoints: yield* entryPoints(),
+		databases: yield* databasesFilePath(),
 	} satisfies AppEnv as AppEnv;
 });
 

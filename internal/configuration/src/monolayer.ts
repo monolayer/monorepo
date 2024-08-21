@@ -3,14 +3,9 @@
  */
 export interface MonolayerConfiguration {
 	/**
-	 * Entry points (files) for monolayer.
+	 * Relative path to a file exporting database definitions.
 	 */
-	entryPoints: {
-		/**
-		 * Relative path to the `databases.ts` file.
-		 */
-		databases: string;
-	};
+	databases: string;
 }
 
 /**
@@ -20,7 +15,7 @@ export interface MonolayerConfiguration {
  * In the `monolayer.ts` file in the root of your project (where `package.json` is located), you can define the configuration like this:
  * ```ts
  * export default defineConfig({
- * 	folder: "app/db", // relative path to the `db` folder
+ * 	databases: "app/db/databases.ts",
  * });
  * ```
  *
@@ -36,16 +31,11 @@ export function defineConfig(config: MonolayerConfiguration) {
  */
 export class MonolayerConfig {
 	/**
-	 * Entry points (files) for monolayer.
+	 * Relative path to a file exporting database definitions.
 	 */
-	readonly entryPoints: {
-		/**
-		 * Relative path to the `databases.ts` file.
-		 */
-		readonly databases: string;
-	};
+	readonly databases: string;
 
 	constructor(config: MonolayerConfiguration) {
-		this.entryPoints = config.entryPoints;
+		this.databases = config.databases;
 	}
 }

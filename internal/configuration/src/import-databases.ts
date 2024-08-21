@@ -10,8 +10,6 @@ export type DatabaseImport = Record<string, MonoLayerPgDatabase>;
 export const importDatabases = pipe(
 	importConfig,
 	flatMap((config) =>
-		importFile<DatabaseImport>(
-			path.join(process.cwd(), config.entryPoints.databases),
-		),
+		importFile<DatabaseImport>(path.join(process.cwd(), config.databases)),
 	),
 );

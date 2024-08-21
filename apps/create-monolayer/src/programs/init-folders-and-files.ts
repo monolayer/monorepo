@@ -84,9 +84,7 @@ export const configTemplate =
 	nunjucks.compile(`import { defineConfig } from "monolayer/config";
 
 export default defineConfig({
-  entryPoints: {
-	  databases: "{{ databasePath }}",
-	},
+  databases: "{{ databasePath }}",
 });
 `);
 

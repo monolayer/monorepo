@@ -30,9 +30,7 @@ describe("validate uique schema name", () => {
 		});
 
 		const env: AppEnv = {
-			entryPoints: {
-				databases: "databases.ts",
-			},
+			databases: "databases.ts",
 			database: new MonoLayerPgDatabase({
 				id: "default",
 				schemas: [dbSchema, anotherSchema],
@@ -56,9 +54,7 @@ describe("validate uique schema name", () => {
 		const anotherSchema = schema({});
 
 		const env: AppEnv = {
-			entryPoints: {
-				databases: "databases.ts",
-			},
+			databases: "databases.ts",
 			database: new MonoLayerPgDatabase({
 				id: "default",
 				schemas: [dbSchema, anotherSchema],
@@ -90,9 +86,7 @@ describe("validate uique schema name", () => {
 		const anotherSchema = schema({ name: "demo" });
 
 		const env: AppEnv = {
-			entryPoints: {
-				databases: "databases.ts",
-			},
+			databases: "databases.ts",
 			database: new MonoLayerPgDatabase({
 				id: "default",
 				schemas: [dbSchema, anotherSchema],
