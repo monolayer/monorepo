@@ -118,7 +118,7 @@ export function applyMigrations({
 			migrationResults.length !== 0
 		) {
 			yield* dumpDatabaseStructureTask;
-			if (appEnv.database.generatePrismaSchema) yield* generatePrisma;
+			if (appEnv.currentDatabase.generatePrismaSchema) yield* generatePrisma;
 			return true;
 		} else {
 			return false;

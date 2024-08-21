@@ -12,7 +12,7 @@ import { cwd } from "process";
 
 export interface AppEnv {
 	databases: MonolayerConfiguration["databases"];
-	database: MonoLayerPgDatabase;
+	currentDatabase: MonoLayerPgDatabase;
 }
 
 export class AppEnvironment extends Context.Tag("AppEnvironment")<
@@ -33,7 +33,7 @@ export function getEnvironment(databaseId: string, envFile?: string) {
 		const database = yield* databaseById(databaseId);
 		const env: AppEnv = {
 			databases: yield* databasesFilePath(),
-			database,
+			currentDatabase: database,
 		};
 		return env;
 	});
@@ -78,17 +78,17 @@ export const appEnvironment = Effect.gen(function* () {
 
 export const appEnvironmentConfigurationSchemas = Effect.gen(function* () {
 	const state = yield* appEnvironment;
-	return state.database.schemas;
+	return state.currentDatabase.schemas;
 });
 
 export const appEnvironmentCamelCasePlugin = Effect.gen(function* () {
 	const state = yield* appEnvironment;
-	return state.database.camelCase;
+	return state.currentDatabase.camelCase;
 });
 
 export const appEnvironmentMigrationsFolder = Effect.gen(function* () {
 	const appEnv = yield* appEnvironment;
-	return path.join(cwd(), "monolayer", "migrations", appEnv.database.id);
+	return path.join(cwd(), "monolayer", "migrations", appEnv.currentDatabase.id);
 });
 
 export function databasesFilePath() {
@@ -100,7 +100,7 @@ export function databasesFilePath() {
 
 export const importSchemaEnvironment = Effect.gen(function* () {
 	return {
-		database: new MonoLayerPgDatabase({ id: "default", schemas: [] }),
+		currentDatabase: new MonoLayerPgDatabase({ id: "default", schemas: [] }),
 		databases: yield* databasesFilePath(),
 	} satisfies AppEnv as AppEnv;
 });

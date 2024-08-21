@@ -88,7 +88,7 @@ const truncateAllTables = Effect.gen(function* () {
 });
 
 const seedDatabase = gen(function* () {
-	const database = (yield* appEnvironment).database;
+	const database = (yield* appEnvironment).currentDatabase;
 	const dbClients = yield* DbClients;
 	const databaseName = dbClients.databaseName;
 	const kysely = dbClients.kysely;

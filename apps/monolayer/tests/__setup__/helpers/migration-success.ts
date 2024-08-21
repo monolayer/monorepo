@@ -40,7 +40,7 @@ export async function testChangesetAndMigrations({
 }) {
 	const env: AppEnv = {
 		databases: "databases.ts",
-		database: new MonoLayerPgDatabase({
+		currentDatabase: new MonoLayerPgDatabase({
 			id: "default",
 			schemas: configuration.schemas,
 			camelCase: configuration.camelCase ?? false,
@@ -50,7 +50,7 @@ export async function testChangesetAndMigrations({
 	const layers = testLayers(
 		context.dbName,
 		path.join(context.folder, "migrations", "default"),
-		env.database,
+		env.currentDatabase,
 	);
 
 	mock();

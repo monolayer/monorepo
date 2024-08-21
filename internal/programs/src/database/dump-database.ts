@@ -59,12 +59,13 @@ const databaseDumpPath = Effect.gen(function* () {
 		cwd(),
 		"monolayer",
 		"dumps",
-		`structure.${env.database.id}.sql`,
+		`structure.${env.currentDatabase.id}.sql`,
 	);
 });
 
 const setPgDumpEnv = Effect.gen(function* () {
-	const connectionString = (yield* appEnvironment).database.connectionString;
+	const connectionString = (yield* appEnvironment).currentDatabase
+		.connectionString;
 	const parsedConfig = pgConnectionString.parse(connectionString);
 	env.PGHOST = `${parsedConfig.host}`;
 	env.PGPORT = `${parsedConfig.port}`;

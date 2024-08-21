@@ -27,7 +27,9 @@ export const computeExtensionChangeset = all([
 function localExtensions() {
 	return appEnvironment.pipe(
 		Effect.flatMap((environment) =>
-			Effect.succeed(localExtensionInfo(environment.database.extensions)),
+			Effect.succeed(
+				localExtensionInfo(environment.currentDatabase.extensions),
+			),
 		),
 	);
 }
