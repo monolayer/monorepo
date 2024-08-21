@@ -29,12 +29,12 @@
 			"require": "./dist/cjs/helper.js"
 		},
 		"./pg": {
-			"types": "./dist/pg.d.ts",
+			"types": "./dist/esm/pg.d.ts",
 			"default": "./dist/esm/pg.js",
 			"require": "./dist/cjs/pg.js"
 		},
 		"./migration": {
-			"types": "./dist/migration.d.ts",
+			"types": "./dist/esm/migration.d.ts",
 			"default": "./dist/esm/migration.js",
 			"require": "./dist/cjs/migration.js"
 		},
