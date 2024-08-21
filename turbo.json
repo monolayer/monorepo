@@ -15,6 +15,14 @@
 		},
 		"test": {
 			"dependsOn": ["^test"]
+		},
+		"unpublish:local": {
+			"dependsOn": ["^unpublish:local"],
+			"cache": false
+		},
+		"publish:local": {
+			"dependsOn": ["^publish:local"],
+			"cache": false
 		}
 	}
 }
