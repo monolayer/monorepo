@@ -41,7 +41,6 @@ export async function testChangesetAndMigrations({
 	const env: AppEnv = {
 		entryPoints: {
 			databases: "databases.ts",
-			seed: "seed.ts",
 		},
 		database: new MonoLayerPgDatabase({
 			id: "default",

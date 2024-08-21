@@ -2,11 +2,6 @@ import dotenv from "dotenv";
 import nunjucks from "nunjucks";
 dotenv.config();
 
-export const monolayerTemplate = nunjucks.compile(`export default {
-	folder: "db"
-};
-`);
-
 export const configurationsTemplate =
 	nunjucks.compile(`import { dbSchema } from "./schema";
 import { defineDatabase } from "{{ pgPath }}";

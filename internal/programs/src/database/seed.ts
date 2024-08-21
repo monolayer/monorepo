@@ -1,13 +1,14 @@
 import * as p from "@clack/prompts";
 import { checkWithFail } from "@monorepo/cli/check.js";
-import { type ActionErrors } from "@monorepo/cli/errors.js";
+import { ActionError, type ActionErrors } from "@monorepo/cli/errors.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
-import { importSeed } from "@monorepo/configuration/import-seed.js";
 import type { InformationSchemaDB } from "@monorepo/pg/introspection/introspection/types.js";
 import { dbTableInfo } from "@monorepo/pg/introspection/table-two.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import type { ProgramContext } from "@monorepo/services/program-context.js";
+import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
+import { fail, gen } from "effect/Effect";
 import { sql, type Kysely } from "kysely";
 import { exit } from "process";
 import { computeChangeset } from "~programs/changeset.js";
@@ -16,22 +17,20 @@ import { pendingMigrations } from "~programs/migrations/pending.js";
 type SeedOptions = {
 	disableWarnings?: boolean;
 	replant?: boolean;
-	seedFile?: string;
 };
 
-export function seed({ disableWarnings, replant, seedFile }: SeedOptions) {
+export function seed({ disableWarnings, replant }: SeedOptions) {
 	return Effect.gen(function* () {
 		p.log.message(
 			`${replant ? "Truncate tables and seed database" : "Seed Database"}`,
 		);
 		yield* checkPendingMigrations;
 		yield* checkPendingSchemaChanges;
-		yield* checkSeederFunction(seedFile);
 
 		if (!!replant && !disableWarnings) yield* replantWarning;
 		if (replant) yield* truncateAllTables;
 
-		yield* seedDatabase(seedFile);
+		yield* seedDatabase;
 	});
 }
 
@@ -62,21 +61,6 @@ const checkPendingSchemaChanges = checkWithFail({
 		),
 });
 
-function checkSeederFunction(seedFile?: string) {
-	return checkWithFail({
-		name: "Check seeder function",
-		nextSteps: `1) Check that a seeder function is exported in your seeder.ts file.
-2) Run 'npx create-monolayer' and choose your current database folder to regenerate the seeder file.`,
-		errorMessage: "No seeder function found. Cannot continue.",
-		failMessage: "Seeder function missing",
-		callback: () =>
-			Effect.succeed(true).pipe(
-				Effect.flatMap(() => importSeed(seedFile)),
-				Effect.flatMap((result) => Effect.succeed(result !== undefined)),
-			),
-	});
-}
-
 const replantWarning = Effect.tryPromise(async () => {
 	const shouldContinue = await p.confirm({
 		initialValue: false,
@@ -103,17 +87,24 @@ const truncateAllTables = Effect.gen(function* () {
 	}
 });
 
-function seedDatabase(seedFile?: string) {
-	return Effect.gen(function* () {
-		const dbClients = yield* DbClients;
-		const databaseName = dbClients.databaseName;
-		const kysely = dbClients.kysely;
-
+const seedDatabase = gen(function* () {
+	const database = (yield* appEnvironment).database;
+	const dbClients = yield* DbClients;
+	const databaseName = dbClients.databaseName;
+	const kysely = dbClients.kysely;
+	const seedFn = database.seeder;
+	if (seedFn === undefined) {
+		yield* fail(
+			new ActionError(
+				"Missing seeder",
+				`${database.id} has no seeder function.`,
+			),
+		);
+	} else {
 		return yield* spinnerTask(`Seed ${databaseName}`, () =>
 			Effect.gen(function* () {
-				const seedFn = yield* importSeed(seedFile);
 				yield* Effect.tryPromise(() => seedFn(kysely));
 			}),
 		);
-	});
-}
+	}
+});

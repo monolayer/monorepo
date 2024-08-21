@@ -18,18 +18,19 @@ export const monolayerTemplate =
 export default defineConfig({
 	entryPoints: {
 		databases: "db/databases.ts",
-		seed: "db/seed.ts",
 	},
 });
 `);
 
 export const configurationsTemplate =
-	nunjucks.compile(`import { dbSchema } from "./schema";
-import { defineDatabase } from "{{ pgPath }}";
+	nunjucks.compile(`import { defineDatabase } from "{{ pgPath }}";
+import { dbSchema } from "./schema";
+import { dbSeed } from "./seeds";
 
 export default defineDatabase({
   id: "default",
 	schemas: [dbSchema],
+	seeder: dbSeed,
 });
 
 export const stats = defineDatabase({id: "stats"});

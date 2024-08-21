@@ -18,7 +18,6 @@ export const initFolderAndFiles = gen(function* () {
 				path.join(cwd(), "monolayer.ts"),
 				configTemplate.render({
 					databasePath: path.join(dbFolderPath, "databases.ts"),
-					seedPath: path.join(dbFolderPath, "seed.ts"),
 				}),
 				true,
 			);
@@ -87,7 +86,6 @@ export const configTemplate =
 export default defineConfig({
   entryPoints: {
 	  databases: "{{ databasePath }}",
-		seed: "{{ seedPath }}",
 	},
 });
 `);
@@ -95,11 +93,13 @@ export default defineConfig({
 export const databasesTemplate =
 	nunjucks.compile(`import { defineDatabase } from "monolayer/pg";
 import { dbSchema } from "./schema";
+import { dbSeed } from "./seed";
 
 export default defineDatabase({
 	id: "default",
 	schemas: [dbSchema],
 	extensions: [],
+	seeder: dbSeed,
 	camelCase: false,
 });
 `);
@@ -130,7 +130,7 @@ export const seedTemplate =
 	nunjucks.compile(`import { sql, type Kysely } from "kysely";
 import type { DB } from "./schema";
 
-export async function seed(db: Kysely<DB>) {
+export async function dbSeed(db: Kysely<DB>) {
   const currentDatabase = await sql<{
     current_database: string;
   }>\`SELECT CURRENT_DATABASE()\`.execute(db);

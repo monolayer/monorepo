@@ -24,6 +24,7 @@ import {
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
 import { Effect, Layer } from "effect";
+import { tap } from "effect/Effect";
 import type { Scope } from "effect/Scope";
 import color from "picocolors";
 import { exit } from "process";
@@ -68,7 +69,7 @@ export async function loadEnv(options: {
 	return await Effect.runPromise(
 		Effect.gen(function* () {
 			return yield* getEnvironment(options.databaseId, options.envFile);
-		}).pipe(printAnyErrors),
+		}).pipe(tap(() => printAnyErrors)),
 	).then(envLoadSuccess, envLoadFailure);
 }
 

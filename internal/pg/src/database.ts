@@ -1,4 +1,5 @@
 import { snakeCase } from "case-anything";
+import type { Kysely } from "kysely";
 import type { PgExtension } from "~pg/schema/extension.js";
 import type { AnySchema } from "~pg/schema/schema.js";
 
@@ -32,6 +33,12 @@ export type DatabaseConfig = {
 	 * @default false
 	 */
 	generatePrismaSchema?: boolean;
+
+	/**
+	 * Function to seed the database with data.
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	seeder?: (db: Kysely<any>) => Promise<void>;
 };
 
 /**
@@ -86,12 +93,21 @@ export class MonoLayerPgDatabase {
 	 */
 	readonly camelCase: boolean;
 
+	/**
+	 * Function to seed the database with data.
+	 *
+	 * @readonly
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	seeder?: (db: Kysely<any>) => Promise<void>;
+
 	constructor(config: DatabaseConfig) {
 		this.id = config.id;
 		this.schemas = config.schemas ?? [];
 		this.extensions = config.extensions ?? [];
 		this.generatePrismaSchema = config.generatePrismaSchema ?? false;
 		this.camelCase = config.camelCase ?? false;
+		this.seeder = config.seeder;
 	}
 
 	/**

@@ -24,8 +24,6 @@ describe("seed", () => {
 	test<ProgramContext>("seeds database", async (context) => {
 		await context.migrator.migrateToLatest();
 
-		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
-
 		await Effect.runPromise(
 			await programWithContextAndServices(
 				ChangesetGeneratorState.provide(TableRenameState.provide(seed({}))),
@@ -46,49 +44,8 @@ describe("seed", () => {
 		expect(result).toStrictEqual(expected);
 	});
 
-	test<ProgramContext>("seeds database with seed file", async (context) => {
-		await context.migrator.migrateToLatest();
-
-		const seedFilePath = path.join(context.folder, "db", "anotherSeed.ts");
-
-		writeFileSync(
-			path.join(context.folder, "db", "anotherSeed.ts"),
-			anotherSeedFile,
-		);
-
-		await Effect.runPromise(
-			await programWithContextAndServices(
-				ChangesetGeneratorState.provide(
-					TableRenameState.provide(seed({ seedFile: seedFilePath })),
-				),
-			),
-		);
-		await Effect.runPromise(
-			await programWithContextAndServices(
-				ChangesetGeneratorState.provide(
-					TableRenameState.provide(seed({ seedFile: seedFilePath })),
-				),
-			),
-		);
-
-		const result = await context.kysely
-			.selectFrom("regulus_mint")
-			.select("name")
-			.execute();
-
-		const expected = [
-			{ name: "test1" },
-			{ name: "test2" },
-			{ name: "test1" },
-			{ name: "test2" },
-		];
-		expect(result).toStrictEqual(expected);
-	});
-
 	test<ProgramContext>("seeds database with replant", async (context) => {
 		await context.migrator.migrateToLatest();
-
-		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
 		await Effect.runPromise(
 			await programWithContextAndServices(
@@ -129,7 +86,6 @@ describe("seed", () => {
 		await context.migrator.migrateToLatest();
 
 		unlinkSync(path.join(context.folder, "db", "databases.ts"));
-		writeFileSync(path.join(context.folder, "db", "seed.ts"), seedFile);
 
 		expect(
 			async () =>
@@ -144,7 +100,7 @@ describe("seed", () => {
 	test<ProgramContext>("fails with seeded function missing", async (context) => {
 		await context.migrator.migrateToLatest();
 
-		writeFileSync(path.join(context.folder, "db", "seed.ts"), "");
+		writeFileSync(path.join(context.folder, "db", "seeds.ts"), "");
 
 		expect(
 			async () =>
@@ -156,25 +112,3 @@ describe("seed", () => {
 		).rejects.toThrowError();
 	});
 });
-
-const seedFile = `import type { Kysely } from "kysely";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function seed(db: Kysely<any>) {
-	await db
-		.insertInto("regulus_mint")
-		.values([{ name: "test1" }])
-		.execute();
-}
-`;
-
-const anotherSeedFile = `import type { Kysely } from "kysely";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function seed(db: Kysely<any>) {
-	await db
-		.insertInto("regulus_mint")
-		.values([{ name: "test1" }, { name: "test2" }])
-		.execute();
-}
-`;

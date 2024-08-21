@@ -157,6 +157,8 @@ export async function setupProgramContext(
 
 	writeFileSync(path.join(context.folder, "db", "schema.ts"), schemaFile);
 
+	writeFileSync(path.join(context.folder, "db", "seeds.ts"), seedFile);
+
 	if (copyMigrationFiles) {
 		copyMigrations(
 			[
@@ -266,4 +268,15 @@ export const dbSchema = schema({
 		}),
   },
 });
+`;
+
+const seedFile = `import type { Kysely } from "kysely";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function dbSeed(db: Kysely<any>) {
+	await db
+		.insertInto("regulus_mint")
+		.values([{ name: "test1" }])
+		.execute();
+}
 `;

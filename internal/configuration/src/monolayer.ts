@@ -10,10 +10,6 @@ export interface MonolayerConfiguration {
 		 * Relative path to the `databases.ts` file.
 		 */
 		databases: string;
-		/**
-		 * Relative path to the `seed.ts` file.
-		 */
-		seed: string;
 	};
 }
 
@@ -47,10 +43,6 @@ export class MonolayerConfig {
 		 * Relative path to the `databases.ts` file.
 		 */
 		readonly databases: string;
-		/**
-		 * Relative path to the `seed.ts` file.
-		 */
-		readonly seed: string;
 	};
 
 	constructor(config: MonolayerConfiguration) {

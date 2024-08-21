@@ -29,7 +29,6 @@ export function runProgram<A, E, R>(
 	const env: AppEnv = {
 		entryPoints: {
 			databases: path.join(folder, "databases.ts"),
-			seed: path.join(folder, "seed.ts"),
 		},
 		database: new MonoLayerPgDatabase({
 			id: "default",
