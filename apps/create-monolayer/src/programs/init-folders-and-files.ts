@@ -1,19 +1,19 @@
 import * as p from "@clack/prompts";
-import { Effect } from "effect";
+import { fail, gen, tryPromise } from "effect/Effect";
 import { promises as fs, mkdirSync, writeFileSync } from "fs";
 import nunjucks from "nunjucks";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
-import { DbFolderState, UndefinedDbFolderError } from "./state/db-folder.js";
+import { DbFolderState, UndefinedDbFolderError } from "../state/db-folder.js";
 
-export const initFolderAndFiles = Effect.gen(function* () {
+export const initFolderAndFiles = gen(function* () {
 	const dbFolder = yield* DbFolderState.current;
 	const dbFolderPath = dbFolder?.path;
 	if (dbFolderPath === undefined) {
-		yield* Effect.fail(new UndefinedDbFolderError());
+		yield* fail(new UndefinedDbFolderError());
 	} else {
-		yield* Effect.tryPromise(async () => {
+		yield* tryPromise(async () => {
 			await createFile(
 				path.join(cwd(), "monolayer.ts"),
 				configTemplate.render({ folder: dbFolderPath }),

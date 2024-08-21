@@ -1,4 +1,6 @@
-import { Context, Effect, Ref } from "effect";
+import { Context, Ref } from "effect";
+import { gen } from "effect/Effect";
+import { get, make, update } from "effect/Ref";
 
 export interface PackageManager {
 	packageManager: PackageManagerSelection;
@@ -9,29 +11,33 @@ export class PackageManagerState extends Context.Tag("PackageManagerState")<
 	Ref.Ref<PackageManager>
 >() {
 	static get current() {
-		return Effect.gen(function* () {
-			return yield* Ref.get(yield* PackageManagerState);
+		return gen(function* () {
+			return yield* get(yield* PackageManagerState);
 		});
 	}
 
-	static updatePackageManager(name: PackageManagerName) {
-		return Effect.gen(function* () {
+	static updatePackageManager(name: string) {
+		return gen(function* () {
 			switch (name) {
 				case "npm":
-					return yield* Ref.update(yield* PackageManagerState, () => {
+					return yield* update(yield* PackageManagerState, () => {
 						return { packageManager: npmPackageManager };
 					});
 				case "pnpm":
-					return yield* Ref.update(yield* PackageManagerState, () => {
+					return yield* update(yield* PackageManagerState, () => {
 						return { packageManager: pnpmPackageManager };
 					});
 				case "yarn":
-					return yield* Ref.update(yield* PackageManagerState, () => {
+					return yield* update(yield* PackageManagerState, () => {
 						return { packageManager: yarnPackageManager };
 					});
 				case "bun":
-					return yield* Ref.update(yield* PackageManagerState, () => {
+					return yield* update(yield* PackageManagerState, () => {
 						return { packageManager: bunPackageManager };
+					});
+				default:
+					return yield* update(yield* PackageManagerState, () => {
+						return { packageManager: npmPackageManager };
 					});
 			}
 		});
@@ -70,6 +76,6 @@ export const bunPackageManager: PackageManagerSelection = {
 	saveDevFlag: "--dev",
 };
 
-export const defaultPackageManagerRef = Ref.make({
+export const defaultPackageManagerRef = make({
 	packageManager: npmPackageManager,
 });

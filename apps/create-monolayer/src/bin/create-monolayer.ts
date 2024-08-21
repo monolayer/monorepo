@@ -1,55 +1,48 @@
 #!/usr/bin/env tsx
 
 import * as p from "@clack/prompts";
-import { Effect, Ref } from "effect";
+import {
+	all,
+	provide,
+	runPromise,
+	succeed,
+	tap,
+	tapErrorCause,
+} from "effect/Effect";
+import { effect } from "effect/Layer";
 import color from "picocolors";
 import { exit } from "process";
-import { initFolderAndFiles } from "~create-monolayer/init-folders-and-files.js";
-import { installPackage } from "~create-monolayer/install-package.js";
-import { selectDbFolder } from "~create-monolayer/prompts/select-db-folder.js";
-import { selectPackageManager } from "~create-monolayer/prompts/select-package-manager.js";
+import { initFolderAndFiles } from "~create-monolayer/programs/init-folders-and-files.js";
+import { installPackage } from "~create-monolayer/programs/install-package.js";
+import { promptDbFolderSelection } from "~create-monolayer/prompts/db-folder-selection.js";
 import {
 	DbFolderState,
-	type DbFolder,
+	defaultDbFolderRef,
 } from "~create-monolayer/state/db-folder.js";
 import {
 	PackageManagerState,
 	defaultPackageManagerRef,
 } from "~create-monolayer/state/package-manager.js";
 
-const program = Effect.all([
-	selectPackageManager,
-	selectDbFolder,
+const packageManager =
+	(process.env.NPM_CONFIG_USER_AGENT ?? "npm").split("/")[0] ?? "npm";
+
+const program = all([
+	succeed(packageManager).pipe(tap(PackageManagerState.updatePackageManager)),
+	promptDbFolderSelection.pipe(tap(DbFolderState.update)),
 	installPackage("monolayer", { development: false }),
 	installPackage("@types/pg", { development: true }),
 	initFolderAndFiles,
-]).pipe(
-	Effect.catchTags({
-		PromptCancelError: (): Effect.Effect<never, never, never> => {
-			p.cancel("Operation cancelled.");
-			exit(1);
-		},
-	}),
-	Effect.tapErrorCause((error) =>
-		Effect.succeed(p.log.error(error.toString())),
-	),
-);
+]).pipe(tapErrorCause((error) => succeed(p.log.error(error.toString()))));
 
 p.intro("Create monolayer");
 
-const programWithPackageManager = Effect.provideServiceEffect(
-	Effect.scoped(program),
-	PackageManagerState,
-	defaultPackageManagerRef,
-);
-
-const programWithDbFolder = Effect.provideServiceEffect(
-	programWithPackageManager,
-	DbFolderState,
-	Ref.make({} as DbFolder),
-);
-
-const result = await Effect.runPromise(programWithDbFolder).then(
+const result = await runPromise(
+	provide(
+		provide(program, effect(DbFolderState, defaultDbFolderRef)),
+		effect(PackageManagerState, defaultPackageManagerRef),
+	),
+).then(
 	() => true,
 	() => false,
 );

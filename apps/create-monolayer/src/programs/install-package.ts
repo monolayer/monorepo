@@ -1,21 +1,22 @@
 import * as p from "@clack/prompts";
 import { Effect } from "effect";
+import { flatMap, gen, succeed, tap, tryPromise } from "effect/Effect";
 import { execa } from "execa";
-import { checkPackageInstallation } from "./check-package-installation.js";
 import {
 	PackageManagerState,
 	type PackageManagerSelection,
-} from "./state/package-manager.js";
+} from "../state/package-manager.js";
+import { checkPackageInstallation } from "./check-package-installation.js";
 
 export function installPackage(
 	name: string,
 	options: { development: boolean },
 ) {
-	return Effect.succeed(name).pipe(
-		Effect.flatMap(checkPackageInstallation),
-		Effect.tap((result) =>
+	return succeed(name).pipe(
+		flatMap(checkPackageInstallation),
+		tap((result) =>
 			Effect.if(result.installed, {
-				onTrue: () => Effect.succeed(true),
+				onTrue: () => succeed(true),
 				onFalse: () => install({ ...result, dev: options.development }),
 			}),
 		),
@@ -28,9 +29,9 @@ interface InstallOptions {
 }
 
 function install(options: InstallOptions) {
-	return Effect.gen(function* () {
+	return gen(function* () {
 		const env = yield* PackageManagerState.current;
-		yield* Effect.tryPromise(async () => {
+		yield* tryPromise(async () => {
 			const s = p.spinner();
 			s.start(`Installing ${installText(options, env.packageManager)}`);
 			try {
@@ -47,7 +48,7 @@ function install(options: InstallOptions) {
 				);
 				throw error;
 			}
-			return Effect.succeed(true);
+			return succeed(true);
 		});
 	});
 }

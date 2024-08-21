@@ -1,11 +1,11 @@
 import * as p from "@clack/prompts";
-import { Effect } from "effect";
+import { gen, tryPromise } from "effect/Effect";
+import type { ExecaReturnBase, StdoutStderrAll } from "execa";
 import { execa } from "execa";
-import { isExecaError } from "./execa-error.js";
-import { PackageManagerState } from "./state/package-manager.js";
+import { PackageManagerState } from "../state/package-manager.js";
 
 export function checkPackageInstallation(packageName: string) {
-	return Effect.gen(function* () {
+	return gen(function* () {
 		const state = yield* PackageManagerState.current;
 		switch (state.packageManager.name) {
 			case "npm":
@@ -36,7 +36,7 @@ export function checkPackageInstallation(packageName: string) {
 }
 
 function checkWithNpm(packageName: string) {
-	return Effect.tryPromise(async () => {
+	return tryPromise(async () => {
 		const s = p.spinner();
 		s.start(`Checking ${packageName}`);
 		try {
@@ -66,10 +66,10 @@ function checkCommandOutput(
 	options: string[],
 	checkOutput: string,
 ) {
-	return Effect.gen(function* () {
+	return gen(function* () {
 		const s = p.spinner();
 		s.start(`Checking ${packageName}`);
-		const response = yield* Effect.tryPromise(async () => {
+		const response = yield* tryPromise(async () => {
 			try {
 				const { stdout } = await execa(packageManager, [
 					...options,
@@ -91,4 +91,16 @@ function checkCommandOutput(
 		}
 		return response;
 	});
+}
+
+function isExecaError(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	error: any,
+): error is ExecaReturnBase<StdoutStderrAll> {
+	return (
+		error.escapedCommand !== undefined &&
+		error.command !== undefined &&
+		error.exitCode !== undefined &&
+		error.failed === true
+	);
 }
