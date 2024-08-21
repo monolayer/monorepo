@@ -80,21 +80,16 @@ const log: LogWithSimpleMessage = {
 	},
 };
 
-export const configTemplate =
-	nunjucks.compile(`import type { Monolayer } from "monolayer/config";
-
-const monolayer = {
-	folder: "{{ folder }}"
-} satisfies Monolayer;
-
-export default monolayer;
+export const configTemplate = nunjucks.compile(`export default {
+	folder: "{{ folder }}",
+};
 `);
 
 export const databasesTemplate =
-	nunjucks.compile(`import { dbSchema } from "./schema";
-import { defineDatabase } from "monolayer/pg";
+	nunjucks.compile(`import { defineDatabase } from "monolayer/pg";
+import { dbSchema } from "./schema";
 
-export const defaultDb = defineDatabase({
+export default defineDatabase({
 	id: "default",
 	schemas: [dbSchema],
 	extensions: [],
@@ -104,17 +99,15 @@ export const defaultDb = defineDatabase({
 
 export const dbTemplate =
 	nunjucks.compile(`import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
-import pg from "pg";
-import { defaultDb } from "./databases";
+import { Pool } from "pg";
+import defaultDb from "./databases";
 import { type DB } from "./schema";
 
 export const defaultDbClient = new Kysely<DB>({
 	dialect: new PostgresDialect({
-		pool: new pg.Pool({ connectionString: defaultDb.connectionString}),
+		pool: new Pool({ connectionString: defaultDb.connectionString}),
 	}),
-	plugins: defaultDb.camelCase.enabled
-		? [new CamelCasePlugin()]
-		: [],
+	plugins: defaultDb.camelCase? [new CamelCasePlugin()] : [],
 });
 `);
 
@@ -127,8 +120,14 @@ export type DB = typeof dbSchema.infer;
 `);
 
 export const seedTemplate =
-	nunjucks.compile(`import type { Kysely } from "kysely";
+	nunjucks.compile(`import { sql, type Kysely } from "kysely";
 import type { DB } from "./schema";
 
-export async function seed(db: Kysely<DB>){}
+export async function seed(db: Kysely<DB>) {
+  const currentDatabase = await sql<{
+    current_database: string;
+  }>\`SELECT CURRENT_DATABASE()\`.execute(db);
+
+  console.log("Current database:", currentDatabase.rows[0].current_database);
+}
 `);
