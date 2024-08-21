@@ -14,8 +14,6 @@ export const initFolderAndFiles = Effect.gen(function* () {
 		yield* Effect.fail(new UndefinedDbFolderError());
 	} else {
 		yield* Effect.tryPromise(async () => {
-			log.lineMessage("");
-
 			await createFile(
 				path.join(cwd(), "monolayer.ts"),
 				configTemplate.render({ folder: dbFolderPath }),
