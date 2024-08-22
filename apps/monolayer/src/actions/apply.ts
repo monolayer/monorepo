@@ -4,16 +4,15 @@ import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { applyMigrations } from "@monorepo/programs/migrations/apply.js";
 import { rollback } from "@monorepo/programs/migrations/rollback.js";
 import { cliAction } from "~monolayer/cli-action.js";
-import { syncAction } from "../actions/sync.js";
 
-export function migrateCommand(program: Command) {
-	const migrate = program.command("migrate");
+export function applyCommands(program: Command) {
+	const apply = program.command("apply");
 
-	migrate.description("Migrate commands");
+	apply.description("Apply migration commands");
 
 	commandWithDefaultOptions({
 		name: "all",
-		program: migrate,
+		program: apply,
 	})
 		.description("migrate all pending migrations")
 		.action(async (opts) => {
@@ -26,7 +25,7 @@ export function migrateCommand(program: Command) {
 
 	commandWithDefaultOptions({
 		name: "alter",
-		program: migrate,
+		program: apply,
 	})
 		.description("migrate pending alter migrations")
 		.action(async (opts) => {
@@ -39,7 +38,7 @@ export function migrateCommand(program: Command) {
 
 	commandWithDefaultOptions({
 		name: "contract",
-		program: migrate,
+		program: apply,
 	})
 		.description("migrate pending contract migrations")
 		.option("-m, --migration <migration-name-name>", "migration name")
@@ -54,7 +53,7 @@ export function migrateCommand(program: Command) {
 
 	commandWithDefaultOptions({
 		name: "expand",
-		program: migrate,
+		program: apply,
 	})
 		.description("migrate pending expand migrations")
 		.action(async (opts) => {
@@ -65,7 +64,7 @@ export function migrateCommand(program: Command) {
 
 	commandWithDefaultOptions({
 		name: "data",
-		program: migrate,
+		program: apply,
 	})
 		.description("migrate pending data migrations")
 		.action(async (opts) => {
@@ -76,14 +75,12 @@ export function migrateCommand(program: Command) {
 
 	commandWithDefaultOptions({
 		name: "rollback",
-		program: migrate,
+		program: apply,
 	})
 		.description("rollback to a previous migration")
 		.action(async (opts) => {
 			await cliAction("Rollback to a previous migration", opts, [rollback]);
 		});
 
-	syncAction(migrate);
-
-	return migrate;
+	return apply;
 }

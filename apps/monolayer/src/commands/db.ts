@@ -9,7 +9,7 @@ import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import { cliAction, cliActionWithoutContext } from "~monolayer/cli-action.js";
 import { importSchema } from "../actions/import-schema.js";
 
-export function dbCommand(program: Command) {
+export function dbCommands(program: Command) {
 	const db = program.command("db");
 
 	db.description("Database commands");

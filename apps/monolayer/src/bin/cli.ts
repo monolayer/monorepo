@@ -3,8 +3,7 @@
 import { Command } from "@commander-js/extra-typings";
 import { CommanderError } from "commander";
 import { exit } from "process";
-import { dbCommand } from "../commands/db.js";
-import { migrateCommand } from "../commands/migrate.js";
+import { dbCommands } from "../commands/db.js";
 import { migrationsCommand } from "../commands/migrations.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
@@ -16,8 +15,7 @@ async function main() {
 
 	program.name("monolayer").version("1.0.0");
 
-	dbCommand(program);
-	migrateCommand(program);
+	dbCommands(program);
 	migrationsCommand(program);
 
 	program.exitOverride();

@@ -6,7 +6,7 @@ import { cliAction } from "~monolayer/cli-action.js";
 export function pendingAction(program: Command) {
 	commandWithDefaultOptions({
 		name: "pending",
-		program: program,
+		program,
 	})
 		.description("list pending schema migrations")
 		.action(async (opts) => {

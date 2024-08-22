@@ -10,7 +10,7 @@ import { cliAction } from "~monolayer/cli-action.js";
 export function generateAction(program: Command) {
 	commandWithDefaultOptions({
 		name: "generate",
-		program: program,
+		program,
 	})
 		.description("generate a schema migration")
 		.action(async (opts) => {

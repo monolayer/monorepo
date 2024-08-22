@@ -4,7 +4,7 @@ import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { scaffoldMigration } from "@monorepo/programs/migrations/scaffold.js";
 import { cliAction } from "~monolayer/cli-action.js";
 
-export function scaffoldCommand(program: Command) {
+export function scaffoldCommands(program: Command) {
 	const scaffold = program.command("scaffold");
 
 	scaffold.description("Scaffold migration commands");
