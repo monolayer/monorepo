@@ -23,10 +23,10 @@
 			"default": "./dist/esm/config.js",
 			"require": "./dist/cjs/config.js"
 		},
-		"./helpers/pg": {
-			"types": "./dist/esm/helpers.d.ts",
-			"default": "./dist/esm/helpers.js",
-			"require": "./dist/cjs/helper.js"
+		"./pg-helpers/timestamps": {
+			"types": "./dist/esm/timestamps.d.ts",
+			"default": "./dist/esm/timestamps.js",
+			"require": "./dist/cjs/timestamps.js"
 		},
 		"./pg": {
 			"types": "./dist/esm/pg.d.ts",
