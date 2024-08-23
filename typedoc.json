@@ -18,6 +18,8 @@
 		"Functions",
 		"Classes",
 		"Type Aliases",
+		"Properties",
+		"Accessors",
 		"*"
 	],
 	"categoryOrder": [
