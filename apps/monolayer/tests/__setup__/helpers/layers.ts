@@ -1,4 +1,4 @@
-import type { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
+import type { PgDatabase } from "@monorepo/pg/database.js";
 import { phasedMigratorLayer } from "@monorepo/programs/phased-migrator.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import dotenv from "dotenv";
@@ -67,7 +67,7 @@ function mockedMigratorLayer(
 export function testLayers(
 	databaseName: string,
 	migrationFolder: string,
-	database: MonoLayerPgDatabase,
+	database: PgDatabase,
 ) {
 	return mockedMigratorLayer(
 		databaseName,

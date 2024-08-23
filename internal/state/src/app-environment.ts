@@ -3,7 +3,7 @@ import { ActionError } from "@monorepo/cli/errors.js";
 import { importConfig } from "@monorepo/configuration/import-config.js";
 import { importDatabases } from "@monorepo/configuration/import-databases.js";
 import type { MonolayerConfiguration } from "@monorepo/configuration/monolayer.js";
-import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
+import { PgDatabase } from "@monorepo/pg/database.js";
 import dotenv from "dotenv";
 import { Context, Effect, Layer, Ref } from "effect";
 import path from "path";
@@ -12,7 +12,7 @@ import { cwd } from "process";
 
 export interface AppEnv {
 	databases: MonolayerConfiguration["databases"];
-	currentDatabase: MonoLayerPgDatabase;
+	currentDatabase: PgDatabase;
 }
 
 export class AppEnvironment extends Context.Tag("AppEnvironment")<
@@ -100,7 +100,7 @@ export function databasesFilePath() {
 
 export const importSchemaEnvironment = Effect.gen(function* () {
 	return {
-		currentDatabase: new MonoLayerPgDatabase({ id: "default", schemas: [] }),
+		currentDatabase: new PgDatabase({ id: "default", schemas: [] }),
 		databases: yield* databasesFilePath(),
 	} satisfies AppEnv as AppEnv;
 });

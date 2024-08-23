@@ -1,5 +1,5 @@
 import { ActionError } from "@monorepo/cli/errors.js";
-import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
+import { PgDatabase } from "@monorepo/pg/database.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
 import { validateUniqueSchemaName } from "@monorepo/programs/validate-unique-schema-name.js";
 import {
@@ -31,7 +31,7 @@ describe("validate uique schema name", () => {
 
 		const env: AppEnv = {
 			databases: "databases.ts",
-			currentDatabase: new MonoLayerPgDatabase({
+			currentDatabase: new PgDatabase({
 				id: "default",
 				schemas: [dbSchema, anotherSchema],
 				camelCase: false,
@@ -55,7 +55,7 @@ describe("validate uique schema name", () => {
 
 		const env: AppEnv = {
 			databases: "databases.ts",
-			currentDatabase: new MonoLayerPgDatabase({
+			currentDatabase: new PgDatabase({
 				id: "default",
 				schemas: [dbSchema, anotherSchema],
 				camelCase: false,
@@ -87,7 +87,7 @@ describe("validate uique schema name", () => {
 
 		const env: AppEnv = {
 			databases: "databases.ts",
-			currentDatabase: new MonoLayerPgDatabase({
+			currentDatabase: new PgDatabase({
 				id: "default",
 				schemas: [dbSchema, anotherSchema],
 				camelCase: false,

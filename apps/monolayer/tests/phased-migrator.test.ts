@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
-import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
+import { PgDatabase } from "@monorepo/pg/database.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import { type AppEnv } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
@@ -19,11 +19,11 @@ async function runPhasedMigration(context: DbContext) {
 	const layers = testLayers(
 		context.dbName,
 		path.join(context.folder, "migrations", "default"),
-		new MonoLayerPgDatabase({ id: "default", schemas: [] }),
+		new PgDatabase({ id: "default", schemas: [] }),
 	);
 	const env: AppEnv = {
 		databases: "databases.ts",
-		currentDatabase: new MonoLayerPgDatabase({
+		currentDatabase: new PgDatabase({
 			id: "default",
 			schemas: [],
 			camelCase: false,

@@ -3,7 +3,7 @@ import type { Kysely } from "kysely";
 import type { PgExtension } from "~pg/schema/extension.js";
 import type { AnySchema } from "~pg/schema/schema.js";
 
-export type DatabaseConfig = {
+export type PgDatabaseConfig = {
 	/**
 	 * Id of the database.
 	 *
@@ -45,15 +45,15 @@ export type DatabaseConfig = {
  * @group Schema Definition
  * @category Database and Tables
  */
-export function defineDatabase(config: DatabaseConfig) {
-	return new MonoLayerPgDatabase(config);
+export function defineDatabase(config: PgDatabaseConfig) {
+	return new PgDatabase(config);
 }
 
 /**
  * @group Classes, Types, and Interfaces
  * @category Classes
  */
-export class MonoLayerPgDatabase {
+export class PgDatabase {
 	/**
 	 * Id of the database.
 	 *
@@ -101,7 +101,7 @@ export class MonoLayerPgDatabase {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	seeder?: (db: Kysely<any>) => Promise<void>;
 
-	constructor(config: DatabaseConfig) {
+	constructor(config: PgDatabaseConfig) {
 		this.id = config.id;
 		this.schemas = config.schemas ?? [];
 		this.extensions = config.extensions ?? [];

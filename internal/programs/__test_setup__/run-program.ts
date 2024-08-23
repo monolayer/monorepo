@@ -1,4 +1,4 @@
-import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
+import { PgDatabase } from "@monorepo/pg/database.js";
 import { text } from "@monorepo/pg/schema/column/data-types/text.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
 import { table } from "@monorepo/pg/schema/table.js";
@@ -28,7 +28,7 @@ export function runProgram<A, E, R>(
 	const folder = programFolder(context);
 	const env: AppEnv = {
 		databases: path.join(folder, "databases.ts"),
-		currentDatabase: new MonoLayerPgDatabase({
+		currentDatabase: new PgDatabase({
 			id: "default",
 			schemas: [dbSchema],
 			camelCase: false,

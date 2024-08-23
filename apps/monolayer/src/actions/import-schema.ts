@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import * as p from "@clack/prompts";
-import { MonoLayerPgDatabase } from "@monorepo/pg/database.js";
+import { PgDatabase } from "@monorepo/pg/database.js";
 import type { EnumInfo } from "@monorepo/pg/introspection/enum.js";
 import { dbExtensionInfo } from "@monorepo/pg/introspection/extension.js";
 import type { IndexInfo } from "@monorepo/pg/introspection/index.js";
@@ -127,7 +127,7 @@ function dumpDatabase(configurationName: string, connectionString: string) {
 		mkdirSync(migrationsFolder(configurationName), { recursive: true });
 
 		const dumpEnv: AppEnv = {
-			currentDatabase: new MonoLayerPgDatabase({ id: "default", schemas: [] }),
+			currentDatabase: new PgDatabase({ id: "default", schemas: [] }),
 			databases: (yield* appEnvironment).databases,
 		};
 
