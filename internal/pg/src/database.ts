@@ -101,6 +101,9 @@ export class PgDatabase {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	seeder?: (db: Kysely<any>) => Promise<void>;
 
+	/**
+	 * @hidden
+	 */
 	constructor(config: PgDatabaseConfig) {
 		this.id = config.id;
 		this.schemas = config.schemas ?? [];
