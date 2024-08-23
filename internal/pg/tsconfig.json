@@ -1,8 +1,6 @@
 {
 	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
 	"include": ["src/**/*", "tests/**/*"],
-	"exclude": ["src/api/*.ts"],
-
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",

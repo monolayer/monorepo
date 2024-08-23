@@ -1,6 +1,7 @@
 {
 	"extends": "./tsconfig.json",
 	"include": ["src/**/*"],
+	"exclude": ["src/api/*.ts"],
 	"compilerOptions": {
 		"emitDeclarationOnly": false,
 		"sourceMap": false,
