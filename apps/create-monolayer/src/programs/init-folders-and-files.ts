@@ -15,7 +15,7 @@ export const initFolderAndFiles = gen(function* () {
 	} else {
 		yield* tryPromise(async () => {
 			await createFile(
-				path.join(cwd(), "monolayer.ts"),
+				path.join(cwd(), "monolayer.config.ts"),
 				configTemplate.render({
 					databasePath: path.join(dbFolderPath, "databases.ts"),
 				}),

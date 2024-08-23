@@ -143,7 +143,10 @@ export async function setupProgramContext(
 	context.kysely = dbMigrator.db;
 	context.migrator = dbMigrator.migrator;
 	const monolayerConfig = monolayerTemplate.render();
-	appendFileSync(path.join(context.folder, "monolayer.ts"), monolayerConfig);
+	appendFileSync(
+		path.join(context.folder, "monolayer.config.ts"),
+		monolayerConfig,
+	);
 
 	const configurations = configurationsTemplate.render({
 		dbName: context.dbName,

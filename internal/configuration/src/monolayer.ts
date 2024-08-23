@@ -12,7 +12,7 @@ export interface MonolayerConfiguration {
  * Defines the monolayer configuration.
  *
  * @example
- * In the `monolayer.ts` file in the root of your project (where `package.json` is located), you can define the configuration like this:
+ * In the `monolayer.config.ts` file in the root of your project (where `package.json` is located), you can define the configuration like this:
  * ```ts
  * export default defineConfig({
  * 	databases: "app/db/databases.ts",

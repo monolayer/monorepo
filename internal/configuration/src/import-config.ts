@@ -6,7 +6,7 @@ import path from "node:path";
 import { MonolayerConfig } from "~configuration/monolayer.js";
 
 export const importConfig = succeed(true).pipe(
-	flatMap(() => importFile(path.join(process.cwd(), "monolayer.ts"))),
+	flatMap(() => importFile(path.join(process.cwd(), "monolayer.config.ts"))),
 	flatMap((def) =>
 		succeed(
 			def.default && def.default.default ? def.default.default : def.default,
@@ -22,7 +22,7 @@ export const importConfig = succeed(true).pipe(
 					fail(
 						new ActionError(
 							"Missing configuration",
-							`Could not find the configuration in \`monolayer.ts\`.`,
+							`Could not find the configuration in \`monolayer.config.ts\`.`,
 						),
 					),
 			},
