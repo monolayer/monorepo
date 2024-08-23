@@ -2,10 +2,7 @@
  * @module pg
  */
 
-export {
-	defineDatabase,
-	type MonoLayerPgDatabase,
-} from "@monorepo/pg/database.js";
+export { defineDatabase, type MonoLayerPgDatabase } from "~pg/database.js";
 export {
 	check,
 	unmanagedCheck,
