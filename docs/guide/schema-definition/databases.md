@@ -28,7 +28,7 @@ Don't forget to update the configuration in `monolayer.config.ts`, when the chan
 
 ## Define a single database
 
-After importing `defineDatabase` from `monolayer/pg`, you export a default database definition.
+After importing [`defineDatabase`](./../../reference/api//pg/functions/defineDatabase.md) from `monolayer/pg`, you export a default database definition.
 
 ::: code-group
 ```ts [databases.ts]
