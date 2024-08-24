@@ -4,9 +4,9 @@ prev: false
 
 # Databases
 
-`monolayer` will be aware of all your databases through the exported databases from a single databases file.
+`monolayer` will be aware of all your databases through exported database defintions from a single databases file.
 
-The databases file serves as the entrypoint for all your databases and schemas.
+You can think of the databases file as the entrypoint for all the databases and schemas you want to manage with `monolayer`.
 
 As a starting point, you are given a default folder/file structure for the `db` folder and a `databases.ts` file it.
 
@@ -28,7 +28,7 @@ Don't forget to update the configuration in `monolayer.config.ts`, when the chan
 
 ## Define a single database
 
-After importing `defineDatabase` from `monolayer/pg`, you export a default database.
+After importing `defineDatabase` from `monolayer/pg`, you export a default database definition.
 
 ::: code-group
 ```ts [databases.ts]
