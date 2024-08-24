@@ -17,7 +17,7 @@ import type { PgUnique } from "~pg/schema/unique.js";
  * @category Types and Interfaces
  */
 export type TableDefinition<T, PK extends string> = {
-	columns: T extends ColumnRecord ? T : never;
+	columns?: T extends ColumnRecord ? T : never;
 	indexes?: keyof T extends string
 		? (PgIndex<keyof T> | PgUnmanagedIndex)[]
 		: never;
@@ -78,7 +78,7 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 		 */
 		protected definition: TableDefinition<T, PK>,
 	) {
-		const columns = this.definition.columns;
+		const columns = this.definition.columns || ({} as ColumnRecord);
 		const primaryKey = this.definition.constraints?.primaryKey;
 		if (primaryKey !== undefined) {
 			const primaryKeyDef = Object.fromEntries(Object.entries(primaryKey)) as {
