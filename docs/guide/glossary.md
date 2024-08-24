@@ -25,6 +25,10 @@ Code that you can run within a database query. It can take inputs, return output
 
 Functions can also be used for [triggers](#triggers) to invoke.
 
+## Index
+
+A [SQL object](#sql-object) that contains data derived from a table or materialized view, allowing for fast retrieval and access of the original data.
+
 ## Schema
 
 > A schema is a namespace for [SQL objects](#sql-object), which all reside in the same database. Each SQL object must reside in exactly one schema.
