@@ -2,7 +2,11 @@
  * @module pg
  */
 
-export { defineDatabase, type PgDatabase } from "~pg/database.js";
+export {
+	defineDatabase,
+	type PgDatabase,
+	type PgDatabaseConfig,
+} from "~pg/database.js";
 export {
 	check,
 	unmanagedCheck,
@@ -73,6 +77,7 @@ export {
 	type PgTimestamp,
 } from "~pg/schema/column/data-types/timestamp.js";
 export { uuid, type PgUuid } from "~pg/schema/column/data-types/uuid.js";
+export { xml, type PgXML } from "~pg/schema/column/data-types/xml.js";
 export { PgExtension, extension } from "~pg/schema/extension.js";
 export {
 	foreignKey,
@@ -88,8 +93,7 @@ export {
 } from "~pg/schema/index.js";
 export { primaryKey, type PgPrimaryKey } from "~pg/schema/primary-key.js";
 export { type PgRawConstraint } from "~pg/schema/raw-constraint.js";
-// export { schema, type Schema } from "~pg/schema/schema.js";
-export { xml, type PgXML } from "~pg/schema/column/data-types/xml.js";
+export { schema, type DatabaseSchema, type Schema } from "~pg/schema/schema.js";
 export { table, type PgTable, type TableDefinition } from "~pg/schema/table.js";
 export {
 	trigger,

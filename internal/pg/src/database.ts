@@ -7,8 +7,9 @@ export type PgDatabaseConfig = {
 	/**
 	 * Id of the database.
 	 *
+	 * @default "default"
 	 */
-	id: string;
+	id?: string;
 	/**
 	 * Schemas in the database.
 	 *
@@ -105,7 +106,7 @@ export class PgDatabase {
 	 * @hidden
 	 */
 	constructor(config: PgDatabaseConfig) {
-		this.id = config.id;
+		this.id = config.id ?? "default";
 		this.schemas = config.schemas ?? [];
 		this.extensions = config.extensions ?? [];
 		this.generatePrismaSchema = config.generatePrismaSchema ?? false;

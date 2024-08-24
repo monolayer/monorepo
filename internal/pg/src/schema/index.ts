@@ -40,7 +40,7 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
 		/**
 		 * @hidden
 		 */
-		protected columns: T[],
+		protected columns?: T[],
 	) {
 		this.isExternal = false;
 		this.options = {
@@ -50,7 +50,7 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
 			expression: undefined,
 			using: undefined,
 			where: [],
-			columns: this.columns,
+			columns: this.columns || [],
 		};
 	}
 
@@ -112,7 +112,7 @@ export class PgIndex<T extends string | (string & Record<string, never>)> {
  * @category Indexes and Constraints
  */
 export function index<T extends string | (string & Record<string, never>)>(
-	columns: T[],
+	columns?: T[],
 ) {
 	return new PgIndex(columns);
 }

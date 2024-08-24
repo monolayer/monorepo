@@ -2,14 +2,40 @@ import type { EnumType } from "~pg/schema/column/data-types/enum.js";
 import type { PgExtension } from "~pg/schema/extension.js";
 import type { AnyPgTable } from "~pg/schema/table.js";
 
-export type DatabaseSchema<T extends ColumnRecord, S extends string> = {
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Types
+ */
+export type DatabaseSchema<T extends TableRecord, S extends string> = {
+	/**
+	 * Schema name.
+	 *
+	 * @default "default"
+	 */
 	name?: S;
+	/**
+	 * Schema tables.
+	 *
+	 * @default []
+	 */
 	tables?: T;
+	/**
+	 * Types in the schema.
+	 *
+	 * @default []
+	 *
+	 * @remarks
+	 * Only enumerated types are supported in v1.
+	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	types?: Array<EnumType<any>>;
 };
 
-export class Schema<T extends ColumnRecord, S extends string> {
+/**
+ * @group Classes, Types, and Interfaces
+ * @category Classes
+ */
+export class Schema<T extends TableRecord, S extends string> {
 	/**
 	 * @hidden
 	 */
@@ -190,7 +216,6 @@ export class Schema<T extends ColumnRecord, S extends string> {
 	 * ```
 	 */
 	declare infer: TableInfer<T>;
-
 	/**
 	 * Infers types with a schema namespace to be used as the Kysely database schema type definition.
 	 * @public
@@ -401,7 +426,7 @@ export class Schema<T extends ColumnRecord, S extends string> {
 	}
 }
 
-type TableInfer<T extends ColumnRecord> = string extends keyof T
+type TableInfer<T extends TableRecord> = string extends keyof T
 	? // eslint-disable-next-line @typescript-eslint/no-explicit-any
 		any
 	: {
@@ -409,7 +434,7 @@ type TableInfer<T extends ColumnRecord> = string extends keyof T
 		};
 
 type TableInferWithSchema<
-	T extends ColumnRecord,
+	T extends TableRecord,
 	S extends string | undefined,
 > = string extends keyof T
 	? // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -422,11 +447,15 @@ type TableInferWithSchema<
 				: never]: T[K]["infer"];
 		};
 
-export function schema<T extends ColumnRecord, S extends string = "public">(
+/**
+ * @group Schema Definition
+ * @category Database and Tables
+ */
+export function schema<T extends TableRecord, S extends string = "public">(
 	schema: DatabaseSchema<T, S>,
 ) {
 	return new Schema<T, S>(schema);
 }
 
-export type ColumnRecord = Record<string, AnyPgTable>;
-export type AnySchema = Schema<Record<string, AnyPgTable>, string>;
+export type TableRecord = Record<string, AnyPgTable>;
+export type AnySchema = Schema<TableRecord, string>;

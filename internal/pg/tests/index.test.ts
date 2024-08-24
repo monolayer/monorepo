@@ -59,7 +59,7 @@ describe("pgIndex", () => {
 		expect(compiledIndex).toEqual(expected);
 	});
 
-	test("expression", async () => {
+	test("column and expression", async () => {
 		const idx = index(["first_name"]).expression(
 			sql`first_name COLLATE "fi_FI"`,
 		);
@@ -68,6 +68,17 @@ describe("pgIndex", () => {
 		const expected = {
 			"4ac64663":
 				'create index "test_table_4ac64663_monolayer_idx" on "public"."test_table" ("first_name", first_name COLLATE "fi_FI")',
+		};
+		expect(compiledIndex).toEqual(expected);
+	});
+
+	test("expression", async () => {
+		const idx = index().expression(sql`upper(${sql.ref("name")})`);
+		const compiledIndex = await compileIndex(idx, "test_table");
+
+		const expected = {
+			"19a3d7e0":
+				'create index "test_table_19a3d7e0_monolayer_idx" on "public"."test_table" (upper("name"))',
 		};
 		expect(compiledIndex).toEqual(expected);
 	});
