@@ -1,0 +1,3 @@
+# Other column data types
+
+Docs soon...
