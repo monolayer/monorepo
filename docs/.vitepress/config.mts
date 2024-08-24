@@ -31,6 +31,10 @@ export default withMermaid({
 						link: "configuration",
 					},
 					schemaDefinition,
+					{
+						text: "Glossary",
+						link: "glossary",
+					},
 				],
 			},
 			"/reference/": apiModules,
