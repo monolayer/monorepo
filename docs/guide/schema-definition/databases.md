@@ -4,7 +4,7 @@ prev: false
 
 # Databases
 
-`monolayer` will be aware of all your databases through exported database defintions from a single databases file.
+`monolayer` will be aware of all your [databases](./../glossary.md#database) through exported database defintions from a single databases file.
 
 You can think of the databases file as the entrypoint for all the databases and schemas you want to manage with `monolayer`.
 

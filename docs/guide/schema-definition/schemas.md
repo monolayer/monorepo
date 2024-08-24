@@ -1,10 +1,8 @@
 # Database Schemas
 
-Each [PostgreSQL](https://www.postgresql.org) database contains one or more named schemas which contain tables and other database objects.
+Each [PostgreSQL](https://www.postgresql.org) [database](./../glossary.md#database) contains one or more named [schemas](./../glossary.md#schema) which contain tables and other database objects.
 
-You can think of schemas as a namespace for SQL objects (i.e tables, types).
-
-Normally, every database in PostgreSQL contains a `public` schema by default, but you can create additional schemas.
+Normally, every database in PostgreSQL contains a `public` schema by default.
 
 ## Define the public schema
 
