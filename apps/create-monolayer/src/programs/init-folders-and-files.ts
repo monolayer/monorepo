@@ -94,7 +94,6 @@ import { dbSchema } from "./schema";
 import { dbSeed } from "./seed";
 
 export default defineDatabase({
-	id: "default",
 	schemas: [dbSchema],
 	extensions: [],
 	seeder: dbSeed,
