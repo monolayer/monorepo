@@ -1,5 +1,6 @@
+import { apiModules } from ".vitepress/sidebar-items/api-modules.mjs";
+import { schemaDefinition } from ".vitepress/sidebar-items/schema-definition.mjs";
 import { withMermaid } from "vitepress-plugin-mermaid";
-import { generateSidebar } from "vitepress-sidebar";
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
@@ -10,73 +11,29 @@ export default withMermaid({
 		nav: [
 			{
 				text: "Guide",
-				link: "/guide/intro",
+				link: "/guide/configuration",
 				activeMatch: "/guide/",
 			},
 			{
-				text: "Reference",
+				text: "API Reference",
 				link: "/reference/api",
 				activeMatch: "/reference/",
 			},
 		],
 
 		sidebar: {
-			...generateSidebar([
-				{
-					documentRootPath: "docs",
-					scanStartPath: "guide",
-					resolvePath: "/guide/",
-					useTitleFromFileHeading: true,
-				},
-			]),
-			"/reference/": {
+			"/guide/": {
+				collapsed: false,
+				base: "/guide/",
 				items: [
 					{
-						text: "API",
-						base: "/reference/",
-						collapsed: true,
-						items: require("./../reference/api/typedoc-sidebar.json"),
+						text: "Configuring monolayer",
+						link: "configuration",
 					},
-					{
-						text: "Command Line Interface",
-						base: "/reference/",
-						items: [
-							{ text: "Intro", link: "cli" },
-							{
-								text: "Commands",
-								items: [
-									{
-										text: "db",
-										collapsed: true,
-										items: [
-											{ text: "create", link: "cli/db/create" },
-											{ text: "drop", link: "cli/db/drop" },
-											{ text: "import", link: "cli/db/import" },
-											{ text: "reset", link: "cli/db/reset" },
-											{ text: "seed", link: "cli/db/seed" },
-										],
-									},
-									{
-										text: "migrate",
-										collapsed: true,
-										items: [
-											{ text: "all", link: "cli/migrate/all" },
-											{ text: "alter", link: "cli/migrate/alter" },
-											{ text: "contract", link: "cli/migrate/contract" },
-											{ text: "data", link: "cli/migrate/data" },
-											{ text: "expand", link: "cli/migrate/expand" },
-											{ text: "rollback", link: "cli/migrate/rollback" },
-										],
-									},
-									{ text: "generate", link: "cli/generate" },
-									{ text: "pending", link: "cli/pending" },
-									{ text: "scaffold", link: "cli/scaffold" },
-								],
-							},
-						],
-					},
+					schemaDefinition,
 				],
 			},
+			"/reference/": apiModules,
 		},
 		socialLinks: [
 			{ icon: "github", link: "https://github.com/vuejs/vitepress" },
