@@ -2,13 +2,9 @@ import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import color from "picocolors";
 
-export function spinnerTask<E extends object, C extends object>(
+export function spinnerTask<E, C>(
 	name: string,
-	callback: () => Effect.Effect<
-		unknown,
-		E extends object ? E : never,
-		C extends object ? C : never
-	>,
+	callback: () => Effect.Effect<unknown, E, C>,
 ) {
 	const spinner = p.spinner();
 	return Effect.succeed(true)
