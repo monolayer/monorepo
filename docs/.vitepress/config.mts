@@ -42,7 +42,7 @@ export default withMermaid({
 			"/reference/": apiModules,
 		},
 		socialLinks: [
-			{ icon: "github", link: "https://github.com/vuejs/vitepress" },
+			{ icon: "github", link: "https://github.com/dunkelbraun/monolayer" },
 		],
 		search: {
 			provider: "local",

@@ -7,23 +7,23 @@ export const introduction = {
 			link: "introduction/what-is-monolayer",
 		},
 		{
-			text: "Installation",
-			link: "introduction/installation",
-		},
-		{
-			text: "Your first schema",
-			link: "introduction/first-schema",
-		},
-		{
-			text: "Querying the database",
-			link: "introduction/querying/kysely",
+			text: "Quickstart",
+			collapsed: false,
 			items: [
 				{
-					text: "Kysely",
+					text: "Installation",
+					link: "introduction/installation",
+				},
+				{
+					text: "Your first schema",
+					link: "introduction/first-schema",
+				},
+				{
+					text: "Querying with Kysely",
 					link: "introduction/querying/kysely",
 				},
 				{
-					text: "Prisma",
+					text: "Querying with Prisma",
 					link: "introduction/querying/prisma",
 				},
 			],
