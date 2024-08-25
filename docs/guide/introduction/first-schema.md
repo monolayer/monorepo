@@ -83,13 +83,17 @@ const posts = table({
     title: text().notNull(),
     content: text(),
     published: boolean().default(false),
-    authorId: integer().notNull(),
+    authorId: integer(),
     createdAt: timestampWithTimeZone().notNull().default(sql`now()`),
     updatedAt: timestampWithTimeZone().notNull().default(sql`now()`),
   },
   constraints: {
     primaryKey: primaryKey(["id"]),
-    foreignKeys: [foreignKey(["authorId"], users, ["id"])],
+    foreignKeys: [
+      foreignKey(["authorId"], users, ["id"])
+        .deleteRule("set null")
+        .updateRule("cascade"),
+     ],
   },
   indexes: [index(["authorId"])],
   triggers: [updateTimestampOnRecordUpdate("updatedAt")],
@@ -115,7 +119,7 @@ The `posts` table what we added to the schema has:
 - An `createdAt` column as a timestamp with time zone, non-nullable, and with the current timestamp as default.
 - An `updatedAt` column as a timestamp with time zone, non-nullable, and with the current timestamp as default.
 - A primary key constraint on the `id` column.
-- A foreign key constraint on `authorId` that references `users`.`id`.
+- A foreign key constraint on `authorId` that references `users`.`id`. When deleting the referenced user, `authorId` will be set to `NULL`. Updating `users`.`id` will update `authorId`.
 - An index on the `authorId` column.
 - A trigger that will update the `updatedAt` column whenever a record is updated.
 

@@ -11,12 +11,20 @@ export const introduction = {
 			link: "introduction/installation",
 		},
 		{
-			text: "Getting started",
-			link: "introduction/getting-started/first-schema",
+			text: "Your first schema",
+			link: "introduction/first-schema",
+		},
+		{
+			text: "Querying the database",
+			link: "introduction/querying/kysely",
 			items: [
 				{
-					text: "Your first schema",
-					link: "introduction/getting-started/first-schema",
+					text: "Kysely",
+					link: "introduction/querying/kysely",
+				},
+				{
+					text: "Prisma",
+					link: "introduction/querying/prisma",
 				},
 			],
 		},
