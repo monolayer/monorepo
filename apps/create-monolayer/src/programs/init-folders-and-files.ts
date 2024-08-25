@@ -7,71 +7,82 @@ import color from "picocolors";
 import { cwd } from "process";
 import { DbFolderState, UndefinedDbFolderError } from "../state/db-folder.js";
 
+function createFileFromTemplate(
+	banner: string,
+	content: string,
+	relativePath: string,
+) {
+	return gen(function* () {
+		const spinner = p.spinner();
+		spinner.start(banner);
+		const result = yield* tryPromise(() =>
+			createFile(path.join(cwd(), relativePath), content),
+		);
+		switch (result) {
+			case "exists":
+				spinner.stop(`${banner} ${color.yellow("exists")}`);
+				break;
+			case "created":
+				spinner.stop(`${banner} ${color.green("✓")}`);
+				break;
+		}
+	});
+}
+
 export const initFolderAndFiles = gen(function* () {
 	const dbFolder = yield* DbFolderState.current;
 	const dbFolderPath = dbFolder?.path;
 	if (dbFolderPath === undefined) {
 		yield* fail(new UndefinedDbFolderError());
 	} else {
-		yield* tryPromise(async () => {
-			await createFile(
-				path.join(cwd(), "monolayer.config.ts"),
-				configTemplate.render({
-					databasePath: path.join(dbFolderPath, "databases.ts"),
-				}),
-				true,
-			);
-			await createDir(dbFolderPath, true);
-			await createFile(`${dbFolderPath}/client.ts`, dbTemplate.render(), true);
-			await createFile(
-				`${dbFolderPath}/schema.ts`,
-				schemaTemplate.render(),
-				true,
-			);
-			await createFile(
-				`${dbFolderPath}/databases.ts`,
-				databasesTemplate.render(),
-				true,
-			);
-			await createFile(`${dbFolderPath}/seed.ts`, seedTemplate.render(), true);
-		});
+		yield* createFileFromTemplate(
+			"Creating monolayer configuration (monolayer.config.ts)",
+			configTemplate.render({
+				databasePath: path.join(dbFolderPath, "databases.ts"),
+			}),
+			"monolayer.config.ts",
+		);
+		yield* tryPromise(() => createDir(dbFolderPath));
+		yield* createFileFromTemplate(
+			`Creating databases file ${dbFolderPath}/databases.ts`,
+			databasesTemplate.render(),
+			`${dbFolderPath}/databases.ts`,
+		);
+		yield* createFileFromTemplate(
+			`Creating schema file ${dbFolderPath}/schema.ts`,
+			schemaTemplate.render(),
+			`${dbFolderPath}/schema.ts`,
+		);
+		yield* createFileFromTemplate(
+			`Creating client file ${dbFolderPath}/client.ts`,
+			dbTemplate.render(),
+			`${dbFolderPath}/client.ts`,
+		);
+		yield* createFileFromTemplate(
+			`Creating seeds file ${dbFolderPath}/seed.ts`,
+			seedTemplate.render(),
+			`${dbFolderPath}/seed.ts`,
+		);
 	}
 });
 
-export async function createDir(path: string, outputLog = false) {
+export async function createDir(path: string) {
 	try {
 		await fs.access(path);
-		if (outputLog) log.lineMessage(`${color.yellow("exists")} ${path}`);
 	} catch {
 		mkdirSync(path, { recursive: true });
-		if (outputLog) log.lineMessage(`${color.green("created")} ${path}`);
 	}
 }
 
-export async function createFile(
-	path: string,
-	content: string,
-	outputLog = false,
-) {
+export async function createFile(path: string, content: string) {
 	try {
 		await fs.access(path);
-		if (outputLog) log.lineMessage(`${color.yellow("exists")} ${path}`);
+		return "exists";
 	} catch {
 		writeFileSync(path, content);
-		if (outputLog) log.lineMessage(`${color.green("created")} ${path}`);
+		return "created";
 	}
 }
-
-type LogWithSimpleMessage = typeof p.log & {
-	lineMessage: (message?: string) => void;
-};
-
-const log: LogWithSimpleMessage = {
-	...p.log,
-	lineMessage: (message = "") => {
-		process.stdout.write(`${color.gray("│")}  ${message}\n`);
-	},
-};
 
 export const configTemplate =
 	nunjucks.compile(`import { defineConfig } from "monolayer/config";
