@@ -1,28 +1,15 @@
----
-sidebar_position: 3
----
-
 # Foreign keys
 
-A foreign key constraint specifies that the values in a column (or a group of columns)
-must match the values appearing in some row of another table.
+[Foreign keys](./../../glossary.md#foreign-key) are defined in the constraints object of table definition using the [`foreignKey`](./../../../reference/api/pg/functions/foreignKey.md) function.
 
-With foreign key you can represent relationships between tables while maintaining the referential integrity between them.
-
-You can have more than one foreign key constraint on a table, and a foreign key can reference
-the same table it is defined on.
-
-In `monolayer`, foreign keys are defined in the constraints object on a table definition
-using the `foreignKey` function.
-
-## On a single column
+## Single column
 
 ```ts
 import { integer, foreignKey, primaryKey, table } from "monolayer/pg";
 
-const users = table({
+const users = table({ // [!code highlight]
   columns: {
-    id: integer().generatedAlwaysAsIdentity(),
+    id: integer().generatedAlwaysAsIdentity(), // [!code highlight]
   },
   constraints: {
     primaryKey: primaryKey(["id"]),
@@ -43,9 +30,7 @@ const documents = table({
 });
 ```
 
-## On multiple of columns
-
-To reference multiple colums, just pass additional columns in the `foreignKey` function:
+## Multiple of columns
 
 ```ts
 import {
@@ -56,10 +41,10 @@ import {
   timestampWithTimeZone
 } from "monolayer/pg";
 
-const projects = table({
+const projects = table({ // [!code highlight]
   columns: {
-    id: integer(),
-    departmendId: integer(),
+    id: integer(), // [!code highlight]
+    departmendId: integer(), // [!code highlight]
   },
   constraints: {
     primaryKey: primaryKey(["id", "departmentId"]),
@@ -84,18 +69,53 @@ const assignments = table({
 });
 ```
 
-## Self referencing
+## With actions
 
-To self reference a foreign key, only referencing and referenced columns are
-needed in the `foreignKey` function:
+When you define a foreign key constraint, you can specify actions to taken when the referenced row in the parent table is deleted or updated. There are five actions that you can set when a referenced row is updated or deleted:
+
+| ACTION      | Behavior     |
+| :------------:| :----------- |
+| CASCADE     | When a referenced row is deleted, row(s) referencing it should be automatically deleted as well |
+| SET NULL    | Referencing column(s) in the referencing row(s) will be set to `NULL` when the referenced row is deleted or when the referenced row key is updated |
+| SET DEFAULT | Referencing column(s) in the referencing row(s) will be set to their default value when the referenced row is deleted or when the referenced row key is updated |
+| RESTRICT    | Prevents the deletion of a referenced row up updated of a referenced key |
+| NO ACTION   | If any referencing rows still exist when the constraint is checked, an error is raised. Similar to `RESTRICT`. The difference is that `NO ACTION` allows the check to be deferred until later in the transaction, whereas `RESTRICT` does not |
+
+::: info
+The default action for a foreign key is  `NO ACTION`.
+:::
+
+Read more about foreign keys in [PostgreSQL - Foreign Keys](https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK)
+
+Use the modifiers `deleteRule` and `updateRule` to specify the foreign key actions
+
+```ts
+
+const documents = table({
+  columns: {
+    id: integer().generatedAlwaysAsIdentity(),
+    userId: integer(),
+  },
+  constraints: {
+    primaryKey: primaryKey(["id"]),
+    foreignKeys: [
+      foreignKey(["userId"], users, ["id"]) // [!code highlight]
+        .deleteRule("set null") // [!code highlight]
+        .updateRule("cascade"), // [!code highlight]
+    ],
+  },
+});
+```
+
+## Self-referential
 
 ```ts
 import { integer, foreignKey, primaryKey, table } from "monolayer/pg";
 
 const tree = table({
   columns: {
-    nodeId: integer().generatedAlwaysAsIdentity(),
-    parentId: integer(),
+    nodeId: integer().generatedAlwaysAsIdentity(), // [!code highlight]
+    parentId: integer(), // [!code highlight]
   },
   constraints: {
     primaryKey: primaryKey(["nodeId"]),

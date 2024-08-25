@@ -1,15 +1,6 @@
----
-sidebar_position: 5
----
-
 # Check constraints
 
-A check constraint is the most generic constraint type.
-It allows you to specify that the value in a certain column must satisfy a Boolean (truth-value) expression.
-
-A type of constraint defined on a relation which restricts the values allowed in one or more attributes.
-The check constraint can make reference to any attribute of the same row in the relation,
-but cannot reference other rows of the same relation or other relations.
+[Check constraints](./../../glossary.md#check-constraint) are defined in the constraints object of table definition using the [`check`](./../../../reference/api/pg/functions/check.md) function.
 
 ```ts
 import { integer, table, check } from "monolayer/pg";
@@ -25,7 +16,6 @@ export const books = table({
 });
 ```
 
-
 A check constraint can refer also to multiple columns:
 
 ```ts
@@ -37,10 +27,10 @@ export const books = table({
     price: integer(),
     discount: integer(),
   },
-  // highlight-start
   constraints: {
-    check: check(sql`${sql.ref("price")} > 0 AND ${sql.ref("discount")} >= 10`), // [!code highlight]
+    check: check(  // [!code highlight]
+      sql`${sql.ref("price")} > 0 AND ${sql.ref("discount")} >= 10`  // [!code highlight]
+    ), // [!code highlight]
   },
-  // highlight-end
 });
 ```

@@ -1,19 +1,8 @@
----
-sidebar_position: 2
----
+# Primary key
 
-# Primary keys
+The [primary key](./../../glossary.md#primary-key) is defined in the constraints object of table definition using the [`primaryKey`](./../../../reference/api/pg/functions/primaryKey.md) function.
 
-A primary key constraint defines a column or a group of columns, that can be used as a unique identifier for rows in the table.
-
-Is a special case of a unique contraint that also guarantees that all of the attributes within the primary key do not have null values.
-
-At most one primary key can be defined per table.
-
-A primary key is defined in the constraints object on a table definition
-by using the `primaryKey` function:
-
-### Primary key on a single column
+## Single column
 
 ```ts
 import { integer, primaryKey, table } from "monolayer/pg";
@@ -21,7 +10,7 @@ import { integer, primaryKey, table } from "monolayer/pg";
 export const users = table({
   name: "users",
   columns: {
-    id: integer().generatedAlwaysAsIdentity(),
+    id: integer().generatedAlwaysAsIdentity(), // [!code highlight]
   },
   constraints: {
     primaryKey: primaryKey(["id"]), // [!code highlight]
@@ -29,17 +18,15 @@ export const users = table({
 });
 ```
 
-### Primary key on mutipliple columns
-
-To reference multiple colums, just pass additional columns names to `primaryKey` function:
+## Mutipliple columns
 
 ```ts
 import { integer, primaryKey, table } from "monolayer/pg";
 
 export const books = table({
   columns: {
-    id: integer().generatedAlwaysAsIdentity(),
-    locationId: integer(),
+    id: integer().generatedAlwaysAsIdentity(), // [!code highlight]
+    locationId: integer(), // [!code highlight]
   },
   constraints: {
     primaryKey: primaryKey(["id", "locationId"]), // [!code highlight]

@@ -42,6 +42,33 @@ export const schemaDefinition = {
 			],
 		},
 		{
+			text: "Constraints",
+			collapsed: true,
+			link: "schema-definition/constraints/not-null",
+			items: [
+				{
+					text: "Not-null",
+					link: "schema-definition/constraints/not-null",
+				},
+				{
+					text: "Primary key",
+					link: "schema-definition/constraints/primary-key",
+				},
+				{
+					text: "Foreign keys",
+					link: "schema-definition/constraints/foreign-key",
+				},
+				{
+					text: "Unique constraints",
+					link: "schema-definition/constraints/unique",
+				},
+				{
+					text: "Check constraints",
+					link: "schema-definition/constraints/check",
+				},
+			],
+		},
+		{
 			text: "Indexes",
 			link: "schema-definition/indexes",
 		},

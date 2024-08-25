@@ -1,22 +1,15 @@
----
-sidebar_position: 4
----
-
 # Unique constraints
 
-Unique constraints ensure that the data contained in a column, or a group of columns,
-is unique among all the rows in the table.
+[Unique constraints](./../../glossary.md#unique-constraint) are defined in the constraints object of table definition using the [`unique`](./../../../reference/api/pg/functions/unique.md) function.
 
-You can define a unique constraint with the `unique` function.
-
-### Unique constraint on a single column
+## Single column
 
 ```ts
 import { table, text, unique } from "monolayer/pg";
 
 export const users = table({
   columns: {
-    name: text(),
+    name: text(), // [!code highlight]
     email: text(),
   },
   constraints: {
@@ -25,15 +18,15 @@ export const users = table({
 });
 ```
 
-### Unique constraint on multiple columns
+## Multiple columns
 
 ```ts
 import { table, text, unique } from "monolayer/pg";
 
 export const users = table({
   columns: {
-    name: text(),
-    email: text(),
+    name: text(), // [!code highlight]
+    email: text(), // [!code highlight]
   },
   constraints: {
     unique: unique(["name", "email"]), // [!code highlight]
@@ -41,24 +34,22 @@ export const users = table({
 });
 ```
 
-### Unique constraint with not null columns
+## With NULLS NOT DISTINCT
 
-Because null values are not considered equal to each other,
-multiple duplicated rows with null values on the constrained column(s) are allowed to exist without violating the unique constraint.
-If you want to prevent this, you can use the `nullsNotDistinct` consider null values a not distinct.
+Since `NULL` values are not considered equal to each other, multiple duplicated rows with `NULL` values on the constrained column(s) are allowed to exist without violating the unique constraint.
+
+If you want to prevent this, you can use the `nullsNotDistinct` consider null values `NOT DISTINCT`.
 
 ```ts
 import { table, text, unique } from "monolayer/pg";
 
 export const users = table({
   columns: {
-    name: text(),
+    name: text(), // [!code highlight]
     email: text(),
   },
-  // highlight-start
   constraints: {
-    unique: unique(["name"]).nullsNotDistinct(),
+    unique: unique(["name"]).nullsNotDistinct(), // [!code highlight]
   },
-  // highlight-end
 });
 ```
