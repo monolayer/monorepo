@@ -1,6 +1,6 @@
 # Column Data Types
 
-Each [column](./../glossary.md#column) in a [table](./../glossary.md#table) has a data type that will constrain the set of possible values that can be assigned it. For example a column with an `integer` data type will not accept text strings, and the data stored in such a column can be used for mathematical computations.
+Each [column](./../../glossary.md#column) in a [table](./../../glossary.md#table) has a data type that will constrain the set of possible values that can be assigned it. For example a column with an `integer` data type will not accept text strings, and the data stored in such a column can be used for mathematical computations.
 
 You define a column with functions from `monolayer/pg`.
 
