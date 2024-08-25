@@ -37,24 +37,19 @@ export function checkPackageInstallation(packageName: string) {
 
 function checkWithNpm(packageName: string) {
 	return tryPromise(async () => {
-		const s = p.spinner();
-		s.start(`Checking ${packageName}`);
 		try {
 			await execa("npm", ["list", packageName]);
-			s.stop(`${packageName} already installed.`);
 			return {
 				packageName: packageName,
 				installed: true,
 			};
 		} catch (error) {
 			if (isExecaError(error) && (error.stdout || "").includes("empty")) {
-				s.stop(`${packageName} not installed.`);
 				return {
 					packageName: packageName,
 					installed: false,
 				};
 			}
-			s.stop(`Failed to check ${packageName}`, 1);
 			throw error;
 		}
 	});

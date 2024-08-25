@@ -13,7 +13,7 @@ import { effect } from "effect/Layer";
 import color from "picocolors";
 import { exit } from "process";
 import { initFolderAndFiles } from "~create-monolayer/programs/init-folders-and-files.js";
-import { installPackage } from "~create-monolayer/programs/install-package.js";
+import { installPackages } from "~create-monolayer/programs/install-package.js";
 import { promptDbFolderSelection } from "~create-monolayer/prompts/db-folder-selection.js";
 import {
 	DbFolderState,
@@ -30,8 +30,10 @@ const packageManager =
 const program = all([
 	succeed(packageManager).pipe(tap(PackageManagerState.updatePackageManager)),
 	promptDbFolderSelection.pipe(tap(DbFolderState.update)),
-	installPackage("monolayer", { development: false }),
-	installPackage("@types/pg", { development: true }),
+	installPackages([
+		{ name: "monolayer", development: false },
+		{ name: "@types/pg", development: true },
+	]),
 	initFolderAndFiles,
 ]).pipe(tapErrorCause((error) => succeed(p.log.error(error.toString()))));
 
