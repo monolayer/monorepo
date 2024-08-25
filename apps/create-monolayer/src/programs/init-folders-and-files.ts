@@ -34,13 +34,6 @@ export const initFolderAndFiles = gen(function* () {
 				true,
 			);
 			await createFile(`${dbFolderPath}/seed.ts`, seedTemplate.render(), true);
-
-			const nextSteps = `1) Edit the default configuration in \`${path.join(dbFolderPath, "databases.ts")}\`.
-2) Run \`npx monolayer db:create\` to create the database.
-3) Edit the schema file at \`${path.join(dbFolderPath, "schema.ts")}\`.
-4) Run 'npx monolayer generate' to create migrations.
-5) Run 'npx monolayer migrate' to migrate the database.`;
-			p.note(nextSteps, "Next Steps");
 		});
 	}
 });
