@@ -3,7 +3,6 @@ import * as p from "@clack/prompts";
 import { ActionError, UnknownActionError } from "@monorepo/cli/errors.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { Migrator } from "@monorepo/services/migrator.js";
-import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import type { MigrationResult } from "kysely";
 import color from "picocolors";
@@ -118,8 +117,7 @@ export function applyMigrations({
 		) {
 			yield* dumpDatabaseStructureTask;
 		}
-		const appEnv = yield* appEnvironment;
-		if (appEnv.currentDatabase.generatePrismaSchema) yield* generatePrisma;
+		yield* generatePrisma;
 	});
 }
 

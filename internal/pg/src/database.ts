@@ -34,6 +34,12 @@ export type PgDatabaseConfig = {
 	 * @default false
 	 */
 	generatePrismaSchema?: boolean;
+	/**
+	 * Path to the Prisma schema to use when generating.
+	 *
+	 * @default "prisma/schema.prisma"
+	 */
+	prismaSchemaPath?: string;
 
 	/**
 	 * Function to seed the database with data.
@@ -86,6 +92,13 @@ export class PgDatabase {
 	 */
 	readonly generatePrismaSchema: boolean;
 	/**
+	 * Path to the Prisma schema to use when generating.
+	 *
+	 * @readonly
+	 * @default "prisma/schema.prisma"
+	 */
+	readonly prismaSchemaPath: string;
+	/**
 	 * Whether to convert camelCase column names to snake_case column names in the database.
 	 *
 	 * @readonly
@@ -110,6 +123,7 @@ export class PgDatabase {
 		this.schemas = config.schemas ?? [];
 		this.extensions = config.extensions ?? [];
 		this.generatePrismaSchema = config.generatePrismaSchema ?? false;
+		this.prismaSchemaPath = config.prismaSchemaPath ?? "prisma/schema.prisma";
 		this.camelCase = config.camelCase ?? false;
 		this.seeder = config.seeder;
 	}
