@@ -10,5 +10,15 @@ export const introduction = {
 			text: "Installation",
 			link: "introduction/installation",
 		},
+		{
+			text: "Getting started",
+			link: "introduction/getting-started/first-schema",
+			items: [
+				{
+					text: "Your first schema",
+					link: "introduction/getting-started/first-schema",
+				},
+			],
+		},
 	],
 };

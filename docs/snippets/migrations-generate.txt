@@ -1,0 +1,8 @@
+┌  monolayer generate
+│
+◇  Enter a name for the schema migration
+│  add users and posts
+│
+●  Generated migration: monolayer/migrations/default/expand/20240725130115976-add-users-and-posts.ts
+│
+└  Done
