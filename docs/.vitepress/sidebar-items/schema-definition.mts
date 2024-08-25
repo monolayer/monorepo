@@ -76,5 +76,9 @@ export const schemaDefinition = {
 			text: "Extensions",
 			link: "schema-definition/extensions",
 		},
+		{
+			text: "Triggers",
+			link: "schema-definition/triggers",
+		},
 	],
 };
