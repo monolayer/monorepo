@@ -8,11 +8,14 @@ hero:
   tagline: My great project tagline
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: What is monolayer?
+      link: /guide/introduction/what-is-monolayer
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Quickstart
+      link: /guide/introduction/installation
+    - theme: alt
+      text: Github
+      link: https://github.com/dunkelbraun/monolayer
 
 features:
   - title: Feature A
