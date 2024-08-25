@@ -1,6 +1,6 @@
 # Querying with Kysely
 
-Now that we've have a the database, we are ready to start querying the database!
+Now that we've have a the database with some tables, we are ready to start querying it!
 
 `monolayer` provides you out-of-the box with a type-safe [`kysely`](https://kysely.dev) database client.
 

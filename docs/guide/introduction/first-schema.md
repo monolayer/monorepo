@@ -233,4 +233,4 @@ After running the command, the current database structure will be also dumped to
 
 <br>
 
-:tada: You've defined, created the database and applied your schema changes!
+You've defined a schema and applied it to a newly created the database! :tada:
