@@ -36,7 +36,7 @@ export const initFolderAndFiles = gen(function* () {
 		yield* fail(new UndefinedDbFolderError());
 	} else {
 		yield* createFileFromTemplate(
-			"Creating monolayer configuration (monolayer.config.ts)",
+			"Creating monolayer.config.ts",
 			configTemplate.render({
 				databasePath: path.join(dbFolderPath, "databases.ts"),
 			}),
@@ -44,22 +44,22 @@ export const initFolderAndFiles = gen(function* () {
 		);
 		yield* tryPromise(() => createDir(dbFolderPath));
 		yield* createFileFromTemplate(
-			`Creating databases file ${dbFolderPath}/databases.ts`,
+			`Creating ${dbFolderPath}/databases.ts`,
 			databasesTemplate.render(),
 			`${dbFolderPath}/databases.ts`,
 		);
 		yield* createFileFromTemplate(
-			`Creating schema file ${dbFolderPath}/schema.ts`,
+			`Creating ${dbFolderPath}/schema.ts`,
 			schemaTemplate.render(),
 			`${dbFolderPath}/schema.ts`,
 		);
 		yield* createFileFromTemplate(
-			`Creating client file ${dbFolderPath}/client.ts`,
+			`Creating ${dbFolderPath}/client.ts`,
 			dbTemplate.render(),
 			`${dbFolderPath}/client.ts`,
 		);
 		yield* createFileFromTemplate(
-			`Creating seeds file ${dbFolderPath}/seed.ts`,
+			`Creating ${dbFolderPath}/seed.ts`,
 			seedTemplate.render(),
 			`${dbFolderPath}/seed.ts`,
 		);
