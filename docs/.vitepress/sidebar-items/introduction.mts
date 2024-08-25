@@ -6,5 +6,9 @@ export const introduction = {
 			text: "What is monolayer?",
 			link: "introduction/what-is-monolayer",
 		},
+		{
+			text: "Installation",
+			link: "introduction/installation",
+		},
 	],
 };

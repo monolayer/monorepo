@@ -1,4 +1,5 @@
 import { apiModules } from ".vitepress/sidebar-items/api-modules.mjs";
+import { introduction } from ".vitepress/sidebar-items/introduction.mjs";
 import { schemaDefinition } from ".vitepress/sidebar-items/schema-definition.mjs";
 import { withMermaid } from "vitepress-plugin-mermaid";
 
@@ -11,7 +12,7 @@ export default withMermaid({
 		nav: [
 			{
 				text: "Guide",
-				link: "/guide/configuration",
+				link: "/guide/introduction/what-is-monolayer",
 				activeMatch: "/guide/",
 			},
 			{
@@ -26,6 +27,7 @@ export default withMermaid({
 				collapsed: false,
 				base: "/guide/",
 				items: [
+					introduction,
 					{
 						text: "Configuring monolayer",
 						link: "configuration",

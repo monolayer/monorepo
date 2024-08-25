@@ -1,0 +1,20 @@
+┌  Welcome to monolayer!
+│
+◇  Where should monolayer create the `db` folder?
+│  ./app
+│
+◇  Installing monolayer... ✓
+│
+◇  Creating monolayer.config.ts ✓
+│
+◇  Creating app/db/databases.ts ✓
+│
+◇  Creating app/db/schema.ts ✓
+│
+◇  Creating app/db/client.ts ✓
+│
+◇  Creating app/db/seed.ts ✓
+│
+◇  Adding sample environment variable to .env ✓
+│
+└  Done
