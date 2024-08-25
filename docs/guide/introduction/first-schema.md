@@ -38,6 +38,12 @@ export type DB = typeof dbSchema.infer;
 ```
 :::
 
+::: tip
+Schema definition in `monolayer` is type-safe.
+
+Change the `unique` constraint column to a non existing one and see what happens! :exploding_head:
+:::
+
 In this schema, we have defined a table called `users` with:
 - An `id` column as an integer, always generated identity column (auto-incremented column).
 - A `email` column as a non-nullable text.
