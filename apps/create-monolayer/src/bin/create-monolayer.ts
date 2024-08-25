@@ -35,7 +35,7 @@ const program = all([
 	initFolderAndFiles,
 ]).pipe(tapErrorCause((error) => succeed(p.log.error(error.toString()))));
 
-p.intro("Create monolayer");
+p.intro("Welcome to monolayer!");
 
 const result = await runPromise(
 	provide(

@@ -6,7 +6,7 @@ export const promptDbFolderSelection = tryPromise(async () => {
 		{
 			path: () =>
 				p.text({
-					message: "Where should we create the `db` folder?",
+					message: "Where should monolayer create the `db` folder?",
 					placeholder: "./app",
 					defaultValue: "./app",
 					validate: (value) => {
