@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { fail, gen, tryPromise } from "effect/Effect";
-import { promises as fs, mkdirSync, writeFileSync } from "fs";
+import { appendFileSync, promises as fs, mkdirSync, writeFileSync } from "fs";
 import nunjucks from "nunjucks";
 import path from "path";
 import color from "picocolors";
@@ -63,6 +63,7 @@ export const initFolderAndFiles = gen(function* () {
 			seedTemplate.render(),
 			`${dbFolderPath}/seed.ts`,
 		);
+		yield* createOrAppendDatabaseURL();
 	}
 });
 
@@ -139,3 +140,31 @@ export async function dbSeed(db: Kysely<DB>) {
   console.log("Current database:", currentDatabase.rows[0].current_database);
 }
 `);
+
+const databaseURL = `
+
+# Inserted by \`create-monolayer\`
+# MONO_PG_DEFAULT_DATABASE_URL=postgresql://user:password@dbserver:5432/dbName
+`;
+
+function createOrAppendDatabaseURL() {
+	return gen(function* () {
+		const banner = "Adding sample environment variable to .env";
+		const spinner = p.spinner();
+		spinner.start(banner);
+		const exists = yield* tryPromise(async () => {
+			try {
+				await fs.access(".env");
+				return true;
+			} catch {
+				return false;
+			}
+		});
+		if (exists) {
+			appendFileSync(".env", databaseURL);
+		} else {
+			writeFileSync(".env", databaseURL);
+		}
+		spinner.stop(`${banner} ${color.green("✓")}`);
+	});
+}
