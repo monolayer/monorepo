@@ -108,15 +108,19 @@ export default defineDatabase({
 
 export const dbTemplate =
 	nunjucks.compile(`import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
-import { Pool } from "pg";
+import pg from "pg";
 import defaultDb from "./databases";
 import { type DB } from "./schema";
+import dotenv from "dotenv";
+dotenv.config({});
 
 export const defaultDbClient = new Kysely<DB>({
-	dialect: new PostgresDialect({
-		pool: new Pool({ connectionString: defaultDb.connectionString}),
-	}),
-	plugins: defaultDb.camelCase? [new CamelCasePlugin()] : [],
+  dialect: new PostgresDialect({
+    pool: new pg.Pool({
+      connectionString: defaultDb.connectionString,
+    }),
+  }),
+  plugins: defaultDb.camelCase ? [new CamelCasePlugin()] : [],
 });
 `);
 
