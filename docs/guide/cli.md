@@ -259,4 +259,5 @@ npx monolayer scaffold --phase expand --env-file .env.test
 | -------------------------| --------------------------------------------------------------------------- |
 | `-d, --database-id <id>` | (*Optional*) Id of an exported database in your databases file to use.      |
 | `-e, --env-file <path>`  | (*Optional*) Load environment variables from an `.env` file.                |
+| `-n, --no-transaction  `   | (*Optional*) Configure migration to not run in a transaction. |
 | `-p, --phase <name>  `   | (*Required*) Phase to scaffold (`alter` \| `contract` \| `data`  \| `expand`). |

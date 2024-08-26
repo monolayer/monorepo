@@ -21,7 +21,4 @@ flowchart TD
 
 ## Custom migrations
 
-::: warning 🚧
-Coming soon...
-:::
-
+You'll find instructions on how to generate custom migrations in the recipe: [Generating custom migrations](./../recipes/custom-migrations.md).
