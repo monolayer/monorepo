@@ -34,6 +34,10 @@ export default withMermaid({
 					},
 					schemaDefinition,
 					{
+						text: "Command Line Interface",
+						link: "cli",
+					},
+					{
 						text: "Glossary",
 						link: "glossary",
 					},
