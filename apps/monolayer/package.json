@@ -85,7 +85,6 @@
 		"@monorepo/migrator": "*",
 		"@monorepo/services": "*",
 		"@monorepo/state": "*",
-		"@monorepo/refactorings": "*",
 		"@monorepo/typescript-config": "*",
 		"@monorepo/utils": "*",
 		"@monorepo/pg": "*",

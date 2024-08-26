@@ -19,8 +19,7 @@
 			"@monorepo/programs/*": ["packages/programs/*"],
 			"@monorepo/services/*": ["packages/services/*"],
 			"@monorepo/state/*": ["packages/state/*"],
-			"@monorepo/utils/*": ["packages/utils/*"],
-			"@monorepo/refactorings/*": ["packages/refactorings/*"]
+			"@monorepo/utils/*": ["packages/utils/*"]
 		}
 	},
 	"references": [

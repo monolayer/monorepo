@@ -26,7 +26,6 @@
 			"~utils/*": ["internal/utils/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
 			"@monorepo/configuration/*": ["internal/configuration/src/*"],
-			"@monorepo/refactorings/*": ["private/refactorings/*"],
 			"@monorepo/migrator/*": ["internal/migrator/src/*"],
 			"@monorepo/pg/*": ["internal/pg/src/*"],
 			"@monorepo/programs/*": ["internal/programs/src/*"],
