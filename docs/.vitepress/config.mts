@@ -1,5 +1,6 @@
 import { apiModules } from ".vitepress/sidebar-items/api-modules.mjs";
 import { introduction } from ".vitepress/sidebar-items/introduction.mjs";
+import { recipes } from ".vitepress/sidebar-items/recipes.mjs";
 import { schemaDefinition } from ".vitepress/sidebar-items/schema-definition.mjs";
 import { withMermaid } from "vitepress-plugin-mermaid";
 
@@ -33,6 +34,7 @@ export default withMermaid({
 						link: "configuration",
 					},
 					schemaDefinition,
+					recipes,
 					{
 						text: "Command Line Interface",
 						link: "cli",
