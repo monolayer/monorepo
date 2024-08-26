@@ -41,10 +41,6 @@ export default withMermaid({
 						text: "Command Line Interface",
 						link: "cli",
 					},
-					{
-						text: "Glossary",
-						link: "glossary",
-					},
 				],
 			},
 			"/reference/": apiModules,
