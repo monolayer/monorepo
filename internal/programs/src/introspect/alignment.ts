@@ -1,5 +1,5 @@
 import type { ColumnInfo } from "@monorepo/pg/schema/column/types.js";
-import { adminPgQuery } from "@monorepo/services/db-clients.js";
+import { adminPgQuery } from "@monorepo/services/db-clients/admin-pg-query.js";
 import { Effect } from "effect";
 
 export interface ColumnToAlign extends ColumnInfo {

@@ -1,8 +1,6 @@
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
-import {
-	adminPgQuery,
-	connectionOptions,
-} from "@monorepo/services/db-clients.js";
+import { adminPgQuery } from "@monorepo/services/db-clients/admin-pg-query.js";
+import { connectionOptions } from "@monorepo/services/db-clients/connection-options.js";
 import { Effect } from "effect";
 import { databaseExists } from "~programs/database/database-exists.js";
 

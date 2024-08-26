@@ -27,7 +27,6 @@ import {
 	triggerDefinition,
 	uniqueConstraintDefinition,
 } from "@monorepo/programs/import-schemas/definitions.js";
-import { kyselyWithConnectionString } from "@monorepo/services/db-clients.js";
 import {
 	AppEnvironment,
 	appEnvironment,
@@ -37,11 +36,13 @@ import { createFile } from "@monorepo/utils/create-file.js";
 import { dateStringWithMilliseconds } from "@monorepo/utils/date-string.js";
 import { camelCase, constantCase } from "case-anything";
 import { Effect, Ref } from "effect";
+import { succeed } from "effect/Effect";
 import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "fs";
-import type { Kysely } from "kysely";
+import { Kysely, PostgresDialect } from "kysely";
 import { cwd } from "node:process";
 import nunjucks from "nunjucks";
 import path from "path";
+import pg from "pg";
 import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 
@@ -308,6 +309,14 @@ const introspectCustomRemote = Effect.gen(function* () {
 		extensions,
 	};
 });
+
+function kyselyWithConnectionString(connection_string: string) {
+	const pgPool = new pg.Pool({ connectionString: connection_string });
+	const kysely = new Kysely({
+		dialect: new PostgresDialect({ pool: pgPool }),
+	});
+	return succeed(kysely);
+}
 
 function generateFirstMigration(
 	configurationName: string,

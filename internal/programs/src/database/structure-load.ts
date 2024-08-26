@@ -1,6 +1,7 @@
 import { checkWithFail } from "@monorepo/cli/check.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
-import { DbClients, pgQuery } from "@monorepo/services/db-clients.js";
+import { DbClients } from "@monorepo/services/db-clients.js";
+import { pgQuery } from "@monorepo/services/db-clients/pg-query.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import fs from "fs/promises";

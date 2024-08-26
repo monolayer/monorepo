@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import { PgExtension } from "@monorepo/pg/schema/extension.js";
 import { Schema } from "@monorepo/pg/schema/schema.js";
-import { connectionOptions } from "@monorepo/services/db-clients.js";
+import { connectionOptions } from "@monorepo/services/db-clients/connection-options.js";
 import {
 	appEnvironment,
 	appEnvironmentConfigurationSchemas,

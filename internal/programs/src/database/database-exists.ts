@@ -1,4 +1,5 @@
-import { DbClients, adminPgQuery } from "@monorepo/services/db-clients.js";
+import { DbClients } from "@monorepo/services/db-clients.js";
+import { adminPgQuery } from "@monorepo/services/db-clients/admin-pg-query.js";
 import { Effect } from "effect";
 
 export const databaseExists = Effect.gen(function* () {

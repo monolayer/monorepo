@@ -1,14 +1,8 @@
-import { ActionError } from "@monorepo/cli/errors.js";
-import {
-	appEnvironment,
-	appEnvironmentCamelCasePlugin,
-} from "@monorepo/state/app-environment.js";
+import { appEnvironmentCamelCasePlugin } from "@monorepo/state/app-environment.js";
 import { Context, Effect, Layer } from "effect";
-import { UnknownException } from "effect/Cause";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
-import type { QueryResultRow } from "pg";
 import pg from "pg";
-import pgConnectionString from "pg-connection-string";
+import { connectionOptions } from "~services/db-clients/connection-options.js";
 
 export type DbClientProperties = {
 	readonly pgPool: pg.Pool;
@@ -24,19 +18,6 @@ export class DbClients extends Context.Tag("DbClients")<
 	DbClients,
 	DbClientProperties
 >() {}
-
-const CONNECTION_STRING_REGEX =
-	/^(postgresql:\/\/(?:[^@]*@)?[^/]*)(?:\/[^?]*)(.*)$/;
-
-export const connectionOptions = Effect.gen(function* () {
-	const connectionString = (yield* appEnvironment).currentDatabase
-		.connectionString;
-	return {
-		app: connectionString,
-		admin: connectionString.replace(CONNECTION_STRING_REGEX, "$1$2"),
-		databaseName: pgConnectionString.parse(connectionString).database ?? "",
-	};
-});
 
 export function dbClientsLayer() {
 	return Layer.effect(
@@ -76,46 +57,4 @@ export function dbClientsLayer() {
 			};
 		}),
 	);
-}
-
-export function pgQuery<T extends QueryResultRow = Record<string, unknown>>(
-	query: string,
-) {
-	return DbClients.pipe(
-		Effect.flatMap((clients) =>
-			Effect.tryPromise(async () => {
-				const result = await clients.pgPool.query<T>(query);
-				return result.rows;
-			}),
-		),
-	);
-}
-
-export function adminPgQuery<
-	T extends QueryResultRow = Record<string, unknown>,
->(query: string) {
-	return Effect.gen(function* () {
-		const pool = (yield* DbClients).pgAdminPool;
-		return yield* Effect.tryPromise({
-			try: async () => {
-				return (await pool.query<T>(query)).rows;
-			},
-			catch: (error: unknown) => {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				const anyError = error as unknown as any;
-				if (anyError.code !== undefined && anyError.severity !== undefined) {
-					return new ActionError("QueryError", anyError.message);
-				}
-				return new UnknownException(error);
-			},
-		});
-	});
-}
-
-export function kyselyWithConnectionString(connection_string: string) {
-	const pgPool = new pg.Pool({ connectionString: connection_string });
-	const kysely = new Kysely({
-		dialect: new PostgresDialect({ pool: pgPool }),
-	});
-	return Effect.succeed(kysely);
 }

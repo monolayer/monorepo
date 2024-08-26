@@ -1,5 +1,6 @@
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
-import { adminPgQuery, DbClients } from "@monorepo/services/db-clients.js";
+import { DbClients } from "@monorepo/services/db-clients.js";
+import { adminPgQuery } from "@monorepo/services/db-clients/admin-pg-query.js";
 import { Effect } from "effect";
 
 export const dropDatabase = Effect.gen(function* () {

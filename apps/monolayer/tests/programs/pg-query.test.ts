@@ -1,4 +1,5 @@
-import { adminPgQuery, pgQuery } from "@monorepo/services/db-clients.js";
+import { adminPgQuery } from "@monorepo/services/db-clients/admin-pg-query.js";
+import { pgQuery } from "@monorepo/services/db-clients/pg-query.js";
 import dotenv from "dotenv";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
