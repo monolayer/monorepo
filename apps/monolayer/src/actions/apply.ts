@@ -2,85 +2,71 @@ import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { applyMigrations } from "@monorepo/programs/migrations/apply.js";
-import { rollback } from "@monorepo/programs/migrations/rollback.js";
+import { exit } from "node:process";
 import { cliAction } from "~monolayer/cli-action.js";
 
-export function applyCommands(program: Command) {
-	const apply = program.command("apply");
+type MigrationPhase = "all" | ChangesetPhase;
 
-	apply.description("Apply migration commands");
-
-	commandWithDefaultOptions({
-		name: "all",
-		program: apply,
+export function applyAction(program: Command) {
+	return commandWithDefaultOptions({
+		name: "apply",
+		program: program,
 	})
-		.description("migrate all pending migrations")
+		.description("Apply pending migrations")
+		.requiredOption(
+			"-p, --phase <name>",
+			"migration phase to apply. One of: `all`, `alter`, `contract`, `data`, or `expand`.",
+			(value) =>
+				["all", "alter", "contract", "data", "expand"].includes(value)
+					? (value as MigrationPhase)
+					: "none",
+		)
+		.option(
+			"-m, --migration <name>",
+			"named migration to apply. Can only be used when applying the `contract` phase.",
+		)
 		.action(async (opts) => {
-			await cliAction(
-				"Migrate all pending migrations (expand, alter, data, contract)",
-				opts,
-				[applyMigrations({ phase: "all" })],
-			);
+			if (
+				validPhase(opts.phase) &&
+				validMigrationName(opts.phase, opts.migration)
+			) {
+				const message =
+					opts.phase === "all"
+						? `Migrate all pending migrations (expand, alter, data, contract)`
+						: `Migrate pending ${opts.phase} migrations`;
+				await cliAction(message, opts, [
+					applyMigrations(applyOptions(opts.phase, opts.migration)),
+				]);
+			}
 		});
+}
 
-	commandWithDefaultOptions({
-		name: "alter",
-		program: apply,
-	})
-		.description("migrate pending alter migrations")
-		.action(async (opts) => {
-			await cliAction("Migrate pending alter migrations", opts, [
-				applyMigrations({
-					phase: ChangesetPhase.Alter,
-				}),
-			]);
-		});
+function validPhase(phase: MigrationPhase | "none"): phase is MigrationPhase {
+	if (phase === "none") {
+		console.log(
+			"error: invalid phase: should be one of `all`, `expand`, `alter`, `data`, `contract`.",
+		);
+		exit(1);
+	}
+	return true;
+}
 
-	commandWithDefaultOptions({
-		name: "contract",
-		program: apply,
-	})
-		.description("migrate pending contract migrations")
-		.option("-m, --migration <migration-name-name>", "migration name")
-		.action(async (opts) => {
-			await cliAction("Migrate pending contract migrations", opts, [
-				applyMigrations({
-					phase: ChangesetPhase.Contract,
-					migrationName: opts.migration,
-				}),
-			]);
-		});
-
-	commandWithDefaultOptions({
-		name: "expand",
-		program: apply,
-	})
-		.description("migrate pending expand migrations")
-		.action(async (opts) => {
-			await cliAction("Migrate pending expand migrations", opts, [
-				applyMigrations({ phase: ChangesetPhase.Expand }),
-			]);
-		});
-
-	commandWithDefaultOptions({
-		name: "data",
-		program: apply,
-	})
-		.description("migrate pending data migrations")
-		.action(async (opts) => {
-			await cliAction("Migrate pending data migrations", opts, [
-				applyMigrations({ phase: ChangesetPhase.Data }),
-			]);
-		});
-
-	commandWithDefaultOptions({
-		name: "rollback",
-		program: apply,
-	})
-		.description("rollback to a previous migration")
-		.action(async (opts) => {
-			await cliAction("Rollback to a previous migration", opts, [rollback]);
-		});
-
-	return apply;
+function validMigrationName(phase: MigrationPhase, migration?: string) {
+	if (phase !== "contract" && migration) {
+		console.log(
+			"error: invalid option: --migration is only allowed when phase is `contract`.",
+		);
+		exit(1);
+	}
+	return true;
+}
+function applyOptions(phase: MigrationPhase, migration?: string) {
+	return phase === "contract"
+		? {
+				phase: phase,
+				...(migration ? { migrationName: migration } : {}),
+			}
+		: {
+				phase,
+			};
 }
