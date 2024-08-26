@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "monolayer"
-  text: "A VitePress Site"
-  tagline: My great project tagline
+  text: "Database schema management for PostgreSQL"
+  tagline: Built with Kysely, integrates with Prisma.
   actions:
     - theme: brand
       text: What is monolayer?
@@ -21,11 +21,13 @@ hero:
       link: https://github.com/dunkelbraun/monolayer
 
 features:
-  - title: Feature A
+  - title: Declarative, type-safe schema definition
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  - title: Out-of-the box type-safe database clients without codegen
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
+  - title: Advanced Migration System
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
+  - title: Comprehensive Zod valudations
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
 
