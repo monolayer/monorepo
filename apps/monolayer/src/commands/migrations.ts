@@ -2,7 +2,7 @@ import type { Command } from "@commander-js/extra-typings";
 import { applyAction } from "~monolayer/actions/apply.js";
 import { generateAction } from "~monolayer/actions/generate.js";
 import { pendingAction } from "~monolayer/actions/pending.js";
-import { scaffoldCommands } from "~monolayer/actions/scaffold.js";
+import { scaffoldAction } from "~monolayer/actions/scaffold.js";
 
 export function migrationsCommand(program: Command) {
 	const migrations = program.command("migrations");
@@ -11,7 +11,7 @@ export function migrationsCommand(program: Command) {
 
 	pendingAction(migrations);
 	generateAction(migrations);
-	scaffoldCommands(migrations);
+	scaffoldAction(migrations);
 	applyAction(migrations);
 	return migrations;
 }

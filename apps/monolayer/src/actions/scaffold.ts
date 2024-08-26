@@ -2,76 +2,13 @@ import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { scaffoldMigration } from "@monorepo/programs/migrations/scaffold.js";
+import { exit } from "node:process";
 import { cliAction } from "~monolayer/cli-action.js";
 
-export function scaffoldCommands(program: Command) {
-	const scaffold = program.command("scaffold");
-
-	scaffold.description("Scaffold migration commands");
-
-	commandWithDefaultOptions({
-		name: "alter",
-		program: scaffold,
-	})
-		.option(
-			"-n, --no-transaction",
-			"configure migration not to run in a transaction",
-		)
-		.description(
-			`Creates an empty alter migration file.
-
-The migration will be configured to run in a transaction by default.
-
-If you want to configure the migration not to run in a transaction, use the --no-transaction flag.`,
-		)
-		.action(async (opts) => {
-			await cliAction("Scaffold alter migration", opts, [
-				scaffoldMigration(ChangesetPhase.Alter, opts.transaction),
-			]);
-		});
-
-	commandWithDefaultOptions({
-		name: "contract",
-		program: scaffold,
-	})
-		.description(
-			`Creates an empty contract migration file.
-
-The migration will be configured to run in a transaction by default.
-
-If you want to configure the migration not to run in a transaction, use the --no-transaction flag.`,
-		)
-		.option(
-			"-n, --no-transaction",
-			"configure migration not to run in a transaction",
-		)
-		.action(async (opts) => {
-			await cliAction("Scaffold contract migration", opts, [
-				scaffoldMigration(ChangesetPhase.Contract, opts.transaction),
-			]);
-		});
-
-	commandWithDefaultOptions({
-		name: "data",
-		program: scaffold,
-	})
-		.description(
-			`Creates an empty data migration file.
-
-The migration will be configured to run in a transaction by default.
-
-If you want to configure the migration to run in a transaction, use the --transaction flag.`,
-		)
-		.option("-t, --transaction", "configure migration to run in a transaction")
-		.action(async (opts) => {
-			await cliAction("Scaffold data migration", opts, [
-				scaffoldMigration(ChangesetPhase.Data, opts.transaction ?? false),
-			]);
-		});
-
-	commandWithDefaultOptions({
-		name: "expand",
-		program: scaffold,
+export function scaffoldAction(program: Command) {
+	return commandWithDefaultOptions({
+		name: "scaffold",
+		program: program,
 	})
 		.description(
 			`Creates an empty expand migration file.
@@ -80,15 +17,38 @@ The migration will be configured to run in a transaction by default.
 
 If you want to configure the migration not to run in a transaction, use the --no-transaction flag.`,
 		)
+		.requiredOption(
+			"-p, --phase <name>",
+			"Phase to scaffold (alter | contract | data | expand)",
+			(value) =>
+				["alter", "contract", "data", "expand"].includes(value)
+					? value
+					: "none",
+		)
 		.option(
 			"-n, --no-transaction",
 			"configure migration not to run in a transaction",
 		)
 		.action(async (opts) => {
-			await cliAction("Scaffold expand migration", opts, [
-				scaffoldMigration(ChangesetPhase.Expand, opts.transaction),
-			]);
+			if (validPhase(opts.phase)) {
+				await cliAction(`Scaffold ${opts.phase} migration`, opts, [
+					scaffoldMigration(opts.phase, opts.transaction),
+				]);
+			}
 		});
+}
 
-	return scaffold;
+function validPhase(phase: string): phase is ChangesetPhase {
+	if (phase === "none") {
+		console.log(
+			"error: invalid phase: should be one of `expand`, `alter`, `data`, `contract`.",
+		);
+		exit(1);
+	}
+	return [
+		ChangesetPhase.Alter.toString(),
+		ChangesetPhase.Contract.toString(),
+		ChangesetPhase.Data.toString(),
+		ChangesetPhase.Expand.toString(),
+	].includes(phase);
 }
