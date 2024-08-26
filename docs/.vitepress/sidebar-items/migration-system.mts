@@ -16,10 +16,6 @@ export const migrationSystem = {
 			link: "migration-system/applying-migrations",
 		},
 		{
-			text: "Deployment schema changes",
-			link: "migration-system/deployment-strategies",
-		},
-		{
 			text: "Migration warnings",
 			link: "migration-system/warnings",
 		},
