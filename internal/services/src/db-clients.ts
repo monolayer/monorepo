@@ -1,5 +1,6 @@
 import { appEnvironmentCamelCasePlugin } from "@monorepo/state/app-environment.js";
 import { Context, Effect, Layer } from "effect";
+import { gen } from "effect/Effect";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { connectionOptions } from "~services/db-clients/connection-options.js";
@@ -17,12 +18,10 @@ export type DbClientProperties = {
 export class DbClients extends Context.Tag("DbClients")<
 	DbClients,
 	DbClientProperties
->() {}
-
-export function dbClientsLayer() {
-	return Layer.effect(
+>() {
+	static readonly LiveLayer = Layer.effect(
 		DbClients,
-		Effect.gen(function* () {
+		gen(function* () {
 			const connectionOpts = yield* connectionOptions;
 			const pgPool = new pg.Pool({ connectionString: connectionOpts.app });
 			const pgAdminPool = new pg.Pool({
@@ -57,4 +56,42 @@ export function dbClientsLayer() {
 			};
 		}),
 	);
+
+	static readonly TestLayer = (
+		adminPool: pg.Pool,
+		databaseName: string,
+		camelCase = false,
+	) => {
+		const pool = new pg.Pool({
+			database: databaseName,
+			user: process.env.POSTGRES_USER,
+			password: process.env.POSTGRES_PASSWORD,
+			host: process.env.POSTGRES_HOST,
+			port: Number(process.env.POSTGRES_PORT ?? 5432),
+		});
+		return Layer.effect(
+			DbClients,
+			// eslint-disable-next-line require-yield
+			Effect.gen(function* () {
+				return {
+					pgPool: pool,
+					pgAdminPool: adminPool,
+					databaseName,
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					kysely: new Kysely<any>({
+						dialect: new PostgresDialect({
+							pool: pool,
+						}),
+						plugins: camelCase ? [new CamelCasePlugin()] : [],
+					}),
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					kyselyNoCamelCase: new Kysely<any>({
+						dialect: new PostgresDialect({
+							pool: pool,
+						}),
+					}),
+				};
+			}),
+		);
+	};
 }

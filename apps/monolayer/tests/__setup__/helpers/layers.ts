@@ -2,7 +2,7 @@ import type { PgDatabase } from "@monorepo/pg/database.js";
 import { phasedMigratorLayer } from "@monorepo/programs/phased-migrator.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import dotenv from "dotenv";
-import { Effect, Layer } from "effect";
+import { Layer } from "effect";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { env } from "process";
@@ -17,35 +17,6 @@ function pgPool(database?: string) {
 		host: env.POSTGRES_HOST,
 		port: Number(env.POSTGRES_PORT ?? 5432),
 	});
-}
-
-export function mockedDbClientsLayer(databaseName: string, camelCase = false) {
-	const pool = pgPool(databaseName);
-	return Layer.effect(
-		DbClients,
-		// eslint-disable-next-line require-yield
-		Effect.gen(function* () {
-			const adminPool = globalPool();
-			return {
-				pgPool: pool,
-				pgAdminPool: adminPool,
-				databaseName,
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				kysely: new Kysely<any>({
-					dialect: new PostgresDialect({
-						pool: pool,
-					}),
-					plugins: camelCase ? [new CamelCasePlugin()] : [],
-				}),
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				kyselyNoCamelCase: new Kysely<any>({
-					dialect: new PostgresDialect({
-						pool: pool,
-					}),
-				}),
-			};
-		}),
-	);
 }
 
 function mockedMigratorLayer(
@@ -74,6 +45,8 @@ export function testLayers(
 		migrationFolder,
 		database.camelCase,
 	).pipe(
-		Layer.provideMerge(mockedDbClientsLayer(databaseName, database.camelCase)),
+		Layer.provideMerge(
+			DbClients.TestLayer(globalPool(), databaseName, database.camelCase),
+		),
 	);
 }
