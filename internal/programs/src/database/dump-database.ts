@@ -1,5 +1,6 @@
 import * as p from "@clack/prompts";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
+import { PgExtension } from "@monorepo/pg/schema/extension.js";
 import { Schema } from "@monorepo/pg/schema/schema.js";
 import { connectionOptions } from "@monorepo/services/db-clients.js";
 import {
@@ -7,7 +8,7 @@ import {
 	appEnvironmentConfigurationSchemas,
 } from "@monorepo/state/app-environment.js";
 import { pathExists } from "@monorepo/utils/path.js";
-import { Effect } from "effect";
+import { gen, tryPromise } from "effect/Effect";
 import { execa } from "execa";
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
@@ -16,7 +17,7 @@ import { cwd, env } from "process";
 import { Writable, type WritableOptions } from "stream";
 import { pipeCommandStdoutToWritable } from "~programs/pipe-command-stdout-to-writable.js";
 
-export const dumpDatabaseStructureTask = Effect.gen(function* () {
+export const dumpDatabaseStructureTask = gen(function* () {
 	const pgDumpExists = yield* checkPgDumpExecutableExists;
 	const previousDumpExists = yield* pathExists(yield* databaseDumpPath);
 
@@ -34,25 +35,25 @@ export const dumpDatabaseStructureTask = Effect.gen(function* () {
 	yield* spinnerTask("Dump database structure", () => dumpDatabase);
 });
 
-export const dumpDatabase = Effect.gen(function* () {
+export const dumpDatabase = gen(function* () {
 	const path = yield* dumpDatabaseWithoutMigrationTables;
 	yield* appendMigrationDataToDump;
 	cleanDump(path);
 });
 
-export const dumpDatabaseWithoutMigrationTables = Effect.gen(function* () {
+export const dumpDatabaseWithoutMigrationTables = gen(function* () {
 	yield* setPgDumpEnv;
 	return yield* dumpStructure;
 });
 
-const checkPgDumpExecutableExists = Effect.gen(function* () {
-	return yield* Effect.tryPromise(async () => {
+const checkPgDumpExecutableExists = gen(function* () {
+	return yield* tryPromise(async () => {
 		const { stdout } = await execa("which", ["pg_dump"]);
 		return stdout !== "";
 	});
 });
 
-const databaseDumpPath = Effect.gen(function* () {
+const databaseDumpPath = gen(function* () {
 	const env = yield* appEnvironment;
 
 	return path.join(
@@ -63,7 +64,7 @@ const databaseDumpPath = Effect.gen(function* () {
 	);
 });
 
-const setPgDumpEnv = Effect.gen(function* () {
+const setPgDumpEnv = gen(function* () {
 	const connectionString = (yield* appEnvironment).currentDatabase
 		.connectionString;
 	const parsedConfig = pgConnectionString.parse(connectionString);
@@ -74,32 +75,42 @@ const setPgDumpEnv = Effect.gen(function* () {
 	return true;
 });
 
-const dumpStructure = Effect.gen(function* () {
-	const schemaArgs = (yield* appEnvironmentConfigurationSchemas)
-		.map((schema) => Schema.info(schema).name || "public")
-		.map((schema) => `--schema=${schema}`);
-
-	const database = (yield* connectionOptions).databaseName;
-
+const dumpStructure = gen(function* () {
 	const dumpPath = yield* databaseDumpPath;
-
 	mkdirSync(path.join(path.dirname(dumpPath)), {
 		recursive: true,
 	});
 
-	yield* Effect.tryPromise(async () =>
-		execa("pg_dump", [
-			"--schema-only",
-			"--no-privileges",
-			"--no-owner",
-			"--quote-all-identifiers",
-			...schemaArgs,
-			database,
-			`--file=${dumpPath}`,
-		]),
-	);
+	const dumpArgs = [
+		"--schema-only",
+		"--no-privileges",
+		"--no-owner",
+		"--quote-all-identifiers",
+		...(yield* extensionArgs),
+		...(yield* schemaArgs),
+		yield* databaseName,
+		`--file=${dumpPath}`,
+	];
 
+	yield* tryPromise(async () => execa("pg_dump", dumpArgs));
 	return dumpPath;
+});
+
+const databaseName = gen(function* () {
+	return (yield* connectionOptions).databaseName;
+});
+
+const schemaArgs = gen(function* () {
+	return (yield* appEnvironmentConfigurationSchemas)
+		.map((schema) => Schema.info(schema).name || "public")
+		.map((schema) => `--schema=${schema}`);
+});
+
+const extensionArgs = gen(function* () {
+	const appEnv = yield* appEnvironment;
+	return appEnv.currentDatabase.extensions.map(
+		(extension) => `--extension=${PgExtension.info(extension).name}`,
+	);
 });
 
 class InsertWritable extends Writable {
@@ -131,7 +142,7 @@ class InsertWritable extends Writable {
 	}
 }
 
-const appendMigrationDataToDump = Effect.gen(function* () {
+const appendMigrationDataToDump = gen(function* () {
 	yield* pipeCommandStdoutToWritable(
 		"pg_dump",
 		[
