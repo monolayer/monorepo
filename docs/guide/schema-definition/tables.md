@@ -1,6 +1,6 @@
 # Tables
 
-You can define a [`table`](./../glossary.md#table) with the [`table`](./../../reference/api/pg/functions/table.md) function.
+You can define a [`table`](./glossary.md#table) with the [`table`](./../../reference/api/pg/functions/table.md) function.
 
 ```ts
 import { table, text } from "monolayer/pg";

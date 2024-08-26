@@ -1,6 +1,6 @@
 # Indexes
 
-[Indexes](./../glossary.md#index) allow you to speed up the retrieval of data from a [table](./../glossary.md#table).
+[Indexes](./glossary.md#index) allow you to speed up the retrieval of data from a [table](./glossary.md#table).
 
 Index are defined with the [`index`](./../../reference/api/pg/functions/index.md) function.
 

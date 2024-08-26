@@ -1,6 +1,6 @@
 # Check constraints
 
-[Check constraints](./../../glossary.md#check-constraint) are defined in the constraints object of table definition using the [`check`](./../../../reference/api/pg/functions/check.md) function.
+[Check constraints](./../glossary.md#check-constraint) are defined in the constraints object of table definition using the [`check`](./../../../reference/api/pg/functions/check.md) function.
 
 ```ts
 import { integer, table, check } from "monolayer/pg";

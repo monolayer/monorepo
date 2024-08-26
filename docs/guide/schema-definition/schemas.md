@@ -1,6 +1,6 @@
 # Database Schemas
 
-Each [PostgreSQL](https://www.postgresql.org) [database](./../glossary.md#database) contains one or more named [schemas](./../glossary.md#schema) which contain tables and other database objects.
+Each [PostgreSQL](https://www.postgresql.org) [database](./glossary.md#database) contains one or more named [schemas](./glossary.md#schema) which contain tables and other database objects.
 
 Normally, every database in PostgreSQL contains a `public` schema by default.
 

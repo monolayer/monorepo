@@ -80,5 +80,9 @@ export const schemaDefinition = {
 			text: "Triggers",
 			link: "schema-definition/triggers",
 		},
+		{
+			text: "Glossary",
+			link: "schema-definition/glossary",
+		},
 	],
 };

@@ -1,6 +1,6 @@
 # Primary key
 
-The [primary key](./../../glossary.md#primary-key) is defined in the constraints object of table definition using the [`primaryKey`](./../../../reference/api/pg/functions/primaryKey.md) function.
+The [primary key](./../glossary.md#primary-key) is defined in the constraints object of table definition using the [`primaryKey`](./../../../reference/api/pg/functions/primaryKey.md) function.
 
 ## Single column
 

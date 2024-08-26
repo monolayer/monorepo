@@ -1,6 +1,6 @@
 # Extensions
 
-`monolayer` manages [extensions](./../glossary.md#extension) through the [`extensions`](./../../reference/api/pg/type-aliases/PgDatabaseConfig.md#extensions) property in your database definition.
+`monolayer` manages [extensions](./glossary.md#extension) through the [`extensions`](./../../reference/api/pg/type-aliases/PgDatabaseConfig.md#extensions) property in your database definition.
 
 You add an extension to your database by using the [`extension`](./../../reference/api/pg/functions/extension.md) function.
 
