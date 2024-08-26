@@ -11,12 +11,12 @@ export const recipes = {
 			link: "recipes/seed",
 		},
 		{
-			text: "Managing multiple schemas",
-			link: "recipes/multiple-schemas",
-		},
-		{
 			text: "Using multiple databases",
 			link: "recipes/multiple-databases",
+		},
+		{
+			text: "Using multiple database schemas",
+			link: "recipes/multiple-schemas",
 		},
 		{
 			text: "Generating custom migrations",
