@@ -2,8 +2,8 @@ import { PgDatabase } from "@monorepo/pg/database.js";
 import { text } from "@monorepo/pg/schema/column/data-types/text.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
 import { table } from "@monorepo/pg/schema/table.js";
-import { phasedMigratorLayer } from "@monorepo/programs/phased-migrator.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
+import { Migrator } from "@monorepo/services/migrator.js";
 import {
 	AppEnvironment,
 	type AppEnv,
@@ -108,7 +108,7 @@ function testLayers(context: TaskContext) {
 			};
 		}),
 	);
-	return phasedMigratorLayer({
+	return Migrator.LiveLayer({
 		client: db,
 		migrationFolder: migrationFolder(context),
 	}).pipe(Layer.provideMerge(dbClientsLayer));

@@ -45,7 +45,7 @@ import path from "node:path";
 import nunjucks from "nunjucks";
 import color from "picocolors";
 import { cwd } from "process";
-import { extractMigrationOps } from "~programs/extract-migration-ops.js";
+import { extractMigrationOps } from "~services/migrator/extract-migration-ops.js";
 
 export class PhasedMigrator implements MigratorInterface {
 	protected readonly alterInstance: MonolayerMigrator;

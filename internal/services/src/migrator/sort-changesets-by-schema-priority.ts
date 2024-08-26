@@ -1,6 +1,6 @@
 import type { Changeset } from "@monorepo/pg/changeset/types.js";
 import { Effect } from "effect";
-import { schemaDependencies } from "~programs/dependencies.js";
+import { schemaDependencies } from "~services/migrator/dependencies.js";
 
 export function sortChangesetsBySchemaPriority(
 	changeset: Changeset[],

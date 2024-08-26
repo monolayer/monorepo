@@ -2,8 +2,8 @@ import {
 	MigrationOpPriority,
 	type Changeset,
 } from "@monorepo/pg/changeset/types.js";
-import { sortChangesetsBySchemaPriority } from "@monorepo/services/migrator/sort-changesets-by-schema-priority.js";
 import { Effect } from "effect";
+import { sortChangesetsBySchemaPriority } from "~services/migrator/sort-changesets-by-schema-priority.js";
 
 export function extractMigrationOps(changesets: Changeset[]) {
 	return Effect.gen(function* () {

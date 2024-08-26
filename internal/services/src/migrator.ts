@@ -8,11 +8,22 @@ import type {
 	Changeset,
 	ChangesetPhase,
 } from "@monorepo/pg/changeset/types.js";
-import type { AppEnvironment } from "@monorepo/state/app-environment.js";
-import { Context, Effect } from "effect";
+import {
+	appEnvironmentMigrationsFolder,
+	type AppEnvironment,
+} from "@monorepo/state/app-environment.js";
+import { Context, Effect, Layer } from "effect";
 import type { UnknownException } from "effect/Cause";
-import type { Kysely, MigrationResultSet, NoMigrations } from "kysely";
-import type { DbClients } from "~services/db-clients.js";
+import {
+	CamelCasePlugin,
+	Kysely,
+	MigrationResultSet,
+	NoMigrations,
+	PostgresDialect,
+} from "kysely";
+import { DbClients } from "~services/db-clients.js";
+import { PhasedMigrator } from "~services/migrator/phased-migrator.js";
+import { databasePoolFromEnvironment } from "~services/pg-pool.js";
 
 export interface MigrationStats {
 	all: MonolayerMigrationInfo[];
@@ -77,7 +88,33 @@ export type MigratorInterface = {
 export class Migrator extends Context.Tag("Migrator")<
 	Migrator,
 	MigratorInterface
->() {}
+>() {
+	static readonly LiveLayer = (props?: MigratorLayerProps) =>
+		Layer.effect(
+			Migrator,
+			Effect.gen(function* () {
+				const folder =
+					props?.migrationFolder ?? (yield* appEnvironmentMigrationsFolder);
+				const db = props?.client ?? (yield* DbClients).kysely;
+				return new PhasedMigrator(db, folder);
+			}),
+		);
+	static readonly TestLayer = (
+		databaseName: string,
+		migrationFolder: string,
+		camelCase = false,
+	) => {
+		const pool = databasePoolFromEnvironment(databaseName);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const db = new Kysely<any>({
+			dialect: new PostgresDialect({
+				pool: pool,
+			}),
+			plugins: camelCase ? [new CamelCasePlugin()] : [],
+		});
+		return Migrator.LiveLayer({ client: db, migrationFolder });
+	};
+}
 
 export interface MigratorLayerProps {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

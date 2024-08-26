@@ -10,9 +10,8 @@ import {
 	cliActionFailureOutro,
 	cliActionSuccessOutro,
 } from "@monorepo/cli/outros.js";
-import { phasedMigratorLayer } from "@monorepo/programs/phased-migrator.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
-import type { Migrator } from "@monorepo/services/migrator.js";
+import { Migrator } from "@monorepo/services/migrator.js";
 import type { ProgramContext } from "@monorepo/services/program-context.js";
 import {
 	AppEnvironment,
@@ -41,7 +40,7 @@ export async function cliAction(
 	).then(cliActionSuccessOutro, cliActionFailureOutro);
 }
 
-export const layers = phasedMigratorLayer().pipe(
+export const layers = Migrator.LiveLayer().pipe(
 	Layer.provideMerge(DbClients.LiveLayer),
 );
 
