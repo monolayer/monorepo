@@ -8,7 +8,7 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
 	title: "monolayer",
-	description: "A VitePress Site",
+	description: "Database schema management for PostgreSQL",
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config
 		nav: [
