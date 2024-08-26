@@ -26,5 +26,13 @@ export const recipes = {
 			text: "Extending Zod validations",
 			link: "recipes/extending-zod",
 		},
+		{
+			text: "Using existing databases",
+			link: "recipes/using-existing-databases",
+		},
+		{
+			text: "Expand and contract patterns",
+			link: "recipes/expand-and-contract",
+		},
 	],
 };

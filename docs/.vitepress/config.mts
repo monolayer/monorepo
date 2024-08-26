@@ -36,6 +36,14 @@ export default withMermaid({
 					},
 					schemaDefinition,
 					migrationSystem,
+					{
+						text: "Generated types",
+						link: "generated-types",
+					},
+					{
+						text: "Validations with Zod",
+						link: "zod-validations",
+					},
 					recipes,
 					{
 						text: "Command Line Interface",
