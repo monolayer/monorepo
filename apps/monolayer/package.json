@@ -39,7 +39,7 @@
 			"require": "./dist/cjs/migration.js"
 		},
 		"./zod": {
-			"types": "./dist/zod.d.ts",
+			"types": "./dist/esm/zod.d.ts",
 			"default": "./dist/esm/zod.js",
 			"require": "./dist/cjs/zod.js"
 		}
