@@ -11,6 +11,9 @@ hero:
       text: What is monolayer?
       link: /guide/introduction/what-is-monolayer
     - theme: alt
+      text: Features
+      link: /guide/introduction/features
+    - theme: alt
       text: Quickstart
       link: /guide/introduction/installation
     - theme: alt

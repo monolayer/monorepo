@@ -7,6 +7,10 @@ export const introduction = {
 			link: "introduction/what-is-monolayer",
 		},
 		{
+			text: "Features",
+			link: "introduction/features",
+		},
+		{
 			text: "Quickstart",
 			collapsed: false,
 			items: [
