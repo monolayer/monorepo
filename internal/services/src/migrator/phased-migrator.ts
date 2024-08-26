@@ -23,13 +23,6 @@ import {
 	ChangesetPhase,
 } from "@monorepo/pg/changeset/types.js";
 import type { ChangeWarning } from "@monorepo/pg/changeset/warnings/warnings.js";
-import { DbClients } from "@monorepo/services/db-clients.js";
-import {
-	type MigrationStats,
-	Migrator,
-	type MigratorInterface,
-	type MigratorLayerProps,
-} from "@monorepo/services/migrator.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
 import { createFile } from "@monorepo/utils/create-file.js";
 import { dateStringWithMilliseconds } from "@monorepo/utils/date-string.js";
@@ -45,6 +38,13 @@ import path from "node:path";
 import nunjucks from "nunjucks";
 import color from "picocolors";
 import { cwd } from "process";
+import { DbClients } from "~services/db-clients.js";
+import {
+	type MigrationStats,
+	Migrator,
+	type MigratorInterface,
+	type MigratorLayerProps,
+} from "~services/migrator.js";
 import { extractMigrationOps } from "~services/migrator/extract-migration-ops.js";
 
 export class PhasedMigrator implements MigratorInterface {

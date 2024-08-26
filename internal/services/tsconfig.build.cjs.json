@@ -16,13 +16,15 @@
 			"@monorepo/cli/*": ["../cli/src/*"],
 			"@monorepo/migrator/*": ["../migrator/src/*"],
 			"@monorepo/pg/*": ["../pg/src/*"],
-			"@monorepo/state/*": ["../state/src/*"]
+			"@monorepo/state/*": ["../state/src/*"],
+			"@monorepo/utils/*": ["../utils/src/*"]
 		}
 	},
 	"references": [
 		{ "path": "../cli" },
 		{ "path": "../migrator" },
 		{ "path": "../pg" },
-		{ "path": "../state" }
+		{ "path": "../state" },
+		{ "path": "../utils" }
 	]
 }

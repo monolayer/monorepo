@@ -17,6 +17,7 @@
 		{ "path": "../cli" },
 		{ "path": "../migrator" },
 		{ "path": "../pg" },
-		{ "path": "../state" }
+		{ "path": "../state" },
+		{ "path": "../utils" }
 	]
 }
