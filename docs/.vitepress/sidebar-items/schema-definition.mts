@@ -36,6 +36,10 @@ export const schemaDefinition = {
 					link: "schema-definition/columns/constraints",
 				},
 				{
+					text: "Enumerated Types",
+					link: "schema-definition/columns/enumerated-types",
+				},
+				{
 					text: "Other data types",
 					link: "schema-definition/columns/other-data-types",
 				},
