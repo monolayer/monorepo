@@ -29,14 +29,16 @@ describe("pgQuery", () => {
 	});
 
 	test<ProgramContext>("other configuration", async (context) => {
-		process.env.MONO_PG_STATS_DATABASE_URL = `postgresql://postgres:postgres@localhost:5440/${context.dbName}_stats`;
+		process.env.MONO_PG_STATS_DATABASE_URL = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${context.dbName}_stats`;
 
 		expect(await currentDatabase("stats")).toStrictEqual([
 			{ current_database: "a93d7f8a_stats" },
 		]);
 	});
 
-	test("admin configurations connect to 'postgres'", async () => {
+	test<ProgramContext>("admin configurations connect to 'postgres'", async (context) => {
+		process.env.MONO_PG_STATS_DATABASE_URL = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${context.dbName}_stats`;
+
 		expect(await currentDatabaseAsAdmin("default")).toStrictEqual([
 			{ current_database: "postgres" },
 		]);

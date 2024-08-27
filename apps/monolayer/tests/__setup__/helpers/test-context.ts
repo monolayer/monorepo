@@ -128,7 +128,7 @@ export async function setupProgramContext(
 	});
 	context.pool = globalPool();
 	context.dbName = dbNameForTest(context);
-	process.env.MONO_PG_DEFAULT_DATABASE_URL = `postgresql://postgres:postgres@localhost:5440/${context.dbName}`;
+	process.env.MONO_PG_DEFAULT_DATABASE_URL = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${context.dbName}`;
 	await context.pool.query(`DROP DATABASE IF EXISTS "${context.dbName}"`);
 	await context.pool.query(`DROP DATABASE IF EXISTS "${context.dbName}_test"`);
 	await context.pool.query(`DROP DATABASE IF EXISTS "${context.dbName}_stats"`);

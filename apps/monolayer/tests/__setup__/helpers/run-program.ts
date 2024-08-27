@@ -28,7 +28,7 @@ export async function programWithContextAndServices<
 			layer ?? layers,
 		);
 	} catch (error) {
-		console.dir(error);
+		console.dir(error, { depth: null });
 		process.exit(1);
 	}
 }

@@ -79,7 +79,9 @@ export async function loadImportSchemaEnv() {
 
 const envLoadSuccess = (result: AppEnv) => result;
 
-const envLoadFailure = () => {
+const envLoadFailure = (error: unknown) => {
+	p.log.error(color.red("Error"));
+	p.log.message(JSON.stringify(error, null, 2));
 	p.outro(`${color.red("Failed")}`);
 	exit(1);
 };
