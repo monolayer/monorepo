@@ -1,5 +1,7 @@
 import type { Difference } from "microdiff";
 import microdiff from "microdiff";
+import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
+import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
 import { type ExtensionInfo } from "../../introspection/extension.js";
 import { executeKyselyDbStatement } from "../helpers/helpers.js";
 import {
@@ -84,6 +86,13 @@ function dropExtensionMigration(diff: DropExtensionDiff) {
 			executeKyselyDbStatement(
 				`CREATE EXTENSION IF NOT EXISTS ${extensionName};`,
 			),
+		],
+		warnings: [
+			{
+				type: ChangeWarningType.Destructive,
+				code: ChangeWarningCode.ExtensionDrop,
+				extensionName: extensionName,
+			},
 		],
 		schemaName: null,
 	};

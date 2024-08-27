@@ -13,11 +13,11 @@ export const render = (changeset: Changeset[]) =>
 		flatMap(([migrator, migrationName]) =>
 			migrator.renderChangesets(changeset, migrationName),
 		),
-		tap(() => {
+		tap(() =>
 			printWarnings(
 				changeset.flatMap((c) => (c.warnings !== undefined ? c.warnings : [])),
-			);
-		}),
+			),
+		),
 		tap((migration) =>
 			forEach(migration, (migration) =>
 				p.log.info(`Generated migration: ${migration}`),

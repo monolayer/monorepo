@@ -10,6 +10,7 @@ import type { ChangeColumnType } from "~pg/changeset/warnings/change-column-type
 import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
 import type { ColumnDrop } from "~pg/changeset/warnings/column-drop.js";
 import type { ColumnRename } from "~pg/changeset/warnings/column-rename.js";
+import type { ExtensionDrop } from "~pg/changeset/warnings/extension-drop.js";
 import type { SchemaDrop } from "~pg/changeset/warnings/schema-drop.js";
 import type { TableDrop } from "~pg/changeset/warnings/table-drop.js";
 import type { TableRename } from "~pg/changeset/warnings/table-rename.js";
@@ -27,7 +28,8 @@ export type DestructiveChange =
 	| SchemaDrop
 	| TableDrop
 	| ColumnDrop
-	| TriggerDrop;
+	| TriggerDrop
+	| ExtensionDrop;
 
 export type BlockingChange =
 	| ChangeColumnType
@@ -56,6 +58,7 @@ export function classifyWarnings(warnings: ChangeWarning[]) {
 				case ChangeWarningCode.ColumnDrop:
 				case ChangeWarningCode.SchemaDrop:
 				case ChangeWarningCode.TriggerDrop:
+				case ChangeWarningCode.ExtensionDrop:
 					acc.destructive = [...acc.destructive, warning];
 					break;
 				case ChangeWarningCode.ChangeColumnType:

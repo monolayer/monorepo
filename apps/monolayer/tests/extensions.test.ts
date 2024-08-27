@@ -87,6 +87,13 @@ describe("Database migrations", () => {
 				down: [
 					["await sql`CREATE EXTENSION IF NOT EXISTS cube;`", "execute(db);"],
 				],
+				warnings: [
+					{
+						code: "D005",
+						extensionName: "cube",
+						type: "destructive",
+					},
+				],
 			},
 			{
 				priority: 6004,
@@ -103,6 +110,13 @@ describe("Database migrations", () => {
 						"await sql`CREATE EXTENSION IF NOT EXISTS btree_gist;`",
 						"execute(db);",
 					],
+				],
+				warnings: [
+					{
+						code: "D005",
+						extensionName: "btree_gist",
+						type: "destructive",
+					},
 				],
 			},
 		];
