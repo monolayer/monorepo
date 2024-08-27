@@ -255,7 +255,10 @@ function printDestructiveWarnings(warnings: DestructiveChange[]) {
 		}),
 		notes: [
 			"These changes may result in a data loss and will prevent existing applications",
-			"that rely on the dropped objects from functioning correctly.",
+			"that rely on the dropped objects from functioning correctly.\n",
+			"These changes have been added to the `contract` phase of the migration process and",
+			"you can avoid disrupting existing applications by applying the `contract` phase",
+			"after making sure that no existing clients are using the dropped objects.",
 		],
 	});
 }
