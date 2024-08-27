@@ -22,12 +22,12 @@ hero:
 
 features:
   - title: Declarative, type-safe schema definition
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  - title: Out-of-the box type-safe database clients without codegen
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: Easy to write, read, and reason about it.
+  - title: Type-safe database clients without codegen
+    details: Types are inferred from your schema definition.
   - title: Advanced Migration System
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Comprehensive Zod valudations
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: Non-blocking migrations by default, migrations by phases, and detailed warnings.
+  - title: Comprehensive Zod validations
+    details: Validate incoming data before inserting it to the database.
 ---
 
