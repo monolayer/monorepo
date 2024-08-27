@@ -1126,6 +1126,14 @@ describe("Table drop migrations", () => {
 						"execute(db);",
 					],
 				],
+				warnings: [
+					{
+						code: "D004",
+						schema: "public",
+						table: "users",
+						type: "destructive",
+					},
+				],
 			},
 			{
 				priority: 1006,

@@ -251,6 +251,9 @@ function printDestructiveWarnings(warnings: DestructiveChange[]) {
 				case ChangeWarningCode.ColumnDrop:
 				case `${ChangeWarningCode.ColumnDrop}`:
 					return `- Dropped column '${color.underline(warning.column)}' ${color.gray(`(table: '${warning.table}' schema: '${warning.schema}')`)}`;
+				case ChangeWarningCode.TriggerDrop:
+				case `${ChangeWarningCode.TriggerDrop}`:
+					return `- Dropped trigger on table '${warning.table}' ${color.gray(`(schema: '${warning.schema}')`)}`;
 			}
 		}),
 		notes: [

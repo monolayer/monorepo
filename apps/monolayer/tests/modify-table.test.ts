@@ -5037,6 +5037,14 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 							"execute(db);",
 						],
 					],
+					warnings: [
+						{
+							code: "D004",
+							schema: "public",
+							table: "users",
+							type: "destructive",
+						},
+					],
 				},
 				{
 					priority: 1001,
@@ -5056,6 +5064,14 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 							"await sql`CREATE OR REPLACE TRIGGER users_9463c7cd_monolayer_trg AFTER UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION moddatetime('updatedat')`",
 							"execute(db);",
 						],
+					],
+					warnings: [
+						{
+							code: "D004",
+							schema: "public",
+							table: "users",
+							type: "destructive",
+						},
 					],
 				},
 			];
@@ -5135,6 +5151,14 @@ EXECUTE FUNCTION moddatetime("updatedAt")\``,
 							'await sql`DROP TRIGGER users_c2304485_monolayer_trg ON "public"."users"`',
 							"execute(db);",
 						],
+					],
+					warnings: [
+						{
+							code: "D004",
+							schema: "public",
+							table: "users",
+							type: "destructive",
+						},
 					],
 				},
 				{

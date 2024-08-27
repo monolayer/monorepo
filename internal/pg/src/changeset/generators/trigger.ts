@@ -9,6 +9,8 @@ import {
 	ChangesetType,
 	MigrationOpPriority,
 } from "~pg/changeset/types.js";
+import { ChangeWarningType } from "~pg/changeset/warnings/change-warning-type.js";
+import { ChangeWarningCode } from "~pg/changeset/warnings/codes.js";
 import { currentTableName } from "~pg/introspection/introspection/table-name.js";
 
 export function triggerMigrationOpGenerator(diff: Difference) {
@@ -189,6 +191,14 @@ function dropTriggerFirstMigration(
 			tableName: tableName,
 			currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 			type: ChangesetType.DropTrigger,
+			warnings: [
+				{
+					type: ChangeWarningType.Destructive,
+					code: ChangeWarningCode.TriggerDrop,
+					schema: schemaName,
+					table: currentTableName(tableName, tablesToRename, schemaName),
+				},
+			],
 			up: droppedTables.includes(tableName)
 				? [[]]
 				: [
@@ -224,6 +234,14 @@ function dropTriggerMigration(
 		tableName: tableName,
 		currentTableName: currentTableName(tableName, tablesToRename, schemaName),
 		type: ChangesetType.DropTrigger,
+		warnings: [
+			{
+				type: ChangeWarningType.Destructive,
+				code: ChangeWarningCode.TriggerDrop,
+				schema: schemaName,
+				table: currentTableName(tableName, tablesToRename, schemaName),
+			},
+		],
 		up: [
 			executeKyselyDbStatement(
 				`DROP TRIGGER ${triggerName} ON "${schemaName}"."${tableName}"`,

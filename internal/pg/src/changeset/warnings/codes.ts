@@ -4,6 +4,7 @@ export enum ChangeWarningCode {
 	SchemaDrop = "D001",
 	TableDrop = "D002",
 	ColumnDrop = "D003",
+	TriggerDrop = "D004",
 	ChangeColumnType = "B001",
 	AddVolatileDefault = "B002",
 	AddSerialColumn = "B003",

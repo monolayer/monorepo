@@ -13,6 +13,7 @@ import type { ColumnRename } from "~pg/changeset/warnings/column-rename.js";
 import type { SchemaDrop } from "~pg/changeset/warnings/schema-drop.js";
 import type { TableDrop } from "~pg/changeset/warnings/table-drop.js";
 import type { TableRename } from "~pg/changeset/warnings/table-rename.js";
+import type { TriggerDrop } from "~pg/changeset/warnings/trigger-drop.js";
 
 export type ChangeWarning =
 	| BackwardIncompatibleChange
@@ -22,7 +23,11 @@ export type ChangeWarning =
 
 export type BackwardIncompatibleChange = TableRename | ColumnRename;
 
-export type DestructiveChange = SchemaDrop | TableDrop | ColumnDrop;
+export type DestructiveChange =
+	| SchemaDrop
+	| TableDrop
+	| ColumnDrop
+	| TriggerDrop;
 
 export type BlockingChange =
 	| ChangeColumnType
@@ -50,6 +55,7 @@ export function classifyWarnings(warnings: ChangeWarning[]) {
 				case ChangeWarningCode.TableDrop:
 				case ChangeWarningCode.ColumnDrop:
 				case ChangeWarningCode.SchemaDrop:
+				case ChangeWarningCode.TriggerDrop:
 					acc.destructive = [...acc.destructive, warning];
 					break;
 				case ChangeWarningCode.ChangeColumnType:
