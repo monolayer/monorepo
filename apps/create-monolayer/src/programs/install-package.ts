@@ -15,7 +15,7 @@ export function installPackages(packagesToInstall: PackageToInstall[]) {
 	return gen(function* () {
 		const env = yield* PackageManagerState.current;
 		const s = p.spinner();
-		s.start(`Installing monolayer...`);
+		s.start(`Installing monolayer and dependencies...`);
 
 		for (const packageToInstall of packagesToInstall) {
 			const check = yield* checkPackageInstallation(packageToInstall.name);
@@ -42,6 +42,6 @@ export function installPackages(packagesToInstall: PackageToInstall[]) {
 				});
 			}
 		}
-		s.stop(`Installing monolayer... ${color.green("✓")}`);
+		s.stop(`Installed monolayer and dependencies. ${color.green("✓")}`);
 	});
 }
