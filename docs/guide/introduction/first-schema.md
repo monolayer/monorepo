@@ -141,7 +141,7 @@ In order for the trigger to work, we need to add the [`moddatetime`](https://www
 ```ts [databases.ts]
 import { defineDatabase, extension } from "monolayer/pg";
 import { dbSchema } from "./schema";
-import { dbSeed } from "./seed.js";
+import { dbSeed } from "./seed";
 
 export default defineDatabase({
   schemas: [dbSchema],
@@ -206,10 +206,10 @@ The folder `monolayer` **SHOULD BE** added to version control.
 Now we'll apply the migrations to the database:
 
 ```bash [Command]
-npx monolayer migrations apply all
+npx monolayer migrations apply --phase all
 ```
 
-The command should output something like:
+The command should output something similar to the following:
 
 ```text
 ┌  Migrate all pending migrations (expand, alter, data, contract)
