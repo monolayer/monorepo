@@ -3,6 +3,7 @@ name: monolayer
 on:
   push:
     paths:
+      - ".github/workflows/monolayer.yml"
       - "apps/monolayer/**"
       - "internal/**"
 
@@ -20,6 +21,23 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
       - name: Run check
         run: npx turbo check
+
+  testpg:
+    needs: [check]
+    name: Test pg
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run pg tests
+        run: npm run test -w internal/pg
