@@ -99,14 +99,14 @@ export function printChangesetSummary(changeset: Changeset[]) {
 	p.log.info(color.underline("Change Summary:"));
 	p.log.message(render);
 
-	printWarnigns(
+	printWarnings(
 		changeset
 			.flatMap((c) => c.warnings)
 			.filter((c): c is ChangeWarning => c !== undefined),
 	);
 }
 
-export function printWarnigns(warnings: ChangeWarning[]) {
+export function printWarnings(warnings: ChangeWarning[]) {
 	const warningsByCode = classifyWarnings(warnings);
 	printTableRenameWarnings(warningsByCode.tableRename);
 	printColumnRenameWarnings(warningsByCode.columnRename);

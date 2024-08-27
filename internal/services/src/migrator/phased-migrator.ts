@@ -17,7 +17,7 @@ import {
 	MonolayerMigrator,
 	NO_MIGRATIONS,
 } from "@monorepo/migrator/migrator.js";
-import { printWarnigns } from "@monorepo/pg/changeset/summary.js";
+import { printWarnings } from "@monorepo/pg/changeset/summary.js";
 import {
 	type Changeset,
 	ChangesetPhase,
@@ -310,7 +310,7 @@ export class PhasedMigrator implements MigratorInterface {
 	}
 
 	#printWarnings(pendingMigrations: MonolayerMigrationInfo[]) {
-		printWarnigns(
+		printWarnings(
 			pendingMigrations
 				.flatMap((c) => c.warnings)
 				.filter((c): c is ChangeWarning => c !== undefined),
