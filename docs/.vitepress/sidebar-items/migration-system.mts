@@ -16,10 +16,6 @@ export const migrationSystem = {
 			link: "migration-system/applying-migrations",
 		},
 		{
-			text: "Migration warnings",
-			link: "migration-system/warnings",
-		},
-		{
 			text: "Seeding your database",
 			link: "migration-system/seeding",
 		},
