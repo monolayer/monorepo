@@ -15,7 +15,6 @@
 		"test": "NO_COLOR=1 vitest tests --run"
 	},
 	"dependencies": {
-		"@config/testing": "*",
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
 		"@monorepo/utils": "*",

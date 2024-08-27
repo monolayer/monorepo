@@ -109,7 +109,6 @@
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.15.4",
-		"@config/testing": "*",
 		"@monorepo/cli": "*",
 		"@monorepo/configuration": "*",
 		"@monorepo/eslint-config": "*",
