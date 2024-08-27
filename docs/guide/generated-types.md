@@ -1,7 +1,7 @@
 # Generated Types
 
 
-Each column in a schema has a Typescript type for type-safe select, insert, and update queries with [`Kysely`](https://kysely.dev).
+Each column in a schema has a TypeScript type for type-safe select, insert, and update queries with [`Kysely`](https://kysely.dev).
 
 Types for a schema can be retrieved using the `infer` method on the schema.
 

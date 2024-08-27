@@ -55,9 +55,9 @@ export class Schema<T extends TableRecord, S extends string> {
 	 * Infers types for select, insert and update operations, taking into account the
 	 * column data type, constraints, generated values, and default data values.
 	 *
-	 * **Typescript Types**
+	 * **TypeScript Types**
 	 *
-	 * Each column has a Typescript type for its select, insert, and update operations:
+	 * Each column has a TypeScript type for its select, insert, and update operations:
 	 * | Column                | Select       | Insert                                                          | Update|
 	 * | :---                  | :----:       | :----:                                                          | :----:|
 	 * | bigint                | `string`     | &#160;&#160;`bigint` &#124; `number` &#124; `string`&#160;&#160;| &#160;&#160;`bigint` &#124; `number` &#124; `string`&#160;&#160;|
@@ -224,9 +224,9 @@ export class Schema<T extends TableRecord, S extends string> {
 	 * Infers types for select, insert and update operations, taking into account the
 	 * database schema, column data type, constraints, generated values, and default data values.
 	 *
-	 * **Typescript Types**
+	 * **TypeScript Types**
 	 *
-	 * Each column has a Typescript type for its select, insert, and update operations:
+	 * Each column has a TypeScript type for its select, insert, and update operations:
 	 * | Column                | Select       | Insert                                                          | Update|
 	 * | :---                  | :----:       | :----:                                                          | :----:|
 	 * | bigint                | `string`     | &#160;&#160;`bigint` &#124; `number` &#124; `string`&#160;&#160;| &#160;&#160;`bigint` &#124; `number` &#124; `string`&#160;&#160;|

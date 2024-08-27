@@ -33,7 +33,7 @@ const usersZodSchema = zodSchema(users);
 
 ## Schema Types
 
-Each column has a Typescript type for input and output values (parsed) in the schema.
+Each column has a TypeScript type for input and output values (parsed) in the schema.
 The output values match the select type for the column(except `bytea` columns *)
 
 (*) Since [Buffer](https://nodejs.org/api/buffer.html) is a Node.js API, the schema will not coerce the input to Buffer for browser compatibility.

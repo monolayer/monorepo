@@ -107,7 +107,7 @@ import { isXMLColumn, xmlSchema } from "~pg/schema/zod/column-schemas/xml.js";
  *
  * **Schema Types**
  *
- * Each column has a Typescript type for input and output values (parsed) in the schema.
+ * Each column has a TypeScript type for input and output values (parsed) in the schema.
  * The output values match the select type for the column(except `bytea` columns *)
  *
  *
