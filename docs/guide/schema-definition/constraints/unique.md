@@ -34,11 +34,11 @@ export const users = table({
 });
 ```
 
-## With NULLS NOT DISTINCT
+## With `NULLS NOT DISTINCT`
 
 Since `NULL` values are not considered equal to each other, multiple duplicated rows with `NULL` values on the constrained column(s) are allowed to exist without violating the unique constraint.
 
-If you want to prevent this, you can use the `nullsNotDistinct` consider null values `NOT DISTINCT`.
+If you want to prevent this, you can use the `nullsNotDistinct` to consider null values `NOT DISTINCT`.
 
 ```ts
 import { table, text, unique } from "monolayer/pg";

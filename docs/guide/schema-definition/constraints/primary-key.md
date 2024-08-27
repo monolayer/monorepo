@@ -18,7 +18,7 @@ export const users = table({
 });
 ```
 
-## Mutipliple columns
+## Multiple columns
 
 ```ts
 import { integer, primaryKey, table } from "monolayer/pg";

@@ -87,7 +87,7 @@ The default action for a foreign key is  `NO ACTION`.
 
 Read more about foreign keys in [PostgreSQL - Foreign Keys](https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK)
 
-Use the modifiers `deleteRule` and `updateRule` to specify the foreign key actions
+Use the modifiers `deleteRule` and `updateRule` to specify the foreign key actions:
 
 ```ts
 
