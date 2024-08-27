@@ -42,7 +42,7 @@ If your deployment pipeline runs as usual, the column will be dropped before the
 
 
 #### Approach 1: release management
-One way to avoid disrupting your deployment pipeline is to split the deployment into two separate stages:
+One way to avoid disrupting your deployment pipeline is to split the release into two separate stages:
 1. Deploy the updated application code that no longer references the column.
 2. Deploy the migration to drop the column.
 
@@ -53,24 +53,24 @@ While this approach is effective, it increases the complexity of the development
 
 #### Approach 2: develop tooling on top of your database migration tool
 
-Another approach would be to modify your deployment pipeline to either migrations to be performed only after the deployment. However, this approach requires you to build and maintain custom tools. It's really tempting to understimate the effort needed to design and build that kind of tooling:
+Another approach is to modify your deployment pipeline so that certain migrations are applied only after the deployment. However, this approach requires you to build and maintain custom tools. It's really tempting to understimate the effort needed to design and build that kind of tooling:
 - Does my database migration tool support running single migrations?
 - How do you identify migrations that must be executed after application deploy?
 - If migrations are split into pre-app-deployment and post-app-deployment phases, do you want to apply all pending migrations or flag specific ones?
 
 #### Approach 3: Minimize downtime impact
 
-A third approach is to schedule the application deployment during off-peak hours when disruptions are less impactful. This minimizes the impact of downtime but may not fully eliminate it.
+A third approach is to schedule the release during off-peak hours when disruptions are less impactful. This minimizes the impact of downtime but may not fully eliminate it.
 
 ## The monolayer approach
 
 With `monolayer`, ypu can safely deploy without downtime the column drop.
 
-When you generate a migration to drop the column from the database, `monolayer` will automatically categorizes the migration as a **Contract** migration.
+When you generate a migration to drop the column from the database, `monolayer` will automatically categorize the migration as a **Contract** migration.
 
 At deploy time, you can granularly control which migrations are applied, allowing you to:
-- Apply the necessary migrations for the new application version (`expand`, `alter`, `data`)
-- Skip the migration to drop the column to the a point in time when the column drop is no longer beign accessed. (`contract`)
+- Apply the necessary migrations for the new application version (`expand`, `alter`, `data`).
+- Skip the migration to drop the column to the a point in time when the column is no longer being accessed. (`contract`).
 
 Your typical deployment pipeline will change to look like this:
 
@@ -88,7 +88,7 @@ flowchart LR;
 ```
 
 
-This deployment loop can be applied over and over again, allowing you to continuously evolve your database schema and integrate "expand and contract" migration patterns seamlessly in your workflow.
+This deployment loop can be applied over and over again, and it allows you to continuously evolve your database schema and integrate "expand and contract" migration patterns seamlessly in your workflow.
 
 Also, with the ability to apply a single contract migration with `migrations apply contract single`, you can start build a custom logic on top of it (i.e. contract all migrations that are older than a certain date).
 

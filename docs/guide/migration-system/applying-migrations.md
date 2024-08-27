@@ -5,7 +5,7 @@
 You can apply all pending migrations with the following command:
 
 ```bash
-npx monolayer migrations apply all
+npx monolayer migrations apply --phase all
 ```
 
 The command will run all phases in the following order:
@@ -29,13 +29,13 @@ Each migration phase has a corresponding migration command in the CLI.
 ### Expand Phase
 
 ```bash
-npx monolayer migrations apply expand
+npx monolayer migrations apply --phase expand
 ```
 **Runs**: all pending expand migrations by timestamp.
 
 ### Alter Phase
 ```bash
-npx monolayer migrations apply alter
+npx monolayer migrations apply --phase alter
 ```
 
 **Runs**: all pending `alter` migrations by timestamp.
@@ -44,7 +44,7 @@ npx monolayer migrations apply alter
 
 ### Data Phase
 ```bash
-npx monolayer migrations apply data
+npx monolayer migrations apply --phase data
 ```
 
 **Runs**: all pending `data` migrations by timestamp.
@@ -53,7 +53,7 @@ npx monolayer migrations apply data
 
 ### Contract Phase
 ```bash
-npx monolayer migrations apply contract
+npx monolayer migrations apply --phase contract
 ```
 
 **Runs**: all pending `contract` migrations by timestamp.
@@ -62,7 +62,7 @@ npx monolayer migrations apply contract
 
 ### Contract Phase - Single Migration
 ```bash
-npx monolayer migrations apply contract single --name=<migration-name>
+npx monolayer migrations apply --phase contract single --name=<migration-name>
 ```
 
 **Runs**: a single `contract` migration.
