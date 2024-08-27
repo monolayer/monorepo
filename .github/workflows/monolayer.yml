@@ -25,8 +25,25 @@ jobs:
       - name: Run check
         run: npx turbo check
 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+      - name: Run build
+        run: npx turbo build
+
   test-pg:
-    needs: [check]
+    needs: [check, build]
     name: Test pg
     runs-on: ubuntu-latest
     steps:
@@ -43,7 +60,7 @@ jobs:
         run: npm run test -w internal/pg
 
   test-programs:
-    needs: [check]
+    needs: [check, build]
     name: Test programs
     runs-on: ubuntu-latest
     defaults:
@@ -87,7 +104,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
   test-monolayer:
-    needs: [check]
+    needs: [check, build]
     name: Test monolayer
     runs-on: ubuntu-latest
     defaults:
