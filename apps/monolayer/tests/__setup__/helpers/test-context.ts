@@ -84,6 +84,9 @@ export async function setupProgramContext(
 		`tmp/programs/${programFolder(context)}`,
 	);
 	rmSync(context.folder, { recursive: true, force: true });
+	mkdirSync(path.join(context.folder, "monolayer", "dumps"), {
+		recursive: true,
+	});
 	mkdirSync(
 		path.join(
 			context.folder,
