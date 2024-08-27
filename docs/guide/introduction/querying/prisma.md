@@ -1,12 +1,12 @@
 # Querying with Prisma
 
 ::: info
-This tutorial expects that you are familiar with [`Prisma`](https://www.prisma.io). Please refer to the [Prisma docs](https://www.prisma.io/docs) if you need assistance on how to use it.
+This tutorial expects some familiarity with [`Prisma`](https://www.prisma.io). Please refer to the [Prisma docs](https://www.prisma.io/docs) if you need assistance on how to use it.
 :::
 
 `monolayer` can be integrated with `Prisma`.
 
-Effectively, you can combine `monolayer`(*schema definition in TypeScript and migration capabilities*) with the `Prisma`(*easy to use ORM*).
+You can combine `monolayer`(*schema definition in TypeScript and migration capabilities*) with the `Prisma`(*easy to use ORM*).
 
 ## Installing Prisma
 
@@ -45,7 +45,7 @@ export default defineDatabase({
 Since `Prisma` was not configured the first time we applied migrations, we need to run the command again:
 
 ```bash
-npx monolayer migrations apply all
+npx monolayer migrations apply --phase all
 ```
 
 
@@ -89,7 +89,6 @@ async function main() {
           title: true,
           content: true,
           published: true,
-          createdAt: true,
         },
       },
     },
@@ -121,20 +120,14 @@ To run the script, run following command from your project root (*replace the pa
 npx tsx path/to/example-prisma.ts
 ```
 
-You should get this output:
+The output you get shoud be similar to:
 
 ```text
 [
   {
     name: 'John Smith',
     email: 'js@example.com',
-    posts: [
-      {
-        title: 'Sample',
-        content: 'Hello World!',
-        published: false,
-      }
-    ]
+    posts: [ { title: 'Sample', content: 'Hello World', published: false } ]
   }
 ]
 ```
