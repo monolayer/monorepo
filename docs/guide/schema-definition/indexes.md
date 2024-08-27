@@ -54,8 +54,7 @@ const users = table({
 ```
 
 ::: danger
-It's recommended to reference column names with the `sql.ref` function.
-At runtime, this function will take care of:
+It's recommended to reference column names with the `sql.ref` function. This function takes care of:
 - Double quote the column name (PostgreSQL lower cases all names unless they are "double quoted" ).
 - Transform to the column name to `snake_case` when the `camelCase` option is active.
 :::
