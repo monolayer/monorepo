@@ -104,7 +104,7 @@ npx monolayer db reset --env-file .env.test
 
 ## `db seed`
 
-Seed the database.
+Seeds the database.
 
 ### Usage
 
@@ -157,7 +157,7 @@ npx monolayer migrations apply --phase all --env-file .env.test
 
 ## `migrations generate`
 
-Generates migrations bases on your database schema definition.
+Generates migrations based on your database schema definition.
 
 ### Usage
 
@@ -259,5 +259,5 @@ npx monolayer scaffold --phase expand --env-file .env.test
 | -------------------------| --------------------------------------------------------------------------- |
 | `-d, --database-id <id>` | (*Optional*) Id of an exported database in your databases file to use.      |
 | `-e, --env-file <path>`  | (*Optional*) Load environment variables from an `.env` file.                |
-| `-n, --no-transaction  `   | (*Optional*) Configure migration to not run in a transaction. |
-| `-p, --phase <name>  `   | (*Required*) Phase to scaffold (`alter` \| `contract` \| `data`  \| `expand`). |
+| `-n, --no-transaction`   | (*Optional*) Configure migration to not run in a transaction. |
+| `-p, --phase <name>`     | (*Required*) Phase to scaffold (`alter` \| `contract` \| `data`  \| `expand`). |
