@@ -96,7 +96,7 @@ Here's a table for select, insert, and update types for each column type:
 ## Optionality and nullability
 
  By default, columns have:
- - Nullable selects, inserts and updated.
+ - Nullable selects, inserts and updates.
  - Optional inserts and updates.
 
  Columns will have their optionality and nullability changed accordingly to the
