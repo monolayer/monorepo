@@ -1,8 +1,8 @@
 # CamelCase to snake_case
 
-By default table and column names defined in your schema will keep the same name.
+By default, table and column names defined in your schema will keep the same name.
 
-For example, with  this schema defintion:
+For example, with this schema defintion:
 
 ```ts
 import { table, text } from "monolayer/pg";
@@ -36,13 +36,14 @@ export default defineDatabase({
 ```
 :::
 
+Generating and applying migrations, will convert table and column names to snake_case:
+- The table name in the database will be `users_table`
+- The column in the `users_table` will be named `first_name`.
+
 ::: warning
 You should set the camelCase option before generating and applying migrations to the database.
 Changing the option after having applied migrations will lead to a *broken* state.
 :::
 
-Generating and applying migrations, will convert table and column names to snake_case:
-- The table name in the database will be `users_table`
-- The column in the `users_table` will be named `first_name`.
 
 
