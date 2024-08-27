@@ -7,6 +7,7 @@ import { checkPackageInstallation } from "./check-package-installation.js";
 
 interface PackageToInstall {
 	name: string;
+	version?: string;
 	development: boolean;
 }
 
@@ -22,7 +23,13 @@ export function installPackages(packagesToInstall: PackageToInstall[]) {
 			if (!check.installed) {
 				yield* tryPromise(async () => {
 					try {
-						const args = [env.packageManager.addCommand, packageToInstall.name];
+						const args = [
+							env.packageManager.addCommand,
+							packageToInstall.version
+								? `${packageToInstall.name}@${packageToInstall.version}`
+								: packageToInstall.name,
+						];
+
 						if (packageToInstall.development) {
 							args.push(env.packageManager.saveDevFlag);
 						}
