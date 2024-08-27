@@ -49,7 +49,7 @@ export const dbSchema = schema({
 ```
 
 ::: info How?
-In `TypeScript` and `Javascript`, you can assign a property to an object as a shorthand property by mentioning the variable in the object literal. The key name is the variable name.
+In `TypeScript` and `JavaScript`, you can assign a property to an object as a shorthand property by mentioning the variable in the object literal. The key name is the variable name.
 :::
 
 In the following example:
