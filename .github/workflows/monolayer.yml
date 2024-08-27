@@ -25,7 +25,7 @@ jobs:
       - name: Run check
         run: npx turbo check
 
-  testpg:
+  test-pg:
     needs: [check]
     name: Test pg
     runs-on: ubuntu-latest
