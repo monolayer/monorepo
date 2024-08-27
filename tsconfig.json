@@ -15,7 +15,6 @@
 		{ "path": "internal/programs" },
 		{ "path": "internal/services" },
 		{ "path": "internal/utils" },
-		{ "path": "internal/state" },
-		{ "path": "private/refactorings" }
+		{ "path": "internal/state" }
 	]
 }

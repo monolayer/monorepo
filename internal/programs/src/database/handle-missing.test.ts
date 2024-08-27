@@ -44,6 +44,10 @@ test<TestProgramContext>("user selects not to create the database", async (conte
 		/* empty */
 	}
 	expect(error._tag).toBe("Die");
+
+	// Gitub Actions terminal output will not match the following snapshot
+	if (process.env.CI) return;
+
 	expect(context.logMessages).toMatchInlineSnapshot(`
 		[
 		  "│
@@ -93,6 +97,10 @@ test<TestProgramContext>("user cancels prompt", async (context) => {
 		/* empty */
 	}
 	expect(error._tag).toBe("Die");
+
+	// Gitub Actions terminal output will not match the following snapshot
+	if (process.env.CI) return;
+
 	expect(context.logMessages).toMatchInlineSnapshot(`
 		[
 		  "│
@@ -139,6 +147,10 @@ test<TestProgramContext>(
 		expect(
 			await databaseExists({ databaseName: context.databaseName }),
 		).toStrictEqual([{ exists: true }]);
+
+		// Gitub Actions terminal output will not match the following snapshot
+		if (process.env.CI) return;
+
 		expect(context.logMessages).toMatchInlineSnapshot(`
 		[
 		  "│

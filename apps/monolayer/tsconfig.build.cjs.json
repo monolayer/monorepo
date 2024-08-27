@@ -21,7 +21,6 @@
 			"~programs/*": ["../../internal/programs/src/*"],
 			"~services/*": ["../../internal/services/src/*"],
 			"~state/*": ["../../internal/state/src/*"],
-			"~refactorings/*": ["../../private/refactorings/src/*"],
 			"~utils/*": ["../../internal/utils/src/*"],
 			"@monorepo/cli/*": ["../../internal/cli/src/*"],
 			"@monorepo/configuration/*": ["../../internal/configuration/src/*"],
@@ -41,7 +40,6 @@
 		{ "path": "../../internal/programs/tsconfig.bundle.cjs.json" },
 		{ "path": "../../internal/services/tsconfig.bundle.cjs.json" },
 		{ "path": "../../internal/utils/tsconfig.bundle.cjs.json" },
-		{ "path": "../../internal/state/tsconfig.bundle.cjs.json" },
-		{ "path": "../../private/refactorings/tsconfig.bundle.cjs.json" }
+		{ "path": "../../internal/state/tsconfig.bundle.cjs.json" }
 	]
 }

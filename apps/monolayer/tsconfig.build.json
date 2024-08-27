@@ -16,7 +16,6 @@
 		{ "path": "../../internal/programs/tsconfig.bundle.json" },
 		{ "path": "../../internal/services/tsconfig.bundle.json" },
 		{ "path": "../../internal/utils/tsconfig.bundle.json" },
-		{ "path": "../../internal/state/tsconfig.bundle.json" },
-		{ "path": "../../private/refactorings/tsconfig.bundle.json" }
+		{ "path": "../../internal/state/tsconfig.bundle.json" }
 	]
 }

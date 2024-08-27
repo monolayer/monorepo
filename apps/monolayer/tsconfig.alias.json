@@ -10,7 +10,6 @@
 			"~programs/*": ["packages/programs/*"],
 			"~services/*": ["packages/services/*"],
 			"~state/*": ["packages/state/*"],
-			"~refactorings/*": ["packages/refactorings/*"],
 			"~utils/*": ["packages/utils/*"],
 			"@monorepo/cli/*": ["packages/cli/*"],
 			"@monorepo/configuration/*": ["packages/configuration/*"],
@@ -30,7 +29,6 @@
 		{ "path": "../../internal/programs" },
 		{ "path": "../../internal/services" },
 		{ "path": "../../internal/state" },
-		{ "path": "../../internal/utils" },
-		{ "path": "../../private/refactorings" }
+		{ "path": "../../internal/utils" }
 	]
 }

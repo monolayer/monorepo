@@ -19,10 +19,10 @@ export function pgAdminPool() {
 			processEnv: envObj,
 		});
 		globalTestThis.pool = new pg.Pool({
-			user: envObj.POSTGRES_USER,
-			password: envObj.POSTGRES_PASSWORD,
-			host: envObj.POSTGRES_HOST,
-			port: Number(envObj.POSTGRES_PORT ?? 5432),
+			user: envObj.POSTGRES_USER ?? process.env.POSTGRES_USER,
+			password: envObj.POSTGRES_PASSWORD ?? process.env.POSTGRES_PASSWORD,
+			host: envObj.POSTGRES_HOST ?? process.env.POSTGRES_HOST,
+			port: Number(envObj.POSTGRES_PORT ?? process.env.POSTGRES_PORT ?? 5432),
 		});
 	}
 	return globalTestThis.pool;

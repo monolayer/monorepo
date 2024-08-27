@@ -22,7 +22,6 @@
 			"~programs/*": ["internal/programs/src/*"],
 			"~services/*": ["internal/services/src/*"],
 			"~state/*": ["internal/state/src/*"],
-			"~refactorings/*": ["internal/refactorings/src/*"],
 			"~utils/*": ["internal/utils/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
 			"@monorepo/configuration/*": ["internal/configuration/src/*"],
