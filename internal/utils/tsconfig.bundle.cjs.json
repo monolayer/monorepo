@@ -3,7 +3,6 @@
 	"compilerOptions": {
 		"outDir": "./../../apps/monolayer/dist/cjs/packages/utils",
 		"tsBuildInfoFile": "./../../apps/monolayer/dist/cjs/packages/utils/tsconfig.bundle.cjs.tsbuildinfo",
-		"composite": true,
-		"declarationDir": "dist/cjs"
+		"composite": true
 	}
 }
