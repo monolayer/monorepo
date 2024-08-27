@@ -23,7 +23,7 @@ As a starting point, you are given a default folder/file structure for the `db` 
 However, you can move and rename files as you see fit and modularize your code to your own conventions.
 
 ::: warning
-Don't forget to update the configuration in `monolayer.config.ts`, when the change your databases file name or its location.
+Don't forget to update the [configuration](./../configuration.md) in `monolayer.config.ts`, when the change your databases file name or its location.
 :::
 
 ## Define a single database
@@ -110,7 +110,7 @@ For a database with the unique identifier `user_stats`, the expected environment
 :::
 
 ::: tip
-`monolayer` will also try to fetch environment variable from the `.env` file in your project root.
+`monolayer` will also try to fetch environment variable from the `.env` file in your project root, if present.
 :::
 
 Read more about database connection URLs in the [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS)
