@@ -4,7 +4,7 @@
 	"description": "",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
-	"homepage": "https://github.com/dunkelbraun/monolayer/packages/create-monolayer",
+	"homepage": "https://github.com/dunkelbraun/monolayer",
 	"type": "module",
 	"module": "dist/src/bin/create-monolayer.js",
 	"bin": {
