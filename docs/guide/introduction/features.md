@@ -23,7 +23,7 @@ aside: false
   </div>
   <div style="display:flex; gap: 1em;">
     <div>✅</div>
-    <div>Type-safe database client(s) for `kysely` (no *codegen* :tada:).</div>
+    <div>Type-safe database client(s) for `kysely` (no <i>codegen</i> 🎉).</div>
   </div>
   <div style="display:flex; gap: 1em;">
     <div>✅</div>
@@ -31,7 +31,11 @@ aside: false
   </div>
   <div style="display:flex; gap: 1em;">
     <div>✅</div>
-    <div>Comprehensive Zod validations for all supported data types (no *codegen* :tada:) for `kysely`.</div>
+    <div>Comprehensive Zod validations for all supported data types (no <i>codegen</i> 🎉) for `kysely`.</div>
+  </div>
+  <div style="display:flex; gap: 1em;">
+    <div>✅</div>
+    <div>Non-blocking migrations by default.</div>
   </div>
   <div style="display:flex; gap: 1em;">
     <div>✅</div>
@@ -40,10 +44,6 @@ aside: false
   <div style="display:flex; gap: 1em;">
     <div>✅</div>
     <div>Multiple schemas per database support.</div>
-  </div>
-  <div style="display:flex; gap: 1em;">
-    <div>✅</div>
-    <div>Non-blocking migrations by default.</div>
   </div>
   <div style="display:flex; gap: 1em;">
     <div>✅</div>
