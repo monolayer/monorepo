@@ -8,7 +8,7 @@
 ## Create a TypeScript project
 
 ::: info
-You can [skip](#add-monolayer-to-your-typescript-project) this step if you already have an existing Typescript project to work with.
+You can [skip](#add-monolayer-to-your-typescript-project) this step if you already have an existing TypeScript project to work with.
 :::
 
 Create a project directory and navigate into it:
@@ -23,12 +23,27 @@ Then, initialize a TypeScript project:
 ```bash
 npm init -y
 npm install typescript
-npx tsc --init
 ```
 
-This will create a `package.json` with an initial setup for your TypeScript app and a `tsconfig.json` with a Typescript configuration.
+This will create a `package.json` with an install TypeScript
 
-## Add monolayer to your Typescript project
+Add a TypeScript configuration with a new file named `tsconfig.json` and the following content:
+
+```json
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  }
+}
+```
+
+## Add monolayer to your TypeScript project
 
 Run the installer with the following command and follow the prompts:
 
@@ -125,4 +140,6 @@ export async function dbSeed(db: Kysely<DB>) {
 
 ## Configure your environment
 
-Now, open the `.env` file in the root of the project directory and uncomment the line with `MONO_PG_DEFAULT_DATABASE_URL`, and replace its value with your database connection URL.
+Now, open the `.env` file in the root of the project directory and:
+1) Uncomment the line with `MONO_PG_DEFAULT_DATABASE_URL`.
+2) Replace the `MONO_PG_DEFAULT_DATABASE_URL` value with your database connection URL.
