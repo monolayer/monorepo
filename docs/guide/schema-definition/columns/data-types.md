@@ -93,7 +93,7 @@ Read more in:
 
 ## character
 
-Column that stores a fixed-length, blank-padded string of up to `maximumLength` characters.
+Column that stores a fixed-length, blank-padded string of up to maximum length of characters.
 
 ```ts
 import { character, table } from "monolayer/pg";
@@ -138,6 +138,8 @@ Read more in: [Don't use varchar](https://wiki.postgresql.org/wiki/Don't_Do_This
 
 Column that stores dates (without time of day).
 
+[PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-datetime.html)
+
 ```ts
 import { date, table } from "monolayer/pg";
 
@@ -151,6 +153,8 @@ const users = table({
 ## double precision
 
 Column that stores inexact, variable-precision numeric types.
+
+[PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FLOAT)
 
 ```ts
 import { doublePrecision, table } from "monolayer/pg";
@@ -166,6 +170,7 @@ const books = table({
 
 Column that stores whole numbers.
 
+[PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT)
 
 ```ts
 import { integer, table } from "monolayer/pg";
@@ -476,3 +481,7 @@ const users = table({
   },
 });
 ```
+
+## Other data types
+
+To use other data types read [Other column data types](./other-data-types.md)

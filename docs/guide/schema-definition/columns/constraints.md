@@ -15,3 +15,11 @@ const users = table({
   },
 });
 ```
+
+## Other contraints
+
+Other column constraints are defined at the table level. Read more in:
+- [Primary key](./../constraints/primary-key.md)
+- [Foreign key](./../constraints/foreign-key.md)
+- [Unique constraint](./../constraints/unique.md)
+- [Check constraint](./../constraints/check.md)
