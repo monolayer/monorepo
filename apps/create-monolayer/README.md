@@ -1,6 +1,15 @@
-# create-monolayer
+# Welcome to monolayer!
 
-To get started with `monolayer`, open a new shell and run:
+[monolayer](https://dunkelbraun.github.io/monolayer) is a database schema management for [PostgreSQL](https://www.postgresql.org) for TypeScript projects with:
+- Declarative, type-safe database schema definition.
+- Type-safe database client(s) for [`kysely`](https://kysely.dev) (no *codegen* :tada:).
+- Comprehensive Zod validations for all supported data types (no *codegen* :tada:) for [`kysely`](https://kysely.dev).
+- An advanced migration system with non-blocking migrations by default, migrations by phases, and detailed warnings.
+- Support for multiple databases.
+- Support for multiple schemas per database.
+- Effortless [`Prisma`](https://www.prisma.io) integration.
+
+To get started, open a new shell and run:
 
 ```sh
 npx create-monolayer@latest
