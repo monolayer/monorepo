@@ -7,7 +7,7 @@
 		"tsBuildInfoFile": "./dist/cjs/tsconfig.build.tsbuildinfo",
 		"composite": false,
 		"emitDeclarationOnly": false,
-		"declaration": false,
+		"declaration": true,
 		"sourceMap": false,
 		"target": "es2020",
 		"module": "CommonJS",

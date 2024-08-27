@@ -25,6 +25,7 @@
     ]
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.15.4",
     "@config/testing": "*",
     "@vitest/coverage-istanbul": "^2.0.5",
     "@vitest/ui": "^2.0.5",

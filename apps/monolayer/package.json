@@ -14,41 +14,70 @@
 	},
 	"exports": {
 		".": {
-			"types": "./dist/esm/index.d.ts",
-			"default": "./dist/esm/index.js",
-			"require": "./dist/cjs/index.js"
+			"import": {
+				"types": "./dist/esm/index.d.ts",
+				"default": "./dist/esm/index.js"
+			},
+			"require": {
+				"types": "./dist/cjs/index.d.ts",
+				"default": "./dist/cjs/index.js"
+			}
 		},
 		"./config": {
-			"types": "./dist/esm/config.d.ts",
-			"default": "./dist/esm/config.js",
-			"require": "./dist/cjs/config.js"
+			"import": {
+				"types": "./dist/esm/config.d.ts",
+				"default": "./dist/esm/config.js"
+			},
+			"require": {
+				"types": "./dist/cjs/config.d.ts",
+				"default": "./dist/cjs/config.js"
+			}
 		},
 		"./pg-helpers/timestamps": {
-			"types": "./dist/esm/timestamps.d.ts",
-			"default": "./dist/esm/timestamps.js",
-			"require": "./dist/cjs/timestamps.js"
+			"import": {
+				"types": "./dist/esm/timestamps.d.ts",
+				"default": "./dist/esm/timestamps.js"
+			},
+			"require": {
+				"types": "./dist/cjs/timestamps.d.ts",
+				"default": "./dist/cjs/timestamps.js"
+			}
 		},
 		"./pg": {
-			"types": "./dist/esm/pg.d.ts",
-			"default": "./dist/esm/pg.js",
-			"require": "./dist/cjs/pg.js"
+			"import": {
+				"types": "./dist/esm/pg.d.ts",
+				"default": "./dist/esm/pg.js"
+			},
+			"require": {
+				"types": "./dist/cjs/pg.d.ts",
+				"default": "./dist/cjs/pg.js"
+			}
 		},
 		"./migration": {
-			"types": "./dist/esm/migration.d.ts",
-			"default": "./dist/esm/migration.js",
-			"require": "./dist/cjs/migration.js"
+			"import": {
+				"types": "./dist/esm/migration.d.ts",
+				"default": "./dist/esm/migration.js"
+			},
+			"require": {
+				"types": "./dist/cjs/migration.d.ts",
+				"default": "./dist/cjs/migration.js"
+			}
 		},
 		"./zod": {
-			"types": "./dist/esm/zod.d.ts",
-			"default": "./dist/esm/zod.js",
-			"require": "./dist/cjs/zod.js"
+			"import": {
+				"types": "./dist/esm/zod.d.ts",
+				"default": "./dist/esm/zod.js"
+			},
+			"require": {
+				"types": "./dist/cjs/zod.d.ts",
+				"default": "./dist/cjs/zod.js"
+			}
 		}
 	},
 	"files": [
 		"dist/esm/package.json",
 		"dist/cjs/package.json",
-		"dist/**/*.js",
-		"dist/**/*.d.ts"
+		"dist/**/*"
 	],
 	"scripts": {
 		"prebuild": "rm -rf dist/*",
@@ -61,6 +90,7 @@
 		"check:lint": "npx eslint .",
 		"check:prettier": "prettier --check .",
 		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src",
+		"check:exports": "attw --pack .",
 		"cli": "src/cli/cli.ts",
 		"format": "prettier --write .",
 		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
@@ -78,6 +108,7 @@
 		"url": "https://github.com/dunkelbraun/monolayer/issues"
 	},
 	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.15.4",
 		"@config/testing": "*",
 		"@monorepo/cli": "*",
 		"@monorepo/configuration": "*",
