@@ -12,7 +12,7 @@
 		"check:lint": "npx eslint .",
 		"check:prettier": "prettier --check ."
 	},
-	"depependencies": {
+	"dependencies": {
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
 		"@types/node": "^18.0.0",
