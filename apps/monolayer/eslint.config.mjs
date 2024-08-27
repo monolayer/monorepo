@@ -19,6 +19,7 @@ export default [
 			"**/tmp/**",
 			"files/**",
 			"**/docs/**",
+			"**/build/**",
 		],
 	},
 	...compat.extends("@monorepo/eslint-config/eslintrc.js"),

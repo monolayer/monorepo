@@ -17,6 +17,7 @@ export default [
 			"**/cdk.out/**/*",
 			"**/dist/**/*",
 			"**files/**/*",
+			"**/build/**",
 		],
 	},
 	...compat.extends("@monorepo/eslint-config/eslintrc.js"),

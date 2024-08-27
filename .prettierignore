@@ -6,3 +6,4 @@ files
 docs/.vitepress/cache
 docs/.vitepress/dist
 *.md
+build
