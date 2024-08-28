@@ -1,8 +1,9 @@
 # Installation
 
 ::: info PREREQUISITES
+
 - [Node.js](https://nodejs.org) 18.18 or later.
-- A [PostgreSQL](https://postgresql.org) database server running.
+- A [PostgreSQL](https://postgresql.org) database server running (15 or higher).
 - [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) and [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html) in your development environment. (*included when installing PostgreSQL*).
 :::
 
