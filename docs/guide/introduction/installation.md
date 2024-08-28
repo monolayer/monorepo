@@ -48,7 +48,7 @@ Add a TypeScript configuration with a new file named `tsconfig.json` and the fol
 Run the installer with the following command and follow the prompts:
 
 ```bash
-npx create-monolayer
+npx create-monolayer@latest
 ```
 
 You will be greeted to enter the relative path to create the `db` folder:
