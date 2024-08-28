@@ -120,5 +120,4 @@ function actionWithLayers<AC, AE, LOut, LErr, LIn>(
 ) {
 	return Effect.provide(actionWithErrorHandling(tasks), layers)
 		.pipe(catchErrorTags)
-		.pipe(printAnyErrors);
 }
