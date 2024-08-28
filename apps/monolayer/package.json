@@ -1,10 +1,16 @@
 {
 	"name": "monolayer",
 	"version": "1.0.0-beta.1",
-	"description": "",
+	"description": "Database schema management for PostgreSQL",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
-	"homepage": "https://github.com/dunkelbraun/monolayer/packages/monolayer",
+	"homepage": "https://dunkelbraun.github.io/monolayer",
+	"bugs": "https://github.com/dunkelbraun/monolayer/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dunkelbraun/monolayer",
+		"directory": "packages/apps/create-monolayer"
+	},
 	"type": "module",
 	"main": "./dist/index.js",
 	"module": "./dist/esm/index.js",
@@ -99,13 +105,6 @@
 		"test": "NO_COLOR=1 vitest --run",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 monolayer -f"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+ssh://git@github.com/dunkelbraun/monolayer.git"
-	},
-	"bugs": {
-		"url": "https://github.com/dunkelbraun/monolayer/issues"
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.15.4",
