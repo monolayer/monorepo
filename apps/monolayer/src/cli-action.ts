@@ -20,7 +20,6 @@ import {
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
 import { Effect, Layer } from "effect";
-import { tap } from "effect/Effect";
 import type { Scope } from "effect/Scope";
 import color from "picocolors";
 import { exit } from "process";
@@ -65,7 +64,7 @@ export async function loadEnv(options: {
 	return await Effect.runPromise(
 		Effect.gen(function* () {
 			return yield* getEnvironment(options.databaseId, options.envFile);
-		}).pipe(tap(() => printAnyErrors)),
+		}),
 	).then(envLoadSuccess, envLoadFailure);
 }
 
@@ -73,7 +72,7 @@ export async function loadImportSchemaEnv() {
 	return await Effect.runPromise(
 		Effect.gen(function* () {
 			return yield* importSchemaEnvironment;
-		}).pipe(printAnyErrors),
+		}),
 	).then(envLoadSuccess, envLoadFailure);
 }
 
@@ -118,6 +117,7 @@ function actionWithLayers<AC, AE, LOut, LErr, LIn>(
 	tasks: Effect.Effect<unknown, AE, AC>[],
 	layers: Layer.Layer<LOut, LErr, LIn>,
 ) {
-	return Effect.provide(actionWithErrorHandling(tasks), layers)
-		.pipe(catchErrorTags)
+	return Effect.provide(actionWithErrorHandling(tasks), layers).pipe(
+		catchErrorTags,
+	);
 }
