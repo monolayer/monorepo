@@ -1,10 +1,16 @@
 {
 	"name": "create-monolayer",
 	"version": "1.0.0-beta.1",
-	"description": "",
+	"description": "Create monolayer inside a project",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
-	"homepage": "https://github.com/dunkelbraun/monolayer",
+	"homepage": "https://dunkelbraun.github.io/monolayer",
+	"bugs": "https://github.com/dunkelbraun/monolayer/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dunkelbraun/monolayer",
+		"directory": "packages/apps/create-monolayer"
+	},
 	"type": "module",
 	"module": "dist/src/bin/create-monolayer.js",
 	"bin": {
