@@ -4,7 +4,7 @@
 
 - [Node.js](https://nodejs.org) 18.18 or later.
 - A [PostgreSQL](https://postgresql.org) database server running (15 or higher).
-- [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) and [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html) in your development environment. (*included when installing PostgreSQL*).
+- (*Recommended*) [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) in your development environment (included when installing PostgreSQL).
 :::
 
 ## Create a TypeScript project
