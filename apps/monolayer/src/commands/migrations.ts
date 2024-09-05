@@ -2,6 +2,7 @@ import type { Command } from "@commander-js/extra-typings";
 import { applyAction } from "~monolayer/actions/apply.js";
 import { generateAction } from "~monolayer/actions/generate.js";
 import { pendingAction } from "~monolayer/actions/pending.js";
+import { rollbackAction } from "~monolayer/actions/rollback.js";
 import { scaffoldAction } from "~monolayer/actions/scaffold.js";
 
 export function migrationsCommand(program: Command) {
@@ -13,5 +14,6 @@ export function migrationsCommand(program: Command) {
 	generateAction(migrations);
 	scaffoldAction(migrations);
 	applyAction(migrations);
+	rollbackAction(migrations);
 	return migrations;
 }
