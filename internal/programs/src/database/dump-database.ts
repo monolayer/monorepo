@@ -14,8 +14,6 @@ import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import pgConnectionString from "pg-connection-string";
 import { cwd, env } from "process";
-import { Writable, type WritableOptions } from "stream";
-import { pipeCommandStdoutToWritable } from "~programs/pipe-command-stdout-to-writable.js";
 
 export const dumpDatabaseStructureTask = gen(function* () {
 	const pgDumpExists = yield* checkPgDumpExecutableExists;
@@ -113,39 +111,10 @@ const extensionArgs = gen(function* () {
 	);
 });
 
-class InsertWritable extends Writable {
-	#dumpPath: string;
-	#contents: string[] = [];
-
-	constructor(dumpPath: string, opts?: WritableOptions) {
-		super(opts);
-		this.#dumpPath = dumpPath;
-	}
-
-	_write(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		chunk: any,
-		_encoding: BufferEncoding,
-		callback: (error?: Error | null) => void,
-	) {
-		const lines = chunk.toString().split("\n");
-		for (const line of lines) {
-			if (line.startsWith("INSERT INTO")) {
-				this.#contents.push(line);
-			}
-		}
-		callback();
-	}
-	end() {
-		appendFileSync(this.#dumpPath, this.#contents.join("\n"));
-		return this;
-	}
-}
-
 const appendMigrationDataToDump = gen(function* () {
-	yield* pipeCommandStdoutToWritable(
-		"pg_dump",
-		[
+	const databaseName = (yield* connectionOptions).databaseName;
+	const { stdout } = yield* tryPromise(() =>
+		execa("pg_dump", [
 			"--no-privileges",
 			"--no-owner",
 			"--schema=public",
@@ -161,9 +130,16 @@ const appendMigrationDataToDump = gen(function* () {
 			"--quote-all-identifiers",
 			"-a",
 			"--no-comments",
-			`${(yield* connectionOptions).databaseName}`,
-		],
-		new InsertWritable(yield* databaseDumpPath),
+			databaseName,
+		]),
+	);
+
+	appendFileSync(
+		yield* databaseDumpPath,
+		stdout
+			.split("\n")
+			.filter((line) => line.startsWith("INSERT INTO"))
+			.join("\n"),
 	);
 });
 
