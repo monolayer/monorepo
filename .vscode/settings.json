@@ -1,6 +1,7 @@
 {
 	"typescript.tsserver.experimental.enableProjectDiagnostics": true,
 	"typescript.tsserver.experimental.useVsCodeWatcher": false,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.renderLineHighlight": "line",
 	"editor.selectionHighlight": false,
 	"editor.formatOnSave": true,
