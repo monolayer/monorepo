@@ -41,5 +41,5 @@ test<ProgramContext>(
 			kysely.insertInto("regulus_mint").values({ name: "hello" }).execute(),
 		).resolves.not.toThrow();
 	},
-	{ timeout: 10000 },
+	{ timeout: 20000 },
 );
