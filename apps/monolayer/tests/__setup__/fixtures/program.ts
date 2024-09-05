@@ -1,11 +1,13 @@
 import dotenv from "dotenv";
 import path from "node:path";
-import { cwd } from "node:process";
 import nunjucks from "nunjucks";
+import { currentWorkingDirectory } from "../setup.js";
 dotenv.config();
 
 const configurationPath = path.join(
-	cwd(),
+	currentWorkingDirectory(),
+	"..",
+	"..",
 	"internal",
 	"configuration",
 	"src",
