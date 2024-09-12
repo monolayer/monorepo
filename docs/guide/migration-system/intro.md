@@ -91,7 +91,3 @@ flowchart LR;
 This deployment loop can be applied over and over again, and it allows you to continuously evolve your database schema and integrate "expand and contract" migration patterns seamlessly in your workflow.
 
 Also, with the ability to apply a single contract migration with `migrations apply contract single`, you can start build a custom logic on top of it (i.e. contract all migrations that are older than a certain date).
-
-
-## Expand and contract patterns
-
