@@ -4,11 +4,11 @@
 	"description": "Create monolayer inside a project",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
-	"homepage": "https://dunkelbraun.github.io/monolayer",
-	"bugs": "https://github.com/dunkelbraun/monolayer/issues",
+	"homepage": "https://dunkelbraun.github.io/monolayer-pg",
+	"bugs": "https://github.com/dunkelbraun/monolayer-pg/issues",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/dunkelbraun/monolayer",
+		"url": "https://github.com/dunkelbraun/monolayer-pg",
 		"directory": "apps/create-monolayer"
 	},
 	"type": "module",
