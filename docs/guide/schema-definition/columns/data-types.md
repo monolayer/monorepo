@@ -35,7 +35,7 @@ const example = table({
 ```
 
 ::: warning
-Use [identity](#identity-columns) columns instead of `bigserial`.
+Use [identity](./identity-columns.md) columns instead of `bigserial`.
 
 Read more in: [Don't use serial](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_serial)
 :::
@@ -301,7 +301,7 @@ const users = table({
 ```
 
 ::: warning
-Use [identity](#identity-columns) columns instead of `bigserial`.
+Use [identity](./identity-columns.md) columns instead of `bigserial`.
 
 Read more in: [Don't use serial](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_serial)
 :::
