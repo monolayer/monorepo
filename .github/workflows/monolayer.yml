@@ -115,7 +115,7 @@ jobs:
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-  test-monolayer:
+  test-monolayer-pg:
     needs: [check, build]
     name: Test monolayer
     runs-on: ubuntu-latest
@@ -153,7 +153,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run programs tests
-        run: NO_COLOR=1 npx vitest --project monolayer
+        run: NO_COLOR=1 npx vitest --project monolayer-pg
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
