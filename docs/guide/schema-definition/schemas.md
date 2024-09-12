@@ -6,7 +6,7 @@ Normally, every database in PostgreSQL contains a `public` schema by default.
 
 ## Define the public schema
 
-You define the database public schema with the [`schema`](./../../reference/api/pg/functions/schema.md) function.
+You define the database public schema with the [`schema`](./../../reference/api/schema/functions/schema.md) function.
 
 :::code-group
 
@@ -16,7 +16,7 @@ export const dbSchema = schema({});
 
 :::
 
-See the list of configuration properties in the [DatabaseSchema Reference](./../../reference/api/pg/type-aliases/DatabaseSchema.md#type-declaration)
+See the list of configuration properties in the [DatabaseSchema Reference](./../../reference/api/schema/type-aliases/DatabaseSchema.md#type-declaration)
 
 ## Define a named schema
 

@@ -1,6 +1,6 @@
 # Tables
 
-You can define a [`table`](./glossary.md#table) with the [`table`](./../../reference/api/pg/functions/table.md) function.
+You can define a [`table`](./glossary.md#table) with the [`table`](./../../reference/api/schema/functions/table.md) function.
 
 ```ts
 import { table, text } from "@monolayer/pg/schema";
@@ -12,11 +12,11 @@ const users = table({ // [!code highlight]
 });// [!code highlight]
 ```
 
-See the full list of configuration options in [TableDefinition](./../../reference/api/pg/type-aliases/TableDefinition.md#type-declaration)
+See the full list of configuration options in [TableDefinition](./../../reference/api/schema/type-aliases/TableDefinition.md#type-declaration)
 
 ## Adding tables to schemas
 
-To add a table to and schema you pass the table definition to the [schema](./../../reference/api/pg/functions/schema.md) definition.
+To add a table to and schema you pass the table definition to the [schema](./../../reference/api/schema/functions/schema.md) definition.
 
 ```ts
 import { table, schema, text } from "@monolayer/pg/schema";

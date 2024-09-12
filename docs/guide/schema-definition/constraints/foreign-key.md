@@ -1,6 +1,6 @@
 # Foreign keys
 
-[Foreign keys](./../glossary.md#foreign-key) are defined in the constraints object of table definition using the [`foreignKey`](./../../../reference/api/pg/functions/foreignKey.md) function.
+[Foreign keys](./../glossary.md#foreign-key) are defined in the constraints object of table definition using the [`foreignKey`](./../../../reference/api/schema/functions/foreignKey.md) function.
 
 ## Single column
 

@@ -1,6 +1,6 @@
 # Triggers
 
-You can add [triggers](./glossary.md#trigger) to a table in its definition with the [`trigger`](./../../reference/api/pg/functions/trigger.md) function:
+You can add [triggers](./glossary.md#trigger) to a table in its definition with the [`trigger`](./../../reference/api/schema/functions/trigger.md) function:
 
 ```ts
 const users = table({
@@ -23,6 +23,6 @@ const users = table({
 });
 ```
 
-You can read more about the different options to configure a trigger in [TriggerOptions](./../../reference/api//pg/type-aliases/TriggerOptions.md).
+You can read more about the different options to configure a trigger in [TriggerOptions](./../../reference/api/schema/type-aliases/TriggerOptions.md).
 
 For the official PostgreSQL documentation on triggers visit [CREATE TRIGGER](https://www.postgresql.org/docs/current/sql-createtrigger.html)

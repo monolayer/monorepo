@@ -1,6 +1,6 @@
 # Other column data types
 
-Column data types other than the default [data types](./data-types.md) provided by `monolayer-pg` can be defined with the [columnWithType](./../../../reference/api/pg/functions/columnWithType.md) function.
+Column data types other than the default [data types](./data-types.md) provided by `monolayer-pg` can be defined with the [columnWithType](./../../../reference/api/schema/functions/columnWithType.md) function.
 
 ```ts
 const accounts = table({

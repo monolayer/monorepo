@@ -10,7 +10,7 @@ The Zod schema will not only take into account:
 
 The schema will also reject explicit `undefined` values when parsing.
 
-You can read more about the specific validations for each column data type in the [Column Types API](./../reference/api/pg/index.md#column-types)
+You can read more about the specific validations for each column data type in the [Column Types API](./../reference/api/schema/index.md#column-types)
 
 ## Retrieving the Zod schema
 

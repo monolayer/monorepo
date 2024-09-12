@@ -2,9 +2,9 @@
 
 [Indexes](./glossary.md#index) allow you to speed up the retrieval of data from a [table](./glossary.md#table).
 
-Index are defined with the [`index`](./../../reference/api/pg/functions/index.md) function.
+Index are defined with the [`index`](./../../reference/api/schema/functions/index.md) function.
 
-You add an index to a table by adding it to the [`indexes`](./../../reference/api/pg/type-aliases/TableDefinition.md#indexes) property in the table definition.
+You add an index to a table by adding it to the [`indexes`](./../../reference/api/schema/type-aliases/TableDefinition.md#indexes) property in the table definition.
 
 ## Index on column(s)
 

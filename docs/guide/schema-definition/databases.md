@@ -28,7 +28,7 @@ Don't forget to update the [configuration](./../configuration.md) in `monolayer.
 
 ## Define a single database
 
-After importing [`defineDatabase`](./../../reference/api//pg/functions/defineDatabase.md) from `@monolayer/pg/schema`, you export a default database definition.
+After importing [`defineDatabase`](./../../reference/api/schema/functions/defineDatabase.md) from `@monolayer/pg/schema`, you export a default database definition.
 
 ::: code-group
 
@@ -44,7 +44,7 @@ export default defineDatabase({
 
 :::
 
-See the list of config options in the [PgDatabaseConfig Reference](./../../reference/api/pg/type-aliases/PgDatabaseConfig.md).
+See the list of config options in the [PgDatabaseConfig Reference](./../../reference/api/schema/type-aliases/PgDatabaseConfig.md).
 
 ## Define multiple databases
 

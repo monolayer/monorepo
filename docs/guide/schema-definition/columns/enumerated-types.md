@@ -2,7 +2,7 @@
 
 Columns based on enumerated types are supported by `monolayer-pg`.
 
-First, you declare an enum type with the [`enumType`](./../../../reference/api/pg/functions/enumType.md).
+First, you declare an enum type with the [`enumType`](./../../../reference/api/schema/functions/enumType.md).
 
 ```ts
 import { enumType } from "@monolayer/pg/schema";
@@ -10,7 +10,7 @@ import { enumType } from "@monolayer/pg/schema";
 const role = enumType("role", ["admin", "user"]);
 ```
 
-Then, you define columns based on this type with [`enumerated`](./../../../reference/api/pg/functions/enumerated.md):
+Then, you define columns based on this type with [`enumerated`](./../../../reference/api/schema/functions/enumerated.md):
 
 ```ts
 import { enumerated, table } from "@monolayer/pg/schema";

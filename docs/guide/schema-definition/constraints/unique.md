@@ -1,6 +1,6 @@
 # Unique constraints
 
-[Unique constraints](./../glossary.md#unique-constraint) are defined in the constraints object of table definition using the [`unique`](./../../../reference/api/pg/functions/unique.md) function.
+[Unique constraints](./../glossary.md#unique-constraint) are defined in the constraints object of table definition using the [`unique`](./../../../reference/api/schema/functions/unique.md) function.
 
 ## Single column
 
