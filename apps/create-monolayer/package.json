@@ -1,6 +1,6 @@
 {
 	"name": "create-monolayer",
-	"version": "1.0.0-beta.1",
+	"version": "1.0.0-beta.2",
 	"description": "Create monolayer inside a project",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
