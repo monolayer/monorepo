@@ -408,7 +408,7 @@ const users = table({
 ```
 
 ::: warning
-Use [timestamp with time zone](#timestanp-with-time-zone) instead.
+Use [timestamp with time zone](#timestamp-with-time-zone) instead.
 
 Read more in: [Don't timestamp without time zone](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_timestamp_.28without_time_zone.29)
 :::
