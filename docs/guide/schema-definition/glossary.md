@@ -43,7 +43,7 @@ A data type is the kind of data that can be stored in a table column or returned
 
 Code that you can run within a database query. It can take inputs, return outputs, and always runs within one transaction. You can call a function as a part of a query, for example via SELECT. Some functions can return multiple rows of data, and these are known as *set-returning* functions.
 
-Functions can also be used for [triggers](#triggers) to invoke.
+Functions can also be used for [triggers](#trigger) to invoke.
 
 ## Index
 
@@ -72,7 +72,7 @@ A primary key is used to reliably identify and distinguish between each individu
 
 ## SQL Object
 
-In PostgreSQL, an “sql object” refers to anything you can create using a CREATE command, like [tables](#table), [functions](#function), or [data types](#function). Most of these objects are tied to a specific [database](#database) and live within [schemas](#schemas), which are like folders that help organize them. For example, tables and functions in the same schema must have unique names. Some objects, like [extensions](#extensions), don’t live in schemas but still need unique names within their database. Additionally, there are global objects like roles, tablespaces, and databases that exist outside any single database and must have unique names across the entire database instance.
+In PostgreSQL, an “sql object” refers to anything you can create using a CREATE command, like [tables](#table), [functions](#function), or [data types](#function). Most of these objects are tied to a specific [database](#database) and live within [schemas](#schema), which are like folders that help organize them. For example, tables and functions in the same schema must have unique names. Some objects, like [extensions](#extension), don’t live in schemas but still need unique names within their database. Additionally, there are global objects like roles, tablespaces, and databases that exist outside any single database and must have unique names across the entire database instance.
 
 ## Table
 
