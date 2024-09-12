@@ -9,7 +9,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/dunkelbraun/monolayer",
-		"directory": "packages/apps/create-monolayer"
+		"directory": "apps/create-monolayer"
 	},
 	"type": "module",
 	"module": "dist/src/bin/create-monolayer.js",
