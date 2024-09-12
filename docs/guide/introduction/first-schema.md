@@ -13,7 +13,7 @@ Change your `schema.ts` file with the following code:
 import {
   index, integer,
   primaryKey, schema, table, text, unique,
-} from "monolayer/pg";
+} from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -65,10 +65,10 @@ import {
   index, integer,
   primaryKey, schema, table, text, unique,
   boolean, foreignKey, timestampWithTimeZone
-} from "monolayer/pg";
+} from "@monolayer/pg/schema";
 import {
   updateTimestampOnRecordUpdate,
-} from "monolayer/pg-helpers/timestamps";
+} from "@monolayer/pg/helpers/timestamps";
 
 const users = table({
   columns: {
@@ -139,7 +139,7 @@ In order for the trigger to work, we need to add the [`moddatetime`](https://www
 
 ::: code-group
 ```ts [databases.ts]
-import { defineDatabase, extension } from "monolayer/pg";
+import { defineDatabase, extension } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
 import { dbSeed } from "./seed";
 

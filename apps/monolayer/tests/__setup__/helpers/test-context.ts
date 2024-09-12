@@ -153,7 +153,7 @@ export async function setupProgramContext(
 
 	const configurations = configurationsTemplate.render({
 		dbName: context.dbName,
-		pgPath: path.join(currentWorkingDirectory(), "src", "pg"),
+		pgPath: path.join(currentWorkingDirectory(), "src", "schema"),
 	});
 
 	writeFileSync(
@@ -247,7 +247,7 @@ export async function dbAndMigrator(context: ProgramContext) {
 	};
 }
 
-const pgPath = path.join(currentWorkingDirectory(), "src", "pg.js");
+const pgPath = path.join(currentWorkingDirectory(), "src", "schema.js");
 const schemaFile = `import { schema, table, text } from "${pgPath}";
 
 export const dbSchema = schema({

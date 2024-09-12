@@ -16,7 +16,7 @@ After entering the name of the migration, a migration file in the phase of your 
 
 ```ts
 import { Kysely } from "kysely";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "@monolayer/pg/migration";
 
 export const migration: Migration = {
   name: "{{ migrationName }}",

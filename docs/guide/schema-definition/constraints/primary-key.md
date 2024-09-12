@@ -5,7 +5,7 @@ The [primary key](./../glossary.md#primary-key) is defined in the constraints ob
 ## Single column
 
 ```ts
-import { integer, primaryKey, table } from "monolayer/pg";
+import { integer, primaryKey, table } from "@monolayer/pg/schema";
 
 export const users = table({
   name: "users",
@@ -21,7 +21,7 @@ export const users = table({
 ## Multiple columns
 
 ```ts
-import { integer, primaryKey, table } from "monolayer/pg";
+import { integer, primaryKey, table } from "@monolayer/pg/schema";
 
 export const books = table({
   columns: {

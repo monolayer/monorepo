@@ -6,7 +6,7 @@ You can define a default on a column with the `default` column modifier. The val
 
 ```ts
 import { sql } from "kysely";
-import { boolean, table, timestampWithTimeZone } from "monolayer/pg";
+import { boolean, table, timestampWithTimeZone } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {

@@ -3,7 +3,7 @@
 You can define a [`table`](./glossary.md#table) with the [`table`](./../../reference/api/pg/functions/table.md) function.
 
 ```ts
-import { table, text } from "monolayer/pg";
+import { table, text } from "@monolayer/pg/schema";
 
 const users = table({ // [!code highlight]
   columns: { // [!code highlight]
@@ -19,7 +19,7 @@ See the full list of configuration options in [TableDefinition](./../../referenc
 To add a table to and schema you pass the table definition to the [schema](./../../reference/api/pg/functions/schema.md) definition.
 
 ```ts
-import { table, schema, text } from "monolayer/pg";
+import { table, schema, text } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -55,7 +55,7 @@ In `TypeScript` and `JavaScript`, you can assign a property to an object as a sh
 In the following example:
 
 ```ts
-import { table, schema, text } from "monolayer/pg";
+import { table, schema, text } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {

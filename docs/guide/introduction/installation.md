@@ -77,7 +77,7 @@ The installer should have installed all necesary dependencies and added the foll
 ::: code-group
 
 ```ts [monolayer.ts]
-import { defineConfig } from "monolayer/config";
+import { defineConfig } from "@monolayer/pg/config";
 
 export default defineConfig({
   databases: "app/db/databases.ts",
@@ -85,7 +85,7 @@ export default defineConfig({
 ```
 
 ```ts [databases.ts]
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
 import { dbSchema } from "./seeds";
 
@@ -99,7 +99,7 @@ export default defineDatabase({
 ```
 
 ```ts [schema.ts]
-import { schema } from "monolayer/pg";
+import { schema } from "@monolayer/pg/schema";
 
 export const dbSchema = schema({});
 

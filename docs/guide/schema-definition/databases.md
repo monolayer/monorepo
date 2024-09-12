@@ -28,11 +28,11 @@ Don't forget to update the [configuration](./../configuration.md) in `monolayer.
 
 ## Define a single database
 
-After importing [`defineDatabase`](./../../reference/api//pg/functions/defineDatabase.md) from `monolayer/pg`, you export a default database definition.
+After importing [`defineDatabase`](./../../reference/api//pg/functions/defineDatabase.md) from `@monolayer/pg/schema`, you export a default database definition.
 
 ::: code-group
 ```ts [databases.ts]
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
 
 export default defineDatabase({
@@ -50,7 +50,7 @@ To define multiple databases, you export more than one database definition from 
 
 ::: code-group
 ```ts [databases.ts]
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 
 export default defineDatabase({
   // Database configuration options
@@ -73,7 +73,7 @@ You can also re-export databases from other files.
 ::: code-group
 
 ```ts [databases.ts]
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 export { statsDb } from "./stats";
 
 export default defineDatabase({
@@ -82,7 +82,7 @@ export default defineDatabase({
 ```
 
 ```ts [stats.ts]
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 import { statsSchema } from "./stats-schema";
 
 export const stats = defineDatabase({

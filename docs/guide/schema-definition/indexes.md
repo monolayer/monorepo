@@ -10,7 +10,7 @@ You add an index to a table by adding it to the [`indexes`](./../../reference/ap
 
 ### Single column
 ```ts
-import { table, text, index } from "monolayer/pg";
+import { table, text, index } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -25,7 +25,7 @@ The optional `columns` argument of the `index` function is always an array.
 
 ### Multiple columns
 ```ts
-import { table, text, index } from "monolayer/pg";
+import { table, text, index } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -43,7 +43,7 @@ This  can be used to obtain fast access to data based on some transformation of 
 
 ```ts
 import { sql } from "kysely";
-import { table, text, index } from "monolayer/pg";
+import { table, text, index } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -66,7 +66,7 @@ You can read more about how to build expressions for indexes in the [Kysely Docs
 An unique index does not allow duplicate values in the table when the index is created (if data already exist) and each time data is added. Attempts to insert or update data which would result in duplicate entries generate an error.
 
 ```ts
-import { table, text, index } from "monolayer/pg";
+import { table, text, index } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -83,7 +83,7 @@ In SQL `NULL` values (which represent missing or unknown data) are considered to
 You may want to change the behaviour and consider `NULL` values as not distinct, only allowing one row with a NULL value. If another row tries to have NULL for the column, it will be rejected because every `NULL` is treated as the same.
 
 ```ts
-import { table, text, index } from "monolayer/pg";
+import { table, text, index } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -98,7 +98,7 @@ const users = table({
 You can specify the index to be created with a specific index method.
 
 ```ts
-import { table, text, index } from "monolayer/pg";
+import { table, text, index } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -113,7 +113,7 @@ const users = table({
 A partial index is an index that contains entries for only a portion of a table, usually a portion that is more useful for indexing than the rest of the table.
 
 ```ts
-import { table, integer, index } from "monolayer/pg";
+import { table, integer, index } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {

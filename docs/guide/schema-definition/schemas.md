@@ -38,7 +38,7 @@ In your `databases.ts` file, specify the schema(s) you want to use in a defined 
 
 ::: code-group
 ```ts [databases.ts]
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
 
 export const defaultDb = defineDatabase({

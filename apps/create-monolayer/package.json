@@ -1,5 +1,5 @@
 {
-	"name": "create-monolayer",
+	"name": "@monolayer/create-pg",
 	"version": "1.0.0-beta.2",
 	"description": "Create monolayer inside a project",
 	"author": "Marcos Essindi <marcessindi@me.com>",
@@ -31,7 +31,7 @@
 		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
 		"package": "npm pack --pack-destination ./build",
 		"publish:local": "npm publish --registry http://localhost:4873",
-		"unpublish:local": "npm unpublish --registry http://localhost:4873 create-monolayer -f"
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/create-pg -f"
 	},
 	"dependencies": {
 		"@clack/prompts": "^0.7.0",

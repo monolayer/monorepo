@@ -10,7 +10,7 @@ To define multiple databases, you export more than one database definition from 
 
 ::: code-group
 ```ts [databases.ts]
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 
 export default defineDatabase({
   // Database configuration options
@@ -33,7 +33,7 @@ You can also re-export databases from other files.
 ::: code-group
 
 ```ts [databases.ts]
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 export { statsDb } from "./stats";
 
 export default defineDatabase({
@@ -42,7 +42,7 @@ export default defineDatabase({
 ```
 
 ```ts [stats.ts]
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 import { statsSchema } from "./stats-schema";
 
 export const stats = defineDatabase({

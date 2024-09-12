@@ -5,7 +5,7 @@
 ## Single column
 
 ```ts
-import { table, text, unique } from "monolayer/pg";
+import { table, text, unique } from "@monolayer/pg/schema";
 
 export const users = table({
   columns: {
@@ -21,7 +21,7 @@ export const users = table({
 ## Multiple columns
 
 ```ts
-import { table, text, unique } from "monolayer/pg";
+import { table, text, unique } from "@monolayer/pg/schema";
 
 export const users = table({
   columns: {
@@ -41,7 +41,7 @@ Since `NULL` values are not considered equal to each other, multiple duplicated 
 If you want to prevent this, you can use the `nullsNotDistinct` to consider null values `NOT DISTINCT`.
 
 ```ts
-import { table, text, unique } from "monolayer/pg";
+import { table, text, unique } from "@monolayer/pg/schema";
 
 export const users = table({
   columns: {

@@ -19,7 +19,7 @@ They mainly differ in whether the database will allow you to override the genera
 ## Generated always as identity column
 
 ```ts
-import { table, text } from "monolayer/pg";
+import { table, text } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {

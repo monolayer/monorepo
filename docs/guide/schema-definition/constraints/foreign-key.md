@@ -5,7 +5,7 @@
 ## Single column
 
 ```ts
-import { integer, foreignKey, primaryKey, table } from "monolayer/pg";
+import { integer, foreignKey, primaryKey, table } from "@monolayer/pg/schema";
 
 const users = table({ // [!code highlight]
   columns: {
@@ -39,7 +39,7 @@ import {
   primaryKey,
   table,
   timestampWithTimeZone
-} from "monolayer/pg";
+} from "@monolayer/pg/schema";
 
 const projects = table({ // [!code highlight]
   columns: {
@@ -110,7 +110,7 @@ const documents = table({
 ## Self-referential
 
 ```ts
-import { integer, foreignKey, primaryKey, table } from "monolayer/pg";
+import { integer, foreignKey, primaryKey, table } from "@monolayer/pg/schema";
 
 const tree = table({
   columns: {

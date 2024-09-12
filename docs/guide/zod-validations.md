@@ -14,7 +14,7 @@ You can read more about the specific validations for each column data type in th
 ## Retrieving the Zod schema
 
 
-Zod schemas are made available through the [`zodSchema`](./../reference/api/zod/functions/zodSchema.md) function from `monolayer/zod`.
+Zod schemas are made available through the [`zodSchema`](./../reference/api/zod/functions/zodSchema.md) function from `@monolayer/pg/zod`.
 
 ```ts
 const users = table({

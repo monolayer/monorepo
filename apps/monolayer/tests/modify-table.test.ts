@@ -15,7 +15,7 @@ import { trigger } from "@monorepo/pg/schema/trigger.js";
 import { unique } from "@monorepo/pg/schema/unique.js";
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, test } from "vitest";
-import { bigserial, timestamptz } from "~monolayer/pg.js";
+import { bigserial, timestamptz } from "~monolayer/schema.js";
 import { type DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testChangesetAndMigrations } from "~tests/__setup__/helpers/migration-success.js";
 import {

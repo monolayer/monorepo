@@ -2,7 +2,7 @@
 
 Each [column](./../glossary.md#column) in a [table](./../glossary.md#table) has a data type that will constrain the set of possible values that can be assigned it. For example a column with an `integer` data type will not accept text strings, and the data stored in such a column can be used for mathematical computations.
 
-You define a column with functions from `monolayer/pg`.
+You define a column with functions from `@monolayer/pg/schema`.
 
 The most common data types in PostgreSQL are supported.
 
@@ -11,7 +11,7 @@ The most common data types in PostgreSQL are supported.
 Column that stores whole numbers.
 
 ```ts
-import { bigint, table } from "monolayer/pg";
+import { bigint, table } from "@monolayer/pg/schema";
 
 const example = table({
   columns: {
@@ -25,7 +25,7 @@ const example = table({
 Unique identifier column.
 
 ```ts
-import { bigserial, table } from "monolayer/pg";
+import { bigserial, table } from "@monolayer/pg/schema";
 
 const example = table({
   columns: {
@@ -45,7 +45,7 @@ Read more in: [Don't use serial](https://wiki.postgresql.org/wiki/Don't_Do_This#
 Column that stores booleans.
 
 ```ts
-import { boolean, table } from "monolayer/pg";
+import { boolean, table } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -59,7 +59,7 @@ const users = table({
 Column that stores binary strings.
 
 ```ts
-import { bytea, table } from "monolayer/pg";
+import { bytea, table } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -73,7 +73,7 @@ const users = table({
 Alias of [character](#character)
 
 ```ts
-import { char, table } from "monolayer/pg";
+import { char, table } from "@monolayer/pg/schema";
 
 const dbSchema = table({
   columns: {
@@ -96,7 +96,7 @@ Read more in:
 Column that stores a fixed-length, blank-padded string of up to maximum length of characters.
 
 ```ts
-import { character, table } from "monolayer/pg";
+import { character, table } from "@monolayer/pg/schema";
 
 const dbSchema = table({
   columns: {
@@ -118,7 +118,7 @@ Read more in:
 Column that stores variable-length string with an optional maximum length.
 
 ```ts
-import { characterVarying, table } from "monolayer/pg";
+import { characterVarying, table } from "@monolayer/pg/schema";
 
 const dbSchema = table({
   columns: {
@@ -141,7 +141,7 @@ Column that stores dates (without time of day).
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-datetime.html)
 
 ```ts
-import { date, table } from "monolayer/pg";
+import { date, table } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -157,7 +157,7 @@ Column that stores inexact, variable-precision numeric types.
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FLOAT)
 
 ```ts
-import { doublePrecision, table } from "monolayer/pg";
+import { doublePrecision, table } from "@monolayer/pg/schema";
 
 const books = table({
   columns: {
@@ -173,7 +173,7 @@ Column that stores whole numbers.
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT)
 
 ```ts
-import { integer, table } from "monolayer/pg";
+import { integer, table } from "@monolayer/pg/schema";
 
 const users: table({
   columns: {
@@ -189,7 +189,7 @@ Column that stores JSON data.
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-json.html#DATATYPE-JSON)
 
 ```ts
-import { json, table } from "monolayer/pg";
+import { json, table } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -205,7 +205,7 @@ Column that stores JSON data in a binary format. It's slower to input than a [`j
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-json.html#DATATYPE-JSON)
 
 ```ts
-import { jsonb, table } from "monolayer/pg";
+import { jsonb, table } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -225,7 +225,7 @@ Column that can store numbers with a very large number of digits iwth an optiona
 Numeric values of any length can be stored, up to the implementation limits.
 
 ```ts
-import { numeric, table } from "monolayer/pg";
+import { numeric, table } from "@monolayer/pg/schema";
 
 const items = table({
   columns: {
@@ -241,7 +241,7 @@ Numeric values with a maximum number of digits to both sides of the decimal poin
 *Example*: 23.5141 has a precision of 6.
 
 ```ts
-import { numeric, table } from "monolayer/pg";
+import { numeric, table } from "@monolayer/pg/schema";
 
 const items = table({
   columns: {
@@ -259,7 +259,7 @@ Numeric with a:
 *Example*: 23.5141 has precision of 6 and a scale of 4.
 
 ```ts
-import { numeric, table } from "monolayer/pg";
+import { numeric, table } from "@monolayer/pg/schema";
 
 const items = table({
   columns: {
@@ -275,7 +275,7 @@ Column that stores inexact, variable-precision numeric types with up to 6 decima
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FLOAT)
 
 ```ts
-import { real, table } from "monolayer/pg";
+import { real, table } from "@monolayer/pg/schema";
  *
 const accounts = table({
   columns: {
@@ -291,7 +291,7 @@ Unique identifier column.
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-SERIAL)
 
 ```ts
-import { serial, table } from "monolayer/pg";
+import { serial, table } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -313,7 +313,7 @@ Column that stores small-range integers (*-32768 to +32767*)
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT)
 
 ```ts
-import { smallint, table } from "monolayer/pg";
+import { smallint, table } from "@monolayer/pg/schema";
 
 const books = table({
   columns: {
@@ -329,7 +329,7 @@ Column that stores variable unlimited length strings.
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-character.html#DATATYPE-CHARACTER)
 
 ```ts
-import { table, text } from "monolayer/pg";
+import { table, text } from "@monolayer/pg/schema";
 
 const books = table({
   columns: {
@@ -345,7 +345,7 @@ Column that stores times of day (no date) without time zone.
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME)
 
 ```ts
-import { table, time } from "monolayer/pg";
+import { table, time } from "@monolayer/pg/schema";
 
 const appointments = table({
   columns: {
@@ -361,7 +361,7 @@ Column that stores times of day (no date) with time zone.
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME)
 
 ```ts
-import { schema, table, timeWithTimeZone } from "monolayer/pg";
+import { schema, table, timeWithTimeZone } from "@monolayer/pg/schema";
 
 const runs = table({
   columns: {
@@ -386,7 +386,7 @@ The precision of a timestamp is the number of fractional digits in the seconds f
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME)
 
 ```ts
-import { table, timestamp } from "monolayer/pg";
+import { table, timestamp } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -398,7 +398,7 @@ const users = table({
 #### Timestamp with precision
 
 ```ts
-import { table, timestamp } from "monolayer/pg";
+import { table, timestamp } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -422,7 +422,7 @@ The precision of a timestamp with time zone is the number of fractional digits i
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME)
 
 ```ts
-import { table, timestampWithTimeZone } from "monolayer/pg";
+import { table, timestampWithTimeZone } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -434,7 +434,7 @@ const users = table({
 #### Timestamp with precision
 
 ```ts
-import { table, timestampWithTimeZone } from "monolayer/pg";
+import { table, timestampWithTimeZone } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {
@@ -450,7 +450,7 @@ Alias of [`time with time zone`](#time-with-time-zone)
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME)
 
 ```ts
-import { table, timetz } from "monolayer/pg";
+import { table, timetz } from "@monolayer/pg/schema";
 
 const runs = table({
   columns: {
@@ -473,7 +473,7 @@ Column that stores Universally Unique Identifiers (UUID).
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-uuid.html#DATATYPE-UUID)
 
 ```ts
-import { table, uuid } from "monolayer/pg";
+import { table, uuid } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {

@@ -5,7 +5,7 @@ By default, table and column names defined in your schema will keep the same nam
 For example, with this schema defintion:
 
 ```ts
-import { table, text } from "monolayer/pg";
+import { table, text } from "@monolayer/pg/schema";
 
 const usersTable = table({ // [!code highlight]
   columns: {
@@ -26,7 +26,7 @@ You can convert those names to snake_case at the database level by setting `came
 
 :::code-group
 ```ts [databases.ts]
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
 
 export default defineDatabase({

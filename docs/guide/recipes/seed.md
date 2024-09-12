@@ -15,7 +15,7 @@ Migrations can be used to add or modify data to an existing database (`data` mig
 Each database can be configured with a seeder function.
 
 ```ts
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
 import { dbSchema } from "./seeds";
 

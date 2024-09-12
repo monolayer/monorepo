@@ -15,7 +15,7 @@ export function installPackages(packagesToInstall: PackageToInstall[]) {
 	return gen(function* () {
 		const env = yield* PackageManagerState.current;
 		const s = p.spinner();
-		s.start(`Installing monolayer and dependencies...`);
+		s.start(`Installing monolayer-pg and dependencies...`);
 
 		for (const packageToInstall of packagesToInstall) {
 			const check = yield* checkPackageInstallation(packageToInstall.name);

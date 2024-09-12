@@ -3,7 +3,7 @@
 [Check constraints](./../glossary.md#check-constraint) are defined in the constraints object of table definition using the [`check`](./../../../reference/api/pg/functions/check.md) function.
 
 ```ts
-import { integer, table, check } from "monolayer/pg";
+import { integer, table, check } from "@monolayer/pg/schema";
 
 export const books = table({
   columns: {
@@ -19,7 +19,7 @@ export const books = table({
 A check constraint can refer also to multiple columns:
 
 ```ts
-import { integer, table, check } from "monolayer/pg";
+import { integer, table, check } from "@monolayer/pg/schema";
 
 export const books = table({
   columns: {

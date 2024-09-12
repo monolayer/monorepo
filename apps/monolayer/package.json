@@ -1,5 +1,5 @@
 {
-	"name": "monolayer",
+	"name": "@monolayer/pg",
 	"version": "1.0.0-beta.2",
 	"description": "Database schema management for PostgreSQL",
 	"author": "Marcos Essindi <marcessindi@me.com>",
@@ -39,7 +39,7 @@
 				"default": "./dist/cjs/config.js"
 			}
 		},
-		"./pg-helpers/timestamps": {
+		"./helpers/timestamps": {
 			"import": {
 				"types": "./dist/esm/timestamps.d.ts",
 				"default": "./dist/esm/timestamps.js"
@@ -49,14 +49,14 @@
 				"default": "./dist/cjs/timestamps.js"
 			}
 		},
-		"./pg": {
+		"./schema": {
 			"import": {
-				"types": "./dist/esm/pg.d.ts",
-				"default": "./dist/esm/pg.js"
+				"types": "./dist/esm/schema.d.ts",
+				"default": "./dist/esm/schema.js"
 			},
 			"require": {
-				"types": "./dist/cjs/pg.d.ts",
-				"default": "./dist/cjs/pg.js"
+				"types": "./dist/cjs/schema.d.ts",
+				"default": "./dist/cjs/schema.js"
 			}
 		},
 		"./migration": {
@@ -104,7 +104,7 @@
 		"publish:local": "npm publish --registry http://localhost:4873",
 		"test": "NO_COLOR=1 vitest --run",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
-		"unpublish:local": "npm unpublish --registry http://localhost:4873 monolayer -f"
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/pg -f"
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.15.4",

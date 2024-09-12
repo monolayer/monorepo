@@ -98,7 +98,7 @@ describe("generateChangesetMigration", () => {
 			const configurations = configurationsTemplateTwoDatabaseSchemas.render({
 				dbName: context.dbName,
 				secondSchemaFile: "anotherSchema",
-				pgPath: path.join(cwd(), "..", "..", "..", "src", "pg"),
+				pgPath: path.join(cwd(), "..", "..", "..", "src", "schema"),
 			});
 
 			writeFileSync(
@@ -196,7 +196,7 @@ describe("generateChangesetMigration", () => {
 			const configurations = configurationsTemplateTwoDatabaseSchemas.render({
 				dbName: context.dbName,
 				secondSchemaFile: "anotherSchema",
-				pgPath: path.join("src", "pg"),
+				pgPath: path.join("src", "schema"),
 			});
 
 			writeFileSync(
@@ -242,7 +242,7 @@ describe("generateChangesetMigration", () => {
 	});
 });
 
-const pgPath = path.join(currentWorkingDirectory(), "src", "pg.js");
+const pgPath = path.join(currentWorkingDirectory(), "src", "schema.js");
 
 const schemaFile = `import { schema, table, text } from "${pgPath}";
 

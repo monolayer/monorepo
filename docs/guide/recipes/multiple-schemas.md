@@ -11,7 +11,7 @@ You may want to use multiple schemas to:
 Simply add schemas to the database configuration:
 
 ```ts
-import { defineDatabase } from "monolayer/pg";
+import { defineDatabase } from "@monolayer/pg/schema";
 import { defaultDbSchema } from "./schema";
 import { statsSchema } from "./stats-schema";
 

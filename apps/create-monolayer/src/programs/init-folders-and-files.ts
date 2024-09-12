@@ -86,7 +86,7 @@ export async function createFile(path: string, content: string) {
 }
 
 export const configTemplate =
-	nunjucks.compile(`import { defineConfig } from "monolayer/config";
+	nunjucks.compile(`import { defineConfig } from "@monolayer/pg/config";
 
 export default defineConfig({
   databases: "{{ databasePath }}",
@@ -94,7 +94,7 @@ export default defineConfig({
 `);
 
 export const databasesTemplate =
-	nunjucks.compile(`import { defineDatabase } from "monolayer/pg";
+	nunjucks.compile(`import { defineDatabase } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
 import { dbSeed } from "./seed";
 
@@ -125,7 +125,7 @@ export const defaultDbClient = new Kysely<DB>({
 `);
 
 export const schemaTemplate =
-	nunjucks.compile(`import { schema } from "monolayer/pg";
+	nunjucks.compile(`import { schema } from "@monolayer/pg/schema";
 
 export const dbSchema = schema({});
 

@@ -3,7 +3,7 @@
 ◇  Where should monolayer create the `db` folder?
 │  ./app
 │
-◇  Installing monolayer... ✓
+◇  Installed monolayer-pg and dependencies... ✓
 │
 ◇  Creating monolayer.config.ts ✓
 │

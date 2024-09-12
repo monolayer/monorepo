@@ -7,7 +7,7 @@ A not-null constraint simply specifies that a column must not assume the `NULL` 
 You can define a not-null constraint to a column with the `notNull` column modifier:
 
 ```ts
-import { table, text } from "monolayer/pg";
+import { table, text } from "@monolayer/pg/schema";
 
 const users = table({
   columns: {

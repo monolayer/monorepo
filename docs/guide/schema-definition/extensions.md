@@ -6,7 +6,7 @@ You add an extension to your database by using the [`extension`](./../../referen
 
 :::code-group
 ```ts [databases.ts]
-import { defineDatabase, extension } from "monolayer/pg";
+import { defineDatabase, extension } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
 
 export default defineDatabase({
