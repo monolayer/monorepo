@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/pg",
-	"version": "1.0.0-beta.3",
+	"version": "1.0.0-beta.4",
 	"description": "Database schema management for PostgreSQL",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",

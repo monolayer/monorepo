@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD026 -->
 # Welcome to monolayer-pg!
 
-[monolayer](https://dunkelbraun.github.io/monolayer) is a [PostgreSQL](https://www.postgresql.org) database schema manager for [TypeScript](https://www.typescriptlang.org) projects built on top of [`kysely`](https://kysely.dev) with:
+[monolayer-pg](https://dunkelbraun.github.io/monolayer-pg) is a [PostgreSQL](https://www.postgresql.org) database schema manager for [TypeScript](https://www.typescriptlang.org) projects built on top of [`kysely`](https://kysely.dev) with:
 
 - Declarative, type-safe database schema definition.
 - Type-safe database client(s) for [`kysely`](https://kysely.dev) (no *codegen* :tada:).
