@@ -39,7 +39,7 @@ A data type is the kind of data that can be stored in a table column or returned
 
 *Source*: [PostgreSQL glossary](https://www.postgresql.org/docs/current/glossary.html#GLOSSARY-FOREIGN-KEY)
 
-## Function:
+## Function
 
 Code that you can run within a database query. It can take inputs, return outputs, and always runs within one transaction. You can call a function as a part of a query, for example via SELECT. Some functions can return multiple rows of data, and these are known as *set-returning* functions.
 
