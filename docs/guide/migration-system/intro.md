@@ -1,6 +1,6 @@
 # Introduction
 
-`monolayer` combines a declarative schema approach, database introspection, and change categorization to structure migrations around their intent.
+`monolayer-pg` combines a declarative schema approach, database introspection, and change categorization to structure migrations around their intent.
 
 Migrations are categorized into distinct phases:
 
@@ -11,7 +11,7 @@ Migrations are categorized into distinct phases:
 | **Data** | Applying data changes to the database, such as populating new tables with data. |
 | **Contract**    | Removing schema elements that are no longer needed, such as dropping tables no longer used. |
 
-When generating migrations with the CLI, `monolayer` automatically splits schema migrations into either `expand`, `alter`, or `contract` migrations.
+When generating migrations with the CLI, `monolayer-pg` automatically splits schema migrations into either `expand`, `alter`, or `contract` migrations.
 
 `data` migrations are manually generated through the CLI and their content is written by you.
 
@@ -73,9 +73,9 @@ A third approach is to schedule the release during off-peak hours when disruptio
 
 ## The monolayer approach
 
-With `monolayer`, ypu can safely deploy without downtime the column drop.
+With `monolayer-pg`, ypu can safely deploy without downtime the column drop.
 
-When you generate a migration to drop the column from the database, `monolayer` will automatically categorize the migration as a **Contract** migration.
+When you generate a migration to drop the column from the database, `monolayer-pg` will automatically categorize the migration as a **Contract** migration.
 
 At deploy time, you can granularly control which migrations are applied, allowing you to:
 

@@ -1,6 +1,6 @@
 # Enumerated types
 
-Columns based on enumerated types are supported by `monolayer`.
+Columns based on enumerated types are supported by `monolayer-pg`.
 
 First, you declare an enum type with the [`enumType`](./../../../reference/api/pg/functions/enumType.md).
 

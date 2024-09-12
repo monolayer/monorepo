@@ -1,6 +1,6 @@
 # Using multiple database schemas
 
-`monolayer` allows you to manage multiple schemas in a single database.
+`monolayer-pg` allows you to manage multiple schemas in a single database.
 
 You may want to use multiple schemas to:
 

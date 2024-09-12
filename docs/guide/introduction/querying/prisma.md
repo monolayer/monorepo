@@ -4,9 +4,9 @@
 This tutorial expects some familiarity with [`Prisma`](https://www.prisma.io). Please refer to the [Prisma docs](https://www.prisma.io/docs) if you need assistance on how to use it.
 :::
 
-`monolayer` can be integrated with `Prisma`.
+`monolayer-pg` can be integrated with `Prisma`.
 
-You can combine `monolayer`(*schema definition in TypeScript and migration capabilities*) with the `Prisma`(*easy to use ORM*).
+You can combine `monolayer-pg`(*schema definition in TypeScript and migration capabilities*) with the `Prisma`(*easy to use ORM*).
 
 ## Installing Prisma
 
@@ -40,7 +40,7 @@ export default defineDatabase({
 
 ## Generate the Prisma client
 
-`monolayer` generates the Prisma client after applying migrations.
+`monolayer-pg` generates the Prisma client after applying migrations.
 
 Since `Prisma` was not configured the first time we applied migrations, we need to run the command again:
 
@@ -53,7 +53,7 @@ You should get the following output:
 <<< @/snippets/migrations-prisma.txt
 
 ::: tip How does it work?
-After applying migrations, `monolayer` executes [`prisma db pull`](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#db-pull) and [`prisma generate`](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#generate) on your behalf.
+After applying migrations, `monolayer-pg` executes [`prisma db pull`](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#db-pull) and [`prisma generate`](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#generate) on your behalf.
 
 `Prisma` will automatically generate relationships between your models based on the relations established in the database through foreign keys.
 :::

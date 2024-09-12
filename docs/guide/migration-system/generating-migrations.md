@@ -1,12 +1,12 @@
 # Generating Migrations
 
-To generate schema migrations based on what you have declared are generated using the `monolayer` CLI with the `migrations generate` command:
+To generate schema migrations based on what you have declared are generated using the `monolayer-pg` CLI with the `migrations generate` command:
 
 ```bash
 npx monolayer migrations generate
 ```
 
-`monolayer` will then introspect the schema defined in your application code and the actual database schema in your development database. If there are chages to be made it will:
+`monolayer-pg` will then introspect the schema defined in your application code and the actual database schema in your development database. If there are chages to be made it will:
 
 ```mermaid
 flowchart TD

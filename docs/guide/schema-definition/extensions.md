@@ -1,6 +1,6 @@
 # Extensions
 
-`monolayer` manages [extensions](./glossary.md#extension) through the [`extensions`](./../../reference/api/pg/type-aliases/PgDatabaseConfig.md#extensions) property in your database definition.
+`monolayer-pg` manages [extensions](./glossary.md#extension) through the [`extensions`](./../../reference/api/pg/type-aliases/PgDatabaseConfig.md#extensions) property in your database definition.
 
 You add an extension to your database by using the [`extension`](./../../reference/api/pg/functions/extension.md) function.
 
@@ -18,7 +18,7 @@ export default defineDatabase({
 
 :::
 
-When `monolayer` generates migrations, extensions will be added, kept, or removed according to what's defined in the `extensions` property and what the database currently has installed:
+When `monolayer-pg` generates migrations, extensions will be added, kept, or removed according to what's defined in the `extensions` property and what the database currently has installed:
 
 | Extension   | When                                                    |
 | :---------: | :------------------------------------------------------ |

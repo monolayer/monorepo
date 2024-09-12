@@ -7,8 +7,8 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
-	title: "monolayer",
-	base: "/monolayer",
+	title: "monolayer-pg",
+	base: "/monolayer-pg",
 	description: "Database schema management for PostgreSQL",
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config
@@ -32,7 +32,7 @@ export default withMermaid({
 				items: [
 					introduction,
 					{
-						text: "Configuring monolayer",
+						text: "Configuring monolayer-pg",
 						link: "configuration",
 					},
 					schemaDefinition,

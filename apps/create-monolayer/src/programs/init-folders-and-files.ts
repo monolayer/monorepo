@@ -147,7 +147,7 @@ export async function dbSeed(db: Kysely<DB>) {
 
 const databaseURL = `
 
-# Inserted by \`create-monolayer\`
+# Inserted by \`@monolayer/create-pg\`
 # MONO_PG_DEFAULT_DATABASE_URL=postgresql://user:password@dbserver:5432/dbName
 `;
 

@@ -2,13 +2,13 @@
 
 Now that we've have a the database with some tables, we are ready to start querying it!
 
-`monolayer` provides you a type-safe [`kysely`](https://kysely.dev) database client out-of-the box.
+`monolayer-pg` provides you a type-safe [`kysely`](https://kysely.dev) database client out-of-the box.
 
 ::: info
 If you are using [`Prisma`](https://www.prisma.io) jump to [querying with Prisma](./prisma.md).
 :::
 
-To query the database, we'll use the default database client that `create-monolayer` put in `db/client.ts`.
+To query the database, we'll use the default database client that `create-pg` put in `db/client.ts`.
 
 In the same folder where the `db` folder is located, create a new file named `example.ts` and add the following code to it:
 

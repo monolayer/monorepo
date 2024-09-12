@@ -50,7 +50,7 @@ Add a TypeScript configuration with a new file named `tsconfig.json` and the fol
 Run the installer with the following command and follow the prompts:
 
 ```bash
-npx create-monolayer@latest
+npx @monolayer/create-pg@latest
 ```
 
 You will be greeted to enter the relative path to create the `db` folder:
@@ -135,7 +135,7 @@ export async function dbSeed(db: Kysely<DB>) {
 
 ```text [.env]
 
-# Inserted by \`create-monolayer\`
+# Inserted by \`@monolayer/create-pg\`
 # MONO_PG_DEFAULT_DATABASE_URL=postgresql://user:password@dbserver:5432/dbName
 ```
 

@@ -42,7 +42,7 @@ export type DB = typeof dbSchema.infer;
 :::
 
 ::: tip
-Schema definition in `monolayer` is type-safe.
+Schema definition in `monolayer-pg` is type-safe.
 
 Change the `unique` constraint column to a non existing one and see what happens! :exploding_head:
 :::
@@ -169,7 +169,7 @@ We've added the `moddatetime` extension to our database definition.
 You can [skip](#generate-migrations) this step if the database is already created
 :::
 
-Create the database with the `monolayer` CLI:
+Create the database with the `monolayer-pg` CLI:
 
 :::code-group
 
@@ -199,7 +199,7 @@ The command will prompt you to select a migration name
 
 <<< @/snippets/migrations-generate.txt
 
-This command will generate a migration file of your chosen name with the schema changes to apply in your project under the `monolayer` directory.
+This command will generate a migration file of your chosen name with the schema changes to apply in your project under the `monolayer-pg` directory.
 
 ```text [Generated files]
 🗂️ hello-monolayer (project root)
@@ -210,7 +210,7 @@ This command will generate a migration file of your chosen name with the schema 
 ```
 
 ::: warning
-The folder `monolayer` **SHOULD BE** added to version control.
+The folder `monolayer-pg` **SHOULD BE** added to version control.
 :::
 
 ## Apply migrations

@@ -3,12 +3,12 @@
 layout: home
 
 hero:
-  name: "monolayer"
+  name: "monolayer-pg"
   text: "Database schema management for PostgreSQL"
   tagline: Built with Kysely, integrates with Prisma.
   actions:
     - theme: brand
-      text: What is monolayer?
+      text: What is monolayer-pg?
       link: /guide/introduction/what-is-monolayer
     - theme: alt
       text: Features

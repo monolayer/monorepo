@@ -4,7 +4,7 @@ aside: false
 
 # Using multiple databases
 
-You can easily use multiple databases with `monolayer`.
+You can easily use multiple databases with `monolayer-pg`.
 
 To define multiple databases, you export more than one database definition from the databases file.
 

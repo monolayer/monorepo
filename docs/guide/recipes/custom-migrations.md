@@ -1,6 +1,6 @@
 # Generating custom migrations
 
-When you define and evolve your schema, `monolayer` will generate and categorize migrations into a [phase](./../migration-system/intro.md#introduction).
+When you define and evolve your schema, `monolayer-pg` will generate and categorize migrations into a [phase](./../migration-system/intro.md#introduction).
 
 However you may want to generate custom migrations to:
 

@@ -1,5 +1,5 @@
 /**
- * @module pg
+ * @module schema
  */
 
 export {

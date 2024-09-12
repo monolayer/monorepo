@@ -5,7 +5,7 @@ aside: false
 
 # What is monolayer?
 
-[monolayer](https://dunkelbraun.github.io/monolayer) is a [PostgreSQL](https://www.postgresql.org) database schema manager for [TypeScript](https://www.typescriptlang.org) projects built on top of [`kysely`](https://kysely.dev) with:
+[monolayer-pg](https://dunkelbraun.github.io/monolayer-pg) is a [PostgreSQL](https://www.postgresql.org) database schema manager for [TypeScript](https://www.typescriptlang.org) projects built on top of [`kysely`](https://kysely.dev) with:
 
 - Declarative, type-safe database [schema definition](./../schema-definition/databases.md).
 - [Type-safe](./../generated-types.md) database client(s) for `kysely` (no *codegen* :tada:).
@@ -17,7 +17,7 @@ aside: false
 
 <br>
 
-Here's a taste of how you define database schemas with `monolayer`:
+Here's a taste of how you define database schemas with `monolayer-pg`:
 
 ```ts
 const users = table({
@@ -64,4 +64,4 @@ export const dbSchema = schema({
 
 <br>
 
-Head over to the [Quickstart](./installation.md) and begin using `monolayer`!
+Head over to the [Quickstart](./installation.md) and begin using `monolayer-pg`!

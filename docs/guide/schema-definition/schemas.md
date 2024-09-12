@@ -33,7 +33,7 @@ export const statsSchema = schema({
 :::
 
 ::: tip
-`monolayer` will handle the creation of the schemas other than the default `public`.
+`monolayer-pg` will handle the creation of the schemas other than the default `public`.
 :::
 
 ## Connecting a schema to a database
