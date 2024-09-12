@@ -18,7 +18,7 @@ hero:
       link: /guide/introduction/installation
     - theme: alt
       text: Github
-      link: https://github.com/dunkelbraun/monolayer
+      link: https://github.com/dunkelbraun/monolayer-pg
 
 features:
   - title: Declarative, type-safe schema definition
