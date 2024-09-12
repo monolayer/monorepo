@@ -24,7 +24,7 @@ export const stats = defineDatabase({
 :::
 
 ::: warning
-When you define multiple databases, make sure each database definition has a [unique identifier](#database-identifiers).
+When you define multiple databases, make sure each database definition has a [unique identifier](./../schema-definition/databases.md#database-identifiers).
 Otherwise, you will have multiple databases with the same `default` identifier.
 :::
 
