@@ -18,7 +18,7 @@ import { enumerated, table } from "@monolayer/pg/schema";
 const users = table({
   columns: {
     role: enumerated(role), // [!code highlight]
-	},
+  },
 });
 ```
 

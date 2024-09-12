@@ -9,6 +9,7 @@ You add an index to a table by adding it to the [`indexes`](./../../reference/ap
 ## Index on column(s)
 
 ### Single column
+
 ```ts
 import { table, text, index } from "@monolayer/pg/schema";
 
@@ -19,11 +20,13 @@ const users = table({
   indexes: [index(["name"])], // [!code highlight]
 });
 ```
+
 ::: warning
 The optional `columns` argument of the `index` function is always an array.
 :::
 
 ### Multiple columns
+
 ```ts
 import { table, text, index } from "@monolayer/pg/schema";
 
@@ -55,6 +58,7 @@ const users = table({
 
 ::: danger
 It's recommended to reference column names with the `sql.ref` function. This function takes care of:
+
 - Double quote the column name (PostgreSQL lower cases all names unless they are "double quoted" ).
 - Transform to the column name to `snake_case` when the `camelCase` option is active.
 :::
@@ -126,5 +130,3 @@ const users = table({
 ```
 
 Read more about how to buid where expressions in the [Kysely Docs](https://kysely-org.github.io/kysely-apidoc/classes/CreateIndexBuilder.html#where)
-
-

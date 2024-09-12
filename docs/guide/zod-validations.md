@@ -3,6 +3,7 @@
 Once you have declared your schema you can access the corresponding [Zod](https://zod.dev) schema for it.
 
 The Zod schema will not only take into account:
+
 - Type of the column.
 - Nullability.
 - Specific column data type validations that match validations at database level. For example, the range of an `integer` is: -2147483648 to +2147483647.
@@ -12,7 +13,6 @@ The schema will also reject explicit `undefined` values when parsing.
 You can read more about the specific validations for each column data type in the [Column Types API](./../reference/api/pg/index.md#column-types)
 
 ## Retrieving the Zod schema
-
 
 Zod schemas are made available through the [`zodSchema`](./../reference/api/zod/functions/zodSchema.md) function from `@monolayer/pg/zod`.
 
@@ -73,6 +73,7 @@ The output type will be the same as the input type.
 | xml                   | &#160;&#160;`string`&#160;&#160;                                | &#160;&#160;`string`&#160;&#160;|
 
 (*) `Boolish` and `JsonValue` are defined as follows:
+
 ```ts
 type Boolish = "true" | "false" | "yes" | "no" | 1 | 0 | "1" | "0" | "on" | "off";
 type JsonArray = JsonValue[];
@@ -123,4 +124,3 @@ type OutputType = {
   createdAt?: Date | undefined;
 }
 ```
-

@@ -67,6 +67,7 @@ main()
 ```
 
 The script we'll:
+
 - Delete all `posts` and `users`.
 - Create a `user` with a `post`.
 - Query for all `users` and their posts.

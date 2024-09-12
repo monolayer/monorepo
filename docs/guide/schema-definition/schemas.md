@@ -9,9 +9,11 @@ Normally, every database in PostgreSQL contains a `public` schema by default.
 You define the database public schema with the [`schema`](./../../reference/api/pg/functions/schema.md) function.
 
 :::code-group
+
 ```ts [schema.ts]
 export const dbSchema = schema({});
 ```
+
 :::
 
 See the list of configuration properties in the [DatabaseSchema Reference](./../../reference/api/pg/type-aliases/DatabaseSchema.md#type-declaration)
@@ -21,11 +23,13 @@ See the list of configuration properties in the [DatabaseSchema Reference](./../
 You define a named database schema by giving it a name.
 
 :::code-group
+
 ```ts [schema.ts]
 export const statsSchema = schema({
   name: "stats", // [!code highlight]
 });
 ```
+
 :::
 
 ::: tip
@@ -37,6 +41,7 @@ export const statsSchema = schema({
 In your `databases.ts` file, specify the schema(s) you want to use in a defined database.
 
 ::: code-group
+
 ```ts [databases.ts]
 import { defineDatabase } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
@@ -45,4 +50,5 @@ export const defaultDb = defineDatabase({
   schemas: [dbSchema],
 });
 ```
+
 :::

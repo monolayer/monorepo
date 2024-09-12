@@ -3,6 +3,7 @@
 When you define and evolve your schema, `monolayer` will generate and categorize migrations into a [phase](./../migration-system/intro.md#introduction).
 
 However you may want to generate custom migrations to:
+
 - Add, modify or remove existing data.
 - Apply expand and contract (parallel changes) techniques while evolving your database schema.
 
@@ -36,5 +37,3 @@ If you want to create a custom migration that does not run in a transaction use 
 ```bash
 npx monolayer migrations scaffold --phase data --no-transaction
 ```
-
-

@@ -138,10 +138,12 @@ export async function dbSeed(db: Kysely<DB>) {
 # Inserted by \`create-monolayer\`
 # MONO_PG_DEFAULT_DATABASE_URL=postgresql://user:password@dbserver:5432/dbName
 ```
+
 :::
 
 ## Configure your environment
 
 Now, open the `.env` file in the root of the project directory and:
+
 1) Uncomment the line with `MONO_PG_DEFAULT_DATABASE_URL`.
 2) Replace the `MONO_PG_DEFAULT_DATABASE_URL` value with your database connection URL.

@@ -1,6 +1,5 @@
 # Generating Migrations
 
-
 To generate schema migrations based on what you have declared are generated using the `monolayer` CLI with the `migrations generate` command:
 
 ```bash

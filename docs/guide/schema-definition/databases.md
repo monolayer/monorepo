@@ -31,6 +31,7 @@ Don't forget to update the [configuration](./../configuration.md) in `monolayer.
 After importing [`defineDatabase`](./../../reference/api//pg/functions/defineDatabase.md) from `@monolayer/pg/schema`, you export a default database definition.
 
 ::: code-group
+
 ```ts [databases.ts]
 import { defineDatabase } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
@@ -40,6 +41,7 @@ export default defineDatabase({
   // Other configuration options
 });
 ```
+
 :::
 
 See the list of config options in the [PgDatabaseConfig Reference](./../../reference/api/pg/type-aliases/PgDatabaseConfig.md).
@@ -49,6 +51,7 @@ See the list of config options in the [PgDatabaseConfig Reference](./../../refer
 To define multiple databases, you export more than one database definition from the databases file.
 
 ::: code-group
+
 ```ts [databases.ts]
 import { defineDatabase } from "@monolayer/pg/schema";
 
@@ -61,6 +64,7 @@ export const stats = defineDatabase({
   // Other database configuration options
 });
 ```
+
 :::
 
 ::: warning
@@ -91,6 +95,7 @@ export const stats = defineDatabase({
   // Other database configuration options
 });
 ```
+
 :::
 
 ## Database identifiers
@@ -98,6 +103,7 @@ export const stats = defineDatabase({
 Each database has a configurable unique identifier (`id`), and the default `id` is `default`.
 
 The unique identifier is used internally by `monolayer` to resolve:
+
 1) The current database context when running CLI commands.
 2) The environment variable name that will contain the database connection URL.
 
@@ -114,4 +120,3 @@ For a database with the unique identifier `user_stats`, the expected environment
 :::
 
 Read more about database connection URLs in the [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS)
-

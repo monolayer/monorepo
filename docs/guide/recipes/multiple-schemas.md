@@ -3,10 +3,10 @@
 `monolayer` allows you to manage multiple schemas in a single database.
 
 You may want to use multiple schemas to:
+
 - Allow many users to use one database without interfering with each other.
 - Organize database objects into logical groups to make them more manageable.
 - Put third-party applications in separate schemas to prevent name collision with other database objects.
-
 
 Simply add schemas to the database configuration:
 
@@ -29,7 +29,6 @@ You can infer namespaced database types with `inferWithSchemaNamespace`:
 ```ts
 export type StatsDB = typeof statsSchema.inferWithSchemaNamespace;
 ```
-
 
 A `users` and `posts` tables defined in the public schema will have the inferred type:
 
@@ -70,7 +69,6 @@ export const defaultDbClient = new Kysely<DB & StatsDB>({ // [!code highlight]
 You can mix inferred types with `infer` and `inferWithSchemaNamespace`, depending on your querying needs.
 
 Read more about working with schemas in the `Kysely` Docs: [Working with schemas](https://kysely.dev/docs/recipes/schemas)
-
 
 ## Mutiple schemas with Prisma
 

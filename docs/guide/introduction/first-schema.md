@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 -->
 # Your first schema
 
 By the end of this section we'll have defined and migrated a database where we can store users and users' posts.
@@ -9,6 +10,7 @@ Let's build a simple schema with a single table called `users`.
 Change your `schema.ts` file with the following code:
 
 ::: code-group
+
 ```ts [schema.ts]
 import {
   index, integer,
@@ -36,6 +38,7 @@ export const dbSchema = schema({
 
 export type DB = typeof dbSchema.infer;
 ```
+
 :::
 
 ::: tip
@@ -45,6 +48,7 @@ Change the `unique` constraint column to a non existing one and see what happens
 :::
 
 In this schema, we have defined a table called `users` with:
+
 - An `id` column as an integer, always generated identity column (auto-incremented column).
 - A `email` column as a non-nullable text.
 - A `name` column as nullable text.
@@ -59,6 +63,7 @@ Now, let's define a `posts` table where we'll store the user's posts.
 Change your schema.ts file with the following code:
 
 ::: code-group
+
 ```ts [schema.ts]
 import { sql } from "kysely";
 import {
@@ -114,9 +119,11 @@ export const dbSchema = schema({
 
 export type DB = typeof dbSchema.infer;
 ```
+
 :::
 
 The `posts` table what we added to the schema has:
+
 - An `id` column as an integer, always generated identity column (auto-incremented column).
 - An `title` column as a non-nullable text.
 - An `content` column as a nullable text.
@@ -138,6 +145,7 @@ The trigger will enable us to use native `PostgreSQL` capabilities to update the
 In order for the trigger to work, we need to add the [`moddatetime`](https://www.postgresql.org/docs/current/contrib-spi.html#CONTRIB-SPI-MODDATETIME) extension to the database. Modify the database definition in `database.ts` with the following code:
 
 ::: code-group
+
 ```ts [databases.ts]
 import { defineDatabase, extension } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
@@ -150,6 +158,7 @@ export default defineDatabase({
   seeder: dbSeed,
 });
 ```
+
 :::
 
 We've added the `moddatetime` extension to our database definition.
@@ -163,9 +172,11 @@ You can [skip](#generate-migrations) this step if the database is already create
 Create the database with the `monolayer` CLI:
 
 :::code-group
+
 ```bash [command]
 npx monolayer db create
 ```
+
 ```text [sample output]
 ┌  Create Database
 │
@@ -173,6 +184,7 @@ npx monolayer db create
 │
 └  Done
 ```
+
 :::
 
 ## Generate migrations

@@ -5,17 +5,18 @@
 You add an extension to your database by using the [`extension`](./../../reference/api/pg/functions/extension.md) function.
 
 :::code-group
+
 ```ts [databases.ts]
 import { defineDatabase, extension } from "@monolayer/pg/schema";
 import { dbSchema } from "./schema";
 
 export default defineDatabase({
-	schemas: [dbSchema],
-	extensions: [extension("moddatetime")], // [!code highlight]
+  schemas: [dbSchema],
+  extensions: [extension("moddatetime")], // [!code highlight]
 });
 ```
-:::
 
+:::
 
 When `monolayer` generates migrations, extensions will be added, kept, or removed according to what's defined in the `extensions` property and what the database currently has installed:
 

@@ -21,7 +21,6 @@ It's recommended to run this command only while developing your application.
 When deploying your application, you should use apply migration phases individually.
 :::
 
-
 ## Applying migration phases individually
 
 Each migration phase has a corresponding migration command in the CLI.
@@ -31,9 +30,11 @@ Each migration phase has a corresponding migration command in the CLI.
 ```bash
 npx monolayer migrations apply --phase expand
 ```
+
 **Runs**: all pending expand migrations by timestamp.
 
 ### Alter Phase
+
 ```bash
 npx monolayer migrations apply --phase alter
 ```
@@ -43,6 +44,7 @@ npx monolayer migrations apply --phase alter
 **Dependencies**: `expand` migrations. It will fail early if there are pending `expand` migrations.
 
 ### Data Phase
+
 ```bash
 npx monolayer migrations apply --phase data
 ```
@@ -52,6 +54,7 @@ npx monolayer migrations apply --phase data
 **Dependencies**: `expand` and `alter` migrations. It will fail early if there are pending `expand` or `alter` migrations.
 
 ### Contract Phase
+
 ```bash
 npx monolayer migrations apply --phase contract
 ```
@@ -61,6 +64,7 @@ npx monolayer migrations apply --phase contract
 **Dependencies**: `expand` and `alter` migrations. It will fail early if there are pending `expand` or `alter` migrations.
 
 ### Contract Phase - Single Migration
+
 ```bash
 npx monolayer migrations apply --phase contract single --name=<migration-name>
 ```
@@ -72,6 +76,7 @@ npx monolayer migrations apply --phase contract single --name=<migration-name>
 ## Migration warnings
 
 From time to time, `monolayer` will have to generate a migration that could be lead to:
+
 - Destructive changes.
 - Backwards incompatibility.
 - Block the database while applying the migration.

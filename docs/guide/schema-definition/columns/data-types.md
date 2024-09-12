@@ -50,7 +50,7 @@ import { boolean, table } from "@monolayer/pg/schema";
 const users = table({
   columns: {
     active: boolean(), // [!code highlight]
-	},
+  },
 });
 ```
 
@@ -86,10 +86,10 @@ const dbSchema = table({
 Don't use `char` for a column. You probably want [text](#text).
 
 Read more in:
+
 - [Don't use char(n)](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_char.28n.29)
 - [Don't char(n) event for fixed length identifiers](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_char.28n.29_even_for_fixed-length_identifiers)
 :::
-
 
 ## character
 
@@ -109,6 +109,7 @@ const dbSchema = table({
 Don't use `character` for a column. You probably want [text](#text).
 
 Read more in:
+
 - [Don't use char(n)](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_char.28n.29)
 - [Don't char(n) event for fixed length identifiers](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_char.28n.29_even_for_fixed-length_identifiers)
 :::
@@ -220,6 +221,7 @@ Column that can store numbers with a very large number of digits iwth an optiona
 
 [PostgreSQL Docs](https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-NUMERIC-DECIMAL)
 
+<!-- markdownlint-disable-next-line MD001 -->
 #### Unconstrained numeric
 
 Numeric values of any length can be stored, up to the implementation limits.
@@ -253,6 +255,7 @@ const items = table({
 #### Numeric with precision and scale
 
 Numeric with a:
+
 - Maximum number of digits to both sides of the decimal point
 - Maximum number of digits to the right of the decimal point.
 
@@ -376,7 +379,6 @@ Use [`timestamp with time zone`](#timestamp-with-time-zone) instead.
 Read more in: [Don't use timetz](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_timetz)
 :::
 
-
 ## timestamp
 
 Column that stores both date and time without time zone with an optional precision (up to 6).
@@ -395,6 +397,7 @@ const users = table({
 });
 ```
 
+<!-- markdownlint-disable-next-line MD001 -->
 #### Timestamp with precision
 
 ```ts
@@ -431,6 +434,7 @@ const users = table({
 });
 ```
 
+<!-- markdownlint-disable-next-line MD001 -->
 #### With precision
 
 ```ts
@@ -464,7 +468,6 @@ Use [`timestamp with time zone`](#timestamp-with-time-zone) instead.
 
 Read more in: [Don't use timetz](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_timetz)
 :::
-
 
 ## uuid
 

@@ -5,6 +5,7 @@ An identity column is a special column that is generated automatically from an i
 It's PostgreSQL native implementation of [`serial`](data-types.md#serial) and [`bigserial`](data-types.md#bigserial) data types in other SQL implementations.
 
 The following column data types can be used as identity columns:
+
 - [smallint](./data-types.md#smallint)
 - [integer](./data-types.md#integer)
 - [bigint](./data-types.md#bigint)

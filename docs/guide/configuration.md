@@ -3,7 +3,7 @@ aside: false
 prev: false
 next: false
 ---
-
+<!-- markdownlint-disable MD033 -->
 # Configuring monolayer
 
 `monolayer` will read your root `monolayer.config.ts` file to be able to manage your database schemas.

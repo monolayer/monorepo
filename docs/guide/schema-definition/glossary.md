@@ -91,4 +91,3 @@ Type of [constraint](#constraint) that ensures that the data contained in a [col
 > A function which can be defined to execute whenever a certain operation (INSERT, UPDATE, DELETE, TRUNCATE) is applied to a relation. A trigger executes within the same transaction as the statement which invoked it, and if the function fails, then the invoking statement also fails.
 
 *Source*: [PostgreSQL glossary](https://www.postgresql.org/docs/current/glossary.html#GLOSSARY-TRIGGER)
-

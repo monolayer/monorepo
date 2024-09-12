@@ -9,6 +9,7 @@ You can easily use multiple databases with `monolayer`.
 To define multiple databases, you export more than one database definition from the databases file.
 
 ::: code-group
+
 ```ts [databases.ts]
 import { defineDatabase } from "@monolayer/pg/schema";
 
@@ -21,6 +22,7 @@ export const stats = defineDatabase({
   // Other database configuration options
 });
 ```
+
 :::
 
 ::: warning
@@ -51,4 +53,5 @@ export const stats = defineDatabase({
   // Other database configuration options
 });
 ```
+
 :::

@@ -48,7 +48,6 @@ Since `Prisma` was not configured the first time we applied migrations, we need 
 npx monolayer migrations apply --phase all
 ```
 
-
 You should get the following output:
 
 <<< @/snippets/migrations-prisma.txt
@@ -108,11 +107,11 @@ main()
 ```
 
 In this script we'll:
+
 - Delete all `posts` and `users`.
 - Create a `user` with a `post`.
 - Query for all `users` and their posts.
 - Output the result.
-
 
 To run the script, run following command from your project root (*replace the path with the actual path to `example-prisma.ts`*) :
 

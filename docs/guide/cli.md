@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD024 -->
 # Command Line Interface
 
 ## `db create`
@@ -68,6 +69,7 @@ npx monolayer db import
 Resets the databas by loading an schema from an existing structure file in `monolayer/dumps`.
 
 The reset process is as follows:
+
 - Drop the database.
 - Create the database.
 - Load the database structure file.
@@ -79,7 +81,6 @@ This command does not run migrations. It will only use the contents of the `mono
 ::: tip
 Use this command to quickly setup additional database environments. It will be faster than running all pending migrations on the database.
 :::
-
 
 ### Usage
 
@@ -100,7 +101,6 @@ npx monolayer db reset --env-file .env.test
 | -------------------------| ---------------------------------------------------------------------- |
 | `-d, --database-id <id>` | (*Optional*) Id of an exported database in your databases file to use. |
 | `-e, --env-file <path>`  | (*Optional*) Load environment variables from an `.env` file.           |
-
 
 ## `db seed`
 
