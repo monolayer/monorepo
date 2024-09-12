@@ -431,7 +431,7 @@ const users = table({
 });
 ```
 
-#### Timestamp with precision
+#### With precision
 
 ```ts
 import { table, timestampWithTimeZone } from "@monolayer/pg/schema";
