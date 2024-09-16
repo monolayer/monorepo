@@ -5,7 +5,7 @@ import { handleMissingDatabase } from "@monorepo/programs/database/handle-missin
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
 import { handlePendingSchemaMigrations } from "@monorepo/programs/migrations/pending.js";
 import { TableRenameState } from "@monorepo/programs/table-renames.js";
-import { cliAction } from "~monolayer/cli-action.js";
+import { cliAction } from "~commands/cli-action.js";
 
 export function generateAction(program: Command) {
 	commandWithDefaultOptions({

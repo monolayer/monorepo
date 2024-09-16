@@ -3,7 +3,7 @@ import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-op
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { scaffoldMigration } from "@monorepo/programs/migrations/scaffold.js";
 import { exit } from "node:process";
-import { cliAction } from "~monolayer/cli-action.js";
+import { cliAction } from "~commands/cli-action.js";
 
 export function scaffoldAction(program: Command) {
 	return commandWithDefaultOptions({

@@ -1,3 +1,4 @@
+import { programWithContextAndServices } from "@monorepo/commands/cli-action.js";
 import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-generator.js";
 import { PgDatabase, type PgDatabaseConfig } from "@monorepo/pg/database.js";
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
@@ -13,7 +14,6 @@ import { Effect } from "effect";
 import type { Layer } from "effect/Layer";
 import path from "path";
 import { expect } from "vitest";
-import { programWithContextAndServices } from "~monolayer/cli-action.js";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
 import { testLayers } from "~tests/__setup__/helpers/layers.js";
 import { migrateDown as migrateDownProgram } from "~tests/__setup__/helpers/migrate-down.js";

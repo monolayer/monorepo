@@ -1,9 +1,9 @@
+import { loadEnv } from "@monorepo/commands/cli-action.js";
 import { adminPgQuery } from "@monorepo/services/db-clients/admin-pg-query.js";
 import { pgQuery } from "@monorepo/services/db-clients/pg-query.js";
 import dotenv from "dotenv";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { loadEnv } from "~monolayer/cli-action.js";
 import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,

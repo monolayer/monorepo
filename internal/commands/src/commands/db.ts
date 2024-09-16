@@ -6,8 +6,8 @@ import { dropDatabase } from "@monorepo/programs/database/drop-database.js";
 import { seed } from "@monorepo/programs/database/seed.js";
 import { structureLoad } from "@monorepo/programs/database/structure-load.js";
 import { TableRenameState } from "@monorepo/programs/table-renames.js";
-import { cliAction, cliActionWithoutContext } from "~monolayer/cli-action.js";
-import { importSchema } from "../actions/import-schema.js";
+import { importSchema } from "~commands/actions/import-schema.js";
+import { cliAction, cliActionWithoutContext } from "~commands/cli-action.js";
 
 export function dbCommands(program: Command) {
 	const db = program.command("db");

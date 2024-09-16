@@ -3,7 +3,7 @@ import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-op
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { applyMigrations } from "@monorepo/programs/migrations/apply.js";
 import { exit } from "node:process";
-import { cliAction } from "~monolayer/cli-action.js";
+import { cliAction } from "~commands/cli-action.js";
 
 type MigrationPhase = "all" | ChangesetPhase;
 

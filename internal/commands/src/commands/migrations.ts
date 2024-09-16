@@ -1,9 +1,9 @@
 import type { Command } from "@commander-js/extra-typings";
-import { applyAction } from "~monolayer/actions/apply.js";
-import { generateAction } from "~monolayer/actions/generate.js";
-import { pendingAction } from "~monolayer/actions/pending.js";
-import { rollbackAction } from "~monolayer/actions/rollback.js";
-import { scaffoldAction } from "~monolayer/actions/scaffold.js";
+import { applyAction } from "~commands/actions/apply.js";
+import { generateAction } from "~commands/actions/generate.js";
+import { pendingAction } from "~commands/actions/pending.js";
+import { rollbackAction } from "~commands/actions/rollback.js";
+import { scaffoldAction } from "~commands/actions/scaffold.js";
 
 export function migrationsCommand(program: Command) {
 	const migrations = program.command("migrations");
