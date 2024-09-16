@@ -1,8 +1,8 @@
 {
 	"extends": "./tsconfig.build.cjs.json",
 	"compilerOptions": {
-		"outDir": "./../../apps/monolayer/dist/cjs/packages/pg",
-		"tsBuildInfoFile": "./../../apps/monolayer/dist/cjs/packages/pg/tsconfig.bundle.cjs.tsbuildinfo",
+		"outDir": "./../../apps/pg/dist/cjs/packages/pg",
+		"tsBuildInfoFile": "./../../apps/pg/dist/cjs/packages/pg/tsconfig.bundle.cjs.tsbuildinfo",
 		"composite": true
 	},
 	"references": [{ "path": "../utils" }]

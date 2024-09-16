@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/pg",
-	"version": "1.0.0-beta.4",
+	"version": "1.0.0-beta.5",
 	"description": "Database schema management for PostgreSQL",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -16,7 +16,7 @@
 	"module": "./dist/esm/index.js",
 	"types": "./dist/esm/index.d.ts",
 	"bin": {
-		"monolayer": "./dist/esm/bin/cli.js"
+		"monolayer-pg": "./dist/esm/bin/cli.js"
 	},
 	"exports": {
 		".": {

@@ -5,8 +5,7 @@
 	"license": "MIT",
 	"workspaces": [
 		"__config__/*",
-		"apps/create-monolayer",
-		"apps/monolayer",
+		"apps/*",
 		"internal/*",
 		"private-apps/*",
 		"docs"

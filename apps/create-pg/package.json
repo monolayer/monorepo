@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/create-pg",
-	"version": "1.0.0-beta.4",
+	"version": "1.0.0-beta.5",
 	"description": "Create monolayer inside a project",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -14,14 +14,14 @@
 	"type": "module",
 	"module": "dist/src/bin/create-monolayer.js",
 	"bin": {
-		"create-monolayer": "dist/src/bin/create-monolayer.js"
+		"create-pg": "dist/src/bin/create-pg.js"
 	},
 	"scripts": {
 		"prebuild": "rm -rf dist",
 		"build": "tsc -p tsconfig.build.json --outDir dist",
 		"postbuild": "npm run postbuild:makeexec && npm run postbuild:package && npm run postbuild:transform-paths",
 		"postbuild:transform-paths": "tsc-alias -p tsconfig.json --outDir dist",
-		"postbuild:makeexec": "chmod +x dist/src/bin/create-monolayer.js",
+		"postbuild:makeexec": "chmod +x dist/src/bin/create-pg.js",
 		"postbuild:package": "echo '{\n  \"type\": \"module\"\n}' > dist/src/package.json",
 		"check": "npm run check:prettier && npm run check:lint && npm run check:skott",
 		"check:lint": "npx eslint .",

@@ -1,8 +1,8 @@
 {
 	"extends": "./tsconfig.build.cjs.json",
 	"compilerOptions": {
-		"outDir": "./../../apps/monolayer/dist/cjs/packages/migrator",
-		"tsBuildInfoFile": "./../../apps/monolayer/dist/cjs/packages/migrator/tsconfig.bundle.cjs.tsbuildinfo",
+		"outDir": "./../../apps/pg/dist/cjs/packages/migrator",
+		"tsBuildInfoFile": "./../../apps/pg/dist/cjs/packages/migrator/tsconfig.bundle.cjs.tsbuildinfo",
 		"composite": true
 	},
 	"references": [

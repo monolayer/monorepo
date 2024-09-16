@@ -1,8 +1,8 @@
 {
 	"extends": "./tsconfig.build.json",
 	"compilerOptions": {
-		"outDir": "./../../apps/monolayer/dist/esm/packages/state",
-		"tsBuildInfoFile": "./../../apps/monolayer/dist/esm/packages/state/tsconfig.build.tsbuildinfo"
+		"outDir": "./../../apps/pg/dist/esm/packages/state",
+		"tsBuildInfoFile": "./../../apps/pg/dist/esm/packages/state/tsconfig.build.tsbuildinfo"
 	},
 	"references": [{ "path": "../cli" }, { "path": "../configuration" }]
 }
