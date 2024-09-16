@@ -7,7 +7,7 @@
 		"composite": true
 	},
 	"references": [
-		{ "path": "apps/monolayer" },
+		{ "path": "apps/pg" },
 		{ "path": "internal/cli" },
 		{ "path": "internal/configuration" },
 		{ "path": "internal/migrator" },
