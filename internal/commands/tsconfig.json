@@ -1,0 +1,27 @@
+{
+	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
+	"include": ["**/src/**/*", "__test_setup__"],
+	"compilerOptions": {
+		"baseUrl": "./",
+		"rootDir": ".",
+		"outDir": "./../../build/local/commands",
+		"tsBuildInfoFile": "./../../build/local/commands/tsconfig.build.tsbuildinfo",
+		"paths": {
+			"~commands/*": ["src/*"],
+			"~tests/*": ["tests/*"]
+		},
+		"composite": true,
+		"emitDeclarationOnly": true,
+		"declaration": true
+	},
+	"references": [
+		{ "path": "../cli" },
+		{ "path": "../configuration" },
+		{ "path": "../migrator" },
+		{ "path": "../pg" },
+		{ "path": "../programs" },
+		{ "path": "../services" },
+		{ "path": "../state" },
+		{ "path": "../utils" }
+	]
+}

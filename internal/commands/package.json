@@ -1,0 +1,34 @@
+{
+	"name": "@monorepo/commands",
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"build": "tsc -b tsconfig.build.json && tsc -b tsconfig.build.cjs.json",
+		"bundle": "tsc -b tsconfig.bundle.json && tsc -b tsconfig.bundle.cjs.json",
+		"check": "npm run check:prettier && npm run check:lint",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"test": "NO_COLOR=1 vitest --run"
+	},
+	"dependencies": {
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@monorepo/cli": "*",
+		"@monorepo/migrator": "*",
+		"@monorepo/pg": "*",
+		"@monorepo/services": "*",
+		"@monorepo/state": "*",
+		"@monorepo/utils": "*",
+		"@types/node": "^18.0.0",
+		"@clack/prompts": "^0.7.0",
+		"effect": "^3.0.7",
+		"execa": "^8.0.1",
+		"picocolors": "^1.0.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

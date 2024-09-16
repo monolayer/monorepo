@@ -3,6 +3,7 @@
 	"include": [
 		"internal/cli/src/**/*",
 		"internal/configuration/src/**/*",
+		"internal/commands/src/**/*",
 		"internal/migrator/src/**/*",
 		"internal/pg/src/**/*",
 		"internal/programs/src/**/*",
@@ -16,6 +17,7 @@
 		"outDir": "dist",
 		"paths": {
 			"~cli/*": ["internal/cli/src/*"],
+			"~commands/*": ["internal/commands/src/*"],
 			"~configuration/*": ["internal/configuration/src/*"],
 			"~migrator/*": ["internal/migrator/src/*"],
 			"~pg/*": ["internal/pg/src/*"],
@@ -24,6 +26,7 @@
 			"~state/*": ["internal/state/src/*"],
 			"~utils/*": ["internal/utils/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
+			"@monorepo/commands/*": ["internal/commands/src/*"],
 			"@monorepo/configuration/*": ["internal/configuration/src/*"],
 			"@monorepo/migrator/*": ["internal/migrator/src/*"],
 			"@monorepo/pg/*": ["internal/pg/src/*"],

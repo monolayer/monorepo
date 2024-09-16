@@ -9,6 +9,7 @@
 	"references": [
 		{ "path": "apps/pg" },
 		{ "path": "internal/cli" },
+		{ "path": "internal/commands" },
 		{ "path": "internal/configuration" },
 		{ "path": "internal/migrator" },
 		{ "path": "internal/pg" },

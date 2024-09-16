@@ -1,0 +1,18 @@
+{
+	"extends": "./tsconfig.build.cjs.json",
+	"compilerOptions": {
+		"outDir": "./../../apps/pg/dist/cjs/packages/commands",
+		"tsBuildInfoFile": "./../../apps/pg/dist/cjs/packages/commands/tsconfig.bundle.cjs.tsbuildinfo",
+		"composite": true
+	},
+	"references": [
+		{ "path": "../cli" },
+		{ "path": "../configuration" },
+		{ "path": "../migrator" },
+		{ "path": "../pg" },
+		{ "path": "../programs" },
+		{ "path": "../services" },
+		{ "path": "../state" },
+		{ "path": "../utils" }
+	]
+}

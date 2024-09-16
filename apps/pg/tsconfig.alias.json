@@ -4,6 +4,7 @@
 		"paths": {
 			"~monolayer/*": ["*"],
 			"~cli/*": ["packages/cli/*"],
+			"~commands/*": ["packages/commands/*"],
 			"~configuration/*": ["packages/configuration/*"],
 			"~migrator/*": ["packages/migrator/*"],
 			"~pg/*": ["packages/pg/*"],
@@ -12,6 +13,7 @@
 			"~state/*": ["packages/state/*"],
 			"~utils/*": ["packages/utils/*"],
 			"@monorepo/cli/*": ["packages/cli/*"],
+			"@monorepo/commands/*": ["packages/commands/*"],
 			"@monorepo/configuration/*": ["packages/configuration/*"],
 			"@monorepo/migrator/*": ["packages/migrator/*"],
 			"@monorepo/pg/*": ["packages/pg/*"],
@@ -23,6 +25,7 @@
 	},
 	"references": [
 		{ "path": "../../internal/cli" },
+		{ "path": "../../internal/commands" },
 		{ "path": "../../internal/configuration" },
 		{ "path": "../../internal/migrator" },
 		{ "path": "../../internal/pg" },

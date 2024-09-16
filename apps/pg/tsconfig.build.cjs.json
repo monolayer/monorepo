@@ -15,6 +15,7 @@
 		"paths": {
 			"~monolayer/*": ["src/*"],
 			"~cli/*": ["../../internal/cli/src/*"],
+			"~commands/*": ["../../internal/commands/src/*"],
 			"~configuration/*": ["../../internal/configuration/src/*"],
 			"~migrator/*": ["../../internal/migrator/src/*"],
 			"~pg/*": ["../../internal/pg/src/*"],
@@ -23,6 +24,7 @@
 			"~state/*": ["../../internal/state/src/*"],
 			"~utils/*": ["../../internal/utils/src/*"],
 			"@monorepo/cli/*": ["../../internal/cli/src/*"],
+			"@monorepo/commands/*": ["../../internal/commands/src/*"],
 			"@monorepo/configuration/*": ["../../internal/configuration/src/*"],
 			"@monorepo/migrator/*": ["../../internal/migrator/src/*"],
 			"@monorepo/pg/*": ["../../internal/pg/src/*"],
@@ -34,6 +36,7 @@
 	},
 	"references": [
 		{ "path": "../../internal/cli/tsconfig.bundle.cjs.json" },
+		{ "path": "../../internal/commands/tsconfig.bundle.cjs.json" },
 		{ "path": "../../internal/configuration/tsconfig.bundle.cjs.json" },
 		{ "path": "../../internal/migrator/tsconfig.bundle.cjs.json" },
 		{ "path": "../../internal/pg/tsconfig.bundle.cjs.json" },

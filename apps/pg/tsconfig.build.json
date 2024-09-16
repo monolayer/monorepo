@@ -10,6 +10,7 @@
 	},
 	"references": [
 		{ "path": "../../internal/cli/tsconfig.bundle.json" },
+		{ "path": "../../internal/commands/tsconfig.bundle.json" },
 		{ "path": "../../internal/configuration/tsconfig.bundle.json" },
 		{ "path": "../../internal/migrator/tsconfig.bundle.json" },
 		{ "path": "../../internal/pg/tsconfig.bundle.json" },

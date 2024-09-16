@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+tmp
+files
+docs
+__snapshots__
+build
