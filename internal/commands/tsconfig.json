@@ -1,6 +1,6 @@
 {
 	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
-	"include": ["**/src/**/*", "__test_setup__"],
+	"include": ["**/src/**/*", "**/tests/**/*"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
@@ -12,7 +12,8 @@
 		},
 		"composite": true,
 		"emitDeclarationOnly": true,
-		"declaration": true
+		"declaration": true,
+		"esModuleInterop": true
 	},
 	"references": [
 		{ "path": "../cli" },

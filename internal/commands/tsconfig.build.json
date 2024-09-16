@@ -1,7 +1,7 @@
 {
 	"extends": "./tsconfig.json",
 	"include": ["src/**/*"],
-	"exclude": ["src/**/*.test.ts", "__test_setup__"],
+	"exclude": ["src/**/*.test.ts", "tests"],
 	"compilerOptions": {
 		"emitDeclarationOnly": false,
 		"sourceMap": false,

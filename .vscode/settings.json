@@ -16,7 +16,7 @@
 		"**/node_modules": true,
 		"**/build": true,
 		"**/dist": true,
-		"**/tmp": true,
+		"**/tmp": false,
 		"**/.turbo": true,
 		"**/coverage": true
 	},

@@ -9,7 +9,7 @@ const config = defineConfig({
 			reporter: ["html", "json"],
 			exclude: ["**/tmp/**", "**/tests/**", "**/docs/**"],
 		},
-		setupFiles: ["__test_setup__/setup.ts"],
+		setupFiles: ["tests/__setup__/setup.ts"],
 		reporters: ["default"],
 	},
 	server: {
