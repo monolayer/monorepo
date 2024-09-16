@@ -8,6 +8,7 @@
 		"apps/create-monolayer",
 		"apps/monolayer",
 		"internal/*",
+		"private-apps/*",
 		"docs"
 	],
 	"engines": {
