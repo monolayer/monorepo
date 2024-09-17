@@ -5,15 +5,15 @@ import { pendingAction } from "~commands/actions/pending.js";
 import { rollbackAction } from "~commands/actions/rollback.js";
 import { scaffoldAction } from "~commands/actions/scaffold.js";
 
-export function migrationsCommand(program: Command) {
+export function migrationsCommand(program: Command, packageName: string) {
 	const migrations = program.command("migrations");
 
 	migrations.description("Migrations commands");
 
-	pendingAction(migrations);
-	generateAction(migrations);
-	scaffoldAction(migrations);
-	applyAction(migrations);
-	rollbackAction(migrations);
+	pendingAction(migrations, packageName);
+	generateAction(migrations, packageName);
+	scaffoldAction(migrations, packageName);
+	applyAction(migrations, packageName);
+	rollbackAction(migrations, packageName);
 	return migrations;
 }

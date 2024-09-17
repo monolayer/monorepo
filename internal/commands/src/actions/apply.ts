@@ -2,12 +2,17 @@ import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { applyMigrations } from "@monorepo/programs/migrations/apply.js";
+import {
+	PackageNameState,
+	makePackageNameState,
+} from "@monorepo/state/package-name.js";
+import { Effect, Layer } from "effect";
 import { exit } from "node:process";
 import { cliAction } from "~commands/cli-action.js";
 
 type MigrationPhase = "all" | ChangesetPhase;
 
-export function applyAction(program: Command) {
+export function applyAction(program: Command, packageName: string) {
 	return commandWithDefaultOptions({
 		name: "apply",
 		program: program,
@@ -35,7 +40,10 @@ export function applyAction(program: Command) {
 						? `Migrate all pending migrations (expand, alter, data, contract)`
 						: `Migrate pending ${opts.phase} migrations`;
 				await cliAction(message, opts, [
-					applyMigrations(applyOptions(opts.phase, opts.migration)),
+					Effect.provide(
+						applyMigrations(applyOptions(opts.phase, opts.migration)),
+						Layer.effect(PackageNameState, makePackageNameState(packageName)),
+					),
 				]);
 			}
 		});

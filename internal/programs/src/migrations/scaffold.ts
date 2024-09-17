@@ -1,5 +1,6 @@
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
+import { PackageNameState } from "@monorepo/state/package-name.js";
 import { createFile } from "@monorepo/utils/create-file.js";
 import { dateStringWithMilliseconds } from "@monorepo/utils/date-string.js";
 import { Effect } from "effect";
@@ -25,6 +26,7 @@ export function scaffoldMigration(
 		const content = nunjucks.compile(migrationTemplate).render({
 			name: scaffoldName,
 			transaction,
+			packageName: (yield* PackageNameState.current).name,
 		});
 		createFile(filePath, content, true);
 
@@ -33,7 +35,7 @@ export function scaffoldMigration(
 }
 
 const migrationTemplate = `import { Kysely } from "kysely";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "{{ packageName }}/migration";
 
 export const migration: Migration = {
   name: "{{ name }}",

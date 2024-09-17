@@ -24,6 +24,7 @@ import {
 } from "@monorepo/pg/changeset/types.js";
 import type { ChangeWarning } from "@monorepo/pg/changeset/warnings/warnings.js";
 import { appEnvironmentMigrationsFolder } from "@monorepo/state/app-environment.js";
+import { PackageNameState } from "@monorepo/state/package-name.js";
 import { createFile } from "@monorepo/utils/create-file.js";
 import { dateStringWithMilliseconds } from "@monorepo/utils/date-string.js";
 import { Effect, Layer } from "effect";
@@ -627,6 +628,7 @@ class PhasedMigratorRenderer {
 							? false
 							: true,
 						this.#changesetWarnings(isolatedChangeset),
+						(yield* PackageNameState.current).name,
 					);
 					renderedMigrations.push(
 						path.relative(
@@ -703,7 +705,7 @@ export function logMigrationResultStatus(
 }
 
 const template = `import { Kysely, sql } from "kysely";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "{{ packageName }}/migration";
 
 export const migration: Migration = {
 	name: "{{ name }}",
@@ -734,6 +736,7 @@ function renderToFile(
 	name: string,
 	transaction: boolean,
 	warnings: string,
+	packageName: string,
 ) {
 	const { up, down } = upDown;
 	const dateStr = dateStringWithMilliseconds();
@@ -745,6 +748,7 @@ function renderToFile(
 		transaction,
 		name: migrationName,
 		warnings,
+		packageName,
 	});
 	createFile(
 		migrationFilePath,

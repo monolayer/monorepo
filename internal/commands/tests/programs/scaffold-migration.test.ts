@@ -1,6 +1,10 @@
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { scaffoldMigration } from "@monorepo/programs/migrations/scaffold.js";
-import { Effect } from "effect";
+import {
+	PackageNameState,
+	makePackageNameState,
+} from "@monorepo/state/package-name.js";
+import { Effect, Layer } from "effect";
 import { readFileSync, rmSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
@@ -37,14 +41,17 @@ describe("scaffoldMigration", () => {
 		);
 		const result = await Effect.runPromise(
 			await programWithContextAndServices(
-				scaffoldMigration(ChangesetPhase.Alter, true),
+				Effect.provide(
+					scaffoldMigration(ChangesetPhase.Alter, true),
+					Layer.effect(PackageNameState, makePackageNameState("@monolayer/pg")),
+				),
 			),
 		);
 
 		expect(result.match(/alter\/.+\.ts$/)).not.toBeNull();
 
 		const expected = `import { Kysely } from "kysely";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "@monolayer/pg/migration";
 
 export const migration: Migration = {
   name: "${path.basename(result).substring(0, path.basename(result).lastIndexOf("."))}",
@@ -76,14 +83,17 @@ export async function down(db: Kysely<any>): Promise<void> {
 		);
 		const result = await Effect.runPromise(
 			await programWithContextAndServices(
-				scaffoldMigration(ChangesetPhase.Data, false),
+				Effect.provide(
+					scaffoldMigration(ChangesetPhase.Data, false),
+					Layer.effect(PackageNameState, makePackageNameState("@monolayer/pg")),
+				),
 			),
 		);
 
 		expect(result.match(/data\/.+\.ts$/)).not.toBeNull();
 
 		const expected = `import { Kysely } from "kysely";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "@monolayer/pg/migration";
 
 export const migration: Migration = {
   name: "${path.basename(result).substring(0, path.basename(result).lastIndexOf("."))}",
@@ -115,14 +125,17 @@ export async function down(db: Kysely<any>): Promise<void> {
 		);
 		const result = await Effect.runPromise(
 			await programWithContextAndServices(
-				scaffoldMigration(ChangesetPhase.Data, false),
+				Effect.provide(
+					scaffoldMigration(ChangesetPhase.Data, false),
+					Layer.effect(PackageNameState, makePackageNameState("@monolayer/pg")),
+				),
 			),
 		);
 
 		expect(result.match(/data\/.+\.ts$/)).not.toBeNull();
 
 		const expected = `import { Kysely } from "kysely";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "@monolayer/pg/migration";
 
 export const migration: Migration = {
   name: "${path.basename(result).substring(0, path.basename(result).lastIndexOf("."))}",

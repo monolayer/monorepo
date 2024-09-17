@@ -9,8 +9,12 @@ import {
 	AppEnvironment,
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
+import {
+	PackageNameState,
+	makePackageNameState,
+} from "@monorepo/state/package-name.js";
 import type { TableRename } from "@monorepo/state/table-column-rename.js";
-import { Effect } from "effect";
+import { Effect, Layer as LayerEffect } from "effect";
 import type { Layer } from "effect/Layer";
 import path from "path";
 import { expect } from "vitest";
@@ -111,8 +115,14 @@ async function runGenerateChangesetMigration(
 	return Effect.runPromise(
 		ChangesetGeneratorState.provide(
 			TableRenameState.provide(
-				programWithErrorCause(
-					await programWithContextAndServices(generateMigration, env, layers),
+				Effect.provide(
+					programWithErrorCause(
+						await programWithContextAndServices(generateMigration, env, layers),
+					),
+					LayerEffect.effect(
+						PackageNameState,
+						makePackageNameState("@monolayer/pg"),
+					),
 				),
 				tableRenames,
 			),

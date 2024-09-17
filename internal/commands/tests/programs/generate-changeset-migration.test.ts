@@ -2,11 +2,15 @@
 import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-generator.js";
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
 import { TableRenameState } from "@monorepo/programs/table-renames.js";
-import { Effect } from "effect";
+import {
+	makePackageNameState,
+	PackageNameState,
+} from "@monorepo/state/package-name.js";
+import { Effect, Layer } from "effect";
 import {
 	mkdirSync,
-	readFileSync,
 	readdirSync,
+	readFileSync,
 	rmSync,
 	writeFileSync,
 } from "fs";
@@ -51,7 +55,15 @@ describe("generateChangesetMigration", () => {
 			await Effect.runPromise(
 				await programWithContextAndServices(
 					ChangesetGeneratorState.provide(
-						TableRenameState.provide(generateMigration),
+						TableRenameState.provide(
+							Effect.provide(
+								generateMigration,
+								Layer.effect(
+									PackageNameState,
+									makePackageNameState("@monolayer/pg"),
+								),
+							),
+						),
 					),
 				),
 			);
@@ -114,7 +126,15 @@ describe("generateChangesetMigration", () => {
 			await Effect.runPromise(
 				await programWithContextAndServices(
 					ChangesetGeneratorState.provide(
-						TableRenameState.provide(generateMigration),
+						TableRenameState.provide(
+							Effect.provide(
+								generateMigration,
+								Layer.effect(
+									PackageNameState,
+									makePackageNameState("@monolayer/pg"),
+								),
+							),
+						),
 					),
 				),
 			);
@@ -159,7 +179,15 @@ describe("generateChangesetMigration", () => {
 			await Effect.runPromise(
 				await programWithContextAndServices(
 					ChangesetGeneratorState.provide(
-						TableRenameState.provide(generateMigration),
+						TableRenameState.provide(
+							Effect.provide(
+								generateMigration,
+								Layer.effect(
+									PackageNameState,
+									makePackageNameState("@monolayer/pg"),
+								),
+							),
+						),
 					),
 				),
 			);
@@ -218,7 +246,15 @@ describe("generateChangesetMigration", () => {
 			await Effect.runPromise(
 				await programWithContextAndServices(
 					ChangesetGeneratorState.provide(
-						TableRenameState.provide(generateMigration),
+						TableRenameState.provide(
+							Effect.provide(
+								generateMigration,
+								Layer.effect(
+									PackageNameState,
+									makePackageNameState("@monolayer/pg"),
+								),
+							),
+						),
 					),
 				),
 			);
@@ -289,7 +325,7 @@ export const dbSchema = schema({
 `;
 
 const expectedMigration = `import { Kysely } from "kysely";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "@monolayer/pg/migration";
 
 export const migration: Migration = {
 	name: "#name",
@@ -313,7 +349,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 `;
 
 const expectedMigrationWithSchemas = `import { Kysely, sql } from "kysely";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "@monolayer/pg/migration";
 
 export const migration: Migration = {
 	name: "#name",
@@ -355,7 +391,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 `;
 
 const expectedMigrationWithDependency = `import { Kysely } from "kysely";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "@monolayer/pg/migration";
 
 export const migration: Migration = {
 	name: "#name",
@@ -379,7 +415,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 `;
 
 const expectedMigrationWithSchemasAndDependency = `import { Kysely, sql } from "kysely";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "@monolayer/pg/migration";
 
 export const migration: Migration = {
 	name: "#name",

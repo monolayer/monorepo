@@ -32,6 +32,7 @@ import {
 	appEnvironment,
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
+import { PackageNameState } from "@monorepo/state/package-name.js";
 import { createFile } from "@monorepo/utils/create-file.js";
 import { dateStringWithMilliseconds } from "@monorepo/utils/date-string.js";
 import { camelCase, constantCase } from "case-anything";
@@ -335,6 +336,7 @@ function generateFirstMigration(
 		const content = nunjucks.compile(migrationTemplate).render({
 			name,
 			initialStructurePath,
+			packageName: (yield* PackageNameState.current).name,
 		});
 		createFile(migrationPath, content, true);
 	});
@@ -353,7 +355,7 @@ function removeSelectConfigLine(filePath: string): void {
 
 const migrationTemplate = `import { Kysely, sql } from "kysely";
 import { readFileSync } from "fs";
-import { type Migration } from "monolayer/migration";
+import { type Migration } from "{{ packageName }}/migration";
 
 export const migration: Migration = {
   name: "{{ name }}",

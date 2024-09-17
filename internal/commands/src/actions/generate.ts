@@ -5,9 +5,14 @@ import { handleMissingDatabase } from "@monorepo/programs/database/handle-missin
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
 import { handlePendingSchemaMigrations } from "@monorepo/programs/migrations/pending.js";
 import { TableRenameState } from "@monorepo/programs/table-renames.js";
+import {
+	makePackageNameState,
+	PackageNameState,
+} from "@monorepo/state/package-name.js";
+import { Effect, Layer } from "effect";
 import { cliAction } from "~commands/cli-action.js";
 
-export function generateAction(program: Command) {
+export function generateAction(program: Command, packageName: string) {
 	commandWithDefaultOptions({
 		name: "generate",
 		program,
@@ -18,7 +23,12 @@ export function generateAction(program: Command) {
 				handleMissingDatabase,
 				handlePendingSchemaMigrations,
 				ChangesetGeneratorState.provide(
-					TableRenameState.provide(generateMigration),
+					TableRenameState.provide(
+						Effect.provide(
+							generateMigration,
+							Layer.effect(PackageNameState, makePackageNameState(packageName)),
+						),
+					),
 				),
 			]);
 		});

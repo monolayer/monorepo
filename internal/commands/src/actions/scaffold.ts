@@ -2,10 +2,15 @@ import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { ChangesetPhase } from "@monorepo/pg/changeset/types.js";
 import { scaffoldMigration } from "@monorepo/programs/migrations/scaffold.js";
+import {
+	PackageNameState,
+	makePackageNameState,
+} from "@monorepo/state/package-name.js";
+import { Effect, Layer } from "effect";
 import { exit } from "node:process";
 import { cliAction } from "~commands/cli-action.js";
 
-export function scaffoldAction(program: Command) {
+export function scaffoldAction(program: Command, packageName: string) {
 	return commandWithDefaultOptions({
 		name: "scaffold",
 		program: program,
@@ -32,7 +37,10 @@ If you want to configure the migration not to run in a transaction, use the --no
 		.action(async (opts) => {
 			if (validPhase(opts.phase)) {
 				await cliAction(`Scaffold ${opts.phase} migration`, opts, [
-					scaffoldMigration(opts.phase, opts.transaction),
+					Effect.provide(
+						scaffoldMigration(opts.phase, opts.transaction),
+						Layer.effect(PackageNameState, makePackageNameState(packageName)),
+					),
 				]);
 			}
 		});

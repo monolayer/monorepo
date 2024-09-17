@@ -6,10 +6,15 @@ import { dropDatabase } from "@monorepo/programs/database/drop-database.js";
 import { seed } from "@monorepo/programs/database/seed.js";
 import { structureLoad } from "@monorepo/programs/database/structure-load.js";
 import { TableRenameState } from "@monorepo/programs/table-renames.js";
+import {
+	PackageNameState,
+	makePackageNameState,
+} from "@monorepo/state/package-name.js";
+import { Effect, Layer } from "effect";
 import { importSchema } from "~commands/actions/import-schema.js";
 import { cliAction, cliActionWithoutContext } from "~commands/cli-action.js";
 
-export function dbCommands(program: Command) {
+export function dbCommands(program: Command, packageName: string) {
 	const db = program.command("db");
 
 	db.description("Database commands");
@@ -21,7 +26,12 @@ export function dbCommands(program: Command) {
 		.description("creates a database")
 		.action(
 			async (opts) =>
-				await cliAction("Create Database", opts, [createDatabase]),
+				await cliAction("Create Database", opts, [
+					Effect.provide(
+						createDatabase,
+						Layer.effect(PackageNameState, makePackageNameState(packageName)),
+					),
+				]),
 		);
 
 	commandWithDefaultOptions({
@@ -30,7 +40,13 @@ export function dbCommands(program: Command) {
 	})
 		.description("drops a database")
 		.action(
-			async (opts) => await cliAction("Drop Database", opts, [dropDatabase]),
+			async (opts) =>
+				await cliAction("Drop Database", opts, [
+					Effect.provide(
+						dropDatabase,
+						Layer.effect(PackageNameState, makePackageNameState(packageName)),
+					),
+				]),
 		);
 
 	commandWithDefaultOptions({
@@ -39,13 +55,23 @@ export function dbCommands(program: Command) {
 	})
 		.description("Restores a database from its structure file")
 		.action(async (opts) => {
-			await cliAction("Reset Database", opts, [structureLoad()]);
+			await cliAction("Reset Database", opts, [
+				Effect.provide(
+					structureLoad(),
+					Layer.effect(PackageNameState, makePackageNameState(packageName)),
+				),
+			]);
 		});
 
 	db.command("import")
 		.description("imports schema")
 		.action(async () => {
-			await cliActionWithoutContext("Import database", [importSchema]);
+			await cliActionWithoutContext("Import database", [
+				Effect.provide(
+					importSchema,
+					Layer.effect(PackageNameState, makePackageNameState(packageName)),
+				),
+			]);
 		});
 
 	commandWithDefaultOptions({
@@ -59,10 +85,13 @@ export function dbCommands(program: Command) {
 			await cliAction("monolayer seed", opts, [
 				ChangesetGeneratorState.provide(
 					TableRenameState.provide(
-						seed({
-							replant: opts.replant,
-							disableWarnings: opts.disableWarnings,
-						}),
+						Effect.provide(
+							seed({
+								replant: opts.replant,
+								disableWarnings: opts.disableWarnings,
+							}),
+							Layer.effect(PackageNameState, makePackageNameState(packageName)),
+						),
 					),
 				),
 			]);

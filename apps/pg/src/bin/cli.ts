@@ -14,8 +14,8 @@ async function main() {
 
 	program.name("monolayer").version("1.0.0");
 
-	dbCommands(program);
-	migrationsCommand(program);
+	dbCommands(program, "@monolayer/pg");
+	migrationsCommand(program, "@monolayer/cloud");
 
 	program.exitOverride();
 

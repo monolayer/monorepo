@@ -12,6 +12,7 @@ import {
 	appEnvironmentMigrationsFolder,
 	type AppEnvironment,
 } from "@monorepo/state/app-environment.js";
+import type { PackageNameState } from "@monorepo/state/package-name.js";
 import { Context, Effect, Layer } from "effect";
 import type { UnknownException } from "effect/Cause";
 import {
@@ -76,7 +77,7 @@ export type MigratorInterface = {
 	): Effect.Effect<
 		string[],
 		UnknownException | ActionError | PromptCancelError,
-		DbClients | AppEnvironment
+		DbClients | AppEnvironment | PackageNameState
 	>;
 	pendingMigrations: Effect.Effect<
 		MonolayerMigrationInfoWithPhase[],
