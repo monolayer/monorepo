@@ -44,7 +44,7 @@ function isColumnNullable(test: Difference): test is ColumnNullableDifference {
 	);
 }
 
-function columnNullableMigrationOperation(
+export function columnNullableMigrationOperation(
 	diff: ColumnNullableDifference,
 	{ schemaName, tablesToRename }: GeneratorContext,
 ) {

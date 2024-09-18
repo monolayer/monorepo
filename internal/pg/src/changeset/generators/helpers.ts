@@ -49,11 +49,14 @@ export function toValueAndHash(value: string) {
 	return valueAndHash;
 }
 
-export function optionsForColumn(column: ColumnToAlign | ColumnInfoDiff) {
+export function optionsForColumn(
+	column: ColumnToAlign | ColumnInfoDiff,
+	skipNullable: boolean = true,
+) {
 	let columnOptions = "";
 	const options = [];
 
-	if (column.isNullable === false) options.push("notNull()");
+	if (skipNullable && column.isNullable === false) options.push("notNull()");
 	if (column.identity === "ALWAYS") options.push("generatedAlwaysAsIdentity()");
 	if (column.identity === "BY DEFAULT")
 		options.push("generatedByDefaultAsIdentity()");

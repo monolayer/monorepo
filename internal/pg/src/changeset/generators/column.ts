@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { gen } from "effect/Effect";
 import { Difference } from "microdiff";
 import { ChangesetGeneratorState } from "~pg/changeset/changeset-generator.js";
@@ -9,7 +10,10 @@ import {
 	optionsForColumn,
 	toValueAndHash,
 } from "~pg/changeset/generators/helpers.js";
-import { setNotNullOp } from "~pg/changeset/generators/modify-column-nullable.js";
+import {
+	columnNullableMigrationOperation,
+	setNotNullOp,
+} from "~pg/changeset/generators/modify-column-nullable.js";
 import type { ColumnToAlign } from "~pg/changeset/helpers/alignment.js";
 import {
 	executeKyselySchemaStatement,
@@ -77,6 +81,7 @@ function isCreateColumnNonNullableColumn(
 function createColumnMigration(
 	diff: CreateColumnDiff,
 	{ schemaName, tablesToRename }: GeneratorContext,
+	skipNullable: boolean = true,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
@@ -88,7 +93,7 @@ function createColumnMigration(
 			`alterTable("${tableName}")`,
 			`addColumn("${columnName}", ${compileDataType(
 				columnDef.dataType,
-			)}${optionsForColumn(columnDef)})`,
+			)}${optionsForColumn(columnDef, skipNullable)})`,
 		),
 	];
 	const defaultValueAndHash = toValueAndHash(String(columnDef.defaultValue));
@@ -120,11 +125,51 @@ function createColumnMigration(
 
 function createNonNullableColumnMigration(
 	diff: CreateColumnDiff,
-	{ schemaName, tablesToRename }: GeneratorContext,
+	{
+		local,
+		db,
+		addedTables,
+		droppedTables,
+		schemaName,
+		camelCase,
+		tablesToRename,
+		columnsToRename,
+		typeAlignments,
+		addedColumns,
+		droppedColumns,
+	}: GeneratorContext,
 ) {
 	const tableName = diff.path[1];
 	const columnName = diff.path[3];
 	const columnDef = diff.value;
+
+	const context: GeneratorContext = {
+		local,
+		db,
+		addedTables,
+		droppedTables,
+		schemaName,
+		camelCase,
+		tablesToRename,
+		columnsToRename,
+		typeAlignments,
+		addedColumns,
+		droppedColumns,
+	};
+	if (columnDef.splitColumn) {
+		return [
+			createColumnMigration(diff, context, false),
+			columnNullableMigrationOperation(
+				{
+					type: "CHANGE",
+					path: ["table", tableName, "columns", columnName, "isNullable"],
+					value: false,
+					oldValue: true,
+				},
+				context,
+			),
+		];
+	}
 
 	const up = [
 		executeKyselySchemaStatement(
