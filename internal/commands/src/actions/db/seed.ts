@@ -1,7 +1,14 @@
+import * as p from "@clack/prompts";
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-generator.js";
-import { seed } from "@monorepo/programs/database/seed.js";
+import {
+	checkPendingMigrations,
+	checkPendingSchemaChanges,
+	replantWarning,
+	seedDatabase,
+	truncateAllTables,
+} from "@monorepo/programs/database/seed-database.js";
 import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import {
 	makePackageNameState,
@@ -33,4 +40,24 @@ export function seedDb(program: Command, packageName: string) {
 				),
 			]);
 		});
+}
+
+type SeedOptions = {
+	disableWarnings?: boolean;
+	replant?: boolean;
+};
+
+export function seed({ disableWarnings, replant }: SeedOptions) {
+	return Effect.gen(function* () {
+		p.log.message(
+			`${replant ? "Truncate tables and seed database" : "Seed Database"}`,
+		);
+		yield* checkPendingMigrations;
+		yield* checkPendingSchemaChanges;
+
+		if (!!replant && !disableWarnings) yield* replantWarning;
+		if (replant) yield* truncateAllTables;
+
+		yield* seedDatabase;
+	});
 }

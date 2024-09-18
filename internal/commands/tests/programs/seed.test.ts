@@ -1,10 +1,10 @@
 import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-generator.js";
-import { seed } from "@monorepo/programs/database/seed.js";
 import { TableRenameState } from "@monorepo/programs/table-renames.js";
 import { Effect } from "effect";
 import { unlinkSync, writeFileSync } from "fs";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { seed } from "~commands/actions/db/seed.js";
 import { programWithContextAndServices } from "~tests/__setup__/helpers/run-program.js";
 import {
 	setupProgramContext,
