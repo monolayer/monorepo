@@ -8,11 +8,11 @@ import {
 } from "~pg/changeset/generators/column.js";
 import { isCreateTable, isDropTable } from "~pg/changeset/generators/table.js";
 import type { TypeAlignment } from "~pg/changeset/helpers/alignment.js";
-import type { Changeset } from "~pg/changeset/types.js";
+import { type Changeset } from "~pg/changeset/types.js";
 import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
-import type {
-	ColumnsToRename,
-	TablesToRename,
+import {
+	type ColumnsToRename,
+	type TablesToRename,
 } from "~pg/introspection/schema.js";
 import type { SchemaMigrationInfo } from "~pg/schema/column/types.js";
 import type { AnySchema } from "~pg/schema/schema.js";
