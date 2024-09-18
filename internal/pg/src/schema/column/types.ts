@@ -62,6 +62,7 @@ export type ColumnInfo = {
 	volatileDefault: "unknown" | "yes" | "no";
 	isNullable: boolean;
 	originalIsNullable?: boolean | null;
+	splitColumn?: boolean;
 	numericPrecision: number | null;
 	numericScale: number | null;
 	characterMaximumLength: number | null;
