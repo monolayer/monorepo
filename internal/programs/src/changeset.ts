@@ -24,7 +24,7 @@ import { promptSchemaRenames } from "~programs/schema-rename.js";
 import { validateForeignKeyReferences } from "~programs/validate-foreign-key-references.js";
 
 export const computeChangeset = gen(function* () {
-	const renames = yield* promptSchemaRenames([]);
+	const renames = yield* promptSchemaRenames();
 	const allSchemas = yield* appEnvironmentConfigurationSchemas;
 	let changesets: Changeset[] = [];
 	const typeAlignments = yield* introspectAlignment;

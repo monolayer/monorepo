@@ -9,12 +9,9 @@ import {
 import { Effect } from "effect";
 import { columnsToRenamePrompt } from "~programs/columns-to-rename.js";
 import { introspectSchema } from "~programs/introspect-schemas.js";
-import type { SplitColumnRefactoring } from "~programs/schema-refactor.js";
 import { tableRenames } from "~programs/table-renames.js";
 
-export function promptSchemaRenames(
-	splitColumnRefactors: SplitColumnRefactoring[],
-) {
+export function promptSchemaRenames() {
 	return Effect.provideServiceEffect(
 		Effect.gen(function* () {
 			const schemas = yield* appEnvironmentConfigurationSchemas;
@@ -28,53 +25,9 @@ export function promptSchemaRenames(
 					introspection.local,
 					introspection.remote,
 				);
-				const filteredColumnDiff = Object.entries(columnDiff).reduce(
-					(acc, [tableName, addedDeleted]) => {
-						if (
-							splitColumnRefactors.some(
-								(refactor) =>
-									refactor.schema === introspection.schemaName &&
-									refactor.tableName === tableName,
-							)
-						) {
-							const sourceColumnsForTable = splitColumnRefactors
-								.filter(
-									(refactor) =>
-										refactor.schema === introspection.schemaName &&
-										refactor.tableName === tableName,
-								)
-								.map((refactor) => refactor.sourceColumn);
-							const targetColumsForTable = splitColumnRefactors
-								.filter(
-									(refactor) =>
-										refactor.schema === introspection.schemaName &&
-										refactor.tableName === tableName,
-								)
-								.flatMap((refactor) => refactor.targetColumns);
-							acc[tableName] = {
-								added: addedDeleted.added.filter(
-									(added) => !targetColumsForTable.includes(added),
-								),
-								deleted: addedDeleted.deleted.filter(
-									(deleted) => !sourceColumnsForTable.includes(deleted),
-								),
-							};
-						} else {
-							acc[tableName] = addedDeleted;
-						}
-						return acc;
-					},
-					{} as Record<
-						string,
-						{
-							added: string[];
-							deleted: string[];
-						}
-					>,
-				);
 				yield* selectColumnDiffInteractive(
 					introspection.schemaName,
-					filteredColumnDiff,
+					columnDiff,
 				);
 			}
 			return yield* TableColumnRenameState.current;
