@@ -705,7 +705,7 @@ export function logMigrationResultStatus(
 }
 
 const template = `import { Kysely, sql } from "kysely";
-import { type Migration } from "{{ packageName }}/migration";
+import { type Migration{% if splitRefactor %}, SplitColumnRefactor{% endif %} } from "{{ packageName }}/migration";
 
 export const migration: Migration = {
 	name: "{{ name }}",
@@ -748,6 +748,9 @@ function renderToFile(
 		transaction,
 		name: migrationName,
 		warnings,
+		splitRefactor:
+			up.some((str) => str.includes("SplitColumnRefactor")) ||
+			down.some((str) => str.includes("SplitColumnRefactor")),
 		packageName,
 	});
 	createFile(
