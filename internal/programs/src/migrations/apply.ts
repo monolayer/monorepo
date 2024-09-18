@@ -114,11 +114,15 @@ export function applyMigrations({
 		if (
 			migrationError === undefined &&
 			migrationResults !== undefined &&
-			migrationResults.length !== 0
+			migrationResults.length !== 0 &&
+			process.env.MONO_ENV !== undefined
 		) {
 			yield* dumpDatabaseStructureTask;
 		}
-		if ((yield* appEnvironment).currentDatabase.generatePrismaSchema) {
+		if (
+			(yield* appEnvironment).currentDatabase.generatePrismaSchema &&
+			process.env.MONO_ENV !== undefined
+		) {
 			yield* generatePrisma;
 		}
 	});
