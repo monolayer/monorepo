@@ -7,6 +7,7 @@
 		"__config__/*",
 		"apps/*",
 		"internal/*",
+		"packages/*",
 		"private/*",
 		"private-apps/*",
 		"docs"

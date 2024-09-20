@@ -8,6 +8,7 @@
 	},
 	"references": [
 		{ "path": "apps/pg" },
+		{ "path": "packages/factor-four" },
 		{ "path": "internal/cli" },
 		{ "path": "internal/commands" },
 		{ "path": "internal/configuration" },

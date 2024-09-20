@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"rootDir": "",
+		"paths": {
+			"~factor-four/*": ["*"],
+			"~resources/*": ["packages/resources/*"],
+			"@monorepo/resources/*": ["packages/resources/*"]
+		}
+	},
+	"references": [{ "path": "../../internal/resources" }]
+}

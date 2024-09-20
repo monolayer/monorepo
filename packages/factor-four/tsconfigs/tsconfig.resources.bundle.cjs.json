@@ -1,0 +1,8 @@
+{
+	"extends": "./../../../internal/resources/tsconfig.build.cjs.json",
+	"compilerOptions": {
+		"outDir": "./../dist/cjs/packages/resources",
+		"tsBuildInfoFile": "./../dist/cjs/packages/resources/tsconfig.bundle.cjs.tsbuildinfo",
+		"composite": true
+	}
+}
