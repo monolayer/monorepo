@@ -1,8 +1,9 @@
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { GenericContainer } from "testcontainers";
 
 import { snakeCase } from "case-anything";
+import { mkdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { cwd } from "node:process";
 import { Container } from "~resources/_lib/container.js";
 import { StartedServerContainerWithWebUI } from "~resources/_lib/started-container.js";
 import { updateEnvVar } from "~resources/write-env.js";
@@ -77,7 +78,37 @@ export class StartedSESContainer extends StartedServerContainerWithWebUI<Started
 }
 
 async function buildSESLocalContainer() {
-	return await GenericContainer.fromDockerfile(
-		path.dirname(fileURLToPath(import.meta.url)),
-	).build("aws-ses-local:latest", { deleteOnExit: false });
+	const buildDir = path.join(cwd(), "tmp", "aws-ses-local");
+	mkdirSync(buildDir, { recursive: true });
+	writeFileSync(path.join(buildDir, "Dockerfile"), SESLocalDockerFile);
+	const container = await GenericContainer.fromDockerfile(buildDir).build(
+		"aws-ses-local:latest",
+		{ deleteOnExit: false },
+	);
+	unlinkSync(buildDir);
+	return container;
 }
+
+const SESLocalDockerFile = `FROM node:alpine AS builder
+
+RUN apk add git && \
+    git clone --depth=1 https://github.com/domdomegg/aws-ses-v2-local.git /srv/www
+
+WORKDIR /srv/www
+
+RUN npm install && npm run prepublishOnly
+
+# Create the image.
+FROM node:alpine
+
+COPY --from=builder /srv/www/branding /srv/www/branding/
+COPY --from=builder /srv/www/dist /srv/www/dist/
+COPY --from=builder /srv/www/node_modules /srv/www/node_modules/
+COPY --from=builder /srv/www/static /srv/www/static/
+COPY --from=builder /srv/www/package.json /srv/www/package.json
+COPY --from=builder /srv/www/package-lock.json /srv/www/package-lock.json
+
+WORKDIR /srv/www/dist
+
+ENTRYPOINT ["node", "cli.js", "--host", "0.0.0.0", "--port", "8005"]
+`;
