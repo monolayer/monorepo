@@ -1,11 +1,11 @@
 {
 	"name": "@monolayer/factor-four",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"license": "MIT",
 	"type": "module",
 	"description": "Backing services as first-class citizens in TypeScript applications",
 	"author": "Marcos Essindi <marcessindi@me.com>",
-	"homepage": "https://github.com/dunkelbraun/monolayer-pg/packages/factor-four",
+	"homepage": "https://github.com/dunkelbraun/monolayer-pg/tree/main/packages/factor-four",
 	"bugs": "https://github.com/dunkelbraun/monolayer-pg/issues",
 	"repository": {
 		"type": "git",
