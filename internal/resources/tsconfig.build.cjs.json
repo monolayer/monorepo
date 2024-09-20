@@ -1,0 +1,17 @@
+{
+	"extends": "./tsconfig.json",
+	"include": ["src/**/*"],
+	"compilerOptions": {
+		"emitDeclarationOnly": false,
+		"rootDir": "src",
+		"outDir": "dist/cjs",
+		"target": "es2020",
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"incremental": true,
+		"tsBuildInfoFile": "dist/tsconfig.build.cjs.tsbuildinfo",
+		"paths": {
+			"~resources/*": ["src/*"]
+		}
+	}
+}
