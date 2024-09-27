@@ -1,0 +1,19 @@
+services:
+  postgresOne:
+    image: postgres:16.1
+    restart: unless-stopped
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
+      start_period: "10s"
+
+volumes:
+  data:
