@@ -10,6 +10,15 @@ import { removeEnvVar } from "~resources/write-env.js";
 
 export async function startResources(folderPath: string) {
 	const resources = await importResources(folderPath);
+	await start(resources);
+}
+
+export async function startResourcesAt(filePath: string) {
+	const resources = await importResourcesAt(filePath);
+	await start(resources);
+}
+
+async function start(resources: unknown[]) {
 	if (resources !== undefined) {
 		for (const resource of resources) {
 			if (isSMTPMailer(resource)) {
@@ -33,6 +42,15 @@ export async function startResources(folderPath: string) {
 
 export async function stopResources(folderPath: string) {
 	const resources = await importResources(folderPath);
+	await stop(resources);
+}
+
+export async function stopResourcesAt(filePath: string) {
+	const resources = await importResourcesAt(filePath);
+	await stop(resources);
+}
+
+export async function stop(resources: unknown[]) {
 	if (resources !== undefined) {
 		for (const resource of resources) {
 			if (isSMTPMailer(resource)) {
@@ -77,22 +95,31 @@ export async function importResources(folderPath: string) {
 	}, Promise.resolve([]));
 }
 
+export async function importResourcesAt(filePath: string) {
+	return Object.values(await import(filePath));
+}
+
 function isSMTPMailer(obj: unknown): obj is SMTPMailer {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return (obj as any).constructor?.name === "SMTPMailer";
 }
 
 function isSESMailer(obj: unknown): obj is SESMailer {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return (obj as any).constructor?.name === "SESMailer";
 }
 
 function isRedisStore(obj: unknown): obj is RedisStore {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return (obj as any).constructor?.name === "RedisStore";
 }
 
 function isMemcachedStore(obj: unknown): obj is MemcachedStore {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return (obj as any).constructor?.name === "MemcachedStore";
 }
 
 function isPostgreSQLDatabase(obj: unknown): obj is PostgreSQLDatabase {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return (obj as any).constructor?.name === "PostgreSQLDatabase";
 }
