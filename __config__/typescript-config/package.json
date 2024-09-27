@@ -4,7 +4,7 @@
 	"private": true,
 	"license": "MIT",
 	"dependencies": {
-		"typescript": "^5.5.4",
+		"typescript": "^5.6.2",
 		"tsc-alias": "^1.8.8"
 	}
 }
