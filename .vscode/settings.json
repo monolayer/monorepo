@@ -26,5 +26,6 @@
 	"files.associations": {
 		".env": "env",
 		".env*": "env"
-	}
+	},
+	"workbench.panel.defaultLocation": "bottom"
 }

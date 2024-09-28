@@ -18,7 +18,7 @@
 		"@monorepo/typescript-config": "*",
 		"@types/node": "^18.0.0",
 		"@clack/prompts": "^0.7.0",
-		"effect": "^3.0.7",
+		"effect": "^3.8.4",
 		"picocolors": "^1.0.0"
 	},
 	"engines": {
