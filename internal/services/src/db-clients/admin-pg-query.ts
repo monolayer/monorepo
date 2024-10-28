@@ -1,4 +1,5 @@
-import { ActionError } from "@monorepo/cli/errors.js";
+import { ActionError, ErrnoException } from "@monorepo/cli/errors.js";
+import { isErrnoException } from "@monorepo/utils/exception.js";
 import { UnknownException } from "effect/Cause";
 import { gen, tryPromise } from "effect/Effect";
 import type { QueryResultRow } from "pg";
@@ -18,6 +19,9 @@ export function adminPgQuery<
 				const anyError = error as unknown as any;
 				if (anyError.code !== undefined && anyError.severity !== undefined) {
 					return new ActionError("QueryError", anyError.message);
+				}
+				if (isErrnoException(error)) {
+					return new ErrnoException(error);
 				}
 				return new UnknownException(error);
 			},
