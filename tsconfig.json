@@ -7,17 +7,17 @@
 		"composite": true
 	},
 	"references": [
-		{ "path": "apps/pg" },
-		{ "path": "packages/factor-four" },
-		{ "path": "internal/cli" },
-		{ "path": "internal/commands" },
-		{ "path": "internal/configuration" },
-		{ "path": "internal/migrator" },
-		{ "path": "internal/pg" },
-		{ "path": "internal/programs" },
-		{ "path": "internal/resources" },
-		{ "path": "internal/services" },
-		{ "path": "internal/utils" },
-		{ "path": "internal/state" }
+		{ "path": "./apps/pg" },
+		{ "path": "./packages/factor-four" },
+		{ "path": "./internal/cli" },
+		{ "path": "./internal/commands" },
+		{ "path": "./internal/configuration" },
+		{ "path": "./internal/migrator" },
+		{ "path": "./internal/pg" },
+		{ "path": "./internal/programs" },
+		{ "path": "./internal/resources" },
+		{ "path": "./internal/services" },
+		{ "path": "./internal/utils" },
+		{ "path": "./internal/state" }
 	]
 }
