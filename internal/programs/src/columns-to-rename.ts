@@ -62,7 +62,7 @@ export async function askColumnsToRename(
 					...deleted.map((deletedColumn) => {
 						return {
 							value: `rename:${deletedColumn}:${addedColumn}`,
-							label: `${color.yellow("rename")} '${deletedColumn}': ${deletedColumn} ${color.yellow("~>")} ${addedColumn}`,
+							label: `${color.yellow("rename")} ${deletedColumn} ${color.yellow("~>")} ${addedColumn}`,
 						};
 					}),
 				],

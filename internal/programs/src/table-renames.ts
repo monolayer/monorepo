@@ -65,7 +65,7 @@ export function selectRename({
 					...deletedTables.map((deletedTable) => {
 						return {
 							value: `rename:${deletedTable}:${table}`,
-							label: `${color.yellow("rename")} '${deletedTable}': ${deletedTable} ${color.yellow("~>")} ${table}`,
+							label: `${color.yellow("rename")} ${deletedTable} ${color.yellow("~>")} ${table}`,
 						};
 					}),
 				],
