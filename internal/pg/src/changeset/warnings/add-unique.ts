@@ -22,7 +22,7 @@ export function printAddUniqueToExisitingColumnWarning(
 		header: "Migration might fail",
 		details: warnings.map((warning) =>
 			[
-				"- Added unique constraing to column(s) on an existing table.",
+				"- Added unique constraint to column(s) on an existing table.",
 				`${color.gray(`(columns: '${warning.columns.join(", ")}' table: '${warning.table}' schema: '${warning.schema}')`)}`,
 			].join("\n  "),
 		),
