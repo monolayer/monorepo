@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 import type { Command as CommandExtra } from "@commander-js/extra-typings";
-import { dropDb } from "@monorepo/commands/actions/db/create.js";
-import { createDb } from "@monorepo/commands/actions/db/drop.js";
+import { createDb } from "@monorepo/commands/actions/db/create.js";
+import { dropDb } from "@monorepo/commands/actions/db/drop.js";
 import { importDb } from "@monorepo/commands/actions/db/import.js";
 import { resetDb } from "@monorepo/commands/actions/db/reset.js";
 import { seedDb } from "@monorepo/commands/actions/db/seed.js";

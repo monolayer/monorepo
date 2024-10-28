@@ -3,7 +3,7 @@ import { checkWithFail } from "@monorepo/cli/check.js";
 import { ActionError, type ActionErrors } from "@monorepo/cli/errors.js";
 import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import type { InformationSchemaDB } from "@monorepo/pg/introspection/introspection/types.js";
-import { dbTableInfo } from "@monorepo/pg/introspection/table-two.js";
+import { dbTableInfo } from "@monorepo/pg/introspection/table.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import type { ProgramContext } from "@monorepo/services/program-context.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
