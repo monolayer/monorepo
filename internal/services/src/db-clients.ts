@@ -1,10 +1,10 @@
 import { appEnvironmentCamelCasePlugin } from "@monorepo/state/app-environment.js";
+import dotenv from "dotenv";
 import { Context, Effect, Layer } from "effect";
 import { gen } from "effect/Effect";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
 import { connectionOptions } from "~services/db-clients/connection-options.js";
-import { databasePoolFromEnvironment } from "~services/pg-pool.js";
 
 export type DbClientProperties = {
 	readonly pgPool: pg.Pool;
@@ -62,8 +62,16 @@ export class DbClients extends Context.Tag("DbClients")<
 		adminPool: pg.Pool,
 		databaseName: string,
 		camelCase = false,
+		messages: string[] = [],
 	) => {
-		const pool = databasePoolFromEnvironment(databaseName);
+		dotenv.config();
+		const pool = new pg.Pool({
+			database: databaseName,
+			user: process.env.POSTGRES_USER,
+			password: process.env.POSTGRES_PASSWORD,
+			host: process.env.POSTGRES_HOST,
+			port: Number(process.env.POSTGRES_PORT ?? 5432),
+		});
 		return Layer.effect(
 			DbClients,
 			// eslint-disable-next-line require-yield
@@ -78,6 +86,9 @@ export class DbClients extends Context.Tag("DbClients")<
 							pool: pool,
 						}),
 						plugins: camelCase ? [new CamelCasePlugin()] : [],
+						log: (msg) => {
+							messages.push(msg.query.sql);
+						},
 					}),
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					kyselyNoCamelCase: new Kysely<any>({
