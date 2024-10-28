@@ -55,7 +55,7 @@ const databaseDumpPath = gen(function* () {
 	const env = yield* appEnvironment;
 
 	return path.join(
-		cwd(),
+		env.currentWorkingDir ?? cwd(),
 		"monolayer",
 		"dumps",
 		`structure.${env.currentDatabase.id}.sql`,
