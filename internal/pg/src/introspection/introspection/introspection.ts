@@ -10,7 +10,7 @@ import { currentColumName } from "~pg/introspection/column-name.js";
 import {
 	dbColumnInfo,
 	localColumnInfoByTable,
-} from "~pg/introspection/column-two.js";
+} from "~pg/introspection/column.js";
 import { schemaInDb } from "~pg/introspection/database-schemas.js";
 import { dbEnumInfo, localEnumInfo } from "~pg/introspection/enum.js";
 import { dbExtensionInfo } from "~pg/introspection/extension.js";
@@ -43,8 +43,8 @@ import {
 	type TriggerInfo,
 	type UniqueInfo,
 } from "~pg/introspection/schema.js";
-import { dbTableInfo } from "~pg/introspection/table-two.js";
 import {
+	dbTableInfo,
 	type ForeignKeyIntrospection,
 	tableInfo,
 } from "~pg/introspection/table.js";
@@ -484,5 +484,5 @@ export function localSchemaTableDependencies(
 		},
 		[] as [string, string | undefined][],
 	);
-	return toposort(entries);
+	return toposort(entries).reverse();
 }
