@@ -127,6 +127,7 @@ const appendMigrationDataToDump = gen(function* () {
 			"--table=monolayer_contract_migration",
 			"--table=monolayer_data_migration_lock",
 			"--table=monolayer_data_migration",
+			"--table=monolayer_transforms",
 			"--quote-all-identifiers",
 			"-a",
 			"--no-comments",
