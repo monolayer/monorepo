@@ -1,6 +1,7 @@
 import { select } from "@clack/prompts";
 import { PromptCancelError } from "@monorepo/cli/errors.js";
 import { Context, Effect, Layer, Ref } from "effect";
+import { flatMap } from "effect/Effect";
 import color from "picocolors";
 
 export function tableRenames(
@@ -11,8 +12,12 @@ export function tableRenames(
 	schemaName: string,
 ) {
 	return Effect.gen(function* () {
+		const current = yield* TableRenameState.current;
+		if (current.tableRenames) {
+			return current.tableRenames;
+		}
 		if (tableDiff.added.length === 0 || tableDiff.deleted.length === 0) {
-			return yield* Ref.get(yield* TableRenameState);
+			return [];
 		}
 		for (const table of tableDiff.added) {
 			const tableOp = yield* selectRename({
@@ -23,7 +28,10 @@ export function tableRenames(
 			const renameMatch = tableOp.match(/^rename:(\w+):(\w+)/);
 			if (renameMatch !== null) {
 				yield* Ref.update(yield* TableRenameState, (state) => {
-					state.push({
+					if (state.tableRenames == undefined) {
+						state.tableRenames = [];
+					}
+					state.tableRenames.push({
 						from: `${schemaName}.${renameMatch[1]}`,
 						to: `${schemaName}.${renameMatch[2]}`,
 					});
@@ -32,10 +40,10 @@ export function tableRenames(
 				tableDiff.deleted.splice(tableDiff.deleted.indexOf(renameMatch[1]!), 1);
 			}
 			if (tableDiff.deleted.length === 0) {
-				return yield* Ref.get(yield* TableRenameState);
+				return (yield* Ref.get(yield* TableRenameState)).tableRenames ?? [];
 			}
 		}
-		return yield* Ref.get(yield* TableRenameState);
+		return (yield* Ref.get(yield* TableRenameState)).tableRenames ?? [];
 	});
 }
 
@@ -86,17 +94,20 @@ export interface TableRename {
 
 export class TableRenameState extends Context.Tag("TableRenameState")<
 	TableRenameState,
-	Ref.Ref<TableRename[]>
+	Ref.Ref<{ tableRenames?: TableRename[] }>
 >() {
+	static current = TableRenameState.pipe(
+		flatMap((tableRenameState) => Ref.get(tableRenameState)),
+	);
 	static provide<A, E, R>(
 		effect: Effect.Effect<A, E, R>,
-		initalState?: TableRename[],
+		initialState?: TableRename[],
 	) {
 		return Effect.provide(
 			effect,
 			Layer.effect(
 				TableRenameState,
-				Ref.make(initalState ?? ([] as TableRename[])),
+				Ref.make(initialState ? { tableRenames: initialState } : {}),
 			),
 		);
 	}
