@@ -75,9 +75,10 @@ export function localCheckConstraintInfo(
 			const transformedTableName = toSnakeCase(tableName, camelCase);
 			const checkConstraints = (
 				tableInfo(tableDefinition).definition.constraints?.checks ?? []
-			).filter((check): check is PgCheck =>
-				check instanceof PgCheck ? true : false,
-			);
+			).filter((check): check is PgCheck => {
+				if (Object.keys(check).includes("isExternal")) return true;
+				return false;
+			});
 			if (checkConstraints !== undefined) {
 				for (const checkConstraint of checkConstraints) {
 					const check = checkConstraint;
