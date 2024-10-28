@@ -13,6 +13,7 @@ import { cwd } from "process";
 export interface AppEnv {
 	databases: MonolayerConfiguration["databases"];
 	currentDatabase: PgDatabase;
+	currentWorkingDir?: string;
 }
 
 export class AppEnvironment extends Context.Tag("AppEnvironment")<
