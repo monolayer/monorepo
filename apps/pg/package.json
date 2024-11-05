@@ -68,16 +68,6 @@
 				"types": "./dist/cjs/migration.d.ts",
 				"default": "./dist/cjs/migration.js"
 			}
-		},
-		"./zod": {
-			"import": {
-				"types": "./dist/esm/zod.d.ts",
-				"default": "./dist/esm/zod.js"
-			},
-			"require": {
-				"types": "./dist/cjs/zod.d.ts",
-				"default": "./dist/cjs/zod.js"
-			}
 		}
 	},
 	"files": [

@@ -67,6 +67,10 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 	/**
 	 * @hidden
 	 */
+	columns: ColumnRecord;
+	/**
+	 * @hidden
+	 */
 	protected schemaName?: string;
 
 	/**
@@ -78,14 +82,14 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 		 */
 		protected definition: TableDefinition<T, PK>,
 	) {
-		const columns = this.definition.columns || ({} as ColumnRecord);
+		this.columns = this.definition.columns || ({} as ColumnRecord);
 		const primaryKey = this.definition.constraints?.primaryKey;
 		if (primaryKey !== undefined) {
 			const primaryKeyDef = Object.fromEntries(Object.entries(primaryKey)) as {
 				columns: string[];
 			};
 			for (const key of primaryKeyDef.columns) {
-				const pkColumn = columns[key];
+				const pkColumn = this.columns[key];
 				if (pkColumn !== undefined) {
 					Object.defineProperty(pkColumn, "_primaryKey", {
 						value: true,

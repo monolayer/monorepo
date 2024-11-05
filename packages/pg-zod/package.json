@@ -1,0 +1,98 @@
+{
+	"name": "@monolayer/pg-zod",
+	"version": "1.0.0",
+	"license": "MIT",
+	"type": "module",
+	"description": "",
+	"author": "Marcos Essindi <marcessindi@me.com>",
+	"homepage": "https://github.com/dunkelbraun/monolayer-pg/tree/main/packages/pg-zod",
+	"bugs": "https://github.com/dunkelbraun/monolayer-pg/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dunkelbraun/monolayer-pg"
+	},
+	"main": "./dist/esm/index.js",
+	"module": "./dist/esm/index.js",
+	"types": "./dist/esm/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/esm/index.d.ts",
+				"default": "./dist/esm/index.js"
+			},
+			"require": {
+				"types": "./dist/cjs/index.d.ts",
+				"default": "./dist/cjs/index.js"
+			}
+		}
+	},
+	"files": [
+		"dist/**/*"
+	],
+	"scripts": {
+		"prebuild": "rm -rf dist/*",
+		"build": "npm run tsbuild:esm && npm run tsbuild:cjs",
+		"tsbuild:esm": "tsup --config tsup.config.esm.ts --tsconfig tsconfig.tsup.json",
+		"tsbuild:cjs": "tsup --config tsup.config.cjs.ts --tsconfig tsconfig.tsup.json",
+		"postbuild": "npm run makepackage",
+		"makepackage": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/package.json && echo '{\n  \"type\": \"commonjs\"\n}' > dist/cjs/package.json",
+		"check": "npm run check:format && npm run check:lint && npm run check:skott",
+		"check:format": "prettier --check .",
+		"check:lint": "npx eslint .",
+		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src",
+		"format": "prettier --write .",
+		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
+		"test": "vitest --run",
+		"test:watch": "vitest --ui --coverage --no-open",
+		"docs:dev": "vitepress dev docs",
+		"docs:build": "vitepress build docs",
+		"docs:preview": "vitepress preview docs",
+		"typedoc": "typedoc --docsRoot docs/reference",
+		"typedoc:watch": "npm run typedoc -- --watch",
+		"predocs": "npm run typedoc",
+		"docs": "npm-run-all --parallel typedoc:watch docs:dev",
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/pg-zod -f",
+		"publish:local": "npm publish --registry http://localhost:4873"
+	},
+	"devDependencies": {
+		"@monorepo/pg": "*",
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@types/node": "^20.12.2",
+		"@types/node-cron": "^3.0.11",
+		"@eslint/compat": "^1.1.1",
+		"@typescript-eslint/eslint-plugin": "^8.3.0",
+		"@typescript-eslint/parser": "^8.3.0",
+		"@vitest/coverage-istanbul": "^2.0.5",
+		"@vitest/coverage-v8": "^2.0.5",
+		"@vitest/ui": "^2.0.5",
+		"eslint": "^9.9.1",
+		"eslint-config-prettier": "^9.1.0",
+		"memcache-client": "^1.0.5",
+		"prettier": "^3.3.3",
+		"prettier-plugin-organize-imports": "^4.0.0",
+		"search-insights": "^2.17.2",
+		"skott": "^0.35.2",
+		"tsc-alias": "^1.8.10",
+		"tsx": "^4.19.1",
+		"type-fest": "^4.25.0",
+		"type-testing": "^0.2.0",
+		"typedoc": "^0.26.5",
+		"typedoc-plugin-markdown": "^4.2.3",
+		"typedoc-vitepress-theme": "^1.0.1",
+		"typescript": "^5.5.4",
+		"vite-plugin-dynamic-import": "^1.5.0",
+		"vite-tsconfig-paths": "^5.0.1",
+		"vitepress": "^1.3.4",
+		"vitepress-plugin-mermaid": "^2.0.16",
+		"vitepress-sidebar": "^1.24.2",
+		"vitest": "^2.0.5",
+		"tsup": "^8.3.0"
+	},
+	"dependencies": {
+		"ip-address": "^9.0.5"
+	},
+	"peerDependencies": {
+		"zod": "3.22.2"
+	}
+}

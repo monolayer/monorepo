@@ -1,0 +1,13 @@
+{
+	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
+	"include": ["**/src/**/*", "test/**/*"],
+	"compilerOptions": {
+		"baseUrl": "./",
+		"rootDir": ".",
+		"incremental": true,
+		"composite": true,
+		"emitDeclarationOnly": true,
+		"declaration": true
+	},
+	"references": [{ "path": "../../internal/pg" }]
+}
