@@ -1,6 +1,0 @@
-[submodule "private"]
-	path = private
-	url = git@github.com:dunkelbraun/monolayer-private.git
-[submodule "private-apps"]
-	path = private-apps
-	url = git@github.com:dunkelbraun/monolayer-private-apps.git

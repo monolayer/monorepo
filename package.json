@@ -8,8 +8,6 @@
 		"apps/*",
 		"internal/*",
 		"packages/*",
-		"private/*",
-		"private-apps/*",
 		"docs"
 	],
 	"engines": {
