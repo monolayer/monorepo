@@ -4,8 +4,8 @@
 	"private": true,
 	"license": "MIT",
 	"dependencies": {
-		"@vitest/coverage-istanbul": "^2.0.5",
-		"@vitest/ui": "^2.0.5",
+		"@vitest/coverage-istanbul": "^2.1.1",
+		"@vitest/ui": "^2.1.1",
 		"skott": "^0.33.2",
 		"type-fest": "^4.10.1",
 		"type-testing": "^0.2.0",
