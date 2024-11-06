@@ -3,6 +3,7 @@ import { spinnerTask } from "@monorepo/cli/spinner-task.js";
 import { PgExtension } from "@monorepo/pg/schema/extension.js";
 import { Schema } from "@monorepo/pg/schema/schema.js";
 import { connectionOptions } from "@monorepo/services/db-clients/connection-options.js";
+import { pgQuery } from "@monorepo/services/db-clients/pg-query.js";
 import {
 	appEnvironment,
 	appEnvironmentConfigurationSchemas,
@@ -111,23 +112,25 @@ const extensionArgs = gen(function* () {
 	);
 });
 
+const monolayerTables = gen(function* () {
+	const tables = yield* pgQuery<{ table_name: string }>(`
+		SELECT table_name
+			FROM information_schema.tables
+			WHERE table_schema = 'public'
+  	AND table_name LIKE 'monolayer_%';`);
+	return tables.map((table) => table.table_name);
+});
+
 const appendMigrationDataToDump = gen(function* () {
 	const databaseName = (yield* connectionOptions).databaseName;
+	const tables = yield* monolayerTables;
 	const { stdout } = yield* tryPromise(() =>
 		execa("pg_dump", [
 			"--no-privileges",
 			"--no-owner",
 			"--schema=public",
 			"--inserts",
-			"--table=monolayer_alter_migration_lock",
-			"--table=monolayer_alter_migration",
-			"--table=monolayer_expand_migration_lock",
-			"--table=monolayer_expand_migration",
-			"--table=monolayer_contract_migration_lock",
-			"--table=monolayer_contract_migration",
-			"--table=monolayer_data_migration_lock",
-			"--table=monolayer_data_migration",
-			"--table=monolayer_transforms",
+			...tables.map((table) => `--table=${table}`),
 			"--quote-all-identifiers",
 			"-a",
 			"--no-comments",
