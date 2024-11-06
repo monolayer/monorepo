@@ -108,7 +108,11 @@ export function introspectLocalSchema(
 			...localTriggersInfo(schema, camelCase),
 		},
 		enums: localEnumInfo(schema),
-		tablePriorities: localSchemaTableDependencies(schema, allSchemas),
+		tablePriorities: localSchemaTableDependencies(
+			schema,
+			allSchemas,
+			camelCase,
+		),
 		schemaInfo:
 			schemaName === "public"
 				? {}
@@ -469,15 +473,20 @@ export async function databaseTableDependencies(
 export function localSchemaTableDependencies(
 	local: AnySchema,
 	allSchemas: AnySchema[],
+	camelCase: boolean,
 ) {
 	const tables = local.tables;
 	const entries = Object.entries(tables).reduce(
 		(acc, [tableName, table]) => {
 			const introspect = tableInfo(table).introspect(allSchemas);
+			const normalizedTableName = toSnakeCase(tableName, camelCase);
 			for (const foreignKey of introspect.foreignKeys) {
-				const targetTableName = foreignKey.targetTable.split(".")[1];
-				if (targetTableName !== tableName) {
-					acc.push([tableName, targetTableName]);
+				const targetTableName = toSnakeCase(
+					foreignKey.targetTable.split(".")[1] ?? "",
+					camelCase,
+				);
+				if (targetTableName !== normalizedTableName) {
+					acc.push([normalizedTableName, targetTableName]);
 				}
 			}
 			return acc;
