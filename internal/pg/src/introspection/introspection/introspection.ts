@@ -463,7 +463,7 @@ export async function databaseTableDependencies(
 			],
 	);
 
-	return toposort(mapped);
+	return toposort(mapped).reverse();
 }
 
 export function localSchemaTableDependencies(
