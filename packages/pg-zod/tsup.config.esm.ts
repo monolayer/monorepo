@@ -7,7 +7,7 @@ export default defineConfig({
 	dts: true,
 	skipNodeModulesBundle: true,
 	clean: true,
-	target: "node20",
+	target: "node18",
 	platform: "node",
 	minify: false,
 	bundle: false,
