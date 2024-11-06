@@ -21,7 +21,7 @@
 		"@monorepo/typescript-config": "*",
 		"@types/node": "^18.0.0",
 		"dotenv": "^16.4.5",
-		"effect": "^3.8.4",
+		"effect": "^3.10.5",
 		"kysely": "^0.27.3",
 		"pg": "^8.11.3"
 	},

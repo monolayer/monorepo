@@ -21,7 +21,7 @@
 		"@monorepo/utils": "*",
 		"@types/node": "^18.0.0",
 		"case-anything": "^2.1.13",
-		"effect": "^3.8.4",
+		"effect": "^3.10.5",
 		"kysely": "^0.27.3",
 		"pg": "^8.11.3"
 	},
