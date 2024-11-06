@@ -4,7 +4,7 @@ import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-genera
 import { handleMissingDatabase } from "@monorepo/programs/database/handle-missing.js";
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
 import { handlePendingSchemaMigrations } from "@monorepo/programs/migrations/pending.js";
-import { TableRenameState } from "@monorepo/programs/table-renames.js";
+import { RenameState } from "@monorepo/programs/table-renames.js";
 import {
 	makePackageNameState,
 	PackageNameState,
@@ -23,7 +23,7 @@ export function generateAction(program: Command, packageName: string) {
 				handleMissingDatabase,
 				handlePendingSchemaMigrations,
 				ChangesetGeneratorState.provide(
-					TableRenameState.provide(
+					RenameState.provide(
 						Effect.provide(
 							generateMigration,
 							Layer.effect(PackageNameState, makePackageNameState(packageName)),

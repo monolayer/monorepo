@@ -4,6 +4,7 @@ import pg from "pg";
 import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
 import {
 	changedColumnNames,
+	currentColumName,
 	previousColumnName,
 } from "~pg/introspection/column-name.js";
 import type { BuilderContext } from "~pg/introspection/introspection/foreign-key-builder.js";
@@ -77,49 +78,6 @@ export async function dbIndexInfo(
 		.where("ns.nspname", "=", databaseSchema)
 		.orderBy("cls.relname")
 		.execute();
-	// SELECT DISTINCT ON(cls.relname) cls.oid, cls.relname as name
-	// FROM pg_catalog.pg_index idx
-	// 		JOIN pg_catalog.pg_class cls ON cls.oid=indexrelid
-	// 		JOIN pg_catalog.pg_class tab ON tab.oid=indrelid
-	// 		JOIN pg_catalog.pg_namespace n ON (n.oid=tab.relnamespace AND n.nspname = 'public')
-	// 		JOIN pg_catalog.pg_am am ON am.oid=cls.relam
-	// 		LEFT JOIN pg_catalog.pg_depend dep ON (dep.classid = cls.tableoid AND dep.objid = cls.oid AND dep.refobjsubid = '0' AND dep.refclassid=(SELECT oid FROM pg_catalog.pg_class WHERE relname='pg_constraint') AND dep.deptype='i')
-	// 		LEFT OUTER JOIN pg_catalog.pg_constraint con ON (con.tableoid = dep.refclassid AND con.oid = dep.refobjid)
-	// 		LEFT OUTER JOIN pg_catalog.pg_description des ON (des.objoid=cls.oid AND des.classoid='pg_class'::regclass)
-	// 		LEFT OUTER JOIN pg_catalog.pg_description desp ON (desp.objoid=con.oid AND desp.objsubid = 0 AND desp.classoid='pg_constraint'::regclass)
-	// WHERE con.conname is NULL
-	// 		ORDER BY cls.relname
-
-	// const results = await kysely
-	// 	.selectFrom("pg_class")
-	// 	.innerJoin("pg_index", "pg_class.oid", "pg_index.indrelid")
-	// 	.innerJoin(
-	// 		"pg_class as pg_class_2",
-	// 		"pg_index.indexrelid",
-	// 		"pg_class_2.oid",
-	// 	)
-	// 	.leftJoin("pg_namespace", "pg_namespace.oid", "pg_class.relnamespace")
-	// 	.select([
-	// 		"pg_class.relname as table",
-	// 		"pg_class_2.relname as name",
-	// 		sql<string>`pg_get_indexdef(pg_index.indexrelid)`.as("definition"),
-	// 		sql<string>`obj_description(pg_index.indexrelid, 'pg_class')`.as(
-	// 			"comment",
-	// 		),
-	// 	])
-	// 	.distinct()
-	// 	.where("pg_class_2.relkind", "in", ["i", "I"])
-	// 	.where("pg_index.indisprimary", "=", false)
-	// 	.where(
-	// 		"pg_class_2.relname",
-	// 		"~",
-	// 		builderContext.external ? "" : "monolayer_idx$",
-	// 	)
-	// 	.where("pg_class.relname", "in", tableNames)
-	// 	.where("pg_namespace.nspname", "=", databaseSchema)
-	// 	.orderBy("pg_class_2.relname")
-	// 	.execute();
-
 	const indexInfo = results.reduce<IndexInfo>((acc, curr) => {
 		const key = builderContext.external
 			? curr.name
@@ -211,6 +169,25 @@ export function indexToInfo(
 		"sample",
 	).compile().sql;
 
+	const currentHash = hashValue(
+		buildIndex(
+			indexCompileArgs,
+			"sample",
+			indexCompileArgs.columns.map((column) =>
+				currentColumName(
+					tableName,
+					schemaName,
+					toSnakeCase(column, camelCase),
+					columnsToRename,
+				),
+			),
+			kysely,
+			camelCase,
+			schemaName,
+			"sample",
+		).compile().sql,
+	);
+
 	for (const changedColumn of changedColumnNames(
 		tableName,
 		schemaName,
@@ -219,9 +196,7 @@ export function indexToInfo(
 		idx = idx.replace(`"${changedColumn.to}"`, `"${changedColumn.from}"`);
 	}
 
-	const hash = hashValue(idx);
-
-	const indexName = `${tableName}_${hash}_monolayer_idx`;
+	const previousHash = hashValue(idx);
 
 	const kyselyBuilder = buildIndex(
 		indexCompileArgs,
@@ -230,13 +205,13 @@ export function indexToInfo(
 		kysely,
 		camelCase,
 		schemaName,
-		indexName,
+		`${tableName}_${currentHash}_monolayer_idx`,
 	);
 
 	const compiledQuery = kyselyBuilder.compile().sql;
 
 	return {
-		[hash]: compiledQuery,
+		[previousHash]: compiledQuery,
 	};
 }
 

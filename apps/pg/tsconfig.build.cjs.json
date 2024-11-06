@@ -17,6 +17,8 @@
 			"~cli/*": ["../../internal/cli/src/*"],
 			"~commands/*": ["../../internal/commands/src/*"],
 			"~configuration/*": ["../../internal/configuration/src/*"],
+			"~db-push/*": ["../../internal/db-push/src/*"],
+			"~db-data/*": ["../../internal/db-data/src/*"],
 			"~migrator/*": ["../../internal/migrator/src/*"],
 			"~pg/*": ["../../internal/pg/src/*"],
 			"~programs/*": ["../../internal/programs/src/*"],
@@ -26,6 +28,8 @@
 			"@monorepo/cli/*": ["../../internal/cli/src/*"],
 			"@monorepo/commands/*": ["../../internal/commands/src/*"],
 			"@monorepo/configuration/*": ["../../internal/configuration/src/*"],
+			"@monorepo/db-push/*": ["../../internal/db-push/src/*"],
+			"@monorepo/db-data/*": ["../../internal/db-data/src/*"],
 			"@monorepo/migrator/*": ["../../internal/migrator/src/*"],
 			"@monorepo/pg/*": ["../../internal/pg/src/*"],
 			"@monorepo/programs/*": ["../../internal/programs/src/*"],
@@ -43,6 +47,8 @@
 		{ "path": "../../internal/programs/tsconfig.bundle.cjs.json" },
 		{ "path": "../../internal/services/tsconfig.bundle.cjs.json" },
 		{ "path": "../../internal/utils/tsconfig.bundle.cjs.json" },
-		{ "path": "../../internal/state/tsconfig.bundle.cjs.json" }
+		{ "path": "../../internal/state/tsconfig.bundle.cjs.json" },
+		{ "path": "../../internal/db-push/tsconfig.bundle.cjs.json" },
+		{ "path": "../../internal/db-data/tsconfig.bundle.cjs.json" }
 	]
 }

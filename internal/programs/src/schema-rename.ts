@@ -9,7 +9,7 @@ import {
 import { Effect } from "effect";
 import { columnsToRenamePrompt } from "~programs/columns-to-rename.js";
 import { introspectSchema } from "~programs/introspect-schemas.js";
-import { tableRenames } from "~programs/table-renames.js";
+import { RenameState, tableRenames } from "~programs/table-renames.js";
 
 export function promptSchemaRenames() {
 	return Effect.provideServiceEffect(
@@ -46,10 +46,9 @@ function selectTableDiffInteractive(
 
 		const renameSelection = yield* tableRenames({ added, deleted }, schemaName);
 
+		yield* RenameState.updateTableRenames({ tableRenames: renameSelection });
 		if (typeof renameSelection === "symbol")
 			return yield* Effect.fail(new PromptCancelError());
-
-		yield* TableColumnRenameState.updateTablesToRename(renameSelection);
 		return yield* Effect.void;
 	});
 }
@@ -67,7 +66,7 @@ function selectColumnDiffInteractive(
 	return Effect.gen(function* () {
 		const renameSelection = yield* columnsToRenamePrompt(schemaName, diff);
 
-		yield* TableColumnRenameState.updateColumnsToRename(
+		yield* RenameState.updateColumnRenames(
 			Object.entries(renameSelection).reduce((acc, [tableName, columns]) => {
 				acc[`${schemaName}.${tableName}`] = columns;
 				return acc;

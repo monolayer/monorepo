@@ -3,7 +3,9 @@ import { type ActionErrors } from "@monorepo/cli/errors.js";
 import {
 	catchErrorTags,
 	handleErrors,
+	handleErrorsNew,
 	printAnyErrors,
+	printCauseNew,
 } from "@monorepo/cli/handle-errors.js";
 import { actionIntro } from "@monorepo/cli/intro.js";
 import {
@@ -20,9 +22,9 @@ import {
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
 import { Effect, Layer } from "effect";
-import type { Scope } from "effect/Scope";
 import color from "picocolors";
 import { exit } from "process";
+import { actionInfo } from "./action-info.js";
 
 export async function cliAction(
 	name: string,
@@ -34,9 +36,35 @@ export async function cliAction(
 ) {
 	actionIntro(name);
 
+	const tasksWithLayers = actionWithLayers(tasks, layers);
+	const program = programWithContext(tasksWithLayers, await loadEnv(options));
+	await Effect.runPromise(program).then(
+		cliActionSuccessOutro,
+		cliActionFailureOutro,
+	);
+}
+
+export async function headlessCliAction<A>(
+	options: {
+		readonly databaseId: string;
+		readonly envFile?: string;
+		readonly verbose?: boolean;
+	},
+	tasks: Effect.Effect<A, ActionErrors, ProgramContext>[],
+) {
 	await Effect.runPromise(
-		programWithContext(actionWithLayers(tasks, layers), await loadEnv(options)),
-	).then(cliActionSuccessOutro, cliActionFailureOutro);
+		await Effect.runPromise(
+			programWithContext(
+				Effect.provide(Effect.all([actionInfo, ...tasks]), layers),
+				await loadEnv(options),
+			)
+				.pipe(handleErrorsNew)
+				.pipe(Effect.tapErrorCause(printCauseNew)),
+		).then(
+			() => exit(0),
+			() => exit(1),
+		),
+	);
 }
 
 export const layers = Migrator.LiveLayer().pipe(
@@ -60,10 +88,13 @@ export async function cliActionWithoutContext(
 export async function loadEnv(options: {
 	readonly databaseId: string;
 	readonly envFile?: string;
+	readonly verbose?: boolean;
 }) {
 	return await Effect.runPromise(
 		Effect.gen(function* () {
-			return yield* getEnvironment(options.databaseId, options.envFile);
+			const appEnv = yield* getEnvironment(options.databaseId, options.envFile);
+			appEnv.debug = options.verbose;
+			return appEnv;
 		}),
 	).then(envLoadSuccess, envLoadFailure);
 }
@@ -86,36 +117,31 @@ const envLoadFailure = (error: unknown) => {
 	exit(1);
 };
 
-function programWithContext<A, E, R>(
+export function programWithContext<A, E, R>(
 	program: Effect.Effect<A, E, R>,
 	env: AppEnv,
 ) {
 	return Effect.scoped(AppEnvironment.provide(program, env));
 }
 
-export async function programWithContextAndServices<
-	A,
-	E,
-	R,
-	Rin extends Migrator | DbClients,
->(
+export function programWithContextAndServices<A, E, R, Rin, LE, LR>(
 	program: Effect.Effect<A, E, R>,
 	env: AppEnv,
-	layer: Layer.Layer<Rin, never, AppEnvironment | Scope>,
+	layer: Layer.Layer<Rin, LE, LR>,
 ) {
 	return Effect.scoped(
 		AppEnvironment.provide(Effect.provide(program, layer), env),
 	);
 }
 
-function actionWithErrorHandling<AC, AE>(
-	tasks: Effect.Effect<unknown, AE, AC>[],
+function actionWithErrorHandling<AI, AC, AE>(
+	tasks: Effect.Effect<AI, AE, AC>[],
 ) {
 	return Effect.all(tasks).pipe(handleErrors).pipe(printAnyErrors);
 }
 
-function actionWithLayers<AC, AE, LOut, LErr, LIn>(
-	tasks: Effect.Effect<unknown, AE, AC>[],
+export function actionWithLayers<AI, AC, AE, LOut, LErr, LIn>(
+	tasks: Effect.Effect<AI, AE, AC>[],
 	layers: Layer.Layer<LOut, LErr, LIn>,
 ) {
 	return Effect.provide(actionWithErrorHandling(tasks), layers).pipe(

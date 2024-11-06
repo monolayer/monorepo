@@ -16,6 +16,8 @@
 		{ "path": "./internal/programs" },
 		{ "path": "./internal/services" },
 		{ "path": "./internal/utils" },
-		{ "path": "./internal/state" }
+		{ "path": "./internal/state" },
+		{ "path": "./internal/db-data" },
+		{ "path": "./internal/db-push" }
 	]
 }

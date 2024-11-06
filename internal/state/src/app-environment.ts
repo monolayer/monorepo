@@ -6,6 +6,7 @@ import type { MonolayerConfiguration } from "@monorepo/configuration/monolayer.j
 import { PgDatabase } from "@monorepo/pg/database.js";
 import dotenv from "dotenv";
 import { Context, Effect, Layer, Ref } from "effect";
+import { gen } from "effect/Effect";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
@@ -14,6 +15,7 @@ export interface AppEnv {
 	databases: MonolayerConfiguration["databases"];
 	currentDatabase: PgDatabase;
 	currentWorkingDir?: string;
+	debug?: boolean;
 }
 
 export class AppEnvironment extends Context.Tag("AppEnvironment")<
@@ -87,6 +89,11 @@ export const appEnvironmentCamelCasePlugin = Effect.gen(function* () {
 	return state.currentDatabase.camelCase;
 });
 
+export const appEnvironmentDebug = Effect.gen(function* () {
+	const state = yield* appEnvironment;
+	return state.debug ?? false;
+});
+
 export const appEnvironmentMigrationsFolder = Effect.gen(function* () {
 	const appEnv = yield* appEnvironment;
 	return path.join(cwd(), "monolayer", "migrations", appEnv.currentDatabase.id);
@@ -138,3 +145,13 @@ export function databaseById(databaseId: string) {
 		return database;
 	});
 }
+
+export const currentDatabaseId = gen(function* () {
+	const appEnv = yield* appEnvironment;
+	return appEnv.currentDatabase.id;
+});
+
+export const currentWorkingDir = gen(function* () {
+	const appEnv = yield* appEnvironment;
+	return appEnv.currentWorkingDir ?? cwd();
+});

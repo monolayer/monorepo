@@ -10,6 +10,7 @@ import {
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
 import { Effect, type Layer } from "effect";
+import type { Scope } from "effect/Scope";
 
 export async function programWithContextAndServices<
 	A,
@@ -19,7 +20,7 @@ export async function programWithContextAndServices<
 >(
 	program: Effect.Effect<A, E, R>,
 	env?: AppEnv,
-	layer?: Layer.Layer<Rin, never, AppEnvironment>,
+	layer?: Layer.Layer<Rin, never, AppEnvironment | Scope>,
 ) {
 	try {
 		return originalprogramWithContextAndServices(

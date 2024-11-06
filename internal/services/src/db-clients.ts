@@ -65,6 +65,12 @@ export class DbClients extends Context.Tag("DbClients")<
 		messages: string[] = [],
 	) => {
 		dotenv.config();
+		const adminP = new pg.Pool({
+			user: process.env.POSTGRES_USER,
+			password: process.env.POSTGRES_PASSWORD,
+			host: process.env.POSTGRES_HOST,
+			port: Number(process.env.POSTGRES_PORT ?? 5432),
+		});
 		const pool = new pg.Pool({
 			database: databaseName,
 			user: process.env.POSTGRES_USER,
@@ -74,11 +80,16 @@ export class DbClients extends Context.Tag("DbClients")<
 		});
 		return Layer.effect(
 			DbClients,
-			// eslint-disable-next-line require-yield
 			Effect.gen(function* () {
+				yield* Effect.addFinalizer(() =>
+					Effect.gen(function* () {
+						yield* Effect.promise(() => pool.end());
+						yield* Effect.promise(() => adminP.end());
+					}),
+				);
 				return {
 					pgPool: pool,
-					pgAdminPool: adminPool,
+					pgAdminPool: adminP,
 					databaseName,
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					kysely: new Kysely<any>({

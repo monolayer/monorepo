@@ -1,11 +1,11 @@
 import { appEnvironment } from "@monorepo/state/app-environment.js";
-import { gen } from "effect/Effect";
+import { gen, succeed } from "effect/Effect";
 import pgConnectionString from "pg-connection-string";
 
 export const connectionOptions = gen(function* () {
 	const connectionString = (yield* appEnvironment).currentDatabase
 		.connectionString;
-	const parsed = pgConnectionString.parse(connectionString);
+	const parsed = yield* parseConnectionString(connectionString);
 	return {
 		app: connectionString,
 		admin: connectionString.replace(
@@ -15,3 +15,7 @@ export const connectionOptions = gen(function* () {
 		databaseName: parsed.database ?? "",
 	};
 });
+
+export function parseConnectionString(connectionString: string) {
+	return succeed(pgConnectionString.parse(connectionString));
+}

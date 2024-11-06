@@ -21,6 +21,11 @@ export class ActionError {
 	) {}
 }
 
+export class ErrnoException {
+	readonly _tag = "ErrnoException";
+	constructor(readonly error: NodeJS.ErrnoException) {}
+}
+
 export class UnknownActionError {
 	readonly _tag = "UnknownActionError";
 	constructor(
@@ -33,7 +38,9 @@ export type ActionErrors =
 	| ExitWithSuccess
 	| UnknownActionError
 	| PromptCancelError
-	| UnknownException;
+	| UnknownException
+	| ErrnoException
+	| Error;
 
 export function formatErrorStack(stack: string) {
 	return (

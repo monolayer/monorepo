@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-generator.js";
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
-import { TableRenameState } from "@monorepo/programs/table-renames.js";
+import { RenameState } from "@monorepo/programs/table-renames.js";
 import {
 	makePackageNameState,
 	PackageNameState,
@@ -55,7 +55,7 @@ describe("generateChangesetMigration", () => {
 			await Effect.runPromise(
 				await programWithContextAndServices(
 					ChangesetGeneratorState.provide(
-						TableRenameState.provide(
+						RenameState.provide(
 							Effect.provide(
 								generateMigration,
 								Layer.effect(
@@ -126,7 +126,7 @@ describe("generateChangesetMigration", () => {
 			await Effect.runPromise(
 				await programWithContextAndServices(
 					ChangesetGeneratorState.provide(
-						TableRenameState.provide(
+						RenameState.provide(
 							Effect.provide(
 								generateMigration,
 								Layer.effect(
@@ -179,7 +179,7 @@ describe("generateChangesetMigration", () => {
 			await Effect.runPromise(
 				await programWithContextAndServices(
 					ChangesetGeneratorState.provide(
-						TableRenameState.provide(
+						RenameState.provide(
 							Effect.provide(
 								generateMigration,
 								Layer.effect(
@@ -246,7 +246,7 @@ describe("generateChangesetMigration", () => {
 			await Effect.runPromise(
 				await programWithContextAndServices(
 					ChangesetGeneratorState.provide(
-						TableRenameState.provide(
+						RenameState.provide(
 							Effect.provide(
 								generateMigration,
 								Layer.effect(

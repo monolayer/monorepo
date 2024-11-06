@@ -2,7 +2,7 @@ import { programWithContextAndServices } from "@monorepo/commands/cli-action.js"
 import { ChangesetGeneratorState } from "@monorepo/pg/changeset/changeset-generator.js";
 import { PgDatabase, type PgDatabaseConfig } from "@monorepo/pg/database.js";
 import { generateMigration } from "@monorepo/programs/migrations/generate.js";
-import { TableRenameState } from "@monorepo/programs/table-renames.js";
+import { RenameState } from "@monorepo/programs/table-renames.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import { Migrator } from "@monorepo/services/migrator.js";
 import {
@@ -16,6 +16,7 @@ import {
 import type { TableRename } from "@monorepo/state/table-column-rename.js";
 import { Effect, Layer as LayerEffect } from "effect";
 import type { Layer } from "effect/Layer";
+import type { Scope } from "effect/Scope";
 import path from "path";
 import { expect } from "vitest";
 import type { DbContext } from "~tests/__setup__/helpers/kysely.js";
@@ -108,13 +109,13 @@ export async function testChangesetAndMigrations({
 }
 
 async function runGenerateChangesetMigration(
-	layers: Layer<Migrator | DbClients, never, AppEnvironment>,
+	layers: Layer<Migrator | DbClients, never, AppEnvironment | Scope>,
 	env: AppEnv,
 	tableRenames: TableRename[] = [],
 ) {
 	return Effect.runPromise(
 		ChangesetGeneratorState.provide(
-			TableRenameState.provide(
+			RenameState.provide(
 				Effect.provide(
 					programWithErrorCause(
 						await programWithContextAndServices(generateMigration, env, layers),
@@ -124,14 +125,14 @@ async function runGenerateChangesetMigration(
 						makePackageNameState("@monolayer/pg"),
 					),
 				),
-				tableRenames,
+				{ tableRenames: tableRenames },
 			),
 		),
 	);
 }
 
 async function cleanup(
-	layers: Layer<Migrator | DbClients, never, AppEnvironment>,
+	layers: Layer<Migrator | DbClients, never, AppEnvironment | Scope>,
 	env: AppEnv,
 ) {
 	const program = DbClients.pipe(
@@ -159,7 +160,7 @@ export const migrate = Effect.gen(function* () {
 });
 
 async function runMigrate(
-	layers: Layer<Migrator | DbClients, never, AppEnvironment>,
+	layers: Layer<Migrator | DbClients, never, AppEnvironment | Scope>,
 	env: AppEnv,
 ) {
 	return Effect.runPromise(
@@ -170,7 +171,7 @@ async function runMigrate(
 }
 
 async function runMigrateDown(
-	layers: Layer<Migrator | DbClients, never, AppEnvironment>,
+	layers: Layer<Migrator | DbClients, never, AppEnvironment | Scope>,
 	env: AppEnv,
 ) {
 	return Effect.runPromise(

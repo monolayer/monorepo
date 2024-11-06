@@ -1,26 +1,47 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
-import { dropDatabase } from "@monorepo/programs/database/drop-database.js";
+import { databaseExists } from "@monorepo/programs/database/database-exists.js";
+import { adminPgQuery } from "@monorepo/services/db-clients/admin-pg-query.js";
+import { connectionOptions } from "@monorepo/services/db-clients/connection-options.js";
 import {
 	makePackageNameState,
 	PackageNameState,
 } from "@monorepo/state/package-name.js";
 import { Effect, Layer } from "effect";
-import { cliAction } from "~commands/cli-action.js";
+import { catchAll, fail, gen, tap } from "effect/Effect";
+import ora from "ora";
 
-export function dropDb(program: Command, packageName: string) {
+import { headlessCliAction } from "~commands/cli-action.js";
+
+export function createDb(program: Command, packageName: string) {
 	commandWithDefaultOptions({
-		name: "drop",
+		name: "create",
 		program: program,
 	})
-		.description("drops a database")
-		.action(
-			async (opts) =>
-				await cliAction("Drop Database", opts, [
-					Effect.provide(
-						dropDatabase,
-						Layer.effect(PackageNameState, makePackageNameState(packageName)),
+		.description("creates a database")
+		.action(async (opts) => {
+			const spinner = ora();
+			await headlessCliAction(opts, [
+				Effect.provide(
+					gen(function* () {
+						spinner.start("Creating database");
+						const databaseName = (yield* connectionOptions).databaseName;
+						if (yield* databaseExists) {
+							return databaseName;
+						}
+						yield* adminPgQuery(`CREATE DATABASE "${databaseName}";`);
+						return databaseName;
+					}).pipe(
+						tap((databaseName) =>
+							spinner.succeed(`Created database: ${databaseName}`),
+						),
+						catchAll((e) => {
+							spinner.fail(`Failed to create database.`);
+							return fail(e);
+						}),
 					),
-				]),
-		);
+					Layer.effect(PackageNameState, makePackageNameState(packageName)),
+				),
+			]);
+		});
 }

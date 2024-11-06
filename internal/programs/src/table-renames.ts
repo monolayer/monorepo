@@ -12,7 +12,7 @@ export function tableRenames(
 	schemaName: string,
 ) {
 	return Effect.gen(function* () {
-		const current = yield* TableRenameState.current;
+		const current = yield* RenameState.current;
 		if (current.tableRenames) {
 			return current.tableRenames;
 		}
@@ -27,7 +27,7 @@ export function tableRenames(
 			});
 			const renameMatch = tableOp.match(/^rename:(\w+):(\w+)/);
 			if (renameMatch !== null) {
-				yield* Ref.update(yield* TableRenameState, (state) => {
+				yield* Ref.update(yield* RenameState, (state) => {
 					if (state.tableRenames == undefined) {
 						state.tableRenames = [];
 					}
@@ -40,10 +40,10 @@ export function tableRenames(
 				tableDiff.deleted.splice(tableDiff.deleted.indexOf(renameMatch[1]!), 1);
 			}
 			if (tableDiff.deleted.length === 0) {
-				return (yield* Ref.get(yield* TableRenameState)).tableRenames ?? [];
+				return (yield* Ref.get(yield* RenameState)).tableRenames ?? [];
 			}
 		}
-		return (yield* Ref.get(yield* TableRenameState)).tableRenames ?? [];
+		return (yield* Ref.get(yield* RenameState)).tableRenames ?? [];
 	});
 }
 
@@ -92,23 +92,65 @@ export interface TableRename {
 	to: string;
 }
 
-export class TableRenameState extends Context.Tag("TableRenameState")<
-	TableRenameState,
-	Ref.Ref<{ tableRenames?: TableRename[] }>
+type QualifiedTableName<
+	SchemaName extends string = string,
+	TableName extends string = string,
+> = `${SchemaName}.${TableName}`;
+
+export type ColumnsToRename = Record<
+	QualifiedTableName,
+	{
+		from: string;
+		to: string;
+	}[]
+>;
+
+export type Renames = {
+	tableRenames?: TableRename[];
+	columnRenames?: ColumnsToRename;
+};
+
+export class RenameState extends Context.Tag("RenameState")<
+	RenameState,
+	Ref.Ref<Renames>
 >() {
-	static current = TableRenameState.pipe(
+	static current = RenameState.pipe(
 		flatMap((tableRenameState) => Ref.get(tableRenameState)),
 	);
 	static provide<A, E, R>(
 		effect: Effect.Effect<A, E, R>,
-		initialState?: TableRename[],
+		initialState?: Renames,
 	) {
 		return Effect.provide(
 			effect,
-			Layer.effect(
-				TableRenameState,
-				Ref.make(initialState ? { tableRenames: initialState } : {}),
-			),
+			Layer.effect(RenameState, Ref.make(initialState ? initialState : {})),
 		);
 	}
+
+	static update = (newState: Renames) =>
+		RenameState.pipe(flatMap((state) => Ref.update(state, () => newState)));
+
+	static updateTableRenames = (newState: { tableRenames?: TableRename[] }) =>
+		RenameState.pipe(
+			flatMap((state) =>
+				Ref.update(state, (current) => {
+					return {
+						...current,
+						...newState,
+					};
+				}),
+			),
+		);
+
+	static updateColumnRenames = (newState: ColumnsToRename) =>
+		RenameState.pipe(
+			flatMap((state) =>
+				Ref.update(state, (current) => {
+					return {
+						...current,
+						...{ columnRenames: newState },
+					};
+				}),
+			),
+		);
 }

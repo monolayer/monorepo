@@ -191,7 +191,7 @@ describe("Table create migrations", () => {
 			},
 		});
 
-		const result = localSchemaTableDependencies(dbSchema, [dbSchema]);
+		const result = localSchemaTableDependencies(dbSchema, [dbSchema], false);
 		const expected = ["users", "videos", "posters", "books"];
 
 		expect(result).toEqual(expected);

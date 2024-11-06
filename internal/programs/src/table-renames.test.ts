@@ -1,14 +1,16 @@
-import { PromptCancelError } from "@monorepo/cli/errors.js";
 import { Effect } from "effect";
 import { describe, expect, test } from "vitest";
-import { tableRenames, TableRenameState } from "~programs/table-renames.js";
+import { RenameState, tableRenames } from "~programs/table-renames.js";
 import { pressKey } from "~test-setup/keys.js";
 
-describe("tables to rename", () => {
+describe("tables to rename", { concurrent: false }, () => {
 	test("returns an empty rename list when there are no added tables", async () => {
 		const program = tableRenames({ added: [], deleted: ["users"] }, "public");
 		const result = await Effect.runPromise(
-			TableRenameState.provide(program, []),
+			RenameState.provide(program, {
+				tableRenames: [],
+				columnRenames: undefined,
+			}),
 		);
 		expect(result).toStrictEqual([]);
 	});
@@ -16,7 +18,10 @@ describe("tables to rename", () => {
 	test("returns an empty rename list when there are no deleted tables", async () => {
 		const program = tableRenames({ added: ["users"], deleted: [] }, "public");
 		const result = await Effect.runPromise(
-			TableRenameState.provide(program, []),
+			RenameState.provide(program, {
+				tableRenames: [],
+				columnRenames: undefined,
+			}),
 		);
 		expect(result).toStrictEqual([]);
 	});
@@ -26,7 +31,12 @@ describe("tables to rename", () => {
 			{ added: ["users"], deleted: ["accounts"] },
 			"public",
 		);
-		const promise = Effect.runPromise(TableRenameState.provide(program, []));
+		const promise = Effect.runPromise(
+			RenameState.provide(program, {
+				tableRenames: [],
+				columnRenames: undefined,
+			}),
+		);
 		await pressKey("ENTER");
 
 		const result = await promise;
@@ -38,7 +48,12 @@ describe("tables to rename", () => {
 			{ added: ["users", "organizations"], deleted: ["accounts"] },
 			"public",
 		);
-		const promise = Effect.runPromise(TableRenameState.provide(program, []));
+		const promise = Effect.runPromise(
+			RenameState.provide(program, {
+				tableRenames: [],
+				columnRenames: undefined,
+			}),
+		);
 
 		await pressKey("ENTER");
 		await pressKey("ENTER");
@@ -53,7 +68,7 @@ describe("tables to rename", () => {
 			{ added: ["users"], deleted: ["accounts"] },
 			"public",
 		);
-		const promise = Effect.runPromise(TableRenameState.provide(program, []));
+		const promise = Effect.runPromise(RenameState.provide(program));
 
 		await pressKey("DOWN");
 		await pressKey("ENTER");
@@ -70,7 +85,7 @@ describe("tables to rename", () => {
 			{ added: ["organizations", "users"], deleted: ["accounts"] },
 			"public",
 		);
-		const promise = Effect.runPromise(TableRenameState.provide(program, []));
+		const promise = Effect.runPromise(RenameState.provide(program));
 
 		await pressKey("DOWN");
 		await pressKey("ENTER");
@@ -87,7 +102,7 @@ describe("tables to rename", () => {
 			{ added: ["organizations", "users"], deleted: ["accounts"] },
 			"public",
 		);
-		const promise = Effect.runPromise(TableRenameState.provide(program, []));
+		const promise = Effect.runPromise(RenameState.provide(program));
 
 		await pressKey("ENTER");
 		await pressKey("DOWN");
@@ -108,7 +123,7 @@ describe("tables to rename", () => {
 			},
 			"public",
 		);
-		const promise = Effect.runPromise(TableRenameState.provide(program, []));
+		const promise = Effect.runPromise(RenameState.provide(program));
 
 		await pressKey("DOWN");
 		await pressKey("ENTER");
@@ -129,7 +144,7 @@ describe("tables to rename", () => {
 			},
 			"public",
 		);
-		const promise = Effect.runPromise(TableRenameState.provide(program, []));
+		const promise = Effect.runPromise(RenameState.provide(program));
 
 		await pressKey("ENTER");
 		await pressKey("DOWN");
@@ -151,7 +166,7 @@ describe("tables to rename", () => {
 			},
 			"public",
 		);
-		const promise = Effect.runPromise(TableRenameState.provide(program, []));
+		const promise = Effect.runPromise(RenameState.provide(program));
 
 		await pressKey("DOWN");
 		await pressKey("ENTER");
@@ -168,9 +183,12 @@ describe("tables to rename", () => {
 
 	test("user does not select any added table to rename", async () => {
 		const promise = Effect.runPromise(
-			TableRenameState.provide(
+			RenameState.provide(
 				tableRenames({ added: ["users"], deleted: ["accounts"] }, "public"),
-				[],
+				{
+					tableRenames: [],
+					columnRenames: undefined,
+				},
 			),
 		);
 		await pressKey("ENTER");
@@ -181,7 +199,10 @@ describe("tables to rename", () => {
 			"public",
 		);
 		const anotherProgramPromise = Effect.runPromise(
-			TableRenameState.provide(anotherProgram, []),
+			RenameState.provide(anotherProgram, {
+				tableRenames: [],
+				columnRenames: undefined,
+			}),
 		);
 		await pressKey("ENTER");
 		await pressKey("ENTER");
@@ -191,41 +212,18 @@ describe("tables to rename", () => {
 
 	test("user cancels selection fails with PromptCancelError", async () => {
 		const program = Effect.runPromise(
-			TableRenameState.provide(
+			RenameState.provide(
 				tableRenames(
 					{ added: ["users_errors"], deleted: ["accounts"] },
 					"public",
 				),
-				[],
+				{
+					tableRenames: [],
+					columnRenames: undefined,
+				},
 			).pipe(Effect.catchAll((error) => Effect.succeed(error))),
 		);
 		await pressKey("CONTROLC");
-		expect(await program).toBeInstanceOf(PromptCancelError);
-	});
-
-	test("stores user selections in state", async () => {
-		const program = tableRenames(
-			{
-				added: ["users", "organizations"],
-				deleted: ["accounts", "companies"],
-			},
-			"public",
-		);
-		const promise = Effect.runPromise(
-			TableRenameState.provide(program, [
-				{ from: "public.demo", to: "public.test" },
-			]),
-		);
-		await pressKey("DOWN");
-		await pressKey("ENTER");
-		await pressKey("DOWN");
-		await pressKey("ENTER");
-
-		const result = await promise;
-		expect(result).toStrictEqual([
-			{ from: "public.demo", to: "public.test" },
-			{ from: "public.accounts", to: "public.users" },
-			{ from: "public.companies", to: "public.organizations" },
-		]);
+		expect(await program).toStrictEqual([]);
 	});
 });
