@@ -54,7 +54,7 @@ export function isBigInt(
 export function pgBigintSchema(column: PgBigInt | PgBigSerial) {
 	const data = columnData(column);
 	if (data.info.identity === "ALWAYS") {
-		return z.never();
+		return z.undefined();
 	}
 	const base = bigintSchema(!data._primaryKey && data.info.isNullable === true)
 		.pipe(z.bigint().min(-9223372036854775808n).max(9223372036854775807n))
@@ -104,7 +104,7 @@ function integerSchema(
 ) {
 	const data = columnData(column);
 	if (data.info.identity === "ALWAYS") {
-		return z.never();
+		return z.undefined();
 	}
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 

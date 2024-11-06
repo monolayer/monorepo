@@ -4,7 +4,7 @@ import { primaryKey } from "@monorepo/pg/schema/primary-key.js";
 import { table } from "@monorepo/pg/schema/table.js";
 import { zodSchema } from "src/zod_schema.js";
 import { Equal, Expect } from "type-testing";
-import { describe, expect, test } from "vitest";
+import { assert, describe, expect, test } from "vitest";
 import z from "zod";
 
 describe("by default", () => {
@@ -543,6 +543,39 @@ describe("as primary key", () => {
 			type Expected = never;
 			const isEqual: Expect<Equal<OutputType, Expected>> = true;
 			expect(isEqual).toBe(true);
+		});
+
+		test("passes parsing without value", () => {
+			const tbl = table({
+				columns: {
+					id: integer().generatedAlwaysAsIdentity(),
+				},
+				constraints: {
+					primaryKey: primaryKey(["id"]),
+				},
+			});
+
+			const schema = zodSchema(tbl);
+			const result = schema.safeParse({});
+			assert(result.success);
+		});
+
+		test("fails parsing with value", () => {
+			const tbl = table({
+				columns: {
+					id: integer().generatedAlwaysAsIdentity(),
+				},
+				constraints: {
+					primaryKey: primaryKey(["id"]),
+				},
+			});
+
+			const schema = zodSchema(tbl);
+			const result = schema.safeParse({ id: 12 });
+			assert(result.success === false);
+			expect(result.error.formErrors.fieldErrors).toStrictEqual({
+				id: ["Expected undefined, received number"],
+			});
 		});
 	});
 });
