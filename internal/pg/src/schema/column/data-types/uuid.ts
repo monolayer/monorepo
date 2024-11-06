@@ -13,21 +13,6 @@ import { PgColumn, valueWithHash } from "~pg/schema/column/column.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: string | null | undefined;
- *   output?: string | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Input value must be `string`, or `null`.
- * - String values must be a valid UUID.
  * @example
  * ```ts
  * import { uuid, schema, sql, table } from "monolayer/pg";

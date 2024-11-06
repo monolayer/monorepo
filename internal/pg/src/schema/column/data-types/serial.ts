@@ -16,20 +16,6 @@ import { SerialColumn } from "~pg/schema/column/column.js";
  *   readonly __update__: number | string;
  * };
  * ```
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: number | string | undefined;
- *   output?: number | undefined;
- * }
- * ```
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Value must be a valid `number`.
- * - Value cannot be lower than -2147483648.
- * - Value cannot be greater than 2147483647.
  * @example
  * ```ts
  * import { schema, serial, table  } from "monolayer/pg";

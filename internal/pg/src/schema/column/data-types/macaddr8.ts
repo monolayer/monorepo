@@ -13,21 +13,6 @@ import { StringColumn } from "~pg/schema/column/column.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: string | null | undefined;
- *   output?: string | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Input value must be `string` or `null`.
- * - String values must be a valid MAC address in EUI-64 format.
  * @example
  * ```ts
  * import { macaddr8, schema, table } from "monolayer/pg";

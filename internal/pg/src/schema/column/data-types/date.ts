@@ -20,21 +20,6 @@ import { PgColumn, valueWithHash } from "~pg/schema/column/column.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: Date | string | null | undefined;
- *   output?: Date | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:* *
- * - Value must be `Date`, `string`, or `null`.
- * - Explicit `undefined` values are rejected.
- * - String values must be coercible to `Date`.
  * @example
  * ```ts
  * import { date, schema, table } from "monolayer/pg";

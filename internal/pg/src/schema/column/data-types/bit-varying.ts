@@ -17,21 +17,6 @@ import { MaxLengthColumn } from "~pg/schema/column/column.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: string | null | undefined;
- *   output?: string | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Value must be a string of 1's and 0's.
- * - Value cannot exceed `maximumLength`.
  * @example
  * ```ts
  * import { schema, table, varbit } from "monolayer/pg";

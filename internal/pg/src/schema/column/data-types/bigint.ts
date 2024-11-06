@@ -13,24 +13,6 @@ import { IdentifiableColumn } from "~pg/schema/column/column.js";
  *   readonly __update__: bigint | number | string | null;
  * };
  * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: bigint | number | string | null | undefined;
- *   output?: string | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Value must be a valid `bigint`.
- * - Value cannot be lower than -9223372036854775808.
- * - Value cannot be greater than 9223372036854775807.
  *
  * @example
  * ```ts

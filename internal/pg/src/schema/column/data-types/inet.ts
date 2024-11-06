@@ -13,21 +13,6 @@ import { StringColumn } from "~pg/schema/column/column.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: string | null | undefined;
- *   output?: string | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Value must be `string` or `null`.
- * - String values must be a valid IPv4 or IPv6 host address with optional subnet.
  * @example
  * ```ts
  * import { inet, schema, table } from "monolayer/pg";

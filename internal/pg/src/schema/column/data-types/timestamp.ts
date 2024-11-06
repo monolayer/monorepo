@@ -23,23 +23,6 @@ import type { DateTimePrecision } from "~pg/schema/column/types.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?:  Date | string | null | undefined;
- *   output?: Date | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Input value must be `Date`, `string`, or `null`.
- * - Non-null values must be:
- *   - Coercible to a `Date`.
- *   - Date must be 4713 BC or later.
  * @example
  * ```ts
  * import { schema, table, timestamp } from "monolayer/pg";

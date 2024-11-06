@@ -32,24 +32,6 @@ import type { JsonValue, WithDefaultColumn } from "~pg/schema/column/types.js";
  * **Warning**: the Zod schema for a `json` column only validates that data can be conforms to the `JsonValue` type.
  * When using a custom data type you shoud adapt it. See examples.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * // type JsonArray = JsonValue[];
- * // type JsonValue = boolean | number | string | Record<string, any> | JsonArray;
- * {
- *   input?: JsonValue | null | undefined;
- *   output?: JsonValue | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Input values must be `JsonValue` or `null`.
- * - String values must be valid JSON.
- * - Record values must be convertible to a JSON string.
  * @example
  *
  * *Default Data Type*

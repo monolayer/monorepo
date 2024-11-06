@@ -17,20 +17,6 @@ import { MaxLengthColumn } from "../column.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: string | null | undefined;
- *   output?: string | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Value must be a `string` or `null`.
- * - Value cannot exceed `maximumLength` (when specified).
  * @example
  * ```ts
  * import { characteVarying, schema, table } from "monolayer/pg";

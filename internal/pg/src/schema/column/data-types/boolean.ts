@@ -16,20 +16,6 @@ import { PgColumn, valueWithHash } from "../column.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: boolean | Boolish | null | undefined;
- *   output?: boolean | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Value must be `boolean` or `Boolish`.
  * @example
  * ```ts
  * import { boolean, schema, table } from "monolayer/pg";

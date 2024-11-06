@@ -16,20 +16,6 @@ import { SerialColumn } from "~pg/schema/column/column.js";
  *   readonly __update__: bigint | number | string;
  * };
  * ```
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: bigint | number | string | undefined;
- *   output?: string | undefined;
- * }
- * ```
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Value must be a valid `bigint`.
- * - Value cannot be lower than -9223372036854775808.
- * - Value cannot be greater than 9223372036854775807.
  *
  * @example
  * ```ts

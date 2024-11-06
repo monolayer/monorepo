@@ -15,23 +15,6 @@ import { IdentifiableColumn } from "~pg/schema/column/column.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?:  number | string | null | undefined;
- *   output?: number | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Input value must be `number`, `string`, or `null`.
- * - Non-null values:
- *   - must be coercible to `number`.
- *   - Cannot be lower than -32768.
- *   - Cannot be greater than 32767.
  * @example
  * ```ts
  * import { schema, smallint, table } from "monolayer/pg";

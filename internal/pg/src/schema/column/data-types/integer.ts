@@ -22,23 +22,6 @@ import type { WithDefaultColumn } from "~pg/schema/column/types.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: number | string | null | undefined;
- *   output?: number | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Input value must be `number`, `string`, or `null`.
- * - Non-null values must be:
- *   - Coercible to `number`.
- *   - Greater or equal than -2147483648.
- *   - Less than 2147483647.
  * @example
  * ```ts
  * import { integer, schema, table } from "monolayer/pg";

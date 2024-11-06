@@ -22,24 +22,6 @@ import { PgColumn } from "~pg/schema/column/column.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?:  bigint | number | string | null | undefined;
- *   output?: string | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Input value must be `bigint`, `number`, `string`, or `null`.
- * - Non-null values must be either:
- *   - Coercible to a number.
- *   - NaN, Infinity, -Infinity
- * - Precision and scale are enforced when specified.
  * @example
  * ```ts
  * import { schema, numeric, table } from "monolayer/pg";
