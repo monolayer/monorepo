@@ -1,6 +1,22 @@
 services:
+  dev:
+    image: sibedge/postgres-plv8:latest
+    restart: unless-stopped
+    ports:
+      - ${POSTGRES_DEV_PORT}:5432
+    volumes:
+      - dev_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
+      start_period: "10s"
+
   postgresOne:
-    image: postgres:16.1
+    image: sibedge/postgres-plv8:latest
     restart: unless-stopped
     ports:
       - ${POSTGRES_PORT}:5432
@@ -16,4 +32,5 @@ services:
       start_period: "10s"
 
 volumes:
+  dev_data:
   data:
