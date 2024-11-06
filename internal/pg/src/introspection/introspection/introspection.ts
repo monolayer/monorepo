@@ -448,7 +448,6 @@ export async function databaseTableDependencies(
 			"<>",
 			"information_schema.constraint_column_usage.table_name",
 		)
-		.where("information_schema.columns.is_nullable", "=", "NO")
 		.select([
 			sql<string>`information_schema.table_constraints.table_name`.as(
 				"foreigh_key_table",
