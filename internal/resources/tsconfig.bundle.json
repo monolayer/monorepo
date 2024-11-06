@@ -1,7 +1,0 @@
-{
-	"extends": "./tsconfig.build.json",
-	"compilerOptions": {
-		"outDir": "./../../apps/pg/dist/esm/packages/utils",
-		"tsBuildInfoFile": "./../../apps/pg/dist/esm/packages/utils/tsconfig.build.tsbuildinfo"
-	}
-}
