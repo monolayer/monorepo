@@ -1,6 +1,6 @@
 {
 	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
-	"out": "docs/reference/api",
+	"out": "docs/api",
 	"entryPoints": ["./src/index.ts"],
 	"entryPointStrategy": "expand",
 	"tsconfig": "./tsconfig.json",
