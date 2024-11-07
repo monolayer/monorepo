@@ -1,0 +1,51 @@
+{
+	"name": "@monorepo/db",
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"build": "tsc -b tsconfig.build.json && tsc -b tsconfig.build.cjs.json",
+		"bundle": "tsc -b tsconfig.bundle.json && tsc -b tsconfig.bundle.cjs.json",
+		"check": "npm run check:prettier && npm run check:lint",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"test": "NO_COLOR=1 vitest --run",
+		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open"
+	},
+	"dependencies": {
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@monorepo/cli": "*",
+		"@monorepo/pg": "*",
+		"@monorepo/services": "*",
+		"@monorepo/state": "*",
+		"@monorepo/utils": "*",
+		"@types/node": "^18.0.0",
+		"@clack/prompts": "^0.7.0",
+		"effect": "^3.10.5",
+		"execa": "^8.0.1",
+		"picocolors": "^1.0.0",
+		"@types/capture-console": "^1.0.5",
+		"@types/jscodeshift": "^0.11.11",
+		"@types/mock-fs": "^4.13.4",
+		"@types/nunjucks": "^3.2.6",
+		"@types/pg": "^8.11.0",
+		"@types/slug": "^5.0.7",
+		"@types/toposort": "^2.0.7",
+		"capture-console": "^1.0.2",
+		"dotenv": "^16.4.1",
+		"mock-fs": "^5.2.0",
+		"mock-stdin": "^1.0.0",
+		"pg": ">=8.11.3",
+		"postcss": "^8.4.35",
+		"ora": "^8.1.0",
+		"type-fest": "^4.10.1",
+		"type-testing": "^0.2.0",
+		"vite-tsconfig-paths": "^4.3.1"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

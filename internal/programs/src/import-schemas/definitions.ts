@@ -1,6 +1,6 @@
-import { uniqueConstraintDefinitionFromString } from "@monorepo/pg/changeset/generators/unique.js";
 import { extractColumnsFromPrimaryKey } from "@monorepo/pg/introspection/schema.js";
 import type { ForeignKeyIntrospection } from "@monorepo/pg/introspection/table.js";
+import { uniqueConstraintDefinitionFromString } from "@monorepo/pg/introspection/unique.js";
 
 export function primaryKeyDefinition(rawColumns: string) {
 	const columns = extractColumnsFromPrimaryKey(rawColumns).sort();

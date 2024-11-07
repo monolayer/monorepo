@@ -9,15 +9,14 @@
 	"references": [
 		{ "path": "./apps/pg" },
 		{ "path": "./internal/cli" },
-		{ "path": "./internal/commands" },
 		{ "path": "./internal/configuration" },
-		{ "path": "./internal/migrator" },
+		{ "path": "./internal/data" },
+		{ "path": "./internal/db" },
 		{ "path": "./internal/pg" },
 		{ "path": "./internal/programs" },
+		{ "path": "./internal/push" },
 		{ "path": "./internal/services" },
-		{ "path": "./internal/utils" },
 		{ "path": "./internal/state" },
-		{ "path": "./internal/db-data" },
-		{ "path": "./internal/db-push" }
+		{ "path": "./internal/utils" }
 	]
 }

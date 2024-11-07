@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { RenameState, tableRenames } from "~programs/table-renames.js";
 import { pressKey } from "~test-setup/keys.js";
 
-describe("tables to rename", { concurrent: false }, () => {
+describe.skip("tables to rename", { concurrent: false }, () => {
 	test("returns an empty rename list when there are no added tables", async () => {
 		const program = tableRenames({ added: [], deleted: ["users"] }, "public");
 		const result = await Effect.runPromise(

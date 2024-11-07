@@ -7,7 +7,6 @@
 	},
 	"references": [
 		{ "path": "../cli" },
-		{ "path": "../migrator" },
 		{ "path": "../pg" },
 		{ "path": "../state" },
 		{ "path": "../utils" }

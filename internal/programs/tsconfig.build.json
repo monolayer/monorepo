@@ -12,7 +12,6 @@
 	"references": [
 		{ "path": "../cli/tsconfig.build.json" },
 		{ "path": "../configuration/tsconfig.build.json" },
-		{ "path": "../migrator/tsconfig.build.json" },
 		{ "path": "../pg/tsconfig.build.json" },
 		{ "path": "../services/tsconfig.build.json" },
 		{ "path": "../state/tsconfig.build.json" },

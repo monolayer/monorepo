@@ -32,7 +32,7 @@ describe("pgTable definition", () => {
 		const tbl = table({
 			columns: columns,
 		});
-		expect(tableInfo(tbl).definition.columns).toBe(columns);
+		expect(tbl.columns).toBe(columns);
 	});
 
 	test("columns with pgEnum", () => {
@@ -45,7 +45,7 @@ describe("pgTable definition", () => {
 		const tbl = table({
 			columns: columns,
 		});
-		expect(tableInfo(tbl).definition.columns).toBe(columns);
+		expect(tbl.columns).toBe(columns);
 	});
 
 	test("indexes can be added", () => {

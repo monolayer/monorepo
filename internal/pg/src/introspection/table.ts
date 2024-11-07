@@ -128,10 +128,7 @@ export function findTableInSchema(table: AnyPgTable, allSchemas: AnySchema[]) {
 		(schema) => Schema.info(schema).name === tableInfo(table).schemaName,
 	)?.tables;
 	const tableInSchema = Object.entries(schemaTables || {}).find(([, value]) => {
-		return (
-			tableInfo(value).definition.columns ===
-			tableInfo(table).definition.columns
-		);
+		return value.columns === table.columns;
 	});
 	if (tableInSchema !== undefined) {
 		return tableInSchema[0];

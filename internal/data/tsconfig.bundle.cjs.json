@@ -1,0 +1,17 @@
+{
+	"extends": "./tsconfig.build.cjs.json",
+	"compilerOptions": {
+		"outDir": "./../../apps/pg/dist/cjs/packages/data",
+		"tsBuildInfoFile": "./../../apps/pg/dist/cjs/packages/data/tsconfig.bundle.cjs.tsbuildinfo",
+		"composite": true
+	},
+	"references": [
+		{ "path": "../cli" },
+		{ "path": "../db" },
+		{ "path": "../pg" },
+		{ "path": "../programs" },
+		{ "path": "../services" },
+		{ "path": "../state" },
+		{ "path": "../utils" }
+	]
+}

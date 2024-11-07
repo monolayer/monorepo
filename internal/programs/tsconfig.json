@@ -17,7 +17,6 @@
 	"references": [
 		{ "path": "../cli" },
 		{ "path": "../configuration" },
-		{ "path": "../migrator" },
 		{ "path": "../pg" },
 		{ "path": "../services" },
 		{ "path": "../state" },

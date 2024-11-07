@@ -1,0 +1,21 @@
+{
+	"extends": "./tsconfig.json",
+	"include": ["src/**/*"],
+	"exclude": ["src/**/*.test.ts", "test/**/*"],
+	"compilerOptions": {
+		"emitDeclarationOnly": false,
+		"sourceMap": false,
+		"rootDir": "src",
+		"outDir": "dist/esm",
+		"tsBuildInfoFile": "dist/tsconfig.build.tsbuildinfo"
+	},
+	"references": [
+		{ "path": "../cli/tsconfig.build.json" },
+		{ "path": "../db/tsconfig.build.json" },
+		{ "path": "../pg/tsconfig.build.json" },
+		{ "path": "../programs/tsconfig.build.json" },
+		{ "path": "../services/tsconfig.build.json" },
+		{ "path": "../state/tsconfig.build.json" },
+		{ "path": "../utils/tsconfig.build.json" }
+	]
+}

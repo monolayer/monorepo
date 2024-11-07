@@ -14,15 +14,14 @@
 	},
 	"references": [
 		{ "path": "../../internal/cli" },
-		{ "path": "../../internal/commands" },
+		{ "path": "../../internal/db" },
 		{ "path": "../../internal/configuration" },
-		{ "path": "../../internal/migrator" },
 		{ "path": "../../internal/pg" },
 		{ "path": "../../internal/programs" },
 		{ "path": "../../internal/services" },
 		{ "path": "../../internal/utils" },
 		{ "path": "../../internal/state" },
-		{ "path": "../../internal/db-push" },
-		{ "path": "../../internal/db-data" }
+		{ "path": "../../internal/push" },
+		{ "path": "../../internal/data" }
 	]
 }

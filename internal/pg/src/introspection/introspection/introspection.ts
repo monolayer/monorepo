@@ -105,7 +105,7 @@ export function introspectLocalSchema(
 			columnsToRename,
 		),
 		triggers: {
-			...localTriggersInfo(schema, camelCase),
+			...localTriggersInfo(schema, camelCase, tablesToRename),
 		},
 		enums: localEnumInfo(schema),
 		tablePriorities: localSchemaTableDependencies(

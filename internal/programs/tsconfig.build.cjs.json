@@ -13,7 +13,6 @@
 			"~programs/*": ["src/*"],
 			"@monorepo/cli/*": ["../cli/src/*"],
 			"@monorepo/configuration/*": ["../configuration/src/*"],
-			"@monorepo/migrator/*": ["../migrator/src/*"],
 			"@monorepo/pg/*": ["../pg/src/*"],
 			"@monorepo/services/*": ["../services/src/*"],
 			"@monorepo/state/*": ["../state/src/*"],
@@ -26,7 +25,6 @@
 	"references": [
 		{ "path": "../cli" },
 		{ "path": "../configuration" },
-		{ "path": "../migrator" },
 		{ "path": "../pg" },
 		{ "path": "../services" },
 		{ "path": "../state" },

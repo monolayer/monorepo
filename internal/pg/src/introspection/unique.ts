@@ -294,3 +294,18 @@ export function uniqueConstraintInfoToQuery(info: UniqueConstraintInfo) {
 			.join(", ")})`,
 	].join(" ");
 }
+
+export function uniqueConstraintDefinitionFromString(
+	unique: string,
+	tableName: string,
+	hashValue: string,
+) {
+	const [, columns] = unique.split("DISTINCT (");
+
+	const definition = {
+		name: `${tableName}_${hashValue}_monolayer_key`,
+		distinct: unique.includes("UNIQUE NULLS DISTINCT"),
+		columns: columns?.replace(/"/g, "").split(")")[0]?.split(", ") || [],
+	};
+	return definition;
+}

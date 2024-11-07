@@ -99,12 +99,11 @@
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.15.4",
 		"@monorepo/cli": "*",
-		"@monorepo/commands": "*",
+		"@monorepo/db": "*",
 		"@monorepo/configuration": "*",
 		"@monorepo/eslint-config": "*",
-		"@monorepo/db-push": "*",
-		"@monorepo/db-data": "*",
-		"@monorepo/migrator": "*",
+		"@monorepo/push": "*",
+		"@monorepo/data": "*",
 		"@monorepo/services": "*",
 		"@monorepo/state": "*",
 		"@monorepo/typescript-config": "*",
@@ -131,7 +130,6 @@
 	},
 	"dependencies": {
 		"@clack/prompts": "^0.7.0",
-		"@commander-js/extra-typings": "^12.0.1",
 		"case-anything": "^2.1.13",
 		"commander": "^12.0.0",
 		"dotenv": "^16.4.5",

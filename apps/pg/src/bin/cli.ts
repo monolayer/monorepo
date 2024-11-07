@@ -1,13 +1,13 @@
 #!/usr/bin/env tsx
 import type { Command as CommandExtra } from "@commander-js/extra-typings";
-import { createDb } from "@monorepo/commands/actions/db/create.js";
-import { dropDb } from "@monorepo/commands/actions/db/drop.js";
-import { importDb } from "@monorepo/commands/actions/db/import.js";
-import { resetDb } from "@monorepo/commands/actions/db/reset.js";
-import { dbCommand } from "@monorepo/commands/commands/db.js";
-import { dataCLI } from "@monorepo/db-data/cli.js";
-import { syncDb } from "@monorepo/db-push/actions/db-sync.js";
-import { pushToDb } from "@monorepo/db-push/actions/push-to-db.js";
+import { createDb } from "@monorepo/db/actions/db/create.js";
+import { dropDb } from "@monorepo/db/actions/db/drop.js";
+import { importDb } from "@monorepo/db/actions/db/import.js";
+import { resetDb } from "@monorepo/db/actions/db/reset.js";
+import { dbCommand } from "@monorepo/db/commands/db.js";
+import { dataCLI } from "@monorepo/data/cli.js";
+import { syncDb } from "@monorepo/push/actions/db-sync.js";
+import { pushToDb } from "@monorepo/push/actions/push-to-db.js";
 import { Command, CommanderError } from "commander";
 import { exit } from "process";
 

@@ -7,6 +7,8 @@ import type { InformationSchemaDB } from "~pg/introspection/introspection/types.
 import { tableInfo } from "~pg/introspection/table.js";
 import { type AnySchema, Schema } from "~pg/schema/schema.js";
 import { type AnyTrigger, PgTrigger } from "~pg/schema/trigger.js";
+import { previousTableName } from "./introspection/table-name.js";
+import type { TablesToRename } from "./schema.js";
 
 export async function dbTriggerInfo(
 	kysely: Kysely<InformationSchemaDB>,
@@ -34,14 +36,14 @@ export async function dbTriggerInfo(
 		.where(
 			"pg_trigger.tgname",
 			"~",
-			builderContext.external ? "" : "_monolayer_trg$",
+			builderContext.external ? "" : "monolayer_trg_",
 		)
 		.execute();
 
 	const triggerInfo = results.reduce<TriggerInfo>((acc, curr) => {
 		const key = builderContext.external
 			? curr.trigger_name
-			: curr.trigger_name?.match(/^\w+_(\w+)_monolayer_trg$/)![1];
+			: curr.trigger_name?.match(/^monolayer_trg_(\w+)$/)![1];
 
 		acc[curr.table_name] = {
 			...acc[curr.table_name],
@@ -117,7 +119,11 @@ export function triggerInfo(
 		.join("\n");
 }
 
-export function localTriggersInfo(schema: AnySchema, camelCase: boolean) {
+export function localTriggersInfo(
+	schema: AnySchema,
+	camelCase: boolean,
+	tablesToRename: TablesToRename,
+) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const kysely = new Kysely<any>({
 		dialect: new PostgresDialect({
@@ -143,15 +149,14 @@ export function localTriggersInfo(schema: AnySchema, camelCase: boolean) {
 				const sampleTrigger = triggerInfo(
 					trigger,
 					"sample",
-					transformedTableName,
+					previousTableName(transformedTableName, tablesToRename, dbInfo.name),
 					kysely,
 					camelCase,
 					dbInfo.name || "public",
 				);
 
 				const triggerKey = hashValue(sampleTrigger);
-				const triggerName =
-					`${transformedTableName}_${triggerKey}_monolayer_trg`.toLowerCase();
+				const triggerName = `monolayer_trg_${triggerKey}`.toLowerCase();
 
 				const compiledTrigger = triggerInfo(
 					trigger,
@@ -162,9 +167,19 @@ export function localTriggersInfo(schema: AnySchema, camelCase: boolean) {
 					dbInfo.name || "public",
 				);
 
+				const newKey = hashValue(
+					triggerInfo(
+						trigger,
+						"sample",
+						transformedTableName,
+						kysely,
+						camelCase,
+						dbInfo.name || "public",
+					),
+				);
 				acc[transformedTableName] = {
 					...acc[transformedTableName],
-					[triggerName]: `${triggerKey}:${compiledTrigger}`,
+					[triggerName]: `${newKey}:${compiledTrigger}`,
 				};
 			}
 			return acc;

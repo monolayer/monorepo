@@ -16,7 +16,6 @@
 	"dependencies": {
 		"@monorepo/cli": "*",
 		"@monorepo/eslint-config": "*",
-		"@monorepo/migrator": "*",
 		"@monorepo/pg": "*",
 		"@monorepo/state": "*",
 		"@monorepo/typescript-config": "*",

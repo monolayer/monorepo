@@ -1,0 +1,16 @@
+{
+	"extends": "./tsconfig.build.json",
+	"compilerOptions": {
+		"outDir": "./../../apps/pg/dist/esm/packages/db",
+		"tsBuildInfoFile": "./../../apps/pg/dist/esm/packages/db/tsconfig.build.tsbuildinfo"
+	},
+	"references": [
+		{ "path": "../cli" },
+		{ "path": "../configuration" },
+		{ "path": "../pg" },
+		{ "path": "../programs" },
+		{ "path": "../services" },
+		{ "path": "../state" },
+		{ "path": "../utils" }
+	]
+}

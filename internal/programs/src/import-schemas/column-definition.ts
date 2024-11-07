@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 /* eslint-disable complexity */
-import { sqlStatement } from "@monorepo/pg/changeset//helpers/helpers.js";
 import type { ColumnInfo } from "@monorepo/pg/schema/column/types.js";
 
 const internalTypes = [
@@ -452,7 +451,7 @@ export function columnDefinition(
 		const defaultValue =
 			matchedType !== "generic" ? base.replace(/::(\w|\s)+$/, "") : base;
 		const value =
-			matchedType === "text" ? defaultValue : sqlStatement(defaultValue);
+			matchedType === "text" ? defaultValue : `sql\`${defaultValue}\``;
 		code.push(`default(${value})`);
 	}
 

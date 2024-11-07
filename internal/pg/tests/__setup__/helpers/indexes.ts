@@ -9,7 +9,7 @@ import type { PgUnique } from "~pg/schema/unique.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function compileIndex(index: PgIndex<any>, tableName: string) {
-	const kysely = await kyselyWithEmptyPool();
+	const kysely = kyselyWithEmptyPool();
 	return indexToInfo(index, tableName, kysely, false);
 }
 

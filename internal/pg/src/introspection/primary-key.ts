@@ -7,7 +7,6 @@ import {
 	type PrimaryKeyInfo,
 } from "~pg/introspection/schema.js";
 import { tableInfo } from "~pg/introspection/table.js";
-import type { ColumnRecord } from "~pg/schema/column.js";
 import { type AnyPgPrimaryKey, PgPrimaryKey } from "~pg/schema/primary-key.js";
 import { type AnySchema, Schema } from "~pg/schema/schema.js";
 import type { AnyPgTable } from "~pg/schema/table.js";
@@ -76,10 +75,8 @@ export function localPrimaryKeyConstraintInfo(
 	return Object.entries(tables || {}).reduce<PrimaryKeyInfo>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const columns = tableInfo(tableDefinition).definition
-				.columns as ColumnRecord;
 			const primaryKeys = primaryKeyColumns(
-				columns,
+				tableDefinition.columns,
 				camelCase,
 				tableName,
 				columnsToRename,

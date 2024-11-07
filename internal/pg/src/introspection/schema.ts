@@ -1,7 +1,6 @@
 import toposort from "toposort";
 import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
 import { currentColumName } from "~pg/introspection/column-name.js";
-import { tableInfo } from "~pg/introspection/table.js";
 import type { ColumnRecord } from "~pg/schema/column.js";
 import type {
 	SchemaMigrationInfo,
@@ -33,7 +32,7 @@ export function primaryKeyColumns(
 	columnsToRename: ColumnsToRename,
 	schemaName: string,
 ) {
-	return Object.entries(columns).reduce<string[]>(
+	return (Object.entries(columns) ?? []).reduce<string[]>(
 		(acc, [columnName, column]) => {
 			const transformedColumnName = currentColumName(
 				tableName,
@@ -140,9 +139,7 @@ export function tableNameInSchema(
 export function findTable(table: AnyPgTable, schema: AnySchema) {
 	const tables = Schema.info(schema).tables;
 	return Object.entries(tables || {}).find(
-		([, value]) =>
-			tableInfo(value).definition.columns ===
-			tableInfo(table).definition.columns,
+		([, value]) => table.columns === value.columns,
 	);
 }
 

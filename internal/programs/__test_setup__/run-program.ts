@@ -1,14 +1,19 @@
+import {
+	layers,
+	loadEnv,
+	programWithContextAndServices as originalprogramWithContextAndServices,
+} from "@monorepo/db/cli-action.js";
 import { PgDatabase } from "@monorepo/pg/database.js";
 import { text } from "@monorepo/pg/schema/column/data-types/text.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
 import { table } from "@monorepo/pg/schema/table.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
-import { Migrator } from "@monorepo/services/migrator.js";
 import {
 	AppEnvironment,
 	type AppEnv,
 } from "@monorepo/state/app-environment.js";
 import { Effect, Layer } from "effect";
+import type { Scope } from "effect/Scope";
 import { Kysely, PostgresDialect } from "kysely";
 import path from "node:path";
 import { env } from "node:process";
@@ -16,7 +21,6 @@ import pg from "pg";
 import type { TaskContext } from "vitest";
 import { pgAdminPool } from "~test-setup/pool.js";
 import {
-	migrationFolder,
 	programFolder,
 	testDatabaseName,
 } from "~test-setup/program_context.js";
@@ -75,13 +79,6 @@ function testLayers(context: TaskContext) {
 		host: env.POSTGRES_HOST,
 		port: Number(env.POSTGRES_PORT ?? 5432),
 	});
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const db = new Kysely<any>({
-		dialect: new PostgresDialect({
-			pool: pool,
-		}),
-		plugins: [],
-	});
 
 	const dbClientsLayer = Layer.effect(
 		DbClients,
@@ -108,8 +105,38 @@ function testLayers(context: TaskContext) {
 			};
 		}),
 	);
-	return Migrator.LiveLayer({
-		client: db,
-		migrationFolder: migrationFolder(context),
-	}).pipe(Layer.provideMerge(dbClientsLayer));
+	return dbClientsLayer;
+}
+
+export async function programWithContextAndServices<
+	A,
+	E,
+	R,
+	Rin extends DbClients,
+>(
+	program: Effect.Effect<A, E, R>,
+	env?: AppEnv,
+	layer?: Layer.Layer<Rin, never, AppEnvironment | Scope>,
+) {
+	try {
+		return originalprogramWithContextAndServices(
+			programWithErrorCause(program),
+			env ?? (await loadEnv({ databaseId: "default" })),
+			layer ?? layers,
+		);
+	} catch (error) {
+		console.dir(error, { depth: null });
+		process.exit(1);
+	}
+}
+
+export function programWithErrorCause<A, E, R>(
+	program: Effect.Effect<A, E, R>,
+) {
+	return program.pipe(
+		Effect.tapErrorCause((cause) => {
+			console.dir(cause, { depth: null });
+			return Effect.void;
+		}),
+	);
 }

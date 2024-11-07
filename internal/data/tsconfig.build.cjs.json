@@ -1,0 +1,34 @@
+{
+	"extends": "./tsconfig.json",
+	"include": ["src/**/*"],
+	"exclude": ["src/**/*.test.ts", "test/**/*"],
+	"compilerOptions": {
+		"paths": {
+			"~data/*": ["src/*"],
+			"@monorepo/cli/*": ["../cli/src/*"],
+			"@monorepo/db/*": ["../db/src/*"],
+			"@monorepo/pg/*": ["../pg/src/*"],
+			"@monorepo/programs/*": ["../programs/src/*"],
+			"@monorepo/services/*": ["../services/src/*"],
+			"@monorepo/state/*": ["../state/src/*"],
+			"@monorepo/utils/*": ["../utils/src/*"]
+		},
+		"emitDeclarationOnly": false,
+		"sourceMap": false,
+		"rootDir": "src",
+		"outDir": "dist/cjs",
+		"target": "es2020",
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"tsBuildInfoFile": "dist/tsconfig.build.cjs.tsbuildinfo"
+	},
+	"references": [
+		{ "path": "../cli" },
+		{ "path": "../db" },
+		{ "path": "../pg" },
+		{ "path": "../programs" },
+		{ "path": "../services" },
+		{ "path": "../state" },
+		{ "path": "../utils" }
+	]
+}

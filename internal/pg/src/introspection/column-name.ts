@@ -26,14 +26,14 @@ export function previousColumnName(
 export function currentColumName(
 	tableName: string,
 	schemaName: string,
-	previousColumName: string,
+	columnName: string,
 	columnsToRename: ColumnsToRename,
 ) {
 	return (
 		changedColumnNames(tableName, schemaName, columnsToRename).find(
 			(column) => {
-				return column.from === previousColumName;
+				return column.from === columnName;
 			},
-		)?.to || previousColumName
+		)?.to || columnName
 	);
 }

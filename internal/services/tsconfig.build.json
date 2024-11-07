@@ -10,7 +10,6 @@
 	},
 	"references": [
 		{ "path": "../cli/tsconfig.build.json" },
-		{ "path": "../migrator/tsconfig.build.json" },
 		{ "path": "../pg/tsconfig.build.json" },
 		{ "path": "../state/tsconfig.build.json" },
 		{ "path": "../utils/tsconfig.build.json" }

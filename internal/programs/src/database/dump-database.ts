@@ -1,17 +1,18 @@
-import * as p from "@clack/prompts";
-import { spinnerTask } from "@monorepo/cli/spinner-task.js";
+import { toSnakeCase } from "@monorepo/pg/helpers/to-snake-case.js";
 import { PgExtension } from "@monorepo/pg/schema/extension.js";
 import { Schema } from "@monorepo/pg/schema/schema.js";
 import { connectionOptions } from "@monorepo/services/db-clients/connection-options.js";
 import { pgQuery } from "@monorepo/services/db-clients/pg-query.js";
 import {
 	appEnvironment,
+	appEnvironmentCamelCasePlugin,
 	appEnvironmentConfigurationSchemas,
 } from "@monorepo/state/app-environment.js";
 import { pathExists } from "@monorepo/utils/path.js";
 import { gen, tryPromise } from "effect/Effect";
 import { execa } from "execa";
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import ora from "ora";
 import path from "path";
 import pgConnectionString from "pg-connection-string";
 import { cwd, env } from "process";
@@ -21,23 +22,29 @@ export const dumpDatabaseStructureTask = gen(function* () {
 	const previousDumpExists = yield* pathExists(yield* databaseDumpPath);
 
 	if (!pgDumpExists) {
+		console.log("Missing pg_dump executable");
 		if (!previousDumpExists) {
-			p.log.warning("Missing pg_dump executable");
-			p.log.message(
+			console.log(
 				"A previous database dump already exists and pg_dump is required to generate a new database dump.",
 			);
 		} else {
 			return;
 		}
+		return;
 	}
 
-	yield* spinnerTask("Dump database structure", () => dumpDatabase);
+	const spinner = ora();
+	spinner.start("Dump database");
+	const result = yield* dumpDatabase;
+	spinner.succeed();
+	return result;
 });
 
 export const dumpDatabase = gen(function* () {
 	const path = yield* dumpDatabaseWithoutMigrationTables;
 	yield* appendMigrationDataToDump;
 	cleanDump(path);
+	return path;
 });
 
 export const dumpDatabaseWithoutMigrationTables = gen(function* () {
@@ -48,7 +55,7 @@ export const dumpDatabaseWithoutMigrationTables = gen(function* () {
 const checkPgDumpExecutableExists = gen(function* () {
 	return yield* tryPromise(async () => {
 		const { stdout } = await execa("which", ["pg_dump"]);
-		return stdout !== "";
+		return stdout === "";
 	});
 });
 
@@ -80,6 +87,7 @@ const dumpStructure = gen(function* () {
 		recursive: true,
 	});
 
+	console.log(dumpPath);
 	const dumpArgs = [
 		"--schema-only",
 		"--no-privileges",
@@ -100,8 +108,12 @@ const databaseName = gen(function* () {
 });
 
 const schemaArgs = gen(function* () {
+	const camelCase = yield* appEnvironmentCamelCasePlugin;
+
 	return (yield* appEnvironmentConfigurationSchemas)
-		.map((schema) => Schema.info(schema).name || "public")
+		.map((schema) =>
+			toSnakeCase(Schema.info(schema).name ?? "public", camelCase),
+		)
 		.map((schema) => `--schema=${schema}`);
 });
 

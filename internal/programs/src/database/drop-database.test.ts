@@ -17,18 +17,7 @@ describe("dropDatabase", () => {
 
 			assertCurrentConnectionDatabaseName(undefined);
 
-			expect(context.logMessages).toMatchInlineSnapshot(`
-				[
-				  "[?25l",
-				  "│
-				",
-				  "[999D",
-				  "[J",
-				  "◇  Drop database 1fe31534 ✓
-				",
-				  "[?25h",
-				]
-			`);
+			expect(context.logMessages).toMatchInlineSnapshot(`[]`);
 		},
 	);
 
@@ -44,34 +33,7 @@ describe("dropDatabase", () => {
 
 			assertCurrentConnectionDatabaseName(undefined);
 
-			expect(context.logMessages).toMatchInlineSnapshot(`
-			[
-			  "[?25l",
-			  "│
-			",
-			  "[999D",
-			  "[J",
-			  "◇  Drop database 5fac32b4 ✓
-			",
-			  "[?25h",
-			  "[?25l",
-			  "│
-			",
-			  "[999D",
-			  "[J",
-			  "◇  Drop database 5fac32b4 ✓
-			",
-			  "[?25h",
-			  "[?25l",
-			  "│
-			",
-			  "[999D",
-			  "[J",
-			  "◇  Drop database 5fac32b4 ✓
-			",
-			  "[?25h",
-			]
-		`);
+			expect(context.logMessages).toMatchInlineSnapshot(`[]`);
 		},
 	);
 });

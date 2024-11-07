@@ -5,7 +5,6 @@ import { Kysely, sql } from "kysely";
 import { toSnakeCase } from "~pg/helpers/to-snake-case.js";
 import type { InformationSchemaDB } from "~pg/introspection/introspection/types.js";
 import { findPrimaryKey } from "~pg/introspection/schema.js";
-import { tableInfo } from "~pg/introspection/table.js";
 import type { TableColumn } from "~pg/schema/column.js";
 import type {
 	ColumnInfo,
@@ -370,9 +369,7 @@ export function localColumnInfoByTable(
 	return Object.entries(tables).reduce<Record<string, TableInfo>>(
 		(acc, [tableName, tableDefinition]) => {
 			const transformedTableName = toSnakeCase(tableName, camelCase);
-			const columns = Object.entries(
-				tableInfo(tableDefinition).definition.columns,
-			);
+			const columns = Object.entries(tableDefinition.columns);
 			acc[transformedTableName] = columns.reduce<TableInfo>(
 				(columnAcc, [columnName, column]) => {
 					const columnInfo = schemaColumnInfo(

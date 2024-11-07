@@ -17,7 +17,6 @@
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
 		"@monorepo/cli": "*",
-		"@monorepo/migrator": "*",
 		"@monorepo/pg": "*",
 		"@monorepo/services": "*",
 		"@monorepo/state": "*",
