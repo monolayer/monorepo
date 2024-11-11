@@ -32,7 +32,7 @@ test<TaskContext>("restores db from structure file", async (context) => {
 		structure,
 	);
 
-	await Effect.runPromise(await programWithContextAndServices(structureLoad()));
+	await Effect.runPromise(await programWithContextAndServices(structureLoad));
 });
 
 const structure = `

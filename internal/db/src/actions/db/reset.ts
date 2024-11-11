@@ -1,7 +1,7 @@
 import type { Command } from "@commander-js/extra-typings";
 import { commandWithDefaultOptions } from "@monorepo/cli/command-with-default-options.js";
 import { structureLoad } from "@monorepo/programs/database/structure-load.js";
-import { cliAction } from "~db/cli-action.js";
+import { headlessCliAction } from "~db/cli-action.js";
 
 export function resetDb(program: Command) {
 	commandWithDefaultOptions({
@@ -10,6 +10,6 @@ export function resetDb(program: Command) {
 	})
 		.description("Restores a database from its structure file")
 		.action(async (opts) => {
-			await cliAction("Reset Database", opts, [structureLoad()]);
+			await headlessCliAction(opts, [structureLoad]);
 		});
 }

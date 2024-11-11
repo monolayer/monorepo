@@ -1,84 +1,59 @@
-import { checkWithFail } from "@monorepo/cli/check.js";
-import { spinnerTask } from "@monorepo/cli/spinner-task.js";
-import { DbClients } from "@monorepo/services/db-clients.js";
 import { pgQuery } from "@monorepo/services/db-clients/pg-query.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
-import { Effect } from "effect";
+import { pathExists } from "@monorepo/utils/path.js";
+import { gen, tryPromise } from "effect/Effect";
 import fs from "fs/promises";
-import { cwd } from "node:process";
+import { cwd, exit } from "node:process";
+import ora from "ora";
 import path from "path";
 import { createDatabase } from "~programs/database/create-database.js";
 import { dropDatabase } from "~programs/database/drop-database.js";
 
-export function structureLoad() {
-	return checkStructureFile().pipe(
-		Effect.tap(dropDatabase),
-		Effect.tap(createDatabase),
-		Effect.tap(restoreDatabaseFromStructureFile),
-	);
-}
+export const structureLoad = gen(function* () {
+	yield* checkFile;
+	yield* dropDatabase;
+	yield* createDatabase;
+	yield* restoreDatabaseFromStructureFile;
+});
 
-function checkStructureFile() {
-	return appEnvironment.pipe(
-		Effect.flatMap((environment) =>
-			checkWithFail({
-				name: `Check structure.${environment.currentDatabase.id}.sql`,
-				nextSteps: `Follow these steps to generate a structure file:
+const checkFile = gen(function* () {
+	const appEnv = yield* appEnvironment;
 
-1) Create the development database: \`npx monolayer db:create -e development\`.
+	const spinner = ora();
+	spinner.start(`Check structure.${appEnv.currentDatabase.id}.sql`);
 
-2) Generate migrations: \`npx monolayer generate -e development\`
-
-3) Apply migrations: \`npx monolayer migrate -e development\``,
-				errorMessage: `Structure file not found. Expected location: ${path.join(
-					cwd(),
-					"monolayer",
-					"dumps",
-					`structure.${environment.currentDatabase.id}.sql`,
-				)}`,
-				failMessage: "Structure file does not exist",
-				callback: () =>
-					Effect.tryPromise(async () => {
-						const structurePath = path.join(
-							cwd(),
-							"monolayer",
-							"dumps",
-							`structure.${environment.currentDatabase.id}.sql`,
-						);
-						try {
-							await fs.stat(structurePath);
-						} catch {
-							return false;
-						}
-						return true;
-					}),
-			}),
+	const exists = yield* pathExists(
+		path.join(
+			cwd(),
+			"monolayer",
+			"dumps",
+			`structure.${appEnv.currentDatabase.id}.sql`,
 		),
 	);
-}
+	if (!exists) {
+		spinner.fail();
+		exit(1);
+	}
+	spinner.succeed();
+});
 
-function restoreDatabaseFromStructureFile() {
-	return Effect.all([appEnvironment, DbClients]).pipe(
-		Effect.flatMap(([environment, dbClients]) =>
-			spinnerTask(
-				`Restore ${dbClients.databaseName} from structure.${environment.currentDatabase.id}.sql`,
-				() =>
-					Effect.tryPromise(async () => {
-						const structurePath = path.join(
-							cwd(),
-							"monolayer",
-							"dumps",
-							`structure.${environment.currentDatabase.id}.sql`,
-						);
-						return (await fs.readFile(structurePath)).toString();
-					}).pipe(
-						Effect.flatMap((structure) =>
-							pgQuery<{
-								datname: string;
-							}>(structure),
-						),
-					),
-			),
-		),
+const restoreDatabaseFromStructureFile = gen(function* () {
+	const appEnv = yield* appEnvironment;
+	const spinner = ora();
+	spinner.start(
+		`Restore database from structure.${appEnv.currentDatabase.id}.sql`,
 	);
-}
+	const data = yield* tryPromise(async () => {
+		const structurePath = path.join(
+			cwd(),
+			"monolayer",
+			"dumps",
+			`structure.${appEnv.currentDatabase.id}.sql`,
+		);
+		return (await fs.readFile(structurePath)).toString();
+	});
+	yield* pgQuery<{
+		datname: string;
+	}>(data);
+	spinner.succeed();
+});
