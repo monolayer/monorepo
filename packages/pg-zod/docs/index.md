@@ -4,22 +4,13 @@ layout: home
 
 hero:
   name: "pg-zod"
-  text: "A VitePress Site"
-  tagline: My great project tagline
+  tagline: Generate Zod schemas from @monolayer/pg schemas.
   actions:
     - theme: brand
       text: Guide
-      link: /what-is-pg-zod
+      link: /guide/what-is-pg-zod
     - theme: alt
       text: API Reference
       link: /reference/api/functions/zodSchema.md
-
-features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
 
