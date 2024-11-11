@@ -1,11 +1,11 @@
 #!/usr/bin/env tsx
 import type { Command as CommandExtra } from "@commander-js/extra-typings";
+import { dataCLI } from "@monorepo/data/cli.js";
 import { createDb } from "@monorepo/db/actions/db/create.js";
 import { dropDb } from "@monorepo/db/actions/db/drop.js";
 import { importDb } from "@monorepo/db/actions/db/import.js";
 import { resetDb } from "@monorepo/db/actions/db/reset.js";
 import { dbCommand } from "@monorepo/db/commands/db.js";
-import { dataCLI } from "@monorepo/data/cli.js";
 import { syncDb } from "@monorepo/push/actions/db-sync.js";
 import { pushToDb } from "@monorepo/push/actions/push-to-db.js";
 import { Command, CommanderError } from "commander";
@@ -30,7 +30,7 @@ async function main() {
 	const push = program.command("push");
 	push.description("Push commands");
 	pushToDb(push, packageName);
-	syncDb(push, packageName);
+	syncDb(push);
 	dataCLI(program);
 
 	program.exitOverride();

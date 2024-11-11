@@ -1,3 +1,5 @@
+/* eslint-disable require-yield */
+/* eslint-disable max-lines */
 import {
 	changedColumnNames,
 	currentColumName,

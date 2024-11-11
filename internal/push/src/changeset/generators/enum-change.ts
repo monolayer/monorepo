@@ -8,7 +8,6 @@ import {
 import { type ChangeEnumDiff } from "~push/changeset/types/diff.js";
 import { ChangesetGeneratorState } from "~push/state/changeset-generator.js";
 import { changeEnum } from "../../ddl/ddl.js";
-import type { AnyKysely } from "../introspection.js";
 
 export function changeEnumChangeset(diff: ChangeEnumDiff) {
 	return gen(function* () {
@@ -24,7 +23,7 @@ export function changeEnumChangeset(diff: ChangeEnumDiff) {
 				diff,
 				context,
 			}),
-			down: async (db: AnyKysely) => {},
+			down: async () => {},
 		};
 
 		return changeSet;

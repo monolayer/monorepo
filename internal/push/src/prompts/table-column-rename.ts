@@ -123,9 +123,10 @@ function computeColumnDiff(
 	remote: SchemaMigrationInfo,
 	renames: TableToRename[],
 ) {
+	// eslint-disable-next-line require-yield
 	return gen(function* () {
 		const localEntries = Object.entries(local.table);
-		let aDiff: ColumnDiff = {};
+		const aDiff: ColumnDiff = {};
 		for (const [tableName, table] of localEntries) {
 			const prevTableName = previousTableName(schemaName, tableName, renames);
 			const remoteTable = remote.table[prevTableName];
@@ -166,7 +167,7 @@ export function tablesToRenamePrompt(
 	schemaName: string,
 ) {
 	return Effect.gen(function* () {
-		let tableRenames: TableToRename[] = [];
+		const tableRenames: TableToRename[] = [];
 		if (tableDiff.added.length === 0 || tableDiff.deleted.length === 0) {
 			return [];
 		}

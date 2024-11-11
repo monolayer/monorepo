@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /**
  * Adapted from Kysely
  * The MIT License (MIT)
@@ -65,6 +66,7 @@ class NoopPlugin implements KyselyPlugin {
 export const NO_MIGRATIONS: NoMigrations = freeze({ __noMigrations__: true });
 
 export interface Migration {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	up(db: Kysely<any>): Promise<void>;
 
 	/**
@@ -73,6 +75,7 @@ export interface Migration {
 	 * If you don't provide a down method, the migration is skipped when
 	 * migrating down.
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	down?(db: Kysely<any>): Promise<void>;
 }
 
@@ -478,6 +481,7 @@ export class Migrator {
 			lockTableSchema: this.#props.migrationTableSchema,
 		});
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const run = async (db: Kysely<any>): Promise<MigrationResultSet> => {
 			try {
 				await adapter.acquireMigrationLock(db, lockOptions);
@@ -525,6 +529,7 @@ export class Migrator {
 			lockTableSchema: this.#props.migrationTableSchema,
 		});
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const run = async (db: Kysely<any>): Promise<MigrationResultSet> => {
 			try {
 				await this.#ensureMigrationTablesExists();
@@ -548,6 +553,7 @@ export class Migrator {
 		}
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async #getState(db: Kysely<any>): Promise<MigrationState> {
 		const migrations = await this.#resolveMigrations();
 		const executedMigrations = await this.#getExecutedMigrations(db);
@@ -588,6 +594,7 @@ export class Migrator {
 	}
 
 	async #getExecutedMigrations(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		db: Kysely<any>,
 	): Promise<ReadonlyArray<string>> {
 		const executedMigrations = await db
@@ -629,6 +636,7 @@ export class Migrator {
 	}
 
 	async #migrateDown(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		db: Kysely<any>,
 		state: MigrationState,
 		step: number,
@@ -687,6 +695,7 @@ export class Migrator {
 	}
 
 	async #migrateSingle(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		db: Kysely<any>,
 		migration: NamedMigration,
 		direction: MigrationDirection,
@@ -747,6 +756,7 @@ export class Migrator {
 	}
 
 	async #migrateUp(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		db: Kysely<any>,
 		state: MigrationState,
 		step: number,
@@ -801,6 +811,7 @@ export class Migrator {
 	}
 
 	async #createIfNotExists(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		qb: CreateTableBuilder<any, any> | CreateSchemaBuilder,
 	): Promise<void> {
 		if (this.#props.db.getExecutor().adapter.supportsCreateIfNotExists) {
@@ -812,6 +823,7 @@ export class Migrator {
 }
 
 export interface MigratorProps {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly db: Kysely<any>;
 	readonly provider: MigrationProvider;
 

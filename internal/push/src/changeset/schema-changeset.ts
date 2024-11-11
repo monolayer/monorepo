@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import {
 	type ColumnsToRename,
 	type TablesToRename,
@@ -189,6 +190,7 @@ export function sortChangeset(
 			acc[name] = index;
 			return acc;
 		},
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		{} as Record<string, any>,
 	);
 

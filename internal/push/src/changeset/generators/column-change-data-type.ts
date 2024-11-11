@@ -2,6 +2,7 @@ import { gen } from "effect/Effect";
 import { changeColumnDataType } from "../../ddl/ddl.js";
 import { ChangesetGeneratorState } from "../../state/changeset-generator.js";
 import { resolveCurrentTableName } from "../introspection.js";
+import { safeDataTypeChange } from "../safe-data-types-change.js";
 import {
 	ChangesetPhase,
 	ChangesetType,
@@ -11,7 +12,6 @@ import {
 import type { ColumnDataTypeDiff } from "../types/diff.js";
 import { ChangeWarningType } from "../warnings/change-warning-type.js";
 import { ChangeWarningCode } from "../warnings/codes.js";
-import { safeDataTypeChange } from "../safe-data-types-change.js";
 
 export function changeColumDataTypeChangeset(diff: ColumnDataTypeDiff) {
 	return gen(function* () {

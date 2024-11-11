@@ -11,11 +11,12 @@ import type { GlobalThis } from "type-fest";
 import { fileURLToPath } from "url";
 import type { RunnerTestSuite, TaskContext } from "vitest";
 import { afterEach, beforeEach, vi } from "vitest";
+import type { AnyKysely } from "~push/changeset/introspection.js";
 import type { SchemaIntrospection } from "~push/introspect-schema.js";
 
 export interface TestContext {
-	adminDbClient: Kysely<any>;
-	dbClient: Kysely<any>;
+	adminDbClient: AnyKysely;
+	dbClient: AnyKysely;
 	databaseName: string;
 	testDir: string;
 	queryLog: string[];
@@ -71,6 +72,7 @@ vi.mock(
 			(await importOriginal()) as typeof import("~push/prompts/table-column-rename.js");
 		return {
 			...actual,
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			promptRenames: vi.fn((introspections: SchemaIntrospection[]) => {
 				return Effect.gen(function* () {
 					return yield* succeed({
@@ -97,6 +99,7 @@ beforeEach<TestContext>(async (context) => {
 	mkdirSync(context.testDir, { recursive: true });
 
 	context.databaseName = testDb;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	context.adminDbClient = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({
@@ -105,6 +108,7 @@ beforeEach<TestContext>(async (context) => {
 		}),
 	});
 	process.env.MONO_PG_DEFAULT_DATABASE_URL = `${pgConnectionString()}/${testDb}`;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	context.dbClient = new Kysely<any>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool({

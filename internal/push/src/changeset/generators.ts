@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { codeChangeset } from "./code-changeset.js";
 import {
 	createCheckChangeset,

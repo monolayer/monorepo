@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { bigint } from "@monorepo/pg/schema/column/data-types/bigint.js";
 import { bigserial } from "@monorepo/pg/schema/column/data-types/bigserial.js";
 import { bitVarying } from "@monorepo/pg/schema/column/data-types/bit-varying.js";

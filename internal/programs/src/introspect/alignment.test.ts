@@ -1,13 +1,13 @@
 import type { ProgramContext } from "@monorepo/services/program-context.js";
 import { Effect } from "effect";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { column } from "~test-setup/columns.js";
 import {
 	setupProgramContext,
 	teardownProgramContext,
 } from "~test-setup/program_context.js";
 import { programWithContextAndServices } from "~test-setup/run-program.js";
 import { alignColumns, introspectAlignment } from "./alignment.js";
-import { column } from "~test-setup/columns.js";
 
 describe("column aligner", () => {
 	beforeEach<ProgramContext>(async (context) => {

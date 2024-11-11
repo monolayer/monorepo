@@ -29,5 +29,4 @@ testSchemaPush("create enum type", {
 		'COMMENT ON TYPE "public"."role" IS \'monolayer\'',
 		'alter table "public"."users" add column "role" "role"',
 	],
-	assertDatabase: async ({}) => {},
 });

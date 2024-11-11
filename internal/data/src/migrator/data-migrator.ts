@@ -12,6 +12,7 @@ export const DEFAULT_ALLOW_UNORDERED_MIGRATIONS = false;
 export const MIGRATION_LOCK_ID = "migration_lock";
 
 export class DataMigrator extends Migrator {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	constructor(options: { db: Kysely<any>; name: string; folder: string }) {
 		if (path.extname(options.folder) !== "") {
 			throw new Error(`Not a folder: ${options.folder}`);

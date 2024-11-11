@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { integer } from "@monorepo/pg/schema/column/data-types/integer.js";
 import { foreignKey } from "@monorepo/pg/schema/foreign-key.js";
 import { primaryKey } from "@monorepo/pg/schema/primary-key.js";

@@ -23,7 +23,7 @@ test<TestContext>("rename trigger on table name change", async (context) => {
 					`
           create extension "moddatetime";
           create table "public"."users" ("updatedAt" timestamp default now(), "id" integer);
-          COMMENT ON COLUMN "public"."users"."updatedAt" IS \'28a4dae0\';
+          COMMENT ON COLUMN "public"."users"."updatedAt" IS '28a4dae0';
 					CREATE OR REPLACE TRIGGER monolayer_trg_8659ae36 BEFORE UPDATE ON "public"."users" FOR EACH ROW EXECUTE FUNCTION moddatetime("updatedAt");
           `,
 				)
@@ -70,7 +70,7 @@ test<TestContext>("replace trigger on column name change", async (context) => {
 					`
           create extension "moddatetime";
           create table "public"."users" ("updatedAt" timestamp default now(), "id" integer);
-          COMMENT ON COLUMN "public"."users"."updatedAt" IS \'28a4dae0\';
+          COMMENT ON COLUMN "public"."users"."updatedAt" IS '28a4dae0';
 					CREATE OR REPLACE TRIGGER monolayer_trg_8659ae36 BEFORE UPDATE ON "public"."users" FOR EACH ROW EXECUTE FUNCTION moddatetime("updatedAt");
           `,
 				)
@@ -123,7 +123,7 @@ test<TestContext>("replace trigger on table column name change", async (context)
 					`
           create extension "moddatetime";
           create table "public"."users" ("updatedAt" timestamp default now(), "id" integer);
-          COMMENT ON COLUMN "public"."users"."updatedAt" IS \'28a4dae0\';
+          COMMENT ON COLUMN "public"."users"."updatedAt" IS '28a4dae0';
 					CREATE OR REPLACE TRIGGER monolayer_trg_8659ae36 BEFORE UPDATE ON "public"."users" FOR EACH ROW EXECUTE FUNCTION moddatetime("updatedAt");
           `,
 				)

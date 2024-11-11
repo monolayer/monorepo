@@ -8,5 +8,4 @@ testSchemaPush("drop extension", {
 	},
 	extensions: [extension("adminpack")],
 	expectedQueries: ["create extension if not exists adminpack;"],
-	assertDatabase: async ({}) => {},
 });

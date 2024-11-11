@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { check, integer, text } from "@monorepo/pg/api/schema.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
 import { table } from "@monorepo/pg/schema/table.js";
@@ -204,7 +205,7 @@ test<TestContext>("add check constraint on renamed column", async (context) => {
 			'alter table "public"."users" add constraint "users_3a87c81c_monolayer_chk" check ("demo" > 0) not valid',
 			'alter table "public"."users" validate constraint "users_3a87c81c_monolayer_chk"',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ assert }) => {
 			await assert.constraint("users_3a87c81c_monolayer_chk", "public.users");
 		},
 	});
@@ -247,7 +248,7 @@ test<TestContext>("add check constraint on renamed table", async (context) => {
 			'alter table "public"."accounts" add constraint "accounts_3a87c81c_monolayer_chk" check ("demo" > 0) not valid',
 			'alter table "public"."accounts" validate constraint "accounts_3a87c81c_monolayer_chk"',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ assert }) => {
 			await assert.constraint(
 				"accounts_3a87c81c_monolayer_chk",
 				"public.accounts",
@@ -299,7 +300,7 @@ test<TestContext>("add check constraint on renamed table and column", async (con
 			'alter table "public"."accounts" add constraint "accounts_3a87c81c_monolayer_chk" check ("demo" > 0) not valid',
 			'alter table "public"."accounts" validate constraint "accounts_3a87c81c_monolayer_chk"',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ assert }) => {
 			await assert.constraint(
 				"accounts_3a87c81c_monolayer_chk",
 				"public.accounts",

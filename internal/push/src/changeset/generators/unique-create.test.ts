@@ -195,7 +195,7 @@ test<TestContext>("add unique constraint on renamed column", async (context) => 
 			'create unique index concurrently "users_f368ca51_monolayer_key_monolayer_uc_idx" on "public"."users" ("demo") ',
 			'alter table "public"."users" add constraint "users_f368ca51_monolayer_key" unique using index "users_f368ca51_monolayer_key_monolayer_uc_idx"',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ assert }) => {
 			await assert.constraint("users_f368ca51_monolayer_key", "public.users");
 		},
 	});
@@ -238,7 +238,7 @@ test<TestContext>("add unique constraint on renamed table", async (context) => {
 			'create unique index concurrently "accounts_f368ca51_monolayer_key_monolayer_uc_idx" on "public"."accounts" ("email") ',
 			'alter table "public"."accounts" add constraint "accounts_f368ca51_monolayer_key" unique using index "accounts_f368ca51_monolayer_key_monolayer_uc_idx"',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ assert }) => {
 			await assert.constraint(
 				"accounts_f368ca51_monolayer_key",
 				"public.accounts",
@@ -290,7 +290,7 @@ test<TestContext>("add unique constraint on renamed table and column", async (co
 			'create unique index concurrently "accounts_f368ca51_monolayer_key_monolayer_uc_idx" on "public"."accounts" ("demo") ',
 			'alter table "public"."accounts" add constraint "accounts_f368ca51_monolayer_key" unique using index "accounts_f368ca51_monolayer_key_monolayer_uc_idx"',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ assert }) => {
 			await assert.constraint(
 				"accounts_f368ca51_monolayer_key",
 				"public.accounts",

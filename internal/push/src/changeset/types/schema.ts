@@ -9,7 +9,6 @@ import type {
 import type { ForeignKeyIntrospection } from "@monorepo/pg/introspection/table.js";
 import type { TriggerInfo } from "@monorepo/pg/introspection/trigger.js";
 
-
 export type ColumnInfo = {
 	columnName: string | null;
 	dataType: string;
@@ -25,7 +24,6 @@ export type ColumnInfo = {
 	identity: "ALWAYS" | "BY DEFAULT" | null;
 	enum: boolean;
 };
-
 
 export type TableColumnInfo = Record<
 	string,

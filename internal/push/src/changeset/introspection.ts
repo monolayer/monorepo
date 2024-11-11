@@ -257,4 +257,5 @@ export type ColumnInfoDiff = Omit<ColumnInfo, "defaultValue"> & {
 	defaultValue: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyKysely = Kysely<any>;

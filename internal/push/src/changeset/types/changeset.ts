@@ -1,5 +1,5 @@
-import type { Kysely } from "kysely";
 import type { ChangeWarning } from "~push/changeset/warnings/warnings.js";
+import type { AnyKysely } from "../introspection.js";
 
 export enum ChangesetType {
 	CreateTable = "createTable",
@@ -45,9 +45,9 @@ export type CodeChangeset = {
 	tableName: string;
 	currentTableName: string;
 	type: ChangesetType;
-	up: (db: Kysely<any>) => Promise<void>;
-	down: (db: Kysely<any>) => Promise<void>;
-	verify?: (db: Kysely<any>) => Promise<void>;
+	up: (db: AnyKysely) => Promise<void>;
+	down: (db: AnyKysely) => Promise<void>;
+	verify?: (db: AnyKysely) => Promise<void>;
 	priority: number;
 	schemaName: string | null;
 	transaction?: boolean;

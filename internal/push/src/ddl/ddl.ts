@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { redefineCheck } from "@monorepo/pg/introspection/check.js";
 import type { ForeignKeyDefinition } from "@monorepo/pg/introspection/introspection/foreign-key-builder.js";
 import { extractColumnsFromPrimaryKey } from "@monorepo/pg/introspection/schema.js";
@@ -103,6 +104,7 @@ interface DropTableOptions {
 function addForeignKeys(
 	options: CreateTableOptions,
 	tableName: string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	createTable: CreateTableBuilder<string, any>,
 ) {
 	Object.entries(options.diff.value.foreignKeys ?? {}).forEach(
@@ -138,10 +140,11 @@ function addForeignKeys(
 function addCheckConstraints(
 	options: CreateTableOptions,
 	tableName: string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	createTable: CreateTableBuilder<string, any>,
 ) {
 	Object.entries(options.diff.value.checkConstraints ?? {}).forEach(
-		([_hash, value]) => {
+		([, value]) => {
 			const checkDefinition = redefineCheck(
 				value!,
 				"current",
@@ -161,6 +164,7 @@ function addCheckConstraints(
 function addUniqueConstraints(
 	tableName: string,
 	options: CreateTableOptions,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	createTable: CreateTableBuilder<string, any>,
 ) {
 	const table = new GeneratorTable(tableName, options.context);
@@ -183,6 +187,7 @@ function addUniqueConstraints(
 
 function addPrimaryKey(
 	options: CreateTableOptions,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	createTable: CreateTableBuilder<string, any>,
 ) {
 	Object.entries(options.diff.value.primaryKey ?? {}).forEach(
@@ -198,6 +203,7 @@ function addPrimaryKey(
 
 function addColumns(
 	options: CreateTableOptions,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	createTable: CreateTableBuilder<string, any>,
 ) {
 	alignColumns(
@@ -354,6 +360,7 @@ export function createEnum(options: CreateEnumOptions) {
 	};
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isCreateDiff(diff: any): diff is CreateEnumDiff {
 	return diff.value !== undefined;
 }
@@ -963,6 +970,7 @@ export function createIndexConcurrently({
 		);
 		try {
 			await query.execute(debug);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (e: any) {
 			await new CompiledQuery(
 				db.withSchema(schemaName).schema.dropIndex(name).ifExists(),
@@ -973,12 +981,7 @@ export function createIndexConcurrently({
 	};
 }
 
-export function createIndex({
-	schemaName,
-	name,
-	definition,
-	debug,
-}: CreateIndexOptions) {
+export function createIndex({ name, definition, debug }: CreateIndexOptions) {
 	return async (db: AnyKysely) => {
 		const query = new RawQuery(
 			sql.raw(definition.replace(/'/g, "\\'")),

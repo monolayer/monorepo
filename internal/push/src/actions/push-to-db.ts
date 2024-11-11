@@ -9,7 +9,7 @@ import { ChangesetGeneratorState } from "~push/state/changeset-generator.js";
 import { MigrationOpsGeneratorsState } from "~push/state/migration-ops-generators.js";
 import { RenameState } from "~push/state/rename.js";
 
-export function pushToDb(program: Command, packageName: string) {
+export function pushToDb(program: Command) {
 	commandWithDefaultOptions({
 		name: "dev",
 		program,

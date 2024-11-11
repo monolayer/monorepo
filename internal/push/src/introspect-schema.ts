@@ -15,11 +15,7 @@ import type { SchemaMigrationInfo } from "~push/changeset/types/schema.js";
 import { type ColumnsToRename, type Renames } from "~push/state/rename.js";
 import { toSnakeCase } from "./changeset/introspection.js";
 
-export function introspectSchema(
-	schema: AnySchema,
-	renames?: Renames,
-	fromPrompt: boolean = false,
-) {
+export function introspectSchema(schema: AnySchema, renames?: Renames) {
 	return Effect.gen(function* () {
 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
 

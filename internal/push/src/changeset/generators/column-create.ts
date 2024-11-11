@@ -5,7 +5,10 @@ import {
 	dropColumn,
 } from "../../ddl/ddl.js";
 import { ChangesetGeneratorState } from "../../state/changeset-generator.js";
-import { resolveCurrentTableName, type ColumnInfoDiff } from "../introspection.js";
+import {
+	resolveCurrentTableName,
+	type ColumnInfoDiff,
+} from "../introspection.js";
 import {
 	ChangesetPhase,
 	ChangesetType,

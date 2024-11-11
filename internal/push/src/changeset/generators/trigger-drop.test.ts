@@ -19,8 +19,8 @@ test<TestContext>("drop trigger", async (context) => {
 					`
           create extension "moddatetime";
           create table "public"."users" ("updatedAt" timestamp default now(), "updatedAtTwo" timestamp default now(), "id" integer);
-          COMMENT ON COLUMN "public"."users"."updatedAt" IS \'28a4dae0\';
-          COMMENT ON COLUMN "public"."users"."updatedAtTwo" IS \'28a4dae0\';
+          COMMENT ON COLUMN "public"."users"."updatedAt" IS '28a4dae0';
+          COMMENT ON COLUMN "public"."users"."updatedAtTwo" IS '28a4dae0';
           CREATE OR REPLACE TRIGGER monolayer_trg_8659ae36\nBEFORE UPDATE ON "public"."users"\nFOR EACH ROW\nEXECUTE FUNCTION moddatetime("updatedAt");
           CREATE OR REPLACE TRIGGER monolayer_trg_7d730e02\nBEFORE UPDATE ON "public"."users"\nFOR EACH ROW\nEXECUTE FUNCTION moddatetime("updatedAtTwo");
           `,
@@ -65,8 +65,8 @@ test<TestContext>("drop all triggers", async (context) => {
 					`
           create extension "moddatetime";
           create table "public"."users" ("updatedAt" timestamp default now(), "updatedAtTwo" timestamp default now(), "id" integer);
-          COMMENT ON COLUMN "public"."users"."updatedAt" IS \'28a4dae0\';
-          COMMENT ON COLUMN "public"."users"."updatedAtTwo" IS \'28a4dae0\';
+          COMMENT ON COLUMN "public"."users"."updatedAt" IS '28a4dae0';
+          COMMENT ON COLUMN "public"."users"."updatedAtTwo" IS '28a4dae0';
           CREATE OR REPLACE TRIGGER monolayer_trg_8659ae36\nBEFORE UPDATE ON "public"."users"\nFOR EACH ROW\nEXECUTE FUNCTION moddatetime("updatedAt");
           CREATE OR REPLACE TRIGGER monolayer_trg_7d730e02\nBEFORE UPDATE ON "public"."users"\nFOR EACH ROW\nEXECUTE FUNCTION moddatetime("updatedAtTwo");        `,
 				)

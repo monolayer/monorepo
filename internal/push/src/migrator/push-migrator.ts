@@ -1,4 +1,4 @@
-import { Kysely } from "kysely";
+import type { AnyKysely } from "~push/changeset/introspection.js";
 import {
 	ChangesetPhase,
 	type ChangesetType,
@@ -15,12 +15,12 @@ interface PushMigrationBase {
 	/**
 	 * Up method.
 	 */
-	up(db: Kysely<any>): Promise<void>;
+	up(db: AnyKysely): Promise<void>;
 
 	/**
 	 * Down method.
 	 */
-	down(db: Kysely<any>): Promise<void>;
+	down(db: AnyKysely): Promise<void>;
 	transform?: SchemaTransform;
 }
 
@@ -48,10 +48,10 @@ export interface MigrationsByPhase {
 }
 
 export class PushMigrator {
-	#db: Kysely<any>;
+	#db: AnyKysely;
 	#migrationLock: MigrationLock;
 
-	constructor(options: { db: Kysely<any> }) {
+	constructor(options: { db: AnyKysely }) {
 		this.#db = options.db;
 		this.#migrationLock = new MigrationLock(options.db);
 	}
@@ -85,10 +85,10 @@ export class PushMigrator {
 class PushMigrationError extends AggregateError {}
 
 class MigrationRunner {
-	#db: Kysely<any>;
+	#db: AnyKysely;
 	#migrationsToRollBack: PushMigration[];
 
-	constructor(options: { db: Kysely<any> }) {
+	constructor(options: { db: AnyKysely }) {
 		this.#db = options.db;
 		this.#migrationsToRollBack = [];
 	}

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import type { TableRename } from "@monorepo/state/table-column-rename.js";
 import { assert, describe, test } from "vitest";
 import type { TableColumnInfo } from "~push/changeset/types/schema.js";

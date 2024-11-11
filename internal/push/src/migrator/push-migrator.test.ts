@@ -1,7 +1,8 @@
 /* eslint-disable max-lines */
-import { Kysely, sql } from "kysely";
+import { sql } from "kysely";
 import { type TestContext } from "test/__setup__/setup.js";
 import { assert, test } from "vitest";
+import type { AnyKysely } from "~push/changeset/introspection.js";
 import { ChangesetPhase, ChangesetType } from "../changeset/types/changeset.js";
 import {
 	PushMigrator,
@@ -15,30 +16,30 @@ test<TestContext>("push all migration phases", async (context) => {
 		{
 			type: ChangesetType.CreateTable,
 			phase: ChangesetPhase.Expand,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("users").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("users").execute();
 			},
 		},
 		{
 			type: ChangesetType.CreateTable,
 			phase: ChangesetPhase.Expand,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("teams").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("teams").execute();
 			},
 		},
 		{
 			type: ChangesetType.CreateTable,
 			phase: ChangesetPhase.Expand,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("hello").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("hello").execute();
 			},
 		},
@@ -48,14 +49,14 @@ test<TestContext>("push all migration phases", async (context) => {
 		{
 			type: ChangesetType.CreateColumn,
 			phase: ChangesetPhase.Alter,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.alterTable("users")
 					.addColumn("name", "text")
 					.execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.alterTable("users")
@@ -66,14 +67,14 @@ test<TestContext>("push all migration phases", async (context) => {
 		{
 			type: ChangesetType.CreateColumn,
 			phase: ChangesetPhase.Alter,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.alterTable("teams")
 					.addColumn("location", "text")
 					.execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.alterTable("teams")
@@ -87,10 +88,10 @@ test<TestContext>("push all migration phases", async (context) => {
 		{
 			type: ChangesetType.DropTable,
 			phase: ChangesetPhase.Contract,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("hello").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("hello").execute();
 			},
 		},
@@ -135,14 +136,14 @@ test<TestContext>("push migrations without transactions", async (context) => {
 		{
 			type: ChangesetType.CreateColumn,
 			phase: ChangesetPhase.Expand,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.createTable("users")
 					.addColumn("name", "text")
 					.execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("users").execute();
 			},
 		},
@@ -150,12 +151,12 @@ test<TestContext>("push migrations without transactions", async (context) => {
 			type: ChangesetType.CreateIndex,
 			phase: ChangesetPhase.Expand,
 			transaction: false,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				try {
-					// eslint-disable-next-line quotes
 					await sql`${sql.raw('create index concurrently "users_3cf2733f_monolayer_idx" on "public"."users" ("name")')}`.execute(
 						db,
 					);
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (error: any) {
 					if (error.code === "23505") {
 						await db
@@ -167,7 +168,7 @@ test<TestContext>("push migrations without transactions", async (context) => {
 					throw error;
 				}
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.dropIndex("users_3cf2733f_monolayer_idx")
@@ -202,30 +203,30 @@ test.skip<TestContext>("rollbacks all migration phases on error", async (context
 		{
 			type: ChangesetType.CreateTable,
 			phase: ChangesetPhase.Expand,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("users").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("users").execute();
 			},
 		},
 		{
 			type: ChangesetType.CreateTable,
 			phase: ChangesetPhase.Expand,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("teams").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("teams").execute();
 			},
 		},
 		{
 			type: ChangesetType.CreateTable,
 			phase: ChangesetPhase.Expand,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("hello").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("hello").execute();
 			},
 		},
@@ -235,14 +236,14 @@ test.skip<TestContext>("rollbacks all migration phases on error", async (context
 		{
 			type: ChangesetType.CreateColumn,
 			phase: ChangesetPhase.Alter,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.alterTable("users")
 					.addColumn("name", "text")
 					.execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.alterTable("users")
@@ -253,14 +254,14 @@ test.skip<TestContext>("rollbacks all migration phases on error", async (context
 		{
 			type: ChangesetType.CreateColumn,
 			phase: ChangesetPhase.Alter,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.alterTable("teams")
 					.addColumn("location", "text")
 					.execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.alterTable("teams")
@@ -274,10 +275,10 @@ test.skip<TestContext>("rollbacks all migration phases on error", async (context
 		{
 			type: ChangesetType.DropTable,
 			phase: ChangesetPhase.Contract,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("pubklic").schema.dropTable("hello").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("hello").execute();
 			},
 		},
@@ -302,30 +303,30 @@ test.skip<TestContext>("rollbacks all migration phases on error - concurrent ind
 		{
 			type: ChangesetType.CreateTable,
 			phase: ChangesetPhase.Expand,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("users").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("users").execute();
 			},
 		},
 		{
 			type: ChangesetType.CreateTable,
 			phase: ChangesetPhase.Expand,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("teams").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("teams").execute();
 			},
 		},
 		{
 			type: ChangesetType.CreateTable,
 			phase: ChangesetPhase.Expand,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.createTable("hello").execute();
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db.withSchema("public").schema.dropTable("hello").execute();
 			},
 		},
@@ -333,12 +334,12 @@ test.skip<TestContext>("rollbacks all migration phases on error - concurrent ind
 			type: ChangesetType.CreateIndex,
 			phase: ChangesetPhase.Expand,
 			transaction: false,
-			up: async (db: Kysely<any>) => {
+			up: async (db: AnyKysely) => {
 				try {
-					// eslint-disable-next-line quotes
 					await sql`${sql.raw('create index concurrently "users_3cf2733f_monolayer_idx" on "publkic"."users" ("name")')}`.execute(
 						db,
 					);
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (error: any) {
 					if (error.code === "23505") {
 						await db
@@ -350,7 +351,7 @@ test.skip<TestContext>("rollbacks all migration phases on error - concurrent ind
 					throw error;
 				}
 			},
-			down: async (db: Kysely<any>) => {
+			down: async (db: AnyKysely) => {
 				await db
 					.withSchema("public")
 					.schema.dropIndex("users_3cf2733f_monolayer_idx")

@@ -31,5 +31,4 @@ testSchemaPush("change enum type", {
 	expectedQueries: [
 		'alter type "public"."role" add value if not exists \'superUser\'',
 	],
-	assertDatabase: async ({}) => {},
 });

@@ -94,7 +94,7 @@ test<TestContext>("add not null to renamed column", async (context) => {
 			'alter table "public"."users" alter column "id2" set not null',
 			'alter table "public"."users" drop constraint "temporary_not_null_check_constraint_public_users_id2"',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ refute }) => {
 			await refute.columnNullable("id2", "public.users");
 		},
 	});

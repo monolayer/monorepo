@@ -43,7 +43,7 @@ test<TestContext>("add column default", async (context) => {
 			'alter table "public"."users" alter column "email" set default \'n@example.com\'::text',
 			'COMMENT ON COLUMN "public"."users"."email" IS \'d432e158\'',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ assert }) => {
 			await assert.columnDefault("count", "0", "public.users");
 			await assert.columnDefault(
 				"email",
@@ -89,7 +89,7 @@ test<TestContext>("add column default to renamed column", async (context) => {
 			'alter table "public"."users" alter column "demo" set default 0',
 			'COMMENT ON COLUMN "public"."users"."demo" IS \'5feceb66\'',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ assert }) => {
 			await assert.columnDefault("demo", "0", "public.users");
 		},
 	});
@@ -131,7 +131,7 @@ test<TestContext>("add column default to renamed table and column", async (conte
 			'alter table "public"."accounts" alter column "demo" set default 0',
 			'COMMENT ON COLUMN "public"."accounts"."demo" IS \'5feceb66\'',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ assert }) => {
 			await assert.columnDefault("demo", "0", "public.accounts");
 		},
 	});

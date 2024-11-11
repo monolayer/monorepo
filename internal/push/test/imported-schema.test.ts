@@ -4,7 +4,6 @@ import { integer } from "@monorepo/pg/schema/column/data-types/integer.js";
 import { numeric } from "@monorepo/pg/schema/column/data-types/numeric.js";
 import { text } from "@monorepo/pg/schema/column/data-types/text.js";
 import { timestampWithTimeZone } from "@monorepo/pg/schema/column/data-types/timestamp-with-time-zone.js";
-import { extension } from "@monorepo/pg/schema/extension.js";
 import { foreignKey } from "@monorepo/pg/schema/foreign-key.js";
 import { unmanagedIndex } from "@monorepo/pg/schema/index.js";
 import { primaryKey } from "@monorepo/pg/schema/primary-key.js";
@@ -32,7 +31,7 @@ describe.skip("Imported Schema test", () => {
 	test<DbContext>("no changes", async (context) => {
 		await schemaDump.execute(context.kysely);
 
-		const extensions = [extension("moddatetime")];
+		// const extensions = [extension("moddatetime")];
 
 		const lamba = table({
 			columns: {
@@ -92,7 +91,7 @@ describe.skip("Imported Schema test", () => {
 			],
 		});
 
-		const dbSchema = schema({
+		schema({
 			tables: {
 				lamba,
 				products,
@@ -104,7 +103,7 @@ describe.skip("Imported Schema test", () => {
 	test<DbContext>("add index", async (context) => {
 		await schemaDump.execute(context.kysely);
 		expect(true).toBe(true);
-		const extensions = [extension("moddatetime")];
+		// const extensions = [extension("moddatetime")];
 
 		const lamba = table({
 			columns: {
@@ -164,7 +163,7 @@ describe.skip("Imported Schema test", () => {
 			],
 		});
 
-		const dbSchema = schema({
+		schema({
 			tables: {
 				lamba,
 				products,

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { DbClients } from "@monorepo/services/db-clients.js";
 import { appEnvironment } from "@monorepo/state/app-environment.js";
 import { pathExists } from "@monorepo/utils/path.js";

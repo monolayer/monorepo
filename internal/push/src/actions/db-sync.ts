@@ -10,7 +10,7 @@ import { ChangesetGeneratorState } from "~push/state/changeset-generator.js";
 import { MigrationOpsGeneratorsState } from "~push/state/migration-ops-generators.js";
 import { RenameState } from "~push/state/rename.js";
 
-export function syncDb(program: Command, packageName: string) {
+export function syncDb(program: Command) {
 	commandWithDefaultOptions({
 		name: "prod",
 		program,

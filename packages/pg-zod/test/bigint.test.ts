@@ -133,7 +133,7 @@ describe("bigint", () => {
 
 			const result = schema.safeParse(1);
 			expect(result.success).toBe(false);
-			});
+		});
 
 		test("parses bigint", () => {
 			const tbl = table({

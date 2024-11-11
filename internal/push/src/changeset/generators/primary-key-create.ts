@@ -103,7 +103,7 @@ export function dropNotNullChangesets(
 												columnName: column,
 												debug: context.debug,
 											})
-										: async (db: AnyKysely) => {},
+										: async () => {},
 								down:
 									direction === "down"
 										? dropNotNull({
@@ -112,7 +112,7 @@ export function dropNotNullChangesets(
 												columnName: column,
 												debug: false,
 											})
-										: async (db: AnyKysely) => {},
+										: async () => {},
 							});
 						}
 					} else {
@@ -132,7 +132,7 @@ export function dropNotNullChangesets(
 												columnName: column,
 												debug: context.debug,
 											})
-										: async (db: AnyKysely) => {},
+										: async () => {},
 								down:
 									direction === "down"
 										? dropNotNull({
@@ -141,7 +141,7 @@ export function dropNotNullChangesets(
 												columnName: column,
 												debug: false,
 											})
-										: async (db: AnyKysely) => {},
+										: async () => {},
 							});
 						}
 					}
@@ -157,11 +157,11 @@ export function dropNotNullChangesets(
 					up:
 						direction === "up"
 							? dropNotNullOp(tableName, column, context.schemaName)
-							: async (db: AnyKysely) => {},
+							: async () => {},
 					down:
 						direction === "down"
 							? dropNotNullOp(tableName, column, context.schemaName)
-							: async (db: AnyKysely) => {},
+							: async () => {},
 				});
 			}
 		}

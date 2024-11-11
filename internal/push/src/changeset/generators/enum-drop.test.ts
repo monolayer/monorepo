@@ -28,5 +28,4 @@ testSchemaPush("drop enum type", {
 		'alter table "public"."users" drop column "role"',
 		'drop type "public"."role"',
 	],
-	assertDatabase: async ({}) => {},
 });

@@ -80,11 +80,11 @@ function introspectLocalSchema(allSchemas: AnySchema[], prompt: boolean) {
 		const introspections: SchemaIntrospection[] = [];
 		const spinner = ora();
 		spinner.start("Introspect local schema");
-		let start = performance.now();
+		const start = performance.now();
 		for (const schema of allSchemas) {
 			introspections.push(yield* introspectSchema(schema));
 		}
-		let end = performance.now();
+		const end = performance.now();
 		spinner.succeed(
 			`Introspect local schema ${color.gray(`${Number(end - start).toFixed(3)}ms`)}`,
 		);
@@ -256,7 +256,8 @@ const updatePromptState = gen(function* () {
 export function tableRenameRecords(tablesToRename: TableToRename[]) {
 	return tablesToRename.map((tableToRename) => {
 		const [schemaFrom, tableFrom] = tableToRename.from.split(".");
-		const [_, tableTo] = tableToRename.to.split(".");
+		const [, tableTo] = tableToRename.to.split(".");
+		// eslint-disable-next-line no-useless-escape
 		const timestamp = new Date().toISOString().replace(/[-:T\.Z]/g, "");
 		const tableRename: TableToRename = {
 			name: `${timestamp}-${hashValue(
@@ -277,6 +278,7 @@ export function columnRenamesRecords(columnsToRename: ColumnsToRename) {
 		(acc, [qualifiedTableName, renames]) => {
 			const [schema, table] = qualifiedTableName.split(".");
 			for (const rename of renames) {
+				// eslint-disable-next-line no-useless-escape
 				const timestamp = new Date().toISOString().replace(/[-:T\.Z]/g, "");
 				const columnRename: ColumnToRename = {
 					name: `${timestamp}-${hashValue(

@@ -34,7 +34,7 @@ test<TestContext>("change column data type", async (context) => {
 		expectedQueries: [
 			'alter table "public"."users" alter column "count" type bigint',
 		],
-		assertDatabase: async ({ assert, refute }) => {
+		assertDatabase: async ({ assert }) => {
 			await assert.column("count", "bigint", "public.users");
 		},
 	});
