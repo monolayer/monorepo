@@ -87,6 +87,11 @@
 		"check:prettier": "prettier --check .",
 		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src",
 		"check:exports": "attw --pack .",
+		"predocs": "npm run typedoc",
+		"docs": "npm-run-all --parallel docs:dev typedoc:watch",
+		"docs:dev": "vitepress dev docs",
+		"docs:build": "vitepress build docs",
+		"docs:preview": "vitepress preview docs",
 		"cli": "src/cli/cli.ts",
 		"format": "prettier --write .",
 		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
@@ -94,6 +99,8 @@
 		"publish:local": "npm publish --registry http://localhost:4873",
 		"test": "NO_COLOR=1 vitest --run",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
+		"typedoc": "typedoc --docsRoot docs/reference",
+		"typedoc:watch": "npm run typedoc -- --watch",
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/pg -f"
 	},
 	"devDependencies": {

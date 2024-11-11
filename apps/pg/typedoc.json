@@ -2,12 +2,11 @@
 	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
 	"out": "docs/reference/api",
 	"entryPoints": [
-		"./internal/pg/src/api",
-		"./internal/migrator/src/api",
-		"./internal/configuration/src/api"
+		"./../../internal/pg/src/api",
+		"./../../internal/configuration/src/api"
 	],
 	"entryPointStrategy": "expand",
-	"tsconfig": "./tsconfig.typedoc.json",
+	"tsconfig": "./../../tsconfig.typedoc.json",
 	"exclude": ["**/dist/**/*.ts", "**/vitest.config.ts", "**/tests/**/*.ts"],
 	"excludeExternals": true,
 	"skipErrorChecking": true,

@@ -52,13 +52,6 @@
 	"scripts": {
 		"test": "NO_COLOR=1 vitest --run",
 		"test:watch": "NO_COLOR=1 vitest ${TEST_FILE} --pool=forks --watch --ui --open=false",
-		"typedoc": "typedoc --docsRoot docs/reference",
-		"typedoc:watch": "npm run typedoc -- --watch",
-		"postinstall": "patch-package",
-		"predocs": "npm run typedoc",
-		"docs": "npm-run-all --parallel docs:dev typedoc:watch",
-		"docs:dev": "vitepress dev docs",
-		"docs:build": "vitepress build docs",
-		"docs:preview": "vitepress preview docs"
+		"postinstall": "patch-package"
 	}
 }
