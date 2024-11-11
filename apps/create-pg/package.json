@@ -45,7 +45,7 @@
 	"devDependencies": {
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
-		"@types/node": "^20.12.2",
+		"@types/node": "^18.0.0",
 		"@types/nunjucks": "^3.2.6"
 	}
 }
