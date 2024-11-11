@@ -5,11 +5,12 @@
 	"type": "module",
 	"description": "",
 	"author": "Marcos Essindi <marcessindi@me.com>",
-	"homepage": "https://github.com/dunkelbraun/monolayer-pg/tree/main/packages/pg-zod",
-	"bugs": "https://github.com/dunkelbraun/monolayer-pg/issues",
+	"homepage": "https://github.com/monolayer/monorepo/tree/main/packages/pg-zod",
+	"bugs": "https://github.com/monolayer/monorepo/issues",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/dunkelbraun/monolayer-pg"
+		"url": "https://github.com/monolayer/monorepo",
+		"directory": "packages/pg-zod"
 	},
 	"main": "./dist/esm/index.js",
 	"module": "./dist/esm/index.js",
