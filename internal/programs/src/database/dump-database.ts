@@ -87,7 +87,6 @@ const dumpStructure = gen(function* () {
 		recursive: true,
 	});
 
-	console.log(dumpPath);
 	const dumpArgs = [
 		"--schema-only",
 		"--no-privileges",
