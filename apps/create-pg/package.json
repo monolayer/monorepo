@@ -12,7 +12,7 @@
 		"directory": "apps/create-pg"
 	},
 	"type": "module",
-	"module": "dist/src/bin/create-monolayer.js",
+	"module": "dist/src/bin/create-pg.js",
 	"bin": {
 		"create-pg": "dist/src/bin/create-pg.js"
 	},
