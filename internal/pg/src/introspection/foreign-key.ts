@@ -27,6 +27,14 @@ export async function dbForeignKeyConstraints(
 		definitions: Record<string, Record<string, ForeignKeyIntrospection>>;
 	}>(
 		(acc, result) => {
+			if (
+				(builderContextNew.skip[result.table] ?? []).includes(
+					result.conname ?? "",
+				)
+			) {
+				return acc;
+			}
+
 			const builderContext = {
 				camelCase: false,
 				tablesToRename: [],

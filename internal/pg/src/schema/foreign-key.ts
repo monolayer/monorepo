@@ -103,28 +103,14 @@ export function foreignKey<T extends string, C extends AnyPgTable>(
 }
 
 export function foreignKeyOptions<
-	T extends
-		| AnyPgForeignKey
-		| AnyPgSelfReferentialForeignKey
-		| AnyPgExternalForeignKey,
+	T extends AnyPgForeignKey | AnyPgSelfReferentialForeignKey,
 >(foreignKey: T) {
 	assertForeignKeyWithInfo(foreignKey);
 	return foreignKey.options;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isExternalForeignKey<T extends PgForeignKey<any, any>>(
-	foreignKey: T,
-) {
-	assertForeignKeyWithInfo(foreignKey);
-	return foreignKey.isExternal;
-}
-
 function assertForeignKeyWithInfo<
-	T extends
-		| AnyPgForeignKey
-		| AnyPgSelfReferentialForeignKey
-		| AnyPgExternalForeignKey,
+	T extends AnyPgForeignKey | AnyPgSelfReferentialForeignKey,
 >(
 	val: T,
 ): asserts val is T & {
@@ -273,68 +259,27 @@ export type PgExternalForeignKeyOptions = {
  * @group Schema Definition
  * @category Unmanaged
  */
-export function mappedForeignKey<T extends string, C extends string>(
-	columns: T[],
-	targetTable: C,
-	targetColumns: string[],
-) {
-	return new PgMappedForeignKey(columns, targetTable, targetColumns);
+export function mappedForeignKey(name: string, definition: string) {
+	return new PgMappedForeignKey(name, definition);
 }
 
 /**
  * @group Classes, Types, and Interfaces
  * @category Classes
  */
-export class PgMappedForeignKey<T extends string, C extends string> {
-	/**
-	 * @hidden
-	 */
-	protected isExternal: boolean;
-
-	/**
-	 * @hidden
-	 */
-	protected options: PgExternalForeignKeyOptions;
-
-	/**
-	 * @hidden
-	 */
+export class PgMappedForeignKey {
 	constructor(
 		/**
 		 * @hidden
 		 */
-		protected columns: T[],
-		targetTable: C,
-		targetColumns: string[],
-	) {
-		this.isExternal = true;
-		this.options = {
-			columns: this.columns,
-			targetTable,
-			targetColumns: targetColumns,
-			deleteRule: "NO ACTION",
-			updateRule: "NO ACTION",
-		};
-	}
+		public name: string,
+		public definition: string,
+	) {}
 
-	deleteRule(rule: Lowercase<ForeignKeyRule>) {
-		this.options.deleteRule = rule.toUpperCase() as ForeignKeyRule;
-		return this;
-	}
-
-	updateRule(rule: Lowercase<ForeignKeyRule>) {
-		this.options.updateRule = rule.toUpperCase() as ForeignKeyRule;
-		return this;
-	}
-
-	external() {
-		this.isExternal = true;
-		return this;
+	get options() {
+		return {};
 	}
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyPgExternalForeignKey = PgMappedForeignKey<any, any>;
 
 export type ForeignKeyRule =
 	| "CASCADE"

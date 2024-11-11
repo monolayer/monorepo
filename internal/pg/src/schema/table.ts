@@ -38,8 +38,7 @@ export type TableDefinition<T, PK extends string> = {
 					| PgForeignKey<keyof T, any>
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					| PgSelfReferentialForeignKey<keyof T, any>
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					| PgMappedForeignKey<keyof T, any>
+					| PgMappedForeignKey
 				>
 			: [];
 		unique?: keyof T extends string ? PgUnique<keyof T>[] : [];
@@ -87,23 +86,7 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 		 */
 		protected definition: TableDefinition<T, PK>,
 	) {
-		this.mapped = [
-			...(
-				(this.definition.constraints?.checks ?? []).filter((index) =>
-					index.constructor.name === "PgMappedCheck" ? true : false,
-				) as PgMappedCheck[]
-			).map((check) => check.name),
-			...(
-				(this.definition.indexes ?? []).filter((index) =>
-					index.constructor.name === "PgMappedIndex" ? true : false,
-				) as PgMappedIndex[]
-			).map((index) => index.name),
-			...(
-				(this.definition.triggers ?? []).filter((index) =>
-					index.constructor.name === "PgMappedTrigger" ? true : false,
-				) as PgMappedTrigger[]
-			).map((trigger) => trigger.name),
-		];
+		this.mapped = mappedObjects(this.definition);
 
 		this.columns = this.definition.columns || ({} as ColumnRecord);
 		const primaryKey = this.definition.constraints?.primaryKey;
@@ -121,13 +104,23 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 				}
 			}
 		}
+
 		this.definition.constraints = {
 			...this.definition.constraints,
 			checks: (this.definition.constraints?.checks ?? []).filter(
 				(check): check is PgCheck => (check instanceof PgCheck ? true : false),
 			),
+			foreignKeys: (this.definition.constraints?.foreignKeys ?? []).filter(
+				(foreignKey) =>
+					foreignKey.constructor.name === "PgMappedForeignKey" ? false : true,
+			) as keyof T extends string
+				? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+					(| PgForeignKey<string & keyof T, any>
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						| PgSelfReferentialForeignKey<string & keyof T, any>
+					)[]
+				: [],
 		};
-
 		this.definition.indexes = (this.definition.indexes ?? []).filter(
 			(index): index is PgIndex<string & keyof T> =>
 				index instanceof PgMappedIndex ? false : true,
@@ -143,3 +136,29 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyPgTable = PgTable<any, any>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mappedObjects<T>(definition: TableDefinition<T, any>) {
+	return [
+		...(
+			(definition.constraints?.foreignKeys ?? []).filter((foreignKey) =>
+				foreignKey.constructor.name === "PgMappedForeignKey" ? true : false,
+			) as PgMappedForeignKey[]
+		).map((foreignKey) => foreignKey.name),
+		...(
+			(definition.constraints?.checks ?? []).filter((index) =>
+				index.constructor.name === "PgMappedCheck" ? true : false,
+			) as PgMappedCheck[]
+		).map((check) => check.name),
+		...(
+			(definition.indexes ?? []).filter((index) =>
+				index.constructor.name === "PgMappedIndex" ? true : false,
+			) as PgMappedIndex[]
+		).map((index) => index.name),
+		...(
+			(definition.triggers ?? []).filter((index) =>
+				index.constructor.name === "PgMappedTrigger" ? true : false,
+			) as PgMappedTrigger[]
+		).map((trigger) => trigger.name),
+	];
+}

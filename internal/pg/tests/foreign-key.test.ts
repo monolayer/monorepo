@@ -1,7 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { tableInfo } from "~pg/introspection/table.js";
 import { integer } from "~pg/schema/column/data-types/integer.js";
-import { foreignKey, foreignKeyOptions } from "~pg/schema/foreign-key.js";
+import {
+	foreignKey,
+	foreignKeyOptions,
+	type AnyPgForeignKey,
+} from "~pg/schema/foreign-key.js";
 import { table } from "~pg/schema/table.js";
 
 describe("PgForeignKeyConstraint", () => {
@@ -23,7 +27,7 @@ describe("PgForeignKeyConstraint", () => {
 		const constraint =
 			tableInfo(documments).definition.constraints?.foreignKeys![0];
 
-		const options = foreignKeyOptions(constraint!);
+		const options = foreignKeyOptions(constraint! as AnyPgForeignKey);
 		expect(options.columns).toStrictEqual(["user_id"]);
 		expect(options.targetColumns).toStrictEqual(["id"]);
 		expect(options.targetTable).toBe(users);
@@ -53,7 +57,7 @@ describe("PgForeignKeyConstraint", () => {
 		const constraint =
 			tableInfo(documments).definition.constraints?.foreignKeys![0];
 
-		const options = foreignKeyOptions(constraint!);
+		const options = foreignKeyOptions(constraint! as AnyPgForeignKey);
 		expect(options.columns).toStrictEqual(["user_id"]);
 		expect(options.targetColumns).toStrictEqual(["id"]);
 		expect(options.targetTable).toBe(users);
@@ -73,7 +77,7 @@ describe("PgForeignKeyConstraint", () => {
 		});
 		const constraint = tableInfo(tree).definition.constraints?.foreignKeys![0];
 
-		const options = foreignKeyOptions(constraint!);
+		const options = foreignKeyOptions(constraint! as AnyPgForeignKey);
 		expect(options.columns).toStrictEqual(["parent_id"]);
 		expect(options.targetColumns).toStrictEqual(["node_id"]);
 		expect(options.deleteRule).toBe("NO ACTION");

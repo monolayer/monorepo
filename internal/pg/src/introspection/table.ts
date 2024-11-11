@@ -7,7 +7,6 @@ import type { ColumnInfo } from "~pg/schema/column/types.js";
 import {
 	type PgForeignKey,
 	foreignKeyOptions,
-	isExternalForeignKey,
 } from "~pg/schema/foreign-key.js";
 import { type AnySchema, Schema } from "~pg/schema/schema.js";
 import type { AnyPgTable, PgTable, TableDefinition } from "~pg/schema/table.js";
@@ -174,7 +173,7 @@ function foreignKeyInfo(
 ) {
 	return (foreignKeys || []).map<ForeignKeyIntrospection>((fk) => {
 		const options = foreignKeyOptions(fk);
-		const isExternal = isExternalForeignKey(fk);
+		const isExternal = false;
 		const foreignKeyTargetTable = options.targetTable ?? currentTable;
 		if (typeof foreignKeyTargetTable === "string") {
 			return {

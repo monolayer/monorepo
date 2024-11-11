@@ -34,7 +34,7 @@ import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 
 export const importSchema = Effect.gen(function* () {
-	const { introspection, databaseName, extensions } =
+	const { introspection, databaseName, extensions, schemaName } =
 		yield* introspectCustomRemote;
 
 	const extensionNames = Object.keys(extensions);
@@ -64,6 +64,7 @@ export const importSchema = Effect.gen(function* () {
 				columns: introspectedTable.columns,
 				primaryKey: tablePrimaryKey(tableName, primaryKeys),
 				foreignKeys: tableForeignKeys(
+					schemaName,
 					tableName,
 					introspection.foreignKeyDefinitions ?? {},
 				),
@@ -118,6 +119,7 @@ function tablePrimaryKey(tableName: string, primaryKeys: PrimaryKeyInfo) {
 }
 
 function tableForeignKeys(
+	schemaName: string,
 	tableName: string,
 	foreignKeys: Record<string, Record<string, ForeignKeyIntrospection>>,
 ) {
@@ -125,8 +127,14 @@ function tableForeignKeys(
 	if (Object.keys(tableForeignKeys).length === 0) {
 		return [];
 	}
-	const definitions = Object.values(tableForeignKeys);
-	return definitions.map((definition) => foreignKeyDefinition(definition));
+
+	return Object.entries(tableForeignKeys).reduce<string[]>(
+		(acc, [fkHash, definition]) => {
+			acc.push(foreignKeyDefinition(schemaName, tableName, fkHash, definition));
+			return acc;
+		},
+		[],
+	);
 }
 
 function tableUniqueConstraints(

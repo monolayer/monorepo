@@ -7,7 +7,12 @@ export function primaryKeyDefinition(rawColumns: string) {
 	return `primaryKey([${columns.map((column) => `"${column}"`).join(", ")}])`;
 }
 
-export function foreignKeyDefinition(foreignKey: ForeignKeyIntrospection) {
+export function foreignKeyDefinition(
+	schemaName: string,
+	tableName: string,
+	fkHash: string,
+	foreignKey: ForeignKeyIntrospection,
+) {
 	const columns = foreignKey.columns
 		.toSorted()
 		.map((column) => `"${column}"`)
@@ -17,11 +22,12 @@ export function foreignKeyDefinition(foreignKey: ForeignKeyIntrospection) {
 		.join(", ");
 	const targetTable = !foreignKey.targetTable.includes(".")
 		? foreignKey.targetTable
-		: `"${foreignKey.targetTable.split(".").at(1)}"`;
+		: `${foreignKey.targetTable.split(".").at(1)}`;
 	const deleteRule = foreignKey.deleteRule ?? "NO ACTION";
 	const updateRule = foreignKey.updateRule ?? "NO ACTION";
 
-	return `mappedForeignKey([${columns}], "${targetTable.replace(/"/g, "")}", [${targetColumns}]).deleteRule("${deleteRule}").updateRule("${updateRule}")`;
+	const definition = `FOREIGN KEY (${columns}) REFERENCES "${schemaName}"."${targetTable}" (${targetColumns}) ON DELETE ${deleteRule} ON UPDATE ${updateRule}`;
+	return `mappedForeignKey("${tableName}_${fkHash}_monolayer_fk", sql\`${definition}\`)`;
 }
 
 export function uniqueConstraintDefinition(unique: string) {
