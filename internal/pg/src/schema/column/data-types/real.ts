@@ -26,7 +26,7 @@ import { PgColumn } from "~pg/schema/column/column.js";
  *
  * @example
  * ```ts
- * import { schema, real, table } from "monolayer/pg";
+ * import { schema, real, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({

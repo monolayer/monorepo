@@ -16,7 +16,7 @@ import { IdentifiableColumn } from "~pg/schema/column/column.js";
  *
  * @example
  * ```ts
- * import { bigint, schema, table } from "monolayer/pg";
+ * import { bigint, schema, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({

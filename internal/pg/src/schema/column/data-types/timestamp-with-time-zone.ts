@@ -25,7 +25,7 @@ import type { DateTimePrecision } from "~pg/schema/column/types.js";
  *
  * @example
  * ```ts
- * import { schema, table, timestampWithTimeZone } from "monolayer/pg";
+ * import { schema, table, timestampWithTimeZone } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({
@@ -94,7 +94,7 @@ export function timestampWithTimeZone(precision?: DateTimePrecision) {
  *   - Date must be 4713 BC or later.
  * @example
  * ```ts
- * import { schema, table, timestamptz } from "monolayer/pg";
+ * import { schema, table, timestamptz } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({

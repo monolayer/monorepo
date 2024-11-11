@@ -19,7 +19,7 @@ import { SerialColumn } from "~pg/schema/column/column.js";
  *
  * @example
  * ```ts
- * import { bigserial, schema, table } from "monolayer/pg";
+ * import { bigserial, schema, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({

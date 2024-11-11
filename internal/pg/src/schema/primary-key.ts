@@ -10,7 +10,7 @@
  *
  * @example
  * ```ts
- * import { integer, schema, table } from "monolayer/pg";
+ * import { integer, schema, table } from "@monolayer/pg/schema";
  *
  * const dbSchema = schema({
  *   tables: {

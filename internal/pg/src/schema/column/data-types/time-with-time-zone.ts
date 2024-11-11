@@ -19,7 +19,7 @@ import type { DateTimePrecision } from "~pg/schema/column/types.js";
  *
  * @example
  * ```ts
- * import { schema, table, timeWithTimeZone } from "monolayer/pg";
+ * import { schema, table, timeWithTimeZone } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({
@@ -80,7 +80,7 @@ export function timeWithTimeZone(precision?: DateTimePrecision) {
  * - Non-values must be a valid string that matches a time format.
  * @example
  * ```ts
- * import { schema, table, timetz } from "monolayer/pg";
+ * import { schema, table, timetz } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({

@@ -19,7 +19,7 @@ import { MaxLengthColumn } from "~pg/schema/column/column.js";
  *
  * @example
  * ```ts
- * import { schema, table, varbit } from "monolayer/pg";
+ * import { schema, table, varbit } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({
@@ -80,7 +80,7 @@ export function varbit(maximumLength?: number) {
  * - Value cannot exceed `maximumLength`.
  * @example
  * ```ts
- * import { schema, table, varbit } from "monolayer/pg";
+ * import { schema, table, varbit } from "@monolayer/pg/schema";
  * const dbSchema = schema({
  *   tables: {
  *     example: table({

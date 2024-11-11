@@ -19,7 +19,7 @@ import { MaxLengthColumn } from "../column.js";
  *
  * @example
  * ```ts
- * import { characteVarying, schema, table } from "monolayer/pg";
+ * import { characteVarying, schema, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({
@@ -80,7 +80,7 @@ export function characterVarying(maximumLength?: number) {
  * - Value cannot exceed `maximumLength` (when specified).
  * @example
  * ```ts
- * import { characteVarying, schema, table } from "monolayer/pg";
+ * import { characteVarying, schema, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({

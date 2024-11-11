@@ -8,7 +8,7 @@ import type { AnyPgTable, PgTable } from "~pg/schema/table.js";
  *
  * @example
  * ```ts
- * import { integer, schema, table } from "monolayer/pg";
+ * import { integer, schema, table } from "@monolayer/pg/schema";
  *
  * const users = table({
  *  columns: {
@@ -37,7 +37,7 @@ import type { AnyPgTable, PgTable } from "~pg/schema/table.js";
  * You can also create self-referential foreign keys, by ommiting the target table:
  *
  * ```ts
- * import { integer, schema, table } from "monolayer/pg";
+ * import { integer, schema, table } from "@monolayer/pg/schema";
  *
  * const tree = table({
  *   columns: {

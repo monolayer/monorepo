@@ -15,7 +15,7 @@ import { PgColumn, valueWithHash } from "~pg/schema/column/column.js";
  *
  * @example
  * ```ts
- * import { uuid, schema, sql, table } from "monolayer/pg";
+ * import { uuid, schema, sql, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({

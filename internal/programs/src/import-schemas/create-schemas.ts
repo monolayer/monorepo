@@ -154,7 +154,7 @@ export function createSchema(
 }
 
 const schemaTemplate = `{%- if sqlUsed %}import { sql } from "kysely"{%- endif %};
-import { {{ columnImports | safe }} } from "monolayer/pg";
+import { {{ columnImports | safe }} } from "@monolayer/pg/schema";
 {%- if extensions.length > 0 %}
 
 export const {{ schemaModuleExtensionName }} = [

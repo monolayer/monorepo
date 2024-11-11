@@ -22,7 +22,7 @@ import { PgColumn, valueWithHash } from "~pg/schema/column/column.js";
  *
  * @example
  * ```ts
- * import { date, schema, table } from "monolayer/pg";
+ * import { date, schema, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({

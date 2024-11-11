@@ -16,7 +16,7 @@ import { MaxLengthColumn } from "~pg/schema/column/column.js";
  *
  * @example
  * ```ts
- * import { char, schema, table } from "monolayer/pg";
+ * import { char, schema, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({
@@ -75,7 +75,7 @@ export function character(maximumLength?: number) {
  * - String values cannot exceed `maximumLength`.
  * @example
  * ```ts
- * import { char, schema, table } from "monolayer/pg";
+ * import { char, schema, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({

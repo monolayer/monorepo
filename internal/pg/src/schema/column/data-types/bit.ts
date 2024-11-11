@@ -18,7 +18,7 @@ import { MaxLengthColumn } from "~pg/schema/column/column.js";
  *
  * @example
  * ```ts
- * import { bit, schema, table } from "monolayer/pg";
+ * import { bit, schema, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({

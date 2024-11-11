@@ -15,7 +15,7 @@ import { StringColumn } from "~pg/schema/column/column.js";
  *
  * @example
  * ```ts
- * import { macaddr8, schema, table } from "monolayer/pg";
+ * import { macaddr8, schema, table } from "@monolayer/pg/schema";
  * import { zodSchema } from "monolayer/zod";
  *
  * const dbSchema = schema({
