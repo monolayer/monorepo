@@ -7,7 +7,6 @@ import { dataUp } from "./data/up.js";
 
 export function dataCommands(program: Command) {
 	const data = program.command("data").description("Data commands");
-	console.log("HELLO");
 	dataApply(data);
 	dataUp(data);
 	dataDown(data);
