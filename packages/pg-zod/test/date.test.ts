@@ -4,7 +4,7 @@ import { primaryKey } from "@monorepo/pg/schema/primary-key.js";
 import { table } from "@monorepo/pg/schema/table.js";
 import { zodSchema } from "src/zod_schema.js";
 import { Equal, Expect } from "type-testing";
-import { describe, expect, test } from "vitest";
+import { assert, describe, expect, test } from "vitest";
 import z from "zod";
 
 describe("zod", () => {
@@ -480,6 +480,7 @@ describe("zod", () => {
 				.required();
 			const requiredSchemaResult = requiredSchema.safeParse({});
 			expect(requiredSchemaResult.success).toBe(false);
+			assert(requiredSchemaResult.success === false);
 			expect(requiredSchemaResult.error?.errors).toStrictEqual([
 				{
 					code: "custom",
@@ -491,7 +492,7 @@ describe("zod", () => {
 
 			type RequiredSchemaInput = z.input<typeof requiredSchema>;
 			type RequiredSchemaExpectedInput = {
-				id?: string | Date | null;
+				id: string | Date | null;
 			};
 			const requiredSchemaIsEqualInput: Expect<
 				Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>

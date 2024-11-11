@@ -12,7 +12,7 @@ import type { PgReal } from "@monorepo/pg/schema/column/data-types/real.js";
 import type { PgSerial } from "@monorepo/pg/schema/column/data-types/serial.js";
 import type { PgSmallint } from "@monorepo/pg/schema/column/data-types/smallint.js";
 import { z } from "zod";
-import { baseSchema, finishSchema } from "../common.js";
+import { baseSchema, finishIdenditySchema, finishSchema } from "../common.js";
 import { columnData, customIssue, nullableColumn } from "../helpers.js";
 
 export function isNumeric(
@@ -60,7 +60,11 @@ export function pgBigintSchema(column: PgBigInt | PgBigSerial) {
 		.pipe(z.bigint().min(-9223372036854775808n).max(9223372036854775807n))
 		.transform((val) => val.toString());
 
-	return finishSchema(!data._primaryKey && data.info.isNullable, base);
+	return finishIdenditySchema(
+		!data._primaryKey && data.info.isNullable,
+		data.info.identity,
+		base,
+	);
 }
 
 export function pgDoublePrecisionSchema(column: PgDoublePrecision) {
@@ -109,7 +113,11 @@ function integerSchema(
 	const isNullable = !data._primaryKey && data.info.isNullable === true;
 
 	const base = wholeNumberSchema(minimum, maximum, isNullable);
-	return finishSchema(isNullable, base);
+	return finishIdenditySchema(
+		!data._primaryKey && data.info.isNullable,
+		data.info.identity,
+		base,
+	);
 }
 
 function bigintSchema(isNullable: boolean) {

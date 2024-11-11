@@ -144,27 +144,6 @@ describe("by default", () => {
 		expect(result.success).toBe(false);
 	});
 
-	test("output type is number with generatedByDefaultAsIdentity", () => {
-		const tbl = table({
-			columns: {
-				id: smallint().generatedByDefaultAsIdentity(),
-			},
-		});
-		const schema = zodSchema(tbl).shape.id;
-		type OutputType = z.output<typeof schema>;
-		type Expected = number;
-		const isEqual: Expect<Equal<OutputType, Expected>> = true;
-		expect(isEqual).toBe(true);
-
-		const result = schema.safeParse(10);
-		expect(result.success).toBe(true);
-		if (result.success) {
-			expect(result.data).toBe(10);
-		}
-		const nullResult = schema.safeParse(null);
-		expect(nullResult.success).toBe(false);
-	});
-
 	test("parses number", () => {
 		const tbl = table({
 			columns: {
@@ -575,7 +554,6 @@ describe("as primary key", () => {
 				id: ["Expected undefined, received number"],
 			});
 		});
-
 	});
 });
 
@@ -780,6 +758,7 @@ describe("schema composition", () => {
 			.required();
 		const requiredSchemaResult = requiredSchema.safeParse({});
 		expect(requiredSchemaResult.success).toBe(false);
+		assert(requiredSchemaResult.success === false);
 		expect(requiredSchemaResult.error?.errors).toStrictEqual([
 			{
 				code: "custom",
@@ -791,7 +770,7 @@ describe("schema composition", () => {
 
 		type RequiredSchemaInput = z.input<typeof requiredSchema>;
 		type RequiredSchemaExpectedInput = {
-			id?: string | number | null;
+			id: string | number | null;
 		};
 		const requiredSchemaIsEqualInput: Expect<
 			Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>

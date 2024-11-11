@@ -3,10 +3,6 @@ import type {
 	PgColumn,
 	SerialColumn,
 } from "@monorepo/pg/schema/column/column.js";
-import type {
-	ZodSchemaObject,
-	ZodType,
-} from "@monorepo/pg/schema/inference.js";
 import type { PgTable } from "@monorepo/pg/schema/table.js";
 import { z } from "zod";
 import {
@@ -81,6 +77,7 @@ import {
 } from "./column-schemas/text-search.js";
 import { isUuid, pgUuidSchema } from "./column-schemas/uuid.js";
 import { isXMLColumn, xmlSchema } from "./column-schemas/xml.js";
+import type { ZodSchemaObject, ZodType } from "./inference.js";
 
 /**
  * Return a Zod schema for the table.

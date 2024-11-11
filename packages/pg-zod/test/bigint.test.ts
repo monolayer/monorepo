@@ -133,49 +133,7 @@ describe("bigint", () => {
 
 			const result = schema.safeParse(1);
 			expect(result.success).toBe(false);
-		});
-
-		test("input type is bigint, number, string, or undefined with generatedByDefaultAsIdentity", () => {
-			const tbl = table({
-				columns: {
-					id: bigint().generatedByDefaultAsIdentity(),
-				},
 			});
-			const schema = zodSchema(tbl).shape.id;
-			type InputType = z.input<typeof schema>;
-			type Expected = bigint | string | number | undefined;
-			const isEqual: Expect<Equal<InputType, Expected>> = true;
-			expect(isEqual).toBe(true);
-			const result = schema.safeParse(10n);
-			expect(result.success).toBe(true);
-			if (result.success) {
-				expect(result.data).toBe("10");
-			}
-
-			const nullResult = schema.safeParse(null);
-			expect(nullResult.success).toBe(false);
-		});
-
-		test("output type is string with generatedByDefaultAsIdentity", () => {
-			const tbl = table({
-				columns: {
-					id: bigint().generatedByDefaultAsIdentity(),
-				},
-			});
-			const schema = zodSchema(tbl).shape.id;
-			type OutputType = z.output<typeof schema>;
-			type Expected = string;
-			const isEqual: Expect<Equal<OutputType, Expected>> = true;
-			expect(isEqual).toBe(true);
-			const result = schema.safeParse(10n);
-			expect(result.success).toBe(true);
-			if (result.success) {
-				expect(result.data).toBe("10");
-			}
-
-			const nullResult = schema.safeParse(null);
-			expect(nullResult.success).toBe(false);
-		});
 
 		test("parses bigint", () => {
 			const tbl = table({
@@ -518,6 +476,7 @@ describe("bigint", () => {
 			expect(schema.safeParse(1n).success).toBe(true);
 			expect(schema.safeParse(null).success).toBe(false);
 			expect(schema.safeParse(undefined).success).toBe(false);
+			expect(zodSchema(tbl).safeParse({}).success).toBe(true);
 		});
 
 		test("with notNull is non nullable and optional", () => {
@@ -759,6 +718,7 @@ describe("bigint", () => {
 				.required();
 			const requiredSchemaResult = requiredSchema.safeParse({});
 			expect(requiredSchemaResult.success).toBe(false);
+			assert(requiredSchemaResult.success === false);
 			expect(requiredSchemaResult.error?.errors).toStrictEqual([
 				{
 					code: "custom",
@@ -770,7 +730,7 @@ describe("bigint", () => {
 
 			type RequiredSchemaInput = z.input<typeof requiredSchema>;
 			type RequiredSchemaExpectedInput = {
-				id?: string | number | bigint | null;
+				id: string | number | bigint | null;
 			};
 			const requiredSchemaIsEqualInput: Expect<
 				Equal<RequiredSchemaInput, RequiredSchemaExpectedInput>

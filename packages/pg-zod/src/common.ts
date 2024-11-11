@@ -20,6 +20,24 @@ export function finishSchema(isNullable: boolean, schema: z.ZodTypeAny) {
 	return schema;
 }
 
+export function finishIdenditySchema(
+	isNullable: boolean,
+	identity: "BY DEFAULT" | "ALWAYS" | null,
+	schema: z.ZodTypeAny,
+) {
+	if (isNullable) {
+		const optionalBase = schema.nullable().optional();
+		optionalBase._parse = rejectExplicitUndefinedParser(optionalBase);
+		return optionalBase;
+	}
+	if (identity === "BY DEFAULT") {
+		const optionalBase = schema.optional();
+		optionalBase._parse = rejectExplicitUndefinedParser(optionalBase);
+		return optionalBase;
+	}
+	return schema;
+}
+
 export function stringSchema(errorMessage: string, isNullable: boolean) {
 	return baseSchema(isNullable, errorMessage).superRefine((val, ctx) => {
 		if (typeof val !== "string") {
