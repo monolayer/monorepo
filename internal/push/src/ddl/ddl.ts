@@ -496,10 +496,6 @@ export function createCheckConstraint({
 	warnings,
 }: CreateCheckConstraintOptions) {
 	return async (db: AnyKysely) => {
-		console.log(
-			`Add check constraint \`${check.name}\` to \`${check.tableName}\` (not valid)`,
-			check.definition,
-		);
 		const query = new RawQuery(
 			sql.raw(
 				db
