@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"license": "MIT",
 	"type": "module",
-	"description": "",
+	"description": "Generate Zod schemas from @monolayer/pg schemas.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"homepage": "https://github.com/monolayer/monorepo/tree/main/packages/pg-zod",
 	"bugs": "https://github.com/monolayer/monorepo/issues",
