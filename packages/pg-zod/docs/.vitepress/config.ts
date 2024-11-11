@@ -3,6 +3,7 @@ import { defineConfig } from "vitepress";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
 	title: "pg-zod",
+	base: "/pg-zod-docs",
 	description: "A VitePress Site",
 	themeConfig: {
 		nav: [
