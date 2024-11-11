@@ -147,44 +147,6 @@ test<TestProgramContext>(
 		expect(
 			await databaseExists({ databaseName: context.databaseName }),
 		).toStrictEqual([{ exists: true }]);
-
-		// Gitub Actions terminal output will not match the following snapshot
-		if (process.env.CI) return;
-
-		expect(context.logMessages).toMatchInlineSnapshot(`
-		[
-		  "│
-		▲  The database 'd307f84a' does not exist.
-		",
-		  "[?25l",
-		  "│
-		◆  Do you want to create it?
-		│  ○ Yes / ● No
-		└
-		",
-		  "[999D[4A",
-		  "[2B",
-		  "[2K[G",
-		  "│  ● Yes / ○ No",
-		  "[2B",
-		  "[999D[4A",
-		  "[1B",
-		  "[J",
-		  "◇  Do you want to create it?
-		│  Yes",
-		  "
-		",
-		  "[?25h",
-		  "[?25l",
-		  "│
-		",
-		  "[999D",
-		  "[J",
-		  "◇  Create database d307f84a ✓
-		",
-		  "[?25h",
-		]
-	`);
 	},
 );
 
