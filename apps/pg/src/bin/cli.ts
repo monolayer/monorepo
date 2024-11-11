@@ -20,13 +20,11 @@ async function main() {
 
 	program.name("monolayer").version("1.0.0");
 
-	const packageName = "@monolayer/pg";
-
 	const db = dbCommand(program);
-	createDb(db, packageName);
-	dropDb(db, packageName);
-	importDb(db, packageName);
-	resetDb(db, packageName);
+	createDb(db);
+	dropDb(db);
+	importDb(db);
+	resetDb(db);
 	const push = program.command("push");
 	push.description("Push commands");
 	pushToDb(push);
