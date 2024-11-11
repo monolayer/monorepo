@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { ActionError } from "@monorepo/cli/errors.js";
 import { importConfig } from "@monorepo/configuration/import-config.js";
-import { importDatabases } from "@monorepo/configuration/import-databases.js";
+import { allDatabases } from "@monorepo/configuration/import-databases.js";
 import type { MonolayerConfiguration } from "@monorepo/configuration/monolayer.js";
 import { PgDatabase } from "@monorepo/pg/database.js";
 import dotenv from "dotenv";
@@ -113,24 +113,9 @@ export const importSchemaEnvironment = Effect.gen(function* () {
 	} satisfies AppEnv as AppEnv;
 });
 
-function allDatabases() {
-	return Effect.gen(function* () {
-		const databases = yield* importDatabases;
-		if (databases === undefined) {
-			return yield* Effect.fail(
-				new ActionError(
-					"Missing configurations",
-					"No configurations found. Check your databases.ts file.",
-				),
-			);
-		}
-		return databases;
-	});
-}
-
 export function databaseById(databaseId: string) {
 	return Effect.gen(function* () {
-		const databases = yield* allDatabases();
+		const databases = yield* allDatabases;
 		const database = databases[databaseId];
 		if (database === undefined) {
 			p.log.error(color.red("Error"));

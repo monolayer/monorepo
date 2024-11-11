@@ -1,15 +1,21 @@
+import { ActionError } from "@monorepo/cli/errors.js";
 import type { PgDatabase } from "@monorepo/pg/database.js";
 import { importFile } from "@monorepo/utils/import-file.js";
-import { pipe } from "effect";
-import { flatMap } from "effect/Effect";
+import { fail, gen } from "effect/Effect";
 import path from "path";
 import { importConfig } from "~configuration/import-config.js";
 
-export type DatabaseImport = Record<string, PgDatabase>;
+export const allDatabases = gen(function* () {
+	const config = yield* importConfig;
+	const databases = yield* importFile<Record<string, PgDatabase>>(
+		path.join(process.cwd(), config.databases),
+	);
+	return databases !== undefined ? databases : yield* missingDatabases;
+});
 
-export const importDatabases = pipe(
-	importConfig,
-	flatMap((config) =>
-		importFile<DatabaseImport>(path.join(process.cwd(), config.databases)),
+const missingDatabases = fail(
+	new ActionError(
+		"Missing configurations",
+		"No configurations found. Check your databases.ts file.",
 	),
 );
