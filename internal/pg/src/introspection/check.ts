@@ -46,6 +46,14 @@ export async function dbCheckConstraintInfo(
 		.orderBy("constraint_name asc")
 		.execute();
 	const transformedResults = results.reduce<CheckInfo>((acc, result) => {
+		if (
+			(builderContext.skip[result.table] ?? []).includes(
+				result.constraint_name ?? "",
+			)
+		) {
+			return acc;
+		}
+
 		const key = builderContext.external
 			? result.constraint_name
 			: result.constraint_name?.match(/^\w+_(\w+)_monolayer_chk$/)![1];

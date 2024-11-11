@@ -15,9 +15,11 @@ import {
 import { Effect } from "effect";
 import { gen } from "effect/Effect";
 import { dropSchemaChangeset as dropSchema } from "~push/changeset/generators/schema-drop.js";
-import { schemaChangeset } from "~push/changeset/schema-changeset.js";
+import {
+	schemaChangeset,
+	type SchemaIntrospection,
+} from "~push/changeset/schema-changeset.js";
 import type { CodeChangeset } from "~push/changeset/types/changeset.js";
-import type { SchemaIntrospection } from "~push/introspect-schema.js";
 import { createSchemaChangeset } from "./generators/schema-create.js";
 import { toSnakeCase } from "./introspection.js";
 import type { CreateSchemaDiff, DropSchemaDiff } from "./types/diff.js";

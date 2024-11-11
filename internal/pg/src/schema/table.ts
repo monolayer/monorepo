@@ -1,7 +1,7 @@
 import type { Simplify } from "kysely";
-import { PgCheck, type PgMappedCheck } from "~pg/schema/check.js";
+import { PgCheck, PgMappedCheck } from "~pg/schema/check.js";
 import type { ColumnRecord } from "~pg/schema/column.js";
-import type {
+import {
 	PgForeignKey,
 	PgMappedForeignKey,
 	PgSelfReferentialForeignKey,
@@ -76,12 +76,35 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 	/**
 	 * @hidden
 	 */
+	mapped: string[];
+
+	/**
+	 * @hidden
+	 */
 	constructor(
 		/**
 		 * @hidden
 		 */
 		protected definition: TableDefinition<T, PK>,
 	) {
+		this.mapped = [
+			...(
+				(this.definition.constraints?.checks ?? []).filter((index) =>
+					index.constructor.name === "PgMappedCheck" ? true : false,
+				) as PgMappedCheck[]
+			).map((check) => check.name),
+			...(
+				(this.definition.indexes ?? []).filter((index) =>
+					index.constructor.name === "PgMappedIndex" ? true : false,
+				) as PgMappedIndex[]
+			).map((index) => index.name),
+			...(
+				(this.definition.triggers ?? []).filter((index) =>
+					index.constructor.name === "PgMappedTrigger" ? true : false,
+				) as PgMappedTrigger[]
+			).map((trigger) => trigger.name),
+		];
+
 		this.columns = this.definition.columns || ({} as ColumnRecord);
 		const primaryKey = this.definition.constraints?.primaryKey;
 		if (primaryKey !== undefined) {

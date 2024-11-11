@@ -3,7 +3,6 @@ import {
 	introspectLocalSchema,
 	introspectRemoteSchema,
 } from "@monorepo/pg/introspection/introspection/introspection.js";
-import type { TablesToRename } from "@monorepo/pg/introspection/schema.js";
 import { Schema, type AnySchema } from "@monorepo/pg/schema/schema.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import {
@@ -12,17 +11,28 @@ import {
 } from "@monorepo/state/app-environment.js";
 import { Effect } from "effect";
 import type { SchemaMigrationInfo } from "~push/changeset/types/schema.js";
-import { type ColumnsToRename, type Renames } from "~push/state/rename.js";
+import { type Renames, type TableToRename } from "~push/state/rename.js";
 import { toSnakeCase } from "./changeset/introspection.js";
+import type { SchemaIntrospection } from "./changeset/schema-changeset.js";
 
 export function introspectSchema(schema: AnySchema, renames?: Renames) {
 	return Effect.gen(function* () {
 		const allSchemas = yield* appEnvironmentConfigurationSchemas;
 
 		const schemaName = Schema.info(schema).name || "public";
+
+		const skip = Object.entries(schema.tables ?? {}).reduce<
+			Record<string, string[]>
+		>((acc, [tableName, table]) => {
+			acc[previousName(tableName, schemaName, renames?.tables ?? [])] =
+				table.mapped;
+			return acc;
+		}, {});
+
 		const introspectedRemote = yield* introspectRemote(
 			schemaName,
 			{ tables: [], columns: {} },
+			skip,
 			false,
 		);
 
@@ -56,6 +66,7 @@ export function introspectSchema(schema: AnySchema, renames?: Renames) {
 function introspectRemote(
 	schemaName: string,
 	renames: Renames,
+	skip: Record<string, string[]>,
 	external = false,
 ) {
 	return Effect.gen(function* () {
@@ -69,6 +80,7 @@ function introspectRemote(
 				renames.tables !== undefined ? (renames.columns ?? {}) : {},
 			schemaName: currentSchemaName,
 			external,
+			skip,
 		};
 
 		return yield* Effect.tryPromise(() =>
@@ -97,17 +109,13 @@ function introspectLocal(
 	});
 }
 
-export type SchemaIntrospection = {
-	schema: AnySchema;
-	allSchemas: AnySchema[];
-	schemaName: string;
-	local: SchemaMigrationInfo;
-	remote: SchemaMigrationInfo;
-	tableDiff: {
-		added: string[];
-		deleted: string[];
-	};
-	tablesToRename: TablesToRename;
-	tablePriorities: string[];
-	columnsToRename: ColumnsToRename;
-};
+function previousName(
+	tableName: string,
+	schemaName: string,
+	renames: TableToRename[],
+) {
+	const renamed = renames.find(
+		(rename) => rename.schema === schemaName && rename.to === tableName,
+	);
+	return renamed ? renamed.from : tableName;
+}

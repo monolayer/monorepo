@@ -306,7 +306,6 @@ export interface CreateSchemaDiff extends DifferenceCreate {
 
 export function isCreateSchemaDiff(test: Difference) {
 	return gen(function* () {
-		console.log(test);
 		if (
 			test.type === "CREATE" &&
 			test.path[0] === "schemaInfo" &&

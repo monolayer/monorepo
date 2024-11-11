@@ -35,10 +35,8 @@ import {
 	type Renames,
 	type TableToRename,
 } from "~push/state/rename.js";
-import {
-	introspectSchema,
-	type SchemaIntrospection,
-} from "./introspect-schema.js";
+import type { SchemaIntrospection } from "./changeset/schema-changeset.js";
+import { introspectSchema } from "./introspect-schema.js";
 import {
 	PushMigrator,
 	type MigrationsByPhase,
@@ -132,10 +130,9 @@ function introspectDatabaseSchema(allSchemas: AnySchema[]) {
 		const spinner = ora();
 		spinner.start("Introspect database schema");
 		const start = performance.now();
+		const renames = yield* RenameState.current;
 		for (const schema of allSchemas) {
-			introspections.push(
-				yield* introspectSchema(schema, yield* RenameState.current),
-			);
+			introspections.push(yield* introspectSchema(schema, renames));
 		}
 		const end = performance.now();
 		spinner.succeed(

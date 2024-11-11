@@ -5,7 +5,7 @@ import { columnsToRenamePrompt } from "@monorepo/programs/columns-to-rename.js";
 import { Effect } from "effect";
 import { fail, gen, tryPromise } from "effect/Effect";
 import color from "picocolors";
-import type { SchemaIntrospection } from "~push/introspect-schema.js";
+import type { SchemaIntrospection } from "~push/changeset/schema-changeset.js";
 import type {
 	ColumnsToRename,
 	Renames,

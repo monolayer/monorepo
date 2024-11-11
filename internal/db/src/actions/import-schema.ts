@@ -257,6 +257,7 @@ const introspectCustomRemote = Effect.gen(function* () {
 		columnsToRename: {},
 		schemaName,
 		external: true,
+		skip: {},
 	};
 
 	const introspection = yield* Effect.tryPromise(() =>

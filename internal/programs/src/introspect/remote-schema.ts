@@ -21,6 +21,7 @@ export function introspectRemote(
 			columnsToRename: renames !== undefined ? renames.columnsToRename : {},
 			schemaName: currentSchemaName,
 			external,
+			skip: {},
 		};
 
 		return yield* Effect.tryPromise(() =>

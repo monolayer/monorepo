@@ -33,6 +33,7 @@ export async function dbForeignKeyConstraints(
 				columnsToRename: {},
 				schemaName: result.schemaName,
 				external: false,
+				skip: builderContextNew.skip,
 			};
 			const foreignKey = {
 				...result,
@@ -182,6 +183,7 @@ export function localForeignKeyConstraintInfoWithPreviousHash(
 						columnsToRename,
 						schemaName,
 						external: false,
+						skip: {},
 					});
 					const hash = builder.hash("previous");
 					acc[tableKey] = {
@@ -228,6 +230,7 @@ export function localForeignKeys(
 							columnsToRename,
 							schemaName,
 							external: false,
+							skip: {},
 						},
 					);
 					acc[tableKey] = {
@@ -259,6 +262,7 @@ export function remoteForeignKeys(schema: AnySchema, allSchemas: AnySchema[]) {
 						columnsToRename: {},
 						schemaName: schemaInfo.name,
 						external: false,
+						skip: {},
 					});
 					acc[tableName] = {
 						...acc[tableName],

@@ -79,6 +79,9 @@ export async function dbIndexInfo(
 		.orderBy("cls.relname")
 		.execute();
 	const indexInfo = results.reduce<IndexInfo>((acc, curr) => {
+		if ((builderContext.skip[curr.table] ?? []).includes(curr.name)) {
+			return acc;
+		}
 		const key = builderContext.external
 			? curr.name
 			: curr.name.match(/^\w+_(\w+)_monolayer_idx$/)![1];

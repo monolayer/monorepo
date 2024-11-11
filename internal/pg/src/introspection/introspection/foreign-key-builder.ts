@@ -22,6 +22,7 @@ export interface BuilderContext {
 	columnsToRename: ColumnsToRename;
 	schemaName: string;
 	external: boolean;
+	skip: Record<string, string[]>;
 }
 
 type BuildMode = "current" | "previous" | "preserve";

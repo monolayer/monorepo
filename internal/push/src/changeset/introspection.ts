@@ -196,6 +196,7 @@ export function foreignKeyDefinition(
 		camelCase,
 		schemaName: schemaName,
 		external: false,
+		skip: {},
 	});
 	return localBuilder.definition(mode);
 }

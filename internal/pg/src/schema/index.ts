@@ -158,7 +158,7 @@ export function mappedIndex(name: string, definition: Expression<any>) {
  */
 export class PgMappedIndex {
 	constructor(
-		protected name: string,
+		public name: string,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		protected expression: Expression<any>,
 	) {}

@@ -12,7 +12,7 @@ import { fileURLToPath } from "url";
 import type { RunnerTestSuite, TaskContext } from "vitest";
 import { afterEach, beforeEach, vi } from "vitest";
 import type { AnyKysely } from "~push/changeset/introspection.js";
-import type { SchemaIntrospection } from "~push/introspect-schema.js";
+import type { SchemaIntrospection } from "~push/changeset/schema-changeset.js";
 
 export interface TestContext {
 	adminDbClient: AnyKysely;

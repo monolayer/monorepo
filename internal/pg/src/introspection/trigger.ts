@@ -41,6 +41,14 @@ export async function dbTriggerInfo(
 		.execute();
 
 	const triggerInfo = results.reduce<TriggerInfo>((acc, curr) => {
+		if (
+			(builderContext.skip[curr.table_name] ?? []).includes(
+				curr.trigger_name ?? "",
+			)
+		) {
+			return acc;
+		}
+
 		const key = builderContext.external
 			? curr.trigger_name
 			: curr.trigger_name?.match(/^monolayer_trg_(\w+)$/)![1];
