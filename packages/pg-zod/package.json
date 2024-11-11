@@ -5,7 +5,7 @@
 	"type": "module",
 	"description": "Generate Zod schemas from @monolayer/pg schemas.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
-	"homepage": "https://github.com/monolayer/monorepo/tree/main/packages/pg-zod",
+	"homepage": "https://monolayer.github.io/pg-zod-docs",
 	"bugs": "https://github.com/monolayer/monorepo/issues",
 	"repository": {
 		"type": "git",
