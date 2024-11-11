@@ -117,7 +117,6 @@ function allDatabases() {
 	return Effect.gen(function* () {
 		const databases = yield* importDatabases;
 		if (databases === undefined) {
-			p.log.error(color.red("Error"));
 			return yield* Effect.fail(
 				new ActionError(
 					"Missing configurations",
