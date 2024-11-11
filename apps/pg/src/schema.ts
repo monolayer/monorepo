@@ -1,9 +1,9 @@
 export { defineDatabase, type PgDatabase } from "@monorepo/pg/database.js";
 export {
 	check,
-	unmanagedCheck,
+	mappedCheck,
 	type PgCheck,
-	type PgUnmanagedCheck,
+	type PgMappedCheck,
 } from "@monorepo/pg/schema/check.js";
 export {
 	columnWithType,
@@ -106,15 +106,15 @@ export { xml, type PgXML } from "@monorepo/pg/schema/column/data-types/xml.js";
 export { PgExtension, extension } from "@monorepo/pg/schema/extension.js";
 export {
 	foreignKey,
-	unmanagedForeignKey,
+	mappedForeignKey,
 	type PgForeignKey,
-	type PgUnmanagedForeignKey,
+	type PgMappedForeignKey,
 } from "@monorepo/pg/schema/foreign-key.js";
 export {
 	index,
-	unmanagedIndex,
+	mappedIndex,
 	type PgIndex,
-	type PgUnmanagedIndex,
+	type PgMappedIndex,
 } from "@monorepo/pg/schema/index.js";
 export {
 	primaryKey,
@@ -128,10 +128,10 @@ export {
 	type TableDefinition as TableSchema,
 } from "@monorepo/pg/schema/table.js";
 export {
+	mappedTrigger,
 	trigger,
-	unmanagedTrigger,
+	type PgMappedTrigger,
 	type PgTrigger,
-	type PgUnmanagedTrigger,
 	type TriggerEvent,
 	type TriggerFiringTime,
 	type TriggerOptions,
