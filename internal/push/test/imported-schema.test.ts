@@ -1,15 +1,15 @@
-import { unmanagedCheck } from "@monorepo/pg/schema/check.js";
+import { mappedCheck } from "@monorepo/pg/schema/check.js";
 import { columnWithType } from "@monorepo/pg/schema/column/column-with-type.js";
 import { integer } from "@monorepo/pg/schema/column/data-types/integer.js";
 import { numeric } from "@monorepo/pg/schema/column/data-types/numeric.js";
 import { text } from "@monorepo/pg/schema/column/data-types/text.js";
 import { timestampWithTimeZone } from "@monorepo/pg/schema/column/data-types/timestamp-with-time-zone.js";
 import { foreignKey } from "@monorepo/pg/schema/foreign-key.js";
-import { unmanagedIndex } from "@monorepo/pg/schema/index.js";
+import { mappedIndex } from "@monorepo/pg/schema/index.js";
 import { primaryKey } from "@monorepo/pg/schema/primary-key.js";
 import { schema } from "@monorepo/pg/schema/schema.js";
 import { table } from "@monorepo/pg/schema/table.js";
-import { unmanagedTrigger } from "@monorepo/pg/schema/trigger.js";
+import { mappedTrigger } from "@monorepo/pg/schema/trigger.js";
 import { unique } from "@monorepo/pg/schema/unique.js";
 import { sql } from "kysely";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
@@ -42,7 +42,7 @@ describe.skip("Imported Schema test", () => {
 				primaryKey: primaryKey(["id"]),
 			},
 			triggers: [
-				unmanagedTrigger(
+				mappedTrigger(
 					"update_timestamp",
 					sql`CREATE TRIGGER update_timestamp BEFORE UPDATE ON public.lamba FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')`,
 				),
@@ -77,14 +77,11 @@ describe.skip("Imported Schema test", () => {
 				],
 				unique: [unique(["order_id"]).external()],
 				checks: [
-					unmanagedCheck(
-						"quantity_check",
-						sql`CHECK ((quantity > 0)) NOT VALID`,
-					),
+					mappedCheck("quantity_check", sql`CHECK ((quantity > 0)) NOT VALID`),
 				],
 			},
 			indexes: [
-				unmanagedIndex(
+				mappedIndex(
 					"order_id_idx",
 					sql`CREATE INDEX order_id_idx ON public.orders USING btree (order_id) WITH (deduplicate_items='true')`,
 				),
@@ -114,7 +111,7 @@ describe.skip("Imported Schema test", () => {
 				primaryKey: primaryKey(["id"]),
 			},
 			triggers: [
-				unmanagedTrigger(
+				mappedTrigger(
 					"update_timestamp",
 					sql`CREATE TRIGGER update_timestamp BEFORE UPDATE ON public.lamba FOR EACH ROW EXECUTE FUNCTION moddatetime('updated_at')`,
 				),
@@ -149,14 +146,11 @@ describe.skip("Imported Schema test", () => {
 				],
 				unique: [unique(["order_id"]).external()],
 				checks: [
-					unmanagedCheck(
-						"quantity_check",
-						sql`CHECK ((quantity > 0)) NOT VALID`,
-					),
+					mappedCheck("quantity_check", sql`CHECK ((quantity > 0)) NOT VALID`),
 				],
 			},
 			indexes: [
-				unmanagedIndex(
+				mappedIndex(
 					"order_id_idx",
 					sql`CREATE INDEX order_id_idx ON public.orders USING btree (order_id) WITH (deduplicate_items='true')`,
 				),

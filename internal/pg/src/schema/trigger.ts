@@ -138,15 +138,15 @@ export class PgTrigger<T extends string | never> {
  * @category Unmanaged
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function unmanagedTrigger(name: string, definition: Expression<any>) {
-	return new PgUnmanagedTrigger(name, definition);
+export function mappedTrigger(name: string, definition: Expression<any>) {
+	return new PgMappedTrigger(name, definition);
 }
 
 /**
  * @group Classes, Types, and Interfaces
  * @category Classes
  */
-export class PgUnmanagedTrigger {
+export class PgMappedTrigger {
 	constructor(
 		protected name: string,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any

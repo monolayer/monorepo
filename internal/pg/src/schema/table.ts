@@ -1,15 +1,15 @@
 import type { Simplify } from "kysely";
-import { PgCheck, type PgUnmanagedCheck } from "~pg/schema/check.js";
+import { PgCheck, type PgMappedCheck } from "~pg/schema/check.js";
 import type { ColumnRecord } from "~pg/schema/column.js";
 import type {
 	PgForeignKey,
+	PgMappedForeignKey,
 	PgSelfReferentialForeignKey,
-	PgUnmanagedForeignKey,
 } from "~pg/schema/foreign-key.js";
-import { type PgIndex, PgUnmanagedIndex } from "~pg/schema/index.js";
+import { type PgIndex, PgMappedIndex } from "~pg/schema/index.js";
 import type { InferColumnTypes } from "~pg/schema/inference.js";
 import type { PgPrimaryKey } from "~pg/schema/primary-key.js";
-import { type PgTrigger, PgUnmanagedTrigger } from "~pg/schema/trigger.js";
+import { PgMappedTrigger, type PgTrigger } from "~pg/schema/trigger.js";
 import type { PgUnique } from "~pg/schema/unique.js";
 
 /**
@@ -19,12 +19,12 @@ import type { PgUnique } from "~pg/schema/unique.js";
 export type TableDefinition<T, PK extends string> = {
 	columns?: T extends ColumnRecord ? T : never;
 	indexes?: keyof T extends string
-		? (PgIndex<keyof T> | PgUnmanagedIndex)[]
+		? (PgIndex<keyof T> | PgMappedIndex)[]
 		: never;
 	triggers?: Array<
 		| PgTrigger<keyof T extends string ? keyof T : never>
 		| PgTrigger<never>
-		| PgUnmanagedTrigger
+		| PgMappedTrigger
 	>;
 	constraints?: {
 		primaryKey?: keyof T extends string
@@ -39,11 +39,11 @@ export type TableDefinition<T, PK extends string> = {
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					| PgSelfReferentialForeignKey<keyof T, any>
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					| PgUnmanagedForeignKey<keyof T, any>
+					| PgMappedForeignKey<keyof T, any>
 				>
 			: [];
 		unique?: keyof T extends string ? PgUnique<keyof T>[] : [];
-		checks?: (PgCheck | PgUnmanagedCheck)[];
+		checks?: (PgCheck | PgMappedCheck)[];
 	};
 };
 
@@ -107,13 +107,13 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 
 		this.definition.indexes = (this.definition.indexes ?? []).filter(
 			(index): index is PgIndex<string & keyof T> =>
-				index instanceof PgUnmanagedIndex ? false : true,
+				index instanceof PgMappedIndex ? false : true,
 		) as keyof T extends string ? PgIndex<keyof T>[] : never;
 
 		this.definition.triggers = (this.definition.triggers ?? []).filter(
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			(index): index is PgTrigger<any> =>
-				index instanceof PgUnmanagedTrigger ? false : true,
+				index instanceof PgMappedTrigger ? false : true,
 		);
 	}
 }

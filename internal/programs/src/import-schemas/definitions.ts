@@ -21,7 +21,7 @@ export function foreignKeyDefinition(foreignKey: ForeignKeyIntrospection) {
 	const deleteRule = foreignKey.deleteRule ?? "NO ACTION";
 	const updateRule = foreignKey.updateRule ?? "NO ACTION";
 
-	return `unmanagedForeignKey([${columns}], "${targetTable.replace(/"/g, "")}", [${targetColumns}]).deleteRule("${deleteRule}").updateRule("${updateRule}")`;
+	return `mappedForeignKey([${columns}], "${targetTable.replace(/"/g, "")}", [${targetColumns}]).deleteRule("${deleteRule}").updateRule("${updateRule}")`;
 }
 
 export function uniqueConstraintDefinition(unique: string) {
@@ -44,13 +44,13 @@ export function uniqueConstraintDefinition(unique: string) {
 }
 
 export function checkConstraintDefinition(name: string, check: string) {
-	return `unmanagedCheck("${name}", sql\`${check}\`)`;
+	return `mappedCheck("${name}", sql\`${check}\`)`;
 }
 
 export function indexDefinition(name: string, index: string) {
-	return `unmanagedIndex("${name}", sql\`${index}\`)`;
+	return `mappedIndex("${name}", sql\`${index}\`)`;
 }
 
 export function triggerDefinition(name: string, trigger: string) {
-	return `unmanagedTrigger("${name}", sql\`${trigger}\`)`;
+	return `mappedTrigger("${name}", sql\`${trigger}\`)`;
 }

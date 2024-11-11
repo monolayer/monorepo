@@ -148,15 +148,15 @@ type ShallowRecord<K extends keyof any, T> = DrainOuterGeneric<{
  * @category Unmanaged
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function unmanagedIndex(name: string, definition: Expression<any>) {
-	return new PgUnmanagedIndex(name, definition);
+export function mappedIndex(name: string, definition: Expression<any>) {
+	return new PgMappedIndex(name, definition);
 }
 
 /**
  * @group Classes, Types, and Interfaces
  * @category Classes
  */
-export class PgUnmanagedIndex {
+export class PgMappedIndex {
 	constructor(
 		protected name: string,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -9,9 +9,9 @@ export {
 } from "~pg/database.js";
 export {
 	check,
-	unmanagedCheck,
+	mappedCheck,
 	type PgCheck,
-	type PgUnmanagedCheck,
+	type PgMappedCheck,
 } from "~pg/schema/check.js";
 export {
 	columnWithType,
@@ -81,25 +81,25 @@ export { xml, type PgXML } from "~pg/schema/column/data-types/xml.js";
 export { PgExtension, extension } from "~pg/schema/extension.js";
 export {
 	foreignKey,
-	unmanagedForeignKey,
+	mappedForeignKey,
 	type PgForeignKey,
-	type PgUnmanagedForeignKey,
+	type PgMappedForeignKey,
 } from "~pg/schema/foreign-key.js";
 export {
 	index,
-	unmanagedIndex,
+	mappedIndex,
 	type PgIndex,
-	type PgUnmanagedIndex,
+	type PgMappedIndex,
 } from "~pg/schema/index.js";
 export { primaryKey, type PgPrimaryKey } from "~pg/schema/primary-key.js";
 export { type PgRawConstraint } from "~pg/schema/raw-constraint.js";
 export { schema, type DatabaseSchema, type Schema } from "~pg/schema/schema.js";
 export { table, type PgTable, type TableDefinition } from "~pg/schema/table.js";
 export {
+	mappedTrigger,
 	trigger,
-	unmanagedTrigger,
+	type PgMappedTrigger,
 	type PgTrigger,
-	type PgUnmanagedTrigger,
 	type TriggerEvent,
 	type TriggerFiringTime,
 	type TriggerOptions,

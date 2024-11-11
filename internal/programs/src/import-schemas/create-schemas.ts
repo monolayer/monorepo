@@ -76,19 +76,19 @@ export function createSchema(
 			imports.add("primaryKey");
 		}
 		if (foreignKeys.length > 0) {
-			imports.add("unmanagedForeignKey");
+			imports.add("mappedForeignKey");
 		}
 		if (uniqueConstraints.length > 0) {
 			imports.add("unique");
 		}
 		if (checkConstraints.length > 0) {
-			imports.add("unmanagedCheck");
+			imports.add("mappedCheck");
 		}
 		if (indexes.length > 0) {
-			imports.add("unmanagedIndex");
+			imports.add("mappedIndex");
 		}
 		if (triggers.length > 0) {
-			imports.add("unmanagedTrigger");
+			imports.add("mappedTrigger");
 		}
 
 		const templateVars = {

@@ -48,12 +48,12 @@ export function assertCheckWithInfo<T extends PgCheck>(
  * @group Schema Definition
  * @category Unmanaged
  */
-export function unmanagedCheck(name: string, expression: Expression<any>) {
-	return new PgUnmanagedCheck(name, expression);
+export function mappedCheck(name: string, expression: Expression<any>) {
+	return new PgMappedCheck(name, expression);
 }
 
 /**
  * @group Classes, Types, and Interfaces
  * @category Classes
  */
-export class PgUnmanagedCheck extends PgRawConstraint {}
+export class PgMappedCheck extends PgRawConstraint {}

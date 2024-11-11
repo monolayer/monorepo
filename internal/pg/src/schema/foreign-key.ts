@@ -273,19 +273,19 @@ export type PgExternalForeignKeyOptions = {
  * @group Schema Definition
  * @category Unmanaged
  */
-export function unmanagedForeignKey<T extends string, C extends string>(
+export function mappedForeignKey<T extends string, C extends string>(
 	columns: T[],
 	targetTable: C,
 	targetColumns: string[],
 ) {
-	return new PgUnmanagedForeignKey(columns, targetTable, targetColumns);
+	return new PgMappedForeignKey(columns, targetTable, targetColumns);
 }
 
 /**
  * @group Classes, Types, and Interfaces
  * @category Classes
  */
-export class PgUnmanagedForeignKey<T extends string, C extends string> {
+export class PgMappedForeignKey<T extends string, C extends string> {
 	/**
 	 * @hidden
 	 */
@@ -334,7 +334,7 @@ export class PgUnmanagedForeignKey<T extends string, C extends string> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyPgExternalForeignKey = PgUnmanagedForeignKey<any, any>;
+export type AnyPgExternalForeignKey = PgMappedForeignKey<any, any>;
 
 export type ForeignKeyRule =
 	| "CASCADE"
