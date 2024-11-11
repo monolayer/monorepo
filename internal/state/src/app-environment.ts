@@ -1,12 +1,15 @@
 import * as p from "@clack/prompts";
 import { ActionError } from "@monorepo/cli/errors.js";
-import { importConfig } from "@monorepo/configuration/import-config.js";
-import { allDatabases } from "@monorepo/configuration/import-databases.js";
-import type { MonolayerConfiguration } from "@monorepo/configuration/monolayer.js";
+import {
+	MonolayerConfig,
+	MonolayerConfiguration,
+} from "@monorepo/configuration/monolayer.js";
 import { PgDatabase } from "@monorepo/pg/database.js";
+import { importDefault } from "@monorepo/utils/import-default.js";
+import { importFile } from "@monorepo/utils/import-file.js";
 import dotenv from "dotenv";
 import { Context, Effect, Layer, Ref } from "effect";
-import { gen } from "effect/Effect";
+import { fail, gen } from "effect/Effect";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
@@ -139,3 +142,38 @@ export const currentWorkingDir = gen(function* () {
 	const appEnv = yield* appEnvironment;
 	return appEnv.currentWorkingDir ?? cwd();
 });
+
+const allDatabases = gen(function* () {
+	const config = yield* importConfig;
+	const databases = yield* importFile<Record<string, PgDatabase>>(
+		path.join(process.cwd(), config.databases),
+	);
+	return databases !== undefined ? databases : yield* missingDatabases;
+});
+
+const missingDatabases = fail(
+	new ActionError(
+		"Missing configurations",
+		"No configurations found. Check your databases.ts file.",
+	),
+);
+
+const importConfig = gen(function* () {
+	const configPath = path.join(process.cwd(), "monolayer.config.ts");
+	const imported = yield* importDefault(configPath);
+	return isMonolayerConfig(imported) ? imported : yield* missingConfiguration;
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isMonolayerConfig(def: any): def is MonolayerConfig {
+	return (
+		def !== undefined && def.constructor instanceof MonolayerConfig.constructor
+	);
+}
+
+const missingConfiguration = fail(
+	new ActionError(
+		"Missing configuration",
+		`Could not find the configuration in \`monolayer.config.ts\`.`,
+	),
+);
