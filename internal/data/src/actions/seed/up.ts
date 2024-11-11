@@ -12,8 +12,8 @@ import { cwd, exit } from "node:process";
 import ora from "ora";
 import color from "picocolors";
 import prompts from "prompts";
+import { dataActionWithEffect } from "~data/programs/data-action.js";
 import { databaseDestinationFolder } from "~data/programs/destination-folder.js";
-import { dataActionWithEffect } from "../data.js";
 
 export function seedUp(program: Command) {
 	commandWithDefaultOptions({
@@ -58,6 +58,7 @@ export function seedUp(program: Command) {
 }
 
 interface SeedFile {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	seed: (db: Kysely<any>) => Promise<void>;
 }
 

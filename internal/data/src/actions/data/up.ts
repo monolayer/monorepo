@@ -5,8 +5,11 @@ import { exit } from "node:process";
 import color from "picocolors";
 import prompts from "prompts";
 import { dataMigrator } from "~data/migrator/data-migrator.js";
+import {
+	dataAction,
+	dataActionWithEffect,
+} from "~data/programs/data-action.js";
 import { checkMigrationExists } from "~data/programs/migration-exists.js";
-import { dataAction, dataActionWithEffect } from "../data.js";
 
 export function dataUp(program: Command) {
 	dataAction(program, "up")

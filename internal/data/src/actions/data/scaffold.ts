@@ -5,9 +5,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import ora from "ora";
 import prompts from "prompts";
+import {
+	dataAction,
+	dataActionWithEffect,
+} from "~data/programs/data-action.js";
 import { databaseDestinationFolder } from "~data/programs/destination-folder.js";
 import { DataCLIState } from "~data/state.js";
-import { dataAction, dataActionWithEffect } from "../data.js";
 
 export function dataScaffold(program: Command) {
 	dataAction(program, "scaffold")

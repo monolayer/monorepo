@@ -3,9 +3,12 @@ import { all, gen } from "effect/Effect";
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import ora from "ora";
+import {
+	dataAction,
+	dataActionWithEffect,
+} from "~data/programs/data-action.js";
 import { databaseDestinationFolder } from "~data/programs/destination-folder.js";
 import { DataCLIState } from "~data/state.js";
-import { dataAction, dataActionWithEffect } from "../data.js";
 
 export function seedScaffold(program: Command) {
 	dataAction(program, "scaffold")

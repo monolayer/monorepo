@@ -6,8 +6,11 @@ import path from "node:path";
 import { cwd } from "node:process";
 import color from "picocolors";
 import { dataMigrator } from "~data/migrator/data-migrator.js";
+import {
+	dataAction,
+	dataActionWithEffect,
+} from "~data/programs/data-action.js";
 import { databaseDestinationFolder } from "~data/programs/destination-folder.js";
-import { dataAction, dataActionWithEffect } from "../data.js";
 
 export function dataApply(program: Command) {
 	dataAction(program, "apply")

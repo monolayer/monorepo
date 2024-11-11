@@ -3,7 +3,10 @@ import { gen, succeed, tryPromise } from "effect/Effect";
 import type { MigrationInfo } from "kysely";
 import color from "picocolors";
 import { dataMigrator } from "~data/migrator/data-migrator.js";
-import { dataAction, dataActionWithEffect } from "../data.js";
+import {
+	dataAction,
+	dataActionWithEffect,
+} from "~data/programs/data-action.js";
 
 export function dataStatus(program: Command) {
 	dataAction(program, "status")
@@ -24,6 +27,7 @@ export function dataStatus(program: Command) {
 }
 
 function printStatus(migrationStatus: MigrationInfo) {
+	// eslint-disable-next-line require-yield
 	return gen(function* () {
 		const statuses = {
 			applied: "applied",
