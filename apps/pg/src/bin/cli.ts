@@ -29,7 +29,7 @@ async function main() {
 	resetDb(db, packageName);
 	const push = program.command("push");
 	push.description("Push commands");
-	pushToDb(push, packageName);
+	pushToDb(push);
 	syncDb(push);
 	dataCLI(program);
 
