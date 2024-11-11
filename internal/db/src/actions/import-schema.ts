@@ -1,6 +1,4 @@
-/* eslint-disable max-lines */
 import * as p from "@clack/prompts";
-import { PgDatabase } from "@monorepo/pg/database.js";
 import type { EnumInfo } from "@monorepo/pg/introspection/enum.js";
 import { dbExtensionInfo } from "@monorepo/pg/introspection/extension.js";
 import type { IndexInfo } from "@monorepo/pg/introspection/index.js";
@@ -14,7 +12,6 @@ import type {
 } from "@monorepo/pg/introspection/schema.js";
 import type { ForeignKeyIntrospection } from "@monorepo/pg/introspection/table.js";
 import type { TriggerInfo } from "@monorepo/pg/introspection/trigger.js";
-import { dumpDatabaseWithoutMigrationTables } from "@monorepo/programs/database/dump-database.js";
 import {
 	createSchema,
 	type ImportedSchema,
@@ -27,28 +24,17 @@ import {
 	triggerDefinition,
 	uniqueConstraintDefinition,
 } from "@monorepo/programs/import-schemas/definitions.js";
-import {
-	AppEnvironment,
-	appEnvironment,
-	type AppEnv,
-} from "@monorepo/state/app-environment.js";
-import { PackageNameState } from "@monorepo/state/package-name.js";
-import { createFile } from "@monorepo/utils/create-file.js";
-import { dateStringWithMilliseconds } from "@monorepo/utils/date-string.js";
-import { camelCase, constantCase } from "case-anything";
-import { Effect, Ref } from "effect";
+import { appEnvironment } from "@monorepo/state/app-environment.js";
+import { camelCase } from "case-anything";
+import { Effect } from "effect";
 import { succeed } from "effect/Effect";
-import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "fs";
 import { Kysely, PostgresDialect } from "kysely";
-import { cwd } from "node:process";
-import nunjucks from "nunjucks";
-import path from "path";
 import pg from "pg";
 import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
 
 export const importSchema = Effect.gen(function* () {
-	const { introspection, databaseName, connectionString, extensions } =
+	const { introspection, databaseName, extensions } =
 		yield* introspectCustomRemote;
 
 	const extensionNames = Object.keys(extensions);
@@ -117,29 +103,8 @@ export const importSchema = Effect.gen(function* () {
 		`Configuration ${schemaImport.configuration.name} added to ./${schemaImport.configuration.path}`,
 	);
 
-	yield* generateFirstMigration(
-		schemaImport.configuration.name,
-		connectionString,
-	);
 	return yield* Effect.succeed(true);
 });
-
-function dumpDatabase(configurationName: string, connectionString: string) {
-	return Effect.gen(function* () {
-		mkdirSync(migrationsFolder(configurationName), { recursive: true });
-
-		const dumpEnv: AppEnv = {
-			currentDatabase: new PgDatabase({ id: "default", schemas: [] }),
-			databases: (yield* appEnvironment).databases,
-		};
-
-		process.env[`${constantCase(configurationName)}_DATABASE_URL`] =
-			connectionString;
-		const state = yield* AppEnvironment;
-		yield* Ref.update(state, () => dumpEnv);
-		return yield* dumpDatabaseWithoutMigrationTables;
-	});
-}
 
 function tablePrimaryKey(tableName: string, primaryKeys: PrimaryKeyInfo) {
 	const tablePrimaryKey = primaryKeys[tableName] || {};
@@ -317,67 +282,4 @@ function kyselyWithConnectionString(connection_string: string) {
 		dialect: new PostgresDialect({ pool: pgPool }),
 	});
 	return succeed(kysely);
-}
-
-function generateFirstMigration(
-	configurationName: string,
-	connectionString: string,
-) {
-	return Effect.gen(function* () {
-		const dumpPath = yield* dumpDatabase(configurationName, connectionString);
-		const name = `${dateStringWithMilliseconds()}-initial-structure`;
-
-		const folder = migrationsFolder(configurationName);
-		const migrationPath = path.join(folder, `${name}.ts`);
-		const initialStructurePath = path.join(folder, `${name}.sql`);
-		renameSync(dumpPath, initialStructurePath);
-		removeSelectConfigLine(initialStructurePath);
-		rmSync(path.dirname(dumpPath), { recursive: true, force: true });
-		const content = nunjucks.compile(migrationTemplate).render({
-			name,
-			initialStructurePath,
-			packageName: (yield* PackageNameState.current).name,
-		});
-		createFile(migrationPath, content, true);
-	});
-}
-
-function removeSelectConfigLine(filePath: string): void {
-	const fileContent = readFileSync(filePath, "utf-8");
-	const lineToRemove =
-		"SELECT pg_catalog.set_config('search_path', '', false);";
-	const cleanedContent = fileContent
-		.split("\n")
-		.filter((line) => line.trim() !== lineToRemove)
-		.join("\n");
-	writeFileSync(filePath, cleanedContent, "utf-8");
-}
-
-const migrationTemplate = `import { Kysely, sql } from "kysely";
-import { readFileSync } from "fs";
-import { type Migration } from "{{ packageName }}/migration";
-
-export const migration: Migration = {
-  name: "{{ name }}",
-	transaction: true,
-	scaffold: false,
-};
-
-export async function up(db: Kysely<any>): Promise<void> {
-	if (process.env.SKIP_STRUCTURE_LOAD === "true") {
-    return;
-  } else {
-    const initialStructure = readFileSync(
-      "{{ initialStructurePath }}",
-      "utf-8",
-    );
-    await sql.raw(initialStructure).execute(db);
-  }
-}
-
-export async function down(db: Kysely<any>): Promise<void> {
-}`;
-
-function migrationsFolder(configurationName: string) {
-	return path.join(cwd(), "monolayer", "migrations", configurationName);
 }
