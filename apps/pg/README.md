@@ -1,4 +1,4 @@
-# Welcome to monolayer-pg!
+# Welcome to monolayer-pg
 
 [monolayer-pg](https://monolayer.github.io/pg-docs/) is a [PostgreSQL](https://www.postgresql.org) database schema manager for [TypeScript](https://www.typescriptlang.org) projects built on top of [`kysely`](https://kysely.dev) with:
 
