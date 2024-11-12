@@ -8,13 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Changed
+
+- Replaced @clack/prompts with ora and prompts.
+
 ## Fixed
 
 - File templates.
-
-## Removed
-
-- Zod installation.
 
 ## [1.0.0-beta-4] - 2024-09-12
 

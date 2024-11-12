@@ -15,12 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Replaced @clack/prompts with ora and prompts.
 - Reorganized CLI commands into `db`, `push`, `data`, and `seed`.
 
 ### Removed
 
-- Schema migrations
-- Generated zod schemas (moved to the @monolayer/pg-zod package).
+- Schema migrations.
 
 ## [1.0.0-beta-4] - 2024-09-12
 
