@@ -3,7 +3,7 @@ aside: false
 ---
 <!-- markdownlint-disable MD033 -->
 
-# What is monolayer?
+# What is monolayer-pg?
 
 [monolayer-pg](https://dunkelbraun.github.io/monolayer-pg) is a [PostgreSQL](https://www.postgresql.org) database schema manager for [TypeScript](https://www.typescriptlang.org) projects built on top of [`kysely`](https://kysely.dev) with:
 
@@ -14,7 +14,7 @@ aside: false
 - Support for [multiple schemas](./../recipes/multiple-schemas.md) per database.
 - Effortless [`Prisma`](https://www.prisma.io) [integration](./querying/prisma.md).
 - Detailed warnings on backwards-incompatible, blocking,unsafe, or destructive changes.
-- Data migrations separated from your schema management.
+- Data migrations decoupled from your schema management.
 <br>
 
 Here's a taste of how you define database schemas with `monolayer-pg`:
