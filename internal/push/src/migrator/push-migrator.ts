@@ -1,8 +1,9 @@
 import type { AnyKysely } from "~push/changeset/introspection.js";
+import { printWarning } from "~push/changeset/warnings.js";
 import {
 	ChangesetPhase,
 	type ChangesetType,
-	type SchemaTransform,
+	type CodeChangesetWarning,
 } from "../changeset/types/changeset.js";
 import { MigrationLock } from "../state/migration-lock.js";
 
@@ -21,7 +22,7 @@ interface PushMigrationBase {
 	 * Down method.
 	 */
 	down(db: AnyKysely): Promise<void>;
-	transform?: SchemaTransform;
+	warnings?: Array<CodeChangesetWarning>;
 }
 
 export interface ExpandPushMigration extends PushMigrationBase {
@@ -95,6 +96,7 @@ class MigrationRunner {
 
 	async execute(migrations: PushMigration[]) {
 		for (const migration of migrations) {
+			(migration.warnings ?? []).forEach(printWarning);
 			const builder =
 				(migration.transaction ?? true)
 					? this.#db.transaction()
