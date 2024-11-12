@@ -32,12 +32,6 @@
 			],
 			"cache": false
 		},
-		"unpublish:aws": {
-			"dependsOn": [
-				"^unpublish:aws"
-			],
-			"cache": false
-		},
 		"publish:local": {
 			"dependsOn": [
 				"^publish:local"
