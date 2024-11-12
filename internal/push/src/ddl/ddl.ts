@@ -40,7 +40,7 @@ interface CreateTableOptions {
 	context: ChangesetGenerator;
 	diff: CreateTableDiff;
 	db: AnyKysely;
-	logOutput: boolean;
+	debug: boolean;
 }
 
 export async function createTable(options: CreateTableOptions) {
@@ -59,7 +59,7 @@ export async function createTable(options: CreateTableOptions) {
 			}),
 		`Create table \`${tableName}\``,
 	);
-	await command.execute(options.logOutput);
+	await command.execute(options.debug);
 
 	const table = new GeneratorTable(tableName, options.context);
 
@@ -67,7 +67,7 @@ export async function createTable(options: CreateTableOptions) {
 		await createUniqueConstraint({
 			context: options.context,
 			db: options.db,
-			logOutput: options.logOutput,
+			debug: options.debug,
 			tableName,
 			constraint,
 		});
@@ -88,7 +88,7 @@ export async function createTable(options: CreateTableOptions) {
 				`Add comment to column \`${tableName}\`.\`${column.columnName}\``,
 				options.db,
 			);
-			await query.execute(options.logOutput);
+			await query.execute(options.debug);
 		}
 	}
 }
@@ -97,7 +97,7 @@ interface DropTableOptions {
 	context: ChangesetGenerator;
 	tableName: string;
 	db: AnyKysely;
-	logOutput: boolean;
+	debug: boolean;
 	warnings?: string;
 }
 
@@ -229,7 +229,7 @@ export async function dropTable(options: DropTableOptions) {
 		`Drop table \`${options.tableName}\``,
 		options.warnings,
 	);
-	await command.execute(options.logOutput);
+	await command.execute(options.debug);
 }
 
 interface RenameTableOptions {
@@ -303,7 +303,7 @@ interface CreateUniqueConstraintOptions {
 	context: ChangesetGenerator;
 	tableName: string;
 	db: AnyKysely;
-	logOutput: boolean;
+	debug: boolean;
 	constraint: {
 		name: string;
 		distinct: boolean;
@@ -327,7 +327,7 @@ export async function createUniqueConstraint(
 			),
 		`Add unique constraint to \`${options.tableName}\``,
 	);
-	await query.execute(options.logOutput);
+	await query.execute(options.debug);
 }
 
 interface CreateEnumOptions {

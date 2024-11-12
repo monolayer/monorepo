@@ -25,7 +25,7 @@ export function createTableChangeset(createTableDiff: CreateTableDiff) {
 					diff: createTableDiff,
 					context,
 					db,
-					logOutput: context.debug,
+					debug: context.debug,
 				});
 			},
 			down: async (db: AnyKysely) => {
@@ -33,7 +33,7 @@ export function createTableChangeset(createTableDiff: CreateTableDiff) {
 					tableName,
 					db,
 					context,
-					logOutput: false,
+					debug: false,
 				});
 			},
 			schemaName: context.schemaName,

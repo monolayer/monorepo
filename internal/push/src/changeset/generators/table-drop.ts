@@ -43,7 +43,7 @@ export function dropTableChangeset(dropTableDiff: DropTableDiff) {
 					db,
 					context,
 					tableName,
-					logOutput: context.debug,
+					debug: context.debug,
 					warnings: context.debug ? tableDropWarning() : undefined,
 				});
 			},
@@ -57,7 +57,7 @@ export function dropTableChangeset(dropTableDiff: DropTableDiff) {
 					diff: createTableDiff,
 					context,
 					db,
-					logOutput: false,
+					debug: false,
 				});
 			},
 			schemaName: context.schemaName,
