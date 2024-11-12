@@ -6,11 +6,6 @@ import {
 	printAnyErrors,
 	printCauseNew,
 } from "@monorepo/cli/handle-errors.js";
-import { actionIntro } from "@monorepo/cli/intro.js";
-import {
-	cliActionFailureOutro,
-	cliActionSuccessOutro,
-} from "@monorepo/cli/outros.js";
 import { DbClients } from "@monorepo/services/db-clients.js";
 import type { ProgramContext } from "@monorepo/services/program-context.js";
 import {
@@ -32,13 +27,17 @@ export async function cliAction(
 	},
 	tasks: Effect.Effect<unknown, ActionErrors, ProgramContext>[],
 ) {
-	actionIntro(name);
+	console.log(name);
 
 	const tasksWithLayers = actionWithLayers(tasks, layers);
 	const program = programWithContext(tasksWithLayers, await loadEnv(options));
 	await Effect.runPromise(program).then(
-		cliActionSuccessOutro,
-		cliActionFailureOutro,
+		() => {
+			exit(0);
+		},
+		() => {
+			exit(1);
+		},
 	);
 }
 
@@ -71,14 +70,21 @@ export async function cliActionWithoutContext(
 	name: string,
 	tasks: Effect.Effect<unknown, ActionErrors, AppEnvironment>[],
 ) {
-	actionIntro(name);
+	console.log(name);
 
 	await Effect.runPromise(
 		programWithContext(
 			actionWithErrorHandling(tasks),
 			await loadImportSchemaEnv(),
 		),
-	).then(cliActionSuccessOutro, cliActionFailureOutro);
+	).then(
+		() => {
+			exit(0);
+		},
+		() => {
+			exit(1);
+		},
+	);
 }
 
 export async function loadEnv(options: {
