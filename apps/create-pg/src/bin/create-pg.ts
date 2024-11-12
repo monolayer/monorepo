@@ -32,9 +32,6 @@ const program = all([
 	promptDbFolderSelection.pipe(tap(DbFolderState.update)),
 	installPackages([
 		{ name: "@monolayer/pg", development: false },
-		{ name: "kysely", version: "^0.27.2", development: false },
-		{ name: "pg", version: "^8.11.3", development: false },
-		{ name: "zod", version: "^3.22.3", development: false },
 		{ name: "@types/pg", development: true },
 	]),
 	initFolderAndFiles,
