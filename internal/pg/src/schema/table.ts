@@ -113,13 +113,7 @@ export class PgTable<T extends ColumnRecord, PK extends string> {
 			foreignKeys: (this.definition.constraints?.foreignKeys ?? []).filter(
 				(foreignKey) =>
 					foreignKey.constructor.name === "PgMappedForeignKey" ? false : true,
-			) as keyof T extends string
-				? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-					(| PgForeignKey<string & keyof T, any>
-						// eslint-disable-next-line @typescript-eslint/no-explicit-any
-						| PgSelfReferentialForeignKey<string & keyof T, any>
-					)[]
-				: [],
+			) as keyof T extends string ? AnyPgForeignKey<T>[] : [],
 		};
 		this.definition.indexes = (this.definition.indexes ?? []).filter(
 			(index): index is PgIndex<string & keyof T> =>
@@ -162,3 +156,9 @@ function mappedObjects<T>(definition: TableDefinition<T, any>) {
 		).map((trigger) => trigger.name),
 	];
 }
+
+type AnyPgForeignKey<T> =
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	| PgForeignKey<string & keyof T, any>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	| PgSelfReferentialForeignKey<string & keyof T, any>;
