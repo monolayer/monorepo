@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/pg",
-	"version": "2.0.0-pre-beta.2",
+	"version": "2.0.0-pre-beta.5",
 	"description": "Database schema management for PostgreSQL",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -150,7 +150,10 @@
 		"picocolors": "^1.0.0",
 		"slug": "^8.2.3",
 		"toposort": "^2.0.2",
-		"tsx": "^4.7.0"
+		"prompts": "^2.4.2",
+		"ora": "^8.1.0",
+		"tsx": "^4.7.0",
+		"indent-string": "^5.0.0"
 	},
 	"peerDependencies": {
 		"kysely": "^0.27.2",
