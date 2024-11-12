@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/create-pg",
-	"version": "2.0.0-pre-beta.6",
+	"version": "2.0.0-beta.2",
 	"description": "Create monolayer-pg inside a project",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
