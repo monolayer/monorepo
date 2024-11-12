@@ -19,7 +19,7 @@ export default withMermaid({
 			},
 			{
 				text: "API Reference",
-				link: "/reference/api",
+				link: "/reference/api/modules",
 				activeMatch: "/reference/",
 			},
 		],
