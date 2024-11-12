@@ -39,7 +39,11 @@ export function pgConnectionString() {
 	const config: Record<string, string> = {};
 
 	dotenv.config({ path: ".env.test", processEnv: config });
-	return `postgres://${config.POSTGRES_USER}:${config.POSTGRES_PASSWORD}@${config.POSTGRES_HOST}:${config.POSTGRES_PORT}`;
+	const user = config.POSTGRES_USER ?? process.env.POSTGRES_USER;
+	const pass = config.POSTGRES_PASSWORD ?? process.env.POSTGRES_PASSWORD;
+	const host = config.POSTGRES_HOST ?? process.env.POSTGRES_HOST;
+	const port = config.POSTGRES_PORT ?? process.env.POSTGRES_PORT;
+	return `postgres://${user}:${pass}@${host}:${port}`;
 }
 
 dotenv.config({
