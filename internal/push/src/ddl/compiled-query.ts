@@ -35,6 +35,7 @@ export class CompiledQuery {
 		runner,
 		message,
 		successMessage,
+		debug,
 	}: {
 		runner: Runner;
 		message: string;
@@ -50,8 +51,10 @@ export class CompiledQuery {
 		spinner.succeed(
 			`${successMessage ?? message} ${color.gray(`${milliseconds}ms`)}`,
 		);
-		const compiled = `${color.gray(this.#formatSQL(runner, 2))}`;
-		console.log(`\n${compiled}\n`);
+		if (debug) {
+			const compiled = `${color.gray(this.#formatSQL(runner, 2))}`;
+			console.log(`\n${compiled}\n`);
+		}
 	}
 
 	#formatSQL(builder: Runner, indent?: number) {

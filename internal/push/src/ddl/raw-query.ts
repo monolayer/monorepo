@@ -24,16 +24,12 @@ export class RawQuery {
 	}
 
 	async execute(debug: boolean = true) {
-		if (debug) {
-			await this.#executeRawBuilderWithSpinner({
-				runner: this.#command,
-				message: this.#description,
-				db: this.#db,
-				debug,
-			});
-		} else {
-			await this.#command.execute(this.#db);
-		}
+		await this.#executeRawBuilderWithSpinner({
+			runner: this.#command,
+			message: this.#description,
+			db: this.#db,
+			debug,
+		});
 		if (this.#warnings) {
 			console.log(this.#warnings);
 		}
@@ -44,6 +40,7 @@ export class RawQuery {
 		message,
 		successMessage,
 		db,
+		debug,
 	}: {
 		runner: RawBuilder<unknown>;
 		message: string;
@@ -60,8 +57,10 @@ export class RawQuery {
 		spinner.succeed(
 			`${successMessage ?? message} ${color.gray(`${milliseconds}ms`)}`,
 		);
-		const compiled = `${color.gray(this.#formatRawBuilderSQL(runner, db, 2))}`;
-		console.log(`\n${compiled}\n`);
+		if (debug) {
+			const compiled = `${color.gray(this.#formatRawBuilderSQL(runner, db, 2))}`;
+			console.log(`\n${compiled}\n`);
+		}
 	}
 
 	#formatRawBuilderSQL(
