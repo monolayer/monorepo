@@ -6,13 +6,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0-beta-4] - 2023-09-12
+## [1.0.0-beta-4] - 2024-09-12
 
 ### Fixed
 
 - Readme link.
 
-## [1.0.0-beta-3] - 2023-09-12
+## [1.0.0-beta-3] - 2024-09-12
 
 ### Changed
 
@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Documentation links and Markdown formatting.
 
-## [1.0.0-beta-2] - 2023-09-05
+## [1.0.0-beta-2] - 2024-09-05
 
 ### Added
 
@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Configuration path in program tests.
 
-## [1.0.0-beta-1] - 2023-08-28
+## [1.0.0-beta-1] - 2024-08-28
 
 ### Added
 
