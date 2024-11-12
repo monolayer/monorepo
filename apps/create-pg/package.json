@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/create-pg",
-	"version": "2.0.0-pre-beta.4",
+	"version": "2.0.0-pre-beta.6",
 	"description": "Create monolayer-pg inside a project",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -34,12 +34,13 @@
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/create-pg -f"
 	},
 	"dependencies": {
-		"@clack/prompts": "^0.7.0",
 		"commander": "^12.0.0",
 		"effect": "^3.10.5",
 		"execa": "^8.0.1",
 		"nunjucks": "^3.2.4",
+		"ora": "^8.1.0",
 		"picocolors": "^1.0.0",
+		"prompts": "^2.4.2",
 		"tsx": "^4.7.1"
 	},
 	"devDependencies": {

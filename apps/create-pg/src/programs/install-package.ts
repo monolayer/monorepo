@@ -1,7 +1,6 @@
-import * as p from "@clack/prompts";
 import { gen, succeed, tryPromise } from "effect/Effect";
 import { execa } from "execa";
-import color from "picocolors";
+import ora from "ora";
 import { PackageManagerState } from "../state/package-manager.js";
 import { checkPackageInstallation } from "./check-package-installation.js";
 
@@ -14,8 +13,8 @@ interface PackageToInstall {
 export function installPackages(packagesToInstall: PackageToInstall[]) {
 	return gen(function* () {
 		const env = yield* PackageManagerState.current;
-		const s = p.spinner();
-		s.start(`Installing monolayer-pg and dependencies...`);
+		const s = ora();
+		s.start("Install monolayer-pg");
 
 		for (const packageToInstall of packagesToInstall) {
 			const check = yield* checkPackageInstallation(packageToInstall.name);
@@ -35,13 +34,13 @@ export function installPackages(packagesToInstall: PackageToInstall[]) {
 						}
 						await execa(env.packageManager.name, args);
 					} catch (error) {
-						s.stop(`Failed to install ${packageToInstall.name}.`, 1);
+						s.fail();
 						throw error;
 					}
 					return succeed(true);
 				});
 			}
 		}
-		s.stop(`Installed monolayer and dependencies. ${color.green("✓")}`);
+		s.succeed();
 	});
 }

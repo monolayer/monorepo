@@ -1,28 +1,20 @@
-import * as p from "@clack/prompts";
 import { tryPromise } from "effect/Effect";
+import { exit } from "node:process";
+import prompts from "prompts";
 
 export const promptDbFolderSelection = tryPromise(async () => {
-	const folder = await p.group(
-		{
-			path: () =>
-				p.text({
-					message: "Where should monolayer create the `db` folder?",
-					placeholder: "./app",
-					defaultValue: "./app",
-					validate: (value) => {
-						let path = value;
-						if (path === "") path = "./app";
-						if (path[0] === "/") return "Please enter a relative path.";
-						return;
-					},
-				}),
+	let aborted = false;
+	const folder = await prompts({
+		type: "text",
+		name: "path",
+		message: "Where should monolayer create the `db` folder?",
+		initial: "./app",
+		onState: (e) => {
+			aborted = e.aborted;
 		},
-		{
-			onCancel: () => {
-				p.cancel("Operation cancelled.");
-				process.exit(0);
-			},
-		},
-	);
-	return folder.path;
+	});
+	if (aborted) {
+		exit(1);
+	}
+	return folder.path as string;
 });

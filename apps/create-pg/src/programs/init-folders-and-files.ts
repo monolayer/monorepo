@@ -1,7 +1,7 @@
-import * as p from "@clack/prompts";
 import { fail, gen, tryPromise } from "effect/Effect";
 import { appendFileSync, promises as fs, mkdirSync, writeFileSync } from "fs";
 import nunjucks from "nunjucks";
+import ora from "ora";
 import path from "path";
 import color from "picocolors";
 import { cwd } from "process";
@@ -13,17 +13,17 @@ function createFileFromTemplate(
 	relativePath: string,
 ) {
 	return gen(function* () {
-		const spinner = p.spinner();
+		const spinner = ora();
 		spinner.start(banner);
 		const result = yield* tryPromise(() =>
 			createFile(path.join(cwd(), relativePath), content),
 		);
 		switch (result) {
 			case "exists":
-				spinner.stop(`${banner} ${color.yellow("exists")}`);
+				spinner.succeed(`${banner} ${color.yellow("exists")}`);
 				break;
 			case "created":
-				spinner.stop(`${banner} ${color.green("✓")}`);
+				spinner.succeed();
 				break;
 		}
 	});
@@ -36,7 +36,7 @@ export const initFolderAndFiles = gen(function* () {
 		yield* fail(new UndefinedDbFolderError());
 	} else {
 		yield* createFileFromTemplate(
-			"Creating monolayer.config.ts",
+			"Create monolayer.config.ts",
 			configTemplate.render({
 				databasePath: path.join(dbFolderPath, "databases.ts"),
 			}),
@@ -44,22 +44,22 @@ export const initFolderAndFiles = gen(function* () {
 		);
 		yield* tryPromise(() => createDir(dbFolderPath));
 		yield* createFileFromTemplate(
-			`Creating ${dbFolderPath}/databases.ts`,
+			`Create ${dbFolderPath}/databases.ts`,
 			databasesTemplate.render(),
 			`${dbFolderPath}/databases.ts`,
 		);
 		yield* createFileFromTemplate(
-			`Creating ${dbFolderPath}/schema.ts`,
+			`Create ${dbFolderPath}/schema.ts`,
 			schemaTemplate.render(),
 			`${dbFolderPath}/schema.ts`,
 		);
 		yield* createFileFromTemplate(
-			`Creating ${dbFolderPath}/client.ts`,
+			`Create ${dbFolderPath}/client.ts`,
 			dbTemplate.render(),
 			`${dbFolderPath}/client.ts`,
 		);
 		yield* createFileFromTemplate(
-			`Creating ${dbFolderPath}/seed.ts`,
+			`Create ${dbFolderPath}/seed.ts`,
 			seedTemplate.render(),
 			`${dbFolderPath}/seed.ts`,
 		);
@@ -153,8 +153,8 @@ const databaseURL = `
 
 function createOrAppendDatabaseURL() {
 	return gen(function* () {
-		const banner = "Adding sample environment variable to .env";
-		const spinner = p.spinner();
+		const banner = "Add sample environment variable to .env";
+		const spinner = ora();
 		spinner.start(banner);
 		const exists = yield* tryPromise(async () => {
 			try {
@@ -169,6 +169,6 @@ function createOrAppendDatabaseURL() {
 		} else {
 			writeFileSync(".env", databaseURL);
 		}
-		spinner.stop(`${banner} ${color.green("✓")}`);
+		spinner.succeed();
 	});
 }

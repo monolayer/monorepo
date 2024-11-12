@@ -1,6 +1,5 @@
 #!/usr/bin/env tsx
 
-import * as p from "@clack/prompts";
 import {
 	all,
 	provide,
@@ -35,9 +34,9 @@ const program = all([
 		{ name: "@types/pg", development: true },
 	]),
 	initFolderAndFiles,
-]).pipe(tapErrorCause((error) => succeed(p.log.error(error.toString()))));
+]).pipe(tapErrorCause((error) => succeed(console.log(error.toString()))));
 
-p.intro("Welcome to monolayer!");
+console.log("Welcome to monolayer!");
 
 const result = await runPromise(
 	provide(
@@ -50,9 +49,9 @@ const result = await runPromise(
 );
 
 if (result) {
-	p.outro("Done");
+	console.log(`${color.green("Done")}`);
 	exit(0);
 } else {
-	p.outro(`${color.red("Failed")}`);
+	console.log(`${color.red("Failed")}`);
 	exit(1);
 }

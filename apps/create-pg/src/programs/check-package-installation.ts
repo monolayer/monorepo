@@ -1,7 +1,7 @@
-import * as p from "@clack/prompts";
 import { gen, tryPromise } from "effect/Effect";
 import type { ExecaReturnBase, StdoutStderrAll } from "execa";
 import { execa } from "execa";
+import ora from "ora";
 import { PackageManagerState } from "../state/package-manager.js";
 
 export function checkPackageInstallation(packageName: string) {
@@ -62,8 +62,8 @@ function checkCommandOutput(
 	checkOutput: string,
 ) {
 	return gen(function* () {
-		const s = p.spinner();
-		s.start(`Checking ${packageName}`);
+		const spinner = ora();
+		spinner.start(`Check ${packageName}`);
 		const response = yield* tryPromise(async () => {
 			try {
 				const { stdout } = await execa(packageManager, [
@@ -75,14 +75,14 @@ function checkCommandOutput(
 					installed: stdout.includes(checkOutput),
 				};
 			} catch (error) {
-				s.stop(`Failed to check ${packageName}`, 1);
+				spinner.fail(`Failed to check ${packageName}`);
 				throw error;
 			}
 		});
 		if (response.installed) {
-			s.stop(`${packageName} already installed.`);
+			spinner.succeed(`Check ${packageName}: already installed.`);
 		} else {
-			s.stop(`${packageName} not installed.`);
+			spinner.succeed(`Check ${packageName}: not installed.`);
 		}
 		return response;
 	});
