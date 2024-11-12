@@ -141,7 +141,7 @@ export async function dbSeed(db: Kysely<DB>) {
     current_database: string;
   }>\`SELECT CURRENT_DATABASE()\`.execute(db);
 
-  console.log("Current database:", currentDatabase.rows[0].current_database);
+  console.log("Current database:", currentDatabase.rows[0]?.current_database);
 }
 `);
 
