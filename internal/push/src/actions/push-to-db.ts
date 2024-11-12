@@ -14,21 +14,28 @@ export function pushToDb(program: Command) {
 		name: "dev",
 		program,
 	})
-		.option("-v, --verbose", "Print SQL statements", false)
+		.option("-q, --quiet", "Do not print SQL statements")
 		.description("push schema changes (development)")
 		.action(async (opts) => {
-			await headlessCliAction(opts, [
-				handleMissingDatabase.pipe(
-					flatMap(() =>
-						ChangesetGeneratorState.provide(
-							MigrationOpsGeneratorsState.provide(
-								RenameState.provide(pushDb(true)),
-								generators,
+			await headlessCliAction(
+				{
+					databaseId: opts.databaseId,
+					envFile: opts.envFile,
+					verbose: opts.quiet === true ? false : true,
+				},
+				[
+					handleMissingDatabase.pipe(
+						flatMap(() =>
+							ChangesetGeneratorState.provide(
+								MigrationOpsGeneratorsState.provide(
+									RenameState.provide(pushDb(true)),
+									generators,
+								),
 							),
 						),
 					),
-				),
-			]);
+				],
+			);
 		});
 }
 
