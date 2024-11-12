@@ -58,16 +58,6 @@
 				"types": "./dist/cjs/schema.d.ts",
 				"default": "./dist/cjs/schema.js"
 			}
-		},
-		"./migration": {
-			"import": {
-				"types": "./dist/esm/migration.d.ts",
-				"default": "./dist/esm/migration.js"
-			},
-			"require": {
-				"types": "./dist/cjs/migration.d.ts",
-				"default": "./dist/cjs/migration.js"
-			}
 		}
 	},
 	"files": [
