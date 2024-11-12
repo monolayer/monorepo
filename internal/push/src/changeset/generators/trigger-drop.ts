@@ -13,6 +13,7 @@ import type {
 	DropMultipleTriggerDiff,
 	DropTriggerDiff,
 } from "../types/diff.js";
+import { destructiveWarning } from "../warnings.js";
 
 export function dropTriggerChangeset(diff: DropTriggerDiff) {
 	return gen(function* () {
@@ -44,6 +45,7 @@ export function dropTriggerChangeset(diff: DropTriggerDiff) {
 				),
 				debug: context.debug,
 			}),
+			warnings: [destructiveWarning],
 		};
 		return changeset;
 	});

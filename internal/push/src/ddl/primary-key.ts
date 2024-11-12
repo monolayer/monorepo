@@ -1,12 +1,13 @@
 import { extractColumnsFromPrimaryKey } from "@monorepo/pg/introspection/schema.js";
 import {
+	addPrimaryKeyToExistingNullableColumn,
+	addPrimaryKeyToNewColumn,
+} from "~push/changeset/warnings.js";
+import {
 	primaryKeyColumnDetails,
 	type AnyKysely,
 	type ColumnExists,
 } from "../changeset/introspection.js";
-import { ChangeWarningType } from "../changeset/warnings/change-warning-type.js";
-import { ChangeWarningCode } from "../changeset/warnings/codes.js";
-import type { ChangeWarning } from "../changeset/warnings/warnings.js";
 import type { ChangesetGenerator } from "../state/changeset-generator.js";
 import {
 	createCheckConstraint,
@@ -16,6 +17,7 @@ import {
 	dropIndex,
 	dropPrimaryKey,
 } from "./ddl.js";
+import type { CodeChangesetWarning } from "~push/changeset/types/changeset.js";
 
 export class OnlinePrimaryKey {
 	index: PrimaryKeyIndex;
@@ -62,7 +64,7 @@ export class OnlinePrimaryKey {
 	}
 
 	get warnings() {
-		const warnings: ChangeWarning[] = [];
+		const warnings: Array<CodeChangesetWarning> = [];
 
 		const existingNullableColumns = Object.values(this.columnDetails).filter(
 			(details) => details.inDb.exists && details.inDb.nullable,
@@ -71,22 +73,10 @@ export class OnlinePrimaryKey {
 			(details) => !details.inDb.exists && details.inTable.exists,
 		);
 		if (existingNullableColumns.length > 0) {
-			warnings.push({
-				type: ChangeWarningType.MightFail,
-				code: ChangeWarningCode.AddPrimaryKeyToExistingNullableColumn,
-				schema: this.schema,
-				table: this.table,
-				columns: existingNullableColumns.map((col) => col.columnName),
-			});
+			warnings.push(addPrimaryKeyToExistingNullableColumn);
 		}
 		if (newColumns.length > 0) {
-			warnings.push({
-				type: ChangeWarningType.MightFail,
-				code: ChangeWarningCode.AddPrimaryKeyToNewColumn,
-				schema: this.schema,
-				table: this.table,
-				columns: newColumns.map((col) => col.columnName),
-			});
+			warnings.push(addPrimaryKeyToNewColumn);
 		}
 		return warnings;
 	}

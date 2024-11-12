@@ -1,4 +1,3 @@
-import type { ChangeWarning } from "~push/changeset/warnings/warnings.js";
 import type { AnyKysely } from "../introspection.js";
 
 export enum ChangesetType {
@@ -51,10 +50,12 @@ export type CodeChangeset = {
 	priority: number;
 	schemaName: string | null;
 	transaction?: boolean;
-	warnings?: Array<ChangeWarning>;
+	warnings?: Array<CodeChangesetWarning>;
 	phase: ChangesetPhase;
 	transform?: SchemaTransform;
 };
+
+export type CodeChangesetWarning = { header: string; notes: string[] };
 
 export type SchemaTransform = RenameColumnSchemaTransform;
 

@@ -14,8 +14,7 @@ import type {
 	DropColumnDefaultDiff,
 } from "../types/diff.js";
 import type { SchemaMigrationInfo } from "../types/schema.js";
-import { ChangeWarningType } from "../warnings/change-warning-type.js";
-import { ChangeWarningCode } from "../warnings/codes.js";
+import { changeColumnDefaultVolatileWarning } from "../warnings.js";
 
 export function addDefaultToColumnChangeset(diff: AddColumnDefaultDiff) {
 	return gen(function* () {
@@ -38,7 +37,6 @@ export function addDefaultToColumnChangeset(diff: AddColumnDefaultDiff) {
 					default: diff.value,
 				},
 				debug: context.debug,
-				warnings: "",
 			}),
 			down: dropColumnDefault({
 				column: {
@@ -47,7 +45,6 @@ export function addDefaultToColumnChangeset(diff: AddColumnDefaultDiff) {
 					name: columnName,
 				},
 				debug: false,
-				warnings: "",
 			}),
 		};
 		return changeset;
@@ -74,7 +71,6 @@ export function dropDefaultFromColumnChangeset(diff: DropColumnDefaultDiff) {
 					name: columnName,
 				},
 				debug: context.debug,
-				warnings: "",
 			}),
 			down: setColumnDefault({
 				column: {
@@ -84,7 +80,6 @@ export function dropDefaultFromColumnChangeset(diff: DropColumnDefaultDiff) {
 					default: diff.oldValue,
 				},
 				debug: false,
-				warnings: "",
 			}),
 		};
 		return changeset;
@@ -114,7 +109,6 @@ export function changeDefaultFromColumnChangeset(
 						default: diff.value,
 					},
 					debug: context.debug,
-					warnings: "",
 				}),
 				down: setColumnDefault({
 					column: {
@@ -124,20 +118,11 @@ export function changeDefaultFromColumnChangeset(
 						default: diff.oldValue,
 					},
 					debug: false,
-					warnings: "",
 				}),
 				schemaName: context.schemaName,
 			};
 			if (columnDefaultIsVolatile(columnName, tableName, context.local)) {
-				changeset.warnings = [
-					{
-						type: ChangeWarningType.Blocking,
-						code: ChangeWarningCode.AddVolatileDefault,
-						schema: context.schemaName,
-						table: tableName,
-						column: columnName,
-					},
-				];
+				changeset.warnings = [changeColumnDefaultVolatileWarning];
 			}
 			return changeset;
 		}

@@ -20,8 +20,7 @@ import type {
 	CreateMultipleUniqueDiff,
 	CreateUniqueDiff,
 } from "../types/diff.js";
-import { ChangeWarningType } from "../warnings/change-warning-type.js";
-import { ChangeWarningCode } from "../warnings/codes.js";
+import { addUniqueToExisitingColumnWarning } from "../warnings.js";
 
 export function createUniqueConstraintChangeset(diff: CreateUniqueDiff) {
 	return gen(function* () {
@@ -64,15 +63,7 @@ export function createUniqueConstraintChangeset(diff: CreateUniqueDiff) {
 		});
 
 		if (existingColumnsWithUniqueAdded.length > 0) {
-			changeset.warnings = [
-				{
-					type: ChangeWarningType.MightFail,
-					code: ChangeWarningCode.AddUniqueToExistingColumn,
-					schema: context.schemaName,
-					table: tableName,
-					columns: existingColumnsWithUniqueAdded,
-				},
-			];
+			changeset.warnings = [addUniqueToExisitingColumnWarning];
 		}
 		return changeset;
 	});

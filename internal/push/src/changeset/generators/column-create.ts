@@ -14,11 +14,15 @@ import {
 	ChangesetType,
 	MigrationOpPriority,
 	type CodeChangeset,
+	type CodeChangesetWarning,
 } from "../types/changeset.js";
 import type { CreateColumnDiff } from "../types/diff.js";
-import { ChangeWarningType } from "../warnings/change-warning-type.js";
-import { ChangeWarningCode } from "../warnings/codes.js";
-import type { ChangeWarning } from "../warnings/warnings.js";
+import {
+	addBigSerialColumn,
+	addNonNullableColumnWarning,
+	addSerialColumn,
+	changeColumnDefaultVolatileWarning,
+} from "../warnings.js";
 
 export function columnCreateChangeset(diff: CreateColumnDiff) {
 	return gen(function* () {
@@ -52,13 +56,7 @@ export function columnCreateChangeset(diff: CreateColumnDiff) {
 			}),
 			schemaName: context.schemaName,
 		};
-		addWarnings(
-			changeset,
-			columnDef,
-			context.schemaName,
-			tableName,
-			columnName,
-		);
+		addWarnings(changeset, columnDef);
 		return changeset;
 	});
 }
@@ -96,56 +94,25 @@ export function columnCreateNonNullableChangeset(diff: CreateColumnDiff) {
 			}),
 			schemaName: context.schemaName,
 		};
-		addWarnings(
-			changeset,
-			columnDef,
-			context.schemaName,
-			tableName,
-			columnName,
-		);
+		addWarnings(changeset, columnDef);
 		return changeset;
 	});
 }
 
-function addWarnings(
-	changeset: CodeChangeset,
-	columnDef: ColumnInfoDiff,
-	schemaName: string,
-	tableName: string,
-	columnName: string,
-) {
-	const warnings: ChangeWarning[] = [];
+function addWarnings(changeset: CodeChangeset, columnDef: ColumnInfoDiff) {
+	const warnings: Array<CodeChangesetWarning> = [];
 
 	if (columnDef.dataType === "serial" || columnDef.dataType === "bigserial") {
-		warnings.push({
-			type: ChangeWarningType.Blocking,
-			code:
-				columnDef.dataType === "serial"
-					? ChangeWarningCode.AddSerialColumn
-					: ChangeWarningCode.AddBigSerialColumn,
-			schema: schemaName,
-			table: tableName,
-			column: columnName,
-		});
+		warnings.push(
+			columnDef.dataType === "serial" ? addSerialColumn : addBigSerialColumn,
+		);
 	}
 
 	if (columnDef.volatileDefault === "yes") {
-		warnings.push({
-			type: ChangeWarningType.Blocking,
-			code: ChangeWarningCode.AddVolatileDefault,
-			schema: schemaName,
-			table: tableName,
-			column: columnName,
-		});
+		warnings.push(changeColumnDefaultVolatileWarning);
 	}
 	if (columnDef.isNullable === false) {
-		warnings.push({
-			type: ChangeWarningType.MightFail,
-			code: ChangeWarningCode.AddNonNullableColumn,
-			schema: schemaName,
-			table: tableName,
-			column: columnName,
-		});
+		warnings.push(addNonNullableColumnWarning);
 	}
 	if (warnings.length > 0) {
 		changeset.warnings = warnings;

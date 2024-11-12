@@ -9,8 +9,7 @@ import {
 	type CodeChangeset,
 } from "../types/changeset.js";
 import type { DropColumnDiff } from "../types/diff.js";
-import { ChangeWarningType } from "../warnings/change-warning-type.js";
-import { ChangeWarningCode } from "../warnings/codes.js";
+import { destructiveWarning } from "../warnings.js";
 
 export function columnDropChangeset(diff: DropColumnDiff) {
 	return gen(function* () {
@@ -24,15 +23,7 @@ export function columnDropChangeset(diff: DropColumnDiff) {
 			tableName: tableName,
 			currentTableName: resolveCurrentTableName(tableName, context),
 			type: ChangesetType.DropColumn,
-			warnings: [
-				{
-					type: ChangeWarningType.Destructive,
-					code: ChangeWarningCode.ColumnDrop,
-					schema: context.schemaName,
-					table: resolveCurrentTableName(tableName, context),
-					column: columnName,
-				},
-			],
+			warnings: [destructiveWarning],
 			up: dropColumn({
 				schemaName: context.schemaName,
 				tableName,

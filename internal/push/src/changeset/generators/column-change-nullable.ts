@@ -9,8 +9,7 @@ import {
 	type CodeChangeset,
 } from "../types/changeset.js";
 import type { ColumnNullableDiff } from "../types/diff.js";
-import { ChangeWarningType } from "../warnings/change-warning-type.js";
-import { ChangeWarningCode } from "../warnings/codes.js";
+import { changeColumnToNonNullableWarning } from "../warnings.js";
 
 export function columnNullableChangeset(diff: ColumnNullableDiff) {
 	return gen(function* () {
@@ -52,15 +51,7 @@ export function columnNullableChangeset(diff: ColumnNullableDiff) {
 					}),
 		};
 		if (diff.value === false) {
-			changeset.warnings = [
-				{
-					type: ChangeWarningType.MightFail,
-					code: ChangeWarningCode.ChangeColumnToNonNullable,
-					schema: context.schemaName,
-					table: tableName,
-					column: columnName,
-				},
-			];
+			changeset.warnings = [changeColumnToNonNullableWarning];
 		}
 		return changeset;
 	});

@@ -12,6 +12,7 @@ import {
 	type CodeChangeset,
 } from "../types/changeset.js";
 import type { RenameTableDiff } from "../types/diff.js";
+import { tableRenameWarning } from "../warnings.js";
 
 export function renameTableChangeset(diff: RenameTableDiff) {
 	return gen(function* () {
@@ -44,6 +45,7 @@ export function renameTableChangeset(diff: RenameTableDiff) {
 				debug: false,
 			}),
 			schemaName: context.schemaName,
+			warnings: [tableRenameWarning],
 		};
 
 		const renameTableObjectsChangeset: CodeChangeset = {

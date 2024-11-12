@@ -9,6 +9,7 @@ import {
 	type CodeChangeset,
 } from "../types/changeset.js";
 import type { RenameColumnDiff } from "../types/diff.js";
+import { columnRenameWarning } from "../warnings.js";
 
 export function renameColumnChangeset(diff: RenameColumnDiff) {
 	return gen(function* () {
@@ -40,6 +41,7 @@ export function renameColumnChangeset(diff: RenameColumnDiff) {
 				debug: false,
 			}),
 			schemaName: context.schemaName,
+			warnings: [columnRenameWarning],
 		};
 		return changeset;
 	});

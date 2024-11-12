@@ -12,12 +12,10 @@ interface Runner {
 export class CompiledQuery {
 	#command: Runner;
 	#description: string;
-	#warnings?: string;
 
-	constructor(command: Runner, description: string, warnings?: string) {
+	constructor(command: Runner, description: string) {
 		this.#command = command;
 		this.#description = description;
-		this.#warnings = warnings;
 	}
 
 	async execute(debug: boolean = true) {
@@ -26,9 +24,6 @@ export class CompiledQuery {
 			message: this.#description,
 			debug,
 		});
-		if (this.#warnings) {
-			console.log(this.#warnings);
-		}
 	}
 
 	async #executeBuilderWithSpinner({

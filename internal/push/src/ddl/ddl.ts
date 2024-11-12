@@ -32,10 +32,6 @@ import { GeneratorTable } from "~push/ddl/table.js";
 import type { ChangesetGenerator } from "~push/state/changeset-generator.js";
 import { RawQuery } from "./raw-query.js";
 
-interface DropSchemaOptions extends CreateSchemaOptions {
-	warnings?: string;
-}
-
 interface CreateTableOptions {
 	context: ChangesetGenerator;
 	diff: CreateTableDiff;
@@ -98,7 +94,6 @@ interface DropTableOptions {
 	tableName: string;
 	db: AnyKysely;
 	debug: boolean;
-	warnings?: string;
 }
 
 function addForeignKeys(
@@ -227,7 +222,6 @@ export async function dropTable(options: DropTableOptions) {
 			.withSchema(options.context.schemaName)
 			.schema.dropTable(options.tableName),
 		`Drop table \`${options.tableName}\``,
-		options.warnings,
 	);
 	await command.execute(options.debug);
 }
@@ -365,17 +359,12 @@ function isCreateDiff(diff: any): diff is CreateEnumDiff {
 	return diff.value !== undefined;
 }
 
-interface DropEnumOptions extends CreateEnumOptions {
-	warnings?: string;
-}
-
-export function dropEnum(options: DropEnumOptions) {
+export function dropEnum(options: CreateEnumOptions) {
 	return async (db: AnyKysely) => {
 		const enumName = options.diff.path[1];
 		const query = new CompiledQuery(
 			db.withSchema(options.context.schemaName).schema.dropType(enumName),
 			`Drop enum \`${enumName}\``,
-			options.warnings,
 		);
 		await query.execute(options.context.debug);
 	};
@@ -424,11 +413,7 @@ export function createExtension(options: CreateExtensionOptions) {
 	};
 }
 
-interface DropExtensionOptions extends CreateExtensionOptions {
-	warnings?: string;
-}
-
-export function dropExtension(options: DropExtensionOptions) {
+export function dropExtension(options: CreateExtensionOptions) {
 	const fn = async (db: AnyKysely) => {
 		const extensionName = options.diff.path[1];
 		const query = new RawQuery(
@@ -446,10 +431,6 @@ interface CreateSchemaOptions {
 	diff: CreateSchemaDiff | DropSchemaDiff;
 }
 
-interface DropSchemaOptions extends CreateSchemaOptions {
-	warnings?: string;
-}
-
 export function createSchema(options: CreateSchemaOptions) {
 	const fn = async (db: AnyKysely) => {
 		const schemaName = options.diff.path[1];
@@ -465,14 +446,13 @@ export function createSchema(options: CreateSchemaOptions) {
 	return fn;
 }
 
-export function dropSchema(options: DropSchemaOptions) {
+export function dropSchema(options: CreateSchemaOptions) {
 	const fn = async (db: AnyKysely) => {
 		const schemaName = options.diff.path[1];
 		const query = new RawQuery(
 			sql.raw(`drop schema if exists "${schemaName}" cascade;`),
 			`Drop schema \`${schemaName}\``,
 			db,
-			options.warnings,
 		);
 		await query.execute(options.logOutput);
 	};
@@ -487,13 +467,11 @@ interface CreateCheckConstraintOptions {
 		schemaName: string;
 	};
 	debug: boolean;
-	warnings?: string;
 }
 
 export function createCheckConstraint({
 	check,
 	debug,
-	warnings,
 }: CreateCheckConstraintOptions) {
 	return async (db: AnyKysely) => {
 		const query = new RawQuery(
@@ -516,7 +494,6 @@ export function createCheckConstraint({
 			),
 			`Validate constraint \`${check.name}\``,
 			db,
-			warnings,
 		);
 		await validate.execute(debug);
 	};
@@ -529,12 +506,10 @@ interface DropCheckConstraintOptions {
 		name: string;
 	};
 	debug: boolean;
-	warnings?: string;
 }
 
 export function dropCheckConstraint({
 	check,
-	warnings,
 	debug,
 }: DropCheckConstraintOptions) {
 	return async (db: AnyKysely) => {
@@ -544,7 +519,6 @@ export function dropCheckConstraint({
 				.schema.alterTable(check.tableName)
 				.dropConstraint(check.name),
 			`Drop check constraint \`${check.name}\``,
-			warnings,
 		);
 		await query.execute(debug);
 	};
@@ -558,12 +532,10 @@ interface RenameCheckConstraintOptions {
 		previousName: string;
 	};
 	debug: boolean;
-	warnings?: string;
 }
 
 export function renameCheckConstraint({
 	check,
-	warnings,
 	debug,
 }: RenameCheckConstraintOptions) {
 	return async (db: AnyKysely) => {
@@ -573,7 +545,6 @@ export function renameCheckConstraint({
 			),
 			`Rename check constraint \`${check.previousName}\` ~> \`${check.name}\``,
 			db,
-			warnings,
 		);
 		await query.execute(debug);
 	};
@@ -587,13 +558,11 @@ interface ChangeColumnDataTypeOptions {
 		dataType: string;
 		oldDataType: string;
 	};
-	warnings: string;
 	debug: boolean;
 }
 
 export function changeColumnDataType({
 	column,
-	warnings,
 	debug,
 }: ChangeColumnDataTypeOptions) {
 	return async (db: AnyKysely) => {
@@ -605,7 +574,6 @@ export function changeColumnDataType({
 					col.setDataType(sql.raw(`${column.dataType}`)),
 				),
 			`Change column \`${column.name}\` data type \`${column.oldDataType}\` ~> \`${column.dataType}\``,
-			warnings,
 		);
 		await query.execute(debug);
 	};
@@ -619,14 +587,9 @@ interface SetColumnDefaultOptions {
 		default: string;
 	};
 	debug: boolean;
-	warnings: string;
 }
 
-export function setColumnDefault({
-	column,
-	warnings,
-	debug,
-}: SetColumnDefaultOptions) {
+export function setColumnDefault({ column, debug }: SetColumnDefaultOptions) {
 	return async (db: AnyKysely) => {
 		const defaultValue = toValueAndHash(String(column.default));
 		const query = new CompiledQuery(
@@ -637,7 +600,6 @@ export function setColumnDefault({
 					col.setDefault(sql.raw(`${defaultValue.value ?? ""}`)),
 				),
 			`Set column \`${column.name}\` default`,
-			warnings,
 		);
 		await query.execute(debug);
 
@@ -663,15 +625,10 @@ interface DropDefaultOptions {
 		tableName: string;
 		name: string;
 	};
-	warnings: string;
 	debug: boolean;
 }
 
-export function dropColumnDefault({
-	column,
-	warnings,
-	debug,
-}: DropDefaultOptions) {
+export function dropColumnDefault({ column, debug }: DropDefaultOptions) {
 	return async (db: AnyKysely) => {
 		const query = new CompiledQuery(
 			db
@@ -679,7 +636,6 @@ export function dropColumnDefault({
 				.schema.alterTable(column.tableName)
 				.alterColumn(column.name, (col) => col.dropDefault()),
 			`Drop column \`${column.name}\` default`,
-			warnings,
 		);
 		await query.execute(debug);
 	};

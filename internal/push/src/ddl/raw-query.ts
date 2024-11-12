@@ -9,18 +9,15 @@ export class RawQuery {
 	#command: RawBuilder<unknown>;
 	#description: string;
 	#db: AnyKysely;
-	#warnings?: string;
 
 	constructor(
 		command: RawBuilder<unknown>,
 		description: string,
 		db: AnyKysely,
-		warnings?: string,
 	) {
 		this.#command = command;
 		this.#description = description;
 		this.#db = db;
-		this.#warnings = warnings;
 	}
 
 	async execute(debug: boolean = true) {
@@ -30,9 +27,6 @@ export class RawQuery {
 			db: this.#db,
 			debug,
 		});
-		if (this.#warnings) {
-			console.log(this.#warnings);
-		}
 	}
 
 	async #executeRawBuilderWithSpinner({

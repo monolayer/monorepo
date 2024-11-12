@@ -10,8 +10,7 @@ import {
 	type CodeChangeset,
 } from "../types/changeset.js";
 import type { ColumnDataTypeDiff } from "../types/diff.js";
-import { ChangeWarningType } from "../warnings/change-warning-type.js";
-import { ChangeWarningCode } from "../warnings/codes.js";
+import { changeColumnTypeWarning } from "../warnings.js";
 
 export function changeColumDataTypeChangeset(diff: ColumnDataTypeDiff) {
 	return gen(function* () {
@@ -36,7 +35,6 @@ export function changeColumDataTypeChangeset(diff: ColumnDataTypeDiff) {
 					oldDataType: oldDataType,
 				},
 				debug: context.debug,
-				warnings: "",
 			}),
 			down: changeColumnDataType({
 				column: {
@@ -47,22 +45,11 @@ export function changeColumDataTypeChangeset(diff: ColumnDataTypeDiff) {
 					oldDataType: newDataType,
 				},
 				debug: false,
-				warnings: "",
 			}),
 			schemaName: context.schemaName,
 		};
 		if (!safeDataTypeChange(diff.oldValue!, diff.value!)) {
-			changeset.warnings = [
-				{
-					type: ChangeWarningType.Blocking,
-					code: ChangeWarningCode.ChangeColumnType,
-					schema: context.schemaName,
-					table: tableName,
-					column: columnName,
-					from: diff.oldValue!,
-					to: diff.value!,
-				},
-			];
+			changeset.warnings = [changeColumnTypeWarning];
 		}
 		return changeset;
 	});
