@@ -11,7 +11,7 @@
 		"check": "npm run check:prettier && npm run check:lint",
 		"check:lint": "npx eslint .",
 		"check:prettier": "prettier --check .",
-		"test": "NO_COLOR=1 vitest --run",
+		"test": "NO_COLOR=1 vitest --run --passWithNoTests",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open"
 	},
 	"dependencies": {
