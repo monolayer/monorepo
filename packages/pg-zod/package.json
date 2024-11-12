@@ -89,7 +89,8 @@
 		"vitest": "^2.1.1",
 		"tsup": "^8.3.0"
 	},
-	"dependencies": {
+	"peerDependencies": {
+		"@monolayer/pg": "*",
 		"zod": "^3.22.2"
 	}
 }
