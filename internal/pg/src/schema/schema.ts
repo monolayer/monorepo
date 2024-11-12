@@ -174,7 +174,7 @@ export class Schema<T extends TableRecord, S extends string> {
 	 *         id: integer().generatedAlwaysAsIdentity(),
 	 *         name: text(),
 	 *         role: enumerated(userRole).notNull(),
-	 *         createdAt: timestampWithTimeZone().default(sql`now`).notNull(),
+	 *         createdAt: timestampWithTimeZone().default(sql`now()`).notNull(),
 	 *       },
 	 *       constraints: {
 	 *         primaryKey: primaryKey(["id"]),
@@ -344,7 +344,7 @@ export class Schema<T extends TableRecord, S extends string> {
 	 *         id: integer().generatedAlwaysAsIdentity(),
 	 *         name: text(),
 	 *         role: enumerated(userRole).notNull(),
-	 *         createdAt: timestampWithTimeZone().default(sql`now`).notNull(),
+	 *         createdAt: timestampWithTimeZone().default(sql`now()`).notNull(),
 	 *       },
 	 *       constraints: {
 	 *         primaryKey: primaryKey(["id"]),

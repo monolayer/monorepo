@@ -37,7 +37,7 @@ const users = table({
     name: text(),
     email: text().notNull(),
     role: enumerated(userRole).notNull(),
-    createdAt: timestampWithTimeZone().default(sql`now`).notNull(),
+    createdAt: timestampWithTimeZone().default(sql`now()`).notNull(),
   },
   constraints: {
     primaryKey: primaryKey(["id"]),

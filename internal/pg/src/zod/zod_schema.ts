@@ -155,7 +155,7 @@ import type { ZodSchemaObject, ZodType } from "./inference.js";
  *     name: text(),
  *     role: enumerated(userRole).notNull(),
  *     orderCount: integer().notNull().default(0),
- *     createdAt: timestampWithTimeZone().default(sql`now`).notNull(),
+ *     createdAt: timestampWithTimeZone().default(sql`now()`).notNull(),
  *   },
  *   constraints: {
  *     primaryKey: primaryKey(["id"]),

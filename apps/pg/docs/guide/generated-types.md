@@ -11,7 +11,7 @@ const users = table({
   columns: {
     id: integer().generatedAlwaysAsIdentity(),
     name: text(),
-    createdAt: timestampWithTimeZone().default(sql`now`).notNull(),
+    createdAt: timestampWithTimeZone().default(sql`now()`).notNull(),
   },
   constraints: {
     primaryKey: primaryKey(["id"]),
