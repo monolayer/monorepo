@@ -1,7 +1,3 @@
-import { apiModules } from ".vitepress/sidebar-items/api-modules.mjs";
-import { cli } from ".vitepress/sidebar-items/cli.mjs";
-import { introduction } from ".vitepress/sidebar-items/introduction.mjs";
-import { schemaDefinition } from ".vitepress/sidebar-items/schema-definition.mjs";
 import { withMermaid } from "vitepress-plugin-mermaid";
 
 // https://vitepress.dev/reference/site-config
@@ -29,12 +25,134 @@ export default withMermaid({
 				collapsed: false,
 				base: "/guide/",
 				items: [
-					introduction,
+					{
+						text: "Introduction",
+						collapsed: false,
+						items: [
+							{
+								text: "What is monolayer?",
+								link: "introduction/what-is-monolayer",
+							},
+							{
+								text: "Quickstart",
+								collapsed: false,
+								items: [
+									{
+										text: "Installation",
+										link: "introduction/installation",
+									},
+									{
+										text: "Your first schema",
+										link: "introduction/first-schema",
+									},
+									{
+										text: "Querying with Kysely",
+										link: "introduction/querying/kysely",
+									},
+									{
+										text: "Querying with Prisma",
+										link: "introduction/querying/prisma",
+									},
+								],
+							},
+						],
+					},
 					{
 						text: "Configuring monolayer-pg",
 						link: "configuration",
 					},
-					schemaDefinition,
+					{
+						text: "Schema Definition",
+						collapsed: false,
+						items: [
+							{
+								text: "Databases",
+								link: "schema-definition/databases",
+							},
+							{
+								text: "Schemas",
+								link: "schema-definition/schemas",
+							},
+							{
+								text: "Tables",
+								link: "schema-definition/tables",
+							},
+							{
+								text: "Columns",
+								collapsed: true,
+								link: "schema-definition/columns/data-types",
+								items: [
+									{
+										text: "Data Types",
+										link: "schema-definition/columns/data-types",
+									},
+									{
+										text: "Default values",
+										link: "schema-definition/columns/default-values",
+									},
+									{
+										text: "Identity columns",
+										link: "schema-definition/columns/identity-columns",
+									},
+									{
+										text: "Constraints",
+										link: "schema-definition/columns/constraints",
+									},
+									{
+										text: "Enumerated Types",
+										link: "schema-definition/columns/enumerated-types",
+									},
+									{
+										text: "Other data types",
+										link: "schema-definition/columns/other-data-types",
+									},
+								],
+							},
+							{
+								text: "Constraints",
+								collapsed: true,
+								link: "schema-definition/constraints/not-null",
+								items: [
+									{
+										text: "Not-null",
+										link: "schema-definition/constraints/not-null",
+									},
+									{
+										text: "Primary key",
+										link: "schema-definition/constraints/primary-key",
+									},
+									{
+										text: "Foreign keys",
+										link: "schema-definition/constraints/foreign-key",
+									},
+									{
+										text: "Unique constraints",
+										link: "schema-definition/constraints/unique",
+									},
+									{
+										text: "Check constraints",
+										link: "schema-definition/constraints/check",
+									},
+								],
+							},
+							{
+								text: "Indexes",
+								link: "schema-definition/indexes",
+							},
+							{
+								text: "Extensions",
+								link: "schema-definition/extensions",
+							},
+							{
+								text: "Triggers",
+								link: "schema-definition/triggers",
+							},
+							{
+								text: "Glossary",
+								link: "schema-definition/glossary",
+							},
+						],
+					},
 					{
 						text: "Pushing schema changes",
 						link: "pushing-schema-changes",
@@ -64,10 +182,76 @@ export default withMermaid({
 						text: "Multiple database schemas",
 						link: "recipes/multiple-schemas",
 					},
-					cli,
+					{
+						text: "Command Line Interface",
+						collapsed: true,
+						items: [
+							{
+								text: "db create",
+								link: "cli/db/create",
+							},
+							{
+								text: "db drop",
+								link: "cli/db/drop",
+							},
+							{
+								text: "db reset",
+								link: "cli/db/reset",
+							},
+							{
+								text: "db import",
+								link: "cli/db/import",
+							},
+							{
+								text: "push dev",
+								link: "cli/push/dev",
+							},
+							{
+								text: "push prod",
+								link: "cli/push/prod",
+							},
+							{
+								text: "data apply",
+								link: "cli/data/apply",
+							},
+							{
+								text: "data up",
+								link: "cli/data/up",
+							},
+							{
+								text: "data down",
+								link: "cli/data/down",
+							},
+							{
+								text: "data status",
+								link: "cli/data/status",
+							},
+							{
+								text: "data scaffold",
+								link: "cli/data/scaffold",
+							},
+							{
+								text: "seed up",
+								link: "cli/seed/up",
+							},
+							{
+								text: "seed scaffold",
+								link: "cli/seed/scaffold",
+							},
+						],
+					},
 				],
 			},
-			"/reference/": apiModules,
+			"/reference/": {
+				items: [
+					{
+						text: "Modules",
+						base: "/reference/",
+						collapsed: false,
+						items: require("./../reference/api/typedoc-sidebar.json"),
+					},
+				],
+			},
 		},
 		socialLinks: [
 			{ icon: "github", link: "https://github.com/dunkelbraun/monolayer" },
