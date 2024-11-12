@@ -93,7 +93,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run tests
-        run: npx turbo test
+        run: NO_COLOR=1 npx vitest --run
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
