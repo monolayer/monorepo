@@ -9,12 +9,12 @@ aside: false
 
 - Declarative, type-safe database [schema definition](./../schema-definition/databases.md).
 - [Type-safe](./../generated-types.md) database client(s) for `kysely` (no *codegen* :tada:).
-- An advanced [migration system](./../migration-system/intro.md) with non-blocking migrations by default, migrations by phases, and detailed warnings.
-- Comprehensive [Zod validations](./../zod-validations.md) for all supported data types (no *codegen* :tada:) for `kysely`.
+- [Schema management](./../pushing-schema-changes.md) without migrations.
 - Support for [multiple databases](./../recipes/multiple-databases.md).
 - Support for [multiple schemas](./../recipes/multiple-schemas.md) per database.
 - Effortless [`Prisma`](https://www.prisma.io) [integration](./querying/prisma.md).
-
+- Detailed warnings on backwards-incompatible, blocking,unsafe, or destructive changes.
+- Data migrations separated from your schema management.
 <br>
 
 Here's a taste of how you define database schemas with `monolayer-pg`:

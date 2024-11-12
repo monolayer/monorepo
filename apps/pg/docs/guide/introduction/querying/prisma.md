@@ -45,12 +45,8 @@ export default defineDatabase({
 Since `Prisma` was not configured the first time we applied migrations, we need to run the command again:
 
 ```bash
-npx monolayer migrations apply --phase all
+npx monolayer-pg push dev
 ```
-
-You should get the following output:
-
-<<< @/snippets/migrations-prisma.txt
 
 ::: tip How does it work?
 After applying migrations, `monolayer-pg` executes [`prisma db pull`](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#db-pull) and [`prisma generate`](https://www.prisma.io/docs/orm/reference/prisma-cli-reference#generate) on your behalf.

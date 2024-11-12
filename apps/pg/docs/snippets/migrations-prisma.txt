@@ -1,7 +1,0 @@
-┌  Migrate all pending migrations (expand, alter, data, contract)
-│
-●  No migrations to apply.
-│
-◇  Generate prisma ✓
-│
-└  Done

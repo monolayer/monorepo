@@ -23,11 +23,11 @@ hero:
 features:
   - title: Declarative, type-safe schema definition
     details: Easy to write, read, and reason about it.
+  - title: Manage your database schema without migrations
+    details: Push your schema changes.
+  - title: Data migrations
+    details: LALALA
   - title: Type-safe database clients without codegen
     details: Types are inferred from your schema definition.
-  - title: Advanced Migration System
-    details: Non-blocking migrations by default, migrations by phases, and detailed warnings.
-  - title: Comprehensive Zod validations
-    details: Validate incoming data before inserting it to the database.
 ---
 

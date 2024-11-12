@@ -174,7 +174,7 @@ Create the database with the `monolayer-pg` CLI:
 :::code-group
 
 ```bash [command]
-npx monolayer db create
+npx monolayer-pg db create
 ```
 
 ```text [sample output]
@@ -187,50 +187,12 @@ npx monolayer db create
 
 :::
 
-## Generate migrations
+## Pushing changes to your development
 
-To update the database to reflect the schema that we have defined, we'll first generate migrations:
-
-```bash [Command]
-npx monolayer migrations generate
-```
-
-The command will prompt you to select a migration name
-
-<<< @/snippets/migrations-generate.txt
-
-This command will generate a migration file of your chosen name with the schema changes to apply in your project under the `monolayer-pg` directory.
-
-```text [Generated files]
-🗂️ hello-monolayer (project root)
-└ 📁 monolayer
-  └ 📁 migrations
-    └ 📁 expand
-      └ 📄 ${timestamp}-${migration-name}.ts
-```
-
-::: warning
-The folder `monolayer-pg` **SHOULD BE** added to version control.
-:::
-
-## Apply migrations
-
-Now we'll apply the migrations to the database:
+To update the database to reflect the schema that we have defined, run the following command:
 
 ```bash [Command]
-npx monolayer migrations apply --phase all
-```
-
-The command should output something similar to the following:
-
-```text
-┌  Migrate all pending migrations (expand, alter, data, contract)
-│
-◆   APPLIED  ${migration-name}
-│
-◇  Dump database structure ✓
-│
-└  Done
+npx monolayer-pg push dev
 ```
 
 After running the command, the current database structure will be also dumped to a file in `monolayer/dumps`
@@ -243,6 +205,18 @@ After running the command, the current database structure will be also dumped to
     └ 📄 structure.default.sql
 ```
 
-<br>
+::: warning
+The folder `monolayer-pg` **SHOULD BE** added to version control.
+:::
 
 You've defined a schema and applied it to a newly created the database! :tada:
+
+## Pushing changes to production
+
+To update production databases, you **SHOULD** run `monolayer-pg push prod` in your CI environment:
+
+```bash [Command]
+npx monolayer-pg push prod
+```
+
+This command will ensure that any state recorded by ``push dev` (such as table or column renames) is taken into account.

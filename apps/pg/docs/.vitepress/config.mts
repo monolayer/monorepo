@@ -1,7 +1,6 @@
 import { apiModules } from ".vitepress/sidebar-items/api-modules.mjs";
+import { cli } from ".vitepress/sidebar-items/cli.mjs";
 import { introduction } from ".vitepress/sidebar-items/introduction.mjs";
-import { migrationSystem } from ".vitepress/sidebar-items/migration-system.mjs";
-import { recipes } from ".vitepress/sidebar-items/recipes.mjs";
 import { schemaDefinition } from ".vitepress/sidebar-items/schema-definition.mjs";
 import { withMermaid } from "vitepress-plugin-mermaid";
 
@@ -36,20 +35,35 @@ export default withMermaid({
 						link: "configuration",
 					},
 					schemaDefinition,
-					migrationSystem,
+					{
+						text: "Pushing schema changes",
+						link: "pushing-schema-changes",
+					},
 					{
 						text: "Generated types",
 						link: "generated-types",
 					},
 					{
-						text: "Validations with Zod",
-						link: "zod-validations",
+						text: "Data migrations",
+						link: "data-migrations",
 					},
-					recipes,
 					{
-						text: "Command Line Interface",
-						link: "cli",
+						text: "Seeding your database",
+						link: "seed",
 					},
+					{
+						text: "CamelCase to snake_case",
+						link: "recipes/camel-case",
+					},
+					{
+						text: "Multiple databases",
+						link: "recipes/multiple-databases",
+					},
+					{
+						text: "Multiple database schemas",
+						link: "recipes/multiple-schemas",
+					},
+					cli,
 				],
 			},
 			"/reference/": apiModules,

@@ -55,8 +55,6 @@ npx @monolayer/create-pg@latest
 
 You will be greeted to enter the relative path to create the `db` folder:
 
-<<< @/snippets/create-monolayer.txt
-
 ## File Structure
 
 The installer should have installed all necesary dependencies and added the following files to your project directory:
@@ -70,13 +68,13 @@ The installer should have installed all necesary dependencies and added the foll
     ├ 📄 schema.ts
     ├ 📄 seeds.ts
 ├ 📄 .env
-└ 📄 monolayer.ts
+└ 📄 monolayer.config.ts
 ```
 
 ::: details Generated code &nbsp; 🔎
 ::: code-group
 
-```ts [monolayer.ts]
+```ts [monolayer.config.ts]
 import { defineConfig } from "@monolayer/pg/config";
 
 export default defineConfig({
