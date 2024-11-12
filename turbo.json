@@ -24,6 +24,9 @@
 		"test": {
 			"dependsOn": [
 				"^test"
+			],
+			"env": [
+				"POSTGRES_*"
 			]
 		},
 		"unpublish:local": {
