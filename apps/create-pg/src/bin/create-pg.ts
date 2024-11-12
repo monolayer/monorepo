@@ -34,7 +34,6 @@ const program = all([
 		{ name: "@monolayer/pg", development: false },
 		{ name: "kysely", version: "^0.27.2", development: false },
 		{ name: "pg", version: "^8.11.3", development: false },
-		{ name: "zod", version: "^3.22.2", development: false },
 		{ name: "@types/pg", development: true },
 	]),
 	initFolderAndFiles,
