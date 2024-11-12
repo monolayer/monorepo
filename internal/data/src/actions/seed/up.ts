@@ -13,7 +13,7 @@ import ora from "ora";
 import color from "picocolors";
 import prompts from "prompts";
 import { dataActionWithEffect } from "~data/programs/data-action.js";
-import { databaseDestinationFolder } from "~data/programs/destination-folder.js";
+import { seedDestinationFolder } from "~data/programs/destination-folder.js";
 
 export function seedUp(program: Command) {
 	commandWithDefaultOptions({
@@ -40,7 +40,7 @@ export function seedUp(program: Command) {
 						? path.isAbsolute(opts.file)
 							? opts.file
 							: path.join(cwd(), opts.file)
-						: path.join(yield* databaseDestinationFolder(""), "seed.ts");
+						: path.join(yield* seedDestinationFolder, "seed.ts");
 
 					const seedImport = yield* importFile<SeedFile>(filePath);
 
@@ -52,7 +52,10 @@ export function seedUp(program: Command) {
 						ora().succeed("Seed database");
 					}
 				}),
-				opts,
+				{
+					...opts,
+					group: "data",
+				},
 			);
 		});
 }

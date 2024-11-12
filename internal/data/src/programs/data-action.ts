@@ -13,14 +13,14 @@ export function dataAction(program: Command, name: string) {
 	return commandWithDefaultOptions({
 		name,
 		program,
-	}).option("-f, --folder <folder-name>", "Folder with data migrations");
+	}).option("-g, --group <group-name>", "Data migration group name", "data");
 }
 
 export async function dataActionWithEffect<A>(
 	effect: Effect.Effect<A, ActionErrors, ProgramContext | DataCLIState>,
 	opts: {
 		databaseId: string;
-		folder?: string;
+		group: string;
 		envFile?: string;
 		verbose?: boolean;
 	},
@@ -34,7 +34,7 @@ export async function dataActionWithEffect<A>(
 				}),
 				effect,
 			]),
-			{ folder: opts.folder },
+			{ group: opts.group },
 		),
 	]);
 }

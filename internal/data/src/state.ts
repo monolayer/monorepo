@@ -2,7 +2,7 @@ import { Context, Effect, Layer, Ref } from "effect";
 import { flatMap } from "effect/Effect";
 
 export interface DataCLIOptions {
-	folder?: string;
+	group: string;
 }
 
 export class DataCLIState extends Context.Tag("DataCLIState")<

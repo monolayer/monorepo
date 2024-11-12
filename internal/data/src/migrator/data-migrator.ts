@@ -53,11 +53,12 @@ export class DataMigrator extends Migrator {
 }
 
 export const dataMigrator = gen(function* () {
+	const destination = yield* databaseDestinationFolder;
 	return new DataMigrator({
 		db: (yield* DbClients).kyselyNoCamelCase,
-		folder: yield* databaseDestinationFolder("data"),
+		folder: destination,
 		name: kebabCase(
-			`${yield* currentDatabaseId}-${path.basename(yield* databaseDestinationFolder("data"))}`,
+			`${yield* currentDatabaseId}-${path.basename(destination)}`,
 		),
 	});
 });

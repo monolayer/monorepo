@@ -1,4 +1,5 @@
 import type { Command } from "@commander-js/extra-typings";
+import { pathExists } from "@monorepo/utils/path.js";
 import { gen, succeed, tryPromise } from "effect/Effect";
 import type { MigrationInfo } from "kysely";
 import color from "picocolors";
@@ -7,6 +8,7 @@ import {
 	dataAction,
 	dataActionWithEffect,
 } from "~data/programs/data-action.js";
+import { databaseDestinationFolder } from "~data/programs/destination-folder.js";
 
 export function dataStatus(program: Command) {
 	dataAction(program, "status")
@@ -15,11 +17,15 @@ export function dataStatus(program: Command) {
 			await dataActionWithEffect(
 				gen(function* () {
 					const migrator = yield* dataMigrator;
-					const status = yield* tryPromise(() => migrator.status());
-					for (const info of status) {
-						yield* printStatus(info);
+					if (yield* pathExists(yield* databaseDestinationFolder)) {
+						const status = yield* tryPromise(() => migrator.status());
+						for (const info of status) {
+							yield* printStatus(info);
+						}
+						yield* succeed(true);
+					} else {
+						console.log("There are no data migrations defined.");
 					}
-					yield* succeed(true);
 				}),
 				opts,
 			);

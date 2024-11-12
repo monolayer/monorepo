@@ -1,5 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
 import { logEmpty } from "@monorepo/cli/console.js";
+import { pathExists } from "@monorepo/utils/path.js";
 import { gen, tryPromise } from "effect/Effect";
 import type { MigrationResultSet } from "kysely";
 import path from "node:path";
@@ -19,16 +20,20 @@ export function dataApply(program: Command) {
 			await dataActionWithEffect(
 				gen(function* () {
 					const migrator = yield* dataMigrator;
-					const status = yield* tryPromise(() => migrator.migrateToLatest());
-					if (status.error === undefined) {
-						if (status.results?.length === 0) {
-							console.log(
-								`${color.yellow("skipped")} there are no data migrations to apply.`,
-							);
+					if (yield* pathExists(yield* databaseDestinationFolder)) {
+						const status = yield* tryPromise(() => migrator.migrateToLatest());
+						if (status.error === undefined) {
+							if (status.results?.length === 0) {
+								console.log(
+									`${color.yellow("skipped")} there are no data migrations to apply.`,
+								);
+							}
+						} else {
+							console.log("");
+							yield* printStatus(status);
 						}
 					} else {
-						console.log("");
-						yield* printStatus(status);
+						console.log("There are no data migrations defined.");
 					}
 				}),
 				opts,
@@ -45,7 +50,7 @@ function printStatus(migrationResult: MigrationResultSet) {
 		}
 		const results = migrationResult.results;
 		if (results !== undefined) {
-			const folder = yield* databaseDestinationFolder("data");
+			const folder = yield* databaseDestinationFolder;
 			const maxLength = maximumLabelLength(migrationResult);
 			for (const result of results) {
 				const dataMigrationFilePath = path.relative(

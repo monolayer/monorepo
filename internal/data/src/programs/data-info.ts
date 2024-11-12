@@ -5,6 +5,6 @@ import { cwd } from "node:process";
 import { databaseDestinationFolder } from "./destination-folder.js";
 
 export const dataInfo = gen(function* () {
-	const folder = yield* databaseDestinationFolder("data");
+	const folder = yield* databaseDestinationFolder;
 	logGray(`Data folder: ./${path.relative(cwd(), folder)}`);
 });

@@ -10,7 +10,6 @@ import {
 	dataActionWithEffect,
 } from "~data/programs/data-action.js";
 import { databaseDestinationFolder } from "~data/programs/destination-folder.js";
-import { DataCLIState } from "~data/state.js";
 
 export function dataScaffold(program: Command) {
 	dataAction(program, "scaffold")
@@ -24,7 +23,7 @@ export function dataScaffold(program: Command) {
 }
 
 const createDestinationFolder = gen(function* () {
-	mkdirSync(yield* databaseDestinationFolder("data"), {
+	mkdirSync(yield* databaseDestinationFolder, {
 		recursive: true,
 	});
 });
@@ -40,11 +39,8 @@ const promptDataMigrationName = tryPromise(() =>
 const createDataMigrationFile = gen(function* () {
 	const { dataMigrationName } = yield* promptDataMigrationName;
 	const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, "");
-	const folder =
-		(yield* DataCLIState.current).folder ??
-		(yield* databaseDestinationFolder("data"));
 	const dataMigrationFilePath = path.join(
-		folder,
+		yield* databaseDestinationFolder,
 		`${timestamp}-${kebabCase(dataMigrationName)}.ts`,
 	);
 	const spinner = ora();

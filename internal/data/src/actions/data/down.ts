@@ -1,4 +1,5 @@
 import type { Command } from "@commander-js/extra-typings";
+import { pathExists } from "@monorepo/utils/path.js";
 import { gen, tryPromise } from "effect/Effect";
 import type { MigrationInfo } from "kysely";
 import { exit } from "node:process";
@@ -9,6 +10,7 @@ import {
 	dataAction,
 	dataActionWithEffect,
 } from "~data/programs/data-action.js";
+import { databaseDestinationFolder } from "~data/programs/destination-folder.js";
 import { checkMigrationExists } from "~data/programs/migration-exists.js";
 
 export function dataDown(program: Command) {
@@ -21,10 +23,14 @@ export function dataDown(program: Command) {
 		.action(async (opts) => {
 			await dataActionWithEffect(
 				gen(function* () {
-					if (opts.name) {
-						yield* revertWithName(opts.name);
+					if (yield* pathExists(yield* databaseDestinationFolder)) {
+						if (opts.name) {
+							yield* revertWithName(opts.name);
+						} else {
+							yield* revertWithPrompt;
+						}
 					} else {
-						yield* revertWithPrompt;
+						console.log("There are no data migrations defined.");
 					}
 				}),
 				opts,

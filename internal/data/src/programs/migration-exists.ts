@@ -5,6 +5,6 @@ import { databaseDestinationFolder } from "./destination-folder.js";
 
 export const checkMigrationExists = (name: string) =>
 	gen(function* () {
-		const folder = yield* databaseDestinationFolder("data");
+		const folder = yield* databaseDestinationFolder;
 		return yield* pathExists(path.join(folder, `${name}.ts`));
 	});
