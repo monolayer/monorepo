@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/pg-zod",
-	"version": "1.0.0",
+	"version": "1.0.0-pre",
 	"license": "MIT",
 	"type": "module",
 	"description": "Generate Zod schemas from @monolayer/pg schemas.",
