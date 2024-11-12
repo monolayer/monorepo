@@ -4,6 +4,7 @@
 
 ```ts
 import { integer, table, check } from "@monolayer/pg/schema";
+import { sql } from "kysely";
 
 export const books = table({
   columns: {
@@ -20,6 +21,7 @@ A check constraint can refer also to multiple columns:
 
 ```ts
 import { integer, table, check } from "@monolayer/pg/schema";
+import { sql } from "kysely";
 
 export const books = table({
   columns: {
@@ -34,3 +36,10 @@ export const books = table({
   },
 });
 ```
+
+::: danger
+It's recommended to reference column names with the `sql.ref` function. This function takes care of:
+
+- Double quote the column name (PostgreSQL lower cases all names unless they are "double quoted" ).
+- Transform to the column name to `snake_case` when the `camelCase` option is active.
+:::

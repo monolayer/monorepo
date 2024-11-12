@@ -45,8 +45,8 @@ An expression index allows an index field to be a computed value of one or more 
 This  can be used to obtain fast access to data based on some transformation of the basic data.
 
 ```ts
-import { sql } from "kysely";
 import { table, text, index } from "@monolayer/pg/schema";
+import { sql } from "kysely";
 
 const users = table({
   columns: {
