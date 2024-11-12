@@ -1,4 +1,3 @@
-import * as p from "@clack/prompts";
 import color from "picocolors";
 
 export function printWarning(opts: {
@@ -7,10 +6,10 @@ export function printWarning(opts: {
 	notes: string[];
 }) {
 	warn(opts.header);
-	p.log.message(opts.details.join("\n"));
-	p.log.message(opts.notes.join("\n"));
+	console.log(opts.details.join("\n"));
+	console.log(opts.notes.join("\n"));
 }
 
 function warn(message: string) {
-	p.log.warning(`${color.bgYellow(color.black(" WARNING "))} ${message}`);
+	console.log(`${color.bgYellow(color.black(" WARNING "))} ${message}`);
 }

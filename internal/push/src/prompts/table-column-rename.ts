@@ -1,10 +1,10 @@
-import { select } from "@clack/prompts";
 import { PromptCancelError } from "@monorepo/cli/errors.js";
 import type { SchemaMigrationInfo } from "@monorepo/pg/schema/column/types.js";
 import { columnsToRenamePrompt } from "@monorepo/programs/columns-to-rename.js";
 import { Effect } from "effect";
 import { fail, gen, tryPromise } from "effect/Effect";
 import color from "picocolors";
+import prompts from "prompts";
 import type { SchemaIntrospection } from "~push/changeset/schema-changeset.js";
 import type {
 	ColumnsToRename,
@@ -197,11 +197,6 @@ export function tablesToRenamePrompt(
 	});
 }
 
-type TableRenameSelection = {
-	value: string;
-	label: string;
-}[];
-
 export function selectRename({
 	table,
 	schemaName,
@@ -212,27 +207,37 @@ export function selectRename({
 	deletedTables: string[];
 }) {
 	return gen(function* () {
-		const result = yield* tryPromise(() =>
-			select<TableRenameSelection, string>({
+		const result = yield* tryPromise(async () => {
+			let aborted = false;
+			const select = await prompts({
+				type: "select",
+				name: "rename",
 				message: `Do you want to create the table '${table}' in the '${schemaName}' schema or rename an existing table?`,
-				options: [
+				choices: [
 					{
 						value: `create:${table}`,
-						label: `${color.green("create")} '${table}'`,
+						title: `${color.green("create")} '${table}'`,
 					},
 					...deletedTables.map((deletedTable) => {
 						return {
 							value: `rename:${deletedTable}:${table}`,
-							label: `${color.yellow("rename")} ${deletedTable} ${color.yellow("~>")} ${table}`,
+							title: `${color.yellow("rename")} ${deletedTable} ${color.yellow("~>")} ${table}`,
 						};
 					}),
 				],
-			}),
-		);
-		if (typeof result === "symbol") {
+				onState: (e) => {
+					aborted = e.aborted;
+				},
+			});
+			return {
+				aborted,
+				select,
+			};
+		});
+		if (result.aborted) {
 			return yield* fail(new PromptCancelError());
 		} else {
-			return result;
+			return result.select.rename as string;
 		}
 	});
 }

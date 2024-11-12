@@ -1,8 +1,9 @@
-import { select } from "@clack/prompts";
 import { PromptCancelError } from "@monorepo/cli/errors.js";
 import type { ColumnsToRename } from "@monorepo/state/table-column-rename.js";
 import { Effect } from "effect";
+import { exit } from "node:process";
 import color from "picocolors";
+import prompts from "prompts";
 
 export function columnsToRenamePrompt(
 	schemaName: string,
@@ -46,29 +47,32 @@ export async function askColumnsToRename(
 			if (deleted.length === 0) {
 				continue;
 			}
-			const columnOp = await select<
-				{
-					value: string;
-					label: string;
-				}[],
-				string
-			>({
+			let aborted = false;
+			const columnOp = await prompts({
+				type: "select",
+				name: "rename",
 				message: `Do you want to create a '${addedColumn}' column in '${schemaName}'.'${tableName}' or rename an existing column?`,
-				options: [
+				choices: [
 					{
 						value: `create:${addedColumn}`,
-						label: `${color.green("create")} '${addedColumn}'`,
+						title: `${color.green("create")} '${addedColumn}'`,
 					},
 					...deleted.map((deletedColumn) => {
 						return {
 							value: `rename:${deletedColumn}:${addedColumn}`,
-							label: `${color.yellow("rename")} ${deletedColumn} ${color.yellow("~>")} ${addedColumn}`,
+							title: `${color.yellow("rename")} ${deletedColumn} ${color.yellow("~>")} ${addedColumn}`,
 						};
 					}),
 				],
+				onState: (e) => {
+					aborted = e.aborted;
+				},
 			});
-			if (typeof columnOp === "string") {
-				const renameMatch = columnOp.match(/^rename:(\w+):(\w+)/);
+			if (aborted) {
+				exit(1);
+			}
+			if (typeof columnOp.rename === "string") {
+				const renameMatch = columnOp.rename.match(/^rename:(\w+):(\w+)/);
 				if (renameMatch !== null) {
 					const toRename = columnsToRename[tableName];
 					if (toRename === undefined) {
@@ -83,8 +87,6 @@ export async function askColumnsToRename(
 					}
 					deleted.splice(deleted.indexOf(renameMatch[1]!), 1);
 				}
-			} else {
-				return columnOp;
 			}
 		}
 	}

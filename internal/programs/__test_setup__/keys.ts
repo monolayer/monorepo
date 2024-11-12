@@ -4,6 +4,8 @@ export const keys = {
 	ENTER: "\x0D",
 	SPACE: "\x20",
 	CONTROLC: "\x03",
+	Y: "y",
+	N: "N",
 };
 
 export async function pressKey(key: keyof typeof keys) {

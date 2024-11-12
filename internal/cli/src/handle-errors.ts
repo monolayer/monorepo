@@ -1,4 +1,3 @@
-import * as p from "@clack/prompts";
 import { Effect } from "effect";
 import { type Cause } from "effect/Cause";
 import { fail } from "effect/Effect";
@@ -13,8 +12,8 @@ import {
 export const handleErrors = Effect.catchTags({
 	ActionError: (error: ActionError) =>
 		Effect.gen(function* () {
-			p.log.error(`${color.red(error.message)}: ${error.message}`);
-			p.outro(`${color.red("Failed")}`);
+			console.log(`${color.red(error.message)}: ${error.message}`);
+			console.log(`${color.red("Failed")}`);
 			yield* Effect.fail("exit");
 		}),
 	ExitWithSuccess: () => Effect.succeed(1),
@@ -36,21 +35,21 @@ export function printCause(cause: Cause<unknown>) {
 				? cause.error
 				: undefined;
 	if (error !== undefined) {
-		p.log.error(`${color.red(error.name)} ${error.message}`);
+		console.log(`${color.red(error.name)} ${error.message}`);
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const err = error as any;
 		if (err.error !== undefined && err.error instanceof Error) {
-			p.log.message(formatErrorStack(err.error.stack));
+			console.log(formatErrorStack(err.error.stack));
 		} else {
 			if (error.stack !== undefined) {
-				p.log.message(formatErrorStack(error.stack));
+				console.log(formatErrorStack(error.stack));
 			} else {
-				p.log.message(JSON.stringify(error, null, 2));
+				console.log(JSON.stringify(error, null, 2));
 			}
 		}
 	} else {
-		p.log.error(color.red("Error"));
-		p.log.message(JSON.stringify(cause, null, 2));
+		console.log(color.red("Error"));
+		console.log(JSON.stringify(cause, null, 2));
 	}
 	return Effect.void;
 }
@@ -86,8 +85,8 @@ export const handleErrorsNew = Effect.catchTags({
 	},
 	ActionError: (error: ActionError) =>
 		Effect.gen(function* () {
-			p.log.error(`${color.red(error.message)}: ${error.message}`);
-			p.outro(`${color.red("Failed")}`);
+			console.log(`${color.red(error.message)}: ${error.message}`);
+			console.log(`${color.red("Failed")}`);
 			yield* Effect.fail("exit");
 		}),
 	ExitWithSuccess: () => Effect.succeed(1),

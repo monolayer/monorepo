@@ -1,4 +1,3 @@
-import * as p from "@clack/prompts";
 import { ActionError } from "@monorepo/cli/errors.js";
 import {
 	MonolayerConfig,
@@ -121,7 +120,7 @@ export function databaseById(databaseId: string) {
 		const databases = yield* allDatabases;
 		const database = databases[databaseId];
 		if (database === undefined) {
-			p.log.error(color.red("Error"));
+			console.log(color.red("Error"));
 			return yield* Effect.fail(
 				new ActionError(
 					"Missing database",

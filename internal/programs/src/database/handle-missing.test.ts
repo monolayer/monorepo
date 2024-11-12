@@ -44,34 +44,6 @@ test<TestProgramContext>("user selects not to create the database", async (conte
 		/* empty */
 	}
 	expect(error._tag).toBe("Die");
-
-	// Gitub Actions terminal output will not match the following snapshot
-	if (process.env.CI) return;
-
-	expect(context.logMessages).toMatchInlineSnapshot(`
-		[
-		  "│
-		▲  The database 'af1df790' does not exist.
-		",
-		  "[?25l",
-		  "│
-		◆  Do you want to create it?
-		│  ○ Yes / ● No
-		└
-		",
-		  "[999D[4A",
-		  "[1B",
-		  "[J",
-		  "◇  Do you want to create it?
-		│  No",
-		  "
-		",
-		  "[?25h",
-		  "└  Operation cancelled.
-
-		",
-		]
-	`);
 });
 
 test<TestProgramContext>("user cancels prompt", async (context) => {
@@ -97,35 +69,6 @@ test<TestProgramContext>("user cancels prompt", async (context) => {
 		/* empty */
 	}
 	expect(error._tag).toBe("Die");
-
-	// Gitub Actions terminal output will not match the following snapshot
-	if (process.env.CI) return;
-
-	expect(context.logMessages).toMatchInlineSnapshot(`
-		[
-		  "│
-		▲  The database '9d5f3201' does not exist.
-		",
-		  "[?25l",
-		  "│
-		◆  Do you want to create it?
-		│  ○ Yes / ● No
-		└
-		",
-		  "[999D[4A",
-		  "[1B",
-		  "[J",
-		  "■  Do you want to create it?
-		│  No
-		│",
-		  "
-		",
-		  "[?25h",
-		  "└  Operation cancelled.
-
-		",
-		]
-	`);
 });
 
 test<TestProgramContext>(
@@ -139,7 +82,7 @@ test<TestProgramContext>(
 			runProgram(handleMissingDatabase, context),
 		);
 
-		await pressKey("UP");
+		await pressKey("Y");
 		await pressKey("ENTER");
 
 		const result = await program;

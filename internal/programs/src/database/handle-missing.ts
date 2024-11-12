@@ -1,8 +1,7 @@
-import * as p from "@clack/prompts";
-import { confirm } from "@clack/prompts";
 import { cancelOperation } from "@monorepo/cli/cancel-operation.js";
 import { Effect, pipe } from "effect";
 import { flatMap, succeed, tap, tryPromise } from "effect/Effect";
+import prompts from "prompts";
 import { createDatabase } from "~programs/database/create-database.js";
 import { databaseExists } from "~programs/database/database-exists.js";
 import { databaseName } from "~programs/database/database-name.js";
@@ -19,16 +18,19 @@ export const handleMissingDatabase = databaseExists.pipe(
 const createDatabasePrompt = pipe(
 	databaseName.pipe(
 		tap((dbName) => {
-			p.log.warn(`The database '${dbName}' does not exist.`);
+			console.log(`The database '${dbName}' does not exist.`);
 		}),
 	),
 	flatMap(() =>
-		tryPromise(() =>
-			confirm({
-				initialValue: false,
-				message: `Do you want to create it?`,
-			}),
-		),
+		tryPromise(async () => {
+			const response = await prompts({
+				type: "confirm",
+				name: "value",
+				message: "Do you want to create it?",
+				initial: false,
+			});
+			return response.value as boolean;
+		}),
 	),
 	tap((promptConfirm) =>
 		Effect.if(promptConfirm === true, {

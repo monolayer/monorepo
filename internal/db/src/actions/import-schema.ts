@@ -1,4 +1,3 @@
-import * as p from "@clack/prompts";
 import type { EnumInfo } from "@monorepo/pg/introspection/enum.js";
 import { dbExtensionInfo } from "@monorepo/pg/introspection/extension.js";
 import type { IndexInfo } from "@monorepo/pg/introspection/index.js";
@@ -29,9 +28,11 @@ import { camelCase } from "case-anything";
 import { Effect } from "effect";
 import { succeed } from "effect/Effect";
 import { Kysely, PostgresDialect } from "kysely";
+import { exit } from "node:process";
 import pg from "pg";
 import pgConnectionString from "pg-connection-string";
 import color from "picocolors";
+import prompts from "prompts";
 
 export const importSchema = Effect.gen(function* () {
 	const { introspection, databaseName, extensions, schemaName } =
@@ -96,11 +97,9 @@ export const importSchema = Effect.gen(function* () {
 
 	const schemaImport = createSchema(databaseName, dbSchema, env.databases);
 
-	p.log.success(
-		`${color.green(`Successfully imported ${databaseName} schema`)}`,
-	);
-	p.log.message(`Schema file: ./${schemaImport.schema.path}`);
-	p.log.message(
+	console.log(`${color.green(`Successfully imported ${databaseName} schema`)}`);
+	console.log(`Schema file: ./${schemaImport.schema.path}`);
+	console.log(
 		`Configuration ${schemaImport.configuration.name} added to ./${schemaImport.configuration.path}`,
 	);
 
@@ -211,45 +210,37 @@ function databaseEnums(enums: EnumInfo) {
 }
 
 const promptConnectionString = Effect.tryPromise(async () => {
-	const connection = await p.group(
-		{
-			string: () =>
-				p.text({
-					message: "Enter the connection sring for the database",
-					placeholder: "postgresql://username:password@host:post/database",
-					validate: (value) => {
-						if (value === "") return "Please enter a connection string.";
-					},
-				}),
+	let aborted = false;
+	const connection = await prompts({
+		type: "text",
+		name: "string",
+		message: "Enter the connection sring for the database",
+		initial: "postgresql://username:password@host:post/database",
+		onState: (e) => {
+			aborted = e.aborted;
 		},
-		{
-			onCancel: () => {
-				p.cancel("Operation cancelled.");
-				process.exit(0);
-			},
-		},
-	);
-	return connection.string;
+	});
+	if (aborted) {
+		exit(1);
+	}
+	return connection.string as string;
 });
 
 const promptSchemaSelection = Effect.tryPromise(async () => {
-	const schema = await p.group(
-		{
-			name: () =>
-				p.text({
-					message: "Schema name to import",
-					defaultValue: "public",
-					placeholder: "public",
-				}),
+	let aborted = false;
+	const schema = await prompts({
+		type: "text",
+		name: "name",
+		message: "Schema to import",
+		initial: "public",
+		onState: (e) => {
+			aborted = e.aborted;
 		},
-		{
-			onCancel: () => {
-				p.cancel("Operation cancelled.");
-				process.exit(0);
-			},
-		},
-	);
-	return schema.name;
+	});
+	if (aborted) {
+		exit(1);
+	}
+	return schema.name as string;
 });
 
 const introspectCustomRemote = Effect.gen(function* () {

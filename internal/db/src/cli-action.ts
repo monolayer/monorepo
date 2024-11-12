@@ -1,4 +1,3 @@
-import * as p from "@clack/prompts";
 import { type ActionErrors } from "@monorepo/cli/errors.js";
 import {
 	catchErrorTags,
@@ -108,9 +107,9 @@ const envLoadSuccess = (result: AppEnv) => result;
 
 const envLoadFailure = (error: unknown) => {
 	console.dir(error);
-	p.log.error(color.red("Error"));
-	p.log.message(JSON.stringify(error, null, 2));
-	p.outro(`${color.red("Failed")}`);
+	console.log(color.red("Error"));
+	console.log(JSON.stringify(error, null, 2));
+	console.log(`${color.red("Failed")}`);
 	exit(1);
 };
 

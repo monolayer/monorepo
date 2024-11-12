@@ -1,6 +1,5 @@
-import * as p from "@clack/prompts";
 import { Effect } from "effect";
-import color from "picocolors";
+import ora from "ora";
 import { ActionError } from "~cli/errors.js";
 
 export function checkWithFail<E extends object, C extends object>({
@@ -21,19 +20,20 @@ export function checkWithFail<E extends object, C extends object>({
 	>;
 }) {
 	return Effect.gen(function* () {
-		const spinner = p.spinner();
+		const spinner = ora();
 		spinner.start();
 		const success = yield* callback();
 		if (success) {
-			spinner.stop(`${name} ${color.green("✓")}`);
+			spinner.succeed(name);
 		} else {
-			spinner.stop(`${name} ${color.red("x")}`);
+			spinner.fail(name);
 		}
 		if (success) {
 			return true;
 		} else {
-			p.log.error(errorMessage);
-			p.note(nextSteps, "Next Steps");
+			console.log(errorMessage);
+			console.log("Next Steps:");
+			console.log(nextSteps);
 			return yield* Effect.fail(new ActionError("Check fail", failMessage));
 		}
 	});

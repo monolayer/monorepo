@@ -23,7 +23,6 @@
 		"@monorepo/state": "*",
 		"@monorepo/utils": "*",
 		"@types/node": "^18.0.0",
-		"@clack/prompts": "^0.7.0",
 		"effect": "^3.10.5",
 		"execa": "^8.0.1",
 		"picocolors": "^1.0.0",
