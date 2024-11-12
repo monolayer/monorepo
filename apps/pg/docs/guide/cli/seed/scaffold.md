@@ -4,7 +4,7 @@
 
 Scaffolds a seed file
 
-### Usage
+## Usage
 
 ```bash
 # scaffold a seed file the default database
@@ -14,7 +14,7 @@ npx monolayer-pg seed scaffold
 npx monolayer-pg seed scaffold --database-id stats
 ```
 
-### Options
+## Options
 
 | Option                   | Description                                                            |
 | -------------------------| ---------------------------------------------------------------------- |

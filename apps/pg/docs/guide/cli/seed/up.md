@@ -4,7 +4,7 @@
 
 Seeds the database.
 
-### Usage
+## Usage
 
 ```bash
 # seed the default database
@@ -17,7 +17,7 @@ npx monolayer-pg seed up --database-id stats
 npx monolayer-pg seed up --env-file .env.test
 ```
 
-### Options
+## Options
 
 | Option                   | Description                                                            |
 | -------------------------| ---------------------------------------------------------------------- |
