@@ -92,8 +92,8 @@ jobs:
           sudo apt-get -y install postgresql-client-16
       - name: Install dependencies
         run: npm ci
-      - name: Run programs tests
-        run: npm run test
+      - name: Run tests
+        run: npx turbo test
         env:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
