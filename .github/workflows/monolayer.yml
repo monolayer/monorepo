@@ -66,7 +66,7 @@ jobs:
         shell: 'script --return --quiet --log-out /dev/null --command "bash -e {0}"'
     services:
       postgres:
-        image: postgres
+        image: postgres:16
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
