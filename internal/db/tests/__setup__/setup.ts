@@ -1,5 +1,4 @@
 import { askColumnsToRename } from "@monorepo/programs/columns-to-rename.js";
-import { askMigrationName } from "@monorepo/programs/migration-name.js";
 import type { ColumnsToRename } from "@monorepo/state/table-column-rename.js";
 import dotenv from "dotenv";
 import { Effect } from "effect";
@@ -98,8 +97,6 @@ vi.mock("@monorepo/programs/migration-name.js", async () => {
 		}),
 	};
 });
-
-vi.mocked(askMigrationName).mockResolvedValueOnce("default");
 
 export function mockColumnDiffOnce(value: ColumnsToRename) {
 	vi.mocked(askColumnsToRename).mockResolvedValueOnce(value);
