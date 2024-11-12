@@ -538,7 +538,6 @@ export function dropCheckConstraint({
 	debug,
 }: DropCheckConstraintOptions) {
 	return async (db: AnyKysely) => {
-		console.log(`Drop check constraint \`${check.name}\``, check.tableName);
 		const query = new CompiledQuery(
 			db
 				.withSchema(check.schemaName)
