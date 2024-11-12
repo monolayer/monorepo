@@ -21,7 +21,7 @@ export function seedUp(program: Command) {
 		program,
 	})
 		.description("seed database")
-		.option("-f, --file <seed-file>", "Ppath to seed file")
+		.option("-f, --file <seed-file>", "Path to seed file")
 		.option("-r, --replant", "Truncate tables before seeding")
 		.option("-n, --disable-warnings", "disable truncation warnings")
 		.action(async (opts) => {
