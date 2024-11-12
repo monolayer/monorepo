@@ -32,22 +32,6 @@ export function globalPool() {
 	return globalTestThis.pool;
 }
 
-vi.mock("@monorepo/programs/table-renames.js", async (importOriginal) => {
-	const actual =
-		(await importOriginal()) as typeof import("@monorepo/programs/table-renames.js");
-	return {
-		...actual,
-		tableRenames: vi.fn(
-			(
-				_tableDiff: { added: string[]; deleted: string[] },
-				schemaName: string,
-			) => {
-				return actual.tableRenames({ added: [], deleted: [] }, schemaName);
-			},
-		),
-	};
-});
-
 vi.mock("@monorepo/programs/columns-to-rename.js", async (importOriginal) => {
 	const actual =
 		(await importOriginal()) as typeof import("@monorepo/programs/columns-to-rename.ts");
