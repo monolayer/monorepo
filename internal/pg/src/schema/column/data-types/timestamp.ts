@@ -26,7 +26,7 @@ import type { DateTimePrecision } from "~pg/schema/column/types.js";
  * @example
  * ```ts
  * import { schema, table, timestamp } from "@monolayer/pg/schema";
- * import { zodSchema } from "monolayer/zod";
+ * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {

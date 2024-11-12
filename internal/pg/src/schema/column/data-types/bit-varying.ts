@@ -20,7 +20,7 @@ import { MaxLengthColumn } from "~pg/schema/column/column.js";
  * @example
  * ```ts
  * import { schema, table, varbit } from "@monolayer/pg/schema";
- * import { zodSchema } from "monolayer/zod";
+ * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {

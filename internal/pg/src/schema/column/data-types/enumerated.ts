@@ -35,7 +35,7 @@ import type { EnumType } from "~pg/schema/column/data-types/enum.js";
  * @example
  * ```ts
  * import { enumerated, enumType, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "monolayer/zod";
+ * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const role = enumType("role", ["admin", "user"]);
  * const dbSchema = schema({

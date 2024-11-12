@@ -58,6 +58,16 @@
 				"types": "./dist/cjs/schema.d.ts",
 				"default": "./dist/cjs/schema.js"
 			}
+		},
+		"./zod": {
+			"import": {
+				"types": "./dist/esm/zod.d.ts",
+				"default": "./dist/esm/zod.js"
+			},
+			"require": {
+				"types": "./dist/cjs/zod.d.ts",
+				"default": "./dist/cjs/zod.js"
+			}
 		}
 	},
 	"files": [
@@ -144,7 +154,8 @@
 	},
 	"peerDependencies": {
 		"kysely": "^0.27.2",
-		"pg": "^8.11.3"
+		"pg": "^8.11.3",
+		"zod": "^3.22.3"
 	},
 	"engines": {
 		"node": ">=18.0.0"

@@ -25,7 +25,7 @@ import type { WithDefaultColumn } from "~pg/schema/column/types.js";
  * @example
  * ```ts
  * import { integer, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "monolayer/zod";
+ * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {

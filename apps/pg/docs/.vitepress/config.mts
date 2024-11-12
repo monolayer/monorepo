@@ -43,6 +43,7 @@ export default withMermaid({
 						text: "Generated types",
 						link: "generated-types",
 					},
+					{ text: "Zod schemas", link: "/zod" },
 					{
 						text: "Data migrations",
 						link: "data-migrations",

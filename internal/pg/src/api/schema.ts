@@ -105,3 +105,4 @@ export {
 	type TriggerOptions,
 } from "~pg/schema/trigger.js";
 export { unique, type PgUnique } from "~pg/schema/unique.js";
+export { zodSchema } from "~pg/zod/zod_schema.js";

@@ -37,7 +37,7 @@ import type { JsonValue, WithDefaultColumn } from "~pg/schema/column/types.js";
  * *Default Data Type*
  * ```ts
  * import { json, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "monolayer/zod";
+ * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -58,7 +58,7 @@ import type { JsonValue, WithDefaultColumn } from "~pg/schema/column/types.js";
  * *Custom Data Example*
  * ```ts
  * import { jsonb, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "monolayer/zod";
+ * import { zodSchema } from "@monolayer/pg/zod";
  *
  * type Data = { count: number; name: string  };
  *
