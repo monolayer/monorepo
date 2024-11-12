@@ -1,5 +1,5 @@
 import { Effect } from "effect";
-import { assert, describe, test } from "vitest";
+import { describe, expect, test } from "vitest";
 import { createDatabase } from "~programs/database/create-database.js";
 import { assertCurrentConnectionDatabaseName } from "~test-setup/assertions.js";
 import { pgAdminPool, pgPool } from "~test-setup/pool.js";
@@ -27,10 +27,9 @@ describe("createDatabase", () => {
 		await Effect.runPromise(runProgram(createDatabase, context));
 
 		const result = await pgAdminPool().query(
-			"SELECT table_name, table_schema FROM information_schema.tables WHERE information_schema.tables.table_name = 'users'",
+			"SELECT table_name FROM information_schema.tables WHERE information_schema.tables.table_name = 'users'",
 		);
-		assert(result.rows.length !== 0);
-
+		expect(result.rows).toStrictEqual([{ table_name: "users" }]);
 		await assertCurrentConnectionDatabaseName(context.databaseName);
 	});
 });
