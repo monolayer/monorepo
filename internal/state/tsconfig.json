@@ -13,5 +13,9 @@
 		"emitDeclarationOnly": true,
 		"declaration": true
 	},
-	"references": [{ "path": "../cli" }, { "path": "../configuration" }]
+	"references": [
+		{ "path": "../cli" },
+		{ "path": "../configuration" },
+		{ "path": "../utils" }
+	]
 }

@@ -15,12 +15,14 @@
 			"~state/*": ["src/*"],
 			"@monorepo/cli/*": ["../cli/src/*"],
 			"@monorepo/configuration/*": ["../configuration/src/*"],
-			"@monorepo/pg/*": ["../pg/src/*"]
+			"@monorepo/pg/*": ["../pg/src/*"],
+			"@monorepo/utils/*": ["../utils/src/*"]
 		}
 	},
 	"references": [
 		{ "path": "../cli" },
 		{ "path": "../configuration" },
-		{ "path": "../pg" }
+		{ "path": "../pg" },
+		{ "path": "../utils" }
 	]
 }

@@ -4,5 +4,9 @@
 		"outDir": "./../../apps/pg/dist/esm/packages/state",
 		"tsBuildInfoFile": "./../../apps/pg/dist/esm/packages/state/tsconfig.build.tsbuildinfo"
 	},
-	"references": [{ "path": "../cli" }, { "path": "../configuration" }]
+	"references": [
+		{ "path": "../cli" },
+		{ "path": "../configuration" },
+		{ "path": "../utils" }
+	]
 }
