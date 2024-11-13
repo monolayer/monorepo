@@ -33,14 +33,13 @@
 		"mimic-function": "^5.0.0",
 		"npm-run-all": "^4.1.5",
 		"ora": "^8.1.0",
-		"patch-package": "^8.0.0",
 		"pg": "^8.11.3",
 		"prompts": "^2.4.2",
 		"search-insights": "^2.17.0",
 		"turbo-ignore": "^2.1.2",
 		"turbo": "^2.1.2",
 		"typedoc-plugin-markdown": "^4.2.3",
-		"typedoc-vitepress-theme": "=1.0.1",
+		"typedoc-vitepress-theme": "^1.0.2",
 		"typedoc": "^0.26.5",
 		"typescript": "^5.6.2",
 		"vite-plugin-dynamic-import": "^1.5.0",
@@ -52,7 +51,6 @@
 	"packageManager": "^npm@10.8.2",
 	"scripts": {
 		"test": "NO_COLOR=1 vitest --run",
-		"test:watch": "NO_COLOR=1 vitest ${TEST_FILE} --pool=forks --watch --ui --open=false",
-		"postinstall": "patch-package"
+		"test:watch": "NO_COLOR=1 vitest ${TEST_FILE} --pool=forks --watch --ui --open=false"
 	}
 }
