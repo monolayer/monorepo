@@ -198,7 +198,7 @@ test<TestContext>("push migrations without transactions", async (context) => {
 	]);
 });
 
-test.skip<TestContext>("rollbacks all migration phases on error", async (context) => {
+test<TestContext>("rollbacks all migration phases on error", async (context) => {
 	const expandMigrations: ExpandPushMigration[] = [
 		{
 			type: ChangesetType.CreateTable,
@@ -286,11 +286,15 @@ test.skip<TestContext>("rollbacks all migration phases on error", async (context
 
 	const pushMigrator = new PushMigrator({ db: context.dbClient });
 
-	await pushMigrator.push({
-		expand: expandMigrations,
-		alter: alterMigrations,
-		contract: contractMigrations,
-	});
+	try {
+		await pushMigrator.push({
+			expand: expandMigrations,
+			alter: alterMigrations,
+			contract: contractMigrations,
+		});
+	} catch {
+		//
+	}
 
 	const tables = await context.dbClient.introspection.getTables();
 	assert.isUndefined(tables.find((t) => t.name === "users"));
@@ -298,7 +302,7 @@ test.skip<TestContext>("rollbacks all migration phases on error", async (context
 	assert.isUndefined(tables.find((t) => t.name === "hello"));
 });
 
-test.skip<TestContext>("rollbacks all migration phases on error - concurrent index failure", async (context) => {
+test<TestContext>("rollbacks all migration phases on error - concurrent index failure", async (context) => {
 	const expandMigrations: ExpandPushMigration[] = [
 		{
 			type: ChangesetType.CreateTable,
@@ -363,9 +367,13 @@ test.skip<TestContext>("rollbacks all migration phases on error - concurrent ind
 
 	const pushMigrator = new PushMigrator({ db: context.dbClient });
 
-	await pushMigrator.push({
-		expand: expandMigrations,
-	});
+	try {
+		await pushMigrator.push({
+			expand: expandMigrations,
+		});
+	} catch {
+		//
+	}
 
 	const tables = await context.dbClient.introspection.getTables();
 
