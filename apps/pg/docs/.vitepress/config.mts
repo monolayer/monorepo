@@ -252,7 +252,7 @@ export default defineConfig({
 			},
 		},
 		socialLinks: [
-			{ icon: "github", link: "https://github.com/dunkelbraun/monolayer" },
+			{ icon: "github", link: "https://github.com/monolayer/monorepo" },
 		],
 		search: {
 			provider: "local",
