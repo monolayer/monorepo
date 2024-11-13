@@ -1,0 +1,60 @@
+{
+	"name": "@monolayer/sidecar",
+	"version": "1.0.0",
+	"description": "The backend sidecar framework",
+	"author": "Marcos Essindi <marcessindi@me.com>",
+	"license": "MIT",
+	"homepage": "https://github.com/monolayer/monorepo",
+	"bugs": "https://github.com/monolayer/monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/monolayer/monorepo",
+		"directory": "packages/sidecar"
+	},
+	"type": "module",
+	"bin": {
+		"sidecar": "dist/esm/bin/cli.js"
+	},
+	"scripts": {
+		"prebuild": "rm -rf dist/*",
+		"build": "tsc -b tsconfig.build.json && tsc -b tsconfig.build.cjs.json",
+		"postbuild": "npm run alias && npm run makeexec && npm run makepackage",
+		"alias": "tsc-alias -p tsconfig.alias.json --outDir dist/esm --verbose && tsc-alias -p tsconfig.alias.json --outDir dist/cjs --verbose",
+		"makeexec": "chmod +x dist/esm/bin/cli.js",
+		"makepackage": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/package.json && echo '{\n  \"type\": \"commonjs\"\n}' > dist/cjs/package.json",
+		"check": "npm run check:prettier && npm run check:lint && npm run check:skott",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src",
+		"check:exports": "attw --pack .",
+		"predocs": "npm run typedoc",
+		"docs": "npm-run-all --parallel docs:dev typedoc:watch",
+		"docs:dev": "vitepress dev docs",
+		"docs:build": "vitepress build docs",
+		"docs:preview": "vitepress preview docs",
+		"cli": "src/cli/cli.ts",
+		"format": "prettier --write .",
+		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
+		"package": "npm pack --pack-destination ./build",
+		"publish:local": "npm publish --registry http://localhost:4873",
+		"test": "NO_COLOR=1 vitest --run --passWithNoTests",
+		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
+		"typedoc": "typedoc --docsRoot docs/reference --name sidecar",
+		"typedoc:watch": "npm run typedoc -- --w´atch",
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/sidecar -f"
+	},
+	"dependencies": {
+		"commander": "^12.0.0",
+		"effect": "^3.10.5",
+		"execa": "^8.0.1",
+		"ora": "^8.1.0",
+		"picocolors": "^1.0.0",
+		"prompts": "^2.4.2",
+		"tsx": "^4.7.1"
+	},
+	"devDependencies": {
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@types/node": "^18.0.0"
+	}
+}
