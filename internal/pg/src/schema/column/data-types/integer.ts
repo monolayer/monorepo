@@ -25,7 +25,6 @@ import type { WithDefaultColumn } from "~pg/schema/column/types.js";
  * @example
  * ```ts
  * import { integer, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -39,8 +38,6 @@ import type { WithDefaultColumn } from "~pg/schema/column/types.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT | integer }

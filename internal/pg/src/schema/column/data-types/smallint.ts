@@ -18,7 +18,6 @@ import { IdentifiableColumn } from "~pg/schema/column/column.js";
  * @example
  * ```ts
  * import { schema, smallint, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -32,8 +31,6 @@ import { IdentifiableColumn } from "~pg/schema/column/column.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  * {@link https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT | smallint} (*PostgreSQL Docs*)

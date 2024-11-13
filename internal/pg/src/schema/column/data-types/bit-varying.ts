@@ -20,7 +20,6 @@ import { MaxLengthColumn } from "~pg/schema/column/column.js";
  * @example
  * ```ts
  * import { schema, table, varbit } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -34,8 +33,6 @@ import { MaxLengthColumn } from "~pg/schema/column/column.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-bit.html#DATATYPE-BIT | bit varying(n)}
@@ -63,21 +60,6 @@ export function varbit(maximumLength?: number) {
  * ```
  * Nullability and optionality will be changed by the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: string | null | undefined;
- *   output?: string | null | undefined;
- * }
- * ```
- * Nullability and optionality will be changed by the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Value must be a string of 1's and 0's.
- * - Value cannot exceed `maximumLength`.
  * @example
  * ```ts
  * import { schema, table, varbit } from "@monolayer/pg/schema";
@@ -90,6 +72,9 @@ export function varbit(maximumLength?: number) {
  *     }),
  *   },
  * });
+ *
+ * // Kysely database schema type
+ * type DB = typeof dbSchema.infer;
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-bit.html#DATATYPE-BIT | bit varying(n)}

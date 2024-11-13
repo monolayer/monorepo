@@ -17,25 +17,9 @@ import type { EnumType } from "~pg/schema/column/data-types/enum.js";
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * // enumType("role", ["admin", "user"]);
- * {
- *   input?: "admin" | "user" | null | undefined;
- *   output?: "admin" | "user" | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Input values must be an enum value, or `null`.
  * @example
  * ```ts
  * import { enumerated, enumType, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const role = enumType("role", ["admin", "user"]);
  * const dbSchema = schema({
@@ -51,8 +35,6 @@ import type { EnumType } from "~pg/schema/column/data-types/enum.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-enum.html#DATATYPE-ENUM | enumerated types }

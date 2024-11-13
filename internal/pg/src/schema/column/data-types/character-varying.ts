@@ -20,7 +20,6 @@ import { MaxLengthColumn } from "../column.js";
  * @example
  * ```ts
  * import { characteVarying, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -34,8 +33,6 @@ import { MaxLengthColumn } from "../column.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-character.html#DATATYPE-CHARACTER | character varying }
@@ -64,24 +61,9 @@ export function characterVarying(maximumLength?: number) {
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?: string | null | undefined;
- *   output?: string | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Value must be a `string` or `null`.
- * - Value cannot exceed `maximumLength` (when specified).
  * @example
  * ```ts
  * import { characteVarying, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -95,8 +77,6 @@ export function characterVarying(maximumLength?: number) {
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  * *PostgreSQL Docs*: {@link https://www.postgresql.org/docs/current/datatype-character.html#DATATYPE-CHARACTER | character varying }

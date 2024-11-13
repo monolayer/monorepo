@@ -19,7 +19,6 @@ import { PgColumn, valueWithHash } from "../column.js";
  * @example
  * ```ts
  * import { boolean, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -34,8 +33,6 @@ import { PgColumn, valueWithHash } from "../column.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * @see
  * *PostgreSQL native data type*: {@link https://www.postgresql.org/docs/current/datatype-boolean.html#DATATYPE-BOOLEAN | boolean }
  *

@@ -20,7 +20,6 @@ import type { DateTimePrecision } from "~pg/schema/column/types.js";
  * @example
  * ```ts
  * import { schema, table, timeWithTimeZone } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -34,8 +33,6 @@ import type { DateTimePrecision } from "~pg/schema/column/types.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  * {@link https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME | time with time zone} (*PostgreSQL Docs*)
@@ -63,25 +60,9 @@ export function timeWithTimeZone(precision?: DateTimePrecision) {
  * ```
  * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
  *
- * **Zod Schema**
- *
- * *Types:*
- * ```ts
- * {
- *   input?:  string | null | undefined;
- *   output?: string | null | undefined;
- * }
- * ```
- * Nullability and optionality will change according to the column's constraints, generated values, and default data values.
- *
- * *Validations:*
- * - Explicit `undefined` values are rejected.
- * - Input value must be `string`, or `null`.
- * - Non-values must be a valid string that matches a time format.
  * @example
  * ```ts
  * import { schema, table, timetz } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -95,8 +76,6 @@ export function timeWithTimeZone(precision?: DateTimePrecision) {
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  * {@link https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME | time with time zone} (*PostgreSQL Docs*)

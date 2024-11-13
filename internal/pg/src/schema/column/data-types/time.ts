@@ -20,7 +20,6 @@ import type { DateTimePrecision } from "~pg/schema/column/types.js";
  * @example
  * ```ts
  * import { schema, table, time } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -34,8 +33,6 @@ import type { DateTimePrecision } from "~pg/schema/column/types.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  * {@link https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME | time without time zone} (*PostgreSQL Docs*)

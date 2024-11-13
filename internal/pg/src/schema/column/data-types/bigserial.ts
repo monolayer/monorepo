@@ -20,7 +20,6 @@ import { SerialColumn } from "~pg/schema/column/column.js";
  * @example
  * ```ts
  * import { bigserial, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -34,8 +33,6 @@ import { SerialColumn } from "~pg/schema/column/column.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  *

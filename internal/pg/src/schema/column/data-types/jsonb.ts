@@ -37,7 +37,6 @@ import type { JsonValue, WithDefaultColumn } from "~pg/schema/column/types.js";
  * *Default Data Type*
  * ```ts
  * import { json, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -51,14 +50,11 @@ import type { JsonValue, WithDefaultColumn } from "~pg/schema/column/types.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  *
  * *Custom Data Example*
  * ```ts
  * import { jsonb, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * type Data = { count: number; name: string  };
  *
@@ -74,28 +70,6 @@ import type { JsonValue, WithDefaultColumn } from "~pg/schema/column/types.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- *
- * // Zod Schema
- * const schemaShape = zodSchema(database.tables.example).shape;
- * const schema = z.object({
- *   ...schemaShape,
- *   info: schemaShape.id.superRefine((data, ctx) => {
- *     const objectKeys = Object.keys(data).sort();
- *     if (
- *       objectKeys.length !== 2 ||
- *       objectKeys[0] !== "count" ||
- *       typeof objectKeys[0] !== "number" ||
- *       objectKeys[1] !== "name"
- *       typeof objectKeys[1] !== "string" ||
- *     ) {
- *       ctx.addIssue({
- *         code: z.ZodIssueCode.custom,
- *         message: "Invalid data",
- *       });
- *     }
- *     return z.NEVER;
- *   }),
- * });
  * ```
  *
  * @see

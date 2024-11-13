@@ -23,7 +23,6 @@ import { PgColumn, valueWithHash } from "~pg/schema/column/column.js";
  * @example
  * ```ts
  * import { date, schema, table } from "@monolayer/pg/schema";
- * import { zodSchema } from "@monolayer/pg/zod";
  *
  * const dbSchema = schema({
  *   tables: {
@@ -37,8 +36,6 @@ import { PgColumn, valueWithHash } from "~pg/schema/column/column.js";
  *
  * // Kysely database schema type
  * type DB = typeof dbSchema.infer;
- * // Zod Schema
- * const schema = zodSchema(database.tables.example);
  * ```
  * @see
  * *PostgreSQL Doc*: {@link https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-DATETIME | date}
