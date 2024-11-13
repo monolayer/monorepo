@@ -1,7 +1,7 @@
-import { withMermaid } from "vitepress-plugin-mermaid";
+import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
-export default withMermaid({
+export default defineConfig({
 	title: "monolayer-pg",
 	base: "/pg-docs",
 	description: "Database schema management for PostgreSQL",
@@ -22,7 +22,6 @@ export default withMermaid({
 
 		sidebar: {
 			"/guide/": {
-				collapsed: false,
 				base: "/guide/",
 				items: [
 					{
@@ -243,11 +242,10 @@ export default withMermaid({
 				],
 			},
 			"/reference/": {
+				base: "/reference/",
 				items: [
 					{
 						text: "Modules",
-						base: "/reference/",
-						collapsed: false,
 						items: require("./../reference/api/typedoc-sidebar.json"),
 					},
 				],
@@ -260,5 +258,4 @@ export default withMermaid({
 			provider: "local",
 		},
 	},
-	mermaid: {},
 });
