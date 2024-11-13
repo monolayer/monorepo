@@ -99,7 +99,7 @@
 		"publish:local": "npm publish --registry http://localhost:4873",
 		"test": "NO_COLOR=1 vitest --run --passWithNoTests",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
-		"typedoc": "typedoc --docsRoot docs/reference",
+		"typedoc": "typedoc --docsRoot docs/reference --name monolayer-pg",
 		"typedoc:watch": "npm run typedoc -- --watch",
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/pg -f"
 	},
