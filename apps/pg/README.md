@@ -9,6 +9,7 @@
 - Support for multiple databases.
 - Support for multiple schemas per database.
 - Effortless [`Prisma`](https://www.prisma.io) integration.
+- Comprehensive Zod validations for all supported data types (no *codegen* :tada:) for [`kysely`](https://kysely.dev).
 
 ## Documentation
 
