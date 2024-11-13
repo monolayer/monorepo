@@ -2,8 +2,10 @@ import color from "picocolors";
 import type { CodeChangesetWarning } from "./types/changeset.js";
 
 export function printWarning(opts: CodeChangesetWarning) {
+	console.log("");
 	console.log(`${color.bgYellow(color.black(" WARNING "))} ${opts.header}`);
 	console.log(opts.notes.join("\n"));
+	console.log("");
 }
 
 export const addBigSerialColumn = {
