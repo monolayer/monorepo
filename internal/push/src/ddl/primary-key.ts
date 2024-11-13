@@ -1,4 +1,5 @@
 import { extractColumnsFromPrimaryKey } from "@monorepo/pg/introspection/schema.js";
+import type { CodeChangesetWarning } from "~push/changeset/types/changeset.js";
 import {
 	addPrimaryKeyToExistingNullableColumn,
 	addPrimaryKeyToNewColumn,
@@ -17,7 +18,6 @@ import {
 	dropIndex,
 	dropPrimaryKey,
 } from "./ddl.js";
-import type { CodeChangesetWarning } from "~push/changeset/types/changeset.js";
 
 export class OnlinePrimaryKey {
 	index: PrimaryKeyIndex;
