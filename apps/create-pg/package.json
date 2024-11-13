@@ -4,7 +4,7 @@
 	"description": "Create monolayer-pg inside a project",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
-	"homepage": "https://dunkelbraun.github.io/monolayer-pg",
+	"homepage": "https://monolayer.github.io/pg-docs",
 	"bugs": "https://github.com/monolayer/monorepo/issues",
 	"repository": {
 		"type": "git",
