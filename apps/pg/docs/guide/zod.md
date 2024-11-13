@@ -4,7 +4,7 @@ aside: true
 
 # Zod Schemas
 
-You can generate `Zod` schemas for tables declared with `@monolayer/pg` with the  [`zodSchema`](./../reference/api//schema/functions/zodSchema.md) function before inserting or updating data to the database.
+You can generate `Zod` schemas for tables declared with `@monolayer/pg` with the  [`zodSchema`](./../reference/api/zod/functions/zodSchema.md) function before inserting or updating data to the database.
 
 The Zod schemas will take into account:
 

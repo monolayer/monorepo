@@ -77,6 +77,7 @@ import { isXMLColumn, xmlSchema } from "./column-schemas/xml.js";
 import type { ZodSchemaObject, ZodType } from "./inference.js";
 
 /**
+ * @module zod
  * Return a Zod schema for the table.
  * @public
  * @remarks
