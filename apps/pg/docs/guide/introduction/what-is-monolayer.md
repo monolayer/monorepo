@@ -15,7 +15,7 @@ aside: false
 - Effortless [`Prisma`](https://www.prisma.io) [integration](./querying/prisma.md).
 - Detailed warnings on backwards-incompatible, blocking,unsafe, or destructive changes.
 - Data migrations decoupled from your schema management.
-- Comprehensive Zod validations for all supported data types (no *codegen* :tada:) for [`kysely`](https://kysely.dev).
+- Comprehensive [Zod](https://zod.dev) validations for all supported data types (no *codegen* :tada:) for [`kysely`](https://kysely.dev).
 
 <br>
 
