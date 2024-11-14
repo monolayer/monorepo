@@ -1,4 +1,4 @@
-# README
+# Welcome to monolayer
 
 monolayer makes it possible to go from local code to production in one step, 100% automated.
 
