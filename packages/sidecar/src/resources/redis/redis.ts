@@ -56,7 +56,6 @@ export class Redis<C> extends Resource<C> implements ResourceContainer {
 		 */
 		name: string,
 	) {
-		const container = new RedisContainer(this, name) satisfies SidecarContainer;
-		return container as SidecarContainer;
+		return new RedisContainer(this, name);
 	}
 }
