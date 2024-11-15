@@ -1,9 +1,7 @@
-import type {
-	ResourceContainer,
-	SidecarContainer,
-} from "~sidecar/container.js";
+import { kebabCase } from "case-anything";
+import type { ResourceContainer } from "~sidecar/container.js";
 import { RedisContainer } from "~sidecar/resources/redis/redis-container.js";
-import { Resource } from "~sidecar/resources/resource.js";
+import { Resource, type ResourceBuild } from "~sidecar/resources/resource.js";
 
 /**
  * Redis resource.
@@ -22,7 +20,10 @@ import { Resource } from "~sidecar/resources/resource.js";
  *
  * @typeParam C - Client type
  */
-export class Redis<C> extends Resource<C> implements ResourceContainer {
+export class Redis<C>
+	extends Resource<C>
+	implements ResourceContainer, ResourceBuild
+{
 	/**
 	 * Container Docker image name
 	 */
@@ -57,5 +58,18 @@ export class Redis<C> extends Resource<C> implements ResourceContainer {
 		name: string,
 	) {
 		return new RedisContainer(this, name);
+	}
+
+	/**
+	 * Returns the build output for the resource.
+	 *
+	 * @hidden
+	 */
+	build() {
+		return {
+			kind: "redis",
+			id: kebabCase(this.id),
+			connectionStringEnvVar: this.connectionStringEnvVar(),
+		};
 	}
 }

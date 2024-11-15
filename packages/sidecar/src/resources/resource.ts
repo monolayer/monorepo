@@ -41,6 +41,7 @@ export abstract class Resource<C> {
 	/**
 	 * @hidden
 	 */
+	abstract build(): ResourceBuildOutput;
 	abstract container(name: string): SidecarContainer;
 
 	/**
@@ -77,4 +78,26 @@ export abstract class Resource<C> {
 			`SIDECAR_${this.constructor.name}_${this.id}_url`,
 		).toUpperCase();
 	}
+}
+
+export interface ResourceBuildOutput {
+	/**
+	 * Resource type
+	 */
+	kind: string;
+	/**
+	 * Resource ID
+	 */
+	id: string;
+	/**
+	 * Environment variable name for the connection string;
+	 */
+	connectionStringEnvVar: string;
+}
+
+export interface ResourceBuild {
+	/**
+	 * Returns a {@link ResourceBuildOutput}
+	 */
+	build: () => ResourceBuildOutput;
 }
