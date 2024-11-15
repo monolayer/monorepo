@@ -76,6 +76,7 @@
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/sidecar -f"
 	},
 	"dependencies": {
+		"@epic-web/remember": "^1.1.0",
 		"case-anything": "^3.1.0",
 		"commander": "^12.0.0",
 		"effect": "^3.10.5",
