@@ -10,7 +10,7 @@ import {
 	expect,
 	test,
 } from "vitest";
-import { startTestContainer } from "~sidecar/containers/start-test-container.js";
+import { RedisContainer } from "~sidecar/containers/redis.js";
 import { Redis } from "~sidecar/resources/redis.js";
 import { assertContainerImage } from "~test/__setup__/assertions.js";
 
@@ -32,7 +32,11 @@ describe("Redis client with test container", async () => {
 
 	beforeEach<RedisTestContext>(async (context) => {
 		context.redis = redisStore;
-		const startedContainer = await startTestContainer(context.redis);
+		const container = new RedisContainer(
+			context.redis,
+			`${context.redis.id}-test`,
+		);
+		const startedContainer = await container.start();
 		assert(startedContainer);
 		context.startedContainer = startedContainer;
 		await context.redis.client.connect();
@@ -84,7 +88,11 @@ test<RedisTestContext>(
 		);
 
 		redisResource.containerImageTag = "7.2.0-v12";
-		const startedContainer = await startTestContainer(redisResource);
+		const container = new RedisContainer(
+			redisResource,
+			`${redisResource.id}-test`,
+		);
+		const startedContainer = await container.start();
 		assert(startedContainer);
 		await assertContainerImage({
 			containerName: "redis_test_image_tag_test",
