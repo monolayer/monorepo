@@ -26,5 +26,6 @@
 		".env": "env",
 		".env*": "env"
 	},
-	"workbench.panel.defaultLocation": "bottom"
+	"workbench.panel.defaultLocation": "bottom",
+	"typescript.preferences.importModuleSpecifier": "non-relative"
 }
