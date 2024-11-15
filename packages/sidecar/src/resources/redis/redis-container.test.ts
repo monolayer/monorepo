@@ -43,7 +43,7 @@ test("Redis started container name label", { sequential: true }, async () => {
 });
 
 test(
-	"Redis started container resurce id label",
+	"Redis started container resource id label",
 	{ sequential: true },
 	async () => {
 		const container = new RedisContainer(redisStore, "test-container-name");
