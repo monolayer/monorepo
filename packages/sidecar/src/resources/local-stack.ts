@@ -1,5 +1,4 @@
 import { type ContainerizedResource } from "~sidecar/resources/interfaces.js";
-import { LocalStackContainer } from "~sidecar/resources/local-stack/local-stack-container.js";
 
 /**
  * LocalStack resource.
@@ -22,14 +21,5 @@ export class LocalStack implements ContainerizedResource {
 	 */
 	constructor(id: string) {
 		this.id = id;
-	}
-
-	/**
-	 * Returns a {@link LocalStackContainer}
-	 *
-	 * @param name container name
-	 */
-	container(name: string) {
-		return new LocalStackContainer(this, name);
 	}
 }

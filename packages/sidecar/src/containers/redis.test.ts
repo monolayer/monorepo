@@ -8,8 +8,8 @@ import {
 } from "test/__setup__/assertions.js";
 import { type StartedTestContainer } from "testcontainers";
 import { afterAll, assert, test } from "vitest";
-import { RedisContainer } from "~sidecar/resources/redis/redis-container.js";
-import { Redis } from "~sidecar/resources/redis/redis.js";
+import { RedisContainer } from "~sidecar/containers/redis.js";
+import { Redis } from "~sidecar/resources/redis.js";
 
 const testContainers: StartedTestContainer[] = [];
 

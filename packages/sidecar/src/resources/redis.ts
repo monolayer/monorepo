@@ -4,7 +4,6 @@ import {
 	type ResourceBuilder,
 	type ResourceClient,
 } from "~sidecar/resources/interfaces.js";
-import { RedisContainer } from "~sidecar/resources/redis/redis-container.js";
 
 /**
  * Redis resource.
@@ -86,15 +85,6 @@ export class Redis<C>
 		return snakeCase(
 			`SIDECAR_${this.constructor.name}_${this.id}_url`,
 		).toUpperCase();
-	}
-
-	container(
-		/**
-		 * Container name
-		 */
-		name: string,
-	) {
-		return new RedisContainer(this, name);
 	}
 
 	/**

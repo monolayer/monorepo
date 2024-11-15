@@ -3,7 +3,7 @@ import {
 	type StartedTestContainer,
 } from "testcontainers";
 import { assert } from "vitest";
-import { CONTAINER_LABEL_NAME } from "~sidecar/container.js";
+import { CONTAINER_LABEL_NAME } from "~sidecar/containers/container.js";
 
 export async function assertContainerImage({
 	containerName,

@@ -7,7 +7,7 @@ import {
 	type StartedTestContainer,
 } from "testcontainers";
 import { afterAll, assert, test } from "vitest";
-import { Container } from "~sidecar/container.js";
+import { Container } from "~sidecar/containers/container.js";
 
 const testContainers: StartedTestContainer[] = [];
 

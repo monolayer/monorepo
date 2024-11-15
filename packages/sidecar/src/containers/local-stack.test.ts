@@ -7,8 +7,8 @@ import {
 } from "test/__setup__/assertions.js";
 import { type StartedTestContainer } from "testcontainers";
 import { afterAll, assert, test } from "vitest";
-import { LocalStackContainer } from "~sidecar/resources/local-stack/local-stack-container.js";
-import { LocalStack } from "~sidecar/resources/local-stack/local-stack.js";
+import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
+import { LocalStack } from "~sidecar/resources/local-stack.js";
 
 const testContainers: StartedTestContainer[] = [];
 

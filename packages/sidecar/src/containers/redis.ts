@@ -5,8 +5,8 @@ import {
 	Container,
 	type SidecarContainer,
 	type StartOptions,
-} from "~sidecar/container.js";
-import type { Redis } from "~sidecar/resources/redis/redis.js";
+} from "~sidecar/containers/container.js";
+import type { Redis } from "~sidecar/resources/redis.js";
 
 const REDIS_SERVER_PORT = 6379;
 const REDIS_WEBUI_PORT = 8001;

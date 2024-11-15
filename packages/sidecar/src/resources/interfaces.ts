@@ -1,5 +1,3 @@
-import type { SidecarContainer } from "~sidecar/container.js";
-
 export interface GenericResource {
 	/**
 	 * Unique ID
@@ -16,11 +14,6 @@ export interface ResourceContainer {
 	 * Container Docker image tag
 	 */
 	containerImageTag: string;
-
-	/**
-	 * Returns the container.
-	 */
-	container: (name: string, imageTag?: string) => SidecarContainer;
 }
 
 export interface ContainerizedResource

@@ -5,8 +5,8 @@ import {
 	Container,
 	type SidecarContainer,
 	type StartOptions,
-} from "~sidecar/container.js";
-import type { LocalStack } from "~sidecar/resources/local-stack/local-stack.js";
+} from "~sidecar/containers/container.js";
+import type { LocalStack } from "~sidecar/resources/local-stack.js";
 
 const LOCAL_STACK_GATEWAY_PORT = 4566;
 
