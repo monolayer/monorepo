@@ -1,3 +1,7 @@
+/**
+ * @module containers
+ */
+
 import getPort from "get-port";
 import { GenericContainer, type StartedTestContainer } from "testcontainers";
 
@@ -80,7 +84,7 @@ export const CONTAINER_LABEL_NAME = "org.monolayer-sidecar.name";
 export const CONTAINER_LABEL_RESOURCE_ID = "org.monolayer-sidecar.resource-id";
 
 /**
- * @group Containers
+ * @module containers
  */
 export class Container extends GenericContainer implements SidecarContainer {
 	startedContainer?: StartedTestContainer;

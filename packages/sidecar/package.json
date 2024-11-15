@@ -25,6 +25,26 @@
 				"types": "./dist/cjs/index.d.ts",
 				"default": "./dist/cjs/index.js"
 			}
+		},
+		"./containers": {
+			"import": {
+				"types": "./dist/esm/containers.d.ts",
+				"default": "./dist/esm/containers.js"
+			},
+			"require": {
+				"types": "./dist/cjs/containers.d.ts",
+				"default": "./dist/cjs/containers.js"
+			}
+		},
+		"./resources": {
+			"import": {
+				"types": "./dist/esm/resources.d.ts",
+				"default": "./dist/esm/resources.js"
+			},
+			"require": {
+				"types": "./dist/cjs/resources.d.ts",
+				"default": "./dist/cjs/resources.js"
+			}
 		}
 	},
 	"scripts": {
