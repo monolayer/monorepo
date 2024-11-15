@@ -1,8 +1,8 @@
 import { kebabCase, snakeCase } from "case-anything";
 import type { ResourceContainer } from "~sidecar/container.js";
+import { GenericResource } from "~sidecar/resources/generic-resource.js";
 import { RedisContainer } from "~sidecar/resources/redis/redis-container.js";
 import type { ResourceClient } from "~sidecar/resources/resource-client.js";
-import { StatefulResource } from "~sidecar/resources/stateful-resource.js";
 import type { ResourceBuild } from "~sidecar/resources/types.js";
 
 /**
@@ -24,7 +24,7 @@ import type { ResourceBuild } from "~sidecar/resources/types.js";
  */
 export class Redis<C>
 	implements
-		StatefulResource,
+		GenericResource,
 		ResourceContainer,
 		ResourceBuild,
 		ResourceClient<C>
