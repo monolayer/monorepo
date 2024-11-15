@@ -180,10 +180,6 @@ export interface SidecarContainer {
 
 export interface ResourceContainer {
 	/**
-	 * Unique ID
-	 */
-	readonly id: string;
-	/**
 	 * Container Docker image name
 	 */
 	readonly containerImageName: string;
