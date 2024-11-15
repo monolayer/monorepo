@@ -1,5 +1,3 @@
-import type { SidecarContainer } from "~sidecar/container.js";
-
 /**
  * @typeParam C - Client type
  */
@@ -28,6 +26,4 @@ export abstract class StatefulResource {
 	constructor(options: StatefulResourceOptions) {
 		this.id = options.id;
 	}
-
-	abstract container(name: string): SidecarContainer;
 }
