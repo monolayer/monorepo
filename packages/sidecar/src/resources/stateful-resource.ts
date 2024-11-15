@@ -47,8 +47,6 @@ export abstract class StatefulResource<C> {
 	/**
 	 * Return the client by calling the client constructor function.
 	 *
-	 * @remarks
-	 *
 	 * The client is memoized.
 	 */
 	get client(): C {
