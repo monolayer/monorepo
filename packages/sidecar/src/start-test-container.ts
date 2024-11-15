@@ -1,10 +1,10 @@
-import type { StatefulResource } from "~sidecar/resources/stateful-resource.js";
+import type { ResourceContainer } from "~sidecar/container.js";
 
-export async function startTestContainer<C>(
+export async function startTestContainer(
 	/**
 	 * Resource
 	 */
-	resource: StatefulResource<C>,
+	resource: ResourceContainer,
 ) {
 	const container = resource.container(`${resource.id}-test`);
 	return await container.start();

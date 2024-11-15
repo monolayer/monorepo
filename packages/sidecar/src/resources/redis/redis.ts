@@ -1,6 +1,7 @@
-import { kebabCase } from "case-anything";
+import { kebabCase, snakeCase } from "case-anything";
 import type { ResourceContainer } from "~sidecar/container.js";
 import { RedisContainer } from "~sidecar/resources/redis/redis-container.js";
+import type { ResourceClient } from "~sidecar/resources/resource-client.js";
 import {
 	StatefulResource,
 	type StatefulResourceBuild,
@@ -24,8 +25,8 @@ import {
  * @typeParam C - Client type
  */
 export class Redis<C>
-	extends StatefulResource<C>
-	implements ResourceContainer, StatefulResourceBuild
+	extends StatefulResource
+	implements ResourceContainer, StatefulResourceBuild, ResourceClient<C>
 {
 	/**
 	 * Container Docker image name
@@ -50,8 +51,44 @@ export class Redis<C>
 	) {
 		super({
 			id: id,
-			client: client,
 		});
+		this.#clientConstructor = client;
+	}
+
+	#client?: C | never;
+	#clientConstructor: (connectionStringVar: string) => C;
+
+	/**
+	 * Return the client by calling the client constructor function.
+	 *
+	 * The client is memoized.
+	 */
+	get client(): C {
+		if (this.#client) {
+			return this.#client;
+		}
+		this.#client = this.#clientConstructor(this.connectionStringEnvVar());
+		return this.#client;
+	}
+
+	/**
+	 * Environment variable that should holds the resource connection string.
+	 *
+	 * Format: `SIDECAR_${resourceName}_${kebabCase(resourceId)}_URL`.toUpperCase()
+	 * @example
+	 *
+	 * const cache = new Redis("app-cache", (resource) => {
+	 *   // SIDECAR_REDIS_APP_CACHE_URL
+	 *   const connStringName = resource.connectionStringEnvVar();
+	 *   createClient({
+	 *     url: process.env[connStringName],
+	 *   }).on("error", (err) => console.error("Redis Client Error", err))
+	 * });
+	 */
+	connectionStringEnvVar() {
+		return snakeCase(
+			`SIDECAR_${this.constructor.name}_${this.id}_url`,
+		).toUpperCase();
 	}
 
 	container(
