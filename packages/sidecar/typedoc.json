@@ -1,38 +1,22 @@
 {
 	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
 	"out": "docs/reference/api",
-	"entryPoints": [],
+	"entryPoints": ["./src/index.ts"],
 	"entryPointStrategy": "expand",
 	"tsconfig": "./../../tsconfig.typedoc.json",
 	"exclude": ["**/dist/**/*.ts", "**/vitest.config.ts", "**/tests/**/*.ts"],
 	"excludeExternals": true,
 	"skipErrorChecking": true,
 	"enumMembersFormat": "table",
-	"groupOrder": [
-		"Schema Definition",
-		"Configuration",
-		"Functions",
-		"Classes",
-		"Type Aliases",
-		"Properties",
-		"Accessors",
-		"*"
-	],
-	"categoryOrder": [
-		"Database and Tables",
-		"Column Types",
-		"Indexes and Constraints",
-		"Data Types",
-		"Other",
-		"Unmanaged",
-		"*"
-	],
+	"groupOrder": ["Classes", "Types and Interfaces", "*"],
+	"categoryOrder": ["Resources", "*"],
 	"indexFormat": "list",
 	"outputFileStrategy": "members",
-	"parametersFormat": "table",
+	"parametersFormat": "htmlTable",
 	"propertiesFormat": "table",
-	"typeDeclarationFormat": "list",
-	"cleanOutputDir": false,
+	"useCodeBlocks": false,
+	"typeDeclarationFormat": "table",
+	"cleanOutputDir": true,
 	"navigation": {
 		"includeCategories": true,
 		"includeGroups": true,
@@ -44,6 +28,16 @@
 		"format": "vitepress",
 		"pretty": true,
 		"collapsed": true
+	},
+	"expandParameters": false,
+	"tableColumnSettings": {
+		"hideDefaults": false,
+		"hideInherited": true,
+		"hideModifiers": false,
+		"hideOverrides": true,
+		"hideSources": false,
+		"hideValues": false,
+		"leftAlignHeaders": false
 	},
 	"disableSources": true
 }
