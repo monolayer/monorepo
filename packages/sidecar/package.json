@@ -40,7 +40,7 @@
 		"test": "NO_COLOR=1 vitest --run --passWithNoTests",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
 		"typedoc": "typedoc --docsRoot docs/reference --name sidecar",
-		"typedoc:watch": "npm run typedoc -- --w´atch",
+		"typedoc:watch": "npm run typedoc -- --watch",
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/sidecar -f"
 	},
 	"dependencies": {
