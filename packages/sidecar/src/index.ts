@@ -5,6 +5,7 @@ export {
 	SidecarContainer,
 	StartOptions,
 } from "./container.js";
+export type { ContainerizedResource } from "./resources/containerized-resource.js";
 export { GenericResource } from "./resources/generic-resource.js";
 export { RedisContainer } from "./resources/redis/redis-container.js";
 export { Redis } from "./resources/redis/redis.js";

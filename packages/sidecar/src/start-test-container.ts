@@ -1,11 +1,10 @@
-import type { ResourceContainer } from "~sidecar/container.js";
-import type { GenericResource } from "~sidecar/resources/generic-resource.js";
+import type { ContainerizedResource } from "~sidecar/resources/containerized-resource.js";
 
 export async function startTestContainer(
 	/**
 	 * Resource
 	 */
-	resource: GenericResource & ResourceContainer,
+	resource: ContainerizedResource,
 ) {
 	const container = resource.container(`${resource.id}-test`);
 	return await container.start();
