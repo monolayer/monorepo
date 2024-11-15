@@ -2,8 +2,8 @@ import { kebabCase, snakeCase } from "case-anything";
 import type { ResourceContainer } from "~sidecar/container.js";
 import { GenericResource } from "~sidecar/resources/generic-resource.js";
 import { RedisContainer } from "~sidecar/resources/redis/redis-container.js";
+import type { ResourceBuild } from "~sidecar/resources/resource-build.js";
 import type { ResourceClient } from "~sidecar/resources/resource-client.js";
-import type { ResourceBuild } from "~sidecar/resources/types.js";
 
 /**
  * Redis resource.
