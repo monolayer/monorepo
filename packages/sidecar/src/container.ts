@@ -144,7 +144,7 @@ export class Container extends GenericContainer implements SidecarContainer {
 	get mappedPorts() {
 		if (this.startedContainer) {
 			const startedContainer = this.startedContainer;
-			return (this.options.portsToExpose ?? []).map((port) => ({
+			return (this.options.portsToExpose ?? []).map<MappedPort>((port) => ({
 				container: port,
 				host: startedContainer.getMappedPort(port),
 			}));
