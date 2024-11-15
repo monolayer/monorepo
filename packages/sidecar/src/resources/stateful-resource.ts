@@ -1,14 +1,4 @@
-/**
- * @typeParam C - Client type
- */
-export type StatefulResourceOptions = {
-	/**
-	 * Unique ID.
-	 */
-	id: string;
-};
-
-export abstract class StatefulResource {
+export interface StatefulResource {
 	/**
 	 * Unique ID
 	 */
@@ -17,13 +7,9 @@ export abstract class StatefulResource {
 	/**
 	 * Container Docker image name
 	 */
-	abstract readonly containerImageName: string;
+	readonly containerImageName: string;
 	/**
 	 * Container Docker image tag
 	 */
-	abstract containerImageTag: string;
-
-	constructor(options: StatefulResourceOptions) {
-		this.id = options.id;
-	}
+	containerImageTag: string;
 }

@@ -23,9 +23,13 @@ import type { ResourceBuild } from "~sidecar/resources/types.js";
  * @typeParam C - Client type
  */
 export class Redis<C>
-	extends StatefulResource
-	implements ResourceContainer, ResourceBuild, ResourceClient<C>
+	implements
+		StatefulResource,
+		ResourceContainer,
+		ResourceBuild,
+		ResourceClient<C>
 {
+	readonly id: string;
 	/**
 	 * Container Docker image name
 	 */
@@ -47,9 +51,7 @@ export class Redis<C>
 		 */
 		client: (connectionStringVar: string) => C,
 	) {
-		super({
-			id: id,
-		});
+		this.id = id;
 		this.#clientConstructor = client;
 	}
 
