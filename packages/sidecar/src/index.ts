@@ -11,4 +11,5 @@ export {
 	StatefulResource,
 	StatefulResourceOptions,
 } from "./resources/stateful-resource.js";
+export { ResourceBuild, ResourceBuildOutput } from "./resources/types.js";
 export { startTestContainer } from "./start-test-container.js";

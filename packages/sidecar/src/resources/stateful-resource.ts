@@ -31,25 +31,3 @@ export abstract class StatefulResource {
 
 	abstract container(name: string): SidecarContainer;
 }
-
-export interface StatefulResourceBuildOutput {
-	/**
-	 * Resource type
-	 */
-	kind: string;
-	/**
-	 * Resource ID
-	 */
-	id: string;
-	/**
-	 * Environment variable name for the connection string;
-	 */
-	connectionStringEnvVar: string;
-}
-
-export interface StatefulResourceBuild {
-	/**
-	 * Returns a {@link StatefulResourceBuildOutput}
-	 */
-	build: () => StatefulResourceBuildOutput;
-}
