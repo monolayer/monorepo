@@ -11,9 +11,15 @@ import type { Redis } from "~sidecar/resources/redis/redis.js";
 const REDIS_SERVER_PORT = 6379;
 const REDIS_WEBUI_PORT = 8001;
 
+/**
+ * Container for Redis
+ */
 export class RedisContainer<C> extends Container implements SidecarContainer {
 	#resource: Redis<C>;
 
+	/**
+	 * @hideconstructor
+	 */
 	constructor(resource: Redis<C>, name: string) {
 		super({
 			resourceId: resource.id,
