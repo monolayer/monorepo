@@ -177,19 +177,3 @@ export interface SidecarContainer {
 	 */
 	mappedPorts?: Array<MappedPort>;
 }
-
-export interface ResourceContainer {
-	/**
-	 * Container Docker image name
-	 */
-	readonly containerImageName: string;
-	/**
-	 * Container Docker image tag
-	 */
-	containerImageTag: string;
-
-	/**
-	 * Returns the container.
-	 */
-	container: (name: string, imageTag?: string) => SidecarContainer;
-}

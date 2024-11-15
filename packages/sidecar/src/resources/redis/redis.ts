@@ -1,9 +1,10 @@
 import { kebabCase, snakeCase } from "case-anything";
-import type { ResourceContainer } from "~sidecar/container.js";
-import { GenericResource } from "~sidecar/resources/generic-resource.js";
+import {
+	type ContainerizedResource,
+	type ResourceBuild,
+	type ResourceClient,
+} from "~sidecar/resources/interfaces.js";
 import { RedisContainer } from "~sidecar/resources/redis/redis-container.js";
-import type { ResourceBuild } from "~sidecar/resources/resource-build.js";
-import type { ResourceClient } from "~sidecar/resources/resource-client.js";
 
 /**
  * Redis resource.
@@ -23,11 +24,7 @@ import type { ResourceClient } from "~sidecar/resources/resource-client.js";
  * @typeParam C - Client type
  */
 export class Redis<C>
-	implements
-		GenericResource,
-		ResourceContainer,
-		ResourceBuild,
-		ResourceClient<C>
+	implements ContainerizedResource, ResourceBuild, ResourceClient<C>
 {
 	readonly id: string;
 	/**

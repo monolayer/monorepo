@@ -1,16 +1,16 @@
 export {
 	Container,
 	MappedPort,
-	ResourceContainer,
 	SidecarContainer,
 	StartOptions,
 } from "./container.js";
-export type { ContainerizedResource } from "./resources/containerized-resource.js";
-export { GenericResource } from "./resources/generic-resource.js";
-export { RedisContainer } from "./resources/redis/redis-container.js";
-export { Redis } from "./resources/redis/redis.js";
-export {
+export type {
+	ContainerizedResource,
+	GenericResource,
 	ResourceBuild,
 	ResourceBuildOutput,
-} from "./resources/resource-build.js";
+	ResourceContainer,
+} from "./resources/interfaces.js";
+export { RedisContainer } from "./resources/redis/redis-container.js";
+export { Redis } from "./resources/redis/redis.js";
 export { startTestContainer } from "./start-test-container.js";

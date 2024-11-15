@@ -1,4 +1,4 @@
-import type { ContainerizedResource } from "~sidecar/resources/containerized-resource.js";
+import type { ContainerizedResource } from "~sidecar/resources/interfaces.js";
 
 export async function startTestContainer(
 	/**
