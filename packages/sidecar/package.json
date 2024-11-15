@@ -15,6 +15,18 @@
 	"bin": {
 		"sidecar": "dist/esm/bin/cli.js"
 	},
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/esm/index.d.ts",
+				"default": "./dist/esm/index.js"
+			},
+			"require": {
+				"types": "./dist/cjs/index.d.ts",
+				"default": "./dist/cjs/index.js"
+			}
+		}
+	},
 	"scripts": {
 		"prebuild": "rm -rf dist/*",
 		"build": "tsc -b tsconfig.build.json && tsc -b tsconfig.build.cjs.json",
@@ -44,17 +56,28 @@
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/sidecar -f"
 	},
 	"dependencies": {
+		"case-anything": "^3.1.0",
 		"commander": "^12.0.0",
 		"effect": "^3.10.5",
 		"execa": "^8.0.1",
+		"get-port": "^7.1.0",
 		"ora": "^8.1.0",
 		"picocolors": "^1.0.0",
 		"prompts": "^2.4.2",
+		"testcontainers": "^10.14.0",
 		"tsx": "^4.7.1"
 	},
 	"devDependencies": {
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
-		"@types/node": "^18.0.0"
+		"@types/node": "^18.0.0",
+		"@vitest/coverage-istanbul": "=2.1.4",
+		"@vitest/coverage-v8": "=2.1.4",
+		"@vitest/ui": "=2.1.4",
+		"redis": "^4.7.0",
+		"skott": "^0.33.2",
+		"type-fest": "^4.10.1",
+		"type-testing": "^0.2.0",
+		"vitest": "=2.1.4"
 	}
 }
