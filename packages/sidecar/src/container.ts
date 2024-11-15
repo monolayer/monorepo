@@ -189,7 +189,7 @@ export interface ResourceContainer {
 	containerImageTag: string;
 
 	/**
-	 * Returns a {@link SidecarContainer}
+	 * Returns the container.
 	 */
 	container: (name: string, imageTag?: string) => SidecarContainer;
 }
