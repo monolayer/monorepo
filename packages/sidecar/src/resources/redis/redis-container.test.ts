@@ -23,9 +23,9 @@ afterAll(async () => {
 	}
 });
 
-const redisStore = new Redis("test-redis-test", (resource) =>
+const redisStore = new Redis("test-redis-test", (connectionStringEnvVar) =>
 	createClient({
-		url: process.env[resource.connectionStringEnvVar()],
+		url: process.env[connectionStringEnvVar],
 	}).on("error", (err) => console.error("Redis Client Error", err)),
 );
 

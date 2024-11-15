@@ -12,7 +12,7 @@ export type ResourceOptions<C> = {
 	/**
 	 * Client constructor function. Executed once when accessing the {@link Resource.client }
 	 */
-	client: (resource: Resource<C>) => C;
+	client: (connectionStringVar: string) => C;
 };
 
 export abstract class Resource<C> {
@@ -54,7 +54,7 @@ export abstract class Resource<C> {
 		if (this.#client) {
 			return this.#client;
 		}
-		this.#client = this.#options.client(this);
+		this.#client = this.#options.client(this.connectionStringEnvVar());
 		return this.#client;
 	}
 

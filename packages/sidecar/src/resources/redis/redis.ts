@@ -42,7 +42,7 @@ export class Redis<C> extends Resource<C> implements ResourceContainer {
 		/**
 		 * Client constructor function. Executed once when accessing the {@link Redis.client }
 		 */
-		client: (resource: Redis<C>) => C,
+		client: (connectionStringVar: string) => C,
 	) {
 		super({
 			id: id,

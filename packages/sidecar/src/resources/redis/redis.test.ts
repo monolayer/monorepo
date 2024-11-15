@@ -1,11 +1,13 @@
 import { createClient } from "redis";
 import type { StartedTestContainer } from "testcontainers";
+import { Equal, Expect } from "type-testing";
 import {
 	afterEach,
 	assert,
 	beforeAll,
 	beforeEach,
 	describe,
+	expect,
 	test,
 } from "vitest";
 import { Redis } from "~sidecar/resources/redis/redis.js";
@@ -21,9 +23,9 @@ describe("Redis client with test container", async () => {
 	let redisStore: Redis<ReturnType<typeof createClient>>;
 
 	beforeAll(async () => {
-		redisStore = new Redis("test-redis-test", (resource) =>
+		redisStore = new Redis("test-redis-test", (connectionStringEnvVar) =>
 			createClient({
-				url: process.env[resource.connectionStringEnvVar()],
+				url: process.env[connectionStringEnvVar],
 			}).on("error", (err) => console.error("Redis Client Error", err)),
 		);
 	});
@@ -71,10 +73,12 @@ test<RedisTestContext>(
 	"Redis with custom image tag container",
 	{ timeout: 10000000 },
 	async () => {
-		const redisResource = new Redis("test-image-tag", (resource) =>
-			createClient({
-				url: process.env[resource.connectionStringEnvVar()],
-			}).on("error", (err) => console.error("Redis Client Error", err)),
+		const redisResource = new Redis(
+			"test-image-tag",
+			(connectionStringEnvVar) =>
+				createClient({
+					url: process.env[connectionStringEnvVar],
+				}).on("error", (err) => console.error("Redis Client Error", err)),
 		);
 
 		redisResource.containerImageTag = "7.2.0-v12";
@@ -86,3 +90,19 @@ test<RedisTestContext>(
 		await startedContainer.stop();
 	},
 );
+
+test<RedisTestContext>("client type", async () => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const redisResource = new Redis(
+		"test-buildOutput",
+		(connectionStringEnvVar) =>
+			createClient({
+				url: process.env[connectionStringEnvVar],
+			}).on("error", (err) => console.error("Redis Client Error", err)),
+	);
+
+	type ClientType = typeof redisResource.client;
+	type ExpectedType = ReturnType<typeof createClient>;
+	const isEqual: Expect<Equal<ClientType, ExpectedType>> = true;
+	expect(isEqual).toBe(true);
+});
