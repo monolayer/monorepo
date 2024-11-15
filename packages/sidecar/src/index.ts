@@ -7,8 +7,8 @@ export {
 export type {
 	ContainerizedResource,
 	GenericResource,
-	ResourceBuild,
 	ResourceBuildOutput,
+	ResourceBuilder,
 	ResourceContainer,
 } from "./resources/interfaces.js";
 export { RedisContainer } from "./resources/redis/redis-container.js";

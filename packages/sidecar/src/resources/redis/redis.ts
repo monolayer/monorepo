@@ -1,7 +1,7 @@
 import { kebabCase, snakeCase } from "case-anything";
 import {
 	type ContainerizedResource,
-	type ResourceBuild,
+	type ResourceBuilder,
 	type ResourceClient,
 } from "~sidecar/resources/interfaces.js";
 import { RedisContainer } from "~sidecar/resources/redis/redis-container.js";
@@ -24,7 +24,7 @@ import { RedisContainer } from "~sidecar/resources/redis/redis-container.js";
  * @typeParam C - Client type
  */
 export class Redis<C>
-	implements ContainerizedResource, ResourceBuild, ResourceClient<C>
+	implements ContainerizedResource, ResourceClient<C>, ResourceBuilder
 {
 	readonly id: string;
 	/**

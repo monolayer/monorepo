@@ -7,7 +7,6 @@ export interface GenericResource {
 	readonly id: string;
 }
 
-
 export interface ResourceContainer {
 	/**
 	 * Container Docker image name
@@ -43,7 +42,7 @@ export interface ResourceBuildOutput {
 	connectionStringEnvVar: string;
 }
 
-export interface ResourceBuild {
+export interface ResourceBuilder {
 	/**
 	 * Returns a {@link ResourceBuildOutput}
 	 */
