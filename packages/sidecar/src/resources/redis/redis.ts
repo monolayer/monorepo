@@ -50,9 +50,6 @@ export class Redis<C> extends Resource<C> implements ResourceContainer {
 		});
 	}
 
-	/**
-	 * Returns a {@link SidecarContainer}
-	 */
 	container(
 		/**
 		 * Container name
