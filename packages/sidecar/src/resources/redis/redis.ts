@@ -1,7 +1,10 @@
 import { kebabCase } from "case-anything";
 import type { ResourceContainer } from "~sidecar/container.js";
 import { RedisContainer } from "~sidecar/resources/redis/redis-container.js";
-import { Resource, type ResourceBuild } from "~sidecar/resources/resource.js";
+import {
+	StatefulResource,
+	type StatefulResourceBuild,
+} from "~sidecar/resources/stateful-resource.js";
 
 /**
  * Redis resource.
@@ -21,8 +24,8 @@ import { Resource, type ResourceBuild } from "~sidecar/resources/resource.js";
  * @typeParam C - Client type
  */
 export class Redis<C>
-	extends Resource<C>
-	implements ResourceContainer, ResourceBuild
+	extends StatefulResource<C>
+	implements ResourceContainer, StatefulResourceBuild
 {
 	/**
 	 * Container Docker image name

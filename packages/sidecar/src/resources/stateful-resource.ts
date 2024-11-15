@@ -4,18 +4,18 @@ import type { SidecarContainer } from "~sidecar/container.js";
 /**
  * @typeParam C - Client type
  */
-export type ResourceOptions<C> = {
+export type StatefulResourceOptions<C> = {
 	/**
 	 * Unique ID.
 	 */
 	id: string;
 	/**
-	 * Client constructor function. Executed once when accessing the {@link Resource.client }
+	 * Client constructor function. Executed once when accessing the {@link StatefulResource.client }
 	 */
 	client: (connectionStringVar: string) => C;
 };
 
-export abstract class Resource<C> {
+export abstract class StatefulResource<C> {
 	/**
 	 * Unique ID
 	 */
@@ -30,10 +30,10 @@ export abstract class Resource<C> {
 	 */
 	abstract containerImageTag: string;
 
-	#options: ResourceOptions<C>;
+	#options: StatefulResourceOptions<C>;
 	#client?: C | never;
 
-	constructor(options: ResourceOptions<C>) {
+	constructor(options: StatefulResourceOptions<C>) {
 		this.id = options.id;
 		this.#options = options;
 	}
@@ -41,7 +41,7 @@ export abstract class Resource<C> {
 	/**
 	 * @hidden
 	 */
-	abstract build(): ResourceBuildOutput;
+	abstract build(): StatefulResourceBuildOutput;
 	abstract container(name: string): SidecarContainer;
 
 	/**
@@ -80,7 +80,7 @@ export abstract class Resource<C> {
 	}
 }
 
-export interface ResourceBuildOutput {
+export interface StatefulResourceBuildOutput {
 	/**
 	 * Resource type
 	 */
@@ -95,9 +95,9 @@ export interface ResourceBuildOutput {
 	connectionStringEnvVar: string;
 }
 
-export interface ResourceBuild {
+export interface StatefulResourceBuild {
 	/**
-	 * Returns a {@link ResourceBuildOutput}
+	 * Returns a {@link StatefulResourceBuildOutput}
 	 */
-	build: () => ResourceBuildOutput;
+	build: () => StatefulResourceBuildOutput;
 }
