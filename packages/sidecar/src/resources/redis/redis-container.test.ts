@@ -102,3 +102,31 @@ test(
 		);
 	},
 );
+
+test("Connection string URL", { sequential: true }, async () => {
+	const container = new RedisContainer(
+		redisStore,
+		"test-container-connection-url",
+	);
+	const startedContainer = await container.start();
+	testContainers.push(startedContainer);
+
+	assert.strictEqual(
+		container.connectionStringURL,
+		`redis://localhost:${startedContainer.getMappedPort(6379)}`,
+	);
+});
+
+test("Web URL", { sequential: true }, async () => {
+	const container = new RedisContainer(
+		redisStore,
+		"test-container-connection-url",
+	);
+	const startedContainer = await container.start();
+	testContainers.push(startedContainer);
+
+	assert.strictEqual(
+		container.webURL,
+		`http://localhost:${startedContainer.getMappedPort(8001)}/`,
+	);
+});

@@ -60,4 +60,32 @@ export class RedisContainer<C> extends Container implements SidecarContainer {
 		process.env[this.#resource.connectionStringEnvVar()] = url.toString();
 		return startedContainer;
 	}
+
+	/**
+	 * Returns the server connection string URL.
+	 */
+	get connectionStringURL() {
+		if (this.startedContainer) {
+			const url = new URL("", "redis://");
+			url.hostname = this.startedContainer.getHost();
+			url.port = this.startedContainer
+				.getMappedPort(REDIS_SERVER_PORT)
+				.toString();
+			return url.toString();
+		}
+	}
+
+	/**
+	 * Returns the web admin interface URL.
+	 */
+	get webURL() {
+		if (this.startedContainer) {
+			const url = new URL("", "http://base.com");
+			url.hostname = this.startedContainer.getHost();
+			url.port = this.startedContainer
+				.getMappedPort(REDIS_WEBUI_PORT)
+				.toString();
+			return url.toString();
+		}
+	}
 }
