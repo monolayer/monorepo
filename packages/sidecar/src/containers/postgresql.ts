@@ -13,7 +13,7 @@ import { PostgresDatabase } from "~sidecar/resources/postgres-database.js";
 const POSTGRESQL_SERVER_PORT = 5432;
 
 /**
- * Container for Redis
+ * Container for PostgreSQL
  */
 export class PostgreSQLContainer<C>
 	extends Container
