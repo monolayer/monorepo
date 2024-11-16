@@ -70,7 +70,7 @@ export class LocalStackContainer extends Container implements SidecarContainer {
 	}
 
 	/**
-	 * Returns the server connection string URL.
+	 * @returns The LocalStack gateway URL.
 	 */
 	get gatewayURL() {
 		if (this.startedContainer) {

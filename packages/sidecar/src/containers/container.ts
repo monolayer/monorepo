@@ -101,19 +101,29 @@ export const CONTAINER_LABEL_ORG = "org.monolayer-sidecar";
  * @module containers
  */
 export class Container extends GenericContainer implements SidecarContainer {
+	/**
+	 * The started container
+	 *
+	 * @defaultValue `undefined`
+	 */
 	startedContainer?: StartedTestContainer;
+	/**
+	 * Container name
+	 *
+	 * @defaultValue `options.name`(constructor)
+	 */
 	name: string;
 
-	/**
-	 * @hideconstructor
-	 */
-	constructor(public options: ContainerOptions) {
+	#options: ContainerOptions;
+
+	constructor(options: ContainerOptions) {
 		super(options.image);
-		this.name = snakeCase(this.options.name);
+		this.#options = options;
+		this.name = snakeCase(this.#options.name);
 		this.withName(this.name);
 		this.withLabels({
 			[CONTAINER_LABEL_NAME]: this.name,
-			[CONTAINER_LABEL_RESOURCE_ID]: this.options.resourceId,
+			[CONTAINER_LABEL_RESOURCE_ID]: this.#options.resourceId,
 			[CONTAINER_LABEL_ORG]: "true",
 		});
 	}
@@ -125,20 +135,20 @@ export class Container extends GenericContainer implements SidecarContainer {
 		if (this.startedContainer) {
 			return this.startedContainer;
 		}
-		for (const portToExpose of this.options.portsToExpose ?? []) {
+		for (const portToExpose of this.#options.portsToExpose ?? []) {
 			this.withExposedPorts({
 				container: portToExpose,
 				host:
-					(this.options.publishToRandomPorts ?? true)
+					(this.#options.publishToRandomPorts ?? true)
 						? await getPort({ port: portToExpose })
 						: portToExpose,
 			});
 		}
 		if (
 			options?.persistenceVolumes &&
-			Array.isArray(this.options.persistenceVolumes)
+			Array.isArray(this.#options.persistenceVolumes)
 		) {
-			for (const persistenceVolume of this.options.persistenceVolumes) {
+			for (const persistenceVolume of this.#options.persistenceVolumes) {
 				this.withBindMounts([
 					{
 						mode: "rw",
@@ -163,14 +173,10 @@ export class Container extends GenericContainer implements SidecarContainer {
 		this.startedContainer = undefined;
 	}
 
-	/**
-	 * Returns the mapped ports from the started container to the host.
-	 *
-	 */
 	get mappedPorts() {
 		if (this.startedContainer) {
 			const startedContainer = this.startedContainer;
-			return (this.options.portsToExpose ?? []).map<MappedPort>((port) => ({
+			return (this.#options.portsToExpose ?? []).map<MappedPort>((port) => ({
 				container: port,
 				host: startedContainer.getMappedPort(port),
 			}));
@@ -199,7 +205,8 @@ export interface SidecarContainer {
 	 */
 	stop: () => Promise<void>;
 	/**
-	 * Returns an array of the container mapped ports.
+	 * @returns An array of exposed container ports published to the host or `undefined` when the container has
+	 * not started.
 	 */
 	mappedPorts?: Array<MappedPort>;
 }

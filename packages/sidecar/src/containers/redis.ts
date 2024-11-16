@@ -76,7 +76,8 @@ export class RedisContainer<C> extends Container implements SidecarContainer {
 	}
 
 	/**
-	 * Returns the web admin interface URL.
+	 * @returns The Redis web admin interface URL or `undefined`
+	 * if the container has not started.
 	 */
 	get webURL() {
 		if (this.startedContainer) {
