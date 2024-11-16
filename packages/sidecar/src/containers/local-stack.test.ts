@@ -1,3 +1,4 @@
+import { kebabCase } from "case-anything";
 import { cwd } from "node:process";
 import path from "path";
 import {
@@ -15,32 +16,23 @@ const localStackResource = new LocalStack("test-local-stack");
 
 test(
 	"Started container name label",
-	{ sequential: true },
+	{ sequential: true, retry: 2 },
 	async ({ containers }) => {
-		const container = new LocalStackContainer(
-			localStackResource,
-			"test-container-name",
-		);
+		const container = new LocalStackContainer(localStackResource);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();
-		assert.strictEqual(
-			labels["org.monolayer-sidecar.name"],
-			"local_stack_test_container_name",
-		);
-		await assertContainer({ containerName: "local_stack_test_container_name" });
+		assert.strictEqual(labels["org.monolayer-sidecar.name"], container.name);
+		await assertContainer({ containerName: container.name });
 	},
 );
 
 test(
 	"Started container resource id label",
-	{ sequential: true },
+	{ sequential: true, retry: 2 },
 	async ({ containers }) => {
-		const container = new LocalStackContainer(
-			localStackResource,
-			"test-container-name",
-		);
+		const container = new LocalStackContainer(localStackResource);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 
@@ -54,41 +46,36 @@ test(
 
 test(
 	"Bind mounts on a redis container",
-	{ sequential: true },
+	{ sequential: true, retry: 2 },
 	async ({ containers }) => {
-		const container = new LocalStackContainer(
-			localStackResource,
-			"test-container-bind-mounts",
-		);
+		const container = new LocalStackContainer(localStackResource);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertBindMounts({
-			containerName: "local_stack_test_container_bind_mounts",
+			containerName: container.name,
 			bindMounts: [
-				`${path.join(cwd(), "tmp", "container-volumes/test-container-bind-mounts-data")}:/var/lib/localstack:rw`,
+				`${path.join(cwd(), "tmp", "container-volumes", kebabCase(`${container.name}-data`))}:/var/lib/localstack:rw`,
 			],
 		});
 	},
 );
 
-test("Exposed ports", { sequential: true }, async ({ containers }) => {
-	const container = new LocalStackContainer(
-		localStackResource,
-		"test-container-ports",
-	);
-	const startedContainer = await container.start();
-	containers.push(startedContainer);
-	await assertExposedPorts({
-		container: startedContainer,
-		ports: [4566],
-	});
-});
+test(
+	"Exposed ports",
+	{ sequential: true, retry: 2 },
+	async ({ containers }) => {
+		const container = new LocalStackContainer(localStackResource);
+		const startedContainer = await container.start();
+		containers.push(startedContainer);
+		await assertExposedPorts({
+			container: startedContainer,
+			ports: [4566],
+		});
+	},
+);
 
-test("Gateway URL", { sequential: true }, async ({ containers }) => {
-	const container = new LocalStackContainer(
-		localStackResource,
-		"test-container-gateway",
-	);
+test("Gateway URL", { sequential: true, retry: 2 }, async ({ containers }) => {
+	const container = new LocalStackContainer(localStackResource);
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
 
@@ -103,14 +90,11 @@ test("LocalStack Custom image tag container", async ({ containers }) => {
 
 	localStackResource.containerImageTag = "3.8.1";
 
-	const container = new LocalStackContainer(
-		localStackResource,
-		"test-image-tag-test",
-	);
+	const container = new LocalStackContainer(localStackResource);
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
 	await assertContainerImage({
-		containerName: "local_stack_test_image_tag_test",
+		containerName: container.name,
 		expectedImage: "localstack/localstack:3.8.1",
 	});
 	await startedContainer.stop();

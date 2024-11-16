@@ -2,6 +2,7 @@
  * @module containers
  */
 
+import { snakeCase } from "case-anything";
 import getPort from "get-port";
 import { GenericContainer, type StartedTestContainer } from "testcontainers";
 
@@ -101,14 +102,17 @@ export const CONTAINER_LABEL_ORG = "org.monolayer-sidecar";
  */
 export class Container extends GenericContainer implements SidecarContainer {
 	startedContainer?: StartedTestContainer;
+	name: string;
 
 	/**
 	 * @hideconstructor
 	 */
 	constructor(public options: ContainerOptions) {
 		super(`${options.image.name}:${options.image.tag}`);
+		this.name = snakeCase(this.options.name);
+		this.withName(this.name);
 		this.withLabels({
-			[CONTAINER_LABEL_NAME]: this.options.name,
+			[CONTAINER_LABEL_NAME]: this.name,
 			[CONTAINER_LABEL_RESOURCE_ID]: this.options.resourceId,
 			[CONTAINER_LABEL_ORG]: "true",
 		});

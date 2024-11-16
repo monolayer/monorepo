@@ -1,4 +1,4 @@
-import { kebabCase, snakeCase } from "case-anything";
+import { kebabCase } from "case-anything";
 import { cwd } from "node:process";
 import path from "path";
 import {
@@ -6,6 +6,7 @@ import {
 	type SidecarContainer,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
+import { randomName } from "~sidecar/containers/random-name.js";
 import type { Redis } from "~sidecar/resources/redis.js";
 
 const REDIS_SERVER_PORT = 6379;
@@ -20,10 +21,11 @@ export class RedisContainer<C> extends Container implements SidecarContainer {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(resource: Redis<C>, name: string) {
+	constructor(resource: Redis<C>) {
+		const name = randomName();
 		super({
 			resourceId: resource.id,
-			name: snakeCase(`redis_${name}`),
+			name,
 			image: {
 				name: resource.containerImageName,
 				tag: resource.containerImageTag,

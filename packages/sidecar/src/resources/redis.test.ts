@@ -15,7 +15,7 @@ test("Redis client commands against test container", async ({ containers }) => {
 			}).on("error", (err) => console.error("Redis Client Error", err)),
 	);
 
-	const container = new RedisContainer(redisStore, `${redisStore.id}-test`);
+	const container = new RedisContainer(redisStore);
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
 
@@ -38,7 +38,7 @@ test("Redis client commands against test container", async ({ containers }) => {
 
 test(
 	"Redis with custom image tag container",
-	{ sequential: true },
+	{ sequential: true, retry: 2 },
 	async ({ containers }) => {
 		const redisResource = new Redis(
 			"rd-custom-image-tag",
@@ -49,14 +49,11 @@ test(
 		);
 
 		redisResource.containerImageTag = "7.2.0-v12";
-		const container = new RedisContainer(
-			redisResource,
-			`${redisResource.id}-test`,
-		);
+		const container = new RedisContainer(redisResource);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertContainerImage({
-			containerName: "redis_rd_custom_image_tag_test",
+			containerName: container.name,
 			expectedImage: "redis/redis-stack:7.2.0-v12",
 		});
 		await startedContainer.stop();

@@ -1,4 +1,4 @@
-import { kebabCase, snakeCase } from "case-anything";
+import { kebabCase } from "case-anything";
 import { cwd } from "node:process";
 import path from "path";
 import {
@@ -6,6 +6,7 @@ import {
 	type SidecarContainer,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
+import { randomName } from "~sidecar/containers/random-name.js";
 import type { LocalStack } from "~sidecar/resources/local-stack.js";
 
 const LOCAL_STACK_GATEWAY_PORT = 4566;
@@ -30,14 +31,11 @@ export class LocalStackContainer extends Container implements SidecarContainer {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(
-		resource: LocalStack,
-		name: string,
-		options?: LocalStackContainerOptions,
-	) {
+	constructor(resource: LocalStack, options?: LocalStackContainerOptions) {
+		const name = randomName();
 		super({
 			resourceId: resource.id,
-			name: snakeCase(`local_stack_${name}`),
+			name,
 			image: {
 				name: resource.containerImageName,
 				tag: resource.containerImageTag,

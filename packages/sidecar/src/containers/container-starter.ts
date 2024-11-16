@@ -29,7 +29,7 @@ class ContainerStarter {
 	}
 
 	async startRedis<C>(resource: Redis<C>) {
-		const container = new RedisContainer(resource, `${resource.id}-test`);
+		const container = new RedisContainer(resource);
 		return await container.start();
 	}
 
@@ -44,11 +44,7 @@ class ContainerStarter {
 	async startLocalStack() {
 		if (this.#localStackContainer === undefined) {
 			const localStackResource = new LocalStack("local-stack-testing");
-			this.#localStackContainer = new LocalStackContainer(
-				localStackResource,
-				"local-stack-test",
-				{ persist: false, publishToRandomPorts: true },
-			);
+			this.#localStackContainer = new LocalStackContainer(localStackResource);
 			await this.#localStackContainer.start();
 		}
 		return this.#localStackContainer;

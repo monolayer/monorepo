@@ -21,7 +21,7 @@ test("start container", async ({ containers }) => {
 	containers.push(startedContainer);
 
 	const labels = startedContainer.getLabels();
-	assert.strictEqual(labels["org.monolayer-sidecar.name"], "test-container");
+	assert.strictEqual(labels["org.monolayer-sidecar.name"], container.name);
 });
 
 test("start container and expose ports", async ({ containers }) => {
@@ -57,7 +57,7 @@ test("start container with persistence volumes", async ({ containers }) => {
 	containers.push(startedContainer);
 
 	await assertBindMounts({
-		containerName: "test-container-persistence",
+		containerName: container.name,
 		bindMounts: ["/tmp/www:/var/www:rw"],
 	});
 });
