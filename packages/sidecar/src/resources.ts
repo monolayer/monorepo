@@ -1,3 +1,4 @@
+export { Bucket } from "./resources/bucket.js";
 export type {
 	GenericResource,
 	ResourceClient,
