@@ -1,10 +1,14 @@
+import pg from "pg";
 import { createClient } from "redis";
+import { assert } from "vitest";
 import { startTestContainer } from "~sidecar/containers/start-test-container.js";
+import { PostgresDatabase } from "~sidecar/resources.js";
 import { Bucket } from "~sidecar/resources/bucket.js";
 import { Redis } from "~sidecar/resources/redis.js";
 import {
 	assertBucket,
 	assertContainerImage,
+	assertDatabase,
 	assertStartedContainerLabel,
 } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
@@ -58,5 +62,76 @@ test(
 		await assertBucket("my-bucket-test-2");
 		await assertBucket("my-bucket-test-3");
 		await assertBucket("my-bucket-test-4");
+	},
+);
+
+test(
+	"launches postgres and creates multiple databases in the same container",
+	{ sequential: true, retry: 2, timeout: 30000 },
+	async ({ containers }) => {
+		const postgresDatabase = new PostgresDatabase(
+			"launch_postgres_same_container",
+			(connectionStringEnvVar) =>
+				new pg.Pool({
+					connectionString: process.env[connectionStringEnvVar],
+				}),
+		);
+
+		const startedContainer = await startTestContainer(postgresDatabase);
+		containers.push(startedContainer);
+		await assertDatabase(postgresDatabase);
+
+		const anotherDatabase = new PostgresDatabase(
+			"another_database_same_container",
+			(connectionStringEnvVar) =>
+				new pg.Pool({
+					connectionString: process.env[connectionStringEnvVar],
+				}),
+		);
+		const anotherDatabaseContainer = await startTestContainer(anotherDatabase);
+		containers.push(anotherDatabaseContainer);
+
+		await assertDatabase(anotherDatabase);
+
+		assert.strictEqual(
+			startedContainer.getName(),
+			anotherDatabaseContainer.getName(),
+		);
+	},
+);
+
+test(
+	"launches postgres and creates multiple databases in different container",
+	{ sequential: true, retry: 2, timeout: 30000 },
+	async ({ containers }) => {
+		const postgresDatabase = new PostgresDatabase(
+			"launch_postgres_different_container",
+			(connectionStringEnvVar) =>
+				new pg.Pool({
+					connectionString: process.env[connectionStringEnvVar],
+				}),
+		);
+
+		const startedContainer = await startTestContainer(postgresDatabase);
+		containers.push(startedContainer);
+		await assertDatabase(postgresDatabase);
+
+		const anotherDatabase = new PostgresDatabase(
+			"another_database_different_container",
+			(connectionStringEnvVar) =>
+				new pg.Pool({
+					connectionString: process.env[connectionStringEnvVar],
+				}),
+			{ serverId: "server-two" },
+		);
+		const anotherDatabaseContainer = await startTestContainer(anotherDatabase);
+		containers.push(anotherDatabaseContainer);
+
+		await assertDatabase(anotherDatabase);
+
+		assert.notStrictEqual(
+			startedContainer.getName(),
+			anotherDatabaseContainer.getName(),
+		);
 	},
 );

@@ -1,4 +1,5 @@
 import { ListBucketsCommand, S3Client } from "@aws-sdk/client-s3";
+import { Pool } from "pg";
 import {
 	getContainerRuntimeClient,
 	type StartedTestContainer,
@@ -7,6 +8,7 @@ import { assert } from "vitest";
 import { containerStarter } from "~sidecar/containers/container-starter.js";
 import { CONTAINER_LABEL_NAME } from "~sidecar/containers/container.js";
 import type { LocalStackContainer } from "~sidecar/containers/local-stack.js";
+import type { PostgresDatabase } from "~sidecar/resources/postgres-database.js";
 
 export async function assertContainerImage({
 	containerName,
@@ -105,4 +107,21 @@ export function assertStartedContainerLabel(
 ) {
 	const labels = startedContainer.getLabels();
 	assert.strictEqual(labels[label], expected);
+}
+
+export async function assertDatabase<C>(resource: PostgresDatabase<C>) {
+	const client = new Pool({
+		connectionString: process.env[resource.connectionStringEnvVar()]?.replace(
+			/\/\w+$/,
+			"",
+		),
+	});
+	const result = await client.query(
+		`SELECT datname FROM pg_database WHERE datname = '${resource.databaseName}'`,
+	);
+	await client.end();
+	assert(
+		result.rowCount !== 0,
+		`Database "${resource.databaseName}" not found.`,
+	);
 }
