@@ -14,9 +14,9 @@ import {
  * import { Redis } from "@monolayer/sidecar";
  * import { createClient } from "redis";
  *
- * const redis = new Redis("redis-cache", (resource) =>
+ * const redis = new Redis("redis-cache", (connectionStringEnvVar) =>
  *   createClient({
- *     url: process.env[resource.connectionString],
+ *     url: process.env[connectionStringEnvVar],
  *   }).on("error", (err) => console.error("Redis Client Error", err)),
  * );
  * ```
@@ -71,13 +71,12 @@ export class Redis<C>
 	 * Format: `SIDECAR_${resourceName}_${kebabCase(resourceId)}_URL`.toUpperCase()
 	 * @example
 	 *
-	 * const cache = new Redis("app-cache", (resource) => {
-	 *   // SIDECAR_REDIS_APP_CACHE_URL
-	 *   const connStringName = resource.connectionStringEnvVar();
-	 *   return createClient({
-	 *     url: process.env[connStringName],
-	 *   }).on("error", (err) => console.error("Redis Client Error", err))
-	 * });
+	 * const cache = new Redis("app-cache", (connectionStringEnvVar) =>
+	 *   createClient({
+	 *     // connectionStringEnvVar: SIDECAR_REDIS_APP_CACHE_URL
+	 *     url: process.env[connectionStringEnvVar],
+	 *   }).on("error", (err) => console.error("Redis Client Error", err)),
+	 * );
 	 */
 	connectionStringEnvVar() {
 		return snakeCase(
