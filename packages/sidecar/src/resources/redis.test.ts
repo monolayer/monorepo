@@ -1,86 +1,47 @@
 import { createClient } from "redis";
-import type { StartedTestContainer } from "testcontainers";
 import { Equal, Expect } from "type-testing";
-import {
-	afterEach,
-	assert,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	test,
-} from "vitest";
+import { assert, expect } from "vitest";
 import { RedisContainer } from "~sidecar/containers/redis.js";
 import { Redis } from "~sidecar/resources/redis.js";
 import { assertContainerImage } from "~test/__setup__/assertions.js";
+import { test } from "~test/__setup__/container-test.js";
 
-interface RedisTestContext {
-	redis: Redis<ReturnType<typeof createClient>>;
-	startedContainer: StartedTestContainer;
-}
-
-describe("Redis client with test container", async () => {
-	let redisStore: Redis<ReturnType<typeof createClient>>;
-
-	beforeAll(async () => {
-		redisStore = new Redis("test-redis-test", (connectionStringEnvVar) =>
+test("Redis client commands against test container", async ({ containers }) => {
+	const redisStore = new Redis(
+		"test-redis-client-commands",
+		(connectionStringEnvVar) =>
 			createClient({
 				url: process.env[connectionStringEnvVar],
 			}).on("error", (err) => console.error("Redis Client Error", err)),
-		);
-	});
+	);
 
-	beforeEach<RedisTestContext>(async (context) => {
-		context.redis = redisStore;
-		const container = new RedisContainer(
-			context.redis,
-			`${context.redis.id}-test`,
-		);
-		const startedContainer = await container.start();
-		assert(startedContainer);
-		context.startedContainer = startedContainer;
-		await context.redis.client.connect();
-	});
+	const container = new RedisContainer(redisStore, `${redisStore.id}-test`);
+	const startedContainer = await container.start();
+	containers.push(startedContainer);
 
-	afterEach<RedisTestContext>(async (context) => {
-		try {
-			await context.redis.client.FLUSHDB();
-		} catch {
-			//
-		}
-		try {
-			await context.redis.client.disconnect();
-		} catch {
-			//
-		}
-		try {
-			await context.startedContainer.stop();
-		} catch {
-			//
-		}
-	});
+	const client = redisStore.client;
+	await client.connect();
 
-	test<RedisTestContext>("Redis client commands against test container", async (context) => {
-		assert.notOk(await context.redis.client.exists("hello"));
+	assert.notOk(await client.exists("hello"));
 
-		await context.redis.client.set("hello", "World!");
-		assert.ok(await context.redis.client.exists("hello"));
+	await client.set("hello", "World!");
+	assert.ok(await client.exists("hello"));
 
-		const retrieved = await context.redis.client.get("hello");
-		assert(retrieved !== null);
-		assert.strictEqual(retrieved, "World!");
+	const retrieved = await client.get("hello");
+	assert(retrieved !== null);
+	assert.strictEqual(retrieved, "World!");
 
-		await context.redis.client.del("hello");
-		assert.isNull(await context.redis.client.get("hello"));
-	});
+	await client.del("hello");
+	assert.isNull(await client.get("hello"));
+	await client.disconnect();
 });
 
-test<RedisTestContext>(
+test(
 	"Redis with custom image tag container",
-	{ timeout: 10000000 },
-	async () => {
+	{ sequential: true },
+	async ({ containers }) => {
 		const redisResource = new Redis(
-			"test-image-tag",
+			"rd-custom-image-tag",
 			(connectionStringEnvVar) =>
 				createClient({
 					url: process.env[connectionStringEnvVar],
@@ -93,16 +54,16 @@ test<RedisTestContext>(
 			`${redisResource.id}-test`,
 		);
 		const startedContainer = await container.start();
-		assert(startedContainer);
+		containers.push(startedContainer);
 		await assertContainerImage({
-			containerName: "redis_test_image_tag_test",
+			containerName: "redis_rd_custom_image_tag_test",
 			expectedImage: "redis/redis-stack:7.2.0-v12",
 		});
 		await startedContainer.stop();
 	},
 );
 
-test<RedisTestContext>("client type", async () => {
+test("client type", async () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const redisResource = new Redis(
 		"test-buildOutput",
@@ -118,7 +79,7 @@ test<RedisTestContext>("client type", async () => {
 	expect(isEqual).toBe(true);
 });
 
-test<RedisTestContext>("build", { timeout: 10000000 }, async () => {
+test("build", async () => {
 	const redisResource = new Redis(
 		"test-buildOutput",
 		(connectionStringEnvVar) =>

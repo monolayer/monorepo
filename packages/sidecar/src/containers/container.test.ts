@@ -2,26 +2,12 @@ import {
 	assertBindMounts,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
-import {
-	getContainerRuntimeClient,
-	type StartedTestContainer,
-} from "testcontainers";
-import { afterAll, assert, test } from "vitest";
+import { getContainerRuntimeClient } from "testcontainers";
+import { assert } from "vitest";
 import { Container } from "~sidecar/containers/container.js";
+import { test } from "~test/__setup__/container-test.js";
 
-const testContainers: StartedTestContainer[] = [];
-
-afterAll(async () => {
-	for (const container of testContainers) {
-		try {
-			await container.stop();
-		} catch {
-			//
-		}
-	}
-});
-
-test("start container", async () => {
+test("start container", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container",
@@ -31,13 +17,14 @@ test("start container", async () => {
 		},
 	});
 	const startedContainer = await container.start();
-	testContainers.push(startedContainer);
+
+	containers.push(startedContainer);
 
 	const labels = startedContainer.getLabels();
 	assert.strictEqual(labels["org.monolayer-sidecar.name"], "test-container");
 });
 
-test("start container and expose ports", async () => {
+test("start container and expose ports", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-ports",
@@ -48,12 +35,12 @@ test("start container and expose ports", async () => {
 		portsToExpose: [80],
 	});
 	const startedContainer = await container.start();
-	testContainers.push(startedContainer);
+	containers.push(startedContainer);
 
 	await assertExposedPorts({ container: startedContainer, ports: [80] });
 });
 
-test("start container with persistence volumes", async () => {
+test("start container with persistence volumes", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-persistence",
@@ -67,8 +54,7 @@ test("start container with persistence volumes", async () => {
 	const startedContainer = await container.start({
 		persistenceVolumes: true,
 	});
-
-	testContainers.push(startedContainer);
+	containers.push(startedContainer);
 
 	await assertBindMounts({
 		containerName: "test-container-persistence",
@@ -76,7 +62,7 @@ test("start container with persistence volumes", async () => {
 	});
 });
 
-test("start container with reuse", async () => {
+test("start container with reuse", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-reuse",
@@ -86,7 +72,7 @@ test("start container with reuse", async () => {
 		},
 	});
 	const startedContainer = await container.start({ reuse: true });
-	testContainers.push(startedContainer);
+	containers.push(startedContainer);
 
 	const anotherContainer = new Container({
 		resourceId: "one",
@@ -100,12 +86,11 @@ test("start container with reuse", async () => {
 	const anotherStartedContainer = await anotherContainer.start({
 		reuse: true,
 	});
-	testContainers.push(anotherStartedContainer);
 
 	assert.strictEqual(startedContainer.getId(), anotherStartedContainer.getId());
 });
 
-test("mapped ports", async () => {
+test("mapped ports", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container",
@@ -116,7 +101,7 @@ test("mapped ports", async () => {
 		portsToExpose: [80],
 	});
 	const startedContainer = await container.start();
-	testContainers.push(startedContainer);
+	containers.push(startedContainer);
 
 	assert.deepStrictEqual(container.mappedPorts, [
 		{
@@ -126,7 +111,7 @@ test("mapped ports", async () => {
 	]);
 });
 
-test("without mapped ports", async () => {
+test("without mapped ports", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-wo-mapped-ports",
@@ -136,98 +121,12 @@ test("without mapped ports", async () => {
 		},
 	});
 	const startedContainer = await container.start();
-	testContainers.push(startedContainer);
+	containers.push(startedContainer);
 
 	assert.deepStrictEqual(container.mappedPorts, []);
 });
 
-test("mapped ports not started container", async () => {
-	const container = new Container({
-		resourceId: "one",
-		name: "test-container-wo-mapped-ports",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
-	});
-	assert.isUndefined(container.mappedPorts);
-});
-
-test("stop container", async () => {
-	const container = new Container({
-		resourceId: "one",
-		name: "test-container-stop",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
-		portsToExpose: [80],
-	});
-	const startedContainer = await container.start();
-	testContainers.push(startedContainer);
-
-	await container.stop();
-
-	const containerRuntimeClient = await getContainerRuntimeClient();
-	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
-		"org.monolayer-sidecar.name",
-		"test-container-stop",
-	);
-
-	assert.isUndefined(existingContainer);
-});
-
-test("start container with reuse", async () => {
-	const container = new Container({
-		resourceId: "one",
-		name: "test-container-reuse",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
-	});
-	const startedContainer = await container.start({ reuse: true });
-	testContainers.push(startedContainer);
-
-	const anotherContainer = new Container({
-		resourceId: "one",
-		name: "test-container-reuse",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
-	});
-
-	const anotherStartedContainer = await anotherContainer.start({
-		reuse: true,
-	});
-	testContainers.push(anotherStartedContainer);
-
-	assert.strictEqual(startedContainer.getId(), anotherStartedContainer.getId());
-});
-
-test("mapped ports", async () => {
-	const container = new Container({
-		resourceId: "one",
-		name: "test-container",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
-		portsToExpose: [80],
-	});
-	const startedContainer = await container.start();
-	testContainers.push(startedContainer);
-
-	assert.deepStrictEqual(container.mappedPorts, [
-		{
-			container: 80,
-			host: startedContainer.getMappedPort(80),
-		},
-	]);
-});
-
-test("without mapped ports", async () => {
+test("mapped ports not started container", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-wo-mapped-ports",
@@ -237,7 +136,7 @@ test("without mapped ports", async () => {
 		},
 	});
 	const startedContainer = await container.start();
-	testContainers.push(startedContainer);
+	containers.push(startedContainer);
 
 	assert.deepStrictEqual(container.mappedPorts, []);
 });
@@ -252,9 +151,7 @@ test("stop container", async () => {
 		},
 		portsToExpose: [80],
 	});
-	const startedContainer = await container.start();
-	testContainers.push(startedContainer);
-
+	await container.start();
 	await container.stop();
 
 	const containerRuntimeClient = await getContainerRuntimeClient();
@@ -266,7 +163,97 @@ test("stop container", async () => {
 	assert.isUndefined(existingContainer);
 });
 
-test("start multiple times returns the same container", async () => {
+test("start container with reuse", async ({ containers }) => {
+	const container = new Container({
+		resourceId: "one",
+		name: "test-container-reuse",
+		image: {
+			name: "nginx",
+			tag: "latest",
+		},
+	});
+	const startedContainer = await container.start({ reuse: true });
+	containers.push(startedContainer);
+
+	const anotherContainer = new Container({
+		resourceId: "one",
+		name: "test-container-reuse",
+		image: {
+			name: "nginx",
+			tag: "latest",
+		},
+	});
+
+	const anotherStartedContainer = await anotherContainer.start({
+		reuse: true,
+	});
+
+	assert.strictEqual(startedContainer.getId(), anotherStartedContainer.getId());
+});
+
+test("mapped ports", async ({ containers }) => {
+	const container = new Container({
+		resourceId: "one",
+		name: "test-container",
+		image: {
+			name: "nginx",
+			tag: "latest",
+		},
+		portsToExpose: [80],
+	});
+	const startedContainer = await container.start();
+	containers.push(startedContainer);
+
+	assert.deepStrictEqual(container.mappedPorts, [
+		{
+			container: 80,
+			host: startedContainer.getMappedPort(80),
+		},
+	]);
+});
+
+test("without mapped ports", async ({ containers }) => {
+	const container = new Container({
+		resourceId: "one",
+		name: "test-container-wo-mapped-ports",
+		image: {
+			name: "nginx",
+			tag: "latest",
+		},
+	});
+
+	const startedContainer = await container.start();
+	containers.push(startedContainer);
+
+	assert.deepStrictEqual(container.mappedPorts, []);
+});
+
+test("stop container", async () => {
+	const container = new Container({
+		resourceId: "one",
+		name: "test-container-stop",
+		image: {
+			name: "nginx",
+			tag: "latest",
+		},
+		portsToExpose: [80],
+	});
+
+	await container.start();
+	await container.stop();
+
+	const containerRuntimeClient = await getContainerRuntimeClient();
+	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
+		"org.monolayer-sidecar.name",
+		"test-container-stop",
+	);
+
+	assert.isUndefined(existingContainer);
+});
+
+test("start multiple times returns the same container", async ({
+	containers,
+}) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-started",
@@ -278,6 +265,7 @@ test("start multiple times returns the same container", async () => {
 	});
 	const container1 = await container.start();
 	const container2 = await container.start();
+	containers.push(container1, container2);
 
 	assert.strictEqual(container1.getId, container2.getId);
 });
