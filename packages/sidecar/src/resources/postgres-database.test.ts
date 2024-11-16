@@ -34,9 +34,9 @@ test(
 		const postgres = new PostgresDatabase(
 			"pg-custom-image-tag",
 			(connectionStringEnvVar) =>
-				createClient({
-					url: process.env[connectionStringEnvVar],
-				}).on("error", (err) => console.error("PostgreSQL Client Error", err)),
+				new pg.Pool({
+					connectionString: process.env[connectionStringEnvVar],
+				}),
 		);
 
 		PostgresDatabase.containerImage = "postgres:16.5";
