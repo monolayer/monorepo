@@ -1,9 +1,12 @@
 import { containerStarter } from "~sidecar/containers/container-starter.js";
 import { type GenericResource } from "~sidecar/resources/interfaces.js";
 
+/**
+ * Launches a test container for a resource.
+ */
 export async function startTestContainer(
 	/**
-	 * Resource
+	 * Resource to launch a test container.
 	 */
 	resource: GenericResource,
 ) {

@@ -69,17 +69,13 @@ export interface ContainerOptions {
 
 export interface StartOptions {
 	/**
-	 * Indicates whether the container should be started with persistent volumes.
-	 *
-	 * If true, the container will start with the persistence volumes defined in
-	 * ContainerOptions that can be reused across container sessions.
+	 * Whether to start the container with persistent volumes that
+	 * can be reused across container sessions.
 	 */
 	persistenceVolumes?: boolean;
 	/**
-	 * Determines whether to reuse an existing container instance if one is available.
-	 *
-	 * If true, a new container will not start if a container with the same configuration is already running will not be
-	 * Useful if you want to share a container across tests without global set up.
+	 * Whether to reuse an already running container the same configuration
+	 * and not launch a new container.
 	 */
 	reuse?: boolean;
 }
@@ -205,6 +201,8 @@ export interface SidecarContainer {
 	 */
 	stop: () => Promise<void>;
 	/**
+	 * An array of exposed container ports published to the host.
+	 *
 	 * @returns An array of exposed container ports published to the host or `undefined` when the container has
 	 * not started.
 	 */
