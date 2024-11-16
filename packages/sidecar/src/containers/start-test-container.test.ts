@@ -49,7 +49,7 @@ test(
 			"my-bucket-test-4",
 		];
 		for (const name of names) {
-			const bucketResource = new Bucket(name, {});
+			const bucketResource = new Bucket(name);
 			const startedContainer = await startTestContainer(bucketResource);
 			containers.push(startedContainer);
 		}
