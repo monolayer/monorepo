@@ -11,7 +11,13 @@ import type { LocalStack } from "~sidecar/resources/local-stack.js";
 const LOCAL_STACK_GATEWAY_PORT = 4566;
 
 interface LocalStackContainerOptions {
+	/**
+	 * @defaultValue `true`
+	 */
 	publishToRandomPorts?: boolean;
+	/**
+	 * @defaultValue `false`
+	 */
 	persist?: boolean;
 }
 
@@ -52,7 +58,7 @@ export class LocalStackContainer extends Container implements SidecarContainer {
 		});
 		this.withEnvironment({
 			SERVICES: "s3",
-			PERSISTENCE: (options?.persist ?? true) ? "1" : "0",
+			PERSISTENCE: (options?.persist ?? false) ? "1" : "0",
 		});
 	}
 
