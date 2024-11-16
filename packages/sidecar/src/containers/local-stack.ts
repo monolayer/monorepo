@@ -10,6 +10,11 @@ import type { LocalStack } from "~sidecar/resources/local-stack.js";
 
 const LOCAL_STACK_GATEWAY_PORT = 4566;
 
+interface LocalStackContainerOptions {
+	publishToRandomPorts?: boolean;
+	persist?: boolean;
+}
+
 /**
  * Container for LocalStack
  *
@@ -19,7 +24,11 @@ export class LocalStackContainer extends Container implements SidecarContainer {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(resource: LocalStack, name: string) {
+	constructor(
+		resource: LocalStack,
+		name: string,
+		options?: LocalStackContainerOptions,
+	) {
 		super({
 			resourceId: resource.id,
 			name: snakeCase(`local_stack_${name}`),
@@ -28,6 +37,7 @@ export class LocalStackContainer extends Container implements SidecarContainer {
 				tag: resource.containerImageTag,
 			},
 			portsToExpose: [LOCAL_STACK_GATEWAY_PORT],
+			publishToRandomPorts: options?.publishToRandomPorts ?? true,
 			persistenceVolumes: [
 				{
 					source: path.join(
@@ -42,7 +52,7 @@ export class LocalStackContainer extends Container implements SidecarContainer {
 		});
 		this.withEnvironment({
 			SERVICES: "s3",
-			PERSISTENCE: "1",
+			PERSISTENCE: (options?.persist ?? true) ? "1" : "0",
 		});
 	}
 
