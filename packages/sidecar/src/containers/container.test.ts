@@ -11,10 +11,7 @@ test("start container", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 	});
 	const startedContainer = await container.start();
 
@@ -28,10 +25,7 @@ test("start container and expose ports", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-ports",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 		portsToExpose: [80],
 	});
 	const startedContainer = await container.start();
@@ -44,10 +38,7 @@ test("start container with persistence volumes", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-persistence",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 		portsToExpose: [80],
 		persistenceVolumes: [{ source: "/tmp/www", target: "/var/www" }],
 	});
@@ -66,10 +57,7 @@ test("start container with reuse", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-reuse",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 	});
 	const startedContainer = await container.start({ reuse: true });
 	containers.push(startedContainer);
@@ -77,10 +65,7 @@ test("start container with reuse", async ({ containers }) => {
 	const anotherContainer = new Container({
 		resourceId: "one",
 		name: "test-container-reuse",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 	});
 
 	const anotherStartedContainer = await anotherContainer.start({
@@ -94,10 +79,7 @@ test("mapped ports", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 		portsToExpose: [80],
 	});
 	const startedContainer = await container.start();
@@ -115,10 +97,7 @@ test("without mapped ports", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-wo-mapped-ports",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 	});
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
@@ -130,10 +109,7 @@ test("mapped ports not started container", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-wo-mapped-ports",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 	});
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
@@ -145,10 +121,7 @@ test("stop container", async () => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-stop",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 		portsToExpose: [80],
 	});
 	await container.start();
@@ -167,10 +140,7 @@ test("start container with reuse", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-reuse",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 	});
 	const startedContainer = await container.start({ reuse: true });
 	containers.push(startedContainer);
@@ -178,10 +148,7 @@ test("start container with reuse", async ({ containers }) => {
 	const anotherContainer = new Container({
 		resourceId: "one",
 		name: "test-container-reuse",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 	});
 
 	const anotherStartedContainer = await anotherContainer.start({
@@ -195,10 +162,7 @@ test("mapped ports", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 		portsToExpose: [80],
 	});
 	const startedContainer = await container.start();
@@ -216,10 +180,7 @@ test("without mapped ports", async ({ containers }) => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-wo-mapped-ports",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 	});
 
 	const startedContainer = await container.start();
@@ -232,10 +193,7 @@ test("stop container", async () => {
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-stop",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 		portsToExpose: [80],
 	});
 
@@ -257,10 +215,7 @@ test("start multiple times returns the same container", async ({
 	const container = new Container({
 		resourceId: "one",
 		name: "test-container-started",
-		image: {
-			name: "nginx",
-			tag: "latest",
-		},
+		image: "nginx:latest",
 		portsToExpose: [80],
 	});
 	const container1 = await container.start();

@@ -1,5 +1,4 @@
 export type {
-	ContainerizedResource,
 	GenericResource,
 	ResourceBuildOutput,
 	ResourceBuilder,

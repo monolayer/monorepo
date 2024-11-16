@@ -1,6 +1,7 @@
 import { kebabCase, snakeCase } from "case-anything";
+import { assertContainerizedResource } from "~sidecar/resources/containerized-resource.js";
 import {
-	type ContainerizedResource,
+	type GenericResource,
 	type ResourceBuilder,
 	type ResourceClient,
 } from "~sidecar/resources/interfaces.js";
@@ -23,19 +24,16 @@ import {
  * @typeParam C - Client type
  */
 export class Redis<C>
-	implements ContainerizedResource, ResourceClient<C>, ResourceBuilder
+	implements GenericResource, ResourceClient<C>, ResourceBuilder
 {
-	readonly id: string;
 	/**
-	 * Container Docker image name
-	 */
-	readonly containerImageName: string = "redis/redis-stack";
-	/**
-	 * Container Docker image tag
+	 * Docker image for container
 	 *
-	 * @defaultValue `latest`
+	 * @defaultValue `redis/redis-stack:latest`
 	 */
-	containerImageTag: string = "latest";
+	static containerImage: string = "redis/redis-stack:latest";
+
+	readonly id: string;
 
 	constructor(
 		/**
@@ -100,3 +98,6 @@ export class Redis<C>
 		};
 	}
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+assertContainerizedResource(Redis<any>);

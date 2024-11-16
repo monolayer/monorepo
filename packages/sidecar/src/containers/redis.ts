@@ -7,7 +7,7 @@ import {
 	type StartOptions,
 } from "~sidecar/containers/container.js";
 import { randomName } from "~sidecar/containers/random-name.js";
-import type { Redis } from "~sidecar/resources/redis.js";
+import { Redis } from "~sidecar/resources/redis.js";
 
 const REDIS_SERVER_PORT = 6379;
 const REDIS_WEBUI_PORT = 8001;
@@ -26,10 +26,7 @@ export class RedisContainer<C> extends Container implements SidecarContainer {
 		super({
 			resourceId: resource.id,
 			name,
-			image: {
-				name: resource.containerImageName,
-				tag: resource.containerImageTag,
-			},
+			image: Redis.containerImage,
 			portsToExpose: [REDIS_SERVER_PORT, REDIS_WEBUI_PORT],
 			persistenceVolumes: [
 				{

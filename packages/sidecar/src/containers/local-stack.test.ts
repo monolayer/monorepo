@@ -88,7 +88,7 @@ test("Gateway URL", { sequential: true, retry: 2 }, async ({ containers }) => {
 test("LocalStack Custom image tag container", async ({ containers }) => {
 	const localStackResource = new LocalStack("test-image-tag");
 
-	localStackResource.containerImageTag = "3.8.1";
+	LocalStack.containerImage = "localstack/localstack:3.8.1";
 
 	const container = new LocalStackContainer(localStackResource);
 	const startedContainer = await container.start();

@@ -48,7 +48,7 @@ test(
 				}).on("error", (err) => console.error("Redis Client Error", err)),
 		);
 
-		redisResource.containerImageTag = "7.2.0-v12";
+		Redis.containerImage = "redis/redis-stack:7.2.0-v12";
 		const container = new RedisContainer(redisResource);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);

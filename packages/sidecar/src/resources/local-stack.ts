@@ -1,20 +1,20 @@
-import { type ContainerizedResource } from "~sidecar/resources/interfaces.js";
+import { assertContainerizedResource } from "~sidecar/resources/containerized-resource.js";
+import { type GenericResource } from "~sidecar/resources/interfaces.js";
 
 /**
  * LocalStack resource.
  *
  * @private
  */
-export class LocalStack implements ContainerizedResource {
+export class LocalStack implements GenericResource {
+	/**
+	 * Docker image for container
+	 *
+	 * @default `localstack/localstack:latest`
+	 */
+	static containerImage: string = "localstack/localstack:latest";
+
 	readonly id: string;
-	/**
-	 * @default "localstack/localstack"
-	 */
-	readonly containerImageName: string = "localstack/localstack";
-	/**
-	 * @default "latest"
-	 */
-	containerImageTag: string = "latest";
 
 	/**
 	 * @param id Unique ID.
@@ -23,3 +23,5 @@ export class LocalStack implements ContainerizedResource {
 		this.id = id;
 	}
 }
+
+assertContainerizedResource(LocalStack);

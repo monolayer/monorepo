@@ -7,7 +7,7 @@ import {
 	type StartOptions,
 } from "~sidecar/containers/container.js";
 import { randomName } from "~sidecar/containers/random-name.js";
-import type { LocalStack } from "~sidecar/resources/local-stack.js";
+import { LocalStack } from "~sidecar/resources/local-stack.js";
 
 const LOCAL_STACK_GATEWAY_PORT = 4566;
 
@@ -36,10 +36,7 @@ export class LocalStackContainer extends Container implements SidecarContainer {
 		super({
 			resourceId: resource.id,
 			name,
-			image: {
-				name: resource.containerImageName,
-				tag: resource.containerImageTag,
-			},
+			image: LocalStack.containerImage,
 			portsToExpose: [LOCAL_STACK_GATEWAY_PORT],
 			publishToRandomPorts: options?.publishToRandomPorts ?? true,
 			persistenceVolumes: [

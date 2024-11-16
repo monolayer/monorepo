@@ -46,7 +46,7 @@ export interface ContainerOptions {
 	/**
 	 * Container image.
 	 */
-	image: ContainerImage;
+	image: string;
 	/**
 	 * Container ports to export to the host.
 	 *
@@ -108,7 +108,7 @@ export class Container extends GenericContainer implements SidecarContainer {
 	 * @hideconstructor
 	 */
 	constructor(public options: ContainerOptions) {
-		super(`${options.image.name}:${options.image.tag}`);
+		super(options.image);
 		this.name = snakeCase(this.options.name);
 		this.withName(this.name);
 		this.withLabels({

@@ -7,18 +7,10 @@ export interface GenericResource {
 
 export interface ResourceContainer {
 	/**
-	 * Container Docker image name
+	 * Docker image for container
 	 */
-	readonly containerImageName: string;
-	/**
-	 * Container Docker image tag
-	 */
-	containerImageTag: string;
+	containerImage: string;
 }
-
-export interface ContainerizedResource
-	extends GenericResource,
-		ResourceContainer {}
 
 export interface ResourceBuildOutput {
 	/**
@@ -45,3 +37,10 @@ export interface ResourceBuilder {
 export interface ResourceClient<C> {
 	client: C;
 }
+
+export interface SerializableStatic {
+	fromObject: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function staticImplements<T>(ctor: T) {}
