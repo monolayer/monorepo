@@ -55,6 +55,12 @@ export interface ContainerOptions {
 	 */
 	portsToExpose?: number[];
 	/**
+	 * Whether to publish the exposed ports to random ports in the host
+	 *
+	 * @default false
+	 */
+	publishToRandomPorts?: boolean;
+	/**
 	 * Container volumnes
 	 */
 	persistenceVolumes?: ContainerPersistenceVolume[];
@@ -110,7 +116,10 @@ export class Container extends GenericContainer implements SidecarContainer {
 		for (const portToExpose of this.options.portsToExpose ?? []) {
 			this.withExposedPorts({
 				container: portToExpose,
-				host: await getPort({ port: portToExpose }),
+				host:
+					(this.options.publishToRandomPorts ?? true)
+						? await getPort({ port: portToExpose })
+						: portToExpose,
 			});
 		}
 		if (
