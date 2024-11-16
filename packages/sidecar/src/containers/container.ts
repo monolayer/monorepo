@@ -87,6 +87,9 @@ export interface StartOptions {
  * @hidden
  */
 export const CONTAINER_LABEL_NAME = "org.monolayer-sidecar.name";
+/**
+ * @hidden
+ */
 export const CONTAINER_LABEL_RESOURCE_ID = "org.monolayer-sidecar.resource-id";
 
 /**
