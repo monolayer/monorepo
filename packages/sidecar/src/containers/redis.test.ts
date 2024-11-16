@@ -103,7 +103,7 @@ test(
 		containers.push(startedContainer);
 
 		assert.strictEqual(
-			container.connectionStringURL,
+			container.connectionURI,
 			`redis://localhost:${startedContainer.getMappedPort(6379)}`,
 		);
 	},

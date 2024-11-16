@@ -61,9 +61,10 @@ export class RedisContainer<C> extends Container implements SidecarContainer {
 	}
 
 	/**
-	 * Returns the server connection string URL.
+	 * @returns The Redis server connection string URI in the form of `redis://host:port`
+	 * or `undefined` if the container has not started.
 	 */
-	get connectionStringURL() {
+	get connectionURI() {
 		if (this.startedContainer) {
 			const url = new URL("", "redis://");
 			url.hostname = this.startedContainer.getHost();
