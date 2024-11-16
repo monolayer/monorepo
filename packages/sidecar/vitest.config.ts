@@ -5,6 +5,8 @@ export default defineConfig({
 	test: {
 		name: "sidecar",
 		setupFiles: ["test/__setup__/setup.ts"],
+		fileParallelism: false,
+		testTimeout: 10000,
 	},
 	server: {
 		watch: {

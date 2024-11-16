@@ -1,9 +1,12 @@
+import { ListBucketsCommand, S3Client } from "@aws-sdk/client-s3";
 import {
 	getContainerRuntimeClient,
 	type StartedTestContainer,
 } from "testcontainers";
 import { assert } from "vitest";
+import { containerStarter } from "~sidecar/containers/container-starter.js";
 import { CONTAINER_LABEL_NAME } from "~sidecar/containers/container.js";
+import type { LocalStackContainer } from "~sidecar/containers/local-stack.js";
 
 export async function assertContainerImage({
 	containerName,
@@ -16,6 +19,7 @@ export async function assertContainerImage({
 	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
 		CONTAINER_LABEL_NAME,
 		containerName,
+		{ status: ["running"] },
 	);
 
 	assert(existingContainer, "Undefined container");
@@ -33,6 +37,7 @@ export async function assertContainer({
 	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
 		CONTAINER_LABEL_NAME,
 		containerName,
+		{ status: ["running"] },
 	);
 
 	assert(existingContainer, "Undefined container");
@@ -49,6 +54,7 @@ export async function assertBindMounts({
 	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
 		CONTAINER_LABEL_NAME,
 		containerName,
+		{ status: ["running"] },
 	);
 
 	assert(existingContainer, "Undefined container");
@@ -67,4 +73,36 @@ export async function assertExposedPorts({
 	for (const port of ports) {
 		assert.doesNotThrow(() => container.getMappedPort(port));
 	}
+}
+
+export async function assertBucket(
+	bucketName: string,
+	localStackContainer?: LocalStackContainer,
+) {
+	const client = new S3Client({
+		region: "us-west-2",
+		forcePathStyle: true,
+		endpoint: localStackContainer
+			? localStackContainer.gatewayURL
+			: (await containerStarter.localStackContainer()).gatewayURL,
+	});
+
+	const response = await client.send(
+		new ListBucketsCommand({
+			BucketRegion: "eu-west-2",
+		}),
+	);
+
+	assert(response.Buckets);
+	const buckets = response.Buckets.map((b) => b.Name);
+	assert(buckets.includes(bucketName), `Bucket ${bucketName} not found`);
+}
+
+export function assertStartedContainerLabel(
+	startedContainer: StartedTestContainer,
+	label: string,
+	expected: string,
+) {
+	const labels = startedContainer.getLabels();
+	assert.strictEqual(labels[label], expected);
 }
