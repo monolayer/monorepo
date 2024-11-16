@@ -13,11 +13,12 @@ import { PostgresDatabase } from "~sidecar/resources.js";
 import { test } from "~test/__setup__/container-test.js";
 
 const postgreSQL = new PostgresDatabase(
-	"test-pg-test",
+	"test_db",
 	(connectionStringEnvVar) =>
 		new pg.Pool({
 			connectionString: process.env[connectionStringEnvVar],
 		}),
+	{ serverId: "server_one" },
 );
 
 test(
@@ -45,7 +46,7 @@ test(
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
 			labels["org.monolayer-sidecar.resource-id"],
-			"test-pg-test",
+			"server-one",
 		);
 	},
 );
@@ -84,14 +85,45 @@ test(
 	"Assigned connection string to environment variable after start",
 	{ sequential: true, retry: 2 },
 	async ({ containers }) => {
-		delete process.env.SIDECAR_POSTGRESQL_TEST_PG_TEST_URL;
+		const postgreSQL = new PostgresDatabase(
+			"test_db",
+			(connectionStringEnvVar) =>
+				new pg.Pool({
+					connectionString: process.env[connectionStringEnvVar],
+				}),
+		);
+		delete process.env.SIDECAR_POSTGRESQL_APP_DB_URL;
 		const container = new PostgreSQLContainer(postgreSQL);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 
 		assert.strictEqual(
-			process.env.SIDECAR_POSTGRESQL_TEST_PG_TEST_URL,
-			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}`,
+			process.env.SIDECAR_POSTGRESQL_APP_DB_URL,
+			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}/test_db`,
+		);
+	},
+);
+
+test(
+	"Assigned connection string to environment variable after start with server id",
+	{ sequential: true, retry: 2 },
+	async ({ containers }) => {
+		const postgreSQL = new PostgresDatabase(
+			"test_db",
+			(connectionStringEnvVar) =>
+				new pg.Pool({
+					connectionString: process.env[connectionStringEnvVar],
+				}),
+			{ serverId: "server_one" },
+		);
+		delete process.env.SIDECAR_POSTGRESQL_SERVER_ONE_URL;
+		const container = new PostgreSQLContainer(postgreSQL);
+		const startedContainer = await container.start();
+		containers.push(startedContainer);
+
+		assert.strictEqual(
+			process.env.SIDECAR_POSTGRESQL_SERVER_ONE_URL,
+			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}/test_db`,
 		);
 	},
 );
@@ -106,7 +138,7 @@ test(
 
 		assert.strictEqual(
 			container.connectionURI,
-			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}`,
+			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}/test_db`,
 		);
 	},
 );

@@ -45,6 +45,7 @@ export class PostgreSQLContainer<C>
 		});
 		this.withEnvironment({
 			POSTGRES_PASSWORD: "postgres",
+			POSTGRES_DB: "postgres",
 		})
 			.withWaitStrategy(
 				Wait.forLogMessage(
@@ -87,6 +88,7 @@ export class PostgreSQLContainer<C>
 		url.port = startedContainer
 			.getMappedPort(POSTGRESQL_SERVER_PORT)
 			.toString();
+		url.pathname = this.#resource.databaseName;
 		return url.toString();
 	}
 }

@@ -1,5 +1,4 @@
 import pg from "pg";
-import { createClient } from "redis";
 import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
@@ -11,20 +10,29 @@ test("PostgreSQL client commands against test container", async ({
 	containers,
 }) => {
 	const postgreSQL = new PostgresDatabase(
-		"test-redis-client-commands",
+		"test_commands",
 		(connectionStringEnvVar) =>
 			new pg.Pool({
 				connectionString: process.env[connectionStringEnvVar],
 			}),
+		{ serverId: "server_one" },
 	);
 
 	const container = new PostgreSQLContainer(postgreSQL);
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
 
+	const adminPool = new pg.Pool({
+		connectionString: process.env[postgreSQL.connectionStringEnvVar()]?.replace(
+			"/test_commands",
+			"",
+		),
+	});
+	await adminPool.query("CREATE DATABASE test_commands");
 	const result = await postgreSQL.client.query("SELECT 1");
 	assert.deepStrictEqual(result.rows, [{ "?column?": 1 }]);
 	await postgreSQL.client.end();
+	await adminPool.end();
 });
 
 test(
@@ -37,6 +45,7 @@ test(
 				new pg.Pool({
 					connectionString: process.env[connectionStringEnvVar],
 				}),
+			{ serverId: "server_one" },
 		);
 
 		PostgresDatabase.containerImage = "postgres:16.5";
@@ -59,6 +68,7 @@ test("client type", async () => {
 			new pg.Pool({
 				connectionString: process.env[connectionStringEnvVar],
 			}),
+		{ serverId: "server_one" },
 	);
 
 	type ClientType = typeof postgreSQL.client;
@@ -74,12 +84,30 @@ test("build", async () => {
 			new pg.Pool({
 				connectionString: process.env[connectionStringEnvVar],
 			}),
+		{ serverId: "server_one" },
 	);
 
 	const buildOutput = postgreSQL.build();
 	assert.deepStrictEqual(buildOutput, {
 		kind: "postgresql",
-		id: "test-build-output",
-		connectionStringEnvVar: "SIDECAR_POSTGRESQL_TEST_BUILD_OUTPUT_URL",
+		id: "server-one",
+		connectionStringEnvVar: "SIDECAR_POSTGRESQL_SERVER_ONE_URL",
+	});
+});
+
+test("build without server id", async () => {
+	const postgreSQL = new PostgresDatabase(
+		"test-buildOutput",
+		(connectionStringEnvVar) =>
+			new pg.Pool({
+				connectionString: process.env[connectionStringEnvVar],
+			}),
+	);
+
+	const buildOutput = postgreSQL.build();
+	assert.deepStrictEqual(buildOutput, {
+		kind: "postgresql",
+		id: "app-db",
+		connectionStringEnvVar: "SIDECAR_POSTGRESQL_APP_DB_URL",
 	});
 });

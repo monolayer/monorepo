@@ -37,17 +37,31 @@ export class PostgresDatabase<C>
 
 	readonly id: string;
 
+	readonly databaseName: string;
+	readonly serverId?: string;
+
 	constructor(
 		/**
-		 * Unique ID.
+		 * Database name.
 		 */
-		id: string,
+		databaseName: string,
 		/**
 		 * Client constructor function. Executed once when accessing the {@link PostgresDatabase.client }
 		 */
 		client: (connectionStringVar: string) => C,
+
+		options?: {
+			/**
+			 * Server ID
+			 *
+			 * @defaultValue `APP_DB`
+			 */
+			serverId: string;
+		},
 	) {
-		this.id = id;
+		this.id = kebabCase(options?.serverId ?? "app-db");
+		this.databaseName = databaseName;
+		this.serverId = options?.serverId;
 		this.#clientConstructor = client;
 	}
 
