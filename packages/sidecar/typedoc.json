@@ -14,7 +14,7 @@
 	"outputFileStrategy": "members",
 	"parametersFormat": "htmlTable",
 	"propertiesFormat": "table",
-	"useCodeBlocks": false,
+	"useCodeBlocks": true,
 	"typeDeclarationFormat": "table",
 	"cleanOutputDir": true,
 	"navigation": {
