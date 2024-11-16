@@ -91,6 +91,10 @@ export const CONTAINER_LABEL_NAME = "org.monolayer-sidecar.name";
  * @hidden
  */
 export const CONTAINER_LABEL_RESOURCE_ID = "org.monolayer-sidecar.resource-id";
+/**
+ * @hidden
+ */
+export const CONTAINER_LABEL_ORG = "org.monolayer-sidecar";
 
 /**
  * @module containers
@@ -106,6 +110,7 @@ export class Container extends GenericContainer implements SidecarContainer {
 		this.withLabels({
 			[CONTAINER_LABEL_NAME]: this.options.name,
 			[CONTAINER_LABEL_RESOURCE_ID]: this.options.resourceId,
+			[CONTAINER_LABEL_ORG]: "true",
 		});
 	}
 
