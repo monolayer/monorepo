@@ -75,20 +75,3 @@ test("client type", async () => {
 	const isEqual: Expect<Equal<ClientType, ExpectedType>> = true;
 	expect(isEqual).toBe(true);
 });
-
-test("build", async () => {
-	const redisResource = new Redis(
-		"test-buildOutput",
-		(connectionStringEnvVar) =>
-			createClient({
-				url: process.env[connectionStringEnvVar],
-			}).on("error", (err) => console.error("Redis Client Error", err)),
-	);
-
-	const buildOutput = redisResource.build();
-	assert.deepStrictEqual(buildOutput, {
-		kind: "redis",
-		id: "test-build-output",
-		connectionStringEnvVar: "SIDECAR_REDIS_TEST_BUILD_OUTPUT_URL",
-	});
-});

@@ -1,5 +1,4 @@
-import { kebabCase } from "case-anything";
-import type { GenericResource, ResourceBuilder } from "~sidecar/resources.js";
+import type { GenericResource } from "~sidecar/resources.js";
 
 export interface BucketOptions {
 	/**
@@ -19,23 +18,9 @@ export interface BucketOptions {
 /**
  * Bucket resource
  */
-
-export class Bucket implements GenericResource, ResourceBuilder {
+export class Bucket implements GenericResource {
 	constructor(
 		public id: string,
 		public options: BucketOptions,
 	) {}
-
-	/**
-	 * Returns the build output for the resource.
-	 *
-	 * @hidden
-	 */
-	build() {
-		return {
-			kind: "bucket",
-			id: kebabCase(this.id),
-			connectionStringEnvVar: "",
-		};
-	}
 }

@@ -2,7 +2,6 @@ import { kebabCase, snakeCase } from "case-anything";
 import { assertContainerizedResource } from "~sidecar/resources/containerized-resource.js";
 import {
 	type GenericResource,
-	type ResourceBuilder,
 	type ResourceClient,
 } from "~sidecar/resources/interfaces.js";
 
@@ -25,9 +24,7 @@ import {
  *
  * @typeParam C - Client type
  */
-export class PostgresDatabase<C>
-	implements GenericResource, ResourceClient<C>, ResourceBuilder
-{
+export class PostgresDatabase<C> implements GenericResource, ResourceClient<C> {
 	/**
 	 * Docker image for container
 	 *
@@ -98,19 +95,6 @@ export class PostgresDatabase<C>
 	 */
 	connectionStringEnvVar() {
 		return snakeCase(`SIDECAR_POSTGRESQL_${this.id}_url`).toUpperCase();
-	}
-
-	/**
-	 * Returns the build output for the resource.
-	 *
-	 * @hidden
-	 */
-	build() {
-		return {
-			kind: "postgresql",
-			id: kebabCase(this.id),
-			connectionStringEnvVar: this.connectionStringEnvVar(),
-		};
 	}
 }
 

@@ -76,38 +76,3 @@ test("client type", async () => {
 	const isEqual: Expect<Equal<ClientType, ExpectedType>> = true;
 	expect(isEqual).toBe(true);
 });
-
-test("build", async () => {
-	const postgreSQL = new PostgresDatabase(
-		"test-buildOutput",
-		(connectionStringEnvVar) =>
-			new pg.Pool({
-				connectionString: process.env[connectionStringEnvVar],
-			}),
-		{ serverId: "server_one" },
-	);
-
-	const buildOutput = postgreSQL.build();
-	assert.deepStrictEqual(buildOutput, {
-		kind: "postgresql",
-		id: "server-one",
-		connectionStringEnvVar: "SIDECAR_POSTGRESQL_SERVER_ONE_URL",
-	});
-});
-
-test("build without server id", async () => {
-	const postgreSQL = new PostgresDatabase(
-		"test-buildOutput",
-		(connectionStringEnvVar) =>
-			new pg.Pool({
-				connectionString: process.env[connectionStringEnvVar],
-			}),
-	);
-
-	const buildOutput = postgreSQL.build();
-	assert.deepStrictEqual(buildOutput, {
-		kind: "postgresql",
-		id: "app-db",
-		connectionStringEnvVar: "SIDECAR_POSTGRESQL_APP_DB_URL",
-	});
-});

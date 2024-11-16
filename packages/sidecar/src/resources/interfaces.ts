@@ -12,28 +12,6 @@ export interface ResourceContainer {
 	containerImage: string;
 }
 
-export interface ResourceBuildOutput {
-	/**
-	 * Resource type
-	 */
-	kind: string;
-	/**
-	 * Resource ID
-	 */
-	id: string;
-	/**
-	 * Environment variable name for the connection string;
-	 */
-	connectionStringEnvVar: string;
-}
-
-export interface ResourceBuilder {
-	/**
-	 * Returns a {@link ResourceBuildOutput}
-	 */
-	build: () => ResourceBuildOutput;
-}
-
 export interface ResourceClient<C> {
 	client: C;
 }

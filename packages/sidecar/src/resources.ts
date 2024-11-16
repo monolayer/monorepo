@@ -1,7 +1,5 @@
 export type {
 	GenericResource,
-	ResourceBuildOutput,
-	ResourceBuilder,
 	ResourceClient,
 	ResourceContainer,
 } from "./resources/interfaces.js";
