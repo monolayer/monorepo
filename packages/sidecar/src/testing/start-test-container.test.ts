@@ -1,10 +1,10 @@
 import pg from "pg";
 import { createClient } from "redis";
 import { assert } from "vitest";
-import { startTestContainer } from "~sidecar/containers/start-test-container.js";
 import { PostgresDatabase } from "~sidecar/resources.js";
 import { Bucket } from "~sidecar/resources/bucket.js";
 import { Redis } from "~sidecar/resources/redis.js";
+import { startTestContainer } from "~sidecar/testing/start-test-container.js";
 import {
 	assertBucket,
 	assertContainerImage,
