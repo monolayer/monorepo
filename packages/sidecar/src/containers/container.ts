@@ -160,6 +160,7 @@ export class Container extends GenericContainer implements SidecarContainer {
 	 */
 	async stop() {
 		await this.startedContainer?.stop();
+		this.startedContainer = undefined;
 	}
 
 	/**
