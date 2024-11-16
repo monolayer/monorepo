@@ -74,7 +74,7 @@ export class Redis<C>
 	 * const cache = new Redis("app-cache", (resource) => {
 	 *   // SIDECAR_REDIS_APP_CACHE_URL
 	 *   const connStringName = resource.connectionStringEnvVar();
-	 *   createClient({
+	 *   return createClient({
 	 *     url: process.env[connStringName],
 	 *   }).on("error", (err) => console.error("Redis Client Error", err))
 	 * });
