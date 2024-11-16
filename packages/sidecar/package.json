@@ -45,6 +45,16 @@
 				"types": "./dist/cjs/resources.d.ts",
 				"default": "./dist/cjs/resources.js"
 			}
+		},
+		"./test": {
+			"import": {
+				"types": "./dist/esm/test.d.ts",
+				"default": "./dist/esm/test.js"
+			},
+			"require": {
+				"types": "./dist/cjs/test.d.ts",
+				"default": "./dist/cjs/test.js"
+			}
 		}
 	},
 	"scripts": {

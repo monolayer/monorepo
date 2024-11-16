@@ -4,7 +4,8 @@
 	"entryPoints": [
 		"./src/index.ts",
 		"./src/containers.ts",
-		"./src/resources.ts"
+		"./src/resources.ts",
+		"./src/test.ts"
 	],
 	"entryPointStrategy": "expand",
 	"tsconfig": "./../../tsconfig.typedoc.json",
