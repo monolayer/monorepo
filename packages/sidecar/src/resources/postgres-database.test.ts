@@ -3,14 +3,14 @@ import { createClient } from "redis";
 import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
-import { PostgreSQL } from "~sidecar/resources/postgresql.js";
+import { PostgresDatabase } from "~sidecar/resources/postgres-database.js";
 import { assertContainerImage } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
 
 test("PostgreSQL client commands against test container", async ({
 	containers,
 }) => {
-	const postgreSQL = new PostgreSQL(
+	const postgreSQL = new PostgresDatabase(
 		"test-redis-client-commands",
 		(connectionStringEnvVar) =>
 			new pg.Pool({
@@ -31,7 +31,7 @@ test(
 	"PostgreSQL with custom image tag container",
 	{ sequential: true, retry: 2 },
 	async ({ containers }) => {
-		const postgres = new PostgreSQL(
+		const postgres = new PostgresDatabase(
 			"pg-custom-image-tag",
 			(connectionStringEnvVar) =>
 				createClient({
@@ -39,7 +39,7 @@ test(
 				}).on("error", (err) => console.error("PostgreSQL Client Error", err)),
 		);
 
-		PostgreSQL.containerImage = "postgres:16.5";
+		PostgresDatabase.containerImage = "postgres:16.5";
 		const container = new PostgreSQLContainer(postgres);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
@@ -53,7 +53,7 @@ test(
 
 test("client type", async () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const postgreSQL = new PostgreSQL(
+	const postgreSQL = new PostgresDatabase(
 		"test-buildOutput",
 		(connectionStringEnvVar) =>
 			new pg.Pool({
@@ -68,7 +68,7 @@ test("client type", async () => {
 });
 
 test("build", async () => {
-	const postgreSQL = new PostgreSQL(
+	const postgreSQL = new PostgresDatabase(
 		"test-buildOutput",
 		(connectionStringEnvVar) =>
 			new pg.Pool({

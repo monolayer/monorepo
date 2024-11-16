@@ -8,7 +8,7 @@ import {
 	type StartOptions,
 } from "~sidecar/containers/container.js";
 import { randomName } from "~sidecar/containers/random-name.js";
-import { PostgreSQL } from "~sidecar/resources/postgresql.js";
+import { PostgresDatabase } from "~sidecar/resources/postgres-database.js";
 
 const POSTGRESQL_SERVER_PORT = 5432;
 
@@ -19,17 +19,17 @@ export class PostgreSQLContainer<C>
 	extends Container
 	implements SidecarContainer
 {
-	#resource: PostgreSQL<C>;
+	#resource: PostgresDatabase<C>;
 
 	/**
 	 * @hideconstructor
 	 */
-	constructor(resource: PostgreSQL<C>) {
+	constructor(resource: PostgresDatabase<C>) {
 		const name = randomName();
 		super({
 			resourceId: resource.id,
 			name,
-			image: PostgreSQL.containerImage,
+			image: PostgresDatabase.containerImage,
 			portsToExpose: [POSTGRESQL_SERVER_PORT],
 			persistenceVolumes: [
 				{

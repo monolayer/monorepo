@@ -25,7 +25,7 @@ import {
  *
  * @typeParam C - Client type
  */
-export class PostgreSQL<C>
+export class PostgresDatabase<C>
 	implements GenericResource, ResourceClient<C>, ResourceBuilder
 {
 	/**
@@ -43,7 +43,7 @@ export class PostgreSQL<C>
 		 */
 		id: string,
 		/**
-		 * Client constructor function. Executed once when accessing the {@link PostgreSQL.client }
+		 * Client constructor function. Executed once when accessing the {@link PostgresDatabase.client }
 		 */
 		client: (connectionStringVar: string) => C,
 	) {
@@ -101,7 +101,7 @@ export class PostgreSQL<C>
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-assertContainerizedResource(PostgreSQL<any>);
+assertContainerizedResource(PostgresDatabase<any>);
 
 /**
  * Tests whether the connection string points to a local container.

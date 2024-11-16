@@ -5,5 +5,5 @@ export type {
 	ResourceClient,
 	ResourceContainer,
 } from "./resources/interfaces.js";
-export { PostgreSQL } from "./resources/postgresql.js"
+export { PostgresDatabase } from "./resources/postgres-database.js";
 export { Redis } from "./resources/redis.js";

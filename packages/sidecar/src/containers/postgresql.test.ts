@@ -9,10 +9,10 @@ import {
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
-import { PostgreSQL } from "~sidecar/resources.js";
+import { PostgresDatabase } from "~sidecar/resources.js";
 import { test } from "~test/__setup__/container-test.js";
 
-const postgreSQL = new PostgreSQL(
+const postgreSQL = new PostgresDatabase(
 	"test-pg-test",
 	(connectionStringEnvVar) =>
 		new pg.Pool({
