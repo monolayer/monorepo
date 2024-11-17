@@ -1,8 +1,8 @@
-import { Pool } from "pg";
+import pg from "pg";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 
 export async function createDatabase<C>(workload: PostgresDatabase<C>) {
-	const client = new Pool({
+	const client = new pg.Pool({
 		connectionString: process.env[workload.connectionStringEnvVar()]?.replace(
 			/\/\w+$/,
 			"",
