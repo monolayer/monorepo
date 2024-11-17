@@ -17,7 +17,7 @@ test(
 	async ({ containers }) => {
 		const postgreSQL = new PostgresDatabase(
 			"test_started_container",
-			"app",
+			"test_app",
 			(connectionStringEnvVar) =>
 				new pg.Pool({
 					connectionString: process.env[connectionStringEnvVar],
@@ -28,11 +28,11 @@ test(
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		const labels = startedContainer.getLabels();
-		assert.strictEqual(labels["org.monolayer-sidecar.workload-id"], "app");
+		assert.strictEqual(labels["org.monolayer-sidecar.workload-id"], "test_app");
 		await assertBindMounts({
 			workload: postgreSQL,
 			bindMounts: [
-				`${path.join(cwd(), "tmp", "container-volumes", "postgres_database", "app_data")}:/var/lib/postgresql/data:rw`,
+				`${path.join(cwd(), "tmp", "container-volumes", "postgres_database", "test_app_data")}:/var/lib/postgresql/data:rw`,
 			],
 		});
 		await assertExposedPorts({
@@ -40,7 +40,7 @@ test(
 			ports: [5432],
 		});
 		assert.strictEqual(
-			process.env.SIDECAR_POSTGRESQL_APP_URL,
+			process.env.SIDECAR_POSTGRESQL_TEST_APP_TEST_STARTED_CONTAINER_URL,
 			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}/test_started_container`,
 		);
 		assert.strictEqual(
