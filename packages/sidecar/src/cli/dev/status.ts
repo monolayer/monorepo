@@ -5,6 +5,7 @@ import {
 	type WorkloadInfo,
 } from "~sidecar/containers/admin/introspection.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
+import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 
 export function devStatus(program: Command) {
 	return program
@@ -13,9 +14,14 @@ export function devStatus(program: Command) {
 		.action(async () => {
 			const workloads = await importWorkloads();
 			const statuses = await Promise.all(
-				Object.values(workloads)
-					.flatMap((w) => w)
-					.map(async (w) => workloadContainerStatus(w)),
+				[
+					...workloads.Mailer,
+					...workloads.PostgresDatabase,
+					...workloads.Redis,
+					...(workloads.Bucket.length !== 0
+						? [new LocalStack("local-stack-dev")]
+						: []),
+				].map(async (w) => workloadContainerStatus(w)),
 			);
 			printStatus(statuses);
 		});
