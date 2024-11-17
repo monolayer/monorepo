@@ -1,18 +1,15 @@
-import { type StatefulWorkload } from "~sidecar/workloads/stateful/interfaces.js";
+import { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.js";
 
 /**
  * LocalStack workload.
  *
  * @private
  */
-export class LocalStack implements StatefulWorkload {
-	stateful!: true;
-	readonly id: string;
-
+export class LocalStack extends StatefulWorkload {
 	/**
 	 * @param id Unique ID.
 	 */
 	constructor(id: string) {
-		this.id = id;
+		super(id);
 	}
 }

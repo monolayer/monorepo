@@ -3,7 +3,7 @@ import color from "picocolors";
 import { getExistingContainer } from "~sidecar/containers/admin/introspection.js";
 import { containerStarter } from "~sidecar/containers/container-starter.js";
 import type { PostgresDatabase } from "~sidecar/workloads.js";
-import { type Workload } from "~sidecar/workloads/stateful/interfaces.js";
+import { type Workload } from "~sidecar/workloads/workload.js";
 /**
  * Launches a dev container for a workload.
  */

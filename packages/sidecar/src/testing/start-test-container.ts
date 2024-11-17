@@ -1,6 +1,5 @@
 import { containerStarter } from "~sidecar/containers/container-starter.js";
-import { type Workload } from "~sidecar/workloads/stateful/interfaces.js";
-
+import { type Workload } from "~sidecar/workloads/workload.js";
 /**
  * Launches a test container for a workload.
  */

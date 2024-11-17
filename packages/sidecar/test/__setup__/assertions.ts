@@ -8,8 +8,8 @@ import { assert } from "vitest";
 import { containerStarter } from "~sidecar/containers/container-starter.js";
 import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
 import type { LocalStackContainer } from "~sidecar/containers/local-stack.js";
-import type { Workload } from "~sidecar/workloads/stateful/interfaces.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
+import type { Workload } from "~sidecar/workloads/workload.js";
 
 export async function assertContainerImage({
 	workload,

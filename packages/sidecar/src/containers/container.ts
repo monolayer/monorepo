@@ -12,7 +12,7 @@ import {
 	type WaitStrategy,
 } from "testcontainers";
 import type { Environment } from "testcontainers/build/types.js";
-import { type Workload } from "~sidecar/workloads/stateful/interfaces.js";
+import { type Workload } from "~sidecar/workloads/workload.js";
 
 export interface ContainerImage {
 	/**
