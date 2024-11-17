@@ -36,14 +36,14 @@
 				"default": "./dist/cjs/containers.js"
 			}
 		},
-		"./resources": {
+		"./workloads": {
 			"import": {
-				"types": "./dist/esm/resources.d.ts",
-				"default": "./dist/esm/resources.js"
+				"types": "./dist/esm/workloads.d.ts",
+				"default": "./dist/esm/workloads.js"
 			},
 			"require": {
-				"types": "./dist/cjs/resources.d.ts",
-				"default": "./dist/cjs/resources.js"
+				"types": "./dist/cjs/workloads.d.ts",
+				"default": "./dist/cjs/workloads.js"
 			}
 		},
 		"./test": {
