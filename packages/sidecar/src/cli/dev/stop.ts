@@ -7,8 +7,12 @@ export function devStop(program: Command) {
 	return program
 		.command("stop")
 		.description("Stop local workloads")
-		.action(async () => {
-			const workloads = await importWorkloads();
+		.requiredOption(
+			"-f, --folder <workloads-folder>",
+			"Path to folder with workloads",
+		)
+		.action(async (opts) => {
+			const workloads = await importWorkloads(opts.folder);
 			const workloadsToStop = [
 				...workloads.Mailer,
 				...workloads.PostgresDatabase,

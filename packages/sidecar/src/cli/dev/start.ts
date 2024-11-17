@@ -16,8 +16,12 @@ export function devStart(program: Command) {
 	return program
 		.command("start")
 		.description("Start local workloads")
-		.action(async () => {
-			const workloads = await importWorkloads();
+		.requiredOption(
+			"-f, --folder <workloads-folder>",
+			"Path to folder with workloads",
+		)
+		.action(async (opts) => {
+			const workloads = await importWorkloads(opts.folder);
 			const envVars: EnvVar[] = [];
 
 			await startMailers(workloads.Mailer, envVars);

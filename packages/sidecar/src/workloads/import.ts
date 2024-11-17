@@ -11,13 +11,13 @@ import type { Redis } from "~sidecar/workloads/stateful/redis.js";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ModuleImport = Record<string, any>;
 
-export async function importWorkloads() {
-	const mods = await importModules();
+export async function importWorkloads(workloadsFolder: string) {
+	const mods = await importModules(workloadsFolder);
 	return classifyWorkloads(mods);
 }
 
-async function importModules() {
-	const workloadsPath = path.join(cwd(), "src", "workloads");
+async function importModules(workloadsFolder: string) {
+	const workloadsPath = path.join(cwd(), workloadsFolder);
 	const files = await fs.readdir(workloadsPath);
 
 	let modules: ModuleImport = {};
