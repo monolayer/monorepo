@@ -1,18 +1,23 @@
-import { kebabCase } from "case-anything";
-import { cwd } from "node:process";
-import path from "path";
-import type { StartedTestContainer } from "testcontainers";
+import { type StartedTestContainer } from "testcontainers";
 import {
 	Container,
 	type SidecarContainer,
+	type SidecarContainerSpec,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { randomName } from "~sidecar/containers/random-name.js";
 import { Mailer } from "~sidecar/resources/mailer.js";
 
 const MAILER_SERVER_PORT = 1025;
 const MAILER_WEBUI_PORT = 8025;
 
+const mailerContainerSpec = {
+	containerImage: "axllent/mailpit:v1.21.3",
+	portsToExpose: [MAILER_SERVER_PORT, MAILER_WEBUI_PORT],
+	environment: {
+		MP_DATABASE: "/data/database.db",
+	},
+	persistentVolumeTargets: ["/data"],
+};
 /**
  * Container for Mailer
  */
@@ -22,27 +27,13 @@ export class MailerContainer<C> extends Container implements SidecarContainer {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(resource: Mailer<C>) {
-		const name = randomName();
+	constructor(resource: Mailer<C>, options?: Partial<SidecarContainerSpec>) {
 		super({
-			resourceId: resource.id,
-			name,
-			image: Mailer.containerImage,
-			portsToExpose: [MAILER_SERVER_PORT, MAILER_WEBUI_PORT],
-			persistenceVolumes: [
-				{
-					source: path.join(
-						cwd(),
-						"tmp",
-						"container-volumes",
-						kebabCase(`${name}-data`),
-					),
-					target: "/data",
-				},
-			],
-		});
-		this.withEnvironment({
-			MP_DATABASE: "/data/database.db",
+			resource,
+			containerSpec: {
+				...mailerContainerSpec,
+				...(options ? options : {}),
+			},
 		});
 		this.#resource = resource;
 	}

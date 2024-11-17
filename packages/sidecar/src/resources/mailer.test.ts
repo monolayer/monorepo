@@ -6,7 +6,6 @@ import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { Mailer } from "~sidecar/resources/mailer.js";
 import { testMailerURL } from "~sidecar/testing/mailer.js";
 import { getMessagesParams } from "~sidecar/testing/mailpit-client/index.js";
-import { assertContainerImage } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
 
 test("Mailer client commands against test container", async ({
@@ -30,25 +29,6 @@ test("Mailer client commands against test container", async ({
 	assert.strictEqual(response.data.start, 0);
 	assert.deepStrictEqual(response.data.tags, []);
 });
-
-test(
-	"Mailer with custom image tag container",
-	{ sequential: true, retry: 2 },
-	async ({ containers }) => {
-		const mailer = new Mailer("test-mailer-send", (connectionStringEnvVar) =>
-			nodemailer.createTransport(process.env[connectionStringEnvVar]),
-		);
-		Mailer.containerImage = "axllent/mailpit:v1.21";
-		const container = new MailerContainer(mailer);
-		const startedContainer = await container.start();
-		containers.push(startedContainer);
-		await assertContainerImage({
-			containerName: container.name,
-			expectedImage: "axllent/mailpit:v1.21",
-		});
-		await startedContainer.stop();
-	},
-);
 
 test("client type", async () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

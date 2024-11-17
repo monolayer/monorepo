@@ -2,9 +2,18 @@
  * @module containers
  */
 
-import { snakeCase } from "case-anything";
+import { kebabCase, snakeCase } from "case-anything";
 import getPort from "get-port";
-import { GenericContainer, type StartedTestContainer } from "testcontainers";
+import path from "node:path";
+import { cwd } from "node:process";
+import {
+	GenericContainer,
+	type StartedTestContainer,
+	type WaitStrategy,
+} from "testcontainers";
+import type { Environment } from "testcontainers/build/types.js";
+import { randomName } from "~sidecar/containers/random-name.js";
+import { type GenericResource } from "~sidecar/resources/interfaces.js";
 
 export interface ContainerImage {
 	/**
@@ -29,42 +38,14 @@ export interface ContainerPersistenceVolume {
 }
 
 export interface ContainerOptions {
-	/**
-	 * ID of the associated resource.
-	 */
-	resourceId: string;
-	/**
-	 * Name to assign as a container label.
-	 *
-	 * Each container will start with the label `org.monolayer-sidecar.name` set to `nameLabel`.
-	 *
-	 * **IMPORTANT**
-	 *
-	 * The actual container name will be assigned by `testcontainers`.
-	 */
-	name: string;
-	/**
-	 * Container image.
-	 */
-	image: string;
-	/**
-	 * Container ports to export to the host.
-	 *
-	 * The published ports to the host will be assigned randomly when starting the container
-	 * and they can be accessed through {@link Container.mappedPorts}
-	 *
-	 */
-	portsToExpose?: number[];
+	resource: GenericResource;
 	/**
 	 * Whether to publish the exposed ports to random ports in the host
 	 *
 	 * @default false
 	 */
 	publishToRandomPorts?: boolean;
-	/**
-	 * Container volumnes
-	 */
-	persistenceVolumes?: ContainerPersistenceVolume[];
+	containerSpec: SidecarContainerSpec;
 }
 
 export interface StartOptions {
@@ -113,15 +94,22 @@ export class Container extends GenericContainer implements SidecarContainer {
 	#options: ContainerOptions;
 
 	constructor(options: ContainerOptions) {
-		super(options.image);
+		super(options.containerSpec.containerImage);
+		this.name = snakeCase(randomName());
 		this.#options = options;
-		this.name = snakeCase(this.#options.name);
-		this.withName(this.name);
-		this.withLabels({
-			[CONTAINER_LABEL_NAME]: this.name,
-			[CONTAINER_LABEL_RESOURCE_ID]: this.#options.resourceId,
-			[CONTAINER_LABEL_ORG]: "true",
-		});
+		this.withName(this.name)
+			.withLabels({
+				[CONTAINER_LABEL_NAME]: this.name,
+				[CONTAINER_LABEL_RESOURCE_ID]: this.#options.resource.id,
+				[CONTAINER_LABEL_ORG]: "true",
+			})
+			.withEnvironment(options.containerSpec.environment);
+		if (options.containerSpec.waitStrategy) {
+			this.withWaitStrategy(options.containerSpec.waitStrategy);
+		}
+		if (options.containerSpec.startupTimeout) {
+			this.withStartupTimeout(options.containerSpec.startupTimeout);
+		}
 	}
 
 	/**
@@ -131,7 +119,8 @@ export class Container extends GenericContainer implements SidecarContainer {
 		if (this.startedContainer) {
 			return this.startedContainer;
 		}
-		for (const portToExpose of this.#options.portsToExpose ?? []) {
+		for (const portToExpose of this.#options.containerSpec.portsToExpose ??
+			[]) {
 			this.withExposedPorts({
 				container: portToExpose,
 				host:
@@ -142,14 +131,20 @@ export class Container extends GenericContainer implements SidecarContainer {
 		}
 		if (
 			options?.persistenceVolumes &&
-			Array.isArray(this.#options.persistenceVolumes)
+			Array.isArray(this.#options.containerSpec.persistentVolumeTargets)
 		) {
-			for (const persistenceVolume of this.#options.persistenceVolumes) {
+			for (const persistenceVolume of this.#options.containerSpec
+				.persistentVolumeTargets) {
 				this.withBindMounts([
 					{
 						mode: "rw",
-						source: persistenceVolume.source,
-						target: persistenceVolume.target,
+						source: path.join(
+							cwd(),
+							"tmp",
+							"container-volumes",
+							kebabCase(`${this.name}-data`),
+						),
+						target: persistenceVolume,
 					},
 				]);
 			}
@@ -172,10 +167,12 @@ export class Container extends GenericContainer implements SidecarContainer {
 	get mappedPorts() {
 		if (this.startedContainer) {
 			const startedContainer = this.startedContainer;
-			return (this.#options.portsToExpose ?? []).map<MappedPort>((port) => ({
-				container: port,
-				host: startedContainer.getMappedPort(port),
-			}));
+			return (this.#options.containerSpec.portsToExpose ?? []).map<MappedPort>(
+				(port) => ({
+					container: port,
+					host: startedContainer.getMappedPort(port),
+				}),
+			);
 		}
 	}
 }
@@ -207,4 +204,24 @@ export interface SidecarContainer {
 	 * not started.
 	 */
 	mappedPorts?: Array<MappedPort>;
+}
+
+export interface SidecarContainerSpec {
+	/**
+	 * Docker image for container
+	 */
+	containerImage: string;
+
+	/**
+	 * Container ports to export to the host.
+	 *
+	 * The published ports to the host will be assigned randomly when starting the container
+	 * and they can be accessed through {@link Container.mappedPorts}
+	 *
+	 */
+	portsToExpose: number[];
+	environment: Environment;
+	waitStrategy?: WaitStrategy;
+	startupTimeout?: number;
+	persistentVolumeTargets: string[];
 }

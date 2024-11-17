@@ -5,6 +5,7 @@ export {
 	ContainerPersistenceVolume,
 	MappedPort,
 	SidecarContainer,
+	SidecarContainerSpec,
 	StartOptions,
 } from "./containers/container.js";
 export { PostgreSQLContainer } from "./containers/postgresql.js";

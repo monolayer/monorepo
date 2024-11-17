@@ -5,6 +5,7 @@ import pg from "pg";
 import {
 	assertBindMounts,
 	assertContainer,
+	assertContainerImage,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
@@ -140,5 +141,31 @@ test(
 			container.connectionURI,
 			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}/test_db`,
 		);
+	},
+);
+
+test(
+	"PostgreSQL with custom image tag container",
+	{ sequential: true, retry: 2 },
+	async ({ containers }) => {
+		const postgres = new PostgresDatabase(
+			"pg-custom-image-tag",
+			(connectionStringEnvVar) =>
+				new pg.Pool({
+					connectionString: process.env[connectionStringEnvVar],
+				}),
+			{ serverId: "server_one" },
+		);
+
+		const container = new PostgreSQLContainer(postgres, {
+			containerImage: "postgres:16.5",
+		});
+		const startedContainer = await container.start();
+		containers.push(startedContainer);
+		await assertContainerImage({
+			containerName: container.name,
+			expectedImage: "postgres:16.5",
+		});
+		await startedContainer.stop();
 	},
 );

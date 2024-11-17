@@ -1,4 +1,3 @@
-import { assertContainerizedResource } from "~sidecar/resources/containerized-resource.js";
 import { type GenericResource } from "~sidecar/resources/interfaces.js";
 
 /**
@@ -7,13 +6,6 @@ import { type GenericResource } from "~sidecar/resources/interfaces.js";
  * @private
  */
 export class LocalStack implements GenericResource {
-	/**
-	 * Docker image for container
-	 *
-	 * @default `localstack/localstack:latest`
-	 */
-	static containerImage: string = "localstack/localstack:latest";
-
 	readonly id: string;
 
 	/**
@@ -23,5 +15,3 @@ export class LocalStack implements GenericResource {
 		this.id = id;
 	}
 }
-
-assertContainerizedResource(LocalStack);

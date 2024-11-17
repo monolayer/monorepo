@@ -5,6 +5,7 @@ import { createClient } from "redis";
 import {
 	assertBindMounts,
 	assertContainer,
+	assertContainerImage,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
@@ -119,3 +120,28 @@ test("Web URL", { sequential: true, retry: 2 }, async ({ containers }) => {
 		`http://localhost:${startedContainer.getMappedPort(8001)}/`,
 	);
 });
+
+test(
+	"Redis with custom image tag container",
+	{ sequential: true, retry: 2 },
+	async ({ containers }) => {
+		const redisResource = new Redis(
+			"rd-custom-image-tag",
+			(connectionStringEnvVar) =>
+				createClient({
+					url: process.env[connectionStringEnvVar],
+				}).on("error", (err) => console.error("Redis Client Error", err)),
+		);
+
+		const container = new RedisContainer(redisResource, {
+			containerImage: "redis/redis-stack:7.2.0-v12",
+		});
+		const startedContainer = await container.start();
+		containers.push(startedContainer);
+		await assertContainerImage({
+			containerName: container.name,
+			expectedImage: "redis/redis-stack:7.2.0-v12",
+		});
+		await startedContainer.stop();
+	},
+);

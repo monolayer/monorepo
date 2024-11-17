@@ -1,12 +1,8 @@
-import { kebabCase } from "case-anything";
-import { cwd } from "node:process";
-import path from "path";
 import {
 	Container,
 	type SidecarContainer,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { randomName } from "~sidecar/containers/random-name.js";
 import { LocalStack } from "~sidecar/resources/local-stack.js";
 
 const LOCAL_STACK_GATEWAY_PORT = 4566;
@@ -20,7 +16,31 @@ interface LocalStackContainerOptions {
 	 * @defaultValue `false`
 	 */
 	persist?: boolean;
+	containerImage?: string;
 }
+
+const localStackContainerSpec = {
+	/**
+	 * Docker image for container
+	 *
+	 * @defaultValue `localstack/localstack:latest`
+	 */
+	containerImage: "localstack/localstack:latest",
+
+	/**
+	 * Container ports to export to the host.
+	 *
+	 * The published ports to the host will be assigned randomly when starting the container
+	 * and they can be accessed through {@link Container.mappedPorts}
+	 *
+	 */
+	portsToExpose: [LOCAL_STACK_GATEWAY_PORT],
+	environment: {
+		SERVICES: "s3",
+		PERSISTENCE: "0",
+	},
+	persistentVolumeTargets: ["/var/lib/localstack"],
+};
 
 /**
  * Container for LocalStack
@@ -32,28 +52,18 @@ export class LocalStackContainer extends Container implements SidecarContainer {
 	 * @hideconstructor
 	 */
 	constructor(resource: LocalStack, options?: LocalStackContainerOptions) {
-		const name = randomName();
 		super({
-			resourceId: resource.id,
-			name,
-			image: LocalStack.containerImage,
-			portsToExpose: [LOCAL_STACK_GATEWAY_PORT],
-			publishToRandomPorts: options?.publishToRandomPorts ?? true,
-			persistenceVolumes: [
-				{
-					source: path.join(
-						cwd(),
-						"tmp",
-						"container-volumes",
-						kebabCase(`${name}-data`),
-					),
-					target: "/var/lib/localstack",
+			resource,
+			containerSpec: {
+				...localStackContainerSpec,
+				containerImage:
+					options?.containerImage ?? localStackContainerSpec.containerImage,
+				environment: {
+					...localStackContainerSpec.environment,
+					PERSIST: (options?.persist ?? false) ? "1" : "0",
 				},
-			],
-		});
-		this.withEnvironment({
-			SERVICES: "s3",
-			PERSISTENCE: (options?.persist ?? false) ? "1" : "0",
+			},
+			publishToRandomPorts: options?.publishToRandomPorts ?? true,
 		});
 	}
 

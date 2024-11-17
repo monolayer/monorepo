@@ -1,5 +1,4 @@
 import { snakeCase } from "case-anything";
-import { assertContainerizedResource } from "~sidecar/resources/containerized-resource.js";
 import {
 	type GenericResource,
 	type ResourceClient,
@@ -22,13 +21,6 @@ import {
  * @typeParam C - Client type
  */
 export class Mailer<C> implements GenericResource, ResourceClient<C> {
-	/**
-	 * Docker image for container
-	 *
-	 * @defaultValue `redis/redis-stack:latest`
-	 */
-	static containerImage: string = "axllent/mailpit:v1.21.3";
-
 	readonly id: string;
 
 	constructor(
@@ -78,6 +70,3 @@ export class Mailer<C> implements GenericResource, ResourceClient<C> {
 		return snakeCase(`SIDECAR_MAILER_${this.id}_url`).toUpperCase();
 	}
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-assertContainerizedResource(Mailer<any>);

@@ -1,16 +1,45 @@
-import { kebabCase } from "case-anything";
-import { cwd } from "node:process";
-import path from "path";
 import { Wait, type StartedTestContainer } from "testcontainers";
 import {
 	Container,
 	type SidecarContainer,
+	type SidecarContainerSpec,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { randomName } from "~sidecar/containers/random-name.js";
 import { PostgresDatabase } from "~sidecar/resources/postgres-database.js";
 
 const POSTGRESQL_SERVER_PORT = 5432;
+
+const postgreSQLContainerSpec = {
+	/**
+	 * Docker image for container
+	 *
+	 * @defaultValue `postgres:16.5-alpine3.20`
+	 */
+	containerImage: "postgres:16.5-alpine3.20",
+
+	/**
+	 * Container ports to export to the host.
+	 *
+	 * The published ports to the host will be assigned randomly when starting the container
+	 * and they can be accessed through {@link Container.mappedPorts}
+	 *
+	 */
+	portsToExpose: [POSTGRESQL_SERVER_PORT],
+
+	environment: {
+		POSTGRES_PASSWORD: "postgres",
+		POSTGRES_DB: "postgres",
+	},
+
+	waitStrategy: Wait.forLogMessage(
+		/.*database system is ready to accept connections.*/,
+		2,
+	),
+
+	startupTimeout: 120_000,
+
+	persistentVolumeTargets: ["/var/lib/postgresql/data"],
+};
 
 /**
  * Container for PostgreSQL
@@ -24,37 +53,17 @@ export class PostgreSQLContainer<C>
 	/**
 	 * @hideconstructor
 	 */
-	constructor(resource: PostgresDatabase<C>) {
-		const name = randomName();
+	constructor(
+		resource: PostgresDatabase<C>,
+		options?: Partial<SidecarContainerSpec>,
+	) {
 		super({
-			resourceId: resource.id,
-			name,
-			image: PostgresDatabase.containerImage,
-			portsToExpose: [POSTGRESQL_SERVER_PORT],
-			persistenceVolumes: [
-				{
-					source: path.join(
-						cwd(),
-						"tmp",
-						"container-volumes",
-						kebabCase(`${name}-data`),
-					),
-					target: "/var/lib/postgresql/data",
-				},
-			],
+			resource,
+			containerSpec: {
+				...postgreSQLContainerSpec,
+				...(options ? options : {}),
+			},
 		});
-		this.withEnvironment({
-			POSTGRES_PASSWORD: "postgres",
-			POSTGRES_DB: "postgres",
-		})
-			.withWaitStrategy(
-				Wait.forLogMessage(
-					/.*database system is ready to accept connections.*/,
-					2,
-				),
-			)
-			.withStartupTimeout(120_000);
-
 		this.#resource = resource;
 	}
 

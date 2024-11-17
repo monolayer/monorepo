@@ -1,5 +1,4 @@
 import { kebabCase, snakeCase } from "case-anything";
-import { assertContainerizedResource } from "~sidecar/resources/containerized-resource.js";
 import {
 	type GenericResource,
 	type ResourceClient,
@@ -25,13 +24,6 @@ import {
  * @typeParam C - Client type
  */
 export class PostgresDatabase<C> implements GenericResource, ResourceClient<C> {
-	/**
-	 * Docker image for container
-	 *
-	 * @defaultValue `postgres:16.5-alpine3.20`
-	 */
-	static containerImage: string = "postgres:16.5-alpine3.20";
-
 	readonly id: string;
 
 	readonly databaseName: string;
@@ -97,9 +89,6 @@ export class PostgresDatabase<C> implements GenericResource, ResourceClient<C> {
 		return snakeCase(`SIDECAR_POSTGRESQL_${this.id}_url`).toUpperCase();
 	}
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-assertContainerizedResource(PostgresDatabase<any>);
 
 /**
  * Tests whether the connection string points to a local container.

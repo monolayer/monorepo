@@ -5,13 +5,6 @@ export interface GenericResource {
 	readonly id: string;
 }
 
-export interface ResourceContainer {
-	/**
-	 * Docker image for container
-	 */
-	containerImage: string;
-}
-
 export interface ResourceClient<C> {
 	client: C;
 }

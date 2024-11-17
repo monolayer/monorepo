@@ -3,7 +3,6 @@ import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
 import { PostgresDatabase } from "~sidecar/resources/postgres-database.js";
-import { assertContainerImage } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
 
 test("PostgreSQL client commands against test container", async ({
@@ -34,31 +33,6 @@ test("PostgreSQL client commands against test container", async ({
 	await postgreSQL.client.end();
 	await adminPool.end();
 });
-
-test(
-	"PostgreSQL with custom image tag container",
-	{ sequential: true, retry: 2 },
-	async ({ containers }) => {
-		const postgres = new PostgresDatabase(
-			"pg-custom-image-tag",
-			(connectionStringEnvVar) =>
-				new pg.Pool({
-					connectionString: process.env[connectionStringEnvVar],
-				}),
-			{ serverId: "server_one" },
-		);
-
-		PostgresDatabase.containerImage = "postgres:16.5";
-		const container = new PostgreSQLContainer(postgres);
-		const startedContainer = await container.start();
-		containers.push(startedContainer);
-		await assertContainerImage({
-			containerName: container.name,
-			expectedImage: "postgres:16.5",
-		});
-		await startedContainer.stop();
-	},
-);
 
 test("client type", async () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

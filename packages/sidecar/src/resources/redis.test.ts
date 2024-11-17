@@ -3,7 +3,6 @@ import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
 import { RedisContainer } from "~sidecar/containers/redis.js";
 import { Redis } from "~sidecar/resources/redis.js";
-import { assertContainerImage } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
 
 test("Redis client commands against test container", async ({ containers }) => {
@@ -35,30 +34,6 @@ test("Redis client commands against test container", async ({ containers }) => {
 	assert.isNull(await client.get("hello"));
 	await client.disconnect();
 });
-
-test(
-	"Redis with custom image tag container",
-	{ sequential: true, retry: 2 },
-	async ({ containers }) => {
-		const redisResource = new Redis(
-			"rd-custom-image-tag",
-			(connectionStringEnvVar) =>
-				createClient({
-					url: process.env[connectionStringEnvVar],
-				}).on("error", (err) => console.error("Redis Client Error", err)),
-		);
-
-		Redis.containerImage = "redis/redis-stack:7.2.0-v12";
-		const container = new RedisContainer(redisResource);
-		const startedContainer = await container.start();
-		containers.push(startedContainer);
-		await assertContainerImage({
-			containerName: container.name,
-			expectedImage: "redis/redis-stack:7.2.0-v12",
-		});
-		await startedContainer.stop();
-	},
-);
 
 test("client type", async () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -5,6 +5,7 @@ import path from "path";
 import {
 	assertBindMounts,
 	assertContainer,
+	assertContainerImage,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
@@ -117,3 +118,23 @@ test("Web URL", { sequential: true, retry: 2 }, async ({ containers }) => {
 		`http://${startedContainer.getHost()}:${startedContainer.getMappedPort(8025)}/`,
 	);
 });
+
+test(
+	"Mailer with custom image tag container",
+	{ sequential: true, retry: 2 },
+	async ({ containers }) => {
+		const mailer = new Mailer("test-mailer-send", (connectionStringEnvVar) =>
+			nodemailer.createTransport(process.env[connectionStringEnvVar]),
+		);
+		const container = new MailerContainer(mailer, {
+			containerImage: "axllent/mailpit:v1.21",
+		});
+		const startedContainer = await container.start();
+		containers.push(startedContainer);
+		await assertContainerImage({
+			containerName: container.name,
+			expectedImage: "axllent/mailpit:v1.21",
+		});
+		await startedContainer.stop();
+	},
+);
