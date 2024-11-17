@@ -8,9 +8,11 @@ import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import { createDatabase } from "~sidecar/containers/admin/create-database.js";
 import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
+import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { RedisContainer } from "~sidecar/containers/redis.js";
 import type { Bucket } from "~sidecar/workloads/stateful/bucket.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
+import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import type { Redis } from "~sidecar/workloads/stateful/redis.js";
 
@@ -29,6 +31,11 @@ function isPostgresDatabase<C>(
 ): workload is PostgresDatabase<C> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return (workload as any).constructor.name === "PostgresDatabase";
+}
+
+function isMailer<C>(workload: unknown): workload is Mailer<C> {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return (workload as any).constructor.name === "Mailer";
 }
 
 class ContainerStarter {
@@ -54,6 +61,9 @@ class ContainerStarter {
 			await createDatabase(workload);
 			return container;
 		}
+		if (isMailer(workload)) {
+			return await this.startMailer(workload);
+		}
 	}
 
 	async startRedis<C>(workload: Redis<C>) {
@@ -67,6 +77,11 @@ class ContainerStarter {
 			persistenceVolumes: true,
 			reuse: true,
 		});
+	}
+
+	async startMailer<C>(workload: Mailer<C>) {
+		const container = new MailerContainer(workload);
+		return await container.start();
 	}
 
 	#localStackContainer?: LocalStackContainer;
