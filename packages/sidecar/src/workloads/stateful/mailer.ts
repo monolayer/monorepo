@@ -57,17 +57,17 @@ export class Mailer<C> implements StatefulWorkload, WorkloadClient<C> {
 	/**
 	 * Environment variable that should holds the workload connection string.
 	 *
-	 * Format: `SIDECAR_${workloadName}_${kebabCase(workloadId)}_URL`.toUpperCase()
+	 * Format: `WL_${workloadName}_${kebabCase(workloadId)}_URL`.toUpperCase()
 	 * @example
 	 *
 	 * const mailer = new Mailer("transactional", (connectionStringEnvVar) =>
 	 *  nodemailer.createTransport(
-	 *     // connectionStringEnvVar: SIDECAR_MAILER_TRANSACTIONAL_URL
+	 *     // connectionStringEnvVar: WL_MAILER_TRANSACTIONAL_URL
 	 *     process.env[connectionStringEnvVar]
 	 *   ),
 	 * );
 	 */
 	connectionStringEnvVar() {
-		return snakeCase(`SIDECAR_MAILER_${this.id}_url`).toUpperCase();
+		return snakeCase(`WL_MAILER_${this.id}_url`).toUpperCase();
 	}
 }

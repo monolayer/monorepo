@@ -67,13 +67,13 @@ test(
 	"Assigned connection string to environment variable after start",
 	{ sequential: true },
 	async ({ containers }) => {
-		delete process.env.SIDECAR_REDIS_TEST_REDIS_TEST_URL;
+		delete process.env.WL_REDIS_TEST_REDIS_TEST_URL;
 		const container = new RedisContainer(redisStore);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 
 		assert.strictEqual(
-			process.env.SIDECAR_REDIS_TEST_REDIS_TEST_URL,
+			process.env.WL_REDIS_TEST_REDIS_TEST_URL,
 			`redis://localhost:${startedContainer.getMappedPort(6379)}`,
 		);
 	},

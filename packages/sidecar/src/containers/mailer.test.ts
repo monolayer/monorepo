@@ -65,13 +65,13 @@ test(
 	"Assigned connection string to environment variable after start",
 	{ sequential: true },
 	async ({ containers }) => {
-		delete process.env.SIDECAR_MAILER_TEST_MAILER_URL;
+		delete process.env.WL_MAILER_TEST_MAILER_URL;
 		const container = new MailerContainer(mailer);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 
 		assert.strictEqual(
-			process.env.SIDECAR_MAILER_TEST_MAILER_URL,
+			process.env.WL_MAILER_TEST_MAILER_URL,
 			`smtp://username:password@${startedContainer.getHost()}:${startedContainer.getMappedPort(1025)}`,
 		);
 	},

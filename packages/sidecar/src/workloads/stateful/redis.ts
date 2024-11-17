@@ -58,19 +58,19 @@ export class Redis<C> implements StatefulWorkload, WorkloadClient<C> {
 	/**
 	 * Environment variable that should holds the workload connection string.
 	 *
-	 * Format: `SIDECAR_${workloadName}_${kebabCase(workloadId)}_URL`.toUpperCase()
+	 * Format: `WL_${workloadName}_${kebabCase(workloadId)}_URL`.toUpperCase()
 	 * @example
 	 *
 	 * const cache = new Redis("app-cache", (connectionStringEnvVar) =>
 	 *   createClient({
-	 *     // connectionStringEnvVar: SIDECAR_REDIS_APP_CACHE_URL
+	 *     // connectionStringEnvVar: WL_REDIS_APP_CACHE_URL
 	 *     url: process.env[connectionStringEnvVar],
 	 *   }).on("error", (err) => console.error("Redis Client Error", err)),
 	 * );
 	 */
 	connectionStringEnvVar() {
 		return snakeCase(
-			`SIDECAR_${this.constructor.name}_${this.id}_url`,
+			`WL_${this.constructor.name}_${this.id}_url`,
 		).toUpperCase();
 	}
 }

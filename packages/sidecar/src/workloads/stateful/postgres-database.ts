@@ -68,13 +68,13 @@ export class PostgresDatabase<C>
 	/**
 	 * Environment variable that should holds the workload connection string.
 	 *
-	 * Format: `SIDECAR_${workloadName}_${kebabCase(databaseId)}_${kebabCase(databaseName)}_URL`.toUpperCase()
+	 * Format: `WL_${workloadName}_${kebabCase(databaseId)}_${kebabCase(databaseName)}_URL`.toUpperCase()
 	 * @example
 	 *
 	 * export const db = new PostgreSQL(
 	 *   "analytics",
 	 *   "app-db",
-	 *   // connectionStringEnvVar: SIDECAR_POSTGRESQL_APP_DB_ANALYTICS_URL
+	 *   // connectionStringEnvVar: WL_POSTGRESQL_APP_DB_ANALYTICS_URL
 	 *   (connectionStringEnvVar) =>
 	 *     new pg.Pool({
 	 *       connectionString: process.env[connectionStringEnvVar],
@@ -83,7 +83,7 @@ export class PostgresDatabase<C>
 	 */
 	connectionStringEnvVar() {
 		return snakeCase(
-			`SIDECAR_POSTGRESQL_${this.id}_${this.databaseName}_url`,
+			`WL_POSTGRESQL_${this.id}_${this.databaseName}_url`,
 		).toUpperCase();
 	}
 }

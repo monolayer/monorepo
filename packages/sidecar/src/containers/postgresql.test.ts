@@ -40,7 +40,7 @@ test(
 			ports: [5432],
 		});
 		assert.strictEqual(
-			process.env.SIDECAR_POSTGRESQL_TEST_APP_TEST_STARTED_CONTAINER_URL,
+			process.env.WL_POSTGRESQL_TEST_APP_TEST_STARTED_CONTAINER_URL,
 			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}/test_started_container`,
 		);
 		assert.strictEqual(
