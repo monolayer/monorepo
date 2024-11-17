@@ -3,7 +3,7 @@ import { stopDevContainer } from "~sidecar/containers/admin/dev-container.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 
-export function devStop(program: Command) {
+export function stop(program: Command) {
 	return program
 		.command("stop")
 		.description("Stop local workloads")

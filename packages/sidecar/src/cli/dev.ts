@@ -12,9 +12,9 @@ import { importWorkloads } from "~sidecar/workloads/import.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 
-export function devStart(program: Command) {
+export function dev(program: Command) {
 	return program
-		.command("start")
+		.command("dev")
 		.description("Start local workloads")
 		.requiredOption(
 			"-f, --folder <workloads-folder>",

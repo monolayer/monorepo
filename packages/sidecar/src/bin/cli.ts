@@ -2,9 +2,9 @@
 import type { Command as CommandExtra } from "@commander-js/extra-typings";
 import { Command, CommanderError } from "commander";
 import { exit } from "process";
-import { devStart } from "~sidecar/cli/dev/start.js";
-import { devStatus } from "~sidecar/cli/dev/status.js";
-import { devStop } from "~sidecar/cli/dev/stop.js";
+import { dev } from "~sidecar/cli/dev.js";
+import { status } from "~sidecar/cli/status.js";
+import { stop } from "~sidecar/cli/stop.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
@@ -16,11 +16,9 @@ async function main() {
 
 	program.name("workloads").version("1.0.0");
 
-	const dev = program.command("dev").description("Dev commands");
-
-	devStart(dev);
-	devStop(dev);
-	devStatus(dev);
+	dev(program);
+	stop(program);
+	status(program);
 
 	program.exitOverride();
 

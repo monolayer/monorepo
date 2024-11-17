@@ -8,7 +8,7 @@ import type { PostgresDatabase } from "~sidecar/workloads.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 
-export function devStatus(program: Command) {
+export function status(program: Command) {
 	return program
 		.command("status")
 		.description("List workload status")
