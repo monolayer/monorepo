@@ -17,11 +17,6 @@ export async function startDevContainer(
 		`Start ${workload.id} ${color.gray(workload.constructor.name)}`,
 	);
 
-	const existingContainer = await getExistingContainer(workload);
-	if (existingContainer) {
-		spinner.succeed();
-		return;
-	}
 	const startedTestContainer = await containerStarter.startContainerForWorkload(
 		workload,
 		false,
@@ -31,6 +26,7 @@ export async function startDevContainer(
 		throw new Error(`no container match for workload: ${workload.id}`);
 	}
 	spinner.succeed();
+	return startedTestContainer;
 }
 
 /**
@@ -50,7 +46,14 @@ export async function stopDevContainer(
 		spinner.succeed();
 		return;
 	} else {
-		await startedTestContainer.stop();
+		try {
+			await startedTestContainer.stop();
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (e: any) {
+			if (e.reason !== "container already stopped") {
+				throw e;
+			}
+		}
 	}
 	spinner.succeed();
 }
