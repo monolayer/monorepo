@@ -39,13 +39,18 @@ function isMailer<C>(workload: unknown): workload is Mailer<C> {
 }
 
 class ContainerStarter {
-	async startContainerForWorkload(workload: unknown) {
+	async startContainerForWorkload(
+		workload: unknown,
+		initialize: boolean = true,
+	) {
 		if (isRedis(workload)) {
 			return await this.startRedis(workload);
 		}
 		if (isBucket(workload)) {
 			const localStackContainer = await this.startLocalStack();
-			await createBucket(workload.id, localStackContainer);
+			if (initialize) {
+				await createBucket(workload.id, localStackContainer);
+			}
 			return localStackContainer.startedContainer;
 		}
 		if (isPostgresDatabase(workload)) {
@@ -58,7 +63,9 @@ class ContainerStarter {
 				container = await this.startPostgres(workload);
 				this.#postgresContainers.push({ container, workloadId: workload.id });
 			}
-			await createDatabase(workload);
+			if (initialize) {
+				await createDatabase(workload);
+			}
 			return container;
 		}
 		if (isMailer(workload)) {
