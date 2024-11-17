@@ -31,12 +31,9 @@ const postgreSQLContainerSpec = {
 		POSTGRES_DB: "postgres",
 	},
 
-	waitStrategy: Wait.forLogMessage(
-		/.*database system is ready to accept connections.*/,
-		2,
-	),
+	waitStrategy: Wait.forHealthCheck(),
 
-	startupTimeout: 120_000,
+	startupTimeout: 6000,
 
 	persistentVolumeTargets: ["/var/lib/postgresql/data"],
 };
@@ -64,6 +61,13 @@ export class PostgreSQLContainer<C>
 				...(options ? options : {}),
 			},
 		});
+		this.withHealthCheck({
+			test: ["CMD", "pg_isready", "-U", "postgres"],
+			interval: 1000,
+			retries: 5,
+			startPeriod: 1000,
+		});
+
 		this.#resource = resource;
 	}
 
