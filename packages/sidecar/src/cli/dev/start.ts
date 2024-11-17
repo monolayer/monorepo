@@ -2,7 +2,10 @@ import type { Command } from "@commander-js/extra-typings";
 import { snakeCase } from "case-anything";
 import ora from "ora";
 import { startDevContainer } from "~sidecar/containers/admin/dev-container.js";
-import { type EnvVar } from "~sidecar/containers/admin/update-dotenv-file.js";
+import {
+	updateDotenvFile,
+	type EnvVar,
+} from "~sidecar/containers/admin/update-dotenv-file.js";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
 import type { Bucket, PostgresDatabase, Redis } from "~sidecar/workloads.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
@@ -21,6 +24,9 @@ export function devStart(program: Command) {
 			await startPostgresDatabases(workloads.PostgresDatabase, envVars);
 			await startRedis(workloads.Redis, envVars);
 			await startBuckets(workloads.Bucket, envVars);
+			if (envVars.length !== 0) {
+				updateDotenvFile(envVars);
+			}
 		});
 }
 
