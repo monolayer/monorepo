@@ -2,6 +2,10 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
 	test: {
+		disableConsoleIntercept: true,
+		pool: "forks",
+		minWorkers: 1,
+		maxWorkers: 2,
 		coverage: {
 			provider: "istanbul",
 			exclude: [

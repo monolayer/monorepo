@@ -5,6 +5,9 @@ export default defineConfig({
 	test: {
 		name: "sidecar",
 		setupFiles: ["test/__setup__/setup.ts"],
+		pool: "forks",
+		minWorkers: 1,
+		maxWorkers: 2,
 		fileParallelism: false,
 		testTimeout: 10000,
 	},
