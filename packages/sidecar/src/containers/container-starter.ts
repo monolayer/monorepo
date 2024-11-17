@@ -1,12 +1,8 @@
 import { remember } from "@epic-web/remember";
-import {
-	getContainerRuntimeClient,
-	type StartedTestContainer,
-} from "testcontainers";
+import { type StartedTestContainer } from "testcontainers";
 import { PostgreSQLContainer } from "~sidecar/containers.js";
 import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import { createDatabase } from "~sidecar/containers/admin/create-database.js";
-import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { RedisContainer } from "~sidecar/containers/redis.js";
@@ -55,14 +51,7 @@ class ContainerStarter {
 		}
 		if (isPostgresDatabase(workload)) {
 			let container: StartedTestContainer | undefined = undefined;
-			if (await this.#containerForWorkload(workload.id)) {
-				container = this.#postgresContainers.find(
-					(c) => c.workloadId === workload.id,
-				)?.container;
-			} else {
-				container = await this.startPostgres(workload);
-				this.#postgresContainers.push({ container, workloadId: workload.id });
-			}
+			container = await this.startPostgres(workload);
 			if (initialize) {
 				await createDatabase(workload);
 			}
@@ -106,20 +95,6 @@ class ContainerStarter {
 			await this.#localStackContainer.start();
 		}
 		return this.#localStackContainer;
-	}
-
-	#postgresContainers: {
-		container: StartedTestContainer;
-		workloadId: string;
-	}[] = [];
-
-	async #containerForWorkload(workloadId: string) {
-		const containerRuntimeClient = await getContainerRuntimeClient();
-		return await containerRuntimeClient.container.fetchByLabel(
-			CONTAINER_LABEL_WORKLOAD_ID,
-			workloadId,
-			{ status: ["running"] },
-		);
 	}
 }
 

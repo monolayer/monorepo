@@ -78,7 +78,6 @@ test(
 				}),
 		);
 		const anotherDatabaseContainer = await startTestContainer(anotherDatabase);
-		containers.push(anotherDatabaseContainer);
 
 		await assertDatabase(anotherDatabase);
 
