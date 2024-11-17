@@ -14,8 +14,9 @@
 		"module": "CommonJS",
 		"moduleResolution": "Node",
 		"paths": {
-			"~sidecar/*": ["src/*"]
+			"~sidecar/*": ["src/*"],
+			"@monorepo/utils/*": ["../../internal/utils/src/*"]
 		}
 	},
-	"references": []
+	"references": [{ "path": "./tsconfigs/tsconfig.cli.bundle.cjs.json" }]
 }

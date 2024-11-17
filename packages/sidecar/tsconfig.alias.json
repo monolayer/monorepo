@@ -2,7 +2,9 @@
 	"compilerOptions": {
 		"rootDir": "",
 		"paths": {
-			"~sidecar/*": ["*"]
+			"~sidecar/*": ["*"],
+			"~utils/*": ["packages/utils/*"],
+			"@monorepo/utils/*": ["packages/utils/*"]
 		}
 	},
 	"references": []

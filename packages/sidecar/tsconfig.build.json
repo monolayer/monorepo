@@ -9,5 +9,5 @@
 		"emitDeclarationOnly": false,
 		"sourceMap": false
 	},
-	"references": []
+	"references": [{ "path": "./tsconfigs/tsconfig.cli.bundle.json" }]
 }

@@ -12,5 +12,5 @@
 		"emitDeclarationOnly": true,
 		"declaration": true
 	},
-	"references": []
+	"references": [{ "path": "../../internal/utils" }]
 }
