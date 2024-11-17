@@ -2,7 +2,7 @@
  * @module containers
  */
 
-import { kebabCase, snakeCase } from "case-anything";
+import { snakeCase } from "case-anything";
 import getPort from "get-port";
 import path from "node:path";
 import { cwd } from "node:process";
@@ -12,7 +12,6 @@ import {
 	type WaitStrategy,
 } from "testcontainers";
 import type { Environment } from "testcontainers/build/types.js";
-import { randomName } from "~sidecar/containers/random-name.js";
 import { type GenericResource } from "~sidecar/resources/interfaces.js";
 
 export interface ContainerImage {
@@ -64,10 +63,6 @@ export interface StartOptions {
 /**
  * @hidden
  */
-export const CONTAINER_LABEL_NAME = "org.monolayer-sidecar.name";
-/**
- * @hidden
- */
 export const CONTAINER_LABEL_RESOURCE_ID = "org.monolayer-sidecar.resource-id";
 /**
  * @hidden
@@ -84,26 +79,16 @@ export class Container extends GenericContainer implements SidecarContainer {
 	 * @defaultValue `undefined`
 	 */
 	startedContainer?: StartedTestContainer;
-	/**
-	 * Container name
-	 *
-	 * @defaultValue `options.name`(constructor)
-	 */
-	name: string;
 
 	#options: ContainerOptions;
 
 	constructor(options: ContainerOptions) {
 		super(options.containerSpec.containerImage);
-		this.name = snakeCase(randomName());
 		this.#options = options;
-		this.withName(this.name)
-			.withLabels({
-				[CONTAINER_LABEL_NAME]: this.name,
-				[CONTAINER_LABEL_RESOURCE_ID]: this.#options.resource.id,
-				[CONTAINER_LABEL_ORG]: "true",
-			})
-			.withEnvironment(options.containerSpec.environment);
+		this.withLabels({
+			[CONTAINER_LABEL_RESOURCE_ID]: this.#options.resource.id,
+			[CONTAINER_LABEL_ORG]: "true",
+		}).withEnvironment(options.containerSpec.environment);
 		if (options.containerSpec.waitStrategy) {
 			this.withWaitStrategy(options.containerSpec.waitStrategy);
 		}
@@ -142,7 +127,8 @@ export class Container extends GenericContainer implements SidecarContainer {
 							cwd(),
 							"tmp",
 							"container-volumes",
-							kebabCase(`${this.name}-data`),
+							snakeCase(`${this.#options.resource.constructor.name}`),
+							snakeCase(`${this.#options.resource.id}-data`),
 						),
 						target: persistenceVolume,
 					},

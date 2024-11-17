@@ -1,10 +1,8 @@
-import { kebabCase } from "case-anything";
 import { cwd } from "node:process";
 import path from "path";
 import { createClient } from "redis";
 import {
 	assertBindMounts,
-	assertContainer,
 	assertContainerImage,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
@@ -20,22 +18,8 @@ const redisStore = new Redis("test-redis-test", (connectionStringEnvVar) =>
 );
 
 test(
-	"Redis started container name label",
-	{ sequential: true, retry: 2 },
-	async ({ containers }) => {
-		const container = new RedisContainer(redisStore);
-		const startedContainer = await container.start();
-		containers.push(startedContainer);
-
-		const labels = startedContainer.getLabels();
-		assert.strictEqual(labels["org.monolayer-sidecar.name"], container.name);
-		await assertContainer({ containerName: container.name });
-	},
-);
-
-test(
 	"Redis started container resource id label",
-	{ sequential: true, retry: 2 },
+	{ sequential: true },
 	async ({ containers }) => {
 		const container = new RedisContainer(redisStore);
 		const startedContainer = await container.start();
@@ -51,15 +35,15 @@ test(
 
 test(
 	"Bind mounts on a redis container",
-	{ sequential: true, retry: 2 },
+	{ sequential: true },
 	async ({ containers }) => {
 		const container = new RedisContainer(redisStore);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertBindMounts({
-			containerName: container.name,
+			resource: redisStore,
 			bindMounts: [
-				`${path.join(cwd(), "tmp", "container-volumes", kebabCase(`${container.name}-data`))}:/data:rw`,
+				`${path.join(cwd(), "tmp", "container-volumes", "redis", "test_redis_test_data")}:/data:rw`,
 			],
 		});
 	},
@@ -67,7 +51,7 @@ test(
 
 test(
 	"Exposed ports of a redis container",
-	{ sequential: true, retry: 2 },
+	{ sequential: true },
 	async ({ containers }) => {
 		const container = new RedisContainer(redisStore);
 		const startedContainer = await container.start();
@@ -81,7 +65,7 @@ test(
 
 test(
 	"Assigned connection string to environment variable after start",
-	{ sequential: true, retry: 2 },
+	{ sequential: true },
 	async ({ containers }) => {
 		delete process.env.SIDECAR_REDIS_TEST_REDIS_TEST_URL;
 		const container = new RedisContainer(redisStore);
@@ -95,22 +79,18 @@ test(
 	},
 );
 
-test(
-	"Connection string URL",
-	{ sequential: true, retry: 2 },
-	async ({ containers }) => {
-		const container = new RedisContainer(redisStore);
-		const startedContainer = await container.start();
-		containers.push(startedContainer);
+test("Connection string URL", { sequential: true }, async ({ containers }) => {
+	const container = new RedisContainer(redisStore);
+	const startedContainer = await container.start();
+	containers.push(startedContainer);
 
-		assert.strictEqual(
-			container.connectionURI,
-			`redis://localhost:${startedContainer.getMappedPort(6379)}`,
-		);
-	},
-);
+	assert.strictEqual(
+		container.connectionURI,
+		`redis://localhost:${startedContainer.getMappedPort(6379)}`,
+	);
+});
 
-test("Web URL", { sequential: true, retry: 2 }, async ({ containers }) => {
+test("Web URL", { sequential: true }, async ({ containers }) => {
 	const container = new RedisContainer(redisStore);
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
@@ -123,7 +103,7 @@ test("Web URL", { sequential: true, retry: 2 }, async ({ containers }) => {
 
 test(
 	"Redis with custom image tag container",
-	{ sequential: true, retry: 2 },
+	{ sequential: true },
 	async ({ containers }) => {
 		const redisResource = new Redis(
 			"rd-custom-image-tag",
@@ -139,7 +119,7 @@ test(
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertContainerImage({
-			containerName: container.name,
+			resource: redisResource,
 			expectedImage: "redis/redis-stack:7.2.0-v12",
 		});
 		await startedContainer.stop();

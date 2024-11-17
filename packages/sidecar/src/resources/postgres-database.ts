@@ -1,4 +1,4 @@
-import { kebabCase, snakeCase } from "case-anything";
+import { snakeCase } from "case-anything";
 import {
 	type GenericResource,
 	type ResourceClient,
@@ -25,9 +25,7 @@ import {
  */
 export class PostgresDatabase<C> implements GenericResource, ResourceClient<C> {
 	readonly id: string;
-
 	readonly databaseName: string;
-	readonly serverId?: string;
 
 	constructor(
 		/**
@@ -35,22 +33,16 @@ export class PostgresDatabase<C> implements GenericResource, ResourceClient<C> {
 		 */
 		databaseName: string,
 		/**
+		 * Database ID
+		 */
+		databaseId: string,
+		/**
 		 * Client constructor function. Executed once when accessing the {@link PostgresDatabase.client }
 		 */
 		client: (connectionStringVar: string) => C,
-
-		options?: {
-			/**
-			 * Server ID
-			 *
-			 * @defaultValue `APP_DB`
-			 */
-			serverId: string;
-		},
 	) {
-		this.id = kebabCase(options?.serverId ?? "app-db");
+		this.id = databaseId;
 		this.databaseName = databaseName;
-		this.serverId = options?.serverId;
 		this.#clientConstructor = client;
 	}
 

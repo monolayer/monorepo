@@ -10,13 +10,12 @@ test("PostgreSQL client commands against test container", async ({
 }) => {
 	const postgreSQL = new PostgresDatabase(
 		"test_commands",
+		"app_db",
 		(connectionStringEnvVar) =>
 			new pg.Pool({
 				connectionString: process.env[connectionStringEnvVar],
 			}),
-		{ serverId: "server_one" },
 	);
-
 	const container = new PostgreSQLContainer(postgreSQL);
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
@@ -27,7 +26,6 @@ test("PostgreSQL client commands against test container", async ({
 			"",
 		),
 	});
-	await adminPool.query("CREATE DATABASE test_commands");
 	const result = await postgreSQL.client.query("SELECT 1");
 	assert.deepStrictEqual(result.rows, [{ "?column?": 1 }]);
 	await postgreSQL.client.end();
@@ -37,14 +35,13 @@ test("PostgreSQL client commands against test container", async ({
 test("client type", async () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const postgreSQL = new PostgresDatabase(
-		"test-buildOutput",
+		"test_commands",
+		"app_db",
 		(connectionStringEnvVar) =>
 			new pg.Pool({
 				connectionString: process.env[connectionStringEnvVar],
 			}),
-		{ serverId: "server_one" },
 	);
-
 	type ClientType = typeof postgreSQL.client;
 	type ExpectedType = pg.Pool;
 	const isEqual: Expect<Equal<ClientType, ExpectedType>> = true;

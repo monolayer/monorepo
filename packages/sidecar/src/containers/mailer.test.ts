@@ -1,10 +1,8 @@
-import { kebabCase } from "case-anything";
 import { cwd } from "node:process";
 import nodemailer from "nodemailer";
 import path from "path";
 import {
 	assertBindMounts,
-	assertContainer,
 	assertContainerImage,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
@@ -18,22 +16,8 @@ const mailer = new Mailer("test-mailer", (connectionStringEnvVar) =>
 );
 
 test(
-	"Mailer started container name label",
-	{ sequential: true, retry: 2 },
-	async ({ containers }) => {
-		const container = new MailerContainer(mailer);
-		const startedContainer = await container.start();
-		containers.push(startedContainer);
-
-		const labels = startedContainer.getLabels();
-		assert.strictEqual(labels["org.monolayer-sidecar.name"], container.name);
-		await assertContainer({ containerName: container.name });
-	},
-);
-
-test(
 	"Mailer started container resource id label",
-	{ sequential: true, retry: 2 },
+	{ sequential: true },
 	async ({ containers }) => {
 		const container = new MailerContainer(mailer);
 		const startedContainer = await container.start();
@@ -49,15 +33,15 @@ test(
 
 test(
 	"Bind mounts on a mailer container",
-	{ sequential: true, retry: 2 },
+	{ sequential: true },
 	async ({ containers }) => {
 		const container = new MailerContainer(mailer);
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertBindMounts({
-			containerName: container.name,
+			resource: mailer,
 			bindMounts: [
-				`${path.join(cwd(), "tmp", "container-volumes", kebabCase(`${container.name}-data`))}:/data:rw`,
+				`${path.join(cwd(), "tmp", "container-volumes", "mailer", "test_mailer_data")}:/data:rw`,
 			],
 		});
 	},
@@ -65,7 +49,7 @@ test(
 
 test(
 	"Exposed ports of a mailer container",
-	{ sequential: true, retry: 2 },
+	{ sequential: true },
 	async ({ containers }) => {
 		const container = new MailerContainer(mailer);
 		const startedContainer = await container.start();
@@ -79,7 +63,7 @@ test(
 
 test(
 	"Assigned connection string to environment variable after start",
-	{ sequential: true, retry: 2 },
+	{ sequential: true },
 	async ({ containers }) => {
 		delete process.env.SIDECAR_MAILER_TEST_MAILER_URL;
 		const container = new MailerContainer(mailer);
@@ -93,22 +77,18 @@ test(
 	},
 );
 
-test(
-	"Connection string URL",
-	{ sequential: true, retry: 2 },
-	async ({ containers }) => {
-		const container = new MailerContainer(mailer);
-		const startedContainer = await container.start();
-		containers.push(startedContainer);
+test("Connection string URL", { sequential: true }, async ({ containers }) => {
+	const container = new MailerContainer(mailer);
+	const startedContainer = await container.start();
+	containers.push(startedContainer);
 
-		assert.strictEqual(
-			container.connectionURI,
-			`smtp://username:password@${startedContainer.getHost()}:${startedContainer.getMappedPort(1025)}`,
-		);
-	},
-);
+	assert.strictEqual(
+		container.connectionURI,
+		`smtp://username:password@${startedContainer.getHost()}:${startedContainer.getMappedPort(1025)}`,
+	);
+});
 
-test("Web URL", { sequential: true, retry: 2 }, async ({ containers }) => {
+test("Web URL", { sequential: true }, async ({ containers }) => {
 	const container = new MailerContainer(mailer);
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
@@ -121,7 +101,7 @@ test("Web URL", { sequential: true, retry: 2 }, async ({ containers }) => {
 
 test(
 	"Mailer with custom image tag container",
-	{ sequential: true, retry: 2 },
+	{ sequential: true },
 	async ({ containers }) => {
 		const mailer = new Mailer("test-mailer-send", (connectionStringEnvVar) =>
 			nodemailer.createTransport(process.env[connectionStringEnvVar]),
@@ -132,7 +112,7 @@ test(
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertContainerImage({
-			containerName: container.name,
+			resource: mailer,
 			expectedImage: "axllent/mailpit:v1.21",
 		});
 		await startedContainer.stop();
