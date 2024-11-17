@@ -6,3 +6,5 @@ files
 docs
 build
 *.md
+schemas.gen.ts
+swagger.json
