@@ -13,7 +13,7 @@
 	},
 	"type": "module",
 	"bin": {
-		"sidecar": "dist/esm/bin/cli.js"
+		"workloads": "dist/esm/bin/cli.js"
 	},
 	"exports": {
 		".": {

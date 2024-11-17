@@ -10,7 +10,7 @@ function isCommanderError(error: unknown): error is CommanderError {
 async function main() {
 	const program = new Command() as unknown as CommandExtra;
 
-	program.name("sidecar").version("1.0.0");
+	program.name("workloads").version("1.0.0");
 
 	program.exitOverride();
 
