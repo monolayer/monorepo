@@ -88,10 +88,3 @@ export class PostgresDatabase<C>
 	}
 }
 
-/**
- * Tests whether the connection string points to a local container.
- */
-export function localUri(connectionString: string) {
-	const localConnection = "postgresql://postgres:postgres@localhost:";
-	return connectionString.startsWith(localConnection);
-}
