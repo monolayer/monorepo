@@ -6,22 +6,22 @@ import {
 } from "testcontainers";
 import { assert } from "vitest";
 import { containerStarter } from "~sidecar/containers/container-starter.js";
-import { CONTAINER_LABEL_RESOURCE_ID } from "~sidecar/containers/container.js";
+import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
 import type { LocalStackContainer } from "~sidecar/containers/local-stack.js";
-import type { GenericResource } from "~sidecar/resources.js";
-import type { PostgresDatabase } from "~sidecar/resources/postgres-database.js";
+import type { GenericWorkload } from "~sidecar/resources.js";
+import type { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
 
 export async function assertContainerImage({
-	resource,
+	workload,
 	expectedImage,
 }: {
-	resource: GenericResource;
+	workload: GenericWorkload;
 	expectedImage: string;
 }) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
-		CONTAINER_LABEL_RESOURCE_ID,
-		resource.id,
+		CONTAINER_LABEL_WORKLOAD_ID,
+		workload.id,
 		{ status: ["running"] },
 	);
 
@@ -32,14 +32,14 @@ export async function assertContainerImage({
 }
 
 export async function assertContainer({
-	resource: resource,
+	workload,
 }: {
-	resource: GenericResource;
+	workload: GenericWorkload;
 }) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
-		CONTAINER_LABEL_RESOURCE_ID,
-		resource.id,
+		CONTAINER_LABEL_WORKLOAD_ID,
+		workload.id,
 		{ status: ["running"] },
 	);
 
@@ -47,16 +47,16 @@ export async function assertContainer({
 }
 
 export async function assertBindMounts({
-	resource,
+	workload,
 	bindMounts,
 }: {
-	resource: GenericResource;
+	workload: GenericWorkload;
 	bindMounts: string[];
 }) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
-		CONTAINER_LABEL_RESOURCE_ID,
-		resource.id,
+		CONTAINER_LABEL_WORKLOAD_ID,
+		workload.id,
 		{ status: ["running"] },
 	);
 

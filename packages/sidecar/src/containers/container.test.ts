@@ -9,13 +9,13 @@ import { assert } from "vitest";
 import { Container } from "~sidecar/containers/container.js";
 import { test } from "~test/__setup__/container-test.js";
 
-class TestResource {
+class TestWorkload {
 	id: string;
 	constructor(id: string) {
 		this.id = id;
 	}
 }
-const testResource = new TestResource("container-test");
+const testWorkload = new TestWorkload("container-test");
 
 const nginxSpec = {
 	containerImage: "nginx:latest",
@@ -26,7 +26,7 @@ const nginxSpec = {
 
 test("start container", async ({ containers }) => {
 	const container = new Container({
-		resource: testResource,
+		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
 	const startedContainer = await container.start();
@@ -36,7 +36,7 @@ test("start container", async ({ containers }) => {
 
 test("start container and expose ports", async ({ containers }) => {
 	const container = new Container({
-		resource: testResource,
+		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
 	const startedContainer = await container.start();
@@ -47,7 +47,7 @@ test("start container and expose ports", async ({ containers }) => {
 
 test("start container with persistence volumes", async ({ containers }) => {
 	const container = new Container({
-		resource: testResource,
+		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
 	const startedContainer = await container.start({
@@ -56,23 +56,23 @@ test("start container with persistence volumes", async ({ containers }) => {
 	containers.push(startedContainer);
 
 	await assertBindMounts({
-		resource: testResource,
+		workload: testWorkload,
 		bindMounts: [
-			`${path.join(cwd(), "tmp/container-volumes", "test_resource", "container_test_data")}:/var/www:rw`,
+			`${path.join(cwd(), "tmp/container-volumes", "test_workload", "container_test_data")}:/var/www:rw`,
 		],
 	});
 });
 
 test("start container with reuse", async ({ containers }) => {
 	const container = new Container({
-		resource: testResource,
+		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
 	const startedContainer = await container.start({ reuse: true });
 	containers.push(startedContainer);
 
 	const anotherContainer = new Container({
-		resource: testResource,
+		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
 
@@ -85,7 +85,7 @@ test("start container with reuse", async ({ containers }) => {
 
 test("mapped ports", async ({ containers }) => {
 	const container = new Container({
-		resource: testResource,
+		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
 	const startedContainer = await container.start();
@@ -101,7 +101,7 @@ test("mapped ports", async ({ containers }) => {
 
 test("without mapped ports", async ({ containers }) => {
 	const container = new Container({
-		resource: testResource,
+		workload: testWorkload,
 		containerSpec: {
 			...nginxSpec,
 			portsToExpose: [],
@@ -115,7 +115,7 @@ test("without mapped ports", async ({ containers }) => {
 
 test("mapped ports not started container", async () => {
 	const container = new Container({
-		resource: testResource,
+		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
 	assert.isUndefined(container.mappedPorts);
@@ -123,7 +123,7 @@ test("mapped ports not started container", async () => {
 
 test("stop container", async () => {
 	const container = new Container({
-		resource: testResource,
+		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
 	await container.start();
@@ -142,7 +142,7 @@ test("start multiple times returns the same container", async ({
 	containers,
 }) => {
 	const container = new Container({
-		resource: testResource,
+		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
 	const container1 = await container.start();

@@ -2,7 +2,7 @@ import { createClient } from "redis";
 import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
 import { RedisContainer } from "~sidecar/containers/redis.js";
-import { Redis } from "~sidecar/resources/redis.js";
+import { Redis } from "~sidecar/workloads/redis.js";
 import { test } from "~test/__setup__/container-test.js";
 
 test("Redis client commands against test container", async ({ containers }) => {
@@ -37,7 +37,7 @@ test("Redis client commands against test container", async ({ containers }) => {
 
 test("client type", async () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const redisResource = new Redis(
+	const redisWorkload = new Redis(
 		"test-buildOutput",
 		(connectionStringEnvVar) =>
 			createClient({
@@ -45,7 +45,7 @@ test("client type", async () => {
 			}).on("error", (err) => console.error("Redis Client Error", err)),
 	);
 
-	type ClientType = typeof redisResource.client;
+	type ClientType = typeof redisWorkload.client;
 	type ExpectedType = ReturnType<typeof createClient>;
 	const isEqual: Expect<Equal<ClientType, ExpectedType>> = true;
 	expect(isEqual).toBe(true);

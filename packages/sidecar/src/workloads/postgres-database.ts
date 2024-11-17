@@ -1,11 +1,11 @@
 import { snakeCase } from "case-anything";
 import {
-	type GenericResource,
-	type ResourceClient,
-} from "~sidecar/resources/interfaces.js";
+	type GenericWorkload,
+	type WorkloadClient,
+} from "~sidecar/workloads/interfaces.js";
 
 /**
- * PostgreSQL resource.
+ * PostgreSQL workload.
  *
  * @example
  * ```ts
@@ -23,7 +23,7 @@ import {
  *
  * @typeParam C - Client type
  */
-export class PostgresDatabase<C> implements GenericResource, ResourceClient<C> {
+export class PostgresDatabase<C> implements GenericWorkload, WorkloadClient<C> {
 	readonly id: string;
 	readonly databaseName: string;
 
@@ -63,9 +63,9 @@ export class PostgresDatabase<C> implements GenericResource, ResourceClient<C> {
 	}
 
 	/**
-	 * Environment variable that should holds the resource connection string.
+	 * Environment variable that should holds the workload connection string.
 	 *
-	 * Format: `SIDECAR_${resourceName}_${kebabCase(resourceId)}_URL`.toUpperCase()
+	 * Format: `SIDECAR_${workloadName}_${kebabCase(workloadId)}_URL`.toUpperCase()
 	 * @example
 	 *
 	 * export const db = new PostgreSQL(

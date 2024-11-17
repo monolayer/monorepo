@@ -5,7 +5,7 @@ import {
 	type SidecarContainerSpec,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { Mailer } from "~sidecar/resources/mailer.js";
+import { Mailer } from "~sidecar/workloads/mailer.js";
 
 const MAILER_SERVER_PORT = 1025;
 const MAILER_WEBUI_PORT = 8025;
@@ -22,20 +22,20 @@ const mailerContainerSpec = {
  * Container for Mailer
  */
 export class MailerContainer<C> extends Container implements SidecarContainer {
-	#resource: Mailer<C>;
+	#workload: Mailer<C>;
 
 	/**
 	 * @hideconstructor
 	 */
-	constructor(resource: Mailer<C>, options?: Partial<SidecarContainerSpec>) {
+	constructor(workload: Mailer<C>, options?: Partial<SidecarContainerSpec>) {
 		super({
-			resource,
+			workload,
 			containerSpec: {
 				...mailerContainerSpec,
 				...(options ? options : {}),
 			},
 		});
-		this.#resource = resource;
+		this.#workload = workload;
 	}
 
 	override async start(options?: StartOptions) {
@@ -45,7 +45,7 @@ export class MailerContainer<C> extends Container implements SidecarContainer {
 				reuse: true,
 			},
 		);
-		process.env[this.#resource.connectionStringEnvVar()] =
+		process.env[this.#workload.connectionStringEnvVar()] =
 			this.#buildConnectionURI(startedContainer);
 		return startedContainer;
 	}

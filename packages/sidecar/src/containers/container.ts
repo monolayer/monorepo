@@ -12,7 +12,7 @@ import {
 	type WaitStrategy,
 } from "testcontainers";
 import type { Environment } from "testcontainers/build/types.js";
-import { type GenericResource } from "~sidecar/resources/interfaces.js";
+import { type GenericWorkload } from "~sidecar/workloads/interfaces.js";
 
 export interface ContainerImage {
 	/**
@@ -37,7 +37,7 @@ export interface ContainerPersistenceVolume {
 }
 
 export interface ContainerOptions {
-	resource: GenericResource;
+	workload: GenericWorkload;
 	/**
 	 * Whether to publish the exposed ports to random ports in the host
 	 *
@@ -63,7 +63,7 @@ export interface StartOptions {
 /**
  * @hidden
  */
-export const CONTAINER_LABEL_RESOURCE_ID = "org.monolayer-sidecar.resource-id";
+export const CONTAINER_LABEL_WORKLOAD_ID = "org.monolayer-sidecar.workload-id";
 /**
  * @hidden
  */
@@ -86,7 +86,7 @@ export class Container extends GenericContainer implements SidecarContainer {
 		super(options.containerSpec.containerImage);
 		this.#options = options;
 		this.withLabels({
-			[CONTAINER_LABEL_RESOURCE_ID]: this.#options.resource.id,
+			[CONTAINER_LABEL_WORKLOAD_ID]: this.#options.workload.id,
 			[CONTAINER_LABEL_ORG]: "true",
 		}).withEnvironment(options.containerSpec.environment);
 		if (options.containerSpec.waitStrategy) {
@@ -127,8 +127,8 @@ export class Container extends GenericContainer implements SidecarContainer {
 							cwd(),
 							"tmp",
 							"container-volumes",
-							snakeCase(`${this.#options.resource.constructor.name}`),
-							snakeCase(`${this.#options.resource.id}-data`),
+							snakeCase(`${this.#options.workload.constructor.name}`),
+							snakeCase(`${this.#options.workload.id}-data`),
 						),
 						target: persistenceVolume,
 					},

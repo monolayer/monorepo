@@ -1,5 +1,5 @@
-import { PostgresDatabase } from "./resources/postgres-database.js";
-import { Redis } from "./resources/redis.js";
+import { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
+import { Redis } from "~sidecar/workloads/redis.js";
 
 export const sc = {
 	PostgresDatabase: PostgresDatabase,

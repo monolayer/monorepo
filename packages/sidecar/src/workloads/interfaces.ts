@@ -1,16 +1,12 @@
-export interface GenericResource {
+export interface GenericWorkload {
 	/**
 	 * Unique ID
 	 */
 	readonly id: string;
 }
 
-export interface ResourceClient<C> {
+export interface WorkloadClient<C> {
 	client: C;
-}
-
-export interface SerializableStatic {
-	fromObject: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

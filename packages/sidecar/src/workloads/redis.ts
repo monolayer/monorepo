@@ -1,11 +1,11 @@
 import { snakeCase } from "case-anything";
 import {
-	type GenericResource,
-	type ResourceClient,
-} from "~sidecar/resources/interfaces.js";
+	type GenericWorkload,
+	type WorkloadClient,
+} from "~sidecar/workloads/interfaces.js";
 
 /**
- * Redis resource.
+ * Redis workload.
  *
  * @example
  * ```ts
@@ -21,7 +21,7 @@ import {
  *
  * @typeParam C - Client type
  */
-export class Redis<C> implements GenericResource, ResourceClient<C> {
+export class Redis<C> implements GenericWorkload, WorkloadClient<C> {
 	readonly id: string;
 
 	constructor(
@@ -55,9 +55,9 @@ export class Redis<C> implements GenericResource, ResourceClient<C> {
 	}
 
 	/**
-	 * Environment variable that should holds the resource connection string.
+	 * Environment variable that should holds the workload connection string.
 	 *
-	 * Format: `SIDECAR_${resourceName}_${kebabCase(resourceId)}_URL`.toUpperCase()
+	 * Format: `SIDECAR_${workloadName}_${kebabCase(workloadId)}_URL`.toUpperCase()
 	 * @example
 	 *
 	 * const cache = new Redis("app-cache", (connectionStringEnvVar) =>

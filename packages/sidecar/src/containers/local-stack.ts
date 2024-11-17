@@ -3,7 +3,7 @@ import {
 	type SidecarContainer,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { LocalStack } from "~sidecar/resources/local-stack.js";
+import { LocalStack } from "~sidecar/workloads/local-stack.js";
 
 const LOCAL_STACK_GATEWAY_PORT = 4566;
 
@@ -51,9 +51,9 @@ export class LocalStackContainer extends Container implements SidecarContainer {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(resource: LocalStack, options?: LocalStackContainerOptions) {
+	constructor(workload: LocalStack, options?: LocalStackContainerOptions) {
 		super({
-			resource,
+			workload: workload,
 			containerSpec: {
 				...localStackContainerSpec,
 				containerImage:

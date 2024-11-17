@@ -8,7 +8,7 @@ import {
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
-import { Mailer } from "~sidecar/resources/mailer.js";
+import { Mailer } from "~sidecar/workloads/mailer.js";
 import { test } from "~test/__setup__/container-test.js";
 
 const mailer = new Mailer("test-mailer", (connectionStringEnvVar) =>
@@ -16,7 +16,7 @@ const mailer = new Mailer("test-mailer", (connectionStringEnvVar) =>
 );
 
 test(
-	"Mailer started container resource id label",
+	"Mailer started container workload id label",
 	{ sequential: true },
 	async ({ containers }) => {
 		const container = new MailerContainer(mailer);
@@ -25,7 +25,7 @@ test(
 
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
-			labels["org.monolayer-sidecar.resource-id"],
+			labels["org.monolayer-sidecar.workload-id"],
 			"test-mailer",
 		);
 	},
@@ -39,7 +39,7 @@ test(
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertBindMounts({
-			resource: mailer,
+			workload: mailer,
 			bindMounts: [
 				`${path.join(cwd(), "tmp", "container-volumes", "mailer", "test_mailer_data")}:/data:rw`,
 			],
@@ -112,7 +112,7 @@ test(
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertContainerImage({
-			resource: mailer,
+			workload: mailer,
 			expectedImage: "axllent/mailpit:v1.21",
 		});
 		await startedContainer.stop();

@@ -6,63 +6,63 @@ import {
 import { PostgreSQLContainer } from "~sidecar/containers.js";
 import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import { createDatabase } from "~sidecar/containers/admin/create-database.js";
-import { CONTAINER_LABEL_RESOURCE_ID } from "~sidecar/containers/container.js";
+import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
 import { RedisContainer } from "~sidecar/containers/redis.js";
-import type { Bucket } from "~sidecar/resources/bucket.js";
-import { LocalStack } from "~sidecar/resources/local-stack.js";
-import type { PostgresDatabase } from "~sidecar/resources/postgres-database.js";
-import type { Redis } from "~sidecar/resources/redis.js";
+import type { Bucket } from "~sidecar/workloads/bucket.js";
+import { LocalStack } from "~sidecar/workloads/local-stack.js";
+import type { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
+import type { Redis } from "~sidecar/workloads/redis.js";
 
-function isRedis<C>(resource: unknown): resource is Redis<C> {
+function isRedis<C>(workload: unknown): workload is Redis<C> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (resource as any).constructor.name === "Redis";
+	return (workload as any).constructor.name === "Redis";
 }
 
-function isBucket(resource: unknown): resource is Bucket {
+function isBucket(workload: unknown): workload is Bucket {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (resource as any).constructor.name === "Bucket";
+	return (workload as any).constructor.name === "Bucket";
 }
 
 function isPostgresDatabase<C>(
-	resource: unknown,
-): resource is PostgresDatabase<C> {
+	workload: unknown,
+): workload is PostgresDatabase<C> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (resource as any).constructor.name === "PostgresDatabase";
+	return (workload as any).constructor.name === "PostgresDatabase";
 }
 
 class ContainerStarter {
-	async startContainerForResource(resource: unknown) {
-		if (isRedis(resource)) {
-			return await this.startRedis(resource);
+	async startContainerForWorkload(workload: unknown) {
+		if (isRedis(workload)) {
+			return await this.startRedis(workload);
 		}
-		if (isBucket(resource)) {
+		if (isBucket(workload)) {
 			const localStackContainer = await this.startLocalStack();
-			await createBucket(resource.id, localStackContainer);
+			await createBucket(workload.id, localStackContainer);
 			return localStackContainer.startedContainer;
 		}
-		if (isPostgresDatabase(resource)) {
+		if (isPostgresDatabase(workload)) {
 			let container: StartedTestContainer | undefined = undefined;
-			if (await this.#containerForResource(resource.id)) {
+			if (await this.#containerForWorkload(workload.id)) {
 				container = this.#postgresContainers.find(
-					(c) => c.resourceId === resource.id,
+					(c) => c.workloadId === workload.id,
 				)?.container;
 			} else {
-				container = await this.startPostgres(resource);
-				this.#postgresContainers.push({ container, resourceId: resource.id });
+				container = await this.startPostgres(workload);
+				this.#postgresContainers.push({ container, workloadId: workload.id });
 			}
-			await createDatabase(resource);
+			await createDatabase(workload);
 			return container;
 		}
 	}
 
-	async startRedis<C>(resource: Redis<C>) {
-		const container = new RedisContainer(resource);
+	async startRedis<C>(workload: Redis<C>) {
+		const container = new RedisContainer(workload);
 		return await container.start();
 	}
 
-	async startPostgres<C>(resource: PostgresDatabase<C>) {
-		const container = new PostgreSQLContainer(resource);
+	async startPostgres<C>(workload: PostgresDatabase<C>) {
+		const container = new PostgreSQLContainer(workload);
 		return await container.start({
 			persistenceVolumes: true,
 			reuse: true,
@@ -79,8 +79,8 @@ class ContainerStarter {
 	}
 	async startLocalStack() {
 		if (this.#localStackContainer === undefined) {
-			const localStackResource = new LocalStack("local-stack-testing");
-			this.#localStackContainer = new LocalStackContainer(localStackResource);
+			const localStackWorkload = new LocalStack("local-stack-testing");
+			this.#localStackContainer = new LocalStackContainer(localStackWorkload);
 			await this.#localStackContainer.start();
 		}
 		return this.#localStackContainer;
@@ -88,14 +88,14 @@ class ContainerStarter {
 
 	#postgresContainers: {
 		container: StartedTestContainer;
-		resourceId: string;
+		workloadId: string;
 	}[] = [];
 
-	async #containerForResource(resourceId: string) {
+	async #containerForWorkload(workloadId: string) {
 		const containerRuntimeClient = await getContainerRuntimeClient();
 		return await containerRuntimeClient.container.fetchByLabel(
-			CONTAINER_LABEL_RESOURCE_ID,
-			resourceId,
+			CONTAINER_LABEL_WORKLOAD_ID,
+			workloadId,
 			{ status: ["running"] },
 		);
 	}

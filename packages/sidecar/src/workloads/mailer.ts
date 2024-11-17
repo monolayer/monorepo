@@ -1,15 +1,15 @@
 import { snakeCase } from "case-anything";
 import {
-	type GenericResource,
-	type ResourceClient,
-} from "~sidecar/resources/interfaces.js";
+	type GenericWorkload,
+	type WorkloadClient,
+} from "~sidecar/workloads/interfaces.js";
 
 /**
- * Redis resource.
+ * Mailer workload.
  *
  * @example
  * ```ts
- * import { Redis } from "@monolayer/sidecar";
+ * import { Mailer } from "@monolayer/sidecar";
  * import nodemailer from 'nodemailer';
  * const mailer = new Mailer("transactional", (connectionStringEnvVar) =>
  *   nodemailer.createTransport(
@@ -20,7 +20,7 @@ import {
  *
  * @typeParam C - Client type
  */
-export class Mailer<C> implements GenericResource, ResourceClient<C> {
+export class Mailer<C> implements GenericWorkload, WorkloadClient<C> {
 	readonly id: string;
 
 	constructor(
@@ -54,9 +54,9 @@ export class Mailer<C> implements GenericResource, ResourceClient<C> {
 	}
 
 	/**
-	 * Environment variable that should holds the resource connection string.
+	 * Environment variable that should holds the workload connection string.
 	 *
-	 * Format: `SIDECAR_${resourceName}_${kebabCase(resourceId)}_URL`.toUpperCase()
+	 * Format: `SIDECAR_${workloadName}_${kebabCase(workloadId)}_URL`.toUpperCase()
 	 * @example
 	 *
 	 * const mailer = new Mailer("transactional", (connectionStringEnvVar) =>

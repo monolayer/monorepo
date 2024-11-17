@@ -1,10 +1,10 @@
 import pg from "pg";
 import { createClient } from "redis";
 import { assert } from "vitest";
-import { PostgresDatabase } from "~sidecar/resources.js";
-import { Bucket } from "~sidecar/resources/bucket.js";
-import { Redis } from "~sidecar/resources/redis.js";
 import { startTestContainer } from "~sidecar/testing/start-test-container.js";
+import { Bucket } from "~sidecar/workloads/bucket.js";
+import { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
+import { Redis } from "~sidecar/workloads/redis.js";
 import {
 	assertBucket,
 	assertContainerImage,
@@ -14,21 +14,21 @@ import {
 import { test } from "~test/__setup__/container-test.js";
 
 test("launches redis", { sequential: true }, async ({ containers }) => {
-	const redisResource = new Redis("launch-redis", (connectionStringEnvVar) =>
+	const redisWorkload = new Redis("launch-redis", (connectionStringEnvVar) =>
 		createClient({
 			url: process.env[connectionStringEnvVar],
 		}).on("error", (err) => console.error("Redis Client Error", err)),
 	);
 
-	const startedContainer = await startTestContainer(redisResource);
+	const startedContainer = await startTestContainer(redisWorkload);
 	containers.push(startedContainer);
 	assertStartedContainerLabel(
 		startedContainer,
-		"org.monolayer-sidecar.resource-id",
+		"org.monolayer-sidecar.workload-id",
 		"launch-redis",
 	);
 	await assertContainerImage({
-		resource: redisResource,
+		workload: redisWorkload,
 		expectedImage: "redis/redis-stack:latest",
 	});
 });
@@ -41,8 +41,8 @@ test("creates buckets", { sequential: true }, async ({ containers }) => {
 		"my-bucket-test-4",
 	];
 	for (const name of names) {
-		const bucketResource = new Bucket(name);
-		const startedContainer = await startTestContainer(bucketResource);
+		const bucketWorkload = new Bucket(name);
+		const startedContainer = await startTestContainer(bucketWorkload);
 		containers.push(startedContainer);
 	}
 

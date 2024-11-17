@@ -8,7 +8,7 @@ import {
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
 import { RedisContainer } from "~sidecar/containers/redis.js";
-import { Redis } from "~sidecar/resources/redis.js";
+import { Redis } from "~sidecar/workloads/redis.js";
 import { test } from "~test/__setup__/container-test.js";
 
 const redisStore = new Redis("test-redis-test", (connectionStringEnvVar) =>
@@ -18,7 +18,7 @@ const redisStore = new Redis("test-redis-test", (connectionStringEnvVar) =>
 );
 
 test(
-	"Redis started container resource id label",
+	"Redis started container workload id label",
 	{ sequential: true },
 	async ({ containers }) => {
 		const container = new RedisContainer(redisStore);
@@ -27,7 +27,7 @@ test(
 
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
-			labels["org.monolayer-sidecar.resource-id"],
+			labels["org.monolayer-sidecar.workload-id"],
 			"test-redis-test",
 		);
 	},
@@ -41,7 +41,7 @@ test(
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertBindMounts({
-			resource: redisStore,
+			workload: redisStore,
 			bindMounts: [
 				`${path.join(cwd(), "tmp", "container-volumes", "redis", "test_redis_test_data")}:/data:rw`,
 			],
@@ -105,7 +105,7 @@ test(
 	"Redis with custom image tag container",
 	{ sequential: true },
 	async ({ containers }) => {
-		const redisResource = new Redis(
+		const redisWorkload = new Redis(
 			"rd-custom-image-tag",
 			(connectionStringEnvVar) =>
 				createClient({
@@ -113,13 +113,13 @@ test(
 				}).on("error", (err) => console.error("Redis Client Error", err)),
 		);
 
-		const container = new RedisContainer(redisResource, {
+		const container = new RedisContainer(redisWorkload, {
 			containerImage: "redis/redis-stack:7.2.0-v12",
 		});
 		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertContainerImage({
-			resource: redisResource,
+			workload: redisWorkload,
 			expectedImage: "redis/redis-stack:7.2.0-v12",
 		});
 		await startedContainer.stop();

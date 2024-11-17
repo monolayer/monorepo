@@ -5,7 +5,7 @@ import {
 	type SidecarContainerSpec,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { PostgresDatabase } from "~sidecar/resources/postgres-database.js";
+import { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
 
 const POSTGRESQL_SERVER_PORT = 5432;
 
@@ -45,17 +45,17 @@ export class PostgreSQLContainer<C>
 	extends Container
 	implements SidecarContainer
 {
-	#resource: PostgresDatabase<C>;
+	#workload: PostgresDatabase<C>;
 
 	/**
 	 * @hideconstructor
 	 */
 	constructor(
-		resource: PostgresDatabase<C>,
+		workload: PostgresDatabase<C>,
 		options?: Partial<SidecarContainerSpec>,
 	) {
 		super({
-			resource,
+			workload,
 			containerSpec: {
 				...postgreSQLContainerSpec,
 				...(options ? options : {}),
@@ -68,7 +68,7 @@ export class PostgreSQLContainer<C>
 			startPeriod: 1000,
 		});
 
-		this.#resource = resource;
+		this.#workload = workload;
 	}
 
 	override async start(options?: StartOptions) {
@@ -78,7 +78,7 @@ export class PostgreSQLContainer<C>
 				reuse: true,
 			},
 		);
-		process.env[this.#resource.connectionStringEnvVar()] =
+		process.env[this.#workload.connectionStringEnvVar()] =
 			this.#generateURI(startedContainer);
 		return startedContainer;
 	}
@@ -101,7 +101,7 @@ export class PostgreSQLContainer<C>
 		url.port = startedContainer
 			.getMappedPort(POSTGRESQL_SERVER_PORT)
 			.toString();
-		url.pathname = this.#resource.databaseName;
+		url.pathname = this.#workload.databaseName;
 		return url.toString();
 	}
 }

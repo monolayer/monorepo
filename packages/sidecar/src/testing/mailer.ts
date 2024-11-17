@@ -1,6 +1,6 @@
 import { getContainerRuntimeClient } from "testcontainers";
-import { CONTAINER_LABEL_RESOURCE_ID } from "~sidecar/containers/container.js";
-import type { Mailer } from "~sidecar/resources/mailer.js";
+import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
+import type { Mailer } from "~sidecar/workloads/mailer.js";
 
 export async function testMailerURL<C>(mailer: Mailer<C>) {
 	const url = new URL(process.env[mailer.connectionStringEnvVar()]!);
@@ -13,7 +13,7 @@ export async function testMailerURL<C>(mailer: Mailer<C>) {
 async function getMailerContainer(mailerId: string) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	const container = await containerRuntimeClient.container.fetchByLabel(
-		CONTAINER_LABEL_RESOURCE_ID,
+		CONTAINER_LABEL_WORKLOAD_ID,
 		mailerId,
 		{ status: ["running"] },
 	);

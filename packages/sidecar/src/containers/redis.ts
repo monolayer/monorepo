@@ -4,7 +4,7 @@ import {
 	type SidecarContainerSpec,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { Redis } from "~sidecar/resources/redis.js";
+import { Redis } from "~sidecar/workloads/redis.js";
 
 const REDIS_SERVER_PORT = 6379;
 const REDIS_WEBUI_PORT = 8001;
@@ -22,20 +22,20 @@ const redisContainerSpec = {
  * Container for Redis
  */
 export class RedisContainer<C> extends Container implements SidecarContainer {
-	#resource: Redis<C>;
+	#workload: Redis<C>;
 
 	/**
 	 * @hideconstructor
 	 */
-	constructor(resource: Redis<C>, options?: Partial<SidecarContainerSpec>) {
+	constructor(workload: Redis<C>, options?: Partial<SidecarContainerSpec>) {
 		super({
-			resource,
+			workload,
 			containerSpec: {
 				...redisContainerSpec,
 				...(options ? options : {}),
 			},
 		});
-		this.#resource = resource;
+		this.#workload = workload;
 	}
 
 	override async start(options?: StartOptions) {
@@ -48,7 +48,7 @@ export class RedisContainer<C> extends Container implements SidecarContainer {
 		const url = new URL("", "redis://");
 		url.hostname = startedContainer.getHost();
 		url.port = startedContainer.getMappedPort(REDIS_SERVER_PORT).toString();
-		process.env[this.#resource.connectionStringEnvVar()] = url.toString();
+		process.env[this.#workload.connectionStringEnvVar()] = url.toString();
 		return startedContainer;
 	}
 
