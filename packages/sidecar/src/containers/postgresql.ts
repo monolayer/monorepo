@@ -1,10 +1,6 @@
 import { Wait, type StartedTestContainer } from "testcontainers";
-import {
-	Container,
-	type SidecarContainer,
-	type SidecarContainerSpec,
-	type StartOptions,
-} from "~sidecar/containers/container.js";
+import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
+import { type SidecarContainerSpec } from "~sidecar/containers/container.js";
 import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 
 const POSTGRESQL_SERVER_PORT = 5432;
@@ -41,10 +37,7 @@ const postgreSQLContainerSpec = {
 /**
  * Container for PostgreSQL
  */
-export class PostgreSQLContainer<C>
-	extends Container
-	implements SidecarContainer
-{
+export class PostgreSQLContainer<C> extends ContainerWithURI {
 	#workload: PostgresDatabase<C>;
 
 	/**
@@ -54,12 +47,9 @@ export class PostgreSQLContainer<C>
 		workload: PostgresDatabase<C>,
 		options?: Partial<SidecarContainerSpec>,
 	) {
-		super({
-			workload,
-			containerSpec: {
-				...postgreSQLContainerSpec,
-				...(options ? options : {}),
-			},
+		super(workload, {
+			...postgreSQLContainerSpec,
+			...(options ? options : {}),
 		});
 		this.withHealthCheck({
 			test: ["CMD", "pg_isready", "-U", "postgres"],
@@ -71,36 +61,12 @@ export class PostgreSQLContainer<C>
 		this.#workload = workload;
 	}
 
-	override async start(options?: StartOptions) {
-		const startedContainer = await super.start(
-			options ?? {
-				persistenceVolumes: true,
-				reuse: true,
-			},
-		);
-		process.env[this.#workload.connectionStringEnvVar()] =
-			this.#generateURI(startedContainer);
-		return startedContainer;
-	}
-
-	/**
-	 * @returns The PostgreSQL server connection string URI
-	 * in the form of `postgresql://username:password@host:port`
-	 * or `undefined` if the container has not started.
-	 */
-	get connectionURI() {
-		if (this.startedContainer) {
-			return this.#generateURI(this.startedContainer);
-		}
-	}
-	#generateURI(startedContainer: StartedTestContainer) {
+	buildConnectionURI(container: StartedTestContainer) {
 		const url = new URL("", "postgresql://");
-		url.hostname = startedContainer.getHost();
+		url.hostname = container.getHost();
 		url.username = "postgres";
 		url.password = "postgres";
-		url.port = startedContainer
-			.getMappedPort(POSTGRESQL_SERVER_PORT)
-			.toString();
+		url.port = container.getMappedPort(POSTGRESQL_SERVER_PORT).toString();
 		url.pathname = this.#workload.databaseName;
 		return url.toString();
 	}

@@ -1,9 +1,6 @@
-import {
-	Container,
-	type SidecarContainer,
-	type SidecarContainerSpec,
-	type StartOptions,
-} from "~sidecar/containers/container.js";
+import type { StartedTestContainer } from "testcontainers";
+import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
+import { type SidecarContainerSpec } from "~sidecar/containers/container.js";
 import { Redis } from "~sidecar/workloads/stateful/redis.js";
 
 const REDIS_SERVER_PORT = 6379;
@@ -21,50 +18,22 @@ const redisContainerSpec = {
 /**
  * Container for Redis
  */
-export class RedisContainer<C> extends Container implements SidecarContainer {
-	#workload: Redis<C>;
-
+export class RedisContainer<C> extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
 	constructor(workload: Redis<C>, options?: Partial<SidecarContainerSpec>) {
-		super({
-			workload,
-			containerSpec: {
-				...redisContainerSpec,
-				...(options ? options : {}),
-			},
+		super(workload, {
+			...redisContainerSpec,
+			...(options ? options : {}),
 		});
-		this.#workload = workload;
 	}
 
-	override async start(options?: StartOptions) {
-		const startedContainer = await super.start(
-			options ?? {
-				persistenceVolumes: true,
-				reuse: true,
-			},
-		);
+	buildConnectionURI(container: StartedTestContainer) {
 		const url = new URL("", "redis://");
-		url.hostname = startedContainer.getHost();
-		url.port = startedContainer.getMappedPort(REDIS_SERVER_PORT).toString();
-		process.env[this.#workload.connectionStringEnvVar()] = url.toString();
-		return startedContainer;
-	}
-
-	/**
-	 * @returns The Redis server connection string URI in the form of `redis://host:port`
-	 * or `undefined` if the container has not started.
-	 */
-	get connectionURI() {
-		if (this.startedContainer) {
-			const url = new URL("", "redis://");
-			url.hostname = this.startedContainer.getHost();
-			url.port = this.startedContainer
-				.getMappedPort(REDIS_SERVER_PORT)
-				.toString();
-			return url.toString();
-		}
+		url.hostname = container.getHost();
+		url.port = container.getMappedPort(REDIS_SERVER_PORT).toString();
+		return url.toString();
 	}
 
 	/**

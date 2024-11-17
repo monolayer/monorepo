@@ -12,4 +12,11 @@ export class LocalStack extends StatefulWorkload {
 	constructor(id: string) {
 		super(id);
 	}
+
+	/**
+	 * Environment variable that should hold the workload connection string.
+	 */
+	connectionStringEnvVar() {
+		return "WL_LOCAL_STACK_GATEWAY_URL";
+	}
 }

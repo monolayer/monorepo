@@ -15,7 +15,7 @@ export abstract class StatefulWorkload {
 }
 
 /**
- * * @typeParam C - Client type
+ * @typeParam C - Client type
  */
 export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
 	readonly connStringComponents: (keyof this)[] = ["id"];

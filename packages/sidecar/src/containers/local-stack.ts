@@ -1,8 +1,5 @@
-import {
-	Container,
-	type SidecarContainer,
-	type StartOptions,
-} from "~sidecar/containers/container.js";
+import type { StartedTestContainer } from "testcontainers";
+import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 
 const LOCAL_STACK_GATEWAY_PORT = 4566;
@@ -47,49 +44,34 @@ const localStackContainerSpec = {
  *
  * @private
  */
-export class LocalStackContainer extends Container implements SidecarContainer {
+export class LocalStackContainer extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
 	constructor(workload: LocalStack, options?: LocalStackContainerOptions) {
-		super({
-			workload: workload,
-			containerSpec: {
-				...localStackContainerSpec,
-				containerImage:
-					options?.containerImage ?? localStackContainerSpec.containerImage,
-				environment: {
-					...localStackContainerSpec.environment,
-					PERSIST: (options?.persist ?? false) ? "1" : "0",
-				},
+		super(workload, {
+			...localStackContainerSpec,
+			containerImage:
+				options?.containerImage ?? localStackContainerSpec.containerImage,
+			environment: {
+				...localStackContainerSpec.environment,
+				PERSIST: (options?.persist ?? false) ? "1" : "0",
 			},
-			publishToRandomPorts: options?.publishToRandomPorts ?? true,
 		});
 	}
 
-	override async start(options?: StartOptions) {
-		if (this.startedContainer === undefined) {
-			this.startedContainer = await super.start(
-				options ?? {
-					persistenceVolumes: true,
-					reuse: true,
-				},
-			);
-		}
-		return this.startedContainer;
+	buildConnectionURI(container: StartedTestContainer) {
+		const url = new URL("", "http://base.com");
+		url.hostname = container.getHost();
+		url.port = container.getMappedPort(LOCAL_STACK_GATEWAY_PORT).toString();
+		return url.toString();
 	}
-
 	/**
 	 * @returns The LocalStack gateway URL.
 	 */
 	get gatewayURL() {
 		if (this.startedContainer) {
-			const url = new URL("", "http://base.com");
-			url.hostname = this.startedContainer.getHost();
-			url.port = this.startedContainer
-				.getMappedPort(LOCAL_STACK_GATEWAY_PORT)
-				.toString();
-			return url.toString();
+			return this.buildConnectionURI(this.startedContainer);
 		}
 	}
 }

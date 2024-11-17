@@ -12,7 +12,7 @@ import {
 	type WaitStrategy,
 } from "testcontainers";
 import type { Environment } from "testcontainers/build/types.js";
-import { type Workload } from "~sidecar/workloads/workload.js";
+import type { Workload } from "~sidecar/workloads.js";
 
 export interface ContainerImage {
 	/**
@@ -80,13 +80,13 @@ export class Container extends GenericContainer implements SidecarContainer {
 	 */
 	startedContainer?: StartedTestContainer;
 
-	#options: ContainerOptions;
+	protected options: ContainerOptions;
 
 	constructor(options: ContainerOptions) {
 		super(options.containerSpec.containerImage);
-		this.#options = options;
+		this.options = options;
 		this.withLabels({
-			[CONTAINER_LABEL_WORKLOAD_ID]: this.#options.workload.id,
+			[CONTAINER_LABEL_WORKLOAD_ID]: this.options.workload.id,
 			[CONTAINER_LABEL_ORG]: "true",
 		}).withEnvironment(options.containerSpec.environment);
 		if (options.containerSpec.waitStrategy) {
@@ -104,21 +104,20 @@ export class Container extends GenericContainer implements SidecarContainer {
 		if (this.startedContainer) {
 			return this.startedContainer;
 		}
-		for (const portToExpose of this.#options.containerSpec.portsToExpose ??
-			[]) {
+		for (const portToExpose of this.options.containerSpec.portsToExpose ?? []) {
 			this.withExposedPorts({
 				container: portToExpose,
 				host:
-					(this.#options.publishToRandomPorts ?? true)
+					(this.options.publishToRandomPorts ?? true)
 						? await getPort({ port: portToExpose })
 						: portToExpose,
 			});
 		}
 		if (
 			options?.persistenceVolumes &&
-			Array.isArray(this.#options.containerSpec.persistentVolumeTargets)
+			Array.isArray(this.options.containerSpec.persistentVolumeTargets)
 		) {
-			for (const persistenceVolume of this.#options.containerSpec
+			for (const persistenceVolume of this.options.containerSpec
 				.persistentVolumeTargets) {
 				this.withBindMounts([
 					{
@@ -127,8 +126,8 @@ export class Container extends GenericContainer implements SidecarContainer {
 							cwd(),
 							"tmp",
 							"container-volumes",
-							snakeCase(`${this.#options.workload.constructor.name}`),
-							snakeCase(`${this.#options.workload.id}-data`),
+							snakeCase(`${this.options.workload.constructor.name}`),
+							snakeCase(`${this.options.workload.id}-data`),
 						),
 						target: persistenceVolume,
 					},
@@ -153,7 +152,7 @@ export class Container extends GenericContainer implements SidecarContainer {
 	get mappedPorts() {
 		if (this.startedContainer) {
 			const startedContainer = this.startedContainer;
-			return (this.#options.containerSpec.portsToExpose ?? []).map<MappedPort>(
+			return (this.options.containerSpec.portsToExpose ?? []).map<MappedPort>(
 				(port) => ({
 					container: port,
 					host: startedContainer.getMappedPort(port),
