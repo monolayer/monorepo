@@ -4,6 +4,7 @@ import {
 	workloadContainerStatus,
 	type WorkloadInfo,
 } from "~sidecar/containers/admin/introspection.js";
+import type { PostgresDatabase } from "~sidecar/workloads.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 
@@ -34,8 +35,8 @@ function printStatus(statuses: WorkloadInfo[]) {
 
 	const table = new Table({
 		head: portsAvailable
-			? ["Workload", "Status", "Ports"]
-			: ["Workload", "Status"],
+			? ["Workload", "Type", "Status", "Ports"]
+			: ["Workload", "Type", "Status"],
 		style: {
 			head: [],
 		},
@@ -55,11 +56,15 @@ function printStatus(statuses: WorkloadInfo[]) {
 			return acc;
 		}, []);
 
-		table.push(
-			portsAvailable
-				? [status.workload.id, status.container.status, ports.join(", ")]
-				: [status.workload.id, status.container.status],
-		);
+		const base = [
+			status.workload.constructor.name === "PostgresDatabase"
+				? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+					`${(status.workload as PostgresDatabase<any>).databaseName} (${status.workload.id})`
+				: status.workload.id,
+			status.workload.constructor.name,
+			status.container.status,
+		];
+		table.push(portsAvailable ? [...base, ports.join(", ")] : base);
 	}
 	if (table.length !== 0) {
 		console.log(table.toString());
