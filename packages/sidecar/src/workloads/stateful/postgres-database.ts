@@ -1,8 +1,8 @@
 import { snakeCase } from "case-anything";
 import {
-	type GenericWorkload,
+	type StatefulWorkload,
 	type WorkloadClient,
-} from "~sidecar/workloads/interfaces.js";
+} from "~sidecar/workloads/stateful/interfaces.js";
 
 /**
  * PostgreSQL workload.
@@ -23,7 +23,10 @@ import {
  *
  * @typeParam C - Client type
  */
-export class PostgresDatabase<C> implements GenericWorkload, WorkloadClient<C> {
+export class PostgresDatabase<C>
+	implements StatefulWorkload, WorkloadClient<C>
+{
+	stateful!: true;
 	readonly id: string;
 	readonly databaseName: string;
 

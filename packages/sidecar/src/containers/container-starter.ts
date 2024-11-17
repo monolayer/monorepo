@@ -9,10 +9,10 @@ import { createDatabase } from "~sidecar/containers/admin/create-database.js";
 import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
 import { RedisContainer } from "~sidecar/containers/redis.js";
-import type { Bucket } from "~sidecar/workloads/bucket.js";
-import { LocalStack } from "~sidecar/workloads/local-stack.js";
-import type { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
-import type { Redis } from "~sidecar/workloads/redis.js";
+import type { Bucket } from "~sidecar/workloads/stateful/bucket.js";
+import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
+import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
+import type { Redis } from "~sidecar/workloads/stateful/redis.js";
 
 function isRedis<C>(workload: unknown): workload is Redis<C> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

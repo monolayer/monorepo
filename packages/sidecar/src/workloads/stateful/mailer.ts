@@ -1,27 +1,27 @@
 import { snakeCase } from "case-anything";
 import {
-	type GenericWorkload,
+	type StatefulWorkload,
 	type WorkloadClient,
-} from "~sidecar/workloads/interfaces.js";
+} from "~sidecar/workloads/stateful/interfaces.js";
 
 /**
- * Redis workload.
+ * Mailer workload.
  *
  * @example
  * ```ts
- * import { Redis } from "@monolayer/sidecar";
- * import { createClient } from "redis";
- *
- * const redis = new Redis("redis-cache", (connectionStringEnvVar) =>
- *   createClient({
- *     url: process.env[connectionStringEnvVar],
- *   }).on("error", (err) => console.error("Redis Client Error", err)),
+ * import { Mailer } from "@monolayer/sidecar";
+ * import nodemailer from 'nodemailer';
+ * const mailer = new Mailer("transactional", (connectionStringEnvVar) =>
+ *   nodemailer.createTransport(
+ *     process.env[connectionStringEnvVar]
+ *   ),
  * );
  * ```
  *
  * @typeParam C - Client type
  */
-export class Redis<C> implements GenericWorkload, WorkloadClient<C> {
+export class Mailer<C> implements StatefulWorkload, WorkloadClient<C> {
+	stateful!: true;
 	readonly id: string;
 
 	constructor(
@@ -30,7 +30,7 @@ export class Redis<C> implements GenericWorkload, WorkloadClient<C> {
 		 */
 		id: string,
 		/**
-		 * Client constructor function. Executed once when accessing the {@link Redis.client }
+		 * Client constructor function. Executed once when accessing the {@link Mailer.client }
 		 */
 		client: (connectionStringVar: string) => C,
 	) {
@@ -60,16 +60,14 @@ export class Redis<C> implements GenericWorkload, WorkloadClient<C> {
 	 * Format: `SIDECAR_${workloadName}_${kebabCase(workloadId)}_URL`.toUpperCase()
 	 * @example
 	 *
-	 * const cache = new Redis("app-cache", (connectionStringEnvVar) =>
-	 *   createClient({
-	 *     // connectionStringEnvVar: SIDECAR_REDIS_APP_CACHE_URL
-	 *     url: process.env[connectionStringEnvVar],
-	 *   }).on("error", (err) => console.error("Redis Client Error", err)),
+	 * const mailer = new Mailer("transactional", (connectionStringEnvVar) =>
+	 *  nodemailer.createTransport(
+	 *     // connectionStringEnvVar: SIDECAR_MAILER_TRANSACTIONAL_URL
+	 *     process.env[connectionStringEnvVar]
+	 *   ),
 	 * );
 	 */
 	connectionStringEnvVar() {
-		return snakeCase(
-			`SIDECAR_${this.constructor.name}_${this.id}_url`,
-		).toUpperCase();
+		return snakeCase(`SIDECAR_MAILER_${this.id}_url`).toUpperCase();
 	}
 }

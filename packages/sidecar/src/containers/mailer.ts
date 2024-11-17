@@ -5,7 +5,7 @@ import {
 	type SidecarContainerSpec,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { Mailer } from "~sidecar/workloads/mailer.js";
+import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 
 const MAILER_SERVER_PORT = 1025;
 const MAILER_WEBUI_PORT = 8025;

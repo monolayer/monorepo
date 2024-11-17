@@ -8,14 +8,14 @@ import { assert } from "vitest";
 import { containerStarter } from "~sidecar/containers/container-starter.js";
 import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
 import type { LocalStackContainer } from "~sidecar/containers/local-stack.js";
-import type { GenericWorkload } from "~sidecar/resources.js";
-import type { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
+import type { Workload } from "~sidecar/resources.js";
+import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 
 export async function assertContainerImage({
 	workload,
 	expectedImage,
 }: {
-	workload: GenericWorkload;
+	workload: Workload;
 	expectedImage: string;
 }) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
@@ -31,11 +31,7 @@ export async function assertContainerImage({
 	assert.strictEqual(inspect.Config.Image, expectedImage);
 }
 
-export async function assertContainer({
-	workload,
-}: {
-	workload: GenericWorkload;
-}) {
+export async function assertContainer({ workload }: { workload: Workload }) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
 		CONTAINER_LABEL_WORKLOAD_ID,
@@ -50,7 +46,7 @@ export async function assertBindMounts({
 	workload,
 	bindMounts,
 }: {
-	workload: GenericWorkload;
+	workload: Workload;
 	bindMounts: string[];
 }) {
 	const containerRuntimeClient = await getContainerRuntimeClient();

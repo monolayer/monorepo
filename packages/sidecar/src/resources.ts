@@ -1,7 +1,8 @@
-export { Bucket } from "~sidecar/workloads/bucket.js";
+export { Bucket } from "~sidecar/workloads/stateful/bucket.js";
 export type {
-	GenericWorkload,
+	StatefulWorkload,
+	Workload,
 	WorkloadClient,
-} from "~sidecar/workloads/interfaces.js";
-export { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
-export { Redis } from "~sidecar/workloads/redis.js";
+} from "~sidecar/workloads/stateful/interfaces.js";
+export { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
+export { Redis } from "~sidecar/workloads/stateful/redis.js";

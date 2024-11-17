@@ -5,7 +5,7 @@ import { assert, expect } from "vitest";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { testMailerURL } from "~sidecar/testing/mailer.js";
 import { getMessagesParams } from "~sidecar/testing/mailpit-client/index.js";
-import { Mailer } from "~sidecar/workloads/mailer.js";
+import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 import { test } from "~test/__setup__/container-test.js";
 
 test("Mailer client commands against test container", async ({

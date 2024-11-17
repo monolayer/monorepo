@@ -8,7 +8,7 @@ import {
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
-import { Mailer } from "~sidecar/workloads/mailer.js";
+import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 import { test } from "~test/__setup__/container-test.js";
 
 const mailer = new Mailer("test-mailer", (connectionStringEnvVar) =>

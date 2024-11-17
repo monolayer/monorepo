@@ -1,6 +1,6 @@
 import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
-import { LocalStack } from "~sidecar/workloads/local-stack.js";
+import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 import { assertBucket } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
 

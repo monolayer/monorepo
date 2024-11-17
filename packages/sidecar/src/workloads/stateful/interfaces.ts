@@ -1,8 +1,12 @@
-export interface GenericWorkload {
+export interface Workload {
 	/**
 	 * Unique ID
 	 */
 	readonly id: string;
+}
+
+export interface StatefulWorkload extends Workload {
+	readonly stateful: true;
 }
 
 export interface WorkloadClient<C> {

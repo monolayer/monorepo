@@ -12,7 +12,7 @@ import {
 	type WaitStrategy,
 } from "testcontainers";
 import type { Environment } from "testcontainers/build/types.js";
-import { type GenericWorkload } from "~sidecar/workloads/interfaces.js";
+import { type Workload } from "~sidecar/workloads/stateful/interfaces.js";
 
 export interface ContainerImage {
 	/**
@@ -37,7 +37,7 @@ export interface ContainerPersistenceVolume {
 }
 
 export interface ContainerOptions {
-	workload: GenericWorkload;
+	workload: Workload;
 	/**
 	 * Whether to publish the exposed ports to random ports in the host
 	 *

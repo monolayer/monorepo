@@ -2,7 +2,7 @@ import { createClient } from "redis";
 import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
 import { RedisContainer } from "~sidecar/containers/redis.js";
-import { Redis } from "~sidecar/workloads/redis.js";
+import { Redis } from "~sidecar/workloads/stateful/redis.js";
 import { test } from "~test/__setup__/container-test.js";
 
 test("Redis client commands against test container", async ({ containers }) => {

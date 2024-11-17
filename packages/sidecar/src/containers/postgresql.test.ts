@@ -8,7 +8,7 @@ import {
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
-import { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
+import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import { test } from "~test/__setup__/container-test.js";
 
 test(

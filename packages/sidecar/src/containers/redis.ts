@@ -4,7 +4,7 @@ import {
 	type SidecarContainerSpec,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { Redis } from "~sidecar/workloads/redis.js";
+import { Redis } from "~sidecar/workloads/stateful/redis.js";
 
 const REDIS_SERVER_PORT = 6379;
 const REDIS_WEBUI_PORT = 8001;

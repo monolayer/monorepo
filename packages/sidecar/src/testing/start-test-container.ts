@@ -1,5 +1,5 @@
 import { containerStarter } from "~sidecar/containers/container-starter.js";
-import { type GenericWorkload } from "~sidecar/workloads/interfaces.js";
+import { type Workload } from "~sidecar/workloads/stateful/interfaces.js";
 
 /**
  * Launches a test container for a workload.
@@ -8,7 +8,7 @@ export async function startTestContainer(
 	/**
 	 * Workload to launch a test container.
 	 */
-	workload: GenericWorkload,
+	workload: Workload,
 ) {
 	const startedTestContainer =
 		await containerStarter.startContainerForWorkload(workload);

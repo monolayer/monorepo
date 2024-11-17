@@ -1,6 +1,6 @@
 import { getContainerRuntimeClient } from "testcontainers";
 import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
-import type { Mailer } from "~sidecar/workloads/mailer.js";
+import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 
 export async function testMailerURL<C>(mailer: Mailer<C>) {
 	const url = new URL(process.env[mailer.connectionStringEnvVar()]!);

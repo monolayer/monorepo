@@ -2,9 +2,9 @@ import pg from "pg";
 import { createClient } from "redis";
 import { assert } from "vitest";
 import { startTestContainer } from "~sidecar/testing/start-test-container.js";
-import { Bucket } from "~sidecar/workloads/bucket.js";
-import { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
-import { Redis } from "~sidecar/workloads/redis.js";
+import { Bucket } from "~sidecar/workloads/stateful/bucket.js";
+import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
+import { Redis } from "~sidecar/workloads/stateful/redis.js";
 import {
 	assertBucket,
 	assertContainerImage,

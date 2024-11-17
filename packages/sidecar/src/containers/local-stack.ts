@@ -3,7 +3,7 @@ import {
 	type SidecarContainer,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { LocalStack } from "~sidecar/workloads/local-stack.js";
+import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 
 const LOCAL_STACK_GATEWAY_PORT = 4566;
 

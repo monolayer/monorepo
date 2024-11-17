@@ -5,7 +5,7 @@ import {
 	type SidecarContainerSpec,
 	type StartOptions,
 } from "~sidecar/containers/container.js";
-import { PostgresDatabase } from "~sidecar/workloads/postgres-database.js";
+import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 
 const POSTGRESQL_SERVER_PORT = 5432;
 
