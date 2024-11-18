@@ -1,7 +1,16 @@
 import { snakeCase } from "case-anything";
 
+/**
+ * @internal
+ */
 export abstract class StatefulWorkload {
+	/**
+	 * @hidden
+	 */
 	stateful!: true;
+	/**
+	 * Unique ID.
+	 */
 	readonly id: string;
 
 	constructor(
@@ -15,6 +24,7 @@ export abstract class StatefulWorkload {
 }
 
 /**
+ * @internal
  * @typeParam C - Client type
  */
 export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {

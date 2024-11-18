@@ -1,7 +1,8 @@
 import { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.js";
 
 /**
- * Bucket workload
+ * Bucket workload.
+ *
  */
 export class Bucket extends StatefulWorkload {
 	constructor(
