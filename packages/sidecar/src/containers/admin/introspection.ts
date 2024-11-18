@@ -22,6 +22,7 @@ export async function workloadContainerStatus(workload: Workload) {
 	if (existingContainer) {
 		const inspect = await existingContainer.inspect();
 		status.container.info = {
+			id: inspect.Id,
 			status: inspect.State.Status,
 			startedAt: inspect.State.StartedAt,
 			health: inspect.State.Health?.Status,
@@ -36,6 +37,7 @@ export interface WorkloadInfo {
 	container: {
 		status: "running" | "not running";
 		info?: {
+			id: string;
 			status: string;
 			startedAt: string;
 			health?: string;

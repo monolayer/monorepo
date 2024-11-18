@@ -34,14 +34,8 @@ export function status(program: Command) {
 }
 
 function printStatus(statuses: WorkloadInfo[]) {
-	const portsAvailable = statuses.some(
-		(status) => status.container.info?.ports !== undefined,
-	);
-
 	const table = new Table({
-		head: portsAvailable
-			? ["Workload", "Type", "Status", "Ports"]
-			: ["Workload", "Type", "Status"],
+		head: ["Workload", "Type", "Status", "Ports", "Container ID"],
 		style: {
 			head: [],
 		},
@@ -61,7 +55,7 @@ function printStatus(statuses: WorkloadInfo[]) {
 			return acc;
 		}, []);
 
-		const base = [
+		const row = [
 			status.workload.constructor.name === "PostgresDatabase" ||
 			status.workload.constructor.name === "MySqlDatabase"
 				? // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,8 +63,10 @@ function printStatus(statuses: WorkloadInfo[]) {
 				: status.workload.id,
 			status.workload.constructor.name,
 			status.container.status,
+			ports.length !== 0 ? ports.join("\n") : "N/A",
+			status.container.info?.id.substring(0, 12) ?? "N/A",
 		];
-		table.push(portsAvailable ? [...base, ports.join(", ")] : base);
+		table.push(row);
 	}
 	if (table.length !== 0) {
 		console.log(table.toString());
