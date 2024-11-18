@@ -23,10 +23,7 @@ const postgreSQLContainerSpec = {
 	portsToExpose: [MYSQL_PORT],
 
 	environment: {
-		MYSQL_DATABASE: "test",
 		MYSQL_ROOT_PASSWORD: "test",
-		MYSQL_USER: "test",
-		MYSQL_PASSWORD: "test",
 	},
 
 	waitStrategy: Wait.forHealthCheck(),
@@ -41,7 +38,6 @@ export class MySQLContainer<C> extends ContainerWithURI {
 
 	username: string;
 	password: string;
-	rootPassword: string;
 
 	/**
 	 * @hideconstructor
@@ -55,9 +51,8 @@ export class MySQLContainer<C> extends ContainerWithURI {
 			...(options ? options : {}),
 		};
 		super(workload, mergedOptions);
-		this.username = mergedOptions.environment.MYSQL_USER;
-		this.password = mergedOptions.environment.MYSQL_PASSWORD;
-		this.rootPassword = mergedOptions.environment.MYSQL_ROOT_PASSWORD;
+		this.username = "root";
+		this.password = mergedOptions.environment.MYSQL_ROOT_PASSWORD;
 
 		this.withHealthCheck({
 			test: [
