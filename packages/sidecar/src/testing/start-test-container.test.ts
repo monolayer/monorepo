@@ -44,12 +44,8 @@ test("creates buckets", { sequential: true }, async ({ containers }) => {
 		const bucketWorkload = new Bucket(name);
 		const startedContainer = await startTestContainer(bucketWorkload);
 		containers.push(startedContainer);
+		await assertBucket("my-bucket-test-1", startedContainer);
 	}
-
-	await assertBucket("my-bucket-test-1");
-	await assertBucket("my-bucket-test-2");
-	await assertBucket("my-bucket-test-3");
-	await assertBucket("my-bucket-test-4");
 });
 
 test(

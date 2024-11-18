@@ -1,6 +1,9 @@
 import { type StartedTestContainer } from "testcontainers";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
-import type { WorkloadContainerOptions } from "~sidecar/containers/container.js";
+import {
+	mergeOptions,
+	type WorkloadContainerOptions,
+} from "~sidecar/containers/container.js";
 import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 
 const MAILER_SERVER_PORT = 1025;
@@ -22,10 +25,7 @@ export class MailerContainer<C> extends ContainerWithURI {
 		workload: Mailer<C>,
 		options?: Partial<WorkloadContainerOptions>,
 	) {
-		super(workload, {
-			...mailerContainerSpec,
-			...(options ? options : {}),
-		});
+		super(workload, mergeOptions(mailerContainerSpec, options));
 	}
 
 	/**

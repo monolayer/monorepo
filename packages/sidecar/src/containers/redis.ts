@@ -1,6 +1,9 @@
 import type { StartedTestContainer } from "testcontainers";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
-import { type WorkloadContainerOptions } from "~sidecar/containers/container.js";
+import {
+	mergeOptions,
+	type WorkloadContainerOptions,
+} from "~sidecar/containers/container.js";
 import { Redis } from "~sidecar/workloads/stateful/redis.js";
 
 const REDIS_SERVER_PORT = 6379;
@@ -21,10 +24,7 @@ export class RedisContainer<C> extends ContainerWithURI {
 	 * @hideconstructor
 	 */
 	constructor(workload: Redis<C>, options?: Partial<WorkloadContainerOptions>) {
-		super(workload, {
-			...redisContainerSpec,
-			...(options ? options : {}),
-		});
+		super(workload, mergeOptions(redisContainerSpec, options));
 	}
 
 	buildConnectionURI(container: StartedTestContainer) {

@@ -5,9 +5,8 @@ import {
 	type StartedTestContainer,
 } from "testcontainers";
 import { assert } from "vitest";
-import { containerStarter } from "~sidecar/containers/container-starter.js";
 import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
-import type { LocalStackContainer } from "~sidecar/containers/local-stack.js";
+import { LOCAL_STACK_GATEWAY_PORT } from "~sidecar/containers/local-stack.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import type { Workload } from "~sidecar/workloads/workload.js";
 
@@ -76,14 +75,15 @@ export async function assertExposedPorts({
 
 export async function assertBucket(
 	bucketName: string,
-	localStackContainer?: LocalStackContainer,
+	container: StartedTestContainer,
 ) {
+	const url = new URL("", "http://base.com");
+	url.hostname = container.getHost();
+	url.port = container.getMappedPort(LOCAL_STACK_GATEWAY_PORT).toString();
 	const client = new S3Client({
 		region: "us-west-2",
 		forcePathStyle: true,
-		endpoint: localStackContainer
-			? localStackContainer.gatewayURL
-			: (await containerStarter.localStackContainer()).gatewayURL,
+		endpoint: url.toString(),
 	});
 
 	const response = await client.send(

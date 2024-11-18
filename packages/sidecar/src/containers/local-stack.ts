@@ -1,36 +1,25 @@
 import type { StartedTestContainer } from "testcontainers";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
+import {
+	mergeOptions,
+	type WorkloadContainerOptions,
+} from "~sidecar/containers/container.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 
-const LOCAL_STACK_GATEWAY_PORT = 4566;
+/**
+ * Container for LocalStack
+ *
+ * @private
+ */
+export const LOCAL_STACK_GATEWAY_PORT = 4566;
 
-interface LocalStackContainerOptions {
-	/**
-	 * @defaultValue `true`
-	 */
-	publishToRandomPorts?: boolean;
-	/**
-	 * @defaultValue `false`
-	 */
-	persist?: boolean;
-	containerImage?: string;
-}
-
-const localStackContainerSpec = {
-	/**
-	 * Docker image for container
-	 *
-	 * @defaultValue `localstack/localstack:latest`
-	 */
+/**
+ * Container for LocalStack
+ *
+ * @private
+ */
+export const localStackContainerSpec = {
 	containerImage: "localstack/localstack:latest",
-
-	/**
-	 * Container ports to export to the host.
-	 *
-	 * The published ports to the host will be assigned randomly when starting the container
-	 * and they can be accessed through {@link Container.mappedPorts}
-	 *
-	 */
 	portsToExpose: [LOCAL_STACK_GATEWAY_PORT],
 	environment: {
 		SERVICES: "s3",
@@ -47,16 +36,11 @@ export class LocalStackContainer extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(workload: LocalStack, options?: LocalStackContainerOptions) {
-		super(workload, {
-			...localStackContainerSpec,
-			containerImage:
-				options?.containerImage ?? localStackContainerSpec.containerImage,
-			environment: {
-				...localStackContainerSpec.environment,
-				PERSIST: (options?.persist ?? false) ? "1" : "0",
-			},
-		});
+	constructor(
+		workload: LocalStack,
+		options?: Partial<WorkloadContainerOptions>,
+	) {
+		super(workload, mergeOptions(localStackContainerSpec, options));
 	}
 
 	buildConnectionURI(container: StartedTestContainer) {

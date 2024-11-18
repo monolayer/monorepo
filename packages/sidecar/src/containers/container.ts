@@ -173,3 +173,13 @@ export interface WorkloadContainerOptions {
 	startupTimeout?: number;
 	healthCheck?: HealthCheck;
 }
+
+export function mergeOptions(
+	base: WorkloadContainerOptions,
+	toMerge?: Partial<WorkloadContainerOptions>,
+) {
+	return {
+		...base,
+		...toMerge,
+	};
+}

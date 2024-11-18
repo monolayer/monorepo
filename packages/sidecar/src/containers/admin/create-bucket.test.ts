@@ -10,5 +10,5 @@ test("create bucket", { sequential: true }, async ({ containers }) => {
 	const startedContainer = await localStackContainer.start();
 	containers.push(startedContainer);
 	await createBucket("create-bucket-test", localStackContainer);
-	await assertBucket("create-bucket-test", localStackContainer);
+	await assertBucket("create-bucket-test", startedContainer);
 });

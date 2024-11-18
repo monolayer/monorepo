@@ -3,7 +3,10 @@ import { type StartedTestContainer } from "testcontainers";
 import { PostgreSQLContainer, type StartOptions } from "~sidecar/containers.js";
 import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import { createDatabase } from "~sidecar/containers/admin/create-database.js";
-import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
+import {
+	LocalStackContainer,
+	localStackContainerSpec,
+} from "~sidecar/containers/local-stack.js";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { MySQLContainer } from "~sidecar/containers/mysql.js";
 import { RedisContainer } from "~sidecar/containers/redis.js";
@@ -106,10 +109,20 @@ class ContainerStarter {
 		}
 		return this.#localStackContainer;
 	}
-	async startLocalStack() {
+	async startLocalStack(persist: boolean = false) {
 		if (this.#localStackContainer === undefined) {
 			const localStackWorkload = new LocalStack("local-stack-testing");
-			this.#localStackContainer = new LocalStackContainer(localStackWorkload);
+			const options = localStackContainerSpec;
+			if (persist) {
+				options.environment = {
+					...localStackContainerSpec.environment,
+					PERSISTENCE: "1",
+				};
+			}
+			this.#localStackContainer = new LocalStackContainer(
+				localStackWorkload,
+				options,
+			);
 			await this.#localStackContainer.start();
 		}
 		return this.#localStackContainer;
