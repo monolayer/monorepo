@@ -4,7 +4,7 @@
 	"entryPoints": [
 		"./src/index.ts",
 		"./src/containers.ts",
-		"./src/resources.ts",
+		"./src/workloads.ts",
 		"./src/test.ts"
 	],
 	"entryPointStrategy": "expand",
