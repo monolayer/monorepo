@@ -52,10 +52,9 @@ test(
 					connectionString: process.env[connectionStringEnvVar],
 				}),
 		});
+		postgres.containerOptions({ imageName: "postgres:16.5" });
 
-		const container = new PostgreSQLContainer(postgres, {
-			containerImage: "postgres:16.5",
-		});
+		const container = new PostgreSQLContainer(postgres);
 		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertContainerImage({

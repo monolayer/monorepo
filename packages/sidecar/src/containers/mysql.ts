@@ -1,10 +1,6 @@
 import { Wait, type StartedTestContainer } from "testcontainers";
 import type { HealthCheck } from "testcontainers/build/types.js";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
-import {
-	mergeOptions,
-	type WorkloadContainerOptions,
-} from "~sidecar/containers/container.js";
 import type { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 
 const MYSQL_PORT = 3306;
@@ -60,11 +56,8 @@ export class MySQLContainer<C> extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(
-		workload: MySqlDatabase<C>,
-		options?: Partial<WorkloadContainerOptions>,
-	) {
-		super(workload, mergeOptions(mySqlContainerSpec, options));
+	constructor(workload: MySqlDatabase<C>) {
+		super(workload, mySqlContainerSpec);
 		this.username = "root";
 		this.password = this.containerOptions.environment.MYSQL_ROOT_PASSWORD ?? "";
 	}

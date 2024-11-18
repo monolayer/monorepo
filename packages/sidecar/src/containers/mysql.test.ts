@@ -52,9 +52,11 @@ test(
 				await mysql.createConnection(process.env[connectionStringEnvVar]!),
 		});
 
-		const container = new MySQLContainer(mySqlDb, {
-			containerImage: "mysql:8.4.2",
+		mySqlDb.containerOptions({
+			imageName: "mysql:8.4.2",
 		});
+
+		const container = new MySQLContainer(mySqlDb);
 		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertContainerImage({

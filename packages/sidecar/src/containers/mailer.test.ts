@@ -87,9 +87,10 @@ test(
 		const mailer = new Mailer("test-mailer-send", (connectionStringEnvVar) =>
 			nodemailer.createTransport(process.env[connectionStringEnvVar]),
 		);
-		const container = new MailerContainer(mailer, {
-			containerImage: "axllent/mailpit:v1.21",
+		mailer.containerOptions({
+			imageName: "axllent/mailpit:v1.21",
 		});
+		const container = new MailerContainer(mailer);
 		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertContainerImage({

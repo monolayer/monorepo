@@ -1,4 +1,5 @@
 import { snakeCase } from "case-anything";
+import type { WorkloadContainerOptions } from "~sidecar/containers/container.js";
 
 /**
  * @internal
@@ -20,6 +21,17 @@ export abstract class StatefulWorkload {
 		id: string,
 	) {
 		this.id = id;
+	}
+
+	/**
+	 * @internal
+	 */
+	_containerOptions?: Partial<WorkloadContainerOptions> | undefined;
+	public containerOptions({ imageName }: { imageName: string }) {
+		this._containerOptions = {
+			containerImage: imageName,
+		};
+		return this;
 	}
 }
 

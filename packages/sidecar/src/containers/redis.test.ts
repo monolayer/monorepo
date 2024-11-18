@@ -83,9 +83,11 @@ test(
 				}).on("error", (err) => console.error("Redis Client Error", err)),
 		);
 
-		const container = new RedisContainer(redisWorkload, {
-			containerImage: "redis/redis-stack:7.2.0-v12",
+		redisWorkload.containerOptions({
+			imageName: "redis/redis-stack:7.2.0-v12",
 		});
+
+		const container = new RedisContainer(redisWorkload);
 		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertContainerImage({

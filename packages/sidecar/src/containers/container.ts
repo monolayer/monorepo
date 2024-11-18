@@ -41,11 +41,17 @@ export const CONTAINER_LABEL_ORG = "org.monolayer-sidecar";
  */
 export class WorkloadContainer {
 	startedContainer?: StartedTestContainer;
+	containerOptions: WorkloadContainerOptions;
 
 	constructor(
 		public workload: Workload,
-		public containerOptions: WorkloadContainerOptions,
-	) {}
+		containerOptions: WorkloadContainerOptions,
+	) {
+		this.containerOptions = mergeOptions(
+			containerOptions,
+			workload._containerOptions,
+		);
+	}
 
 	/**
 	 * Starts the container.

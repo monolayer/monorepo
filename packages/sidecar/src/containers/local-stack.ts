@@ -1,9 +1,5 @@
 import type { StartedTestContainer } from "testcontainers";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
-import {
-	mergeOptions,
-	type WorkloadContainerOptions,
-} from "~sidecar/containers/container.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 
 /**
@@ -36,11 +32,8 @@ export class LocalStackContainer extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(
-		workload: LocalStack,
-		options?: Partial<WorkloadContainerOptions>,
-	) {
-		super(workload, mergeOptions(localStackContainerSpec, options));
+	constructor(workload: LocalStack) {
+		super(workload, localStackContainerSpec);
 	}
 
 	buildConnectionURI(container: StartedTestContainer) {

@@ -23,6 +23,7 @@ export async function startDevContainer(
 				publishToRandomPorts: false,
 			},
 			initialize: false,
+			test: false,
 		},
 	);
 	if (startedTestContainer === undefined) {

@@ -50,13 +50,14 @@ class ContainerStarter {
 		options: {
 			startOptions?: StartOptions;
 			initialize?: boolean;
+			test: boolean;
 		},
 	) {
 		if (isRedis(workload)) {
 			return await this.startRedis(workload, options?.startOptions);
 		}
 		if (isBucket(workload)) {
-			const localStackContainer = await this.startLocalStack();
+			const localStackContainer = await this.startLocalStack(options.test);
 			if (options?.initialize) {
 				await createBucket(workload.id, localStackContainer);
 			}
@@ -103,27 +104,23 @@ class ContainerStarter {
 
 	#localStackContainer?: LocalStackContainer;
 
-	async localStackContainer() {
-		if (this.#localStackContainer === undefined) {
-			return await this.startLocalStack();
-		}
-		return this.#localStackContainer;
-	}
-	async startLocalStack(persist: boolean = false) {
+	async startLocalStack(test: boolean = false) {
 		if (this.#localStackContainer === undefined) {
 			const localStackWorkload = new LocalStack("local-stack-testing");
 			const options = localStackContainerSpec;
-			if (persist) {
+			if (!test) {
 				options.environment = {
 					...localStackContainerSpec.environment,
 					PERSISTENCE: "1",
 				};
+				localStackWorkload._containerOptions = options;
 			}
-			this.#localStackContainer = new LocalStackContainer(
-				localStackWorkload,
-				options,
-			);
-			await this.#localStackContainer.start();
+			this.#localStackContainer = new LocalStackContainer(localStackWorkload);
+			await this.#localStackContainer.start({
+				reuse: !test,
+				publishToRandomPorts: test,
+			});
+			// await this.#localStackContainer.start();
 		}
 		return this.#localStackContainer;
 	}

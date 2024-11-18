@@ -1,10 +1,6 @@
 import { Wait, type StartedTestContainer } from "testcontainers";
 import type { HealthCheck } from "testcontainers/build/types.js";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
-import {
-	mergeOptions,
-	type WorkloadContainerOptions,
-} from "~sidecar/containers/container.js";
 import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 
 const POSTGRESQL_SERVER_PORT = 5432;
@@ -32,11 +28,8 @@ export class PostgreSQLContainer<C> extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(
-		workload: PostgresDatabase<C>,
-		options?: Partial<WorkloadContainerOptions>,
-	) {
-		super(workload, mergeOptions(postgreSQLContainerSpec, options));
+	constructor(workload: PostgresDatabase<C>) {
+		super(workload, postgreSQLContainerSpec);
 	}
 
 	buildConnectionURI(container: StartedTestContainer) {

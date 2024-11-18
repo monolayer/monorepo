@@ -17,6 +17,7 @@ export async function startTestContainer(
 				publishToRandomPorts: true,
 			},
 			initialize: true,
+			test: true,
 		},
 	);
 	if (startedTestContainer === undefined) {

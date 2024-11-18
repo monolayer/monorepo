@@ -9,6 +9,7 @@ class TestWorkload {
 	constructor(id: string) {
 		this.id = id;
 	}
+	stateful = true;
 }
 const testWorkload = new TestWorkload("container-test");
 
