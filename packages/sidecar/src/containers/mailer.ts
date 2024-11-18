@@ -1,6 +1,6 @@
 import { type StartedTestContainer } from "testcontainers";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
-import { type SidecarContainerSpec } from "~sidecar/containers/container.js";
+import type { WorkloadContainerOptions } from "~sidecar/containers/container.js";
 import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 
 const MAILER_SERVER_PORT = 1025;
@@ -18,7 +18,10 @@ export class MailerContainer<C> extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(workload: Mailer<C>, options?: Partial<SidecarContainerSpec>) {
+	constructor(
+		workload: Mailer<C>,
+		options?: Partial<WorkloadContainerOptions>,
+	) {
 		super(workload, {
 			...mailerContainerSpec,
 			...(options ? options : {}),

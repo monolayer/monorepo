@@ -1,7 +1,7 @@
 import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { getContainerRuntimeClient } from "testcontainers";
 import { assert } from "vitest";
-import { Container } from "~sidecar/containers/container.js";
+import { WorkloadContainer } from "~sidecar/containers/container.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 class TestWorkload {
@@ -19,20 +19,14 @@ const nginxSpec = {
 };
 
 test("start container", async ({ containers }) => {
-	const container = new Container({
-		workload: testWorkload,
-		containerSpec: nginxSpec,
-	});
+	const container = new WorkloadContainer(testWorkload, nginxSpec);
 	const startedContainer = await startContainer(container);
 
 	containers.push(startedContainer);
 });
 
 test("start container and expose ports", async ({ containers }) => {
-	const container = new Container({
-		workload: testWorkload,
-		containerSpec: nginxSpec,
-	});
+	const container = new WorkloadContainer(testWorkload, nginxSpec);
 	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
@@ -40,20 +34,13 @@ test("start container and expose ports", async ({ containers }) => {
 });
 
 test("start container with reuse", async ({ containers }) => {
-	const container = new Container({
-		workload: testWorkload,
-		containerSpec: nginxSpec,
-	});
+	const container = new WorkloadContainer(testWorkload, nginxSpec);
 	const startedContainer = await container.start({
 		reuse: true,
 		publishToRandomPorts: true,
 	});
 	containers.push(startedContainer);
-
-	const anotherContainer = new Container({
-		workload: testWorkload,
-		containerSpec: nginxSpec,
-	});
+	const anotherContainer = new WorkloadContainer(testWorkload, nginxSpec);
 
 	const anotherStartedContainer = await anotherContainer.start({
 		reuse: true,
@@ -64,10 +51,7 @@ test("start container with reuse", async ({ containers }) => {
 });
 
 test("mapped ports", async ({ containers }) => {
-	const container = new Container({
-		workload: testWorkload,
-		containerSpec: nginxSpec,
-	});
+	const container = new WorkloadContainer(testWorkload, nginxSpec);
 	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
@@ -80,12 +64,9 @@ test("mapped ports", async ({ containers }) => {
 });
 
 test("without mapped ports", async ({ containers }) => {
-	const container = new Container({
-		workload: testWorkload,
-		containerSpec: {
-			...nginxSpec,
-			portsToExpose: [],
-		},
+	const container = new WorkloadContainer(testWorkload, {
+		...nginxSpec,
+		portsToExpose: [],
 	});
 	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
@@ -94,18 +75,12 @@ test("without mapped ports", async ({ containers }) => {
 });
 
 test("mapped ports not started container", async () => {
-	const container = new Container({
-		workload: testWorkload,
-		containerSpec: nginxSpec,
-	});
+	const container = new WorkloadContainer(testWorkload, nginxSpec);
 	assert.isUndefined(container.mappedPorts);
 });
 
 test("stop container", async () => {
-	const container = new Container({
-		workload: testWorkload,
-		containerSpec: nginxSpec,
-	});
+	const container = new WorkloadContainer(testWorkload, nginxSpec);
 	await startContainer(container);
 	await container.stop();
 
@@ -121,10 +96,7 @@ test("stop container", async () => {
 test("start multiple times returns the same container", async ({
 	containers,
 }) => {
-	const container = new Container({
-		workload: testWorkload,
-		containerSpec: nginxSpec,
-	});
+	const container = new WorkloadContainer(testWorkload, nginxSpec);
 	const container1 = await startContainer(container);
 	const container2 = await startContainer(container);
 	containers.push(container1, container2);

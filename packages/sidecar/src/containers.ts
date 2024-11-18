@@ -1,12 +1,11 @@
 export {
-	Container,
 	ContainerImage,
 	ContainerOptions,
 	ContainerPersistenceVolume,
 	MappedPort,
-	SidecarContainer,
-	SidecarContainerSpec,
 	StartOptions,
+	WorkloadContainer,
+	WorkloadContainerOptions,
 } from "./containers/container.js";
 export { MailerContainer } from "./containers/mailer.js";
 export { PostgreSQLContainer } from "./containers/postgresql.js";

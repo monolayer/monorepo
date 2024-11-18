@@ -8,7 +8,7 @@ import {
 	type StartedTestContainer,
 	type WaitStrategy,
 } from "testcontainers";
-import type { Environment } from "testcontainers/build/types.js";
+import type { Environment, HealthCheck } from "testcontainers/build/types.js";
 import type { Workload } from "~sidecar/workloads.js";
 
 export interface ContainerImage {
@@ -35,7 +35,7 @@ export interface ContainerPersistenceVolume {
 
 export interface ContainerOptions {
 	workload: Workload;
-	containerSpec: SidecarContainerSpec;
+	containerSpec: WorkloadContainerOptions;
 }
 
 export interface StartOptions {
@@ -66,7 +66,7 @@ export const CONTAINER_LABEL_ORG = "org.monolayer-sidecar";
 /**
  * @module containers
  */
-export class Container extends GenericContainer implements SidecarContainer {
+export class WorkloadContainer {
 	/**
 	 * The started container
 	 *
@@ -74,43 +74,17 @@ export class Container extends GenericContainer implements SidecarContainer {
 	 */
 	startedContainer?: StartedTestContainer;
 
-	protected options: ContainerOptions;
-
-	constructor(options: ContainerOptions) {
-		super(options.containerSpec.containerImage);
-		this.options = options;
-		this.withLabels({
-			[CONTAINER_LABEL_WORKLOAD_ID]: this.options.workload.id,
-			[CONTAINER_LABEL_ORG]: "true",
-		}).withEnvironment(options.containerSpec.environment);
-		if (options.containerSpec.waitStrategy) {
-			this.withWaitStrategy(options.containerSpec.waitStrategy);
-		}
-		if (options.containerSpec.startupTimeout) {
-			this.withStartupTimeout(options.containerSpec.startupTimeout);
-		}
-	}
+	constructor(
+		public workload: Workload,
+		public containerOptions: WorkloadContainerOptions,
+	) {}
 
 	/**
 	 * Starts the container.
 	 */
-	override async start(options?: StartOptions) {
-		if (this.startedContainer) {
-			return this.startedContainer;
-		}
-		for (const portToExpose of this.options.containerSpec.portsToExpose ?? []) {
-			this.withExposedPorts({
-				container: portToExpose,
-				host:
-					(options?.publishToRandomPorts ?? false)
-						? await getPort()
-						: portToExpose,
-			});
-		}
-		if (options?.reuse ?? true) {
-			this.withReuse();
-		}
-		this.startedContainer = await super.start();
+	async start(options?: StartOptions) {
+		const container = await this.#prepareContainer(options);
+		this.startedContainer = await container.start();
 		return this.startedContainer;
 	}
 
@@ -125,13 +99,47 @@ export class Container extends GenericContainer implements SidecarContainer {
 	get mappedPorts() {
 		if (this.startedContainer) {
 			const startedContainer = this.startedContainer;
-			return (this.options.containerSpec.portsToExpose ?? []).map<MappedPort>(
+			return (this.containerOptions.portsToExpose ?? []).map<MappedPort>(
 				(port) => ({
 					container: port,
 					host: startedContainer.getMappedPort(port),
 				}),
 			);
 		}
+	}
+
+	async #prepareContainer(startOptions?: StartOptions) {
+		const container = new GenericContainer(
+			this.containerOptions.containerImage,
+		);
+		container
+			.withLabels({
+				[CONTAINER_LABEL_WORKLOAD_ID]: this.workload.id,
+				[CONTAINER_LABEL_ORG]: "true",
+			})
+			.withEnvironment(this.containerOptions.environment);
+		if (this.containerOptions.waitStrategy) {
+			container.withWaitStrategy(this.containerOptions.waitStrategy);
+		}
+		if (this.containerOptions.startupTimeout) {
+			container.withStartupTimeout(this.containerOptions.startupTimeout);
+		}
+		if (this.containerOptions.healthCheck) {
+			container.withHealthCheck(this.containerOptions.healthCheck);
+		}
+		for (const portToExpose of this.containerOptions.portsToExpose ?? []) {
+			container.withExposedPorts({
+				container: portToExpose,
+				host:
+					(startOptions?.publishToRandomPorts ?? false)
+						? await getPort()
+						: portToExpose,
+			});
+		}
+		if (startOptions?.reuse ?? true) {
+			container.withReuse();
+		}
+		return container;
 	}
 }
 
@@ -146,25 +154,7 @@ export interface MappedPort {
 	host: number;
 }
 
-export interface SidecarContainer {
-	/**
-	 * Starts the container.
-	 */
-	start: (options?: StartOptions) => Promise<StartedTestContainer>;
-	/**
-	 * Stops the container.
-	 */
-	stop: () => Promise<void>;
-	/**
-	 * An array of exposed container ports published to the host.
-	 *
-	 * @returns An array of exposed container ports published to the host or `undefined` when the container has
-	 * not started.
-	 */
-	mappedPorts?: Array<MappedPort>;
-}
-
-export interface SidecarContainerSpec {
+export interface WorkloadContainerOptions {
 	/**
 	 * Docker image for container
 	 */
@@ -181,4 +171,5 @@ export interface SidecarContainerSpec {
 	environment: Environment;
 	waitStrategy?: WaitStrategy;
 	startupTimeout?: number;
+	healthCheck?: HealthCheck;
 }

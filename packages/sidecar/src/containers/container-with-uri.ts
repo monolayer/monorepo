@@ -1,28 +1,21 @@
 import { type StartedTestContainer } from "testcontainers";
 import {
-	Container,
-	type SidecarContainer,
-	type SidecarContainerSpec,
+	WorkloadContainer,
 	type StartOptions,
+	type WorkloadContainerOptions,
 } from "~sidecar/containers/container.js";
 import type { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.js";
 
-export abstract class ContainerWithURI
-	extends Container
-	implements SidecarContainer
-{
+export abstract class ContainerWithURI extends WorkloadContainer {
 	#workload: StatefulWorkload & { connectionStringEnvVar: () => string };
 	/**
 	 * @hideconstructor
 	 */
 	constructor(
 		workload: StatefulWorkload & { connectionStringEnvVar: () => string },
-		containerSpec: SidecarContainerSpec,
+		containerSpec: WorkloadContainerOptions,
 	) {
-		super({
-			workload,
-			containerSpec,
-		});
+		super(workload, containerSpec);
 		this.#workload = workload;
 	}
 
