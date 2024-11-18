@@ -17,6 +17,7 @@ export function stop(program: Command) {
 				...workloads.Mailer,
 				...workloads.PostgresDatabase,
 				...workloads.Redis,
+				...workloads.MySqlDatabase,
 				...(workloads.Bucket.length !== 0
 					? [new LocalStack("local-stack-dev")]
 					: []),

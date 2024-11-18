@@ -4,8 +4,8 @@ import {
 	workloadContainerStatus,
 	type WorkloadInfo,
 } from "~sidecar/containers/admin/introspection.js";
-import type { PostgresDatabase } from "~sidecar/workloads.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
+import type { Database } from "~sidecar/workloads/stateful/database.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 
 export function status(program: Command) {
@@ -22,6 +22,7 @@ export function status(program: Command) {
 				[
 					...workloads.Mailer,
 					...workloads.PostgresDatabase,
+					...workloads.MySqlDatabase,
 					...workloads.Redis,
 					...(workloads.Bucket.length !== 0
 						? [new LocalStack("local-stack-dev")]
@@ -61,9 +62,10 @@ function printStatus(statuses: WorkloadInfo[]) {
 		}, []);
 
 		const base = [
-			status.workload.constructor.name === "PostgresDatabase"
+			status.workload.constructor.name === "PostgresDatabase" ||
+			status.workload.constructor.name === "MySqlDatabase"
 				? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-					`${(status.workload as PostgresDatabase<any>).databaseName} (${status.workload.id})`
+					`${(status.workload as Database<any>).databaseName} (${status.workload.id})`
 				: status.workload.id,
 			status.workload.constructor.name,
 			status.container.status,

@@ -3,6 +3,7 @@ import { Effect } from "effect";
 import fs from "fs/promises";
 import path from "node:path";
 import { cwd } from "node:process";
+import type { MySqlDatabase } from "~sidecar/workloads.js";
 import type { Bucket } from "~sidecar/workloads/stateful/bucket.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
@@ -12,15 +13,16 @@ import type { Redis } from "~sidecar/workloads/stateful/redis.js";
 type ModuleImport = Record<string, any>;
 
 export async function importWorkloads(workloadsFolder: string) {
-	const mods = await importModules(workloadsFolder);
-	return classifyWorkloads(mods);
-}
-
-async function importModules(workloadsFolder: string) {
 	const workloadsPath = path.join(cwd(), workloadsFolder);
 	const files = await fs.readdir(workloadsPath);
 
-	let modules: ModuleImport = {};
+	const workloads: WorkloadByKind = {
+		Mailer: [],
+		PostgresDatabase: [],
+		Bucket: [],
+		Redis: [],
+		MySqlDatabase: [],
+	};
 
 	for (const fileName of files) {
 		if (fileName.endsWith(".ts") && !fileName.endsWith(".d.ts")) {
@@ -28,13 +30,16 @@ async function importModules(workloadsFolder: string) {
 			const imported = await Effect.runPromise(
 				importFile<ModuleImport>(importPath),
 			);
-			modules = {
-				...modules,
-				...imported,
-			};
+			for (const [, workload] of Object.entries(imported)) {
+				const workloadKind = workload.constructor.name;
+				if (validWorkload(workloadKind)) {
+					const key = workloadKind as keyof WorkloadByKind;
+					workloads[key].push(workload);
+				}
+			}
 		}
 	}
-	return modules;
+	return workloads;
 }
 
 export interface WorkloadByKind {
@@ -45,26 +50,17 @@ export interface WorkloadByKind {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Redis: Array<Redis<any>>;
 	Bucket: Array<Bucket>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	MySqlDatabase: Array<MySqlDatabase<any>>;
 }
 
-function classifyWorkloads(workloads: ModuleImport) {
-	return Object.entries(workloads).reduce<WorkloadByKind>(
-		(acc, [, workload]) => {
-			const workloadKind = workload.constructor.name;
-			if (validWorkload(workloadKind)) {
-				const key = workloadKind as keyof WorkloadByKind;
-				if (acc[key] === undefined) {
-					acc[key] = [];
-				}
-				acc[key].push(workload);
-			}
-			return acc;
-		},
-		{ Mailer: [], PostgresDatabase: [], Bucket: [], Redis: [] },
-	);
-}
-
-const validConstructor = ["PostgresDatabase", "Redis", "Bucket", "Mailer"];
+const validConstructor = [
+	"PostgresDatabase",
+	"Redis",
+	"Bucket",
+	"Mailer",
+	"MySqlDatabase",
+];
 
 function validWorkload(workloadConstructor: string) {
 	return validConstructor.includes(workloadConstructor);

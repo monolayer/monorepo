@@ -7,7 +7,12 @@ import {
 	type EnvVar,
 } from "~sidecar/containers/admin/update-dotenv-file.js";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
-import type { Bucket, PostgresDatabase, Redis } from "~sidecar/workloads.js";
+import type {
+	Bucket,
+	MySqlDatabase,
+	PostgresDatabase,
+	Redis,
+} from "~sidecar/workloads.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
@@ -28,6 +33,7 @@ export function dev(program: Command) {
 			await startPostgresDatabases(workloads.PostgresDatabase, envVars);
 			await startRedis(workloads.Redis, envVars);
 			await startBuckets(workloads.Bucket, envVars);
+			await startMySqlDatabases(workloads.MySqlDatabase, envVars);
 			if (envVars.length !== 0) {
 				updateDotenvFile(envVars);
 			}
@@ -91,4 +97,19 @@ async function startBuckets(buckets: Bucket[], envVars: EnvVar[]) {
 		spinner.succeed();
 	}
 	return envVars;
+}
+
+async function startMySqlDatabases(
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	mySqlDatabases: MySqlDatabase<any>[],
+	envVars: EnvVar[],
+) {
+	for (const mySqlDatabase of mySqlDatabases) {
+		await startDevContainer(mySqlDatabase);
+		const name = mySqlDatabase.connectionStringEnvVar();
+		envVars.push({
+			name,
+			value: process.env[name]!,
+		});
+	}
 }

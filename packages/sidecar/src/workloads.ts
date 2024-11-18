@@ -1,5 +1,6 @@
 export { Bucket } from "~sidecar/workloads/stateful/bucket.js";
 export { Mailer } from "~sidecar/workloads/stateful/mailer.js";
+export { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 export { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 export { Redis } from "~sidecar/workloads/stateful/redis.js";
 export {

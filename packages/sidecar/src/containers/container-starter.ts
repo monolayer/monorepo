@@ -5,10 +5,12 @@ import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import { createDatabase } from "~sidecar/containers/admin/create-database.js";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
+import { MySQLContainer } from "~sidecar/containers/mysql.js";
 import { RedisContainer } from "~sidecar/containers/redis.js";
 import type { Bucket } from "~sidecar/workloads/stateful/bucket.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
+import type { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import type { Redis } from "~sidecar/workloads/stateful/redis.js";
 
@@ -32,6 +34,11 @@ function isPostgresDatabase<C>(
 function isMailer<C>(workload: unknown): workload is Mailer<C> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return (workload as any).constructor.name === "Mailer";
+}
+
+function isMysql<C>(workload: unknown): workload is MySqlDatabase<C> {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return (workload as any).constructor.name === "MySqlDatabase";
 }
 
 class ContainerStarter {
@@ -60,6 +67,9 @@ class ContainerStarter {
 		if (isMailer(workload)) {
 			return await this.startMailer(workload);
 		}
+		if (isMysql(workload)) {
+			return await this.startMySql(workload);
+		}
 	}
 
 	async startRedis<C>(workload: Redis<C>) {
@@ -69,6 +79,14 @@ class ContainerStarter {
 
 	async startPostgres<C>(workload: PostgresDatabase<C>) {
 		const container = new PostgreSQLContainer(workload);
+		return await container.start({
+			persistenceVolumes: true,
+			reuse: true,
+		});
+	}
+
+	async startMySql<C>(workload: MySqlDatabase<C>) {
+		const container = new MySQLContainer(workload);
 		return await container.start({
 			persistenceVolumes: true,
 			reuse: true,
