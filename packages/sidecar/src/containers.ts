@@ -1,7 +1,4 @@
 export {
-	ContainerImage,
-	ContainerOptions,
-	ContainerPersistenceVolume,
 	MappedPort,
 	StartOptions,
 	WorkloadContainer,

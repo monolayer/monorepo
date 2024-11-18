@@ -32,8 +32,11 @@ export abstract class ContainerWithURI extends WorkloadContainer {
 	}
 
 	/**
-	 * @returns The Mailer server connection string URI in the form of `smtp://username:password@host`
-	 * or `undefined` if the container has not started.
+	 * @returns The connection uri for the containerized workload or
+	 * `undefined` if the container has not started.
+	 *
+	 * *Example*: for a {@link Redis} workload the connection URI
+	 * will have this format: `redis://username:password@host:port`
 	 */
 	get connectionURI() {
 		if (this.startedContainer) {
@@ -41,5 +44,8 @@ export abstract class ContainerWithURI extends WorkloadContainer {
 		}
 	}
 
+	/**
+	 * @internal
+	 */
 	abstract buildConnectionURI(container: StartedTestContainer): string;
 }

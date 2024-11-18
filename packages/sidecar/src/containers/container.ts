@@ -11,33 +11,6 @@ import {
 import type { Environment, HealthCheck } from "testcontainers/build/types.js";
 import type { Workload } from "~sidecar/workloads.js";
 
-export interface ContainerImage {
-	/**
-	 * Docker image name.
-	 */
-	name: string;
-	/**
-	 * Docker image tag.
-	 */
-	tag: string;
-}
-
-export interface ContainerPersistenceVolume {
-	/**
-	 * Source path in the host file system.
-	 */
-	source: string;
-	/**
-	 * Target path in the container file system.
-	 */
-	target: string;
-}
-
-export interface ContainerOptions {
-	workload: Workload;
-	containerSpec: WorkloadContainerOptions;
-}
-
 export interface StartOptions {
 	/**
 	 * Whether to reuse an already running container the same configuration
@@ -64,14 +37,9 @@ export const CONTAINER_LABEL_WORKLOAD_ID = "org.monolayer-sidecar.workload-id";
 export const CONTAINER_LABEL_ORG = "org.monolayer-sidecar";
 
 /**
- * @module containers
+ * @internal
  */
 export class WorkloadContainer {
-	/**
-	 * The started container
-	 *
-	 * @defaultValue `undefined`
-	 */
 	startedContainer?: StartedTestContainer;
 
 	constructor(
@@ -96,6 +64,10 @@ export class WorkloadContainer {
 		this.startedContainer = undefined;
 	}
 
+	/**
+	 * @returns An array of published ports from the container to the host or `undefined`
+	 * if the container has not started.
+	 */
 	get mappedPorts() {
 		if (this.startedContainer) {
 			const startedContainer = this.startedContainer;
