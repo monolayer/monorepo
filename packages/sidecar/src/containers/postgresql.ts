@@ -24,7 +24,6 @@ const postgreSQLContainerSpec = {
 
 	environment: {
 		POSTGRES_PASSWORD: "postgres",
-		POSTGRES_DB: "postgres",
 	},
 
 	waitStrategy: Wait.forHealthCheck(),
