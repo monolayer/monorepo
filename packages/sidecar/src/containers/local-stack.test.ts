@@ -5,7 +5,7 @@ import {
 import { assert } from "vitest";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
-import { test } from "~test/__setup__/container-test.js";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 
 const localStackWorkload = new LocalStack("test-local-stack");
 
@@ -14,7 +14,7 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const container = new LocalStackContainer(localStackWorkload);
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();
@@ -27,7 +27,7 @@ test(
 
 test("Exposed ports", { sequential: true }, async ({ containers }) => {
 	const container = new LocalStackContainer(localStackWorkload);
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 	await assertExposedPorts({
 		container: startedContainer,
@@ -37,7 +37,7 @@ test("Exposed ports", { sequential: true }, async ({ containers }) => {
 
 test("Gateway URL", { sequential: true }, async ({ containers }) => {
 	const container = new LocalStackContainer(localStackWorkload);
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	assert.strictEqual(
@@ -52,7 +52,7 @@ test("LocalStack Custom image tag container", async ({ containers }) => {
 	const container = new LocalStackContainer(localStackWorkload, {
 		containerImage: "localstack/localstack:3.8.1",
 	});
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 	await assertContainerImage({
 		workload: localStackWorkload,

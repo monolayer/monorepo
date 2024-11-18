@@ -3,7 +3,7 @@ import type { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
 import { MySQLContainer } from "~sidecar/containers/mysql.js";
 import { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
-import { test } from "~test/__setup__/container-test.js";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test("MySQL client commands against test container", async ({ containers }) => {
 	const mysqlDb = new MySqlDatabase(
@@ -13,7 +13,7 @@ test("MySQL client commands against test container", async ({ containers }) => {
 			await mysql.createConnection(process.env[connectionStringEnvVar]!),
 	);
 	const container = new MySQLContainer(mysqlDb);
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	const adminClient = await mysql.createConnection(

@@ -3,7 +3,7 @@ import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
 import { RedisContainer } from "~sidecar/containers/redis.js";
 import { Redis } from "~sidecar/workloads/stateful/redis.js";
-import { test } from "~test/__setup__/container-test.js";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test("Redis client commands against test container", async ({ containers }) => {
 	const redisStore = new Redis(
@@ -15,7 +15,7 @@ test("Redis client commands against test container", async ({ containers }) => {
 	);
 
 	const container = new RedisContainer(redisStore);
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	const client = redisStore.client;

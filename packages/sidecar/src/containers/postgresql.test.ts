@@ -6,7 +6,7 @@ import {
 import { assert } from "vitest";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
 import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
-import { test } from "~test/__setup__/container-test.js";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test(
 	"PostgreSQL started container",
@@ -22,7 +22,7 @@ test(
 		);
 
 		const container = new PostgreSQLContainer(postgreSQL);
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(labels["org.monolayer-sidecar.workload-id"], "test_app");
@@ -58,7 +58,7 @@ test(
 		const container = new PostgreSQLContainer(postgres, {
 			containerImage: "postgres:16.5",
 		});
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertContainerImage({
 			workload: postgres,

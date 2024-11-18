@@ -3,7 +3,7 @@ import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
 import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
-import { test } from "~test/__setup__/container-test.js";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test("PostgreSQL client commands against test container", async ({
 	containers,
@@ -17,7 +17,7 @@ test("PostgreSQL client commands against test container", async ({
 			}),
 	);
 	const container = new PostgreSQLContainer(postgreSQL);
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	const adminPool = new pg.Pool({

@@ -53,42 +53,6 @@ test("creates buckets", { sequential: true }, async ({ containers }) => {
 });
 
 test(
-	"launches postgres and creates multiple databases in the same container",
-	{ sequential: true, retry: 2, timeout: 30000 },
-	async ({ containers }) => {
-		const postgresDatabase = new PostgresDatabase(
-			"launch_postgres_same_container",
-			"app_db_container",
-			(connectionStringEnvVar) =>
-				new pg.Pool({
-					connectionString: process.env[connectionStringEnvVar],
-				}),
-		);
-
-		const startedContainer = await startTestContainer(postgresDatabase);
-		containers.push(startedContainer);
-		await assertDatabase(postgresDatabase);
-
-		const anotherDatabase = new PostgresDatabase(
-			"another_database_same_container",
-			"app_db_container",
-			(connectionStringEnvVar) =>
-				new pg.Pool({
-					connectionString: process.env[connectionStringEnvVar],
-				}),
-		);
-		const anotherDatabaseContainer = await startTestContainer(anotherDatabase);
-
-		await assertDatabase(anotherDatabase);
-
-		assert.strictEqual(
-			startedContainer.getName(),
-			anotherDatabaseContainer.getName(),
-		);
-	},
-);
-
-test(
 	"launches postgres and creates multiple databases in different container",
 	{ sequential: true, retry: 2, timeout: 30000 },
 	async ({ containers }) => {

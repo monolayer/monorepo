@@ -6,7 +6,7 @@ import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { testMailerURL } from "~sidecar/testing/mailer.js";
 import { getMessagesParams } from "~sidecar/testing/mailpit-client/index.js";
 import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
-import { test } from "~test/__setup__/container-test.js";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test("Mailer client commands against test container", async ({
 	containers,
@@ -16,7 +16,8 @@ test("Mailer client commands against test container", async ({
 	);
 
 	const container = new MailerContainer(mailer);
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
+
 	containers.push(startedContainer);
 	const response = await getMessagesParams({
 		baseUrl: await testMailerURL(mailer),

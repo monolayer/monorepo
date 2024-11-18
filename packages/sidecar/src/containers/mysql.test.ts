@@ -6,7 +6,7 @@ import {
 import { assert } from "vitest";
 import { MySQLContainer } from "~sidecar/containers/mysql.js";
 import { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
-import { test } from "~test/__setup__/container-test.js";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test(
 	"MySQL started container",
@@ -20,7 +20,7 @@ test(
 		);
 
 		const container = new MySQLContainer(mySqlDb);
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
@@ -57,7 +57,7 @@ test(
 		const container = new MySQLContainer(mySqlDb, {
 			containerImage: "mysql:8.4.2",
 		});
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertContainerImage({
 			workload: mySqlDb,

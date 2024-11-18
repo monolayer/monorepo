@@ -2,10 +2,7 @@
  * @module containers
  */
 
-import { snakeCase } from "case-anything";
 import getPort from "get-port";
-import path from "node:path";
-import { cwd } from "node:process";
 import {
 	GenericContainer,
 	type StartedTestContainer,
@@ -38,12 +35,6 @@ export interface ContainerPersistenceVolume {
 
 export interface ContainerOptions {
 	workload: Workload;
-	/**
-	 * Whether to publish the exposed ports to random ports in the host
-	 *
-	 * @default false
-	 */
-	publishToRandomPorts?: boolean;
 	containerSpec: SidecarContainerSpec;
 }
 
@@ -51,8 +42,16 @@ export interface StartOptions {
 	/**
 	 * Whether to reuse an already running container the same configuration
 	 * and not launch a new container.
+	 *
+	 * @default true
 	 */
 	reuse?: boolean;
+	/**
+	 * Whether to publish the exposed ports to random host ports.
+	 *
+	 * @default false
+	 */
+	publishToRandomPorts?: boolean;
 }
 
 /**
@@ -103,10 +102,13 @@ export class Container extends GenericContainer implements SidecarContainer {
 			this.withExposedPorts({
 				container: portToExpose,
 				host:
-					(this.options.publishToRandomPorts ?? true)
-						? await getPort({ port: portToExpose })
+					(options?.publishToRandomPorts ?? false)
+						? await getPort()
 						: portToExpose,
 			});
+		}
+		if (options?.reuse ?? true) {
+			this.withReuse();
 		}
 		this.startedContainer = await super.start();
 		return this.startedContainer;

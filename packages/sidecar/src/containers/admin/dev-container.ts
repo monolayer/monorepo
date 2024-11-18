@@ -17,7 +17,13 @@ export async function startDevContainer(
 	spinner.start(spinnerMessage(workload, "Start"));
 	const startedTestContainer = await containerStarter.startContainerForWorkload(
 		workload,
-		false,
+		{
+			startOptions: {
+				reuse: true,
+				publishToRandomPorts: false,
+			},
+			initialize: false,
+		},
 	);
 	if (startedTestContainer === undefined) {
 		spinner.fail();

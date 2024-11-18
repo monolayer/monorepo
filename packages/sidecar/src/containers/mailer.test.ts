@@ -6,7 +6,7 @@ import {
 import { assert } from "vitest";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
-import { test } from "~test/__setup__/container-test.js";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 
 const mailer = new Mailer("test-mailer", (connectionStringEnvVar) =>
 	nodemailer.createTransport(process.env[connectionStringEnvVar]),
@@ -17,7 +17,7 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const container = new MailerContainer(mailer);
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();
@@ -33,7 +33,7 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const container = new MailerContainer(mailer);
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertExposedPorts({
 			container: startedContainer,
@@ -48,7 +48,7 @@ test(
 	async ({ containers }) => {
 		delete process.env.WL_MAILER_TEST_MAILER_URL;
 		const container = new MailerContainer(mailer);
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 
 		assert.strictEqual(
@@ -60,7 +60,7 @@ test(
 
 test("Connection string URL", { sequential: true }, async ({ containers }) => {
 	const container = new MailerContainer(mailer);
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	assert.strictEqual(
@@ -71,7 +71,7 @@ test("Connection string URL", { sequential: true }, async ({ containers }) => {
 
 test("Web URL", { sequential: true }, async ({ containers }) => {
 	const container = new MailerContainer(mailer);
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	assert.strictEqual(
@@ -90,7 +90,7 @@ test(
 		const container = new MailerContainer(mailer, {
 			containerImage: "axllent/mailpit:v1.21",
 		});
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertContainerImage({
 			workload: mailer,

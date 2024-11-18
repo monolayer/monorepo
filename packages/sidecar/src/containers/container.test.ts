@@ -2,7 +2,7 @@ import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { getContainerRuntimeClient } from "testcontainers";
 import { assert } from "vitest";
 import { Container } from "~sidecar/containers/container.js";
-import { test } from "~test/__setup__/container-test.js";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 
 class TestWorkload {
 	id: string;
@@ -23,7 +23,7 @@ test("start container", async ({ containers }) => {
 		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 
 	containers.push(startedContainer);
 });
@@ -33,7 +33,7 @@ test("start container and expose ports", async ({ containers }) => {
 		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	await assertExposedPorts({ container: startedContainer, ports: [80] });
@@ -44,7 +44,10 @@ test("start container with reuse", async ({ containers }) => {
 		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
-	const startedContainer = await container.start({ reuse: true });
+	const startedContainer = await container.start({
+		reuse: true,
+		publishToRandomPorts: true,
+	});
 	containers.push(startedContainer);
 
 	const anotherContainer = new Container({
@@ -54,6 +57,7 @@ test("start container with reuse", async ({ containers }) => {
 
 	const anotherStartedContainer = await anotherContainer.start({
 		reuse: true,
+		publishToRandomPorts: true,
 	});
 
 	assert.strictEqual(startedContainer.getId(), anotherStartedContainer.getId());
@@ -64,7 +68,7 @@ test("mapped ports", async ({ containers }) => {
 		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	assert.deepStrictEqual(container.mappedPorts, [
@@ -83,7 +87,7 @@ test("without mapped ports", async ({ containers }) => {
 			portsToExpose: [],
 		},
 	});
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	assert.deepStrictEqual(container.mappedPorts, []);
@@ -102,7 +106,7 @@ test("stop container", async () => {
 		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
-	await container.start();
+	await startContainer(container);
 	await container.stop();
 
 	const containerRuntimeClient = await getContainerRuntimeClient();
@@ -121,8 +125,8 @@ test("start multiple times returns the same container", async ({
 		workload: testWorkload,
 		containerSpec: nginxSpec,
 	});
-	const container1 = await container.start();
-	const container2 = await container.start();
+	const container1 = await startContainer(container);
+	const container2 = await startContainer(container);
 	containers.push(container1, container2);
 
 	assert.strictEqual(container1.getId, container2.getId);

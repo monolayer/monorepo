@@ -6,7 +6,7 @@ import {
 import { assert } from "vitest";
 import { RedisContainer } from "~sidecar/containers/redis.js";
 import { Redis } from "~sidecar/workloads/stateful/redis.js";
-import { test } from "~test/__setup__/container-test.js";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 
 const redisStore = new Redis("test-redis-test", (connectionStringEnvVar) =>
 	createClient({
@@ -19,7 +19,7 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const container = new RedisContainer(redisStore);
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();
@@ -35,7 +35,7 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const container = new RedisContainer(redisStore);
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertExposedPorts({
 			container: startedContainer,
@@ -50,7 +50,7 @@ test(
 	async ({ containers }) => {
 		delete process.env.WL_REDIS_TEST_REDIS_TEST_URL;
 		const container = new RedisContainer(redisStore);
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 
 		assert.strictEqual(
@@ -62,7 +62,7 @@ test(
 
 test("Connection string URL", { sequential: true }, async ({ containers }) => {
 	const container = new RedisContainer(redisStore);
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	assert.strictEqual(
@@ -73,7 +73,7 @@ test("Connection string URL", { sequential: true }, async ({ containers }) => {
 
 test("Web URL", { sequential: true }, async ({ containers }) => {
 	const container = new RedisContainer(redisStore);
-	const startedContainer = await container.start();
+	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
 
 	assert.strictEqual(
@@ -97,7 +97,7 @@ test(
 		const container = new RedisContainer(redisWorkload, {
 			containerImage: "redis/redis-stack:7.2.0-v12",
 		});
-		const startedContainer = await container.start();
+		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertContainerImage({
 			workload: redisWorkload,

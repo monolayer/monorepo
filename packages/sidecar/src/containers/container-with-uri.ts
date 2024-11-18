@@ -30,6 +30,7 @@ export abstract class ContainerWithURI
 		const startedContainer = await super.start(
 			options ?? {
 				reuse: true,
+				publishToRandomPorts: false,
 			},
 		);
 		process.env[this.#workload.connectionStringEnvVar()] =

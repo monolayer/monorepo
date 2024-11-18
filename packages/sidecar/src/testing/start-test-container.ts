@@ -9,8 +9,16 @@ export async function startTestContainer(
 	 */
 	workload: Workload,
 ) {
-	const startedTestContainer =
-		await containerStarter.startContainerForWorkload(workload);
+	const startedTestContainer = await containerStarter.startContainerForWorkload(
+		workload,
+		{
+			startOptions: {
+				reuse: false,
+				publishToRandomPorts: true,
+			},
+			initialize: true,
+		},
+	);
 	if (startedTestContainer === undefined) {
 		throw new Error(`no container match for workload: ${workload.id}`);
 	}
