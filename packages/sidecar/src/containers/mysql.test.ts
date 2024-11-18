@@ -47,7 +47,7 @@ test(
 		);
 		assert.strictEqual(
 			container.connectionURI,
-			`mysql://test:test@localhost:${startedContainer.getMappedPort(3306)}/test_started_container`,
+			`mysql://root:test@localhost:${startedContainer.getMappedPort(3306)}/test_started_container`,
 		);
 	},
 );
