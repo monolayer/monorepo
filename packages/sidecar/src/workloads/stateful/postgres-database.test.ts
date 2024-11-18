@@ -26,6 +26,14 @@ test("PostgreSQL client commands against test container", async ({
 			"",
 		),
 	});
+	const exists = await adminPool.query(
+		`SELECT datname FROM pg_catalog.pg_database WHERE datname = '${postgreSQL.databaseName}'`,
+	);
+
+	if (exists.rowCount === 0) {
+		await adminPool.query(`CREATE DATABASE "${postgreSQL.databaseName}";`);
+	}
+
 	const result = await postgreSQL.client.query("SELECT 1");
 	assert.deepStrictEqual(result.rows, [{ "?column?": 1 }]);
 	await postgreSQL.client.end();
