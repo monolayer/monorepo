@@ -47,7 +47,7 @@ function isMysql<C>(workload: unknown): workload is MySqlDatabase<C> {
 class ContainerStarter {
 	async startContainerForWorkload(
 		workload: unknown,
-		options?: {
+		options: {
 			startOptions?: StartOptions;
 			initialize?: boolean;
 		},
