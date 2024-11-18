@@ -12,5 +12,9 @@ export interface Workload {
 	/**
 	 * @internal
 	 */
-	_containerOptions?: Partial<WorkloadContainerOptions> | undefined;
+	_containerOptions?:
+		| {
+				options: Partial<WorkloadContainerOptions>;
+		  }
+		| undefined;
 }

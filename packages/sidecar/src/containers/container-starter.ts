@@ -113,7 +113,9 @@ class ContainerStarter {
 					...localStackContainerSpec.environment,
 					PERSISTENCE: "1",
 				};
-				localStackWorkload._containerOptions = options;
+				localStackWorkload._containerOptions = {
+					options,
+				};
 			}
 			this.#localStackContainer = new LocalStackContainer(localStackWorkload);
 			await this.#localStackContainer.start({

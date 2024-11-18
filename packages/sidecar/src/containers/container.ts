@@ -49,7 +49,7 @@ export class WorkloadContainer {
 	) {
 		this.containerOptions = mergeOptions(
 			containerOptions,
-			workload._containerOptions,
+			workload._containerOptions?.options,
 		);
 	}
 

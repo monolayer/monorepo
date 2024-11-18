@@ -26,10 +26,14 @@ export abstract class StatefulWorkload {
 	/**
 	 * @internal
 	 */
-	_containerOptions?: Partial<WorkloadContainerOptions> | undefined;
+	_containerOptions?:
+		| {
+				options: Partial<WorkloadContainerOptions>;
+		  }
+		| undefined;
 	public containerOptions({ imageName }: { imageName: string }) {
 		this._containerOptions = {
-			containerImage: imageName,
+			options: { containerImage: imageName },
 		};
 		return this;
 	}
