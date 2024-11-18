@@ -54,11 +54,13 @@ test(
 	async ({ containers }) => {
 		const postgresDatabase = new PostgresDatabase(
 			"launch_postgres_different_container",
-			"app_db_multiple_one",
-			(connectionStringEnvVar) =>
-				new pg.Pool({
-					connectionString: process.env[connectionStringEnvVar],
-				}),
+			{
+				databaseId: "app_db_multiple_one",
+				client: (connectionStringEnvVar) =>
+					new pg.Pool({
+						connectionString: process.env[connectionStringEnvVar],
+					}),
+			},
 		);
 
 		const startedContainer = await startTestContainer(postgresDatabase);
@@ -67,11 +69,13 @@ test(
 
 		const anotherDatabase = new PostgresDatabase(
 			"another_database_different_container",
-			"app_db_multiple_two",
-			(connectionStringEnvVar) =>
-				new pg.Pool({
-					connectionString: process.env[connectionStringEnvVar],
-				}),
+			{
+				databaseId: "app_db_multiple_two",
+				client: (connectionStringEnvVar) =>
+					new pg.Pool({
+						connectionString: process.env[connectionStringEnvVar],
+					}),
+			},
 		);
 		const anotherDatabaseContainer = await startTestContainer(anotherDatabase);
 		containers.push(anotherDatabaseContainer);

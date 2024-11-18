@@ -12,12 +12,11 @@ test(
 	"MySQL started container",
 	{ sequential: true, timeout: 20000 },
 	async ({ containers }) => {
-		const mySqlDb = new MySqlDatabase(
-			"test_started_container",
-			"container_test",
-			async (connectionStringEnvVar) =>
+		const mySqlDb = new MySqlDatabase("test_started_container", {
+			databaseId: "container_test",
+			client: async (connectionStringEnvVar) =>
 				await mysql.createConnection(process.env[connectionStringEnvVar]!),
-		);
+		});
 
 		const container = new MySQLContainer(mySqlDb);
 		const startedContainer = await startContainer(container);
@@ -47,12 +46,11 @@ test(
 	"PostgreSQL with custom image tag container",
 	{ sequential: true },
 	async ({ containers }) => {
-		const mySqlDb = new MySqlDatabase(
-			"test_started_container",
-			"mysql_container_test",
-			async (connectionStringEnvVar) =>
+		const mySqlDb = new MySqlDatabase("test_started_container", {
+			databaseId: "mysql_container_test",
+			client: async (connectionStringEnvVar) =>
 				await mysql.createConnection(process.env[connectionStringEnvVar]!),
-		);
+		});
 
 		const container = new MySQLContainer(mySqlDb, {
 			containerImage: "mysql:8.4.2",

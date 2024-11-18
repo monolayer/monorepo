@@ -12,14 +12,13 @@ test(
 	"PostgreSQL started container",
 	{ sequential: true },
 	async ({ containers }) => {
-		const postgreSQL = new PostgresDatabase(
-			"test_started_container",
-			"test_app",
-			(connectionStringEnvVar) =>
+		const postgreSQL = new PostgresDatabase("test_started_container", {
+			databaseId: "test_app",
+			client: (connectionStringEnvVar) =>
 				new pg.Pool({
 					connectionString: process.env[connectionStringEnvVar],
 				}),
-		);
+		});
 
 		const container = new PostgreSQLContainer(postgreSQL);
 		const startedContainer = await startContainer(container);
@@ -46,14 +45,13 @@ test(
 	"PostgreSQL with custom image tag container",
 	{ sequential: true },
 	async ({ containers }) => {
-		const postgres = new PostgresDatabase(
-			"pg-custom-image-tag",
-			"db_custom_image",
-			(connectionStringEnvVar) =>
+		const postgres = new PostgresDatabase("pg-custom-image-tag", {
+			databaseId: "db_custom_image",
+			client: (connectionStringEnvVar) =>
 				new pg.Pool({
 					connectionString: process.env[connectionStringEnvVar],
 				}),
-		);
+		});
 
 		const container = new PostgreSQLContainer(postgres, {
 			containerImage: "postgres:16.5",

@@ -8,14 +8,13 @@ import { startContainer, test } from "~test/__setup__/container-test.js";
 test("PostgreSQL client commands against test container", async ({
 	containers,
 }) => {
-	const postgreSQL = new PostgresDatabase(
-		"test_commands",
-		"app_db",
-		(connectionStringEnvVar) =>
+	const postgreSQL = new PostgresDatabase("test_commands", {
+		databaseId: "app_db",
+		client: (connectionStringEnvVar) =>
 			new pg.Pool({
 				connectionString: process.env[connectionStringEnvVar],
 			}),
-	);
+	});
 	const container = new PostgreSQLContainer(postgreSQL);
 	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
@@ -42,14 +41,13 @@ test("PostgreSQL client commands against test container", async ({
 
 test("client type", async () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const postgreSQL = new PostgresDatabase(
-		"test_commands",
-		"app_db",
-		(connectionStringEnvVar) =>
+	const postgreSQL = new PostgresDatabase("test_commands", {
+		databaseId: "app_db",
+		client: (connectionStringEnvVar) =>
 			new pg.Pool({
 				connectionString: process.env[connectionStringEnvVar],
 			}),
-	);
+	});
 	type ClientType = typeof postgreSQL.client;
 	type ExpectedType = pg.Pool;
 	const isEqual: Expect<Equal<ClientType, ExpectedType>> = true;

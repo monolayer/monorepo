@@ -6,12 +6,11 @@ import { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test("MySQL client commands against test container", async ({ containers }) => {
-	const mysqlDb = new MySqlDatabase(
-		"app_db",
-		"mysql",
-		async (connectionStringEnvVar) =>
+	const mysqlDb = new MySqlDatabase("app_db", {
+		databaseId: "mysql",
+		client: async (connectionStringEnvVar) =>
 			await mysql.createConnection(process.env[connectionStringEnvVar]!),
-	);
+	});
 	const container = new MySQLContainer(mysqlDb);
 	const startedContainer = await startContainer(container);
 	containers.push(startedContainer);
@@ -30,12 +29,11 @@ test("MySQL client commands against test container", async ({ containers }) => {
 
 test("client type", async () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const mysqlDb = new MySqlDatabase(
-		"app-db",
-		"mysql",
-		async (connectionStringEnvVar) =>
+	const mysqlDb = new MySqlDatabase("app-db", {
+		databaseId: "mysql",
+		client: async (connectionStringEnvVar) =>
 			await mysql.createConnection(process.env[connectionStringEnvVar]!),
-	);
+	});
 
 	type ClientType = typeof mysqlDb.client;
 	type ExpectedType = Promise<mysql.Connection>;
