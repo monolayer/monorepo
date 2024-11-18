@@ -27,7 +27,6 @@ const postgreSQLContainerSpec = {
 	},
 
 	waitStrategy: Wait.forHealthCheck(),
-	persistentVolumeTargets: ["/var/lib/mysql"],
 };
 
 /**

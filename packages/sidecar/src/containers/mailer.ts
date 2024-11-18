@@ -9,10 +9,7 @@ const MAILER_WEBUI_PORT = 8025;
 const mailerContainerSpec = {
 	containerImage: "axllent/mailpit:v1.21.3",
 	portsToExpose: [MAILER_SERVER_PORT, MAILER_WEBUI_PORT],
-	environment: {
-		MP_DATABASE: "/data/database.db",
-	},
-	persistentVolumeTargets: ["/data"],
+	environment: {},
 };
 /**
  * Container for Mailer

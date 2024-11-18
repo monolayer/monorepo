@@ -36,7 +36,6 @@ const localStackContainerSpec = {
 		SERVICES: "s3",
 		PERSISTENCE: "0",
 	},
-	persistentVolumeTargets: ["/var/lib/localstack"],
 };
 
 /**

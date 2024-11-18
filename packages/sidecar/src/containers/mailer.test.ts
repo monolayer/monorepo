@@ -1,8 +1,5 @@
-import { cwd } from "node:process";
 import nodemailer from "nodemailer";
-import path from "path";
 import {
-	assertBindMounts,
 	assertContainerImage,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
@@ -28,22 +25,6 @@ test(
 			labels["org.monolayer-sidecar.workload-id"],
 			"test-mailer",
 		);
-	},
-);
-
-test(
-	"Bind mounts on a mailer container",
-	{ sequential: true },
-	async ({ containers }) => {
-		const container = new MailerContainer(mailer);
-		const startedContainer = await container.start();
-		containers.push(startedContainer);
-		await assertBindMounts({
-			workload: mailer,
-			bindMounts: [
-				`${path.join(cwd(), "tmp", "container-volumes", "mailer", "test_mailer_data")}:/data:rw`,
-			],
-		});
 	},
 );
 

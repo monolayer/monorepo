@@ -1,8 +1,5 @@
-import { cwd } from "node:process";
-import path from "path";
 import { createClient } from "redis";
 import {
-	assertBindMounts,
 	assertContainerImage,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
@@ -30,22 +27,6 @@ test(
 			labels["org.monolayer-sidecar.workload-id"],
 			"test-redis-test",
 		);
-	},
-);
-
-test(
-	"Bind mounts on a redis container",
-	{ sequential: true },
-	async ({ containers }) => {
-		const container = new RedisContainer(redisStore);
-		const startedContainer = await container.start();
-		containers.push(startedContainer);
-		await assertBindMounts({
-			workload: redisStore,
-			bindMounts: [
-				`${path.join(cwd(), "tmp", "container-volumes", "redis", "test_redis_test_data")}:/data:rw`,
-			],
-		});
 	},
 );
 

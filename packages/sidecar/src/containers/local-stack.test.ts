@@ -1,7 +1,4 @@
-import { cwd } from "node:process";
-import path from "path";
 import {
-	assertBindMounts,
 	assertContainerImage,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
@@ -25,22 +22,6 @@ test(
 			labels["org.monolayer-sidecar.workload-id"],
 			"test-local-stack",
 		);
-	},
-);
-
-test(
-	"Bind mounts on a redis container",
-	{ sequential: true },
-	async ({ containers }) => {
-		const container = new LocalStackContainer(localStackWorkload);
-		const startedContainer = await container.start();
-		containers.push(startedContainer);
-		await assertBindMounts({
-			workload: localStackWorkload,
-			bindMounts: [
-				`${path.join(cwd(), "tmp", "container-volumes", "local_stack", "test_local_stack_data")}:/var/lib/localstack:rw`,
-			],
-		});
 	},
 );
 

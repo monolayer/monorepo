@@ -49,11 +49,6 @@ export interface ContainerOptions {
 
 export interface StartOptions {
 	/**
-	 * Whether to start the container with persistent volumes that
-	 * can be reused across container sessions.
-	 */
-	persistenceVolumes?: boolean;
-	/**
 	 * Whether to reuse an already running container the same configuration
 	 * and not launch a new container.
 	 */
@@ -112,30 +107,6 @@ export class Container extends GenericContainer implements SidecarContainer {
 						? await getPort({ port: portToExpose })
 						: portToExpose,
 			});
-		}
-		if (
-			options?.persistenceVolumes &&
-			Array.isArray(this.options.containerSpec.persistentVolumeTargets)
-		) {
-			for (const persistenceVolume of this.options.containerSpec
-				.persistentVolumeTargets) {
-				this.withBindMounts([
-					{
-						mode: "rw",
-						source: path.join(
-							cwd(),
-							"tmp",
-							"container-volumes",
-							snakeCase(`${this.options.workload.constructor.name}`),
-							snakeCase(`${this.options.workload.id}-data`),
-						),
-						target: persistenceVolume,
-					},
-				]);
-			}
-		}
-		if (options?.reuse) {
-			this.withReuse();
 		}
 		this.startedContainer = await super.start();
 		return this.startedContainer;
@@ -208,5 +179,4 @@ export interface SidecarContainerSpec {
 	environment: Environment;
 	waitStrategy?: WaitStrategy;
 	startupTimeout?: number;
-	persistentVolumeTargets: string[];
 }

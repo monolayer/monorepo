@@ -29,7 +29,6 @@ export abstract class ContainerWithURI
 	override async start(options?: StartOptions) {
 		const startedContainer = await super.start(
 			options ?? {
-				persistenceVolumes: true,
 				reuse: true,
 			},
 		);

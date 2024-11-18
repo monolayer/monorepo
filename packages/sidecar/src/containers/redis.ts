@@ -12,7 +12,6 @@ const redisContainerSpec = {
 	environment: {
 		REDIS_ARGS: "--save 1 1 --appendonly yes",
 	},
-	persistentVolumeTargets: ["/data"],
 };
 
 /**

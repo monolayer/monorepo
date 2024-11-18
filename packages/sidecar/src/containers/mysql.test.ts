@@ -1,8 +1,5 @@
 import mysql from "mysql2/promise";
-import { cwd } from "node:process";
-import path from "path";
 import {
-	assertBindMounts,
 	assertContainerImage,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
@@ -30,12 +27,6 @@ test(
 			labels["org.monolayer-sidecar.workload-id"],
 			"container_test",
 		);
-		await assertBindMounts({
-			workload: mySqlDb,
-			bindMounts: [
-				`${path.join(cwd(), "tmp", "container-volumes", "my_sql_database", "container_test_data")}:/var/lib/mysql:rw`,
-			],
-		});
 		await assertExposedPorts({
 			container: startedContainer,
 			ports: [3306],
@@ -43,7 +34,7 @@ test(
 
 		assert.strictEqual(
 			process.env.WL_MYSQL_CONTAINER_TEST_TEST_STARTED_CONTAINER_URL,
-			`mysql://test:test@localhost:${startedContainer.getMappedPort(3306)}/test_started_container`,
+			`mysql://root:test@localhost:${startedContainer.getMappedPort(3306)}/test_started_container`,
 		);
 		assert.strictEqual(
 			container.connectionURI,

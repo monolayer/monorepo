@@ -29,8 +29,6 @@ const postgreSQLContainerSpec = {
 	waitStrategy: Wait.forHealthCheck(),
 
 	startupTimeout: 6000,
-
-	persistentVolumeTargets: ["/var/lib/postgresql/data"],
 };
 
 /**

@@ -1,8 +1,5 @@
-import { cwd } from "node:process";
-import path from "path";
 import pg from "pg";
 import {
-	assertBindMounts,
 	assertContainerImage,
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
@@ -29,12 +26,6 @@ test(
 		containers.push(startedContainer);
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(labels["org.monolayer-sidecar.workload-id"], "test_app");
-		await assertBindMounts({
-			workload: postgreSQL,
-			bindMounts: [
-				`${path.join(cwd(), "tmp", "container-volumes", "postgres_database", "test_app_data")}:/var/lib/postgresql/data:rw`,
-			],
-		});
 		await assertExposedPorts({
 			container: startedContainer,
 			ports: [5432],

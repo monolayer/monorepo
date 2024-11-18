@@ -1,9 +1,4 @@
-import path from "node:path";
-import { cwd } from "process";
-import {
-	assertBindMounts,
-	assertExposedPorts,
-} from "test/__setup__/assertions.js";
+import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { getContainerRuntimeClient } from "testcontainers";
 import { assert } from "vitest";
 import { Container } from "~sidecar/containers/container.js";
@@ -21,7 +16,6 @@ const nginxSpec = {
 	containerImage: "nginx:latest",
 	portsToExpose: [80],
 	environment: {},
-	persistentVolumeTargets: ["/var/www"],
 };
 
 test("start container", async ({ containers }) => {
@@ -43,24 +37,6 @@ test("start container and expose ports", async ({ containers }) => {
 	containers.push(startedContainer);
 
 	await assertExposedPorts({ container: startedContainer, ports: [80] });
-});
-
-test("start container with persistence volumes", async ({ containers }) => {
-	const container = new Container({
-		workload: testWorkload,
-		containerSpec: nginxSpec,
-	});
-	const startedContainer = await container.start({
-		persistenceVolumes: true,
-	});
-	containers.push(startedContainer);
-
-	await assertBindMounts({
-		workload: testWorkload,
-		bindMounts: [
-			`${path.join(cwd(), "tmp/container-volumes", "test_workload", "container_test_data")}:/var/www:rw`,
-		],
-	});
 });
 
 test("start container with reuse", async ({ containers }) => {

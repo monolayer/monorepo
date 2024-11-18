@@ -80,7 +80,6 @@ class ContainerStarter {
 	async startPostgres<C>(workload: PostgresDatabase<C>) {
 		const container = new PostgreSQLContainer(workload);
 		return await container.start({
-			persistenceVolumes: true,
 			reuse: true,
 		});
 	}
@@ -88,7 +87,6 @@ class ContainerStarter {
 	async startMySql<C>(workload: MySqlDatabase<C>) {
 		const container = new MySQLContainer(workload);
 		return await container.start({
-			persistenceVolumes: true,
 			reuse: true,
 		});
 	}
