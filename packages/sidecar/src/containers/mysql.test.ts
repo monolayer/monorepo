@@ -17,7 +17,7 @@ test(
 	async ({ containers }) => {
 		const mySqlDb = new MySqlDatabase(
 			"test_started_container",
-			"mysql_container_test",
+			"container_test",
 			async (connectionStringEnvVar) =>
 				await mysql.createConnection(process.env[connectionStringEnvVar]!),
 		);
@@ -28,12 +28,12 @@ test(
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
 			labels["org.monolayer-sidecar.workload-id"],
-			"mysql_container_test",
+			"container_test",
 		);
 		await assertBindMounts({
 			workload: mySqlDb,
 			bindMounts: [
-				`${path.join(cwd(), "tmp", "container-volumes", "my_sql_database", "mysql_container_test_data")}:/var/lib/mysql:rw`,
+				`${path.join(cwd(), "tmp", "container-volumes", "my_sql_database", "container_test_data")}:/var/lib/mysql:rw`,
 			],
 		});
 		await assertExposedPorts({
@@ -42,8 +42,7 @@ test(
 		});
 
 		assert.strictEqual(
-			process.env
-				.WL_MY_SQL_DATABASE_MYSQL_CONTAINER_TEST_TEST_STARTED_CONTAINER_URL,
+			process.env.WL_MYSQL_CONTAINER_TEST_TEST_STARTED_CONTAINER_URL,
 			`mysql://test:test@localhost:${startedContainer.getMappedPort(3306)}/test_started_container`,
 		);
 		assert.strictEqual(

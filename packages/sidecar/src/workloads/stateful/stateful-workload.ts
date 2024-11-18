@@ -18,8 +18,6 @@ export abstract class StatefulWorkload {
  * @typeParam C - Client type
  */
 export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
-	readonly connStringComponents: (keyof this)[] = ["id"];
-
 	constructor(
 		/**
 		 * Unique ID.
@@ -50,13 +48,14 @@ export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
 		return this.#client;
 	}
 
+	abstract get connStringComponents(): string[];
+
 	/**
 	 * Environment variable that should hold the workload connection string.
 	 */
 	connectionStringEnvVar() {
-		const components = this.connStringComponents.map((c) => this[c]).join("_");
 		return snakeCase(
-			`WL_${this.constructor.name}_${components}_url`,
+			["wl", ...this.connStringComponents, "url"].join("_"),
 		).toUpperCase();
 	}
 }

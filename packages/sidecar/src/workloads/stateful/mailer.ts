@@ -16,4 +16,8 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
  *
  * @typeParam C - Client type
  */
-export class Mailer<C> extends StatefulWorkloadWithClient<C> {}
+export class Mailer<C> extends StatefulWorkloadWithClient<C> {
+	get connStringComponents() {
+		return ["mailer", this.id];
+	}
+}

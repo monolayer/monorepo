@@ -8,8 +8,6 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
 export abstract class Database<C> extends StatefulWorkloadWithClient<C> {
 	readonly databaseName: string;
 
-	override connStringComponents = ["id" as const, "databaseName" as const];
-
 	constructor(
 		/**
 		 * Database name.
