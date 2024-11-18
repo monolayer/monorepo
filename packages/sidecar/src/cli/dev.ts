@@ -7,15 +7,9 @@ import {
 	type EnvVar,
 } from "~sidecar/containers/admin/update-dotenv-file.js";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
-import type {
-	Bucket,
-	MySqlDatabase,
-	PostgresDatabase,
-	Redis,
-} from "~sidecar/workloads.js";
+import type { Bucket, StatefulWorkloadWithClient } from "~sidecar/workloads.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
 import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
-import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 
 export function dev(program: Command) {
 	return program
@@ -29,57 +23,19 @@ export function dev(program: Command) {
 			const workloads = await importWorkloads(opts.folder);
 			const envVars: EnvVar[] = [];
 
-			await startMailers(workloads.Mailer, envVars);
-			await startPostgresDatabases(workloads.PostgresDatabase, envVars);
-			await startRedis(workloads.Redis, envVars);
+			for (const workload of [
+				...workloads.Mailer,
+				...workloads.PostgresDatabase,
+				...workloads.Redis,
+				...workloads.MySqlDatabase,
+			]) {
+				await startStatefulWorkloadWithConnectionString(workload, envVars);
+			}
 			await startBuckets(workloads.Bucket, envVars);
-			await startMySqlDatabases(workloads.MySqlDatabase, envVars);
 			if (envVars.length !== 0) {
 				updateDotenvFile(envVars);
 			}
 		});
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function startMailers(mailers: Mailer<any>[], envVars: EnvVar[]) {
-	for (const mailer of mailers) {
-		await startDevContainer(mailer);
-		const name = mailer.connectionStringEnvVar();
-		envVars.push({
-			name,
-			value: process.env[name]!,
-		});
-	}
-}
-
-async function startPostgresDatabases(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	postgresDatabases: PostgresDatabase<any>[],
-	envVars: EnvVar[],
-) {
-	for (const postgresDatabase of postgresDatabases) {
-		await startDevContainer(postgresDatabase);
-		const name = postgresDatabase.connectionStringEnvVar();
-		envVars.push({
-			name,
-			value: process.env[name]!,
-		});
-	}
-}
-
-async function startRedis(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	redis: Redis<any>[],
-	envVars: EnvVar[],
-) {
-	for (const red of redis) {
-		await startDevContainer(red);
-		const name = red.connectionStringEnvVar();
-		envVars.push({
-			name,
-			value: process.env[name]!,
-		});
-	}
 }
 
 async function startBuckets(buckets: Bucket[], envVars: EnvVar[]) {
@@ -99,17 +55,15 @@ async function startBuckets(buckets: Bucket[], envVars: EnvVar[]) {
 	return envVars;
 }
 
-async function startMySqlDatabases(
+async function startStatefulWorkloadWithConnectionString(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	mySqlDatabases: MySqlDatabase<any>[],
+	workload: StatefulWorkloadWithClient<any>,
 	envVars: EnvVar[],
 ) {
-	for (const mySqlDatabase of mySqlDatabases) {
-		await startDevContainer(mySqlDatabase);
-		const name = mySqlDatabase.connectionStringEnvVar();
-		envVars.push({
-			name,
-			value: process.env[name]!,
-		});
-	}
+	await startDevContainer(workload);
+	const name = workload.connectionStringEnvVar();
+	envVars.push({
+		name,
+		value: process.env[name]!,
+	});
 }
