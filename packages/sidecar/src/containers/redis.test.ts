@@ -39,7 +39,7 @@ test(
 		containers.push(startedContainer);
 		await assertExposedPorts({
 			container: startedContainer,
-			ports: [6379, 8001],
+			ports: [6379],
 		});
 	},
 );
@@ -68,17 +68,6 @@ test("Connection string URL", { sequential: true }, async ({ containers }) => {
 	assert.strictEqual(
 		container.connectionURI,
 		`redis://localhost:${startedContainer.getMappedPort(6379)}`,
-	);
-});
-
-test("Web URL", { sequential: true }, async ({ containers }) => {
-	const container = new RedisContainer(redisStore);
-	const startedContainer = await startContainer(container);
-	containers.push(startedContainer);
-
-	assert.strictEqual(
-		container.webURL,
-		`http://localhost:${startedContainer.getMappedPort(8001)}/`,
 	);
 });
 
