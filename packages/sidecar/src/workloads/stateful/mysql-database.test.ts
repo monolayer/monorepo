@@ -1,8 +1,32 @@
 import mysql from "mysql2/promise";
 import type { Equal, Expect } from "type-testing";
-import { expect } from "vitest";
+import { assert, expect } from "vitest";
+import { MySQLContainer } from "~sidecar/containers/mysql.js";
 import { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 import { test } from "~test/__setup__/container-test.js";
+
+test("MySQL client commands against test container", async ({ containers }) => {
+	const mysqlDb = new MySqlDatabase(
+		"app_db",
+		"mysql",
+		async (connectionStringEnvVar) =>
+			await mysql.createConnection(process.env[connectionStringEnvVar]!),
+	);
+	const container = new MySQLContainer(mysqlDb);
+	const startedContainer = await container.start();
+	containers.push(startedContainer);
+
+	const adminClient = await mysql.createConnection(
+		process.env[mysqlDb.connectionStringEnvVar()]!.replace("/app_db", ""),
+	);
+
+	await adminClient.query("CREATE DATABASE IF NOT EXISTS app_db;");
+
+	const client = await mysqlDb.client;
+	const result = await client.query("SELECT CURRENT_USER()");
+	assert(result);
+	await client.end();
+});
 
 test("client type", async () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
