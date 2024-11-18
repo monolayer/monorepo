@@ -20,7 +20,7 @@ test(
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
 			labels["org.monolayer-sidecar.workload-id"],
-			"test-local-stack",
+			"localstack-test-local-stack",
 		);
 	},
 );

@@ -14,7 +14,7 @@ async function getMailerContainer(mailerId: string) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	const container = await containerRuntimeClient.container.fetchByLabel(
 		CONTAINER_LABEL_WORKLOAD_ID,
-		mailerId,
+		`mailer-${mailerId}`,
 		{ status: ["running"] },
 	);
 	if (container === undefined) {

@@ -1,5 +1,8 @@
 import pg from "pg";
-import { assertContainerImage, assertExposedPorts } from "test/__setup__/assertions.js";
+import {
+	assertContainerImage,
+	assertExposedPorts,
+} from "test/__setup__/assertions.js";
 import { assert } from "vitest";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
 import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
@@ -21,7 +24,10 @@ test(
 		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		const labels = startedContainer.getLabels();
-		assert.strictEqual(labels["org.monolayer-sidecar.workload-id"], "test_app");
+		assert.strictEqual(
+			labels["org.monolayer-sidecar.workload-id"],
+			"postgresdatabase-test-app",
+		);
 		await assertExposedPorts({
 			container: startedContainer,
 			ports: [5432],

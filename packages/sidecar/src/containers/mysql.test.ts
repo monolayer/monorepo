@@ -24,7 +24,7 @@ test(
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
 			labels["org.monolayer-sidecar.workload-id"],
-			"container_test",
+			"mysqldatabase-container-test",
 		);
 		await assertExposedPorts({
 			container: startedContainer,
@@ -43,7 +43,7 @@ test(
 );
 
 test(
-	"PostgreSQL with custom image tag container",
+	"MySQL with custom image tag container",
 	{ sequential: true },
 	async ({ containers }) => {
 		const mySqlDb = new MySqlDatabase("test_started_container", {

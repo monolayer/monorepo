@@ -1,4 +1,5 @@
 import { ListBucketsCommand, S3Client } from "@aws-sdk/client-s3";
+import { kebabCase } from "case-anything";
 import { Pool } from "pg";
 import {
 	getContainerRuntimeClient,
@@ -20,7 +21,7 @@ export async function assertContainerImage({
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
 		CONTAINER_LABEL_WORKLOAD_ID,
-		workload.id,
+		kebabCase(`${workload.constructor.name.toLowerCase()}-${workload.id}`),
 		{ status: ["running"] },
 	);
 

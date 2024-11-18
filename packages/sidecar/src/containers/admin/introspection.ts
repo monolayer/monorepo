@@ -1,3 +1,4 @@
+import { kebabCase } from "case-anything";
 import { getContainerRuntimeClient } from "testcontainers";
 import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
 import type { Workload } from "~sidecar/workloads.js";
@@ -6,7 +7,7 @@ export async function getExistingContainer(workload: Workload) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	return await containerRuntimeClient.container.fetchByLabel(
 		CONTAINER_LABEL_WORKLOAD_ID,
-		workload.id,
+		kebabCase(`${workload.constructor.name.toLowerCase()}-${workload.id}`),
 		{ status: ["running"] },
 	);
 }

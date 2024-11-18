@@ -2,6 +2,7 @@
  * @module containers
  */
 
+import { kebabCase } from "case-anything";
 import getPort from "get-port";
 import {
 	GenericContainer,
@@ -101,7 +102,9 @@ export class WorkloadContainer {
 				this.containerOptions.containerImage,
 		);
 		container.withLabels({
-			[CONTAINER_LABEL_WORKLOAD_ID]: this.workload.id,
+			[CONTAINER_LABEL_WORKLOAD_ID]: kebabCase(
+				`${this.workload.constructor.name.toLowerCase()}-${this.workload.id}`,
+			),
 			[CONTAINER_LABEL_ORG]: "true",
 		});
 
