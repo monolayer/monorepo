@@ -1,8 +1,9 @@
 import { remember } from "@epic-web/remember";
 import { type StartedTestContainer } from "testcontainers";
-import { PostgreSQLContainer, type StartOptions } from "~sidecar/containers.js";
+import { PostgreSQLContainer } from "~sidecar/containers.js";
 import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import { createDatabase } from "~sidecar/containers/admin/create-database.js";
+import { defaultTestStartOptions } from "~sidecar/containers/container.js";
 import {
 	LocalStackContainer,
 	localStackContainerSpec,
@@ -48,15 +49,26 @@ class ContainerStarter {
 	async startContainerForWorkload(
 		workload: unknown,
 		options: {
-			startOptions?: StartOptions;
 			initialize?: boolean;
 			test: boolean;
 		},
 	) {
 		if (isRedis(workload)) {
-			return await this.startRedis(workload, options?.startOptions);
+			workload.containerOptions({
+				startOptions: {
+					reuse: !options.test,
+					publishToRandomPorts: options.test,
+				},
+			});
+			return await this.startRedis(workload);
 		}
 		if (isBucket(workload)) {
+			workload.containerOptions({
+				startOptions: {
+					reuse: !options.test,
+					publishToRandomPorts: options.test,
+				},
+			});
 			const localStackContainer = await this.startLocalStack(options.test);
 			if (options?.initialize) {
 				await createBucket(workload.id, localStackContainer);
@@ -64,42 +76,57 @@ class ContainerStarter {
 			return localStackContainer.startedContainer;
 		}
 		if (isPostgresDatabase(workload)) {
+			workload.containerOptions({
+				startOptions: {
+					reuse: !options.test,
+					publishToRandomPorts: options.test,
+				},
+			});
 			let container: StartedTestContainer | undefined = undefined;
-			container = await this.startPostgres(workload, options?.startOptions);
+			container = await this.startPostgres(workload);
 			if (options?.initialize) {
 				await createDatabase(workload);
 			}
 			return container;
 		}
 		if (isMailer(workload)) {
-			return await this.startMailer(workload, options?.startOptions);
+			workload.containerOptions({
+				startOptions: {
+					reuse: !options.test,
+					publishToRandomPorts: options.test,
+				},
+			});
+			return await this.startMailer(workload);
 		}
 		if (isMysql(workload)) {
-			return await this.startMySql(workload, options?.startOptions);
+			workload.containerOptions({
+				startOptions: {
+					reuse: !options.test,
+					publishToRandomPorts: options.test,
+				},
+			});
+			return await this.startMySql(workload);
 		}
 	}
 
-	async startRedis<C>(workload: Redis<C>, options?: StartOptions) {
+	async startRedis<C>(workload: Redis<C>) {
 		const container = new RedisContainer(workload);
-		return await container.start(options);
+		return await container.start();
 	}
 
-	async startPostgres<C>(
-		workload: PostgresDatabase<C>,
-		options?: StartOptions,
-	) {
+	async startPostgres<C>(workload: PostgresDatabase<C>) {
 		const container = new PostgreSQLContainer(workload);
-		return await container.start(options);
+		return await container.start();
 	}
 
-	async startMySql<C>(workload: MySqlDatabase<C>, options?: StartOptions) {
+	async startMySql<C>(workload: MySqlDatabase<C>) {
 		const container = new MySQLContainer(workload);
-		return await container.start(options);
+		return await container.start();
 	}
 
-	async startMailer<C>(workload: Mailer<C>, options?: StartOptions) {
+	async startMailer<C>(workload: Mailer<C>) {
 		const container = new MailerContainer(workload);
-		return await container.start(options);
+		return await container.start();
 	}
 
 	#localStackContainer?: LocalStackContainer;
@@ -113,16 +140,25 @@ class ContainerStarter {
 					...localStackContainerSpec.environment,
 					PERSISTENCE: "1",
 				};
-				localStackWorkload._containerOptions = {
-					options,
+			} else {
+				localStackWorkload.containerOverrides = {
+					definition: {
+						containerImage: options.containerImage,
+					},
+					startOptions: defaultTestStartOptions,
 				};
 			}
+			localStackWorkload.containerOverrides = {
+				definition: {
+					containerImage: options.containerImage,
+				},
+				startOptions: {
+					reuse: !test,
+					publishToRandomPorts: test,
+				},
+			};
 			this.#localStackContainer = new LocalStackContainer(localStackWorkload);
-			await this.#localStackContainer.start({
-				reuse: !test,
-				publishToRandomPorts: test,
-			});
-			// await this.#localStackContainer.start();
+			await this.#localStackContainer.start();
 		}
 		return this.#localStackContainer;
 	}

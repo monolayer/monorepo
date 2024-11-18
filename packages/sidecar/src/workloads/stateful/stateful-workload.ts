@@ -1,42 +1,14 @@
 import { snakeCase } from "case-anything";
-import type { WorkloadContainerOptions } from "~sidecar/containers/container.js";
+import { Workload } from "~sidecar/workloads/workload.js";
 
 /**
  * @internal
  */
-export abstract class StatefulWorkload {
+export abstract class StatefulWorkload extends Workload {
 	/**
 	 * @hidden
 	 */
 	stateful!: true;
-	/**
-	 * Unique ID.
-	 */
-	readonly id: string;
-
-	constructor(
-		/**
-		 * Unique ID.
-		 */
-		id: string,
-	) {
-		this.id = id;
-	}
-
-	/**
-	 * @internal
-	 */
-	_containerOptions?:
-		| {
-				options: Partial<WorkloadContainerOptions>;
-		  }
-		| undefined;
-	public containerOptions({ imageName }: { imageName: string }) {
-		this._containerOptions = {
-			options: { containerImage: imageName },
-		};
-		return this;
-	}
 }
 
 /**

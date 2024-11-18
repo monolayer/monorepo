@@ -2,15 +2,10 @@ import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { getContainerRuntimeClient } from "testcontainers";
 import { assert } from "vitest";
 import { WorkloadContainer } from "~sidecar/containers/container.js";
+import { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
-class TestWorkload {
-	id: string;
-	constructor(id: string) {
-		this.id = id;
-	}
-	stateful = true;
-}
+class TestWorkload extends StatefulWorkload {}
 const testWorkload = new TestWorkload("container-test");
 
 const nginxSpec = {
@@ -22,7 +17,6 @@ const nginxSpec = {
 test("start container", async ({ containers }) => {
 	const container = new WorkloadContainer(testWorkload, nginxSpec);
 	const startedContainer = await startContainer(container);
-
 	containers.push(startedContainer);
 });
 
@@ -35,18 +29,18 @@ test("start container and expose ports", async ({ containers }) => {
 });
 
 test("start container with reuse", async ({ containers }) => {
-	const container = new WorkloadContainer(testWorkload, nginxSpec);
-	const startedContainer = await container.start({
-		reuse: true,
-		publishToRandomPorts: true,
+	testWorkload.containerOptions({
+		startOptions: {
+			reuse: true,
+			publishToRandomPorts: true,
+		},
 	});
+	const container = new WorkloadContainer(testWorkload, nginxSpec);
+	const startedContainer = await container.start();
 	containers.push(startedContainer);
 	const anotherContainer = new WorkloadContainer(testWorkload, nginxSpec);
 
-	const anotherStartedContainer = await anotherContainer.start({
-		reuse: true,
-		publishToRandomPorts: true,
-	});
+	const anotherStartedContainer = await anotherContainer.start();
 
 	assert.strictEqual(startedContainer.getId(), anotherStartedContainer.getId());
 });

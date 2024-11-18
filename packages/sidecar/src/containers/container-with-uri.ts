@@ -1,13 +1,9 @@
 import { type StartedTestContainer } from "testcontainers";
-import {
-	WorkloadContainer,
-	type StartOptions,
-	type WorkloadContainerOptions,
-} from "~sidecar/containers/container.js";
+import type { WorkloadContainerOptions } from "~sidecar/containers.js";
+import { WorkloadContainer } from "~sidecar/containers/container.js";
 import type { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.js";
 
 export abstract class ContainerWithURI extends WorkloadContainer {
-	#workload: StatefulWorkload & { connectionStringEnvVar: () => string };
 	/**
 	 * @hideconstructor
 	 */
@@ -16,18 +12,17 @@ export abstract class ContainerWithURI extends WorkloadContainer {
 		containerSpec: WorkloadContainerOptions,
 	) {
 		super(workload, containerSpec);
-		this.#workload = workload;
 	}
 
-	override async start(options?: StartOptions) {
-		const startedContainer = await super.start(
-			options ?? {
-				reuse: true,
-				publishToRandomPorts: false,
-			},
-		);
-		process.env[this.#workload.connectionStringEnvVar()] =
-			this.buildConnectionURI(startedContainer);
+	override async start() {
+		const startedContainer = await super.start();
+		process.env[
+			(
+				this.workload as StatefulWorkload & {
+					connectionStringEnvVar: () => string;
+				}
+			).connectionStringEnvVar()
+		] = this.buildConnectionURI(startedContainer);
 		return startedContainer;
 	}
 

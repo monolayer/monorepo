@@ -59,7 +59,7 @@ export class MySQLContainer<C> extends ContainerWithURI {
 	constructor(workload: MySqlDatabase<C>) {
 		super(workload, mySqlContainerSpec);
 		this.username = "root";
-		this.password = this.containerOptions.environment.MYSQL_ROOT_PASSWORD ?? "";
+		this.password = mySqlContainerSpec.environment.MYSQL_ROOT_PASSWORD ?? "";
 	}
 
 	buildConnectionURI(container: StartedTestContainer) {

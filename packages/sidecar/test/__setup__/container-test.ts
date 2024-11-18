@@ -15,7 +15,14 @@ export const test = base.extend({
 		await use(startedContainers);
 
 		for (const startedContainer of startedContainers) {
-			await startedContainer.stop();
+			try {
+				await startedContainer.stop();
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			} catch (e: any) {
+				if (e.reason !== "no such container") {
+					throw e;
+				}
+			}
 		}
 		startedContainers.length = 0;
 	},

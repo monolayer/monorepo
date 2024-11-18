@@ -1,8 +1,5 @@
 import pg from "pg";
-import {
-	assertContainerImage,
-	assertExposedPorts,
-} from "test/__setup__/assertions.js";
+import { assertContainerImage, assertExposedPorts } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
 import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";

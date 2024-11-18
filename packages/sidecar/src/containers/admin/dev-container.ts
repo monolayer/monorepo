@@ -18,10 +18,6 @@ export async function startDevContainer(
 	const startedTestContainer = await containerStarter.startContainerForWorkload(
 		workload,
 		{
-			startOptions: {
-				reuse: true,
-				publishToRandomPorts: false,
-			},
 			initialize: false,
 			test: false,
 		},

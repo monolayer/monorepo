@@ -9,6 +9,7 @@ import {
 	type WaitStrategy,
 } from "testcontainers";
 import type { Environment, HealthCheck } from "testcontainers/build/types.js";
+import type { WorkloadContainerOptions } from "~sidecar/containers.js";
 import type { Workload } from "~sidecar/workloads.js";
 
 export interface StartOptions {
@@ -27,6 +28,16 @@ export interface StartOptions {
 	publishToRandomPorts?: boolean;
 }
 
+export const defaultDevStartOptions: StartOptions = {
+	reuse: true,
+	publishToRandomPorts: false,
+};
+
+export const defaultTestStartOptions: StartOptions = {
+	reuse: false,
+	publishToRandomPorts: true,
+};
+
 /**
  * @hidden
  */
@@ -41,23 +52,17 @@ export const CONTAINER_LABEL_ORG = "org.monolayer-sidecar";
  */
 export class WorkloadContainer {
 	startedContainer?: StartedTestContainer;
-	containerOptions: WorkloadContainerOptions;
 
 	constructor(
 		public workload: Workload,
-		containerOptions: WorkloadContainerOptions,
-	) {
-		this.containerOptions = mergeOptions(
-			containerOptions,
-			workload._containerOptions?.options,
-		);
-	}
+		public containerOptions: WorkloadContainerOptions,
+	) {}
 
 	/**
 	 * Starts the container.
 	 */
-	async start(options?: StartOptions) {
-		const container = await this.#prepareContainer(options);
+	async start() {
+		const container = await this.#prepareContainer();
 		this.startedContainer = await container.start();
 		return this.startedContainer;
 	}
@@ -86,16 +91,22 @@ export class WorkloadContainer {
 		}
 	}
 
-	async #prepareContainer(startOptions?: StartOptions) {
+	async #prepareContainer() {
+		const startOptions = {
+			...defaultTestStartOptions,
+			...(this.workload.containerOverrides?.startOptions ?? {}),
+		};
 		const container = new GenericContainer(
-			this.containerOptions.containerImage,
+			this.workload.containerOverrides?.definition?.containerImage ??
+				this.containerOptions.containerImage,
 		);
-		container
-			.withLabels({
-				[CONTAINER_LABEL_WORKLOAD_ID]: this.workload.id,
-				[CONTAINER_LABEL_ORG]: "true",
-			})
-			.withEnvironment(this.containerOptions.environment);
+		container.withLabels({
+			[CONTAINER_LABEL_WORKLOAD_ID]: this.workload.id,
+			[CONTAINER_LABEL_ORG]: "true",
+		});
+
+		container.withEnvironment(this.containerOptions.environment);
+
 		if (this.containerOptions.waitStrategy) {
 			container.withWaitStrategy(this.containerOptions.waitStrategy);
 		}
@@ -132,7 +143,7 @@ export interface MappedPort {
 	host: number;
 }
 
-export interface WorkloadContainerOptions {
+export interface WorkloadContainerDefinition {
 	/**
 	 * Docker image for container
 	 */
@@ -153,11 +164,16 @@ export interface WorkloadContainerOptions {
 }
 
 export function mergeOptions(
-	base: WorkloadContainerOptions,
-	toMerge?: Partial<WorkloadContainerOptions>,
+	base: WorkloadContainerDefinition,
+	toMerge?: Partial<WorkloadContainerDefinition>,
 ) {
 	return {
 		...base,
 		...toMerge,
 	};
+}
+
+export interface ContainerOverrides {
+	definition?: Partial<WorkloadContainerDefinition>;
+	startOptions?: StartOptions;
 }
