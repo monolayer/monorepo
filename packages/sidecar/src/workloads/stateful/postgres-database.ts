@@ -1,4 +1,4 @@
-import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful-workload.js";
+import { Database } from "~sidecar/workloads/stateful/database.js";
 
 /**
  * PostgreSQL workload.
@@ -19,27 +19,4 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
  *
  * @typeParam C - Client type
  */
-export class PostgresDatabase<C> extends StatefulWorkloadWithClient<C> {
-	readonly databaseName: string;
-
-	override connStringComponents = ["id" as const, "databaseName" as const];
-
-	constructor(
-		/**
-		 * Database name.
-		 */
-		databaseName: string,
-		/**
-		 * Database ID
-		 */
-		databaseId: string,
-		/**
-		 * Client constructor function. Executed once when accessing the `client` property.
-		 */
-		client: (connectionStringVar: string) => C,
-	) {
-		super(databaseId, client);
-		this.databaseName = databaseName;
-	}
-}
-
+export class PostgresDatabase<C> extends Database<C> {}
