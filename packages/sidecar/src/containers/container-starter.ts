@@ -1,9 +1,7 @@
 import { remember } from "@epic-web/remember";
-import { type StartedTestContainer } from "testcontainers";
 import { PostgreSQLContainer } from "~sidecar/containers.js";
 import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import { createDatabase } from "~sidecar/containers/admin/create-database.js";
-import { defaultTestStartOptions } from "~sidecar/containers/container.js";
 import {
 	LocalStackContainer,
 	localStackContainerSpec,
@@ -82,8 +80,7 @@ class ContainerStarter {
 					publishToRandomPorts: options.test,
 				},
 			});
-			let container: StartedTestContainer | undefined = undefined;
-			container = await this.startPostgres(workload);
+			const container = await this.startPostgres(workload);
 			if (options?.initialize) {
 				await createDatabase(workload);
 			}
@@ -135,28 +132,18 @@ class ContainerStarter {
 		if (this.#localStackContainer === undefined) {
 			const localStackWorkload = new LocalStack("local-stack-testing");
 			const options = localStackContainerSpec;
-			if (!test) {
-				options.environment = {
-					...localStackContainerSpec.environment,
-					PERSISTENCE: "1",
-				};
-			} else {
-				localStackWorkload.containerOverrides = {
-					definition: {
-						containerImage: options.containerImage,
-					},
-					startOptions: defaultTestStartOptions,
-				};
-			}
-			localStackWorkload.containerOverrides = {
-				definition: {
-					containerImage: options.containerImage,
-				},
+			localStackWorkload.containerOptions({
 				startOptions: {
 					reuse: !test,
 					publishToRandomPorts: test,
 				},
-			};
+			});
+			if (test) {
+				options.environment = {
+					...localStackContainerSpec.environment,
+					PERSISTENCE: "0",
+				};
+			}
 			this.#localStackContainer = new LocalStackContainer(localStackWorkload);
 			await this.#localStackContainer.start();
 		}

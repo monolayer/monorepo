@@ -19,7 +19,7 @@ export const localStackContainerSpec = {
 	portsToExpose: [LOCAL_STACK_GATEWAY_PORT],
 	environment: {
 		SERVICES: "s3",
-		PERSISTENCE: "0",
+		PERSISTENCE: "1",
 	},
 };
 
