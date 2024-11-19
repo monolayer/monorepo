@@ -1,4 +1,4 @@
 export {
 	startTestContainer,
 	startTestContainers,
-} from "./testing/start-test-container.js";
+} from "./containers/start-test-container.js";

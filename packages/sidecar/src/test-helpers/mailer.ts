@@ -2,19 +2,19 @@ import { getExistingContainer } from "~sidecar/containers/admin/introspection.js
 import type {
 	Options,
 	RequestResult,
-} from "~sidecar/testing/mailpit/generated/client/index.js";
+} from "~sidecar/test-helpers/mailpit/generated/client/index.js";
 import {
 	deleteMessagesParams,
 	getMessageHtmlParams,
 	getMessagesParams,
 	getMessageTextParams,
-} from "~sidecar/testing/mailpit/generated/services.gen.js";
+} from "~sidecar/test-helpers/mailpit/generated/services.gen.js";
 import type {
 	DeleteMessagesParamsData,
 	GetMessageHtmlParamsData,
 	GetMessageTextParamsData,
 	MessagesSummary,
-} from "~sidecar/testing/mailpit/generated/types.gen.js";
+} from "~sidecar/test-helpers/mailpit/generated/types.gen.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 
 /**

@@ -3,5 +3,5 @@ export {
 	messageHtml,
 	messageText,
 	messages,
-} from "~sidecar/testing/mailer.js";
-export * from "./testing/mailpit/mailpit.js";
+} from "~sidecar/test-helpers/mailer.js";
+export * from "~sidecar/test-helpers/mailpit/mailpit.js";
