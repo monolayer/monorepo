@@ -4,6 +4,7 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
  * Mailer workload.
  *
  * @group Workloads
+ * @category Stateful
  *
  * @example
  * ```ts

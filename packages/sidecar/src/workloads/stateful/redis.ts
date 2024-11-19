@@ -5,6 +5,7 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
  *
  *
  * @group Workloads
+ * @category Stateful
  * @example
  * ```ts
  * import { Redis } from "@monolayer/sidecar";

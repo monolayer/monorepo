@@ -3,8 +3,7 @@ import type SMTPTransport from "nodemailer/lib/smtp-transport/index.js";
 import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
-import { testMailerURL } from "~sidecar/testing/mailer.js";
-import { getMessagesParams } from "~sidecar/testing/mailpit-client/index.js";
+import { messages } from "~sidecar/testing/mailer.js";
 import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
@@ -19,9 +18,7 @@ test("Mailer client commands against test container", async ({
 	const startedContainer = await startContainer(container);
 
 	containers.push(startedContainer);
-	const response = await getMessagesParams({
-		baseUrl: await testMailerURL(mailer),
-	});
+	const response = await messages(mailer);
 	assert(response.data);
 	assert.deepStrictEqual(response.data.messages, []);
 	assert.strictEqual(response.data.total, 0);
