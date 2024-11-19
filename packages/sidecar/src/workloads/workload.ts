@@ -5,9 +5,6 @@ import {
 	type StartOptions,
 } from "~sidecar/containers/container.js";
 
-/**
- * @internal
- */
 export class Workload {
 	/**
 	 * Unique ID
@@ -28,10 +25,21 @@ export class Workload {
 	 */
 	containerOverrides?: ContainerOverrides;
 
-	public containerOptions(options: {
-		imageName?: string;
-		startOptions?: StartOptions;
-	}) {
+	public containerOptions(
+		/**
+		 * Container Options
+		 */
+		options: {
+			/**
+			 * Docker image name
+			 */
+			imageName?: string;
+			/**
+			 * Container start options
+			 */
+			startOptions?: StartOptions;
+		},
+	) {
 		this.containerOverrides = {
 			definition: { containerImage: options.imageName },
 			startOptions: options.startOptions ?? {},
