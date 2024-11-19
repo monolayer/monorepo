@@ -1,5 +1,4 @@
-import { defineConfig } from "vitepress";
-
+import { defineConfig, type DefaultTheme } from "vitepress";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
 	title: "Sidecar",
@@ -17,7 +16,22 @@ export default defineConfig({
 			},
 			"/reference/": {
 				base: "/reference",
-				items: require("./../reference/api/typedoc-sidebar.json"),
+				items: [
+					...(require("./../reference/api/typedoc-sidebar.json") ?? []).filter(
+						(item: DefaultTheme.SidebarItem) =>
+							["Workloads", "Testing"].includes(item.text),
+					),
+					{
+						text: "Other",
+						collapsed: true,
+						items: (
+							require("./../reference/api/typedoc-sidebar.json") ?? []
+						).filter(
+							(item: DefaultTheme.SidebarItem) =>
+								!["Workloads", "Testing"].includes(item.text),
+						),
+					},
+				],
 			},
 		},
 		socialLinks: [
