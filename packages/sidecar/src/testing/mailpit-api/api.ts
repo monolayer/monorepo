@@ -1,10 +1,11 @@
 export {
-	deleteMessagesParams as deleteMessages,
-	getMessageParams as getMessage,
-	getMessageHtmlParams as getMessageHtml,
-	getMessageTextParams as getMessageText,
-	getMessagesParams as getMessages,
+	deleteMessagesParams as deleteMailerMessages,
+	getMessageParams as getMailerMessage,
+	getMessageHtmlParams as getMailerMessageHtml,
+	getMessageTextParams as getMailerMessageText,
+	getMessagesParams as getMailerMessages,
 } from "./../mailpit-client/services.gen.js";
+
 export {
 	Address,
 	Attachment,

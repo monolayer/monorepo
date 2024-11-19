@@ -3,6 +3,8 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
 /**
  * Database workload.
  *
+ * @group Workloads
+ *
  * @typeParam C - Client type
  */
 export abstract class Database<C> extends StatefulWorkloadWithClient<C> {
@@ -27,6 +29,10 @@ export abstract class Database<C> extends StatefulWorkloadWithClient<C> {
 	}
 }
 
+/**
+ * @group Other
+ * @category Types and Interfaces
+ */
 export interface DatabaseOptions<C> {
 	/**
 	 * Database ID

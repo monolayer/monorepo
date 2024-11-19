@@ -8,7 +8,7 @@ export default defineConfig({
 		// https://vitepress.dev/reference/default-theme-config
 		nav: [
 			{ text: "Guide", link: "/guide/markdown-examples" },
-			{ text: "API Reference", link: "/reference/api/modules" },
+			{ text: "API Reference", link: "/reference/api/globals" },
 		],
 		sidebar: {
 			"/guide/": {

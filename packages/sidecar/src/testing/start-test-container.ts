@@ -3,6 +3,8 @@ import { defaultTestStartOptions } from "~sidecar/containers/container.js";
 import { type Workload } from "~sidecar/workloads/workload.js";
 /**
  * Launches a test container for a workload.
+ *
+ * @group Test Helpers
  */
 export async function startTestContainer(
 	/**

@@ -99,6 +99,7 @@ export const appInformation = <ThrowOnError extends boolean = false>(
  * Returns the summary of a message, marking the message as read.
  *
  * The ID can be set to `latest` to return the latest message.
+ * @group Test Helpers
  */
 export const getMessageParams = <ThrowOnError extends boolean = false>(
 	options: Options<GetMessageParamsData, ThrowOnError>,
@@ -269,6 +270,9 @@ export const spamAssassinCheckParams = <ThrowOnError extends boolean = false>(
 /**
  * List messages
  * Returns messages from the mailbox ordered from newest to oldest.
+ *
+ * @group Test Helpers
+ *
  */
 export const getMessagesParams = <ThrowOnError extends boolean = false>(
 	options?: Options<GetMessagesParamsData, ThrowOnError>,
@@ -303,6 +307,9 @@ export const setReadStatusParams = <ThrowOnError extends boolean = false>(
 /**
  * Delete messages
  * Delete individual or all messages. If no IDs are provided then all messages are deleted.
+ *
+ * @group Test Helpers
+ *
  */
 export const deleteMessagesParams = <ThrowOnError extends boolean = false>(
 	options?: Options<DeleteMessagesParamsData, ThrowOnError>,
@@ -461,6 +468,7 @@ export const webUiConfiguration = <ThrowOnError extends boolean = false>(
  * Note that is the message does not contain a HTML part then an 404 error is returned.
  *
  * The ID can be set to `latest` to return the latest message.
+ * @group Test Helpers
  */
 export const getMessageHtmlParams = <ThrowOnError extends boolean = false>(
 	options: Options<GetMessageHtmlParamsData, ThrowOnError>,
@@ -480,6 +488,7 @@ export const getMessageHtmlParams = <ThrowOnError extends boolean = false>(
  * Renders just the message's text part which can be used for UI integration testing.
  *
  * The ID can be set to `latest` to return the latest message.
+ * @group Test Helpers
  */
 export const getMessageTextParams = <ThrowOnError extends boolean = false>(
 	options: Options<GetMessageTextParamsData, ThrowOnError>,

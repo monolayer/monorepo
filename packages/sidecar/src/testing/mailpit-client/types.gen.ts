@@ -4,6 +4,10 @@
 /**
  * An address such as "Barry Gibbs <bg@example.com>" is represented
  * as Address{Name: "Barry Gibbs", Address: "bg@example.com"}.
+ *
+ * @group Other
+ * @category Types and Interfaces
+ *
  */
 export type Address = {
 	Address?: string;
@@ -81,6 +85,10 @@ export type AppInformation = {
 
 /**
  * Attachment struct for inline and attachments
+ *
+ * @group Other
+ * @category Types and Interfaces
+ *
  */
 export type Attachment = {
 	/**
@@ -289,6 +297,10 @@ export type LinkCheckResponse = {
 
 /**
  * Message data excluding physical attachments
+ *
+ * @group Other
+ * @category Types and Interfaces
+ *
  */
 export type Message = {
 	/**
@@ -363,6 +375,10 @@ export type MessageHeadersResponse = {
 
 /**
  * MessagesSummary is a summary of a list of messages
+ *
+ * @group Other
+ * @category Types and Interfaces
+ *
  */
 export type MessagesSummary = {
 	/**
@@ -394,6 +410,10 @@ export type MessagesSummary = {
 
 /**
  * MessageSummary struct for frontend messages
+ *
+ * @group Other
+ * @category Types and Interfaces
+ *
  */
 export type MessageSummary = {
 	/**
@@ -645,6 +665,12 @@ export type AppInformationResponse = AppInformation;
 
 export type AppInformationError = string;
 
+/**
+ *
+ * @group Other
+ * @category Types and Interfaces
+ *
+ */
 export type GetMessageParamsData = {
 	path: {
 		/**
@@ -782,6 +808,12 @@ export type SpamAssassinCheckParamsResponse = SpamAssassinResponse;
 
 export type SpamAssassinCheckParamsError = string;
 
+/**
+ *
+ * @group Other
+ * @category Types and Interfaces
+ *
+ */
 export type GetMessagesParamsData = {
 	query?: {
 		/**
@@ -816,6 +848,12 @@ export type SetReadStatusParamsResponse = string;
 
 export type SetReadStatusParamsError = string;
 
+/**
+ *
+ * @group Other
+ * @category Types and Interfaces
+ *
+ */
 export type DeleteMessagesParamsData = {
 	/**
 	 * Delete request
@@ -939,6 +977,12 @@ export type WebUiConfigurationResponse = WebUIConfiguration;
 
 export type WebUiConfigurationError = string;
 
+/**
+ *
+ * @group Other
+ * @category Types and Interfaces
+ *
+ */
 export type GetMessageHtmlParamsData = {
 	path: {
 		/**
@@ -952,6 +996,12 @@ export type GetMessageHtmlParamsResponse = string;
 
 export type GetMessageHtmlParamsError = string;
 
+/**
+ *
+ * @group Other
+ * @category Types and Interfaces
+ *
+ */
 export type GetMessageTextParamsData = {
 	path: {
 		/**

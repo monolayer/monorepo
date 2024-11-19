@@ -3,6 +3,8 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
 /**
  * Mailer workload.
  *
+ * @group Workloads
+ *
  * @example
  * ```ts
  * import { Mailer } from "@monolayer/sidecar";
