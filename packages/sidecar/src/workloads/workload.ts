@@ -1,6 +1,8 @@
-import type {
-	ContainerOverrides,
-	StartOptions,
+import {
+	defaultDevStartOptions,
+	defaultTestStartOptions,
+	type ContainerOverrides,
+	type StartOptions,
 } from "~sidecar/containers/container.js";
 
 /**
@@ -35,5 +37,19 @@ export class Workload {
 			startOptions: options.startOptions ?? {},
 		};
 		return this;
+	}
+
+	/**
+	 * @hidden
+	 */
+	mode(mode: "dev" | "test") {
+		const current = this.containerOverrides;
+		this.containerOptions({
+			startOptions:
+				mode === "dev" ? defaultDevStartOptions : defaultTestStartOptions,
+		});
+		if (current) {
+			this.containerOptions(current);
+		}
 	}
 }

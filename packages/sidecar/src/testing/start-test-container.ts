@@ -13,11 +13,12 @@ export async function startTestContainer(
 	workload.containerOptions({
 		startOptions: defaultTestStartOptions,
 	});
+	containerStarter.mode = "dev";
 	const startedTestContainer = await containerStarter.startContainerForWorkload(
 		workload,
 		{
 			initialize: true,
-			test: true,
+			mode: "test",
 		},
 	);
 	if (startedTestContainer === undefined) {

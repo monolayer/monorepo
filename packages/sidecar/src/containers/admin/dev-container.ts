@@ -15,11 +15,12 @@ export async function startDevContainer(
 ) {
 	const spinner = ora();
 	spinner.start(spinnerMessage(workload, "Start"));
+	
 	const startedTestContainer = await containerStarter.startContainerForWorkload(
 		workload,
 		{
 			initialize: false,
-			test: false,
+			mode: "dev",
 		},
 	);
 	if (startedTestContainer === undefined) {

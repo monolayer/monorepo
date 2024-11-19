@@ -2,10 +2,7 @@ import { remember } from "@epic-web/remember";
 import { PostgreSQLContainer } from "~sidecar/containers.js";
 import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import { createDatabase } from "~sidecar/containers/admin/create-database.js";
-import {
-	LocalStackContainer,
-	localStackContainerSpec,
-} from "~sidecar/containers/local-stack.js";
+import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { MySQLContainer } from "~sidecar/containers/mysql.js";
 import { RedisContainer } from "~sidecar/containers/redis.js";
@@ -15,6 +12,7 @@ import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 import type { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import type { Redis } from "~sidecar/workloads/stateful/redis.js";
+import type { Workload } from "~sidecar/workloads/workload.js";
 
 function isRedis<C>(workload: unknown): workload is Redis<C> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,42 +42,29 @@ function isMysql<C>(workload: unknown): workload is MySqlDatabase<C> {
 }
 
 class ContainerStarter {
+	mode: "dev" | "test" = "dev";
+
 	async startContainerForWorkload(
-		workload: unknown,
+		workload: Workload,
 		options: {
 			initialize?: boolean;
-			test: boolean;
+			mode: "dev" | "test";
 		},
 	) {
+		this.mode = options.mode;
+		workload.mode(this.mode);
+
 		if (isRedis(workload)) {
-			workload.containerOptions({
-				startOptions: {
-					reuse: !options.test,
-					publishToRandomPorts: options.test,
-				},
-			});
 			return await this.startRedis(workload);
 		}
 		if (isBucket(workload)) {
-			workload.containerOptions({
-				startOptions: {
-					reuse: !options.test,
-					publishToRandomPorts: options.test,
-				},
-			});
-			const localStackContainer = await this.startLocalStack(options.test);
+			const localStackContainer = await this.startLocalStack();
 			if (options?.initialize) {
 				await createBucket(workload.id, localStackContainer);
 			}
 			return localStackContainer.startedContainer;
 		}
 		if (isPostgresDatabase(workload)) {
-			workload.containerOptions({
-				startOptions: {
-					reuse: !options.test,
-					publishToRandomPorts: options.test,
-				},
-			});
 			const container = await this.startPostgres(workload);
 			if (options?.initialize) {
 				await createDatabase(workload);
@@ -87,21 +72,9 @@ class ContainerStarter {
 			return container;
 		}
 		if (isMailer(workload)) {
-			workload.containerOptions({
-				startOptions: {
-					reuse: !options.test,
-					publishToRandomPorts: options.test,
-				},
-			});
 			return await this.startMailer(workload);
 		}
 		if (isMysql(workload)) {
-			workload.containerOptions({
-				startOptions: {
-					reuse: !options.test,
-					publishToRandomPorts: options.test,
-				},
-			});
 			return await this.startMySql(workload);
 		}
 	}
@@ -128,23 +101,14 @@ class ContainerStarter {
 
 	#localStackContainer?: LocalStackContainer;
 
-	async startLocalStack(test: boolean = false) {
+	async startLocalStack() {
 		if (this.#localStackContainer === undefined) {
 			const localStackWorkload = new LocalStack("local-stack-testing");
-			const options = localStackContainerSpec;
-			localStackWorkload.containerOptions({
-				startOptions: {
-					reuse: !test,
-					publishToRandomPorts: test,
-				},
-			});
-			if (test) {
-				options.environment = {
-					...localStackContainerSpec.environment,
-					PERSISTENCE: "0",
-				};
-			}
-			this.#localStackContainer = new LocalStackContainer(localStackWorkload);
+			localStackWorkload.mode(this.mode);
+			this.#localStackContainer = new LocalStackContainer(
+				localStackWorkload,
+				this.mode !== "test",
+			);
 			await this.#localStackContainer.start();
 		}
 		return this.#localStackContainer;

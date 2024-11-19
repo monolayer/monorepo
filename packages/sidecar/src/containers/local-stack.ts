@@ -32,8 +32,14 @@ export class LocalStackContainer extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(workload: LocalStack) {
-		super(workload, localStackContainerSpec);
+	constructor(workload: LocalStack, persist?: boolean) {
+		super(workload, {
+			...localStackContainerSpec,
+			...{
+				...localStackContainerSpec.environment,
+				...{ PERSISTENCE: (persist ?? true) ? "1" : "0" },
+			},
+		});
 	}
 
 	buildConnectionURI(container: StartedTestContainer) {

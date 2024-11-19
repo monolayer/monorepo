@@ -11,6 +11,12 @@ export class LocalStack extends StatefulWorkload {
 	 */
 	constructor(id: string) {
 		super(id);
+		this.containerOptions({
+			startOptions: {
+				reuse: true,
+				publishToRandomPorts: false,
+			},
+		});
 	}
 
 	/**
