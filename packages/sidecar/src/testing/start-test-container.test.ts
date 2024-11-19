@@ -1,7 +1,7 @@
 import pg from "pg";
 import { createClient } from "redis";
 import { assert } from "vitest";
-import { startWorkflowTestContainer } from "~sidecar/testing/start-test-container.js";
+import { startTestContainer } from "~sidecar/testing/start-test-container.js";
 import { Bucket } from "~sidecar/workloads/stateful/bucket.js";
 import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import { Redis } from "~sidecar/workloads/stateful/redis.js";
@@ -20,7 +20,7 @@ test("launches redis", { sequential: true }, async ({ containers }) => {
 		}).on("error", (err) => console.error("Redis Client Error", err)),
 	);
 
-	const startedContainer = await startWorkflowTestContainer(redisWorkload);
+	const startedContainer = await startTestContainer(redisWorkload);
 	containers.push(startedContainer);
 	assertStartedContainerLabel(
 		startedContainer,
@@ -42,7 +42,7 @@ test("creates buckets", { sequential: true }, async ({ containers }) => {
 	];
 	for (const name of names) {
 		const bucketWorkload = new Bucket(name);
-		const startedContainer = await startWorkflowTestContainer(bucketWorkload);
+		const startedContainer = await startTestContainer(bucketWorkload);
 		containers.push(startedContainer);
 		await assertBucket("my-bucket-test-1", startedContainer);
 	}
@@ -63,7 +63,7 @@ test(
 			},
 		);
 
-		const startedContainer = await startWorkflowTestContainer(postgresDatabase);
+		const startedContainer = await startTestContainer(postgresDatabase);
 		containers.push(startedContainer);
 		await assertDatabase(postgresDatabase);
 
@@ -77,8 +77,7 @@ test(
 					}),
 			},
 		);
-		const anotherDatabaseContainer =
-			await startWorkflowTestContainer(anotherDatabase);
+		const anotherDatabaseContainer = await startTestContainer(anotherDatabase);
 		containers.push(anotherDatabaseContainer);
 
 		await assertDatabase(anotherDatabase);

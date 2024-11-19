@@ -4,9 +4,10 @@ import { type Workload } from "~sidecar/workloads/workload.js";
 /**
  * Launches a test container for a workload.
  *
- * @group Test Helpers
+ * @group Testing
+ * @category Containers
  */
-export async function startWorkflowTestContainer(
+export async function startTestContainer(
 	/**
 	 * Workload to launch a test container.
 	 */
