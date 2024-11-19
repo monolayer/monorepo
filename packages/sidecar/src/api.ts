@@ -17,4 +17,7 @@ export {
 } from "~sidecar/workloads/stateful/stateful-workload.js";
 export type { Workload } from "~sidecar/workloads/workload.js";
 export * from "./testing/mailpit/mailpit.js";
-export { startTestContainer } from "./testing/start-test-container.js";
+export {
+	startTestContainer,
+	startTestContainers,
+} from "./testing/start-test-container.js";
