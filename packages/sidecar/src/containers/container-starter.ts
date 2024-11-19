@@ -62,10 +62,11 @@ class ContainerStarter {
 
 	async startPostgres<C>(workload: PostgresDatabase<C>, initialize: boolean) {
 		const container = new PostgreSQLContainer(workload);
+		const startedContainer = await container.start();
 		if (initialize) {
 			await createDatabase(workload);
 		}
-		return await container.start();
+		return startedContainer;
 	}
 
 	async startMySql<C>(workload: MySqlDatabase<C>) {

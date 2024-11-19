@@ -26,7 +26,6 @@ export async function startTestContainer(
 	if (startedTestContainer === undefined) {
 		throw new Error(`no container match for workload: ${workload.id}`);
 	}
-	return startedTestContainer;
 }
 
 /**

@@ -1,15 +1,18 @@
 // my-test.ts
+import type Dockerode from "dockerode";
 import type { StartedTestContainer } from "testcontainers";
 import { test as base } from "vitest";
 import type { StartOptions } from "~sidecar/containers/container.js";
 
-const startedContainers: StartedTestContainer[] = [];
+const startedContainers: (StartedTestContainer | Dockerode.Container)[] = [];
 
 export const test = base.extend({
 	containers: async (
 		// eslint-disable-next-line no-empty-pattern
 		{},
-		use: (value: StartedTestContainer[]) => Promise<void>,
+		use: (
+			value: (StartedTestContainer | Dockerode.Container)[],
+		) => Promise<void>,
 	) => {
 		startedContainers.length = 0;
 		await use(startedContainers);
@@ -19,7 +22,10 @@ export const test = base.extend({
 				await startedContainer.stop();
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (e: any) {
-				if (e.reason !== "no such container") {
+				if (
+					e.reason !== "no such container" &&
+					!e.reason.includes("already stopped")
+				) {
 					throw e;
 				}
 			}
