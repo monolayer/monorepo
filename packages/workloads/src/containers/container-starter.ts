@@ -1,7 +1,10 @@
 import { remember } from "@epic-web/remember";
 import type { StartedTestContainer } from "testcontainers";
 import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
-import { createDatabase } from "~sidecar/containers/admin/create-database.js";
+import {
+	createMysqlDatabase,
+	createPostgresDatabase,
+} from "~sidecar/containers/admin/create-database.js";
 import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { MySQLContainer } from "~sidecar/containers/mysql.js";
@@ -45,7 +48,7 @@ class ContainerStarter {
 				break;
 			case "MySqlDatabase":
 				assertMySqlDatabase(workload);
-				container = await this.startMySql(workload);
+				container = await this.startMySql(workload, initAfterLaunch);
 				break;
 			case "PostgresDatabase":
 				assertPostgresDatabase(workload);
@@ -64,14 +67,18 @@ class ContainerStarter {
 		const container = new PostgreSQLContainer(workload);
 		const startedContainer = await container.start();
 		if (initialize) {
-			await createDatabase(workload);
+			await createPostgresDatabase(workload);
 		}
 		return startedContainer;
 	}
 
-	async startMySql<C>(workload: MySqlDatabase<C>) {
+	async startMySql<C>(workload: MySqlDatabase<C>, initialize: boolean) {
 		const container = new MySQLContainer(workload);
-		return await container.start();
+		const startedContainer = await container.start();
+		if (initialize) {
+			await createMysqlDatabase(workload);
+		}
+		return startedContainer;
 	}
 
 	async startMailer<C>(workload: Mailer<C>) {

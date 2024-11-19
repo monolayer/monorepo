@@ -1,12 +1,11 @@
+import mysql from "mysql2/promise";
 import pg from "pg";
+import type { MySqlDatabase } from "~sidecar/workloads.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 
-export async function createDatabase<C>(workload: PostgresDatabase<C>) {
+export async function createPostgresDatabase<C>(workload: PostgresDatabase<C>) {
 	const client = new pg.Pool({
-		connectionString: process.env[workload.connectionStringEnvVar()]?.replace(
-			/\/\w+$/,
-			"",
-		),
+		connectionString: adminCredentials(workload),
 	});
 	const exists = await client.query(
 		`SELECT datname FROM pg_catalog.pg_database WHERE datname = '${workload.databaseName}'`,
@@ -16,4 +15,14 @@ export async function createDatabase<C>(workload: PostgresDatabase<C>) {
 		await client.query(`CREATE DATABASE "${workload.databaseName}";`);
 	}
 	await client.end();
+}
+
+export async function createMysqlDatabase<C>(workload: MySqlDatabase<C>) {
+	const connection = await mysql.createConnection(adminCredentials(workload)!);
+	await connection.query(`CREATE DATABASE ${workload.databaseName};`);
+	await connection.end();
+}
+
+function adminCredentials<C>(workload: MySqlDatabase<C> | PostgresDatabase<C>) {
+	return process.env[workload.connectionStringEnvVar()]?.replace(/\/\w+$/, "");
 }
