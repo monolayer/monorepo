@@ -5,6 +5,6 @@ export default defineConfig({
 		bundle: true,
 		name: "@hey-api/client-fetch",
 	},
-	input: "packages/sidecar/src/testing/mailpit-api/swagger.json",
-	output: "packages/sidecar/src/testing/mailpit-api/generated",
+	input: "packages/workloads/src/testing/mailpit-api/swagger.json",
+	output: "packages/workloads/src/testing/mailpit-api/generated",
 });

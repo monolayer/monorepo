@@ -8,7 +8,7 @@
 	},
 	"references": [
 		{ "path": "./apps/pg" },
-		{ "path": "./packages/sidecar" },
+		{ "path": "./packages/workloads" },
 		{ "path": "./internal/cli" },
 		{ "path": "./internal/configuration" },
 		{ "path": "./internal/data" },

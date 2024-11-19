@@ -10,7 +10,7 @@
 		"internal/services/src/**/*",
 		"internal/state/src/**/*",
 		"internal/utils/src/**/*",
-		"packages/sidecar/src/**/*"
+		"packages/workloads/src/**/*"
 	],
 	"compilerOptions": {
 		"baseUrl": "./",
@@ -25,7 +25,7 @@
 			"~services/*": ["internal/services/src/*"],
 			"~state/*": ["internal/state/src/*"],
 			"~utils/*": ["internal/utils/src/*"],
-			"~sidecar/*": ["packages/sidecar/src/*"],
+			"~sidecar/*": ["packages/workloads/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
 			"@monorepo/db/*": ["internal/db/src/*"],
 			"@monorepo/configuration/*": ["internal/configuration/src/*"],

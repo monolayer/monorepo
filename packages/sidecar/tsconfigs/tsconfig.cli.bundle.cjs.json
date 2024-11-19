@@ -1,8 +1,0 @@
-{
-	"extends": "../../../internal/utils/tsconfig.build.cjs.json",
-	"compilerOptions": {
-		"outDir": "./../../../packages/sidecar/dist/cjs/packages/utils",
-		"tsBuildInfoFile": "./../../../packages/sidecar/dist/cjs/packages/utils/tsconfig.bundle.cjs.tsbuildinfo",
-		"composite": true
-	}
-}

@@ -1,5 +1,5 @@
 {
-	"name": "@monolayer/sidecar",
+	"name": "@monolayer/workloads",
 	"version": "1.0.0",
 	"description": "The backend sidecar framework",
 	"author": "Marcos Essindi <marcessindi@me.com>",
@@ -9,7 +9,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/monolayer/monorepo",
-		"directory": "packages/sidecar"
+		"directory": "packages/workloads"
 	},
 	"type": "module",
 	"bin": {
