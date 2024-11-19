@@ -26,7 +26,7 @@ test("launches redis", { sequential: true }, async ({ containers }) => {
 	assert(container);
 	containers.push(container);
 
-	assertContainerLabel(
+	await assertContainerLabel(
 		container,
 		"org.monolayer-sidecar.workload-id",
 		"redis-launch-redis",
