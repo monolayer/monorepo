@@ -55,7 +55,7 @@ test("creates buckets", { sequential: true }, async ({ containers }) => {
 });
 
 test(
-	"launches postgres and creates multiple databases in different container",
+	"launches postgres and creates multiple databases in different container for different workloads",
 	{ sequential: true, timeout: 30000 },
 	async ({ containers }) => {
 		const postgresDatabase = new PostgresDatabase(
@@ -92,5 +92,35 @@ test(
 		await assertDatabase(anotherDatabase);
 
 		assert.notStrictEqual(anotherContainer.id, container.id);
+	},
+);
+
+test(
+	"launch different containers for the same workload",
+	{ sequential: true },
+	async ({ containers }) => {
+		const redisWorkload = new Redis("red-one", (connectionStringEnvVar) =>
+			createClient({
+				url: process.env[connectionStringEnvVar],
+			}).on("error", (err) => console.error("Redis Client Error", err)),
+		);
+
+		await startTestContainer(redisWorkload);
+		const container = await getExistingContainer(redisWorkload);
+		assert(container);
+		containers.push(container);
+
+		await assertContainerLabel(
+			container,
+			"org.monolayer-sidecar.workload-id",
+			"redis-red-one",
+		);
+
+		await startTestContainer(redisWorkload);
+		const secondContainer = await getExistingContainer(redisWorkload);
+		assert(secondContainer);
+		containers.push(secondContainer);
+
+		assert.notStrictEqual(container.id, secondContainer.id);
 	},
 );
