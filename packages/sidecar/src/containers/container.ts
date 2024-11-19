@@ -10,7 +10,6 @@ import {
 	type WaitStrategy,
 } from "testcontainers";
 import type { Environment, HealthCheck } from "testcontainers/build/types.js";
-import type { WorkloadContainerOptions } from "~sidecar/containers.js";
 import type { Workload } from "~sidecar/workloads.js";
 
 export interface StartOptions {
@@ -56,7 +55,7 @@ export class WorkloadContainer {
 
 	constructor(
 		public workload: Workload,
-		public containerOptions: WorkloadContainerOptions,
+		public containerOptions: WorkloadContainerDefinition,
 	) {}
 
 	/**
