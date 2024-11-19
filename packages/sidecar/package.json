@@ -16,16 +16,6 @@
 		"workloads": "dist/esm/bin/cli.js"
 	},
 	"exports": {
-		"./containers": {
-			"import": {
-				"types": "./dist/esm/containers.d.ts",
-				"default": "./dist/esm/containers.js"
-			},
-			"require": {
-				"types": "./dist/cjs/containers.d.ts",
-				"default": "./dist/cjs/containers.js"
-			}
-		},
 		"./workloads": {
 			"import": {
 				"types": "./dist/esm/workloads.d.ts",
