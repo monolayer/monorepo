@@ -5,8 +5,6 @@ import { type Workload } from "~sidecar/workloads/workload.js";
 /**
  * Launches a test container for a workload.
  *
- * @group Testing
- * @category Containers
  */
 export async function startTestContainer(
 	/**
@@ -34,8 +32,6 @@ export async function startTestContainer(
 /**
  * Launches test containers for workloads defined in a folder.
  *
- * @group Testing
- * @category Containers
  */
 export async function startTestContainers(
 	/**

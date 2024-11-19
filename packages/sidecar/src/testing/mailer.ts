@@ -20,8 +20,6 @@ import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 /**
  * List messages
  * Returns messages from the mailbox ordered from newest to oldest.
- * @group Testing
- * @category Mailer
  */
 export async function messages<C>(
 	mailer: Mailer<C>,
@@ -36,8 +34,6 @@ export async function messages<C>(
  * Renders just the message's text part which can be used for UI integration testing.
  *
  * The ID can be set to `latest` to return the latest message.
- * @group Testing
- * @category Mailer
  */
 export async function messageText<C, ThrowOnError extends boolean = false>(
 	mailer: Mailer<C>,
@@ -52,8 +48,6 @@ export async function messageText<C, ThrowOnError extends boolean = false>(
 /**
  * Delete messages
  * Delete individual or all messages. If no IDs are provided then all messages are deleted.
- * @group Testing
- * @category Mailer
  */
 export async function deleteMessages<C, ThrowOnError extends boolean = false>(
 	mailer: Mailer<C>,
@@ -72,8 +66,6 @@ export async function deleteMessages<C, ThrowOnError extends boolean = false>(
  * Note that is the message does not contain a HTML part then an 404 error is returned.
  *
  * The ID can be set to `latest` to return the latest message.
- * @group Testing
- * @category Mailer
  */
 export async function messageHtml<C, ThrowOnError extends boolean = false>(
 	mailer: Mailer<C>,

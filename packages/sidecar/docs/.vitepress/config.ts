@@ -1,4 +1,4 @@
-import { defineConfig, type DefaultTheme } from "vitepress";
+import { defineConfig } from "vitepress";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
 	title: "Sidecar",
@@ -7,7 +7,7 @@ export default defineConfig({
 		// https://vitepress.dev/reference/default-theme-config
 		nav: [
 			{ text: "Guide", link: "/guide/markdown-examples" },
-			{ text: "API Reference", link: "/reference/api/globals" },
+			{ text: "API Reference", link: "/reference/api/modules" },
 		],
 		sidebar: {
 			"/guide/": {
@@ -16,22 +16,7 @@ export default defineConfig({
 			},
 			"/reference/": {
 				base: "/reference",
-				items: [
-					...(require("./../reference/api/typedoc-sidebar.json") ?? []).filter(
-						(item: DefaultTheme.SidebarItem) =>
-							["Workloads", "Testing"].includes(item.text),
-					),
-					{
-						text: "Other",
-						collapsed: true,
-						items: (
-							require("./../reference/api/typedoc-sidebar.json") ?? []
-						).filter(
-							(item: DefaultTheme.SidebarItem) =>
-								!["Workloads", "Testing"].includes(item.text),
-						),
-					},
-				],
+				items: require("./../reference/api/typedoc-sidebar.json"),
 			},
 		},
 		socialLinks: [

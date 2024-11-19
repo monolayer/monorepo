@@ -16,16 +16,6 @@
 		"workloads": "dist/esm/bin/cli.js"
 	},
 	"exports": {
-		".": {
-			"import": {
-				"types": "./dist/esm/index.d.ts",
-				"default": "./dist/esm/index.js"
-			},
-			"require": {
-				"types": "./dist/cjs/index.d.ts",
-				"default": "./dist/cjs/index.js"
-			}
-		},
 		"./containers": {
 			"import": {
 				"types": "./dist/esm/containers.d.ts",
@@ -46,14 +36,14 @@
 				"default": "./dist/cjs/workloads.js"
 			}
 		},
-		"./test": {
+		"./test-helpers": {
 			"import": {
-				"types": "./dist/esm/test.d.ts",
-				"default": "./dist/esm/test.js"
+				"types": "./dist/esm/test-helpers.d.ts",
+				"default": "./dist/esm/test-helpers.js"
 			},
 			"require": {
-				"types": "./dist/cjs/test.d.ts",
-				"default": "./dist/cjs/test.js"
+				"types": "./dist/cjs/test-helpers.d.ts",
+				"default": "./dist/cjs/test-helpers.js"
 			}
 		}
 	},

@@ -1,4 +1,3 @@
-export { messages as mailerMessages } from "~sidecar/testing/mailer.js";
 export type {
 	RequestOptionsBase,
 	RequestResult,
@@ -25,15 +24,3 @@ export type {
 	MessageSummary,
 	MessagesSummary,
 } from "~sidecar/testing/mailpit/generated/types.gen.js";
-// export {
-// 	Address,
-// 	Attachment,
-// 	DeleteMessagesParamsData,
-// 	GetMessageHtmlParamsData,
-// 	GetMessageParamsData,
-// 	GetMessageTextParamsData,
-// 	GetMessagesParamsData,
-// 	Message,
-// 	MessageSummary,
-// 	MessagesSummary,
-// } from "./../mailpit-client/types.gen.js";

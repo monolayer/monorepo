@@ -1,3 +1,4 @@
+export { StartOptions } from "~sidecar/containers/container.js";
 export { Bucket } from "~sidecar/workloads/stateful/bucket.js";
 export { DatabaseOptions } from "~sidecar/workloads/stateful/database.js";
 export { Mailer } from "~sidecar/workloads/stateful/mailer.js";

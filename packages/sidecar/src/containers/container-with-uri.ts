@@ -1,5 +1,5 @@
 import { type StartedTestContainer } from "testcontainers";
-import type { WorkloadContainerDefinition } from "~sidecar/containers.js";
+import type { WorkloadContainerDefinition } from "~sidecar/containers/container.js";
 import { WorkloadContainer } from "~sidecar/containers/container.js";
 import type { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.js";
 

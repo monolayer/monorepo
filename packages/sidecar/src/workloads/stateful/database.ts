@@ -3,7 +3,6 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
 /**
  * Database workload.
  *
- * @group Workloads
  *
  * @typeParam C - Client type
  */

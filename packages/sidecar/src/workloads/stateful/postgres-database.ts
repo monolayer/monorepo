@@ -4,7 +4,6 @@ import { Database } from "~sidecar/workloads/stateful/database.js";
  * PostgreSQL workload.
  *
  *
- * @group Workloads
  * @example
  * ```ts
  * import { PostgreSQL } from "@monolayer/sidecar";

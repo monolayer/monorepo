@@ -4,7 +4,6 @@ import { Database } from "~sidecar/workloads/stateful/database.js";
  * MySQL workload.
  *
  *
- * @group Workloads
  * @example
  * ```ts
  * import { MySqlDatabase } from "@monolayer/sidecar";

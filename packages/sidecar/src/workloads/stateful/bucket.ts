@@ -3,8 +3,7 @@ import { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.
 /**
  * Bucket workload.
  *
- * @group Workloads
- *  */
+ */
 export class Bucket extends StatefulWorkload {
 	constructor(
 		/**
