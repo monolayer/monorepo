@@ -1,4 +1,5 @@
 import { remember } from "@epic-web/remember";
+import type { StartedTestContainer } from "testcontainers";
 import { PostgreSQLContainer } from "~sidecar/containers.js";
 import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import { createDatabase } from "~sidecar/containers/admin/create-database.js";
@@ -14,33 +15,6 @@ import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-data
 import type { Redis } from "~sidecar/workloads/stateful/redis.js";
 import type { Workload } from "~sidecar/workloads/workload.js";
 
-function isRedis<C>(workload: unknown): workload is Redis<C> {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (workload as any).constructor.name === "Redis";
-}
-
-function isBucket(workload: unknown): workload is Bucket {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (workload as any).constructor.name === "Bucket";
-}
-
-function isPostgresDatabase<C>(
-	workload: unknown,
-): workload is PostgresDatabase<C> {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (workload as any).constructor.name === "PostgresDatabase";
-}
-
-function isMailer<C>(workload: unknown): workload is Mailer<C> {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (workload as any).constructor.name === "Mailer";
-}
-
-function isMysql<C>(workload: unknown): workload is MySqlDatabase<C> {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return (workload as any).constructor.name === "MySqlDatabase";
-}
-
 class ContainerStarter {
 	mode: "dev" | "test" = "dev";
 
@@ -53,30 +27,32 @@ class ContainerStarter {
 	) {
 		this.mode = options.mode;
 		workload.mode(this.mode);
+		const initAfterLaunch = options.initialize ?? false;
 
-		if (isRedis(workload)) {
-			return await this.startRedis(workload);
+		let container: StartedTestContainer | undefined = undefined;
+		switch (workload.constructor.name) {
+			case "Redis":
+				assertRedis(workload);
+				container = await this.startRedis(workload);
+				break;
+			case "Bucket":
+				assertBucket(workload);
+				container = await this.startLocalStack(workload, initAfterLaunch);
+				break;
+			case "Mailer":
+				assertMailer(workload);
+				container = await this.startMailer(workload);
+				break;
+			case "MySqlDatabase":
+				assertMySqlDatabase(workload);
+				container = await this.startMySql(workload);
+				break;
+			case "PostgresDatabase":
+				assertPostgresDatabase(workload);
+				container = await this.startPostgres(workload, initAfterLaunch);
+				break;
 		}
-		if (isBucket(workload)) {
-			const localStackContainer = await this.startLocalStack();
-			if (options?.initialize) {
-				await createBucket(workload.id, localStackContainer);
-			}
-			return localStackContainer.startedContainer;
-		}
-		if (isPostgresDatabase(workload)) {
-			const container = await this.startPostgres(workload);
-			if (options?.initialize) {
-				await createDatabase(workload);
-			}
-			return container;
-		}
-		if (isMailer(workload)) {
-			return await this.startMailer(workload);
-		}
-		if (isMysql(workload)) {
-			return await this.startMySql(workload);
-		}
+		return container;
 	}
 
 	async startRedis<C>(workload: Redis<C>) {
@@ -84,8 +60,11 @@ class ContainerStarter {
 		return await container.start();
 	}
 
-	async startPostgres<C>(workload: PostgresDatabase<C>) {
+	async startPostgres<C>(workload: PostgresDatabase<C>, initialize: boolean) {
 		const container = new PostgreSQLContainer(workload);
+		if (initialize) {
+			await createDatabase(workload);
+		}
 		return await container.start();
 	}
 
@@ -99,9 +78,17 @@ class ContainerStarter {
 		return await container.start();
 	}
 
+	async startLocalStack(workload: Bucket, initialize: boolean) {
+		const localStackContainer = await this.startLocalStackContainer();
+		if (initialize) {
+			await createBucket(workload.id, localStackContainer);
+		}
+		return localStackContainer.startedContainer;
+	}
+
 	#localStackContainer?: LocalStackContainer;
 
-	async startLocalStack() {
+	async startLocalStackContainer() {
 		if (this.#localStackContainer === undefined) {
 			const localStackWorkload = new LocalStack("local-stack-testing");
 			localStackWorkload.mode(this.mode);
@@ -119,3 +106,17 @@ export const containerStarter = remember(
 	"containerStarter",
 	() => new ContainerStarter(),
 );
+
+function assertRedis<C>(workload: unknown): asserts workload is Redis<C> {}
+
+function assertBucket(workload: unknown): asserts workload is Bucket {}
+
+function assertPostgresDatabase<C>(
+	workload: unknown,
+): asserts workload is PostgresDatabase<C> {}
+
+function assertMailer<C>(workload: unknown): asserts workload is Mailer<C> {}
+
+function assertMySqlDatabase<C>(
+	workload: unknown,
+): asserts workload is MySqlDatabase<C> {}
