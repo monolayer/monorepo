@@ -6,7 +6,7 @@ import { type Workload } from "~sidecar/workloads/workload.js";
  *
  * @group Test Helpers
  */
-export async function startTestContainer(
+export async function startWorkflowTestContainer(
 	/**
 	 * Workload to launch a test container.
 	 */

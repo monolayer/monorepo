@@ -11,4 +11,4 @@ export {
 export type { Workload } from "~sidecar/workloads/workload.js";
 
 export * from "./testing/mailpit-api/api.js";
-export { startTestContainer } from "./testing/start-test-container.js";
+export { startWorkflowTestContainer } from "./testing/start-test-container.js";
