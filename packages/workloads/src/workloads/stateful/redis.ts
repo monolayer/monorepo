@@ -9,9 +9,9 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
  * import { Redis } from "@monolayer/sidecar";
  * import { createClient } from "redis";
  *
- * const redis = new Redis("redis-cache", (connectionStringEnvVar) =>
+ * const redis = new Redis("redis-cache", (envVarName) =>
  *   createClient({
- *     url: process.env[connectionStringEnvVar],
+ *     url: process.env[envVarName],
  *   }).on("error", (err) => console.error("Redis Client Error", err)),
  * );
  * ```

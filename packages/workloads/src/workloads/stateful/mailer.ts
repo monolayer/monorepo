@@ -8,11 +8,21 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
  * ```ts
  * import { Mailer } from "@monolayer/sidecar";
  * import nodemailer from 'nodemailer';
- * const mailer = new Mailer("transactional", (connectionStringEnvVar) =>
+ *
+ * const mailer = new Mailer("transactional", (envVarName) =>
  *   nodemailer.createTransport(
- *     process.env[connectionStringEnvVar]
+ *     process.env[envVarName]
  *   ),
  * );
+ *
+ * // Sending an email
+ * await mailer.client.sendMail({
+ *   from: "sender@example.com",
+ *   to: "recipient@example.com",
+ *   subject: "Message in a bottle",
+ *   text: "I hope this message gets there!",
+ * });
+
  * ```
  *
  * @typeParam C - Client type

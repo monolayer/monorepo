@@ -12,8 +12,8 @@ import { Database } from "~sidecar/workloads/stateful/database.js";
  * export const db = new MySqlDatabase(
  *   "app-db",
  *   	"mysql-db",
- *   (connectionStringEnvVar) =>
- *     await mysql.createConnection(process.env[connectionStringEnvVar]!)
+ *   async (envVarName) =>
+ *     await mysql.createConnection(process.env[envVarName]!)
  * );
  * ```
  *

@@ -13,7 +13,6 @@ test("Mailer client commands against test container", async ({
 	const mailer = new Mailer("test-mailer-send", (connectionStringEnvVar) =>
 		nodemailer.createTransport(process.env[connectionStringEnvVar]),
 	);
-
 	const container = new MailerContainer(mailer);
 	const startedContainer = await startContainer(container);
 

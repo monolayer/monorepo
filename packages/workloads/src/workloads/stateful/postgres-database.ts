@@ -11,7 +11,7 @@ import { Database } from "~sidecar/workloads/stateful/database.js";
  *
  * export const db = new PostgreSQL(
  *   "app-db",
- *   (connectionStringEnvVar) =>
+ *   (envVarName) =>
  *     new pg.Pool({
  *       connectionString: process.env[connectionStringEnvVar],
  *     }),
