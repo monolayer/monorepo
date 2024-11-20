@@ -12,7 +12,7 @@ import { Database } from "~workloads/workloads/stateful/database.js";
  *
  * @example
  * ```ts
- * import { PostgreSQL } from "@monolayer/sidecar";
+ * import { PostgreSQL } from "@monolayer/workloads";
  * import pg from "pg";
  *
  * export const db = new PostgreSQL(

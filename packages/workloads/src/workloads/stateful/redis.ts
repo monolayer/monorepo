@@ -6,7 +6,7 @@ import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/statef
  *
  * @example
  * ```ts
- * import { Redis } from "@monolayer/sidecar";
+ * import { Redis } from "@monolayer/workloads";
  * import { createClient } from "redis";
  *
  * const redis = new Redis("redis-cache", (envVarName) =>

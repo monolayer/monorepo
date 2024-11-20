@@ -6,7 +6,7 @@ import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/statef
  *
  * @example
  * ```ts
- * import { Mailer } from "@monolayer/sidecar";
+ * import { Mailer } from "@monolayer/workloads";
  * import nodemailer from 'nodemailer';
  *
  * const mailer = new Mailer("transactional", (envVarName) =>

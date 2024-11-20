@@ -12,7 +12,7 @@ import { Database } from "~workloads/workloads/stateful/database.js";
  *
  * @example
  * ```ts
- * import { MySqlDatabase } from "@monolayer/sidecar";
+ * import { MySqlDatabase } from "@monolayer/workloads";
  * import mysql from 'mysql2/promise';
  *
  * export const db = new MySqlDatabase(

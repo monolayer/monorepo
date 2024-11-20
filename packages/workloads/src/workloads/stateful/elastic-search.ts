@@ -10,7 +10,7 @@ import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/statef
  *
  * @example
  * ```ts
- * import { ElasticSearch } from "@monolayer/sidecar";
+ * import { ElasticSearch } from "@monolayer/workloads";
  * import { Client } from "@elastic/elasticsearch';
  *
  * const elastic = new ElasticSearch("products", (envVarName) =>
