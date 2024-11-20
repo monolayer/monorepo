@@ -21,7 +21,6 @@ const mySqlContainerSpec = {
 	 *
 	 */
 	portsToExpose: [MYSQL_PORT],
-
 	environment: {
 		MYSQL_ROOT_PASSWORD: "test",
 	},
@@ -33,7 +32,7 @@ const mySqlContainerSpec = {
 		],
 		interval: 1000,
 		retries: 5,
-		startPeriod: 3000,
+		startPeriod: 6000,
 	} satisfies HealthCheck,
 };
 
