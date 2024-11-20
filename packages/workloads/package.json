@@ -16,7 +16,7 @@
 		"workloads": "dist/esm/bin/cli.js"
 	},
 	"exports": {
-		"./workloads": {
+		".": {
 			"import": {
 				"types": "./dist/esm/workloads.d.ts",
 				"default": "./dist/esm/workloads.js"
