@@ -3,8 +3,8 @@
 layout: home
 
 hero:
-  name: "Sidecar"
-  text: "A modern backend framework"
+  name: "Workloads"
+  text: "The backend sidecar framework"
   tagline: My great project tagline
   actions:
     - theme: brand

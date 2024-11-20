@@ -1,8 +1,8 @@
 import { defineConfig } from "vitepress";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-	title: "Sidecar",
-	description: "A modern backend framework",
+	title: "Workloads",
+	description: "The backend sidecar framework",
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config
 		nav: [
