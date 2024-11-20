@@ -12,7 +12,6 @@ export abstract class StatefulWorkload extends Workload {
 }
 
 /**
- * @internal
  * @typeParam C - Client type
  */
 export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
