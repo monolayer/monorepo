@@ -1,5 +1,5 @@
 import mysql from "mysql2/promise";
-import type { MySqlDatabase } from "~workloads/workloads.js";
+import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 
 /**
  * Truncates all the tables in a {@link MySqlDatabase} workload.
