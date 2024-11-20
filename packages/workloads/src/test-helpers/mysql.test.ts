@@ -1,7 +1,7 @@
 import mysql from "mysql2/promise";
 import { assert } from "vitest";
 import { getExistingContainer } from "~sidecar/containers/admin/introspection.js";
-import { startTestContainer } from "~sidecar/containers/start-test-container.js";
+import { startTestContainer } from "~sidecar/containers/admin/start-test-container.js";
 import { truncateMySqlTables } from "~sidecar/test-helpers/mysql.js";
 import { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 import { test } from "~test/__setup__/container-test.js";

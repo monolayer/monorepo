@@ -11,4 +11,4 @@ export { flushRedis } from "~sidecar/test-helpers/redis.js";
 export {
 	startTestContainer,
 	startTestContainers,
-} from "./containers/start-test-container.js";
+} from "./containers/admin/start-test-container.js";
