@@ -16,7 +16,7 @@ test("PostgreSQL client commands against test container", async ({
 			}),
 	});
 	const container = new PostgreSQLContainer(postgreSQL);
-	const startedContainer = await startContainer(container);
+	const startedContainer = await startContainer(container, false);
 	containers.push(startedContainer);
 
 	const adminPool = new pg.Pool({

@@ -49,12 +49,14 @@ test(
 		});
 
 		const container = new ElasticSearchContainer(redisWorkload);
+		console.log("STARTING", new Date());
 		const startedContainer = await startContainer(container);
+		console.log("STARTED", new Date());
 		containers.push(startedContainer);
 		await assertContainerImage({
 			workload: redisWorkload,
 			expectedImage: "elasticsearch:7.17.7",
 		});
-		await startedContainer.stop();
+		console.log("FINISH", new Date());
 	},
 );
