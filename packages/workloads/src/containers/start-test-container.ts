@@ -15,7 +15,7 @@ export async function startTestContainer(
 	workload.containerOptions({
 		startOptions: defaultTestStartOptions,
 	});
-	containerStarter.mode = "dev";
+	containerStarter.mode = "test";
 	const startedTestContainer = await containerStarter.startContainerForWorkload(
 		workload,
 		{
