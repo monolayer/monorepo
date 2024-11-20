@@ -12,15 +12,7 @@ export function stop(program: Command) {
 		)
 		.action(async (opts) => {
 			const workloads = await importWorkloads(opts.folder);
-			const workloadsToStop = [
-				...workloads.Mailer,
-				...workloads.PostgresDatabase,
-				...workloads.Redis,
-				...workloads.MySqlDatabase,
-				...workloads.ElasticSearch,
-				...workloads.MongoDb,
-			];
-			for (const workload of workloadsToStop) {
+			for (const workload of workloads) {
 				await stopDevContainer(workload);
 			}
 		});

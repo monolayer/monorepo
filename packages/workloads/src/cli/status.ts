@@ -18,14 +18,7 @@ export function status(program: Command) {
 		.action(async (opts) => {
 			const workloads = await importWorkloads(opts.folder);
 			const statuses = await Promise.all(
-				[
-					...workloads.Mailer,
-					...workloads.PostgresDatabase,
-					...workloads.MySqlDatabase,
-					...workloads.Redis,
-					...workloads.ElasticSearch,
-					...workloads.MongoDb,
-				].map(async (w) => workloadContainerStatus(w)),
+				workloads.map(async (w) => workloadContainerStatus(w)),
 			);
 			printStatus(statuses);
 		});

@@ -39,14 +39,7 @@ export async function startTestContainers(
 	folder: string,
 ) {
 	const workloads = await importWorkloads(folder);
-	for (const workload of [
-		...workloads.Mailer,
-		...workloads.PostgresDatabase,
-		...workloads.Redis,
-		...workloads.MySqlDatabase,
-		...workloads.ElasticSearch,
-		...workloads.MongoDb,
-	]) {
+	for (const workload of workloads) {
 		await startTestContainer(workload);
 	}
 }

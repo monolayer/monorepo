@@ -1,7 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
 import { startDevContainer } from "~sidecar/containers/admin/dev-container.js";
 import { type EnvVar } from "~sidecar/containers/admin/update-dotenv-file.js";
-import type { StatefulWorkloadWithClient } from "~sidecar/workloads.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
 
 export function dev(program: Command) {
@@ -16,28 +15,13 @@ export function dev(program: Command) {
 			const workloads = await importWorkloads(opts.folder);
 			const envVars: EnvVar[] = [];
 
-			for (const workload of [
-				...workloads.Mailer,
-				...workloads.PostgresDatabase,
-				...workloads.Redis,
-				...workloads.MySqlDatabase,
-				...workloads.ElasticSearch,
-				...workloads.MongoDb,
-			]) {
-				await startStatefulWorkloadWithConnectionString(workload, envVars);
+			for (const workload of workloads) {
+				await startDevContainer(workload);
+				const name = workload.connectionStringEnvVar;
+				envVars.push({
+					name,
+					value: process.env[name]!,
+				});
 			}
 		});
-}
-
-async function startStatefulWorkloadWithConnectionString(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	workload: StatefulWorkloadWithClient<any>,
-	envVars: EnvVar[],
-) {
-	await startDevContainer(workload);
-	const name = workload.connectionStringEnvVar;
-	envVars.push({
-		name,
-		value: process.env[name]!,
-	});
 }
