@@ -34,9 +34,9 @@ export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
 	#clientConstructor: (connectionStringVar: string) => C;
 
 	/**
-	 * Return the client by calling the client constructor function.
+	 * Returns the client by calling the client constructor function.
 	 *
-	 * The client is memoized.
+	 * Lazy-loaded and memoized.
 	 */
 	get client(): C {
 		if (this.#client) {
@@ -52,7 +52,7 @@ export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
 	abstract get connStringComponents(): string[];
 
 	/**
-	 * Environment variable that should hold the workload connection string.
+	 * Returns the unique environment variable name that should hold the connection string.
 	 */
 	connectionStringEnvVar() {
 		return snakeCase(
