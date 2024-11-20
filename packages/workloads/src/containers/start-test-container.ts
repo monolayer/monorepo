@@ -44,6 +44,7 @@ export async function startTestContainers(
 		...workloads.PostgresDatabase,
 		...workloads.Redis,
 		...workloads.MySqlDatabase,
+		...workloads.ElasticSearch,
 	]) {
 		await startTestContainer(workload);
 	}

@@ -21,6 +21,7 @@ export function dev(program: Command) {
 				...workloads.PostgresDatabase,
 				...workloads.Redis,
 				...workloads.MySqlDatabase,
+				...workloads.ElasticSearch,
 			]) {
 				await startStatefulWorkloadWithConnectionString(workload, envVars);
 			}

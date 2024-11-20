@@ -17,6 +17,7 @@ export function stop(program: Command) {
 				...workloads.PostgresDatabase,
 				...workloads.Redis,
 				...workloads.MySqlDatabase,
+				...workloads.ElasticSearch,
 			];
 			for (const workload of workloadsToStop) {
 				await stopDevContainer(workload);

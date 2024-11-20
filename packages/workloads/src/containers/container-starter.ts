@@ -4,10 +4,12 @@ import {
 	createMysqlDatabase,
 	createPostgresDatabase,
 } from "~sidecar/containers/admin/create-database.js";
+import { ElasticSearchContainer } from "~sidecar/containers/elastic-search.js";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { MySQLContainer } from "~sidecar/containers/mysql.js";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
 import { RedisContainer } from "~sidecar/containers/redis.js";
+import type { ElasticSearch } from "~sidecar/workloads/stateful/elastic-search.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 import type { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
@@ -46,6 +48,10 @@ class ContainerStarter {
 				assertPostgresDatabase(workload);
 				container = await this.startPostgres(workload, initAfterLaunch);
 				break;
+			case "ElasticSearch":
+				assertElasticSearch(workload);
+				container = await this.startElasticSearch(workload);
+				break;
 		}
 		return container;
 	}
@@ -77,6 +83,11 @@ class ContainerStarter {
 		const container = new MailerContainer(workload);
 		return await container.start();
 	}
+
+	async startElasticSearch<C>(workload: ElasticSearch<C>) {
+		const container = new ElasticSearchContainer(workload);
+		return await container.start();
+	}
 }
 
 export const containerStarter = remember(
@@ -85,6 +96,10 @@ export const containerStarter = remember(
 );
 
 function assertRedis<C>(workload: unknown): asserts workload is Redis<C> {}
+
+function assertElasticSearch<C>(
+	workload: unknown,
+): asserts workload is ElasticSearch<C> {}
 
 function assertPostgresDatabase<C>(
 	workload: unknown,

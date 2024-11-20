@@ -3,8 +3,9 @@ import { Effect } from "effect";
 import fs from "fs/promises";
 import path from "node:path";
 import { cwd } from "node:process";
-import type { MySqlDatabase } from "~sidecar/workloads.js";
+import type { ElasticSearch } from "~sidecar/workloads/stateful/elastic-search.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
+import type { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import type { Redis } from "~sidecar/workloads/stateful/redis.js";
 
@@ -20,6 +21,7 @@ export async function importWorkloads(workloadsFolder: string) {
 		PostgresDatabase: [],
 		Redis: [],
 		MySqlDatabase: [],
+		ElasticSearch: [],
 	};
 
 	for (const fileName of files) {
@@ -49,6 +51,8 @@ export interface WorkloadByKind {
 	Redis: Array<Redis<any>>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	MySqlDatabase: Array<MySqlDatabase<any>>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	ElasticSearch: Array<ElasticSearch<any>>;
 }
 
 const validConstructor = [
@@ -56,6 +60,7 @@ const validConstructor = [
 	"Redis",
 	"Mailer",
 	"MySqlDatabase",
+	"ElasticSearch",
 ];
 
 function validWorkload(workloadConstructor: string) {

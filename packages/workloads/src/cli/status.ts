@@ -23,6 +23,7 @@ export function status(program: Command) {
 					...workloads.PostgresDatabase,
 					...workloads.MySqlDatabase,
 					...workloads.Redis,
+					...workloads.ElasticSearch,
 				].map(async (w) => workloadContainerStatus(w)),
 			);
 			printStatus(statuses);
