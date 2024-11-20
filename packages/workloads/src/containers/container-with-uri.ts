@@ -1,5 +1,4 @@
 import { type StartedTestContainer } from "testcontainers";
-import type { WorkloadContainerDefinition } from "~sidecar/containers/container.js";
 import { WorkloadContainer } from "~sidecar/containers/container.js";
 import type { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.js";
 
@@ -7,11 +6,8 @@ export abstract class ContainerWithURI extends WorkloadContainer {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(
-		workload: StatefulWorkload & { connectionStringEnvVar: string },
-		containerSpec: WorkloadContainerDefinition,
-	) {
-		super(workload, containerSpec);
+	constructor(workload: StatefulWorkload & { connectionStringEnvVar: string }) {
+		super(workload);
 	}
 
 	override async start() {

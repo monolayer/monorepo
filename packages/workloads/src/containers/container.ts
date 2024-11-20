@@ -54,13 +54,11 @@ export const CONTAINER_LABEL_ORG = "org.monolayer-sidecar";
 /**
  * @internal
  */
-export class WorkloadContainer {
+export abstract class WorkloadContainer {
+	abstract definition: WorkloadContainerDefinition;
 	startedContainer?: StartedTestContainer;
 
-	constructor(
-		public workload: Workload,
-		public containerOptions: WorkloadContainerDefinition,
-	) {}
+	constructor(public workload: Workload) {}
 
 	/**
 	 * Starts the container.
@@ -86,12 +84,10 @@ export class WorkloadContainer {
 	get mappedPorts() {
 		if (this.startedContainer) {
 			const startedContainer = this.startedContainer;
-			return (this.containerOptions.portsToExpose ?? []).map<MappedPort>(
-				(port) => ({
-					container: port,
-					host: startedContainer.getMappedPort(port),
-				}),
-			);
+			return (this.definition.portsToExpose ?? []).map<MappedPort>((port) => ({
+				container: port,
+				host: startedContainer.getMappedPort(port),
+			}));
 		}
 	}
 
@@ -102,7 +98,7 @@ export class WorkloadContainer {
 		};
 		const container = new GenericContainer(
 			this.workload.containerOverrides?.definition?.containerImage ??
-				this.containerOptions.containerImage,
+				this.definition.containerImage,
 		);
 		container.withLabels({
 			[CONTAINER_LABEL_WORKLOAD_ID]: kebabCase(
@@ -111,23 +107,21 @@ export class WorkloadContainer {
 			[CONTAINER_LABEL_ORG]: "true",
 		});
 
-		container.withEnvironment(this.containerOptions.environment);
+		container.withEnvironment(this.definition.environment);
 
-		if (this.containerOptions.waitStrategy) {
-			container.withWaitStrategy(this.containerOptions.waitStrategy);
+		if (this.definition.waitStrategy) {
+			container.withWaitStrategy(this.definition.waitStrategy);
 		}
-		if (this.containerOptions.startupTimeout) {
-			container.withStartupTimeout(this.containerOptions.startupTimeout);
+		if (this.definition.startupTimeout) {
+			container.withStartupTimeout(this.definition.startupTimeout);
 		}
-		if (this.containerOptions.healthCheck) {
-			container.withHealthCheck(this.containerOptions.healthCheck);
+		if (this.definition.healthCheck) {
+			container.withHealthCheck(this.definition.healthCheck);
 		}
-		if (this.containerOptions.contentsToCopy) {
-			container.withCopyContentToContainer(
-				this.containerOptions.contentsToCopy,
-			);
+		if (this.definition.contentsToCopy) {
+			container.withCopyContentToContainer(this.definition.contentsToCopy);
 		}
-		for (const portToExpose of this.containerOptions.portsToExpose ?? []) {
+		for (const portToExpose of this.definition.portsToExpose ?? []) {
 			container.withExposedPorts({
 				container: portToExpose,
 				host:

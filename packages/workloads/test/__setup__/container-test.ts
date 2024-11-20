@@ -39,8 +39,8 @@ export async function startContainer(
 	quickStart: boolean = true,
 ) {
 	if (quickStart) {
-		container.containerOptions = {
-			...container.containerOptions,
+		container.definition = {
+			...container.definition,
 			healthCheck: undefined,
 			waitStrategy: Wait.forLogMessage(""),
 		};

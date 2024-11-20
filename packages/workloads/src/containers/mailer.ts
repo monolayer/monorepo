@@ -3,12 +3,6 @@ import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
 import type { WorkloadContainerDefinition } from "~sidecar/containers/container.js";
 import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 
-const mailerContainerSpec: WorkloadContainerDefinition = {
-	containerImage: "axllent/mailpit:v1.21.3",
-	portsToExpose: [1025, 8025],
-	environment: {},
-};
-
 /**
  * Container for Mailer
  */
@@ -17,8 +11,14 @@ export class MailerContainer<C> extends ContainerWithURI {
 	 * @hideconstructor
 	 */
 	constructor(workload: Mailer<C>) {
-		super(workload, mailerContainerSpec);
+		super(workload);
 	}
+
+	definition: WorkloadContainerDefinition = {
+		containerImage: "axllent/mailpit:v1.21.3",
+		portsToExpose: [1025, 8025],
+		environment: {},
+	};
 
 	/**
 	 * @returns The Mailer web admin interface URL or `undefined`
