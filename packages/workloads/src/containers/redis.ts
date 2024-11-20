@@ -15,7 +15,7 @@ const redisContainerSpec = {
 /**
  * Container for Redis
  *
- * @internals
+ * @internal
  */
 export class RedisContainer<C> extends ContainerWithURI {
 	constructor(workload: Redis<C>) {
