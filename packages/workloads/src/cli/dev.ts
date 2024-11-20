@@ -22,6 +22,7 @@ export function dev(program: Command) {
 				...workloads.Redis,
 				...workloads.MySqlDatabase,
 				...workloads.ElasticSearch,
+				...workloads.MongoDb,
 			]) {
 				await startStatefulWorkloadWithConnectionString(workload, envVars);
 			}

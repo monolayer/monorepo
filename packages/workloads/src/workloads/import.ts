@@ -5,6 +5,7 @@ import path from "node:path";
 import { cwd } from "node:process";
 import type { ElasticSearch } from "~sidecar/workloads/stateful/elastic-search.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
+import type { MongoDb } from "~sidecar/workloads/stateful/mongo-db.js";
 import type { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import type { Redis } from "~sidecar/workloads/stateful/redis.js";
@@ -22,6 +23,7 @@ export async function importWorkloads(workloadsFolder: string) {
 		Redis: [],
 		MySqlDatabase: [],
 		ElasticSearch: [],
+		MongoDb: [],
 	};
 
 	for (const fileName of files) {
@@ -53,6 +55,8 @@ export interface WorkloadByKind {
 	MySqlDatabase: Array<MySqlDatabase<any>>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	ElasticSearch: Array<ElasticSearch<any>>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	MongoDb: Array<MongoDb<any>>;
 }
 
 const validConstructor = [
@@ -61,6 +65,7 @@ const validConstructor = [
 	"Mailer",
 	"MySqlDatabase",
 	"ElasticSearch",
+	"MongoDb",
 ];
 
 function validWorkload(workloadConstructor: string) {

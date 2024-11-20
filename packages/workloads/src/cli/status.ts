@@ -24,6 +24,7 @@ export function status(program: Command) {
 					...workloads.MySqlDatabase,
 					...workloads.Redis,
 					...workloads.ElasticSearch,
+					...workloads.MongoDb,
 				].map(async (w) => workloadContainerStatus(w)),
 			);
 			printStatus(statuses);

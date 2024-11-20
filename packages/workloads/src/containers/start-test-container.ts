@@ -45,6 +45,7 @@ export async function startTestContainers(
 		...workloads.Redis,
 		...workloads.MySqlDatabase,
 		...workloads.ElasticSearch,
+		...workloads.MongoDb,
 	]) {
 		await startTestContainer(workload);
 	}

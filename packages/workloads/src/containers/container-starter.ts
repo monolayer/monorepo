@@ -6,11 +6,13 @@ import {
 } from "~sidecar/containers/admin/create-database.js";
 import { ElasticSearchContainer } from "~sidecar/containers/elastic-search.js";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
+import { MongoDbContainer } from "~sidecar/containers/mongo-db.js";
 import { MySQLContainer } from "~sidecar/containers/mysql.js";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
 import { RedisContainer } from "~sidecar/containers/redis.js";
 import type { ElasticSearch } from "~sidecar/workloads/stateful/elastic-search.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
+import type { MongoDb } from "~sidecar/workloads/stateful/mongo-db.js";
 import type { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import type { Redis } from "~sidecar/workloads/stateful/redis.js";
@@ -52,6 +54,10 @@ class ContainerStarter {
 				assertElasticSearch(workload);
 				container = await this.startElasticSearch(workload);
 				break;
+			case "MongoDb":
+				assertMongoDb(workload);
+				container = await this.startMongoDb(workload);
+				break;
 		}
 		return container;
 	}
@@ -88,6 +94,11 @@ class ContainerStarter {
 		const container = new ElasticSearchContainer(workload);
 		return await container.start();
 	}
+
+	async startMongoDb<C>(workload: MongoDb<C>) {
+		const container = new MongoDbContainer(workload);
+		return await container.start();
+	}
 }
 
 export const containerStarter = remember(
@@ -100,6 +111,8 @@ function assertRedis<C>(workload: unknown): asserts workload is Redis<C> {}
 function assertElasticSearch<C>(
 	workload: unknown,
 ): asserts workload is ElasticSearch<C> {}
+
+function assertMongoDb<C>(workload: unknown): asserts workload is MongoDb<C> {}
 
 function assertPostgresDatabase<C>(
 	workload: unknown,
