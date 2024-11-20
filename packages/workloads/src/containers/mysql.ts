@@ -6,21 +6,8 @@ import type { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.j
 const MYSQL_PORT = 3306;
 
 const mySqlContainerSpec = {
-	/**
-	 * Docker image for container
-	 *
-	 * @defaultValue `postgres:16.5-alpine3.20`
-	 */
 	containerImage: "mysql:8.4.3",
-
-	/**
-	 * Container ports to export to the host.
-	 *
-	 * The published ports to the host will be assigned randomly when starting the container
-	 * and they can be accessed through {@link Container.mappedPorts}
-	 *
-	 */
-	portsToExpose: [MYSQL_PORT],
+	portsToExpose: [3306],
 	environment: {
 		MYSQL_ROOT_PASSWORD: "test",
 	},
