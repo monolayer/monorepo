@@ -25,20 +25,11 @@ const mySqlContainerSpec = {
 	environment: {
 		MYSQL_ROOT_PASSWORD: "test",
 	},
-
 	waitStrategy: Wait.forHealthCheck(),
-
 	healthCheck: {
 		test: [
-			"CMD",
-			"mysql",
-			"-h",
-			"127.0.0.1",
-			"-u",
-			"root",
-			`-ptest`,
-			"-e",
-			`SELECT CURRENT_USER();`,
+			"CMD-SHELL",
+			"mysqladmin -h 'localhost' -u root -ptest ping --silent",
 		],
 		interval: 1000,
 		retries: 5,
