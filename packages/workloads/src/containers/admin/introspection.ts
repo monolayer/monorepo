@@ -5,13 +5,9 @@ import type { Workload } from "~sidecar/workloads.js";
 
 export async function getExistingContainer(workload: Workload) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
-	const id =
-		workload.constructor.name === "Bucket"
-			? "localstack-local-stack-testing"
-			: kebabCase(`${workload.constructor.name.toLowerCase()}-${workload.id}`);
 	return await containerRuntimeClient.container.fetchByLabel(
 		CONTAINER_LABEL_WORKLOAD_ID,
-		id,
+		kebabCase(`${workload.constructor.name.toLowerCase()}-${workload.id}`),
 		{ status: ["running"] },
 	);
 }

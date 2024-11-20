@@ -3,11 +3,9 @@ import { createClient } from "redis";
 import { assert } from "vitest";
 import { getExistingContainer } from "~sidecar/containers/admin/introspection.js";
 import { startTestContainer } from "~sidecar/containers/start-test-container.js";
-import { Bucket } from "~sidecar/workloads/stateful/bucket.js";
 import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import { Redis } from "~sidecar/workloads/stateful/redis.js";
 import {
-	assertBucket,
 	assertContainerImage,
 	assertContainerLabel,
 	assertDatabase,
@@ -35,23 +33,6 @@ test("launches redis", { sequential: true }, async ({ containers }) => {
 		workload: redisWorkload,
 		expectedImage: "redis:7.4.1-alpine3.20",
 	});
-});
-
-test("creates buckets", { sequential: true }, async ({ containers }) => {
-	const names = [
-		"my-bucket-test-1",
-		"my-bucket-test-2",
-		"my-bucket-test-3",
-		"my-bucket-test-4",
-	];
-	for (const name of names) {
-		const bucketWorkload = new Bucket(name);
-		await startTestContainer(bucketWorkload);
-		const container = await getExistingContainer(bucketWorkload);
-		assert(container);
-		containers.push(container);
-		await assertBucket("my-bucket-test-1", bucketWorkload);
-	}
 });
 
 test(

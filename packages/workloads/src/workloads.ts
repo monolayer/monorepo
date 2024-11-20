@@ -1,5 +1,4 @@
 export type { StartOptions } from "~sidecar/containers/container.js";
-export { Bucket } from "~sidecar/workloads/stateful/bucket.js";
 export type {
 	Database,
 	DatabaseOptions,

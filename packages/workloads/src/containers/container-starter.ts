@@ -1,17 +1,13 @@
 import { remember } from "@epic-web/remember";
 import type { StartedTestContainer } from "testcontainers";
-import { createBucket } from "~sidecar/containers/admin/create-bucket.js";
 import {
 	createMysqlDatabase,
 	createPostgresDatabase,
 } from "~sidecar/containers/admin/create-database.js";
-import { LocalStackContainer } from "~sidecar/containers/local-stack.js";
 import { MailerContainer } from "~sidecar/containers/mailer.js";
 import { MySQLContainer } from "~sidecar/containers/mysql.js";
 import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
 import { RedisContainer } from "~sidecar/containers/redis.js";
-import type { Bucket } from "~sidecar/workloads/stateful/bucket.js";
-import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 import type { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
@@ -37,10 +33,6 @@ class ContainerStarter {
 			case "Redis":
 				assertRedis(workload);
 				container = await this.startRedis(workload);
-				break;
-			case "Bucket":
-				assertBucket(workload);
-				container = await this.startLocalStack(workload, initAfterLaunch);
 				break;
 			case "Mailer":
 				assertMailer(workload);
@@ -85,29 +77,6 @@ class ContainerStarter {
 		const container = new MailerContainer(workload);
 		return await container.start();
 	}
-
-	async startLocalStack(workload: Bucket, initialize: boolean) {
-		const localStackContainer = await this.startLocalStackContainer();
-		if (initialize) {
-			await createBucket(workload.id, localStackContainer);
-		}
-		return localStackContainer.startedContainer;
-	}
-
-	#localStackContainer?: LocalStackContainer;
-
-	async startLocalStackContainer() {
-		if (this.#localStackContainer === undefined) {
-			const localStackWorkload = new LocalStack("local-stack-testing");
-			localStackWorkload.mode(this.mode);
-			this.#localStackContainer = new LocalStackContainer(
-				localStackWorkload,
-				this.mode !== "test",
-			);
-			await this.#localStackContainer.start();
-		}
-		return this.#localStackContainer;
-	}
 }
 
 export const containerStarter = remember(
@@ -116,8 +85,6 @@ export const containerStarter = remember(
 );
 
 function assertRedis<C>(workload: unknown): asserts workload is Redis<C> {}
-
-function assertBucket(workload: unknown): asserts workload is Bucket {}
 
 function assertPostgresDatabase<C>(
 	workload: unknown,

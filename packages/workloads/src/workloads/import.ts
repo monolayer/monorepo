@@ -4,7 +4,6 @@ import fs from "fs/promises";
 import path from "node:path";
 import { cwd } from "node:process";
 import type { MySqlDatabase } from "~sidecar/workloads.js";
-import type { Bucket } from "~sidecar/workloads/stateful/bucket.js";
 import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
 import type { Redis } from "~sidecar/workloads/stateful/redis.js";
@@ -19,7 +18,6 @@ export async function importWorkloads(workloadsFolder: string) {
 	const workloads: WorkloadByKind = {
 		Mailer: [],
 		PostgresDatabase: [],
-		Bucket: [],
 		Redis: [],
 		MySqlDatabase: [],
 	};
@@ -49,7 +47,6 @@ export interface WorkloadByKind {
 	PostgresDatabase: Array<PostgresDatabase<any>>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Redis: Array<Redis<any>>;
-	Bucket: Array<Bucket>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	MySqlDatabase: Array<MySqlDatabase<any>>;
 }
@@ -57,7 +54,6 @@ export interface WorkloadByKind {
 const validConstructor = [
 	"PostgresDatabase",
 	"Redis",
-	"Bucket",
 	"Mailer",
 	"MySqlDatabase",
 ];

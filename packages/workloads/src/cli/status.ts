@@ -6,7 +6,6 @@ import {
 } from "~sidecar/containers/admin/introspection.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
 import type { Database } from "~sidecar/workloads/stateful/database.js";
-import { LocalStack } from "~sidecar/workloads/stateful/local-stack.js";
 
 export function status(program: Command) {
 	return program
@@ -24,9 +23,6 @@ export function status(program: Command) {
 					...workloads.PostgresDatabase,
 					...workloads.MySqlDatabase,
 					...workloads.Redis,
-					...(workloads.Bucket.length !== 0
-						? [new LocalStack("local-stack-dev")]
-						: []),
 				].map(async (w) => workloadContainerStatus(w)),
 			);
 			printStatus(statuses);
