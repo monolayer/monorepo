@@ -9,7 +9,11 @@ import {
 	type StartedTestContainer,
 	type WaitStrategy,
 } from "testcontainers";
-import type { Environment, HealthCheck } from "testcontainers/build/types.js";
+import type {
+	ContentToCopy,
+	Environment,
+	HealthCheck,
+} from "testcontainers/build/types.js";
 import type { Workload } from "~sidecar/workloads.js";
 
 export interface StartOptions {
@@ -118,6 +122,11 @@ export class WorkloadContainer {
 		if (this.containerOptions.healthCheck) {
 			container.withHealthCheck(this.containerOptions.healthCheck);
 		}
+		if (this.containerOptions.contentsToCopy) {
+			container.withCopyContentToContainer(
+				this.containerOptions.contentsToCopy,
+			);
+		}
 		for (const portToExpose of this.containerOptions.portsToExpose ?? []) {
 			container.withExposedPorts({
 				container: portToExpose,
@@ -163,6 +172,7 @@ export interface WorkloadContainerDefinition {
 	waitStrategy?: WaitStrategy;
 	startupTimeout?: number;
 	healthCheck?: HealthCheck;
+	contentsToCopy?: ContentToCopy[];
 }
 
 export function mergeOptions(
