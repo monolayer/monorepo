@@ -20,6 +20,9 @@ import { Database } from "~sidecar/workloads/stateful/database.js";
  * @typeParam C - Client type
  */
 export class MySqlDatabase<C> extends Database<C> {
+	/**
+	 * @internal
+	 */
 	get connStringComponents() {
 		return ["mysql", this.id, this.databaseName];
 	}

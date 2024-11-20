@@ -19,6 +19,9 @@ import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful
  * @typeParam C - Client type
  */
 export class Redis<C> extends StatefulWorkloadWithClient<C> {
+	/**
+	 * @internal
+	 */
 	get connStringComponents() {
 		return ["redis", this.id];
 	}

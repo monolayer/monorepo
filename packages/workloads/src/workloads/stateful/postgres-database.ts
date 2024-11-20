@@ -21,6 +21,9 @@ import { Database } from "~sidecar/workloads/stateful/database.js";
  * @typeParam C - Client type
  */
 export class PostgresDatabase<C> extends Database<C> {
+	/**
+	 * @internal
+	 */
 	get connStringComponents() {
 		return ["postgres", this.id, this.databaseName];
 	}
