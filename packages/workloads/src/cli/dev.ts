@@ -1,4 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
+import ora from "ora";
+import { spinnerMessage } from "~sidecar/cli/spinner-message.js";
 import { startDevContainer } from "~sidecar/containers/admin/dev-container.js";
 import { type EnvVar } from "~sidecar/containers/admin/update-dotenv-file.js";
 import { importWorkloads } from "~sidecar/workloads/import.js";
@@ -16,7 +18,15 @@ export function dev(program: Command) {
 			const envVars: EnvVar[] = [];
 
 			for (const workload of workloads) {
-				await startDevContainer(workload);
+				const spinner = ora();
+				spinner.start(spinnerMessage(workload, "Start"));
+				try {
+					await startDevContainer(workload);
+				} catch (e) {
+					spinner.fail();
+					throw e;
+				}
+				spinner.succeed();
 				const name = workload.connectionStringEnvVar;
 				envVars.push({
 					name,
