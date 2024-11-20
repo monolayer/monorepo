@@ -31,6 +31,10 @@ export class Mailer<C> extends StatefulWorkloadWithClient<C> {
 	/**
 	 * @internal
 	 */
+	declare _brand: "Mailer";
+	/**
+	 * @internal
+	 */
 	get connStringComponents() {
 		return ["mailer", this.id];
 	}

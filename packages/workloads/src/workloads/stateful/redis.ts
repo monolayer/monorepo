@@ -22,6 +22,10 @@ export class Redis<C> extends StatefulWorkloadWithClient<C> {
 	/**
 	 * @internal
 	 */
+	declare _brand: "Redis";
+	/**
+	 * @internal
+	 */
 	get connStringComponents() {
 		return ["redis", this.id];
 	}

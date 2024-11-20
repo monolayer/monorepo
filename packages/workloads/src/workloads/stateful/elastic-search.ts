@@ -26,6 +26,10 @@ export class ElasticSearch<C> extends StatefulWorkloadWithClient<C> {
 	/**
 	 * @internal
 	 */
+	declare _brand: "ElasticSearch";
+	/**
+	 * @internal
+	 */
 	get connStringComponents() {
 		return ["elastic-search", this.id];
 	}
