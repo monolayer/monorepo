@@ -5,6 +5,9 @@ import {
 	type StartOptions,
 } from "~sidecar/containers/container.js";
 
+/**
+ * @internal
+ */
 export class Workload {
 	/**
 	 * Unique ID
