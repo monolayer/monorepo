@@ -1,9 +1,9 @@
 import pg from "pg";
 import { assert } from "vitest";
-import { getExistingContainer } from "~sidecar/containers/admin/introspection.js";
-import { startTestContainer } from "~sidecar/containers/admin/start-test-container.js";
-import { truncatePostgresTables } from "~sidecar/test-helpers/postgres.js";
-import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
+import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
+import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
+import { truncatePostgresTables } from "~workloads/test-helpers/postgres.js";
+import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { test } from "~test/__setup__/container-test.js";
 import { postgresDatabasePool } from "~test/__setup__/helpers.js";
 

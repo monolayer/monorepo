@@ -1,8 +1,8 @@
 import pg from "pg";
 import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
-import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
-import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
+import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
+import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test("PostgreSQL client commands against test container", async ({

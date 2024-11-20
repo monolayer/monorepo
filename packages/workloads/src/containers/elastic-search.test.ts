@@ -3,8 +3,8 @@ import {
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
-import { ElasticSearchContainer } from "~sidecar/containers/elastic-search.js";
-import { ElasticSearch } from "~sidecar/workloads/stateful/elastic-search.js";
+import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
+import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 const elastic = new ElasticSearch("elastic-test", () => true);

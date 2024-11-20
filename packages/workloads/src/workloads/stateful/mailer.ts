@@ -1,4 +1,4 @@
-import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful-workload.js";
+import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
 
 /**
  * Mailer workload.

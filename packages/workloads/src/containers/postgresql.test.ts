@@ -4,8 +4,8 @@ import {
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
-import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
-import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
+import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
+import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test(

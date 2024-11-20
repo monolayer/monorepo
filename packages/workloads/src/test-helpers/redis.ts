@@ -1,5 +1,5 @@
 import { createClient } from "redis";
-import type { Redis } from "~sidecar/workloads/stateful/redis.js";
+import type { Redis } from "~workloads/workloads/stateful/redis.js";
 
 /**
  * Deletes all the keys of a {@link Redis} workload database.

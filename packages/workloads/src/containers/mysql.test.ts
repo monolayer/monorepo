@@ -4,8 +4,8 @@ import {
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
-import { MySQLContainer } from "~sidecar/containers/mysql.js";
-import { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
+import { MySQLContainer } from "~workloads/containers/mysql.js";
+import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test(

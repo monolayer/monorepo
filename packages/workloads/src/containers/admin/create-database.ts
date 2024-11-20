@@ -1,7 +1,7 @@
 import mysql from "mysql2/promise";
 import pg from "pg";
-import type { MySqlDatabase } from "~sidecar/workloads.js";
-import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
+import type { MySqlDatabase } from "~workloads/workloads.js";
+import type { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 
 export async function createPostgresDatabase<C>(workload: PostgresDatabase<C>) {
 	const client = new pg.Pool({

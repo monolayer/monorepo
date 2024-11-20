@@ -1,6 +1,6 @@
 import { type StartedTestContainer } from "testcontainers";
-import { WorkloadContainer } from "~sidecar/containers/container.js";
-import type { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.js";
+import { WorkloadContainer } from "~workloads/containers/container.js";
+import type { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workload.js";
 
 export abstract class ContainerWithURI extends WorkloadContainer {
 	/**

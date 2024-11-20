@@ -1,5 +1,5 @@
 import pg from "pg";
-import type { PostgresDatabase } from "~sidecar/workloads.js";
+import type { PostgresDatabase } from "~workloads/workloads.js";
 
 /**
  * Truncates all the tables in a {@link PostgresDatabase} workload.

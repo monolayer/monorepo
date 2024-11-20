@@ -1,8 +1,8 @@
 import type { Command } from "@commander-js/extra-typings";
 import ora from "ora";
-import { spinnerMessage } from "~sidecar/cli/spinner-message.js";
-import { stopDevContainer } from "~sidecar/containers/admin/dev-container.js";
-import { importWorkloads } from "~sidecar/workloads/import.js";
+import { spinnerMessage } from "~workloads/cli/spinner-message.js";
+import { stopDevContainer } from "~workloads/containers/admin/dev-container.js";
+import { importWorkloads } from "~workloads/workloads/import.js";
 
 export function stop(program: Command) {
 	return program

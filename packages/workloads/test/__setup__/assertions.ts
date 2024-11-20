@@ -6,9 +6,9 @@ import {
 	type StartedTestContainer,
 } from "testcontainers";
 import { assert } from "vitest";
-import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
-import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
-import type { Workload } from "~sidecar/workloads/workload.js";
+import { CONTAINER_LABEL_WORKLOAD_ID } from "~workloads/containers/container.js";
+import type { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
+import type { Workload } from "~workloads/workloads/workload.js";
 
 export async function assertContainerImage({
 	workload,

@@ -1,6 +1,6 @@
-import { getExistingContainer } from "~sidecar/containers/admin/introspection.js";
-import { containerStarter } from "~sidecar/containers/container-starter.js";
-import { type Workload } from "~sidecar/workloads/workload.js";
+import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
+import { containerStarter } from "~workloads/containers/container-starter.js";
+import { type Workload } from "~workloads/workloads/workload.js";
 /**
  * Launches a dev container for a workload.
  */

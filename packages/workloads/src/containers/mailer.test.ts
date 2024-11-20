@@ -4,8 +4,8 @@ import {
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
-import { MailerContainer } from "~sidecar/containers/mailer.js";
-import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
+import { MailerContainer } from "~workloads/containers/mailer.js";
+import { Mailer } from "~workloads/workloads/stateful/mailer.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 const mailer = new Mailer("test-mailer", (connectionStringEnvVar) =>

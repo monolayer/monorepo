@@ -1,7 +1,7 @@
 import { kebabCase } from "case-anything";
 import { getContainerRuntimeClient } from "testcontainers";
-import { CONTAINER_LABEL_WORKLOAD_ID } from "~sidecar/containers/container.js";
-import type { Workload } from "~sidecar/workloads.js";
+import { CONTAINER_LABEL_WORKLOAD_ID } from "~workloads/containers/container.js";
+import type { Workload } from "~workloads/workloads.js";
 
 export async function getExistingContainer(workload: Workload) {
 	const containerRuntimeClient = await getContainerRuntimeClient();

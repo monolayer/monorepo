@@ -4,8 +4,8 @@ import { assert } from "vitest";
 import {
 	WorkloadContainer,
 	type WorkloadContainerDefinition,
-} from "~sidecar/containers/container.js";
-import { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.js";
+} from "~workloads/containers/container.js";
+import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workload.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 class TestWorkload extends StatefulWorkload {}

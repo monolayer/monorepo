@@ -3,8 +3,8 @@ import {
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
-import { MongoDbContainer } from "~sidecar/containers/mongo-db.js";
-import { MongoDb } from "~sidecar/workloads/stateful/mongo-db.js";
+import { MongoDbContainer } from "~workloads/containers/mongo-db.js";
+import { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test("MongoDb container", { sequential: true }, async ({ containers }) => {

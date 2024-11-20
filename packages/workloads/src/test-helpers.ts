@@ -3,11 +3,11 @@ export {
 	messageHtml,
 	messageText,
 	messages,
-} from "~sidecar/test-helpers/mailer.js";
-export * from "~sidecar/test-helpers/mailpit/mailpit.js";
-export { truncateMySqlTables } from "~sidecar/test-helpers/mysql.js";
-export { truncatePostgresTables } from "~sidecar/test-helpers/postgres.js";
-export { flushRedis } from "~sidecar/test-helpers/redis.js";
+} from "~workloads/test-helpers/mailer.js";
+export * from "~workloads/test-helpers/mailpit/mailpit.js";
+export { truncateMySqlTables } from "~workloads/test-helpers/mysql.js";
+export { truncatePostgresTables } from "~workloads/test-helpers/postgres.js";
+export { flushRedis } from "~workloads/test-helpers/redis.js";
 export {
 	startTestContainer,
 	startTestContainers,

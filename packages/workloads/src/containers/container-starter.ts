@@ -3,20 +3,20 @@ import type { StartedTestContainer } from "testcontainers";
 import {
 	createMysqlDatabase,
 	createPostgresDatabase,
-} from "~sidecar/containers/admin/create-database.js";
-import { ElasticSearchContainer } from "~sidecar/containers/elastic-search.js";
-import { MailerContainer } from "~sidecar/containers/mailer.js";
-import { MongoDbContainer } from "~sidecar/containers/mongo-db.js";
-import { MySQLContainer } from "~sidecar/containers/mysql.js";
-import { PostgreSQLContainer } from "~sidecar/containers/postgresql.js";
-import { RedisContainer } from "~sidecar/containers/redis.js";
-import type { ElasticSearch } from "~sidecar/workloads/stateful/elastic-search.js";
-import type { Mailer } from "~sidecar/workloads/stateful/mailer.js";
-import type { MongoDb } from "~sidecar/workloads/stateful/mongo-db.js";
-import type { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
-import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
-import type { Redis } from "~sidecar/workloads/stateful/redis.js";
-import type { Workload } from "~sidecar/workloads/workload.js";
+} from "~workloads/containers/admin/create-database.js";
+import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
+import { MailerContainer } from "~workloads/containers/mailer.js";
+import { MongoDbContainer } from "~workloads/containers/mongo-db.js";
+import { MySQLContainer } from "~workloads/containers/mysql.js";
+import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
+import { RedisContainer } from "~workloads/containers/redis.js";
+import type { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
+import type { Mailer } from "~workloads/workloads/stateful/mailer.js";
+import type { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
+import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
+import type { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
+import type { Redis } from "~workloads/workloads/stateful/redis.js";
+import type { Workload } from "~workloads/workloads/workload.js";
 
 class ContainerStarter {
 	mode: "dev" | "test" = "dev";

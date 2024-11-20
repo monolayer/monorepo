@@ -2,7 +2,7 @@
 import type Dockerode from "dockerode";
 import { Wait, type StartedTestContainer } from "testcontainers";
 import { test as base } from "vitest";
-import type { WorkloadContainer } from "~sidecar/containers/container.js";
+import type { WorkloadContainer } from "~workloads/containers/container.js";
 
 const startedContainers: (StartedTestContainer | Dockerode.Container)[] = [];
 

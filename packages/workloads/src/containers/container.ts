@@ -14,7 +14,7 @@ import type {
 	Environment,
 	HealthCheck,
 } from "testcontainers/build/types.js";
-import type { Workload } from "~sidecar/workloads.js";
+import type { Workload } from "~workloads/workloads.js";
 
 export interface StartOptions {
 	/**

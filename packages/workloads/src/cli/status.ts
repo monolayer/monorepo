@@ -3,9 +3,9 @@ import Table from "cli-table3";
 import {
 	workloadContainerStatus,
 	type WorkloadInfo,
-} from "~sidecar/containers/admin/introspection.js";
-import { importWorkloads } from "~sidecar/workloads/import.js";
-import type { Database } from "~sidecar/workloads/stateful/database.js";
+} from "~workloads/containers/admin/introspection.js";
+import { importWorkloads } from "~workloads/workloads/import.js";
+import type { Database } from "~workloads/workloads/stateful/database.js";
 
 export function status(program: Command) {
 	return program

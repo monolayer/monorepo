@@ -1,9 +1,9 @@
 import type { Command } from "@commander-js/extra-typings";
 import ora from "ora";
-import { spinnerMessage } from "~sidecar/cli/spinner-message.js";
-import { startDevContainer } from "~sidecar/containers/admin/dev-container.js";
-import { type EnvVar } from "~sidecar/containers/admin/update-dotenv-file.js";
-import { importWorkloads } from "~sidecar/workloads/import.js";
+import { spinnerMessage } from "~workloads/cli/spinner-message.js";
+import { startDevContainer } from "~workloads/containers/admin/dev-container.js";
+import { type EnvVar } from "~workloads/containers/admin/update-dotenv-file.js";
+import { importWorkloads } from "~workloads/workloads/import.js";
 
 export function dev(program: Command) {
 	return program

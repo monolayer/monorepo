@@ -1,7 +1,7 @@
 import { type StartedTestContainer } from "testcontainers";
-import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
-import type { WorkloadContainerDefinition } from "~sidecar/containers/container.js";
-import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
+import { ContainerWithURI } from "~workloads/containers/container-with-uri.js";
+import type { WorkloadContainerDefinition } from "~workloads/containers/container.js";
+import { Mailer } from "~workloads/workloads/stateful/mailer.js";
 
 /**
  * Container for Mailer

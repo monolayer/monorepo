@@ -1,13 +1,13 @@
 export type {
 	RequestOptionsBase,
 	RequestResult,
-} from "~sidecar/test-helpers/mailpit/generated/client/index.js";
+} from "~workloads/test-helpers/mailpit/generated/client/index.js";
 export {
 	Config,
 	OmitKeys,
 	OptionsBase,
 	RequestOptions,
-} from "~sidecar/test-helpers/mailpit/generated/client/types.js";
+} from "~workloads/test-helpers/mailpit/generated/client/types.js";
 export type {
 	ArrayStyle,
 	BodySerializer,
@@ -15,7 +15,7 @@ export type {
 	QuerySerializer,
 	QuerySerializerOptions,
 	SerializerOptions,
-} from "~sidecar/test-helpers/mailpit/generated/client/utils.js";
+} from "~workloads/test-helpers/mailpit/generated/client/utils.js";
 export type {
 	Address,
 	DeleteMessagesParamsData,
@@ -23,4 +23,4 @@ export type {
 	GetMessageTextParamsData,
 	MessageSummary,
 	MessagesSummary,
-} from "~sidecar/test-helpers/mailpit/generated/types.gen.js";
+} from "~workloads/test-helpers/mailpit/generated/types.gen.js";

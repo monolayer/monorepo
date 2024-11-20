@@ -1,9 +1,9 @@
 import { createClient } from "redis";
 import { assert } from "vitest";
-import { getExistingContainer } from "~sidecar/containers/admin/introspection.js";
-import { startTestContainer } from "~sidecar/containers/admin/start-test-container.js";
-import { flushRedis } from "~sidecar/test-helpers/redis.js";
-import { Redis } from "~sidecar/workloads/stateful/redis.js";
+import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
+import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
+import { flushRedis } from "~workloads/test-helpers/redis.js";
+import { Redis } from "~workloads/workloads/stateful/redis.js";
 import { test } from "~test/__setup__/container-test.js";
 
 test("FlushDB", async ({ containers }) => {

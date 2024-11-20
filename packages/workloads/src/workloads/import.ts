@@ -3,13 +3,13 @@ import { Effect } from "effect";
 import fs from "fs/promises";
 import path from "node:path";
 import { cwd } from "node:process";
-import { ElasticSearch } from "~sidecar/workloads/stateful/elastic-search.js";
-import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
-import { MongoDb } from "~sidecar/workloads/stateful/mongo-db.js";
-import { MySqlDatabase } from "~sidecar/workloads/stateful/mysql-database.js";
-import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
-import { Redis } from "~sidecar/workloads/stateful/redis.js";
-import type { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful-workload.js";
+import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
+import { Mailer } from "~workloads/workloads/stateful/mailer.js";
+import { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
+import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
+import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
+import { Redis } from "~workloads/workloads/stateful/redis.js";
+import type { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ModuleImport = Record<string, any>;

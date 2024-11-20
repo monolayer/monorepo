@@ -1,5 +1,5 @@
 import { snakeCase } from "case-anything";
-import { Workload } from "~sidecar/workloads/workload.js";
+import { Workload } from "~workloads/workloads/workload.js";
 
 /**
  * @internal

@@ -1,6 +1,6 @@
 import { assert } from "vitest";
-import { ElasticSearch } from "~sidecar/workloads/stateful/elastic-search.js";
-import { StatefulWorkloadWithClient } from "~sidecar/workloads/stateful/stateful-workload.js";
+import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
+import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
 import { test } from "~test/__setup__/container-test.js";
 
 test("ElasticSearch is a StatefulWorkloadWithClient", () => {

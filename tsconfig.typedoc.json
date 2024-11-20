@@ -25,7 +25,7 @@
 			"~services/*": ["internal/services/src/*"],
 			"~state/*": ["internal/state/src/*"],
 			"~utils/*": ["internal/utils/src/*"],
-			"~sidecar/*": ["packages/workloads/src/*"],
+			"~workloads/*": ["packages/workloads/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
 			"@monorepo/db/*": ["internal/db/src/*"],
 			"@monorepo/configuration/*": ["internal/configuration/src/*"],

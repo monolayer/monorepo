@@ -3,7 +3,7 @@ import {
 	defaultTestStartOptions,
 	type ContainerOverrides,
 	type StartOptions,
-} from "~sidecar/containers/container.js";
+} from "~workloads/containers/container.js";
 
 /**
  * @internal

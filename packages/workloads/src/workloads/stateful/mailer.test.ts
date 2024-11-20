@@ -2,9 +2,9 @@ import nodemailer from "nodemailer";
 import type SMTPTransport from "nodemailer/lib/smtp-transport/index.js";
 import { Equal, Expect } from "type-testing";
 import { assert, expect } from "vitest";
-import { MailerContainer } from "~sidecar/containers/mailer.js";
-import { messages } from "~sidecar/test-helpers/mailer.js";
-import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
+import { MailerContainer } from "~workloads/containers/mailer.js";
+import { messages } from "~workloads/test-helpers/mailer.js";
+import { Mailer } from "~workloads/workloads/stateful/mailer.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test("Mailer client commands against test container", async ({

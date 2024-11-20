@@ -1,6 +1,6 @@
 import color from "picocolors";
-import type { Database } from "~sidecar/workloads/stateful/database.js";
-import type { Workload } from "~sidecar/workloads/workload.js";
+import type { Database } from "~workloads/workloads/stateful/database.js";
+import type { Workload } from "~workloads/workloads/workload.js";
 
 export function spinnerMessage(workload: Workload, prefix: "Start" | "Stop") {
 	let message = "";

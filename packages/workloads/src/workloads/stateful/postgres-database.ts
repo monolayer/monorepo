@@ -1,4 +1,4 @@
-import { Database } from "~sidecar/workloads/stateful/database.js";
+import { Database } from "~workloads/workloads/stateful/database.js";
 
 /**
  * PostgreSQL workload.

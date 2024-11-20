@@ -1,7 +1,7 @@
-import { containerStarter } from "~sidecar/containers/container-starter.js";
-import { defaultTestStartOptions } from "~sidecar/containers/container.js";
-import { importWorkloads } from "~sidecar/workloads/import.js";
-import { type Workload } from "~sidecar/workloads/workload.js";
+import { containerStarter } from "~workloads/containers/container-starter.js";
+import { defaultTestStartOptions } from "~workloads/containers/container.js";
+import { importWorkloads } from "~workloads/workloads/import.js";
+import { type Workload } from "~workloads/workloads/workload.js";
 /**
  * Launches a test container for a workload.
  *

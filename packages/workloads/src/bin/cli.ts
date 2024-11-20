@@ -2,9 +2,9 @@
 import type { Command as CommandExtra } from "@commander-js/extra-typings";
 import { Command, CommanderError } from "commander";
 import { exit } from "process";
-import { dev } from "~sidecar/cli/dev.js";
-import { status } from "~sidecar/cli/status.js";
-import { stop } from "~sidecar/cli/stop.js";
+import { dev } from "~workloads/cli/dev.js";
+import { status } from "~workloads/cli/status.js";
+import { stop } from "~workloads/cli/stop.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;

@@ -1,11 +1,11 @@
 import pg from "pg";
 import { createClient } from "redis";
 import { assert } from "vitest";
-import { startDevContainer } from "~sidecar/containers/admin/dev-container.js";
-import { getExistingContainer } from "~sidecar/containers/admin/introspection.js";
-import { startTestContainer } from "~sidecar/containers/admin/start-test-container.js";
-import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
-import { Redis } from "~sidecar/workloads/stateful/redis.js";
+import { startDevContainer } from "~workloads/containers/admin/dev-container.js";
+import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
+import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
+import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
+import { Redis } from "~workloads/workloads/stateful/redis.js";
 import {
 	assertContainerImage,
 	assertContainerLabel,
