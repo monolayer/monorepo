@@ -26,6 +26,16 @@ export abstract class Database<C> extends StatefulWorkloadWithClient<C> {
 		super(options.databaseId, options.client);
 		this.databaseName = databaseName;
 	}
+
+	/**
+	 * Database ID
+	 *
+	 * **Note:**
+	 * Alias of `ìd`.
+	 */
+	get databaseId() {
+		return this.id;
+	}
 }
 
 export interface DatabaseOptions<C> {
