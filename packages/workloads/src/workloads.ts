@@ -1,3 +1,6 @@
+/**
+ * @module main
+ */
 export type { StartOptions } from "~workloads/containers/container.js";
 export type {
 	Database,
