@@ -1,13 +1,12 @@
 import { Wait, type StartedTestContainer } from "testcontainers";
 import type { HealthCheck } from "testcontainers/build/types.js";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
+import type { WorkloadContainerDefinition } from "~sidecar/containers/container.js";
 import type { ElasticSearch } from "~sidecar/workloads/stateful/elastic-search.js";
 
-const ELASTIC_SEARCH_HTTP_PORT = 9200;
-
-const elasticSearchContainerSpec = {
+const elasticSearchContainerSpec: WorkloadContainerDefinition = {
 	containerImage: "elasticsearch:7.17.25",
-	portsToExpose: [ELASTIC_SEARCH_HTTP_PORT],
+	portsToExpose: [9200],
 	environment: {
 		"discovery.type": "single-node",
 	},
@@ -43,7 +42,9 @@ export class ElasticSearchContainer<C> extends ContainerWithURI {
 	buildConnectionURI(container: StartedTestContainer) {
 		const url = new URL("", "http://base.com");
 		url.hostname = container.getHost();
-		url.port = container.getMappedPort(ELASTIC_SEARCH_HTTP_PORT).toString();
+		url.port = container
+			.getMappedPort(this.containerOptions.portsToExpose[0]!)
+			.toString();
 		return url.toString();
 	}
 }

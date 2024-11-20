@@ -1,12 +1,11 @@
 import type { StartedTestContainer } from "testcontainers";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
+import type { WorkloadContainerDefinition } from "~sidecar/containers/container.js";
 import { Redis } from "~sidecar/workloads/stateful/redis.js";
 
-const REDIS_SERVER_PORT = 6379;
-
-const redisContainerSpec = {
+const redisContainerSpec: WorkloadContainerDefinition = {
 	containerImage: "redis:7.4.1-alpine3.20",
-	portsToExpose: [REDIS_SERVER_PORT],
+	portsToExpose: [6379],
 	environment: {
 		REDIS_ARGS: "--save 1 1 --appendonly yes",
 	},
@@ -25,7 +24,9 @@ export class RedisContainer<C> extends ContainerWithURI {
 	buildConnectionURI(container: StartedTestContainer) {
 		const url = new URL("", "redis://");
 		url.hostname = container.getHost();
-		url.port = container.getMappedPort(REDIS_SERVER_PORT).toString();
+		url.port = container
+			.getMappedPort(this.containerOptions.portsToExpose[0]!)
+			.toString();
 		return url.toString();
 	}
 }

@@ -1,14 +1,17 @@
 import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { getContainerRuntimeClient } from "testcontainers";
 import { assert } from "vitest";
-import { WorkloadContainer } from "~sidecar/containers/container.js";
+import {
+	WorkloadContainer,
+	type WorkloadContainerDefinition,
+} from "~sidecar/containers/container.js";
 import { StatefulWorkload } from "~sidecar/workloads/stateful/stateful-workload.js";
 import { startContainer, test } from "~test/__setup__/container-test.js";
 
 class TestWorkload extends StatefulWorkload {}
 const testWorkload = new TestWorkload("container-test");
 
-const nginxSpec = {
+const nginxSpec: WorkloadContainerDefinition = {
 	containerImage: "nginx:latest",
 	portsToExpose: [80],
 	environment: {},

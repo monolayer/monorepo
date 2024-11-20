@@ -1,13 +1,12 @@
 import { Wait, type StartedTestContainer } from "testcontainers";
 import type { HealthCheck } from "testcontainers/build/types.js";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
+import type { WorkloadContainerDefinition } from "~sidecar/containers/container.js";
 import type { MongoDb } from "~sidecar/workloads/stateful/mongo-db.js";
 
-const MONGODB_HTTP_PORT = 27017;
-
-const mongoDbContainerSpec = {
+const mongoDbContainerSpec: WorkloadContainerDefinition = {
 	containerImage: "mongo:7.0.15",
-	portsToExpose: [MONGODB_HTTP_PORT],
+	portsToExpose: [27017],
 	environment: {
 		"discovery.type": "single-node",
 	},
@@ -34,7 +33,9 @@ export class MongoDbContainer<C> extends ContainerWithURI {
 	buildConnectionURI(container: StartedTestContainer) {
 		const url = new URL("", "http://base.com");
 		url.hostname = container.getHost();
-		url.port = container.getMappedPort(MONGODB_HTTP_PORT).toString();
+		url.port = container
+			.getMappedPort(this.containerOptions.portsToExpose[0]!)
+			.toString();
 		url.pathname = (this.workload as MongoDb<C>).databaseName;
 		return url.toString();
 	}

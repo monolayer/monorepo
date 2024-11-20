@@ -1,15 +1,14 @@
 import { type StartedTestContainer } from "testcontainers";
 import { ContainerWithURI } from "~sidecar/containers/container-with-uri.js";
+import type { WorkloadContainerDefinition } from "~sidecar/containers/container.js";
 import { Mailer } from "~sidecar/workloads/stateful/mailer.js";
 
-const MAILER_SERVER_PORT = 1025;
-const MAILER_WEBUI_PORT = 8025;
-
-const mailerContainerSpec = {
+const mailerContainerSpec: WorkloadContainerDefinition = {
 	containerImage: "axllent/mailpit:v1.21.3",
-	portsToExpose: [MAILER_SERVER_PORT, MAILER_WEBUI_PORT],
+	portsToExpose: [1025, 8025],
 	environment: {},
 };
+
 /**
  * Container for Mailer
  */
@@ -30,7 +29,7 @@ export class MailerContainer<C> extends ContainerWithURI {
 			const url = new URL("", "http://base.com");
 			url.hostname = this.startedContainer.getHost();
 			url.port = this.startedContainer
-				.getMappedPort(MAILER_WEBUI_PORT)
+				.getMappedPort(this.definition.portsToExpose[1]!)
 				.toString();
 			return url.toString();
 		}
@@ -39,7 +38,9 @@ export class MailerContainer<C> extends ContainerWithURI {
 	buildConnectionURI(container: StartedTestContainer) {
 		const url = new URL("", "smtp://");
 		url.hostname = container.getHost();
-		url.port = container.getMappedPort(MAILER_SERVER_PORT).toString();
+		url.port = container
+			.getMappedPort(this.definition.portsToExpose[0]!)
+			.toString();
 		url.username = "username";
 		url.password = "password";
 		return url.toString();
