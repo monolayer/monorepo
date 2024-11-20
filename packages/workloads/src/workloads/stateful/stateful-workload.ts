@@ -46,6 +46,9 @@ export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
 		return this.#client;
 	}
 
+	/**
+	 * @internal
+	 */
 	abstract get connStringComponents(): string[];
 
 	/**
