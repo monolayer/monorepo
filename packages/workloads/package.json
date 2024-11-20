@@ -61,9 +61,9 @@
 		"publish:local": "npm publish --registry http://localhost:4873",
 		"test": "NO_COLOR=1 vitest --run --passWithNoTests",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
-		"typedoc": "typedoc --docsRoot docs/reference --name sidecar",
+		"typedoc": "typedoc --docsRoot docs/reference --name workloads",
 		"typedoc:watch": "npm run typedoc -- --watch",
-		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/sidecar -f"
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/workloads -f"
 	},
 	"dependencies": {
 		"@epic-web/remember": "^1.1.0",
