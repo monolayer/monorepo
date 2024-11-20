@@ -3,6 +3,7 @@ import { Workload } from "~sidecar/workloads/workload.js";
 
 /**
  * @internal
+ * @group Abstract Classes
  */
 export abstract class StatefulWorkload extends Workload {
 	/**
@@ -12,6 +13,7 @@ export abstract class StatefulWorkload extends Workload {
 }
 
 /**
+ * @group Abstract Classes
  * @typeParam C - Client type
  */
 export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
