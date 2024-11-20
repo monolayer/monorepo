@@ -78,7 +78,7 @@ export async function messageHtml<C, ThrowOnError extends boolean = false>(
 }
 
 async function testMailerURL<C>(mailer: Mailer<C>) {
-	const url = new URL(process.env[mailer.connectionStringEnvVar()]!);
+	const url = new URL(process.env[mailer.connectionStringEnvVar]!);
 	const httpURL = new URL("", "http://base.com");
 	httpURL.host = url.host;
 	httpURL.port = await mailerWebUIHostPort(mailer);

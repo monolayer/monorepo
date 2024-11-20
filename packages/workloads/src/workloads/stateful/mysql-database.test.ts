@@ -16,7 +16,7 @@ test("MySQL client commands against test container", async ({ containers }) => {
 	containers.push(startedContainer);
 
 	const adminClient = await mysql.createConnection(
-		process.env[mysqlDb.connectionStringEnvVar()]!.replace("/app_db", ""),
+		process.env[mysqlDb.connectionStringEnvVar]!.replace("/app_db", ""),
 	);
 
 	await adminClient.query("CREATE DATABASE IF NOT EXISTS app_db;");

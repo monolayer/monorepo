@@ -8,7 +8,7 @@ export abstract class ContainerWithURI extends WorkloadContainer {
 	 * @hideconstructor
 	 */
 	constructor(
-		workload: StatefulWorkload & { connectionStringEnvVar: () => string },
+		workload: StatefulWorkload & { connectionStringEnvVar: string },
 		containerSpec: WorkloadContainerDefinition,
 	) {
 		super(workload, containerSpec);
@@ -19,9 +19,9 @@ export abstract class ContainerWithURI extends WorkloadContainer {
 		process.env[
 			(
 				this.workload as StatefulWorkload & {
-					connectionStringEnvVar: () => string;
+					connectionStringEnvVar: string;
 				}
-			).connectionStringEnvVar()
+			).connectionStringEnvVar
 		] = this.buildConnectionURI(startedContainer);
 		return startedContainer;
 	}

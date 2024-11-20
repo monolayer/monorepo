@@ -20,7 +20,7 @@ test("PostgreSQL client commands against test container", async ({
 	containers.push(startedContainer);
 
 	const adminPool = new pg.Pool({
-		connectionString: process.env[postgreSQL.connectionStringEnvVar()]?.replace(
+		connectionString: process.env[postgreSQL.connectionStringEnvVar]?.replace(
 			"/test_commands",
 			"",
 		),

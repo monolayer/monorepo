@@ -12,7 +12,7 @@ export async function truncateMySqlTables(
 	workload: MySqlDatabase<any>,
 ) {
 	const connection = await mysql.createConnection(
-		process.env[workload.connectionStringEnvVar()]!,
+		process.env[workload.connectionStringEnvVar]!,
 	);
 	const tables = await tablesInDatabase(connection, workload.databaseName);
 	await truncateTablesInDatabase(connection, tables);

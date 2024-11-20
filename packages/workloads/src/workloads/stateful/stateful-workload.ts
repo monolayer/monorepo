@@ -43,7 +43,7 @@ export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
 		if (this.#client) {
 			return this.#client;
 		}
-		this.#client = this.#clientConstructor(this.connectionStringEnvVar());
+		this.#client = this.#clientConstructor(this.connectionStringEnvVar);
 		return this.#client;
 	}
 
@@ -55,7 +55,7 @@ export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
 	/**
 	 * Returns the unique environment variable name that should hold the connection string.
 	 */
-	connectionStringEnvVar() {
+	get connectionStringEnvVar() {
 		return snakeCase(
 			["wl", ...this.connStringComponents, "url"].join("_"),
 		).toUpperCase();

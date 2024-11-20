@@ -6,13 +6,13 @@ import type { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-data
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function postgresDatabasePool(workload: PostgresDatabase<any>) {
 	return new pg.Pool({
-		connectionString: process.env[workload.connectionStringEnvVar()],
+		connectionString: process.env[workload.connectionStringEnvVar],
 	});
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function mysqlConnection(workload: MySqlDatabase<any>) {
 	return await mysql.createConnection(
-		process.env[workload.connectionStringEnvVar()]!,
+		process.env[workload.connectionStringEnvVar]!,
 	);
 }

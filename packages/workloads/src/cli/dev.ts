@@ -61,7 +61,7 @@ async function startStatefulWorkloadWithConnectionString(
 	envVars: EnvVar[],
 ) {
 	await startDevContainer(workload);
-	const name = workload.connectionStringEnvVar();
+	const name = workload.connectionStringEnvVar;
 	envVars.push({
 		name,
 		value: process.env[name]!,

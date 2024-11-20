@@ -24,5 +24,5 @@ export async function createMysqlDatabase<C>(workload: MySqlDatabase<C>) {
 }
 
 function adminCredentials<C>(workload: MySqlDatabase<C> | PostgresDatabase<C>) {
-	return process.env[workload.connectionStringEnvVar()]?.replace(/\/\w+$/, "");
+	return process.env[workload.connectionStringEnvVar]?.replace(/\/\w+$/, "");
 }

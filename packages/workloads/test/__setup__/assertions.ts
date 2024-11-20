@@ -127,7 +127,7 @@ export async function assertContainerLabel(
 
 export async function assertDatabase<C>(resource: PostgresDatabase<C>) {
 	const client = new Pool({
-		connectionString: process.env[resource.connectionStringEnvVar()]?.replace(
+		connectionString: process.env[resource.connectionStringEnvVar]?.replace(
 			/\/\w+$/,
 			"",
 		),

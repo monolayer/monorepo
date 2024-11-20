@@ -22,7 +22,7 @@ export class LocalStack extends StatefulWorkload {
 	/**
 	 * Environment variable that should hold the workload connection string.
 	 */
-	connectionStringEnvVar() {
+	get connectionStringEnvVar() {
 		return "WL_LOCAL_STACK_GATEWAY_URL";
 	}
 }

@@ -16,7 +16,7 @@ export async function truncatePostgresTables(
 	schemaName?: string,
 ) {
 	const pool = new pg.Pool({
-		connectionString: process.env[workload.connectionStringEnvVar()],
+		connectionString: process.env[workload.connectionStringEnvVar],
 	});
 	const tables = await tablesInSchema(pool, schemaName ?? "public");
 	await truncateTablesInSchema(pool, tables);

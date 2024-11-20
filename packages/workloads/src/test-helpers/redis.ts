@@ -16,7 +16,7 @@ export async function flushRedis(
 	db?: number,
 ) {
 	const client = createClient({
-		url: process.env[workload.connectionStringEnvVar()],
+		url: process.env[workload.connectionStringEnvVar],
 	}).on("error", (err) => console.error("Redis Client Error", err));
 	await client.connect();
 	if (db) {
