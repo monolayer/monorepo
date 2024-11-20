@@ -1,6 +1,7 @@
 import pg from "pg";
 import { createClient } from "redis";
 import { assert } from "vitest";
+import { startDevContainer } from "~sidecar/containers/admin/dev-container.js";
 import { getExistingContainer } from "~sidecar/containers/admin/introspection.js";
 import { startTestContainer } from "~sidecar/containers/start-test-container.js";
 import { PostgresDatabase } from "~sidecar/workloads/stateful/postgres-database.js";
@@ -95,6 +96,37 @@ test(
 			container,
 			"org.monolayer-sidecar.workload-id",
 			"redis-red-one",
+		);
+
+		await startTestContainer(redisWorkload);
+		const secondContainer = await getExistingContainer(redisWorkload);
+		assert(secondContainer);
+		containers.push(secondContainer);
+
+		assert.notStrictEqual(container.id, secondContainer.id);
+	},
+);
+
+test(
+	"launch different containers for dev and test",
+	{ sequential: true },
+	async ({ containers }) => {
+		const redisWorkload = new Redis("red-two", (connectionStringEnvVar) =>
+			createClient({
+				url: process.env[connectionStringEnvVar],
+			}).on("error", (err) => console.error("Redis Client Error", err)),
+		);
+
+		await startDevContainer(redisWorkload);
+
+		const container = await getExistingContainer(redisWorkload);
+		assert(container);
+		containers.push(container);
+
+		await assertContainerLabel(
+			container,
+			"org.monolayer-sidecar.workload-id",
+			"redis-red-two",
 		);
 
 		await startTestContainer(redisWorkload);
