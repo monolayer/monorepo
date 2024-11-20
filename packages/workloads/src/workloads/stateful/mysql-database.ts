@@ -1,8 +1,14 @@
 import { Database } from "~sidecar/workloads/stateful/database.js";
 
 /**
- * MySQL workload.
+ * MySQL database workload.
  *
+ * A `MySqlDatabase` workload is initialized with:
+ * - A database name.
+ * - A stable database ID that references the database server where the database is located.
+ *   Multiple workloads can point to the same database server.
+ * - A client constructor function providing the client of your choice.
+ *   The {@link MySqlDatabase.client | client } accessor will call this function and memoize its result.
  *
  * @example
  * ```ts
@@ -11,10 +17,16 @@ import { Database } from "~sidecar/workloads/stateful/database.js";
  *
  * export const db = new MySqlDatabase(
  *   "app-db",
- *   	"mysql-db",
- *   async (envVarName) =>
- *     await mysql.createConnection(process.env[envVarName]!)
- * );
+ *   {
+ *     databaseId: "mysql-db",
+ *     client: async (envVarName) =>
+ *       await mysql.createConnection(process.env[envVarName]!)
+ *     ),
+ *   }
+ *
+ * // Querying with the client
+ * const client = await db.client;
+ * await client.query("SELECT 1");
  * ```
  *
  * @typeParam C - Client type
