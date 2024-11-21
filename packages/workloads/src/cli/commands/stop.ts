@@ -8,7 +8,7 @@ export function stop(program: Command) {
 	return program
 		.command("stop")
 		.description("Stop local workloads")
-		.requiredOption(
+		.option(
 			"-f, --folder <workloads-folder>",
 			"Path to folder with workloads",
 		)
