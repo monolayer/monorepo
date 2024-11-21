@@ -11,9 +11,8 @@ export function status(program: Command) {
 	return program
 		.command("status")
 		.description("List workload status")
-		.option("-f, --folder <workloads-folder>", "Path to folder with workloads")
-		.action(async (opts) => {
-			const workloads = await importWorkloads(opts.folder);
+		.action(async () => {
+			const workloads = await importWorkloads();
 			const statuses = await Promise.all(
 				workloads.map(async (w) => workloadContainerStatus(w)),
 			);

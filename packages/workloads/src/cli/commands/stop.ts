@@ -8,12 +8,8 @@ export function stop(program: Command) {
 	return program
 		.command("stop")
 		.description("Stop local workloads")
-		.option(
-			"-f, --folder <workloads-folder>",
-			"Path to folder with workloads",
-		)
-		.action(async (opts) => {
-			const workloads = await importWorkloads(opts.folder);
+		.action(async () => {
+			const workloads = await importWorkloads();
 			for (const workload of workloads) {
 				const spinner = ora();
 				spinner.start(spinnerMessage(workload, "Start"));

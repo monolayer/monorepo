@@ -4,6 +4,7 @@ import { existsSync } from "fs";
 import fs from "fs/promises";
 import path from "node:path";
 import { cwd, exit } from "node:process";
+import color from "picocolors";
 import { workloadsConfiguration } from "~workloads/configuration.js";
 import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
 import { Mailer } from "~workloads/workloads/stateful/mailer.js";
@@ -16,14 +17,15 @@ import type { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/s
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ModuleImport = Record<string, any>;
 
-export async function importWorkloads(workloadsFolder?: string) {
+export async function importWorkloads() {
 	const workloadsPath = path.join(
 		cwd(),
-		workloadsFolder ?? (await workloadsConfiguration).workloadsPath,
+		(await workloadsConfiguration).workloadsPath,
 	);
 
 	if (!existsSync(workloadsPath)) {
-		console.error(`Workloads folder not found: ${workloadsPath}`);
+		console.log(`${color.red("error")} Workloads folder not found`);
+		console.log("Check your configuration file: ./workloads.config.ts");
 		exit(1);
 	}
 

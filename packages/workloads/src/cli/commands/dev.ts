@@ -12,9 +12,8 @@ export function dev(program: Command) {
 	return program
 		.command("dev")
 		.description("Start local workloads")
-		.option("-f, --folder <workloads-folder>", "Path to folder with workloads")
-		.action(async (opts) => {
-			const workloads = await importWorkloads(opts.folder);
+		.action(async () => {
+			const workloads = await importWorkloads();
 			const envVars: EnvVar[] = [];
 
 			for (const workload of workloads) {

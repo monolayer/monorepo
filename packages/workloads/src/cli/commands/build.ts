@@ -9,9 +9,8 @@ export function build(program: Command) {
 	return program
 		.command("build")
 		.description("Build workloads")
-		.option("-f, --folder <workloads-folder>", "Path to folder with workloads")
-		.action(async (opts) => {
-			const workloads = await importWorkloads(opts.folder);
+		.action(async () => {
+			const workloads = await importWorkloads();
 			const spinner = ora();
 			spinner.start("Build workloads");
 			const workloadMake = new Make(workloads);

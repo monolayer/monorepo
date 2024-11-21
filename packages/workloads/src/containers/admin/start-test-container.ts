@@ -32,13 +32,8 @@ export async function startTestContainer(
  * Launches test containers for workloads defined in a folder.
  *
  */
-export async function startTestContainers(
-	/**
-	 * Path to folder with workloads
-	 */
-	folder: string,
-) {
-	const workloads = await importWorkloads(folder);
+export async function startTestContainers() {
+	const workloads = await importWorkloads();
 	for (const workload of workloads) {
 		await startTestContainer(workload);
 	}
