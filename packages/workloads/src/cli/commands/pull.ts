@@ -24,34 +24,41 @@ export function pull(program: Command) {
 		.description("Pull docker images workloads")
 		.action(async () => {
 			const workloads = await importWorkloads();
-			const images = workloads
-				.flatMap((workload) => containerForWorkload(workload))
+			const images = (
+				await Promise.all(
+					workloads.flatMap(
+						async (workload) => await containerForWorkload(workload),
+					),
+				)
+			)
 				.filter((name) => name !== undefined)
 				.reduce<Set<string>>((acc, name) => acc.add(name), new Set<string>());
 			await pullImages(Array.from(images));
 		});
 }
 
-function containerForWorkload(workload: StatefulWorkloadWithClient<unknown>) {
+async function containerForWorkload(
+	workload: StatefulWorkloadWithClient<unknown>,
+) {
 	switch (workload.constructor.name) {
 		case "PostgresDatabase":
 			assertPostgresDatabase(workload);
-			return new PostgreSQLContainer(workload).containerImage();
+			return await new PostgreSQLContainer(workload).containerImage();
 		case "MySqlDatabase":
 			assertMySqlDatabase(workload);
-			return new MySQLContainer(workload).containerImage();
+			return await new MySQLContainer(workload).containerImage();
 		case "Redis":
 			assertRedis(workload);
-			return new RedisContainer(workload).containerImage();
+			return await new RedisContainer(workload).containerImage();
 		case "ElasticSearch":
 			assertElasticSearch(workload);
-			return new ElasticSearchContainer(workload).containerImage();
+			return await new ElasticSearchContainer(workload).containerImage();
 		case "MongoDb":
 			assertMongoDb(workload);
-			return new MongoDbContainer(workload).containerImage();
+			return await new MongoDbContainer(workload).containerImage();
 		case "Mailer":
 			assertMailer(workload);
-			return new MailerContainer(workload).containerImage();
+			return await new MailerContainer(workload).containerImage();
 	}
 }
 

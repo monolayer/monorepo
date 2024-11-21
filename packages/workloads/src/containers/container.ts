@@ -2,7 +2,7 @@
  * @module containers
  */
 
-import { kebabCase } from "case-anything";
+import { camelCase, kebabCase } from "case-anything";
 import getPort from "get-port";
 import {
 	GenericContainer,
@@ -14,6 +14,10 @@ import type {
 	Environment,
 	HealthCheck,
 } from "testcontainers/build/types.js";
+import {
+	workloadsConfiguration,
+	type Configuration,
+} from "~workloads/configuration.js";
 import type { Workload } from "~workloads/workloads/workload.js";
 
 export interface StartOptions {
@@ -94,22 +98,27 @@ export abstract class WorkloadContainer {
 	/**
 	 * @internal
 	 */
-	containerImage() {
+	async containerImage() {
 		return (
 			this.workload.containerOverrides?.definition?.containerImage ??
+			(await this.#imageFromConfiguration()) ??
 			this.definition.containerImage
 		);
 	}
 
+	async #imageFromConfiguration() {
+		const key = camelCase(
+			this.workload.constructor.name,
+		) as keyof Required<Configuration>["containerImages"];
+		const configuration = (await workloadsConfiguration).containerImages ?? {};
+		return configuration[key];
+	}
 	async #prepareContainer() {
 		const startOptions = {
 			...defaultTestStartOptions,
 			...(this.workload.containerOverrides?.startOptions ?? {}),
 		};
-		const container = new GenericContainer(
-			this.workload.containerOverrides?.definition?.containerImage ??
-				this.definition.containerImage,
-		);
+		const container = new GenericContainer(await this.containerImage());
 		container.withLabels({
 			[CONTAINER_LABEL_WORKLOAD_ID]: kebabCase(
 				`${this.workload.constructor.name.toLowerCase()}-${this.workload.id}`,
