@@ -67,7 +67,6 @@
 	},
 	"dependencies": {
 		"@epic-web/remember": "^1.1.0",
-		"@hey-api/client-fetch": "^0.4.3",
 		"case-anything": "^3.1.0",
 		"cli-table3": "^0.6.5",
 		"commander": "^12.0.0",
@@ -79,6 +78,7 @@
 		"tsx": "^4.7.1"
 	},
 	"devDependencies": {
+		"@hey-api/client-fetch": "^0.4.3",
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
 		"@monorepo/utils": "*",
