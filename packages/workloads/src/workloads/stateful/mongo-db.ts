@@ -31,6 +31,6 @@ export class MongoDb<C> extends Database<C> {
 	 * @internal
 	 */
 	get connStringComponents() {
-		return ["mongodb", this.id, this.databaseName];
+		return ["mongodb", this.id, this.databaseName, "database"];
 	}
 }

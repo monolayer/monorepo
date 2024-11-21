@@ -42,6 +42,6 @@ export class PostgresDatabase<C> extends Database<C> {
 	 * @internal
 	 */
 	get connStringComponents() {
-		return ["postgres", this.id, this.databaseName];
+		return ["postgres", this.id, this.databaseName, "database"];
 	}
 }

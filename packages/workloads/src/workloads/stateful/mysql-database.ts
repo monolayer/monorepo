@@ -40,6 +40,6 @@ export class MySqlDatabase<C> extends Database<C> {
 	 * @internal
 	 */
 	get connStringComponents() {
-		return ["mysql", this.id, this.databaseName];
+		return ["mysql", this.id, this.databaseName, "database"];
 	}
 }
