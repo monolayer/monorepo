@@ -1,6 +1,14 @@
 import { remember } from "@epic-web/remember";
 import type { StartedTestContainer } from "testcontainers";
 import {
+	assertElasticSearch,
+	assertMailer,
+	assertMongoDb,
+	assertMySqlDatabase,
+	assertPostgresDatabase,
+	assertRedis,
+} from "~workloads/containers/admin/assertions.js";
+import {
 	createMysqlDatabase,
 	createPostgresDatabase,
 } from "~workloads/containers/admin/create-database.js";
@@ -105,21 +113,3 @@ export const containerStarter = remember(
 	"containerStarter",
 	() => new ContainerStarter(),
 );
-
-function assertRedis<C>(workload: unknown): asserts workload is Redis<C> {}
-
-function assertElasticSearch<C>(
-	workload: unknown,
-): asserts workload is ElasticSearch<C> {}
-
-function assertMongoDb<C>(workload: unknown): asserts workload is MongoDb<C> {}
-
-function assertPostgresDatabase<C>(
-	workload: unknown,
-): asserts workload is PostgresDatabase<C> {}
-
-function assertMailer<C>(workload: unknown): asserts workload is Mailer<C> {}
-
-function assertMySqlDatabase<C>(
-	workload: unknown,
-): asserts workload is MySqlDatabase<C> {}
