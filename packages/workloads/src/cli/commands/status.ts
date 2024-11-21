@@ -49,7 +49,7 @@ function printStatus(statuses: WorkloadInfo[]) {
 					`${(status.workload as Database<any>).databaseName} (${status.workload.id})`
 				: status.workload.id,
 			status.workload.constructor.name,
-			status.container.status,
+			status.container.info?.status ?? "N/A",
 			ports.length !== 0 ? ports.join("\n") : "N/A",
 			status.container.info?.id.substring(0, 12) ?? "N/A",
 		];

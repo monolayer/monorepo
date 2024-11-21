@@ -3,23 +3,24 @@ import { getContainerRuntimeClient } from "testcontainers";
 import { CONTAINER_LABEL_WORKLOAD_ID } from "~workloads/containers/container.js";
 import type { Workload } from "~workloads/workloads/workload.js";
 
-export async function getExistingContainer(workload: Workload) {
+export async function getExistingContainer(
+	workload: Workload,
+	onlyRunning: boolean = true,
+) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	return await containerRuntimeClient.container.fetchByLabel(
 		CONTAINER_LABEL_WORKLOAD_ID,
 		kebabCase(`${workload.constructor.name.toLowerCase()}-${workload.id}`),
-		{ status: ["running"] },
+		{ status: onlyRunning ? ["running"] : undefined },
 	);
 }
 
 export async function workloadContainerStatus(workload: Workload) {
-	const existingContainer = await getExistingContainer(workload);
+	const existingContainer = await getExistingContainer(workload, false);
 
 	const status: WorkloadInfo = {
 		workload: workload,
-		container: {
-			status: existingContainer ? "running" : "not running",
-		},
+		container: {},
 	};
 	if (existingContainer) {
 		const inspect = await existingContainer.inspect();
@@ -37,7 +38,6 @@ export async function workloadContainerStatus(workload: Workload) {
 export interface WorkloadInfo {
 	workload: Workload;
 	container: {
-		status: "running" | "not running";
 		info?: {
 			id: string;
 			status: string;
