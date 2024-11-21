@@ -2,6 +2,7 @@
 import type { Command as CommandExtra } from "@commander-js/extra-typings";
 import { Command, CommanderError } from "commander";
 import { exit } from "process";
+import { build } from "~workloads/cli/commands/build.js";
 import { dev } from "~workloads/cli/commands/dev.js";
 import { status } from "~workloads/cli/commands/status.js";
 import { stop } from "~workloads/cli/commands/stop.js";
@@ -19,6 +20,7 @@ async function main() {
 	dev(program);
 	stop(program);
 	status(program);
+	build(program);
 
 	program.exitOverride();
 

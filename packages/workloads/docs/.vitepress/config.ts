@@ -47,6 +47,10 @@ export default defineConfig({
 						],
 					},
 					{
+						text: "Build Outputs",
+						items: [{ text: "Build output", link: "build-output" }],
+					},
+					{
 						base: "/reference",
 						text: "CLI & API reference",
 						link: "/api/modules",
