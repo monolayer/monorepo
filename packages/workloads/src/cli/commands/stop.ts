@@ -12,7 +12,7 @@ export function stop(program: Command) {
 			const workloads = await importWorkloads();
 			for (const workload of workloads) {
 				const spinner = ora();
-				spinner.start(spinnerMessage(workload, "Start"));
+				spinner.start(spinnerMessage(workload, "Stop"));
 				await stopDevContainer(workload);
 				spinner.succeed();
 			}
