@@ -4,9 +4,9 @@ import {
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
-import { startContainer, test } from "~test/__setup__/container-test.js";
 
 const redisStore = new Redis("test-redis-test", (connectionStringEnvVar) =>
 	createClient({
@@ -48,13 +48,13 @@ test(
 	"Assigned connection string to environment variable after start",
 	{ sequential: true },
 	async ({ containers }) => {
-		delete process.env.WL_REDIS_TEST_REDIS_TEST_URL;
+		delete process.env.MONO_REDIS_TEST_REDIS_TEST_URL;
 		const container = new RedisContainer(redisStore);
 		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 
 		assert.strictEqual(
-			process.env.WL_REDIS_TEST_REDIS_TEST_URL,
+			process.env.MONO_REDIS_TEST_REDIS_TEST_URL,
 			`redis://localhost:${startedContainer.getMappedPort(6379)}`,
 		);
 	},

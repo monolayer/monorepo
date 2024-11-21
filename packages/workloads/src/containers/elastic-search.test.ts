@@ -3,9 +3,9 @@ import {
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
 import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
-import { startContainer, test } from "~test/__setup__/container-test.js";
 
 const elastic = new ElasticSearch("elastic-test", () => true);
 
@@ -28,7 +28,7 @@ test(
 		});
 
 		assert.strictEqual(
-			process.env.WL_ELASTIC_SEARCH_ELASTIC_TEST_URL,
+			process.env.MONO_ELASTIC_SEARCH_ELASTIC_TEST_URL,
 			`http://localhost:${startedContainer.getMappedPort(9200)}/`,
 		);
 		assert.strictEqual(

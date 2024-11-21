@@ -3,9 +3,9 @@ import {
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 import { MongoDbContainer } from "~workloads/containers/mongo-db.js";
 import { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
-import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test("MongoDb container", { sequential: true }, async ({ containers }) => {
 	const mongoDb = new MongoDb("products", {
@@ -27,7 +27,7 @@ test("MongoDb container", { sequential: true }, async ({ containers }) => {
 	});
 
 	assert.strictEqual(
-		process.env.WL_MONGODB_CONTAINER_PRODUCTS_URL,
+		process.env.MONO_MONGODB_CONTAINER_PRODUCTS_URL,
 		`http://localhost:${startedContainer.getMappedPort(27017)}/products`,
 	);
 	assert.strictEqual(

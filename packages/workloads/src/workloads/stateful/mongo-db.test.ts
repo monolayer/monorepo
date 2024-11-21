@@ -1,7 +1,7 @@
 import { assert } from "vitest";
+import { test } from "~test/__setup__/container-test.js";
 import { Database } from "~workloads/workloads/stateful/database.js";
 import { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
-import { test } from "~test/__setup__/container-test.js";
 
 test("MongoDb is a StatefulWorkloadWithClient", () => {
 	assert(MongoDb.prototype instanceof Database);
@@ -14,6 +14,6 @@ test("ElasticSearch connection string name", () => {
 	});
 	assert.strictEqual(
 		mongoDb.connectionStringEnvVar,
-		"WL_MONGODB_MAIN_PRODUCTS_URL",
+		"MONO_MONGODB_MAIN_PRODUCTS_URL",
 	);
 });

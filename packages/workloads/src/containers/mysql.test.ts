@@ -4,9 +4,9 @@ import {
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
-import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test(
 	"MySQL started container",
@@ -32,7 +32,7 @@ test(
 		});
 
 		assert.strictEqual(
-			process.env.WL_MYSQL_CONTAINER_TEST_TEST_STARTED_CONTAINER_URL,
+			process.env.MONO_MYSQL_CONTAINER_TEST_TEST_STARTED_CONTAINER_URL,
 			`mysql://root:test@localhost:${startedContainer.getMappedPort(3306)}/test_started_container`,
 		);
 		assert.strictEqual(

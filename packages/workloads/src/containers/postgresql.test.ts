@@ -4,9 +4,9 @@ import {
 	assertExposedPorts,
 } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
+import { startContainer, test } from "~test/__setup__/container-test.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
-import { startContainer, test } from "~test/__setup__/container-test.js";
 
 test(
 	"PostgreSQL started container",
@@ -34,7 +34,7 @@ test(
 		});
 
 		assert.strictEqual(
-			process.env.WL_POSTGRES_TEST_APP_TEST_STARTED_CONTAINER_URL,
+			process.env.MONO_POSTGRES_TEST_APP_TEST_STARTED_CONTAINER_URL,
 			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}/test_started_container`,
 		);
 		assert.strictEqual(
