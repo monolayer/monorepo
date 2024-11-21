@@ -1,8 +1,9 @@
 import { importFile } from "@monorepo/utils/import-file.js";
 import { Effect } from "effect";
+import { existsSync } from "fs";
 import fs from "fs/promises";
 import path from "node:path";
-import { cwd } from "node:process";
+import { cwd, exit } from "node:process";
 import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
 import { Mailer } from "~workloads/workloads/stateful/mailer.js";
 import { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
@@ -16,8 +17,13 @@ type ModuleImport = Record<string, any>;
 
 export async function importWorkloads(workloadsFolder: string) {
 	const workloadsPath = path.join(cwd(), workloadsFolder);
-	const files = await fs.readdir(workloadsPath);
 
+	if (!existsSync(workloadsPath)) {
+		console.error(`Workloads folder not found: ${workloadsPath}`);
+		exit(1);
+	}
+
+	const files = await fs.readdir(workloadsPath);
 	const workloads: Array<StatefulWorkloadWithClient<unknown>> = [];
 
 	for (const fileName of files) {
