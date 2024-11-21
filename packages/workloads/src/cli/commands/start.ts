@@ -8,9 +8,9 @@ import {
 } from "~workloads/containers/admin/update-dotenv-file.js";
 import { importWorkloads } from "~workloads/workloads/import.js";
 
-export function dev(program: Command) {
+export function start(program: Command) {
 	return program
-		.command("dev")
+		.command("start")
 		.description("Start local workloads")
 		.action(async () => {
 			const workloads = await importWorkloads();
