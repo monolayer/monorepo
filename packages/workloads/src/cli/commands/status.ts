@@ -10,7 +10,7 @@ import type { Database } from "~workloads/workloads/stateful/database.js";
 export function status(program: Command) {
 	return program
 		.command("status")
-		.description("List workload status")
+		.description("List the status of the workflows' Docker containers")
 		.action(async () => {
 			const workloads = await importWorkloads();
 			const statuses = await Promise.all(

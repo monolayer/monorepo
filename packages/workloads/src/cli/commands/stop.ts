@@ -7,7 +7,7 @@ import { importWorkloads } from "~workloads/workloads/import.js";
 export function stop(program: Command) {
 	return program
 		.command("stop")
-		.description("Stop local workloads")
+		.description("Stop workflows' Docker containers.")
 		.action(async () => {
 			const workloads = await importWorkloads();
 			for (const workload of workloads) {

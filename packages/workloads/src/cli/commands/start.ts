@@ -8,7 +8,7 @@ import { importWorkloads } from "~workloads/workloads/import.js";
 export function start(program: Command) {
 	return program
 		.command("start")
-		.description("Start local workloads")
+		.description("Start workflows' Docker containers.")
 		.action(async () => {
 			const workloads = await importWorkloads();
 

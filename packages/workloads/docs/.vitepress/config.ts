@@ -59,7 +59,22 @@ export default defineConfig({
 			},
 			"/reference/": {
 				base: "/reference",
-				items: require("./../reference/api/typedoc-sidebar.json"),
+				items: [
+					{
+						text: "Modules",
+						items: require("./../reference/api/typedoc-sidebar.json"),
+					},
+					{
+						text: "Command Line Interface",
+						items: [
+							{ text: "dev start", link: "/cli/dev-start" },
+							{ text: "dev stop", link: "/cli/dev-stop" },
+							{ text: "dev status", link: "/cli/dev-status" },
+							{ text: "build", link: "/cli/build" },
+							{ text: "pull", link: "/cli/pull" },
+						],
+					},
+				],
 			},
 		},
 		socialLinks: [
