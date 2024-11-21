@@ -2,7 +2,10 @@ import type { Command } from "@commander-js/extra-typings";
 import ora from "ora";
 import { spinnerMessage } from "~workloads/cli/spinner-message.js";
 import { startDevContainer } from "~workloads/containers/admin/dev-container.js";
-import { type EnvVar } from "~workloads/containers/admin/update-dotenv-file.js";
+import {
+	updateDotenvFile,
+	type EnvVar,
+} from "~workloads/containers/admin/update-dotenv-file.js";
 import { importWorkloads } from "~workloads/workloads/import.js";
 
 export function dev(program: Command) {
@@ -32,6 +35,9 @@ export function dev(program: Command) {
 					name,
 					value: process.env[name]!,
 				});
+			}
+			if (envVars.length !== 0) {
+				updateDotenvFile(envVars);
 			}
 		});
 }
