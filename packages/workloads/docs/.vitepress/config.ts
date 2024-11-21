@@ -17,7 +17,7 @@ export default defineConfig({
 						text: "Introduction",
 						items: [
 							{ text: "What is Workloads?", link: "what-is-workloads" },
-							{ text: "Getting Started", link: "installation" },
+							{ text: "Getting Started", link: "getting-started" },
 						],
 					},
 					{
@@ -47,8 +47,8 @@ export default defineConfig({
 						],
 					},
 					{
-						text: "Build Outputs",
-						items: [{ text: "Build output", link: "build-output" }],
+						text: "Build Output",
+						link: "build-output",
 					},
 					{
 						base: "/reference",
