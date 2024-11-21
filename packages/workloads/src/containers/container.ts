@@ -91,6 +91,16 @@ export abstract class WorkloadContainer {
 		}
 	}
 
+	/**
+	 * @internal
+	 */
+	containerImage() {
+		return (
+			this.workload.containerOverrides?.definition?.containerImage ??
+			this.definition.containerImage
+		);
+	}
+
 	async #prepareContainer() {
 		const startOptions = {
 			...defaultTestStartOptions,

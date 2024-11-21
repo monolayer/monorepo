@@ -2,12 +2,12 @@ import { snakeCase } from "case-anything";
 import { Workload } from "~workloads/workloads/workload.js";
 
 /**
- * @internal
  * @group Abstract Classes
  */
 export abstract class StatefulWorkload extends Workload {
 	/**
 	 * @hidden
+	 * @internal
 	 */
 	stateful!: true;
 }

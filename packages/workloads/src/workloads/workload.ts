@@ -6,9 +6,9 @@ import {
 } from "~workloads/containers/container.js";
 
 /**
- * @internal
+ * @group Abstract Classes
  */
-export class Workload {
+export abstract class Workload {
 	/**
 	 * Unique ID
 	 */
