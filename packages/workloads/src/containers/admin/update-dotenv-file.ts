@@ -15,7 +15,7 @@ export function updateDotenvFile(vars: EnvVar[] = []) {
 	const envFilePath = path.join(cwd(), ".env");
 
 	if (!existsSync(envFilePath)) {
-		spinner.start("Write workload env vars to .env");
+		spinner.start("Write .env");
 		writeFileSync(
 			envFilePath,
 			vars
@@ -28,7 +28,7 @@ export function updateDotenvFile(vars: EnvVar[] = []) {
 		return;
 	}
 
-	spinner.start("Update workload env vars in .env");
+	spinner.start("Update .env");
 
 	const newContent: string[] = [];
 
