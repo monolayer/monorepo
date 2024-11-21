@@ -6,7 +6,7 @@ import type { PostgresDatabase } from "~workloads/workloads/stateful/postgres-da
  */
 export async function truncatePostgresTables(
 	/**
-	 * PostgresDatabase workflow
+	 * PostgresDatabase workload
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	workload: PostgresDatabase<any>,

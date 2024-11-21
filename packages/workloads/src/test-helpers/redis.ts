@@ -6,7 +6,7 @@ import type { Redis } from "~workloads/workloads/stateful/redis.js";
  */
 export async function flushRedis(
 	/**
-	 * Redis workflow
+	 * Redis workload
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	workload: Redis<any>,

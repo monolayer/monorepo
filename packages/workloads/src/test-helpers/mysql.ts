@@ -6,7 +6,7 @@ import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database
  */
 export async function truncateMySqlTables(
 	/**
-	 * MySqlDatabase workflow
+	 * MySqlDatabase workload
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	workload: MySqlDatabase<any>,
