@@ -12,7 +12,7 @@ import type { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/s
 export function dev(program: Command) {
 	return program
 		.command("dev")
-		.description("Launch workflows")
+		.description("launch workflows")
 		.option("-n, --no-exit", "Do not exit workflows' containers on close")
 		.action(async (options) => {
 			const workloads = await importWorkloads();

@@ -8,7 +8,7 @@ import { importWorkloads } from "~workloads/workloads/import.js";
 export function build(program: Command) {
 	return program
 		.command("build")
-		.description("Build workloads")
+		.description("build workloads")
 		.action(async () => {
 			const workloads = await importWorkloads();
 			const spinner = ora();

@@ -2,7 +2,7 @@
 
 ## Description
 
-Pulls all Docker images.
+Pulls all workflows' Docker images.
 
 ## Usage
 
