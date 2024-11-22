@@ -1,10 +1,10 @@
-import { assert } from "vitest";
+import { assert, expect } from "vitest";
 import { test } from "~test/__setup__/container-test.js";
 import { Database } from "~workloads/workloads/stateful/database.js";
 import { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
 
-test("MongoDb is a StatefulWorkloadWithClient", () => {
-	assert(MongoDb.prototype instanceof Database);
+test("MongoDb is a Database", () => {
+	expect(MongoDb.prototype).toBeInstanceOf(Database);
 });
 
 test("ElasticSearch connection string name", () => {
