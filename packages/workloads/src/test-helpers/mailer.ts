@@ -18,10 +18,11 @@ import type {
 import type { Mailer } from "~workloads/workloads/stateful/mailer.js";
 
 /**
- * List messages
+ * List messages of a {@link Mailer} workload.
+ *
  * Returns messages from the mailbox ordered from newest to oldest.
  */
-export async function messages<C>(
+export async function mailerMesages<C>(
 	mailer: Mailer<C>,
 ): Promise<RequestResult<MessagesSummary, string>> {
 	return await getMessagesParams({
@@ -30,12 +31,16 @@ export async function messages<C>(
 }
 
 /**
- * Render message text part
+ * Render message text part from a {@link Mailer} workload.
+ *
  * Renders just the message's text part which can be used for UI integration testing.
  *
  * The ID can be set to `latest` to return the latest message.
  */
-export async function messageText<C, ThrowOnError extends boolean = false>(
+export async function mailerMessageText<
+	C,
+	ThrowOnError extends boolean = false,
+>(
 	mailer: Mailer<C>,
 	options: Options<GetMessageTextParamsData, ThrowOnError>,
 ): Promise<RequestResult<string, string, ThrowOnError>> {
@@ -46,10 +51,14 @@ export async function messageText<C, ThrowOnError extends boolean = false>(
 }
 
 /**
- * Delete messages
+ * Delete messages from a {@link Mailer} workload.
+ *
  * Delete individual or all messages. If no IDs are provided then all messages are deleted.
  */
-export async function deleteMessages<C, ThrowOnError extends boolean = false>(
+export async function deleteMailerMessages<
+	C,
+	ThrowOnError extends boolean = false,
+>(
 	mailer: Mailer<C>,
 	options: Options<DeleteMessagesParamsData, ThrowOnError>,
 ): Promise<RequestResult<string, string, ThrowOnError>> {
@@ -60,14 +69,18 @@ export async function deleteMessages<C, ThrowOnError extends boolean = false>(
 }
 
 /**
- * Render message HTML part
+ * Render message HTML part from a {@link Mailer} workload.
+ *
  * Renders just the message's HTML part which can be used for UI integration testing.
  * Attached inline images are modified to link to the API provided they exist.
  * Note that is the message does not contain a HTML part then an 404 error is returned.
  *
  * The ID can be set to `latest` to return the latest message.
  */
-export async function messageHtml<C, ThrowOnError extends boolean = false>(
+export async function mailerMessageHTML<
+	C,
+	ThrowOnError extends boolean = false,
+>(
 	mailer: Mailer<C>,
 	options: Options<GetMessageHtmlParamsData, ThrowOnError>,
 ): Promise<RequestResult<string, string, ThrowOnError>> {
