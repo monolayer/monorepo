@@ -110,7 +110,8 @@ export abstract class WorkloadContainer {
 		const key = camelCase(
 			this.workload.constructor.name,
 		) as keyof Required<Configuration>["containerImages"];
-		const configuration = (await workloadsConfiguration).containerImages ?? {};
+		const configuration =
+			(await workloadsConfiguration()).containerImages ?? {};
 		return configuration[key];
 	}
 	async #prepareContainer() {

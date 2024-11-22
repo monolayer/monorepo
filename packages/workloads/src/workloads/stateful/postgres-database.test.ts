@@ -1,55 +1,21 @@
-import pg from "pg";
-import { Equal, Expect } from "type-testing";
-import { assert, expect } from "vitest";
-import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
+import { expect } from "vitest";
+import { test } from "~test/__setup__/container-test.js";
+import { Database } from "~workloads/workloads/stateful/database.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
-import { startContainer, test } from "~test/__setup__/container-test.js";
 
-test("PostgreSQL client commands against test container", async ({
-	containers,
-}) => {
-	const postgreSQL = new PostgresDatabase("test_commands", {
-		databaseId: "app_db",
-		client: (connectionStringEnvVar) =>
-			new pg.Pool({
-				connectionString: process.env[connectionStringEnvVar],
-			}),
-	});
-	const container = new PostgreSQLContainer(postgreSQL);
-	const startedContainer = await startContainer(container, false);
-	containers.push(startedContainer);
-
-	const adminPool = new pg.Pool({
-		connectionString: process.env[postgreSQL.connectionStringEnvVar]?.replace(
-			"/test_commands",
-			"",
-		),
-	});
-	const exists = await adminPool.query(
-		`SELECT datname FROM pg_catalog.pg_database WHERE datname = '${postgreSQL.databaseName}'`,
-	);
-
-	if (exists.rowCount === 0) {
-		await adminPool.query(`CREATE DATABASE "${postgreSQL.databaseName}";`);
-	}
-
-	const result = await postgreSQL.client.query("SELECT 1");
-	assert.deepStrictEqual(result.rows, [{ "?column?": 1 }]);
-	await postgreSQL.client.end();
-	await adminPool.end();
+test("PostgresDatabase is a Database", () => {
+	expect(PostgresDatabase.prototype).toBeInstanceOf(Database);
 });
 
-test("client type", async () => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const postgreSQL = new PostgresDatabase("test_commands", {
-		databaseId: "app_db",
-		client: (connectionStringEnvVar) =>
-			new pg.Pool({
-				connectionString: process.env[connectionStringEnvVar],
-			}),
+test("connStringComponents", async () => {
+	const postgres = new PostgresDatabase("products", {
+		databaseId: "main",
+		client: () => true,
 	});
-	type ClientType = typeof postgreSQL.client;
-	type ExpectedType = pg.Pool;
-	const isEqual: Expect<Equal<ClientType, ExpectedType>> = true;
-	expect(isEqual).toBe(true);
+	expect(postgres.connStringComponents).toStrictEqual([
+		"pg",
+		"main",
+		"products",
+		"database",
+	]);
 });

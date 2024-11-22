@@ -46,7 +46,5 @@ async function importConfig(): Promise<Configuration> {
 		: imported.default;
 }
 
-export const workloadsConfiguration = remember(
-	"workloadsConfiguration",
-	async () => await importConfig(),
-);
+export const workloadsConfiguration = () =>
+	remember("workloadsConfiguration", async () => await importConfig());

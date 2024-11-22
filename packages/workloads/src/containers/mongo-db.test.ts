@@ -27,7 +27,7 @@ test("MongoDb container", { sequential: true }, async ({ containers }) => {
 	});
 
 	assert.strictEqual(
-		process.env.MONO_MONGODB_CONTAINER_PRODUCTS_URL,
+		process.env.MONO_MONGODB_CONTAINER_PRODUCTS_DATABASE_URL,
 		`http://localhost:${startedContainer.getMappedPort(27017)}/products`,
 	);
 	assert.strictEqual(

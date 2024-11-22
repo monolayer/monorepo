@@ -20,7 +20,7 @@ type ModuleImport = Record<string, any>;
 export async function importWorkloads() {
 	const workloadsPath = path.join(
 		cwd(),
-		(await workloadsConfiguration).workloadsPath,
+		(await workloadsConfiguration()).workloadsPath,
 	);
 
 	if (!existsSync(workloadsPath)) {

@@ -1,0 +1,8 @@
+import { expect } from "vitest";
+import { test } from "~test/__setup__/container-test.js";
+import { Database } from "~workloads/workloads/stateful/database.js";
+import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
+
+test("Database is a StatefulWorkloadWithClient", () => {
+	expect(Database.prototype).toBeInstanceOf(StatefulWorkloadWithClient);
+});
