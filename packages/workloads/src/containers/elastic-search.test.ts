@@ -42,17 +42,17 @@ test(
 	"ElasticSearch with custom image tag container",
 	{ sequential: true },
 	async ({ containers }) => {
-		const redisWorkload = new ElasticSearch("rd-custom-image-tag", () => true);
+		const elastic = new ElasticSearch("rd-custom-image-tag", () => true);
 
-		redisWorkload.containerOptions({
+		elastic.containerOptions({
 			imageName: "elasticsearch:7.17.7",
 		});
 
-		const container = new ElasticSearchContainer(redisWorkload);
+		const container = new ElasticSearchContainer(elastic);
 		const startedContainer = await startContainer(container);
 		containers.push(startedContainer);
 		await assertContainerImage({
-			workload: redisWorkload,
+			workload: elastic,
 			expectedImage: "elasticsearch:7.17.7",
 		});
 	},
