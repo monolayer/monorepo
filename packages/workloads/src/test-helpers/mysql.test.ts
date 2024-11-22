@@ -1,11 +1,11 @@
 import mysql from "mysql2/promise";
 import { assert } from "vitest";
+import { test } from "~test/__setup__/container-test.js";
+import { mysqlConnection } from "~test/__setup__/helpers.js";
 import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
 import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
 import { truncateMySqlTables } from "~workloads/test-helpers/mysql.js";
 import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
-import { test } from "~test/__setup__/container-test.js";
-import { mysqlConnection } from "~test/__setup__/helpers.js";
 
 test("Truncate existing tables", { timeout: 20000 }, async ({ containers }) => {
 	const mysqlDb = new MySqlDatabase("app_db", {
@@ -17,7 +17,6 @@ test("Truncate existing tables", { timeout: 20000 }, async ({ containers }) => {
 	await startTestContainer(mysqlDb);
 	const container = await getExistingContainer(mysqlDb);
 	assert(container);
-	containers.push(container);
 
 	const connection = await mysqlConnection(mysqlDb);
 	await connection.query(`CREATE TABLE users (name text)`);
@@ -29,6 +28,8 @@ test("Truncate existing tables", { timeout: 20000 }, async ({ containers }) => {
 	await connection.query(`CREATE TABLE cities (name text)`);
 	await connection.query(`INSERT INTO cities VALUES ('New York')`);
 	await connection.query(`INSERT INTO cities VALUES ('Paris')`);
+
+	containers.push(container);
 
 	const [usersBefore] =
 		await connection.query<mysql.RowDataPacket[]>(`SELECT * from users;`);

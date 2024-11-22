@@ -1,3 +1,4 @@
+import type { Bucket } from "~workloads/workloads/stateful/bucket.js";
 import type { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
 import type { Mailer } from "~workloads/workloads/stateful/mailer.js";
 import type { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
@@ -29,3 +30,7 @@ export function assertMailer<C>(
 export function assertMySqlDatabase<C>(
 	workload: Workload,
 ): asserts workload is MySqlDatabase<C> {}
+
+export function assertBucket<C>(
+	workload: Workload,
+): asserts workload is Bucket<C> {}

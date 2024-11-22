@@ -6,6 +6,7 @@ import path from "node:path";
 import { cwd, exit } from "node:process";
 import color from "picocolors";
 import { workloadsConfiguration } from "~workloads/configuration.js";
+import { Bucket } from "~workloads/workloads/stateful/bucket.js";
 import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
 import { Mailer } from "~workloads/workloads/stateful/mailer.js";
 import { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
@@ -56,6 +57,7 @@ const validConstructor = [
 	MySqlDatabase.name,
 	ElasticSearch.name,
 	MongoDb.name,
+	Bucket.name,
 ];
 
 function validWorkload(workloadConstructor: string) {

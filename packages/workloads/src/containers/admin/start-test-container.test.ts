@@ -1,17 +1,18 @@
 import pg from "pg";
 import { createClient } from "redis";
-import { assert } from "vitest";
-import { startDevContainer } from "~workloads/containers/admin/dev-container.js";
-import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
-import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
-import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
-import { Redis } from "~workloads/workloads/stateful/redis.js";
+import { assert, describe } from "vitest";
 import {
 	assertContainerImage,
 	assertContainerLabel,
 	assertDatabase,
 } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
+import { startDevContainer } from "~workloads/containers/admin/dev-container.js";
+import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
+import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
+import { Bucket } from "~workloads/workloads/stateful/bucket.js";
+import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
+import { Redis } from "~workloads/workloads/stateful/redis.js";
 
 test("launches redis", { sequential: true }, async ({ containers }) => {
 	const redisWorkload = new Redis("launch-redis", (connectionStringEnvVar) =>
@@ -137,3 +138,47 @@ test(
 		assert.notStrictEqual(container.id, secondContainer.id);
 	},
 );
+
+test(
+	"Multiple workloads have the same container in dev",
+	{ sequential: true },
+	async ({ containers }) => {
+		const bucket = new Bucket("bucket-one", () => true);
+		const bucketStartedContainer = await startDevContainer(bucket);
+		containers.push(bucketStartedContainer);
+
+		const anotherBucket = new Bucket("bucket-two", () => true);
+		const anotherBucketStartedContainer =
+			await startDevContainer(anotherBucket);
+		containers.push(anotherBucketStartedContainer);
+
+		assert.strictEqual(
+			bucketStartedContainer.getId(),
+			anotherBucketStartedContainer.getId(),
+		);
+	},
+);
+
+describe("local stack", () => {
+	test(
+		"Multiple workloads have the same container in test",
+		{ sequential: true },
+		async ({ containers }) => {
+			const bucket = new Bucket("bucket-one", () => true);
+			await startTestContainer(bucket);
+			const bucketStartedContainer = await getExistingContainer(bucket);
+			assert(bucketStartedContainer);
+			containers.push(bucketStartedContainer);
+
+			const anotherBucket = new Bucket("bucket-two", () => true);
+			await startTestContainer(anotherBucket);
+			const anotherBucketStartedContainer = await getExistingContainer(bucket);
+			assert(anotherBucketStartedContainer);
+
+			assert.strictEqual(
+				bucketStartedContainer.id,
+				anotherBucketStartedContainer.id,
+			);
+		},
+	);
+});

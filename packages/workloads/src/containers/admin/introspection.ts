@@ -8,9 +8,13 @@ export async function getExistingContainer(
 	onlyRunning: boolean = true,
 ) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
+	const containerId =
+		workload.constructor.name === "Bucket"
+			? "local-stack"
+			: kebabCase(`${workload.constructor.name.toLowerCase()}-${workload.id}`);
 	return await containerRuntimeClient.container.fetchByLabel(
 		CONTAINER_LABEL_WORKLOAD_ID,
-		kebabCase(`${workload.constructor.name.toLowerCase()}-${workload.id}`),
+		containerId,
 		{ status: onlyRunning ? ["running"] : undefined },
 	);
 }

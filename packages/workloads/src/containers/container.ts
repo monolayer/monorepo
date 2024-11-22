@@ -107,8 +107,12 @@ export abstract class WorkloadContainer {
 	}
 
 	async #imageFromConfiguration() {
+		const name =
+			this.workload.constructor.name === "Bucket"
+				? "localStack"
+				: this.workload.constructor.name;
 		const key = camelCase(
-			this.workload.constructor.name,
+			name,
 		) as keyof Required<Configuration>["containerImages"];
 		const configuration =
 			(await workloadsConfiguration()).containerImages ?? {};
@@ -120,12 +124,7 @@ export abstract class WorkloadContainer {
 			...(this.workload.containerOverrides?.startOptions ?? {}),
 		};
 		const container = new GenericContainer(await this.containerImage());
-		container.withLabels({
-			[CONTAINER_LABEL_WORKLOAD_ID]: kebabCase(
-				`${this.workload.constructor.name.toLowerCase()}-${this.workload.id}`,
-			),
-			[CONTAINER_LABEL_ORG]: "true",
-		});
+		container.withLabels(this.containerLabels());
 
 		container.withEnvironment(this.definition.environment);
 
@@ -154,6 +153,15 @@ export abstract class WorkloadContainer {
 			container.withReuse();
 		}
 		return container;
+	}
+
+	containerLabels() {
+		return {
+			[CONTAINER_LABEL_WORKLOAD_ID]: kebabCase(
+				`${this.workload.constructor.name.toLowerCase()}-${this.workload.id}`,
+			),
+			[CONTAINER_LABEL_ORG]: "true",
+		};
 	}
 }
 

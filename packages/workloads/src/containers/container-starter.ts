@@ -1,6 +1,7 @@
 import { remember } from "@epic-web/remember";
 import type { StartedTestContainer } from "testcontainers";
 import {
+	assertBucket,
 	assertElasticSearch,
 	assertMailer,
 	assertMongoDb,
@@ -13,11 +14,13 @@ import {
 	createPostgresDatabase,
 } from "~workloads/containers/admin/create-database.js";
 import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
+import { LocalStackContainer } from "~workloads/containers/local-stack.js";
 import { MailerContainer } from "~workloads/containers/mailer.js";
 import { MongoDbContainer } from "~workloads/containers/mongo-db.js";
 import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
+import type { Bucket } from "~workloads/workloads/stateful/bucket.js";
 import type { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
 import type { Mailer } from "~workloads/workloads/stateful/mailer.js";
 import type { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
@@ -66,6 +69,10 @@ class ContainerStarter {
 				assertMongoDb(workload);
 				container = await this.startMongoDb(workload);
 				break;
+			case "Bucket":
+				assertBucket(workload);
+				container = await this.startLocalStack(workload);
+				break;
 		}
 		return container;
 	}
@@ -105,6 +112,11 @@ class ContainerStarter {
 
 	async startMongoDb<C>(workload: MongoDb<C>) {
 		const container = new MongoDbContainer(workload);
+		return await container.start();
+	}
+
+	async startLocalStack<C>(workload: Bucket<C>) {
+		const container = new LocalStackContainer(workload);
 		return await container.start();
 	}
 }

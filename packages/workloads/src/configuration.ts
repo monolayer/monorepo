@@ -36,6 +36,10 @@ export interface Configuration {
 		 * @default mongo:7.0.15
 		 */
 		mongoDb?: string;
+		/**
+		 * @default localstack/localstack:latest
+		 */
+		localStack?: string;
 	};
 }
 

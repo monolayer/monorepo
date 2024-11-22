@@ -3,6 +3,7 @@
  */
 export { type Configuration } from "~workloads/configuration.js";
 export type { StartOptions } from "~workloads/containers/container.js";
+export { Bucket } from "~workloads/workloads/stateful/bucket.js";
 export type {
 	Database,
 	DatabaseOptions,

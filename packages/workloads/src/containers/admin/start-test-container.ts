@@ -12,9 +12,9 @@ export async function startTestContainer(
 	 */
 	workload: Workload,
 ) {
-	workload.containerOptions({
-		startOptions: defaultTestStartOptions,
-	});
+	workload.containerOverrides = {
+		startOptions: defaultTestStartOptions ?? {},
+	};
 	containerStarter.mode = "test";
 	const startedTestContainer = await containerStarter.startContainerForWorkload(
 		workload,
