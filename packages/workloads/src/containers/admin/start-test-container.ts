@@ -29,7 +29,7 @@ export async function startTestContainer(
 }
 
 /**
- * Launches test containers for workloads defined in a folder.
+ * Launches test containers for workloads.
  *
  */
 export async function startTestContainers() {
