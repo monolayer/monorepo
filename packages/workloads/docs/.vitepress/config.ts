@@ -6,7 +6,7 @@ export default defineConfig({
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config
 		nav: [
-			{ text: "Guide", link: "/guide/what-is-workloads" },
+			{ text: "Guide", link: "/guide/why-workloads" },
 			{ text: "API Reference", link: "/reference/api/modules" },
 		],
 		sidebar: {
@@ -16,7 +16,7 @@ export default defineConfig({
 					{
 						text: "Introduction",
 						items: [
-							{ text: "What is Workloads?", link: "what-is-workloads" },
+							{ text: "Why Workloads?", link: "why-workloads" },
 							{ text: "Getting Started", link: "getting-started" },
 						],
 					},
