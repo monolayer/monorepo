@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import { existsSync, writeFileSync } from "fs";
 import { cwd } from "node:process";
-import ora from "ora";
 import * as path from "path";
 import readline from "readline";
 
@@ -11,11 +10,9 @@ export interface EnvVar {
 }
 
 export function updateDotenvFile(vars: EnvVar[] = []) {
-	const spinner = ora();
 	const envFilePath = path.join(cwd(), ".env");
 
 	if (!existsSync(envFilePath)) {
-		spinner.start("Write .env");
 		writeFileSync(
 			envFilePath,
 			vars
@@ -24,11 +21,8 @@ export function updateDotenvFile(vars: EnvVar[] = []) {
 				})
 				.join("\n"),
 		);
-		spinner.succeed();
 		return;
 	}
-
-	spinner.start("Update .env");
 
 	const newContent: string[] = [];
 
@@ -56,6 +50,5 @@ export function updateDotenvFile(vars: EnvVar[] = []) {
 			newContent.push(`${key[0]}="${key[2]}"`);
 		}
 		writeFileSync(envFilePath, newContent.join("\n"));
-		spinner.succeed();
 	});
 }
