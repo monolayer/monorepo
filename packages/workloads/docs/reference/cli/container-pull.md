@@ -9,3 +9,9 @@ Pulls all Docker images.
 ```bash
 npx workloads pull
 ```
+
+## Global Options
+
+| Option                   | Description                   |
+| -------------------------| ----------------------------- |
+| `-h, --help`             | Display help for the command. |

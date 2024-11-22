@@ -9,3 +9,9 @@ Stops workflows' Docker containers.
 ```bash
 npx workloads dev stop
 ```
+
+## Global Options
+
+| Option                   | Description                   |
+| -------------------------| ----------------------------- |
+| `-h, --help`             | Display help for the command. |
