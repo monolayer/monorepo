@@ -1,4 +1,4 @@
-# `dev status`
+# `container status`
 
 ## Description
 

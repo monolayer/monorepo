@@ -2,7 +2,7 @@
 
 ## Description
 
-Build workloads.
+Builds workloads.
 
 ## Usage
 

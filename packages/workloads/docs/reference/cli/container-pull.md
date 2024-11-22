@@ -1,4 +1,4 @@
-# `pull`
+# `container pull`
 
 ## Description
 

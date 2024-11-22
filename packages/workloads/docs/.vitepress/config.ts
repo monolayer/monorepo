@@ -67,11 +67,11 @@ export default defineConfig({
 					{
 						text: "Command Line Interface",
 						items: [
-							{ text: "dev start", link: "/cli/dev-start" },
-							{ text: "dev stop", link: "/cli/dev-stop" },
-							{ text: "dev status", link: "/cli/dev-status" },
+							{ text: "dev", link: "/cli/dev" },
 							{ text: "build", link: "/cli/build" },
-							{ text: "pull", link: "/cli/pull" },
+							{ text: "container stop", link: "/cli/container-stop" },
+							{ text: "container status", link: "/cli/container-status" },
+							{ text: "container pull", link: "/cli/container-pull" },
 						],
 					},
 				],

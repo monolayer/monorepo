@@ -1,4 +1,4 @@
-# `dev stop`
+# `container stop`
 
 ## Description
 
