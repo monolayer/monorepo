@@ -7,8 +7,7 @@ import {
 	assertDatabase,
 } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
-import { startDevContainer } from "~workloads/containers/admin/dev-container.js";
-import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
+import { startContainer } from "~workloads/containers/admin/container.js";
 import { Bucket } from "~workloads/workloads/stateful/bucket.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
@@ -20,7 +19,10 @@ test("launches redis", { sequential: true }, async ({ containers }) => {
 		}).on("error", (err) => console.error("Redis Client Error", err)),
 	);
 
-	const container = await startTestContainer(redisWorkload);
+	const container = await startContainer(redisWorkload, {
+		mode: "test",
+		waitForHealthcheck: false,
+	});
 	containers.push(container);
 
 	await assertContainerLabel(
@@ -49,7 +51,10 @@ test(
 			},
 		);
 
-		const container = await startTestContainer(postgresDatabase, true);
+		const container = await startContainer(postgresDatabase, {
+			mode: "test",
+			waitForHealthcheck: true,
+		});
 		containers.push(container);
 		await assertDatabase(postgresDatabase);
 
@@ -63,7 +68,10 @@ test(
 					}),
 			},
 		);
-		const anotherContainer = await startTestContainer(anotherDatabase, true);
+		const anotherContainer = await startContainer(anotherDatabase, {
+			mode: "test",
+			waitForHealthcheck: true,
+		});
 		assert(anotherContainer);
 		containers.push(anotherContainer);
 		await assertDatabase(anotherDatabase);
@@ -82,7 +90,10 @@ test(
 			}).on("error", (err) => console.error("Redis Client Error", err)),
 		);
 
-		const container = await startTestContainer(redisWorkload);
+		const container = await startContainer(redisWorkload, {
+			mode: "test",
+			waitForHealthcheck: false,
+		});
 		containers.push(container);
 
 		await assertContainerLabel(
@@ -91,7 +102,10 @@ test(
 			"redis-red-one",
 		);
 
-		const secondContainer = await startTestContainer(redisWorkload);
+		const secondContainer = await startContainer(redisWorkload, {
+			mode: "test",
+			waitForHealthcheck: false,
+		});
 		containers.push(secondContainer);
 
 		assert.strictEqual(container.getId(), secondContainer.getId());
@@ -110,7 +124,10 @@ test(
 				}).on("error", (err) => console.error("Redis Client Error", err)),
 		);
 
-		const container = await startDevContainer(redisWorkload);
+		const container = await startContainer(redisWorkload, {
+			mode: "dev",
+			waitForHealthcheck: false,
+		});
 		containers.push(container);
 
 		await assertContainerLabel(
@@ -119,7 +136,10 @@ test(
 			"redis-redis-dev-test",
 		);
 
-		const secondContainer = await startTestContainer(redisWorkload);
+		const secondContainer = await startContainer(redisWorkload, {
+			mode: "test",
+			waitForHealthcheck: false,
+		});
 		containers.push(secondContainer);
 
 		assert.notStrictEqual(container.getId(), secondContainer.getId());
@@ -131,12 +151,17 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const bucket = new Bucket("bucket-one", () => true);
-		const bucketStartedContainer = await startDevContainer(bucket);
+		const bucketStartedContainer = await startContainer(bucket, {
+			mode: "dev",
+			waitForHealthcheck: false,
+		});
 		containers.push(bucketStartedContainer);
 
 		const anotherBucket = new Bucket("bucket-two", () => true);
-		const anotherBucketStartedContainer =
-			await startDevContainer(anotherBucket);
+		const anotherBucketStartedContainer = await startContainer(anotherBucket, {
+			mode: "dev",
+			waitForHealthcheck: false,
+		});
 		containers.push(anotherBucketStartedContainer);
 
 		assert.strictEqual(
@@ -152,12 +177,20 @@ describe("local stack", () => {
 		{ sequential: true },
 		async ({ containers }) => {
 			const bucket = new Bucket("bucket-one", () => true);
-			const bucketStartedContainer = await startTestContainer(bucket);
+			const bucketStartedContainer = await startContainer(bucket, {
+				mode: "test",
+				waitForHealthcheck: false,
+			});
 			containers.push(bucketStartedContainer);
 
 			const anotherBucket = new Bucket("bucket-two", () => true);
-			const anotherBucketStartedContainer =
-				await startTestContainer(anotherBucket);
+			const anotherBucketStartedContainer = await startContainer(
+				anotherBucket,
+				{
+					mode: "test",
+					waitForHealthcheck: false,
+				},
+			);
 
 			assert.strictEqual(
 				bucketStartedContainer.getId(),

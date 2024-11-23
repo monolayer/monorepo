@@ -1,12 +1,7 @@
 import { kebabCase } from "case-anything";
 import type { StartedTestContainer } from "testcontainers";
 import { ContainerWithURI } from "~workloads/containers/container-with-uri.js";
-import {
-	CONTAINER_LABEL_MODE,
-	CONTAINER_LABEL_ORG,
-	CONTAINER_LABEL_WORKLOAD_ID,
-	type WorkloadContainerDefinition,
-} from "~workloads/containers/container.js";
+import { type WorkloadContainerDefinition } from "~workloads/containers/container.js";
 import type { Bucket } from "~workloads/workloads/stateful/bucket.js";
 
 /**
@@ -58,13 +53,7 @@ export class LocalStackContainer<C> extends ContainerWithURI {
 		}
 	}
 
-	containerLabels() {
-		return {
-			[CONTAINER_LABEL_WORKLOAD_ID]: kebabCase(
-				!this.#testContainer ? `local-stack` : `local-stack-test`,
-			),
-			[CONTAINER_LABEL_ORG]: "true",
-			[CONTAINER_LABEL_MODE]: "dev" as const,
-		};
+	qualifiedWorkloadId() {
+		return kebabCase(!this.#testContainer ? `local-stack` : `local-stack-test`);
 	}
 }

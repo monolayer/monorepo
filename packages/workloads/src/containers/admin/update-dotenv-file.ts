@@ -9,8 +9,9 @@ export interface EnvVar {
 	value: string;
 }
 
-export function updateDotenvFile(vars: EnvVar[] = []) {
-	const envFilePath = path.join(cwd(), ".env");
+export function updateDotenvFile(vars: EnvVar[] = [], mode: "dev" | "test") {
+	const envFileName = mode === "dev" ? ".env" : ".env.test";
+	const envFilePath = path.join(cwd(), envFileName);
 
 	if (!existsSync(envFilePath)) {
 		writeFileSync(
@@ -27,7 +28,7 @@ export function updateDotenvFile(vars: EnvVar[] = []) {
 	const newContent: string[] = [];
 
 	const file = readline.createInterface({
-		input: fs.createReadStream(".env"),
+		input: fs.createReadStream(envFileName),
 		output: process.stdout,
 		terminal: false,
 	});

@@ -2,7 +2,7 @@ import pg from "pg";
 import { assert } from "vitest";
 import { test } from "~test/__setup__/container-test.js";
 import { postgresDatabasePool } from "~test/__setup__/helpers.js";
-import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
+import { startContainer } from "~workloads/containers/admin/container.js";
 import { truncatePostgresTables } from "~workloads/test-helpers/postgres.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 
@@ -17,7 +17,10 @@ test("Truncate existing tables", async ({ containers }) => {
 		},
 	});
 
-	const container = await startTestContainer(postgreSQL, true);
+	const container = await startContainer(postgreSQL, {
+		mode: "test",
+		waitForHealthcheck: true,
+	});
 	containers.push(container);
 
 	const pool = postgresDatabasePool(postgreSQL);

@@ -159,12 +159,16 @@ export abstract class WorkloadContainer {
 
 	containerLabels() {
 		return {
-			[CONTAINER_LABEL_WORKLOAD_ID]: kebabCase(
-				`${this.workload.constructor.name.toLowerCase()}-${this.workload.id}`,
-			),
+			[CONTAINER_LABEL_WORKLOAD_ID]: this.qualifiedWorkloadId(),
 			[CONTAINER_LABEL_ORG]: "true",
 			[CONTAINER_LABEL_MODE]: this.mode,
 		};
+	}
+
+	qualifiedWorkloadId() {
+		return kebabCase(
+			`${this.workload.constructor.name.toLowerCase()}-${this.workload.id}`,
+		);
 	}
 }
 

@@ -1,26 +1,8 @@
-import type { Command } from "@commander-js/extra-typings";
 import Table from "cli-table3";
-import {
-	workloadContainerStatus,
-	type WorkloadInfo,
-} from "~workloads/containers/admin/introspection.js";
-import { importWorkloads } from "~workloads/workloads/import.js";
+import type { WorkloadInfo } from "~workloads/containers/admin/introspection.js";
 import type { Database } from "~workloads/workloads/stateful/database.js";
 
-export function status(program: Command) {
-	return program
-		.command("status")
-		.description("list the status of the workflows' Docker containers")
-		.action(async () => {
-			const workloads = await importWorkloads();
-			const statuses = await Promise.all(
-				workloads.map(async (w) => workloadContainerStatus(w)),
-			);
-			printStatus(statuses);
-		});
-}
-
-function printStatus(statuses: WorkloadInfo[]) {
+export function printStatus(statuses: WorkloadInfo[]) {
 	const table = new Table({
 		head: ["Workload", "Type", "Status", "Ports", "Container ID"],
 		style: {

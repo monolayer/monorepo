@@ -4,15 +4,19 @@ import { type Workload } from "~workloads/workloads/workload.js";
 /**
  * Launches a dev container for a workload.
  */
-export async function startDevContainer(
+export async function startContainer(
 	/**
 	 * Workload with the dev container to launch.
 	 */
 	workload: Workload,
+	options: {
+		mode: "dev" | "test";
+		waitForHealthcheck: boolean;
+	},
 ) {
 	const startedTestContainer = await containerStarter.startForWorload(
 		workload,
-		{ mode: "dev", waitForHealthcheck: false },
+		options,
 	);
 	if (startedTestContainer === undefined) {
 		throw new Error(`no container match for workload: ${workload.id}`);
@@ -23,13 +27,14 @@ export async function startDevContainer(
 /**
  * Stops the dev container for a workload.
  */
-export async function stopDevContainer(
+export async function stopContainer(
 	/**
 	 * Workload with the dev container to stop.
 	 */
 	workload: Workload,
+	mode: "dev" | "test",
 ) {
-	const startedTestContainer = await getExistingContainer(workload, "dev");
+	const startedTestContainer = await getExistingContainer(workload, mode);
 
 	if (startedTestContainer === undefined) {
 		return;

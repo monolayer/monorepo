@@ -2,8 +2,8 @@ import mysql from "mysql2/promise";
 import { assert } from "vitest";
 import { test } from "~test/__setup__/container-test.js";
 import { mysqlConnection } from "~test/__setup__/helpers.js";
+import { startContainer } from "~workloads/containers/admin/container.js";
 import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
-import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
 import { truncateMySqlTables } from "~workloads/test-helpers/mysql.js";
 import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 
@@ -14,7 +14,10 @@ test("Truncate existing tables", { timeout: 20000 }, async ({ containers }) => {
 			await mysql.createConnection(process.env[connectionStringEnvVar]!),
 	});
 
-	await startTestContainer(mysqlDb, true);
+	await startContainer(mysqlDb, {
+		mode: "test",
+		waitForHealthcheck: true,
+	});
 	const container = await getExistingContainer(mysqlDb, "test");
 	assert(container);
 

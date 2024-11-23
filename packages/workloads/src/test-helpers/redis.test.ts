@@ -1,8 +1,8 @@
 import { createClient } from "redis";
 import { assert } from "vitest";
 import { test } from "~test/__setup__/container-test.js";
+import { startContainer } from "~workloads/containers/admin/container.js";
 import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
-import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
 import { flushRedis } from "~workloads/test-helpers/redis.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
 
@@ -14,7 +14,10 @@ test("FlushDB", async ({ containers }) => {
 		await client.connect();
 		return client;
 	});
-	await startTestContainer(redis);
+	await startContainer(redis, {
+		mode: "test",
+		waitForHealthcheck: false,
+	});
 	const container = await getExistingContainer(redis, "test");
 	assert(container);
 	containers.push(container);
@@ -43,7 +46,10 @@ test("FlushDB on another database", async ({ containers }) => {
 		await client.connect();
 		return client;
 	});
-	const container = await startTestContainer(redis);
+	const container = await startContainer(redis, {
+		mode: "test",
+		waitForHealthcheck: false,
+	});
 	containers.push(container);
 
 	const client = await redis.client;

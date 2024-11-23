@@ -28,8 +28,11 @@ export async function getExistingContainer(
 	}
 }
 
-export async function workloadContainerStatus(workload: Workload) {
-	const existingContainer = await getExistingContainer(workload, "dev", false);
+export async function workloadContainerStatus(
+	workload: Workload,
+	mode: "dev" | "test",
+) {
+	const existingContainer = await getExistingContainer(workload, mode, false);
 
 	const status: WorkloadInfo = {
 		workload: workload,
