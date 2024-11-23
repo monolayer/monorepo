@@ -4,6 +4,7 @@
 	"exclude": [
 		"src/bin/**/*",
 		"src/cli/**/*",
+		"src/containers/**/*",
 		"src/**/*.test.ts",
 		"test/**/*",
 		"src/api.ts"
