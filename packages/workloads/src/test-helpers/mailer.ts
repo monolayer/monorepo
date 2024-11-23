@@ -1,9 +1,5 @@
 import { kebabCase } from "case-anything";
 import { getContainerRuntimeClient } from "testcontainers";
-import {
-	CONTAINER_LABEL_MODE,
-	CONTAINER_LABEL_WORKLOAD_ID,
-} from "~workloads/containers/container.js";
 import type {
 	Options,
 	RequestResult,
@@ -122,8 +118,8 @@ async function getMailerContainer<C>(workload: Mailer<C>) {
 	const container = listContainers.find(
 		(container) =>
 			container.State === "running" &&
-			container.Labels[CONTAINER_LABEL_WORKLOAD_ID] === containerId &&
-			container.Labels[CONTAINER_LABEL_MODE] === "test",
+			container.Labels["org.monolayer-sidecar.workload-id"] === containerId &&
+			container.Labels["org.monolayer-sidecar.mode"] === "test",
 	);
 	if (container) {
 		return containerRuntimeClient.container.getById(container.Id);
