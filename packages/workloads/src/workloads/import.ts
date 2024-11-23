@@ -1,5 +1,3 @@
-import { importFile } from "@monorepo/utils/import-file.js";
-import { Effect } from "effect";
 import { existsSync } from "fs";
 import fs from "fs/promises";
 import path from "node:path";
@@ -36,9 +34,7 @@ export async function importWorkloads() {
 	for (const fileName of files) {
 		if (fileName.endsWith(".ts") && !fileName.endsWith(".d.ts")) {
 			const importPath = path.join(workloadsPath, fileName);
-			const imported = await Effect.runPromise(
-				importFile<ModuleImport>(importPath),
-			);
+			const imported = (await import(importPath)) as ModuleImport;
 			for (const [, workload] of Object.entries(imported)) {
 				const workloadKind = workload.constructor.name;
 				if (validWorkload(workloadKind)) {
