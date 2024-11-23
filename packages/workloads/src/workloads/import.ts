@@ -7,7 +7,7 @@ import { workloadsConfiguration } from "~workloads/configuration.js";
 import { Bucket } from "~workloads/workloads/stateful/bucket.js";
 import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
 import { Mailer } from "~workloads/workloads/stateful/mailer.js";
-import { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
+import { MongoDatabase } from "~workloads/workloads/stateful/mongo-database.js";
 import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
@@ -52,7 +52,7 @@ const validConstructor = [
 	Mailer.name,
 	MySqlDatabase.name,
 	ElasticSearch.name,
-	MongoDb.name,
+	MongoDatabase.name,
 	Bucket.name,
 ];
 

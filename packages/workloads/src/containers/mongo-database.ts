@@ -2,15 +2,15 @@ import { Wait, type StartedTestContainer } from "testcontainers";
 import type { HealthCheck } from "testcontainers/build/types.js";
 import { ContainerWithURI } from "~workloads/containers/container-with-uri.js";
 import type { WorkloadContainerDefinition } from "~workloads/containers/container.js";
-import type { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
+import type { MongoDatabase } from "~workloads/workloads/stateful/mongo-database.js";
 
 /**
- * Container for ElasticSearch
+ * Container for MongoDatabase
  *
  * @internal
  */
-export class MongoDbContainer<C> extends ContainerWithURI {
-	constructor(workload: MongoDb<C>) {
+export class MongoDatabaseContainer<C> extends ContainerWithURI {
+	constructor(workload: MongoDatabase<C>) {
 		super(workload);
 	}
 
@@ -36,7 +36,7 @@ export class MongoDbContainer<C> extends ContainerWithURI {
 		url.port = container
 			.getMappedPort(this.definition.portsToExpose[0]!)
 			.toString();
-		url.pathname = (this.workload as MongoDb<C>).databaseName;
+		url.pathname = (this.workload as MongoDatabase<C>).databaseName;
 		return url.toString();
 	}
 }

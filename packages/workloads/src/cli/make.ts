@@ -4,7 +4,7 @@ import { cwd } from "node:process";
 import {
 	assertElasticSearch,
 	assertMailer,
-	assertMongoDb,
+	assertMongoDatabase,
 	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
@@ -59,8 +59,8 @@ export class Make {
 						connectionStringEnvVar: workload.connectionStringEnvVar,
 					});
 					break;
-				case "MongoDb":
-					assertMongoDb(workload);
+				case "MongoDatabase":
+					assertMongoDatabase(workload);
 					this.#addDatabase(workload, manifest.mongoDb);
 					break;
 			}

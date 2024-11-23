@@ -1,7 +1,7 @@
 {
 	"name": "@monolayer/workloads",
-	"version": "1.0.0",
-	"description": "The backend sidecar framework",
+	"version": "1.0.0-pre-1",
+	"description": "The sidecar framework for full-stack web development with React.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
 	"homepage": "https://github.com/monolayer/monorepo",

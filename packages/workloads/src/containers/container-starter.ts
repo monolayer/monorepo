@@ -3,7 +3,7 @@ import {
 	assertBucket,
 	assertElasticSearch,
 	assertMailer,
-	assertMongoDb,
+	assertMongoDatabase,
 	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
@@ -11,7 +11,7 @@ import {
 import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
 import { LocalStackContainer } from "~workloads/containers/local-stack.js";
 import { MailerContainer } from "~workloads/containers/mailer.js";
-import { MongoDbContainer } from "~workloads/containers/mongo-db.js";
+import { MongoDatabaseContainer } from "~workloads/containers/mongo-database.js";
 import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
@@ -47,9 +47,9 @@ class ContainerStarter {
 			case "ElasticSearch":
 				assertElasticSearch(workload);
 				return new ElasticSearchContainer(workload);
-			case "MongoDb":
-				assertMongoDb(workload);
-				return new MongoDbContainer(workload);
+			case "MongoDatabase":
+				assertMongoDatabase(workload);
+				return new MongoDatabaseContainer(workload);
 			case "Bucket":
 				assertBucket(workload);
 				return new LocalStackContainer(workload);

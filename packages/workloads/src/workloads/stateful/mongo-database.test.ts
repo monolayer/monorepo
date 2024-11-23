@@ -1,14 +1,14 @@
 import { expect } from "vitest";
 import { test } from "~test/__setup__/container-test.js";
 import { Database } from "~workloads/workloads/stateful/database.js";
-import { MongoDb } from "~workloads/workloads/stateful/mongo-db.js";
+import { MongoDatabase } from "~workloads/workloads/stateful/mongo-database.js";
 
-test("MongoDb is a Database", () => {
-	expect(MongoDb.prototype).toBeInstanceOf(Database);
+test("MongoDatabase is a Database", () => {
+	expect(MongoDatabase.prototype).toBeInstanceOf(Database);
 });
 
 test("connStringComponents", async () => {
-	const mongoDb = new MongoDb("contracts", {
+	const mongoDb = new MongoDatabase("contracts", {
 		databaseId: "documents",
 		client: () => true,
 	});
