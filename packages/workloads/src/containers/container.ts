@@ -6,6 +6,7 @@ import { camelCase, kebabCase } from "case-anything";
 import getPort from "get-port";
 import {
 	GenericContainer,
+	Wait,
 	type StartedTestContainer,
 	type WaitStrategy,
 } from "testcontainers";
@@ -34,17 +35,11 @@ export interface StartOptions {
 	 * @default false
 	 */
 	publishToRandomPorts?: boolean;
+	/**
+	 *
+	 */
+	mode: "dev" | "test";
 }
-
-export const defaultDevStartOptions: StartOptions = {
-	reuse: true,
-	publishToRandomPorts: false,
-};
-
-export const defaultTestStartOptions: StartOptions = {
-	reuse: false,
-	publishToRandomPorts: true,
-};
 
 /**
  * @hidden
@@ -56,20 +51,28 @@ export const CONTAINER_LABEL_WORKLOAD_ID = "org.monolayer-sidecar.workload-id";
 export const CONTAINER_LABEL_ORG = "org.monolayer-sidecar";
 
 /**
+ * @hidden
+ */
+export const CONTAINER_LABEL_MODE = "org.monolayer-sidecar.mode";
+
+/**
  * @internal
  */
 export abstract class WorkloadContainer {
 	abstract definition: WorkloadContainerDefinition;
 	startedContainer?: StartedTestContainer;
 
+	mode: "dev" | "test" = "dev";
+
 	constructor(public workload: Workload) {}
 
 	/**
 	 * Starts the container.
 	 */
-	async start() {
-		const container = await this.#prepareContainer();
+	async start(waithForHealthcheck: boolean = false) {
+		const container = await this.#prepareContainer(waithForHealthcheck);
 		this.startedContainer = await container.start();
+		await this.afterStart();
 		return this.startedContainer;
 	}
 
@@ -100,10 +103,12 @@ export abstract class WorkloadContainer {
 	 */
 	async containerImage() {
 		return (
-			this.workload.containerOverrides?.definition?.containerImage ??
-			(await this.#imageFromConfiguration()) ??
-			this.definition.containerImage
+			(await this.#imageFromConfiguration()) ?? this.definition.containerImage
 		);
+	}
+
+	async afterStart() {
+		return;
 	}
 
 	async #imageFromConfiguration() {
@@ -118,19 +123,18 @@ export abstract class WorkloadContainer {
 			(await workloadsConfiguration()).containerImages ?? {};
 		return configuration[key];
 	}
-	async #prepareContainer() {
-		const startOptions = {
-			...defaultTestStartOptions,
-			...(this.workload.containerOverrides?.startOptions ?? {}),
-		};
+	async #prepareContainer(waithForHealthcheck: boolean = false) {
 		const container = new GenericContainer(await this.containerImage());
 		container.withLabels(this.containerLabels());
 
 		container.withEnvironment(this.definition.environment);
 
-		if (this.definition.waitStrategy) {
-			container.withWaitStrategy(this.definition.waitStrategy);
-		}
+		container.withWaitStrategy(
+			waithForHealthcheck && this.definition.waitStrategy
+				? this.definition.waitStrategy
+				: Wait.forLogMessage(""),
+		);
+
 		if (this.definition.startupTimeout) {
 			container.withStartupTimeout(this.definition.startupTimeout);
 		}
@@ -144,14 +148,12 @@ export abstract class WorkloadContainer {
 			container.withExposedPorts({
 				container: portToExpose,
 				host:
-					(startOptions?.publishToRandomPorts ?? false)
-						? await getPort()
+					this.mode === "test"
+						? await getPort({ port: portToExpose + 1 })
 						: portToExpose,
 			});
 		}
-		if (startOptions?.reuse ?? true) {
-			container.withReuse();
-		}
+		container.withReuse();
 		return container;
 	}
 
@@ -161,6 +163,7 @@ export abstract class WorkloadContainer {
 				`${this.workload.constructor.name.toLowerCase()}-${this.workload.id}`,
 			),
 			[CONTAINER_LABEL_ORG]: "true",
+			[CONTAINER_LABEL_MODE]: this.mode,
 		};
 	}
 }

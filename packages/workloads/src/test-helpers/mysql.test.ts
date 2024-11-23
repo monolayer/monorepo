@@ -14,18 +14,20 @@ test("Truncate existing tables", { timeout: 20000 }, async ({ containers }) => {
 			await mysql.createConnection(process.env[connectionStringEnvVar]!),
 	});
 
-	await startTestContainer(mysqlDb);
-	const container = await getExistingContainer(mysqlDb);
+	await startTestContainer(mysqlDb, true);
+	const container = await getExistingContainer(mysqlDb, "test");
 	assert(container);
 
 	const connection = await mysqlConnection(mysqlDb);
-	await connection.query(`CREATE TABLE users (name text)`);
+	await connection.query(`CREATE TABLE IF NOT EXISTS users (name text)`);
+	await connection.query(`TRUNCATE TABLE users`);
 	await connection.query(`INSERT INTO users VALUES ('paul')`);
 	await connection.query(`INSERT INTO users VALUES ('john')`);
 	await connection.query(`INSERT INTO users VALUES ('ringo')`);
 	await connection.query(`INSERT INTO users VALUES ('george')`);
 
-	await connection.query(`CREATE TABLE cities (name text)`);
+	await connection.query(`CREATE TABLE IF NOT EXISTS cities (name text)`);
+	await connection.query(`TRUNCATE TABLE cities`);
 	await connection.query(`INSERT INTO cities VALUES ('New York')`);
 	await connection.query(`INSERT INTO cities VALUES ('Paris')`);
 

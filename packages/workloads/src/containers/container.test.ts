@@ -1,12 +1,12 @@
 import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { getContainerRuntimeClient } from "testcontainers";
 import { assert } from "vitest";
+import { test } from "~test/__setup__/container-test.js";
 import {
 	WorkloadContainer,
 	type WorkloadContainerDefinition,
 } from "~workloads/containers/container.js";
 import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workload.js";
-import { startContainer, test } from "~test/__setup__/container-test.js";
 
 class TestWorkload extends StatefulWorkload {}
 const testWorkload = new TestWorkload("container-test");
@@ -21,25 +21,19 @@ class WorkloadTestContainer extends WorkloadContainer {
 
 test("start container", async ({ containers }) => {
 	const container = new WorkloadTestContainer(testWorkload);
-	const startedContainer = await startContainer(container);
+	const startedContainer = await container.start();
 	containers.push(startedContainer);
 });
 
 test("start container and expose ports", async ({ containers }) => {
 	const container = new WorkloadTestContainer(testWorkload);
-	const startedContainer = await startContainer(container);
+	const startedContainer = await container.start();
 	containers.push(startedContainer);
 
 	await assertExposedPorts({ container: startedContainer, ports: [80] });
 });
 
 test("start container with reuse", async ({ containers }) => {
-	testWorkload.containerOptions({
-		startOptions: {
-			reuse: true,
-			publishToRandomPorts: true,
-		},
-	});
 	const container = new WorkloadTestContainer(testWorkload);
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
@@ -52,7 +46,7 @@ test("start container with reuse", async ({ containers }) => {
 
 test("mapped ports", async ({ containers }) => {
 	const container = new WorkloadTestContainer(testWorkload);
-	const startedContainer = await startContainer(container);
+	const startedContainer = await container.start();
 	containers.push(startedContainer);
 
 	assert.deepStrictEqual(container.mappedPorts, [
@@ -69,7 +63,7 @@ test("without mapped ports", async ({ containers }) => {
 		...container.definition,
 		portsToExpose: [],
 	};
-	const startedContainer = await startContainer(container);
+	const startedContainer = await container.start();
 	containers.push(startedContainer);
 
 	assert.deepStrictEqual(container.mappedPorts, []);
@@ -82,7 +76,7 @@ test("mapped ports not started container", async () => {
 
 test("stop container", async () => {
 	const container = new WorkloadTestContainer(testWorkload);
-	await startContainer(container);
+	await container.start();
 	await container.stop();
 
 	const containerRuntimeClient = await getContainerRuntimeClient();
@@ -98,8 +92,8 @@ test("start multiple times returns the same container", async ({
 	containers,
 }) => {
 	const container = new WorkloadTestContainer(testWorkload);
-	const container1 = await startContainer(container);
-	const container2 = await startContainer(container);
+	const container1 = await container.start();
+	const container2 = await container.start();
 	containers.push(container1, container2);
 
 	assert.strictEqual(container1.getId, container2.getId);

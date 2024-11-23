@@ -1,8 +1,7 @@
 // my-test.ts
 import type Dockerode from "dockerode";
-import { Wait, type StartedTestContainer } from "testcontainers";
+import { type StartedTestContainer } from "testcontainers";
 import { test as base } from "vitest";
-import type { WorkloadContainer } from "~workloads/containers/container.js";
 
 const startedContainers: (StartedTestContainer | Dockerode.Container)[] = [];
 
@@ -33,17 +32,3 @@ export const test = base.extend({
 		startedContainers.length = 0;
 	},
 });
-
-export async function startContainer(
-	container: WorkloadContainer,
-	quickStart: boolean = true,
-) {
-	if (quickStart) {
-		container.definition = {
-			...container.definition,
-			healthCheck: undefined,
-			waitStrategy: Wait.forLogMessage(""),
-		};
-	}
-	return await container.start();
-}

@@ -1,5 +1,4 @@
 import { kebabCase } from "case-anything";
-import type Dockerode from "dockerode";
 import { Pool } from "pg";
 import {
 	getContainerRuntimeClient,
@@ -74,12 +73,11 @@ export async function assertExposedPorts({
 }
 
 export async function assertContainerLabel(
-	container: Dockerode.Container,
+	container: StartedTestContainer,
 	label: string,
 	expected: string,
 ) {
-	const inspect = await container.inspect();
-	assert.strictEqual(inspect.Config.Labels[label], expected);
+	assert.strictEqual(container.getLabels()[label], expected);
 }
 
 export async function assertDatabase<C>(resource: PostgresDatabase<C>) {

@@ -1,10 +1,7 @@
 import mysql from "mysql2/promise";
-import {
-	assertContainerImage,
-	assertExposedPorts,
-} from "test/__setup__/assertions.js";
+import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
-import { startContainer, test } from "~test/__setup__/container-test.js";
+import { test } from "~test/__setup__/container-test.js";
 import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 
@@ -19,7 +16,7 @@ test(
 		});
 
 		const container = new MySQLContainer(mySqlDb);
-		const startedContainer = await startContainer(container);
+		const startedContainer = await container.start(true);
 		containers.push(startedContainer);
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
@@ -39,30 +36,5 @@ test(
 			container.connectionURI,
 			`mysql://root:test@localhost:${startedContainer.getMappedPort(3306)}/test_started_container`,
 		);
-	},
-);
-
-test(
-	"MySQL with custom image tag container",
-	{ sequential: true },
-	async ({ containers }) => {
-		const mySqlDb = new MySqlDatabase("test_started_container", {
-			databaseId: "mysql_container_test",
-			client: async (connectionStringEnvVar) =>
-				await mysql.createConnection(process.env[connectionStringEnvVar]!),
-		});
-
-		mySqlDb.containerOptions({
-			imageName: "mysql:8.4.2",
-		});
-
-		const container = new MySQLContainer(mySqlDb);
-		const startedContainer = await startContainer(container);
-		containers.push(startedContainer);
-		await assertContainerImage({
-			workload: mySqlDb,
-			expectedImage: "mysql:8.4.2",
-		});
-		await startedContainer.stop();
 	},
 );

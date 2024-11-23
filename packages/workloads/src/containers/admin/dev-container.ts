@@ -10,12 +10,9 @@ export async function startDevContainer(
 	 */
 	workload: Workload,
 ) {
-	const startedTestContainer = await containerStarter.startContainerForWorkload(
+	const startedTestContainer = await containerStarter.startForWorload(
 		workload,
-		{
-			initialize: false,
-			mode: "dev",
-		},
+		{ mode: "dev", waitForHealthcheck: false },
 	);
 	if (startedTestContainer === undefined) {
 		throw new Error(`no container match for workload: ${workload.id}`);
@@ -32,7 +29,7 @@ export async function stopDevContainer(
 	 */
 	workload: Workload,
 ) {
-	const startedTestContainer = await getExistingContainer(workload);
+	const startedTestContainer = await getExistingContainer(workload, "dev");
 
 	if (startedTestContainer === undefined) {
 		return;

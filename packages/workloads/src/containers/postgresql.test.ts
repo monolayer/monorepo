@@ -1,10 +1,7 @@
 import pg from "pg";
-import {
-	assertContainerImage,
-	assertExposedPorts,
-} from "test/__setup__/assertions.js";
+import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
-import { startContainer, test } from "~test/__setup__/container-test.js";
+import { test } from "~test/__setup__/container-test.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 
@@ -21,7 +18,7 @@ test(
 		});
 
 		const container = new PostgreSQLContainer(postgreSQL);
-		const startedContainer = await startContainer(container);
+		const startedContainer = await container.start(true);
 		containers.push(startedContainer);
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
@@ -41,29 +38,5 @@ test(
 			container.connectionURI,
 			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}/test_started_container`,
 		);
-	},
-);
-
-test(
-	"PostgreSQL with custom image tag container",
-	{ sequential: true },
-	async ({ containers }) => {
-		const postgres = new PostgresDatabase("pg-custom-image-tag", {
-			databaseId: "db_custom_image",
-			client: (connectionStringEnvVar) =>
-				new pg.Pool({
-					connectionString: process.env[connectionStringEnvVar],
-				}),
-		});
-		postgres.containerOptions({ imageName: "postgres:16.5" });
-
-		const container = new PostgreSQLContainer(postgres);
-		const startedContainer = await startContainer(container);
-		containers.push(startedContainer);
-		await assertContainerImage({
-			workload: postgres,
-			expectedImage: "postgres:16.5",
-		});
-		await startedContainer.stop();
 	},
 );

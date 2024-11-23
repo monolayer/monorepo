@@ -8,7 +8,6 @@ import {
 } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
 import { startDevContainer } from "~workloads/containers/admin/dev-container.js";
-import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
 import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
 import { Bucket } from "~workloads/workloads/stateful/bucket.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
@@ -21,9 +20,7 @@ test("launches redis", { sequential: true }, async ({ containers }) => {
 		}).on("error", (err) => console.error("Redis Client Error", err)),
 	);
 
-	await startTestContainer(redisWorkload);
-	const container = await getExistingContainer(redisWorkload);
-	assert(container);
+	const container = await startTestContainer(redisWorkload);
 	containers.push(container);
 
 	await assertContainerLabel(
@@ -52,9 +49,7 @@ test(
 			},
 		);
 
-		await startTestContainer(postgresDatabase);
-		const container = await getExistingContainer(postgresDatabase);
-		assert(container);
+		const container = await startTestContainer(postgresDatabase, true);
 		containers.push(container);
 		await assertDatabase(postgresDatabase);
 
@@ -68,18 +63,17 @@ test(
 					}),
 			},
 		);
-		await startTestContainer(anotherDatabase);
-		const anotherContainer = await getExistingContainer(anotherDatabase);
+		const anotherContainer = await startTestContainer(anotherDatabase, true);
 		assert(anotherContainer);
 		containers.push(anotherContainer);
 		await assertDatabase(anotherDatabase);
 
-		assert.notStrictEqual(anotherContainer.id, container.id);
+		assert.notStrictEqual(anotherContainer.getId(), container.getId());
 	},
 );
 
 test(
-	"launch different containers for the same workload",
+	"launch same containers for the same workload",
 	{ sequential: true },
 	async ({ containers }) => {
 		const redisWorkload = new Redis("red-one", (connectionStringEnvVar) =>
@@ -88,9 +82,7 @@ test(
 			}).on("error", (err) => console.error("Redis Client Error", err)),
 		);
 
-		await startTestContainer(redisWorkload);
-		const container = await getExistingContainer(redisWorkload);
-		assert(container);
+		const container = await startTestContainer(redisWorkload);
 		containers.push(container);
 
 		await assertContainerLabel(
@@ -99,12 +91,10 @@ test(
 			"redis-red-one",
 		);
 
-		await startTestContainer(redisWorkload);
-		const secondContainer = await getExistingContainer(redisWorkload);
-		assert(secondContainer);
+		const secondContainer = await startTestContainer(redisWorkload);
 		containers.push(secondContainer);
 
-		assert.notStrictEqual(container.id, secondContainer.id);
+		assert.strictEqual(container.getId(), secondContainer.getId());
 	},
 );
 
@@ -112,30 +102,27 @@ test(
 	"launch different containers for dev and test",
 	{ sequential: true },
 	async ({ containers }) => {
-		const redisWorkload = new Redis("red-two", (connectionStringEnvVar) =>
-			createClient({
-				url: process.env[connectionStringEnvVar],
-			}).on("error", (err) => console.error("Redis Client Error", err)),
+		const redisWorkload = new Redis(
+			"redis-dev-test",
+			(connectionStringEnvVar) =>
+				createClient({
+					url: process.env[connectionStringEnvVar],
+				}).on("error", (err) => console.error("Redis Client Error", err)),
 		);
 
-		await startDevContainer(redisWorkload);
-
-		const container = await getExistingContainer(redisWorkload);
-		assert(container);
+		const container = await startDevContainer(redisWorkload);
 		containers.push(container);
 
 		await assertContainerLabel(
 			container,
 			"org.monolayer-sidecar.workload-id",
-			"redis-red-two",
+			"redis-redis-dev-test",
 		);
 
-		await startTestContainer(redisWorkload);
-		const secondContainer = await getExistingContainer(redisWorkload);
-		assert(secondContainer);
+		const secondContainer = await startTestContainer(redisWorkload);
 		containers.push(secondContainer);
 
-		assert.notStrictEqual(container.id, secondContainer.id);
+		assert.notStrictEqual(container.getId(), secondContainer.getId());
 	},
 );
 
@@ -165,19 +152,16 @@ describe("local stack", () => {
 		{ sequential: true },
 		async ({ containers }) => {
 			const bucket = new Bucket("bucket-one", () => true);
-			await startTestContainer(bucket);
-			const bucketStartedContainer = await getExistingContainer(bucket);
-			assert(bucketStartedContainer);
+			const bucketStartedContainer = await startTestContainer(bucket);
 			containers.push(bucketStartedContainer);
 
 			const anotherBucket = new Bucket("bucket-two", () => true);
-			await startTestContainer(anotherBucket);
-			const anotherBucketStartedContainer = await getExistingContainer(bucket);
-			assert(anotherBucketStartedContainer);
+			const anotherBucketStartedContainer =
+				await startTestContainer(anotherBucket);
 
 			assert.strictEqual(
-				bucketStartedContainer.id,
-				anotherBucketStartedContainer.id,
+				bucketStartedContainer.getId(),
+				anotherBucketStartedContainer.getId(),
 			);
 		},
 	);

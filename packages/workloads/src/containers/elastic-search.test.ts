@@ -1,9 +1,6 @@
-import {
-	assertContainerImage,
-	assertExposedPorts,
-} from "test/__setup__/assertions.js";
+import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
-import { startContainer, test } from "~test/__setup__/container-test.js";
+import { test } from "~test/__setup__/container-test.js";
 import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
 import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
 
@@ -14,7 +11,7 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const container = new ElasticSearchContainer(elastic);
-		const startedContainer = await startContainer(container);
+		const startedContainer = await container.start();
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();
@@ -35,25 +32,5 @@ test(
 			container.connectionURI,
 			`http://localhost:${startedContainer.getMappedPort(9200)}/`,
 		);
-	},
-);
-
-test(
-	"ElasticSearch with custom image tag container",
-	{ sequential: true },
-	async ({ containers }) => {
-		const elastic = new ElasticSearch("rd-custom-image-tag", () => true);
-
-		elastic.containerOptions({
-			imageName: "elasticsearch:7.17.7",
-		});
-
-		const container = new ElasticSearchContainer(elastic);
-		const startedContainer = await startContainer(container);
-		containers.push(startedContainer);
-		await assertContainerImage({
-			workload: elastic,
-			expectedImage: "elasticsearch:7.17.7",
-		});
 	},
 );

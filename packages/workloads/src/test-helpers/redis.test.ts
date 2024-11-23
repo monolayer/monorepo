@@ -1,10 +1,10 @@
 import { createClient } from "redis";
 import { assert } from "vitest";
+import { test } from "~test/__setup__/container-test.js";
 import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
 import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
 import { flushRedis } from "~workloads/test-helpers/redis.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
-import { test } from "~test/__setup__/container-test.js";
 
 test("FlushDB", async ({ containers }) => {
 	const redis = new Redis("flushdb-test", async (connectionStringEnvVar) => {
@@ -15,7 +15,7 @@ test("FlushDB", async ({ containers }) => {
 		return client;
 	});
 	await startTestContainer(redis);
-	const container = await getExistingContainer(redis);
+	const container = await getExistingContainer(redis, "test");
 	assert(container);
 	containers.push(container);
 
@@ -43,9 +43,7 @@ test("FlushDB on another database", async ({ containers }) => {
 		await client.connect();
 		return client;
 	});
-	await startTestContainer(redis);
-	const container = await getExistingContainer(redis);
-	assert(container);
+	const container = await startTestContainer(redis);
 	containers.push(container);
 
 	const client = await redis.client;

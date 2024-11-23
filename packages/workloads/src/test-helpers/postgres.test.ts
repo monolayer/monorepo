@@ -1,11 +1,10 @@
 import pg from "pg";
 import { assert } from "vitest";
-import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
+import { test } from "~test/__setup__/container-test.js";
+import { postgresDatabasePool } from "~test/__setup__/helpers.js";
 import { startTestContainer } from "~workloads/containers/admin/start-test-container.js";
 import { truncatePostgresTables } from "~workloads/test-helpers/postgres.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
-import { test } from "~test/__setup__/container-test.js";
-import { postgresDatabasePool } from "~test/__setup__/helpers.js";
 
 test("Truncate existing tables", async ({ containers }) => {
 	const postgreSQL = new PostgresDatabase("truncate", {
@@ -18,19 +17,19 @@ test("Truncate existing tables", async ({ containers }) => {
 		},
 	});
 
-	await startTestContainer(postgreSQL);
-	const container = await getExistingContainer(postgreSQL);
-	assert(container);
+	const container = await startTestContainer(postgreSQL, true);
 	containers.push(container);
 
 	const pool = postgresDatabasePool(postgreSQL);
-	await pool.query(`CREATE TABLE users (name text)`);
+	await pool.query(`CREATE TABLE IF NOT EXISTS users (name text)`);
+	await pool.query(`TRUNCATE TABLE users`);
 	await pool.query(`INSERT INTO users VALUES ('paul')`);
 	await pool.query(`INSERT INTO users VALUES ('john')`);
 	await pool.query(`INSERT INTO users VALUES ('ringo')`);
 	await pool.query(`INSERT INTO users VALUES ('george')`);
 
-	await pool.query(`CREATE TABLE cities (name text)`);
+	await pool.query(`CREATE TABLE IF NOT EXISTS cities (name text)`);
+	await pool.query(`TRUNCATE TABLE cities`);
 	await pool.query(`INSERT INTO cities VALUES ('New York')`);
 	await pool.query(`INSERT INTO cities VALUES ('Paris')`);
 

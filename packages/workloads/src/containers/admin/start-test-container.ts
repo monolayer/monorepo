@@ -1,5 +1,4 @@
 import { containerStarter } from "~workloads/containers/container-starter.js";
-import { defaultTestStartOptions } from "~workloads/containers/container.js";
 import { importWorkloads } from "~workloads/workloads/import.js";
 import { type Workload } from "~workloads/workloads/workload.js";
 /**
@@ -11,21 +10,16 @@ export async function startTestContainer(
 	 * Workload to launch a test container.
 	 */
 	workload: Workload,
+	waitForHealthcheck: boolean = false,
 ) {
-	workload.containerOverrides = {
-		startOptions: defaultTestStartOptions ?? {},
-	};
-	containerStarter.mode = "test";
-	const startedTestContainer = await containerStarter.startContainerForWorkload(
+	const startedTestContainer = await containerStarter.startForWorload(
 		workload,
-		{
-			initialize: true,
-			mode: "test",
-		},
+		{ mode: "test", waitForHealthcheck },
 	);
 	if (startedTestContainer === undefined) {
 		throw new Error(`no container match for workload: ${workload.id}`);
 	}
+	return startedTestContainer;
 }
 
 /**

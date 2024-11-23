@@ -1,6 +1,6 @@
 import { assert } from "vitest";
 import { assertExposedPorts } from "~test/__setup__/assertions.js";
-import { startContainer, test } from "~test/__setup__/container-test.js";
+import { test } from "~test/__setup__/container-test.js";
 import { LocalStackContainer } from "~workloads/containers/local-stack.js";
 import { Bucket } from "~workloads/workloads/stateful/bucket.js";
 
@@ -10,7 +10,8 @@ test(
 	async ({ containers }) => {
 		const bucket = new Bucket("test-local-stack", () => true);
 		const container = new LocalStackContainer(bucket);
-		const startedContainer = await startContainer(container);
+
+		const startedContainer = await container.start();
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();
@@ -27,7 +28,7 @@ test(
 	async ({ containers }) => {
 		const bucket = new Bucket("demo", () => true);
 		const container = new LocalStackContainer(bucket, { test: true });
-		const startedContainer = await startContainer(container);
+		const startedContainer = await container.start();
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();
@@ -41,7 +42,7 @@ test(
 test("Exposed ports", { sequential: true }, async ({ containers }) => {
 	const bucket = new Bucket("test-local-stack", () => true);
 	const container = new LocalStackContainer(bucket);
-	const startedContainer = await startContainer(container);
+	const startedContainer = await container.start();
 	containers.push(startedContainer);
 	await assertExposedPorts({
 		container: startedContainer,
@@ -52,7 +53,7 @@ test("Exposed ports", { sequential: true }, async ({ containers }) => {
 test("Gateway URL", { sequential: true }, async ({ containers }) => {
 	const bucket = new Bucket("test-local-stack", () => true);
 	const container = new LocalStackContainer(bucket);
-	const startedContainer = await startContainer(container);
+	const startedContainer = await container.start();
 	containers.push(startedContainer);
 
 	assert.strictEqual(

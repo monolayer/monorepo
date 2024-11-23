@@ -1,5 +1,7 @@
 import { Wait, type StartedTestContainer } from "testcontainers";
 import type { HealthCheck } from "testcontainers/build/types.js";
+import { assertPostgresDatabase } from "~workloads/containers/admin/assertions.js";
+import { createPostgresDatabase } from "~workloads/containers/admin/create-database.js";
 import { ContainerWithURI } from "~workloads/containers/container-with-uri.js";
 import type { WorkloadContainerDefinition } from "~workloads/containers/container.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
@@ -41,5 +43,11 @@ export class PostgreSQLContainer<C> extends ContainerWithURI {
 			.toString();
 		url.pathname = (this.workload as PostgresDatabase<C>).databaseName;
 		return url.toString();
+	}
+
+	async afterStart() {
+		await super.afterStart();
+		assertPostgresDatabase(this.workload);
+		await createPostgresDatabase(this.workload);
 	}
 }

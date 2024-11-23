@@ -1,10 +1,14 @@
 import { kebabCase } from "case-anything";
 import { getContainerRuntimeClient } from "testcontainers";
-import { CONTAINER_LABEL_WORKLOAD_ID } from "~workloads/containers/container.js";
+import {
+	CONTAINER_LABEL_MODE,
+	CONTAINER_LABEL_WORKLOAD_ID,
+} from "~workloads/containers/container.js";
 import type { Workload } from "~workloads/workloads/workload.js";
 
 export async function getExistingContainer(
 	workload: Workload,
+	mode: "dev" | "test" = "dev",
 	onlyRunning: boolean = true,
 ) {
 	const containerRuntimeClient = await getContainerRuntimeClient();
@@ -12,15 +16,20 @@ export async function getExistingContainer(
 		workload.constructor.name === "Bucket"
 			? "local-stack"
 			: kebabCase(`${workload.constructor.name.toLowerCase()}-${workload.id}`);
-	return await containerRuntimeClient.container.fetchByLabel(
-		CONTAINER_LABEL_WORKLOAD_ID,
-		containerId,
-		{ status: onlyRunning ? ["running"] : undefined },
+	const listContainers = await containerRuntimeClient.container.list();
+	const container = listContainers.find(
+		(container) =>
+			(onlyRunning ? container.State === "running" : true) &&
+			container.Labels[CONTAINER_LABEL_WORKLOAD_ID] === containerId &&
+			container.Labels[CONTAINER_LABEL_MODE] === mode,
 	);
+	if (container) {
+		return containerRuntimeClient.container.getById(container.Id);
+	}
 }
 
 export async function workloadContainerStatus(workload: Workload) {
-	const existingContainer = await getExistingContainer(workload, false);
+	const existingContainer = await getExistingContainer(workload, "dev", false);
 
 	const status: WorkloadInfo = {
 		workload: workload,

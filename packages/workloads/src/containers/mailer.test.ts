@@ -1,10 +1,7 @@
 import nodemailer from "nodemailer";
-import {
-	assertContainerImage,
-	assertExposedPorts,
-} from "test/__setup__/assertions.js";
+import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
-import { startContainer, test } from "~test/__setup__/container-test.js";
+import { test } from "~test/__setup__/container-test.js";
 import { MailerContainer } from "~workloads/containers/mailer.js";
 import { Mailer } from "~workloads/workloads/stateful/mailer.js";
 
@@ -17,7 +14,7 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const container = new MailerContainer(mailer);
-		const startedContainer = await startContainer(container);
+		const startedContainer = await container.start();
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();
@@ -33,7 +30,7 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const container = new MailerContainer(mailer);
-		const startedContainer = await startContainer(container);
+		const startedContainer = await container.start();
 		containers.push(startedContainer);
 		await assertExposedPorts({
 			container: startedContainer,
@@ -48,7 +45,7 @@ test(
 	async ({ containers }) => {
 		delete process.env.MONO_MAILER_TEST_MAILER_URL;
 		const container = new MailerContainer(mailer);
-		const startedContainer = await startContainer(container);
+		const startedContainer = await container.start();
 		containers.push(startedContainer);
 
 		assert.strictEqual(
@@ -60,7 +57,7 @@ test(
 
 test("Connection string URL", { sequential: true }, async ({ containers }) => {
 	const container = new MailerContainer(mailer);
-	const startedContainer = await startContainer(container);
+	const startedContainer = await container.start();
 	containers.push(startedContainer);
 
 	assert.strictEqual(
@@ -71,7 +68,7 @@ test("Connection string URL", { sequential: true }, async ({ containers }) => {
 
 test("Web URL", { sequential: true }, async ({ containers }) => {
 	const container = new MailerContainer(mailer);
-	const startedContainer = await startContainer(container);
+	const startedContainer = await container.start();
 	containers.push(startedContainer);
 
 	assert.strictEqual(
@@ -79,24 +76,3 @@ test("Web URL", { sequential: true }, async ({ containers }) => {
 		`http://${startedContainer.getHost()}:${startedContainer.getMappedPort(8025)}/`,
 	);
 });
-
-test(
-	"Mailer with custom image tag container",
-	{ sequential: true },
-	async ({ containers }) => {
-		const mailer = new Mailer("test-mailer-send", (connectionStringEnvVar) =>
-			nodemailer.createTransport(process.env[connectionStringEnvVar]),
-		);
-		mailer.containerOptions({
-			imageName: "axllent/mailpit:v1.21",
-		});
-		const container = new MailerContainer(mailer);
-		const startedContainer = await startContainer(container);
-		containers.push(startedContainer);
-		await assertContainerImage({
-			workload: mailer,
-			expectedImage: "axllent/mailpit:v1.21",
-		});
-		await startedContainer.stop();
-	},
-);

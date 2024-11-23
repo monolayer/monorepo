@@ -2,6 +2,7 @@ import { kebabCase } from "case-anything";
 import type { StartedTestContainer } from "testcontainers";
 import { ContainerWithURI } from "~workloads/containers/container-with-uri.js";
 import {
+	CONTAINER_LABEL_MODE,
 	CONTAINER_LABEL_ORG,
 	CONTAINER_LABEL_WORKLOAD_ID,
 	type WorkloadContainerDefinition,
@@ -48,15 +49,6 @@ export class LocalStackContainer<C> extends ContainerWithURI {
 		return url.toString();
 	}
 
-	override async start() {
-		this.workload.containerOverrides = {
-			...(this.workload.containerOverrides ?? {}),
-			startOptions: {
-				reuse: true,
-			},
-		};
-		return await super.start();
-	}
 	/**
 	 * @returns The LocalStack gateway URL.
 	 */
@@ -72,6 +64,7 @@ export class LocalStackContainer<C> extends ContainerWithURI {
 				!this.#testContainer ? `local-stack` : `local-stack-test`,
 			),
 			[CONTAINER_LABEL_ORG]: "true",
+			[CONTAINER_LABEL_MODE]: "dev" as const,
 		};
 	}
 }

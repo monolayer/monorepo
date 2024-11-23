@@ -55,23 +55,4 @@ export class Bucket<C> extends StatefulWorkloadWithClient<C> {
 	get connStringComponents() {
 		return ["aws", "endpoint"];
 	}
-
-	/**
-	 * @hidden
-	 */
-	mode(mode: "dev" | "test") {
-		this.containerOverrides = {
-			startOptions: {
-				reuse: true,
-				publishToRandomPorts: mode === "test",
-			},
-		};
-	}
-
-	/**
-	 * `containerOptions` can't be set in a Bucket.
-	 */
-	public containerOptions(): never {
-		throw new Error("`containerOptions` can't be set in a Bucket");
-	}
 }

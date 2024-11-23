@@ -1,5 +1,7 @@
 import { Wait, type StartedTestContainer } from "testcontainers";
 import type { HealthCheck } from "testcontainers/build/types.js";
+import { assertMySqlDatabase } from "~workloads/containers/admin/assertions.js";
+import { createMysqlDatabase } from "~workloads/containers/admin/create-database.js";
 import { ContainerWithURI } from "~workloads/containers/container-with-uri.js";
 import type { WorkloadContainerDefinition } from "~workloads/containers/container.js";
 import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
@@ -48,5 +50,11 @@ export class MySQLContainer<C> extends ContainerWithURI {
 		url.username = this.username;
 		url.password = this.password;
 		return url.toString();
+	}
+
+	async afterStart() {
+		await super.afterStart();
+		assertMySqlDatabase(this.workload);
+		await createMysqlDatabase(this.workload);
 	}
 }

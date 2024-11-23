@@ -10,8 +10,8 @@ export abstract class ContainerWithURI extends WorkloadContainer {
 		super(workload);
 	}
 
-	override async start() {
-		const startedContainer = await super.start();
+	override async start(waithForHealthcheck: boolean = false) {
+		const startedContainer = await super.start(waithForHealthcheck);
 		process.env[
 			(
 				this.workload as StatefulWorkload & {
@@ -20,6 +20,18 @@ export abstract class ContainerWithURI extends WorkloadContainer {
 			).connectionStringEnvVar
 		] = this.buildConnectionURI(startedContainer);
 		return startedContainer;
+	}
+
+	async afterStart() {
+		if (this.startedContainer) {
+			process.env[
+				(
+					this.workload as StatefulWorkload & {
+						connectionStringEnvVar: string;
+					}
+				).connectionStringEnvVar
+			] = this.buildConnectionURI(this.startedContainer);
+		}
 	}
 
 	/**
