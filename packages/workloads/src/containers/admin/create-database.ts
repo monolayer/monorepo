@@ -19,7 +19,9 @@ export async function createPostgresDatabase<C>(workload: PostgresDatabase<C>) {
 
 export async function createMysqlDatabase<C>(workload: MySqlDatabase<C>) {
 	const connection = await mysql.createConnection(adminCredentials(workload)!);
-	await connection.query(`CREATE DATABASE ${workload.databaseName};`);
+	await connection.query(
+		`CREATE DATABASE IF NOT EXISTS ${workload.databaseName};`,
+	);
 	await connection.end();
 }
 
