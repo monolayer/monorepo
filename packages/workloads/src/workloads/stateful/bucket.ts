@@ -3,11 +3,19 @@ import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/statef
 /**
  * Workload for an AWS S3 compatible storage.
  *
- * **IMPORTANT**
+ * The `Bucket` workload is initialized with:
+ * - A valid bucket name.
+ * - A client constructor function providing the client of your choice.
+ *   The {@link Bucket.client | client } accessor will call this function and memoize its result.
+
+ * **NOTES**
+ *
+ * Launching the development or test containers with `npx workloads start` will write the environment
+ * variable `MONO_AWS_ENDPOINT_URL` will be written to the corresponding dotenv file (`.env` or `.env.test`)
  *
  * When initializing the client, you need to configure `forcePathStyle` and `endpoint`
- * if the dev or test container is running (*the `MONO_AWS_ENDPOINT_URL` environment
- * variable will be set*). See the example.
+ * if the dev or test container is running (*check for the `MONO_AWS_ENDPOINT_URL` environment
+ * variable*). See the example.
  *
  * @example
  * ```ts
