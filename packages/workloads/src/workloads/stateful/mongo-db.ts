@@ -27,10 +27,11 @@ export class MongoDb<C> extends Database<C> {
 	 * @internal
 	 */
 	declare _brand: "MongoDb";
+
 	/**
 	 * @internal
 	 */
-	get connStringComponents() {
-		return ["mongodb", this.id, this.databaseName, "database"];
+	connStringPrefix(): string {
+		return "mongodb";
 	}
 }

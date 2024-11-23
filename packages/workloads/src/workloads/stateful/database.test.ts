@@ -8,8 +8,8 @@ test("Database is a StatefulWorkloadWithClient", () => {
 });
 
 class TestDatabase<C> extends Database<C> {
-	get connStringComponents() {
-		return [];
+	connStringPrefix() {
+		return "";
 	}
 }
 

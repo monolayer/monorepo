@@ -38,10 +38,11 @@ export class PostgresDatabase<C> extends Database<C> {
 	 * @internal
 	 */
 	declare _brand: "PostgresDatabase";
+
 	/**
 	 * @internal
 	 */
-	get connStringComponents() {
-		return ["pg", this.id, this.databaseName, "database"];
+	connStringPrefix(): string {
+		return "pg";
 	}
 }

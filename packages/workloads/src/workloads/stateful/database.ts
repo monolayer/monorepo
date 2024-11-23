@@ -36,6 +36,18 @@ export abstract class Database<C> extends StatefulWorkloadWithClient<C> {
 	get databaseId() {
 		return this.id;
 	}
+
+	/**
+	 * @internal
+	 */
+	abstract connStringPrefix(): string;
+
+	/**
+	 * @internal
+	 */
+	get connStringComponents() {
+		return [this.connStringPrefix(), this.id, this.databaseName, "database"];
+	}
 }
 
 export interface DatabaseOptions<C> {

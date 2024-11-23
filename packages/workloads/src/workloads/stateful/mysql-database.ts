@@ -36,10 +36,11 @@ export class MySqlDatabase<C> extends Database<C> {
 	 * @internal
 	 */
 	declare _brand: "MySqlDatabase";
+
 	/**
 	 * @internal
 	 */
-	get connStringComponents() {
-		return ["mysql", this.id, this.databaseName, "database"];
+	connStringPrefix(): string {
+		return "mysql";
 	}
 }
