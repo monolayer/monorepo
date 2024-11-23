@@ -1,16 +1,14 @@
-# `build`
+# `status test`
 
 ## Description
 
-Builds workloads.
+Lists the status of the Docker containers for the test workloads.
 
 ## Usage
 
 ```bash
-npx workloads build
+npx workloads status test
 ```
-
-The build output will be located in `./.workloads`
 
 ## Global Options
 

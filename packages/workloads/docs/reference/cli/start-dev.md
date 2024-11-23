@@ -1,20 +1,20 @@
-# `dev`
+# `start dev`
 
 ## Description
 
-Launches workflows.
+Launches workloads for development.
 
 ## Usage
 
 ```bash
-npx workloads dev start
+npx workloads start dev
 ```
 
 ## Options
 
 | Option                   | Description                                  |
 | -------------------------| -------------------------------------------- |
-| `-n, --no-exit`          | Do not exit workflows' containers on close.  |
+| `-n, --no-exit`          | Do not exit workloads' containers on close.  |
 
 ## Global Options
 

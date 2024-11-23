@@ -1,13 +1,13 @@
-# `container stop`
+# `status dev`
 
 ## Description
 
-Stops workflows' Docker containers.
+Lists the status of the Docker containers for the development workloads.
 
 ## Usage
 
 ```bash
-npx workloads dev stop
+npx workloads status dev
 ```
 
 ## Global Options

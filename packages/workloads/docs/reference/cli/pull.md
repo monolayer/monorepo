@@ -1,13 +1,13 @@
-# `container status`
+# `pull`
 
 ## Description
 
-Lists the status of the workflows' Docker containers.
+Pulls all workloads' Docker images.
 
 ## Usage
 
 ```bash
-npx workloads dev status
+npx workloads pull
 ```
 
 ## Global Options

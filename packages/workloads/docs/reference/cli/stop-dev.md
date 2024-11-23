@@ -1,16 +1,14 @@
-# `build`
+# `stop dev`
 
 ## Description
 
-Builds workloads.
+Stops development workloads.
 
 ## Usage
 
 ```bash
-npx workloads build
+npx workloads stop dev
 ```
-
-The build output will be located in `./.workloads`
 
 ## Global Options
 

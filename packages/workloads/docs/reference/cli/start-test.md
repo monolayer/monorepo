@@ -1,13 +1,13 @@
-# `container pull`
+# `start test`
 
 ## Description
 
-Pulls all workflows' Docker images.
+Launches workloads for test.
 
 ## Usage
 
 ```bash
-npx workloads pull
+npx workloads start test
 ```
 
 ## Global Options

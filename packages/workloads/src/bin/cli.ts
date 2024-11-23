@@ -2,10 +2,11 @@
 import type { Command as CommandExtra } from "@commander-js/extra-typings";
 import { Command, CommanderError } from "commander";
 import { exit } from "process";
-import { dev } from "~workloads/cli/actions/dev.js";
-import { test } from "~workloads/cli/actions/test.js";
-import { build } from "~workloads/cli/commands/build.js";
-import { pull } from "~workloads/cli/commands/pull.js";
+import { build } from "~workloads/cli/actions/build.js";
+import { pull } from "~workloads/cli/actions/pull.js";
+import { start } from "~workloads/cli/actions/start.js";
+import { status } from "~workloads/cli/actions/status.js";
+import { stop } from "~workloads/cli/actions/stop.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
@@ -17,14 +18,11 @@ async function main() {
 
 	program.name("workloads").version("1.0.0");
 
-	dev(program);
-	test(program);
+	start(program);
+	stop(program);
+	status(program);
 
-	const container = program
-		.command("container")
-		.description("Container commands");
-	pull(container);
-
+	pull(program);
 	build(program);
 
 	program.exitOverride();
