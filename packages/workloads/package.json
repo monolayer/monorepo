@@ -16,7 +16,10 @@
 		"workloads": "dist/bin/cli.js"
 	},
 	"files": [
-		"dist/**/*"
+		"dist/**/*.js",
+		"dist/**/*.d.ts",
+		"dist/esm/package.json",
+		"dist/cjs/package.json"
 	],
 	"exports": {
 		".": {
