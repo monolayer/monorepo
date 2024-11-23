@@ -1,4 +1,9 @@
-import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
+import { kebabCase } from "case-anything";
+import { getContainerRuntimeClient } from "testcontainers";
+import {
+	CONTAINER_LABEL_MODE,
+	CONTAINER_LABEL_WORKLOAD_ID,
+} from "~workloads/containers/container.js";
 import type {
 	Options,
 	RequestResult,
@@ -99,11 +104,28 @@ async function testMailerURL<C>(mailer: Mailer<C>) {
 }
 
 async function mailerWebUIHostPort<C>(mailer: Mailer<C>) {
-	const container = await getExistingContainer(mailer);
+	const container = await getMailerContainer(mailer);
 	if (container === undefined) {
 		throw new Error(`container for Mailer workload ${mailer.id} not found`);
 	}
 	const inspect = await container.inspect();
 	const ports = inspect.NetworkSettings.Ports;
 	return ports["8025/tcp"]![0]!["HostPort"];
+}
+
+async function getMailerContainer<C>(workload: Mailer<C>) {
+	const containerRuntimeClient = await getContainerRuntimeClient();
+	const containerId = kebabCase(
+		`${workload.constructor.name.toLowerCase()}-${workload.id}`,
+	);
+	const listContainers = await containerRuntimeClient.container.list();
+	const container = listContainers.find(
+		(container) =>
+			container.State === "running" &&
+			container.Labels[CONTAINER_LABEL_WORKLOAD_ID] === containerId &&
+			container.Labels[CONTAINER_LABEL_MODE] === "test",
+	);
+	if (container) {
+		return containerRuntimeClient.container.getById(container.Id);
+	}
 }
