@@ -5,4 +5,4 @@ aside: false
 
 # What is workloads?
 
-Head over to the [Quickstart](./installation.md) and begin using `workloads`!
+Head over to the [Quickstart](./getting-started.md) and begin using `workloads`!
