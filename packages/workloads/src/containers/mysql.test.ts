@@ -10,7 +10,7 @@ test(
 	{ sequential: true, timeout: 20000 },
 	async ({ containers }) => {
 		const mySqlDb = new MySqlDatabase("test_started_container", {
-			databaseId: "container_test",
+			serverId: "container_test",
 			client: async (connectionStringEnvVar) =>
 				await mysql.createConnection(process.env[connectionStringEnvVar]!),
 		});

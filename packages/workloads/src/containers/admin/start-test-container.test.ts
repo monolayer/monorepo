@@ -43,7 +43,7 @@ test(
 		const postgresDatabase = new PostgresDatabase(
 			"launch_postgres_different_container",
 			{
-				databaseId: "app_db_multiple_one",
+				serverId: "app_db_multiple_one",
 				client: (connectionStringEnvVar) =>
 					new pg.Pool({
 						connectionString: process.env[connectionStringEnvVar],
@@ -61,7 +61,7 @@ test(
 		const anotherDatabase = new PostgresDatabase(
 			"another_database_different_container",
 			{
-				databaseId: "app_db_multiple_two",
+				serverId: "app_db_multiple_two",
 				client: (connectionStringEnvVar) =>
 					new pg.Pool({
 						connectionString: process.env[connectionStringEnvVar],

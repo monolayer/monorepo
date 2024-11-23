@@ -9,7 +9,7 @@ test("MongoDatabase is a Database", () => {
 
 test("connStringComponents", async () => {
 	const mongoDb = new MongoDatabase("contracts", {
-		databaseId: "documents",
+		serverId: "documents",
 		client: () => true,
 	});
 	expect(mongoDb.connStringComponents).toStrictEqual([

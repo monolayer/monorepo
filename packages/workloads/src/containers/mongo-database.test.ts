@@ -9,7 +9,7 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const mongoDb = new MongoDatabase("products", {
-			databaseId: "container",
+			serverId: "container",
 			client: () => true,
 		});
 		const container = new MongoDatabaseContainer(mongoDb);

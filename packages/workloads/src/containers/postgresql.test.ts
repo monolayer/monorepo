@@ -10,7 +10,7 @@ test(
 	{ sequential: true },
 	async ({ containers }) => {
 		const postgreSQL = new PostgresDatabase("test_started_container", {
-			databaseId: "test_app",
+			serverId: "test_app",
 			client: (connectionStringEnvVar) =>
 				new pg.Pool({
 					connectionString: process.env[connectionStringEnvVar],

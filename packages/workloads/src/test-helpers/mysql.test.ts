@@ -9,7 +9,7 @@ import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 
 test("Truncate existing tables", { timeout: 20000 }, async ({ containers }) => {
 	const mysqlDb = new MySqlDatabase("app_db", {
-		databaseId: "mysql",
+		serverId: "mysql",
 		client: async (connectionStringEnvVar) =>
 			await mysql.createConnection(process.env[connectionStringEnvVar]!),
 	});

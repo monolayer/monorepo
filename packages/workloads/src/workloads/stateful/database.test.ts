@@ -15,7 +15,7 @@ class TestDatabase<C> extends Database<C> {
 
 test("databaseId", () => {
 	const db = new TestDatabase("myDb", {
-		databaseId: "test-id",
+		serverId: "test-id",
 		client: () => true,
 	});
 	expect(db.id).toStrictEqual("test-id");

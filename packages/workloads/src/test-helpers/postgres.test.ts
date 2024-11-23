@@ -8,7 +8,7 @@ import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-databas
 
 test("Truncate existing tables", async ({ containers }) => {
 	const postgreSQL = new PostgresDatabase("truncate", {
-		databaseId: "truncate_test",
+		serverId: "truncate_test",
 		client: (connectionStringEnvVar) => {
 			console.dir(process.env[connectionStringEnvVar]);
 			return new pg.Pool({

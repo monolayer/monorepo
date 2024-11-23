@@ -9,7 +9,7 @@ test("PostgresDatabase is a Database", () => {
 
 test("connStringComponents", async () => {
 	const postgres = new PostgresDatabase("products", {
-		databaseId: "main",
+		serverId: "main",
 		client: () => true,
 	});
 	expect(postgres.connStringComponents).toStrictEqual([
