@@ -23,7 +23,7 @@ export abstract class Database<C> extends StatefulWorkloadWithClient<C> {
 		 */
 		options: DatabaseOptions<C>,
 	) {
-		super(options.databaseId, options.client);
+		super(options.databaseId ?? databaseName, options.client);
 		this.databaseName = databaseName;
 	}
 
@@ -44,7 +44,7 @@ export interface DatabaseOptions<C> {
 	 * @default: `databaseName`
 	 *
 	 */
-	databaseId: string;
+	databaseId?: string;
 	/**
 	 * Client constructor function. Executed once when accessing the `client` property.
 	 */
