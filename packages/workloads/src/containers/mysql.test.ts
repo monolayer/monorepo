@@ -9,8 +9,7 @@ test(
 	"MySQL started container",
 	{ sequential: true, timeout: 20000 },
 	async ({ containers }) => {
-		const mySqlDb = new MySqlDatabase("test_started_container", {
-			serverId: "container_test",
+		const mySqlDb = new MySqlDatabase("started_container", {
 			client: async (connectionStringEnvVar) =>
 				await mysql.createConnection(process.env[connectionStringEnvVar]!),
 		});
@@ -21,7 +20,7 @@ test(
 		const labels = startedContainer.getLabels();
 		assert.strictEqual(
 			labels["org.monolayer-workloads.workload-id"],
-			"mysqldatabase-container-test",
+			"mysqldatabase-started-container",
 		);
 		await assertExposedPorts({
 			container: startedContainer,
@@ -29,12 +28,12 @@ test(
 		});
 
 		assert.strictEqual(
-			process.env.MONO_MYSQL_CONTAINER_TEST_TEST_STARTED_CONTAINER_DATABASE_URL,
-			`mysql://root:test@localhost:${startedContainer.getMappedPort(3306)}/test_started_container`,
+			process.env.MONO_MYSQL_STARTED_CONTAINER_DATABASE_URL,
+			`mysql://root:test@localhost:${startedContainer.getMappedPort(3306)}/started_container`,
 		);
 		assert.strictEqual(
 			container.connectionURI,
-			`mysql://root:test@localhost:${startedContainer.getMappedPort(3306)}/test_started_container`,
+			`mysql://root:test@localhost:${startedContainer.getMappedPort(3306)}/started_container`,
 		);
 	},
 );
