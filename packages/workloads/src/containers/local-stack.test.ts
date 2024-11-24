@@ -11,7 +11,7 @@ test(
 		const bucket = new Bucket("test-local-stack", () => true);
 		const container = new LocalStackContainer(bucket);
 
-		const startedContainer = await container.start();
+		const startedContainer = await container.start(true);
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();
@@ -28,7 +28,7 @@ test(
 	async ({ containers }) => {
 		const bucket = new Bucket("demo", () => true);
 		const container = new LocalStackContainer(bucket, { test: true });
-		const startedContainer = await container.start();
+		const startedContainer = await container.start(true);
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();

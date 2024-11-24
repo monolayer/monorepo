@@ -143,14 +143,14 @@ test(
 		const bucket = new Bucket("bucket-one", () => true);
 		const bucketStartedContainer = await startContainer(bucket, {
 			mode: "dev",
-			waitForHealthcheck: false,
+			waitForHealthcheck: true,
 		});
 		containers.push(bucketStartedContainer);
 
 		const anotherBucket = new Bucket("bucket-two", () => true);
 		const anotherBucketStartedContainer = await startContainer(anotherBucket, {
 			mode: "dev",
-			waitForHealthcheck: false,
+			waitForHealthcheck: true,
 		});
 		containers.push(anotherBucketStartedContainer);
 
@@ -169,7 +169,7 @@ describe("local stack", () => {
 			const bucket = new Bucket("bucket-one", () => true);
 			const bucketStartedContainer = await startContainer(bucket, {
 				mode: "test",
-				waitForHealthcheck: false,
+				waitForHealthcheck: true,
 			});
 			containers.push(bucketStartedContainer);
 
@@ -178,7 +178,7 @@ describe("local stack", () => {
 				anotherBucket,
 				{
 					mode: "test",
-					waitForHealthcheck: false,
+					waitForHealthcheck: true,
 				},
 			);
 
