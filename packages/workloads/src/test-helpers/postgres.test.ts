@@ -10,7 +10,6 @@ test("Truncate existing tables", async ({ containers }) => {
 	const postgreSQL = new PostgresDatabase("truncate", {
 		serverId: "truncate_test",
 		client: (connectionStringEnvVar) => {
-			console.dir(process.env[connectionStringEnvVar]);
 			return new pg.Pool({
 				connectionString: process.env[connectionStringEnvVar],
 			});

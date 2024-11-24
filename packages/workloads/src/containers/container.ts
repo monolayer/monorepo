@@ -44,16 +44,17 @@ export interface StartOptions {
 /**
  * @hidden
  */
-export const CONTAINER_LABEL_WORKLOAD_ID = "org.monolayer-sidecar.workload-id";
+export const CONTAINER_LABEL_WORKLOAD_ID =
+	"org.monolayer-workloads.workload-id";
 /**
  * @hidden
  */
-export const CONTAINER_LABEL_ORG = "org.monolayer-sidecar";
+export const CONTAINER_LABEL_ORG = "org.monolayer-workloads";
 
 /**
  * @hidden
  */
-export const CONTAINER_LABEL_MODE = "org.monolayer-sidecar.mode";
+export const CONTAINER_LABEL_MODE = "org.monolayer-workloads.mode";
 
 /**
  * @internal

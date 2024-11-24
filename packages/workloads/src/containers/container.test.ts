@@ -81,7 +81,7 @@ test("stop container", async () => {
 
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	const existingContainer = await containerRuntimeClient.container.fetchByLabel(
-		"org.monolayer-sidecar.name",
+		"org.monolayer-workloads.name",
 		"test-container-stop",
 	);
 

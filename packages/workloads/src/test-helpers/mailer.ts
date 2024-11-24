@@ -118,8 +118,8 @@ async function getMailerContainer<C>(workload: Mailer<C>) {
 	const container = listContainers.find(
 		(container) =>
 			container.State === "running" &&
-			container.Labels["org.monolayer-sidecar.workload-id"] === containerId &&
-			container.Labels["org.monolayer-sidecar.mode"] === "test",
+			container.Labels["org.monolayer-workloads.workload-id"] === containerId &&
+			container.Labels["org.monolayer-workloads.mode"] === "test",
 	);
 	if (container) {
 		return containerRuntimeClient.container.getById(container.Id);

@@ -27,7 +27,7 @@ test("launches redis", { sequential: true }, async ({ containers }) => {
 
 	await assertContainerLabel(
 		container,
-		"org.monolayer-sidecar.workload-id",
+		"org.monolayer-workloads.workload-id",
 		"redis-launch-redis",
 	);
 	await assertContainerImage({
@@ -98,7 +98,7 @@ test(
 
 		await assertContainerLabel(
 			container,
-			"org.monolayer-sidecar.workload-id",
+			"org.monolayer-workloads.workload-id",
 			"redis-red-one",
 		);
 
@@ -132,7 +132,7 @@ test(
 
 		await assertContainerLabel(
 			container,
-			"org.monolayer-sidecar.workload-id",
+			"org.monolayer-workloads.workload-id",
 			"redis-redis-dev-test",
 		);
 
