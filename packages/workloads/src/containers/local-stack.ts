@@ -1,5 +1,6 @@
 import { kebabCase } from "case-anything";
-import type { StartedTestContainer } from "testcontainers";
+import { Wait, type StartedTestContainer } from "testcontainers";
+import type { HealthCheck } from "testcontainers/build/types.js";
 import { ContainerWithURI } from "~workloads/containers/container-with-uri.js";
 import { type WorkloadContainerDefinition } from "~workloads/containers/container.js";
 import type { Bucket } from "~workloads/workloads/stateful/bucket.js";
@@ -33,6 +34,13 @@ export class LocalStackContainer<C> extends ContainerWithURI {
 			SERVICES: "s3",
 			PERSISTENCE: "1",
 		},
+		healthCheck: {
+			test: ["CMD", "awslocal", "s3", "ls"],
+			interval: 1000,
+			retries: 5,
+			startPeriod: 1000,
+		} satisfies HealthCheck,
+		waitStrategy: Wait.forHealthCheck(),
 	};
 
 	buildConnectionURI(container: StartedTestContainer) {
