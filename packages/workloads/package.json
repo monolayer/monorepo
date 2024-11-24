@@ -76,6 +76,7 @@
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/workloads -f"
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.699.0",
 		"@epic-web/remember": "^1.1.0",
 		"case-anything": "^3.1.0",
 		"cli-table3": "^0.6.5",
