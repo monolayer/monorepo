@@ -17,6 +17,7 @@ export default defineConfig({
 						text: "Introduction",
 						items: [
 							{ text: "Why Workloads?", link: "why-workloads" },
+							{ text: "Installation", link: "installation" },
 							{ text: "Getting Started", link: "getting-started" },
 						],
 					},
