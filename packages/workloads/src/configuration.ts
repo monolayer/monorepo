@@ -1,4 +1,5 @@
 import { remember } from "@epic-web/remember";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
 
@@ -52,3 +53,8 @@ async function importConfig(): Promise<Configuration> {
 
 export const workloadsConfiguration = () =>
 	remember("workloadsConfiguration", async () => await importConfig());
+
+export const packageName = remember("packageName", () => {
+	const packageJSON = JSON.parse(readFileSync("package.json").toString());
+	return packageJSON.name;
+});

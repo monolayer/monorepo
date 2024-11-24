@@ -16,10 +16,10 @@ import type {
 	HealthCheck,
 } from "testcontainers/build/types.js";
 import {
+	packageName,
 	workloadsConfiguration,
 	type Configuration,
 } from "~workloads/configuration.js";
-import { packageName } from "~workloads/containers/admin/package-name.js";
 import type { Workload } from "~workloads/workloads/workload.js";
 
 export interface StartOptions {

@@ -1,6 +1,6 @@
 import { kebabCase } from "case-anything";
 import { getContainerRuntimeClient } from "testcontainers";
-import { packageName } from "~workloads/containers/admin/package-name.js";
+import { packageName } from "~workloads/configuration.js";
 import type {
 	Options,
 	RequestResult,
