@@ -10,37 +10,43 @@ export interface Configuration {
 	 */
 	workloadsPath: string;
 	/**
-	 * Docker images for workloads
+	 * Container configurations.
 	 */
-	containerImages?: {
+	containers?: {
 		/**
-		 * @default postgres:16.5-alpine3.20
+		 * @default { imageName: "postgres:16.5-alpine3.20", exposedPorts: [ container: 5432, host: 5432 ] }
 		 */
-		postgresDatabase?: string;
+		postgresDatabase?: ContainerConfig;
 		/**
-		 * @default redis:7.4.1-alpine3.20
+		 * @default
+		 * { imageName: "redis:7.4.1-alpine3.20", exposedPorts: [ container: 6379, host: 6379 ] }
 		 */
-		redis?: string;
+		redis?: ContainerConfig;
 		/**
-		 * @default elasticsearch:7.17.25
+		 * @default
+		 * { imageName: "elasticsearch:7.17.25", exposedPorts: [ container: 9200, host: 9200 ] }
 		 */
-		elasticSearch?: string;
+		elasticSearch?: ContainerConfig;
 		/**
-		 * @default mysql:8.4.3
+		 * @default
+		 * { imageName: "mysql:8.4.3", exposedPorts: [ container: 3306, host: 3306 ] }
 		 */
-		mySqlDatabase?: string;
+		mySqlDatabase?: ContainerConfig;
 		/**
-		 * @default axllent/mailpit:v1.21.3
+		 * @default
+		 * { imageName: "axllent/mailpit:v1.21.3", exposedPorts: [ container: 1025, host: 1025 ] }
 		 */
-		mailer?: string;
+		mailer?: ContainerConfig;
 		/**
-		 * @default mongo:7.0.15
+		 * @default
+		 * { imageName: "mongo:7.0.15", exposedPorts: [ container: 27017, host: 27017 ] }
 		 */
-		mongoDb?: string;
+		mongoDb?: ContainerConfig;
 		/**
-		 * @default localstack/localstack:latest
+		 * @default
+		 * { imageName: "localstack/localstack:latest", exposedPorts: [ container: 4566, host: 4566 ] }
 		 */
-		localStack?: string;
+		localStack?: ContainerConfig;
 	};
 
 	/**
@@ -56,6 +62,20 @@ export interface Configuration {
 		 */
 		test?: string;
 	};
+}
+
+export interface ContainerConfig {
+	/**
+	 * Docker image name.
+	 */
+	imageName?: string;
+	/**
+	 * Host port to publish the exposed container port.
+	 */
+	exposedPorts?: {
+		container: number;
+		host: number;
+	}[];
 }
 
 async function importConfig(): Promise<Configuration> {

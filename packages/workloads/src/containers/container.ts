@@ -123,13 +123,21 @@ export abstract class WorkloadContainer {
 			this.workload.constructor.name === "Bucket"
 				? "localStack"
 				: this.workload.constructor.name;
-		const key = camelCase(
-			name,
-		) as keyof Required<Configuration>["containerImages"];
-		const configuration =
-			(await workloadsConfiguration()).containerImages ?? {};
-		return configuration[key];
+		const key = camelCase(name) as keyof Required<Configuration>["containers"];
+		const configuration = (await workloadsConfiguration()).containers ?? {};
+		return configuration[key]?.imageName;
 	}
+
+	async #exposedPortsFromConfiguration() {
+		const name =
+			this.workload.constructor.name === "Bucket"
+				? "localStack"
+				: this.workload.constructor.name;
+		const key = camelCase(name) as keyof Required<Configuration>["containers"];
+		const configuration = (await workloadsConfiguration()).containers ?? {};
+		return configuration[key]?.exposedPorts;
+	}
+
 	async #prepareContainer(waithForHealthcheck: boolean = false) {
 		const container = new GenericContainer(await this.containerImage());
 		container.withLabels(this.containerLabels());
@@ -151,13 +159,23 @@ export abstract class WorkloadContainer {
 		if (this.definition.contentsToCopy) {
 			container.withCopyContentToContainer(this.definition.contentsToCopy);
 		}
-		for (const portToExpose of this.definition.portsToExpose ?? []) {
+		const portsFromConfig = await this.#exposedPortsFromConfiguration();
+		const portsFromDefinition =
+			(await this.#exposedPortsFromConfiguration()) ||
+			this.definition.portsToExpose.map((port) => ({
+				container: port,
+				host: port,
+			}));
+		console.log("portsFromConfig", portsFromConfig);
+		console.log("portsfromDefinition", portsFromDefinition);
+		for (const ports of Object.values(portsFromDefinition)) {
+			console.log(ports);
 			container.withExposedPorts({
-				container: portToExpose,
+				container: ports.container,
 				host:
 					this.mode === "test"
-						? await getPort({ port: portToExpose + 1 })
-						: portToExpose,
+						? await getPort({ port: ports.host + 1 })
+						: ports.host,
 			});
 		}
 		container.withReuse();

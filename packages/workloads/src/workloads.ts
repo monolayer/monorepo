@@ -1,7 +1,10 @@
 /**
  * @module main
  */
-export { type Configuration } from "~workloads/configuration.js";
+export {
+	ContainerConfig,
+	type Configuration,
+} from "~workloads/configuration.js";
 export { Bucket } from "~workloads/workloads/stateful/bucket.js";
 export type {
 	Database,
