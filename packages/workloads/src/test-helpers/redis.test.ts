@@ -1,4 +1,4 @@
-import { createClient } from "redis";
+import { Redis as IORedis } from "ioredis";
 import { assert } from "vitest";
 import { test } from "~test/__setup__/container-test.js";
 import { startContainer } from "~workloads/containers/admin/container.js";
@@ -7,13 +7,10 @@ import { flushRedis } from "~workloads/test-helpers/redis.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
 
 test("FlushDB", async ({ containers }) => {
-	const redis = new Redis("flushdb-test", async (connectionStringEnvVar) => {
-		const client = createClient({
-			url: process.env[connectionStringEnvVar],
-		}).on("error", (err) => console.error("Redis Client Error", err));
-		await client.connect();
-		return client;
-	});
+	const redis = new Redis(
+		"flushdb-test",
+		(envVarName) => new IORedis(process.env[envVarName]!),
+	);
 	await startContainer(redis, {
 		mode: "test",
 		waitForHealthcheck: false,
@@ -22,7 +19,7 @@ test("FlushDB", async ({ containers }) => {
 	assert(container);
 	containers.push(container);
 
-	const client = await redis.client;
+	const client = redis.client;
 
 	await client.set("key", "1");
 	await client.set("anotherKey", "2");
@@ -39,13 +36,10 @@ test("FlushDB", async ({ containers }) => {
 });
 
 test("FlushDB on another database", async ({ containers }) => {
-	const redis = new Redis("flushdb-test", async (connectionStringEnvVar) => {
-		const client = createClient({
-			url: process.env[connectionStringEnvVar],
-		}).on("error", (err) => console.error("Redis Client Error", err));
-		await client.connect();
-		return client;
-	});
+	const redis = new Redis(
+		"flushdb-test",
+		(envVarName) => new IORedis(process.env[envVarName]!),
+	);
 	const container = await startContainer(redis, {
 		mode: "test",
 		waitForHealthcheck: false,

@@ -18,13 +18,10 @@ import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/statef
  * @example
  * ```ts
  * import { Redis } from "@monolayer/workloads";
- * import { createClient } from "redis";
+ * import { Redis as IORedis } from "ioredis";
  *
  * const cache = new Redis("cache", (envVarName) =>
- *   createClient({
- *     // envVarName = MONO_REDIS_CACHE_URL
- *     url: process.env[envVarName],
- *   }).on("error", (err) => console.error("Redis Client Error", err)),
+ *   new IORedis(process.env[envVarName]!)
  * );
  * ```
  *

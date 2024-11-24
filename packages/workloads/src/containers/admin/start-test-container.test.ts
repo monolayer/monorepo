@@ -1,5 +1,5 @@
+import { Redis as IORedis } from "ioredis";
 import pg from "pg";
-import { createClient } from "redis";
 import { assert, describe } from "vitest";
 import {
 	assertContainerImage,
@@ -13,10 +13,10 @@ import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-databas
 import { Redis } from "~workloads/workloads/stateful/redis.js";
 
 test("launches redis", { sequential: true }, async ({ containers }) => {
-	const redisWorkload = new Redis("launch-redis", (connectionStringEnvVar) =>
-		createClient({
-			url: process.env[connectionStringEnvVar],
-		}).on("error", (err) => console.error("Redis Client Error", err)),
+	const redisWorkload = new Redis(
+		"launch-redis",
+		(connectionStringEnvVar) =>
+			new IORedis(process.env[connectionStringEnvVar]!),
 	);
 
 	const container = await startContainer(redisWorkload, {
@@ -84,11 +84,7 @@ test(
 	"launch same containers for the same workload",
 	{ sequential: true },
 	async ({ containers }) => {
-		const redisWorkload = new Redis("red-one", (connectionStringEnvVar) =>
-			createClient({
-				url: process.env[connectionStringEnvVar],
-			}).on("error", (err) => console.error("Redis Client Error", err)),
-		);
+		const redisWorkload = new Redis("red-one", () => true);
 
 		const container = await startContainer(redisWorkload, {
 			mode: "test",
@@ -116,13 +112,7 @@ test(
 	"launch different containers for dev and test",
 	{ sequential: true },
 	async ({ containers }) => {
-		const redisWorkload = new Redis(
-			"redis-dev-test",
-			(connectionStringEnvVar) =>
-				createClient({
-					url: process.env[connectionStringEnvVar],
-				}).on("error", (err) => console.error("Redis Client Error", err)),
-		);
+		const redisWorkload = new Redis("redis-dev-test", () => true);
 
 		const container = await startContainer(redisWorkload, {
 			mode: "dev",

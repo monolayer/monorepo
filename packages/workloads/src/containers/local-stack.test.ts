@@ -42,7 +42,7 @@ test(
 test("Exposed ports", { sequential: true }, async ({ containers }) => {
 	const bucket = new Bucket("test-local-stack", () => true);
 	const container = new LocalStackContainer(bucket);
-	const startedContainer = await container.start();
+	const startedContainer = await container.start(true);
 	containers.push(startedContainer);
 	await assertExposedPorts({
 		container: startedContainer,
@@ -53,7 +53,7 @@ test("Exposed ports", { sequential: true }, async ({ containers }) => {
 test("Gateway URL", { sequential: true }, async ({ containers }) => {
 	const bucket = new Bucket("test-local-stack", () => true);
 	const container = new LocalStackContainer(bucket);
-	const startedContainer = await container.start();
+	const startedContainer = await container.start(true);
 	containers.push(startedContainer);
 
 	assert.strictEqual(

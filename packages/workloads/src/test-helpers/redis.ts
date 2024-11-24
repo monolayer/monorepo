@@ -1,4 +1,4 @@
-import { createClient } from "redis";
+import { Redis as IORedis } from "ioredis";
 import type { Redis } from "~workloads/workloads/stateful/redis.js";
 
 /**
@@ -15,13 +15,10 @@ export async function flushRedis(
 	 */
 	db?: number,
 ) {
-	const client = createClient({
-		url: process.env[workload.connectionStringEnvVar],
-	}).on("error", (err) => console.error("Redis Client Error", err));
-	await client.connect();
+	const client = new IORedis(process.env[workload.connectionStringEnvVar]!);
 	if (db) {
 		await client.select(db);
 	}
-	await client.FLUSHDB();
-	await client.disconnect();
+	await client.flushdb();
+	client.disconnect();
 }
