@@ -73,7 +73,7 @@ The script we'll:
 - Query for all `users` and their posts.
 - Output the result.
 
-Eun following command from your project root (*replace the path with the actual path to `example.ts`*):
+Run following command from your project root (*replace the path with the actual path to `example.ts`*):
 
 ```bash
 npx tsx path/to/example.ts
