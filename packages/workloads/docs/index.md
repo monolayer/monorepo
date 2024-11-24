@@ -19,8 +19,8 @@ features:
   - icon: 🛠️
     title: Great DevEx
     details: Dev environment with zero config.<br>Test your backend with ease.
-  - icon: 🔓
-    title: Use the libraries and ORMs of your choice.
+  - icon: 📦
+    title: Use packages, libraries and ORMs of your choice.
     details: Work with tools you already know and love.
   - icon: 💾
     title: Stateful Workloads
