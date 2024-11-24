@@ -42,6 +42,20 @@ export interface Configuration {
 		 */
 		localStack?: string;
 	};
+
+	/**
+	 * Names of the dotenv files to write the workloads' connection strings.
+	 */
+	envFileName?: {
+		/**
+		 * File name for development,
+		 */
+		development?: string;
+		/**
+		 * File name for test,
+		 */
+		test?: string;
+	};
 }
 
 async function importConfig(): Promise<Configuration> {

@@ -3,14 +3,28 @@ import { existsSync, writeFileSync } from "fs";
 import { cwd } from "node:process";
 import * as path from "path";
 import readline from "readline";
+import { workloadsConfiguration } from "~workloads/configuration.js";
 
 export interface EnvVar {
 	name: string;
 	value: string;
 }
 
-export function updateDotenvFile(vars: EnvVar[] = [], mode: "dev" | "test") {
-	const envFileName = mode === "dev" ? ".env" : ".env.test";
+export async function dotenvFile(mode: "dev" | "test") {
+	const configuration = await workloadsConfiguration();
+	switch (mode) {
+		case "dev":
+			return configuration.envFileName?.development ?? ".env";
+		case "test":
+			return configuration.envFileName?.test ?? ".env.test";
+	}
+}
+
+export async function updateDotenvFile(
+	vars: EnvVar[] = [],
+	mode: "dev" | "test",
+) {
+	const envFileName = await dotenvFile(mode);
 	const envFilePath = path.join(cwd(), envFileName);
 
 	if (!existsSync(envFilePath)) {

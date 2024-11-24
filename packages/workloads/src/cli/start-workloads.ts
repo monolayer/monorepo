@@ -20,7 +20,7 @@ export async function startWorkloads(
 		try {
 			await startContainer(workload, options);
 			const name = workload.connectionStringEnvVar;
-			updateDotenvFile(
+			await updateDotenvFile(
 				[
 					{
 						name: workload.connectionStringEnvVar,
