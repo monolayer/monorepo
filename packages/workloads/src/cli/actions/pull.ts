@@ -21,7 +21,7 @@ import { importWorkloads } from "~workloads/workloads/import.js";
 export function pull(program: Command) {
 	return program
 		.command("pull")
-		.description("pull all workflows' Docker images")
+		.description("pull all workloads' Docker images")
 		.action(async () => {
 			const workloads = await importWorkloads();
 			const images = (

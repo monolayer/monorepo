@@ -29,7 +29,7 @@ function devStatus(program: Command) {
 function testStatus(program: Command) {
 	return program
 		.command("test")
-		.description("list the status of the workflows' Docker containers")
+		.description("list the status of the workloads' Docker containers")
 		.action(async () => {
 			const workloads = await importWorkloads();
 			const statuses = await Promise.all(
