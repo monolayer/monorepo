@@ -20,6 +20,7 @@ test(
 		containers.push(startedContainer);
 
 		const labels = startedContainer.getLabels();
+		console.dir(labels);
 		assert.strictEqual(
 			labels["org.monolayer-workloads.workload-id"],
 			"redis-test-redis-test",

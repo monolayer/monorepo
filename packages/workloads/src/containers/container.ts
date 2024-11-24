@@ -19,6 +19,7 @@ import {
 	workloadsConfiguration,
 	type Configuration,
 } from "~workloads/configuration.js";
+import { packageName } from "~workloads/containers/admin/package-name.js";
 import type { Workload } from "~workloads/workloads/workload.js";
 
 export interface StartOptions {
@@ -55,6 +56,11 @@ export const CONTAINER_LABEL_ORG = "org.monolayer-workloads";
  * @hidden
  */
 export const CONTAINER_LABEL_MODE = "org.monolayer-workloads.mode";
+
+/**
+ * @hidden
+ */
+export const CONTAINER_LABEL_PACKAGE = "org.monolayer-workloads.package";
 
 /**
  * @internal
@@ -160,6 +166,7 @@ export abstract class WorkloadContainer {
 
 	containerLabels() {
 		return {
+			[CONTAINER_LABEL_PACKAGE]: packageName,
 			[CONTAINER_LABEL_WORKLOAD_ID]: this.qualifiedWorkloadId(),
 			[CONTAINER_LABEL_ORG]: "true",
 			[CONTAINER_LABEL_MODE]: this.mode,

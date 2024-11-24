@@ -1,5 +1,6 @@
 import { kebabCase } from "case-anything";
 import { getContainerRuntimeClient } from "testcontainers";
+import { packageName } from "~workloads/containers/admin/package-name.js";
 import type {
 	Options,
 	RequestResult,
@@ -119,6 +120,7 @@ async function getMailerContainer<C>(workload: Mailer<C>) {
 		(container) =>
 			container.State === "running" &&
 			container.Labels["org.monolayer-workloads.workload-id"] === containerId &&
+			container.Labels["org.monolayer-workloads.package"] === packageName &&
 			container.Labels["org.monolayer-workloads.mode"] === "test",
 	);
 	if (container) {
