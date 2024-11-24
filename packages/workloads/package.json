@@ -21,6 +21,7 @@
 		"dist/esm/package.json",
 		"dist/cjs/package.json"
 	],
+	"types": "./dist/esm/workloads.d.ts",
 	"exports": {
 		".": {
 			"import": {
