@@ -159,17 +159,13 @@ export abstract class WorkloadContainer {
 		if (this.definition.contentsToCopy) {
 			container.withCopyContentToContainer(this.definition.contentsToCopy);
 		}
-		const portsFromConfig = await this.#exposedPortsFromConfiguration();
 		const portsFromDefinition =
 			(await this.#exposedPortsFromConfiguration()) ||
 			this.definition.portsToExpose.map((port) => ({
 				container: port,
 				host: port,
 			}));
-		console.log("portsFromConfig", portsFromConfig);
-		console.log("portsfromDefinition", portsFromDefinition);
 		for (const ports of Object.values(portsFromDefinition)) {
-			console.log(ports);
 			container.withExposedPorts({
 				container: ports.container,
 				host:
