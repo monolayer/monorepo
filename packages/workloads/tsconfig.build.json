@@ -1,0 +1,20 @@
+{
+	"extends": "./tsconfig.json",
+	"include": ["**/src/**/*"],
+	"exclude": [
+		"src/bin/**/*",
+		"src/cli/**/*",
+		"src/containers/**/*",
+		"src/**/*.test.ts",
+		"test/**/*",
+		"src/api.ts"
+	],
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "./dist/esm",
+		"tsBuildInfoFile": "./dist/esm/tsconfig.build.tsbuildinfo",
+		"emitDeclarationOnly": false,
+		"sourceMap": false
+	},
+	"references": [{ "path": "./tsconfigs/tsconfig.cli.bundle.json" }]
+}

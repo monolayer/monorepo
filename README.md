@@ -54,4 +54,8 @@ We plan to build an integrated cloud where you can deploy and monitor your web a
 
 ## Our journey has started
 
-We have already launched [`monolayer-pg`](https://monolayer.github.io/pg-docs/), a declarative schema management toolkit for PostgreSQL without schema migrations. It saves time and effort to get your database schema to a desired state, using native PostgreSQL operations to perform online changes and to avoid locking and downtime wherever possible.
+We have already launched:
+
+- [`monolayer-pg`](https://monolayer.github.io/pg-docs/), a declarative schema management toolkit for PostgreSQL without schema migrations. It saves time and effort to get your database schema to a desired state, using native PostgreSQL operations to perform online changes and to avoid locking and downtime wherever possible.
+
+- [`workloads`](https://monolayer.github.io/workloads-docs/), a sidecar framework for full-stack React web development to define web development workloads outside the HTTPs request/response cycle.

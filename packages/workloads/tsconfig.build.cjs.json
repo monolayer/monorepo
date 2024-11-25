@@ -1,0 +1,29 @@
+{
+	"extends": "./tsconfig.json",
+	"include": ["src/**/*"],
+	"exclude": [
+		"src/bin/**/*",
+		"src/cli/**/*",
+		"src/containers/**/*",
+		"src/**/*.test.ts",
+		"test/**/*",
+		"src/api.ts"
+	],
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "./dist/cjs",
+		"tsBuildInfoFile": "./dist/cjs/tsconfig.build.tsbuildinfo",
+		"composite": false,
+		"emitDeclarationOnly": false,
+		"declaration": true,
+		"sourceMap": false,
+		"target": "es2020",
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"paths": {
+			"~workloads/*": ["src/*"],
+			"@monorepo/utils/*": ["../../internal/utils/src/*"]
+		}
+	},
+	"references": [{ "path": "./tsconfigs/tsconfig.cli.bundle.cjs.json" }]
+}

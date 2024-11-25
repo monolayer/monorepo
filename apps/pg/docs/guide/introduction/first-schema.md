@@ -166,7 +166,7 @@ We've added the `moddatetime` extension to our database definition.
 ## Create the database
 
 ::: info
-You can [skip](#generate-migrations) this step if the database is already created
+You can [skip](#pushing-changes-to-your-development) this step if the database is already created
 :::
 
 Create the database with the `monolayer-pg` CLI:

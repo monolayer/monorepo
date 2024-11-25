@@ -1,0 +1,116 @@
+{
+	"name": "@monolayer/workloads",
+	"version": "1.0.0-beta-2",
+	"description": "The sidecar framework for full-stack web development with React.",
+	"author": "Marcos Essindi <marcessindi@me.com>",
+	"license": "MIT",
+	"homepage": "https://monolayer.github.io/workloads-docs/",
+	"bugs": "https://github.com/monolayer/monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/monolayer/monorepo/",
+		"directory": "packages/workloads"
+	},
+	"type": "module",
+	"bin": {
+		"workloads": "dist/bin/cli.js"
+	},
+	"files": [
+		"dist/**/*.js",
+		"dist/**/*.d.ts",
+		"dist/esm/package.json",
+		"dist/cjs/package.json"
+	],
+	"types": "./dist/esm/workloads.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/esm/workloads.d.ts",
+				"default": "./dist/esm/workloads.js"
+			},
+			"require": {
+				"types": "./dist/cjs/workloads.d.ts",
+				"default": "./dist/cjs/workloads.js"
+			}
+		},
+		"./test-helpers": {
+			"import": {
+				"types": "./dist/esm/test-helpers.d.ts",
+				"default": "./dist/esm/test-helpers.js"
+			},
+			"require": {
+				"types": "./dist/cjs/test-helpers.d.ts",
+				"default": "./dist/cjs/test-helpers.js"
+			}
+		}
+	},
+	"scripts": {
+		"prebuild": "rm -rf dist/*",
+		"build": "npm run build:esm && npm run build:cjs && npm run build:cli",
+		"build:cli": "tsup --config tsup.cli.config.ts",
+		"build:cjs": "tsc -b tsconfig.build.cjs.json",
+		"build:esm": "tsc -b tsconfig.build.json",
+		"postbuild": "npm run alias && npm run makeexec && npm run makepackage",
+		"alias": "tsc-alias -p tsconfig.alias.json --outDir dist/esm --verbose && tsc-alias -p tsconfig.alias.json --outDir dist/cjs --verbose",
+		"makeexec": "chmod +x dist/bin/cli.js",
+		"makepackage": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/package.json && echo '{\n  \"type\": \"commonjs\"\n}' > dist/cjs/package.json",
+		"check": "npm run check:prettier && npm run check:lint && npm run check:skott",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src",
+		"check:exports": "attw --pack .",
+		"predocs": "npm run typedoc",
+		"docs": "npm-run-all --parallel docs:dev typedoc:watch",
+		"docs:dev": "vitepress dev docs",
+		"docs:build": "vitepress build docs",
+		"docs:preview": "vitepress preview docs",
+		"cli": "src/cli/cli.ts",
+		"format": "prettier --write .",
+		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
+		"package": "npm pack --pack-destination ./build",
+		"publish:local": "npm publish --registry http://localhost:4873",
+		"test": "NO_COLOR=1 vitest --run --passWithNoTests",
+		"test:containers": "npm run test -- src/containers/**.test.ts",
+		"test:admin": "npm run test -- src/containers/admin/",
+		"test:test-helpers": "npm run test -- src/test-helpers",
+		"test:workloads": "npm run test -- src/workloads",
+		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
+		"typedoc": "typedoc --docsRoot docs/reference --name workloads",
+		"typedoc:watch": "npm run typedoc -- --watch",
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/workloads -f"
+	},
+	"dependencies": {
+		"@aws-sdk/client-s3": "^3.699.0",
+		"@epic-web/remember": "^1.1.0",
+		"case-anything": "^3.1.0",
+		"cli-table3": "^0.6.5",
+		"commander": "^12.0.0",
+		"get-port": "^7.1.0",
+		"mysql2": "^3.11.4",
+		"ora": "^8.1.0",
+		"picocolors": "^1.0.0",
+		"pg": "^8.13.1",
+		"prompts": "^2.4.2",
+		"testcontainers": "^10.14.0",
+		"tsx": "^4.7.1"
+	},
+	"devDependencies": {
+		"@hey-api/client-fetch": "^0.4.3",
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@monorepo/utils": "*",
+		"@hey-api/openapi-ts": "^0.56.1",
+		"@types/node": "^18.0.0",
+		"@types/nodemailer": "^6.4.16",
+		"@vitest/coverage-istanbul": "=2.1.4",
+		"@vitest/coverage-v8": "=2.1.4",
+		"@vitest/ui": "=2.1.4",
+		"ioredis": "^5.4.1",
+		"nodemailer": "^6.9.16",
+		"skott": "^0.33.2",
+		"tsup": "^8.3.5",
+		"type-fest": "^4.10.1",
+		"type-testing": "^0.2.0",
+		"vitest": "=2.1.4"
+	}
+}
