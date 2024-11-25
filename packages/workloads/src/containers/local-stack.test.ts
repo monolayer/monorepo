@@ -39,25 +39,33 @@ test(
 	},
 );
 
-test("Exposed ports", { sequential: true, timeout: 20000 }, async ({ containers }) => {
-	const bucket = new Bucket("test-local-stack", () => true);
-	const container = new LocalStackContainer(bucket);
-	const startedContainer = await container.start(true);
-	containers.push(startedContainer);
-	await assertExposedPorts({
-		container: startedContainer,
-		ports: [4566],
-	});
-});
+test(
+	"Exposed ports",
+	{ sequential: true, timeout: 20000 },
+	async ({ containers }) => {
+		const bucket = new Bucket("test-local-stack", () => true);
+		const container = new LocalStackContainer(bucket);
+		const startedContainer = await container.start(true);
+		containers.push(startedContainer);
+		await assertExposedPorts({
+			container: startedContainer,
+			ports: [4566],
+		});
+	},
+);
 
-test("Gateway URL", { sequential: true, timeout: 20000 }, async ({ containers }) => {
-	const bucket = new Bucket("test-local-stack", () => true);
-	const container = new LocalStackContainer(bucket);
-	const startedContainer = await container.start(true);
-	containers.push(startedContainer);
+test(
+	"Gateway URL",
+	{ sequential: true, timeout: 20000 },
+	async ({ containers }) => {
+		const bucket = new Bucket("test-local-stack", () => true);
+		const container = new LocalStackContainer(bucket);
+		const startedContainer = await container.start(true);
+		containers.push(startedContainer);
 
-	assert.strictEqual(
-		container.gatewayURL,
-		`http://localhost:${startedContainer.getMappedPort(4566)}/`,
-	);
-});
+		assert.strictEqual(
+			container.gatewayURL,
+			`http://localhost:${startedContainer.getMappedPort(4566)}/`,
+		);
+	},
+);
