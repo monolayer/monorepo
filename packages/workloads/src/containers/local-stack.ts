@@ -30,7 +30,7 @@ export class LocalStackContainer<C> extends ContainerWithURI {
 	}
 
 	definition: WorkloadContainerDefinition = {
-		containerImage: "localstack/localstack:latest",
+		containerImage: "localstack/localstack:3.8.1",
 		portsToExpose: [4566],
 		environment: {
 			SERVICES: "s3",

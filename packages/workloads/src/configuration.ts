@@ -44,7 +44,7 @@ export interface Configuration {
 		mongoDb?: ContainerConfig;
 		/**
 		 * @default
-		 * { imageName: "localstack/localstack:latest", exposedPorts: [ container: 4566, host: 4566 ] }
+		 * { imageName: "localstack/localstack:3.8.1", exposedPorts: [ container: 4566, host: 4566 ] }
 		 */
 		localStack?: ContainerConfig;
 	};
