@@ -29,3 +29,6 @@ Spend less time configuring and more time coding.
 
 When you're ready to deploy, `Workloads` provides you with building blocks for automatic infrastructure provisioning.
 
+## Documentation
+
+Workloads documentation is [here](https://monolayer.github.io/workloads-docs/).
