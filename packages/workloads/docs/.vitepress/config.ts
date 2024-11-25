@@ -18,39 +18,26 @@ export default defineConfig({
 						items: [
 							{ text: "Why Workloads?", link: "why-workloads" },
 							{ text: "Installation", link: "installation" },
-							{ text: "Getting Started", link: "getting-started" },
+							{ text: "Quick Start", link: "quick-start" },
 						],
 					},
 					{
-						text: "Developing with Workloads",
+						text: "Workload types",
 						items: [
-							{
-								text: "Workload types",
-								items: [
-									{ text: "PostgreSQL", link: "postgres" },
-									{ text: "MySQL", link: "mysql" },
-									{ text: "MongoDB", link: "mongo-db" },
-									{ text: "Redis", link: "redis" },
-									{ text: "Mailer", link: "mailer" },
-									{ text: "ElasticSearch", link: "elastic-search" },
-								],
-							},
-							{
-								text: "Environments",
-								collapsed: false,
-								items: [
-									{ text: "Dev", link: "dev-env" },
-									{ text: "Test", link: "test-env" },
-									{ text: "Customizing", link: "customizing-environment" },
-								],
-							},
-							{ text: "Testing strategies", link: "testing" },
+							{ text: "PostgresDatabase", link: "postgres" },
+							{ text: "MySqlDatabase", link: "mysql" },
+							{ text: "MongoDatabase", link: "mongo-db" },
+							{ text: "Bucket", link: "bucket" },
+							{ text: "Redis", link: "redis" },
+							{ text: "Mailer", link: "mailer" },
+							{ text: "ElasticSearch", link: "elastic-search" },
 						],
 					},
 					{
-						text: "Build Output",
-						link: "build-output",
+						text: "Configuration",
+						link: "configuration",
 					},
+					{ text: "Testing helpers", link: "testing" },
 					{
 						base: "/reference",
 						text: "CLI & API reference",
