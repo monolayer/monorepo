@@ -1,56 +1,59 @@
 {
-	"name": "monolayer",
-	"private": true,
-	"type": "module",
-	"license": "MIT",
-	"workspaces": [
-		"__config__/*",
-		"apps/*",
-		"internal/*",
-		"packages/*",
-		"docs"
-	],
-	"engines": {
-		"node": ">=18.0.0"
-	},
-	"prettier": {
-		"trailingComma": "all",
-		"useTabs": true,
-		"tabWidth": 2,
-		"semi": true,
-		"singleQuote": false,
-		"plugins": [
-			"prettier-plugin-organize-imports"
-		]
-	},
-	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.15.4",
-		"@commander-js/extra-typings": "^12.1.0",
-		"@config/testing": "*",
-		"get-east-asian-width": "^1.0.0",
-		"indent-string": "^5.0.0",
-		"kysely": "^0.27.2",
-		"mimic-function": "^5.0.0",
-		"npm-run-all": "^2.1.0",
-		"ora": "^8.1.0",
-		"pg": "^8.11.3",
-		"prompts": "^2.4.2",
-		"search-insights": "^2.17.0",
-		"turbo": "^2.1.2",
-		"turbo-ignore": "^2.1.2",
-		"typedoc": "^0.26.5",
-		"typedoc-plugin-markdown": "^4.2.3",
-		"typedoc-vitepress-theme": "^1.0.2",
-		"typescript": "^5.6.2",
-		"vite-plugin-dynamic-import": "^1.5.0",
-		"vitepress": "^1.3.2",
-		"vitepress-sidebar": "^1.24.2",
-		"vitest": "=2.1.4",
-		"zod": "^3.22.2"
-	},
-	"packageManager": "^npm@10.8.2",
-	"scripts": {
-		"test": "NO_COLOR=1 vitest --run",
-		"test:watch": "NO_COLOR=1 vitest ${TEST_FILE} --pool=forks --watch --ui --open=false --coverage"
-	}
+  "name": "monolayer",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "workspaces": [
+    "__config__/*",
+    "apps/*",
+    "internal/*",
+    "packages/*",
+    "docs"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "useTabs": true,
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": false,
+    "plugins": [
+      "prettier-plugin-organize-imports"
+    ]
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.15.4",
+    "@commander-js/extra-typings": "^12.1.0",
+    "@config/testing": "*",
+    "get-east-asian-width": "^1.0.0",
+    "indent-string": "^5.0.0",
+    "kysely": "^0.27.2",
+    "mimic-function": "^5.0.0",
+    "npm-run-all": "^2.1.0",
+    "ora": "^8.1.0",
+    "pg": "^8.11.3",
+    "prompts": "^2.4.2",
+    "search-insights": "^2.17.0",
+    "turbo": "^2.1.2",
+    "turbo-ignore": "^2.1.2",
+    "typedoc": "^0.26.5",
+    "typedoc-plugin-markdown": "^4.2.3",
+    "typedoc-vitepress-theme": "^1.0.2",
+    "typescript": "^5.6.2",
+    "vite-plugin-dynamic-import": "^1.5.0",
+    "vitepress": "^1.3.2",
+    "vitepress-sidebar": "^1.24.2",
+    "vitest": "=2.1.4",
+    "zod": "^3.22.2"
+  },
+  "packageManager": "^npm@10.8.2",
+  "scripts": {
+    "test": "NO_COLOR=1 vitest --run",
+    "test:watch": "NO_COLOR=1 vitest ${TEST_FILE} --pool=forks --watch --ui --open=false --coverage",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  }
 }
