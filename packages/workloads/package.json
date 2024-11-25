@@ -1,14 +1,14 @@
 {
 	"name": "@monolayer/workloads",
-	"version": "1.0.0-beta-1",
+	"version": "1.0.0-beta-2",
 	"description": "The sidecar framework for full-stack web development with React.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
-	"homepage": "https://github.com/monolayer/monorepo",
+	"homepage": "https://monolayer.github.io/workloads-docs/",
 	"bugs": "https://github.com/monolayer/monorepo/issues",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/monolayer/monorepo",
+		"url": "https://github.com/monolayer/monorepo/",
 		"directory": "packages/workloads"
 	},
 	"type": "module",
