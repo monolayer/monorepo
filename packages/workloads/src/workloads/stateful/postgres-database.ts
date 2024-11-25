@@ -51,7 +51,7 @@ import { Database } from "~workloads/workloads/stateful/database.js";
  *   }
  * );
  *
- * // Workloads in the same database servers
+ * // Workloads in the same database server
  * export const producsDbMain = new PostgresDatabase(
  *   "products",
  *   {

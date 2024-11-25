@@ -20,7 +20,7 @@ import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/statef
  * @example
  * ```ts
  * import { Bucket } from "@monolayer/workloads";
- * import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+ * import { S3Client } from "@aws-sdk/client-s3";
  *
  * const imagesBucket = new Bucket(
  * 	"workloads-images",
