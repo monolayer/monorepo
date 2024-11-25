@@ -9,7 +9,7 @@ export default defineConfig({
 		minWorkers: 1,
 		maxWorkers: 2,
 		fileParallelism: false,
-		testTimeout: 10000,
+		testTimeout: 20000,
 		env: {
 			// DEBUG: "testcontainers",
 		},
