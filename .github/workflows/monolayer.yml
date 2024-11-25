@@ -6,7 +6,6 @@ on:
       - ".github/workflows/monolayer.yml"
       - "apps/**"
       - "internal/**"
-      - "packages/**"
 
 jobs:
   check:
