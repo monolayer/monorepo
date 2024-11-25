@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
 import {
+	assertBucket,
 	assertElasticSearch,
 	assertMailer,
 	assertMongoDatabase,
@@ -46,7 +47,7 @@ export class Make {
 					break;
 				case "MySqlDatabase":
 					assertMySqlDatabase(workload);
-					this.#addDatabase(workload, manifest.mysqlDatabase);
+					this.#addDatabase(workload, manifest.mySqlDatabase);
 					break;
 				case "PostgresDatabase":
 					assertPostgresDatabase(workload);
@@ -63,6 +64,12 @@ export class Make {
 					assertMongoDatabase(workload);
 					this.#addDatabase(workload, manifest.mongoDb);
 					break;
+				case "Bucket":
+					assertBucket(workload);
+					manifest.bucket.push({
+						name: workload.name,
+					});
+					break;
 			}
 		}
 		return manifest;
@@ -71,6 +78,7 @@ export class Make {
 	#addDatabase(workload: Database<unknown>, info: DatabaseWorkloadInfo[]) {
 		const dbInfo = {
 			name: workload.databaseName,
+			serverId: workload.databaseId,
 			connectionStringEnvVar: workload.connectionStringEnvVar,
 		};
 		const existingDb = info.find((d) => d.id === workload.id);
@@ -108,11 +116,12 @@ export class Make {
 		const manifest: BuildManifest = {
 			version: "1",
 			postgresDatabase: [],
-			mysqlDatabase: [],
+			mySqlDatabase: [],
 			redis: [],
 			elasticSearch: [],
 			mailer: [],
 			mongoDb: [],
+			bucket: [],
 		};
 		return manifest;
 	}
@@ -121,17 +130,19 @@ export class Make {
 interface BuildManifest {
 	version: string;
 	postgresDatabase: DatabaseWorkloadInfo[];
-	mysqlDatabase: DatabaseWorkloadInfo[];
+	mySqlDatabase: DatabaseWorkloadInfo[];
 	redis: WorkloadInfo[];
 	elasticSearch: WorkloadInfo[];
 	mongoDb: DatabaseWorkloadInfo[];
 	mailer: WorkloadInfo[];
+	bucket: BucketInfo[];
 }
 
 interface DatabaseWorkloadInfo {
 	id: string;
 	databases: {
 		name: string;
+		serverId: string;
 		connectionStringEnvVar: string;
 	}[];
 }
@@ -139,6 +150,10 @@ interface DatabaseWorkloadInfo {
 interface WorkloadInfo {
 	id: string;
 	connectionStringEnvVar: string;
+}
+
+interface BucketInfo {
+	name: string;
 }
 
 export const schema = {
@@ -159,7 +174,7 @@ export const schema = {
 				$ref: "#/$defs/DatabaseWorkloadInfo",
 			},
 		},
-		mysqlDatabase: {
+		mySqlDatabase: {
 			type: "array",
 			items: {
 				$ref: "#/$defs/DatabaseWorkloadInfo",
@@ -190,6 +205,13 @@ export const schema = {
 				description: "Array of Mailer",
 			},
 		},
+		bucket: {
+			type: "array",
+			items: {
+				$ref: "#/$defs/BucketInfo",
+				description: "Array of Bucket",
+			},
+		},
 	},
 	required: [
 		"postgresDatabase",
@@ -198,6 +220,7 @@ export const schema = {
 		"elasticSearch",
 		"mongoDb",
 		"mailer",
+		"bucket",
 	],
 	$defs: {
 		DatabaseWorkloadInfo: {
@@ -217,6 +240,7 @@ export const schema = {
 			type: "object",
 			properties: {
 				name: { type: "string" },
+				serverId: { type: "string" },
 				connectionStringEnvVar: { type: "string" },
 			},
 			required: ["name", "connectionStringEnvVar"],
@@ -232,6 +256,15 @@ export const schema = {
 				},
 			},
 			required: ["id", "connectionStringEnvVar"],
+		},
+		BucketInfo: {
+			type: "object",
+			properties: {
+				name: {
+					type: "string",
+				},
+			},
+			required: ["name"],
 		},
 	},
 };
