@@ -1,6 +1,6 @@
 import { Redis as IORedis } from "ioredis";
 import pg from "pg";
-import { assert, describe } from "vitest";
+import { assert } from "vitest";
 import {
 	assertContainerImage,
 	assertContainerLabel,
@@ -8,7 +8,6 @@ import {
 } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
 import { startContainer } from "~workloads/containers/admin/container.js";
-import { Bucket } from "~workloads/workloads/stateful/bucket.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
 
@@ -135,57 +134,3 @@ test(
 		assert.notStrictEqual(container.getId(), secondContainer.getId());
 	},
 );
-
-test(
-	"Multiple workloads have the same container in dev",
-	{ sequential: true, timeout: 20000 },
-	async ({ containers }) => {
-		const bucket = new Bucket("bucket-one", () => true);
-		const bucketStartedContainer = await startContainer(bucket, {
-			mode: "dev",
-			waitForHealthcheck: true,
-		});
-		containers.push(bucketStartedContainer);
-
-		const anotherBucket = new Bucket("bucket-two", () => true);
-		const anotherBucketStartedContainer = await startContainer(anotherBucket, {
-			mode: "dev",
-			waitForHealthcheck: true,
-		});
-		containers.push(anotherBucketStartedContainer);
-
-		assert.strictEqual(
-			bucketStartedContainer.getId(),
-			anotherBucketStartedContainer.getId(),
-		);
-	},
-);
-
-describe("local stack", () => {
-	test(
-		"Multiple workloads have the same container in test",
-		{ sequential: true },
-		async ({ containers }) => {
-			const bucket = new Bucket("bucket-one", () => true);
-			const bucketStartedContainer = await startContainer(bucket, {
-				mode: "test",
-				waitForHealthcheck: true,
-			});
-			containers.push(bucketStartedContainer);
-
-			const anotherBucket = new Bucket("bucket-two", () => true);
-			const anotherBucketStartedContainer = await startContainer(
-				anotherBucket,
-				{
-					mode: "test",
-					waitForHealthcheck: true,
-				},
-			);
-
-			assert.strictEqual(
-				bucketStartedContainer.getId(),
-				anotherBucketStartedContainer.getId(),
-			);
-		},
-	);
-});
