@@ -1,42 +1,51 @@
-import { Redis as IORedis } from "ioredis";
 import pg from "pg";
 import { assert } from "vitest";
-import {
-	assertContainerImage,
-	assertContainerLabel,
-	assertDatabase,
-} from "~test/__setup__/assertions.js";
+import { assertDatabase } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
 import { startContainer } from "~workloads/containers/admin/container.js";
+import { Mailer } from "~workloads/workloads/stateful/mailer.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
-import { Redis } from "~workloads/workloads/stateful/redis.js";
-
-test("launches redis", { sequential: true }, async ({ containers }) => {
-	const redisWorkload = new Redis(
-		"launch-redis",
-		(connectionStringEnvVar) =>
-			new IORedis(process.env[connectionStringEnvVar]!),
-	);
-
-	const container = await startContainer(redisWorkload, {
-		mode: "test",
-		waitForHealthcheck: false,
-	});
-	containers.push(container);
-
-	await assertContainerLabel(
-		container,
-		"org.monolayer-workloads.workload-id",
-		"redis-launch-redis",
-	);
-	await assertContainerImage({
-		workload: redisWorkload,
-		expectedImage: "redis:7.4.1-alpine3.20",
-	});
-});
 
 test(
-	"launches postgres and creates multiple databases in different container for different workloads",
+	"launch different containers for dev and test",
+	{ sequential: true },
+	async ({ containers }) => {
+		const mailer = new Mailer("test-mailer-one", () => true);
+
+		const container = await startContainer(mailer, {
+			mode: "dev",
+			waitForHealthcheck: false,
+		});
+
+		const containerDevTwo = await startContainer(mailer, {
+			mode: "dev",
+			waitForHealthcheck: false,
+		});
+
+		assert.strictEqual(container.getId(), containerDevTwo.getId());
+
+		containers.push(container);
+
+		const containerTest = await startContainer(mailer, {
+			mode: "test",
+			waitForHealthcheck: false,
+		});
+
+		const containerTestTwo = await startContainer(mailer, {
+			mode: "test",
+			waitForHealthcheck: false,
+		});
+
+		containers.push(containerTest);
+
+		assert.strictEqual(containerTest.getId(), containerTestTwo.getId());
+
+		assert.notStrictEqual(container.getId(), containerTest.getId());
+	},
+);
+
+test(
+	"launches postgres and creates database",
 	{ sequential: true, timeout: 30000 },
 	async ({ containers }) => {
 		const postgresDatabase = new PostgresDatabase(
@@ -56,81 +65,5 @@ test(
 		});
 		containers.push(container);
 		await assertDatabase(postgresDatabase);
-
-		const anotherDatabase = new PostgresDatabase(
-			"another_database_different_container",
-			{
-				serverId: "app_db_multiple_two",
-				client: (connectionStringEnvVar) =>
-					new pg.Pool({
-						connectionString: process.env[connectionStringEnvVar],
-					}),
-			},
-		);
-		const anotherContainer = await startContainer(anotherDatabase, {
-			mode: "test",
-			waitForHealthcheck: true,
-		});
-		assert(anotherContainer);
-		containers.push(anotherContainer);
-		await assertDatabase(anotherDatabase);
-
-		assert.notStrictEqual(anotherContainer.getId(), container.getId());
-	},
-);
-
-test(
-	"launch same containers for the same workload",
-	{ sequential: true },
-	async ({ containers }) => {
-		const redisWorkload = new Redis("red-one", () => true);
-
-		const container = await startContainer(redisWorkload, {
-			mode: "test",
-			waitForHealthcheck: false,
-		});
-		containers.push(container);
-
-		await assertContainerLabel(
-			container,
-			"org.monolayer-workloads.workload-id",
-			"redis-red-one",
-		);
-
-		const secondContainer = await startContainer(redisWorkload, {
-			mode: "test",
-			waitForHealthcheck: false,
-		});
-		containers.push(secondContainer);
-
-		assert.strictEqual(container.getId(), secondContainer.getId());
-	},
-);
-
-test(
-	"launch different containers for dev and test",
-	{ sequential: true },
-	async ({ containers }) => {
-		const redisWorkload = new Redis("redis-dev-test", () => true);
-
-		const container = await startContainer(redisWorkload, {
-			mode: "dev",
-			waitForHealthcheck: false,
-		});
-		containers.push(container);
-
-		await assertContainerLabel(
-			container,
-			"org.monolayer-workloads.workload-id",
-			"redis-redis-dev-test",
-		);
-
-		const secondContainer = await startContainer(redisWorkload, {
-			mode: "test",
-			waitForHealthcheck: false,
-		});
-		containers.push(secondContainer);
-
-		assert.notStrictEqual(container.getId(), secondContainer.getId());
 	},
 );

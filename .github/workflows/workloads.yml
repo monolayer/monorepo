@@ -53,9 +53,9 @@ jobs:
       - name: Run build
         run: npx turbo build --filter="@monolayer/workloads"
 
-  test:
+  test-containers:
     needs: [check, build]
-    name: Test
+    name: Test (containers)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -72,5 +72,71 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Run tests
-        run: NO_COLOR=1 npx vitest --run --project=workloads
+      - name: Run tests (containers)
+        run: NO_COLOR=1 npm run test:containers -w @monolayer/workloads
+
+  test-admin:
+    needs: [check, build]
+    name: Test (admin)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # GitHub Actions run without a TTY device. This is a workaround to get one,
+        # based on https://github.com/actions/runner/issues/241#issuecomment-2019042651
+        shell: 'script --return --quiet --log-out /dev/null --command "bash -e {0}"'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests (containers)
+        run: NO_COLOR=1 npm run test:admin -w @monolayer/workloads
+
+  test-workloads:
+    needs: [check, build]
+    name: Test (workloads)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # GitHub Actions run without a TTY device. This is a workaround to get one,
+        # based on https://github.com/actions/runner/issues/241#issuecomment-2019042651
+        shell: 'script --return --quiet --log-out /dev/null --command "bash -e {0}"'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests (workloads)
+        run: NO_COLOR=1 npm run test:workloads -w @monolayer/workloads
+
+  test-helpers:
+    needs: [check, build]
+    name: Test (helpers)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # GitHub Actions run without a TTY device. This is a workaround to get one,
+        # based on https://github.com/actions/runner/issues/241#issuecomment-2019042651
+        shell: 'script --return --quiet --log-out /dev/null --command "bash -e {0}"'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests (test-helpers)
+        run: NO_COLOR=1 npm run test:test-helpers -w @monolayer/workloads

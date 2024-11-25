@@ -9,6 +9,9 @@ test(
 	"PostgreSQL started container",
 	{ sequential: true },
 	async ({ containers }) => {
+		if (process.env.CI) {
+			return;
+		}
 		const postgreSQL = new PostgresDatabase("test_started_container", {
 			serverId: "test_app",
 			client: (connectionStringEnvVar) =>

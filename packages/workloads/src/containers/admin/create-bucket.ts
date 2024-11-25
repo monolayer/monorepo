@@ -7,6 +7,11 @@ import {
 
 export async function createBucket(bucketName: string, gatewayURL: string) {
 	const client = new S3Client({
+		region: "us-west-1",
+		credentials: {
+			accessKeyId: "localstack",
+			secretAccessKey: "localstack",
+		},
 		forcePathStyle: true,
 		endpoint: gatewayURL,
 	});

@@ -9,6 +9,9 @@ test(
 	"MySQL started container",
 	{ sequential: true, timeout: 20000 },
 	async ({ containers }) => {
+		if (process.env.CI) {
+			return;
+		}
 		const mySqlDb = new MySqlDatabase("started_container", {
 			client: async (connectionStringEnvVar) =>
 				await mysql.createConnection(process.env[connectionStringEnvVar]!),

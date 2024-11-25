@@ -12,6 +12,7 @@ test("Redis container", { sequential: true }, async ({ containers }) => {
 			new IORedis(process.env[connectionStringEnvVar]!),
 	);
 	const container = new RedisContainer(redisStore);
+	container.mode = "test";
 	const startedContainer = await container.start();
 	containers.push(startedContainer);
 
