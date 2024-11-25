@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run check
-        run: npx turbo check
+        run: npx turbo check --filter="@monolayer/pg"
 
   build:
     name: Build
@@ -52,7 +52,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run build
-        run: npx turbo build
+        run: npx turbo build --filter="@monolayer/pg"
 
   test:
     needs: [check, build]
