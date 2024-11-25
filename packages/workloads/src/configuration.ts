@@ -14,37 +14,37 @@ export interface Configuration {
 	 */
 	containers?: {
 		/**
-		 * @default { imageName: "postgres:16.5-alpine3.20", exposedPorts: [ container: 5432, host: 5432 ] }
+		 * @default { imageName: "postgres:16.5-alpine3.20", exposedPorts: [ { container: 5432, host: 5432 } ] }
 		 */
 		postgresDatabase?: ContainerConfig;
 		/**
 		 * @default
-		 * { imageName: "redis:7.4.1-alpine3.20", exposedPorts: [ container: 6379, host: 6379 ] }
+		 * { imageName: "redis:7.4.1-alpine3.20", exposedPorts: [ { container: 6379, host: 6379 } ] }
 		 */
 		redis?: ContainerConfig;
 		/**
 		 * @default
-		 * { imageName: "elasticsearch:7.17.25", exposedPorts: [ container: 9200, host: 9200 ] }
+		 * { imageName: "elasticsearch:7.17.25", exposedPorts: [ { container: 9200, host: 9200 } ] }
 		 */
 		elasticSearch?: ContainerConfig;
 		/**
 		 * @default
-		 * { imageName: "mysql:8.4.3", exposedPorts: [ container: 3306, host: 3306 ] }
+		 * { imageName: "mysql:8.4.3", exposedPorts: [ { container: 3306, host: 3306 } ] }
 		 */
 		mySqlDatabase?: ContainerConfig;
 		/**
 		 * @default
-		 * { imageName: "axllent/mailpit:v1.21.3", exposedPorts: [ container: 1025, host: 1025 ] }
+		 * { imageName: "axllent/mailpit:v1.21.3", exposedPorts: [ { container: 1025, host: 1025 }, { container: 8025, host: 8025 } ] }
 		 */
 		mailer?: ContainerConfig;
 		/**
 		 * @default
-		 * { imageName: "mongo:7.0.15", exposedPorts: [ container: 27017, host: 27017 ] }
+		 * { imageName: "mongo:7.0.15", exposedPorts: [ { container: 27017, host: 27017 } ] }
 		 */
 		mongoDb?: ContainerConfig;
 		/**
 		 * @default
-		 * { imageName: "localstack/localstack:3.8.1", exposedPorts: [ container: 4566, host: 4566 ] }
+		 * { imageName: "localstack/localstack:3.8.1", exposedPorts: [ { container: 4566, host: 4566 } ] }
 		 */
 		localStack?: ContainerConfig;
 	};
