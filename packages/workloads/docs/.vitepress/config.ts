@@ -2,6 +2,7 @@ import { defineConfig } from "vitepress";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
 	title: "Workloads",
+	base: "/workloads-docs",
 	description: "The backend sidecar framework",
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config
