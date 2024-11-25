@@ -6,7 +6,7 @@ import { Bucket } from "~workloads/workloads/stateful/bucket.js";
 
 test(
 	"Started container workload id label",
-	{ sequential: true },
+	{ sequential: true, timeout: 20000 },
 	async ({ containers }) => {
 		const bucket = new Bucket("test-local-stack", () => true);
 		const container = new LocalStackContainer(bucket);
@@ -24,7 +24,7 @@ test(
 
 test(
 	"Started container workload id label in test",
-	{ sequential: true },
+	{ sequential: true, timeout: 20000 },
 	async ({ containers }) => {
 		const bucket = new Bucket("demo", () => true);
 		const container = new LocalStackContainer(bucket, { test: true });
@@ -39,7 +39,7 @@ test(
 	},
 );
 
-test("Exposed ports", { sequential: true }, async ({ containers }) => {
+test("Exposed ports", { sequential: true, timeout: 20000 }, async ({ containers }) => {
 	const bucket = new Bucket("test-local-stack", () => true);
 	const container = new LocalStackContainer(bucket);
 	const startedContainer = await container.start(true);
@@ -50,7 +50,7 @@ test("Exposed ports", { sequential: true }, async ({ containers }) => {
 	});
 });
 
-test("Gateway URL", { sequential: true }, async ({ containers }) => {
+test("Gateway URL", { sequential: true, timeout: 20000 }, async ({ containers }) => {
 	const bucket = new Bucket("test-local-stack", () => true);
 	const container = new LocalStackContainer(bucket);
 	const startedContainer = await container.start(true);

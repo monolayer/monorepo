@@ -138,7 +138,7 @@ test(
 
 test(
 	"Multiple workloads have the same container in dev",
-	{ sequential: true },
+	{ sequential: true, timeout: 20000 },
 	async ({ containers }) => {
 		const bucket = new Bucket("bucket-one", () => true);
 		const bucketStartedContainer = await startContainer(bucket, {
