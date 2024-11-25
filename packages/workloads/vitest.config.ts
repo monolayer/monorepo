@@ -7,7 +7,7 @@ export default defineConfig({
 		setupFiles: ["test/__setup__/setup.ts"],
 		pool: "forks",
 		minWorkers: 1,
-		maxWorkers: 2,
+		maxWorkers: 1,
 		fileParallelism: false,
 		testTimeout: 20000,
 		env: {
