@@ -11,7 +11,7 @@ export class Make {
 		this.#imports = workloads;
 	}
 	build() {
-		this.#createBuildDirectory();
+		this.#setupBuildDirectory();
 		const manifest = this.#collectWorkloads();
 		const manifestFilePath = this.#writeManifestFile(manifest);
 		this.#writeSchemaFile();
@@ -84,8 +84,13 @@ export class Make {
 		return path.join(cwd(), ".workloads");
 	}
 
-	#createBuildDirectory() {
-		if (!existsSync(this.#buildDir)) {
+	#setupBuildDirectory() {
+		if (existsSync(this.#buildDir)) {
+			rmSync(this.#buildDir, {
+				recursive: true,
+				force: true,
+			});
+		} else {
 			mkdirSync(this.#buildDir);
 		}
 	}
