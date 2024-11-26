@@ -1,14 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
 import ora from "ora";
 import { getContainerRuntimeClient, ImageName } from "testcontainers";
-import {
-	assertElasticSearch,
-	assertMailer,
-	assertMongoDatabase,
-	assertMySqlDatabase,
-	assertPostgresDatabase,
-	assertRedis,
-} from "~workloads/containers/admin/assertions.js";
 import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
 import { MailerContainer } from "~workloads/containers/mailer.js";
 import { MongoDatabaseContainer } from "~workloads/containers/mongo-database.js";
@@ -16,6 +8,14 @@ import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
 import { type StatefulWorkloadWithClient } from "~workloads/workloads.js";
+import {
+	assertElasticSearch,
+	assertMailer,
+	assertMongoDatabase,
+	assertMySqlDatabase,
+	assertPostgresDatabase,
+	assertRedis,
+} from "~workloads/workloads/assertions.js";
 import { importWorkloads } from "~workloads/workloads/import.js";
 
 export function pull(program: Command) {

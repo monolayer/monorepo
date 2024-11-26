@@ -1,4 +1,11 @@
 import { remember } from "@epic-web/remember";
+import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
+import { LocalStackContainer } from "~workloads/containers/local-stack.js";
+import { MailerContainer } from "~workloads/containers/mailer.js";
+import { MongoDatabaseContainer } from "~workloads/containers/mongo-database.js";
+import { MySQLContainer } from "~workloads/containers/mysql.js";
+import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
+import { RedisContainer } from "~workloads/containers/redis.js";
 import {
 	assertBucket,
 	assertElasticSearch,
@@ -7,14 +14,7 @@ import {
 	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
-} from "~workloads/containers/admin/assertions.js";
-import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
-import { LocalStackContainer } from "~workloads/containers/local-stack.js";
-import { MailerContainer } from "~workloads/containers/mailer.js";
-import { MongoDatabaseContainer } from "~workloads/containers/mongo-database.js";
-import { MySQLContainer } from "~workloads/containers/mysql.js";
-import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
-import { RedisContainer } from "~workloads/containers/redis.js";
+} from "~workloads/workloads/assertions.js";
 import type { Workload } from "~workloads/workloads/workload.js";
 
 class ContainerStarter {

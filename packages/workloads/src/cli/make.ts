@@ -1,8 +1,14 @@
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+/* eslint-disable max-lines */
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
-import type { WorkloadImports } from "~workloads/workloads/import.js";
+import { build } from "tsup";
+import type {
+	WorkloadImport,
+	WorkloadImports,
+} from "~workloads/workloads/import.js";
 import type { Database } from "~workloads/workloads/stateful/database.js";
+import type { Cron } from "~workloads/workloads/stateless/cron.js";
 
 export class Make {
 	#imports: WorkloadImports;
@@ -10,15 +16,15 @@ export class Make {
 	constructor(workloads: WorkloadImports) {
 		this.#imports = workloads;
 	}
-	build() {
+	async build() {
 		this.#setupBuildDirectory();
-		const manifest = this.#collectWorkloads();
+		const manifest = await this.#collectWorkloads();
 		const manifestFilePath = this.#writeManifestFile(manifest);
 		this.#writeSchemaFile();
 		return manifestFilePath;
 	}
 
-	#collectWorkloads() {
+	async #collectWorkloads() {
 		const manifest = this.#initManifest();
 		for (const imported of this.#imports.Mailer) {
 			manifest.mailer.push({
@@ -40,7 +46,7 @@ export class Make {
 		}
 		for (const imported of this.#imports.Bucket) {
 			manifest.bucket.push({
-				name: imported.workload.name,
+				name: imported.workload.id,
 			});
 		}
 		for (const imported of [
@@ -49,6 +55,15 @@ export class Make {
 			...this.#imports.MySqlDatabase,
 		]) {
 			this.#addDatabase(imported.workload, manifest.postgresDatabase);
+		}
+		for (const imported of this.#imports.Cron) {
+			const info = await makeCron(imported);
+			manifest.cron.push({
+				id: imported.workload.id,
+				entryPoint: info.entryPoint,
+				path: info.path,
+				schedule: imported.workload.schedule,
+			});
 		}
 		return manifest;
 	}
@@ -105,6 +120,7 @@ export class Make {
 			mailer: [],
 			mongoDb: [],
 			bucket: [],
+			cron: [],
 		};
 		return manifest;
 	}
@@ -119,6 +135,7 @@ interface BuildManifest {
 	mongoDb: DatabaseWorkloadInfo[];
 	mailer: WorkloadInfo[];
 	bucket: BucketInfo[];
+	cron: CronInto[];
 }
 
 interface DatabaseWorkloadInfo {
@@ -137,6 +154,13 @@ interface WorkloadInfo {
 
 interface BucketInfo {
 	name: string;
+}
+
+interface CronInto {
+	id: string;
+	path: string;
+	entryPoint: string;
+	schedule: string;
 }
 
 export const schema = {
@@ -195,6 +219,13 @@ export const schema = {
 				description: "Array of Bucket",
 			},
 		},
+		cron: {
+			type: "array",
+			items: {
+				$ref: "#/$defs/CronInfo",
+				description: "Array of Cron",
+			},
+		},
 	},
 	required: [
 		"postgresDatabase",
@@ -204,6 +235,7 @@ export const schema = {
 		"mongoDb",
 		"mailer",
 		"bucket",
+		"cron",
 	],
 	$defs: {
 		DatabaseWorkloadInfo: {
@@ -249,5 +281,66 @@ export const schema = {
 			},
 			required: ["name"],
 		},
+		CronInfo: {
+			type: "object",
+			properties: {
+				id: {
+					type: "string",
+				},
+				path: {
+					type: "string",
+				},
+				entryPoint: {
+					type: "string",
+				},
+				schedule: {
+					type: "string",
+				},
+			},
+			required: ["id", "path", "entryPoint", "schedule"],
+		},
 	},
 };
+
+async function makeCron(cronImport: WorkloadImport<Cron>) {
+	const name = path.parse(cronImport.src).name;
+	await build({
+		outExtension({ format }) {
+			switch (format) {
+				case "cjs":
+					return {
+						js: `.js`,
+					};
+				case "iife":
+					return {
+						js: `.global.js`,
+					};
+				case "esm":
+					return {
+						js: `.mjs`,
+					};
+			}
+		},
+		format: ["esm"],
+		entry: [cronImport.src],
+		outDir: `.workloads/crons/${cronImport}`,
+		dts: false,
+		shims: false,
+		skipNodeModulesBundle: false,
+		clean: true,
+		target: "node20",
+		platform: "node",
+		minify: false,
+		bundle: true,
+		noExternal: [],
+		splitting: true,
+		cjsInterop: true,
+		treeshake: true,
+		sourcemap: true,
+		silent: true,
+	});
+	return {
+		path: `crons/${name}`,
+		entryPoint: `index.js`,
+	};
+}

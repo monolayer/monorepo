@@ -51,13 +51,13 @@ export class Bucket<C> extends StatefulWorkloadWithClient<C> {
 		/**
 		 * Bucket name. Same as `id`.
 		 */
-		public readonly name: string,
+		public readonly id: string,
 		/**
 		 * Client constructor function. Executed once when accessing the `client` property.
 		 */
 		client: () => C,
 	) {
-		super(name, client);
+		super(id, client);
 	}
 
 	get connStringComponents() {

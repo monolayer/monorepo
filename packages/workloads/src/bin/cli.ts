@@ -7,6 +7,7 @@ import { pull } from "~workloads/cli/actions/pull.js";
 import { start } from "~workloads/cli/actions/start.js";
 import { status } from "~workloads/cli/actions/status.js";
 import { stop } from "~workloads/cli/actions/stop.js";
+import { trigger } from "~workloads/cli/actions/trigger.js";
 
 function isCommanderError(error: unknown): error is CommanderError {
 	return error instanceof CommanderError;
@@ -24,6 +25,8 @@ async function main() {
 
 	pull(program);
 	build(program);
+
+	trigger(program);
 
 	program.exitOverride();
 

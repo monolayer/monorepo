@@ -3,9 +3,9 @@ import { StatelessWorkload } from "~workloads/workloads/stateless/stateless-work
 
 export interface CronOptions {
 	/**
-	 * TDB.
+	 * Function with the code that will be executed.
 	 */
-	work: () => Promise<void> | void;
+	run: () => Promise<void>;
 	/**
 	 * Schedule in crontab format.
 	 */
@@ -13,7 +13,28 @@ export interface CronOptions {
 }
 
 /**
- * Workload for scheduled tasks.
+ * Workload for recurring tasks.
+ *
+ * A [`Cron`](./../reference/api/main/classes/Cron.md) workload is initialized with a unique id and the following options:
+ *
+ * - [schedule](./../reference/api/main/interfaces/CronOptions.md#properties) in [unix-cron](https://man7.org/linux/man-pages/man5/crontab.5.html)
+ * format to specify when it should run.
+ *
+ * - [run](./../reference/api/main/interfaces/CronOptions.md#properties) function with the code that will be executed.
+ *
+ * @example
+ * ```ts
+ * import { Cron } from "@monolayer/workloads";
+ *
+ * const reports = new Cron("reports", {
+ *   schedule: "* * * * *",
+ *   work: () => {
+ *     // Do something;
+ *   },
+ * });
+ *
+ * export default reports;
+ * ```
  */
 export class Cron extends StatelessWorkload {
 	/**
@@ -21,7 +42,7 @@ export class Cron extends StatelessWorkload {
 	 */
 	declare _brand: "cron";
 
-	work: () => Promise<void> | void;
+	run: () => Promise<void>;
 	schedule: string;
 
 	constructor(
@@ -32,7 +53,7 @@ export class Cron extends StatelessWorkload {
 		public options: CronOptions,
 	) {
 		super(id);
-		this.work = options.work;
+		this.run = options.run;
 		this.schedule = parseSchedule(options.schedule);
 	}
 }

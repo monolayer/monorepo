@@ -14,7 +14,7 @@ export function build(program: Command) {
 			const spinner = ora();
 			spinner.start("Build workloads");
 			const workloadMake = new Make(imports);
-			const manifestPath = workloadMake.build();
+			const manifestPath = await workloadMake.build();
 			spinner.succeed(`${spinner.text}`);
 			console.log("");
 			console.log(`Manifest: ${path.relative(cwd(), manifestPath)}`);

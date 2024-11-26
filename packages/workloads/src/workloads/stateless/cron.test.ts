@@ -4,7 +4,7 @@ import { Cron } from "~workloads/workloads/stateless/cron.js";
 test("initialize on valid schedule", () => {
 	const reporting = new Cron("reporting", {
 		schedule: "* * * * *",
-		work: () => {},
+		run: async () => {},
 	});
 
 	assert.strictEqual(reporting.schedule, "* * * * *");
@@ -15,12 +15,12 @@ test("run task", () => {
 
 	const reporting = new Cron("reporting", {
 		schedule: "* * * * *",
-		work: () => {
+		run: async () => {
 			number += 1;
 		},
 	});
 
-	reporting.work();
+	reporting.run();
 	assert.strictEqual(number, 1);
 });
 
@@ -29,7 +29,7 @@ test("throws on invalid schedule", () => {
 		() =>
 			new Cron("reporting", {
 				schedule: "invalid",
-				work: () => {},
+				run: async () => {},
 			}),
 		"Failed to parse schedule: invalid",
 	);

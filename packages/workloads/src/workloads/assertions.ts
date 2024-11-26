@@ -5,6 +5,7 @@ import type { MongoDatabase } from "~workloads/workloads/stateful/mongo-database
 import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import type { Redis } from "~workloads/workloads/stateful/redis.js";
+import type { Cron } from "~workloads/workloads/stateless/cron.js";
 import type { Workload } from "~workloads/workloads/workload.js";
 
 export function assertRedis<C>(
@@ -34,3 +35,5 @@ export function assertMySqlDatabase<C>(
 export function assertBucket<C>(
 	workload: Workload,
 ): asserts workload is Bucket<C> {}
+
+export function assertCron(workload: Workload): asserts workload is Cron {}

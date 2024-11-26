@@ -4,14 +4,16 @@ import path from "node:path";
 import { cwd, exit } from "node:process";
 import color from "picocolors";
 import { workloadsConfiguration } from "~workloads/configuration.js";
+import { Cron } from "~workloads/workloads.js";
 import {
 	assertBucket,
+	assertCron,
 	assertElasticSearch,
 	assertMongoDatabase,
 	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
-} from "~workloads/containers/admin/assertions.js";
+} from "~workloads/workloads/assertions.js";
 import { Bucket } from "~workloads/workloads/stateful/bucket.js";
 import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
 import { Mailer } from "~workloads/workloads/stateful/mailer.js";
@@ -63,13 +65,14 @@ const validConstructor = [
 	ElasticSearch.name,
 	MongoDatabase.name,
 	Bucket.name,
+	Cron.name,
 ];
 
 function validWorkload(workloadConstructor: string) {
 	return validConstructor.includes(workloadConstructor);
 }
 
-interface WorkloadImport<I> {
+export interface WorkloadImport<I> {
 	src: string;
 	workload: I;
 }
@@ -82,6 +85,7 @@ interface ImportByWorkload {
 	Bucket: WorkloadImport<Bucket<unknown>>[];
 	MongoDatabase: WorkloadImport<MongoDatabase<unknown>>[];
 	Redis: WorkloadImport<Redis<unknown>>[];
+	Cron: WorkloadImport<Cron>[];
 }
 
 export class WorkloadImports {
@@ -100,6 +104,7 @@ export class WorkloadImports {
 			Bucket: [],
 			MongoDatabase: [],
 			Redis: [],
+			Cron: [],
 		};
 	}
 
@@ -133,6 +138,10 @@ export class WorkloadImports {
 
 	get Bucket() {
 		return this.#importsByWorkload.Bucket;
+	}
+
+	get Cron() {
+		return this.#importsByWorkload.Cron;
 	}
 
 	add(src: string, workload: StatefulWorkloadWithClient<unknown>) {
@@ -179,6 +188,13 @@ export class WorkloadImports {
 					break;
 				case "MongoDatabase":
 					assertMongoDatabase(workload);
+					this.#importsByWorkload[key].push({
+						src,
+						workload,
+					});
+					break;
+				case "Cron":
+					assertCron(workload);
 					this.#importsByWorkload[key].push({
 						src,
 						workload,

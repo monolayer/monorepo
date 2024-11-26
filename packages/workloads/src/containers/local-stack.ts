@@ -1,10 +1,10 @@
 import { kebabCase } from "case-anything";
 import { Wait, type StartedTestContainer } from "testcontainers";
 import type { HealthCheck } from "testcontainers/build/types.js";
-import { assertBucket } from "~workloads/containers/admin/assertions.js";
 import { createBucket } from "~workloads/containers/admin/create-bucket.js";
 import { ContainerWithURI } from "~workloads/containers/container-with-uri.js";
 import { type WorkloadContainerDefinition } from "~workloads/containers/container.js";
+import { assertBucket } from "~workloads/workloads/assertions.js";
 import type { Bucket } from "~workloads/workloads/stateful/bucket.js";
 
 /**
@@ -72,7 +72,7 @@ export class LocalStackContainer<C> extends ContainerWithURI {
 		const gatewayURL = this.gatewayURL;
 		if (gatewayURL) {
 			assertBucket(this.workload);
-			await createBucket(this.workload.name, gatewayURL);
+			await createBucket(this.workload.id, gatewayURL);
 		}
 	}
 }

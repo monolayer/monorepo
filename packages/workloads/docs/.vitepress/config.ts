@@ -25,13 +25,22 @@ export default defineConfig({
 					{
 						text: "Workload types",
 						items: [
-							{ text: "PostgresDatabase", link: "postgres" },
-							{ text: "MySqlDatabase", link: "mysql" },
-							{ text: "MongoDatabase", link: "mongo-db" },
-							{ text: "Bucket", link: "bucket" },
-							{ text: "Redis", link: "redis" },
-							{ text: "Mailer", link: "mailer" },
-							{ text: "ElasticSearch", link: "elastic-search" },
+							{
+								text: "Stateful",
+								items: [
+									{ text: "PostgresDatabase", link: "postgres" },
+									{ text: "MySqlDatabase", link: "mysql" },
+									{ text: "MongoDatabase", link: "mongo-db" },
+									{ text: "Bucket", link: "bucket" },
+									{ text: "Redis", link: "redis" },
+									{ text: "Mailer", link: "mailer" },
+									{ text: "ElasticSearch", link: "elastic-search" },
+								],
+							},
+							{
+								text: "Stateless",
+								items: [{ text: "Cron (experimental)", link: "cron" }],
+							},
 						],
 					},
 					{
@@ -62,6 +71,7 @@ export default defineConfig({
 							{ text: "stop test", link: "/cli/stop-test" },
 							{ text: "status dev", link: "/cli/status-dev" },
 							{ text: "status test", link: "/cli/status-dev" },
+							{ text: "trigger cron", link: "/cli/trigger-cron" },
 							{ text: "build", link: "/cli/build" },
 							{ text: "pull", link: "/cli/pull" },
 						],

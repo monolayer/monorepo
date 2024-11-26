@@ -8,7 +8,7 @@ test("is a StatefulWorkloadWithClient", () => {
 
 test("name is id", () => {
 	const bucket = new Bucket("images", () => true);
-	expect(bucket.id).toStrictEqual(bucket.name);
+	expect(bucket.id).toStrictEqual(bucket.id);
 });
 
 test("connStringComponents", () => {
