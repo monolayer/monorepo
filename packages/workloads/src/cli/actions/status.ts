@@ -18,9 +18,11 @@ function devStatus(program: Command) {
 		.command("dev")
 		.description("list the status of the workloads' Docker containers")
 		.action(async () => {
-			const workloads = await importWorkloads();
+			const imports = await importWorkloads();
 			const statuses = await Promise.all(
-				workloads.map(async (w) => workloadContainerStatus(w, "dev")),
+				imports.workloads.map(async (workload) =>
+					workloadContainerStatus(workload, "dev"),
+				),
 			);
 			printStatus(statuses);
 		});
@@ -31,9 +33,11 @@ function testStatus(program: Command) {
 		.command("test")
 		.description("list the status of the workloads' Docker containers")
 		.action(async () => {
-			const workloads = await importWorkloads();
+			const imports = await importWorkloads();
 			const statuses = await Promise.all(
-				workloads.map(async (w) => workloadContainerStatus(w, "test")),
+				imports.workloads.map(async (workload) =>
+					workloadContainerStatus(workload, "test"),
+				),
 			);
 			printStatus(statuses);
 		});

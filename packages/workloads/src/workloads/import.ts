@@ -29,7 +29,7 @@ export async function importWorkloads() {
 	}
 
 	const files = await fs.readdir(workloadsPath);
-	const workloads: Array<StatefulWorkloadWithClient<unknown>> = [];
+	const imports = new WorkloadImports();
 
 	for (const fileName of files) {
 		if (fileName.endsWith(".ts") && !fileName.endsWith(".d.ts")) {
@@ -38,12 +38,13 @@ export async function importWorkloads() {
 			for (const [, workload] of Object.entries(imported)) {
 				const workloadKind = workload.constructor.name;
 				if (validWorkload(workloadKind)) {
-					workloads.push(workload);
+					const workloadPath = path.relative(cwd(), importPath);
+					imports.add(workloadPath, workload);
 				}
 			}
 		}
 	}
-	return workloads;
+	return imports;
 }
 
 const validConstructor = [
@@ -58,4 +59,22 @@ const validConstructor = [
 
 function validWorkload(workloadConstructor: string) {
 	return validConstructor.includes(workloadConstructor);
+}
+
+export class WorkloadImports {
+	imports: Array<{
+		src: string;
+		workload: StatefulWorkloadWithClient<unknown>;
+	}> = [];
+
+	get workloads() {
+		return this.imports.map((i) => i.workload);
+	}
+
+	add(src: string, workload: StatefulWorkloadWithClient<unknown>) {
+		this.imports.push({
+			src,
+			workload,
+		});
+	}
 }

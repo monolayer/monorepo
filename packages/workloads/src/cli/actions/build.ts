@@ -10,10 +10,10 @@ export function build(program: Command) {
 		.command("build")
 		.description("build workloads")
 		.action(async () => {
-			const workloads = await importWorkloads();
+			const imports = await importWorkloads();
 			const spinner = ora();
 			spinner.start("Build workloads");
-			const workloadMake = new Make(workloads);
+			const workloadMake = new Make(imports.workloads);
 			const manifestPath = workloadMake.build();
 			spinner.succeed(`${spinner.text}`);
 			console.log("");

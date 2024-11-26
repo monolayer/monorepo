@@ -18,8 +18,8 @@ function devStop(program: Command) {
 		.command("dev")
 		.description("stop dev workloads")
 		.action(async () => {
-			const workloads = await importWorkloads();
-			for (const workload of workloads) {
+			const imports = await importWorkloads();
+			for (const workload of imports.workloads) {
 				const spinner = ora();
 				spinner.start(spinnerMessage(workload, "Stop"));
 				await stopContainer(workload, "dev");
@@ -33,8 +33,8 @@ function testStop(program: Command) {
 		.command("test")
 		.description("stop test workloads")
 		.action(async () => {
-			const workloads = await importWorkloads();
-			for (const workload of workloads) {
+			const imports = await importWorkloads();
+			for (const workload of imports.workloads) {
 				const spinner = ora();
 				spinner.start(spinnerMessage(workload, "Stop"));
 				await stopContainer(workload, "test");

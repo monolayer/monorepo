@@ -23,10 +23,10 @@ export function pull(program: Command) {
 		.command("pull")
 		.description("pull all workloads' Docker images")
 		.action(async () => {
-			const workloads = await importWorkloads();
+			const imports = await importWorkloads();
 			const images = (
 				await Promise.all(
-					workloads.flatMap(
+					imports.workloads.flatMap(
 						async (workload) => await containerForWorkload(workload),
 					),
 				)
