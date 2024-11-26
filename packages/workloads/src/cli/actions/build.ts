@@ -13,7 +13,7 @@ export function build(program: Command) {
 			const imports = await importWorkloads();
 			const spinner = ora();
 			spinner.start("Build workloads");
-			const workloadMake = new Make(imports.workloads);
+			const workloadMake = new Make(imports);
 			const manifestPath = workloadMake.build();
 			spinner.succeed(`${spinner.text}`);
 			console.log("");

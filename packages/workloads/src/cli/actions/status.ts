@@ -20,7 +20,7 @@ function devStatus(program: Command) {
 		.action(async () => {
 			const imports = await importWorkloads();
 			const statuses = await Promise.all(
-				imports.workloads.map(async (workload) =>
+				imports.allWorkloads.map(async (workload) =>
 					workloadContainerStatus(workload, "dev"),
 				),
 			);
@@ -35,7 +35,7 @@ function testStatus(program: Command) {
 		.action(async () => {
 			const imports = await importWorkloads();
 			const statuses = await Promise.all(
-				imports.workloads.map(async (workload) =>
+				imports.allWorkloads.map(async (workload) =>
 					workloadContainerStatus(workload, "test"),
 				),
 			);

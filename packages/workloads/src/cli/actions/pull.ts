@@ -26,7 +26,7 @@ export function pull(program: Command) {
 			const imports = await importWorkloads();
 			const images = (
 				await Promise.all(
-					imports.workloads.flatMap(
+					imports.allWorkloads.flatMap(
 						async (workload) => await containerForWorkload(workload),
 					),
 				)

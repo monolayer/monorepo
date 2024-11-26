@@ -1,23 +1,14 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
-import {
-	assertBucket,
-	assertElasticSearch,
-	assertMailer,
-	assertMongoDatabase,
-	assertMySqlDatabase,
-	assertPostgresDatabase,
-	assertRedis,
-} from "~workloads/containers/admin/assertions.js";
+import type { WorkloadImports } from "~workloads/workloads/import.js";
 import type { Database } from "~workloads/workloads/stateful/database.js";
-import type { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
 
 export class Make {
-	#workloads;
+	#imports: WorkloadImports;
 
-	constructor(workloads: StatefulWorkloadWithClient<unknown>[]) {
-		this.#workloads = workloads;
+	constructor(workloads: WorkloadImports) {
+		this.#imports = workloads;
 	}
 	build() {
 		this.#createBuildDirectory();
@@ -29,48 +20,35 @@ export class Make {
 
 	#collectWorkloads() {
 		const manifest = this.#initManifest();
-		for (const workload of this.#workloads) {
-			switch (workload.constructor.name) {
-				case "Redis":
-					assertRedis(workload);
-					manifest.redis.push({
-						id: workload.id,
-						connectionStringEnvVar: workload.connectionStringEnvVar,
-					});
-					break;
-				case "Mailer":
-					assertMailer(workload);
-					manifest.mailer.push({
-						id: workload.id,
-						connectionStringEnvVar: workload.connectionStringEnvVar,
-					});
-					break;
-				case "MySqlDatabase":
-					assertMySqlDatabase(workload);
-					this.#addDatabase(workload, manifest.mySqlDatabase);
-					break;
-				case "PostgresDatabase":
-					assertPostgresDatabase(workload);
-					this.#addDatabase(workload, manifest.postgresDatabase);
-					break;
-				case "ElasticSearch":
-					assertElasticSearch(workload);
-					manifest.elasticSearch.push({
-						id: workload.id,
-						connectionStringEnvVar: workload.connectionStringEnvVar,
-					});
-					break;
-				case "MongoDatabase":
-					assertMongoDatabase(workload);
-					this.#addDatabase(workload, manifest.mongoDb);
-					break;
-				case "Bucket":
-					assertBucket(workload);
-					manifest.bucket.push({
-						name: workload.name,
-					});
-					break;
-			}
+		for (const imported of this.#imports.Mailer) {
+			manifest.mailer.push({
+				id: imported.workload.id,
+				connectionStringEnvVar: imported.workload.connectionStringEnvVar,
+			});
+		}
+		for (const imported of this.#imports.Redis) {
+			manifest.redis.push({
+				id: imported.workload.id,
+				connectionStringEnvVar: imported.workload.connectionStringEnvVar,
+			});
+		}
+		for (const imported of this.#imports.ElasticSearch) {
+			manifest.elasticSearch.push({
+				id: imported.workload.id,
+				connectionStringEnvVar: imported.workload.connectionStringEnvVar,
+			});
+		}
+		for (const imported of this.#imports.Bucket) {
+			manifest.bucket.push({
+				name: imported.workload.name,
+			});
+		}
+		for (const imported of [
+			...this.#imports.PostgresDatabase,
+			...this.#imports.MongoDatabase,
+			...this.#imports.MySqlDatabase,
+		]) {
+			this.#addDatabase(imported.workload, manifest.postgresDatabase);
 		}
 		return manifest;
 	}
