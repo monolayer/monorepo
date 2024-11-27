@@ -17,7 +17,7 @@ function devStart(program: Command) {
 		.description("launch dev workloads")
 		.action(async () => {
 			const imports = await importWorkloads();
-			startWorkloads(imports.allWorkloads, {
+			startWorkloads(imports.workloadsWithContainers, {
 				mode: "dev",
 				waitForHealthcheck: true,
 			});
@@ -30,7 +30,7 @@ function testStart(program: Command) {
 		.description("launch test workloads")
 		.action(async () => {
 			const imports = await importWorkloads();
-			startWorkloads(imports.allWorkloads, {
+			startWorkloads(imports.workloadsWithContainers, {
 				mode: "test",
 				waitForHealthcheck: true,
 			});

@@ -21,5 +21,7 @@ export type {
 	StatefulWorkloadWithClient,
 } from "~workloads/workloads/stateful/stateful-workload.js";
 export type { StatelessWorkload } from "~workloads/workloads/stateless/stateless-workload.js";
+export { Task } from "~workloads/workloads/stateless/task.js";
+export { dispatcher } from "~workloads/workloads/stateless/task/dispatcher.js";
 export type { Workload } from "~workloads/workloads/workload.js";
 export { Cron, type CronOptions } from "./workloads/stateless/cron.js";
