@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { kebabCase } from "case-anything";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
@@ -303,7 +304,7 @@ export const schema = {
 };
 
 async function makeCron(cronImport: WorkloadImport<Cron>) {
-	const name = path.parse(cronImport.src).name;
+	const dir = `crons/${kebabCase(cronImport.workload.id)}`;
 	await build({
 		outExtension({ format }) {
 			switch (format) {
@@ -323,7 +324,7 @@ async function makeCron(cronImport: WorkloadImport<Cron>) {
 		},
 		format: ["esm"],
 		entry: [cronImport.src],
-		outDir: `.workloads/crons/${cronImport}`,
+		outDir: `.workloads/${dir}`,
 		dts: false,
 		shims: false,
 		skipNodeModulesBundle: false,
@@ -340,7 +341,7 @@ async function makeCron(cronImport: WorkloadImport<Cron>) {
 		silent: true,
 	});
 	return {
-		path: `crons/${name}`,
-		entryPoint: `index.js`,
+		path: dir,
+		entryPoint: `${path.parse(cronImport.src).name}.mjs`,
 	};
 }
