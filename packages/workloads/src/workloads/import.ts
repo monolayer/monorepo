@@ -13,6 +13,7 @@ import {
 	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
+	assertTask,
 } from "~workloads/workloads/assertions.js";
 import { Bucket } from "~workloads/workloads/stateful/bucket.js";
 import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
@@ -21,6 +22,8 @@ import { MongoDatabase } from "~workloads/workloads/stateful/mongo-database.js";
 import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
+import { Task } from "~workloads/workloads/stateless/task/task.js";
+
 import type { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,6 +69,7 @@ const validConstructor = [
 	MongoDatabase.name,
 	Bucket.name,
 	Cron.name,
+	Task.name,
 ];
 
 function validWorkload(workloadConstructor: string) {
@@ -86,6 +90,7 @@ interface ImportByWorkload {
 	MongoDatabase: WorkloadImport<MongoDatabase<unknown>>[];
 	Redis: WorkloadImport<Redis<unknown>>[];
 	Cron: WorkloadImport<Cron>[];
+	Task: WorkloadImport<Task<unknown>>[];
 }
 
 export class WorkloadImports {
@@ -105,11 +110,20 @@ export class WorkloadImports {
 			MongoDatabase: [],
 			Redis: [],
 			Cron: [],
+			Task: [],
 		};
 	}
 
-	get allWorkloads() {
-		return this.#imports.map((i) => i.workload);
+	get workloadsWithContainers() {
+		return [
+			...this.Bucket,
+			...this.ElasticSearch,
+			...this.Mailer,
+			...this.MongoDatabase,
+			...this.MySqlDatabase,
+			...this.PostgresDatabase,
+			...this.Redis,
+		].map((i) => i.workload);
 	}
 
 	get Redis() {
@@ -142,6 +156,10 @@ export class WorkloadImports {
 
 	get Cron() {
 		return this.#importsByWorkload.Cron;
+	}
+
+	get Task() {
+		return this.#importsByWorkload.Task;
 	}
 
 	add(src: string, workload: StatefulWorkloadWithClient<unknown>) {
@@ -195,6 +213,13 @@ export class WorkloadImports {
 					break;
 				case "Cron":
 					assertCron(workload);
+					this.#importsByWorkload[key].push({
+						src,
+						workload,
+					});
+					break;
+				case "Task":
+					assertTask(workload);
 					this.#importsByWorkload[key].push({
 						src,
 						workload,
