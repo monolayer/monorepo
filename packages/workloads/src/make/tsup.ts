@@ -4,21 +4,22 @@ export function tsupConfig(
 	entry: string[],
 	outDir: string,
 	noExternal: (string | RegExp)[],
+	cjsExt: string = ".js",
 ) {
 	const options: Options = {
 		outExtension({ format }) {
 			switch (format) {
 				case "cjs":
 					return {
-						js: `.js`,
+						js: cjsExt,
 					};
 				case "iife":
 					return {
-						js: `.global.js`,
+						js: ".global.js",
 					};
 				case "esm":
 					return {
-						js: `.mjs`,
+						js: ".mjs",
 					};
 			}
 		},
@@ -38,7 +39,7 @@ export function tsupConfig(
 		treeshake: true,
 		cjsInterop: false,
 		sourcemap: true,
-		silent: false,
+		silent: true,
 	};
 	return options;
 }

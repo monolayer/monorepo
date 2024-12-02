@@ -1,7 +1,6 @@
 import { kebabCase } from "case-anything";
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { cwd } from "node:process";
 import { build } from "tsup";
 import { tsupConfig } from "~workloads/make/tsup.js";
 import type { WorkloadImport } from "~workloads/workloads/import.js";
@@ -11,37 +10,57 @@ export async function makeTask(taskImport: WorkloadImport<Task<unknown>>) {
 	const workloadId = kebabCase(taskImport.workload.name);
 	const dir = `tasks/${workloadId}`;
 
-	const importPath = path.join(cwd(), taskImport.src.replace(".ts", ""));
 	mkdirSync(`.workloads/${dir}`, { recursive: true });
-	writeFileSync(`.workloads/${dir}/server.ts`, bullTemplate(importPath));
-	writeFileSync(`.workloads/${dir}/lambda.ts`, lambdaTemplate(importPath));
 
-	await build(
-		tsupConfig(
-			[`.workloads/${dir}/server.ts`, `.workloads/${dir}/lambda.ts`],
-			`.workloads/${dir}`,
-			[/(.*)/],
-		),
-	);
+	const taskFileName = await buildTask(taskImport, dir);
+	const workerFileName = await buildWorker(dir);
+	const name = buildRunner(taskImport, dir, taskFileName, workerFileName);
 
 	return {
 		path: dir,
-		entryPoint: `index.mjs`,
+		entryPoint: name,
 	};
 }
 
-export const bullTemplate = (
-	importPath: string,
-) => `import { TaskBullWorker } from "${path.join(cwd(), "node_modules/@monolayer/workloads/dist/esm/workloads/stateless/task/workers/bull.js")}";
-import task from "${importPath}.js";
+async function buildWorker(dir: string) {
+	await build(
+		tsupConfig(
+			[
+				"./node_modules/@monolayer/workloads/dist/esm/workloads/stateless/task/worker.js",
+			],
+			`.workloads/${dir}`,
+			[/(.*)/],
+			".cjs",
+		),
+	);
+	return "worker.cjs";
+}
 
-new TaskBullWorker(task);
-`;
+async function buildTask(
+	taskImport: WorkloadImport<Task<unknown>>,
+	dir: string,
+) {
+	await build(
+		tsupConfig([taskImport.src], `.workloads/${dir}`, [/(.*)/], ".cjs"),
+	);
+	return `${path.parse(taskImport.src).name}.cjs`;
+}
 
-export const lambdaTemplate = (
-	importPath: string,
-) => `import { doWorkWithSQS } from "${path.join(cwd(), "node_modules/@monolayer/workloads/dist/esm/workloads/stateless/task/workers/lambda.js")}";
-import task from "${importPath}.js"
+export function buildRunner(
+	taskImport: WorkloadImport<Task<unknown>>,
+	dir: string,
+	taskFileName: string,
+	workerFileName: string,
+) {
+	const name = `index.mjs`;
+	writeFileSync(
+		path.join(`.workloads/${dir}`, name),
+		`\
+import { TaskWorker } from "./${workerFileName}";
+import task from "./${taskFileName}";
 
-export const handler = doWorkWithSQS(task);
-`;
+new TaskWorker(task);
+`,
+	);
+	return name;
+}

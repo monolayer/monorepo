@@ -1,3 +1,8 @@
+import {
+	CreateQueueCommand,
+	GetQueueAttributesCommand,
+} from "@aws-sdk/client-sqs";
+import { snakeCase } from "case-anything";
 import getPort from "get-port";
 import { Redis as IORedis } from "ioredis";
 import mysql from "mysql2/promise";
@@ -5,11 +10,12 @@ import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
 import { GenericContainer, type StartedTestContainer } from "testcontainers";
-import { vi } from "vitest";
+import { vi, type TaskContext, type TestContext } from "vitest";
 import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { bullQueues } from "~workloads/workloads/stateless/task/bull.js";
 import { Task } from "~workloads/workloads/stateless/task/task.js";
+import { TaskSQSClient } from "~workloads/workloads/stateless/task/workers/sqs.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function postgresDatabasePool(workload: PostgresDatabase<any>) {
@@ -113,4 +119,63 @@ export function localStackSQSQueueUrl(
 
 export function currentWorkingDirectory() {
 	return path.resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
+}
+
+export interface TaskSQSWorkerContext {
+	queueUrl: string;
+	deadLetterQueueUrl: string;
+	container: StartedTestContainer;
+}
+
+export async function setupSqsQueueForWorker(
+	context: TaskContext & TestContext & TaskSQSWorkerContext,
+) {
+	context.container = await startLocalStackContainer();
+	const url = localstackConnectionstring(context.container);
+	vi.stubEnv("AWS_ENDPOINT_URL_SQS", url);
+	const client = new TaskSQSClient();
+	const testTask = new Task(context.task.id, async () => {}, {
+		retry: {
+			times: 2,
+		},
+	});
+
+	const deadLetterQueue = await client.send(
+		new CreateQueueCommand({
+			QueueName: `${testTask.id}-dlq`,
+		}),
+	);
+
+	context.deadLetterQueueUrl = localStackSQSQueueUrl(
+		deadLetterQueue.QueueUrl!,
+		url,
+	);
+	const deadLetterQueueArn = await client.send(
+		new GetQueueAttributesCommand({
+			QueueUrl: context.deadLetterQueueUrl,
+			AttributeNames: ["QueueArn"],
+		}),
+	);
+	const createQueue = new CreateQueueCommand({
+		QueueName: testTask.id,
+		Attributes: {
+			RedrivePolicy: JSON.stringify({
+				deadLetterTargetArn: deadLetterQueueArn.Attributes?.QueueArn,
+				maxReceiveCount: testTask.options?.retry?.times,
+			}),
+		},
+	});
+
+	const result = await client.send(createQueue);
+	context.queueUrl = localStackSQSQueueUrl(result.QueueUrl!, url);
+	vi.stubEnv(
+		`MONO_TASK_${snakeCase(testTask.id).toUpperCase()}_SQS_QUEUE_URL`,
+		context.queueUrl,
+	);
+}
+
+export async function tearDownSqsQueueForWorker(
+	context: TaskContext & TestContext & TaskSQSWorkerContext,
+) {
+	await context.container.stop();
 }

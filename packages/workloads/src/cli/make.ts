@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
 import { makeCron } from "~workloads/make/cron.js";
+import { makeTask } from "~workloads/make/task.js";
 import type { WorkloadImports } from "~workloads/workloads/import.js";
 import type { Database } from "~workloads/workloads/stateful/database.js";
 
@@ -61,6 +62,15 @@ export class Make {
 				schedule: imported.workload.schedule,
 			});
 		}
+		for (const imported of this.#imports.Task) {
+			const info = await makeTask(imported);
+			manifest.task.push({
+				id: imported.workload.name,
+				entryPoint: info.entryPoint,
+				path: info.path,
+			});
+		}
+
 		return manifest;
 	}
 
@@ -117,6 +127,7 @@ export class Make {
 			mongoDb: [],
 			bucket: [],
 			cron: [],
+			task: [],
 		};
 		return manifest;
 	}
@@ -132,6 +143,7 @@ interface BuildManifest {
 	mailer: WorkloadInfo[];
 	bucket: BucketInfo[];
 	cron: CronInto[];
+	task: TaskInfo[];
 }
 
 interface DatabaseWorkloadInfo {
@@ -157,6 +169,12 @@ interface CronInto {
 	path: string;
 	entryPoint: string;
 	schedule: string;
+}
+
+interface TaskInfo {
+	id: string;
+	path: string;
+	entryPoint: string;
 }
 
 export const schema = {
@@ -222,6 +240,13 @@ export const schema = {
 				description: "Array of Cron",
 			},
 		},
+		task: {
+			type: "array",
+			items: {
+				$ref: "#/$defs/TaskInfo",
+				description: "Array of Task",
+			},
+		},
 	},
 	required: [
 		"postgresDatabase",
@@ -232,6 +257,7 @@ export const schema = {
 		"mailer",
 		"bucket",
 		"cron",
+		"task",
 	],
 	$defs: {
 		DatabaseWorkloadInfo: {
