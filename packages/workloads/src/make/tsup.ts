@@ -1,4 +1,5 @@
 import type { Options } from "tsup";
+
 export function tsupConfig(
 	entry: string[],
 	outDir: string,
@@ -25,7 +26,7 @@ export function tsupConfig(
 		entry,
 		outDir,
 		dts: false,
-		shims: true,
+		shims: false,
 		skipNodeModulesBundle: false,
 		clean: false,
 		target: "node20",
@@ -35,7 +36,7 @@ export function tsupConfig(
 		noExternal,
 		splitting: false,
 		treeshake: true,
-		cjsInterop: true,
+		cjsInterop: false,
 		sourcemap: true,
 		silent: false,
 	};
