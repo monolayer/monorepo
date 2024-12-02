@@ -14,12 +14,12 @@ export async function makeCron(cronImport: WorkloadImport<Cron>) {
 
 	await buildCron(cronImport, dir);
 
-	buildRunner(dir, parsed);
+	const name = buildRunner(dir, parsed);
 	buildDockerfile(parsed, dir);
 
 	return {
 		path: dir,
-		entryPoint: `${parsed.name}.js`,
+		entryPoint: name,
 	};
 }
 
@@ -38,14 +38,16 @@ function buildDockerfile(parsed: path.ParsedPath, dir: string) {
 }
 
 function buildRunner(dir: string, parsed: path.ParsedPath) {
+	const name = `index.mjs`;
 	writeFileSync(
-		path.join(`.workloads/${dir}`, `index.mjs`),
+		path.join(`.workloads/${dir}`, name),
 		`\
 import task from "./${parsed.name}.js";
 
 await task.run();
 `,
 	);
+	return name;
 }
 
 export function cronDockerFile(parsed: path.ParsedPath, dir: string) {
@@ -79,7 +81,7 @@ export function cronDockerFile(parsed: path.ParsedPath, dir: string) {
 	dockerfile.comment(
 		"See https://github.com/nodejs/docker-node?tab=readme-ov-file#nodealpine",
 	);
-	dockerfile.RUN("apk add --no-cache gcompat");
+	dockerfile.RUN("apk add --no-cache gcompat=1.1.0-r4");
 	dockerfile.WORKDIR("/app");
 
 	if (prismaInstalled) {
