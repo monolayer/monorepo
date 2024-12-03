@@ -8,7 +8,7 @@ import type { WorkloadImport } from "~workloads/workloads/import.js";
 import type { Cron } from "~workloads/workloads/stateless/cron.js";
 
 export async function makeCron(cronImport: WorkloadImport<Cron>) {
-	const dir = `crons/${kebabCase(cronImport.workload.id)}`;
+	const dir = `crons/${kebabCase(cronImport.workload.id)}/dist`;
 	const cronFileName = await buildCron(cronImport, dir);
 	const runnerFileName = buildRunner(cronFileName, dir);
 
@@ -28,7 +28,7 @@ async function buildCron(cronImport: WorkloadImport<Cron>, dir: string) {
 
 function buildDockerfile(files: string[], dir: string) {
 	writeFileSync(
-		path.join(`.workloads/${dir}`, `node20x.Dockerfile`),
+		path.join(`.workloads/${dir}`, "..", `node20x.Dockerfile`),
 		generateNode20Dockerfile(
 			files.map((file) =>
 				path.format({

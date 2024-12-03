@@ -1,5 +1,5 @@
 import { kebabCase } from "case-anything";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { build } from "tsup";
 import { generateNode20Dockerfile } from "~workloads/make/dockerfile-node20.js";
@@ -9,10 +9,7 @@ import type { Task } from "~workloads/workloads/stateless/task/task.js";
 
 export async function makeTask(taskImport: WorkloadImport<Task<unknown>>) {
 	const workloadId = kebabCase(taskImport.workload.name);
-	const dir = `tasks/${workloadId}`;
-
-	mkdirSync(`.workloads/${dir}`, { recursive: true });
-
+	const dir = `tasks/${workloadId}/dist`;
 	const taskFileName = await buildTask(taskImport, dir);
 	const workerFileName = await buildWorker(dir);
 	const entryPointFilename = buildRunner(
@@ -89,7 +86,7 @@ function buildDockerfile(filenames: string[], dir: string) {
 		}),
 	);
 	return writeFileSync(
-		path.join(`.workloads/${dir}`, `node20x.Dockerfile`),
+		path.join(`.workloads/${dir}`, "..", `node20x.Dockerfile`),
 		generateNode20Dockerfile(files),
 	);
 }
