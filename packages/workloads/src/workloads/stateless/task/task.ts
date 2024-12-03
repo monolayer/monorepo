@@ -32,9 +32,11 @@ export class Task<P> extends Workload {
 	/**
 	 * Performs the task later, dispatching the task to a queue.
 	 *
-	 * **NOTE**
+	 * **NOTES**
 	 *
 	 * In development, the task will be performed immediately.
+	 *
+	 * In test, the task will collected ans can be retrieved with the `performedTasks` test helper.
 	 */
 	async performLater(data: P | P[], options?: PerformOptions) {
 		return await performLater(this, data, options);
