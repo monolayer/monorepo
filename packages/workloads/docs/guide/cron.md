@@ -41,7 +41,7 @@ However, you can test the work function of a `Cron` in your test suite.
 
 ## Production environments
 
-You can deploy the `Cron` workload to production environment using the [build ouput](#build-output)
+You can deploy the `Cron` workload to production environments using the [build ouput](#build-output)
 
 ## Build output
 
