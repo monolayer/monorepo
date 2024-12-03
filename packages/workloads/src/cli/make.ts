@@ -248,7 +248,7 @@ export const schema = {
 			},
 		},
 	},
-	required: [
+	optional: [
 		"postgresDatabase",
 		"mysqlDatabase",
 		"redis",
