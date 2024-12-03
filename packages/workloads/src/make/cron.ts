@@ -24,8 +24,6 @@ export async function makeCron(cronImport: WorkloadImport<Cron>) {
 }
 
 async function buildCron(cronImport: WorkloadImport<Cron>, dir: string) {
-	tsupConfig([cronImport.src], `.workloads/${dir}`, []);
-
 	await build(tsupConfig([cronImport.src], `.workloads/${dir}`, [/(.*)/]));
 }
 
