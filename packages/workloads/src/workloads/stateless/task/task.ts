@@ -90,7 +90,17 @@ export interface RetryOptions {
 	/**
 	 * Backoff setting for automatic retries if the job fails.
 	 *
-	 * @defaultValue: { type: "constant", delay: 0 }
+	 * **Important**
+	 *
+	 * This setting does not have any effect on Tasks backed by an `SQS` queue in production.
+	 *
+	 * Retries will happen after the `VisibilityTimeout` of the message expires (30 seconds by default).
+	 * See: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html#consumer-fails-to-process-message
+	 *
+	 * You can to implement an custom backoff strategy using a dead-letter queue to handle retries
+	 * and a Lambda function.
+	 *
+	 * @defaultValue { type: "constant", delay: 0 }
 	 */
 	backoff?: ExponentialBackoff | ConstantBackoff;
 }
