@@ -41,13 +41,14 @@ However, you can test the work function of a `Cron` in your test suite.
 
 ## Production environments
 
-You can deploy the `Cron` workload to production environment using the [build ouput](#build-output)
+You can deploy the `Cron` workload to production environments using the [build ouput](#build-output)
 
 ## Build output
 
 ### Compiled code
 
-Each `Cron` will be compiled to JavaScript as an ECMAScript module.
+Each `Cron` will be compiled to a single CommonJS file with bundled dependencies which can be run
+through a generated runner script.
 
 The exported code will be located in `.workloads/cron/${cron-file-name}`.
 
@@ -56,22 +57,17 @@ The exported code will be located in `.workloads/cron/${cron-file-name}`.
 :::warning
 To provide portability across hosting providers, the output code does not include any scheduler.
 
-In the future, we'll provide build presets to tailor the output for different environments, such as node server, Vercel, and AWS Lambda.
+Also, the compiler doesn't perform any type checking.
 :::
 
 - Code is tree shaken.
-- Code does include packages (dependencies and peerDependencies).
 - A source map is included.
-- You can execute the workload by importing it from the [entryPoint] specified in `manifest.json`.
 
-  ```ts
-  import reports from "./path/to/reports/cron/index.mjs";
-  await reports.work();
-  ```
+### Dockerfile
 
-:::warning
-The compiler doesn't perform any type checking.
-:::
+A Dockerfile for the `Cron` workload is also provided.
+
+Once the image is built, running the container will run the `Cron` workload.
 
 ### manifest.json
 
