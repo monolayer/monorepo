@@ -34,6 +34,7 @@ import { Mailer } from "~workloads/workloads/stateful/mailer.js";
 import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
+import { testDispatchers } from "~workloads/workloads/stateless/task/local.js";
 import { Task } from "~workloads/workloads/stateless/task/task.js";
 
 test(
@@ -256,6 +257,8 @@ test(
 describe("performed tasks", () => {
 	beforeEach(() => {
 		vi.stubEnv("NODE_ENV", "test");
+		const dispatchers = testDispatchers;
+		delete dispatchers["send-emails"];
 	});
 
 	viTest("performed tasks", async () => {
