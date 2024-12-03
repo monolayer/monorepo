@@ -11,42 +11,33 @@ export async function makeCron(cronImport: WorkloadImport<Cron>) {
 	const dir = `crons/${kebabCase(cronImport.workload.id)}`;
 	const parsed = path.parse(cronImport.src);
 
-	await buildCron(cronImport, dir);
+	const cronFileName = await buildCron(cronImport, dir);
+	const runnerFileName = buildRunner(dir, parsed);
 
-	const name = buildRunner(dir, parsed);
-	buildDockerfile(parsed, dir);
+	buildDockerfile([cronFileName, `${cronFileName}.map`, runnerFileName], dir);
 
 	return {
 		path: dir,
-		entryPoint: name,
+		entryPoint: runnerFileName,
 	};
 }
 
 async function buildCron(cronImport: WorkloadImport<Cron>, dir: string) {
 	await build(tsupConfig([cronImport.src], `.workloads/${dir}`, [/(.*)/]));
+	return `${path.parse(cronImport.src).name}.js`;
 }
 
-function buildDockerfile(parsed: path.ParsedPath, dir: string) {
-	const files = [
-		path.format({
-			root: `.workloads/${dir}/`,
-			base: `${parsed.name}.js`,
-			ext: ".js",
-		}),
-		path.format({
-			root: `.workloads/${dir}/`,
-			base: `${parsed.name}.js.map`,
-			ext: ".js.map",
-		}),
-		path.format({
-			root: `.workloads/${dir}/`,
-			base: `index.mjs`,
-			ext: ".mjs",
-		}),
-	];
+function buildDockerfile(files: string[], dir: string) {
 	writeFileSync(
 		path.join(`.workloads/${dir}`, `node20x.Dockerfile`),
-		generateNode20Dockerfile(files),
+		generateNode20Dockerfile(
+			files.map((file) =>
+				path.format({
+					root: `.workloads/${dir}/`,
+					base: file,
+				}),
+			),
+		),
 	);
 }
 
