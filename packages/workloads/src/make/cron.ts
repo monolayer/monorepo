@@ -9,10 +9,8 @@ import type { Cron } from "~workloads/workloads/stateless/cron.js";
 
 export async function makeCron(cronImport: WorkloadImport<Cron>) {
 	const dir = `crons/${kebabCase(cronImport.workload.id)}`;
-	const parsed = path.parse(cronImport.src);
-
 	const cronFileName = await buildCron(cronImport, dir);
-	const runnerFileName = buildRunner(dir, parsed);
+	const runnerFileName = buildRunner(cronFileName, dir);
 
 	buildDockerfile([cronFileName, `${cronFileName}.map`, runnerFileName], dir);
 
@@ -23,8 +21,9 @@ export async function makeCron(cronImport: WorkloadImport<Cron>) {
 }
 
 async function buildCron(cronImport: WorkloadImport<Cron>, dir: string) {
-	await build(tsupConfig([cronImport.src], `.workloads/${dir}`, [/(.*)/]));
-	return `${path.parse(cronImport.src).name}.js`;
+	const ext = ".cjs";
+	await build(tsupConfig([cronImport.src], `.workloads/${dir}`, [/(.*)/], ext));
+	return `${path.parse(cronImport.src).name}${ext}`;
 }
 
 function buildDockerfile(files: string[], dir: string) {
@@ -41,12 +40,12 @@ function buildDockerfile(files: string[], dir: string) {
 	);
 }
 
-function buildRunner(dir: string, parsed: path.ParsedPath) {
+function buildRunner(cronFileName: string, dir: string) {
 	const name = `index.mjs`;
 	writeFileSync(
 		path.join(`.workloads/${dir}`, name),
 		`\
-import task from "./${parsed.name}.js";
+import task from "./${cronFileName}";
 
 await task.run();
 `,
