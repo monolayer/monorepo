@@ -39,7 +39,10 @@ export default defineConfig({
 							},
 							{
 								text: "Stateless",
-								items: [{ text: "Cron (experimental)", link: "cron" }],
+								items: [
+									{ text: "Cron", link: "cron" },
+									{ text: "Task", link: "task" },
+								],
 							},
 						],
 					},
