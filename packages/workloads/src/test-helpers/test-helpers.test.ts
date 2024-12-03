@@ -2,7 +2,14 @@ import { Redis as IORedis } from "ioredis";
 import mysql from "mysql2/promise";
 import nodemailer from "nodemailer";
 import pg from "pg";
-import { assert } from "vitest";
+import {
+	assert,
+	beforeEach,
+	describe,
+	expect,
+	vi,
+	test as viTest,
+} from "vitest";
 import { test } from "~test/__setup__/container-test.js";
 import {
 	mysqlConnection,
@@ -19,10 +26,15 @@ import {
 import { truncateMySqlTables } from "~workloads/test-helpers/mysql.js";
 import { truncatePostgresTables } from "~workloads/test-helpers/postgres.js";
 import { flushRedis } from "~workloads/test-helpers/redis.js";
+import {
+	clearPerformedTasks,
+	performedTasks,
+} from "~workloads/test-helpers/task.js";
 import { Mailer } from "~workloads/workloads/stateful/mailer.js";
 import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
+import { Task } from "~workloads/workloads/stateless/task/task.js";
 
 test(
 	"Truncate existing tables",
@@ -240,3 +252,43 @@ test(
 		client.disconnect();
 	},
 );
+
+describe("performed tasks", () => {
+	beforeEach(() => {
+		vi.stubEnv("NODE_ENV", "test");
+	});
+
+	viTest("performed tasks", async () => {
+		const testTask = new Task<{ word: string }>(
+			"Send emails",
+			async () => {},
+			{},
+		);
+
+		const executionId = await testTask.performLater({ word: "world" });
+
+		const performed = performedTasks(testTask);
+
+		const performedTask = performed[0];
+		assert(performedTask);
+		expect(performedTask.executionId).toStrictEqual(executionId);
+		expect(performedTask.data).toStrictEqual({ word: "world" });
+	});
+
+	viTest("clear performed tasks", async () => {
+		const testTask = new Task<{ word: string }>(
+			"Send emails",
+			async () => {},
+			{},
+		);
+
+		await testTask.performLater({ word: "hello" });
+		await testTask.performLater({ word: "world" });
+
+		expect(performedTasks(testTask).length).toBe(2);
+
+		clearPerformedTasks(testTask);
+
+		expect(performedTasks(testTask).length).toBe(0);
+	});
+});

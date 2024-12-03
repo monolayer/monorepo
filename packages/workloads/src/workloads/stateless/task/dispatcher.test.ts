@@ -1,7 +1,10 @@
 import { afterEach, expect, test, vi } from "vitest";
 import { bullDispatch } from "~workloads/workloads/stateless/task/bull.js";
 import { dispatcher } from "~workloads/workloads/stateless/task/dispatcher.js";
-import { localDispatch } from "~workloads/workloads/stateless/task/local.js";
+import {
+	developmentDispatch,
+	testDispatch,
+} from "~workloads/workloads/stateless/task/local.js";
 import { sqsDispatch } from "~workloads/workloads/stateless/task/sqs.js";
 
 afterEach(() => {
@@ -9,13 +12,20 @@ afterEach(() => {
 });
 
 test(
-	"is local dispatcher in non production environments",
+	"is dev dispatcher in non production environments",
 	{ sequential: true, concurrent: false },
 	() => {
 		vi.stubEnv("NODE_ENV", "development");
-		expect(dispatcher()).toBe(localDispatch);
+		expect(dispatcher()).toBe(developmentDispatch);
+	},
+);
+
+test(
+	"is test dispatcher in non production environments",
+	{ sequential: true, concurrent: false },
+	() => {
 		vi.stubEnv("NODE_ENV", "test");
-		expect(dispatcher()).toBe(localDispatch);
+		expect(dispatcher()).toBe(testDispatch);
 	},
 );
 
