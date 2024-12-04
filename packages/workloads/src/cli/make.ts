@@ -1,7 +1,11 @@
-/* eslint-disable max-lines */
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
+import {
+	manifestJsonSchema,
+	type BuildManifest,
+	type DatabaseWorkloadInfo,
+} from "~workloads/build-manifest.js";
 import { makeCron } from "~workloads/make/cron.js";
 import { makeTask } from "~workloads/make/task.js";
 import type { WorkloadImports } from "~workloads/workloads/import.js";
@@ -98,7 +102,7 @@ export class Make {
 
 	#writeSchemaFile() {
 		const filePath = path.join(this.#buildDir, "schema.json");
-		writeFileSync(filePath, JSON.stringify(schema, null, 2));
+		writeFileSync(filePath, JSON.stringify(manifestJsonSchema, null, 2));
 	}
 
 	get #buildDir() {
@@ -132,209 +136,3 @@ export class Make {
 		return manifest;
 	}
 }
-
-interface BuildManifest {
-	version: string;
-	postgresDatabase: DatabaseWorkloadInfo[];
-	mySqlDatabase: DatabaseWorkloadInfo[];
-	redis: WorkloadInfo[];
-	elasticSearch: WorkloadInfo[];
-	mongoDb: DatabaseWorkloadInfo[];
-	mailer: WorkloadInfo[];
-	bucket: BucketInfo[];
-	cron: CronInto[];
-	task: TaskInfo[];
-}
-
-interface DatabaseWorkloadInfo {
-	id: string;
-	databases: {
-		name: string;
-		serverId: string;
-		connectionStringEnvVar: string;
-	}[];
-}
-
-interface WorkloadInfo {
-	id: string;
-	connectionStringEnvVar: string;
-}
-
-interface BucketInfo {
-	name: string;
-}
-
-interface CronInto {
-	id: string;
-	path: string;
-	entryPoint: string;
-	schedule: string;
-}
-
-interface TaskInfo {
-	id: string;
-	path: string;
-	entryPoint: string;
-}
-
-export const schema = {
-	$schema: "https://json-schema.org/draft/2020-12/schema",
-	type: "object",
-	$id: "workloads-build-manifest-schema-v1",
-	title: "WorkloadsBuildManifest",
-	properties: {
-		version: {
-			type: "string",
-			enum: ["1"],
-			description:
-				"The version of the schema. This must be '1' for version 1 of the schema.",
-		},
-		postgresDatabase: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/DatabaseWorkloadInfo",
-			},
-		},
-		mySqlDatabase: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/DatabaseWorkloadInfo",
-			},
-		},
-		redis: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/WorkloadInfo",
-			},
-		},
-		elasticSearch: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/WorkloadInfo",
-			},
-		},
-		mongoDb: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/DatabaseWorkloadInfo",
-			},
-		},
-		mailer: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/WorkloadInfo",
-				description: "Array of Mailer",
-			},
-		},
-		bucket: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/BucketInfo",
-				description: "Array of Bucket",
-			},
-		},
-		cron: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/CronInfo",
-				description: "Array of Cron",
-			},
-		},
-		task: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/TaskInfo",
-				description: "Array of Task",
-			},
-		},
-	},
-	optional: [
-		"postgresDatabase",
-		"mysqlDatabase",
-		"redis",
-		"elasticSearch",
-		"mongoDb",
-		"mailer",
-		"bucket",
-		"cron",
-		"task",
-	],
-	$defs: {
-		DatabaseWorkloadInfo: {
-			type: "object",
-			properties: {
-				id: { type: "string" },
-				databases: {
-					type: "array",
-					items: {
-						$ref: "#/$defs/Database",
-					},
-				},
-			},
-			required: ["id", "databases"],
-		},
-		Database: {
-			type: "object",
-			properties: {
-				name: { type: "string" },
-				serverId: { type: "string" },
-				connectionStringEnvVar: { type: "string" },
-			},
-			required: ["name", "connectionStringEnvVar"],
-		},
-		WorkloadInfo: {
-			type: "object",
-			properties: {
-				id: {
-					type: "string",
-				},
-				connectionStringEnvVar: {
-					type: "string",
-				},
-			},
-			required: ["id", "connectionStringEnvVar"],
-		},
-		BucketInfo: {
-			type: "object",
-			properties: {
-				name: {
-					type: "string",
-				},
-			},
-			required: ["name"],
-		},
-		CronInfo: {
-			type: "object",
-			properties: {
-				id: {
-					type: "string",
-				},
-				path: {
-					type: "string",
-				},
-				entryPoint: {
-					type: "string",
-				},
-				schedule: {
-					type: "string",
-				},
-			},
-			required: ["id", "path", "entryPoint", "schedule"],
-		},
-		TaskInfo: {
-			type: "object",
-			properties: {
-				id: {
-					type: "string",
-				},
-				path: {
-					type: "string",
-				},
-				entryPoint: {
-					type: "string",
-				},
-			},
-			required: ["id", "path", "entryPoint"],
-		},
-	},
-};
