@@ -6,6 +6,10 @@ export class DockerfileWriter {
 	/**
 	 * Instruction that initializes a new build stage and sets the base image for
 	 * subsequent instructions.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#from)
 	 */
 	FROM(
 		/**
@@ -40,6 +44,10 @@ export class DockerfileWriter {
 	 * Sets the environment variable <key> to the value <value>.
 	 * This value will be in the environment for all subsequent instructions
 	 * in the build stage.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#env)
 	 */
 	ENV(key: string, value: string) {
 		this.#pushInstruction(`ENV ${key}="${value}"`);
@@ -49,6 +57,10 @@ export class DockerfileWriter {
 	/**
 	 * Sets the working directory for any `RUN`, `CMD`, `ENTRYPOINT`, `COPY` and `ADD` instructions
 	 * that follow it in the Dockerfile.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#workdir)
 	 */
 	WORKDIR(dir: string) {
 		this.#pushInstruction(`WORKDIR ${dir}`);
@@ -57,6 +69,10 @@ export class DockerfileWriter {
 
 	/**
 	 * Execute any commands to create a new layer on top of the current image.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#run)
 	 */
 	RUN(
 		command: string | string[],
@@ -89,6 +105,10 @@ export class DockerfileWriter {
 	 * Copies new files or directories from <src> and adds them to the filesystem of the image
 	 * at the path <dest>. Files and directories can be copied from the build context,
 	 * build stage, named context, or an image.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#copy)
 	 */
 	COPY(source: string | string[], destination: string, options?: CopyOptions) {
 		const base =
@@ -106,6 +126,10 @@ export class DockerfileWriter {
 
 	/**
 	 * Sets the command to be executed when running a container from an image.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#cmd)
 	 */
 	CMD(params?: string[]): this;
 	CMD(executable: string, params?: string[]): this;
@@ -121,6 +145,10 @@ export class DockerfileWriter {
 
 	/**
 	 * Configures a container that will run as an executable.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#entrypoint)
 	 */
 	ENTRYPOINT(executable: string, parameters?: string[]) {
 		this.#pushInstruction(
@@ -134,6 +162,10 @@ export class DockerfileWriter {
 	 *
 	 * The default shell on Linux is `["/bin/sh", "-c"]`,
 	 * and on Windows is `["cmd", "/S", "/C"]`.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#shell)
 	 */
 	SHELL(executable: string, parameters: string[]) {
 		this.#pushInstruction(
@@ -147,6 +179,10 @@ export class DockerfileWriter {
 	 *
 	 * You can specify whether the port listens on TCP or UDP,
 	 * and the default is TCP if you don't specify a protocol.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#expose)
 	 */
 	EXPOSE(port: number | { port: number; protocol: "tcp" | "udp" }) {
 		if (typeof port === "number") {
@@ -163,6 +199,10 @@ export class DockerfileWriter {
 	 *
 	 * The specified user is used for RUN instructions and at runtime,
 	 * runs the relevant `ENTRYPOINT` and `CMD` commands.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#user)
 	 */
 	USER(name: number, group?: number): this;
 	USER(name: string, group?: string): this;
@@ -175,6 +215,10 @@ export class DockerfileWriter {
 	/**
 	 * Creates a mount point with the specified name and
 	 * marks it as holding externally mounted volumes from native host or other containers.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#volume)
 	 */
 	VOLUME(...names: string[]) {
 		const volumes = names.map((v) => `"${v}"`).join(", ");
@@ -184,6 +228,10 @@ export class DockerfileWriter {
 
 	/**
 	 * Sets the system call signal that will be sent to the container to exit.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#stopsignal)
 	 */
 	STOPSIGNAL(signal: NodeJS.Signals | number) {
 		this.#pushInstruction(`STOPSIGNAL ${signal}`);
@@ -193,6 +241,10 @@ export class DockerfileWriter {
 	/**
 	 * Defines a variable that users can pass at build-time to the builder
 	 * with the docker build command using the `--build-arg <varname>=<value>` flag.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#arg)
 	 */
 	ARG(name: string, defaultValue?: string) {
 		this.#pushInstruction(
@@ -207,6 +259,10 @@ export class DockerfileWriter {
 	 *
 	 * Files and directories can be copied from the build context,
 	 * a remote URL, or a Git repository.
+	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#add)
 	 */
 	ADD(source: string | string[], destination: string, options?: AddOptions) {
 		const base =
@@ -225,6 +281,9 @@ export class DockerfileWriter {
 	/**
 	 * Tells Docker how to test a container to check that it's still working.
 	 *
+	 * @see
+	 *
+	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#healthcheck)
 	 */
 	HEALTHCHECK(command: "NONE"): this;
 	HEALTHCHECK(command: string, options?: HealthCheckOptions): this;
@@ -290,6 +349,9 @@ export class DockerfileWriter {
 		return this.#lines.join("\n");
 	}
 
+	/**
+	 * Saves the Dockerfile.
+	 */
 	save(filePath: string) {
 		writeFileSync(filePath, this.print());
 	}
