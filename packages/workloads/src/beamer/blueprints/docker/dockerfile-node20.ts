@@ -1,18 +1,18 @@
 import path from "node:path";
-import { DockerfileGen } from "~workloads/beamer/blueprints/docker/dockerfile-gen.js";
+import { DockerfileWriter } from "~workloads/beamer/blueprints/docker/dockerfile-writer.js";
 import { installedPackage } from "~workloads/beamer/scan/installed-packages.js";
 
 export function generateNode20Dockerfile(files: string[]) {
 	const prismaInstalled = installedPackage("@prisma/client");
-	const dockerfile = new DockerfileGen();
+	const dockerfile = new DockerfileWriter();
 	baseStage(dockerfile);
 	addPrismaDependencies(prismaInstalled, dockerfile);
 	finalStage(dockerfile, prismaInstalled, files);
-	return dockerfile.print();
+	return dockerfile;
 }
 
 export function finalStage(
-	dockerfile: DockerfileGen,
+	dockerfile: DockerfileWriter,
 	prismaInstalled: boolean,
 	files: string[],
 ) {
@@ -34,7 +34,7 @@ export function finalStage(
 
 export function addPrismaDependencies(
 	prismaInstalled: boolean,
-	dockerfile: DockerfileGen,
+	dockerfile: DockerfileWriter,
 ) {
 	if (prismaInstalled) {
 		dockerfile.blank();
@@ -53,7 +53,7 @@ export function addPrismaDependencies(
 	}
 }
 
-export function baseStage(dockerfile: DockerfileGen) {
+export function baseStage(dockerfile: DockerfileWriter) {
 	dockerfile.banner("Base stage");
 	dockerfile.FROM("node:20-alpine3.20", { as: "base" });
 	dockerfile.comment(

@@ -1,13 +1,21 @@
 /* eslint-disable max-lines */
-import { beforeEach, describe, expect, test } from "vitest";
-import { DockerfileGen } from "~workloads/beamer/blueprints/docker/dockerfile-gen.js";
+import { mkdirSync, readFileSync, rmSync } from "node:fs";
+import path from "node:path";
+import { cwd } from "node:process";
+import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { DockerfileWriter } from "~workloads/beamer/blueprints/docker/dockerfile-writer.js";
 
 interface TestContext {
-	dockerfile: DockerfileGen;
+	dockerfile: DockerfileWriter;
 }
 
 beforeEach<TestContext>((context) => {
-	context.dockerfile = new DockerfileGen();
+	context.dockerfile = new DockerfileWriter();
+	mkdirSync(path.join(cwd(), "tmp", "dockerfiles"), { recursive: true });
+});
+
+afterEach<TestContext>(() => {
+	rmSync(path.join(cwd(), "tmp", "dockerfiles"), { recursive: true });
 });
 
 describe("FROM", () => {
@@ -232,7 +240,7 @@ describe("COPY", () => {
 });
 
 test("insert a blank line between instructions by default", () => {
-	const dockerfile = new DockerfileGen();
+	const dockerfile = new DockerfileWriter();
 	dockerfile.FROM("node:20-slim");
 	dockerfile.ENV("NODE_ENV", "production");
 
@@ -403,4 +411,18 @@ test<TestContext>("HEALTHCHECK with options", (context) => {
 test<TestContext>("HEALTHCHECK NONE", (context) => {
 	context.dockerfile.HEALTHCHECK("NONE");
 	expect(context.dockerfile.print()).toStrictEqual("HEALTHCHECK NONE\n");
+});
+
+test<TestContext>("save", (context) => {
+	context.dockerfile.FROM("node:20");
+	context.dockerfile.WORKDIR("/APP");
+
+	const testPath = path.join(cwd(), "tmp", "dockerfiles", "saved.Dockerfile");
+	context.dockerfile.save(testPath);
+
+	expect(readFileSync(testPath).toString()).toStrictEqual(`\
+FROM node:20
+
+WORKDIR /APP
+`);
 });

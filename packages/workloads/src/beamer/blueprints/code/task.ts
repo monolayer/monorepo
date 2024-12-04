@@ -85,8 +85,6 @@ function buildDockerfile(filenames: string[], dir: string) {
 			base: filename,
 		}),
 	);
-	return writeFileSync(
-		path.join(`.workloads/${dir}`, "..", `node20x.Dockerfile`),
-		generateNode20Dockerfile(files),
-	);
+	const dockerfile = generateNode20Dockerfile(files);
+	dockerfile.save(path.join(`.workloads/${dir}`, "..", `node20x.Dockerfile`));
 }

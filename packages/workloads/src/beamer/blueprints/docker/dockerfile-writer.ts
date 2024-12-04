@@ -1,4 +1,6 @@
-export class DockerfileGen {
+import { writeFileSync } from "fs";
+
+export class DockerfileWriter {
 	#lines: string[] = [];
 
 	/**
@@ -286,6 +288,10 @@ export class DockerfileGen {
 	 */
 	print() {
 		return this.#lines.join("\n");
+	}
+
+	save(filePath: string) {
+		writeFileSync(filePath, this.print());
 	}
 
 	#blankAfterInstruction: boolean = true;

@@ -27,17 +27,15 @@ async function buildCron(cronImport: WorkloadImport<Cron>, dir: string) {
 }
 
 function buildDockerfile(files: string[], dir: string) {
-	writeFileSync(
-		path.join(`.workloads/${dir}`, "..", `node20x.Dockerfile`),
-		generateNode20Dockerfile(
-			files.map((file) =>
-				path.format({
-					root: `.workloads/${dir}/`,
-					base: file,
-				}),
-			),
+	const dockerfile = generateNode20Dockerfile(
+		files.map((file) =>
+			path.format({
+				root: `.workloads/${dir}/`,
+				base: file,
+			}),
 		),
 	);
+	dockerfile.save(path.join(`.workloads/${dir}`, "..", `node20x.Dockerfile`));
 }
 
 function buildRunner(cronFileName: string, dir: string) {
