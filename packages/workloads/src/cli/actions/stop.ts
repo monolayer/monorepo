@@ -1,8 +1,8 @@
 import type { Command } from "@commander-js/extra-typings";
 import ora from "ora";
+import { importWorkloads } from "~workloads/beamer/scan/workload-imports.js";
 import { spinnerMessage } from "~workloads/cli/spinner-message.js";
 import { stopContainer } from "~workloads/containers/admin/container.js";
-import { importWorkloads } from "~workloads/workloads/import.js";
 
 export function stop(program: Command) {
 	const stopCommand = program.command("stop").description("stop commands");

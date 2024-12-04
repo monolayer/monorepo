@@ -1,6 +1,6 @@
 import path from "node:path";
-import { DockerfileGen } from "~workloads/make/dockerfile-gen.js";
-import { installedPackage } from "~workloads/make/installed-packages.js";
+import { DockerfileGen } from "~workloads/beamer/blueprints/docker/dockerfile-gen.js";
+import { installedPackage } from "~workloads/beamer/scan/installed-packages.js";
 
 export function generateNode20Dockerfile(files: string[]) {
 	const prismaInstalled = installedPackage("@prisma/client");

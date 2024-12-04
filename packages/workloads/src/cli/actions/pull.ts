@@ -1,6 +1,7 @@
 import type { Command } from "@commander-js/extra-typings";
 import ora from "ora";
 import { getContainerRuntimeClient, ImageName } from "testcontainers";
+import { importWorkloads } from "~workloads/beamer/scan/workload-imports.js";
 import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
 import { MailerContainer } from "~workloads/containers/mailer.js";
 import { MongoDatabaseContainer } from "~workloads/containers/mongo-database.js";
@@ -16,7 +17,6 @@ import {
 	assertPostgresDatabase,
 	assertRedis,
 } from "~workloads/workloads/assertions.js";
-import { importWorkloads } from "~workloads/workloads/import.js";
 
 export function pull(program: Command) {
 	return program

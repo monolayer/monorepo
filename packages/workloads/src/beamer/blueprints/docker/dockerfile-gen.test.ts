@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { beforeEach, describe, expect, test } from "vitest";
-import { DockerfileGen } from "~workloads/make/dockerfile-gen.js";
+import { DockerfileGen } from "~workloads/beamer/blueprints/docker/dockerfile-gen.js";
 
 interface TestContext {
 	dockerfile: DockerfileGen;

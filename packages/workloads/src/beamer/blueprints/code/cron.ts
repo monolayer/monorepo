@@ -2,9 +2,9 @@ import { kebabCase } from "case-anything";
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { build } from "tsup";
-import { generateNode20Dockerfile } from "~workloads/make/dockerfile-node20.js";
-import { tsupConfig } from "~workloads/make/tsup.js";
-import type { WorkloadImport } from "~workloads/workloads/import.js";
+import { tsupConfig } from "~workloads/beamer/blueprints/code/config.js";
+import { generateNode20Dockerfile } from "~workloads/beamer/blueprints/docker/dockerfile-node20.js";
+import type { WorkloadImport } from "~workloads/beamer/scan/workload-imports.js";
 import type { Cron } from "~workloads/workloads/stateless/cron.js";
 
 export async function makeCron(cronImport: WorkloadImport<Cron>) {

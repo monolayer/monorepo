@@ -2,8 +2,8 @@ import type { Command } from "@commander-js/extra-typings";
 import path from "node:path";
 import { cwd } from "node:process";
 import ora from "ora";
-import { Make } from "~workloads/cli/make.js";
-import { importWorkloads } from "~workloads/workloads/import.js";
+import { importWorkloads } from "~workloads/beamer/scan/workload-imports.js";
+import { Make } from "~workloads/beamer/blueprints/make.js";
 
 export function build(program: Command) {
 	return program

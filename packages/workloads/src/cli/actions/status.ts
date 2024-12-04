@@ -1,7 +1,7 @@
 import type { Command } from "@commander-js/extra-typings";
+import { importWorkloads } from "~workloads/beamer/scan/workload-imports.js";
 import { printStatus } from "~workloads/cli/print-status.js";
 import { workloadContainerStatus } from "~workloads/containers/admin/introspection.js";
-import { importWorkloads } from "~workloads/workloads/import.js";
 
 export function status(program: Command) {
 	const statusCommand = program

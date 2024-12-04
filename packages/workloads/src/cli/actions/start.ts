@@ -1,6 +1,6 @@
 import type { Command } from "@commander-js/extra-typings";
+import { importWorkloads } from "~workloads/beamer/scan/workload-imports.js";
 import { startWorkloads } from "~workloads/cli/start-workloads.js";
-import { importWorkloads } from "~workloads/workloads/import.js";
 
 export function start(program: Command) {
 	const startCommand = program.command("start").description("start commands");
