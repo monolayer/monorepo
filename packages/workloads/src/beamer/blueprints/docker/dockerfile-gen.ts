@@ -614,8 +614,8 @@ interface AddOptions extends SharedCopyAddOptions {
  * Examples:
  * - `10ms`
  * - `40s`
- * - 1m30s
- * - 1h5m30s20ms`
+ * - `1m30s`
+ * - `1h5m30s20ms`
  */
 type Duration = string;
 
