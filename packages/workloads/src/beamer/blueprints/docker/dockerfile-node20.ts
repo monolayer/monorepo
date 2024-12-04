@@ -20,13 +20,6 @@ export function finalStage(
 	dockerfile.banner("Final stage");
 	dockerfile.FROM(prismaInstalled ? "deps" : "base", { as: "run" });
 
-	if (prismaInstalled) {
-		dockerfile.group(() => {
-			dockerfile.comment("Copy Prisma dependencies from deps stage");
-			dockerfile.COPY("/app/node_modules", "./node_modules", { from: "deps" });
-		});
-	}
-
 	dockerfile.group(() => {
 		dockerfile.comment("Copy files from context");
 		files.forEach((file) => dockerfile.COPY(file, `./${path.basename(file)}`));
