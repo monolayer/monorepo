@@ -656,5 +656,5 @@ interface HealthCheckOptions {
 	 *
 	 * @defaultValue 3
 	 */
-	retries?: number; // =N (default: 3)
+	retries?: number;
 }
