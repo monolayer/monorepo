@@ -368,7 +368,7 @@ export class DockerfileWriter {
 	}
 }
 
-type MountType =
+export type MountType =
 	| BindMountType
 	| CacheMountType
 	| TmpfsMountType
@@ -379,7 +379,7 @@ type MountType =
  * This mount type allows binding files or directories to the build container.
  * A bind mount is read-only by default.
  */
-interface BindMountType {
+export interface BindMountType {
 	type: "bind";
 	/**
 	 * Mount path.
@@ -407,7 +407,7 @@ interface BindMountType {
  * This mount type allows the build container to cache directories
  * for compilers and package managers.
  */
-interface CacheMountType {
+export interface CacheMountType {
 	type: "cache";
 	/**
 	 * ID to identify separate/different caches.
@@ -474,7 +474,7 @@ interface CacheMountType {
 /**
  * Mount type that allows mounting tmpfs in the build container.
  */
-interface TmpfsMountType {
+export interface TmpfsMountType {
 	type: "tmpfs";
 	/**
 	 * Mount path.
@@ -495,7 +495,7 @@ interface TmpfsMountType {
  *
  * You can also mount the secret as an environment variable by setting the env option.
  */
-interface SecretMountType {
+export interface SecretMountType {
 	type: "secret";
 	/**
 	 * ID of the secret.
@@ -541,7 +541,7 @@ interface SecretMountType {
 	gid?: string;
 }
 
-interface SshMountType {
+export interface SshMountType {
 	type: "ssh";
 	/**
 	 * ID of SSH agent socket or key.
@@ -608,7 +608,7 @@ function mountOpts(mount?: MountType | MountType[]) {
 		.join(" \\\n    ");
 }
 
-interface SharedCopyAddOptions {
+export interface SharedCopyAddOptions {
 	/**
 	 * Owner of the copied content: username, groupname, or UID/GID combination.
 	 */
@@ -631,7 +631,7 @@ interface SharedCopyAddOptions {
 	link?: boolean;
 }
 
-interface CopyOptions extends SharedCopyAddOptions {
+export interface CopyOptions extends SharedCopyAddOptions {
 	/**
 	 * Copy files from an image, a build stage, or a named context.
 	 */
@@ -655,7 +655,7 @@ function optionsToString(opts?: Record<string, any>) {
 		.trimEnd();
 }
 
-interface AddOptions extends SharedCopyAddOptions {
+export interface AddOptions extends SharedCopyAddOptions {
 	/**
 	 * Preserve the .git directory when `<src>` is the
 	 * HTTP or SSH address of a remote Git repository.
@@ -687,7 +687,7 @@ interface AddOptions extends SharedCopyAddOptions {
  */
 type Duration = string;
 
-interface HealthCheckOptions {
+export interface HealthCheckOptions {
 	/**
 	 * The health check will first run interval seconds after the container is started,
 	 * and then again interval seconds after each previous check completes.
