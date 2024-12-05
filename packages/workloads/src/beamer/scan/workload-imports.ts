@@ -9,6 +9,7 @@ import {
 	assertBucket,
 	assertCron,
 	assertElasticSearch,
+	assertMailer,
 	assertMongoDatabase,
 	assertMySqlDatabase,
 	assertPostgresDatabase,
@@ -220,6 +221,13 @@ export class WorkloadImports {
 					break;
 				case "Task":
 					assertTask(workload);
+					this.#importsByWorkload[key].push({
+						src,
+						workload,
+					});
+					break;
+				case "Mailer":
+					assertMailer(workload);
 					this.#importsByWorkload[key].push({
 						src,
 						workload,
