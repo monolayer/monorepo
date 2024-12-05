@@ -17,10 +17,7 @@ export class MongoDatabaseContainer<C> extends ContainerWithURI {
 	definition: WorkloadContainerDefinition = {
 		containerImage: "mongo:7.0.15",
 		portsToExpose: [27017],
-		environment: {
-			"discovery.type": "single-node",
-		},
-
+		environment: {},
 		healthCheck: {
 			test: ["CMD", "mongosh", "--host", "localhost:27017", "--eval", "1"],
 			interval: 1000,
