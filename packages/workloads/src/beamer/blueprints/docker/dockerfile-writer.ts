@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+import { kebabCase } from "case-anything";
 import { writeFileSync } from "fs";
 
 export class DockerfileWriter {
@@ -50,7 +52,11 @@ export class DockerfileWriter {
 	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#env)
 	 */
 	ENV(key: string, value: string) {
-		this.#pushInstruction(`ENV ${key}="${value}"`);
+		if (value.match(/^\${.+}$/)) {
+			this.#pushInstruction(`ENV ${key}=${value}`);
+		} else {
+			this.#pushInstruction(`ENV ${key}="${value}"`);
+		}
 		return this;
 	}
 
@@ -110,17 +116,11 @@ export class DockerfileWriter {
 	 *
 	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#copy)
 	 */
-	COPY(source: string | string[], destination: string, options?: CopyOptions) {
-		const base =
-			options === undefined ? "COPY" : `COPY ${optionsToString(options)}`;
-		this.#pushInstruction(
-			`${base} ${[source]
-				.flatMap((s) => s)
-				.map((s) => (s.includes(" ") ? `"${s}"` : s))
-				.join(
-					" ",
-				)} ${destination.includes(" ") ? `"${destination}"` : destination}`,
-		);
+	COPY(source: string[], destination: Directory, options?: CopyOptions): this;
+	COPY(source: string, destination: string, options?: CopyOptions): this;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	COPY(...args: any[]) {
+		this.#fileInstruction(args, "COPY");
 		return this;
 	}
 
@@ -184,11 +184,18 @@ export class DockerfileWriter {
 	 *
 	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#expose)
 	 */
-	EXPOSE(port: number | { port: number; protocol: "tcp" | "udp" }) {
-		if (typeof port === "number") {
-			this.#pushInstruction(`EXPOSE ${port}`);
-		} else {
-			this.#pushInstruction(`EXPOSE ${port.port}/${port.protocol}`);
+	EXPOSE(
+		port:
+			| (number | Interpolation | PortRange)
+			| { port: number | Interpolation | PortRange; protocol: "tcp" | "udp" },
+	) {
+		switch (typeof port) {
+			case "number":
+			case "string":
+				this.#pushInstruction(`EXPOSE ${port}`);
+				break;
+			default:
+				this.#pushInstruction(`EXPOSE ${port.port}/${port.protocol}`);
 		}
 		return this;
 	}
@@ -248,7 +255,7 @@ export class DockerfileWriter {
 	 */
 	ARG(name: string, defaultValue?: string) {
 		this.#pushInstruction(
-			`ARG ${[name, defaultValue].filter((c) => c !== undefined).join("=")}`,
+			`ARG ${[name, defaultValue ? `"${defaultValue}"` : undefined].filter((c) => c !== undefined).join("=")}`,
 		);
 		return this;
 	}
@@ -264,17 +271,11 @@ export class DockerfileWriter {
 	 *
 	 * [Docker Docs](https://docs.docker.com/engine/reference/builder/#add)
 	 */
-	ADD(source: string | string[], destination: string, options?: AddOptions) {
-		const base =
-			options === undefined ? "ADD" : `ADD ${optionsToString(options)}`;
-		this.#pushInstruction(
-			`${base} ${[source]
-				.flatMap((s) => s)
-				.map((s) => (s.includes(" ") ? `"${s}"` : s))
-				.join(
-					" ",
-				)} ${destination.includes(" ") ? `"${destination}"` : destination}`,
-		);
+	ADD(source: string, destination: string, options?: AddOptions): this;
+	ADD(source: string[], destination: Directory, options?: AddOptions): this;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	ADD(...args: any[]) {
+		this.#fileInstruction(args, "ADD");
 		return this;
 	}
 
@@ -302,6 +303,26 @@ export class DockerfileWriter {
 				}
 		}
 		return this;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	#fileInstruction(args: any[], kind: "COPY" | "ADD") {
+		const source = args[0];
+		const destination = args[1];
+		const options = args[2];
+
+		const base =
+			options === undefined ? kind : `${kind} ${optionsToString(options)}`;
+
+		const files = [source, destination].flatMap((s) => s);
+		const withSpaces = files.some((s) => s.includes(" "));
+		if (withSpaces) {
+			this.#pushInstruction(
+				`${base} [ ${files.map((s) => `"${s}"`).join(", ")} ]`,
+			);
+		} else {
+			this.#pushInstruction(`${base} ${files.join(" ")}`);
+		}
 	}
 
 	/**
@@ -645,10 +666,11 @@ function optionsToString(opts?: Record<string, any>) {
 	}
 	return Object.entries(opts)
 		.reduce<string>((acc, val) => {
+			const optionName = kebabCase(val[0]);
 			if (typeof val[1] === "boolean") {
-				acc += `--${val[0]} `;
+				acc += `--${optionName} `;
 			} else {
-				acc += `--${val[0]}=${val[1]} `;
+				acc += `--${optionName}=${val[1]} `;
 			}
 			return acc;
 		}, "")
@@ -726,3 +748,7 @@ export interface HealthCheckOptions {
 	 */
 	retries?: number;
 }
+
+type Directory = `${string}${"/"}`;
+type PortRange = `${string}${"-"}${string}`;
+type Interpolation = `${"${"}${string}${"}"}`;
