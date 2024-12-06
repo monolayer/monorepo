@@ -9,6 +9,7 @@
 	"references": [
 		{ "path": "./apps/pg" },
 		{ "path": "./packages/workloads" },
+		{ "path": "./packages/dw" },
 		{ "path": "./internal/cli" },
 		{ "path": "./internal/configuration" },
 		{ "path": "./internal/data" },

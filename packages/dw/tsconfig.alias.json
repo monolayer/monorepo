@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"rootDir": "",
+		"paths": {
+			"~dw/*": ["*"]
+		}
+	},
+	"references": []
+}

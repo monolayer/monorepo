@@ -10,7 +10,8 @@
 		"internal/services/src/**/*",
 		"internal/state/src/**/*",
 		"internal/utils/src/**/*",
-		"packages/workloads/src/**/*"
+		"packages/workloads/src/**/*",
+		"packages/dw/src/**/*"
 	],
 	"compilerOptions": {
 		"baseUrl": "./",
@@ -26,6 +27,7 @@
 			"~state/*": ["internal/state/src/*"],
 			"~utils/*": ["internal/utils/src/*"],
 			"~workloads/*": ["packages/workloads/src/*"],
+			"~dw/*": ["packages/dw/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
 			"@monorepo/db/*": ["internal/db/src/*"],
 			"@monorepo/configuration/*": ["internal/configuration/src/*"],
