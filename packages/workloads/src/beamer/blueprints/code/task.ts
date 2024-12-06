@@ -3,7 +3,7 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { build } from "tsup";
 import { tsupConfig } from "~workloads/beamer/blueprints/code/config.js";
-import { generateNode20Dockerfile } from "~workloads/beamer/blueprints/docker/dockerfile-node20.js";
+import { generateNode20Dockerfile } from "~workloads/beamer/blueprints/docker/dockerfiles/dockerfile-node20.js";
 import type { WorkloadImport } from "~workloads/beamer/scan/workload-imports.js";
 import type { Task } from "~workloads/workloads/stateless/task/task.js";
 
