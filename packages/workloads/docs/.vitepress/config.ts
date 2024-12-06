@@ -88,5 +88,8 @@ export default defineConfig({
 				link: "https://github.com/monolayer/monorepo/tree/main/packages/workloads",
 			},
 		],
+		search: {
+			provider: "local",
+		},
 	},
 });
