@@ -11,6 +11,6 @@ hero:
       link: /guide/quick-start
     - theme: alt
       text: API Reference
-      link: /reference/api/modules
+      link: /reference/api/globals
 ---
 
