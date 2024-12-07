@@ -8,6 +8,7 @@ import {
 	type BuildManifest,
 	type DatabaseWorkloadInfo,
 } from "~workloads/beamer/blueprints/manifest.js";
+import { projectFramework } from "~workloads/beamer/scan/project-a.js";
 import type { WorkloadImports } from "~workloads/beamer/scan/workload-imports.js";
 import type { Database } from "~workloads/workloads/stateful/database.js";
 
@@ -26,7 +27,7 @@ export class Make {
 	}
 
 	async #collectWorkloads() {
-		const manifest = this.#initManifest();
+		const manifest = await this.#initManifest();
 		for (const imported of this.#imports.Mailer) {
 			manifest.mailer.push({
 				id: imported.workload.id,
@@ -120,9 +121,10 @@ export class Make {
 		}
 	}
 
-	#initManifest() {
+	async #initManifest() {
 		const manifest: BuildManifest = {
 			version: "1",
+			framework: (await projectFramework()) ?? "",
 			postgresDatabase: [],
 			mySqlDatabase: [],
 			redis: [],

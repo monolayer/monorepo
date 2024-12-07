@@ -1,5 +1,6 @@
 export interface BuildManifest {
 	version: string;
+	framework: string;
 	postgresDatabase: DatabaseWorkloadInfo[];
 	mySqlDatabase: DatabaseWorkloadInfo[];
 	redis: WorkloadInfo[];
@@ -53,6 +54,9 @@ export const manifestJsonSchema = {
 			enum: ["1"],
 			description:
 				"The version of the schema. This must be '1' for version 1 of the schema.",
+		},
+		framework: {
+			type: "string",
 		},
 		postgresDatabase: {
 			type: "array",
@@ -113,6 +117,7 @@ export const manifestJsonSchema = {
 			},
 		},
 	},
+	required: ["webFramework"],
 	optional: [
 		"postgresDatabase",
 		"mysqlDatabase",
