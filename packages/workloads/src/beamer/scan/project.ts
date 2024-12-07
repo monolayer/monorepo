@@ -1,3 +1,8 @@
+import { frameworkList } from "@vercel/frameworks";
+import {
+	detectFrameworks,
+	LocalFileSystemDetector,
+} from "@vercel/fs-detectors";
 import { readFileSync } from "fs";
 import path from "node:path";
 import { cwd } from "node:process";
@@ -25,6 +30,18 @@ export function projectName() {
 	if (packageJson.name) {
 		return packageJson.name as string;
 	}
+}
+
+/**
+ * Returns the slug (unique identifier) of the framework
+ * used in the current project.
+ */
+export async function projectFramework() {
+	const result = await detectFrameworks({
+		fs: new LocalFileSystemDetector(cwd()),
+		frameworkList,
+	});
+	return result[0]?.slug ?? undefined;
 }
 
 function parsePackageJson() {
