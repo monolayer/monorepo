@@ -103,6 +103,7 @@
 	"devDependencies": {
 		"@hey-api/client-fetch": "^0.4.3",
 		"@hey-api/openapi-ts": "^0.56.1",
+		"@monorepo/docker": "*",
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
 		"@monorepo/utils": "*",

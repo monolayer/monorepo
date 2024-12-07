@@ -2,7 +2,9 @@
 	"compilerOptions": {
 		"rootDir": "",
 		"paths": {
-			"~dw/*": ["*"]
+			"~dw/*": ["*"],
+			"~docker/*": ["packages/docker/*"],
+			"@monorepo/docker/*": ["packages/docker/*"]
 		}
 	},
 	"references": []

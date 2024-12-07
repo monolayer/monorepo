@@ -22,8 +22,12 @@
 		"moduleResolution": "Node",
 		"paths": {
 			"~workloads/*": ["src/*"],
-			"@monorepo/utils/*": ["../../internal/utils/src/*"]
+			"@monorepo/utils/*": ["../../internal/utils/src/*"],
+			"@monorepo/docker/*": ["../../internal/docker/src/*"]
 		}
 	},
-	"references": [{ "path": "./tsconfigs/tsconfig.cli.bundle.cjs.json" }]
+	"references": [
+		{ "path": "./tsconfigs/tsconfig.cli.bundle.cjs.json" },
+		{ "path": "./tsconfigs/tsconfig.docker.bundle.cjs.json" }
+	]
 }

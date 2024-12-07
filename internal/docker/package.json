@@ -1,0 +1,24 @@
+{
+	"name": "@monorepo/docker",
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*"
+	},
+	"scripts": {
+		"build": "tsc -b tsconfig.build.json && tsc -b tsconfig.build.cjs.json",
+		"bundle": "tsc -b tsconfig.bundle.json && tsc -b tsconfig.bundle.cjs.json",
+		"check": "npm run check:prettier && npm run check:lint && npm run check:skott",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src"
+	},
+	"dependencies": {
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@types/node": "^18.0.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

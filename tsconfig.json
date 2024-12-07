@@ -14,6 +14,7 @@
 		{ "path": "./internal/configuration" },
 		{ "path": "./internal/data" },
 		{ "path": "./internal/db" },
+		{ "path": "./internal/docker" },
 		{ "path": "./internal/pg" },
 		{ "path": "./internal/programs" },
 		{ "path": "./internal/push" },

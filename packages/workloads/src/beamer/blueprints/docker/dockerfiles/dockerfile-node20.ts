@@ -1,10 +1,10 @@
+import { Dockerfile } from "@monorepo/docker/df.js";
 import path from "node:path";
-import { DockerfileWriter } from "~workloads/beamer/blueprints/docker/dockerfile-writer.js";
 import { installedPackage } from "~workloads/beamer/scan/installed-packages.js";
 
 export function generateNode20Dockerfile(files: string[]) {
 	const prismaInstalled = installedPackage("@prisma/client");
-	const dockerfile = new DockerfileWriter();
+	const dockerfile = new Dockerfile();
 	baseStage(dockerfile);
 	addPrismaDependencies(prismaInstalled, dockerfile);
 	finalStage(dockerfile, prismaInstalled, files);
@@ -12,7 +12,7 @@ export function generateNode20Dockerfile(files: string[]) {
 }
 
 export function finalStage(
-	dockerfile: DockerfileWriter,
+	dockerfile: Dockerfile,
 	prismaInstalled: boolean,
 	files: string[],
 ) {
@@ -34,7 +34,7 @@ export function finalStage(
 
 export function addPrismaDependencies(
 	prismaInstalled: boolean,
-	dockerfile: DockerfileWriter,
+	dockerfile: Dockerfile,
 ) {
 	if (prismaInstalled) {
 		dockerfile.blank();
@@ -53,7 +53,7 @@ export function addPrismaDependencies(
 	}
 }
 
-export function baseStage(dockerfile: DockerfileWriter) {
+export function baseStage(dockerfile: Dockerfile) {
 	dockerfile.banner("Base stage");
 	dockerfile.FROM("node:20-alpine3.20", { as: "base" });
 	dockerfile.comment(

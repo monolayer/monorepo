@@ -1,6 +1,6 @@
 import { assert, test } from "vitest";
-import { Dockerfile } from "~dw/df.js";
-import { validate } from "~dw/validator.js";
+import { Dockerfile } from "~docker/df.js";
+import { validate } from "~docker/validator.js";
 
 test("validates DockerfileWriter", () => {
 	const dw = new Dockerfile();

@@ -4,6 +4,7 @@
 		"internal/cli/src/**/*",
 		"internal/configuration/src/**/*",
 		"internal/db/src/**/*",
+		"internal/docker/src/**/*",
 		"internal/migrator/src/**/*",
 		"internal/pg/src/**/*",
 		"internal/programs/src/**/*",
@@ -20,6 +21,7 @@
 		"paths": {
 			"~cli/*": ["internal/cli/src/*"],
 			"~db/*": ["internal/db/src/*"],
+			"~docker/*": ["internal/docker/src/*"],
 			"~configuration/*": ["internal/configuration/src/*"],
 			"~pg/*": ["internal/pg/src/*"],
 			"~programs/*": ["internal/programs/src/*"],
@@ -30,6 +32,7 @@
 			"~dw/*": ["packages/dw/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
 			"@monorepo/db/*": ["internal/db/src/*"],
+			"@monorepo/docker/*": ["internal/docker/src/*"],
 			"@monorepo/configuration/*": ["internal/configuration/src/*"],
 			"@monorepo/pg/*": ["internal/pg/src/*"],
 			"@monorepo/programs/*": ["internal/programs/src/*"],

@@ -4,7 +4,9 @@
 		"paths": {
 			"~workloads/*": ["*"],
 			"~utils/*": ["packages/utils/*"],
-			"@monorepo/utils/*": ["packages/utils/*"]
+			"@monorepo/utils/*": ["packages/utils/*"],
+			"~docker/*": ["packages/docker/*"],
+			"@monorepo/docker/*": ["packages/docker/*"]
 		}
 	},
 	"references": []

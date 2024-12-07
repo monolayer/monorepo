@@ -1,0 +1,16 @@
+{
+	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
+	"include": ["**/src/**/*", "**/tests/**/*"],
+	"compilerOptions": {
+		"baseUrl": "./",
+		"rootDir": ".",
+		"outDir": "./../../build/local/utils",
+		"tsBuildInfoFile": "./../../build/local/utils/tsconfig.build.tsbuildinfo",
+		"composite": true,
+		"paths": {
+			"~docker/*": ["src/*"]
+		},
+		"emitDeclarationOnly": true,
+		"declaration": true
+	}
+}

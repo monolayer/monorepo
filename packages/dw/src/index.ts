@@ -11,5 +11,5 @@ export {
 	SharedCopyAddOptions,
 	SshMountType,
 	TmpfsMountType,
-} from "~dw/df.js";
-export { validate } from "~dw/validator.js";
+} from "@monorepo/docker/df.js";
+export { validate } from "@monorepo/docker/validator.js";

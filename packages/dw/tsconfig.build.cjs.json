@@ -14,8 +14,9 @@
 		"module": "CommonJS",
 		"moduleResolution": "Node",
 		"paths": {
-			"~dw/*": ["src/*"]
+			"~dw/*": ["src/*"],
+			"@monorepo/docker/*": ["../../internal/docker/src/*"]
 		}
 	},
-	"references": []
+	"references": [{ "path": "./tsconfigs/tsconfig.docker.bundle.cjs.json" }]
 }

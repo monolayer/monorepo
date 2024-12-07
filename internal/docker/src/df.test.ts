@@ -4,7 +4,7 @@ import { mkdirSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { Dockerfile } from "~dw/df.js";
+import { Dockerfile } from "~docker/df.js";
 
 interface TestContext {
 	dockerfile: Dockerfile;

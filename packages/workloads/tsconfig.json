@@ -12,5 +12,8 @@
 		"emitDeclarationOnly": true,
 		"declaration": true
 	},
-	"references": [{ "path": "../../internal/utils" }]
+	"references": [
+		{ "path": "../../internal/utils" },
+		{ "path": "../../internal/docker" }
+	]
 }

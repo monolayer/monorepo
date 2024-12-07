@@ -1,0 +1,8 @@
+{
+	"extends": "../../../internal/docker/tsconfig.build.cjs.json",
+	"compilerOptions": {
+		"outDir": "./../../../packages/workloads/dist/cjs/packages/docker",
+		"tsBuildInfoFile": "./../../../packages/workloads/dist/cjs/packages/docker/tsconfig.bundle.cjs.tsbuildinfo",
+		"composite": true
+	}
+}

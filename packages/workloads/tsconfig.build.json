@@ -16,5 +16,8 @@
 		"emitDeclarationOnly": false,
 		"sourceMap": false
 	},
-	"references": [{ "path": "./tsconfigs/tsconfig.cli.bundle.json" }]
+	"references": [
+		{ "path": "./tsconfigs/tsconfig.cli.bundle.json" },
+		{ "path": "./tsconfigs/tsconfig.docker.bundle.json" }
+	]
 }

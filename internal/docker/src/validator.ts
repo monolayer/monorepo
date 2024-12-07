@@ -1,5 +1,5 @@
 import { validate as dockerfileValidate } from "dockerfile-utils";
-import { Dockerfile } from "~dw/df.js";
+import { Dockerfile } from "~docker/df.js";
 
 /**
  * Validates a {@link Dockerfile }.

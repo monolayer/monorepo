@@ -1,0 +1,12 @@
+{
+	"extends": "./tsconfig.json",
+	"include": ["**/src/**/*"],
+	"exclude": ["**/src/**/*.test.ts"],
+	"compilerOptions": {
+		"emitDeclarationOnly": false,
+		"sourceMap": false,
+		"rootDir": "src",
+		"outDir": "dist/esm",
+		"tsBuildInfoFile": "dist/tsconfig.build.tsbuildinfo"
+	}
+}

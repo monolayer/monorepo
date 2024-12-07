@@ -63,6 +63,7 @@
 		"dockerfile-utils": "^0.16.1"
 	},
 	"devDependencies": {
+		"@monorepo/docker": "*",
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
 		"@types/node": "^18.0.0",
