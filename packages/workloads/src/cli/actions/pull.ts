@@ -1,13 +1,13 @@
 import type { Command } from "@commander-js/extra-typings";
 import ora from "ora";
 import { getContainerRuntimeClient, ImageName } from "testcontainers";
-import { importWorkloads } from "~workloads/beamer/scan/workload-imports.js";
 import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
 import { MailerContainer } from "~workloads/containers/mailer.js";
 import { MongoDatabaseContainer } from "~workloads/containers/mongo-database.js";
 import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
+import { importWorkloads } from "~workloads/scan/workload-imports.js";
 import { type StatefulWorkloadWithClient } from "~workloads/workloads.js";
 import {
 	assertElasticSearch,

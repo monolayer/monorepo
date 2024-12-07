@@ -1,15 +1,15 @@
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
-import { makeCron } from "~workloads/beamer/blueprints/code/cron.js";
-import { makeTask } from "~workloads/beamer/blueprints/code/task.js";
+import { makeCron } from "~workloads/make/cron.js";
+import { makeTask } from "~workloads/make/task.js";
 import {
 	manifestJsonSchema,
 	type BuildManifest,
 	type DatabaseWorkloadInfo,
-} from "~workloads/beamer/blueprints/manifest.js";
-import { projectFramework } from "~workloads/beamer/scan/project.js";
-import type { WorkloadImports } from "~workloads/beamer/scan/workload-imports.js";
+} from "~workloads/make/manifest.js";
+import { projectFramework } from "~workloads/scan/project.js";
+import type { WorkloadImports } from "~workloads/scan/workload-imports.js";
 import type { Database } from "~workloads/workloads/stateful/database.js";
 
 export class Make {
