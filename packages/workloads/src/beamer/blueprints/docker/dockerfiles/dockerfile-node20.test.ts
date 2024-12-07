@@ -5,3 +5,9 @@ import { generateNode20Dockerfile } from "~workloads/beamer/blueprints/docker/do
 test("validate dockerfile", () => {
 	assert.isTrue(validate(generateNode20Dockerfile(["index.js"])));
 });
+
+test("validate dockerfile with prisma", () => {
+	assert.isTrue(
+		validate(generateNode20Dockerfile(["index.js"], { prisma: true })),
+	);
+});

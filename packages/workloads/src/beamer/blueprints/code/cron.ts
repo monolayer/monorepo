@@ -4,6 +4,7 @@ import path from "node:path";
 import { build } from "tsup";
 import { tsupConfig } from "~workloads/beamer/blueprints/code/config.js";
 import { generateNode20Dockerfile } from "~workloads/beamer/blueprints/docker/dockerfiles/dockerfile-node20.js";
+import { installedPackage } from "~workloads/beamer/scan/installed-packages.js";
 import type { WorkloadImport } from "~workloads/beamer/scan/workload-imports.js";
 import type { Cron } from "~workloads/workloads/stateless/cron.js";
 
@@ -34,6 +35,9 @@ function buildDockerfile(files: string[], dir: string) {
 				base: file,
 			}),
 		),
+		{
+			prisma: installedPackage("@prisma/client"),
+		},
 	);
 	dockerfile.save(path.join(`.workloads/${dir}`, "..", `node20x.Dockerfile`));
 }

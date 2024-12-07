@@ -1,24 +1,27 @@
 import { Dockerfile } from "@monorepo/docker/df.js";
 import path from "node:path";
-import { installedPackage } from "~workloads/beamer/scan/installed-packages.js";
 
-export function generateNode20Dockerfile(files: string[]) {
-	const prismaInstalled = installedPackage("@prisma/client");
+export function generateNode20Dockerfile(
+	files: string[],
+	additionalDeps?: { prisma?: boolean },
+) {
 	const dockerfile = new Dockerfile();
 	baseStage(dockerfile);
-	addPrismaDependencies(prismaInstalled, dockerfile);
-	finalStage(dockerfile, prismaInstalled, files);
+	if (additionalDeps?.prisma) {
+		addPrismaDependencies(dockerfile, "base");
+	}
+	finalStage(dockerfile, additionalDeps?.prisma ? "deps" : "base", files);
 	return dockerfile;
 }
 
 export function finalStage(
 	dockerfile: Dockerfile,
-	prismaInstalled: boolean,
+	from: string,
 	files: string[],
 ) {
 	dockerfile.blank();
 	dockerfile.banner("Final stage");
-	dockerfile.FROM(prismaInstalled ? "deps" : "base", { as: "run" });
+	dockerfile.FROM(from, { as: "run" });
 
 	dockerfile.group(() => {
 		dockerfile.comment("Copy files from context");
@@ -32,25 +35,17 @@ export function finalStage(
 	dockerfile.ENTRYPOINT("node");
 }
 
-export function addPrismaDependencies(
-	prismaInstalled: boolean,
-	dockerfile: Dockerfile,
-) {
-	if (prismaInstalled) {
-		dockerfile.blank();
-		dockerfile.banner("Dependencies stage");
-		dockerfile.FROM("base", { as: "deps" });
+export function addPrismaDependencies(dockerfile: Dockerfile, from: string) {
+	dockerfile.blank();
+	dockerfile.banner("Dependencies stage");
+	dockerfile.FROM(from, { as: "deps" });
 
-		dockerfile.comment("Copy Prisma dependencies");
-		dockerfile.group(() =>
-			[".prisma", "prisma", "@prisma"].forEach((folder) =>
-				dockerfile.COPY(
-					`./node_modules/${folder}/`,
-					`./node_modules/${folder}`,
-				),
-			),
-		);
-	}
+	dockerfile.comment("Copy Prisma dependencies");
+	dockerfile.group(() =>
+		[".prisma", "prisma", "@prisma"].forEach((folder) =>
+			dockerfile.COPY(`./node_modules/${folder}/`, `./node_modules/${folder}`),
+		),
+	);
 }
 
 export function baseStage(dockerfile: Dockerfile) {
