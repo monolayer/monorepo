@@ -3,9 +3,14 @@ import path from "node:path";
 import { cwd } from "node:process";
 
 export function projectDependency(packageName: string) {
-	const packageJson = JSON.parse(
-		readFileSync(path.join(cwd(), "package.json")).toString(),
-	);
-	const deps = Object.keys(packageJson.dependencies ?? {});
-	return deps.some((dep) => dep === packageName);
+	return projectDependencies().some((dep) => dep === packageName);
+}
+
+export function projectDependencies() {
+	const packageJson = parsePackageJson();
+	return Object.keys(packageJson.dependencies ?? {});
+}
+
+function parsePackageJson() {
+	return JSON.parse(readFileSync(path.join(cwd(), "package.json")).toString());
 }
