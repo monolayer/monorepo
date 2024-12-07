@@ -8,7 +8,7 @@ import {
 	type BuildManifest,
 	type DatabaseWorkloadInfo,
 } from "~workloads/beamer/blueprints/manifest.js";
-import { projectFramework } from "~workloads/beamer/scan/project-a.js";
+import { projectFramework } from "~workloads/beamer/scan/project.js";
 import type { WorkloadImports } from "~workloads/beamer/scan/workload-imports.js";
 import type { Database } from "~workloads/workloads/stateful/database.js";
 
