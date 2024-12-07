@@ -17,6 +17,16 @@ export function projectDependencies() {
 	return Object.keys(packageJson.dependencies ?? {});
 }
 
+/**
+ * Returns the project name (from package.json)
+ */
+export function projectName() {
+	const packageJson = parsePackageJson();
+	if (packageJson.name) {
+		return packageJson.name as string;
+	}
+}
+
 function parsePackageJson() {
 	return JSON.parse(readFileSync(path.join(cwd(), "package.json")).toString());
 }
