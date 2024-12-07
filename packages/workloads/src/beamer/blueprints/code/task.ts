@@ -4,7 +4,7 @@ import path from "node:path";
 import { build } from "tsup";
 import { tsupConfig } from "~workloads/beamer/blueprints/code/config.js";
 import { generateNode20Dockerfile } from "~workloads/beamer/blueprints/docker/dockerfiles/dockerfile-node20.js";
-import { projectDependency } from "~workloads/beamer/scan/installed-packages.js";
+import { projectDependency } from "~workloads/beamer/scan/project.js";
 import type { WorkloadImport } from "~workloads/beamer/scan/workload-imports.js";
 import type { Task } from "~workloads/workloads/stateless/task/task.js";
 
