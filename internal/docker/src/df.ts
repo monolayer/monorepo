@@ -8,6 +8,7 @@ export class Dockerfile {
 	/**
 	 * Merge multiple Dockerfile instances into one.
 	 *
+	 * Returns a new Dockerfile instance.
 	 */
 	static merge(dockerfiles: Dockerfile[]) {
 		const allLines = dockerfiles.flatMap((df) => df.#lines);
