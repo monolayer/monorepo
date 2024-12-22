@@ -1,7 +1,11 @@
 {
 	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
 	"out": "docs/reference/api",
-	"entryPoints": ["./src/workloads.ts", "./src/test-helpers.ts"],
+	"entryPoints": [
+		"./src/workloads.ts",
+		"./src/test-helpers.ts",
+		"./src/introspection.ts"
+	],
 	"entryPointStrategy": "expand",
 	"tsconfig": "./../../tsconfig.typedoc.json",
 	"exclude": ["**/dist/**/*.ts", "**/vitest.config.ts", "**/tests/**/*.ts"],
