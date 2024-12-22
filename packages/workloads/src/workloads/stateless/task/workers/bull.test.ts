@@ -168,7 +168,7 @@ describe("TaskBullWorker", () => {
 
 		const worker = new TaskBullWorker(testTask);
 
-		await setTimeout(100);
+		await setTimeout(1000);
 		await worker.close();
 
 		expect(errors.length).toBeGreaterThan(0);

@@ -69,6 +69,7 @@
 		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
 		"package": "npm pack --pack-destination ./build",
 		"publish:local": "npm publish --registry http://localhost:4873",
+		"pretest": "./test/__setup__/pull-images.sh",
 		"test": "NO_COLOR=1 vitest --run --passWithNoTests",
 		"test:containers": "npm run test -- src/containers/**.test.ts",
 		"test:admin": "npm run test -- src/containers/admin/",

@@ -38,7 +38,7 @@ import { testDispatchers } from "~workloads/workloads/stateless/task/local.js";
 import { Task } from "~workloads/workloads/stateless/task/task.js";
 
 test(
-	"Truncate existing tables",
+	"Truncate existing tables PostgreSQL",
 	{ sequential: true, timeout: 20000 },
 	async ({ containers }) => {
 		if (process.env.CI) {
@@ -89,7 +89,7 @@ test(
 );
 
 test(
-	"Truncate existing tables",
+	"Truncate existing tables MySQL",
 	{ sequential: true, timeout: 20000 },
 	async ({ containers }) => {
 		if (process.env.CI) {
