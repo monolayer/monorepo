@@ -64,5 +64,5 @@ containerLogs(
 ```ts
 import { volumeCreate } from "@monolayer/dsdk/v1.47";
 
-await volumeCreate({ body: { Name: name } });
+await volumeCreate({ body: { Name: "myVolume" } });
 ```
