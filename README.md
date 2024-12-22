@@ -60,6 +60,6 @@ We have already launched:
 
 - [`workloads`](https://monolayer.github.io/workloads-docs/), a sidecar framework for full-stack React web development to define web development workloads outside the HTTPs request/response cycle.
 
-- [`dw`](https://monolayer.github.io/dw-docs/), a tiny library to write and validate Dockerfiles in Typescript.
+- [`dw`](https://monolayer.github.io/dw-docs/), a tiny library to write and validate Dockerfiles in TypeScript.
 
 - [`dsdk`](https://monolayer.github.io/dsdk-docs/), a type-safe SDK you can use to access the Docker Engine API.
