@@ -6,6 +6,8 @@ on:
       - ".github/workflows/dw.yml"
       - "packages/dw/**"
 
+  workflow_dispatch:
+
 jobs:
   check:
     name: Check

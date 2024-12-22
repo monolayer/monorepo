@@ -6,6 +6,8 @@ on:
       - ".github/workflows/workloads.yml"
       - "packages/workloads/**"
 
+  workflow_dispatch:
+
 jobs:
   check:
     name: Check
