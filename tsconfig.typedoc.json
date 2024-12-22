@@ -5,6 +5,7 @@
 		"internal/configuration/src/**/*",
 		"internal/db/src/**/*",
 		"internal/docker/src/**/*",
+		"internal/docker-api-client-generator/src/**/*",
 		"internal/migrator/src/**/*",
 		"internal/pg/src/**/*",
 		"internal/programs/src/**/*",
@@ -12,13 +13,16 @@
 		"internal/state/src/**/*",
 		"internal/utils/src/**/*",
 		"packages/workloads/src/**/*",
-		"packages/dw/src/**/*"
+		"packages/blueprints/src/**/*",
+		"packages/dw/src/**/*",
+		"packages/dsdk/src/**/*"
 	],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
 		"outDir": "dist",
 		"paths": {
+			"~blueprints/*": ["packages/blueprints/src/*"],
 			"~cli/*": ["internal/cli/src/*"],
 			"~db/*": ["internal/db/src/*"],
 			"~docker/*": ["internal/docker/src/*"],
@@ -30,9 +34,13 @@
 			"~utils/*": ["internal/utils/src/*"],
 			"~workloads/*": ["packages/workloads/src/*"],
 			"~dw/*": ["packages/dw/src/*"],
+			"@monorepo/blueprints/*": ["internal/blueprints/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
 			"@monorepo/db/*": ["internal/db/src/*"],
 			"@monorepo/docker/*": ["internal/docker/src/*"],
+			"@monorepo/docker-api-client-generator/*": [
+				"internal/docker-api-client-generator/src/*"
+			],
 			"@monorepo/configuration/*": ["internal/configuration/src/*"],
 			"@monorepo/pg/*": ["internal/pg/src/*"],
 			"@monorepo/programs/*": ["internal/programs/src/*"],

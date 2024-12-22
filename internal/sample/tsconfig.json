@@ -1,0 +1,27 @@
+{
+	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
+	"include": ["src/**/*", "test/**/*"],
+	"compilerOptions": {
+		"baseUrl": "./",
+		"rootDir": ".",
+		"outDir": "./../../build/local/internal-sample",
+		"tsBuildInfoFile": "./../../build/local/internal-sample/tsconfig.build.tsbuildinfo",
+		"paths": {
+			"~internal-sample/*": ["src/*"],
+			"~test/*": ["test/*"]
+		},
+		"composite": true,
+		"emitDeclarationOnly": true,
+		"declaration": true
+	},
+	"references": [
+		{ "path": "../cli" },
+		{ "path": "../db" },
+		{ "path": "../docker" },
+		{ "path": "../pg" },
+		{ "path": "../programs" },
+		{ "path": "../services" },
+		{ "path": "../state" },
+		{ "path": "../utils" }
+	]
+}

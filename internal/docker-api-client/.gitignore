@@ -1,0 +1,12 @@
+node_modules
+
+/.cache
+/build
+/coverage
+/dist
+/tmp
+
+.env
+.vscode
+
+/bin/

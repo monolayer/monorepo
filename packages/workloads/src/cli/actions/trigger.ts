@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { exit } from "node:process";
 import color from "picocolors";
 import prompts from "prompts";
-import { importWorkloads } from "~workloads/beamer/scan/workload-imports.js";
+import { importWorkloads } from "~workloads/scan/workload-imports.js";
 import type { Cron } from "~workloads/workloads/stateless/cron.js";
 
 export function trigger(program: Command) {

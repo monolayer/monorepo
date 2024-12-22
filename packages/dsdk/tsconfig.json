@@ -1,0 +1,14 @@
+{
+	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
+	"include": ["**/src/**/*"],
+	"compilerOptions": {
+		"baseUrl": "./",
+		"rootDir": ".",
+		"paths": {},
+		"lib": ["DOM", "DOM.AsyncIterable"],
+		"outDir": "./dist",
+		"emitDeclarationOnly": true,
+		"declaration": true
+	},
+	"references": []
+}

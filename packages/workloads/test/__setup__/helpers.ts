@@ -66,17 +66,11 @@ export async function teardownBullContext<P>(context: BullContext<P>) {
 }
 
 export async function startRedisContainer() {
-	const container = new GenericContainer("redis/redis-stack:latest");
-	container.withExposedPorts(
-		{
-			container: 6379,
-			host: await getPort(),
-		},
-		{
-			container: 8001,
-			host: await getPort(),
-		},
-	);
+	const container = new GenericContainer("redis:7.4.1-alpine3.20");
+	container.withExposedPorts({
+		container: 6379,
+		host: await getPort(),
+	});
 	const startedContainer = await container.start();
 	return startedContainer;
 }
