@@ -695,7 +695,7 @@ test("merge Dockerfiles", () => {
 	depsStage.WORKDIR("/app");
 
 	const finalStage = new Dockerfile();
-	finalStage.banner("Stage 2: Final");
+	finalStage.banner("Stage 3: Final");
 	depsStage.FROM("deps", { as: "final" });
 	finalStage.ENV("NODE_ENV", "production");
 	finalStage.EXPOSE(3000);
@@ -727,7 +727,7 @@ WORKDIR /app
 FROM deps AS final
 
 # ---------
-# Stage 2: Final
+# Stage 3: Final
 # ---------
 
 ENV NODE_ENV="production"
