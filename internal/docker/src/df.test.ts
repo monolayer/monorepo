@@ -739,6 +739,53 @@ ENTRYPOINT ["node", "server.js"]
 	);
 });
 
+test("append", () => {
+	const baseStage = new Dockerfile();
+	baseStage.banner("Stage 1: base image");
+	baseStage.FROM("node:18-alpine3.20", { as: "base" });
+	baseStage.comment(
+		"Add libc6-compat package (shared library required for use of process.dlopen).",
+	);
+	baseStage.comment(
+		"See https://github.com/nodejs/docker-node?tab=readme-ov-file#nodealpine",
+	);
+	baseStage.RUN("apk add --no-cache gcompat=1.1.0-r4");
+	baseStage.blank();
+
+	const depsStage = new Dockerfile();
+	depsStage.banner("Stage 2: dependencies");
+	depsStage.FROM("base", { as: "deps" });
+	depsStage.WORKDIR("/app");
+
+	const dockerfile = new Dockerfile();
+	dockerfile.append(baseStage);
+	dockerfile.append(depsStage);
+
+	testOutputAndValidate(
+		dockerfile,
+		`\
+# ---------
+# Stage 1: base image
+# ---------
+
+FROM node:18-alpine3.20 AS base
+
+# Add libc6-compat package (shared library required for use of process.dlopen).
+# See https://github.com/nodejs/docker-node?tab=readme-ov-file#nodealpine
+RUN apk add --no-cache gcompat=1.1.0-r4
+
+
+# ---------
+# Stage 2: dependencies
+# ---------
+
+FROM base AS deps
+
+WORKDIR /app
+`,
+	);
+});
+
 function testOutputAndValidate(
 	df: Dockerfile,
 	expected: string,

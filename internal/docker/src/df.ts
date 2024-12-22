@@ -7,6 +7,7 @@ export class Dockerfile {
 
 	/**
 	 * Merge multiple Dockerfile instances into one.
+	 *
 	 */
 	static merge(dockerfiles: Dockerfile[]) {
 		const allLines = dockerfiles.flatMap((df) => df.#lines);
@@ -480,6 +481,14 @@ export class Dockerfile {
 	 */
 	save(filePath: string) {
 		writeFileSync(filePath, this.toString());
+	}
+
+	/**
+	 * Appends the contents of a Dockerfile instance.
+	 */
+	append(dockerfile: Dockerfile) {
+		this.#lines.push(...dockerfile.#lines);
+		return this;
 	}
 
 	#blankAfterInstruction: boolean = true;
