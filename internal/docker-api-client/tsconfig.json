@@ -1,0 +1,16 @@
+{
+	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
+	"include": ["src/**/*"],
+	"compilerOptions": {
+		"baseUrl": "./",
+		"rootDir": ".",
+		"outDir": "./../../build/local/docker-api-client-generator",
+		"tsBuildInfoFile": "./../../build/local/docker-api-client-generator/tsconfig.build.tsbuildinfo",
+		"paths": {},
+		"lib": ["DOM", "DOM.Iterable"],
+		"composite": true,
+		"emitDeclarationOnly": true,
+		"declaration": true
+	},
+	"references": []
+}

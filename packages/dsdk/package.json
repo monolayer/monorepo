@@ -1,0 +1,91 @@
+{
+	"name": "@monolayer/dsdk",
+	"version": "1.0.0",
+	"description": "TypeScript SDK interact with the Docker Engine API",
+	"author": "Marcos Essindi <marcessindi@me.com>",
+	"license": "MIT",
+	"homepage": "https://monolayer.github.io/dsdk-docs/",
+	"bugs": "https://github.com/monolayer/monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/monolayer/monorepo/",
+		"directory": "packages/dsdk"
+	},
+	"type": "module",
+	"files": [
+		"dist/**/*.js",
+		"dist/**/*.d.ts",
+		"dist/esm/package.json",
+		"dist/cjs/package.json"
+	],
+	"exports": {
+		"./config": {
+			"import": {
+				"types": "./dist/esm/config.d.ts",
+				"default": "./dist/esm/config.js"
+			},
+			"require": {
+				"types": "./dist/cjs/config.d.ts",
+				"default": "./dist/cjs/config.js"
+			}
+		},
+		"./headers": {
+			"import": {
+				"types": "./dist/esm/headers.d.ts",
+				"default": "./dist/esm/headers.js"
+			},
+			"require": {
+				"types": "./dist/cjs/headers.d.ts",
+				"default": "./dist/cjs/headers.js"
+			}
+		},
+		"./v1.47": {
+			"import": {
+				"types": "./dist/esm/v1.47/index.d.ts",
+				"default": "./dist/esm/v1.47/index.js"
+			},
+			"require": {
+				"types": "./dist/cjs/v1.47/index.d.ts",
+				"default": "./dist/cjs/v1.47/index.js"
+			}
+		}
+	},
+	"scripts": {
+		"prebuild": "rm -rf dist/*",
+		"build": "tsc -b tsconfig.build.json && tsc -b tsconfig.build.cjs.json",
+		"postbuild": "npm run alias && npm run makepackage",
+		"alias": "tsc-alias -p tsconfig.alias.json --outDir dist/esm --verbose && tsc-alias -p tsconfig.alias.json --outDir dist/cjs --verbose",
+		"makepackage": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/package.json && echo '{\n  \"type\": \"commonjs\"\n}' > dist/cjs/package.json",
+		"check": "npm run check:prettier && npm run check:lint && npm run check:skott",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src",
+		"check:exports": "attw --pack .",
+		"predocs": "npm run typedoc",
+		"docs": "npm-run-all --parallel docs:dev typedoc:watch",
+		"docs:dev": "vitepress dev docs",
+		"docs:build": "vitepress build docs",
+		"docs:preview": "vitepress preview docs",
+		"cli": "src/cli/cli.ts",
+		"format": "prettier --write .",
+		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
+		"package": "npm pack --pack-destination ./build",
+		"publish:local": "npm publish --registry http://localhost:4873",
+		"test": "NO_COLOR=1 vitest --run",
+		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
+		"typedoc": "typedoc --docsRoot docs/reference --name dsdk",
+		"typedoc:watch": "npm run typedoc -- --watch",
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/dsdk -f"
+	},
+	"dependencies": {
+		"docker-modem": "^5.0.3",
+		"pino": "^9.5.0",
+		"pino-pretty": "13.0.0"
+	},
+	"devDependencies": {
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@types/node": "^18.0.0",
+		"skott": "^0.33.2"
+	}
+}
