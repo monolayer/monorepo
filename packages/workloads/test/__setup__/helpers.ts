@@ -171,5 +171,7 @@ export async function setupSqsQueueForWorker(
 export async function tearDownSqsQueueForWorker(
 	context: TaskContext & TestContext & TaskSQSWorkerContext,
 ) {
-	await context.container.stop();
+	if (context.container) {
+		await context.container.stop();
+	}
 }
