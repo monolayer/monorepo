@@ -676,6 +676,69 @@ WORKDIR /APP
 `);
 });
 
+test("merge Dockerfiles", () => {
+	const baseStage = new Dockerfile();
+	baseStage.banner("Stage 1: base image");
+	baseStage.FROM("node:18-alpine3.20", { as: "base" });
+	baseStage.comment(
+		"Add libc6-compat package (shared library required for use of process.dlopen).",
+	);
+	baseStage.comment(
+		"See https://github.com/nodejs/docker-node?tab=readme-ov-file#nodealpine",
+	);
+	baseStage.RUN("apk add --no-cache gcompat=1.1.0-r4");
+	baseStage.blank();
+
+	const depsStage = new Dockerfile();
+	depsStage.banner("Stage 2: dependencies");
+	depsStage.FROM("base", { as: "deps" });
+	depsStage.WORKDIR("/app");
+
+	const finalStage = new Dockerfile();
+	finalStage.banner("Stage 2: Final");
+	depsStage.FROM("deps", { as: "final" });
+	finalStage.ENV("NODE_ENV", "production");
+	finalStage.EXPOSE(3000);
+	finalStage.ENTRYPOINT("node", ["server.js"]);
+	const merged = Dockerfile.merge([baseStage, depsStage, finalStage]);
+
+	testOutputAndValidate(
+		merged,
+		`\
+# ---------
+# Stage 1: base image
+# ---------
+
+FROM node:18-alpine3.20 AS base
+
+# Add libc6-compat package (shared library required for use of process.dlopen).
+# See https://github.com/nodejs/docker-node?tab=readme-ov-file#nodealpine
+RUN apk add --no-cache gcompat=1.1.0-r4
+
+
+# ---------
+# Stage 2: dependencies
+# ---------
+
+FROM base AS deps
+
+WORKDIR /app
+
+FROM deps AS final
+
+# ---------
+# Stage 2: Final
+# ---------
+
+ENV NODE_ENV="production"
+
+EXPOSE 3000
+
+ENTRYPOINT ["node", "server.js"]
+`,
+	);
+});
+
 function testOutputAndValidate(
 	df: Dockerfile,
 	expected: string,

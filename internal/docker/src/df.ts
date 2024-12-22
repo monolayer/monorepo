@@ -5,6 +5,17 @@ import { writeFileSync } from "fs";
 export class Dockerfile {
 	#lines: string[] = [];
 
+	/**
+	 * Merge multiple Dockerfile instances into one.
+	 */
+	static merge(dockerfiles: Dockerfile[]) {
+		const allLines = dockerfiles.flatMap((df) => df.#lines);
+
+		const dockerfile = new Dockerfile();
+		dockerfile.#lines.push(...allLines);
+		return dockerfile;
+	}
+
 	constructor(df?: Dockerfile) {
 		if (df) {
 			this.#lines = df.#lines;
