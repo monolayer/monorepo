@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/workloads",
-	"version": "1.1.2-beta-1",
+	"version": "1.2.0-beta-1",
 	"description": "The sidecar framework for full-stack web development with React.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -41,6 +41,16 @@
 			"require": {
 				"types": "./dist/cjs/test-helpers.d.ts",
 				"default": "./dist/cjs/test-helpers.js"
+			}
+		},
+		"./introspection": {
+			"import": {
+				"types": "./dist/esm/introspection.d.ts",
+				"default": "./dist/esm/introspection.js"
+			},
+			"require": {
+				"types": "./dist/cjs/introspection.d.ts",
+				"default": "./dist/cjs/introspection.js"
 			}
 		}
 	},
