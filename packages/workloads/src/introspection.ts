@@ -1,4 +1,11 @@
 export {
+	projectDependencies,
+	projectDependency,
+	projectFramework,
+	projectName,
+} from "~workloads/scan/project.js";
+
+export {
 	manifestJsonSchema,
 	type BucketInfo,
 	type BuildManifest,
