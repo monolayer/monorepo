@@ -35,6 +35,8 @@ export function projectName() {
 /**
  * Returns the slug (unique identifier) of the framework
  * used in the current project.
+ *
+ * Frameworks are defected wirth the package: `@vercel/fs-detectors`
  */
 export async function projectFramework() {
 	const result = await detectFrameworks({
