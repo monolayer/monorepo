@@ -38,7 +38,7 @@ See selected [examples](https://monolayer.dev/dsdk-docs/guide/examples.html) to 
 
 ## Debug API calls
 
-To debug API calls, set the environment variable `DEBUG` to any value.
+To debug API calls, set the environment variable `DEBUG` to `trace`.
 
 \
 Full documentation is available here: [DSDK Documentation](https://monolayer.dev/dsdk-docs/)
