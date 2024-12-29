@@ -57,6 +57,7 @@ export const manifestJsonSchema = {
 		},
 		framework: {
 			type: "string",
+			description: "Application framework",
 		},
 		postgresDatabase: {
 			type: "array",
@@ -117,7 +118,7 @@ export const manifestJsonSchema = {
 			},
 		},
 	},
-	required: ["framework"],
+	required: ["framework", "version"],
 	optional: [
 		"postgresDatabase",
 		"mysqlDatabase",
