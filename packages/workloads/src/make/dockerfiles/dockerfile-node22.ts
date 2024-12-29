@@ -6,57 +6,74 @@ export function generateNode22Dockerfile(
 	additionalDeps?: { prisma?: boolean },
 ) {
 	const dockerfile = new Dockerfile();
-	baseStage(dockerfile);
-	if (additionalDeps?.prisma) {
-		addPrismaDependencies(dockerfile, "base");
-	}
-	finalStage(dockerfile, additionalDeps?.prisma ? "deps" : "base", files);
-	return dockerfile;
-}
-
-export function finalStage(
-	dockerfile: Dockerfile,
-	from: string,
-	files: string[],
-) {
+	dockerfile.comment("syntax=docker.io/docker/dockerfile:1");
 	dockerfile.blank();
+
+	dockerfile.append(baseStageNode22Alpine320({ as: "base" }));
+
+	if (additionalDeps?.prisma) {
+		dockerfile.append(prismaDependenciesStage({ from: "base" }));
+	}
+
 	dockerfile.banner("Final stage");
-	dockerfile.FROM(from, { as: "run" });
+
+	dockerfile.FROM("base", { as: "run" });
+
+	dockerfile.WORKDIR("/app");
 
 	dockerfile.group(() => {
 		dockerfile.comment("Copy files from context");
 		files.forEach((file) => dockerfile.COPY(file, `./${path.basename(file)}`));
 	});
 
+	if (additionalDeps?.prisma) {
+		dockerfile.append(copyPrismaDependencies());
+	}
+
 	dockerfile.ENV("NODE_ENV", "production");
 
 	dockerfile.CMD(["index.mjs"]);
 
 	dockerfile.ENTRYPOINT("node");
+
+	return dockerfile;
 }
 
-export function addPrismaDependencies(dockerfile: Dockerfile, from: string) {
-	dockerfile.blank();
-	dockerfile.banner("Dependencies stage");
-	dockerfile.FROM(from, { as: "deps" });
+export function baseStageNode22Alpine320(opts: { as: string }) {
+	return new Dockerfile()
+		.banner("Base image stage")
+		.FROM("node:22-alpine3.20", { as: opts.as })
+		.comment(
+			"Add libc6-compat package (shared library required for use of process.dlopen).",
+		)
+		.comment(
+			"See https://github.com/nodejs/docker-node?tab=readme-ov-file#nodealpine",
+		)
+		.RUN("apk add --no-cache gcompat=1.1.0-r4")
+		.blank();
+}
 
-	dockerfile.comment("Copy Prisma dependencies");
-	dockerfile.group(() =>
+function prismaDependenciesStage(options: { from: string }) {
+	const stage = new Dockerfile();
+	stage.banner("Prisma dependencies");
+	stage.FROM(options.from, { as: "prisma" });
+	stage.group(() =>
 		[".prisma", "prisma", "@prisma"].forEach((folder) =>
-			dockerfile.COPY(`./node_modules/${folder}/`, `./node_modules/${folder}`),
+			stage.COPY(`./node_modules/${folder}/`, `./node_modules/${folder}`),
 		),
 	);
+	return stage;
 }
 
-export function baseStage(dockerfile: Dockerfile) {
-	dockerfile.banner("Base stage");
-	dockerfile.FROM("node:22-alpine3.20", { as: "base" });
-	dockerfile.comment(
-		"Add libc6-compat package (shared library required for use of process.dlopen).",
-	);
-	dockerfile.comment(
-		"See https://github.com/nodejs/docker-node?tab=readme-ov-file#nodealpine",
-	);
-	dockerfile.RUN("apk add --no-cache gcompat=1.1.0-r4");
-	dockerfile.WORKDIR("/app");
+function copyPrismaDependencies() {
+	const dockerfile = new Dockerfile();
+	dockerfile.comment("Copy prisma dependencies");
+	dockerfile.group(() => {
+		[".prisma", "prisma", "@prisma"].forEach((folder) =>
+			dockerfile.COPY(`./node_modules/${folder}/`, `./node_modules/${folder}`, {
+				from: "prisma",
+			}),
+		);
+	});
+	return dockerfile;
 }
