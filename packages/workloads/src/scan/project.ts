@@ -4,6 +4,7 @@ import {
 	LocalFileSystemDetector,
 } from "@vercel/fs-detectors";
 import { readFileSync } from "fs";
+import { spawn } from "node:child_process";
 import path from "node:path";
 import { cwd } from "node:process";
 
@@ -51,3 +52,50 @@ function parsePackageJson(projectRoot?: string) {
 		readFileSync(path.join(projectRoot ?? cwd(), "package.json")).toString(),
 	);
 }
+
+/**
+ * Returns the installed version of a package or `undefined` if the package is not installed.
+ */
+export async function packageVersion(
+	packageName: string,
+	projectRoot?: string,
+) {
+	const list = await npmList(projectRoot);
+	return (list.dependencies ?? {})[packageName]?.version;
+}
+
+async function npmList(projectRoot?: string) {
+	return new Promise<PackageList>((resolve, reject) => {
+		const lines: string[] = [];
+		const list = spawn(
+			"npm",
+			["list", "--json"],
+			projectRoot
+				? {
+						cwd: projectRoot,
+					}
+				: undefined,
+		);
+
+		list.stdout.on("data", (chunks) => lines.push(chunks.toString()));
+		list.stderr.on("data", (chunks) => reject(chunks.toString()));
+		list.on("close", (code) => {
+			if (code !== 0) {
+				throw new Error(`npm list command finished with code ${code}`);
+			}
+			resolve(JSON.parse(lines.join()));
+		});
+	});
+}
+
+type PackageList = {
+	name: string;
+	dependencies?: Record<
+		string,
+		{
+			version: string;
+			resolved: string;
+			overridden: boolean;
+		}
+	>;
+};
