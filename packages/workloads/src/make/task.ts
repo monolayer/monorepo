@@ -3,7 +3,7 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { build } from "tsup";
 import { tsupConfig } from "~workloads/make/config.js";
-import { generateNode20Dockerfile } from "~workloads/make/dockerfiles/dockerfile-node20.js";
+import { generateNode22Dockerfile } from "~workloads/make/dockerfiles/dockerfile-node22.js";
 import { projectDependency } from "~workloads/scan/project.js";
 import type { WorkloadImport } from "~workloads/scan/workload-imports.js";
 import type { Task } from "~workloads/workloads/stateless/task/task.js";
@@ -87,8 +87,8 @@ function buildDockerfile(filenames: string[], dir: string) {
 		}),
 	);
 
-	const dockerfile = generateNode20Dockerfile(files, {
+	const dockerfile = generateNode22Dockerfile(files, {
 		prisma: projectDependency("@prisma/client"),
 	});
-	dockerfile.save(path.join(`.workloads/${dir}`, "..", `node20x.Dockerfile`));
+	dockerfile.save(path.join(`.workloads/${dir}`, "..", `node22x.Dockerfile`));
 }

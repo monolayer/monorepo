@@ -3,7 +3,7 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { build } from "tsup";
 import { tsupConfig } from "~workloads/make/config.js";
-import { generateNode20Dockerfile } from "~workloads/make/dockerfiles/dockerfile-node20.js";
+import { generateNode22Dockerfile } from "~workloads/make/dockerfiles/dockerfile-node22.js";
 import { projectDependency } from "~workloads/scan/project.js";
 import type { WorkloadImport } from "~workloads/scan/workload-imports.js";
 import type { Cron } from "~workloads/workloads/stateless/cron.js";
@@ -28,7 +28,7 @@ async function buildCron(cronImport: WorkloadImport<Cron>, dir: string) {
 }
 
 function buildDockerfile(files: string[], dir: string) {
-	const dockerfile = generateNode20Dockerfile(
+	const dockerfile = generateNode22Dockerfile(
 		files.map((file) =>
 			path.format({
 				root: `.workloads/${dir}/`,
@@ -39,7 +39,7 @@ function buildDockerfile(files: string[], dir: string) {
 			prisma: projectDependency("@prisma/client"),
 		},
 	);
-	dockerfile.save(path.join(`.workloads/${dir}`, "..", `node20x.Dockerfile`));
+	dockerfile.save(path.join(`.workloads/${dir}`, "..", `node22x.Dockerfile`));
 }
 
 function buildRunner(cronFileName: string, dir: string) {

@@ -1,7 +1,7 @@
 import { Dockerfile } from "@monorepo/docker/df.js";
 import path from "node:path";
 
-export function generateNode20Dockerfile(
+export function generateNode22Dockerfile(
 	files: string[],
 	additionalDeps?: { prisma?: boolean },
 ) {
@@ -50,7 +50,7 @@ export function addPrismaDependencies(dockerfile: Dockerfile, from: string) {
 
 export function baseStage(dockerfile: Dockerfile) {
 	dockerfile.banner("Base stage");
-	dockerfile.FROM("node:20-alpine3.20", { as: "base" });
+	dockerfile.FROM("node:22-alpine3.20", { as: "base" });
 	dockerfile.comment(
 		"Add libc6-compat package (shared library required for use of process.dlopen).",
 	);
