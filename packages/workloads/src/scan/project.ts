@@ -10,23 +10,23 @@ import { cwd } from "node:process";
 /**
  * Returns true if the project is dependant on a package.
  */
-export function projectDependency(packageName: string) {
-	return projectDependencies().some((dep) => dep === packageName);
+export function projectDependency(packageName: string, projectRoot?: string) {
+	return projectDependencies(projectRoot).some((dep) => dep === packageName);
 }
 
 /**
  * Returns all project dependencies
  */
-export function projectDependencies() {
-	const packageJson = parsePackageJson();
+export function projectDependencies(projectRoot?: string) {
+	const packageJson = parsePackageJson(projectRoot);
 	return Object.keys(packageJson.dependencies ?? {});
 }
 
 /**
  * Returns the project name (from package.json)
  */
-export function projectName() {
-	const packageJson = parsePackageJson();
+export function projectName(projectRoot?: string) {
+	const packageJson = parsePackageJson(projectRoot);
 	if (packageJson.name) {
 		return packageJson.name as string;
 	}
@@ -38,14 +38,16 @@ export function projectName() {
  *
  * Frameworks are defected wirth the package: `@vercel/fs-detectors`
  */
-export async function projectFramework() {
+export async function projectFramework(projectRoot?: string) {
 	const result = await detectFrameworks({
-		fs: new LocalFileSystemDetector(cwd()),
+		fs: new LocalFileSystemDetector(projectRoot ?? cwd()),
 		frameworkList,
 	});
 	return result[0]?.slug ?? undefined;
 }
 
-function parsePackageJson() {
-	return JSON.parse(readFileSync(path.join(cwd(), "package.json")).toString());
+function parsePackageJson(projectRoot?: string) {
+	return JSON.parse(
+		readFileSync(path.join(projectRoot ?? cwd(), "package.json")).toString(),
+	);
 }
