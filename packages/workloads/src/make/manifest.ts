@@ -117,7 +117,7 @@ export const manifestJsonSchema = {
 			},
 		},
 	},
-	required: ["webFramework"],
+	required: ["framework"],
 	optional: [
 		"postgresDatabase",
 		"mysqlDatabase",
