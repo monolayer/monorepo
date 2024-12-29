@@ -1,9 +1,7 @@
 {
 	"compilerOptions": {
 		"rootDir": "",
-		"paths": {
-			"~blueprints/*": ["*"]
-		}
+		"paths": {}
 	},
 	"references": []
 }

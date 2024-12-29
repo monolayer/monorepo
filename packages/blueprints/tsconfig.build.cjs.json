@@ -1,7 +1,7 @@
 {
 	"extends": "./tsconfig.json",
 	"include": ["**/src/**/*"],
-	"exclude": ["**/src/**/*.test.ts", "**/test/**/*"],
+	"exclude": ["**/src/**/*.test.ts"],
 	"compilerOptions": {
 		"rootDir": "src",
 		"outDir": "./dist/cjs",
@@ -13,10 +13,7 @@
 		"target": "es2020",
 		"module": "CommonJS",
 		"moduleResolution": "Node",
-		"paths": {
-			"~dw/*": ["src/*"],
-			"@monorepo/utils/*": ["../../internal/utils/src/*"]
-		}
+		"paths": {}
 	},
 	"references": []
 }
