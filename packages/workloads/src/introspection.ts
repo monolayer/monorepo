@@ -1,4 +1,5 @@
 export {
+	packageVersion,
 	projectDependencies,
 	projectDependency,
 	projectFramework,
