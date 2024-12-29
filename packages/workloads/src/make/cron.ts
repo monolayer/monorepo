@@ -13,11 +13,15 @@ export async function makeCron(cronImport: WorkloadImport<Cron>) {
 	const cronFileName = await buildCron(cronImport, dir);
 	const runnerFileName = buildRunner(cronFileName, dir);
 
-	buildDockerfile([cronFileName, `${cronFileName}.map`, runnerFileName], dir);
+	const dockerfileName = buildDockerfile(
+		[cronFileName, `${cronFileName}.map`, runnerFileName],
+		dir,
+	);
 
 	return {
 		path: dir,
 		entryPoint: runnerFileName,
+		dockerfileName,
 	};
 }
 
@@ -39,7 +43,9 @@ function buildDockerfile(files: string[], dir: string) {
 			prisma: projectDependency("@prisma/client"),
 		},
 	);
-	dockerfile.save(path.join(`.workloads/${dir}`, "..", `node22x.Dockerfile`));
+	const dockerfileName = "node22x.Dockerfile";
+	dockerfile.save(path.join(`.workloads/${dir}`, "..", dockerfileName));
+	return dockerfileName;
 }
 
 function buildRunner(cronFileName: string, dir: string) {

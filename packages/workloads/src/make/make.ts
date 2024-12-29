@@ -65,6 +65,7 @@ export class Make {
 				entryPoint: info.entryPoint,
 				path: info.path,
 				schedule: imported.workload.schedule,
+				dockerfile: info.dockerfileName,
 			});
 		}
 		for (const imported of this.#imports.Task) {
@@ -73,6 +74,7 @@ export class Make {
 				id: imported.workload.name,
 				entryPoint: info.entryPoint,
 				path: info.path,
+				dockerfile: info.dockerfileName,
 			});
 		}
 

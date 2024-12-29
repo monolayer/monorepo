@@ -20,7 +20,7 @@ export async function makeTask(taskImport: WorkloadImport<Task<unknown>>) {
 		workerFileName,
 	);
 
-	buildDockerfile(
+	const dockerfileName = buildDockerfile(
 		[
 			taskFileName,
 			`${taskFileName}.map`,
@@ -33,6 +33,7 @@ export async function makeTask(taskImport: WorkloadImport<Task<unknown>>) {
 	return {
 		path: dir,
 		entryPoint: entryPointFilename,
+		dockerfileName,
 	};
 }
 
@@ -90,5 +91,7 @@ function buildDockerfile(filenames: string[], dir: string) {
 	const dockerfile = generateNode22Dockerfile(files, {
 		prisma: projectDependency("@prisma/client"),
 	});
-	dockerfile.save(path.join(`.workloads/${dir}`, "..", `node22x.Dockerfile`));
+	const dockerfileName = "node22x.Dockerfile";
+	dockerfile.save(path.join(`.workloads/${dir}`, "..", dockerfileName));
+	return dockerfileName;
 }

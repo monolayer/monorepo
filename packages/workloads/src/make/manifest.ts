@@ -35,12 +35,14 @@ export interface CronInto {
 	path: string;
 	entryPoint: string;
 	schedule: string;
+	dockerfile: string;
 }
 
 export interface TaskInfo {
 	id: string;
 	path: string;
 	entryPoint: string;
+	dockerfile: string;
 }
 
 export const manifestJsonSchema = {
@@ -189,8 +191,11 @@ export const manifestJsonSchema = {
 				schedule: {
 					type: "string",
 				},
+				dockerfile: {
+					type: "string",
+				},
 			},
-			required: ["id", "path", "entryPoint", "schedule"],
+			required: ["id", "path", "entryPoint", "schedule", "dockerfile"],
 		},
 		TaskInfo: {
 			type: "object",
@@ -204,8 +209,11 @@ export const manifestJsonSchema = {
 				entryPoint: {
 					type: "string",
 				},
+				dockerfile: {
+					type: "string",
+				},
 			},
-			required: ["id", "path", "entryPoint"],
+			required: ["id", "path", "entryPoint", "dockerfile"],
 		},
 	},
 };
