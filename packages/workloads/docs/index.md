@@ -24,7 +24,7 @@ features:
     details: Define recurring tasks, long running tasks, websockets and more.<br>Coming soon...
   - icon: 📦
     title: Use packages, libraries and ORMs of your choice.
-    details: No disrucption. Work with tools you already know and love.
+    details: No disruption. Work with tools you already know and love.
   - icon: <span class="react-icon"></span>
     title: Made for React
     details: Use it with your Next.js, Remix, and TanStack Start applications.
