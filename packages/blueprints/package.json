@@ -18,19 +18,6 @@
 		"dist/esm/package.json",
 		"dist/cjs/package.json"
 	],
-	"types": "./dist/esm/index.d.ts",
-	"exports": {
-		".": {
-			"import": {
-				"types": "./dist/esm/index.d.ts",
-				"default": "./dist/esm/index.js"
-			},
-			"require": {
-				"types": "./dist/cjs/index.d.ts",
-				"default": "./dist/cjs/index.js"
-			}
-		}
-	},
 	"scripts": {
 		"prebuild": "rm -rf dist/*",
 		"build": "tsc -b tsconfig.build.json && tsc -b tsconfig.build.cjs.json",
