@@ -20,10 +20,10 @@
 	],
 	"scripts": {
 		"prebuild": "rm -rf dist/*",
-		"build": "tsc -b tsconfig.build.json && tsc -b tsconfig.build.cjs.json",
+		"build": "tsc -b tsconfig.build.json",
 		"postbuild": "npm run alias && npm run makepackage",
-		"alias": "tsc-alias -p tsconfig.alias.json --outDir dist/esm --verbose && tsc-alias -p tsconfig.alias.json --outDir dist/cjs --verbose",
-		"makepackage": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/package.json && echo '{\n  \"type\": \"commonjs\"\n}' > dist/cjs/package.json",
+		"alias": "tsc-alias -p tsconfig.alias.json --outDir dist --verbose",
+		"makepackage": "echo '{\n  \"type\": \"module\"\n}' > dist/package.json",
 		"check": "npm run check:prettier && npm run check:lint && npm run check:skott",
 		"check:lint": "npx eslint .",
 		"check:prettier": "prettier --check .",
