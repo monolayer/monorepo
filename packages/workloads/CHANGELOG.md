@@ -6,17 +6,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.4] - 2024-12-31
+
+### Fixed
+
+- Pin exact version of @vercel/fs-detectors (Insecure package dependencies in later versions).
+
 ## [1.5.3] - 2024-12-31
 
 ### Fixed
 
-- Insecure pacakge dependencies.
+- Insecure package dependencies.
 
 ## [1.5.2] - 2024-12-31
 
 ### Fixed
 
-- Insecure pacakge dependencies.
+- Insecure package dependencies.
 
 ## [1.5.1] - 2024-12-24
 
