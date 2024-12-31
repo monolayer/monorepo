@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/workloads",
-	"version": "1.5.1",
+	"version": "1.5.2",
 	"description": "The sidecar framework for full-stack web development with React.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
