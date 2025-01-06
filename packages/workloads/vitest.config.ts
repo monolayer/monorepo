@@ -11,7 +11,7 @@ export default defineConfig({
 		fileParallelism: false,
 		testTimeout: 20000,
 		env: {
-			// DEBUG: "testcontainers",
+			DEBUG: "testcontainers",
 		},
 	},
 	server: {

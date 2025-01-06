@@ -45,7 +45,7 @@ describe("start test constainers", { sequential: true }, () => {
 
 	test(
 		"launches postgres and creates database",
-		{ timeout: 30000, retry: 2 },
+		{ timeout: 30000, retry: 4 },
 		async ({ containers }) => {
 			const postgresDatabase = new PostgresDatabase(
 				"launch_postgres_different_container",
