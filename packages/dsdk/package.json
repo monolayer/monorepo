@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/dsdk",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "TypeScript SDK interact with the Docker Engine API",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
