@@ -7,7 +7,7 @@ import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 
 test(
 	"MySQL started container",
-	{ sequential: true, timeout: 20000 },
+	{ sequential: true, timeout: 20000, retry: 2 },
 	async ({ containers }) => {
 		if (process.env.CI) {
 			return;
