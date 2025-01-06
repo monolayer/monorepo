@@ -29,8 +29,8 @@
 				"default": "./dist/esm/workloads.js"
 			},
 			"require": {
-				"types": "./dist/cjs/workloads.d.ts",
-				"default": "./dist/cjs/workloads.js"
+				"types": "./dist/cjs/index.d.ts",
+				"default": "./dist/cjs/index.js"
 			}
 		},
 		"./test-helpers": {
