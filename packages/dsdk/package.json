@@ -12,6 +12,7 @@
 		"directory": "packages/dsdk"
 	},
 	"type": "module",
+	"types": "dist/cjs/index.d.ts",
 	"files": [
 		"dist/**/*.js",
 		"dist/**/*.d.ts",
