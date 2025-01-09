@@ -3,14 +3,14 @@ import fs, { mkdirSync } from "node:fs";
 import path from "node:path";
 import { cwd } from "node:process";
 
-export function blueprints(program: Command) {
-	const blueprints = program
+export function blueprint(program: Command) {
+	const blueprint = program
 		.command("blueprints")
 		.description("blueprints commmands");
 
-	add(blueprints);
+	add(blueprint);
 
-	return blueprints;
+	return blueprint;
 }
 
 function add(program: Command) {
@@ -18,16 +18,16 @@ function add(program: Command) {
 		.command("add")
 		.description("Add blueprints to your project")
 		.action(async () => {
-			const blueprintsPath = path.join(cwd(), "blueprints");
-			mkdirSync(blueprintsPath);
+			const blueprintPath = path.join(cwd(), "blueprint");
+			mkdirSync(blueprintPath);
 			fs.cpSync(
-				"./node_modules/@monolayer/workloads/dist/blueprints",
-				blueprintsPath,
+				"./node_modules/@monolayer/workloads/dist/blueprint",
+				blueprintPath,
 				{
 					force: true,
 					recursive: true,
 				},
 			);
-			console.log(`Blueprints installed in ${blueprintsPath}`);
+			console.log(`Blueprint installed in ${blueprintPath}`);
 		});
 }

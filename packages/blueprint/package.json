@@ -1,5 +1,5 @@
 {
-    "name": "blueprints",
+    "name": "blueprint",
     "main": "src/index.ts",
     "devDependencies": {
         "eslint-config-prettier": "^9.1.0",
