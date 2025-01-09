@@ -2,6 +2,7 @@
 import type { Command as CommandExtra } from "@commander-js/extra-typings";
 import { Command, CommanderError } from "commander";
 import { exit } from "process";
+import { blueprints } from "~workloads/cli/actions/blueprints.js";
 import { build } from "~workloads/cli/actions/build.js";
 import { pull } from "~workloads/cli/actions/pull.js";
 import { start } from "~workloads/cli/actions/start.js";
@@ -27,6 +28,8 @@ async function main() {
 	build(program);
 
 	trigger(program);
+
+	blueprints(program);
 
 	program.exitOverride();
 
