@@ -1,15 +1,18 @@
 {
-	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
-	"include": ["**/src/**/*"],
 	"compilerOptions": {
-		"baseUrl": "./",
-		"rootDir": ".",
-		"paths": {
-			"~blueprints/*": ["src/*"]
-		},
-		"outDir": "./dist",
-		"emitDeclarationOnly": true,
-		"declaration": true
+		"strict": true,
+		"outDir": "bin",
+		"target": "ES2022",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"experimentalDecorators": true,
+		"pretty": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"forceConsistentCasingInFileNames": true,
+		"esModuleInterop": true
 	},
-	"references": []
+	"include": ["**/src/**/*.ts"],
+	"exclude": ["node_modules"]
 }

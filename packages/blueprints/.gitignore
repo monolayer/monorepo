@@ -1,3 +1,2 @@
-docs/.vitepress/cache
-docs/.vitepress/dist
-docs/reference/api
+node_modules
+.DS_Store
