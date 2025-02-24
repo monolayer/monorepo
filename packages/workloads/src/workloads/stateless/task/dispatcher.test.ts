@@ -5,7 +5,10 @@ import {
 	developmentDispatch,
 	testDispatch,
 } from "~workloads/workloads/stateless/task/local.js";
-import { sqsDispatch } from "~workloads/workloads/stateless/task/sqs.js";
+import {
+	sqsDispatch,
+	sqsSingleDispatch,
+} from "~workloads/workloads/stateless/task/sqs.js";
 
 afterEach(() => {
 	vi.unstubAllEnvs();
@@ -46,6 +49,16 @@ test(
 		vi.stubEnv("NODE_ENV", "production");
 		vi.stubEnv("MONO_TASK_MODE", "sqs");
 		expect(dispatcher()).toBe(sqsDispatch);
+	},
+);
+
+test(
+	"is sqs single dispatcher in production environments when MONO_TASK_MODE is sqs-single",
+	{ sequential: true, concurrent: false },
+	() => {
+		vi.stubEnv("NODE_ENV", "production");
+		vi.stubEnv("MONO_TASK_MODE", "sqs-single");
+		expect(dispatcher()).toBe(sqsSingleDispatch);
 	},
 );
 

@@ -3,7 +3,10 @@ import {
 	developmentDispatch,
 	testDispatch,
 } from "~workloads/workloads/stateless/task/local.js";
-import { sqsDispatch } from "~workloads/workloads/stateless/task/sqs.js";
+import {
+	sqsDispatch,
+	sqsSingleDispatch,
+} from "~workloads/workloads/stateless/task/sqs.js";
 
 export function dispatcher() {
 	if (process.env.NODE_ENV !== "production") {
@@ -15,6 +18,8 @@ export function dispatcher() {
 	switch (process.env.MONO_TASK_MODE) {
 		case "sqs":
 			return sqsDispatch;
+		case "sqs-single":
+			return sqsSingleDispatch;
 		case "bull":
 			return bullDispatch;
 		default:
