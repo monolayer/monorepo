@@ -1,0 +1,22 @@
+{
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.renderLineHighlight": "line",
+	"editor.selectionHighlight": false,
+	"editor.formatOnSave": true,
+	"explorer.excludeGitIgnore": true,
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/Thumbs.db": true,
+		"**/node_modules": true,
+		"**/build": true,
+		"**/dist": true,
+		"**/tmp": true,
+		"**/.turbo": true,
+		"**/coverage": true
+	},
+	"typescript.preferences.importModuleSpecifier": "non-relative"
+}

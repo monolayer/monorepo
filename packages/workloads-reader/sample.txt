@@ -1,0 +1,57 @@
+{
+  "PostgresDatabase": {
+    "trellex": [
+      {
+        "type": "PostgresDatabase",
+        "id": "trellex",
+        "file": "./lib/workloads/app-db.ts"
+      }
+    ]
+  },
+  "Bucket": {
+    "app-documents": [
+      {
+        "type": "Bucket",
+        "id": "app-documents",
+        "file": "./lib/workloads/bucket.ts"
+      }
+    ]
+  },
+  "Mailer": {
+    "app-mailer": [
+      {
+        "type": "Mailer",
+        "id": "app-mailer",
+        "file": "./lib/workloads/mailer.ts"
+      }
+    ]
+  },
+  "Redis": {
+    "tokens": [
+      {
+        "type": "Redis",
+        "id": "tokens",
+        "file": "./lib/workloads/redis.ts"
+      }
+    ]
+  },
+  "Cron": {
+    "reports": [
+      {
+        "type": "Cron",
+        "id": "reports",
+        "file": "./lib/workloads/reports.ts",
+        "schedule": "* * * * *"
+      }
+    ]
+  },
+  "Task": {
+    "user-signup": [
+      {
+        "type": "Task",
+        "id": "user-signup",
+        "file": "./lib/workloads/user-signup.ts"
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
+	"include": ["**/src/**/*", "**/test/**/*"],
+	"compilerOptions": {
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"baseUrl": "./",
+		"rootDir": ".",
+		"paths": {
+			"~workloads-reader/*": ["src/*"],
+			"~test/*": ["test/*"]
+		},
+		"outDir": "./dist",
+		"emitDeclarationOnly": true,
+		"declaration": true
+	}
+}
