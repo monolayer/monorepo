@@ -14,7 +14,7 @@ test("Dockerfile", () => {
 # Base image stage
 # ---------
 
-FROM node:20-alpine3.20 AS base
+FROM public.ecr.aws/docker/library/node:20-alpine3.20 AS base
 
 # Add libc6-compat package (shared library required for use of process.dlopen).
 # See https://github.com/nodejs/docker-node?tab=readme-ov-file#nodealpine

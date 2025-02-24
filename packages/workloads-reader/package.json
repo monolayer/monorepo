@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/workloads-reader",
-	"version": "1.0.0-pre-5",
+	"version": "1.0.0-pre-6",
 	"description": "Read defined workloads",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
