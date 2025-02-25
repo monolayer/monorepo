@@ -1,0 +1,29 @@
+import {
+	LifecycleWorkload,
+	type LifecycleWorkloadOptions,
+} from "~workloads/workloads/app-lifecycle/lifecycle-workload.js";
+
+/**
+ * Workload for defining bootstrap scripts to run when rolling out a fresh application.
+ *
+ * @example
+ * ```ts
+ * import { Bootstrap } from "@monolayer/workloads";
+ *
+ * const bootstrap = new Bootstrap({
+ *   commands: ["db:create", "db:seed"],f
+ * });
+ *
+ * export default bootstrap;
+ * ```
+ */
+export class Bootstrap extends LifecycleWorkload {
+	/**
+	 * @internal
+	 */
+	declare _brand: "bootstrap";
+
+	constructor(options: LifecycleWorkloadOptions) {
+		super("bootstrap", options);
+	}
+}
