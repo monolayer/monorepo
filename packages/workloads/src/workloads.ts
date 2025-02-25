@@ -5,6 +5,10 @@ export {
 	ContainerConfig,
 	type Configuration,
 } from "~workloads/configuration.js";
+export { AfterRollout } from "~workloads/workloads/app-lifecycle/after-rollout.js";
+export { BeforeRollout } from "~workloads/workloads/app-lifecycle/before-rollout.js";
+export { Bootstrap } from "~workloads/workloads/app-lifecycle/bootstrap.js";
+export { type LifecycleWorkload } from "~workloads/workloads/app-lifecycle/lifecycle-workload.js";
 export { Bucket } from "~workloads/workloads/stateful/bucket.js";
 export type {
 	Database,
