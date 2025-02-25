@@ -5,8 +5,12 @@ import * as path from "path";
 import * as ts from "typescript";
 
 import groupBy from "object.groupby";
+import {
+	lambdaDockerfile,
+	tasksLambdaHander,
+	tsupConfig,
+} from "~workloads-reader/tasks-lambda-handler.js";
 import { generateCronsDockerfile } from "./dockerfile-crons.js";
-import { generateTasksDockerfile } from "./dockerfile-tasks.js";
 
 /**
  * Interface for the export data found in a workload file.
@@ -59,12 +63,13 @@ function readWorkloads() {
 	}, {});
 	const tasks = secRes["Task"];
 	if (tasks) {
-		const tasksFiles = Object.values(tasks)
+		const taskFiles = Object.values(tasks)
 			.filter((v) => v !== undefined)
 			.flatMap((t) => t)
 			.map((t) => t.file);
-		const dockerFile = generateTasksDockerfile(tasksFiles);
-		fs.writeFileSync("./tasks.Dockerfile", dockerFile.toString());
+		fs.writeFileSync("./tasks.Dockerfile", lambdaDockerfile(taskFiles));
+		fs.writeFileSync("./tsup.config.ts", tsupConfig);
+		fs.writeFileSync("./lambda.js", tasksLambdaHander);
 	}
 	const crons = secRes["Cron"];
 	if (crons) {
