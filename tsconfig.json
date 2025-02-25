@@ -8,7 +8,7 @@
 	},
 	"references": [
 		{ "path": "./apps/pg" },
-		{ "path": "./packages/blueprints" },
+		{ "path": "./packages/blueprint" },
 		{ "path": "./packages/dw" },
 		{ "path": "./packages/workloads" },
 		{ "path": "./internal/cli" },
