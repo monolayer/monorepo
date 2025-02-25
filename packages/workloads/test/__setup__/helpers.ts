@@ -168,6 +168,50 @@ export async function setupSqsQueueForWorker(
 	);
 }
 
+export async function setupSqsQueueForSingleWorker(
+	context: TaskContext & TestContext & TaskSQSWorkerContext,
+) {
+	context.container = await startLocalStackContainer();
+	const url = localstackConnectionstring(context.container);
+	vi.stubEnv("AWS_ENDPOINT_URL_SQS", url);
+	const client = new TaskSQSClient();
+	const testTask = new Task(context.task.id, async () => {}, {
+		retry: {
+			times: 2,
+		},
+	});
+
+	const deadLetterQueue = await client.send(
+		new CreateQueueCommand({
+			QueueName: `${testTask.id}-dlq`,
+		}),
+	);
+
+	context.deadLetterQueueUrl = localStackSQSQueueUrl(
+		deadLetterQueue.QueueUrl!,
+		url,
+	);
+	const deadLetterQueueArn = await client.send(
+		new GetQueueAttributesCommand({
+			QueueUrl: context.deadLetterQueueUrl,
+			AttributeNames: ["QueueArn"],
+		}),
+	);
+	const createQueue = new CreateQueueCommand({
+		QueueName: testTask.id,
+		Attributes: {
+			RedrivePolicy: JSON.stringify({
+				deadLetterTargetArn: deadLetterQueueArn.Attributes?.QueueArn,
+				maxReceiveCount: testTask.options?.retry?.times,
+			}),
+		},
+	});
+
+	const result = await client.send(createQueue);
+	context.queueUrl = localStackSQSQueueUrl(result.QueueUrl!, url);
+	vi.stubEnv(`MONO_TASK_SQS_QUEUE_URL`, context.queueUrl);
+}
+
 export async function tearDownSqsQueueForWorker(
 	context: TaskContext & TestContext & TaskSQSWorkerContext,
 ) {
