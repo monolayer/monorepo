@@ -4,14 +4,14 @@ export interface LifecycleWorkloadOptions {
 	/**
 	 * Array of script names defined in `package.json`.
 	 */
-	commands: string[];
+	script: string;
 }
 
 export abstract class LifecycleWorkload extends Workload {
-	declare commands: LifecycleWorkloadOptions["commands"];
+	declare script: LifecycleWorkloadOptions["script"];
 
 	constructor(id: string, options: LifecycleWorkloadOptions) {
 		super(id);
-		this.commands = options.commands;
+		this.script = options.script;
 	}
 }

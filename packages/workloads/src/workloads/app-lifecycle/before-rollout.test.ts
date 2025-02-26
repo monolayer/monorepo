@@ -3,18 +3,18 @@ import { BeforeRollout } from "~workloads/workloads/app-lifecycle/before-rollout
 
 describe("Before rollout workload", () => {
 	test("id", () => {
-		const rollout = new BeforeRollout({
-			commands: ["db:seed"],
+		const rollout = new BeforeRollout("before-1", {
+			script: "db:seed",
 		});
 
-		expect(rollout.id).toEqual("before-rollout");
+		expect(rollout.id).toEqual("before-1");
 	});
 
 	test("command list", () => {
-		const rollout = new BeforeRollout({
-			commands: ["db:seed", "some:script"],
+		const rollout = new BeforeRollout("another", {
+			script: "db:seed",
 		});
 
-		expect(rollout.commands).toStrictEqual(["db:seed", "some:script"]);
+		expect(rollout.script).toStrictEqual("db:seed");
 	});
 });

@@ -23,7 +23,13 @@ export class Bootstrap extends LifecycleWorkload {
 	 */
 	declare _brand: "bootstrap";
 
-	constructor(options: LifecycleWorkloadOptions) {
-		super("bootstrap", options);
+	constructor(
+		/**
+		 * Unique ID
+		 */
+		id: string,
+		options: LifecycleWorkloadOptions,
+	) {
+		super(id, options);
 	}
 }

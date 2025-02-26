@@ -3,18 +3,18 @@ import { AfterRollout } from "./after-rollout.js";
 
 describe("After rollout workload", () => {
 	test("id", () => {
-		const rollout = new AfterRollout({
-			commands: ["db:migrate"],
+		const rollout = new AfterRollout("1-after-rollout", {
+			script: "db:migrate",
 		});
 
-		expect(rollout.id).toEqual("after-rollout");
+		expect(rollout.id).toEqual("1-after-rollout");
 	});
 
-	test("command list", () => {
-		const rollout = new AfterRollout({
-			commands: ["db:migrate", "some:script"],
+	test("script", () => {
+		const rollout = new AfterRollout("another-rollout", {
+			script: "db:migrate",
 		});
 
-		expect(rollout.commands).toStrictEqual(["db:migrate", "some:script"]);
+		expect(rollout.script).toStrictEqual("db:migrate");
 	});
 });

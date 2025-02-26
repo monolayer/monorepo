@@ -23,7 +23,13 @@ export class AfterRollout extends LifecycleWorkload {
 	 */
 	declare _brand: "after-rollout";
 
-	constructor(options: LifecycleWorkloadOptions) {
-		super("after-rollout", options);
+	constructor(
+		/**
+		 * Unique ID
+		 */
+		id: string,
+		options: LifecycleWorkloadOptions,
+	) {
+		super(id, options);
 	}
 }

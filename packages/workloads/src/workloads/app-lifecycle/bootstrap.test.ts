@@ -3,18 +3,18 @@ import { Bootstrap } from "~workloads/workloads/app-lifecycle/bootstrap.js";
 
 describe("Bootstrap workload", () => {
 	test("id", () => {
-		const rollout = new Bootstrap({
-			commands: ["db:seed"],
+		const rollout = new Bootstrap("bootstrap", {
+			script: "db:seed",
 		});
 
 		expect(rollout.id).toEqual("bootstrap");
 	});
 
 	test("command list", () => {
-		const rollout = new Bootstrap({
-			commands: ["db:seed", "some:script"],
+		const rollout = new Bootstrap("bootstrap", {
+			script: "db:seed",
 		});
 
-		expect(rollout.commands).toStrictEqual(["db:seed", "some:script"]);
+		expect(rollout.script).toStrictEqual("db:seed");
 	});
 });

@@ -23,7 +23,13 @@ export class BeforeRollout extends LifecycleWorkload {
 	 */
 	declare _brand: "before-rollout";
 
-	constructor(options: LifecycleWorkloadOptions) {
-		super("before-rollout", options);
+	constructor(
+		/**
+		 * Unique ID
+		 */
+		id: string,
+		options: LifecycleWorkloadOptions,
+	) {
+		super(id, options);
 	}
 }
