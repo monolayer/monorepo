@@ -25,7 +25,6 @@ export async function sqsDispatch<P>(
 
 const sqsClient = remember("TaskSQSClient", () => new TaskSQSClient({}));
 
-
 export async function sqsSingleDispatch<P>(
 	task: Task<P>,
 	data: P | P[],
