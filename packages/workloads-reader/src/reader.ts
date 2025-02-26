@@ -21,6 +21,7 @@ interface ExportData {
 	schedule?: string;
 	serverId?: string;
 	file: string;
+	script?: string;
 }
 
 function readWorkloads() {
@@ -45,6 +46,7 @@ function readWorkloads() {
 	}
 
 	const tsFiles = getFilesRecursively(absoluteWorkloadsDir, ".ts");
+
 	const allExports: ExportData[] = [];
 
 	tsFiles.forEach((file) => {
@@ -123,6 +125,29 @@ function processNewExpression(
 						id: idArg.text,
 						file: `./${path.relative(".", filePath)}`,
 					};
+
+					// Extract `script` for Bootstrap, BeforeRollout, AfterRollout
+					if (
+						typeName === "Bootstrap" ||
+						typeName === "BeforeRollout" ||
+						typeName === "AfterRollout"
+					) {
+						const configArg = args[1]; // First argument is the config object
+						if (configArg) {
+							if (ts.isObjectLiteralExpression(configArg)) {
+								configArg.properties.forEach((prop) => {
+									if (
+										ts.isPropertyAssignment(prop) &&
+										ts.isIdentifier(prop.name) &&
+										prop.name.text === "script" &&
+										ts.isStringLiteral(prop.initializer)
+									) {
+										exportData.script = prop.initializer.text;
+									}
+								});
+							}
+						}
+					}
 
 					if (
 						typeName === "PostgresDatabase" ||
