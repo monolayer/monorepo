@@ -34,7 +34,7 @@ export function generateCronsDockerfile(crons: { id: string; file: string }[]) {
 	dockerfile.RUN("echo 'await imports[id].default.run();' >> crons-runner.ts");
 	dockerfile.RUN("echo '}' >> crons-runner.ts");
 	dockerfile.RUN(
-		"echo 'runCron(process.argv[2]).catch((e) => console.error(e));' >> crons-runner.ts",
+		"echo 'runCron(process.argv[2]).catch((e) => { console.error(e); throw e });' >> crons-runner.ts",
 	);
 
 	dockerfile.RUN(
