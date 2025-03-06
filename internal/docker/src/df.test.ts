@@ -97,11 +97,15 @@ describe("RUN", () => {
 		testOutputAndValidate(
 			context.dockerfile,
 			`\
-RUN <<EOF
-apt-get update
-apt-get install -y curl
-EOF
+RUN \\
+  apt-get update \\
+  apt-get install -y curl
 `,
+			// 			`\
+			// RUN \\
+			//   apt-get update \\
+			//   apt-get install -y curl \\
+			// `,
 			true,
 		);
 	});
@@ -166,10 +170,9 @@ RUN --mount=type=bind,target=/root/.build,source=./tmp/build,from=/home/ci,readw
 		testOutputAndValidate(
 			context.dockerfile,
 			`\
-RUN --mount=type=bind,target=/root/.build,source=./tmp/build,from=/home/ci,readwrite <<EOF
-npx run build
-npx run alias
-EOF
+RUN --mount=type=bind,target=/root/.build,source=./tmp/build,from=/home/ci,readwrite \\
+  npx run build \\
+  npx run alias
 `,
 			true,
 		);

@@ -147,7 +147,9 @@ export class Dockerfile {
 			base += ` ${mountOpts(options?.mount)}${Array.isArray(command) ? "" : " \\\n   "}`;
 		}
 		const instruction = `${base} ${
-			Array.isArray(command) ? ["<<EOF", ...command, "EOF"].join("\n") : command
+			Array.isArray(command)
+				? ["", ...command].join(" \\\n  ").trimStart()
+				: command
 		}`;
 		this.#pushInstruction(instruction);
 		return this;
