@@ -39,7 +39,7 @@ export function generateTasksDockerfile(files: string[]) {
 
 	dockerfile.RUN("npx tsup");
 
-	dockerfile.ENTRYPOINT("node", ["dist/bin/task-runner.cjs"]);
+	dockerfile.ENTRYPOINT("node", ["dist/ml-lambda/task-runner.cjs"]);
 	return dockerfile;
 }
 
