@@ -57,7 +57,7 @@ function readWorkloads() {
 	const result = groupBy(allExports, ({ type }) => type);
 
 	const secRes = Object.entries(result).reduce<
-		Record<string, Partial<Record<string, ExportData[]>>>
+		Record<string, boolean | Partial<Record<string, ExportData[]>>>
 	>((acc, record) => {
 		const lala = groupBy(record[1]!, ({ serverId, id }) => `${serverId ?? id}`);
 		acc[record[0]] = lala;
@@ -82,6 +82,20 @@ function readWorkloads() {
 		const dockerFile = generateCronsDockerfile(cronsFiles);
 		fs.writeFileSync("./crons.Dockerfile", dockerFile.toString());
 	}
+
+	const packageJsonPath = path.resolve(process.cwd(), "package.json");
+
+	if (!fs.existsSync(packageJsonPath)) {
+		console.error("Error: package.json not found in the current directory.");
+		process.exit(1);
+	}
+
+	const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+	const scripts = packageJson.scripts || {};
+
+	secRes["PerformBootstrap"] = Boolean(scripts["ml:bootstrap"]);
+	secRes["PerformBeforeRollout"] = Boolean(scripts["ml:before-rollout"]);
+	secRes["PerformAfterRollout"] = Boolean(scripts["ml:after-rollout"]);
 
 	console.log(JSON.stringify(secRes, null, 2));
 }
