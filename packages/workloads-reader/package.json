@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/workloads-reader",
-	"version": "1.0.0-pre-10",
+	"version": "1.0.0-pre.20",
 	"description": "Read defined workloads",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -36,7 +36,7 @@
 	"dependencies": {
 		"typescript": "^5.7.3",
 		"object.groupby": "^1.0.3",
-		"@monolayer/dw": "^1.1.0"
+		"@monolayer/dw": "^1.1.1"
 	},
 	"devDependencies": {
 		"@types/node": "^20.0.0",
