@@ -28,6 +28,8 @@ RUN apk add --no-cache gcompat=1.1.0-r4
 
 FROM base AS run
 
+WORKDIR /app
+
 # Copy files from context
 COPY index.js ./index.js
 COPY worker.cjs ./worker.cjs
@@ -76,6 +78,8 @@ COPY ./node_modules/@prisma/ ./node_modules/@prisma
 # ---------
 
 FROM base AS run
+
+WORKDIR /app
 
 # Copy files from context
 COPY index.js ./index.js

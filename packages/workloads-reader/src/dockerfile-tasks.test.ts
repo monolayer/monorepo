@@ -31,13 +31,12 @@ RUN npm install -g tsup
 
 COPY . ./
 
-RUN <<EOF
-if [ -f yarn.lock ]; then yarn --frozen-lockfile;
-elif [ -f package-lock.json ]; then npm ci;
-elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i;
-else echo "Lockfile not found." && exit 1;
-fi
-EOF
+RUN \\
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \\
+  elif [ -f package-lock.json ]; then npm ci; \\
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i; \\
+  else echo "Lockfile not found." && exit 1; \\
+  fi
 
 RUN echo '' > tasks-runner.ts
 
@@ -53,7 +52,7 @@ RUN echo -e 'import { defineConfig } from "tsup";export default defineConfig({ 	
 
 RUN npx tsup
 
-ENTRYPOINT ["node", "dist/bin/task-runner.cjs"]
+ENTRYPOINT ["node", "dist/ml-lambda/task-runner.cjs"]
 `);
 	assert.isTrue(validate(dockerfile));
 });

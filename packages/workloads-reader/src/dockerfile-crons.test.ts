@@ -31,13 +31,12 @@ RUN npm install -g tsup
 
 COPY . ./
 
-RUN <<EOF
-if [ -f yarn.lock ]; then yarn --frozen-lockfile;
-elif [ -f package-lock.json ]; then npm ci;
-elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i;
-else echo "Lockfile not found." && exit 1;
-fi
-EOF
+RUN \\
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \\
+  elif [ -f package-lock.json ]; then npm ci; \\
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i; \\
+  else echo "Lockfile not found." && exit 1; \\
+  fi
 
 RUN echo '' > crons-runner.ts
 
@@ -53,7 +52,7 @@ RUN echo 'await imports[id].default.run();' >> crons-runner.ts
 
 RUN echo '}' >> crons-runner.ts
 
-RUN echo 'runCron(process.argv[2]).catch((e) => console.error(e));' >> crons-runner.ts
+RUN echo 'runCron(process.argv[2]).catch((e) => { console.error(e); throw e });' >> crons-runner.ts
 
 RUN echo -e 'import { defineConfig } from "tsup";export default defineConfig({ 	format: ["cjs"], 	entry: ["./crons-runner.ts"], 	outDir: "dist/bin", 	dts: false, 	shims: true, 	skipNodeModulesBundle: true, 	clean: true, 	target: "node20", 	platform: "node", 	minify: false, 	bundle: true, 	noExternal: [/(.*)/], 	splitting: false, 	cjsInterop: false, 	treeshake: true, 	sourcemap: true, });' > tsup.config.ts
 
