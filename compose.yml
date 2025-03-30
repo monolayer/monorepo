@@ -1,6 +1,6 @@
 services:
   dev:
-    image: sibedge/postgres-plv8:latest
+    image: sibedge/postgres-plv8:16.8-3.2.3
     restart: unless-stopped
     ports:
       - ${POSTGRES_DEV_PORT}:5432
@@ -16,7 +16,7 @@ services:
       start_period: "10s"
 
   postgresOne:
-    image: sibedge/postgres-plv8:latest
+    image: sibedge/postgres-plv8:16.8-3.2.3
     restart: unless-stopped
     ports:
       - ${POSTGRES_PORT}:5432
