@@ -32,7 +32,7 @@
 		"skott": "^0.33.2",
 		"type-fest": "^4.10.1",
 		"type-testing": "^0.2.0",
-		"vitest": "=2.1.4"
+		"vitest": "^2.1.9"
 	},
 	"engines": {
 		"node": ">=18.0.0"
