@@ -1,0 +1,9 @@
+{
+	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
+	"include": ["**/cli/**/*"],
+	"compilerOptions": {
+		"baseUrl": "./",
+		"rootDir": ".",
+		"outDir": "./dist"
+	}
+}

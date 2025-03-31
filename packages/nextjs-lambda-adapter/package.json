@@ -1,0 +1,53 @@
+{
+	"name": "@monolayer/nextjs-lambda-adapter",
+	"version": "1.0.0-beta.1",
+	"description": "AWS Lambda adapter for Next.js applications.",
+	"author": "Marcos Essindi <marcessindi@me.com>",
+	"license": "MIT",
+	"homepage": "https://github.com/monolayer/monorepo/tree/main/packages/nextjs-lambda-adapter",
+	"bugs": "https://github.com/monolayer/monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/monolayer/monorepo/",
+		"directory": "packages/nextjs-lambda-adapter"
+	},
+	"bin": {
+		"nextjs-lambda-adapter": "./dist/cli/index.js"
+	},
+	"type": "module",
+	"files": [
+		"dist/**/*.js",
+		"dist/**/*.mjs"
+	],
+	"scripts": {
+		"prebuild": "rm -rf dist/*",
+		"build": "tsc",
+		"postbuild": "npm run copy-adapter",
+		"postbuild:makeexec": "chmod +x dist/cli/index.js",
+		"copy-adapter": "cp -r adapter dist/",
+		"check": "npm run check:prettier && npm run check:lint",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"format": "prettier --write .",
+		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
+		"package": "npm pack --pack-destination ./build",
+		"publish:local": "npm publish --registry http://localhost:4873",
+		"test": "NO_COLOR=1 vitest --run --passWithNoTests",
+		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/nextjs-lambda-adapter -f"
+	},
+	"devDependencies": {
+		"@monorepo/docker": "*",
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@types/node": "^20.0.0",
+		"@vitest/coverage-istanbul": "^2.1.9",
+		"@vitest/coverage-v8": "^2.1.9",
+		"@vitest/ui": "^2.1.9",
+		"vitest": "^2.1.9",
+		"@aws-sdk/client-s3": "^3.777.0",
+		"@aws-sdk/client-dynamodb": "^3.777.0",
+		"@aws-sdk/util-utf8-node": "^3.259.0",
+		"testcontainers": "^10.23.0"
+	}
+}
