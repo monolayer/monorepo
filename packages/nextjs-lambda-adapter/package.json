@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/nextjs-lambda-adapter",
-	"version": "1.0.0-beta.1",
+	"version": "2.0.0-beta.1",
 	"description": "AWS Lambda adapter for Next.js applications.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -35,6 +35,9 @@
 		"test": "NO_COLOR=1 vitest --run --passWithNoTests",
 		"test:watch": "vitest ${TEST_FILE:-tests} --pool=forks --watch --ui --open",
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/nextjs-lambda-adapter -f"
+	},
+	"dependencies": {
+		"@monolayer/dw": "^1.1.1"
 	},
 	"devDependencies": {
 		"@monorepo/docker": "*",

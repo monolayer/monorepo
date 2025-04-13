@@ -1,6 +1,6 @@
 {
 	"extends": ["@monorepo/typescript-config/tsconfig.base.json"],
-	"include": ["**/cli/**/*"],
+	"include": ["**/cli/**/*", "docker/lambda-dockerfile.ts", "**/docker/**/*"],
 	"compilerOptions": {
 		"baseUrl": "./",
 		"rootDir": ".",
