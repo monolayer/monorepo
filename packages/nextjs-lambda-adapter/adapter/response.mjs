@@ -35,8 +35,9 @@ export class AppResponse extends http.ServerResponse {
 	}
 
 	write(chunk, encoding, callback) {
-		this._readableResponse.push(chunk, encoding);
+		const res = this._readableResponse.push(chunk, encoding);
 		if (callback) callback();
+		return res;
 	}
 
 	end(chunk, encoding) {
