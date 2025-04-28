@@ -2,7 +2,7 @@ import { Dockerfile } from "@monolayer/dw";
 
 export function nextJsDockerfile() {
 	const df = new Dockerfile();
-	df.FROM("public.ecr.aws/lambda/nodejs:20", { as: "base" });
+	df.FROM("public.ecr.aws/lambda/nodejs:22", { as: "base" });
 	df.banner("Install dependencies");
 	df.FROM("base", { as: "deps" });
 	df.COPY(
