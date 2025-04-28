@@ -93,8 +93,16 @@
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/workloads -f"
 	},
 	"dependencies": {
+		"@vercel/frameworks": "^3.4.0",
+		"@vercel/fs-detectors": "=5.3.0",
 		"tsup": "^8.3.5",
-		"tsx": "^4.7.1"
+		"tsx": "^4.7.1",
+		"cron-parser": "^4.9.0",
+		"@epic-web/remember": "^1.1.0",
+		"case-anything": "^3.1.0",
+		"dotenv": "^16.4.5",
+		"get-port": "^7.1.0",
+		"testcontainers": "^10.14.0"
 	},
 	"devDependencies": {
 		"@aws-sdk/client-s3": "^3.699.0",
@@ -108,8 +116,6 @@
 		"@types/aws-lambda": "^8.10.146",
 		"@types/node": "^18.0.0",
 		"@types/nodemailer": "^6.4.16",
-		"@vercel/frameworks": "^3.4.0",
-		"@vercel/fs-detectors": "=5.3.0",
 		"@vitest/coverage-istanbul": "^2.1.9",
 		"@vitest/coverage-v8": "^2.1.9",
 		"@vitest/ui": "^2.1.9",
@@ -131,13 +137,5 @@
 		"type-fest": "^4.10.1",
 		"type-testing": "^0.2.0",
 		"vitest": "^2.1.9"
-	},
-	"peerDependencies": {
-		"cron-parser": "^4.9.0",
-		"@epic-web/remember": "^1.1.0",
-		"case-anything": "^3.1.0",
-		"dotenv": "^16.4.5",
-		"get-port": "^7.1.0",
-		"testcontainers": "^10.14.0"
 	}
 }
