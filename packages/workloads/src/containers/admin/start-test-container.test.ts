@@ -3,14 +3,14 @@ import { assert } from "vitest";
 import { assertDatabase } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
 import { startContainer } from "~workloads/containers/admin/container.js";
-import { Mailer } from "~workloads/workloads/stateful/mailer.js";
+import { Redis } from "~workloads/workloads.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 
 test(
 	"launch different containers for dev and test",
 	{ sequential: true },
 	async ({ containers }) => {
-		const mailer = new Mailer("test-mailer-one", () => true);
+		const mailer = new Redis("test-redis", () => true);
 
 		const container = await startContainer(mailer, {
 			mode: "dev",

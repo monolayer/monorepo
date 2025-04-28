@@ -1,18 +1,12 @@
 import type { Command } from "@commander-js/extra-typings";
 import ora from "ora";
 import { getContainerRuntimeClient, ImageName } from "testcontainers";
-import { ElasticSearchContainer } from "~workloads/containers/elastic-search.js";
-import { MailerContainer } from "~workloads/containers/mailer.js";
-import { MongoDatabaseContainer } from "~workloads/containers/mongo-database.js";
 import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
 import { importWorkloads } from "~workloads/scan/workload-imports.js";
 import { type StatefulWorkloadWithClient } from "~workloads/workloads.js";
 import {
-	assertElasticSearch,
-	assertMailer,
-	assertMongoDatabase,
 	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
@@ -50,15 +44,6 @@ async function containerForWorkload(
 		case "Redis":
 			assertRedis(workload);
 			return await new RedisContainer(workload).containerImage();
-		case "ElasticSearch":
-			assertElasticSearch(workload);
-			return await new ElasticSearchContainer(workload).containerImage();
-		case "MongoDatabase":
-			assertMongoDatabase(workload);
-			return await new MongoDatabaseContainer(workload).containerImage();
-		case "Mailer":
-			assertMailer(workload);
-			return await new MailerContainer(workload).containerImage();
 	}
 }
 

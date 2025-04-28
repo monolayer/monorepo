@@ -8,18 +8,12 @@ import { Cron } from "~workloads/workloads.js";
 import {
 	assertBucket,
 	assertCron,
-	assertElasticSearch,
-	assertMailer,
-	assertMongoDatabase,
 	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
 	assertTask,
 } from "~workloads/workloads/assertions.js";
 import { Bucket } from "~workloads/workloads/stateful/bucket.js";
-import { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
-import { Mailer } from "~workloads/workloads/stateful/mailer.js";
-import { MongoDatabase } from "~workloads/workloads/stateful/mongo-database.js";
 import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
@@ -64,10 +58,7 @@ export async function importWorkloads() {
 const validConstructor = [
 	PostgresDatabase.name,
 	Redis.name,
-	Mailer.name,
 	MySqlDatabase.name,
-	ElasticSearch.name,
-	MongoDatabase.name,
 	Bucket.name,
 	Cron.name,
 	Task.name,
@@ -84,11 +75,8 @@ export interface WorkloadImport<I> {
 
 interface ImportByWorkload {
 	PostgresDatabase: WorkloadImport<PostgresDatabase<unknown>>[];
-	Mailer: WorkloadImport<Mailer<unknown>>[];
 	MySqlDatabase: WorkloadImport<MySqlDatabase<unknown>>[];
-	ElasticSearch: WorkloadImport<ElasticSearch<unknown>>[];
 	Bucket: WorkloadImport<Bucket<unknown>>[];
-	MongoDatabase: WorkloadImport<MongoDatabase<unknown>>[];
 	Redis: WorkloadImport<Redis<unknown>>[];
 	Cron: WorkloadImport<Cron>[];
 	Task: WorkloadImport<Task<unknown>>[];
@@ -104,11 +92,8 @@ export class WorkloadImports {
 	constructor() {
 		this.#importsByWorkload = {
 			PostgresDatabase: [],
-			Mailer: [],
 			MySqlDatabase: [],
-			ElasticSearch: [],
 			Bucket: [],
-			MongoDatabase: [],
 			Redis: [],
 			Cron: [],
 			Task: [],
@@ -118,9 +103,6 @@ export class WorkloadImports {
 	get workloadsWithContainers() {
 		return [
 			...this.Bucket,
-			...this.ElasticSearch,
-			...this.Mailer,
-			...this.MongoDatabase,
 			...this.MySqlDatabase,
 			...this.PostgresDatabase,
 			...this.Redis,
@@ -137,18 +119,6 @@ export class WorkloadImports {
 
 	get PostgresDatabase() {
 		return this.#importsByWorkload.PostgresDatabase;
-	}
-
-	get MongoDatabase() {
-		return this.#importsByWorkload.MongoDatabase;
-	}
-
-	get ElasticSearch() {
-		return this.#importsByWorkload.ElasticSearch;
-	}
-
-	get Mailer() {
-		return this.#importsByWorkload.Mailer;
 	}
 
 	get Bucket() {
@@ -198,20 +168,6 @@ export class WorkloadImports {
 						workload,
 					});
 					break;
-				case "ElasticSearch":
-					assertElasticSearch(workload);
-					this.#importsByWorkload[key].push({
-						src,
-						workload,
-					});
-					break;
-				case "MongoDatabase":
-					assertMongoDatabase(workload);
-					this.#importsByWorkload[key].push({
-						src,
-						workload,
-					});
-					break;
 				case "Cron":
 					assertCron(workload);
 					this.#importsByWorkload[key].push({
@@ -221,13 +177,6 @@ export class WorkloadImports {
 					break;
 				case "Task":
 					assertTask(workload);
-					this.#importsByWorkload[key].push({
-						src,
-						workload,
-					});
-					break;
-				case "Mailer":
-					assertMailer(workload);
 					this.#importsByWorkload[key].push({
 						src,
 						workload,

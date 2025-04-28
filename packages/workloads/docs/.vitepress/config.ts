@@ -30,11 +30,8 @@ export default defineConfig({
 								items: [
 									{ text: "PostgresDatabase", link: "postgres" },
 									{ text: "MySqlDatabase", link: "mysql" },
-									{ text: "MongoDatabase", link: "mongo-db" },
 									{ text: "Bucket", link: "bucket" },
 									{ text: "Redis", link: "redis" },
-									{ text: "Mailer", link: "mailer" },
-									{ text: "ElasticSearch", link: "elastic-search" },
 								],
 							},
 							{

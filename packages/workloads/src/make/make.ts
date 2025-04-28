@@ -28,20 +28,8 @@ export class Make {
 
 	async #collectWorkloads() {
 		const manifest = await this.#initManifest();
-		for (const imported of this.#imports.Mailer) {
-			manifest.mailer.push({
-				id: imported.workload.id,
-				connectionStringEnvVar: imported.workload.connectionStringEnvVar,
-			});
-		}
 		for (const imported of this.#imports.Redis) {
 			manifest.redis.push({
-				id: imported.workload.id,
-				connectionStringEnvVar: imported.workload.connectionStringEnvVar,
-			});
-		}
-		for (const imported of this.#imports.ElasticSearch) {
-			manifest.elasticSearch.push({
 				id: imported.workload.id,
 				connectionStringEnvVar: imported.workload.connectionStringEnvVar,
 			});
@@ -53,7 +41,6 @@ export class Make {
 		}
 		for (const imported of [
 			...this.#imports.PostgresDatabase,
-			...this.#imports.MongoDatabase,
 			...this.#imports.MySqlDatabase,
 		]) {
 			this.#addDatabase(imported.workload, manifest.postgresDatabase);

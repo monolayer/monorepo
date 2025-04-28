@@ -14,9 +14,6 @@ export type {
 	Database,
 	DatabaseOptions,
 } from "~workloads/workloads/stateful/database.js";
-export { ElasticSearch } from "~workloads/workloads/stateful/elastic-search.js";
-export { Mailer } from "~workloads/workloads/stateful/mailer.js";
-export { MongoDatabase } from "~workloads/workloads/stateful/mongo-database.js";
 export { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 export { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 export { Redis } from "~workloads/workloads/stateful/redis.js";

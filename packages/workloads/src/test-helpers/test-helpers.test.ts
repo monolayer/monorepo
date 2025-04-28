@@ -1,6 +1,5 @@
 import { Redis as IORedis } from "ioredis";
 import mysql from "mysql2/promise";
-import nodemailer from "nodemailer";
 import pg from "pg";
 import {
 	assert,
@@ -17,12 +16,6 @@ import {
 } from "~test/__setup__/helpers.js";
 import { startContainer } from "~workloads/containers/admin/container.js";
 import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
-import {
-	deleteMailerMessages,
-	mailerMesages,
-	mailerMessageHTML,
-	mailerMessageText,
-} from "~workloads/test-helpers/mailer.js";
 import { truncateMySqlTables } from "~workloads/test-helpers/mysql.js";
 import { truncatePostgresTables } from "~workloads/test-helpers/postgres.js";
 import { flushRedis } from "~workloads/test-helpers/redis.js";
@@ -30,7 +23,6 @@ import {
 	clearPerformedTasks,
 	performedTasks,
 } from "~workloads/test-helpers/task.js";
-import { Mailer } from "~workloads/workloads/stateful/mailer.js";
 import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 import { Redis } from "~workloads/workloads/stateful/redis.js";
@@ -142,64 +134,6 @@ test(
 		assert.strictEqual(citiesAfter.length, 0);
 
 		await connection.end();
-	},
-);
-
-test(
-	"mailerMesages",
-	{ sequential: true, timeout: 20000 },
-	async ({ containers }) => {
-		const mailer = new Mailer("transactions", (connectionStringEnvVar) =>
-			nodemailer.createTransport(process.env[connectionStringEnvVar]!),
-		);
-
-		await startContainer(mailer, {
-			mode: "test",
-			waitForHealthcheck: true,
-		});
-		const container = await getExistingContainer(mailer, "test");
-		assert(container);
-		containers.push(container);
-
-		await mailer.client.sendMail({
-			from: "no-reply@workloads.com",
-			to: "demo@example.com",
-			subject: "Hello!",
-			text: `Hi there!`,
-			html: "<span>Hi There!<span>",
-		});
-
-		const response = await mailerMesages(mailer);
-		assert(response.data?.messages);
-		assert.strictEqual(response.data.messages.length, 1);
-		assert.deepStrictEqual(response.data.messages[0]?.To, [
-			{ Address: "demo@example.com", Name: "" },
-		]);
-		assert.deepStrictEqual(response.data.messages[0]?.From, {
-			Address: "no-reply@workloads.com",
-			Name: "",
-		});
-
-		// mailerMesages
-		const messagesResponse = await mailerMesages(mailer);
-		assert(messagesResponse.data?.messages);
-
-		// mailerMessageText
-		const messasgeTextResponse = await mailerMessageText(mailer, {
-			path: { ID: messagesResponse.data?.messages[0]!.ID ?? "" },
-		});
-		assert.strictEqual(messasgeTextResponse.data, "Hi there!");
-
-		// mailerMessageHTML
-		const messageHTMLReponse = await mailerMessageHTML(mailer, {
-			path: { ID: messagesResponse.data?.messages[0]!.ID ?? "" },
-		});
-		assert.strictEqual(messageHTMLReponse.data, "<span>Hi There!<span>");
-
-		// Delete Messages
-		await deleteMailerMessages(mailer, {});
-
-		assert.strictEqual((await mailerMesages(mailer)).data?.messages?.length, 0);
 	},
 );
 
