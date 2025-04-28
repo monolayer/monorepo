@@ -10,5 +10,7 @@ export async function performLater<P>(
 	data: P | P[],
 	options?: PerformOptions,
 ) {
-	return await dispatcher()(task, data, options);
+	return await (
+		await dispatcher()
+	)(task, data, options);
 }

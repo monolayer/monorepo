@@ -136,6 +136,8 @@
 		"tsup": "^8.3.5",
 		"type-fest": "^4.10.1",
 		"type-testing": "^0.2.0",
-		"vitest": "^2.1.9"
+		"vitest": "^2.1.9",
+		"@monolayer/task-bullmq-adapter": "^1.0.0-pre-4",
+		"@monolayer/task-sqs-adapter": "^1.0.0-pre-1"
 	}
 }

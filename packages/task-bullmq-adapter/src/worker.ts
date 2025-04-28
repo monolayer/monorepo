@@ -1,8 +1,7 @@
 import { Worker as BullWorker } from "bullmq";
-import { computeBackoff } from "~workloads/workloads/stateless/task/backoffs.js";
-import type { Task } from "~workloads/workloads/stateless/task/task.js";
+import type { Task } from "src/types.js";
 
-export class TaskBullWorker<P> extends BullWorker<P> {
+export class Worker<P> extends BullWorker<P> {
 	constructor(task: Task<P>) {
 		super(
 			task.id,
@@ -47,4 +46,32 @@ export class TaskBullWorker<P> extends BullWorker<P> {
 	async stop() {
 		this.close();
 	}
+}
+
+export interface ConstantBackoff {
+	type: "constant";
+	delay: number;
+}
+
+export interface ExponentialBackoff {
+	type: "exponential";
+	delay: number;
+}
+
+export function computeBackoff(
+	attemptsMade: number,
+	backoff?: ExponentialBackoff | ConstantBackoff,
+) {
+	if (backoff !== undefined) {
+		switch (backoff.type) {
+			case "constant":
+				return backoff.delay;
+			case "exponential":
+				if (backoff.delay < 0 || attemptsMade < 0) {
+					throw new Error("Retry number cannot be less that 0");
+				}
+				return Math.round(Math.pow(2, attemptsMade) * backoff.delay);
+		}
+	}
+	return 0;
 }

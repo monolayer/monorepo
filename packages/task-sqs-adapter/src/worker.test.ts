@@ -1,24 +1,22 @@
 import { GetQueueAttributesCommand } from "@aws-sdk/client-sqs";
-import { setTimeout } from "timers/promises";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { SQSClient } from "src/client.js";
+import { Worker } from "src/worker.js";
 import {
-	setupSqsQueueForSingleWorker,
+	setupSqsQueueForWorker,
 	tearDownSqsQueueForWorker,
 	type TaskSQSWorkerContext,
-} from "~test/__setup__/helpers.js";
+} from "tests/setup.js";
+import { setTimeout } from "timers/promises";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { Task } from "~workloads/workloads/stateless/task/task.js";
-import {
-	TaskSingleSQSClient,
-	TaskSingleSQSWorker,
-} from "~workloads/workloads/stateless/task/workers/sqs-single-queue.js";
 
 vi.setConfig({
 	maxConcurrency: 1,
 });
 
-describe("TaskSQSWorker", { sequential: true, concurrent: false }, () => {
+describe("Client Worker", { sequential: true, concurrent: false }, () => {
 	beforeEach<TaskSQSWorkerContext>(async (context) => {
-		await setupSqsQueueForSingleWorker(context);
+		await setupSqsQueueForWorker(context);
 	});
 
 	afterEach<TaskSQSWorkerContext>(async (context) => {
@@ -32,25 +30,20 @@ describe("TaskSQSWorker", { sequential: true, concurrent: false }, () => {
 		const testTask = new Task<Record<string, string>>(
 			context.task.id,
 			async (data): Promise<void> => {
-				console.log("PROCESSING", data);
 				processedTask.push(data);
 			},
 			{
 				onError() {},
 			},
 		);
-		const client = new TaskSingleSQSClient();
-		const executionId = await client.sendTask(
-			testTask,
-			{},
-			{ taskId: testTask.id, payload: { hello: "world" } },
-		);
+		const client = new SQSClient();
+		const executionId = await client.sendTask(testTask, {}, { hello: "world" });
 		const secondExecutionId = await client.sendTask(
 			testTask,
 			{},
-			{ taskId: testTask.id, payload: { hello: "world" } },
+			{ hello: "world" },
 		);
-		const sqsWorker = new TaskSingleSQSWorker([testTask]);
+		const sqsWorker = new Worker(testTask);
 
 		while (processedTask.length === 0) {
 			await setTimeout(1000);
@@ -84,18 +77,10 @@ describe("TaskSQSWorker", { sequential: true, concurrent: false }, () => {
 				onError() {},
 			},
 		);
-		const client = new TaskSingleSQSClient();
-		await client.sendTask(
-			testTask,
-			{},
-			{ taskId: testTask.id, payload: { hello: "world" } },
-		);
-		await client.sendTask(
-			testTask,
-			{},
-			{ taskId: testTask.id, payload: { hello: "world" } },
-		);
-		const sqsWorker = new TaskSingleSQSWorker([testTask]);
+		const client = new SQSClient();
+		await client.sendTask(testTask, {}, { hello: "world" });
+		await client.sendTask(testTask, {}, { hello: "world" });
+		const sqsWorker = new Worker(testTask);
 
 		while (processedTask.length !== 2) {
 			await setTimeout(50);
@@ -131,14 +116,10 @@ describe("TaskSQSWorker", { sequential: true, concurrent: false }, () => {
 					},
 				},
 			);
-			const client = new TaskSingleSQSClient();
-			await client.sendTask(
-				testTask,
-				{},
-				{ taskId: testTask.id, payload: { hello: "world" } },
-			);
+			const client = new SQSClient();
+			await client.sendTask(testTask, {}, { hello: "world" });
 
-			const sqsWorker = new TaskSingleSQSWorker([testTask]);
+			const sqsWorker = new Worker(testTask);
 
 			await setTimeout(90000);
 			sqsWorker.stop();

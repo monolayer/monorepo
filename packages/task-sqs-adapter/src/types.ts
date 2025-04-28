@@ -1,34 +1,70 @@
-import { kebabCase } from "case-anything";
-import type {
-	ConstantBackoff,
-	ExponentialBackoff,
-} from "~workloads/workloads/stateless/task/backoffs.js";
-import { performLater } from "~workloads/workloads/stateless/task/perform-later.js";
-import { performNow } from "~workloads/workloads/stateless/task/perform-now.js";
-import { Workload } from "~workloads/workloads/workload.js";
+export type ExecutionId = string & {
+	_brand: "ExecutionId";
+};
 
-export class Task<P> extends Workload {
+export interface PerformOptions {
+	/**
+	 * Amount in milliseconds to wait until this task can be processed.
+	 *
+	 * @defaultValue 0
+	 */
+	delay?: number;
+}
+
+/**
+ * @group Abstract Classes
+ */
+declare abstract class Workload {
+	/**
+	 * Unique ID
+	 */
+	readonly id: string;
+	constructor(
+		/**
+		 * Unique ID.
+		 */
+		id: string,
+	);
+}
+
+export interface ConstantBackoff {
+	type: "constant";
+	delay: number;
+}
+export interface ExponentialBackoff {
+	type: "exponential";
+	delay: number;
+}
+export declare function computeBackoff(
+	attemptsMade: number,
+	backoff?: ExponentialBackoff | ConstantBackoff,
+): number;
+
+export declare class Task<P> extends Workload {
+	/**
+	 * Name of the task.
+	 */
+	name: string;
+	/**
+	 * Function that processes a task.
+	 */
+	work: (task: { taskId: string; data: P }) => Promise<void>;
+	options?: TaskOptions<P> | undefined;
 	constructor(
 		/**
 		 * Name of the task.
 		 */
-		public name: string,
+		name: string,
 		/**
 		 * Function that processes a task.
 		 */
-		public work: (task: { taskId: string; data: P }) => Promise<void>,
-		public options?: TaskOptions<P>,
-	) {
-		super(kebabCase(name));
-	}
-
+		work: (task: { taskId: string; data: P }) => Promise<void>,
+		options?: TaskOptions<P> | undefined,
+	);
 	/**
 	 * Performs the task immediately in the current processs.
 	 */
-	async performNow(data: P | P[]) {
-		await performNow(this, data);
-	}
-
+	performNow(data: P | P[]): Promise<void>;
 	/**
 	 * Performs the task later, dispatching the task to a queue.
 	 *
@@ -38,48 +74,28 @@ export class Task<P> extends Workload {
 	 *
 	 * In test, the task will collected ans can be retrieved with the `performedTasks` test helper.
 	 */
-	async performLater(data: P | P[], options?: PerformOptions) {
-		return await performLater(this, data, options);
-	}
+	performLater(
+		data: P | P[],
+		options?: PerformOptions,
+	): Promise<ExecutionId | ExecutionId[]>;
 
-	handleError(error?: unknown, data?: P, executionId?: string) {
-		if (this.options?.onError) {
-			this.options?.onError(
-				new TaskError("Error while performing tasks", {
-					task: this.id,
-					executionId,
-					data,
-					error,
-				}),
-			);
-		} else {
-			console.log(
-				`An error was thrown in ${this.id} and the onError callback function is undefined.`,
-			);
-		}
-	}
+	handleError(error?: unknown, data?: P, executionId?: string): void;
 }
 
 export interface TaskOptions<P> {
 	onError?: (error: TaskError<P>) => void;
 	retry?: RetryOptions;
 }
-
-export class TaskError<P> extends Error {
-	declare cause: TaskErrorCause<P>;
-
-	constructor(message: string, cause: TaskErrorCause<P>) {
-		super(message, { cause });
-	}
+export declare class TaskError<P> extends Error {
+	cause: TaskErrorCause<P>;
+	constructor(message: string, cause: TaskErrorCause<P>);
 }
-
 export type TaskErrorCause<P> = {
 	task: string;
 	executionId?: string;
 	data?: P;
 	error: unknown;
 };
-
 export interface RetryOptions {
 	/**
 	 * The total number of attempts to try the job until it completes.
@@ -103,7 +119,6 @@ export interface RetryOptions {
 	 */
 	backoff?: ExponentialBackoff | ConstantBackoff;
 }
-
 export interface PerformOptions {
 	/**
 	 * Amount in milliseconds to wait until this task can be processed.

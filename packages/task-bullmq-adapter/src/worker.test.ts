@@ -1,15 +1,19 @@
 import { Redis as IORedis } from "ioredis";
-import { setTimeout } from "timers/promises";
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { Worker } from "src/worker.js";
 import {
 	setupBullContext,
 	teardownBullContext,
 	type BullContext,
-} from "~test/__setup__/helpers.js";
+} from "tests/setup.js";
+import { setTimeout } from "timers/promises";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { Task } from "~workloads/workloads/stateless/task/task.js";
-import { TaskBullWorker } from "~workloads/workloads/stateless/task/workers/bull.js";
 
-afterEach<BullContext<{ hello: string }>>(async (context) => {
+beforeEach<BullContext<{ name: string }>>(async (context) => {
+	await setupBullContext(context);
+});
+
+afterEach<BullContext<{ name: string }>>(async (context) => {
 	await teardownBullContext(context);
 });
 
@@ -22,45 +26,49 @@ vi.setConfig({
 });
 
 describe("TaskBullWorker", () => {
-	test<BullContext<TaskData>>("Process tasks", async (context) => {
-		let processed = 0;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const errors: any = [];
-		const testTask = new Task<TaskData>(
-			"Send Emails",
-			async () => {
-				processed += 1;
-			},
-			{
-				retry: {
-					times: 6,
+	test<BullContext<TaskData>>(
+		"Process tasks",
+		{ timeout: 7000 },
+		async (context) => {
+			let processed = 0;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const errors: any = [];
+			const testTask = new Task<TaskData>(
+				"Send Emails",
+				async () => {
+					processed += 1;
 				},
-				onError(error) {
-					errors.push(error);
+				{
+					// retry: {
+					// 	times: 6,
+					// },
+					onError(error) {
+						console.log(error);
+						errors.push(error);
+					},
 				},
-			},
-		);
+			);
 
-		await setupBullContext(context, testTask);
+			const worker = new Worker(testTask);
+			expect(await context.client.zcard(worker.toKey("failed"))).toBe(0);
 
-		const worker = new TaskBullWorker(testTask);
-		await worker.waitUntilReady();
+			await worker.waitUntilReady();
+			expect(await context.client.zcard(worker.toKey("failed"))).toBe(0);
 
-		expect(await context.client.zcard(worker.toKey("failed"))).toBe(0);
+			await testTask.performLater({ name: "world" });
+			await testTask.performLater({ name: "world" });
+			await testTask.performLater({ name: "world" });
 
-		await testTask.performLater({ name: "world" });
-		await testTask.performLater({ name: "world" });
-		await testTask.performLater({ name: "world" });
+			while (processed < 3) {
+				await setTimeout(5000);
+			}
+			await worker.close();
 
-		while (processed < 3) {
-			await setTimeout(5000);
-		}
-		await worker.close();
+			expect(await context.client.zcard(worker.toKey("failed"))).toBe(0);
 
-		expect(await context.client.zcard(worker.toKey("failed"))).toBe(0);
-
-		expect(errors).toStrictEqual([]);
-	});
+			expect(errors).toStrictEqual([]);
+		},
+	);
 
 	test<
 		BullContext<TaskData>
@@ -81,9 +89,7 @@ describe("TaskBullWorker", () => {
 			},
 		);
 
-		await setupBullContext(context, testTask);
-
-		const worker = new TaskBullWorker(testTask);
+		const worker = new Worker(testTask);
 		await worker.waitUntilReady();
 
 		expect(await context.client.zcard(worker.toKey("failed"))).toBe(0);
@@ -102,7 +108,7 @@ describe("TaskBullWorker", () => {
 
 	test<
 		BullContext<TaskData>
-	>("onError callback is called when a task throws", async (context) => {
+	>("onError callback is called when a task throws", async () => {
 		let processed = 0;
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const errors: any = [];
@@ -130,9 +136,7 @@ describe("TaskBullWorker", () => {
 			},
 		);
 
-		await setupBullContext(context, testTask);
-
-		const worker = new TaskBullWorker(testTask);
+		const worker = new Worker(testTask);
 		await worker.waitUntilReady();
 
 		const jobIds = [
@@ -166,7 +170,7 @@ describe("TaskBullWorker", () => {
 			},
 		});
 
-		const worker = new TaskBullWorker(testTask);
+		const worker = new Worker(testTask);
 
 		await setTimeout(1000);
 		await worker.close();

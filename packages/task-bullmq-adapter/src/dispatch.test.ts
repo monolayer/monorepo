@@ -1,10 +1,10 @@
 import { Redis as IORedis } from "ioredis";
-import { afterEach, beforeEach, expect, test } from "vitest";
 import {
 	setupBullContext,
 	teardownBullContext,
 	type BullContext,
-} from "~test/__setup__/helpers.js";
+} from "tests/setup.js";
+import { afterEach, beforeEach, expect, test } from "vitest";
 
 beforeEach<BullContext<{ hello: string }>>(async (context) => {
 	await setupBullContext(context);

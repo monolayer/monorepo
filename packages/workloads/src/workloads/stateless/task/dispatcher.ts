@@ -1,14 +1,9 @@
-import { bullDispatch } from "~workloads/workloads/stateless/task/bull.js";
 import {
 	developmentDispatch,
 	testDispatch,
 } from "~workloads/workloads/stateless/task/local.js";
-import {
-	sqsDispatch,
-	sqsSingleDispatch,
-} from "~workloads/workloads/stateless/task/sqs.js";
 
-export function dispatcher() {
+export async function dispatcher() {
 	if (process.env.NODE_ENV !== "production") {
 		if (process.env.NODE_ENV === "test") {
 			return testDispatch;
@@ -17,11 +12,9 @@ export function dispatcher() {
 	}
 	switch (process.env.MONO_TASK_MODE) {
 		case "sqs":
-			return sqsDispatch;
-		case "sqs-single":
-			return sqsSingleDispatch;
+			return (await import("@monolayer/task-sqs-adapter")).sqsDispatch;
 		case "bull":
-			return bullDispatch;
+			return (await import("@monolayer/task-bullmq-adapter")).bullDispatch;
 		default:
 			throw new Error(`undefined dispatcher`);
 	}

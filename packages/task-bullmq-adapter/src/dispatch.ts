@@ -1,13 +1,12 @@
 import { remember } from "@epic-web/remember";
 import { type JobsOptions, type Queue } from "bullmq";
 import { randomUUID } from "node:crypto";
-import type { ExecutionId } from "~workloads/workloads/stateless/task/perform-now.js";
-import {
-	type PerformOptions,
-	type Task,
-	type TaskOptions,
-} from "~workloads/workloads/stateless/task/task.js";
-import { validateJsonStringified } from "~workloads/workloads/stateless/task/validate-data-size.js";
+import type {
+	ExecutionId,
+	PerformOptions,
+	Task,
+	TaskOptions,
+} from "src/types.js";
 
 export async function bullDispatch<P>(
 	task: Task<P>,
@@ -53,7 +52,7 @@ export const bullQueues = remember(
 	() => ({}) as Record<string, Queue>,
 );
 
-export async function bullQueue<P>(task: Task<P>): Promise<Queue> {
+async function bullQueue<P>(task: Task<P>): Promise<Queue> {
 	const queueKey = task.id as keyof typeof bullQueues;
 	if (bullQueues[queueKey] !== undefined) {
 		return bullQueues[queueKey];
@@ -65,4 +64,13 @@ export async function bullQueue<P>(task: Task<P>): Promise<Queue> {
 		},
 	});
 	return bullQueues[queueKey];
+}
+
+function validateJsonStringified<P>(data: P, max: number = 256000) {
+	const dataString = JSON.stringify(typeof data === "undefined" ? {} : data);
+	const byteLength = Buffer.byteLength(dataString, "utf8");
+
+	if (byteLength > max) {
+		throw new Error(`Data size exceeds the limit (${max} bytes)`);
+	}
 }

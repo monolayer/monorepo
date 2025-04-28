@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"rootDir": "",
+		"paths": {
+			"~utils/*": ["packages/utils/*"],
+			"@monorepo/utils/*": ["packages/utils/*"]
+		}
+	},
+	"references": []
+}
