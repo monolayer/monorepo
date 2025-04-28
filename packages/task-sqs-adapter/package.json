@@ -63,6 +63,9 @@
 		"skott": "^0.33.2",
 		"type-fest": "^4.10.1",
 		"type-testing": "^0.2.0",
-		"vitest": "^2.1.9"
+		"vitest": "^2.1.9",
+		"case-anything": "^3.1.2",
+		"@epic-web/remember": "^1.1.0",
+		"@aws-sdk/client-sqs": "^3.797.0"
 	}
 }
