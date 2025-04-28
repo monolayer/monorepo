@@ -44,10 +44,10 @@ The Lambda function must be configured as follows:
 
 - Handler: `adapter/index.handler`.
 - Environment Variables:
-  - S3_BUCKET_NAME (**required**): name of the bucket for the cache items.
-  - DYNAMODB_TAGS_TABLE (**required**): name of the DynamoDB table for the cache tags.
-  - CLOUDFRONT_DOMAIN (*optional*): CloudFront distribution domain name. To allow server actions to be called from a CloudFront distribution.
-  - CACHE_HANDLER_DEBUG (*optional*): Set to `true` to print cache operations.
+  - NEXTJS_ADAPTER_CACHE_BUCKET_NAME (**required**): name of the bucket for the cache items.
+  - NEXTJS_ADAPTER_DYNAMODB_TAGS_TABLE (**required**): name of the DynamoDB table for the cache tags.
+  - NEXTJS_ADAPTER_CLOUDFRONT_DOMAIN (*optional*): CloudFront distribution domain name. To allow server actions to be called from a CloudFront distribution.
+  - NEXTJS_ADAPTER_CACHE_DEBUG (*optional*): Set to `true` to print cache operations.
 - Permissions: read/write permissions to the S3 Bucket and DynamoDB table.
 
 ### Example
@@ -108,8 +108,8 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          S3_BUCKET_NAME: !Ref CacheBucket
-          DYNAMODB_TAGS_TABLE: !Ref DynamoDBTableName
+          NEXTJS_ADAPTER_CACHE_BUCKET_NAME: !Ref CacheBucket
+          NEXTJS_ADAPTER_DYNAMODB_TAGS_TABLE: !Ref DynamoDBTableName
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref CacheBucket

@@ -23,8 +23,11 @@ const nextConfig = JSON.parse(
 nextConfig["cacheHandler"] = "../adapter/cache-handler.mjs";
 nextConfig["cacheMaxMemorySize"] = 0;
 
-if (process.env.CLOUDFRONT_DOMAIN) {
-	appendToAllowedOrigins(nextConfig, process.env.CLOUDFRONT_DOMAIN);
+if (process.env.NEXTJS_ADAPTER_CLOUDFRONT_DOMAIN) {
+	appendToAllowedOrigins(
+		nextConfig,
+		process.env.NEXTJS_ADAPTER_CLOUDFRONT_DOMAIN,
+	);
 }
 
 process.env.__NEXT_PRIVATE_STANDALONE_CONFIG = JSON.stringify(nextConfig);

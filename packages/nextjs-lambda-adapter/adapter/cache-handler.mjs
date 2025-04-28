@@ -13,7 +13,7 @@ import {
 import { fromUtf8 } from "@aws-sdk/util-utf8-node";
 import path from "node:path";
 
-const S3_BUCKET = process.env.S3_BUCKET_NAME;
+const S3_BUCKET = process.env.NEXTJS_ADAPTER_CACHE_BUCKET_NAME;
 const CACHE_PREFIX = "server-cache/";
 
 const s3 = new S3Client();
@@ -111,7 +111,7 @@ export async function associateKeyToTags(key, tags, client) {
 	const dynamodbClient = client === undefined ? new DynamoDBClient({}) : client;
 	const transactItems = tags.map((tag) => ({
 		Update: {
-			TableName: process.env.DYNAMODB_TAGS_TABLE,
+			TableName: process.env.NEXTJS_ADAPTER_DYNAMODB_TAGS_TABLE,
 			Key: { PK: { S: tag } },
 			UpdateExpression:
 				"SET cacheKeys = list_append(if_not_exists(cacheKeys, :empty_list), :new_key)",
@@ -132,7 +132,7 @@ export async function associateKeyToTags(key, tags, client) {
 export async function deleteTag(tag, client) {
 	const dynamodbClient = client === undefined ? new DynamoDBClient({}) : client;
 	const params = {
-		TableName: process.env.DYNAMODB_TAGS_TABLE,
+		TableName: process.env.NEXTJS_ADAPTER_DYNAMODB_TAGS_TABLE,
 		Key: { PK: { S: tag } },
 		ReturnValues: "ALL_OLD",
 	};
@@ -142,7 +142,7 @@ export async function deleteTag(tag, client) {
 }
 
 function debug(...msg) {
-	if (process.env.CACHE_HANDLER_DEBUG === "true") {
+	if (process.env.NEXTJS_ADAPTER_CACHE_DEBUG === "true") {
 		console.debug(...msg);
 	}
 }

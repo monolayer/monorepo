@@ -11,7 +11,7 @@ import { associateKeyToTags, deleteTag } from "./cache-handler.mjs";
 
 let startedTestContainer: StartedTestContainer;
 
-process.env.DYNAMODB_TAGS_TABLE = "test-table";
+process.env.NEXTJS_ADAPTER_DYNAMODB_TAGS_TABLE = "test-table";
 process.env.AWS_ENDPOINT_URL_DYNAMODB = "http://localhost:8000";
 
 const dynamoDBClient = new DynamoDBClient({});
@@ -32,7 +32,7 @@ beforeAll(async () => {
 				AttributeType: "S",
 			},
 		],
-		TableName: process.env.DYNAMODB_TAGS_TABLE,
+		TableName: process.env.NEXTJS_ADAPTER_DYNAMODB_TAGS_TABLE,
 		KeySchema: [
 			{
 				AttributeName: "PK",
@@ -105,7 +105,7 @@ test("deleteTag", async () => {
 
 async function getKeysForTag(tag: string) {
 	const params = {
-		TableName: process.env.DYNAMODB_TAGS_TABLE,
+		TableName: process.env.NEXTJS_ADAPTER_DYNAMODB_TAGS_TABLE,
 		Key: { PK: { S: tag } },
 	};
 
