@@ -4,7 +4,14 @@ import path from "node:path";
 import { cwd, exit } from "node:process";
 import color from "picocolors";
 import { workloadsConfiguration } from "~workloads/configuration.js";
-import { Cron } from "~workloads/workloads.js";
+import {
+	type Bucket,
+	type Cron,
+	type MySqlDatabase,
+	type PostgresDatabase,
+	type Redis,
+	type Task,
+} from "~workloads/workloads.js";
 import {
 	assertBucket,
 	assertCron,
@@ -13,11 +20,6 @@ import {
 	assertRedis,
 	assertTask,
 } from "~workloads/workloads/assertions.js";
-import { Bucket } from "~workloads/workloads/stateful/bucket.js";
-import { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
-import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
-import { Redis } from "~workloads/workloads/stateful/redis.js";
-import { Task } from "~workloads/workloads/stateless/task/task.js";
 
 import type { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
 
@@ -56,12 +58,12 @@ export async function importWorkloads() {
 }
 
 const validConstructor = [
-	PostgresDatabase.name,
-	Redis.name,
-	MySqlDatabase.name,
-	Bucket.name,
-	Cron.name,
-	Task.name,
+	"PostgresDatabase",
+	"Redis",
+	"MySqlDatabase",
+	"Bucket",
+	"Cron",
+	"Task",
 ];
 
 function validWorkload(workloadConstructor: string) {

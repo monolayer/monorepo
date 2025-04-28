@@ -4,6 +4,9 @@ export default defineConfig({
 	format: ["esm"],
 	entry: ["./src/bin/cli.ts"],
 	outDir: "dist/bin",
+	banner: {
+		js: `import { createRequire } from 'module'; const require = createRequire(import.meta.url);`,
+	},
 	dts: false,
 	shims: false,
 	skipNodeModulesBundle: false,
