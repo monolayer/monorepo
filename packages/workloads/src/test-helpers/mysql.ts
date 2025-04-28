@@ -1,4 +1,3 @@
-import mysql from "mysql2/promise";
 import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 
 /**
@@ -11,39 +10,20 @@ export async function truncateMySqlTables(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	workload: MySqlDatabase<any>,
 ) {
+	const mysql = await import("mysql2/promise");
 	const connection = await mysql.createConnection(
 		process.env[workload.connectionStringEnvVar]!,
 	);
-	const tables = await tablesInDatabase(connection, workload.databaseName);
-	await truncateTablesInDatabase(connection, tables);
-	await connection.end();
-}
-
-/**
- * @internal
- */
-async function tablesInDatabase(
-	connection: mysql.Connection,
-	databaseName: string,
-) {
-	const [result] = await connection.query<mysql.RowDataPacket[]>(`
+	const [result] = await connection.query(`
 		SELECT table_name as table_name
 		FROM information_schema.tables
-		WHERE table_schema = '${databaseName}';
+		WHERE table_schema = '${workload.databaseName}';
 	`);
-	return result as { table_name: string }[];
-}
-
-/**
- * @internal
- */
-async function truncateTablesInDatabase(
-	connection: mysql.Connection,
-	tables: { table_name: string }[],
-) {
+	const tables = result as { table_name: string }[];
 	await connection.query("SET FOREIGN_KEY_CHECKS = 0;");
 	for (const table of tables) {
 		await connection.query(`TRUNCATE TABLE ${table.table_name};`);
 	}
 	await connection.query("SET FOREIGN_KEY_CHECKS = 1;");
+	await connection.end();
 }

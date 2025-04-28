@@ -1,5 +1,5 @@
 import { remember } from "@epic-web/remember";
-import { Queue, type JobsOptions } from "bullmq";
+import { type JobsOptions, type Queue } from "bullmq";
 import { randomUUID } from "node:crypto";
 import type { ExecutionId } from "~workloads/workloads/stateless/task/perform-now.js";
 import {
@@ -16,14 +16,14 @@ export async function bullDispatch<P>(
 ) {
 	validateJsonStringified(data);
 	if (!Array.isArray(data)) {
-		const bullJob = await bullQueue(task).add(
-			task.id,
-			data,
-			generateJob({ perform: options, task: task.options }),
-		);
+		const bullJob = await (
+			await bullQueue(task)
+		).add(task.id, data, generateJob({ perform: options, task: task.options }));
 		return bullJob.id as ExecutionId;
 	} else {
-		const bullJobs = await bullQueue(task).addBulk(
+		const bullJobs = await (
+			await bullQueue(task)
+		).addBulk(
 			data.map((data) => ({
 				name: task.id,
 				data,
@@ -53,11 +53,12 @@ export const bullQueues = remember(
 	() => ({}) as Record<string, Queue>,
 );
 
-export function bullQueue<P>(task: Task<P>) {
+export async function bullQueue<P>(task: Task<P>): Promise<Queue> {
 	const queueKey = task.id as keyof typeof bullQueues;
 	if (bullQueues[queueKey] !== undefined) {
 		return bullQueues[queueKey];
 	}
+	const Queue = (await import("bullmq")).Queue;
 	bullQueues[queueKey] = new Queue(queueKey, {
 		connection: {
 			url: process.env.MONO_TASK_REDIS_URL,

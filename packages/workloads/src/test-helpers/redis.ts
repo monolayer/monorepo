@@ -1,4 +1,3 @@
-import { Redis as IORedis } from "ioredis";
 import type { Redis } from "~workloads/workloads/stateful/redis.js";
 
 /**
@@ -15,7 +14,8 @@ export async function flushRedis(
 	 */
 	db?: number,
 ) {
-	const client = new IORedis(process.env[workload.connectionStringEnvVar]!);
+	const Redis = (await import("ioredis")).Redis;
+	const client = new Redis(process.env[workload.connectionStringEnvVar]!);
 	if (db) {
 		await client.select(db);
 	}

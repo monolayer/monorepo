@@ -1,4 +1,3 @@
-import pg from "pg";
 import type { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 
 /**
@@ -15,39 +14,24 @@ export async function truncatePostgresTables(
 	 */
 	schemaName?: string,
 ) {
+	const pg = await import("pg");
 	const pool = new pg.Pool({
 		connectionString: process.env[workload.connectionStringEnvVar],
 	});
-	const tables = await tablesInSchema(pool, schemaName ?? "public");
-	await truncateTablesInSchema(pool, tables);
-	await pool.end();
-}
-
-/**
- * @internal
- */
-async function tablesInSchema(pool: pg.Pool, schema: string) {
 	const result = await pool.query<{
 		table_name: string;
 		schema_name: string;
 	}>(`
 		SELECT c.relname as table_name, n.nspname as schema_name
 		FROM pg_class c LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
-		WHERE n.nspname = '${schema}'
+		WHERE n.nspname = '${schemaName ?? "public"}'
 		AND c.relkind IN ('r','p');`);
-	return result.rows;
-}
 
-/**
- * @internal
- */
-async function truncateTablesInSchema(
-	pool: pg.Pool,
-	tableAndSchemas: { table_name: string; schema_name: string }[],
-) {
-	const queries = tableAndSchemas.map(
-		(tableAndSchema) =>
-			`TRUNCATE TABLE ${tableAndSchema.schema_name}.${tableAndSchema.table_name} RESTART IDENTITY CASCADE;`,
+	const tables = result.rows;
+	const queries = tables.map(
+		(table) =>
+			`TRUNCATE TABLE ${table.schema_name}.${table.table_name} RESTART IDENTITY CASCADE;`,
 	);
 	await pool.query(queries.join("\n"));
+	await pool.end();
 }
