@@ -66,6 +66,7 @@
 		"vitest": "^2.1.9",
 		"case-anything": "^3.1.2",
 		"@epic-web/remember": "^1.1.0",
-		"@aws-sdk/client-sqs": "^3.797.0"
+		"@aws-sdk/client-sqs": "^3.797.0",
+		"@aws-sdk/client-dynamodb": "^3.797.0"
 	}
 }
