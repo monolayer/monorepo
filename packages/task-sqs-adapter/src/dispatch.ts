@@ -2,7 +2,7 @@ import { remember } from "@epic-web/remember";
 import { SQSClient } from "./client.js";
 import type { PerformOptions, Task } from "./types.js";
 
-export async function sqsDispatch<P>(
+export async function dispatcher<P>(
 	task: Task<P>,
 	data: P | P[],
 	options?: PerformOptions,
