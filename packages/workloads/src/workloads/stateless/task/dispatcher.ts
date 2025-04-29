@@ -3,8 +3,9 @@ import {
 	testDispatch,
 } from "~workloads/workloads/stateless/task/local.js";
 
-const sqsAdapter = "@monolayer/task-sqs-adapter";
-const bullMQAdapter = "@monolayer/task-bullmq-adapter";
+export const dispatcherAdapterSymbol = Symbol.for(
+	"@monolayer/workloads-task-dispacher",
+);
 
 export async function dispatcher(): Promise<typeof developmentDispatch> {
 	if (process.env.NODE_ENV !== "production") {
@@ -13,12 +14,12 @@ export async function dispatcher(): Promise<typeof developmentDispatch> {
 		}
 		return developmentDispatch;
 	}
-	switch (process.env.MONO_TASK_MODE) {
-		case "sqs":
-			return (await import(sqsAdapter)).sqsDispatch;
-		case "bull":
-			return (await import(bullMQAdapter)).bullDispatch;
-		default:
-			throw new Error(`undefined dispatcher`);
-	}
+	const dispatcherLib = process.env.TASK_DISPATCHER;
+	if (dispatcherLib == undefined) throw new Error(`undefined TASK_DISPATCHER`);
+
+	const dispatcher = (await import(dispatcherLib))
+		.dispatcher as typeof developmentDispatch;
+
+	if (dispatcher === undefined) throw new Error(`undefined dispatcher`);
+	return dispatcher;
 }
