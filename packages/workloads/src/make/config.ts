@@ -23,13 +23,17 @@ export function tsupConfig(
 					};
 			}
 		},
-		format: ["cjs"],
+		format: ["esm"],
+		banner: {
+			js: `import { createRequire } from 'module'; const require = createRequire(import.meta.url);`,
+		},
 		entry,
 		outDir,
 		dts: false,
-		shims: false,
+		shims: true,
 		skipNodeModulesBundle: true,
-		noExternal: [/monolayer/],
+		noExternal: undefined,
+		bundle: true,
 		clean: false,
 		target: "node22",
 		platform: "node",

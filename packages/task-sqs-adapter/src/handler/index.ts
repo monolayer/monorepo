@@ -41,7 +41,7 @@ export function makeSQSTaskHandler(opts: { tasksDir: string }) {
 
 				if (tasks[taskId] === undefined) {
 					tasks[taskId] = (
-						await import(path.join(opts.tasksDir, taskId, "index.cjs"))
+						await import(path.join(opts.tasksDir, taskId, "index.mjs"))
 					).default;
 				}
 

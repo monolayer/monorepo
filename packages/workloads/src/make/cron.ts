@@ -23,7 +23,7 @@ async function buildCron(cronImport: WorkloadImport<Cron>, dir: string) {
 	await build(
 		tsupConfig({ index: cronImport.src }, `.workloads/${dir}`, [/(.*)/], ext),
 	);
-	return `index${ext}`;
+	return `index.mjs`;
 }
 
 export async function cronRequiredFiles(taskInfo: CronInfo) {

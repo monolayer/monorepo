@@ -30,7 +30,7 @@ async function buildTask(
 			".cjs",
 		),
 	);
-	return "index.cjs";
+	return "index.mjs";
 }
 
 export async function taskRequiredFiles(taskInfo: TaskInfo) {
