@@ -7,7 +7,7 @@ import {
 	type BuildManifest,
 	type DatabaseWorkloadInfo,
 } from "~workloads/make/manifest.js";
-import { makeTask } from "~workloads/make/task.js";
+import { makeTask, taskRequiredFiles } from "~workloads/make/task.js";
 import { projectFramework } from "~workloads/scan/project.js";
 import type { WorkloadImports } from "~workloads/scan/workload-imports.js";
 import type { Database } from "~workloads/workloads/stateful/database.js";
@@ -47,22 +47,24 @@ export class Make {
 		}
 		for (const imported of this.#imports.Cron) {
 			const info = await makeCron(imported);
-			manifest.cron.push({
+			const cronInfo = {
 				id: imported.workload.id,
 				entryPoint: info.entryPoint,
 				path: info.path,
 				schedule: imported.workload.schedule,
-				dockerfile: info.dockerfileName,
-			});
+			};
+			manifest.cron.push(cronInfo);
+			await taskRequiredFiles(cronInfo);
 		}
 		for (const imported of this.#imports.Task) {
 			const info = await makeTask(imported);
-			manifest.task.push({
+			const taskInfo = {
 				id: imported.workload.name,
 				entryPoint: info.entryPoint,
 				path: info.path,
-				dockerfile: info.dockerfileName,
-			});
+			};
+			manifest.task.push(taskInfo);
+			await taskRequiredFiles(taskInfo);
 		}
 
 		return manifest;
@@ -112,14 +114,11 @@ export class Make {
 
 	async #initManifest() {
 		const manifest: BuildManifest = {
-			version: "1",
+			version: "2",
 			framework: (await projectFramework()) ?? "",
 			postgresDatabase: [],
 			mySqlDatabase: [],
 			redis: [],
-			elasticSearch: [],
-			mailer: [],
-			mongoDb: [],
 			bucket: [],
 			cron: [],
 			task: [],

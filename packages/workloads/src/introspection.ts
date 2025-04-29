@@ -10,7 +10,7 @@ export {
 	manifestJsonSchema,
 	type BucketInfo,
 	type BuildManifest,
-	type CronInto,
+	type CronInfo as CronInto,
 	type DatabaseWorkloadInfo,
 	type TaskInfo,
 	type WorkloadInfo,

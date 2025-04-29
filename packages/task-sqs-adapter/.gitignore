@@ -1,3 +1,5 @@
 docs/.vitepress/cache
 docs/.vitepress/dist
 docs/reference/api
+.tsup
+.aws-sam

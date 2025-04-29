@@ -3,8 +3,8 @@ import {
 	type Message,
 } from "@aws-sdk/client-sqs";
 import { snakeCase } from "case-anything";
-import { SQSClient } from "src/client.js";
-import type { Task } from "src/types.js";
+import { SQSClient } from "./client.js";
+import type { Task } from "./types.js";
 
 export class Worker<P> {
 	#client: SQSClient;

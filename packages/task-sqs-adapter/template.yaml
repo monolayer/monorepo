@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  IngressQueue:
+    Type: AWS::SQS::Queue
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      VisibilityTimeout: 60 # (lambda_function_timeout * 6) + max_batching_window_in_seconds
+      MessageRetentionPeriod: 345600
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt Dlq.Arn
+        maxReceiveCount: 1
+
+  Dlq:
+    Type: AWS::SQS::Queue
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      MessageRetentionPeriod: 345600
+
+  TasksTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+      BillingMode: PAY_PER_REQUEST
+
+  AppFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 1536
+      PackageType: Zip
+      Handler: index.handler
+      CodeUri: dist/handler
+      Runtime: nodejs22.x
+      Timeout: 30
+      Architectures:
+        - arm64
+      Environment:
+        Variables:
+          DYNAMODB_TABLE_NAME: !Ref TasksTable
+          NODE_ENV: production
+      LoggingConfig:
+        LogFormat: JSON
+        ApplicationLogLevel: TRACE
+        SystemLogLevel: INFO
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - SQSPollerPolicy:
+            QueueName: !GetAtt IngressQueue.QueueName
+        - DynamoDBWritePolicy: # required for the handler to write to the TasksTable
+            TableName: !Ref TasksTable
+
+      Events:
+        IngressSQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt IngressQueue.Arn
+            FunctionResponseTypes: [ReportBatchItemFailures]
+            MaximumBatchingWindowInSeconds: 0
+            BatchSize: 1
+            ScalingConfig:
+              MaximumConcurrency: 2
+
+    Metadata:
+      SkipBuild: true

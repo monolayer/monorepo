@@ -9,7 +9,14 @@ import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SQSClient } from "src/client.js";
 import { GenericContainer, type StartedTestContainer } from "testcontainers";
-import { vi, type TaskContext, type TestContext } from "vitest";
+import { createTable, deleteTable } from "tests/table.js";
+import {
+	afterAll,
+	beforeAll,
+	vi,
+	type TaskContext,
+	type TestContext,
+} from "vitest";
 
 export async function startLocalStackContainer() {
 	const container = new GenericContainer("localstack/localstack:3.8.1");
@@ -150,3 +157,30 @@ export async function tearDownSqsQueueForWorker(
 		await context.container.stop();
 	}
 }
+
+process.env.DYNAMODB_TABLE_NAME = "task-sqs-adapter";
+
+let startedTestContainer: StartedTestContainer;
+
+beforeAll(async () => {
+	try {
+		const port = await getPort();
+		const container = new GenericContainer("amazon/dynamodb-local:latest");
+		container.withExposedPorts({
+			container: 8000,
+			host: port,
+		});
+		startedTestContainer = await container.start();
+		process.env.AWS_ENDPOINT_URL_DYNAMODB = `http://localhost:${port}`;
+		await deleteTable();
+		await createTable();
+	} catch (e) {
+		console.error(e);
+	}
+});
+
+afterAll(async () => {
+	if (startedTestContainer) {
+		await startedTestContainer.stop();
+	}
+});

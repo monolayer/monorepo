@@ -1,6 +1,5 @@
 import { ReceiveMessageCommand } from "@aws-sdk/client-sqs";
-import { snakeCase } from "case-anything";
-import { SQSClient } from "src/client.js";
+import { kebabCase, snakeCase } from "case-anything";
 import {
 	setupSqsQueueForWorker,
 	tearDownSqsQueueForWorker,
@@ -9,6 +8,7 @@ import {
 import { setTimeout } from "timers/promises";
 import { afterEach, assert, beforeEach, expect, test, vi } from "vitest";
 import { Task } from "~workloads/workloads/stateless/task/task.js";
+import { SQSClient } from "./client.js";
 
 vi.setConfig({
 	allowOnly: true,
@@ -61,7 +61,7 @@ test<TaskSQSWorkerContext>("send tasks to queue", async (context) => {
 		new ReceiveMessageCommand({
 			QueueUrl: context.queueUrl,
 			MaxNumberOfMessages: 10,
-			MessageAttributeNames: ["executionId", "attempts"],
+			MessageAttributeNames: ["executionId", "attempts", "taskId"],
 		}),
 	);
 
@@ -72,14 +72,21 @@ test<TaskSQSWorkerContext>("send tasks to queue", async (context) => {
 		queueMesages.Messages.map((m) => ({
 			body: JSON.parse(m.Body ?? ""),
 			executionId: m.MessageAttributes!["executionId"]?.StringValue,
+			taskId: m.MessageAttributes!["taskId"]?.StringValue,
 			attempts: m.MessageAttributes!["attempts"]?.StringValue,
 		})),
 	).toStrictEqual([
-		{ body: { hello: "world" }, executionId: firstMessageId, attempts: "1" },
+		{
+			body: { hello: "world" },
+			executionId: firstMessageId,
+			attempts: "1",
+			taskId: kebabCase(context.task.id),
+		},
 		{
 			body: { hello: "planet" },
 			executionId: secondMessageId,
 			attempts: "1",
+			taskId: kebabCase(context.task.id),
 		},
 	]);
 });
@@ -108,7 +115,7 @@ test<TaskSQSWorkerContext>("send tasks to queue with delay", async (context) => 
 				new ReceiveMessageCommand({
 					QueueUrl: context.queueUrl,
 					MaxNumberOfMessages: 10,
-					MessageAttributeNames: ["executionId", "attempts"],
+					MessageAttributeNames: ["executionId", "attempts", "taskId"],
 				}),
 			)
 		).Messages,
@@ -118,7 +125,7 @@ test<TaskSQSWorkerContext>("send tasks to queue with delay", async (context) => 
 		new ReceiveMessageCommand({
 			QueueUrl: context.queueUrl,
 			MaxNumberOfMessages: 10,
-			MessageAttributeNames: ["executionId", "attempts"],
+			MessageAttributeNames: ["executionId", "attempts", "taskId"],
 		}),
 	);
 
@@ -130,7 +137,7 @@ test<TaskSQSWorkerContext>("send tasks to queue with delay", async (context) => 
 		new ReceiveMessageCommand({
 			QueueUrl: context.queueUrl,
 			MaxNumberOfMessages: 10,
-			MessageAttributeNames: ["executionId", "attempts"],
+			MessageAttributeNames: ["executionId", "attempts", "taskId"],
 		}),
 	);
 
@@ -142,10 +149,16 @@ test<TaskSQSWorkerContext>("send tasks to queue with delay", async (context) => 
 		queueMesages.Messages.map((m) => ({
 			body: JSON.parse(m.Body ?? ""),
 			executionId: m.MessageAttributes!["executionId"]?.StringValue,
+			taskId: m.MessageAttributes!["taskId"]?.StringValue,
 			attempts: m.MessageAttributes!["attempts"]?.StringValue,
 		})),
 	).toStrictEqual([
-		{ body: { hello: "world" }, executionId: messageId, attempts: "1" },
+		{
+			body: { hello: "world" },
+			executionId: messageId,
+			attempts: "1",
+			taskId: kebabCase(context.task.id),
+		},
 	]);
 });
 
@@ -172,7 +185,7 @@ test<TaskSQSWorkerContext>("send tasks in bulk", async (context) => {
 		new ReceiveMessageCommand({
 			QueueUrl: context.queueUrl,
 			MaxNumberOfMessages: 10,
-			MessageAttributeNames: ["executionId", "attempts"],
+			MessageAttributeNames: ["executionId", "attempts", "taskId"],
 		}),
 	);
 
@@ -183,10 +196,21 @@ test<TaskSQSWorkerContext>("send tasks in bulk", async (context) => {
 		queueMesages.Messages.map((m) => ({
 			body: JSON.parse(m.Body ?? ""),
 			executionId: m.MessageAttributes!["executionId"]?.StringValue,
+			taskId: m.MessageAttributes!["taskId"]?.StringValue,
 			attempts: m.MessageAttributes!["attempts"]?.StringValue,
 		})),
 	).toStrictEqual([
-		{ body: { hello: "world" }, executionId: messageIds[0], attempts: "1" },
-		{ body: { hello: "planet" }, executionId: messageIds[1], attempts: "1" },
+		{
+			body: { hello: "world" },
+			executionId: messageIds[0],
+			attempts: "1",
+			taskId: kebabCase(context.task.id),
+		},
+		{
+			body: { hello: "planet" },
+			executionId: messageIds[1],
+			attempts: "1",
+			taskId: kebabCase(context.task.id),
+		},
 	]);
 });

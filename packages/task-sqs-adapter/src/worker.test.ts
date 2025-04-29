@@ -1,6 +1,4 @@
 import { GetQueueAttributesCommand } from "@aws-sdk/client-sqs";
-import { SQSClient } from "src/client.js";
-import { Worker } from "src/worker.js";
 import {
 	setupSqsQueueForWorker,
 	tearDownSqsQueueForWorker,
@@ -9,6 +7,8 @@ import {
 import { setTimeout } from "timers/promises";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { Task } from "~workloads/workloads/stateless/task/task.js";
+import { SQSClient } from "./client.js";
+import { Worker } from "./worker.js";
 
 vi.setConfig({
 	maxConcurrency: 1,

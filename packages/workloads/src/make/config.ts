@@ -1,7 +1,7 @@
 import type { Options } from "tsup";
 
 export function tsupConfig(
-	entry: string[],
+	entry: string[] | Record<string, string>,
 	outDir: string,
 	noExternal: (string | RegExp)[],
 	cjsExt: string = ".js",
@@ -28,13 +28,12 @@ export function tsupConfig(
 		outDir,
 		dts: false,
 		shims: false,
-		skipNodeModulesBundle: false,
+		skipNodeModulesBundle: true,
+		noExternal: [/monolayer/],
 		clean: false,
-		target: "node20",
+		target: "node22",
 		platform: "node",
 		minify: false,
-		bundle: true,
-		noExternal,
 		splitting: false,
 		treeshake: true,
 		cjsInterop: false,

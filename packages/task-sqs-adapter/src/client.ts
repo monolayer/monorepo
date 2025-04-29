@@ -8,7 +8,7 @@ import {
 import assert from "assert";
 import { snakeCase } from "case-anything";
 import { randomUUID } from "node:crypto";
-import type { ExecutionId, PerformOptions, Task } from "src/types.js";
+import type { ExecutionId, PerformOptions, Task } from "./types.js";
 
 export class SQSClient extends AWSSQSClient {
 	async sendTask<P>(
@@ -96,6 +96,10 @@ export class SQSClient extends AWSSQSClient {
 		data: P,
 	) {
 		const messageAttributes = {
+			taskId: {
+				DataType: "String",
+				StringValue: task.id,
+			},
 			executionId: {
 				DataType: "String",
 				StringValue: executionId,

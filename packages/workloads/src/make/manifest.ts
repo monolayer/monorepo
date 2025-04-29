@@ -4,11 +4,8 @@ export interface BuildManifest {
 	postgresDatabase: DatabaseWorkloadInfo[];
 	mySqlDatabase: DatabaseWorkloadInfo[];
 	redis: WorkloadInfo[];
-	elasticSearch: WorkloadInfo[];
-	mongoDb: DatabaseWorkloadInfo[];
-	mailer: WorkloadInfo[];
 	bucket: BucketInfo[];
-	cron: CronInto[];
+	cron: CronInfo[];
 	task: TaskInfo[];
 }
 
@@ -30,19 +27,17 @@ export interface BucketInfo {
 	name: string;
 }
 
-export interface CronInto {
+export interface CronInfo {
 	id: string;
 	path: string;
 	entryPoint: string;
 	schedule: string;
-	dockerfile: string;
 }
 
 export interface TaskInfo {
 	id: string;
 	path: string;
 	entryPoint: string;
-	dockerfile: string;
 }
 
 export const manifestJsonSchema = {
@@ -53,7 +48,7 @@ export const manifestJsonSchema = {
 	properties: {
 		version: {
 			type: "string",
-			enum: ["1"],
+			enum: ["2"],
 			description:
 				"The version of the schema. This must be '1' for version 1 of the schema.",
 		},
@@ -77,25 +72,6 @@ export const manifestJsonSchema = {
 			type: "array",
 			items: {
 				$ref: "#/$defs/WorkloadInfo",
-			},
-		},
-		elasticSearch: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/WorkloadInfo",
-			},
-		},
-		mongoDb: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/DatabaseWorkloadInfo",
-			},
-		},
-		mailer: {
-			type: "array",
-			items: {
-				$ref: "#/$defs/WorkloadInfo",
-				description: "Array of Mailer",
 			},
 		},
 		bucket: {
@@ -125,9 +101,6 @@ export const manifestJsonSchema = {
 		"postgresDatabase",
 		"mysqlDatabase",
 		"redis",
-		"elasticSearch",
-		"mongoDb",
-		"mailer",
 		"bucket",
 		"cron",
 		"task",
