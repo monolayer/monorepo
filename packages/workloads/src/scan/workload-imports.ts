@@ -46,10 +46,12 @@ export async function importWorkloads() {
 			const importPath = path.join(workloadsPath, fileName);
 			const imported = (await import(importPath)) as ModuleImport;
 			for (const [, workload] of Object.entries(imported)) {
-				const workloadKind = workload.constructor.name;
-				if (validWorkload(workloadKind)) {
-					const workloadPath = path.relative(cwd(), importPath);
-					imports.add(workloadPath, workload);
+				if (workload !== undefined) {
+					const workloadKind = workload.constructor.name;
+					if (validWorkload(workloadKind)) {
+						const workloadPath = path.relative(cwd(), importPath);
+						imports.add(workloadPath, workload);
+					}
 				}
 			}
 		}
