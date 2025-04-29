@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/task-sqs-adapter",
-	"version": "1.0.0-pre-7",
+	"version": "1.0.0-pre-9",
 	"description": "SQS adapter for tasks workloads (@monolayer/workloads)",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
