@@ -9,27 +9,27 @@ BullMQ adapter for task workloads from `@monolayer/workloads`.
 
 ## Usage
 
+### Dispatcher
+
 - Add package
 
   ```bash
   npm install @monolayer/task-bullmq-adapter
   ```
 
-- Set `MONO_TASK_MODE` environment variable to `bull`
+- Set `TASK_DISPATCHER` environment variable to `@monolayer/task-bullmq-adapter`
 
   ```bash
-  export MONO_TASK_MODE=bull
+  export MONO_TASK_MODE="@monolayer/task-bullmq-adapter"
   ```
 
-- Set `MONO_TASK_REDIS_URL` environment variable with the Redis instance connection string
+- Set `TASK_BULLMQ_ADAPTER_REDIS_URL` environment variable with the Redis instance connection string
 
   ```bash
-  export MONO_TASK_REDIS_URL=redis-connection-string
+  export TASK_BULLMQ_ADAPTER_REDIS_URL=redis-connection-string
   ```
 
-### Dispatcher
-
-Run your application with the task workload.
+- Run your application with the task workload.
 
 ### Worker
 
@@ -37,7 +37,7 @@ Wrap your task in a worker script.
 
 ```js
 import { Worker } from "@monolayer/task-bullmq-adapter";
-import task from "/path/to/task.js" // Build output from workloads build
+import task from "/path/to/task.mjs" // Build output from workloads build
 
 new Worker(task.default);
 ```
