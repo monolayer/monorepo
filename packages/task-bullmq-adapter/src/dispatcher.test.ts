@@ -5,6 +5,7 @@ import {
 	type BullContext,
 } from "tests/setup.js";
 import { afterEach, beforeEach, expect, test } from "vitest";
+import { dispatcher } from "./dispatcher.js";
 
 beforeEach<BullContext<{ hello: string }>>(async (context) => {
 	await setupBullContext(context);
@@ -18,7 +19,7 @@ test<BullContext<{ hello: string }>>(
 	"sends task to queue",
 	{ sequential: true, concurrent: false },
 	async (context) => {
-		await context.testTask.performLater({ hello: "world" });
+		await dispatcher(context.testTask, { hello: "world" });
 
 		const jobKeys = await jobKeysInRedis(context.client);
 
@@ -34,7 +35,7 @@ test<BullContext<{ hello: string }>>(
 	"sends task to queue with delay",
 	{ sequential: true, concurrent: false },
 	async (context) => {
-		await context.testTask.performLater({ hello: "world" }, { delay: 2000 });
+		await dispatcher(context.testTask, { hello: "world" }, { delay: 2000 });
 
 		const jobKeys = await jobKeysInRedis(context.client);
 
@@ -50,7 +51,7 @@ test<BullContext<{ hello: string }>>(
 	"sends tasks in bulk to queue",
 	{ sequential: true, concurrent: false },
 	async (context) => {
-		await context.testTask.performLater([
+		await dispatcher(context.testTask, [
 			{ hello: "world" },
 			{ hello: "world" },
 			{ hello: "world" },
