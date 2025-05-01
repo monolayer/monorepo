@@ -19,7 +19,7 @@ export async function setupBullContext<P>(
 ) {
 	context.container = await startRedisContainer();
 	const url = redisConnectionString(context.container);
-	vi.stubEnv("MONO_TASK_REDIS_URL", url);
+	vi.stubEnv("TASK_BULLMQ_ADAPTER_REDIS_URL", url);
 	vi.stubEnv("NODE_ENV", "production");
 	vi.stubEnv("MONO_TASK_MODE", "bull");
 	context.client = new IORedis(url);

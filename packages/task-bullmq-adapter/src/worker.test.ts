@@ -163,7 +163,7 @@ describe("TaskBullWorker", () => {
 	test<
 		BullContext<TaskData>
 	>("onError callback is called on connection errors", async () => {
-		vi.stubEnv("MONO_TASK_REDIS_URL", "redis://nonexistenthost:6379");
+		vi.stubEnv("TASK_BULLMQ_ADAPTER_REDIS_URL", "redis://nonexistenthost:6379");
 		const errors: Error[] = [];
 		const testTask = new Task<TaskData>("Send Emails", async () => {}, {
 			onError(error) {

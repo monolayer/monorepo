@@ -10,7 +10,7 @@ export class Worker<P> extends BullWorker<P> {
 			},
 			{
 				connection: {
-					url: process.env.MONO_TASK_REDIS_URL,
+					url: process.env.TASK_BULLMQ_ADAPTER_REDIS_URL,
 				},
 				removeOnComplete: { count: 0 },
 				lockDuration: 30000,

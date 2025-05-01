@@ -56,7 +56,7 @@ async function bullQueue<P>(task: Task<P>): Promise<Queue> {
 	const Queue = (await import("bullmq")).Queue;
 	bullQueues[queueKey] = new Queue(queueKey, {
 		connection: {
-			url: process.env.MONO_TASK_REDIS_URL,
+			url: process.env.TASK_BULLMQ_ADAPTER_REDIS_URL,
 		},
 	});
 	return bullQueues[queueKey];
