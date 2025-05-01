@@ -1,2 +1,2 @@
-export { dispatcher } from "./dispatch.js";
-export { Worker } from "./worker.js";
+export { dispatcher } from "./dispatcher.js";
+export { makeSQSTaskHandler } from "./handler.js";

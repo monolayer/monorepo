@@ -1,5 +1,6 @@
 import { ReceiveMessageCommand } from "@aws-sdk/client-sqs";
 import { kebabCase, snakeCase } from "case-anything";
+import type { Task } from "src/types.js";
 import {
 	setupSqsQueueForWorker,
 	tearDownSqsQueueForWorker,
@@ -7,8 +8,7 @@ import {
 } from "tests/setup.js";
 import { setTimeout } from "timers/promises";
 import { afterEach, assert, beforeEach, expect, test, vi } from "vitest";
-import { Task } from "~workloads/workloads/stateless/task/task.js";
-import { SQSClient } from "./client.js";
+import { dispatcher, sqsTaskQueueURL } from "./dispatcher.js";
 
 vi.setConfig({
 	allowOnly: true,
@@ -27,7 +27,7 @@ afterEach<TaskSQSWorkerContext>(async (context) => {
 });
 
 test<TaskSQSWorkerContext>("task queue url", async (context) => {
-	expect(context.queueUrl).toBe(
+	expect(sqsTaskQueueURL(context.task.id)).toBe(
 		process.env[
 			`MONO_TASK_${snakeCase(context.task.id).toUpperCase()}_SQS_QUEUE_URL`
 		],
@@ -35,26 +35,14 @@ test<TaskSQSWorkerContext>("task queue url", async (context) => {
 });
 
 test<TaskSQSWorkerContext>("send tasks to queue", async (context) => {
-	const testTask = new Task<Record<string, string>>(
-		context.task.id,
-		async (): Promise<void> => {},
-		{
-			onError() {},
-		},
-	);
-
-	const client = new SQSClient();
-	const firstMessageId = await client.sendTask(
+	const testTask = { id: kebabCase(context.task.id) } as Task<unknown>;
+	const firstMessageId = await dispatcher(testTask, { hello: "world" }, {});
+	const secondMessageId = await dispatcher(
 		testTask,
-		{},
-		{ hello: "world" },
-	);
-	const secondMessageId = await client.sendTask(
-		testTask,
-		{},
 		{
 			hello: "planet",
 		},
+		{},
 	);
 
 	const queueMesages = await context.awsSqsClient.send(
@@ -92,21 +80,14 @@ test<TaskSQSWorkerContext>("send tasks to queue", async (context) => {
 });
 
 test<TaskSQSWorkerContext>("send tasks to queue with delay", async (context) => {
-	const testTask = new Task<Record<string, string>>(
-		context.task.id,
-		async (): Promise<void> => {},
-		{
-			onError() {},
-		},
-	);
-	const client = new SQSClient();
+	const testTask = { id: kebabCase(context.task.id) } as Task<unknown>;
 
-	const messageId = await client.sendTask(
+	const messageId = await dispatcher(
 		testTask,
-		{ delay: 3000 },
 		{
 			hello: "world",
 		},
+		{ delay: 3000 },
 	);
 
 	assert.isUndefined(
@@ -163,23 +144,20 @@ test<TaskSQSWorkerContext>("send tasks to queue with delay", async (context) => 
 });
 
 test<TaskSQSWorkerContext>("send tasks in bulk", async (context) => {
-	const testTask = new Task<Record<string, string>>(
-		context.task.id,
-		async (): Promise<void> => {},
-		{
-			onError() {},
-		},
-	);
-	const client = new SQSClient();
+	const testTask = { id: kebabCase(context.task.id) } as Task<unknown>;
 
-	const messageIds = await client.sendTaskBatch(testTask, {}, [
-		{
-			hello: "world",
-		},
-		{
-			hello: "planet",
-		},
-	]);
+	const messageIds = await dispatcher(
+		testTask,
+		[
+			{
+				hello: "world",
+			},
+			{
+				hello: "planet",
+			},
+		],
+		{},
+	);
 
 	const queueMesages = await context.awsSqsClient.send(
 		new ReceiveMessageCommand({

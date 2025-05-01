@@ -1,9 +1,0 @@
-version = 0.1
-[default.deploy.parameters]
-stack_name = "tasks-test"
-resolve_s3 = true
-s3_prefix = "tasks-test"
-region = "us-west-1"
-profile = "blueprint"
-capabilities = "CAPABILITY_AUTO_EXPAND CAPABILITY_IAM"
-image_repositories = []

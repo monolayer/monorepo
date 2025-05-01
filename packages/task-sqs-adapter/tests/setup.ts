@@ -1,13 +1,13 @@
 import {
 	CreateQueueCommand,
 	GetQueueAttributesCommand,
+	SQSClient,
 } from "@aws-sdk/client-sqs";
 import { Task } from "@monolayer/workloads";
 import { snakeCase } from "case-anything";
 import getPort from "get-port";
 import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SQSClient } from "src/client.js";
 import { GenericContainer, type StartedTestContainer } from "testcontainers";
 import { createTable, deleteTable } from "tests/table.js";
 import {

@@ -7,7 +7,7 @@ Resources:
     DeletionPolicy: Delete
     UpdateReplacePolicy: Delete
     Properties:
-      VisibilityTimeout: 60 # (lambda_function_timeout * 6) + max_batching_window_in_seconds
+      VisibilityTimeout: 360
       MessageRetentionPeriod: 345600
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt Dlq.Arn

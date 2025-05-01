@@ -1,10 +1,7 @@
-import {
-	ConditionalCheckFailedException,
-	DynamoDBClient,
-	PutItemCommand,
-} from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import type { SQSBatchItemFailure, SQSEvent } from "aws-lambda";
 import path from "node:path";
+import { insertId } from "./idempotency.js";
 
 declare class Task<P> {
 	id: string;
@@ -77,34 +74,4 @@ export function makeSQSTaskHandler(opts: { tasksDir: string }) {
 		}
 	};
 	return handler;
-}
-
-async function insertId(
-	id: string,
-	ttlSeconds: number,
-	opts?: { client?: DynamoDBClient },
-) {
-	try {
-		const dynamoClient = opts?.client ?? new DynamoDBClient({});
-		const now = new Date();
-		now.setSeconds(now.getSeconds() + ttlSeconds * 1000);
-		await dynamoClient.send(
-			new PutItemCommand({
-				TableName: process.env.DYNAMODB_TABLE_NAME,
-				Item: {
-					PK: { S: id },
-					ttl: { N: Math.floor(now.getTime() / 1000).toString() },
-				},
-				ConditionExpression: "attribute_not_exists(PK)",
-			}),
-		);
-		return true;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	} catch (e: any) {
-		if (e instanceof ConditionalCheckFailedException) {
-			return false;
-		} else {
-			throw e;
-		}
-	}
 }
