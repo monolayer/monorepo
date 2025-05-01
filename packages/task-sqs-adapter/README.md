@@ -15,10 +15,12 @@ AWS SQS adapter for task workloads from `@monolayer/workloads`.
   npm install @monolayer/task-sqs-adapter
   ```
 
-- Set `MONO_TASK_MODE` environment variable to `sqs`
+### Dispatcher
+
+- Set `TASK_DISPATCHER` environment variable to `@monolayer/task-sqs-adapter`
 
   ```bash
-  export MONO_TASK_MODE=sqs
+  export TASK_DISPATCHER="@monolayer/task-sqs-adapter"
   ```
 
 - Set the environment variable with the SQS queue URL associated with the task.
@@ -31,9 +33,7 @@ AWS SQS adapter for task workloads from `@monolayer/workloads`.
 
   Each task has a unique environment variable associated with for its queue: `MONO_TASK_${snakeCase(taskId).toUpperCase()}_SQS_QUEUE_URL`
 
-### Dispatcher
-
-Run your application with the task workload.
+- Run your application with the task workload.
 
 ### Worker
 
@@ -41,7 +41,7 @@ Wrap your task in a worker script.
 
 ```js
 import { Worker } from "@monolayer/task-sqs-adapter";
-import task from "/path/to/task.js" // Build output from workloads build
+import task from "/path/to/task.mjs" // Build output from workloads build
 
 new Worker(task.default);
 ```
