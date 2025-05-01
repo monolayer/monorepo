@@ -10,8 +10,8 @@ import {
  * ```ts
  * import { Bootstrap } from "@monolayer/workloads";
  *
- * const bootstrap = new Bootstrap({
- *   commands: ["db:create", "db:seed"],f
+ * const bootstrap = new Bootstrap("bootstrap", {
+ *   scripts: "db:create",
  * });
  *
  * export default bootstrap;

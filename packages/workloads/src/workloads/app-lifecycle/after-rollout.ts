@@ -10,8 +10,8 @@ import {
  * ```ts
  * import { AfterRollout } from "@monolayer/workloads";
  *
- * const rollout = new AfterRollout({
- *   commands: ["db:migrate"],
+ * const rollout = new AfterRollout("after-rollout-1",{
+ *   script: "notify",
  * });
  *
  * export rollout;

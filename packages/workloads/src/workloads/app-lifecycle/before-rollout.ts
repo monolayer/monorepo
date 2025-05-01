@@ -10,8 +10,8 @@ import {
  * ```ts
  * import { BeforeRollout } from "@monolayer/workloads";
  *
- * const rollout = new BeforeRollout({
- *   commands: ["db:migrate"],
+ * const rollout = new BeforeRollout("before-1", {
+ *   scripts: "db:migrate",
  * });
  *
  * export default rollout;
