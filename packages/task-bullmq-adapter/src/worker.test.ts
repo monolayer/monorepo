@@ -1,4 +1,5 @@
 import { Redis as IORedis } from "ioredis";
+import { bullDispatch } from "src/dispatch.js";
 import { Worker } from "src/worker.js";
 import {
 	setupBullContext,
@@ -55,9 +56,9 @@ describe("TaskBullWorker", () => {
 			await worker.waitUntilReady();
 			expect(await context.client.zcard(worker.toKey("failed"))).toBe(0);
 
-			await testTask.performLater({ name: "world" });
-			await testTask.performLater({ name: "world" });
-			await testTask.performLater({ name: "world" });
+			await bullDispatch(testTask, { name: "world" });
+			await bullDispatch(testTask, { name: "world" });
+			await bullDispatch(testTask, { name: "world" });
 
 			while (processed < 3) {
 				await setTimeout(5000);
@@ -94,9 +95,9 @@ describe("TaskBullWorker", () => {
 
 		expect(await context.client.zcard(worker.toKey("failed"))).toBe(0);
 
-		await testTask.performLater({ name: "world" });
-		await testTask.performLater({ name: "world" });
-		await testTask.performLater({ name: "world" });
+		await bullDispatch(testTask, { name: "world" });
+		await bullDispatch(testTask, { name: "world" });
+		await bullDispatch(testTask, { name: "world" });
 
 		while (processed < 3) {
 			await setTimeout(50);
@@ -140,9 +141,9 @@ describe("TaskBullWorker", () => {
 		await worker.waitUntilReady();
 
 		const jobIds = [
-			await testTask.performLater({ name: "world" }),
-			await testTask.performLater({ name: "world" }),
-			await testTask.performLater({ name: "world" }),
+			await bullDispatch(testTask, { name: "world" }),
+			await bullDispatch(testTask, { name: "world" }),
+			await bullDispatch(testTask, { name: "world" }),
 		];
 
 		while (processed < 3) {
