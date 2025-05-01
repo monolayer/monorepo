@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/task-bullmq-adapter",
-	"version": "1.0.0-pre-4",
+	"version": "1.0.0-pre-10",
 	"description": "BullMQ adapter for tasks workloads (@monolayer/workloads)",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
