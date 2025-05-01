@@ -8,7 +8,7 @@ import type {
 	TaskOptions,
 } from "src/types.js";
 
-export async function bullDispatch<P>(
+export async function dispatcher<P>(
 	task: Task<P>,
 	data: P | P[],
 	options?: PerformOptions,

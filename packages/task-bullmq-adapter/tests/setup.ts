@@ -2,7 +2,7 @@ import getPort from "get-port";
 import { Redis as IORedis } from "ioredis";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
-import { bullQueues } from "src/dispatch.js";
+import { bullQueues } from "src/dispatcher.js";
 import { GenericContainer, type StartedTestContainer } from "testcontainers";
 import { vi } from "vitest";
 import { Task } from "~workloads/workloads/stateless/task/task.js";
