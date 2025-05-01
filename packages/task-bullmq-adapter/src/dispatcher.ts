@@ -1,4 +1,3 @@
-import { remember } from "@epic-web/remember";
 import { type JobsOptions, type Queue } from "bullmq";
 import { randomUUID } from "node:crypto";
 import type {
@@ -47,10 +46,7 @@ function generateJob<P>(options?: {
 	} satisfies JobsOptions;
 }
 
-export const bullQueues = remember(
-	"BullQueues",
-	() => ({}) as Record<string, Queue>,
-);
+export const bullQueues = {} as Record<string, Queue>;
 
 async function bullQueue<P>(task: Task<P>): Promise<Queue> {
 	const queueKey = task.id as keyof typeof bullQueues;

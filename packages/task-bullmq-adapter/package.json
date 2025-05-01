@@ -52,7 +52,6 @@
 		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/task-bullmq-dispatch -f"
 	},
 	"dependencies": {
-		"@epic-web/remember": "^1.1.0",
 		"bullmq": "^5.51.1"
 	},
 	"devDependencies": {
