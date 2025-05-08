@@ -62,6 +62,7 @@ export class AppRequest extends http.IncomingMessage {
 			headers,
 			body,
 			url,
+			socket: null,
 		});
 
 		this._read = () => {
