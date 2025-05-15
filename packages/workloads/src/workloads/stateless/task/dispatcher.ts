@@ -7,17 +7,16 @@ export const dispatcherAdapterSymbol = Symbol.for(
 	"@monolayer/workloads-task-dispacher",
 );
 
+const TASK_DISPATCHER_SYMBOL = Symbol.for(
+	"@monolayer/workloads/task-dispatcher",
+);
+
 export async function dispatcher(): Promise<typeof developmentDispatch> {
 	if (process.env.NODE_ENV === "production") {
-		const dispatcherLib = process.env.TASK_DISPATCHER;
-		if (dispatcherLib == undefined)
-			throw new Error(`undefined TASK_DISPATCHER`);
-
-		const dispatcher = (await import(dispatcherLib))
-			.dispatcher as typeof developmentDispatch;
-
+		// @ts-expect-error defined at runtime
+		const dispatcher = globalThis[TASK_DISPATCHER_SYMBOL];
 		if (dispatcher === undefined) throw new Error(`undefined dispatcher`);
-		return dispatcher;
+		return dispatcher as typeof developmentDispatch;
 	} else {
 		if (process.env.NODE_ENV === "test") {
 			return testDispatch;

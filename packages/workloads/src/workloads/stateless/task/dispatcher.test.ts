@@ -1,6 +1,3 @@
-import { bullDispatch } from "@monolayer/task-bullmq-adapter";
-// @ts-expect-error evailable in runtime
-import { sqsDispatch, sqsSingleDispatch } from "@monolayer/task-sqs-adapter";
 import { afterEach, expect, test, vi } from "vitest";
 import { dispatcher } from "~workloads/workloads/stateless/task/dispatcher.js";
 import {
@@ -8,8 +5,12 @@ import {
 	testDispatch,
 } from "~workloads/workloads/stateless/task/local.js";
 
+const dispatcherSymbol = Symbol.for("@monolayer/workloads/task-dispatcher");
+
 afterEach(() => {
 	vi.unstubAllEnvs();
+	//@ts-expect-error untyped
+	globalThis[dispatcherSymbol] = undefined;
 });
 
 test(
@@ -31,50 +32,21 @@ test(
 );
 
 test(
-	"is bull dispatcher in production environments when MONO_TASK_MODE is bull",
+	"throws in production environments when globalThis[TASK_DISPATCHER_SYMBOL] is not set",
 	{ sequential: true, concurrent: false },
 	async () => {
 		vi.stubEnv("NODE_ENV", "production");
-		vi.stubEnv("MONO_TASK_MODE", "bull");
-		expect(await dispatcher()).toBe(bullDispatch);
+		await expect(dispatcher).rejects.toThrow("undefined dispatcher");
 	},
 );
 
 test(
-	"is sqs dispatcher in production environments when MONO_TASK_MODE is sqs",
+	"dispatcher in production environments from globalThis[TASK_DISPATCHER_SYMBOL]",
 	{ sequential: true, concurrent: false },
 	async () => {
 		vi.stubEnv("NODE_ENV", "production");
-		vi.stubEnv("MONO_TASK_MODE", "sqs");
-		expect(await dispatcher()).toBe(sqsDispatch);
-	},
-);
-
-test(
-	"is sqs single dispatcher in production environments when MONO_TASK_MODE is sqs-single",
-	{ sequential: true, concurrent: false },
-	async () => {
-		vi.stubEnv("NODE_ENV", "production");
-		vi.stubEnv("MONO_TASK_MODE", "sqs-single");
-		expect(await dispatcher()).toBe(sqsSingleDispatch);
-	},
-);
-
-test(
-	"throws in production environments when MONO_TASK_MODE is not set",
-	{ sequential: true, concurrent: false },
-	() => {
-		vi.stubEnv("NODE_ENV", "production");
-		expect(dispatcher).rejects.toThrow("undefined dispatcher");
-	},
-);
-
-test(
-	"throws in production environments when MONO_TASK_MODE is not sqs or bull",
-	{ sequential: true, concurrent: false },
-	() => {
-		vi.stubEnv("NODE_ENV", "production");
-		vi.stubEnv("MONO_TASK_MODE", "something");
-		expect(dispatcher).rejects.toThrow("undefined dispatcher");
+		//@ts-expect-error untyped
+		globalThis[dispatcherSymbol] = "fake-dispatcher";
+		expect(await dispatcher()).toBe("fake-dispatcher");
 	},
 );
