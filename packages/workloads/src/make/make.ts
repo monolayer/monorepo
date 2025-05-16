@@ -107,9 +107,8 @@ export class Make {
 				recursive: true,
 				force: true,
 			});
-		} else {
-			mkdirSync(this.#buildDir);
 		}
+		mkdirSync(this.#buildDir);
 	}
 
 	async #initManifest() {
