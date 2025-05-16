@@ -1,6 +1,7 @@
 import type { Command } from "@commander-js/extra-typings";
 import ora from "ora";
 import { getContainerRuntimeClient, ImageName } from "testcontainers";
+import { LocalStackContainer } from "~workloads/containers/local-stack.js";
 import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
@@ -10,6 +11,7 @@ import {
 	type StatefulWorkloadWithClient,
 } from "~workloads/workloads.js";
 import {
+	assertBucket,
 	assertMySqlDatabase,
 	assertPostgresDatabase,
 	assertRedis,
@@ -37,6 +39,7 @@ export function pull(program: Command) {
 async function containerForWorkload(
 	workload: StatefulWorkloadWithClient<unknown> | StatefulWorkload,
 ) {
+	console.log("constructor", workload.constructor.name);
 	switch (workload.constructor.name) {
 		case "PostgresDatabase":
 			assertPostgresDatabase(workload);
@@ -47,6 +50,9 @@ async function containerForWorkload(
 		case "Redis":
 			assertRedis(workload);
 			return await new RedisContainer(workload).containerImage();
+		case "Bucket":
+			assertBucket(workload);
+			return await new LocalStackContainer(workload).containerImage();
 	}
 }
 

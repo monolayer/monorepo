@@ -24,7 +24,7 @@ export interface WorkloadInfo {
 }
 
 export interface BucketInfo {
-	name: string;
+	id: string;
 }
 
 export interface CronInfo {

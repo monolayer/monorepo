@@ -36,7 +36,7 @@ export class Make {
 		}
 		for (const imported of this.#imports.Bucket) {
 			manifest.bucket.push({
-				name: imported.workload.id,
+				id: imported.workload.id,
 			});
 		}
 		for (const imported of [
