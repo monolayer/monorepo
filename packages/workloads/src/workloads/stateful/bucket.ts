@@ -10,10 +10,10 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  * **NOTES**
  *
  * Launching the development or test containers with `npx workloads start` will write the environment
- * variable `MONO_AWS_ENDPOINT_URL` will be written to the corresponding dotenv file (`.env` or `.env.test`)
+ * variable `ML_AWS_ENDPOINT_URL` will be written to the corresponding dotenv file (`.env` or `.env.test`)
  *
  * When initializing the S3 client, you need to configure `forcePathStyle` and `endpoint`
- * if the dev or test container is running (*check for the `MONO_AWS_ENDPOINT_URL` environment
+ * if the dev or test container is running (*check for the `ML_AWS_ENDPOINT_URL` environment
  * variable*). See the example.
  *
  * @example
@@ -26,10 +26,10 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  * const s3Client = new S3Client({
  *   // Configure forcePathStyle and endpoint
  *   // when the dev or test container is running
- *   ...(process.env.MONO_AWS_ENDPOINT_URL
+ *   ...(process.env.ML_AWS_ENDPOINT_URL
  *     ? {
  *         forcePathStyle: true,
- *         endpoint: process.env.MONO_AWS_ENDPOINT_URL,
+ *         endpoint: process.env.ML_AWS_ENDPOINT_URL,
  *        }
  *     : {}),
  *   // Other configuration options
