@@ -16,7 +16,7 @@ export async function dotenvFile(mode: "dev" | "test") {
 		case "dev":
 			return configuration.envFileName?.development ?? ".env";
 		case "test":
-			return configuration.envFileName?.test ?? ".env.test";
+			return configuration.envFileName?.test ?? ".env.test.local";
 	}
 }
 
