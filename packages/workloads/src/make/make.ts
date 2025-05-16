@@ -70,7 +70,7 @@ export class Make {
 		return manifest;
 	}
 
-	#addDatabase(workload: Database<unknown>, info: DatabaseWorkloadInfo[]) {
+	#addDatabase(workload: Database, info: DatabaseWorkloadInfo[]) {
 		const dbInfo = {
 			name: workload.databaseName,
 			serverId: workload.databaseId,

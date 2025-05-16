@@ -1,6 +1,5 @@
 import { Redis as IORedis } from "ioredis";
 import mysql from "mysql2/promise";
-import pg from "pg";
 import {
 	assert,
 	beforeEach,
@@ -38,11 +37,6 @@ test(
 		}
 		const postgreSQL = new PostgresDatabase("truncate", {
 			serverId: "truncate_test",
-			client: (connectionStringEnvVar) => {
-				return new pg.Pool({
-					connectionString: process.env[connectionStringEnvVar],
-				});
-			},
 		});
 
 		const container = await startContainer(postgreSQL, {
@@ -89,8 +83,6 @@ test(
 		}
 		const mysqlDb = new MySqlDatabase("app_db", {
 			serverId: "mysql",
-			client: async (connectionStringEnvVar) =>
-				await mysql.createConnection(process.env[connectionStringEnvVar]!),
 		});
 
 		await startContainer(mysqlDb, {
@@ -141,10 +133,7 @@ test(
 	"FlushDB",
 	{ sequential: true, timeout: 20000 },
 	async ({ containers }) => {
-		const redis = new Redis(
-			"flushdb-test",
-			(envVarName) => new IORedis(process.env[envVarName]!),
-		);
+		const redis = new Redis("flushdb-test");
 		await startContainer(redis, {
 			mode: "test",
 			waitForHealthcheck: false,
@@ -153,7 +142,7 @@ test(
 		assert(container);
 		containers.push(container);
 
-		const client = redis.client;
+		const client = new IORedis(redis.connectionString);
 
 		await client.set("key", "1");
 		await client.set("anotherKey", "2");

@@ -6,17 +6,15 @@ import type { Cron } from "~workloads/workloads/stateless/cron.js";
 import type { Task } from "~workloads/workloads/stateless/task/task.js";
 import type { Workload } from "~workloads/workloads/workload.js";
 
-export function assertRedis<C>(
-	workload: Workload,
-): asserts workload is Redis<C> {}
+export function assertRedis(workload: Workload): asserts workload is Redis {}
 
-export function assertPostgresDatabase<C>(
+export function assertPostgresDatabase(
 	workload: Workload,
-): asserts workload is PostgresDatabase<C> {}
+): asserts workload is PostgresDatabase {}
 
-export function assertMySqlDatabase<C>(
+export function assertMySqlDatabase(
 	workload: Workload,
-): asserts workload is MySqlDatabase<C> {}
+): asserts workload is MySqlDatabase {}
 
 export function assertBucket(workload: Workload): asserts workload is Bucket {}
 

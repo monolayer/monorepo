@@ -8,6 +8,6 @@ test("Redis is a StatefulWorkloadWithClient", () => {
 });
 
 test("connStringComponents", async () => {
-	const redis = new Redis("products", () => true);
+	const redis = new Redis("products");
 	expect(redis.connStringComponents).toStrictEqual(["redis", "products"]);
 });

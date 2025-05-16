@@ -74,7 +74,7 @@ import { Database } from "~workloads/workloads/stateful/database.js";
  *
  * @typeParam C - Client type
  */
-export class MySqlDatabase<C> extends Database<C> {
+export class MySqlDatabase extends Database {
 	/**
 	 * @internal
 	 */

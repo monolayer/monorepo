@@ -22,31 +22,14 @@ describe("StatefulWorkloadWithClient", () => {
 		);
 	});
 
-	class TestStatefulWorkloadWithClient<
-		C,
-	> extends StatefulWorkloadWithClient<C> {
+	class TestStatefulWorkloadWithClient extends StatefulWorkloadWithClient {
 		get connStringComponents() {
 			return ["test-stateful", this.id, "url"];
 		}
 	}
 
-	test("client type", async () => {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const testDb = new TestStatefulWorkloadWithClient(
-			"test_commands",
-			(connectionStringEnvVar) => [connectionStringEnvVar],
-		);
-		type ClientType = typeof testDb.client;
-		type ExpectedType = string[];
-		const isEqual: Expect<Equal<ClientType, ExpectedType>> = true;
-		expect(isEqual).toBe(true);
-	});
-
 	test("connectionStringEnvVar from components", async () => {
-		const testDb = new TestStatefulWorkloadWithClient(
-			"commands",
-			(connectionStringEnvVar) => [connectionStringEnvVar],
-		);
+		const testDb = new TestStatefulWorkloadWithClient("commands");
 		expect(testDb.connectionStringEnvVar).toStrictEqual(
 			"MONO_TEST_STATEFUL_COMMANDS_URL_URL",
 		);

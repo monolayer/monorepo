@@ -1,4 +1,3 @@
-import pg from "pg";
 import { assert } from "vitest";
 import { assertDatabase } from "~test/__setup__/assertions.js";
 import { test } from "~test/__setup__/container-test.js";
@@ -10,7 +9,7 @@ test(
 	"launch different containers for dev and test",
 	{ sequential: true },
 	async ({ containers }) => {
-		const mailer = new Redis("test-redis", () => true);
+		const mailer = new Redis("test-redis");
 
 		const container = await startContainer(mailer, {
 			mode: "dev",
@@ -52,10 +51,6 @@ test(
 			"launch_postgres_different_container",
 			{
 				serverId: "app_db_multiple_one",
-				client: (connectionStringEnvVar) =>
-					new pg.Pool({
-						connectionString: process.env[connectionStringEnvVar],
-					}),
 			},
 		);
 

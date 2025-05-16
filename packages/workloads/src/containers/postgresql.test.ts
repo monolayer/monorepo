@@ -1,4 +1,3 @@
-import pg from "pg";
 import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
 import { test } from "~test/__setup__/container-test.js";
@@ -14,10 +13,6 @@ test(
 		}
 		const postgreSQL = new PostgresDatabase("test_started_container", {
 			serverId: "test_app",
-			client: (connectionStringEnvVar) =>
-				new pg.Pool({
-					connectionString: process.env[connectionStringEnvVar],
-				}),
 		});
 
 		const container = new PostgreSQLContainer(postgreSQL);

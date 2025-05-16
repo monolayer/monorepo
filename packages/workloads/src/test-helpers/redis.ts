@@ -7,8 +7,8 @@ export async function flushRedis(
 	/**
 	 * Redis workload
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	workload: Redis<any>,
+
+	workload: Redis,
 	/**
 	 * Redis database (default: 0)
 	 */

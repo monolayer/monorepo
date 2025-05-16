@@ -27,8 +27,7 @@ export function printStatus(statuses: WorkloadInfo[]) {
 		const row = [
 			status.workload.constructor.name === "PostgresDatabase" ||
 			status.workload.constructor.name === "MySqlDatabase"
-				? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-					`${(status.workload as Database<any>).databaseName} (${status.workload.id})`
+				? `${(status.workload as Database).databaseName} (${status.workload.id})`
 				: status.workload.id,
 			status.workload.constructor.name,
 			status.container.info?.status ?? "N/A",

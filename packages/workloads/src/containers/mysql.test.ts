@@ -1,4 +1,3 @@
-import mysql from "mysql2/promise";
 import { assertExposedPorts } from "test/__setup__/assertions.js";
 import { assert } from "vitest";
 import { test } from "~test/__setup__/container-test.js";
@@ -12,10 +11,7 @@ test(
 		if (process.env.CI) {
 			return;
 		}
-		const mySqlDb = new MySqlDatabase("started_container", {
-			client: async (connectionStringEnvVar) =>
-				await mysql.createConnection(process.env[connectionStringEnvVar]!),
-		});
+		const mySqlDb = new MySqlDatabase("started_container", {});
 
 		const container = new MySQLContainer(mySqlDb);
 		const startedContainer = await container.start(true);

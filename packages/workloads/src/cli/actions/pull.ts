@@ -37,7 +37,7 @@ export function pull(program: Command) {
 }
 
 async function containerForWorkload(
-	workload: StatefulWorkloadWithClient<unknown> | StatefulWorkload,
+	workload: StatefulWorkloadWithClient | StatefulWorkload,
 ) {
 	console.log("constructor", workload.constructor.name);
 	switch (workload.constructor.name) {

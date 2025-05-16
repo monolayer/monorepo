@@ -7,8 +7,8 @@ export async function truncatePostgresTables(
 	/**
 	 * PostgresDatabase workload
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	workload: PostgresDatabase<any>,
+
+	workload: PostgresDatabase,
 	/**
 	 * Schema name (default: `public`)
 	 */

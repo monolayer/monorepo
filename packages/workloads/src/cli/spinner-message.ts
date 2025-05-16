@@ -8,7 +8,7 @@ export function spinnerMessage(workload: Workload, prefix: "Start" | "Stop") {
 		workload.constructor.name === "PostgresDatabase" ||
 		workload.constructor.name === "MySqlDatabase"
 	) {
-		const databaseWorkload = workload as Database<unknown>;
+		const databaseWorkload = workload as Database;
 		message = `${prefix} ${databaseWorkload.databaseName} (${workload.id}) ${color.gray(workload.constructor.name)}`;
 	} else {
 		message = `${prefix} ${workload.id} ${color.gray(workload.constructor.name)}`;

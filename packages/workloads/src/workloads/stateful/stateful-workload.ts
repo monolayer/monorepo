@@ -16,35 +16,14 @@ export abstract class StatefulWorkload extends Workload {
  * @group Abstract Classes
  * @typeParam C - Client type
  */
-export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
+export abstract class StatefulWorkloadWithClient extends StatefulWorkload {
 	constructor(
 		/**
 		 * Unique ID.
 		 */
 		id: string,
-		/**
-		 * Client constructor function. Executed once when accessing the `client` property.
-		 */
-		client: (connectionStringVar: string) => C,
 	) {
 		super(id);
-		this.#clientConstructor = client;
-	}
-
-	#client?: C | never;
-	#clientConstructor: (connectionStringVar: string) => C;
-
-	/**
-	 * Returns the client by calling the client constructor function.
-	 *
-	 * Lazy-loaded and memoized.
-	 */
-	get client(): C {
-		if (this.#client) {
-			return this.#client;
-		}
-		this.#client = this.#clientConstructor(this.connectionStringEnvVar);
-		return this.#client;
 	}
 
 	/**
@@ -59,5 +38,18 @@ export abstract class StatefulWorkloadWithClient<C> extends StatefulWorkload {
 		return snakeCase(
 			["mono", ...this.connStringComponents, "url"].join("_"),
 		).toUpperCase();
+	}
+
+	/**
+	 * Reads the value fron environment variable name that should hold the connection string.
+	 */
+	get connectionString() {
+		const value = process.env[this.connectionStringEnvVar];
+		if (value === undefined) {
+			throw new Error(
+				`Expected environment variable with connection string ${this.connectionStringEnvVar}`,
+			);
+		}
+		return value;
 	}
 }

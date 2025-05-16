@@ -9,11 +9,11 @@ import { PostgresDatabase } from "~workloads/workloads/stateful/postgres-databas
 /**
  * Container for PostgreSQL
  */
-export class PostgreSQLContainer<C> extends ContainerWithURI {
+export class PostgreSQLContainer extends ContainerWithURI {
 	/**
 	 * @hideconstructor
 	 */
-	constructor(workload: PostgresDatabase<C>) {
+	constructor(workload: PostgresDatabase) {
 		super(workload);
 	}
 
@@ -41,7 +41,7 @@ export class PostgreSQLContainer<C> extends ContainerWithURI {
 		url.port = container
 			.getMappedPort(this.definition.portsToExpose[0]!)
 			.toString();
-		url.pathname = (this.workload as PostgresDatabase<C>).databaseName;
+		url.pathname = (this.workload as PostgresDatabase).databaseName;
 		return url.toString();
 	}
 

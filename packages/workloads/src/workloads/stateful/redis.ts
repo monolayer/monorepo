@@ -27,7 +27,7 @@ import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/statef
  *
  * @typeParam C - Client type
  */
-export class Redis<C> extends StatefulWorkloadWithClient<C> {
+export class Redis extends StatefulWorkloadWithClient {
 	/**
 	 * @internal
 	 */

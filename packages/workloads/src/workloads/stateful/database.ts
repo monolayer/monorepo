@@ -6,7 +6,7 @@ import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/statef
  * @group Abstract Classes
  * @typeParam C - Client type
  */
-export abstract class Database<C> extends StatefulWorkloadWithClient<C> {
+export abstract class Database extends StatefulWorkloadWithClient {
 	/**
 	 * Database name.
 	 */
@@ -21,9 +21,9 @@ export abstract class Database<C> extends StatefulWorkloadWithClient<C> {
 		/**
 		 * Options
 		 */
-		options: DatabaseOptions<C>,
+		options: DatabaseOptions,
 	) {
-		super(options.serverId ?? databaseName, options.client);
+		super(options.serverId ?? databaseName);
 		this.databaseName = databaseName;
 	}
 
@@ -56,15 +56,11 @@ export abstract class Database<C> extends StatefulWorkloadWithClient<C> {
 	}
 }
 
-export interface DatabaseOptions<C> {
+export interface DatabaseOptions {
 	/**
 	 * Database server ID
 	 * @default: `databaseName`
 	 *
 	 */
 	serverId?: string;
-	/**
-	 * Client constructor function. Executed once when accessing the `client` property.
-	 */
-	client: (connectionStringVar: string) => C;
 }

@@ -7,7 +7,7 @@ test("Database is a StatefulWorkloadWithClient", () => {
 	expect(Database.prototype).toBeInstanceOf(StatefulWorkloadWithClient);
 });
 
-class TestDatabase<C> extends Database<C> {
+class TestDatabase extends Database {
 	connStringPrefix() {
 		return "test";
 	}
@@ -16,28 +16,22 @@ class TestDatabase<C> extends Database<C> {
 test("databaseId", () => {
 	const db = new TestDatabase("myDb", {
 		serverId: "test-id",
-		client: () => true,
 	});
 	expect(db.id).toStrictEqual("test-id");
 });
 
 test("databaseId defaults to databaseName", () => {
-	const db = new TestDatabase("myDb", {
-		client: () => true,
-	});
+	const db = new TestDatabase("myDb", {});
 	expect(db.id).toStrictEqual(db.databaseName);
 });
 
 test("connection string components without server id", () => {
-	const db = new TestDatabase("myDb", {
-		client: () => true,
-	});
+	const db = new TestDatabase("myDb", {});
 	expect(db.connStringComponents).toStrictEqual(["test", "myDb", "database"]);
 });
 
 test("connection string components with server id", () => {
 	const db = new TestDatabase("myDb", {
-		client: () => true,
 		serverId: "main",
 	});
 	expect(db.connStringComponents).toStrictEqual([

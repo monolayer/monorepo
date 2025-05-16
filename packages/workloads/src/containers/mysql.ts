@@ -9,14 +9,14 @@ import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database
 /**
  * Container for PostgreSQL
  */
-export class MySQLContainer<C> extends ContainerWithURI {
+export class MySQLContainer extends ContainerWithURI {
 	username: string;
 	password: string;
 
 	/**
 	 * @hideconstructor
 	 */
-	constructor(workload: MySqlDatabase<C>) {
+	constructor(workload: MySqlDatabase) {
 		super(workload);
 		this.username = "root";
 		this.password = this.definition.environment.MYSQL_ROOT_PASSWORD ?? "";
@@ -46,7 +46,7 @@ export class MySQLContainer<C> extends ContainerWithURI {
 		url.port = container
 			.getMappedPort(this.definition.portsToExpose[0]!)
 			.toString();
-		url.pathname = (this.workload as MySqlDatabase<C>).databaseName;
+		url.pathname = (this.workload as MySqlDatabase).databaseName;
 		url.username = this.username;
 		url.password = this.password;
 		return url.toString();

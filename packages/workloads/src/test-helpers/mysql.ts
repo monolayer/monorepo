@@ -7,8 +7,8 @@ export async function truncateMySqlTables(
 	/**
 	 * MySqlDatabase workload
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	workload: MySqlDatabase<any>,
+
+	workload: MySqlDatabase,
 ) {
 	const mysql = await import("mysql2/promise");
 	const connection = await mysql.createConnection(

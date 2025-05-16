@@ -8,8 +8,8 @@ import { Redis } from "~workloads/workloads/stateful/redis.js";
  *
  * @internal
  */
-export class RedisContainer<C> extends ContainerWithURI {
-	constructor(workload: Redis<C>) {
+export class RedisContainer extends ContainerWithURI {
+	constructor(workload: Redis) {
 		super(workload);
 	}
 

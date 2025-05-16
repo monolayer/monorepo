@@ -3,7 +3,7 @@ import pg from "pg";
 import type { MySqlDatabase } from "~workloads/workloads/stateful/mysql-database.js";
 import type { PostgresDatabase } from "~workloads/workloads/stateful/postgres-database.js";
 
-export async function createPostgresDatabase<C>(workload: PostgresDatabase<C>) {
+export async function createPostgresDatabase(workload: PostgresDatabase) {
 	const client = new pg.Pool({
 		connectionString: adminCredentials(workload),
 	});
@@ -17,7 +17,7 @@ export async function createPostgresDatabase<C>(workload: PostgresDatabase<C>) {
 	await client.end();
 }
 
-export async function createMysqlDatabase<C>(workload: MySqlDatabase<C>) {
+export async function createMysqlDatabase(workload: MySqlDatabase) {
 	const connection = await mysql.createConnection(adminCredentials(workload)!);
 	await connection.query(
 		`CREATE DATABASE IF NOT EXISTS ${workload.databaseName};`,
@@ -25,7 +25,7 @@ export async function createMysqlDatabase<C>(workload: MySqlDatabase<C>) {
 	await connection.end();
 }
 
-function adminCredentials<C>(workload: MySqlDatabase<C> | PostgresDatabase<C>) {
+function adminCredentials(workload: MySqlDatabase | PostgresDatabase) {
 	return process.env[workload.connectionStringEnvVar]?.replace(
 		/(\d)\/.+$/,
 		"$1",

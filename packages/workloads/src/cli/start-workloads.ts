@@ -12,7 +12,7 @@ import type {
 
 export async function startWorkloads(
 	workloads: (
-		| StatefulWorkloadWithClient<unknown>
+		| StatefulWorkloadWithClient
 		| (StatefulWorkload & { connectionStringEnvVar: string })
 	)[],
 	options: {
@@ -43,13 +43,13 @@ export async function startWorkloads(
 	}
 }
 
-async function stopWorkloads(workloads: StatefulWorkloadWithClient<unknown>[]) {
+async function stopWorkloads(workloads: StatefulWorkloadWithClient[]) {
 	await Promise.all(
 		workloads.map(async (workload) => await stopContainer(workload, "dev")),
 	);
 }
 
-export function handleSigint(workloads: StatefulWorkloadWithClient<unknown>[]) {
+export function handleSigint(workloads: StatefulWorkloadWithClient[]) {
 	setInterval(() => {}, 10000);
 	let sigint = false;
 	process.on("SIGINT", async () => {

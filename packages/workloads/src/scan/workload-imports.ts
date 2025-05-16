@@ -78,10 +78,10 @@ export interface WorkloadImport<I> {
 }
 
 interface ImportByWorkload {
-	PostgresDatabase: WorkloadImport<PostgresDatabase<unknown>>[];
-	MySqlDatabase: WorkloadImport<MySqlDatabase<unknown>>[];
+	PostgresDatabase: WorkloadImport<PostgresDatabase>[];
+	MySqlDatabase: WorkloadImport<MySqlDatabase>[];
 	Bucket: WorkloadImport<Bucket>[];
-	Redis: WorkloadImport<Redis<unknown>>[];
+	Redis: WorkloadImport<Redis>[];
 	Cron: WorkloadImport<Cron>[];
 	Task: WorkloadImport<Task<unknown>>[];
 }
@@ -90,7 +90,7 @@ export class WorkloadImports {
 	#importsByWorkload: ImportByWorkload;
 	#imports: Array<{
 		src: string;
-		workload: StatefulWorkloadWithClient<unknown>;
+		workload: StatefulWorkloadWithClient;
 	}> = [];
 
 	constructor() {
@@ -137,7 +137,7 @@ export class WorkloadImports {
 		return this.#importsByWorkload.Task;
 	}
 
-	add(src: string, workload: StatefulWorkloadWithClient<unknown>) {
+	add(src: string, workload: StatefulWorkloadWithClient) {
 		if (validWorkload(workload.constructor.name)) {
 			const key = workload.constructor.name as keyof ImportByWorkload;
 			if (this.#importsByWorkload[key] === undefined) {
