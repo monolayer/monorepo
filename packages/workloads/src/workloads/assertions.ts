@@ -18,9 +18,7 @@ export function assertMySqlDatabase<C>(
 	workload: Workload,
 ): asserts workload is MySqlDatabase<C> {}
 
-export function assertBucket<C>(
-	workload: Workload,
-): asserts workload is Bucket<C> {}
+export function assertBucket(workload: Workload): asserts workload is Bucket {}
 
 export function assertCron(workload: Workload): asserts workload is Cron {}
 

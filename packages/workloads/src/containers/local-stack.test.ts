@@ -7,7 +7,7 @@ test(
 	"Started container",
 	{ sequential: true, timeout: 30000 },
 	async ({ containers }) => {
-		const bucket = new Bucket("test-local-stack", () => true);
+		const bucket = new Bucket("test-local-stack");
 		const container = new LocalStackContainer(bucket);
 
 		const startedContainer = await container.start(true);

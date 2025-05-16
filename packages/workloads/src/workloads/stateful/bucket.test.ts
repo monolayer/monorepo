@@ -1,22 +1,24 @@
-import { expect, test } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 import { Bucket } from "~workloads/workloads/stateful/bucket.js";
-import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
+import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workload.js";
 
-test("is a StatefulWorkloadWithClient", () => {
-	expect(Bucket.prototype).toBeInstanceOf(StatefulWorkloadWithClient);
+afterEach(() => {
+	vi.unstubAllEnvs();
 });
 
-test("name is id", () => {
-	const bucket = new Bucket("images", () => true);
-	expect(bucket.id).toStrictEqual(bucket.id);
+test("is a StatefulWorkload", () => {
+	expect(Bucket.prototype).toBeInstanceOf(StatefulWorkload);
 });
 
-test("connStringComponents", () => {
-	const bucket = new Bucket("images", () => true);
-	expect(bucket.connStringComponents).toStrictEqual(["aws", "endpoint"]);
+test("name from env var", () => {
+	const bucket = new Bucket("work-documents");
+	vi.stubEnv("ML_WORK_DOCUMENTS_BUCKET_NAME", "my_bucket");
+	expect(bucket.name).toStrictEqual("my_bucket");
 });
 
-test("connectionStringEnvVar", () => {
-	const bucket = new Bucket("images", () => true);
-	expect(bucket.connectionStringEnvVar).toStrictEqual("MONO_AWS_ENDPOINT_URL");
+test("name from env var throws on missing", () => {
+	const bucket = new Bucket("work-documents");
+	expect(() => bucket.name).toThrow(
+		"Undefined bucket name for Bucket work-documents. ML_WORK_DOCUMENTS_BUCKET_NAME not set.",
+	);
 });

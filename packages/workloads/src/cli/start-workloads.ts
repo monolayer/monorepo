@@ -5,10 +5,16 @@ import {
 	stopContainer,
 } from "~workloads/containers/admin/container.js";
 import { updateDotenvFile } from "~workloads/containers/admin/update-dotenv-file.js";
-import type { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
+import type {
+	StatefulWorkload,
+	StatefulWorkloadWithClient,
+} from "~workloads/workloads/stateful/stateful-workload.js";
 
 export async function startWorkloads(
-	workloads: StatefulWorkloadWithClient<unknown>[],
+	workloads: (
+		| StatefulWorkloadWithClient<unknown>
+		| (StatefulWorkload & { connectionStringEnvVar: string })
+	)[],
 	options: {
 		mode: "dev" | "test";
 		waitForHealthcheck: boolean;

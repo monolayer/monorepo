@@ -5,7 +5,10 @@ import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
 import { importWorkloads } from "~workloads/scan/workload-imports.js";
-import { type StatefulWorkloadWithClient } from "~workloads/workloads.js";
+import {
+	type StatefulWorkload,
+	type StatefulWorkloadWithClient,
+} from "~workloads/workloads.js";
 import {
 	assertMySqlDatabase,
 	assertPostgresDatabase,
@@ -32,7 +35,7 @@ export function pull(program: Command) {
 }
 
 async function containerForWorkload(
-	workload: StatefulWorkloadWithClient<unknown>,
+	workload: StatefulWorkloadWithClient<unknown> | StatefulWorkload,
 ) {
 	switch (workload.constructor.name) {
 		case "PostgresDatabase":

@@ -80,7 +80,7 @@ export interface WorkloadImport<I> {
 interface ImportByWorkload {
 	PostgresDatabase: WorkloadImport<PostgresDatabase<unknown>>[];
 	MySqlDatabase: WorkloadImport<MySqlDatabase<unknown>>[];
-	Bucket: WorkloadImport<Bucket<unknown>>[];
+	Bucket: WorkloadImport<Bucket>[];
 	Redis: WorkloadImport<Redis<unknown>>[];
 	Cron: WorkloadImport<Cron>[];
 	Task: WorkloadImport<Task<unknown>>[];

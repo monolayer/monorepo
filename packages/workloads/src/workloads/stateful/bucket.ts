@@ -1,19 +1,18 @@
-import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/stateful-workload.js";
+import { snakeCase } from "case-anything";
+import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workload.js";
 
 /**
  * Workload for an AWS S3 compatible storage.
  *
  * The `Bucket` workload is initialized with:
  * - A valid bucket name.
- * - A client constructor function providing the client of your choice.
- *   The {@link Bucket.client | client } accessor will call this function and memoize its result.
 
  * **NOTES**
  *
  * Launching the development or test containers with `npx workloads start` will write the environment
  * variable `MONO_AWS_ENDPOINT_URL` will be written to the corresponding dotenv file (`.env` or `.env.test`)
  *
- * When initializing the client, you need to configure `forcePathStyle` and `endpoint`
+ * When initializing the S3 client, you need to configure `forcePathStyle` and `endpoint`
  * if the dev or test container is running (*check for the `MONO_AWS_ENDPOINT_URL` environment
  * variable*). See the example.
  *
@@ -22,23 +21,21 @@ import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/statef
  * import { Bucket } from "@monolayer/workloads";
  * import { S3Client } from "@aws-sdk/client-s3";
  *
- * const imagesBucket = new Bucket(
- * 	"workloads-images",
- * 	() =>
- * 		new S3Client({
- *      // Configure forcePathStyle and endpoint
- *      // when the dev or test container is running
- *      ...(process.env.MONO_AWS_ENDPOINT_URL
- *        ? {
- *            forcePathStyle: true,
- *            endpoint: process.env.MONO_AWS_ENDPOINT_URL,
- *          }
- *        : {}),
- *      // Other configuration options
- *    }),
- * );
+ * const imagesBucket = new Bucket("workloads-images");
  *
- * const response = await imagesBucket.client.send(
+ * const s3Client = new S3Client({
+ *   // Configure forcePathStyle and endpoint
+ *   // when the dev or test container is running
+ *   ...(process.env.MONO_AWS_ENDPOINT_URL
+ *     ? {
+ *         forcePathStyle: true,
+ *         endpoint: process.env.MONO_AWS_ENDPOINT_URL,
+ *        }
+ *     : {}),
+ *   // Other configuration options
+ * }),
+
+ * const response = await s3Client.send(
  *   new GetObjectCommand({
  *     Bucket: imagesBucket.name,
  *     Key: "README.md",
@@ -46,21 +43,21 @@ import { StatefulWorkloadWithClient } from "~workloads/workloads/stateful/statef
  * );
  * ```
  */
-export class Bucket<C> extends StatefulWorkloadWithClient<C> {
-	constructor(
-		/**
-		 * Bucket name. Same as `id`.
-		 */
-		public readonly id: string,
-		/**
-		 * Client constructor function. Executed once when accessing the `client` property.
-		 */
-		client: () => C,
-	) {
-		super(id, client);
+export class Bucket extends StatefulWorkload {
+	get name() {
+		const envVarName = snakeCase(
+			["ml", this.id, "bucket", "name"].join("-"),
+		).toUpperCase();
+		const bucketName = process.env[envVarName];
+		if (bucketName === undefined) {
+			throw new Error(
+				`Undefined bucket name for Bucket ${this.id}. ${envVarName} not set.`,
+			);
+		}
+		return bucketName;
 	}
 
-	get connStringComponents() {
-		return ["aws", "endpoint"];
+	get connectionStringEnvVar() {
+		return "ML_AWS_ENDPOINT_URL";
 	}
 }

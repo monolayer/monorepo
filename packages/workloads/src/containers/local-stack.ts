@@ -12,12 +12,12 @@ import type { Bucket } from "~workloads/workloads/stateful/bucket.js";
  *
  * @private
  */
-export class LocalStackContainer<C> extends ContainerWithURI {
+export class LocalStackContainer extends ContainerWithURI {
 	#testContainer: boolean;
 	/**
 	 * @hideconstructor
 	 */
-	constructor(workload: Bucket<C>, options?: { test?: boolean }) {
+	constructor(workload: Bucket, options?: { test?: boolean }) {
 		super(workload);
 		this.#testContainer = options?.test ?? false;
 		if (this.#testContainer) {
