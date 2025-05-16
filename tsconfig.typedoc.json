@@ -13,7 +13,6 @@
 		"internal/state/src/**/*",
 		"internal/utils/src/**/*",
 		"packages/workloads/src/**/*",
-		"packages/blueprints/src/**/*",
 		"packages/dw/src/**/*",
 		"packages/dsdk/src/**/*"
 	],
@@ -22,7 +21,6 @@
 		"rootDir": ".",
 		"outDir": "dist",
 		"paths": {
-			"~blueprints/*": ["packages/blueprints/src/*"],
 			"~cli/*": ["internal/cli/src/*"],
 			"~db/*": ["internal/db/src/*"],
 			"~docker/*": ["internal/docker/src/*"],
@@ -34,7 +32,6 @@
 			"~utils/*": ["internal/utils/src/*"],
 			"~workloads/*": ["packages/workloads/src/*"],
 			"~dw/*": ["packages/dw/src/*"],
-			"@monorepo/blueprints/*": ["internal/blueprints/src/*"],
 			"@monorepo/cli/*": ["internal/cli/src/src/*"],
 			"@monorepo/db/*": ["internal/db/src/*"],
 			"@monorepo/docker/*": ["internal/docker/src/*"],

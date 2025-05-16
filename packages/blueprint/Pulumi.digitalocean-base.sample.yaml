@@ -1,4 +1,0 @@
-config:
-  # Set digitalocean provider token with:
-  #   pulumi config set digitalocean:token --secret -s digitalocean
-  digitalocean:token:
