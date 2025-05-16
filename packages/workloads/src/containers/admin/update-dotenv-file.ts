@@ -14,7 +14,7 @@ export async function dotenvFile(mode: "dev" | "test") {
 	const configuration = await workloadsConfiguration();
 	switch (mode) {
 		case "dev":
-			return configuration.envFileName?.development ?? ".env";
+			return configuration.envFileName?.development ?? ".env.local";
 		case "test":
 			return configuration.envFileName?.test ?? ".env.test.local";
 	}
@@ -64,6 +64,36 @@ export async function updateDotenvFile(
 		for (const key of keys) {
 			newContent.push(`${key[0]}="${key[2]}"`);
 		}
+		writeFileSync(envFilePath, newContent.join("\n"));
+	});
+}
+
+export async function removeFromDotenvfile(
+	keys: string[] = [],
+	mode: "dev" | "test",
+) {
+	const envFileName = await dotenvFile(mode);
+	const envFilePath = path.join(cwd(), envFileName);
+
+	if (!existsSync(envFilePath)) {
+		return;
+	}
+
+	const newContent: string[] = [];
+
+	const file = readline.createInterface({
+		input: fs.createReadStream(envFileName),
+		output: process.stdout,
+		terminal: false,
+	});
+
+	file.on("line", (line) => {
+		const idx = keys.findIndex((key) => line.trim().match(key));
+		if (idx === -1) {
+			newContent.push(line);
+		}
+	});
+	file.on("close", () => {
 		writeFileSync(envFilePath, newContent.join("\n"));
 	});
 }

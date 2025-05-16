@@ -1,4 +1,5 @@
 import { getExistingContainer } from "~workloads/containers/admin/introspection.js";
+import { removeFromDotenvfile } from "~workloads/containers/admin/update-dotenv-file.js";
 import { containerStarter } from "~workloads/containers/container-starter.js";
 import { type Workload } from "~workloads/workloads/workload.js";
 /**
@@ -41,6 +42,11 @@ export async function stopContainer(
 	} else {
 		try {
 			await startedTestContainer.stop();
+			await removeFromDotenvfile(
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				[(workload as any).connectionStringEnvVar],
+				mode,
+			);
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (e: any) {
 			if (e.reason !== "container already stopped") {
