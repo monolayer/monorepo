@@ -24,7 +24,11 @@ function devStatus(program: Command) {
 					workloadContainerStatus(workload, "dev"),
 				),
 			);
-			printStatus(statuses);
+			if (statuses.length === 0) {
+				console.log("No workloads to show status.");
+			} else {
+				printStatus(statuses);
+			}
 		});
 }
 
@@ -39,6 +43,10 @@ function testStatus(program: Command) {
 					workloadContainerStatus(workload, "test"),
 				),
 			);
-			printStatus(statuses);
+			if (statuses.length === 0) {
+				console.log("No workloads to show status.");
+			} else {
+				printStatus(statuses);
+			}
 		});
 }

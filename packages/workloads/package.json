@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/workloads",
-	"version": "2.0.0-pre-63",
+	"version": "2.0.0-pre-65",
 	"description": "The sidecar framework for full-stack web development with React.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -19,8 +19,7 @@
 		"dist/**/*.js",
 		"dist/**/*.d.ts",
 		"dist/esm/package.json",
-		"dist/cjs/package.json",
-		"dist/blueprints/**/*"
+		"dist/cjs/package.json"
 	],
 	"types": "./dist/cjs/index.d.ts",
 	"exports": {
@@ -61,11 +60,10 @@
 		"build:cli": "tsup --config tsup.cli.config.ts",
 		"build:cjs": "tsc -b tsconfig.build.cjs.json",
 		"build:esm": "tsc -b tsconfig.build.json",
-		"postbuild": "npm run alias && npm run makeexec && npm run makepackage && npm run copyblueprints",
+		"postbuild": "npm run alias && npm run makeexec && npm run makepackage",
 		"alias": "tsc-alias -p tsconfig.alias.json --outDir dist/esm --verbose && tsc-alias -p tsconfig.alias.json --outDir dist/cjs --verbose",
 		"makeexec": "chmod +x dist/bin/cli.js",
 		"makepackage": "echo '{\n  \"type\": \"module\"\n}' > dist/esm/package.json && echo '{\n  \"type\": \"commonjs\"\n}' > dist/cjs/package.json",
-		"copyblueprints": "cp -r ./../blueprint ./dist/",
 		"check": "npm run check:prettier && npm run check:lint && npm run check:skott",
 		"check:lint": "npx eslint .",
 		"check:prettier": "prettier --check .",
