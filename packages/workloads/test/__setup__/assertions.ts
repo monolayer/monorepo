@@ -80,7 +80,7 @@ export async function assertContainerLabel(
 	assert.strictEqual(container.getLabels()[label], expected);
 }
 
-export async function assertDatabase<C>(resource: PostgresDatabase<C>) {
+export async function assertDatabase(resource: PostgresDatabase) {
 	const client = new Pool({
 		connectionString: process.env[resource.connectionStringEnvVar]?.replace(
 			/\/\w+$/,
