@@ -1,0 +1,52 @@
+{
+	"name": "@monolayer/create-workloads",
+	"version": "1.0.0-pre-3",
+	"description": "Create @monolayer/workloads inside a project",
+	"author": "Marcos Essindi <marcessindi@me.com>",
+	"license": "MIT",
+	"homepage": "https://monolayer.github.io/pg-docs",
+	"bugs": "https://github.com/monolayer/monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/monolayer/monorepo",
+		"directory": "apps/create-workloads"
+	},
+	"type": "module",
+	"module": "dist/src/bin/create-workloads.js",
+	"bin": {
+		"create-pg": "dist/src/bin/create-workloads.js"
+	},
+	"scripts": {
+		"prebuild": "rm -rf dist",
+		"build": "tsc -p tsconfig.build.json --outDir dist",
+		"postbuild": "npm run postbuild:makeexec && npm run postbuild:package && npm run postbuild:transform-paths",
+		"postbuild:transform-paths": "tsc-alias -p tsconfig.json --outDir dist",
+		"postbuild:makeexec": "chmod +x dist/src/bin/create-workloads.js",
+		"postbuild:package": "echo '{\n  \"type\": \"module\"\n}' > dist/src/package.json",
+		"check": "npm run check:prettier && npm run check:lint && npm run check:skott",
+		"check:lint": "npx eslint .",
+		"check:prettier": "prettier --check .",
+		"check:skott": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --cwd src",
+		"format": "prettier --write .",
+		"prepack": "npm run check && npm run build && rm -rf build && mkdir build",
+		"package": "npm pack --pack-destination ./build",
+		"publish:local": "npm publish --registry http://localhost:4873",
+		"unpublish:local": "npm unpublish --registry http://localhost:4873 @monolayer/create-workloads -f"
+	},
+	"dependencies": {
+		"commander": "^12.0.0",
+		"effect": "^3.10.5",
+		"execa": "^8.0.1",
+		"nunjucks": "^3.2.4",
+		"ora": "^8.1.0",
+		"picocolors": "^1.0.0",
+		"prompts": "^2.4.2",
+		"tsx": "^4.7.1"
+	},
+	"devDependencies": {
+		"@monorepo/eslint-config": "*",
+		"@monorepo/typescript-config": "*",
+		"@types/node": "^18.0.0",
+		"@types/nunjucks": "^3.2.6"
+	}
+}

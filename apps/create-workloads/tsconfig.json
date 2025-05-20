@@ -1,0 +1,12 @@
+{
+	"extends": "@monorepo/typescript-config/tsconfig.base.json",
+	"include": ["src"],
+	"compilerOptions": {
+		"baseUrl": "./",
+		"rootDir": ".",
+		"paths": {
+			/* Specify a set of entries that re-map imports to additional lookup locations. */
+			"~create-workloads/*": ["src/*"]
+		}
+	}
+}
