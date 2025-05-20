@@ -55,10 +55,16 @@ export interface Configuration {
 	envFileName?: {
 		/**
 		 * File name for development,
+		 *
+		 * @default
+		 * .env.local
 		 */
 		development?: string;
 		/**
 		 * File name for test,
+		 *
+		 * @default
+		 * .env.test.local
 		 */
 		test?: string;
 	};
