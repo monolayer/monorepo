@@ -74,6 +74,10 @@ export function bucketLocalConfiguration() {
 	return {
 		forcePathStyle: true,
 		endpoint: process.env[bucketEndPointEnvVarName],
+		credentials: {
+			accessKeyId: "minioadmin",
+			secretAccessKey: "minioadmin",
+		},
 	};
 }
 

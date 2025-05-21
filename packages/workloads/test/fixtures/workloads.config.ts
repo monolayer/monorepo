@@ -12,8 +12,9 @@ const config: Configuration = {
 		mySqlDatabase: {
 			exposedPorts: [{ container: 3306, host: 7013 }],
 		},
-		localStack: {
-			exposedPorts: [{ container: 4566, host: 7017 }],
+		minio: {
+			exposedPorts: [{ container: 9000, host: 7017 }],
+		},
 	},
 };
 

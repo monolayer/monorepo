@@ -1,38 +1,35 @@
 import { assert } from "vitest";
 import { test } from "~test/__setup__/container-test.js";
-import { LocalStackContainer } from "~workloads/containers/local-stack.js";
+import { MinioContainer } from "~workloads/containers/minio.js";
 import { Bucket } from "~workloads/workloads/stateful/bucket.js";
 
 test(
 	"Started container",
 	{ sequential: true, timeout: 30000 },
 	async ({ containers }) => {
-		const bucket = new Bucket("test-local-stack");
-		const container = new LocalStackContainer(bucket);
+		const bucket = new Bucket("test-minio");
+		const container = new MinioContainer(bucket);
 
 		const startedContainer = await container.start(true);
 		containers.push(startedContainer);
 
 		assert.strictEqual(
 			container.gatewayURL,
-			`http://localhost:${startedContainer.getMappedPort(4566)}/`,
+			`http://localhost:${startedContainer.getMappedPort(9000)}/`,
 		);
 
 		assert.strictEqual(
-			new LocalStackContainer(bucket).qualifiedWorkloadId(),
-			"local-stack",
+			new MinioContainer(bucket).qualifiedWorkloadId(),
+			"minio",
 		);
 
 		const labels = startedContainer.getLabels();
-		assert.strictEqual(
-			labels["org.monolayer-workloads.workload-id"],
-			"local-stack",
-		);
+		assert.strictEqual(labels["org.monolayer-workloads.workload-id"], "minio");
 
 		container.mode = "test";
 		assert.strictEqual(
-			new LocalStackContainer(bucket, { test: true }).qualifiedWorkloadId(),
-			"local-stack-test",
+			new MinioContainer(bucket, { test: true }).qualifiedWorkloadId(),
+			"minio-test",
 		);
 	},
 );

@@ -14,7 +14,7 @@ export async function getExistingContainer(
 	const containerRuntimeClient = await getContainerRuntimeClient();
 	const containerId =
 		workload.constructor.name === "Bucket"
-			? "local-stack"
+			? "minio"
 			: kebabCase(`${workload.constructor.name.toLowerCase()}-${workload.id}`);
 	const listContainers = await containerRuntimeClient.container.list();
 	const container = listContainers.find(

@@ -1,7 +1,6 @@
 import { kebabCase } from "case-anything";
 import { Wait, type StartedTestContainer } from "testcontainers";
 import type { HealthCheck } from "testcontainers/build/types.js";
-import { createBucket } from "~workloads/containers/admin/create-bucket.js";
 import { ContainerWithURI } from "~workloads/containers/container-with-uri.js";
 import { type WorkloadContainerDefinition } from "~workloads/containers/container.js";
 import { assertBucket } from "~workloads/workloads/assertions.js";
@@ -12,7 +11,7 @@ import type { Bucket } from "~workloads/workloads/stateful/bucket.js";
  *
  * @private
  */
-export class LocalStackContainer extends ContainerWithURI {
+export class MinioContainer extends ContainerWithURI {
 	#testContainer: boolean;
 	/**
 	 * @hideconstructor
@@ -20,29 +19,20 @@ export class LocalStackContainer extends ContainerWithURI {
 	constructor(workload: Bucket, options?: { test?: boolean }) {
 		super(workload);
 		this.#testContainer = options?.test ?? false;
-		if (this.#testContainer) {
-			this.definition.environment = {
-				SERVICES: "s3",
-				PERSISTENCE: "0",
-			};
-		}
-		this.definition.environment = {};
 	}
 
 	definition: WorkloadContainerDefinition = {
-		containerImage: "localstack/localstack:3.8.1",
-		portsToExpose: [4566],
-		environment: {
-			SERVICES: "s3",
-			PERSISTENCE: "1",
-		},
+		containerImage: "minio/minio",
+		portsToExpose: [9000, 9001],
+		environment: {},
 		healthCheck: {
-			test: ["CMD", "awslocal", "s3", "ls"],
+			test: ["CMD", "mc", "ready", "local"],
 			interval: 1000,
 			retries: 5,
 			startPeriod: 1000,
 		} satisfies HealthCheck,
-		waitStrategy: Wait.forHealthCheck(),
+		waitStrategy: Wait.forAll([Wait.forHttp("/minio/health/live", 9000)]),
+		command: ["server", "--console-address", `:${9001}`, "/data"],
 	};
 
 	buildConnectionURI(container: StartedTestContainer) {
@@ -64,7 +54,7 @@ export class LocalStackContainer extends ContainerWithURI {
 	}
 
 	qualifiedWorkloadId() {
-		return kebabCase(!this.#testContainer ? `local-stack` : `local-stack-test`);
+		return kebabCase(!this.#testContainer ? `minio` : `minio-test`);
 	}
 
 	async afterStart() {
@@ -72,12 +62,14 @@ export class LocalStackContainer extends ContainerWithURI {
 		const gatewayURL = this.gatewayURL;
 		if (gatewayURL) {
 			assertBucket(this.workload);
-			await createBucket(
-				[this.workload.id, this.#testContainer ? "test" : "development"].join(
-					"-",
-				),
-				gatewayURL,
-			);
+			if (this.startedContainer) {
+				await this.startedContainer.exec(
+					`mc mb --ignore-existing data/${[
+						this.workload.id,
+						this.#testContainer ? "test" : "development",
+					].join("-")}`,
+				);
+			}
 		}
 	}
 }

@@ -31,7 +31,7 @@ export interface Configuration {
 		 * @default
 		 * { imageName: "localstack/localstack:3.8.1", exposedPorts: [ { container: 4566, host: 4566 } ] }
 		 */
-		localStack?: ContainerConfig;
+		minio?: ContainerConfig;
 	};
 
 	/**

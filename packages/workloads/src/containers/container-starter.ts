@@ -1,5 +1,5 @@
 import { remember } from "@epic-web/remember";
-import { LocalStackContainer } from "~workloads/containers/local-stack.js";
+import { MinioContainer } from "~workloads/containers/minio.js";
 import { MySQLContainer } from "~workloads/containers/mysql.js";
 import { PostgreSQLContainer } from "~workloads/containers/postgresql.js";
 import { RedisContainer } from "~workloads/containers/redis.js";
@@ -37,7 +37,7 @@ class ContainerStarter {
 				return new PostgreSQLContainer(workload);
 			case "Bucket":
 				assertBucket(workload);
-				return new LocalStackContainer(workload);
+				return new MinioContainer(workload);
 			default:
 				throw new Error(`Missing container for ${workload.constructor.name}`);
 		}

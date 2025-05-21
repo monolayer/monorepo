@@ -131,7 +131,7 @@ export abstract class WorkloadContainer {
 	async #exposedPortsFromConfiguration() {
 		const name =
 			this.workload.constructor.name === "Bucket"
-				? "localStack"
+				? "minio"
 				: this.workload.constructor.name;
 		const key = camelCase(name) as keyof Required<Configuration>["containers"];
 		const configuration = (await workloadsConfiguration()).containers ?? {};
@@ -159,6 +159,11 @@ export abstract class WorkloadContainer {
 		if (this.definition.contentsToCopy) {
 			container.withCopyContentToContainer(this.definition.contentsToCopy);
 		}
+
+		if (this.definition.command) {
+			container.withCommand(this.definition.command);
+		}
+
 		const portsFromDefinition =
 			(await this.#exposedPortsFromConfiguration()) ||
 			this.definition.portsToExpose.map((port) => ({
@@ -224,6 +229,7 @@ export interface WorkloadContainerDefinition {
 	startupTimeout?: number;
 	healthCheck?: HealthCheck;
 	contentsToCopy?: ContentToCopy[];
+	command?: string[];
 }
 
 export function mergeOptions(
