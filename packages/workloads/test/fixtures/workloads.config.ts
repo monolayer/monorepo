@@ -9,24 +9,11 @@ const config: Configuration = {
 		redis: {
 			exposedPorts: [{ container: 6379, host: 7011 }],
 		},
-		elasticSearch: {
-			exposedPorts: [{ container: 9200, host: 7012 }],
-		},
 		mySqlDatabase: {
 			exposedPorts: [{ container: 3306, host: 7013 }],
 		},
-		mailer: {
-			exposedPorts: [
-				{ container: 1025, host: 7014 },
-				{ container: 8025, host: 7015 },
-			],
-		},
-		mongoDb: {
-			exposedPorts: [{ container: 27017, host: 7016 }],
-		},
 		localStack: {
 			exposedPorts: [{ container: 4566, host: 7017 }],
-		},
 	},
 };
 

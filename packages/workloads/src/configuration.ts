@@ -24,24 +24,9 @@ export interface Configuration {
 		redis?: ContainerConfig;
 		/**
 		 * @default
-		 * { imageName: "elasticsearch:7.17.25", exposedPorts: [ { container: 9200, host: 9200 } ] }
-		 */
-		elasticSearch?: ContainerConfig;
-		/**
-		 * @default
 		 * { imageName: "mysql:8.4.3", exposedPorts: [ { container: 3306, host: 3306 } ] }
 		 */
 		mySqlDatabase?: ContainerConfig;
-		/**
-		 * @default
-		 * { imageName: "axllent/mailpit:v1.21.3", exposedPorts: [ { container: 1025, host: 1025 }, { container: 8025, host: 8025 } ] }
-		 */
-		mailer?: ContainerConfig;
-		/**
-		 * @default
-		 * { imageName: "mongo:7.0.15", exposedPorts: [ { container: 27017, host: 27017 } ] }
-		 */
-		mongoDb?: ContainerConfig;
 		/**
 		 * @default
 		 * { imageName: "localstack/localstack:3.8.1", exposedPorts: [ { container: 4566, host: 4566 } ] }
