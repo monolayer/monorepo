@@ -2,9 +2,7 @@
 	"compilerOptions": {
 		"rootDir": "",
 		"paths": {
-			"~workloads/*": ["*"],
-			"~utils/*": ["packages/utils/*"],
-			"@monorepo/utils/*": ["packages/utils/*"]
+			"~workloads/*": ["*"]
 		}
 	},
 	"references": []

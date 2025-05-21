@@ -110,7 +110,6 @@
 		"@hey-api/openapi-ts": "^0.56.1",
 		"@monorepo/eslint-config": "*",
 		"@monorepo/typescript-config": "*",
-		"@monorepo/utils": "*",
 		"@types/aws-lambda": "^8.10.146",
 		"@types/node": "^18.0.0",
 		"@types/nodemailer": "^6.4.16",

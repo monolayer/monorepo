@@ -11,6 +11,5 @@
 		"outDir": "./dist",
 		"emitDeclarationOnly": true,
 		"declaration": true
-	},
-	"references": [{ "path": "../../internal/utils" }]
+	}
 }
