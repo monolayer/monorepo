@@ -72,7 +72,12 @@ export class LocalStackContainer extends ContainerWithURI {
 		const gatewayURL = this.gatewayURL;
 		if (gatewayURL) {
 			assertBucket(this.workload);
-			await createBucket(this.workload.id, gatewayURL);
+			await createBucket(
+				[this.workload.id, this.#testContainer ? "test" : "development"].join(
+					"-",
+				),
+				gatewayURL,
+			);
 		}
 	}
 }

@@ -45,19 +45,36 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  */
 export class Bucket extends StatefulWorkload {
 	get name() {
-		const envVarName = snakeCase(
-			["ml", this.id, "bucket", "name"].join("-"),
-		).toUpperCase();
-		const bucketName = process.env[envVarName];
-		if (bucketName === undefined) {
-			throw new Error(
-				`Undefined bucket name for Bucket ${this.id}. ${envVarName} not set.`,
-			);
+		if (process.env.NODE_ENV === "production") {
+			const envVarName = snakeCase(
+				["ml", this.id, "bucket", "name"].join("-"),
+			).toUpperCase();
+			const bucketName = process.env[envVarName];
+			if (bucketName === undefined) {
+				throw new Error(
+					`Undefined bucket name for Bucket ${this.id}. ${envVarName} not set.`,
+				);
+			}
+			return bucketName;
+		} else {
+			return [this.id, process.env.NODE_ENV].join("-");
 		}
-		return bucketName;
 	}
 
+	/**
+	 * @internal
+	 */
 	get connectionStringEnvVar() {
-		return "ML_AWS_ENDPOINT_URL";
+		return bucketEndPointEnvVarName;
 	}
 }
+
+export function bucketLocalConfiguration() {
+	if (process.env.NODE_ENV === "production") return {};
+	return {
+		forcePathStyle: true,
+		endpoint: process.env[bucketEndPointEnvVarName],
+	};
+}
+
+const bucketEndPointEnvVarName = "ML_BUCKET_ENDPOINT";
