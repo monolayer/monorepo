@@ -1,10 +1,9 @@
 {
 	"name": "@monolayer/create-workloads",
-	"version": "1.0.0-pre-3",
+	"version": "1.0.0-prerelease-4",
 	"description": "Create @monolayer/workloads inside a project",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
-	"homepage": "https://monolayer.github.io/pg-docs",
 	"bugs": "https://github.com/monolayer/monorepo/issues",
 	"repository": {
 		"type": "git",
