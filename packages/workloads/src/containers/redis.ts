@@ -16,9 +16,8 @@ export class RedisContainer extends ContainerWithURI {
 	definition: WorkloadContainerDefinition = {
 		containerImage: "redis:7.4.1-alpine3.20",
 		portsToExpose: [6379],
-		environment: {
-			REDIS_ARGS: "--save 1 1 --appendonly yes",
-		},
+		command: ["--save", "30", "1"],
+		environment: {},
 	};
 
 	buildConnectionURI(container: StartedTestContainer) {
