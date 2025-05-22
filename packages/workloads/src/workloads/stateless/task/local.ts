@@ -1,5 +1,5 @@
 import { remember } from "@epic-web/remember";
-import { randomUUID } from "node:crypto";
+import { randomUUID } from "crypto";
 import {
 	performNow,
 	type ExecutionId,

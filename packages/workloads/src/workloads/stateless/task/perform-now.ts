@@ -1,6 +1,6 @@
 import type { Task } from "~workloads/workloads/stateless/task/task.js";
 
-import { randomUUID } from "node:crypto";
+import { randomUUID } from "crypto";
 import workAndHandleError from "~workloads/workloads/stateless/task/perform.js";
 
 export async function performNow<P>(task: Task<P>, data: P | P[]) {
