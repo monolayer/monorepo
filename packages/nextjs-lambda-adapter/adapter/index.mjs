@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import next from "next";
+import ResponseCache from "next/dist/server/response-cache/index.js";
 import { AsyncLocalStorage } from "node:async_hooks";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -43,6 +44,56 @@ const RequestContext = {
 };
 globalThis[Symbol.for("@next/request-context")] = RequestContext;
 
+// Adapted from
+// https://github.com/opennextjs/opennextjs-netlify/blob/main/src/run/handlers/request-context.cts
+
+const originalGet = ResponseCache.default.prototype.get;
+
+ResponseCache.default.prototype.get = function get(...getArgs) {
+	if (!this.didAddBackgroundWorkTracking) {
+		if (typeof this.batcher !== "undefined") {
+			const originalBatcherBatch = this.batcher.batch;
+			this.batcher.batch = async (key, fn) => {
+				const trackedFn = async (...workFnArgs) => {
+					const workPromise = fn(...workFnArgs);
+					globalThis[TRACKED_PROMISES].push(workPromise);
+					return await workPromise;
+				};
+				return originalBatcherBatch.call(this.batcher, key, trackedFn);
+			};
+		} else if (typeof this.pendingResponses !== "undefined") {
+			const backgroundWork = new Map();
+
+			const originalPendingResponsesSet = this.pendingResponses.set;
+			this.pendingResponses.set = async (key, value) => {
+				if (!this.pendingResponses.has(key)) {
+					const workPromise = new Promise((_resolve) => {
+						backgroundWork.set(key, _resolve);
+					});
+					globalThis[TRACKED_PROMISES].push(workPromise);
+				}
+				return originalPendingResponsesSet.call(
+					this.pendingResponses,
+					key,
+					value,
+				);
+			};
+
+			const originalPendingResponsesDelete = this.pendingResponses.delete;
+			this.pendingResponses.delete = async (key) => {
+				const _resolve = backgroundWork.get(key);
+				if (_resolve) {
+					await _resolve();
+				}
+				return originalPendingResponsesDelete.call(this.pendingResponses, key);
+			};
+		}
+
+		this.didAddBackgroundWorkTracking = true;
+	}
+	return originalGet.apply(this, getArgs);
+};
+
 // Init app
 const app = next({
 	hostname: "localhost",
@@ -50,10 +101,18 @@ const app = next({
 	dev: false,
 	dir: __dirname,
 });
-const requestHandler = await app.prepare().then(() => app.getRequestHandler());
+
+const TRACKED_PROMISES = Symbol.for("@monolayer/tracked-promises");
+globalThis[TRACKED_PROMISES] = [];
+
+await app.prepare();
+const requestHandler = app.getRequestHandler();
+
 // eslint-disable-next-line no-undef
 export const handler = awslambda.streamifyResponse(
-	async (event, responseStream) => {
+	async (event, responseStream, lambdaContext) => {
+		lambdaContext.callbackWaitsForEmptyEventLoop = false;
+		globalThis[TRACKED_PROMISES] = [];
 		const context = {
 			waitUntil: async (val) => {
 				await val;
@@ -61,8 +120,15 @@ export const handler = awslambda.streamifyResponse(
 		};
 		const req = APIGatewayProxyEventV2ToAppRequest(event);
 		const res = new AppResponse(req, responseStream);
-		await RequestContextStorage.run(context, async () =>
-			requestHandler(req, res),
-		);
+		await new Promise((resolve, reject) => {
+			responseStream.on("finish", () => {
+				resolve();
+			});
+			responseStream.on("error", (err) => {
+				reject(err);
+			});
+			RequestContextStorage.run(context, async () => requestHandler(req, res));
+		});
+		await Promise.allSettled(globalThis[TRACKED_PROMISES]);
 	},
 );

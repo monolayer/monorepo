@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/nextjs-lambda-adapter",
-	"version": "4.0.1-beta.5",
+	"version": "4.0.2-beta-2",
 	"description": "AWS Lambda adapter for Next.js applications.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
@@ -21,10 +21,12 @@
 	],
 	"scripts": {
 		"prebuild": "rm -rf dist/*",
-		"build": "tsc",
-		"postbuild": "npm run copy-adapter",
+		"build": "npm run build:cli && npm run build:adapter",
+		"build:cli": "tsc",
+		"build:adapter": "tsx build-adapter.ts",
+		"postbuild": "npm run postbuild:makeexec && npm run postbuild:package-cache-handler",
 		"postbuild:makeexec": "chmod +x dist/cli/index.js",
-		"copy-adapter": "cp -r adapter dist/",
+		"postbuild:package-cache-handler": "cp adapter/cache-handler.mjs dist/adapter/cache-handler.mjs",
 		"check": "npm run check:prettier && npm run check:lint",
 		"check:lint": "npx eslint .",
 		"check:prettier": "prettier --check .",
@@ -51,6 +53,9 @@
 		"@aws-sdk/client-s3": "^3.777.0",
 		"@aws-sdk/client-dynamodb": "^3.777.0",
 		"@aws-sdk/util-utf8-node": "^3.259.0",
-		"testcontainers": "^10.23.0"
+		"testcontainers": "^10.23.0",
+		"esbuild": "^0.25.4",
+		"undici": "^7.10.0",
+		"tsx": "^4.19.4"
 	}
 }
