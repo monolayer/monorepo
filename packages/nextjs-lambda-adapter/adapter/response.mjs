@@ -62,6 +62,11 @@ export class AppResponse extends http.ServerResponse {
 				([key, _]) => !headersToFilterOut.includes(key.toLowerCase()),
 			),
 		);
+		const link = awsMetadata.headers["link"];
+		if (link && Array.isArray(link)) {
+			awsMetadata.headers["link"] = awsMetadata.headers["link"].join(", ");
+		}
+
 		return awsMetadata;
 	}
 }

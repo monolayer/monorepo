@@ -1,6 +1,6 @@
 {
 	"name": "@monolayer/nextjs-lambda-adapter",
-	"version": "4.0.2-beta-2",
+	"version": "4.0.3-beta-2",
 	"description": "AWS Lambda adapter for Next.js applications.",
 	"author": "Marcos Essindi <marcessindi@me.com>",
 	"license": "MIT",
