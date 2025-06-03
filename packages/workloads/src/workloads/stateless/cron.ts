@@ -28,7 +28,7 @@ export interface CronOptions {
  *
  * const reports = new Cron("reports", {
  *   schedule: "* * * * *",
- *   work: () => {
+ *   run: async () => {
  *     // Do something;
  *   },
  * });
