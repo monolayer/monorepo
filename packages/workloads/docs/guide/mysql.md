@@ -74,7 +74,7 @@ and it includes:
 
 ```json
 {
-  "version": "1",
+  "version": "2",
   "mysqlDatabase": [
     {
       "name": "products",

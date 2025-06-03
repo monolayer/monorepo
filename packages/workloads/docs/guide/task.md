@@ -127,7 +127,7 @@ The `manifest.json` includes a `task` key with an array of the `Task` workloads.
 
 ```json[Task Workload]
 {
-  "version": "1",
+  "version": "2",
   "task": [
     {
       "id": "reports",

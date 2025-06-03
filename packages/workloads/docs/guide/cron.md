@@ -82,7 +82,7 @@ The `manifest.json` includes a `crons` key with an array of the `Cron` workloads
 
 ```json[Cron Workload]
 {
-  "version": "1",
+  "version": "2",
   "crons": [
     {
       "id": "reports",

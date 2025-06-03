@@ -71,7 +71,7 @@ and it includes:
 
 ```json[Bucket Workload]
 {
-  "version": "1",
+  "version": "2",
   "bucket": [
     {
       "name": "images",

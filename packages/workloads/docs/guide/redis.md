@@ -72,7 +72,7 @@ and it includes:
 
 ```json[Redis Workload]
 {
-  "version": "1",
+  "version": "2",
   "redis": [
     {
       "id": "products",
