@@ -14,7 +14,7 @@ import { fromUtf8 } from "@aws-sdk/util-utf8-node";
 import path from "node:path";
 
 const S3_BUCKET = process.env.NEXTJS_ADAPTER_CACHE_BUCKET_NAME;
-const CACHE_PREFIX = "server-cache/";
+const CACHE_PREFIX = `server-cache/${process.env.NEXTJS_ADAPTER_BUILD_ID}/`;
 
 const s3 = new S3Client();
 
