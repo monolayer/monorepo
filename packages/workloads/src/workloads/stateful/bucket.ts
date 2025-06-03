@@ -6,7 +6,8 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  *
  * The `Bucket` workload is initialized with:
  * - A valid bucket name.
-
+ * - An optional Options object to set public read accesss.
+ *
  * **NOTES**
  *
  * Launching the development or test containers with `npx workloads start dev` will write the environment
@@ -22,6 +23,7 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  * import { S3Client } from "@aws-sdk/client-s3";
  *
  * const imagesBucket = new Bucket("workloads-images");
+ * const documentsBucket = new Bucket("workloads-images", { publicRead: true });
  *
  * const s3Client = new S3Client({
  *   // Configure forcePathStyle and endpoint
@@ -41,9 +43,32 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
  *     Key: "README.md",
  *   }),
  * );
+ *
+ * const documentsBucket = new Bucket("workloads-images", { publicRead: true });
  * ```
  */
 export class Bucket extends StatefulWorkload {
+	/**
+	 * Whether the bucket has public read access permissions.
+	 *
+	 * @default false
+	 */
+	publicRead: boolean;
+
+	constructor(
+		/**
+		 * Bucket ID.
+		 */
+		id: string,
+		/**
+		 * Bucket options
+		 */
+		options?: BucketOptions,
+	) {
+		super(id);
+		this.publicRead = options?.publicRead ?? false;
+	}
+
 	get name() {
 		if (process.env.NODE_ENV === "production") {
 			const envVarName = snakeCase(
@@ -79,6 +104,13 @@ export function bucketLocalConfiguration() {
 			secretAccessKey: "minioadmin",
 		},
 	};
+}
+
+export interface BucketOptions {
+	/**
+	 * Whether the bucket has public read access permission.
+	 */
+	publicRead?: boolean;
 }
 
 const bucketEndPointEnvVarName = "ML_BUCKET_ENDPOINT";

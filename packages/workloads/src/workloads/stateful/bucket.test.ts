@@ -36,3 +36,13 @@ test("name from env var in test", () => {
 	vi.stubEnv("NODE_ENV", "test");
 	expect(bucket.name).toStrictEqual("work-documents-test");
 });
+
+test("private by default", () => {
+	const bucket = new Bucket("work-documents");
+	expect(bucket.publicRead).toBeFalsy();
+});
+
+test("public read bucket", () => {
+	const bucket = new Bucket("work-documents", { publicRead: true });
+	expect(bucket.publicRead).toBeTruthy();
+});

@@ -24,6 +24,7 @@ export interface WorkloadInfo {
 
 export interface BucketInfo {
 	id: string;
+	publicRead: boolean;
 }
 
 export interface CronInfo {
@@ -143,6 +144,9 @@ export const manifestJsonSchema = {
 			properties: {
 				name: {
 					type: "string",
+				},
+				private: {
+					type: "boolean",
 				},
 			},
 			required: ["name"],

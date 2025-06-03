@@ -11,6 +11,7 @@ export { Bootstrap } from "~workloads/workloads/app-lifecycle/bootstrap.js";
 export { type LifecycleWorkload } from "~workloads/workloads/app-lifecycle/lifecycle-workload.js";
 export {
 	Bucket,
+	BucketOptions,
 	bucketLocalConfiguration,
 } from "~workloads/workloads/stateful/bucket.js";
 export type { Database } from "~workloads/workloads/stateful/database.js";

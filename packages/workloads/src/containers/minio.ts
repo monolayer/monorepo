@@ -69,6 +69,18 @@ export class MinioContainer extends ContainerWithURI {
 						this.#testContainer ? "test" : "development",
 					].join("-")}`,
 				);
+				if (!this.workload.publicRead) {
+					await this.startedContainer.exec(
+						`mc alias set myminio http://localhost:9000 minioadmin minioadmin`,
+					);
+					//
+					await this.startedContainer.exec(
+						`mc anonymous set download myminio/${[
+							this.workload.id,
+							this.#testContainer ? "test" : "development",
+						].join("-")}`,
+					);
+				}
 			}
 		}
 	}
