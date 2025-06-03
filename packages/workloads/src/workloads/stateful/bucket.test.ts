@@ -18,6 +18,7 @@ test("name from env var in production", () => {
 });
 
 test("name from env var in production throws on missing", () => {
+	vi.stubEnv("NODE_ENV", "production");
 	const bucket = new Bucket("work-documents");
 	expect(() => bucket.name).toThrow(
 		"Undefined bucket name for Bucket work-documents. ML_WORK_DOCUMENTS_BUCKET_NAME not set.",
