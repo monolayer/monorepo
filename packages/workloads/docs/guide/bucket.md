@@ -10,7 +10,7 @@ A [`Bucket`](./../reference/api/main/classes/Bucket.md) workload is initialized 
 
 See [examples](#examples).
 
-Each workload has the `MONO_AWS_ENDPOINT_URL` environment variable name associated with it to hold the endpoint url to connect to development and test environments.
+Each workload has the `ML_AWS_ENDPOINT_URL` environment variable name associated with it to hold the endpoint url to connect to development and test environments.
 
 ## Client
 
@@ -30,7 +30,7 @@ You can stop it with [`npx workloads stop dev`](./../reference/cli/stop-dev.md).
 
 After the container is started:
 
-- The `MONO_AWS_ENDPOINT_URL` environment variable with the endpoint URL to the workload's Docker container
+- The `ML_AWS_ENDPOINT_URL` environment variable with the endpoint URL to the workload's Docker container
 will be written to `.env`.
 - The bucket will be created if it does not exist.
 
@@ -46,7 +46,7 @@ A docker container for the test environment is launched with [`npx workloads sta
 
 You can stop it with [`npx workloads stop test`](./../reference/cli/stop-test.md).
 
-- The `MONO_AWS_ENDPOINT_URL` environment variable with the endpoint URL to the workload's Docker container
+- The `ML_AWS_ENDPOINT_URL` environment variable with the endpoint URL to the workload's Docker container
 will be written to `.env`.
 - The bucket will be created if it does not exist.
 
@@ -95,10 +95,10 @@ const imagesBucket = new Bucket(
     new S3Client({
      // Configure forcePathStyle and endpoint
      // when the dev or test container is running
-     ...(process.env.MONO_AWS_ENDPOINT_URL
+     ...(process.env.ML_AWS_ENDPOINT_URL
        ? {
            forcePathStyle: true,
-           endpoint: process.env.MONO_AWS_ENDPOINT_URL,
+           endpoint: process.env.ML_AWS_ENDPOINT_URL,
          }
        : {}),
      // Other configuration options

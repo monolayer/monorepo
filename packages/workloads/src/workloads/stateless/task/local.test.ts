@@ -3,7 +3,7 @@ import { dispatcherForTask } from "~workloads/workloads/stateless/task/local.js"
 import { Task } from "~workloads/workloads/stateless/task/task.js";
 
 beforeEach(() => {
-	vi.stubEnv("MONO_TASK_MODE", undefined);
+	vi.stubEnv("ML_TASK_MODE", undefined);
 });
 
 describe("dev dispatcher", () => {

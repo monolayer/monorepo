@@ -13,7 +13,7 @@ See [examples](#examples).
 Each workload has an environment variable name associated with it to hold the connection
 string for the database named after the workloads' [`id`](./../reference/api/main/classes/Redis.md#properties). For example:
 
-- id `documents`: `MONO_REDIS_DOCUMENTS_URL`.
+- id `documents`: `ML_REDIS_DOCUMENTS_URL`.
 
 ## Client
 
@@ -76,7 +76,7 @@ and it includes:
   "redis": [
     {
       "id": "products",
-      "connectionStringEnvVar": "MONO_REDIS_PRODUCTS_DATABASE_URL"
+      "connectionStringEnvVar": "ML_REDIS_PRODUCTS_DATABASE_URL"
     }
   ],
   // ...

@@ -87,14 +87,14 @@ Each `Task` will be compiled to a single CommonJS file with bundled dependencies
 
 The exported code will be located in `.workloads/task/${task-file-name}/dist`.
 
-This entrypoint script expects an environment variable `MONO_TASK_MODE` to be either set to:
+This entrypoint script expects an environment variable `ML_TASK_MODE` to be either set to:
 
 - `bull`: for `Redis` backed queues.
 
-  You need to set the environment variable `MONO_TASK_REDIS_URL` with the connection string to the Redis server.
+  You need to set the environment variable `ML_TASK_REDIS_URL` with the connection string to the Redis server.
 - `sqs`: for `AWS SQS` backed queues.
 
-  You need to set the environment variable `MONO_TASK_${snakeCase(task.id).toUpperCase()}_SQS_QUEUE_URL` with the `SQS` queue URL.
+  You need to set the environment variable `ML_TASK_${snakeCase(task.id).toUpperCase()}_SQS_QUEUE_URL` with the `SQS` queue URL.
 
   Credentials for the client are picked up from the environment by the AWS SDK.
 

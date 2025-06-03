@@ -17,7 +17,7 @@ See [examples](#examples).
 Each workload has an environment variable name associated with it to hold the connection
 string for the database named after the workloads' [`databaseName`](./../reference/api/main/classes/PostgresDatabase.md#properties). For example:
 
-- database name `products`: `MONO_PG_PRODUCTS_DATABASE_URL`.
+- database name `products`: `ML_PG_PRODUCTS_DATABASE_URL`.
 
 ## Client
 
@@ -80,7 +80,7 @@ and it includes:
   "postgresDatabase": [
     {
       "name": "products",
-      "connectionStringEnvVar": "MONO_PG_PRODUCTS_DATABASE_URL"
+      "connectionStringEnvVar": "ML_PG_PRODUCTS_DATABASE_URL"
     }
   ],
   // ...

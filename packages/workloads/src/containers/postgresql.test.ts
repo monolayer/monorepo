@@ -27,7 +27,7 @@ test(
 		});
 
 		assert.strictEqual(
-			process.env.MONO_PG_TEST_STARTED_CONTAINER_DATABASE_URL,
+			process.env.ML_PG_TEST_STARTED_CONTAINER_DATABASE_URL,
 			`postgresql://postgres:postgres@localhost:${startedContainer.getMappedPort(5432)}/test_started_container`,
 		);
 		assert.strictEqual(

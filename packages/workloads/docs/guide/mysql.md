@@ -13,7 +13,7 @@ See [examples](#examples).
 Each workload has an environment variable name associated with it to hold the connection
 string for the database named after the workloads' [`databaseName`](./../reference/api/main/classes/MySqlDatabase.md#properties). For example:
 
-- database name `products`: `MONO_MYSQL_PRODUCTS_DATABASE_URL`.
+- database name `products`: `ML_MYSQL_PRODUCTS_DATABASE_URL`.
 
 ## Client
 
@@ -78,7 +78,7 @@ and it includes:
   "mysqlDatabase": [
     {
       "name": "products",
-      "connectionStringEnvVar": "MONO_MYSQL_PRODUCTS_DATABASE_URL"
+      "connectionStringEnvVar": "ML_MYSQL_PRODUCTS_DATABASE_URL"
     }
   ],
   // ...

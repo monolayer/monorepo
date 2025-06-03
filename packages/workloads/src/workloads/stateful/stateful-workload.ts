@@ -36,7 +36,7 @@ export abstract class StatefulWorkloadWithClient extends StatefulWorkload {
 	 */
 	get connectionStringEnvVar() {
 		return snakeCase(
-			["mono", ...this.connStringComponents, "url"].join("_"),
+			["ml", ...this.connStringComponents, "url"].join("_"),
 		).toUpperCase();
 	}
 

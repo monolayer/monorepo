@@ -62,7 +62,7 @@ async function sendTaskBatch<P>(
 
 export function sqsTaskQueueURL(taskId: string) {
 	return process.env[
-		`MONO_TASK_${snakeCase(taskId).toUpperCase()}_SQS_QUEUE_URL`
+		`ML_TASK_${snakeCase(taskId).toUpperCase()}_SQS_QUEUE_URL`
 	];
 }
 

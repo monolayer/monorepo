@@ -28,10 +28,10 @@ AWS SQS adapter for task workloads from `@monolayer/workloads`.
   For a task with the following id: `send-email`:
 
   ```bash
-  export MONO_TASK_SEND_EMAIL_SQS_QUEUE_URL=sqs-queue-url
+  export ML_TASK_SEND_EMAIL_SQS_QUEUE_URL=sqs-queue-url
   ```
 
-  Each task has a unique environment variable associated with for its queue: `MONO_TASK_${snakeCase(taskId).toUpperCase()}_SQS_QUEUE_URL`
+  Each task has a unique environment variable associated with for its queue: `ML_TASK_${snakeCase(taskId).toUpperCase()}_SQS_QUEUE_URL`
 
 - Run your application with the task workload.
 

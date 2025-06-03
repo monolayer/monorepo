@@ -29,7 +29,7 @@ afterEach<TaskSQSWorkerContext>(async (context) => {
 test<TaskSQSWorkerContext>("task queue url", async (context) => {
 	expect(sqsTaskQueueURL(context.task.id)).toBe(
 		process.env[
-			`MONO_TASK_${snakeCase(context.task.id).toUpperCase()}_SQS_QUEUE_URL`
+			`ML_TASK_${snakeCase(context.task.id).toUpperCase()}_SQS_QUEUE_URL`
 		],
 	);
 });

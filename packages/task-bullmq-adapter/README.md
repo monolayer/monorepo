@@ -20,7 +20,7 @@ BullMQ adapter for task workloads from `@monolayer/workloads`.
 - Set `TASK_DISPATCHER` environment variable to `@monolayer/task-bullmq-adapter`
 
   ```bash
-  export MONO_TASK_MODE="@monolayer/task-bullmq-adapter"
+  export ML_TASK_MODE="@monolayer/task-bullmq-adapter"
   ```
 
 - Set `TASK_BULLMQ_ADAPTER_REDIS_URL` environment variable with the Redis instance connection string

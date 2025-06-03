@@ -23,7 +23,7 @@ test("Redis container", { sequential: true }, async ({ containers }) => {
 	});
 
 	assert.strictEqual(
-		process.env.MONO_REDIS_TEST_REDIS_TEST_URL,
+		process.env.ML_REDIS_TEST_REDIS_TEST_URL,
 		`redis://localhost:${startedContainer.getMappedPort(6379)}`,
 	);
 

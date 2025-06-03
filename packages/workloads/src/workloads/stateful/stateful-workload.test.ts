@@ -31,7 +31,7 @@ describe("StatefulWorkloadWithClient", () => {
 	test("connectionStringEnvVar from components", async () => {
 		const testDb = new TestStatefulWorkloadWithClient("commands");
 		expect(testDb.connectionStringEnvVar).toStrictEqual(
-			"MONO_TEST_STATEFUL_COMMANDS_URL_URL",
+			"ML_TEST_STATEFUL_COMMANDS_URL_URL",
 		);
 	});
 });

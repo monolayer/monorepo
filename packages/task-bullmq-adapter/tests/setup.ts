@@ -21,7 +21,7 @@ export async function setupBullContext<P>(
 	const url = redisConnectionString(context.container);
 	vi.stubEnv("TASK_BULLMQ_ADAPTER_REDIS_URL", url);
 	vi.stubEnv("NODE_ENV", "production");
-	vi.stubEnv("MONO_TASK_MODE", "bull");
+	vi.stubEnv("ML_TASK_MODE", "bull");
 	context.client = new IORedis(url);
 	context.testTask = task ?? new Task("Send emails", async () => {}, {});
 }

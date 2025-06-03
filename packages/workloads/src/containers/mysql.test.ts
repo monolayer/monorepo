@@ -27,7 +27,7 @@ test(
 		});
 
 		assert.strictEqual(
-			process.env.MONO_MYSQL_STARTED_CONTAINER_DATABASE_URL,
+			process.env.ML_MYSQL_STARTED_CONTAINER_DATABASE_URL,
 			`mysql://root:test@localhost:${startedContainer.getMappedPort(3306)}/started_container`,
 		);
 		assert.strictEqual(

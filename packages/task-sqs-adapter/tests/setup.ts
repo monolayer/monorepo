@@ -101,7 +101,7 @@ export async function setupSqsQueueForWorker(
 	const result = await client.send(createQueue);
 	context.queueUrl = localStackSQSQueueUrl(result.QueueUrl!, url);
 	vi.stubEnv(
-		`MONO_TASK_${snakeCase(testTask.id).toUpperCase()}_SQS_QUEUE_URL`,
+		`ML_TASK_${snakeCase(testTask.id).toUpperCase()}_SQS_QUEUE_URL`,
 		context.queueUrl,
 	);
 }
@@ -147,7 +147,7 @@ export async function setupSqsQueueForSingleWorker(
 
 	const result = await client.send(createQueue);
 	context.queueUrl = localStackSQSQueueUrl(result.QueueUrl!, url);
-	vi.stubEnv(`MONO_TASK_SQS_QUEUE_URL`, context.queueUrl);
+	vi.stubEnv(`ML_TASK_SQS_QUEUE_URL`, context.queueUrl);
 }
 
 export async function tearDownSqsQueueForWorker(
