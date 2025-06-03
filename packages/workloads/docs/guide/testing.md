@@ -19,12 +19,3 @@ The [test-helpers](./../reference/api//test-helpers/index.md#functions) module p
 | Helper | Description |
 | - | - |
 | [`flushRedis`](./../reference/api/test-helpers/functions/flushRedis.md) | deletes all the keys of the currently selected database. |
-
-## Mailer
-
-| Helper | Description |
-| - | - |
-| [`deleteMailerMessages`](./../reference/api/test-helpers/functions/deleteMailerMessages.md) | Deletes messages. |
-| [`mailerMesages`](./../reference/api/test-helpers/functions/mailerMesages.md) | Get all messages. |
-| [`mailerMessageText`](./../reference/api/test-helpers/functions/mailerMessageText.md) | Get the text part of a message. |
-| [`mailerMessageHTML`](./../reference/api/test-helpers/functions/mailerMessageHTML.md) | Get the HTML part of a message. |

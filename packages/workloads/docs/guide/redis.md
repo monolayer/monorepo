@@ -6,7 +6,7 @@ Workload for Redis API compatible key-value stores.
 
 With this workload you define Redis key-value stores.
 
-A [`Redis`](./../reference/api/main/classes/Redis.md) workload is initialized with a stable ID and a [client constructor function](./../reference/api/main/interfaces/DatabaseOptions.md#properties) providing the client of your choice.
+A [`Redis`](./../reference/api/main/classes/Redis.md) workload is initialized with a stable ID.
 
 See [examples](#examples).
 

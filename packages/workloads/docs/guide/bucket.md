@@ -6,7 +6,7 @@ Workload for AWS S3 compatible storage.
 
 With this workload you define AWS S3 compatible storages.
 
-A [`Bucket`](./../reference/api/main/classes/Bucket.md) workload is initialized with a valid bucket name a [client constructor function](./../reference/api/main/interfaces/DatabaseOptions.md#properties) providing the client of your choice.
+A [`Bucket`](./../reference/api/main/classes/Bucket.md) workload is initialized with a valid bucket name.
 
 See [examples](#examples).
 
