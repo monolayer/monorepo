@@ -9,7 +9,7 @@ import { StatefulWorkload } from "~workloads/workloads/stateful/stateful-workloa
 
  * **NOTES**
  *
- * Launching the development or test containers with `npx workloads start` will write the environment
+ * Launching the development or test containers with `npx workloads start dev` will write the environment
  * variable `ML_AWS_ENDPOINT_URL` will be written to the corresponding dotenv file (`.env` or `.env.test`)
  *
  * When initializing the S3 client, you need to configure `forcePathStyle` and `endpoint`

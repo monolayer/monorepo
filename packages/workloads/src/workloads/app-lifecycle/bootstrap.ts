@@ -4,7 +4,7 @@ import {
 } from "~workloads/workloads/app-lifecycle/lifecycle-workload.js";
 
 /**
- * Workload for defining bootstrap scripts to run when rolling out a fresh application.
+ * Workload for defining bootstrap an npm script to run when rolling out a fresh application.
  *
  * @example
  * ```ts

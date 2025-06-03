@@ -6,26 +6,18 @@ Workload for PostgreSQL databases.
 
 With this workload you define MySQL databases.
 
-A [`MySqlDatabase`](./../reference/api/main/classes/MySqlDatabase.md) workload is initialized with a valid database name and the following options:
-
-- A [client constructor function](./../reference/api/main/interfaces/DatabaseOptions.md#properties) providing the client of your choice.
-- An optional [serverId](./../reference/api/main/interfaces/DatabaseOptions.md#properties) to reference the database server where the database is located.
+A [`MySqlDatabase`](./../reference/api/main/classes/MySqlDatabase.md) workload is initialized with a valid database name.
 
 See [examples](#examples).
 
 Each workload has an environment variable name associated with it to hold the connection
-string for the database named after the workloads' [`databaseName`](./../reference/api/main/classes/MySqlDatabase.md#properties) and [`databaseId`](./../reference/api/main/classes/MySqlDatabase.md#databaseid). For example:
+string for the database named after the workloads' [`databaseName`](./../reference/api/main/classes/MySqlDatabase.md#properties). For example:
 
 - database name `products`: `MONO_MYSQL_PRODUCTS_DATABASE_URL`.
-- database name `products` and server ID `main`: `MONO_MYSQL_MAIN_PRODUCTS_DATABASE_URL`.
 
 ## Client
 
 You can use **any** MySQL database client with the workload.
-
-The database client is defined by passing a constructor function when initializing the workload.
-
-You access the client with the [client](./../reference/api/main/classes/MySqlDatabase.md#client) accessor. This accessor will call this client constructor function with the workload's environment variable name and memoize its result.
 
 See [examples](#examples).
 
@@ -44,7 +36,7 @@ You can stop it with [`npx workloads stop dev`](./../reference/cli/stop-dev.md).
 After the container is started:
 
 - The environment variable with the connection string for the workload's Docker container
-will be written to `.env`.
+will be written to `.env.local`.
 - The database will be created in the database server if it does not exist.
 
 :::info
@@ -58,7 +50,7 @@ A docker container for the test environment is launched with [`npx workloads sta
 You can stop it with [`npx workloads stop test`](./../reference/cli/stop-test.md).
 
 - The environment variable with the connection string for the workload's Docker container
-will be written to `.env.test`.
+will be written to `.env.test.local`.
 - The database will be created in the database server if it does not exist.
 
 :::info
@@ -78,18 +70,14 @@ The build output for the workload is located in the `mysqlDatabase` of the `mani
 and it includes:
 
 - The database name.
-- The server ID.
 - The environment variable name.
 
-:::code-group
-
-```json[Workload without a serverId]
+```json
 {
   "version": "1",
   "mysqlDatabase": [
     {
       "name": "products",
-      "serverId": "products",
       "connectionStringEnvVar": "MONO_MYSQL_PRODUCTS_DATABASE_URL"
     }
   ],
@@ -97,57 +85,7 @@ and it includes:
 }
 ```
 
-```json[Multiple workloads with the same serverId]
-{
-  "version": "1",
-  "mysqlDatabase": [
-    {
-      "name": "products",
-      "serverId": "main",
-      "connectionStringEnvVar": "MONO_MYSQL_MAIN_PRODUCTS_DATABASE_URL"
-    },
-    {
-      "name": "documents",
-      "serverId": "main",
-      "connectionStringEnvVar": "MONO_MYSQL_MAIN_DOCUMENTS_DATABASE_URL"
-    }
-  ],
-  // ...
-}
-```
-
-:::
-
 ## Examples
-
-### Workloads on different database servers
-
-```ts
-import { MySqlDatabase } from "@monolayer/workloads";
-import mysql from 'mysql2/promise';
-
-// Workloads on different database servers
-
-export const productsDb = new MySqlDatabase(
-  "products",
-  {
-    // envVarName -> MONO_MYSQL_PRODUCTS_DATABASE_URL
-    client: async (envVarName) =>
-      await mysql.createConnection(process.env[envVarName]!)
-    ),
-  }
-);
-
-export const analyticsDb = new MySqlDatabase(
-  "analytics",
-  {
-    // envVarName -> MONO_MYSQL_ANALYTICS_DATABASE_URL
-    client: async (envVarName) =>
-      await mysql.createConnection(process.env[envVarName]!)
-    ),
-  }
-);
-```
 
 ### Workloads on the same database server
 
@@ -155,29 +93,17 @@ export const analyticsDb = new MySqlDatabase(
 import { MySqlDatabase } from "@monolayer/workloads";
 import mysql from 'mysql2/promise';
 
-export const productsDbMain = new MySqlDatabase(
-  "products",
-  {
-    serverId: "main",
-    // envVarName -> MONO_MYSQL_MAIN_PRODUCTS_DATABASE_URL
-    client: async (envVarName) =>
-      await mysql.createConnection(process.env[envVarName]!)
-    ),
-  }
-);
+// Workloads on different database servers
 
-export const analyticsDbMain = new MySqlDatabase(
-  "analytics",
-  {
-    serverId: "main",
-    // envVarName -> MONO_MYSQL_MAIN_ANALYTICS_DATABASE_URL
-    client: async (envVarName) =>
-      await mysql.createConnection(process.env[envVarName]!)
-    ),
-  }
+export const productsDb = new MySqlDatabase("products");
 
-// client calls the client constructor
-analyticsDbMain.client.query("SELECT 1")
-// Successive calls to client will get the same client
-analyticsDbMain.client.query("SELECT 2")
+export const dbClient = async () => {
+  // Assumes the environment variable is set
+  return await mysql.createConnection(process.env[productsDb.connectionStringEnvVar]!)
+}
+
+dbClient().then((client) => {
+  client.query("SELECT 2");
+  client.query("SELECT 1");
+})
 ```

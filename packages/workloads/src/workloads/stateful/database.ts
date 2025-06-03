@@ -50,12 +50,3 @@ export abstract class Database extends StatefulWorkloadWithClient {
 		];
 	}
 }
-
-export interface DatabaseOptions {
-	/**
-	 * Database server ID
-	 * @default: `databaseName`
-	 *
-	 */
-	serverId?: string;
-}

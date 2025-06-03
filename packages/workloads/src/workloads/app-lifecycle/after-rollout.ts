@@ -4,7 +4,7 @@ import {
 } from "~workloads/workloads/app-lifecycle/lifecycle-workload.js";
 
 /**
- * Workload for defining scripts to run after rolling out a new application version.
+ * Workload for defining an npm script to run after rolling out a new application version.
  *
  * @example
  * ```ts
